@@ -2,112 +2,512 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC8029905E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55699299060
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782896AbgJZPBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:01:40 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44159 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782665AbgJZPBi (ORCPT
+        id S1782912AbgJZPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:02:35 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:46184 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782749AbgJZPCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:01:38 -0400
-Received: by mail-wr1-f68.google.com with SMTP id t9so12957220wrq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:01:37 -0700 (PDT)
+        Mon, 26 Oct 2020 11:02:34 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x1so2967765oic.13;
+        Mon, 26 Oct 2020 08:02:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U97g4DPk37yBTbr4sK3d+QCMl4K1OpjO58zJeloILjc=;
-        b=uXgwrHyoB/oVh3VPXCniZeS4cme8VQiCH4mJUmf6fVFsiJN8mC6nzwHz7tC7EytqYj
-         CYZOV4+jlcL+Lnwom/Y/MzEXEyGvOsAk4/W2ZB7rIus+ZQdJ/Ks2SNbvhRK8F87shls9
-         Lw4JZBQbl9pfHwKgQuaAMIA5khCEmy7TAyQgZNi9hgsm4wgru7pbE447D3lSzDmF+s2t
-         k5XtQtIjhJ8JiyGsOK5VdEcFmVWzcEt4Y38gT3sbizazWSA+54IJEjmEYhi+NeVYt9no
-         xKIJoIFKtET6z4mPQj08LxJguvP1H5cqHgwChbub9D5MfAWYZ6nPUHuQp25epRa/HGhk
-         wLCA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=homWwlI93slxiwqEak8Y1cJp7LwJAJvYpOxCzwQqMT8=;
+        b=VtV6YX9YRdZepfCDDvg4VmVQI+X6G1c5GMg6aa0TQYI3DGpGjlDUsD6cgZ1QUA33T8
+         R5ou+fOBRFBSdue2UWSEfP7uY42u54J+u5aF3UFu2sDLedt1JZ30h3dGB08MoN27jIUn
+         Vjgt4V8sV22mxq0OfGGHmzUMarWpQu/7eG8To5JWaTgcaEGA79cM4t2aVS56S8tyyCCb
+         2H2AFIRMFzumGtkQonjpCMGLNvYAJzAoZGrKxg+duD0Ll465zprY4YZZq5diwJZr83VH
+         i0w1q43hMoWAmx6tJYMyKMED9lxPah8Z7yPZEPNi5q7p8iJPDkpiR7hSH7um/6ZxsUCK
+         us+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U97g4DPk37yBTbr4sK3d+QCMl4K1OpjO58zJeloILjc=;
-        b=k6g7K+z/62dg8OawnuFAu3Uy274ZIdP7BzFdPfRC414asS0aTUF6IlOAjF9l7qDYr/
-         cQ6NYVmuA5+ih+98YEJngIKC9GLWty4aApZgFubjKEFhcaPSXiDAJ1PEBgbsOzfVOuiV
-         wUO0z2SlcuwRZlu1CPawbsm/F4jOIf/2sn5+R1w+aaF4n9V0/uPNT0tfXDkpTu77OZub
-         Vpy3SquaPSNNEc3LbMdaTx5kWlhtv5MN11xxcqQgpyafCXPj3DhEtVTrss31bAvNV9GW
-         CLcmgGj9bI5UYX4N1SWHPNPPbbBApfxUYv6u3ZUeqcL08V9t041gfFUuoddALC3/KLkJ
-         XPXA==
-X-Gm-Message-State: AOAM530OMl5v06JO+Xp1PBn3wH3zjLyc9DH78/apRYwSWR0o5Mbu3WXK
-        EuX3zSs35wMXL9M2zgN5zQB/mg==
-X-Google-Smtp-Source: ABdhPJwwb/Bivg+EAjiajD6Nc7JOqnZTCvtVkr5/QG5ozwvdx65HSpznlKuBPwU9mfAMsDDOYJjP8g==
-X-Received: by 2002:adf:e4c4:: with SMTP id v4mr18073433wrm.79.1603724496207;
-        Mon, 26 Oct 2020 08:01:36 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id w11sm22317715wrs.26.2020.10.26.08.01.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Oct 2020 08:01:35 -0700 (PDT)
-Subject: Re: [PATCH] Asoc: qcom: lpass-sc7180: Fix MI2S bitwidth field bit
- positions
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1603373219-19374-1-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <335f1d55-8a85-8501-fd69-0397f44e21af@linaro.org>
-Date:   Mon, 26 Oct 2020 15:01:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=homWwlI93slxiwqEak8Y1cJp7LwJAJvYpOxCzwQqMT8=;
+        b=ZT/iLDZqN3Q0OUYvuDGV1kcfA9OA7wwHIWi6w3fvjqFN0tr9c1FVwIcRA4q1FWrNnW
+         VQDZMn9jVJF3+vWsRvpz+i55PJ2fxYJCRjDzbi776f8sEI2L3ESupupvoYcqZ7k9Rkm8
+         uiK31yCLWmbLTQOnYCbhS7f0k6nosO/VJmOoOYix6H0ux73Yvh244rzRhglUdvEJ1p/B
+         Xcupzz6NqEfXRrgUc6otm4+nTjlG8Q8Km6iH2zkEZDbBBOWL7Dh46bvR/uZF6WZxhZPD
+         iM9txKKfBZG9bGcYAwy0gCqvTqWUlX9zl46mpPoc3mpBpBlmhzppzYCfvT3vejLQdW6A
+         zSkg==
+X-Gm-Message-State: AOAM532nUHJ2sgPGdGKsWOlVItahuvjXbjqpPAmFTfzcr2rU3Eygtx1L
+        SUMHxSO5RUeGHp5Hb029VZjJ4U6VKpA=
+X-Google-Smtp-Source: ABdhPJz2VrTLYQDQOcEfUYlLZ6kPAny2FEXfotOX/DMQBzakkYrKnIaC+MO2b+kCiWeEA1Wc9NrjFA==
+X-Received: by 2002:aca:d5c1:: with SMTP id m184mr12947573oig.19.1603724550500;
+        Mon, 26 Oct 2020 08:02:30 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g22sm3678575oti.26.2020.10.26.08.02.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 26 Oct 2020 08:02:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 26 Oct 2020 08:02:28 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] hwmon: pmbus: shrink code and remove pmbus_do_remove()
+Message-ID: <20201026150228.GA54948@roeck-us.net>
+References: <20201026105352.20359-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <1603373219-19374-1-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026105352.20359-1-brgl@bgdev.pl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/10/2020 14:26, Srinivasa Rao Mandadapu wrote:
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On Mon, Oct 26, 2020 at 11:53:52AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Update SC7180 lpass_variant structure with proper I2S bitwidth
-> field bit positions, as bitwidth denotes 0 to 1 bits,
-> but previously used only 0 bit.
+> The only action currently performed in pmbus_do_remove() is removing the
+> debugfs hierarchy. We can schedule a devm action at probe time and remove
+> pmbus_do_remove() entirely from all pmbus drivers.
 > 
-> Fixes: commit cba62c8b49bead ("Merge series "ASoC: qcom: Add support for SC7180 lpass variant" from Rohit kumar <rohitkr@codeaurora.org>:")
-this should be 12 chars long, for this particular fix it should be!
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Fixes: 24caf8d9eb108 ("ASoC: qcom: lpass-sc7180: Add platform driver for 
-lpass audio")
-> 
+Applied.
 
-No empty line after Fixes tag!
+Thanks,
+Guenter
 
-
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 > ---
->   sound/soc/qcom/lpass-sc7180.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/hwmon/pmbus/adm1266.c      |  1 -
+>  drivers/hwmon/pmbus/adm1275.c      |  1 -
+>  drivers/hwmon/pmbus/bel-pfe.c      |  1 -
+>  drivers/hwmon/pmbus/ibm-cffps.c    |  1 -
+>  drivers/hwmon/pmbus/inspur-ipsps.c |  1 -
+>  drivers/hwmon/pmbus/ir35221.c      |  1 -
+>  drivers/hwmon/pmbus/ir38064.c      |  1 -
+>  drivers/hwmon/pmbus/irps5401.c     |  1 -
+>  drivers/hwmon/pmbus/isl68137.c     |  1 -
+>  drivers/hwmon/pmbus/lm25066.c      |  1 -
+>  drivers/hwmon/pmbus/ltc2978.c      |  1 -
+>  drivers/hwmon/pmbus/ltc3815.c      |  1 -
+>  drivers/hwmon/pmbus/max16064.c     |  1 -
+>  drivers/hwmon/pmbus/max16601.c     |  1 -
+>  drivers/hwmon/pmbus/max20730.c     |  1 -
+>  drivers/hwmon/pmbus/max20751.c     |  1 -
+>  drivers/hwmon/pmbus/max31785.c     |  1 -
+>  drivers/hwmon/pmbus/max34440.c     |  1 -
+>  drivers/hwmon/pmbus/max8688.c      |  1 -
+>  drivers/hwmon/pmbus/mp2975.c       |  1 -
+>  drivers/hwmon/pmbus/pmbus.c        |  1 -
+>  drivers/hwmon/pmbus/pmbus.h        |  1 -
+>  drivers/hwmon/pmbus/pmbus_core.c   | 20 +++++++++-----------
+>  drivers/hwmon/pmbus/pxe1610.c      |  1 -
+>  drivers/hwmon/pmbus/tps40422.c     |  1 -
+>  drivers/hwmon/pmbus/tps53679.c     |  1 -
+>  drivers/hwmon/pmbus/ucd9000.c      |  1 -
+>  drivers/hwmon/pmbus/ucd9200.c      |  1 -
+>  drivers/hwmon/pmbus/xdpe12284.c    |  1 -
+>  drivers/hwmon/pmbus/zl6100.c       |  1 -
+>  30 files changed, 9 insertions(+), 40 deletions(-)
 > 
-> diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-> index c6292f9e..bc998d5 100644
-> --- a/sound/soc/qcom/lpass-sc7180.c
-> +++ b/sound/soc/qcom/lpass-sc7180.c
-> @@ -188,7 +188,7 @@ static struct lpass_variant sc7180_data = {
->   	.micmode		= REG_FIELD_ID(0x1000, 4, 8, 3, 0x1000),
->   	.micmono		= REG_FIELD_ID(0x1000, 3, 3, 3, 0x1000),
->   	.wssrc			= REG_FIELD_ID(0x1000, 2, 2, 3, 0x1000),
-> -	.bitwidth		= REG_FIELD_ID(0x1000, 0, 0, 3, 0x1000),
-> +	.bitwidth		= REG_FIELD_ID(0x1000, 0, 1, 3, 0x1000),
->   
->   	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
->   	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
-> 
---srini
+> diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
+> index c7b373ba92f2..4d2e4ddcfbfd 100644
+> --- a/drivers/hwmon/pmbus/adm1266.c
+> +++ b/drivers/hwmon/pmbus/adm1266.c
+> @@ -502,7 +502,6 @@ static struct i2c_driver adm1266_driver = {
+>  		   .of_match_table = adm1266_of_match,
+>  		  },
+>  	.probe_new = adm1266_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = adm1266_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
+> index e7997f37b266..38a6515b0763 100644
+> --- a/drivers/hwmon/pmbus/adm1275.c
+> +++ b/drivers/hwmon/pmbus/adm1275.c
+> @@ -797,7 +797,6 @@ static struct i2c_driver adm1275_driver = {
+>  		   .name = "adm1275",
+>  		   },
+>  	.probe_new = adm1275_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = adm1275_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/bel-pfe.c b/drivers/hwmon/pmbus/bel-pfe.c
+> index 2c5b853d6c7f..aed7542d7ce5 100644
+> --- a/drivers/hwmon/pmbus/bel-pfe.c
+> +++ b/drivers/hwmon/pmbus/bel-pfe.c
+> @@ -121,7 +121,6 @@ static struct i2c_driver pfe_pmbus_driver = {
+>  		   .name = "bel-pfe",
+>  	},
+>  	.probe_new = pfe_pmbus_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = pfe_device_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
+> index 2fb7540ee952..d6bbbb223871 100644
+> --- a/drivers/hwmon/pmbus/ibm-cffps.c
+> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
+> @@ -617,7 +617,6 @@ static struct i2c_driver ibm_cffps_driver = {
+>  		.of_match_table = ibm_cffps_of_match,
+>  	},
+>  	.probe_new = ibm_cffps_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ibm_cffps_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/inspur-ipsps.c b/drivers/hwmon/pmbus/inspur-ipsps.c
+> index be493182174d..88c5865c4d6f 100644
+> --- a/drivers/hwmon/pmbus/inspur-ipsps.c
+> +++ b/drivers/hwmon/pmbus/inspur-ipsps.c
+> @@ -216,7 +216,6 @@ static struct i2c_driver ipsps_driver = {
+>  		.of_match_table = of_match_ptr(ipsps_of_match),
+>  	},
+>  	.probe_new = ipsps_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ipsps_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ir35221.c b/drivers/hwmon/pmbus/ir35221.c
+> index 5fadb1def49f..3aebeb1443fd 100644
+> --- a/drivers/hwmon/pmbus/ir35221.c
+> +++ b/drivers/hwmon/pmbus/ir35221.c
+> @@ -137,7 +137,6 @@ static struct i2c_driver ir35221_driver = {
+>  		.name	= "ir35221",
+>  	},
+>  	.probe_new	= ir35221_probe,
+> -	.remove		= pmbus_do_remove,
+>  	.id_table	= ir35221_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ir38064.c b/drivers/hwmon/pmbus/ir38064.c
+> index 9ac563ce7dd8..46f17c4b4873 100644
+> --- a/drivers/hwmon/pmbus/ir38064.c
+> +++ b/drivers/hwmon/pmbus/ir38064.c
+> @@ -53,7 +53,6 @@ static struct i2c_driver ir38064_driver = {
+>  		   .name = "ir38064",
+>  		   },
+>  	.probe_new = ir38064_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ir38064_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/irps5401.c b/drivers/hwmon/pmbus/irps5401.c
+> index 44aeafcbd56c..93ef6d64a33a 100644
+> --- a/drivers/hwmon/pmbus/irps5401.c
+> +++ b/drivers/hwmon/pmbus/irps5401.c
+> @@ -55,7 +55,6 @@ static struct i2c_driver irps5401_driver = {
+>  		   .name = "irps5401",
+>  		   },
+>  	.probe_new = irps5401_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = irps5401_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/isl68137.c b/drivers/hwmon/pmbus/isl68137.c
+> index 7cad76e07f70..2bee930d3900 100644
+> --- a/drivers/hwmon/pmbus/isl68137.c
+> +++ b/drivers/hwmon/pmbus/isl68137.c
+> @@ -324,7 +324,6 @@ static struct i2c_driver isl68137_driver = {
+>  		   .name = "isl68137",
+>  		   },
+>  	.probe_new = isl68137_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = raa_dmpvr_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
+> index 429172a42902..c75a6bf39641 100644
+> --- a/drivers/hwmon/pmbus/lm25066.c
+> +++ b/drivers/hwmon/pmbus/lm25066.c
+> @@ -508,7 +508,6 @@ static struct i2c_driver lm25066_driver = {
+>  		   .name = "lm25066",
+>  		   },
+>  	.probe_new = lm25066_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = lm25066_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ltc2978.c b/drivers/hwmon/pmbus/ltc2978.c
+> index 9a024cf70145..7e53fa95b92d 100644
+> --- a/drivers/hwmon/pmbus/ltc2978.c
+> +++ b/drivers/hwmon/pmbus/ltc2978.c
+> @@ -875,7 +875,6 @@ static struct i2c_driver ltc2978_driver = {
+>  		   .of_match_table = of_match_ptr(ltc2978_of_match),
+>  		   },
+>  	.probe_new = ltc2978_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ltc2978_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ltc3815.c b/drivers/hwmon/pmbus/ltc3815.c
+> index 8328fb367ad6..e45e14d26c9a 100644
+> --- a/drivers/hwmon/pmbus/ltc3815.c
+> +++ b/drivers/hwmon/pmbus/ltc3815.c
+> @@ -200,7 +200,6 @@ static struct i2c_driver ltc3815_driver = {
+>  		   .name = "ltc3815",
+>  		   },
+>  	.probe_new = ltc3815_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ltc3815_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max16064.c b/drivers/hwmon/pmbus/max16064.c
+> index 26e7f5ef9d7f..d79add99083e 100644
+> --- a/drivers/hwmon/pmbus/max16064.c
+> +++ b/drivers/hwmon/pmbus/max16064.c
+> @@ -103,7 +103,6 @@ static struct i2c_driver max16064_driver = {
+>  		   .name = "max16064",
+>  		   },
+>  	.probe_new = max16064_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max16064_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max16601.c b/drivers/hwmon/pmbus/max16601.c
+> index 71bb74e27a5c..a960b86e72d2 100644
+> --- a/drivers/hwmon/pmbus/max16601.c
+> +++ b/drivers/hwmon/pmbus/max16601.c
+> @@ -302,7 +302,6 @@ static struct i2c_driver max16601_driver = {
+>  		   .name = "max16601",
+>  		   },
+>  	.probe_new = max16601_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max16601_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
+> index 57923d72490c..bb0f38d9cfcc 100644
+> --- a/drivers/hwmon/pmbus/max20730.c
+> +++ b/drivers/hwmon/pmbus/max20730.c
+> @@ -779,7 +779,6 @@ static struct i2c_driver max20730_driver = {
+>  		.of_match_table = max20730_of_match,
+>  	},
+>  	.probe_new = max20730_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max20730_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max20751.c b/drivers/hwmon/pmbus/max20751.c
+> index 921e92d82aec..9d42f82fdd99 100644
+> --- a/drivers/hwmon/pmbus/max20751.c
+> +++ b/drivers/hwmon/pmbus/max20751.c
+> @@ -43,7 +43,6 @@ static struct i2c_driver max20751_driver = {
+>  		   .name = "max20751",
+>  		   },
+>  	.probe_new = max20751_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max20751_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max31785.c b/drivers/hwmon/pmbus/max31785.c
+> index 839b957bc03e..e5a9f4019cd5 100644
+> --- a/drivers/hwmon/pmbus/max31785.c
+> +++ b/drivers/hwmon/pmbus/max31785.c
+> @@ -390,7 +390,6 @@ static struct i2c_driver max31785_driver = {
+>  		.of_match_table = max31785_of_match,
+>  	},
+>  	.probe_new = max31785_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max31785_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max34440.c b/drivers/hwmon/pmbus/max34440.c
+> index f4cb196aaaf3..dad66b3c0116 100644
+> --- a/drivers/hwmon/pmbus/max34440.c
+> +++ b/drivers/hwmon/pmbus/max34440.c
+> @@ -521,7 +521,6 @@ static struct i2c_driver max34440_driver = {
+>  		   .name = "max34440",
+>  		   },
+>  	.probe_new = max34440_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max34440_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/max8688.c b/drivers/hwmon/pmbus/max8688.c
+> index 4b2239a6afd3..329dc851fc59 100644
+> --- a/drivers/hwmon/pmbus/max8688.c
+> +++ b/drivers/hwmon/pmbus/max8688.c
+> @@ -183,7 +183,6 @@ static struct i2c_driver max8688_driver = {
+>  		   .name = "max8688",
+>  		   },
+>  	.probe_new = max8688_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = max8688_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
+> index 1c3e2a9453b1..60fbdb371332 100644
+> --- a/drivers/hwmon/pmbus/mp2975.c
+> +++ b/drivers/hwmon/pmbus/mp2975.c
+> @@ -758,7 +758,6 @@ static struct i2c_driver mp2975_driver = {
+>  		.of_match_table = of_match_ptr(mp2975_of_match),
+>  	},
+>  	.probe_new = mp2975_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = mp2975_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/pmbus.c b/drivers/hwmon/pmbus/pmbus.c
+> index 20f1af9165c2..a1b4260e75b2 100644
+> --- a/drivers/hwmon/pmbus/pmbus.c
+> +++ b/drivers/hwmon/pmbus/pmbus.c
+> @@ -238,7 +238,6 @@ static struct i2c_driver pmbus_driver = {
+>  		   .name = "pmbus",
+>  		   },
+>  	.probe_new = pmbus_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = pmbus_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
+> index 88a5df2633fb..4c30ec89f5bf 100644
+> --- a/drivers/hwmon/pmbus/pmbus.h
+> +++ b/drivers/hwmon/pmbus/pmbus.h
+> @@ -490,7 +490,6 @@ void pmbus_clear_faults(struct i2c_client *client);
+>  bool pmbus_check_byte_register(struct i2c_client *client, int page, int reg);
+>  bool pmbus_check_word_register(struct i2c_client *client, int page, int reg);
+>  int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info);
+> -int pmbus_do_remove(struct i2c_client *client);
+>  const struct pmbus_driver_info *pmbus_get_driver_info(struct i2c_client
+>  						      *client);
+>  int pmbus_get_fan_rate_device(struct i2c_client *client, int page, int id,
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index 170a9f82ca61..996393339be3 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -2388,6 +2388,13 @@ static int pmbus_debugfs_set_pec(void *data, u64 val)
+>  DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_pec, pmbus_debugfs_get_pec,
+>  			 pmbus_debugfs_set_pec, "%llu\n");
+>  
+> +static void pmbus_remove_debugfs(void *data)
+> +{
+> +	struct dentry *entry = data;
+> +
+> +	debugfs_remove_recursive(entry);
+> +}
+> +
+>  static int pmbus_init_debugfs(struct i2c_client *client,
+>  			      struct pmbus_data *data)
+>  {
+> @@ -2523,7 +2530,8 @@ static int pmbus_init_debugfs(struct i2c_client *client,
+>  		}
+>  	}
+>  
+> -	return 0;
+> +	return devm_add_action_or_reset(data->dev,
+> +					pmbus_remove_debugfs, data->debugfs);
+>  }
+>  #else
+>  static int pmbus_init_debugfs(struct i2c_client *client,
+> @@ -2610,16 +2618,6 @@ int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info)
+>  }
+>  EXPORT_SYMBOL_GPL(pmbus_do_probe);
+>  
+> -int pmbus_do_remove(struct i2c_client *client)
+> -{
+> -	struct pmbus_data *data = i2c_get_clientdata(client);
+> -
+> -	debugfs_remove_recursive(data->debugfs);
+> -
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(pmbus_do_remove);
+> -
+>  struct dentry *pmbus_get_debugfs_dir(struct i2c_client *client)
+>  {
+>  	struct pmbus_data *data = i2c_get_clientdata(client);
+> diff --git a/drivers/hwmon/pmbus/pxe1610.c b/drivers/hwmon/pmbus/pxe1610.c
+> index fa5c5dd29b7a..da27ce34ee3f 100644
+> --- a/drivers/hwmon/pmbus/pxe1610.c
+> +++ b/drivers/hwmon/pmbus/pxe1610.c
+> @@ -131,7 +131,6 @@ static struct i2c_driver pxe1610_driver = {
+>  			.name = "pxe1610",
+>  			},
+>  	.probe_new = pxe1610_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = pxe1610_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/tps40422.c b/drivers/hwmon/pmbus/tps40422.c
+> index edbdfa809d51..f7f00ab6f46c 100644
+> --- a/drivers/hwmon/pmbus/tps40422.c
+> +++ b/drivers/hwmon/pmbus/tps40422.c
+> @@ -43,7 +43,6 @@ static struct i2c_driver tps40422_driver = {
+>  		   .name = "tps40422",
+>  		   },
+>  	.probe_new = tps40422_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = tps40422_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/tps53679.c b/drivers/hwmon/pmbus/tps53679.c
+> index db2bdf2a1f02..ba838fa311c3 100644
+> --- a/drivers/hwmon/pmbus/tps53679.c
+> +++ b/drivers/hwmon/pmbus/tps53679.c
+> @@ -251,7 +251,6 @@ static struct i2c_driver tps53679_driver = {
+>  		.of_match_table = of_match_ptr(tps53679_of_match),
+>  	},
+>  	.probe_new = tps53679_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = tps53679_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
+> index f8017993e2b4..a15e6fe3e425 100644
+> --- a/drivers/hwmon/pmbus/ucd9000.c
+> +++ b/drivers/hwmon/pmbus/ucd9000.c
+> @@ -621,7 +621,6 @@ static struct i2c_driver ucd9000_driver = {
+>  		.of_match_table = of_match_ptr(ucd9000_of_match),
+>  	},
+>  	.probe_new = ucd9000_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ucd9000_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/ucd9200.c b/drivers/hwmon/pmbus/ucd9200.c
+> index e111e25e1619..47cc7ca9d329 100644
+> --- a/drivers/hwmon/pmbus/ucd9200.c
+> +++ b/drivers/hwmon/pmbus/ucd9200.c
+> @@ -201,7 +201,6 @@ static struct i2c_driver ucd9200_driver = {
+>  		.of_match_table = of_match_ptr(ucd9200_of_match),
+>  	},
+>  	.probe_new = ucd9200_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = ucd9200_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/xdpe12284.c b/drivers/hwmon/pmbus/xdpe12284.c
+> index c95ac934fde4..f8bc0f41cd5f 100644
+> --- a/drivers/hwmon/pmbus/xdpe12284.c
+> +++ b/drivers/hwmon/pmbus/xdpe12284.c
+> @@ -160,7 +160,6 @@ static struct i2c_driver xdpe122_driver = {
+>  		.of_match_table = of_match_ptr(xdpe122_of_match),
+>  	},
+>  	.probe_new = xdpe122_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = xdpe122_id,
+>  };
+>  
+> diff --git a/drivers/hwmon/pmbus/zl6100.c b/drivers/hwmon/pmbus/zl6100.c
+> index e8bda340482b..69120ca7aaa8 100644
+> --- a/drivers/hwmon/pmbus/zl6100.c
+> +++ b/drivers/hwmon/pmbus/zl6100.c
+> @@ -396,7 +396,6 @@ static struct i2c_driver zl6100_driver = {
+>  		   .name = "zl6100",
+>  		   },
+>  	.probe_new = zl6100_probe,
+> -	.remove = pmbus_do_remove,
+>  	.id_table = zl6100_id,
+>  };
+>  
