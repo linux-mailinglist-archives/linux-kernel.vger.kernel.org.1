@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4811729A01B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B128829A0B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442677AbgJ0A1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:27:53 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:59534 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442659AbgJ0A1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:27:51 -0400
-Received: from firstfloor.org (c-71-237-255-61.hsd1.or.comcast.net [71.237.255.61])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        id S2408620AbgJZXtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:49:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408583AbgJZXtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:49:09 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by one.firstfloor.org (Postfix) with ESMTPSA id BE45686766;
-        Tue, 27 Oct 2020 01:27:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1603758465;
-        bh=G+lqBRTHiouhxMe8FHDWSn2UPqjt5ZSlhdYeSW2DEgQ=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0ABF720872;
+        Mon, 26 Oct 2020 23:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603756148;
+        bh=tguj/0U9f+WJ+JjUiME69FnKBajQQPSWVqFnxkZkV5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFrN0inelfb1qMJa1X5SlXwHwjJUiU5JCJMITLrTMX5NdoWxshDeyGVR07oI4rc6I
-         kcqcP3jNTJE85dM3lkqmOK9jBnEnSvRcOHKcZeis4A98JquBwQOEhTmIPYXURlLtC/
-         80rnVfZDCfv8IP1APOHJWSKSPxc+03vfvYvgtrwQ=
-Received: by firstfloor.org (Postfix, from userid 1000)
-        id 0ADECA074A; Mon, 26 Oct 2020 17:27:42 -0700 (PDT)
-From:   Andi Kleen <andi@firstfloor.org>
-To:     acme@kernel.org
-Cc:     jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        alexey.budankov@linux.intel.com, Andi Kleen <andi@firstfloor.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 2/2] perf tools: Support -x for perf stat report
-Date:   Mon, 26 Oct 2020 17:27:37 -0700
-Message-Id: <20201027002737.30942-2-andi@firstfloor.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027002737.30942-1-andi@firstfloor.org>
-References: <20201027002737.30942-1-andi@firstfloor.org>
+        b=F6qVn672vb4DOqU+xlg4ZNYIsgjWBnPHSxV5hyEmn4lRrgy3Tw+/H0hpK8e7NDeCf
+         2DH6NZpQrvqNi0AFaru0+PlKKCWo2bO7qWcqm3t15UScvyi7fuj1RMqRklFtInaJkQ
+         JyJLeRAwhZZFgA9Tclk84e/4duwNOwHGt13txyTo=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.9 002/147] powerpc/powernv/smp: Fix spurious DBG() warning
+Date:   Mon, 26 Oct 2020 19:46:40 -0400
+Message-Id: <20201026234905.1022767-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
+References: <20201026234905.1022767-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the -x, option to enable CSV output with perf stat
-report. Useful to parse the information with other programs.
+From: Oliver O'Halloran <oohall@gmail.com>
 
-% perf stat record --quiet -a -I 1000 sleep 5
-% perf stat report -x,
-     1.000838672,4003.55,msec,cpu-clock,4003548736,100.00,,
-     1.000838672,11243,,context-switches,4003631885,100.00,0.003,M/sec
-     1.000838672,1682,,cpu-migrations,4003672150,100.00,0.420,K/sec
-     1.000838672,13244,,page-faults,4003697471,100.00,0.003,M/sec
-     1.000838672,2953214077,,cycles,4003715495,100.00,0.738,GHz
-     1.000838672,4380820799,,instructions,4003738270,100.00,1.48,insn per cycle
-     1.000838672,809865653,,branches,4003760616,100.00,202.287,M/sec
-     1.000838672,12439843,,branch-misses,4003780785,100.00,1.54,of all branches
-...
+[ Upstream commit f6bac19cf65c5be21d14a0c9684c8f560f2096dd ]
 
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+When building with W=1 we get the following warning:
+
+ arch/powerpc/platforms/powernv/smp.c: In function ‘pnv_smp_cpu_kill_self’:
+ arch/powerpc/platforms/powernv/smp.c:276:16: error: suggest braces around
+ 	empty body in an ‘if’ statement [-Werror=empty-body]
+   276 |      cpu, srr1);
+       |                ^
+ cc1: all warnings being treated as errors
+
+The full context is this block:
+
+ if (srr1 && !generic_check_cpu_restart(cpu))
+ 	DBG("CPU%d Unexpected exit while offline srr1=%lx!\n",
+ 			cpu, srr1);
+
+When building with DEBUG undefined DBG() expands to nothing and GCC emits
+the warning due to the lack of braces around an empty statement.
+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200804005410.146094-2-oohall@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-stat.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/powerpc/platforms/powernv/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 743fe47e7a88..31e7bd877f1d 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1988,6 +1988,8 @@ static int __cmd_report(int argc, const char **argv)
- 		     "aggregate counts per numa node", AGGR_NODE),
- 	OPT_SET_UINT('A', "no-aggr", &perf_stat.aggr_mode,
- 		     "disable CPU count aggregation", AGGR_NONE),
-+	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
-+		   "print counts with custom separator"),
- 	OPT_END()
- 	};
- 	struct stat st;
-@@ -2002,6 +2004,11 @@ static int __cmd_report(int argc, const char **argv)
- 			input_name = "perf.data";
- 	}
+diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
+index b2ba3e95bda73..bbf361f23ae86 100644
+--- a/arch/powerpc/platforms/powernv/smp.c
++++ b/arch/powerpc/platforms/powernv/smp.c
+@@ -43,7 +43,7 @@
+ #include <asm/udbg.h>
+ #define DBG(fmt...) udbg_printf(fmt)
+ #else
+-#define DBG(fmt...)
++#define DBG(fmt...) do { } while (0)
+ #endif
  
-+	if (stat_config.csv_sep) {
-+		stat_config.csv_output = true;
-+		stat_config.big_num = false;
-+	}
-+
- 	perf_stat.data.path = input_name;
- 	perf_stat.data.mode = PERF_DATA_MODE_READ;
- 
+ static void pnv_smp_setup_cpu(int cpu)
 -- 
-2.28.0
+2.25.1
 
