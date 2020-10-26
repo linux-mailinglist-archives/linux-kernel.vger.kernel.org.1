@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B22299245
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18E529924B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785764AbgJZQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:23:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:44070 "EHLO foss.arm.com"
+        id S1785786AbgJZQXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:23:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1775605AbgJZQXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:23:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 920E81042;
-        Mon, 26 Oct 2020 09:23:22 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.56.187])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 257703F719;
-        Mon, 26 Oct 2020 09:23:20 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:23:14 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Christoffer Dall <christoffer.dall@linaro.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        James Morse <james.morse@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] arm64: traps: fix -Woverride-init warnings
-Message-ID: <20201026162314.GA42396@C02TD0UTHF1T.local>
-References: <20201026160342.3705327-1-arnd@kernel.org>
- <20201026160342.3705327-4-arnd@kernel.org>
+        id S1785777AbgJZQXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:23:44 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 029C722284;
+        Mon, 26 Oct 2020 16:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603729424;
+        bh=yUOfxfS9igt/p3qR0VlqJ21rvyD2S/dpzhyJ173/25k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=esLzZFZJtsmQeXwsk36H9Qm8iJH5Xt7kCisL900ixIlu1Zizxj0482lrANlS2od0x
+         i2cgrIu7Rlac4xLGrrYiOf2cxuPyYJgEEIJI75aThrHDnwwrrfNxO+Vg6JsP1P8442
+         2QSItQ+ylghWglsLO/Cz+7liKQJ5+x4Y48QUaF/g=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] ctype.h: remove duplicate isdigit() helper
+Date:   Mon, 26 Oct 2020 17:23:29 +0100
+Message-Id: <20201026162336.3711040-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026160342.3705327-4-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Mon, Oct 26, 2020 at 05:03:31PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are many warnings in this file when we re-enable the
-> Woverride-init flag:
-> 
-> arch/arm64/kernel/traps.c:704:26: warning: initialized field overwritten [-Woverride-init]
->   704 |  [ESR_ELx_EC_UNKNOWN]  = "Unknown/Uncategorized",
->       |                          ^~~~~~~~~~~~~~~~~~~~~~~
-> arch/arm64/kernel/traps.c:704:26: note: (near initialization for 'esr_class_str[0]')
-> arch/arm64/kernel/traps.c:705:22: warning: initialized field overwritten [-Woverride-init]
->   705 |  [ESR_ELx_EC_WFx]  = "WFI/WFE",
->       |                      ^~~~~~~~~
-> 
-> This is harmless since they are only informational strings,
-> but it's easy to change the code to ignore missing initialization
-> and instead warn about possible duplicate initializers.
+gcc warns a few thousand times about the isdigit() shadow:
 
-This has come up before, and IMO the warning is more hindrance than
-helpful, given the prevalance of spurious warnings, and the (again IMO)
-the rework needed to avoid those making the code harder to reason about.
+include/linux/ctype.h:26:19: warning: declaration of 'isdigit' shadows a built-in function [-Wshadow]
 
-We use this pattern all througout the kernel (e.g. in the syscall
-wrappers), so unless the plan is to avoid this everywhere, I don't think
-that we should alter individual cases. I also don't think that the Fixes
-tag is appropriate given the code is correct.
+As there is already a compiler builtin, just use that, and make
+it clear we do that by defining a macro.  Unfortunately, clang
+does not have the isdigit() builtin, so this has to be conditional.
 
-Could we instead convince the compiler folk to give us better tools to
-deal with this? For example, if we could annotate assignmments as
-overridable or being an override, it'd be possible to distinguish the
-benign cases from bad ones, without forcing us to have dynamic checks.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/ctype.h | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-Thanks,
-Mark.
+diff --git a/include/linux/ctype.h b/include/linux/ctype.h
+index 363b004426db..c407acb258c2 100644
+--- a/include/linux/ctype.h
++++ b/include/linux/ctype.h
+@@ -23,10 +23,6 @@ extern const unsigned char _ctype[];
+ #define isalnum(c)	((__ismask(c)&(_U|_L|_D)) != 0)
+ #define isalpha(c)	((__ismask(c)&(_U|_L)) != 0)
+ #define iscntrl(c)	((__ismask(c)&(_C)) != 0)
+-static inline int isdigit(int c)
+-{
+-	return '0' <= c && c <= '9';
+-}
+ #define isgraph(c)	((__ismask(c)&(_P|_U|_L|_D)) != 0)
+ #define islower(c)	((__ismask(c)&(_L)) != 0)
+ #define isprint(c)	((__ismask(c)&(_P|_U|_L|_D|_SP)) != 0)
+@@ -39,6 +35,18 @@ static inline int isdigit(int c)
+ #define isascii(c) (((unsigned char)(c))<=0x7f)
+ #define toascii(c) (((unsigned char)(c))&0x7f)
+ 
++#if defined __has_builtin
++#if __has_builtin(__builtin_isdigit)
++#define isdigit(ch) __builtin_isdigit(ch)
++#endif
++#endif
++#ifndef isdigit
++static inline int isdigit(int c)
++{
++	return '0' <= c && c <= '9';
++}
++#endif
++
+ static inline unsigned char __tolower(unsigned char c)
+ {
+ 	if (isupper(c))
+-- 
+2.27.0
 
-> 
-> Fixes: 60a1f02c9e91 ("arm64: decode ESR_ELx.EC when reporting exceptions")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm64/kernel/traps.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> index 8af4e0e85736..d21cb25f9e1f 100644
-> --- a/arch/arm64/kernel/traps.c
-> +++ b/arch/arm64/kernel/traps.c
-> @@ -700,7 +700,6 @@ void do_sysinstr(unsigned int esr, struct pt_regs *regs)
->  NOKPROBE_SYMBOL(do_sysinstr);
->  
->  static const char *esr_class_str[] = {
-> -	[0 ... ESR_ELx_EC_MAX]		= "UNRECOGNIZED EC",
->  	[ESR_ELx_EC_UNKNOWN]		= "Unknown/Uncategorized",
->  	[ESR_ELx_EC_WFx]		= "WFI/WFE",
->  	[ESR_ELx_EC_CP15_32]		= "CP15 MCR/MRC",
-> @@ -746,7 +745,7 @@ static const char *esr_class_str[] = {
->  
->  const char *esr_get_class_string(u32 esr)
->  {
-> -	return esr_class_str[ESR_ELx_EC(esr)];
-> +	return esr_class_str[ESR_ELx_EC(esr)] ?: "UNRECOGNIZED EC";
->  }
->  
->  /*
-> -- 
-> 2.27.0
-> 
