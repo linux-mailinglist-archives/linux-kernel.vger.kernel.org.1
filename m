@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C739629A140
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE93029A142
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444560AbgJ0Aiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
+        id S2444571AbgJ0Ai4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:38:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409091AbgJZXuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:50:20 -0400
+        id S2409107AbgJZXuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:50:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8549C217A0;
-        Mon, 26 Oct 2020 23:50:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DE6220874;
+        Mon, 26 Oct 2020 23:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756220;
-        bh=2NjS2MUM+tDZ4w36kX80jWMxxJyN/Gd+G3rpgJtSWeY=;
+        s=default; t=1603756223;
+        bh=3Fr6HPJQmQnlZLOd4j4lqZ0K3iwWPgAdGpAl9e9fpS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ANvNvT8rujwDfB1WjKXlIt3iwLd+Tj5pZgx62nRRRN4QA1ypi2ACr4y4nPMUroCmA
-         xd47BgWEKItEXv6ELQHjbgLKW508u7IG1RA7b01+hf4ivoqbS/KM//fg/+ceQzxHjN
-         YCXWcKJmyguqJUV5dPXg6KkSgRmV+/QG2fTxjKvA=
+        b=uJyb7RrWaQGlM8i0f7g4PzhNhKQNOOY+dRXPym7wXywir+qbjOp10M4rsf8k/wCOB
+         KGKvcHFzEqjtnaPJp0xOWdI+S6QT5oW5XHj+dS4narYPDCYWRUHjQNgyLD25ku4DbC
+         On/icoH6flvEsOr1TA5wkpJBPOsxKy+W6qU4JNcU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.9 060/147] bpf: Permit map_ptr arithmetic with opcode add and offset 0
-Date:   Mon, 26 Oct 2020 19:47:38 -0400
-Message-Id: <20201026234905.1022767-60-sashal@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Qiang Yu <yuq825@gmail.com>, Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.9 063/147] drm: lima: fix common struct sg_table related issues
+Date:   Mon, 26 Oct 2020 19:47:41 -0400
+Message-Id: <20201026234905.1022767-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -43,117 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-[ Upstream commit 7c6967326267bd5c0dded0a99541357d70dd11ac ]
+[ Upstream commit c3d9c17f486d5c54940487dc31a54ebfdeeb371a ]
 
-Commit 41c48f3a98231 ("bpf: Support access
-to bpf map fields") added support to access map fields
-with CORE support. For example,
+The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
+returns the number of the created entries in the DMA address space.
+However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
+dma_unmap_sg must be called with the original number of the entries
+passed to the dma_map_sg().
 
-            struct bpf_map {
-                    __u32 max_entries;
-            } __attribute__((preserve_access_index));
+struct sg_table is a common structure used for describing a non-contiguous
+memory buffer, used commonly in the DRM and graphics subsystems. It
+consists of a scatterlist with memory pages and DMA addresses (sgl entry),
+as well as the number of scatterlist entries: CPU pages (orig_nents entry)
+and DMA mapped pages (nents entry).
 
-            struct bpf_array {
-                    struct bpf_map map;
-                    __u32 elem_size;
-            } __attribute__((preserve_access_index));
+It turned out that it was a common mistake to misuse nents and orig_nents
+entries, calling DMA-mapping functions with a wrong number of entries or
+ignoring the number of mapped entries returned by the dma_map_sg()
+function.
 
-            struct {
-                    __uint(type, BPF_MAP_TYPE_ARRAY);
-                    __uint(max_entries, 4);
-                    __type(key, __u32);
-                    __type(value, __u32);
-            } m_array SEC(".maps");
+To avoid such issues, lets use a common dma-mapping wrappers operating
+directly on the struct sg_table objects and use scatterlist page
+iterators where possible. This, almost always, hides references to the
+nents and orig_nents entries, making the code robust, easier to follow
+and copy/paste safe.
 
-            SEC("cgroup_skb/egress")
-            int cg_skb(void *ctx)
-            {
-                    struct bpf_array *array = (struct bpf_array *)&m_array;
-
-                    /* .. array->map.max_entries .. */
-            }
-
-In kernel, bpf_htab has similar structure,
-
-	    struct bpf_htab {
-		    struct bpf_map map;
-                    ...
-            }
-
-In the above cg_skb(), to access array->map.max_entries, with CORE, the clang will
-generate two builtin's.
-            base = &m_array;
-            /* access array.map */
-            map_addr = __builtin_preserve_struct_access_info(base, 0, 0);
-            /* access array.map.max_entries */
-            max_entries_addr = __builtin_preserve_struct_access_info(map_addr, 0, 0);
-	    max_entries = *max_entries_addr;
-
-In the current llvm, if two builtin's are in the same function or
-in the same function after inlining, the compiler is smart enough to chain
-them together and generates like below:
-            base = &m_array;
-            max_entries = *(base + reloc_offset); /* reloc_offset = 0 in this case */
-and we are fine.
-
-But if we force no inlining for one of functions in test_map_ptr() selftest, e.g.,
-check_default(), the above two __builtin_preserve_* will be in two different
-functions. In this case, we will have code like:
-   func check_hash():
-            reloc_offset_map = 0;
-            base = &m_array;
-            map_base = base + reloc_offset_map;
-            check_default(map_base, ...)
-   func check_default(map_base, ...):
-            max_entries = *(map_base + reloc_offset_max_entries);
-
-In kernel, map_ptr (CONST_PTR_TO_MAP) does not allow any arithmetic.
-The above "map_base = base + reloc_offset_map" will trigger a verifier failure.
-  ; VERIFY(check_default(&hash->map, map));
-  0: (18) r7 = 0xffffb4fe8018a004
-  2: (b4) w1 = 110
-  3: (63) *(u32 *)(r7 +0) = r1
-   R1_w=invP110 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
-  ; VERIFY_TYPE(BPF_MAP_TYPE_HASH, check_hash);
-  4: (18) r1 = 0xffffb4fe8018a000
-  6: (b4) w2 = 1
-  7: (63) *(u32 *)(r1 +0) = r2
-   R1_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R2_w=invP1 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
-  8: (b7) r2 = 0
-  9: (18) r8 = 0xffff90bcb500c000
-  11: (18) r1 = 0xffff90bcb500c000
-  13: (0f) r1 += r2
-  R1 pointer arithmetic on map_ptr prohibited
-
-To fix the issue, let us permit map_ptr + 0 arithmetic which will
-result in exactly the same map_ptr.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200908175702.2463625-1-yhs@fb.com
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Qiang Yu <yuq825@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/lima/lima_gem.c | 11 ++++++++---
+ drivers/gpu/drm/lima/lima_vm.c  |  5 ++---
+ 2 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index fba52d9ec8fc4..8c0f605e5ee94 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5219,6 +5219,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			dst, reg_type_str[ptr_reg->type]);
- 		return -EACCES;
- 	case CONST_PTR_TO_MAP:
-+		/* smin_val represents the known value */
-+		if (known && smin_val == 0 && opcode == BPF_ADD)
-+			break;
-+		/* fall-through */
- 	case PTR_TO_PACKET_END:
- 	case PTR_TO_SOCKET:
- 	case PTR_TO_SOCKET_OR_NULL:
+diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+index 155f2b4b4030a..11223fe348dfe 100644
+--- a/drivers/gpu/drm/lima/lima_gem.c
++++ b/drivers/gpu/drm/lima/lima_gem.c
+@@ -69,8 +69,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+ 		return ret;
+ 
+ 	if (bo->base.sgt) {
+-		dma_unmap_sg(dev, bo->base.sgt->sgl,
+-			     bo->base.sgt->nents, DMA_BIDIRECTIONAL);
++		dma_unmap_sgtable(dev, bo->base.sgt, DMA_BIDIRECTIONAL, 0);
+ 		sg_free_table(bo->base.sgt);
+ 	} else {
+ 		bo->base.sgt = kmalloc(sizeof(*bo->base.sgt), GFP_KERNEL);
+@@ -80,7 +79,13 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+ 		}
+ 	}
+ 
+-	dma_map_sg(dev, sgt.sgl, sgt.nents, DMA_BIDIRECTIONAL);
++	ret = dma_map_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
++	if (ret) {
++		sg_free_table(&sgt);
++		kfree(bo->base.sgt);
++		bo->base.sgt = NULL;
++		return ret;
++	}
+ 
+ 	*bo->base.sgt = sgt;
+ 
+diff --git a/drivers/gpu/drm/lima/lima_vm.c b/drivers/gpu/drm/lima/lima_vm.c
+index 5b92fb82674a9..2b2739adc7f53 100644
+--- a/drivers/gpu/drm/lima/lima_vm.c
++++ b/drivers/gpu/drm/lima/lima_vm.c
+@@ -124,7 +124,7 @@ int lima_vm_bo_add(struct lima_vm *vm, struct lima_bo *bo, bool create)
+ 	if (err)
+ 		goto err_out1;
+ 
+-	for_each_sg_dma_page(bo->base.sgt->sgl, &sg_iter, bo->base.sgt->nents, 0) {
++	for_each_sgtable_dma_page(bo->base.sgt, &sg_iter, 0) {
+ 		err = lima_vm_map_page(vm, sg_page_iter_dma_address(&sg_iter),
+ 				       bo_va->node.start + offset);
+ 		if (err)
+@@ -298,8 +298,7 @@ int lima_vm_map_bo(struct lima_vm *vm, struct lima_bo *bo, int pageoff)
+ 	mutex_lock(&vm->lock);
+ 
+ 	base = bo_va->node.start + (pageoff << PAGE_SHIFT);
+-	for_each_sg_dma_page(bo->base.sgt->sgl, &sg_iter,
+-			     bo->base.sgt->nents, pageoff) {
++	for_each_sgtable_dma_page(bo->base.sgt, &sg_iter, pageoff) {
+ 		err = lima_vm_map_page(vm, sg_page_iter_dma_address(&sg_iter),
+ 				       base + offset);
+ 		if (err)
 -- 
 2.25.1
 
