@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1662992A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E87282992A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786234AbgJZQkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:40:21 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38597 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1741277AbgJZQkV (ORCPT
+        id S1786288AbgJZQlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:41:17 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:55834 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1786238AbgJZQlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:40:21 -0400
-Received: by mail-lf1-f67.google.com with SMTP id c141so12916429lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bYYpq/ODtlAp6N9v/jOmvwi4a5DwPQlK76zjEaH5y0U=;
-        b=hmCYvw9TPflPd9H/DK+zYCiLVpY5wiSnYliiGK03r7yuumwzjDfiWUfaETFJkuFXlL
-         QHuf3ENiQc9ybhv0U9lUsM06Seadp7EyAGOaVTxST1ou+WDqigqW997mKZ+cvV1uKUPP
-         e9e/u9S4WZl/5w277vCvBfQHhABwox7LdWIN5koZP7tYuaA5zLWQN9uidAWWVvoLUJYW
-         +w54kOvfmg0XpZYA3gMbNkug0gaWI0CMGdRGtc4zxGxSP8+d6YiFb39REgpsudDcnjBd
-         Ju4exspOqQOM1aJ+gMqmHnyYonF/xDUYbq0piU/yNKW0E67Amo6MdYhnN7/PnKmB9mQG
-         WRAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bYYpq/ODtlAp6N9v/jOmvwi4a5DwPQlK76zjEaH5y0U=;
-        b=R6RbDX9Qqpqir7krevRZECCX83z+vv9zMcaGlfFFIBUIf7azWqzx9BV8hn09wfBdZ/
-         DzkQqQn6c1q4bb0LLapp7I5cQHFmqIIxPdEZl5CaoEPGrjRsjwyf7frSIwNp0qK2YJD2
-         1SkzEbvnPMuMNWCzNu9mgb9+GxjsolWFqz7j0c+E/ljpqAPkE7FDANrmqJfTlHK0/9c/
-         Oh11PN5GgOtLJDDH3G6Q19MSLbvc87XvYSyl0CwrlkhlQQ5T+pFxzc98kO67zZzPnFDF
-         gkXwECex9zcVr7AZoG10ojbe/uBRZ+ScHvdrB6c0yku+yPi+i/3IAf/tixifFNY25gU5
-         V0nQ==
-X-Gm-Message-State: AOAM530UHQ9vOdo9XM8XyNzzKKDeFboaiJLEvNBetTCnTAZfThGuRbEe
-        sRtMabFlbBTnySOHy5aBqwA=
-X-Google-Smtp-Source: ABdhPJxEWYhWIhaW1xu9iLYys/ET2q6xrt2OTX3z8cDhceYtdfps/1yk+gQ6n16gAaYymVA4Q5lPRg==
-X-Received: by 2002:a19:c3cd:: with SMTP id t196mr4934402lff.501.1603730418621;
-        Mon, 26 Oct 2020 09:40:18 -0700 (PDT)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id m22sm1091484lfq.12.2020.10.26.09.40.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 09:40:17 -0700 (PDT)
-Subject: Re: BTI interaction between seccomp filters in systemd and glibc
- mprotect calls, causing service failures
-To:     Dave Martin <Dave.Martin@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
-        systemd-devel@lists.freedesktop.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201026162410.GB27285@arm.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <ed3407a9-8479-edf7-23eb-5354e77d2a58@gmail.com>
-Date:   Mon, 26 Oct 2020 18:39:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 26 Oct 2020 12:41:02 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 488068030867;
+        Mon, 26 Oct 2020 16:40:55 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id AxqfK58WGdc8; Mon, 26 Oct 2020 19:40:52 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        David Cohen <david.a.cohen@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v2 0/3] usb: dwc3: ulpi: Fix UPLI registers read/write ops
+Date:   Mon, 26 Oct 2020 19:40:47 +0300
+Message-ID: <20201026164050.30380-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20201026162410.GB27285@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.10.2020 18.24, Dave Martin wrote:
-> On Wed, Oct 21, 2020 at 10:44:46PM -0500, Jeremy Linton via Libc-alpha wrote:
->> Hi,
->>
->> There is a problem with glibc+systemd on BTI enabled systems. Systemd
->> has a service flag "MemoryDenyWriteExecute" which uses seccomp to deny
->> PROT_EXEC changes. Glibc enables BTI only on segments which are marked as
->> being BTI compatible by calling mprotect PROT_EXEC|PROT_BTI. That call is
->> caught by the seccomp filter, resulting in service failures.
->>
->> So, at the moment one has to pick either denying PROT_EXEC changes, or BTI.
->> This is obviously not desirable.
->>
->> Various changes have been suggested, replacing the mprotect with mmap calls
->> having PROT_BTI set on the original mapping, re-mmapping the segments,
->> implying PROT_EXEC on mprotect PROT_BTI calls when VM_EXEC is already set,
->> and various modification to seccomp to allow particular mprotect cases to
->> bypass the filters. In each case there seems to be an undesirable attribute
->> to the solution.
->>
->> So, whats the best solution?
-> 
-> Unrolling this discussion a bit, this problem comes from a few sources:
-> 
-> 1) systemd is trying to implement a policy that doesn't fit SECCOMP
-> syscall filtering very well.
-> 
-> 2) The program is trying to do something not expressible through the
-> syscall interface: really the intent is to set PROT_BTI on the page,
-> with no intent to set PROT_EXEC on any page that didn't already have it
-> set.
-> 
-> 
-> This limitation of mprotect() was known when I originally added PROT_BTI,
-> but at that time we weren't aware of a clear use case that would fail.
-> 
-> 
-> Would it now help to add something like:
-> 
-> int mchangeprot(void *addr, size_t len, int old_flags, int new_flags)
-> {
-> 	int ret = -EINVAL;
-> 	mmap_write_lock(current->mm);
-> 	if (all vmas in [addr .. addr + len) have
-> 			their mprotect flags set to old_flags) {
-> 
-> 		ret = mprotect(addr, len, new_flags);
-> 	}
-> 	
-> 	mmap_write_unlock(current->mm);
-> 	return ret;
-> }
-> 
-> 
-> libc would now be able to do
-> 
-> 	mchangeprot(addr, len, PROT_EXEC | PROT_READ,
-> 		PROT_EXEC | PROT_READ | PROT_BTI);
-> 
-> while systemd's MDWX filter would reject the call if
-> 
-> 	(new_flags & PROT_EXEC) &&
-> 		(!(old_flags & PROT_EXEC) || (new_flags & PROT_WRITE)
-> 
-> 
-> 
-> This won't magically fix current code, but something along these lines
-> might be better going forward.
-> 
-> 
-> Thoughts?
+Our Baikal-T1 SoC is equipped with DWC USB3 IP core as a USB2.0 bus
+controller. In general the DWC USB3 driver is working well for it except
+the ULPI-bus part. We've found out that the DWC USB3 ULPI-bus driver detected
+PHY with VID:PID tuple as 0x0000:0x0000, which of course wasn't true since
+it was supposed to be 0x0424:0x0006. After a short digging inside the
+ulpi.c code and studying the DWC USB3 documentation, it has been
+discovered that the ULPI bus IO ops didn't work quite correct. The
+busy-loop had stopped waiting before the actual operation was finished. We
+found out that the problem was caused by several bugs hidden in the DWC
+USB3 ULPI-bus IO implementation.
 
-Looks good to me.
+First of all in accordance with the DWC USB3 databook [1] the ULPI IO
+busy-loop is supposed to use the GUSB2PHYACCn.VStsDone flag as an
+indication of the PHY vendor control access completion. Instead it polled
+the GUSB2PHYACCn.VStsBsy flag, which as we discovered can be cleared a
+bit before the VStsDone flag.
 
--Topi
+Secondly having the simple counter-based loop in the modern kernel is
+really a weak design of the busy-looping pattern especially seeing the
+ULPI operations delay can be easily estimated [2], since the bus clock is
+fixed to 60MHz.
+
+Finally the root cause of the denoted in the prologue problem was due to
+the Suspend PHY DWC USB3 feature perception. The commit e0082698b689
+("usb: dwc3: ulpi: conditionally resume ULPI PHY") introduced the Suspend
+USB2.0 HS/FS/LS PHY regression as the Low-power consumption mode would be
+disable after a first attempt to read/write from the ULPI PHY control
+registers, and still didn't fix the problem it was originally intended for
+since the very first attempt of the ULPI PHY control registers IO would
+need much more time than the busy-loop provided. So instead of disabling
+the Suspend USB2.0 HS/FS/LS PHY feature we suggest to just extend the
+busy-loop delay in case if the GUSB2PHYCFGn.SusPHY flag set to 1. By doing
+so we'll eliminate the regression and fix the false busy-loop timeout
+problem.
+
+[1] Synopsys DesignWare Cores SuperSpeed USB 3.0 xHCI Host Controller
+    Databook, 2.70a, December 2013, p.388
+
+[2] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+    October 20, 2004, pp. 30 - 36.
+
+Link: https://lore.kernel.org/linux-usb/20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru
+Changelog v2:
+- Add Heikki'es acked-byt tag.
+- Resend the series so it wouldn't be lost but merged in the kernel 5.10.
+
+Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
+Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (3):
+  usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
+  usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
+  usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
+
+ drivers/usb/dwc3/core.h |  1 +
+ drivers/usb/dwc3/ulpi.c | 38 +++++++++++++++++++++-----------------
+ 2 files changed, 22 insertions(+), 17 deletions(-)
+
+-- 
+2.28.0
 
