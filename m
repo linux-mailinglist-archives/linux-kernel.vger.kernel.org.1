@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9B829946B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86FE299471
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788622AbgJZRxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1780913AbgJZRxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:53:53 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C63720791;
-        Mon, 26 Oct 2020 17:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603734832;
-        bh=1+7x8X20mneBgmOpqia3W6ELvfpsExV2ATsV8SIe8ig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jCtZnhDs/sE7iw6ZGxPHBrsb6Jo/jdUFZy0AOrL1tSHO9Inr540hHV/I7fwQ2EfG0
-         5UiWs+SX8voaGg4ULdsp/27DzxeLjqRtIB8hiyy2p9mDGjclYqMB/9Jyqzatoq9dqm
-         10NrRiAgDGec9MDEwYROXQwQbmJadJ/bARGrvFMs=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 16E99403C2; Mon, 26 Oct 2020 14:53:49 -0300 (-03)
-Date:   Mon, 26 Oct 2020 14:53:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH v2 2/2] perf stat: Support regex pattern in
- --for-each-cgroup
-Message-ID: <20201026175349.GA2449445@kernel.org>
-References: <20201024025918.453431-1-namhyung@kernel.org>
- <20201024025918.453431-2-namhyung@kernel.org>
- <20201026114009.GD2726983@krava>
- <CAM9d7chdStkY7-tRjw9Fo+3wKdhrDYAkbNT0b-g6ftGoaZfMDQ@mail.gmail.com>
+        id S1788706AbgJZRzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:55:35 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33786 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781489AbgJZRze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 13:55:34 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 89D8B1F44FC8
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        fparent@baylibre.com, weiyi.lu@mediatek.com,
+        Joerg Roedel <jroedel@suse.de>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v3 00/16] soc: mediatek: pm-domains: Add new driver for SCPSYS power domains controller
+Date:   Mon, 26 Oct 2020 18:55:09 +0100
+Message-Id: <20201026175526.2915399-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7chdStkY7-tRjw9Fo+3wKdhrDYAkbNT0b-g6ftGoaZfMDQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 26, 2020 at 09:32:34PM +0900, Namhyung Kim escreveu:
-> Hi Jiri,
-> 
-> On Mon, Oct 26, 2020 at 8:40 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Sat, Oct 24, 2020 at 11:59:18AM +0900, Namhyung Kim wrote:
-> > > To make the command line even more compact with cgroups, support regex
-> > > pattern matching in cgroup names.
-> > >
-> > >   $ perf stat -a -e cpu-clock,cycles --for-each-cgroup ^foo sleep 1
-> > >
-> > >           3,000.73 msec cpu-clock                 foo #    2.998 CPUs utilized
-> > >     12,530,992,699      cycles                    foo #    7.517 GHz                      (100.00%)
-> > >           1,000.61 msec cpu-clock                 foo/bar #    1.000 CPUs utilized
-> > >      4,178,529,579      cycles                    foo/bar #    2.506 GHz                      (100.00%)
-> > >           1,000.03 msec cpu-clock                 foo/baz #    0.999 CPUs utilized
-> > >      4,176,104,315      cycles                    foo/baz #    2.505 GHz                      (100.00%)
-> >
-> > just curious.. there was another foo/XXX group using the
-> > rest of the cycles, right?
-> 
-> No, if so it should be displayed too.  But actually there was a process
-> in the foo cgroup itself.
-> 
-> >
-> > also perhaps we want to warn if there's no match found:
-> >
-> >         $ sudo ./perf stat -a -e cpu-clock,cycles --for-each-cgroup ^foo sleep 1
-> >
-> >          Performance counter stats for 'system wide':
-> >
-> >
-> >                1.002375575 seconds time elapsed
-> >
-> 
-> Right, will check this case.
+Dear all,
 
-Hum, I thought that could be done on top of this one, but then, the
-ambiguity of:
+This is a new driver with the aim to deprecate the mtk-scpsys driver.
+The problem with that driver is that, in order to support more Mediatek
+SoCs you need to add some logic to handle properly the power-up
+sequence of newer Mediatek SoCs, doesn't handle parent-child power
+domains and need to hardcode all the clocks in the driver itself. The
+result is that the driver is getting bigger and bigger every time a
+new SoC needs to be supported.
 
-1. No samples for a cgroups matching that expression
+All this information can be getted from a properly defined binding, so
+can be cleaner and smaller, hence, we implemented a new driver. For
+now, only MT8173 and MT8183 is supported but should be fairly easy to
+add support for new SoCs.
 
-2. No cgroups match that expression
+Two important notes:
 
-Is real and warrants a warning for the 'no cgroups match the
---for-each-group regexp' case.
+1. Support for MT8183 is not ready to land yet because has some
+   dependencies, i.e mmsys support is still missing.
 
-So I'll wait for v3 with that warning,
+2. Support for MT8192. I picked the patches [1] from Weiyi Lu and
+   adapted to this new series. I posted only for reference due that this
+   new version has some changes that affects that patchset.
 
-Thanks,
+Only patches from 1 to 9 are ready, the others are provided for reference and test.
 
-- Arnaldo
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=368821
+
+Best regards,
+  Enric
+
+Enric Balletbo i Serra (5):
+  dt-bindings: power: Add bindings for the Mediatek SCPSYS power domains
+    controller
+  soc: mediatek: Add MediaTek SCPSYS power domains
+  arm64: dts: mediatek: Add mt8173 power domain controller
+  dt-bindings: power: Add MT8183 power domains
+  arm64: dts: mediatek: Add smi_common node for MT8183
+
+Matthias Brugger (8):
+  soc: mediatek: pm-domains: Add bus protection protocol
+  soc: mediatek: pm_domains: Make bus protection generic
+  soc: mediatek: pm-domains: Add SMI block as bus protection block
+  soc: mediatek: pm-domains: Add extra sram control
+  soc: mediatek: pm-domains: Add subsystem clocks
+  soc: mediatek: pm-domains: Allow bus protection to ignore clear ack
+  soc: mediatek: pm-domains: Add support for mt8183
+  arm64: dts: mediatek: Add mt8183 power domains controller
+
+Weiyi Lu (3):
+  dt-bindings: power: Add MT8192 power domains
+  soc: mediatek: pm-domains: Add default power off flag
+  soc: mediatek: pm-domains: Add support for mt8192
+
+ .../power/mediatek,power-controller.yaml      | 293 +++++++++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      | 164 +++--
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 172 +++++
+ drivers/soc/mediatek/Kconfig                  |  13 +
+ drivers/soc/mediatek/Makefile                 |   1 +
+ drivers/soc/mediatek/mt8173-pm-domains.h      |  94 +++
+ drivers/soc/mediatek/mt8183-pm-domains.h      | 221 +++++++
+ drivers/soc/mediatek/mt8192-pm-domains.h      | 292 +++++++++
+ drivers/soc/mediatek/mtk-infracfg.c           |   5 -
+ drivers/soc/mediatek/mtk-pm-domains.c         | 615 ++++++++++++++++++
+ drivers/soc/mediatek/mtk-pm-domains.h         | 102 +++
+ include/dt-bindings/power/mt8183-power.h      |  26 +
+ include/dt-bindings/power/mt8192-power.h      |  32 +
+ include/linux/soc/mediatek/infracfg.h         | 107 +++
+ 14 files changed, 2083 insertions(+), 54 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+ create mode 100644 drivers/soc/mediatek/mt8173-pm-domains.h
+ create mode 100644 drivers/soc/mediatek/mt8183-pm-domains.h
+ create mode 100644 drivers/soc/mediatek/mt8192-pm-domains.h
+ create mode 100644 drivers/soc/mediatek/mtk-pm-domains.c
+ create mode 100644 drivers/soc/mediatek/mtk-pm-domains.h
+ create mode 100644 include/dt-bindings/power/mt8183-power.h
+ create mode 100644 include/dt-bindings/power/mt8192-power.h
+
+-- 
+2.28.0
+
