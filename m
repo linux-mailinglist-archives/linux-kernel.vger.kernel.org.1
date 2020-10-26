@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B62929913B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24083299147
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773430AbgJZPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:39:41 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:43806 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1772929AbgJZPjl (ORCPT
+        id S1784281AbgJZPkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:40:55 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35605 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1784274AbgJZPky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:39:41 -0400
-Received: by mail-qt1-f193.google.com with SMTP id e6so6985630qtw.10;
-        Mon, 26 Oct 2020 08:39:40 -0700 (PDT)
+        Mon, 26 Oct 2020 11:40:54 -0400
+Received: by mail-wr1-f67.google.com with SMTP id n15so13177768wrq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vLQei8ZmgmFcSxn2MPuUAP5brChetukYTYeEtCq2OjI=;
-        b=WZClcdFYON5jGkBEUsXDjjrC5+/8ykP+W6jK5+YeWAfaGlZD+93YguQywa1UlSp48E
-         uuGYiMGQ/K04Dg/M2ZDj65g6NI2HxWyDWw75mA2OiPTlu4gvZmkKphql2hKrPxoQ6XkI
-         KQDwxR3oSWF8+kE2PPMlU6jR7hvZSRY4CG0DkqzG5g1NmsiQ1zBanpyNT1bit/dYeJv+
-         fa8TvdDcGh3m0EpxlNz1RjSkouEZjkL+LvrvKe8ilMfCbxc0hKKrGjgEho1DM3INinLX
-         Z6gEQCXl+0JUCW9mEfYAx1I7W8SYlFzMt5uW3ji+qSjJskmQHCmirSbKgLG5odMoqpxW
-         jDbw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y8KnB6WQ6hnwXYvVwKUwP7/9fw5cwUH/Ducej8yDecI=;
+        b=hx/9mALBPLHrmx+V9KVUGZuTU552IL81yLtuZLv9sSXLFZqLZQOw/dCDP4uToCR+gp
+         pzIMoJRYa904I9opdv3PA8bQ4x7pbUyCLA1JW32PiNhsctGx9Est1XDuMLgvRJzpa8Ni
+         0ZGLYyRBnlm5f5uj/eCh1aKu0xUyKbAVhDADaZzDJ9nj4rE9/SI9/HS8O9rgK4IeRETc
+         X9StrO3z2IMv8kN+0qWgM8qd6US4D0I/3aoPD72cjez6ofBu02brfKQb41x/XqC57OtN
+         YhxMGzx1rC/kc16XivYMxGGkTJtMwxTUzjeQZeBQqaJ6TUtBTzadm36KI6Jn97GQYRKL
+         nN+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vLQei8ZmgmFcSxn2MPuUAP5brChetukYTYeEtCq2OjI=;
-        b=E00KcnsOh2BTaC/FqoiezxHRoTKA8w+mstyWzW3n+jX2ROYHqs7OjDulfZyKSdeW0d
-         6rCsQq/B0rF2Uyz/X0qtZ7KxJWYpFT9gIgIpn1aA+0xLa+sRxlCh/QHL5YWthiLGgAXQ
-         RbEMo5T0nHDiUlMIMHHBCo2A3N4Cu4mHh8lBZHbeScJpfH8E4BzFptyzgwmNbWoYX3Fq
-         CVLypePnW6tuHy2fcRUAuFQPeGst7XoSpPSuDDYOPigT6m4gBw5T6ou0WHnSy9QIwMiH
-         8Rm3vWErfDUa5B2tYPPTifUZAmaSoa9UxxfQbeh3Oz5OLUdB3yQvveellpOeaBT04QwS
-         GopQ==
-X-Gm-Message-State: AOAM531A8UPU72qiHttqr82iadoNwJCqkhVYsrX3NNAYDuiT8aKzlk1v
-        zk8atZqJ2r+rS6zP+WpZGxq1N1YPQbOM/g==
-X-Google-Smtp-Source: ABdhPJxwbjJpM7BXgATHrFMn/Ypqvv2ofYPBMDwSwLCNpEqKIsLxrJd136lnOkueYbC0g12unZabRA==
-X-Received: by 2002:ac8:4b4b:: with SMTP id e11mr3668273qts.29.1603726779530;
-        Mon, 26 Oct 2020 08:39:39 -0700 (PDT)
-Received: from ubuntu (ool-45785633.dyn.optonline.net. [69.120.86.51])
-        by smtp.gmail.com with ESMTPSA id 22sm4586589qtw.61.2020.10.26.08.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:39:38 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 11:39:36 -0400
-From:   Vivek Unune <npcomplete13@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: BCM5301X: Linksys EA9500 add fixed partitions
-Message-ID: <20201026153936.GA258640@ubuntu>
-References: <20201026131351.258296-1-npcomplete13@gmail.com>
- <e64d76cc-90bb-5b54-04de-fde21542e4fe@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y8KnB6WQ6hnwXYvVwKUwP7/9fw5cwUH/Ducej8yDecI=;
+        b=pfXxD2HiYvPxiWipf1qRX806a9EOTW8kgyn9Gs0n0ZuEY6r221gVsvO2y9Ge8gkrBo
+         CPinQb9dk7IaWglzAtK4zY4rx2caYyLA2PyYH4saCkk4k1bTuUHu4czjv4O0TJ3pIfZz
+         PZoxrtQidg1SyLwsvsWr3z57z/FDugVGIS3P1G9IMmKfY8UrofMdTqR0PWD4GusIv2oK
+         YbbRRuSc9D0hk59dWmKJXQIHaOlU7wRAAGRtd/2LZxvYRwIQJNWKCUq9jEuFUxsLvjMH
+         LOzuo0JjybWXvAjoXSWuHzfZRom5O2eFox7cZnF6ayJcxcemdRnymDQ7GrpGG0UbS+5S
+         B00Q==
+X-Gm-Message-State: AOAM530xDZdyCXE2M00GhOW9eqRncYVlQgWKkoTAdOzPg4VWbBIt5jbk
+        83Vi7msh9pIPNURxpZu9KajOZWd92BKMsd4JAGhIWg==
+X-Google-Smtp-Source: ABdhPJzHop1BRomp4oOm+x1BEG1zBGs0Rws3clbK5s/p75nXNyPrU/FcUBFnlcNyShtGn6cdR9YnyE433LTBIytXfV4=
+X-Received: by 2002:adf:b641:: with SMTP id i1mr17840787wre.376.1603726851498;
+ Mon, 26 Oct 2020 08:40:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e64d76cc-90bb-5b54-04de-fde21542e4fe@gmail.com>
+References: <20201024025918.453431-1-namhyung@kernel.org>
+In-Reply-To: <20201024025918.453431-1-namhyung@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 26 Oct 2020 08:40:39 -0700
+Message-ID: <CAP-5=fVOJ=7RwJmDX7r-k_YUhNAznHF0xkorLT_TrSa_arifGQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf test: Use generic event for expand_libpfm_events()
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 06:30:53AM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 10/26/2020 6:13 AM, Vivek Unune wrote:
-> > This router has dual paritions to store trx firmware image and
-> > dual partitions for nvram. The second one in each of these cases acts
-> > as a backup store.
-> > 
-> > When tested with OpenWrt, the default partition parser causes two issues:
-> > 
-> > 1. It labels both nvram partitions as nvram. In factory, second one is
-> > labeled devinfo.
-> > 2. It parses second trx image and tries to create second 'linux' partition
-> > and fails with - cannot create duplicate 'linux' partition. I've set this
-> > partition to read-only for now
-> > 
-> > The following patch works around both of these issues.
-> > 
-> > Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
-> > ---
-> >   .../boot/dts/bcm47094-linksys-panamera.dts    | 41 +++++++++++++++++++
-> >   1 file changed, 41 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-> > index 5d5930edfb9d..13da16c5de68 100644
-> > --- a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-> > +++ b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-> > @@ -292,3 +292,44 @@ fixed-link {
-> >   &usb3_phy {
-> >   	status = "okay";
-> >   };
-> > +
-> > +&nandcs {
-> > +	partitions {
-> > +		compatible = "fixed-partitions";
-> > +		#address-cells = <1>;
-> > +		#size-cells = <1>;
-> > +
-> > +		partition@0 {
-> > +			label = "boot";
-> > +			reg = <0x0000000 0x0080000>;
-> > +			read-only;
-> > +		};
-> > +
-> > +		partition@80000 {
-> > +			label = "nvram";
-> > +			reg = <0x080000 0x0100000>;
-> > +		};
-> > +
-> > +		partition@180000{
-> > +			label = "devinfo";
-> > +			reg = <0x0180000 0x080000>;
-> > +		};
-> > +
-> > +		partition@200000 {
-> > +			label = "firmware";
-> > +			reg = <0x0200000 0x01D00000>;
-> > +			compatible = "brcm,trx";
-> > +		};
-> > +
-> > +		partition@1F00000 {
-> > +			label = "failsafe";
-> > +			reg = <0x01F00000 0x01D00000>;
-> > +			read-only;
-> > +		};
-> > +
-> > +		partition@0x5200000 {
-> 
-> You would need to remove the 0x from the hex number here.
+On Fri, Oct 23, 2020 at 7:59 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> I found that the UNHALTED_CORE_CYCLES event is only available in the
+> Intel machines and it makes other vendors/archs fail on the test.  As
+> libpfm4 can parse the generic events like cycles, let's use them.
+>
+> Fixes: 40b74c30ffb9 ("perf test: Add expand cgroup event test")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Sure, I'll fix this in next version
-
-> 
-> > +			label = "brcmnand";
-> 
-> Not sure how useful naming this partition brcmnand is, can we find a better
-> name for it?
-
-I'll be more than happy to rename this that makes sense. Factory uses this
-name as well. This is used as a general persistent storage for system cofigs.
-Could we name it System?
+Acked-by: Ian Rogers <irogers@google.com>
 
 Thanks,
+Ian
 
-Vivek
-
+> ---
+>  tools/perf/tests/expand-cgroup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
+> index d5771e4d094f..4c59f3ae438f 100644
+> --- a/tools/perf/tests/expand-cgroup.c
+> +++ b/tools/perf/tests/expand-cgroup.c
+> @@ -145,7 +145,7 @@ static int expand_libpfm_events(void)
+>         int ret;
+>         struct evlist *evlist;
+>         struct rblist metric_events;
+> -       const char event_str[] = "UNHALTED_CORE_CYCLES";
+> +       const char event_str[] = "CYCLES";
+>         struct option opt = {
+>                 .value = &evlist,
+>         };
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
