@@ -2,157 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C46E299C72
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715EE299C66
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436971AbgJZX6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:58:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34602 "EHLO mail.kernel.org"
+        id S2436982AbgJZX6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:58:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410956AbgJZXzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:55:47 -0400
+        id S2404516AbgJZXzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:55:54 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0139121655;
-        Mon, 26 Oct 2020 23:55:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F11321D7B;
+        Mon, 26 Oct 2020 23:55:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756542;
-        bh=12+N3Sl8anEqlF04IUgnWUIyuoEjcEJ7JjgNNWWKPJ8=;
+        s=default; t=1603756553;
+        bh=b0aSR3s+f7POOM80evIJLhUdfl2lkDPiYgyYitdmhcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nyRPW1JGbcBM7xtXUMzs46mQBvVhAB/dQRLokASpD8uOPOCrnpvR5N44uOpT0MxzX
-         r8clV80Z1ZDRdL9V9G89EEjWgMwNTWr/Kn14sW/Oqrjbsin4VBNRLdwdQx98fpOqMW
-         AhBnjcIuOH4LPBG5s1L3jHbB7ofp/2WquSItDFuQ=
+        b=OFSngjRALLWk81PIWJ8e/AKQTpxI2CsFm7VrCuHg8Vc9jLABsSb6eToNg6WzcPQ26
+         gXlj0pEyHSBUrP64zV1ygIxfW7Xs63w1LFAAacPeEgNxXK1e++NovMdVy958f1AUHN
+         5Fga8XJEKOKAUjzgHqEZGxP3H2RwrQA1hw8vz7r8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-doc@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 21/80] media: videodev2.h: RGB BT2020 and HSV are always full range
-Date:   Mon, 26 Oct 2020 19:54:17 -0400
-Message-Id: <20201026235516.1025100-21-sashal@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-ia64@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 30/80] ia64: kprobes: Use generic kretprobe trampoline handler
+Date:   Mon, 26 Oct 2020 19:54:26 -0400
+Message-Id: <20201026235516.1025100-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
 References: <20201026235516.1025100-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit b305dfe2e93434b12d438434461b709641f62af4 ]
+[ Upstream commit e792ff804f49720ce003b3e4c618b5d996256a18 ]
 
-The default RGB quantization range for BT.2020 is full range (just as for
-all the other RGB pixel encodings), not limited range.
+Use the generic kretprobe trampoline handler. Don't use
+framepointer verification.
 
-Update the V4L2_MAP_QUANTIZATION_DEFAULT macro and documentation
-accordingly.
-
-Also mention that HSV is always full range and cannot be limited range.
-
-When RGB BT2020 was introduced in V4L2 it was not clear whether it should
-be limited or full range, but full range is the right (and consistent)
-choice.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/159870606883.1229682.12331813108378725668.stgit@devnote2
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../media/uapi/v4l/colorspaces-defs.rst         |  9 ++++-----
- .../media/uapi/v4l/colorspaces-details.rst      |  5 ++---
- include/uapi/linux/videodev2.h                  | 17 ++++++++---------
- 3 files changed, 14 insertions(+), 17 deletions(-)
+ arch/ia64/kernel/kprobes.c | 77 +-------------------------------------
+ 1 file changed, 2 insertions(+), 75 deletions(-)
 
-diff --git a/Documentation/media/uapi/v4l/colorspaces-defs.rst b/Documentation/media/uapi/v4l/colorspaces-defs.rst
-index e122bbe3d799d..aabb08130354a 100644
---- a/Documentation/media/uapi/v4l/colorspaces-defs.rst
-+++ b/Documentation/media/uapi/v4l/colorspaces-defs.rst
-@@ -36,8 +36,7 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
- :c:type:`v4l2_hsv_encoding` specifies which encoding is used.
+diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
+index b8356edbde659..b3dc39050c1ad 100644
+--- a/arch/ia64/kernel/kprobes.c
++++ b/arch/ia64/kernel/kprobes.c
+@@ -396,83 +396,9 @@ static void kretprobe_trampoline(void)
+ {
+ }
  
- .. note:: The default R'G'B' quantization is full range for all
--   colorspaces except for BT.2020 which uses limited range R'G'B'
--   quantization.
-+   colorspaces. HSV formats are always full range.
- 
- .. tabularcolumns:: |p{6.7cm}|p{10.8cm}|
- 
-@@ -169,8 +168,8 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
-       - Details
-     * - ``V4L2_QUANTIZATION_DEFAULT``
-       - Use the default quantization encoding as defined by the
--	colorspace. This is always full range for R'G'B' (except for the
--	BT.2020 colorspace) and HSV. It is usually limited range for Y'CbCr.
-+	colorspace. This is always full range for R'G'B' and HSV.
-+	It is usually limited range for Y'CbCr.
-     * - ``V4L2_QUANTIZATION_FULL_RANGE``
-       - Use the full range quantization encoding. I.e. the range [0…1] is
- 	mapped to [0…255] (with possible clipping to [1…254] to avoid the
-@@ -180,4 +179,4 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
-     * - ``V4L2_QUANTIZATION_LIM_RANGE``
-       - Use the limited range quantization encoding. I.e. the range [0…1]
- 	is mapped to [16…235]. Cb and Cr are mapped from [-0.5…0.5] to
--	[16…240].
-+	[16…240]. Limited Range cannot be used with HSV.
-diff --git a/Documentation/media/uapi/v4l/colorspaces-details.rst b/Documentation/media/uapi/v4l/colorspaces-details.rst
-index 8b0ba3668101d..fd0cf57691d87 100644
---- a/Documentation/media/uapi/v4l/colorspaces-details.rst
-+++ b/Documentation/media/uapi/v4l/colorspaces-details.rst
-@@ -377,9 +377,8 @@ Colorspace BT.2020 (V4L2_COLORSPACE_BT2020)
- The :ref:`itu2020` standard defines the colorspace used by Ultra-high
- definition television (UHDTV). The default transfer function is
- ``V4L2_XFER_FUNC_709``. The default Y'CbCr encoding is
--``V4L2_YCBCR_ENC_BT2020``. The default R'G'B' quantization is limited
--range (!), and so is the default Y'CbCr quantization. The chromaticities
--of the primary colors and the white reference are:
-+``V4L2_YCBCR_ENC_BT2020``. The default Y'CbCr quantization is limited range.
-+The chromaticities of the primary colors and the white reference are:
- 
- 
- 
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 530638dffd934..3210b3c82a4a2 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -371,9 +371,9 @@ enum v4l2_hsv_encoding {
- 
- enum v4l2_quantization {
+-/*
+- * At this point the target function has been tricked into
+- * returning into our trampoline.  Lookup the associated instance
+- * and then:
+- *    - call the handler function
+- *    - cleanup by marking the instance as unused
+- *    - long jump back to the original return address
+- */
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	struct kretprobe_instance *ri = NULL;
+-	struct hlist_head *head, empty_rp;
+-	struct hlist_node *tmp;
+-	unsigned long flags, orig_ret_address = 0;
+-	unsigned long trampoline_address =
+-		((struct fnptr *)kretprobe_trampoline)->ip;
+-
+-	INIT_HLIST_HEAD(&empty_rp);
+-	kretprobe_hash_lock(current, &head, &flags);
+-
+-	/*
+-	 * It is possible to have multiple instances associated with a given
+-	 * task either because an multiple functions in the call path
+-	 * have a return probe installed on them, and/or more than one return
+-	 * return probe was registered for a target function.
+-	 *
+-	 * We can handle this because:
+-	 *     - instances are always inserted at the head of the list
+-	 *     - when multiple return probes are registered for the same
+-	 *       function, the first instance's ret_addr will point to the
+-	 *       real return address, and all the rest will point to
+-	 *       kretprobe_trampoline
+-	 */
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
+-	}
+-
+-	regs->cr_iip = orig_ret_address;
+-
+-	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+-		if (ri->task != current)
+-			/* another task is sharing our hash bucket */
+-			continue;
+-
+-		if (ri->rp && ri->rp->handler)
+-			ri->rp->handler(ri, regs);
+-
+-		orig_ret_address = (unsigned long)ri->ret_addr;
+-		recycle_rp_inst(ri, &empty_rp);
+-
+-		if (orig_ret_address != trampoline_address)
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			break;
+-	}
+-	kretprobe_assert(ri, orig_ret_address, trampoline_address);
+-
+-	kretprobe_hash_unlock(current, &flags);
+-
+-	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+-		hlist_del(&ri->hlist);
+-		kfree(ri);
+-	}
++	regs->cr_iip = __kretprobe_trampoline_handler(regs, kretprobe_trampoline, NULL);
  	/*
--	 * The default for R'G'B' quantization is always full range, except
--	 * for the BT2020 colorspace. For Y'CbCr the quantization is always
--	 * limited range, except for COLORSPACE_JPEG: this is full range.
-+	 * The default for R'G'B' quantization is always full range.
-+	 * For Y'CbCr the quantization is always limited range, except
-+	 * for COLORSPACE_JPEG: this is full range.
- 	 */
- 	V4L2_QUANTIZATION_DEFAULT     = 0,
- 	V4L2_QUANTIZATION_FULL_RANGE  = 1,
-@@ -382,14 +382,13 @@ enum v4l2_quantization {
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+@@ -485,6 +411,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				      struct pt_regs *regs)
+ {
+ 	ri->ret_addr = (kprobe_opcode_t *)regs->b0;
++	ri->fp = NULL;
  
- /*
-  * Determine how QUANTIZATION_DEFAULT should map to a proper quantization.
-- * This depends on whether the image is RGB or not, the colorspace and the
-- * Y'CbCr encoding.
-+ * This depends on whether the image is RGB or not, the colorspace.
-+ * The Y'CbCr encoding is not used anymore, but is still there for backwards
-+ * compatibility.
-  */
- #define V4L2_MAP_QUANTIZATION_DEFAULT(is_rgb_or_hsv, colsp, ycbcr_enc) \
--	(((is_rgb_or_hsv) && (colsp) == V4L2_COLORSPACE_BT2020) ? \
--	 V4L2_QUANTIZATION_LIM_RANGE : \
--	 (((is_rgb_or_hsv) || (colsp) == V4L2_COLORSPACE_JPEG) ? \
--	 V4L2_QUANTIZATION_FULL_RANGE : V4L2_QUANTIZATION_LIM_RANGE))
-+	(((is_rgb_or_hsv) || (colsp) == V4L2_COLORSPACE_JPEG) ? \
-+	 V4L2_QUANTIZATION_FULL_RANGE : V4L2_QUANTIZATION_LIM_RANGE)
- 
- /*
-  * Deprecated names for opRGB colorspace (IEC 61966-2-5)
+ 	/* Replace the return addr with trampoline addr */
+ 	regs->b0 = ((struct fnptr *)kretprobe_trampoline)->ip;
 -- 
 2.25.1
 
