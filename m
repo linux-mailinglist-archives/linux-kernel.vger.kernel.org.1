@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7D5299038
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3557D29903D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782705AbgJZOzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:55:45 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:35484 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782088AbgJZOzo (ORCPT
+        id S1782728AbgJZOz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:55:56 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:39950 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782136AbgJZOzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:55:44 -0400
-Received: by mail-pj1-f67.google.com with SMTP id h4so3222806pjk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:55:44 -0700 (PDT)
+        Mon, 26 Oct 2020 10:55:55 -0400
+Received: by mail-pg1-f195.google.com with SMTP id x13so6204554pgp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gyW32MZ8OSoinxuXp8kqgHUjIwxNZICw8FuoRY/UD9c=;
-        b=ieYl9GrTxm18tKLd3e2GEkSyzB4fgJBpLTwzGnog8ojgx+bj/xGHpgf7e43ffusvjh
-         QuDW0AT5ukd+yNgI4Q13wVET7huAibAY/PXl7lJpT9r9FC++G1sh+tWQLFrD31kk1Ia4
-         TkpI6GvCoMdCpKLLMb5l1crJrCbhHcX8kjWD3Em5jxJXVRUO1PvW8MQiNqADdRPPzZx1
-         UbofYIoYpINsiRUNxM+g9Q8qAkDf68EGkIVssPlhhil9lQXjEMARYEHRrmAOBgv90Skz
-         M2WmiXIS+1b2I+AOVkUWzrKloLm8yykJjjRjr9chMd1nQRHV9z48E3R7U9Zaqk3oMKYp
-         rhIw==
+        bh=zKqFfBrPPNmfHuJAiL+mzNtDXNprI4LFbnvEVHi51k0=;
+        b=deY/yV0JSi4ghS+MYfvehuTghmP/k3wU5P7MfbaKSuvybxlaavkj7gxOy9N9od7djU
+         ZDXVA/cCElyyL/7i1bVz1s8klImmDxE+YfdU/8MgNpbTcSa55QU9L/iGFQ0EgvvndVnD
+         5GrN9vGE76ReMR8URaepwTgpte1Vy+rHJvh2xLeTunn21rpBVscx+0hbH7oQIksHdDRE
+         bLzCTvXoR9XgVqDmYV+HzNCAgK4tFZ9s7uNuecN8KyaFzQCMmF32ZXFEFcBw16eFIvY+
+         Izc44NYxBcBsP3NqBMx8l/ER+VHQg6oKGRPM5WQp0yimoiCch7CBX++iUV6fdrj2nyeE
+         7Hdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gyW32MZ8OSoinxuXp8kqgHUjIwxNZICw8FuoRY/UD9c=;
-        b=WzGGo1z210EwdJHmkXW4oVd3ch7MyVQJ727F44dD2EB94rJXIOiBZ20zZEgupvwYVO
-         YkQEnPvpOkmbsB8IeC43TRnzszRGvYcuuEDy9uDBo9s03TOxXlH8wwX3zhWkXUTcDcg5
-         8GJMt2Ki3/tzAR7HwpBSGe52aYueEPq7mP7lQnSR7x3Apasnvry0m6lqVuybyizf0Y0Y
-         nxCZSxCxdeTCOgtj8jJhsqtrAEG+jdPH+5/WzH3Tov4fHITqN1uKq7D8ak0rbyrEfhP5
-         9snvqcMs90ONb7uaoqJaFIsnKrsMt+VJAsaMkxm02fgS8zy6nnosgBcXJnkQXsxpeQza
-         5f4w==
-X-Gm-Message-State: AOAM531LcCpbrsknh6t2GZB49Ti5+TxIHatrEXV+u+DhiZFfhH27BgYx
-        i/qo6B2roGYW9qgj6/9eOnwUMw==
-X-Google-Smtp-Source: ABdhPJxXsam/XlOPzz/Gp1YN2pMJT1VPNjBUP5H+XZsosKWY9Qb7CNr3fa9M+5hmN9nFhz9dzpvY+A==
-X-Received: by 2002:a17:902:c383:b029:d3:d17a:1de with SMTP id g3-20020a170902c383b02900d3d17a01demr8417074plg.84.1603724144004;
-        Mon, 26 Oct 2020 07:55:44 -0700 (PDT)
+        bh=zKqFfBrPPNmfHuJAiL+mzNtDXNprI4LFbnvEVHi51k0=;
+        b=GL20lv6Hkb1uXX4fjjDtj0uXa3tZDQuH19wxgxV0XZkfaJl+ElN3vVoPd8Ok5Iv5UW
+         CgZVuq1y4ABBzoyW3KK2N6eb7VKR2jjPx85kFllszcYsmm4ZtfC6hf0E1lYnOO1f79kz
+         /vnwabZhlpT8PaiYg77pjYrH9/Ve0nO8Bhp02jpcMsaXeIyFemcE+Iyjgt8lTWhAUSqY
+         kq3KfUTzVYgv19+lr7APYpdXqSm8JVuUYN24LN/TFDUe/fxR4DwCYbCL00rNVCeMmV4y
+         7HxkuHu15ZKmmRt5Q8WCfnwC8XkkqWMiDswZqfb8gaJSgJDJJd5JWNFv8qaEZMJt1WJn
+         3U5g==
+X-Gm-Message-State: AOAM533JOk++6Vi35DLlyvw57mGc394FQL0zjuyfeGcDkoNGW+IKSKtU
+        YBvbfAiqYz1A8Wpm2bnRMi4vzg==
+X-Google-Smtp-Source: ABdhPJwZpN31AOXioEN9JiSwqRoUmQ80iiNHv4T0NpDl7YUZ0tnKsoQQevQKz/UeP9vjrxIDoY6Skg==
+X-Received: by 2002:a63:d650:: with SMTP id d16mr13453163pgj.277.1603724153485;
+        Mon, 26 Oct 2020 07:55:53 -0700 (PDT)
 Received: from localhost.localdomain ([103.136.220.89])
-        by smtp.gmail.com with ESMTPSA id x123sm12042726pfb.212.2020.10.26.07.55.34
+        by smtp.gmail.com with ESMTPSA id x123sm12042726pfb.212.2020.10.26.07.55.44
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Oct 2020 07:55:43 -0700 (PDT)
+        Mon, 26 Oct 2020 07:55:52 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
         mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
@@ -58,9 +58,9 @@ Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 16/19] mm/hugetlb: Add a kernel parameter hugetlb_free_vmemmap
-Date:   Mon, 26 Oct 2020 22:51:11 +0800
-Message-Id: <20201026145114.59424-17-songmuchun@bytedance.com>
+Subject: [PATCH v2 17/19] mm/hugetlb: Merge pte to huge pmd only for gigantic page
+Date:   Mon, 26 Oct 2020 22:51:12 +0800
+Message-Id: <20201026145114.59424-18-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20201026145114.59424-1-songmuchun@bytedance.com>
 References: <20201026145114.59424-1-songmuchun@bytedance.com>
@@ -70,98 +70,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
-freeing unused vmemmap pages associated with each hugetlb page on boot.
+Merge pte to huge pmd if it has ever been split. Now only support
+gigantic page which's vmemmap pages size is an integer multiple of
+PMD_SIZE. This is the simplest case to handle.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- .../admin-guide/kernel-parameters.txt         |  9 ++++++++
- Documentation/admin-guide/mm/hugetlbpage.rst  |  3 +++
- mm/hugetlb.c                                  | 23 +++++++++++++++++++
- 3 files changed, 35 insertions(+)
+ arch/x86/include/asm/hugetlb.h |   8 +++
+ include/linux/hugetlb.h        |   7 +++
+ mm/hugetlb.c                   | 106 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 119 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 5debfe238027..ccf07293cb63 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1551,6 +1551,15 @@
- 			Documentation/admin-guide/mm/hugetlbpage.rst.
- 			Format: size[KMG]
- 
-+	hugetlb_free_vmemmap=
-+			[KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
-+			this controls freeing unused vmemmap pages associated
-+			with each HugeTLB page.
-+			Format: { on (default) | off }
-+
-+			on:  enable the feature
-+			off: disable the feature
-+
- 	hung_task_panic=
- 			[KNL] Should the hung task detector generate panics.
- 			Format: 0 | 1
-diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-index f7b1c7462991..7d6129ee97dd 100644
---- a/Documentation/admin-guide/mm/hugetlbpage.rst
-+++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-@@ -145,6 +145,9 @@ default_hugepagesz
- 
- 	will all result in 256 2M huge pages being allocated.  Valid default
- 	huge page size is architecture dependent.
-+hugetlb_free_vmemmap
-+	When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this disables freeing
-+	unused vmemmap pages associated each HugeTLB page.
- 
- When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
- indicates the current number of pre-allocated huge pages of the default size.
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 509de0732d9f..82467d573fee 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1310,6 +1310,8 @@ static void __free_hugepage(struct hstate *h, struct page *page);
- 	(__boundary - 1 < (end) - 1) ? __boundary : (end);		\
- })
- 
-+static bool hugetlb_free_vmemmap_disabled __initdata;
-+
- static inline unsigned int nr_free_vmemmap(struct hstate *h)
+diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
+index 7c3eb60c2198..9f9e19dd0578 100644
+--- a/arch/x86/include/asm/hugetlb.h
++++ b/arch/x86/include/asm/hugetlb.h
+@@ -15,6 +15,14 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
  {
- 	return h->nr_free_vmemmap_pages;
-@@ -1457,6 +1459,13 @@ static void __init hugetlb_vmemmap_init(struct hstate *h)
- 	unsigned int order = huge_page_order(h);
- 	unsigned int vmemmap_pages;
- 
-+	if (hugetlb_free_vmemmap_disabled) {
-+		h->nr_free_vmemmap_pages = 0;
-+		pr_info("HugeTLB: disable free vmemmap pages for %s\n",
-+			h->name);
-+		return;
-+	}
-+
- 	vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
- 	/*
- 	 * The head page and the first tail page not free to buddy system,
-@@ -1826,6 +1835,20 @@ static inline void clear_subpage_hwpoison(struct page *head)
- {
- 	set_page_private(head + 4, 0);
+ 	return pmd_large(*pmd);
  }
 +
-+static int __init early_hugetlb_free_vmemmap_param(char *buf)
++#define vmemmap_pmd_mkhuge vmemmap_pmd_mkhuge
++static inline pmd_t vmemmap_pmd_mkhuge(struct page *page)
 +{
-+	if (!buf)
-+		return -EINVAL;
++	pte_t entry = pfn_pte(page_to_pfn(page), PAGE_KERNEL_LARGE);
 +
-+	if (!strcmp(buf, "off"))
-+		hugetlb_free_vmemmap_disabled = true;
-+	else if (strcmp(buf, "on"))
-+		return -EINVAL;
-+
-+	return 0;
++	return __pmd(pte_val(entry));
 +}
-+early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
- #else
- static inline void hugetlb_vmemmap_init(struct hstate *h)
+ #endif
+ 
+ #define hugepages_supported() boot_cpu_has(X86_FEATURE_PSE)
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 695d3041ae7d..3a45199cc5c1 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -611,6 +611,13 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
+ }
+ #endif
+ 
++#ifndef vmemmap_pmd_mkhuge
++static inline pmd_t vmemmap_pmd_mkhuge(struct page *page)
++{
++	return pmd_mkhuge(mk_pmd(page, PAGE_KERNEL));
++}
++#endif
++
+ #ifndef VMEMMAP_HPAGE_SHIFT
+ #define VMEMMAP_HPAGE_SHIFT		PMD_SHIFT
+ #endif
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 82467d573fee..a526bcdb137b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1718,6 +1718,62 @@ static void __remap_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
+ 	}
+ }
+ 
++static void __replace_huge_page_pte_vmemmap(pte_t *ptep, unsigned long start,
++					    unsigned int nr, struct page *huge,
++					    struct list_head *free_pages)
++{
++	unsigned long addr;
++	unsigned long end = start + (nr << PAGE_SHIFT);
++
++	for (addr = start; addr < end; addr += PAGE_SIZE, ptep++) {
++		struct page *page;
++		pte_t old = *ptep;
++		pte_t entry;
++
++		prepare_vmemmap_page(huge);
++
++		entry = mk_pte(huge++, PAGE_KERNEL);
++		VM_WARN_ON(!pte_present(old));
++		page = pte_page(old);
++		list_add(&page->lru, free_pages);
++
++		set_pte_at(&init_mm, addr, ptep, entry);
++	}
++}
++
++static void replace_huge_page_pmd_vmemmap(pmd_t *pmd, unsigned long start,
++					  struct page *huge,
++					  struct list_head *free_pages)
++{
++	unsigned long end = start + VMEMMAP_HPAGE_SIZE;
++
++	flush_cache_vunmap(start, end);
++	__replace_huge_page_pte_vmemmap(pte_offset_kernel(pmd, start), start,
++					VMEMMAP_HPAGE_NR, huge, free_pages);
++	flush_tlb_kernel_range(start, end);
++}
++
++static pte_t *merge_vmemmap_pte(pmd_t *pmdp, unsigned long addr)
++{
++	pte_t *pte;
++	struct page *page;
++
++	pte = pte_offset_kernel(pmdp, addr);
++	page = pte_page(*pte);
++	set_pmd(pmdp, vmemmap_pmd_mkhuge(page));
++
++	return pte;
++}
++
++static void merge_huge_page_pmd_vmemmap(pmd_t *pmd, unsigned long start,
++					struct page *huge,
++					struct list_head *free_pages)
++{
++	replace_huge_page_pmd_vmemmap(pmd, start, huge, free_pages);
++	pte_free_kernel(&init_mm, merge_vmemmap_pte(pmd, start));
++	flush_tlb_kernel_range(start, start + VMEMMAP_HPAGE_SIZE);
++}
++
+ static inline void alloc_vmemmap_pages(struct hstate *h, struct list_head *list)
  {
+ 	int i;
+@@ -1731,6 +1787,15 @@ static inline void alloc_vmemmap_pages(struct hstate *h, struct list_head *list)
+ 	}
+ }
+ 
++static inline void dissolve_compound_page(struct page *page, unsigned int order)
++{
++	int i;
++	unsigned int nr_pages = 1 << order;
++
++	for (i = 1; i < nr_pages; i++)
++		set_page_refcounted(page + i);
++}
++
+ static void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+ {
+ 	pmd_t *pmd;
+@@ -1750,10 +1815,47 @@ static void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+ 				    __remap_huge_page_pte_vmemmap);
+ 	if (!freed_vmemmap_hpage_dec(pmd_page(*pmd)) && pmd_split(pmd)) {
+ 		/*
+-		 * Todo:
+-		 * Merge pte to huge pmd if it has ever been split.
++		 * Merge pte to huge pmd if it has ever been split. Now only
++		 * support gigantic page which's vmemmap pages size is an
++		 * integer multiple of PMD_SIZE. This is the simplest case
++		 * to handle.
+ 		 */
+ 		clear_pmd_split(pmd);
++
++		if (IS_ALIGNED(nr_vmemmap(h), VMEMMAP_HPAGE_NR)) {
++			unsigned long addr = (unsigned long)head;
++			unsigned long end = addr + nr_vmemmap_size(h);
++
++			spin_unlock(ptl);
++
++			for (; addr < end; addr += VMEMMAP_HPAGE_SIZE) {
++				void *to;
++				struct page *page;
++
++				page = alloc_pages(GFP_VMEMMAP_PAGE & ~__GFP_NOFAIL,
++						   VMEMMAP_HPAGE_ORDER);
++				dissolve_compound_page(page,
++						       VMEMMAP_HPAGE_ORDER);
++				if (!page)
++					goto out;
++
++				to = page_to_virt(page);
++				memcpy(to, (void *)addr, VMEMMAP_HPAGE_SIZE);
++
++				/*
++				 * Make sure that any data that writes to the
++				 * @to is made visible to the physical page.
++				 */
++				flush_kernel_vmap_range(to, VMEMMAP_HPAGE_SIZE);
++
++				merge_huge_page_pmd_vmemmap(pmd++, addr, page,
++							    &remap_pages);
++			}
++
++out:
++			free_vmemmap_page_list(&remap_pages);
++			return;
++		}
+ 	}
+ 	spin_unlock(ptl);
+ }
 -- 
 2.20.1
 
