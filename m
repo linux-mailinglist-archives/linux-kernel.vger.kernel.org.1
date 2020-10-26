@@ -2,179 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03572299750
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D62299757
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgJZTsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:48:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgJZTsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:48:20 -0400
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F7BC2076D;
-        Mon, 26 Oct 2020 19:48:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603741699;
-        bh=0CP8uZo286GYB4ZeSsm3JEfEaYF6gJ46de7Wm5oEt9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YFfbfsOmu7bIpEI6O6D6dWmYeueVt5Ls58K7cJojaOUDcA/W5Ogra1vmfp4tFoG/b
-         Q+BwBZl0EuQg39eDEe1fUs8OirTqXyKFzYX/8CAZUzGYxtZT2XN5P89avKRKXF1wbI
-         9PBQ9fu/oUUKPKRmra78sKl1gVvO/GRQvrqDh6mE=
-Date:   Mon, 26 Oct 2020 12:48:17 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org
-Subject: Re: [PATCH v3 1/5] scsi: ufs: atomic update for clkgating_enable
-Message-ID: <20201026194817.GA359340@google.com>
-References: <20201024150646.1790529-1-jaegeuk@kernel.org>
- <20201024150646.1790529-2-jaegeuk@kernel.org>
- <68cf5fe17691653f07544db5fe390c97@codeaurora.org>
- <20201026061313.GA2517102@google.com>
- <6c029b64cb4d78e7624bc896f9c9f16d@codeaurora.org>
+        id S1728783AbgJZTub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:50:31 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:33359 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728665AbgJZTub (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:50:31 -0400
+Received: by mail-pj1-f68.google.com with SMTP id k8so2058591pjd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dlpTSDPfA0UrBOKMG6J79aMdLO6WWnbzuFkDbchHp4c=;
+        b=b5LA8oRftaz6Vkp7FSDYjIdNtYZup3hkcqo74rSDdXpfCVE/1t5tFU2/kX5foF4QSM
+         Ci629Gr/wY//Cp7rtHlzuOm4b/QoxC5Lmpbb34b7UsqKdT4G9WCig9ezpomztxykxdbm
+         ROx07IWYKt8LSokAhrEUsjR06qeunt397stKbNaGEdd/FICK9iqT0UJt7KXp/+Fm7Atz
+         KF130+q84KImCUlZLudjKJZuXpg/dIQnkTkkJkQpf0CuSU4A/Qiqow8VUit8oEMroNCx
+         3nCYLqbclfeVGls496Bf+FB/Vnq1nQAn1U3aD0hx9WrKl3Xy2eU5YQvjJIs1fntLbDEa
+         ZLag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dlpTSDPfA0UrBOKMG6J79aMdLO6WWnbzuFkDbchHp4c=;
+        b=kpOoGHsSQE7OwDV5OI0VVowrbo7+uDN65CoHKGOwWPCZDXpt0RshIuvUm235gQYKNG
+         ab4hzxTUWfx039gijsu2Xn0cG2CFvwdq9sIwnw309xwNDRx8GklIAs+vybLEGOXZBtVE
+         siIGfgUpaLFxXVFCdKWAAuhcB10d3zVO699BZBHgbBXL957mhvP7luz4Jq8bCnDEjdFA
+         6vHlgJAlLLRI4fl7blBabXdfCL8AI4rwaZL/d0RxS1xuk1ttDEjhZnkvO2/1FtT5L6SA
+         khK+KYaaSgLM5P9/0X+HjI+L0c+YvrotxnxRntFd85N9ayh7u5hIEWKKsDY6SdKzXoMr
+         45Jw==
+X-Gm-Message-State: AOAM530YjMmHdMUvWn6IOYn4O/7hjabOAAverF0O6OOS54RUMPa1tnyi
+        UEtiVUYLlQ1vDfnWe6v4ifi+mFTnO+U3aieJHHzW7w==
+X-Google-Smtp-Source: ABdhPJwIiThTbhw+igCvl9C27O7ZcOpplD58EFuW1KI6p+s7uLzuPmvh5EXboo7kHLxLMIgbUZU0/EZ/lH2yKhGnEZU=
+X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr17980256pja.75.1603741829917;
+ Mon, 26 Oct 2020 12:50:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c029b64cb4d78e7624bc896f9c9f16d@codeaurora.org>
+References: <20201022174706.8813-1-kholk11@gmail.com>
+In-Reply-To: <20201022174706.8813-1-kholk11@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Mon, 26 Oct 2020 20:50:19 +0100
+Message-ID: <CAG3jFyvePZ8OZ+0_8pK7t=-UECd5q8tZ4a=c-dbMcNm6pgfnrQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Add support for SDM630/660 Camera Subsystem
+To:     kholk11@gmail.com
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26, Can Guo wrote:
-> On 2020-10-26 14:13, Jaegeuk Kim wrote:
-> > On 10/26, Can Guo wrote:
-> > > On 2020-10-24 23:06, Jaegeuk Kim wrote:
-> > > > From: Jaegeuk Kim <jaegeuk@google.com>
-> > > >
-> > > > When giving a stress test which enables/disables clkgating, we hit
-> > > > device
-> > > > timeout sometimes. This patch avoids subtle racy condition to address
-> > > > it.
-> > > >
-> > > > If we use __ufshcd_release(), I've seen that gate_work can be called in
-> > > > parallel
-> > > > with ungate_work, which results in UFS timeout when doing hibern8.
-> > > > Should avoid it.
-> > > >
-> > > 
-> > > I don't understand this comment. gate_work and ungate_work are
-> > > queued on
-> > > an ordered workqueue and an ordered workqueue executes at most one
-> > > work item
-> > > at any given time in the queued order. How can the two run in
-> > > parallel?
-> > 
-> > When I hit UFS stuck, I saw this by clkgating tracepoint.
-> > 
-> > - REQ_CLK_OFF
-> > - CLKS_OFF
-> > - REQ_CLK_OFF
-> > - REQ_CLKS_ON
-> > ..
-> > 
-> 
-> I don't see how can you tell that the two works are running in parallel
-> just from above trace. May I know what is the exact error by "UFS timeout
-> when doing hibern8"?
-> 
-> By using __ufshcd_release() here, I do see one potential issue if your test
-> quickly toggles on/off of clk_gating - disable it, enable it, disable it and
-> enable it, which will cause that __ufshcd_release() being called twice,
-> meaning
-> we queue two gate_works back to back. So can you try below code and let me
-> know
-> if it helps or not? I am OK with your current change, but I would like to
-> understand the problem. Thanks.
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 1791bce..3eee438 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2271,6 +2271,8 @@ static void ufshcd_gate_work(struct work_struct *work)
->         unsigned long flags;
-> 
->         spin_lock_irqsave(hba->host->host_lock, flags);
-> +       if (hba->clk_gating.state == CLKS_OFF)
-> +               goto rel_lock;
->         /*
->          * In case you are here to cancel this work the gating state
->          * would be marked as REQ_CLKS_ON. In this case save time by
+Hey Angelo,
 
-This doesn't help. So, I checked this back again, and, like what you said, now
-suspect __ufshcd_release() which changed state to REQ_CLKS_OFF on CLKS_OFF.
+I can't functionally test the code myself, but the series looks good to me now.
 
-With the below change, I can see the issue anymore. Let me send v4.
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
----
- drivers/scsi/ufs/ufshcd.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b8f573a02713..cc8d5f0c3fdc 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1745,7 +1745,8 @@ static void __ufshcd_release(struct ufs_hba *hba)
- 	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
- 	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
- 	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
--	    hba->active_uic_cmd || hba->uic_async_done)
-+	    hba->active_uic_cmd || hba->uic_async_done ||
-+	    hba->clk_gating.state == CLKS_OFF)
- 		return;
- 
- 	hba->clk_gating.state = REQ_CLKS_OFF;
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
-
-> 
-> Regards,
-> 
-> Can Guo.
-> 
-> > By using active_req, I don't see any problem.
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > Can Guo.
-> > > 
-> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> > > > ---
-> > > >  drivers/scsi/ufs/ufshcd.c | 12 ++++++------
-> > > >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > > > index b8f573a02713..e0b479f9eb8a 100644
-> > > > --- a/drivers/scsi/ufs/ufshcd.c
-> > > > +++ b/drivers/scsi/ufs/ufshcd.c
-> > > > @@ -1807,19 +1807,19 @@ static ssize_t
-> > > > ufshcd_clkgate_enable_store(struct device *dev,
-> > > >  		return -EINVAL;
-> > > >
-> > > >  	value = !!value;
-> > > > +
-> > > > +	spin_lock_irqsave(hba->host->host_lock, flags);
-> > > >  	if (value == hba->clk_gating.is_enabled)
-> > > >  		goto out;
-> > > >
-> > > > -	if (value) {
-> > > > -		ufshcd_release(hba);
-> > > > -	} else {
-> > > > -		spin_lock_irqsave(hba->host->host_lock, flags);
-> > > > +	if (value)
-> > > > +		hba->clk_gating.active_reqs--;
-> > > > +	else
-> > > >  		hba->clk_gating.active_reqs++;
-> > > > -		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > > > -	}
-> > > >
-> > > >  	hba->clk_gating.is_enabled = value;
-> > > >  out:
-> > > > +	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > > >  	return count;
-> > > >  }
+On Thu, 22 Oct 2020 at 19:47, <kholk11@gmail.com> wrote:
+>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> This patch series implements support for the entire camera subsystem
+> found in SDM630/636/660 and SDA variants, including CSIPHY 3-Phase,
+> CSID v5.0, ISPIF 3.0 (though it didn't need any adaptation) and
+> VFE 4.8.
+>
+> One small note about VFE4.8, even if I wrote it in the commit that
+> adds support for it: I know, the VFE support here is split in
+> multiple files having the name of the actual VFE version that it is
+> targeting... but it didn't feel right to commonize the VFE 4.7 file
+> and make another one only for VFE4.8, when it's just about something
+> like 3 small differences.
+> That VFE 4.8 seems to be just a minor revision of VFE 4.7.
+>
+> While at it, also fix a small issue when using two VFEs: only one
+> of them was being resetted (always VFE0) so, after the first usage
+> of VFE1, in case we leave it in a bad state, it would not properly
+> start again. Now... it's fine :)))
+>
+> P.S.: SDM630/660's camss seems to be *very* similar to MSM8998, so
+>       likely 90% of this series should be reusable on that one, too!
+>
+> Tested on:
+>  - Sony Xperia XA2 (IMX300 on CSI0/PHY0/VFE0, IMX219 on CSI2,PHY2,VFE1)
+>    * VFE0/1 RDI only, as the VIDEO one does not work with SRGGB Bayer
+>      formats yet. As far as I can see, that color format hasn't been
+>      implemented yet in the video interface.
+>
+> Changes in v2:
+>  - Splitted out VFE 4.7 functions rename from the VFE 4.8 support commit
+>  - Moved a commit so that sequentially picking patches from this series
+>    still results in buildable code (heh, oops! sorry!)
+>  - Fixed ispif reset commit (moved the fix for itfrom the wrong commit
+>    to the right one: that was a "funny" overlook).
+>
+> AngeloGioacchino Del Regno (7):
+>   media: camss: ispif: Correctly reset based on the VFE ID
+>   media: camss: vfe-4-7: Rename get_ub_size, set_qos, set_ds, wm_enable
+>   media: camss: vfe: Add support for VFE 4.8
+>   media: camss: Add support for SDM630/636/660 camera subsystem
+>   media: camss: csiphy-3ph: Add support for SDM630/660
+>   media: dt-bindings: media: qcom,camss: Add bindings for SDM660 camss
+>   media: camss: csiphy: Set rate on csiX_phy clock on SDM630/660
+>
+>  .../devicetree/bindings/media/qcom,camss.txt  |   7 +
+>  .../media/platform/qcom/camss/camss-csid.c    |   9 +-
+>  .../qcom/camss/camss-csiphy-3ph-1-0.c         |   7 +-
+>  .../media/platform/qcom/camss/camss-csiphy.c  |  25 ++-
+>  .../media/platform/qcom/camss/camss-csiphy.h  |   1 +
+>  .../media/platform/qcom/camss/camss-ispif.c   | 100 ++++++---
+>  .../media/platform/qcom/camss/camss-ispif.h   |   2 +-
+>  .../media/platform/qcom/camss/camss-vfe-4-7.c | 131 ++++++++++-
+>  drivers/media/platform/qcom/camss/camss-vfe.c |  19 +-
+>  drivers/media/platform/qcom/camss/camss-vfe.h |   1 +
+>  .../media/platform/qcom/camss/camss-video.c   |   3 +-
+>  drivers/media/platform/qcom/camss/camss.c     | 206 +++++++++++++++++-
+>  drivers/media/platform/qcom/camss/camss.h     |   1 +
+>  13 files changed, 450 insertions(+), 62 deletions(-)
+>
+> --
+> 2.28.0
+>
