@@ -2,88 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D1E298D9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF17F298D9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1738420AbgJZNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:14:50 -0400
-Received: from casper.infradead.org ([90.155.50.34]:39424 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406990AbgJZNOD (ORCPT
+        id S1776612AbgJZNOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:14:52 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:39878 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1776597AbgJZNN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:14:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lta2H3+0F6XrQvumNGK2SyvRq8bs5VV2UbSLAwhlWGE=; b=p3vct6D2uTGzWeM0J29gXSW59P
-        Z6fYSCZYhXh0jmldeAg2pwv82tIHgQj8ajZl5XmjJRSfxawBd6GKMI0wqaI08FmgIoie/EojZTMEx
-        uABPSw22X3nZcq+0buG1zj0qm42j28oyNBAmWEHCd1lR29iqRsYcm4DkaskFSETEDMNIDRHFpX2bA
-        m32PRa9MPYqUMrkjsw0m0m+c+3KQ0ErG0bhBM8q0cGUtP0P1CITvKJmkUGeGSEJ7dEyl1SIH4w2ye
-        SOyw39zOAAnEpj8qYS7HmLsuVxKxps235DF6V/0Gu03ETPRaEunyWlc1oRdrTSTeORAjJp/Ay4awP
-        wF9ysFdQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX2Jt-00066K-9f; Mon, 26 Oct 2020 13:13:53 +0000
-Date:   Mon, 26 Oct 2020 13:13:53 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Qian Cai <cai@lca.pw>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-Message-ID: <20201026131353.GP20115@casper.infradead.org>
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
- <20201022004906.GQ20115@casper.infradead.org>
- <20201026094948.GA29758@quack2.suse.cz>
+        Mon, 26 Oct 2020 09:13:57 -0400
+Received: by mail-oi1-f196.google.com with SMTP id u127so10406504oib.6;
+        Mon, 26 Oct 2020 06:13:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rmJekMJIbGl07zxWeiosPnkjYnZ4WMaPaye8OH8Xnfg=;
+        b=GCbzwOp0n0zAlvmzAZjU6pBy9vuqhJolO/QhYEW8hyr0LRcGS4p1GQzrvhMCE0PhRT
+         1nln8b+Ca7GLKdEIeSPf0z4kPv8DLBgCnmaDaW3wy2vkU/Qr4wBXdWVhnnYzeW4Cf60t
+         Dx/4C6zUKbS+0pEhN7HJhBs28Jtn2MWNs7f1bcv+u0jyNAYeQ3eY4MMKX+rOYng37sqG
+         WoNvdzKBERuC8fVAo7mtGcwQxStzCmEkJbq6NFp6R/+DhERDhEW4QdtEw3ex5pFRL3ML
+         j0ol+Wf93R9ngB8H+mPcrl3fPwzN/fexloH4MVdt7+F91O5WsDtllcjZA4aCCV0tY+Wq
+         r51w==
+X-Gm-Message-State: AOAM530PqL3rhmtp8m6ikiVNBFQDVA51dctw54ke40YrqfvY0866Ufc5
+        qsyilv1tR+ukFUnrmFUcJw==
+X-Google-Smtp-Source: ABdhPJxZnw5CrxzzGKl682KAZOV7/6vCSY0bZk6f1XdhhjV5uYq2BaP8QK0LgRi1cGEe7IOnR23wMg==
+X-Received: by 2002:aca:d487:: with SMTP id l129mr10305529oig.123.1603718036793;
+        Mon, 26 Oct 2020 06:13:56 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k13sm3841301ooi.41.2020.10.26.06.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 06:13:55 -0700 (PDT)
+Received: (nullmailer pid 10906 invoked by uid 1000);
+        Mon, 26 Oct 2020 13:13:55 -0000
+Date:   Mon, 26 Oct 2020 08:13:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        matthias.bgg@gmail.com, srinivas.kandagatla@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: nvmem: mtk-efuse: add documentation for
+ MT8516 SoC
+Message-ID: <20201026131355.GA10697@bogus>
+References: <20201016171837.3261310-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026094948.GA29758@quack2.suse.cz>
+In-Reply-To: <20201016171837.3261310-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:49:48AM +0100, Jan Kara wrote:
-> On Thu 22-10-20 01:49:06, Matthew Wilcox wrote:
-> > On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
-> > > Today's linux-next starts to trigger this wondering if anyone has any clue.
-> > 
-> > I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
-> > to try to get a clue about it.  Good to know it's not the THP patches
-> > since they aren't in linux-next.
-> > 
-> > I don't understand how it can happen.  We have the page locked, and then we do:
-> > 
-> >                         if (PageWriteback(page)) {
-> >                                 if (wbc->sync_mode != WB_SYNC_NONE)
-> >                                         wait_on_page_writeback(page);
-> >                                 else
-> >                                         goto continue_unlock;
-> >                         }
-> > 
-> >                         VM_BUG_ON_PAGE(PageWriteback(page), page);
-> > 
-> > Nobody should be able to put this page under writeback while we have it
-> > locked ... right?  The page can be redirtied by the code that's supposed
-> > to be writing it back, but I don't see how anyone can make PageWriteback
-> > true while we're holding the page lock.
+On Fri, 16 Oct 2020 19:18:36 +0200, Fabien Parent wrote:
+> Add binding documentation for MT8516 SoCs.
 > 
-> FWIW here's very similar report for ext4 [1] and I strongly suspect this
-> started happening after Linus' rewrite of the page bit waiting logic. Linus
-> thinks it's preexisting bug which just got exposed by his changes (which is
-> possible). I've been searching a culprit for some time but so far I failed.
-> It's good to know it isn't ext4 specific so we should be searching in the
-> generic code ;). So far I was concentrating more on ext4 bits...
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/nvmem/mtk-efuse.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> 								Honza
-> 
-> [1] https://lore.kernel.org/lkml/000000000000d3a33205add2f7b2@google.com/
 
-Oh good, I was wondering if it was an XFS bug ;-)
-
-I hope Qian gets it to reproduce soon with the assert because that will
-tell us whether it's a spurious wakeup or someone calling SetPageWriteback
-without holding the page lock.
+Acked-by: Rob Herring <robh@kernel.org>
