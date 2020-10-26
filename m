@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3671D299BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D710299BC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409952AbgJZXxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55410 "EHLO mail.kernel.org"
+        id S2409976AbgJZXxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409796AbgJZXwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:38 -0400
+        id S2409833AbgJZXwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:43 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01A0620882;
-        Mon, 26 Oct 2020 23:52:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA1C621D41;
+        Mon, 26 Oct 2020 23:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756357;
-        bh=X8lBN1La8+tYGxssc0c66XRKu04bVNdwauw8oNCdDSk=;
+        s=default; t=1603756362;
+        bh=4evDXZqiaG6E4PstCTzCtKAW6Halr373+z+lN8tqAvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ik/53r9gQ01rLYRWgGChTckYnYJ3CnV0XsP/R4FuRrUiFnKH1kpwwaFJmdwtXD9ox
-         KCyLG97tu1ONPvPbpVaJ+eNeEe9ObD6Pjgm6p3vvv4LY3uhnpOhsbeqZXLyQpyUvse
-         9quOnqEhk4TU/fnG4OQi2LLW7Cnl1bnzxaWtMFvk=
+        b=g+UVBPwVmezsS+P80l469tfxUTtlrRYdroy0a0QWBOJkcXFB5m38QJJoQO3VcZ0tm
+         fodaraHxLXdJKNlxvKjHziiNuE4dXFz5Y1C41R1rYfSo0TbxdbM1b8n/guVdEQyLM1
+         cspwQWxOq23u48bW7K4i+HDFv6xZoTVwbdI1eC/4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Venkateswara Naralasetty <vnaralas@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+Cc:     Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 027/132] ath10k: fix retry packets update in station dump
-Date:   Mon, 26 Oct 2020 19:50:19 -0400
-Message-Id: <20201026235205.1023962-27-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 031/132] ath10k: start recovery process when payload length exceeds max htc length for sdio
+Date:   Mon, 26 Oct 2020 19:50:23 -0400
+Message-Id: <20201026235205.1023962-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,72 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+From: Wen Gong <wgong@codeaurora.org>
 
-[ Upstream commit 67b927f9820847d30e97510b2f00cd142b9559b6 ]
+[ Upstream commit 2fd3c8f34d08af0a6236085f9961866ad92ef9ec ]
 
-When tx status enabled, retry count is updated from tx completion status.
-which is not working as expected due to firmware limitation where
-firmware can not provide per MSDU rate statistics from tx completion
-status. Due to this tx retry count is always 0 in station dump.
+When simulate random transfer fail for sdio write and read, it happened
+"payload length exceeds max htc length" and recovery later sometimes.
 
-Fix this issue by updating the retry packet count from per peer
-statistics. This patch will not break on SDIO devices since, this retry
-count is already updating from peer statistics for SDIO devices.
+Test steps:
+1. Add config and update kernel:
+CONFIG_FAIL_MMC_REQUEST=y
+CONFIG_FAULT_INJECTION=y
+CONFIG_FAULT_INJECTION_DEBUG_FS=y
 
-Tested-on: QCA9984 PCI 10.4-3.6-00104
-Tested-on: QCA9882 PCI 10.2.4-1.0-00047
+2. Run simulate fail:
+cd /sys/kernel/debug/mmc1/fail_mmc_request
+echo 10 > probability
+echo 10 > times # repeat until hitting issues
 
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+3. It happened payload length exceeds max htc length.
+[  199.935506] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
+....
+[  264.990191] ath10k_sdio mmc1:0001:1: payload length 57005 exceeds max htc length: 4088
+
+4. after some time, such as 60 seconds, it start recovery which triggered
+by wmi command timeout for periodic scan.
+[  269.229232] ieee80211 phy0: Hardware restart was requested
+[  269.734693] ath10k_sdio mmc1:0001:1: device successfully recovered
+
+The simulate fail of sdio is not a real sdio transter fail, it only
+set an error status in mmc_should_fail_request after the transfer end,
+actually the transfer is success, then sdio_io_rw_ext_helper will
+return error status and stop transfer the left data. For example,
+the really RX len is 286 bytes, then it will split to 2 blocks in
+sdio_io_rw_ext_helper, one is 256 bytes, left is 30 bytes, if the
+first 256 bytes get an error status by mmc_should_fail_request,then
+the left 30 bytes will not read in this RX operation. Then when the
+next RX arrive, the left 30 bytes will be considered as the header
+of the read, the top 4 bytes of the 30 bytes will be considered as
+lookaheads, but actually the 4 bytes is not the lookaheads, so the len
+from this lookaheads is not correct, it exceeds max htc length 4088
+sometimes. When happened exceeds, the buffer chain is not matched between
+firmware and ath10k, then it need to start recovery ASAP. Recently then
+recovery will be started by wmi command timeout, but it will be long time
+later, for example, it is 60+ seconds later from the periodic scan, if
+it does not have periodic scan, it will be longer.
+
+Start recovery when it happened "payload length exceeds max htc length"
+will be reasonable.
+
+This patch only effect sdio chips.
+
+Tested with QCA6174 SDIO with firmware WLAN.RMH.4.4.1-00029.
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1591856446-26977-1-git-send-email-vnaralas@codeaurora.org
+Link: https://lore.kernel.org/r/20200108031957.22308-3-wgong@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
- drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/sdio.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index d787cbead56ab..cac05e7bb6b07 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3575,12 +3575,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
- 	}
- 
- 	if (ar->htt.disable_tx_comp) {
--		arsta->tx_retries += peer_stats->retry_pkts;
- 		arsta->tx_failed += peer_stats->failed_pkts;
--		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
--			   arsta->tx_retries, arsta->tx_failed);
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
-+			   arsta->tx_failed);
- 	}
- 
-+	arsta->tx_retries += peer_stats->retry_pkts;
-+	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 63f882c690bff..0841e69b10b1a 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -557,6 +557,10 @@ static int ath10k_sdio_mbox_rx_alloc(struct ath10k *ar,
+ 				    le16_to_cpu(htc_hdr->len),
+ 				    ATH10K_HTC_MBOX_MAX_PAYLOAD_LENGTH);
+ 			ret = -ENOMEM;
 +
- 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
- 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
- 						    rate_idx);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 919d15584d4a2..d9d4b15a6d81c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -8547,12 +8547,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
- 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
- 
- 	if (ar->htt.disable_tx_comp) {
--		sinfo->tx_retries = arsta->tx_retries;
--		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
- 		sinfo->tx_failed = arsta->tx_failed;
- 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
- 	}
- 
-+	sinfo->tx_retries = arsta->tx_retries;
-+	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
++			queue_work(ar->workqueue, &ar->restart_work);
++			ath10k_warn(ar, "exceeds length, start recovery\n");
 +
- 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
- }
+ 			goto err;
+ 		}
  
 -- 
 2.25.1
