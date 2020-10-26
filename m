@@ -2,501 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC11298AAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C428298A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1770984AbgJZKqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:46:45 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:58730 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1770941AbgJZKqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:46:40 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8A9E3200671;
-        Mon, 26 Oct 2020 11:46:36 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1CFDB2009F5;
-        Mon, 26 Oct 2020 11:46:31 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 98D71402BB;
-        Mon, 26 Oct 2020 11:46:24 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: fsl_aud2htx: Add aud2htx module driver
-Date:   Mon, 26 Oct 2020 18:40:55 +0800
-Message-Id: <1603708855-2663-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603708855-2663-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1603708855-2663-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1770112AbgJZKlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:41:55 -0400
+Received: from mail7.static.mailgun.info ([104.130.122.7]:10474 "EHLO
+        mail7.static.mailgun.info" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1769585AbgJZKly (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 06:41:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mixtli.metztli.it; q=dns/txt;
+ s=mx; t=1603708912; h=From: Date: Message-Id: To: Subject: Sender;
+ bh=ITigBUdYGDFHK24+Rc32x5xA0Nff6fIJ4jxNkCjtyHA=; b=KlwkTyep5pTcnLGH3ttHpFK5SGkWr+CTQwjS/Th9S1YiDxDv5IHTSjZ1GmM8utplbKqXJTIg
+ wTBL7Zjm3cFvJnl6hqjHdn9AnptCXUVMI/C7PelYGPUrxFw6zupj2lQQSmyravNF3IXvci+l
+ BCY0z2/agpUFg6DPc9ttBQkNRgc=
+X-Mailgun-Sending-Ip: 104.130.122.7
+X-Mailgun-Sid: WyIxYzIzYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgIjE3YjU0Il0=
+Received: from huitzilopochtli.metztli-it.com
+ (99-130-254-3.lightspeed.sntcca.sbcglobal.net [99.130.254.3]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f96a7f01e4642bf75a36d73 (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256);
+ Mon, 26 Oct 2020 10:41:52 GMT
+Sender: jose.r.r=metztli.com@mixtli.metztli.it
+Received: by huitzilopochtli.metztli-it.com (Postfix, from userid 1000)
+        id 199566FB9182; Mon, 26 Oct 2020 03:42:12 -0700 (PDT)
+Subject: Re: PROBLEM: Reiser4 hard lockup
+To:     <Hgntkwis@vfemail.net>, <edward.shishkin@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <reiserfs-devel@vger.kernel.org>
+X-Mailer: mail (GNU Mailutils 3.9)
+Message-Id: <20201026104213.199566FB9182@huitzilopochtli.metztli-it.com>
+Date:   Mon, 26 Oct 2020 03:42:12 -0700 (PDT)
+From:   Metztli Information Technology <jose.r.r@metztli.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AUD2HTX is a digital module that provides a bridge between
-the Audio Subsystem and the HDMI RTX Subsystem. This module
-includes intermediate storage to queue SDMA transactions prior
-to being synchronized and passed to the HDMI RTX Subsystem over
-the Audio Link.
+On Sun, Oct 25, 2020 at 6:10 PM David Niklas <Hgntkwis@vfemail.net> wrote:
+>
+> I'll reply to both of you in this email.
+>
+> On Sun, 25 Oct 2020 02:04:22 -0700 (PDT)
+> Metztli Information Technology <jose.r.r@metztli.com> wrote:
+> > Niltze, David-
+> >
+> > A few observations are in order below:
+> >
+> > On Sat, Oct 24, 2020 at 1:39 PM David Niklas <Hgntkwis@vfemail.net>
+> > wrote:
+> > >
+> > > Hello,
+> > >
+> <snip>
+> > reiser4progs 1.1.x Software Framework Release Number (SFRN) 4.0.1 file
+> > system utilities should not be used to check/fix media formatted 'a
+> > priori' in SFRN 4.0.2 and vice-versa.
+>
+> Honestly, this is the first time I've heard about a Linux FS having
+> versioning other than a major one (NTFS IIRC is infamous for it's
+> incompatibilities).
+>
+> <snip>
+>
+> > Conclusion: I suggest you read up on the published reiser4
+> > documentation and build *both* your kernel and reiser4progs utilities
+> > conforming to the more recent stable SFRN 4.0.2.
+>
+> I religiously read the reiser4 documentation prior to changing my FS. No
+> where do I recall seeing, on the wiki, or in the man pages, that there
+> was a need to use a newer reiser4 progs.
+> Ok, here it is:
+> https://reiser4.wiki.kernel.org/index.php/Reiser4_development_model
+> I'm not normally going to read a page that looks like it's for developers
+> as an end user which is why I didn't initially read it.
+>
+> > Prior to build reiser4progs 1.2.1 SFRN 4.0.2:
+> > libaal-1.0.7.tar.gz
+> > < https://sourceforge.net/projects/reiser4/files/reiser4-utils/ >
+> >
+> > then build reiser4progs-1.2.1.tar.gz SFRN 4.0.2
+> > <
+> > https://sourceforge.net/projects/reiser4/files/reiser4-utils/reiser4progs/
+> > >
+> >
+> > as any reiser4 patches for kernel 4.14 and higher conform to SFRN 4.0.2:
+> > https://sourceforge.net/projects/reiser4/files/reiser4-for-linux-5.x/
+> >
+> > citing, for the third time, reference email documenting the change,
+> > i.e. '2017-11-26 23:01:53 reiser4 SFRN 4.0.2 is not your father's
+> > reiser4 SFRN 4.0.1' <
+> > https://marc.info/?l=reiserfs-devel&m=151173731709826&w=2 >
+> >
+> > If you are going to use reiser4 kernel patches for linux 4.15.xy -
+> > 5.4.5 range, please make sure to *also* apply: [PATCH] reiser4: prevent
+> > system lockups: <
+> > https://marc.info/?l=reiserfs-devel&m=158086248927420&w=2 >
+> <snip>
+>
+> I was using 5.7.13 at the time. Should the crashes still be happening
+> because this patch is missing? 
+Only
+"If you are going to use reiser4 kernel patches for linux 4.15.xy -  5.4.5 range,"
 
-The AUD2HTX contains a DMA request routed to the SDMA module.
-This DMA request is controlled based on the watermark level in
-the 32-entry sample buffer.
+> It seems odd you'd mention it knowing
+> which kernel version I was using.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/Kconfig       |   8 +
- sound/soc/fsl/Makefile      |   2 +
- sound/soc/fsl/fsl_aud2htx.c | 322 ++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_aud2htx.h |  67 ++++++++
- 4 files changed, 399 insertions(+)
- create mode 100644 sound/soc/fsl/fsl_aud2htx.c
- create mode 100644 sound/soc/fsl/fsl_aud2htx.h
+I have to be proactive and anticipate a potential decision to use a lower version ;-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3f76ff71ea47..5234d9ab9884 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -95,6 +95,14 @@ config SND_SOC_FSL_EASRC
- 	  destination sample rate. It is a new design module compare with the
- 	  old ASRC.
- 
-+config SND_SOC_FSL_AUD2HTX
-+	tristate "AUDIO TO HDMI TX module support"
-+	select REGMAP_MMIO
-+	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+	  Say Y if you want to add AUDIO TO HDMI TX support for NXP.
-+
- config SND_SOC_FSL_UTILS
- 	tristate
- 
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index b835eebf8825..78bc088b39d5 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -25,6 +25,7 @@ snd-soc-fsl-utils-objs := fsl_utils.o
- snd-soc-fsl-dma-objs := fsl_dma.o
- snd-soc-fsl-mqs-objs := fsl_mqs.o
- snd-soc-fsl-easrc-objs := fsl_easrc.o
-+snd-soc-fsl-aud2htx-objs := fsl_aud2htx.o
- 
- obj-$(CONFIG_SND_SOC_FSL_AUDMIX) += snd-soc-fsl-audmix.o
- obj-$(CONFIG_SND_SOC_FSL_ASOC_CARD) += snd-soc-fsl-asoc-card.o
-@@ -38,6 +39,7 @@ obj-$(CONFIG_SND_SOC_FSL_UTILS) += snd-soc-fsl-utils.o
- obj-$(CONFIG_SND_SOC_FSL_MQS) += snd-soc-fsl-mqs.o
- obj-$(CONFIG_SND_SOC_FSL_EASRC) += snd-soc-fsl-easrc.o
- obj-$(CONFIG_SND_SOC_POWERPC_DMA) += snd-soc-fsl-dma.o
-+obj-$(CONFIG_SND_SOC_FSL_AUD2HTX) += snd-soc-fsl-aud2htx.o
- 
- # MPC5200 Platform Support
- obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
-diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
-new file mode 100644
-index 000000000000..8c4b897db6f0
---- /dev/null
-+++ b/sound/soc/fsl/fsl_aud2htx.c
-@@ -0,0 +1,322 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright (C) 2020 NXP
-+
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/delay.h>
-+#include <linux/dmaengine.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/of_address.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/time.h>
-+#include <linux/pm_qos.h>
-+#include <sound/core.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
-+#include <linux/dma-mapping.h>
-+
-+#include "fsl_aud2htx.h"
-+#include "imx-pcm.h"
-+
-+static int fsl_aud2htx_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *cpu_dai)
-+{
-+	struct fsl_aud2htx *aud2htx = snd_soc_dai_get_drvdata(cpu_dai);
-+
-+	/* DMA request when number of entries < WTMK_LOW */
-+	regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-+			   AUD2HTX_CTRE_DT_MASK, 0);
-+
-+	/* Disable interrupts*/
-+	regmap_update_bits(aud2htx->regmap, AUD2HTX_IRQ_MASK,
-+			   AUD2HTX_WM_HIGH_IRQ_MASK |
-+			   AUD2HTX_WM_LOW_IRQ_MASK |
-+			   AUD2HTX_OVF_MASK,
-+			   AUD2HTX_WM_HIGH_IRQ_MASK |
-+			   AUD2HTX_WM_LOW_IRQ_MASK |
-+			   AUD2HTX_OVF_MASK);
-+
-+	/* Configur watermark */
-+	regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-+			   AUD2HTX_CTRE_WL_MASK,
-+			   AUD2HTX_WTMK_LOW << AUD2HTX_CTRE_WL_SHIFT);
-+	regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-+			   AUD2HTX_CTRE_WH_MASK,
-+			   AUD2HTX_WTMK_HIGH << AUD2HTX_CTRE_WH_SHIFT);
-+	return 0;
-+}
-+
-+static int fsl_aud2htx_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct fsl_aud2htx *aud2htx = snd_soc_dai_get_drvdata(dai);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL,
-+				   AUD2HTX_CTRL_EN, AUD2HTX_CTRL_EN);
-+		regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-+				   AUD2HTX_CTRE_DE, AUD2HTX_CTRE_DE);
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-+				   AUD2HTX_CTRE_DE, 0);
-+		regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL,
-+				   AUD2HTX_CTRL_EN, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops fsl_aud2htx_dai_ops = {
-+	.hw_params	= fsl_aud2htx_hw_params,
-+	.trigger	= fsl_aud2htx_trigger,
-+};
-+
-+static int fsl_aud2htx_dai_probe(struct snd_soc_dai *cpu_dai)
-+{
-+	struct fsl_aud2htx *aud2htx = dev_get_drvdata(cpu_dai->dev);
-+
-+	snd_soc_dai_init_dma_data(cpu_dai, &aud2htx->dma_params_tx,
-+				  &aud2htx->dma_params_rx);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_driver fsl_aud2htx_dai = {
-+	.probe = fsl_aud2htx_dai_probe,
-+	.playback = {
-+		.stream_name = "CPU-Playback",
-+		.channels_min = 1,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000 |
-+			 SNDRV_PCM_RATE_88200 |
-+			 SNDRV_PCM_RATE_96000 |
-+			 SNDRV_PCM_RATE_176400 |
-+			 SNDRV_PCM_RATE_192000,
-+		.formats = FSL_AUD2HTX_FORMATS,
-+	},
-+	.ops = &fsl_aud2htx_dai_ops,
-+};
-+
-+static const struct snd_soc_component_driver fsl_aud2htx_component = {
-+	.name	= "fsl-aud2htx",
-+};
-+
-+static const struct reg_default fsl_aud2htx_reg_defaults[] = {
-+	{AUD2HTX_CTRL,		0x00000000},
-+	{AUD2HTX_CTRL_EXT,	0x00000000},
-+	{AUD2HTX_WR,		0x00000000},
-+	{AUD2HTX_STATUS,	0x00000000},
-+	{AUD2HTX_IRQ_NOMASK,	0x00000000},
-+	{AUD2HTX_IRQ_MASKED,	0x00000000},
-+	{AUD2HTX_IRQ_MASK,	0x00000000},
-+};
-+
-+static bool fsl_aud2htx_readable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AUD2HTX_CTRL:
-+	case AUD2HTX_CTRL_EXT:
-+	case AUD2HTX_STATUS:
-+	case AUD2HTX_IRQ_NOMASK:
-+	case AUD2HTX_IRQ_MASKED:
-+	case AUD2HTX_IRQ_MASK:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool fsl_aud2htx_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AUD2HTX_CTRL:
-+	case AUD2HTX_CTRL_EXT:
-+	case AUD2HTX_WR:
-+	case AUD2HTX_IRQ_NOMASK:
-+	case AUD2HTX_IRQ_MASKED:
-+	case AUD2HTX_IRQ_MASK:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool fsl_aud2htx_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AUD2HTX_STATUS:
-+	case AUD2HTX_IRQ_NOMASK:
-+	case AUD2HTX_IRQ_MASKED:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct regmap_config fsl_aud2htx_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+
-+	.max_register = AUD2HTX_IRQ_MASK,
-+	.reg_defaults = fsl_aud2htx_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_aud2htx_reg_defaults),
-+	.readable_reg = fsl_aud2htx_readable_reg,
-+	.volatile_reg = fsl_aud2htx_volatile_reg,
-+	.writeable_reg = fsl_aud2htx_writeable_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static const struct of_device_id fsl_aud2htx_dt_ids[] = {
-+	{ .compatible = "fsl,imx8mp-aud2htx",},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, fsl_aud2htx_dt_ids);
-+
-+static irqreturn_t fsl_aud2htx_isr(int irq, void *dev_id)
-+{
-+	return IRQ_HANDLED;
-+}
-+
-+static int fsl_aud2htx_probe(struct platform_device *pdev)
-+{
-+	struct fsl_aud2htx *aud2htx;
-+	struct resource *res;
-+	void __iomem *regs;
-+	int ret, irq;
-+
-+	aud2htx = devm_kzalloc(&pdev->dev, sizeof(*aud2htx), GFP_KERNEL);
-+	if (!aud2htx)
-+		return -ENOMEM;
-+
-+	aud2htx->pdev = pdev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	regs = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(regs)) {
-+		dev_err(&pdev->dev, "failed ioremap\n");
-+		return PTR_ERR(regs);
-+	}
-+
-+	aud2htx->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-+						&fsl_aud2htx_regmap_config);
-+	if (IS_ERR(aud2htx->regmap)) {
-+		dev_err(&pdev->dev, "failed to init regmap");
-+		return PTR_ERR(aud2htx->regmap);
-+	}
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0) {
-+		dev_err(&pdev->dev, "no irq for node %s\n",
-+			dev_name(&pdev->dev));
-+		return irq;
-+	}
-+
-+	ret = devm_request_irq(&pdev->dev, irq, fsl_aud2htx_isr, 0,
-+			       dev_name(&pdev->dev), aud2htx);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to claim irq %u: %d\n", irq, ret);
-+		return ret;
-+	}
-+
-+	aud2htx->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	if (IS_ERR(aud2htx->bus_clk)) {
-+		dev_err(&pdev->dev, "failed to get mem clock\n");
-+		return PTR_ERR(aud2htx->bus_clk);
-+	}
-+
-+	aud2htx->dma_params_tx.chan_name = "tx";
-+	aud2htx->dma_params_tx.maxburst = AUD2HTX_MAXBURST;
-+	aud2htx->dma_params_tx.addr = res->start + AUD2HTX_WR;
-+
-+	platform_set_drvdata(pdev, aud2htx);
-+	pm_runtime_enable(&pdev->dev);
-+
-+	regcache_cache_only(aud2htx->regmap, true);
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &fsl_aud2htx_component,
-+					      &fsl_aud2htx_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register ASoC DAI\n");
-+		return ret;
-+	}
-+
-+	ret = imx_pcm_dma_init(pdev, IMX_DEFAULT_DMABUF_SIZE);
-+	if (ret)
-+		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int fsl_aud2htx_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int fsl_aud2htx_runtime_suspend(struct device *dev)
-+{
-+	struct fsl_aud2htx *aud2htx = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(aud2htx->regmap, true);
-+	clk_disable_unprepare(aud2htx->bus_clk);
-+
-+	return 0;
-+}
-+
-+static int fsl_aud2htx_runtime_resume(struct device *dev)
-+{
-+	struct fsl_aud2htx *aud2htx = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(aud2htx->bus_clk);
-+	if (ret)
-+		return ret;
-+
-+	regcache_cache_only(aud2htx->regmap, false);
-+	regcache_mark_dirty(aud2htx->regmap);
-+	regcache_sync(aud2htx->regmap);
-+
-+	return 0;
-+}
-+#endif /*CONFIG_PM*/
-+
-+static const struct dev_pm_ops fsl_aud2htx_pm_ops = {
-+	SET_RUNTIME_PM_OPS(fsl_aud2htx_runtime_suspend,
-+			   fsl_aud2htx_runtime_resume,
-+			   NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+};
-+
-+static struct platform_driver fsl_aud2htx_driver = {
-+	.probe = fsl_aud2htx_probe,
-+	.remove = fsl_aud2htx_remove,
-+	.driver = {
-+		.name = "fsl-aud2htx",
-+		.pm = &fsl_aud2htx_pm_ops,
-+		.of_match_table = fsl_aud2htx_dt_ids,
-+	},
-+};
-+module_platform_driver(fsl_aud2htx_driver);
-+
-+MODULE_AUTHOR("Shengjiu Wang <Shengjiu.Wang@nxp.com>");
-+MODULE_DESCRIPTION("NXP AUD2HTX driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/fsl/fsl_aud2htx.h b/sound/soc/fsl/fsl_aud2htx.h
-new file mode 100644
-index 000000000000..ffa98e6af5ec
---- /dev/null
-+++ b/sound/soc/fsl/fsl_aud2htx.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020 NXP
-+ */
-+
-+#ifndef _FSL_AUD2HTX_H
-+#define _FSL_AUD2HTX_H
-+
-+#define FSL_AUD2HTX_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | \
-+			     SNDRV_PCM_FMTBIT_S32_LE)
-+
-+/* AUD2HTX Register Map */
-+#define AUD2HTX_CTRL          0x0   /* AUD2HTX Control Register */
-+#define AUD2HTX_CTRL_EXT      0x4   /* AUD2HTX Control Extended Register */
-+#define AUD2HTX_WR            0x8   /* AUD2HTX Write Register */
-+#define AUD2HTX_STATUS        0xC   /* AUD2HTX Status Register */
-+#define AUD2HTX_IRQ_NOMASK    0x10  /* AUD2HTX Nonmasked Interrupt Flags Register */
-+#define AUD2HTX_IRQ_MASKED    0x14  /* AUD2HTX Masked Interrupt Flags Register */
-+#define AUD2HTX_IRQ_MASK      0x18  /* AUD2HTX IRQ Masks Register */
-+
-+/* AUD2HTX Control Register */
-+#define AUD2HTX_CTRL_EN          BIT(0)
-+
-+/* AUD2HTX Control Extended Register */
-+#define AUD2HTX_CTRE_DE          BIT(0)
-+#define AUD2HTX_CTRE_DT_SHIFT    0x1
-+#define AUD2HTX_CTRE_DT_WIDTH    0x2
-+#define AUD2HTX_CTRE_DT_MASK     ((BIT(AUD2HTX_CTRE_DT_WIDTH) - 1) \
-+				 << AUD2HTX_CTRE_DT_SHIFT)
-+#define AUD2HTX_CTRE_WL_SHIFT    16
-+#define AUD2HTX_CTRE_WL_WIDTH    5
-+#define AUD2HTX_CTRE_WL_MASK     ((BIT(AUD2HTX_CTRE_WL_WIDTH) - 1) \
-+				 << AUD2HTX_CTRE_WL_SHIFT)
-+#define AUD2HTX_CTRE_WH_SHIFT    24
-+#define AUD2HTX_CTRE_WH_WIDTH    5
-+#define AUD2HTX_CTRE_WH_MASK     ((BIT(AUD2HTX_CTRE_WH_WIDTH) - 1) \
-+				 << AUD2HTX_CTRE_WH_SHIFT)
-+
-+/* AUD2HTX IRQ Masks Register */
-+#define AUD2HTX_WM_HIGH_IRQ_MASK BIT(2)
-+#define AUD2HTX_WM_LOW_IRQ_MASK  BIT(1)
-+#define AUD2HTX_OVF_MASK         BIT(0)
-+
-+#define AUD2HTX_FIFO_DEPTH       0x20
-+#define AUD2HTX_WTMK_LOW         0x10
-+#define AUD2HTX_WTMK_HIGH        0x10
-+#define AUD2HTX_MAXBURST         0x10
-+
-+/**
-+ * fsl_aud2htx: AUD2HTX private data
-+ *
-+ * @pdev: platform device pointer
-+ * @regmap: regmap handler
-+ * @bus_clk: clock source to access register
-+ * @dma_params_rx: DMA parameters for receive channel
-+ * @dma_params_tx: DMA parameters for transmit channel
-+ */
-+struct fsl_aud2htx {
-+	struct platform_device *pdev;
-+	struct regmap *regmap;
-+	struct clk *bus_clk;
-+
-+	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	struct snd_dmaengine_dai_dma_data dma_params_tx;
-+};
-+
-+#endif /* _FSL_AUD2HTX_H */
+i.e., I am really baffled at how you were using reiser4 SFRN 4.0.2 patch for linux 5.7.13 -- yet built and were using old reiser4progs 1.1.x SFRN 4.0.1 :)
+
+It is not as if there were not reiser4 resources out there. One of the reasons I make available a reiser4 hack of Debian netboot ISOs on SourceForge is to provide some sort of reference implementation.
+
+If you do not like/trust the Debian metaframework OS hack installed onto your computer, fair, as you can only use the bootable iso to execute the commands suggested elsewhere by Ed to find out the proper SFRN and/or versions of the kernel and reiser4progs utilities which your *own* build might strive to match.
+
+>
+>
+> On Sun, 25 Oct 2020 13:50:15 +0100
+> Edward Shishkin <edward.shishkin@gmail.com> wrote:
+> > On 10/24/2020 10:36 PM, David Niklas wrote:
+> > > Hello,
+> > >   
+> >
+> > Hi David,
+> >
+> > Thanks for the comprehensive report, which is definitely useful!
+> > Below you can find some hints and comments.
+> >
+>
+> (:
+>
+> <snip>
+> >
+> > It's a pity..
+> > To be honest, I received complaints that reiser4 doesn't make
+> > a friendship with torrents long time ago. Unfortunately, I am in Europe,
+> > where it is impossible to use torrents that simply, without conflicts
+> > with local legislation. Respectively, I am not able to reproduce it,
+> > and the problem is still unfixed..
+> >
+> I might try to reproduce this later and log the actual write patterns so
+> you can reproduce these crashes. Obviously, I'll have to learn how to
+> first.
+>
+> <snip>
+> > reiser4 mount option "dont_load_bitmap" is your friend.
+>
+> I knew about that, but I'm uncertain if it would change how reiser4 works
+> and then it will not cause the crash.
+>
+> > > I had also to manually chew through all the kernel .o files to find
+> > > where the kernel broke at (also attached).
+> > >
+> > > The command I used to create the reiser4 FS was:
+> > > mkfs.reiser4 -o
+> > > create=reg40,fibration=ext_3_fibre,hash=r5_hash,key=key_large,node=node40,compress=lzo1,compressMode=conv /dev/md7p1
+> > > I wanted to use reg40 as opposed to ccreg40 because I wanted an
+> > > unencrypted partition. 
+> >
+> >
+> > You got confused. Reiser4 doesn't support encryption without special
+> > patches (which are not public). With "create=reg40" you get a "classic"
+> > setup without compression.
+> >
+> > There is a "getting started" page, which provides some recommendations
+> > on reiser4 mkfs and mount options:
+> > https://reiser4.wiki.kernel.org/index.php/Reiser4_Howto
+>
+> Ah, I read that page 4 times but thought it out of date because the
+> plugin description said something else.
+>
+> > > Likewise, I changed the fibration to ext_3_fibre
+> > > from ext_1_fibre. Other then that, everything is set to it's defaults.
+> > > Interestingly, if I try to set the key to short and change the mode to
+> > > tea (a time compute trade off AFAIK), I crashes mkfs.reiser4.
+> > > I need to report this to the developers. 
+> >
+> > Short keys is an exotic option (are you restricted in disk space?).
+>
+> Quite the contrary, I wanted an excuse to try using tea. IDK what the key
+> lengths are (I've been really curious about that), but I decided to try
+> using tea and short hashes as a fun exercise as a time/compute trade off.
+>
+> > But that crash needs to be fixed, of course. I'll create a ticket.
+>
+> Nice!
+>
+> > > When trying to remount the FS after this crash I got an error from
+> > > fsck that I needed to rebuild the super block. Considering that all
+> > > transactions are atomic, this was quite a surprise to me.
+> > > This failed because the format version was somehow greater than my
+> > > tools version. 
+> >
+> >
+> > Absolutely.
+> >
+> > SFRN (Software Framework Release Number) of your tools is 4.0.1.
+> > SFRN of your reiser4 module is 4.0.2.
+> > Right after formatting your partition had format 4.0.1.
+> > After mounting to the kernel of greater SFRN, it was automatically
+> > upgraded to 4.0.2, so you are not able to check that partition with
+> > fsck of smaller SFRN anymore. All you needed was to upgrade your
+> > reiser4progs.
+> >
+> > More about compatibility is here:
+> > https://reiser4.wiki.kernel.org/index.php/Reiser4_development_model
+>
+> Ah! I wondered how I could create an FS that had a larger version than my
+> tools.
+>
+>
+> > > One thing that was quite interesting about this is that the Linux
+> > > kernel said I needed to upgrade my disk format of reiser 4.
+> > > Sep 19 04:21:16 Phenom-II-x6 kernel: [   37.113970][ T2122]
+> > > Loading Reiser4 (format release: 4.0.2) See www.namesys.com for a
+> > > description of Reiser4.
+> > > Sep 19 04:21:16 Phenom-II-x6 kernel: [   37.132956][ T2121]
+> > > reiser4: md7p1: found disk format 4.0.2.
+> > > Sep 19 04:21:16 Phenom-II-x6 kernel: [   37.133792][ T2121]
+> > > reiser4: md7p1: use 'fsck.reiser4 --fix' to complete disk format
+> > > upgrade.
+> >
+> >
+> > It is expected, since you mounted partition 4.0.1 by reiser4 module
+> > 4.0.2. No hurry to complete disk format upgrade. It is needed by fsck
+> > only.
+>
+> So the upgrade was only partial?
+>
+> > > IDR If I tried to issue the above recommended command.
+> > >
+> > >
+> > > Overall, after over a decade of development, I had hoped that reiser4
+> > > would prove to be a fast, space efficient, and stable FS. 
+> >
+> >
+> > So, as I understand, the only problem is stability?
+> > What can I say... We are not enterprise. We are like the upstream
+> > vanilla kernel, which can always be corrupted in some configuration
+> > under a specific workload, despite 30 years(!) of development history.
+> > Motivation to fix bugs is driven mostly by users and their bug reports
+> > (similar to ones that you have provided)..
+>
+> I know. I know. It's just after reading several months of emails from the
+> LKML where Hans goes on and on about how wonderfully stable it is and
+> every bug is quickly quashed, I thought it would be as stable as a
+> boulder.
+> And using ext3 as a baseline didn't help either. (:
+>
+I have not noticed 'ext3 as a baseline' since reiser4 is an extensible file system framework. Updating the Unix plugin (i.e. module) is how Ed has been able to update the SFRN:
+"Despite the name, this file system is written from scratch, although it inherited some features of its 'ideological' predecessor – reiserfs.
+
+As well as implementing the traditional Linux filesystem functions, reiser4 provides users with a number of additional features: transparent compression and encryption of files, full data journaling (implemented only in ext3 [at that time]), as well as almost unlimited (with the help of plug-in architecture) extensibility, i.e. the ability to adapt to arbitrarily complex end user requirements. However, there is currently no support for direct IO (work has begun on implementation), quotas, and POSIX ACL."
+
+The Design of Reiser4
+< https://metztli.blog/amatl/reiser-nahui/reiser4-design >
+
+Whenever I am provisioned a remote server and *that* ext[x] file system is imposed on (denying me the GNU freedom to choose my own file system ;-) I've always reformatted the root and data partitions to reiser4 SFRN 4.0.2
+
+I have even published a couple of blogs on how I achieved that when the hosting provider does not offer physical/virtual CD/VD device by using a second storage media device as a temporary placeholder for my reiser4 netboot ISO image from where to boot the remote installation.
+> <snip>
+> > Thanks again for the report.
+> > Once we fix the problem with torrents, we'll let you know..
+> >
+> > Edward.
+>
+>
+> Thanks,
+> David
+I suggest you use this list for further communication as pretending to wear an 'invisibility cloak' under cryptic email name/domains elsewhere is essentially pointless: 'Murica's Stasi...er, NSA, is being fed data 24/7 from her fascist Five Eyes vassals, thus anyone's pretensions at privacy are largely 'child's play' for them, eh Google? ;-)
+
+Best Professional Regards.
+
 -- 
-2.27.0
-
+Jose R R
+http://metztli.it
+---------------------------------------------------------------------------------------------
+Download Metztli Reiser4: Debian Buster w/ Linux 5.7.19 AMD64
+---------------------------------------------------------------------------------------------
+feats ZSTD compression https://sf.net/projects/metztli-reiser4/
+-------------------------------------------------------------------------------------------
+Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
