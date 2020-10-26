@@ -2,185 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84862989E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306E1298A32
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768806AbgJZJ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:58:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
+        id S1422427AbgJZKPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:15:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:33808 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768801AbgJZJ5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:57:54 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C9D822202;
-        Mon, 26 Oct 2020 09:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603706273;
-        bh=wtdKbIZ2qTydFUtmnkADSICjasq+Dj2neVT/nOLvOb4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jsdvoezVXrGHZKVZ+w54EEmVFcXiA9XurYdgbiz+v6Gsg8kZb8M8QESWk5luEoUZa
-         rN5ZnhuyqRdn4qNSyx8BQwcWx6UaR0iV3czPt7Ib3rlB8dT6IaoxcPU/EtnW7mQIP3
-         1kBPGNI+uH8gWF10JJXwEptRrVmzY9/AFXleI764=
-Date:   Mon, 26 Oct 2020 11:57:45 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH] mm: cleanup: remove unused tsk arg from
- __access_remote_vm
-Message-ID: <20201026095745.GE1154158@kernel.org>
-References: <20201026074137.4147787-1-jhubbard@nvidia.com>
+        id S1768371AbgJZJr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:47:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 629AE30E;
+        Mon, 26 Oct 2020 02:47:28 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AFB53F719;
+        Mon, 26 Oct 2020 02:47:27 -0700 (PDT)
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET flag
+ to reset uclamp
+To:     Yun Hsiang <hsiang023167@gmail.com>, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, qais.yousef@arm.com,
+        patrick.bellasi@matbug.net
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
+Date:   Mon, 26 Oct 2020 10:47:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026074137.4147787-1-jhubbard@nvidia.com>
+In-Reply-To: <20201025073632.720393-1-hsiang023167@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 12:41:37AM -0700, John Hubbard wrote:
-> Despite a comment that said that page fault accounting would be charged
-> to whatever task_struct* was passed into __access_remote_vm(), the tsk
-> argument was actually unused.
+On 25/10/2020 08:36, Yun Hsiang wrote:
+> If the user wants to stop controlling uclamp and let the task inherit
+> the value from the group, we need a method to reset.
 > 
-> Delete both the comment, and the argument.
+> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
+> sched_setattr syscall.
+> 
+> The policy is
+> _CLAMP_RESET                           => reset both min and max
+> _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> 
+> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
 
-I'd also mention that making page fault accounting actually use this
-task struct is quite a project, so there is no point to keep tsk
-argument.
+[...]
 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> Cc: Oleg Nesterov <oleg@redhat.com>
+> @@ -1451,7 +1464,8 @@ static void __setscheduler_uclamp(struct task_struct *p,
+>  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+>  
+>  		/* Keep using defined clamps across class changes */
+> -		if (uc_se->user_defined)
+> +		if (flags != SCHED_FLAG_UTIL_CLAMP_RESET &&
+> +				uc_se->user_defined)
+>  			continue;
 
-FWIW:
+With:
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+(1) _CLAMP_RESET                           => reset both min and max
+(2) _CLAMP_RESET | _CLAMP_MIN              => reset min value
+(3) _CLAMP_RESET | _CLAMP_MAX              => reset max value
+(4) _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
 
-> ---
-> 
-> Hi,
-> 
-> Just something that caught my eye when I was reviewing a semi-related
-> patchset.
-> 
-> thanks,
-> John Hubbard
-> NVIDIA
-> 
->  include/linux/mm.h |  4 ++--
->  kernel/ptrace.c    |  2 +-
->  mm/memory.c        | 11 +++++------
->  mm/nommu.c         |  8 ++++----
->  4 files changed, 12 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ef360fe70aaf..b3b85a5c5937 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1716,8 +1716,8 @@ extern int access_process_vm(struct task_struct *tsk, unsigned long addr,
->  		void *buf, int len, unsigned int gup_flags);
->  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
->  		void *buf, int len, unsigned int gup_flags);
-> -extern int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
-> -		unsigned long addr, void *buf, int len, unsigned int gup_flags);
-> +extern int __access_remote_vm(struct mm_struct *mm, unsigned long addr,
-> +			      void *buf, int len, unsigned int gup_flags);
->  
->  long get_user_pages_remote(struct mm_struct *mm,
->  			    unsigned long start, unsigned long nr_pages,
-> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-> index 43d6179508d6..fbbe32443b18 100644
-> --- a/kernel/ptrace.c
-> +++ b/kernel/ptrace.c
-> @@ -57,7 +57,7 @@ int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
->  		return 0;
->  	}
->  
-> -	ret = __access_remote_vm(tsk, mm, addr, buf, len, gup_flags);
-> +	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
->  	mmput(mm);
->  
->  	return ret;
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c48f8df6e502..25b28bc251d5 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4874,11 +4874,10 @@ EXPORT_SYMBOL_GPL(generic_access_phys);
->  #endif
->  
->  /*
-> - * Access another process' address space as given in mm.  If non-NULL, use the
-> - * given task for page fault accounting.
-> + * Access another process' address space as given in mm.
->   */
-> -int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
-> -		unsigned long addr, void *buf, int len, unsigned int gup_flags)
-> +int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
-> +		       int len, unsigned int gup_flags)
->  {
->  	struct vm_area_struct *vma;
->  	void *old_buf = buf;
-> @@ -4955,7 +4954,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
->  int access_remote_vm(struct mm_struct *mm, unsigned long addr,
->  		void *buf, int len, unsigned int gup_flags)
->  {
-> -	return __access_remote_vm(NULL, mm, addr, buf, len, gup_flags);
-> +	return __access_remote_vm(mm, addr, buf, len, gup_flags);
->  }
->  
->  /*
-> @@ -4973,7 +4972,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr,
->  	if (!mm)
->  		return 0;
->  
-> -	ret = __access_remote_vm(tsk, mm, addr, buf, len, gup_flags);
-> +	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
->  
->  	mmput(mm);
->  
-> diff --git a/mm/nommu.c b/mm/nommu.c
-> index 0faf39b32cdb..870fea12823e 100644
-> --- a/mm/nommu.c
-> +++ b/mm/nommu.c
-> @@ -1675,8 +1675,8 @@ void filemap_map_pages(struct vm_fault *vmf,
->  }
->  EXPORT_SYMBOL(filemap_map_pages);
->  
-> -int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
-> -		unsigned long addr, void *buf, int len, unsigned int gup_flags)
-> +int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
-> +		       int len, unsigned int gup_flags)
->  {
->  	struct vm_area_struct *vma;
->  	int write = gup_flags & FOLL_WRITE;
-> @@ -1722,7 +1722,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
->  int access_remote_vm(struct mm_struct *mm, unsigned long addr,
->  		void *buf, int len, unsigned int gup_flags)
->  {
-> -	return __access_remote_vm(NULL, mm, addr, buf, len, gup_flags);
-> +	return __access_remote_vm(mm, addr, buf, len, gup_flags);
->  }
->  
->  /*
-> @@ -1741,7 +1741,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr, void *buf, in
->  	if (!mm)
->  		return 0;
->  
-> -	len = __access_remote_vm(tsk, mm, addr, buf, len, gup_flags);
-> +	len = __access_remote_vm(mm, addr, buf, len, gup_flags);
->  
->  	mmput(mm);
->  	return len;
-> 
-> base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
-> -- 
-> 2.29.0
-> 
-> 
+If you reset an RT task with (1) you don't reset its uclamp.min value.
 
--- 
-Sincerely yours,
-Mike.
+__uclamp_update_util_min_rt_default(p) doesn't know about
+SCHED_FLAG_UTIL_CLAMP_RESET. It only knows user_defined and will bail early.
+
+[...]
+
+> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+> +	if (likely(!flags || flags == SCHED_FLAG_UTIL_CLAMP_RESET))
+>  		return;
+>  
+> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> +	if (flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> +		if (reset) {
+> +			clamp_value = __default_uclamp_value(p, UCLAMP_MIN);
+> +			user_defined = false;
+> +		} else {
+> +			clamp_value = attr->sched_util_min;
+> +			user_defined = true;
+> +		}
+
+Why do you reset for (1) in the for_each_clamp_id(clamp_id) loop and for
+(2)-(4) in the if (flags & SCHED_FLAG_UTIL_CLAMP_MXX) condition?
+
+You could reset (1)-(4) in the for_each_clamp_id(clamp_id) loop? In this
+case you wouldn't need __default_uclamp_value().
+
+[...]
