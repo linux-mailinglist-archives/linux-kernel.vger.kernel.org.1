@@ -2,79 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0272999DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1C32999E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394735AbgJZWtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:49:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43162 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390414AbgJZWti (ORCPT
+        id S2394813AbgJZWv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:51:28 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:42200 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394700AbgJZWv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:49:38 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603752576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ksDYXJPDBGDtncgmMUcP9mg1mza2LJA00t5oGzxZJYk=;
-        b=m7vXXWXXxHdnndNtWQzlF5Od36id+ZmbnGgo3O8KuZgIQt8AscK7UpGXMljlrFEHLNBaxA
-        YFgMa2sXy/Z8smqW8pTKT3fR27aNV9g1YXjR0uSFbgUiAyNFq7qZVyTPe+MmEYZIPU7JeY
-        CZJPzsqK7IBdoJNDIZkkZEavoNHE1En/gpdaMaVi5G7CRSXFK/awLeOWDP6FMz5fSM7lrl
-        qYHeVFPmmcBO/oIvuCQ6mLAn46sp74MiQkRAi4SPsaIWjn7MJDMCwDCCLHRtB78P/5y4jB
-        er8LHo0C+LGGSmAolm/yXPk75p7DEBvjeRLowmPokxh6NBAtwJ480e622yAp7Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603752576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ksDYXJPDBGDtncgmMUcP9mg1mza2LJA00t5oGzxZJYk=;
-        b=nsEuqJwgK8MU3fHK1KrFTAEeMjqWozGRv//N4pHuy/v6G6hN3DNpuuLWxfRIk3N7f1F1Mp
-        ykp4Anes+d/b9tAg==
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <959997ee-f393-bab0-45c0-4144c37b9185@redhat.com>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net> <20201019140005.GB17287@fuller.cnet> <20201020073055.GY2611@hirez.programming.kicks-ass.net> <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com> <20201020134128.GT2628@hirez.programming.kicks-ass.net> <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com> <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com> <20201023085826.GP2611@hirez.programming.kicks-ass.net> <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com> <87ft6464jf.fsf@nanos.tec.linutronix.de> <20201026173012.GA377978@fuller.cnet> <875z6w4xt4.fsf@nanos.tec.linutronix.de> <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com> <87v9ew3fzd.fsf@nanos.tec.linutronix.de> <85b5f53e-5be2-beea-269a-f70029bea298@intel.com> <87lffs3bd6.fsf@nanos.tec.linutronix.de> <959997ee-f393-bab0-45c0-4144c37b9185@redhat.com>
-Date:   Mon, 26 Oct 2020 23:49:35 +0100
-Message-ID: <875z6w38n4.fsf@nanos.tec.linutronix.de>
+        Mon, 26 Oct 2020 18:51:28 -0400
+Received: by mail-ua1-f66.google.com with SMTP id f15so3388713uaq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=19k3R6N9Mjf8/fy6EgCnmozd0vTjcVDdUyOxd/Efois=;
+        b=Xzdx9ayiwtEuil1EnIQHZmAft9rvmOipRojP7rR3Fnk/see8OvPnyG1nbyIFQHlYbp
+         kQfz4zASOQYuOXi9MKYgpoj06g8IVWj80iDvbVi2c8ClU8zEfrXtCRj4r/dsU5vRazpK
+         h0ku93hW4MFhYyb3VCN2IcBlvAI2kEcKai1Kg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=19k3R6N9Mjf8/fy6EgCnmozd0vTjcVDdUyOxd/Efois=;
+        b=ZIntPvLVNWWHpHRMTaKyNXtUlBzxBSxzB7iw+9UgTcQdWPJEWsu+kwvoQUPVzEw+sK
+         GLUq2BMPsfhu2aFjOCkx4MlWCOKKfAGfYcoCzr75GTYzZFJPsbvvdz3E1rEz49EE7De8
+         1A223ZXyW0YmK9eEY+BqnJaOso0uNvHJx1mA6nGGy4IYJPfH39Mm6+fKR52Qw9fgDhFO
+         gN+6Fog6lePVTt+Ze2T394KPrL9M3AImpvbNIdVw8iaL+dRsOeX6qoK34PFXvtJqm14A
+         9pohdnwwWqzNqaA/m4CUrePF6JxRHKqU0bWkqkWSmZRCNL2oBnbO2MNOB3kliekY9v2N
+         EeIg==
+X-Gm-Message-State: AOAM531SqkyR3TGAZtFZIUZhLA4lDEEyoD/64dOc4oLD+A/YirBvkTBd
+        pYL1MyUwd3fl3/ChvPgxubuaxylmV1K8Qg==
+X-Google-Smtp-Source: ABdhPJysURSwNTkRgqmB/cRPoTpxUShQi/c9KluKp0O5EJHRgqGDDAUcmTo6oGQkRAaEtcuFfq7OuA==
+X-Received: by 2002:ab0:5e95:: with SMTP id y21mr21543942uag.21.1603752686566;
+        Mon, 26 Oct 2020 15:51:26 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id e9sm1467362uad.20.2020.10.26.15.51.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 15:51:25 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id n18so5718257vsl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:51:25 -0700 (PDT)
+X-Received: by 2002:a67:e3b9:: with SMTP id j25mr17631109vsm.37.1603752685047;
+ Mon, 26 Oct 2020 15:51:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
+ <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
+ <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com> <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
+In-Reply-To: <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 26 Oct 2020 15:51:13 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
+Message-ID: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     Abhishek Kumar <kuabhs@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Brian Norris <briannorris@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26 2020 at 18:22, Nitesh Narayan Lal wrote:
-> On 10/26/20 5:50 PM, Thomas Gleixner wrote:
->> But I still think that for curing that isolation stuff we want at least
->> some information from the driver. Alternative solution would be to grant
->> the allocation of interrupts and queues and have some sysfs knob to shut
->> down queues at runtime. If that shutdown results in releasing the queue
->> interrupt (via free_irq()) then the vector exhaustion problem goes away.
+Hi,
+
+On Sat, Oct 24, 2020 at 9:40 AM Rakesh Pillai <pillair@codeaurora.org> wrot=
+e:
 >
-> I think this is close to what I and Marcelo were discussing earlier today
-> privately.
+> >         if (bd_ie_type =3D=3D ATH10K_BD_IE_BOARD) {
+> > +               /* With variant and chip id */
+> >                 ret =3D ath10k_core_create_board_name(ar, boardname,
+> > -                                                   sizeof(boardname), =
+true);
+> > +                                               sizeof(boardname), true=
+, true);
 >
-> I don't think there is currently a way to control the enablement/disablement of
-> interrupts from the userspace.
+> Instead of adding a lot of code to generate a second fallback name, its b=
+etter to just modify the condition inside the function =E2=80=9Cath10k_core=
+_create_board_name=E2=80=9D to allow the generation of BDF tag using chip i=
+d, even =E2=80=9Cif ar->id.bdf_ext[0] =3D=3D '\0 =E2=80=9C.
+>
+> This will make sure that the variant string is NULL, and just board-id an=
+d chip-id is used. This will help avoid most of the code changes.
+> The code would look as shown below
+>
+> @@ -1493,7 +1493,7 @@ static int ath10k_core_create_board_name(struct ath=
+10k *ar, char *name,
+>         }
+>
+>         if (ar->id.qmi_ids_valid) {
+> -               if (with_variant && ar->id.bdf_ext[0] !=3D '\0')
+> +               if (with_variant)
 
-You cannot just disable the interrupt. You need to make sure that the
-associated queue is shutdown or quiesced _before_ the interrupt is shut
-down.
+Wouldn't the above just be "if (with_chip_id)" instead?  ...but yeah,
+that would be a cleaner way to do this.  Abhishek: do you want to post
+a v2?
 
-Thanks,
-
-        tglx
+-Doug
