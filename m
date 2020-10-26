@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67CE299689
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5D129968A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792657AbgJZTN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:13:57 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:48744 "EHLO inva020.nxp.com"
+        id S1792663AbgJZTOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:14:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392992AbgJZTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:06:38 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E54FD1A056F;
-        Mon, 26 Oct 2020 20:06:35 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D85FA1A00AB;
-        Mon, 26 Oct 2020 20:06:35 +0100 (CET)
-Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 6223820308;
-        Mon, 26 Oct 2020 20:06:35 +0100 (CET)
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>,
-        Andrei Botila <andrei.botila@nxp.com>,
-        Dragos Rosioru <dragos.rosioru@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Subject: [PATCH v2] crypto: caam - enable crypto-engine retry mechanism
-Date:   Mon, 26 Oct 2020 21:06:26 +0200
-Message-Id: <1603739186-4007-1-git-send-email-iuliana.prodan@nxp.com>
-X-Mailer: git-send-email 2.1.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1737755AbgJZTH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:07:57 -0400
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF50D21D41
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:07:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603739277;
+        bh=vYbDisG7UZadajXMw/nlAuSTCeEhQwUZQJvu+Behapk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PuwWMFp/Hsj/gr+Y8SP1Q3U7qxUYAKqGg6LvnPMe5gme1MoqHSQ4ThL3MQXwF1mUm
+         SLCKZdlQv6CpDQ9jrxyyHIKeVA6lKIwC8E7SwF71KPruU5t7riQ8SjQarBkp+soLrG
+         yOH8M5OK+z8ban5yRlNr+AjZhMXl19h8XVUpVupo=
+Received: by mail-qk1-f181.google.com with SMTP id h140so9441869qke.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:07:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532hBwJ79owt0u48NN/w7RVCnMHxWnlQD+795DlmKnSQQ1OynN4f
+        GvXbkHFMveIPG+1OOc+KYGQc5ogJAvPC/qHjQHw=
+X-Google-Smtp-Source: ABdhPJx8U0mDhIpTto7EjkABKog5y1+ZMYZ6+1tpD5ozQ/zCb/L2KWLwDnaCbZCUVbwdDGbxrwuBUJcCJjpsIu4BhC0=
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr16125103qkg.3.1603739276000;
+ Mon, 26 Oct 2020 12:07:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201026161108.3707783-1-arnd@kernel.org> <20201026132300.6b175028@gandalf.local.home>
+In-Reply-To: <20201026132300.6b175028@gandalf.local.home>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 26 Oct 2020 20:07:39 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1ASxy3w62A16Ne9AkM2kfF5ZokYOfos53FSTQdkXha4Q@mail.gmail.com>
+Message-ID: <CAK8P3a1ASxy3w62A16Ne9AkM2kfF5ZokYOfos53FSTQdkXha4Q@mail.gmail.com>
+Subject: Re: [PATCH] seq_buf: avoid type mismatch for seq_buf_init
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
+        Petr Mladek <pmladek@suse.cz>,
+        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new crypto_engine_alloc_init_and_set() function to
-initialize crypto-engine and enable retry mechanism.
+On Mon, Oct 26, 2020 at 6:23 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 26 Oct 2020 17:10:58 +0100
+> Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Building with W=2 prints a number of warnings for one function that
+> > has a pointer type mismatch:
+> >
+> > linux/seq_buf.h: In function 'seq_buf_init':
+> > linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
+>
+> I've always hated the warning about char * and unsigned char *, as they are
+> mostly meaningless. Yes, bugs happen with int to unsigned int conversions,
+> but this is dealing with strings, where unsigned char * and char * are
+> basically equivalent, except when it comes to one thing, which is why I
+> prefer unsigned char * over char *, and that is printing out the numerical
+> values of a buffer, if they go above 177, the char * prints the negative
+> value, but unsigned char * keeps printing what you would expect.
 
-Set the maximum size for crypto-engine software queue based on
-Job Ring size (JOBR_DEPTH) and a threshold (reserved for the
-non-crypto-API requests that are not passed through crypto-engine).
+I agree it's a super annoying warning, which is exactly why I sent the
+fixes to shut it up in common headers. At least that way, building a specific
+driver with W=2 will only show the warnings in that driver, rather than
+those in header files as well.
 
-The callback for do_batch_requests is NULL, since CAAM
-doesn't support linked requests.
+> As this is just an annoyance (extra warnings), and not really a "fix", I'll
+> queue it up for the next merge window.
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
-Changes since v1:
-- add comment for THRESHOLD define;
-- update max size for crypto-engine queue.
+Yes, that was the idea, thanks!
 
- drivers/crypto/caam/intern.h | 8 ++++++++
- drivers/crypto/caam/jr.c     | 4 +++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
-index 9112279..7d45b21 100644
---- a/drivers/crypto/caam/intern.h
-+++ b/drivers/crypto/caam/intern.h
-@@ -16,6 +16,14 @@
- /* Currently comes from Kconfig param as a ^2 (driver-required) */
- #define JOBR_DEPTH (1 << CONFIG_CRYPTO_DEV_FSL_CAAM_RINGSIZE)
- 
-+/*
-+ * Maximum size for crypto-engine software queue based on Job Ring
-+ * size (JOBR_DEPTH) and a THRESHOLD (reserved for the non-crypto-API
-+ * requests that are not passed through crypto-engine)
-+ */
-+#define THRESHOLD 15
-+#define CRYPTO_ENGINE_MAX_QLEN (JOBR_DEPTH - THRESHOLD)
-+
- /* Kconfig params for interrupt coalescing if selected (else zero) */
- #ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_INTC
- #define JOBR_INTC JRCFG_ICEN
-diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
-index 6f66996..7f2b1101 100644
---- a/drivers/crypto/caam/jr.c
-+++ b/drivers/crypto/caam/jr.c
-@@ -550,7 +550,9 @@ static int caam_jr_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Initialize crypto engine */
--	jrpriv->engine = crypto_engine_alloc_init(jrdev, false);
-+	jrpriv->engine = crypto_engine_alloc_init_and_set(jrdev, true, NULL,
-+							  false,
-+							  CRYPTO_ENGINE_MAX_QLEN);
- 	if (!jrpriv->engine) {
- 		dev_err(jrdev, "Could not init crypto-engine\n");
- 		return -ENOMEM;
--- 
-2.1.0
-
+        Arnd
