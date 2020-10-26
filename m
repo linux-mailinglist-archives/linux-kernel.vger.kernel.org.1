@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34666298EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F8C298EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774828AbgJZN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:56:49 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:63524 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1780802AbgJZN4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:56:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603720607; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=6WReYE7EsI0TzLP4fHRo6o5oMyKnwMkBqs5Ms1eH5XM=; b=YVpbzR1SsSWlG3V688m4DsZ5JlYHzTYFiNrB1UNdIdzhTyYZYU260Fqp1xo86fOb6rvNe4Rx
- 6CzVMqJDn9dxGtSzDbdUwGVaIWZ25gmcAXHVBXE595BiDjATHy+SqnM7AORTTCuKzyIG/H/F
- hInIYP03K1Ys+WkiAu78vk11yfM=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f96d5936b827c4eefbbd18e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 13:56:35
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C74A9C43385; Mon, 26 Oct 2020 13:56:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 520CDC433C9;
-        Mon, 26 Oct 2020 13:56:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 520CDC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v9 3/4] docs: Add documentation for userspace client
- interface
-To:     Dan Williams <dcbw@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        netdev@vger.kernel.org
-References: <1603495075-11462-1-git-send-email-hemantk@codeaurora.org>
- <1603495075-11462-4-git-send-email-hemantk@codeaurora.org>
- <20201025144627.65b2324e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <e92a5a5b-ac62-a6d8-b6b4-b65587e64255@codeaurora.org>
- <4e4dc63d0a0b5a820f7a70e30e29746fd6735a96.camel@redhat.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <7934e50d-72bd-f20a-54da-33f29c66c3fa@codeaurora.org>
-Date:   Mon, 26 Oct 2020 07:56:33 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1780798AbgJZN4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:56:42 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:51976 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1780756AbgJZN4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 09:56:42 -0400
+Received: by mail-wm1-f67.google.com with SMTP id v5so11750324wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 06:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=HgyBh+16fLRmJC5zM1itgabVQdxvIj/AWtqWUQEP6yc=;
+        b=Khw6HtXiUbQUTT15ZKtC1tSHL3G0pWYJkDmyqU4U9ImTpofZ96CxkjCjZ9pg8LVRRM
+         CXTTsNBHXMJo78LPCvCk6A+aSvBjPwytrmKcGGtDr75MUjLL4LIagO/lam1xV4wHMLIY
+         9r6xFeE65639FT8qnuT+eZs018NUkgAA9xmkkAIKpN4LBTswNYKjvsNsEAC+lyLHJpy3
+         gvxB22Jl4If0+HRow+pNI+MWIWzl9PUiloLBwEKeb+66jlRkAWg5LKwNnKv2qwihc32n
+         7BQna0hcFMIRKn6JexOMZAqGcD5D3+p6uHCgFsVceeNvj5TzGk0HCFXFAQb8VfK1LKEn
+         I/cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=HgyBh+16fLRmJC5zM1itgabVQdxvIj/AWtqWUQEP6yc=;
+        b=PVOhQHMdOb59PcL1oR7suNScTt320uWt44ORYZeaUpgKod5nd98h3RRJKsZwtN1ewV
+         0PGyx3KHD9u6QUJrCM+avbWzZn2WYt2o05UEOkJ7lC8Ba8v1TQDd9vOnPzi+fgACD0TH
+         TBCCd7AQraxCtBWAxhCjDVzs5AUbVhT84QV2R8zgtkQsvi8o4b2w0IpZTnUDSYAXY/Gp
+         1OEAVCb5nUIdKprQPPhXs46YPACl6lxw0Lfv9yH2xfMA/CFGtIdLgltAugaJUzxoGDJV
+         WvjtRBdiTr63dvZVZs6KXwAHoe96zMGUK94ZvqT20esVG2Z8DZPX0OoYVn3OGRXxRxdB
+         6vBw==
+X-Gm-Message-State: AOAM532QqrC+rbQ63g9uCvfnmD23dTe88ENcO/itzrJgZj48ucCuKuFz
+        BX7gsvvBTxD8Oyb7TqjZ3UCtzw==
+X-Google-Smtp-Source: ABdhPJwhFRSy34ieLn1DstuSvVzZsmJTDrXtazaPwKq5GkCIxrsVvZ2CQeyoqavPfCy8A+wgZ4FTcQ==
+X-Received: by 2002:a1c:7214:: with SMTP id n20mr16444207wmc.93.1603720600298;
+        Mon, 26 Oct 2020 06:56:40 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id u195sm23028274wmu.18.2020.10.26.06.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 06:56:39 -0700 (PDT)
+References: <20200915124553.8056-1-narmstrong@baylibre.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] clk: meson: axg: add clocks for MIPI-DSI support
+In-reply-to: <20200915124553.8056-1-narmstrong@baylibre.com>
+Date:   Mon, 26 Oct 2020 14:56:39 +0100
+Message-ID: <1jeelljdk8.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <4e4dc63d0a0b5a820f7a70e30e29746fd6735a96.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/2020 7:46 AM, Dan Williams wrote:
-> On Mon, 2020-10-26 at 07:38 -0600, Jeffrey Hugo wrote:
->> On 10/25/2020 3:46 PM, Jakub Kicinski wrote:
->>> On Fri, 23 Oct 2020 16:17:54 -0700 Hemant Kumar wrote:
->>>> +UCI driver enables userspace clients to communicate to external
->>>> MHI devices
->>>> +like modem and WLAN. UCI driver probe creates standard character
->>>> device file
->>>> +nodes for userspace clients to perform open, read, write, poll
->>>> and release file
->>>> +operations.
->>>
->>> What's the user space that talks to this?
->>>
->>
->> Multiple.
->>
->> Each channel has a different purpose.  There it is expected that a
->> different userspace application would be using it.
->>
->> Hemant implemented the loopback channel, which is a simple channel
->> that
->> just sends you back anything you send it.  Typically this is consumed
->> by
->> a test application.
->>
->> Diag is a typical channel to be consumed by userspace.  This is
->> consumed
->> by various applications that talk to the remote device for
->> diagnostic
->> information (logs and such).
-> 
-> QMI too?
-> Dan
 
-Interesting question.  My product doesn't use QMI.  I would expect that 
-all QMI runs through Router these days, but I am seeing some QMI 
-channels in the downstream source.
+On Tue 15 Sep 2020 at 14:45, Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-Hemant, Do you know what is the usecase for the QMI0/QMI1 channels?
+> This adds the VPU & VAPB clocks along the MIPI DSI Host clock.
+>
+> The clock scheme is based on the GXBB & G12A VPU clocks, with a different CTS
+> clock output used for MIPI-DSI.
+>
+> Changes since v1 at [1]:
+> - update patch 3 commit message to reflect drm driver state
+> - added comments in patch 3 for clock specificities
+> - removed useless parents comments in patch 2
+> - fixed bad flags in patch 4
+> - removed holes in axg_vdin_meas_parent_data in patch 4
+>
+> [1] https://lkml.kernel.org/r/20200907093810.6585-1-narmstrong@baylibre.com
+>
+> Neil Armstrong (4):
+>   dt-bindings: clk: axg-clkc: add Video Clocks
+>   dt-bindings: clk: axg-clkc: add MIPI DSI Host clock binding
+>   clk: meson: axg: add Video Clocks
+>   clk: meson: axg: add MIPI DSI Host clock
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+Applied for v5.11 fixing 75 char per line patches 3 & 4 commit descriptions
+
+>
+>  drivers/clk/meson/axg.c              | 819 +++++++++++++++++++++++++++
+>  drivers/clk/meson/axg.h              |  23 +-
+>  include/dt-bindings/clock/axg-clkc.h |  25 +
+>  3 files changed, 866 insertions(+), 1 deletion(-)
+
