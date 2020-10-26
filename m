@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0402829918F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A103529918A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784626AbgJZP6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:58:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:43166 "EHLO foss.arm.com"
+        id S1784584AbgJZP6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:58:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:43202 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784512AbgJZP4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:56:51 -0400
+        id S1784567AbgJZP5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:57:40 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05B5C1042;
-        Mon, 26 Oct 2020 08:56:50 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D86B3F719;
-        Mon, 26 Oct 2020 08:56:48 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 15:56:35 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Topi Miettinen <toiwoton@gmail.com>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E5F11042;
+        Mon, 26 Oct 2020 08:57:40 -0700 (PDT)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7EC673F719;
+        Mon, 26 Oct 2020 08:57:37 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-hardening@vger.kernel.org, libc-alpha@sourceware.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: BTI interaction between seccomp filters in systemd and glibc
- mprotect calls, causing service failures
-Message-ID: <20201026155628.GA27285@arm.com>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022075447.GO3819@arm.com>
- <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
- <202010221256.A4F95FD11@keescook>
- <20201023090232.GA25736@gaia>
- <cf655c11-d854-281a-17ae-262ddf0aaa08@gmail.com>
- <20201026145245.GD3117@gaia>
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v4 0/2] MTE support for KVM guest
+Date:   Mon, 26 Oct 2020 15:57:25 +0000
+Message-Id: <20201026155727.36685-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026145245.GD3117@gaia>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 02:52:46PM +0000, Catalin Marinas via Libc-alpha wrote:
-> On Sat, Oct 24, 2020 at 02:01:30PM +0300, Topi Miettinen wrote:
-> > On 23.10.2020 12.02, Catalin Marinas wrote:
-> > > On Thu, Oct 22, 2020 at 01:02:18PM -0700, Kees Cook wrote:
-> > > > Regardless, it makes sense to me to have the kernel load the executable
-> > > > itself with BTI enabled by default. I prefer gaining Catalin's suggested
-> > > > patch[2]. :)
-> > > [...]
-> > > > [2] https://lore.kernel.org/linux-arm-kernel/20201022093104.GB1229@gaia/
-> > > 
-> > > I think I first heard the idea at Mark R ;).
-> > > 
-> > > It still needs glibc changes to avoid the mprotect(), or at least ignore
-> > > the error. Since this is an ABI change and we don't know which kernels
-> > > would have it backported, maybe better to still issue the mprotect() but
-> > > ignore the failure.
-> > 
-> > What about kernel adding an auxiliary vector as a flag to indicate that BTI
-> > is supported and recommended by the kernel? Then dynamic loader could use
-> > that to detect that a) the main executable is BTI protected and there's no
-> > need to mprotect() it and b) PROT_BTI flag should be added to all PROT_EXEC
-> > pages.
-> 
-> We could add a bit to AT_FLAGS, it's always been 0 for Linux.
-> 
-> > In absence of the vector, the dynamic loader might choose to skip doing
-> > PROT_BTI at all (since the main executable isn't protected anyway either, or
-> > maybe even the kernel is up-to-date but it knows that it's not recommended
-> > for some reason, or maybe the kernel is so ancient that it doesn't know
-> > about BTI). Optionally it could still read the flag from ELF later (for
-> > compatibility with old kernels) and then do the mprotect() dance, which may
-> > trip seccomp filters, possibly fatally.
-> 
-> I think the safest is for the dynamic loader to issue an mprotect() and
-> ignore the EPERM error. Not all user deployments have this seccomp
-> filter, so they can still benefit, and user can't tell whether the
-> kernel change has been backported.
-> 
-> Now, if the dynamic loader silently ignores the mprotect() failure on
-> the main executable, is there much value in exposing a flag in the aux
-> vectors? It saves a few (one?) mprotect() calls but I don't think it
-> matters much. Anyway, I don't mind the flag.
+This series adds support for Arm's Memory Tagging Extension (MTE) to
+KVM, allowing KVM guests to make use of it. This builds on the existing
+user space support already in v5.10-rc1, see [1] for an overview.
 
-I don't see a problem with the aforementioned patch [2] to pre-set BTI
-on the pages of the main binary.
+[1] https://lwn.net/Articles/834289/
 
-The original rationale here was that ld.so doesn't _need_ this, since it
-is going to examine the binary's ELF headers anyway.  But equally, if
-the binary is marked as supporting BTI then it's safe to enable BTI for
-the binary's own pages.
+Changes since v3[2]:
 
+ * Rebased on v5.10-rc1 (required updating KVM_CAP number).
 
-I'd tend to agree that an AT_FLAGS flag doesn't add much.  I think real
-EPERMs would only be seen in assert-fail type situations.  Failure of
-mmap() is likely to result in a segfault later on, or correct operation
-with weakened permissions on some pages.  Given the likely failure
-modes, that situation doesn't feel too bad.
+ * Clarified redundant test for system_supports_mte() with a comment.
 
+ * Added Reviewed-by tags from Andrew - thanks!
 
-> The only potential risk is if the dynamic loader decides not to turn
-> PROT_BTI one because of some mix and match of objects but AFAIK BTI
-> allows interworking.
+[2] https://lore.kernel.org/r/20200925093607.3051-1-steven.price%40arm.com
 
-Yes, the design means that a page's PROT_BTI can be set safely if the
-code in that page was compiled for BTI, irrespective of how other pages
-were compiled.  The reasons why we don't do this at finer granularity
-are (a) is't not very useful, and (b) ELF images only contain a BTI
-property note for the whole image, not per segment.
+Haibo plans to start looking at the QEMU support for this. I believe
+what is in this series should be sufficient, but there is still some
+concern that we need more kernel support for easily accessing the tags
+for migrating the VM. I don't expect any extra support to change the
+interfaces defined here, but rather build on them. My only reservation
+would be whether we want to expose the KVM_CAP before everything is
+ready.
 
-I think that ld.so already makes this decision at ELF image granularity
-(unless someone contradicts me).
+Steven Price (2):
+  arm64: kvm: Save/restore MTE registers
+  arm64: kvm: Introduce MTE VCPU feature
 
-Cheers
----Dave
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +++
+ arch/arm64/include/asm/kvm_host.h          |  7 +++++++
+ arch/arm64/include/asm/sysreg.h            |  3 ++-
+ arch/arm64/kvm/arm.c                       |  9 +++++++++
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
+ arch/arm64/kvm/mmu.c                       | 20 ++++++++++++++++++++
+ arch/arm64/kvm/sys_regs.c                  | 20 +++++++++++++++-----
+ include/uapi/linux/kvm.h                   |  1 +
+ 8 files changed, 71 insertions(+), 6 deletions(-)
+
+-- 
+2.20.1
+
