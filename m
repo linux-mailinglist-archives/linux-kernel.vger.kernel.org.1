@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55338299723
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39622299729
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786028AbgJZTiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:38:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1785727AbgJZTiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:38:14 -0400
-Received: from localhost.localdomain (unknown [192.30.34.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 163D720760;
-        Mon, 26 Oct 2020 19:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603741093;
-        bh=CVVfhj02cmHbdP0P+NzKNKUmqyFb56ji/LkfMW9dIKY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EXymziehrOzSmP9nWeYagSisgRzY54TjSUcEnigl3Ijoj0FpJVGxil+IJvqm4ZzcK
-         dkFPKPWUMcfISevnIdZ8oYl02wDkYshfV5DnyGhBnw4K6dXJBnd5cSTobZ9HPnb9ww
-         qG4dycoN8pU7UvbcqcxZUvEM5q+s75cfK5umk+sM=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: avoid -Woverride-init warning
-Date:   Mon, 26 Oct 2020 20:37:46 +0100
-Message-Id: <20201026193807.3816388-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1793307AbgJZTjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:39:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37504 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1786239AbgJZTjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:39:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603741191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=lCWigmNkQYdFYX02ynyqvoR8Vn8yvpoh4XRQOBQT06E=;
+        b=aG7bhzWdQ0t7DYabcFq0HhBegsbo9SIlVEmHpzKzzJgkHGZ1RL2jCKrJ8hS4SrM8bYb5FS
+        Vf3t0JFnv0+NSZAPjgG7VO5G1hLcuoGghFp5i8YHjGieiSe1tUG6EF6aScb88IzKprEna1
+        wE9idhKosV/j+QOcyYbavRDZ/f3bNws=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-Ni8hQSynOMObMpMDTyoKEQ-1; Mon, 26 Oct 2020 15:39:49 -0400
+X-MC-Unique: Ni8hQSynOMObMpMDTyoKEQ-1
+Received: by mail-oo1-f69.google.com with SMTP id r25so6134308oop.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:39:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lCWigmNkQYdFYX02ynyqvoR8Vn8yvpoh4XRQOBQT06E=;
+        b=f3xa3Q3ONjw5gjpuZxYxb7zCQy/+2vVRsgurD5MnSuDE9KDpsvBUJEs6IpgYBa0tv5
+         nKGY8vmx2y4e5eLaErMSoBHQWQ+zSy1Ap343BC2LJH8a+PT0uo3ekCReT/MNuxE/6Oem
+         hEDuufxmJZ04mpJq2jFip4GgO5XH+smSq27WeowLyNG6yTMmrT1uWgGmGu+SgFwG1qCx
+         2R7EwEQs9DdERhYLw8S0QhDUu7xLMnqV3YMCl8DaSTOrV56kYWhZfkQNummHq54HV8r0
+         d+OQ9t0ICzCMShgLcWKZDvVZ2RvmUzNjDuiEeOtH2elLnLhCEYnygrcxf4x6AhC2yRkg
+         ON8A==
+X-Gm-Message-State: AOAM532KSjXBTwBXdTRFqV4/i8SfZHxOBsfF4Wh5w1AbPniGoVhhPAPo
+        CEtp9SiJUbNjzmMopgGr5hayVGbYqmQ9qqwUqLVbHxGUwVokf92FtmScU1Q5WTj8hp8dUL3q4mb
+        dNWjbWlUZ6uJghcrphvJ23PIk
+X-Received: by 2002:a9d:2a88:: with SMTP id e8mr12231285otb.122.1603741188410;
+        Mon, 26 Oct 2020 12:39:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsyhAyUP2n2wv1fWsYURWnBm/cPB7m0J6DqoavC6i6FD6IAtB7NM8dGRZmoMdpumanQCoxXA==
+X-Received: by 2002:a9d:2a88:: with SMTP id e8mr12231270otb.122.1603741188215;
+        Mon, 26 Oct 2020 12:39:48 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t29sm4230509otd.51.2020.10.26.12.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 12:39:47 -0700 (PDT)
+From:   trix@redhat.com
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, viro@zeniv.linux.org.uk
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH v2] usb: gadget: f_hid: remove unneeded break
+Date:   Mon, 26 Oct 2020 12:39:33 -0700
+Message-Id: <20201026193933.1434490-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Tom Rix <trix@redhat.com>
 
-The icache_policy_str[] definition causes a warning when extra
-warning flags are enabled:
+A break is not needed if it is preceded by a goto.
 
-arch/arm64/kernel/cpuinfo.c:38:26: warning: initialized field overwritten [-Woverride-init]
-   38 |  [ICACHE_POLICY_VIPT]  = "VIPT",
-      |                          ^~~~~~
-arch/arm64/kernel/cpuinfo.c:38:26: note: (near initialization for 'icache_policy_str[2]')
-arch/arm64/kernel/cpuinfo.c:39:26: warning: initialized field overwritten [-Woverride-init]
-   39 |  [ICACHE_POLICY_PIPT]  = "PIPT",
-      |                          ^~~~~~
-arch/arm64/kernel/cpuinfo.c:39:26: note: (near initialization for 'icache_policy_str[3]')
-arch/arm64/kernel/cpuinfo.c:40:27: warning: initialized field overwritten [-Woverride-init]
-   40 |  [ICACHE_POLICY_VPIPT]  = "VPIPT",
-      |                           ^~~~~~~
-arch/arm64/kernel/cpuinfo.c:40:27: note: (near initialization for 'icache_policy_str[0]')
-
-There is no real need for the default initializer here, as printing a
-NULL string is harmless. Rewrite the logic to have an explicit
-reserved value for the only one that uses the default value.
-
-This partially reverts the commit that removed ICACHE_POLICY_AIVIVT.
-
-Fixes: 155433cb365e ("arm64: cache: Remove support for ASID-tagged VIVT I-caches")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- arch/arm64/include/asm/cache.h | 1 +
- arch/arm64/kernel/cpuinfo.c    | 7 ++++---
- 2 files changed, 5 insertions(+), 3 deletions(-)
+v2: split from larger patch
+---
+ drivers/usb/gadget/function/f_hid.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
-index a4d1b5f771f6..16e1e16e7e61 100644
---- a/arch/arm64/include/asm/cache.h
-+++ b/arch/arm64/include/asm/cache.h
-@@ -24,6 +24,7 @@
- #define CTR_L1IP(ctr)		(((ctr) >> CTR_L1IP_SHIFT) & CTR_L1IP_MASK)
+diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
+index 1125f4715830..5204769834d1 100644
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -511,9 +511,7 @@ static int hidg_setup(struct usb_function *f,
+ 		/* send an empty report */
+ 		length = min_t(unsigned, length, hidg->report_length);
+ 		memset(req->buf, 0x0, length);
+-
+ 		goto respond;
+-		break;
  
- #define ICACHE_POLICY_VPIPT	0
-+#define ICACHE_POLICY_RESERVED	1
- #define ICACHE_POLICY_VIPT	2
- #define ICACHE_POLICY_PIPT	3
+ 	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
+ 		  | HID_REQ_GET_PROTOCOL):
+@@ -521,13 +519,11 @@ static int hidg_setup(struct usb_function *f,
+ 		length = min_t(unsigned int, length, 1);
+ 		((u8 *) req->buf)[0] = hidg->protocol;
+ 		goto respond;
+-		break;
  
-diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
-index 6a7bb3729d60..77605aec25fe 100644
---- a/arch/arm64/kernel/cpuinfo.c
-+++ b/arch/arm64/kernel/cpuinfo.c
-@@ -34,10 +34,10 @@ DEFINE_PER_CPU(struct cpuinfo_arm64, cpu_data);
- static struct cpuinfo_arm64 boot_cpu_data;
+ 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
+ 		  | HID_REQ_SET_REPORT):
+ 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
+ 		goto stall;
+-		break;
  
- static const char *icache_policy_str[] = {
--	[0 ... ICACHE_POLICY_PIPT]	= "RESERVED/UNKNOWN",
-+	[ICACHE_POLICY_VPIPT]		= "VPIPT",
-+	[ICACHE_POLICY_RESERVED]	= "RESERVED/UNKNOWN",
- 	[ICACHE_POLICY_VIPT]		= "VIPT",
- 	[ICACHE_POLICY_PIPT]		= "PIPT",
--	[ICACHE_POLICY_VPIPT]		= "VPIPT",
- };
+ 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
+ 		  | HID_REQ_SET_PROTOCOL):
+@@ -544,7 +540,6 @@ static int hidg_setup(struct usb_function *f,
+ 			goto respond;
+ 		}
+ 		goto stall;
+-		break;
  
- unsigned long __icache_flags;
-@@ -334,10 +334,11 @@ static void cpuinfo_detect_icache_policy(struct cpuinfo_arm64 *info)
- 	case ICACHE_POLICY_VPIPT:
- 		set_bit(ICACHEF_VPIPT, &__icache_flags);
+ 	case ((USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_INTERFACE) << 8
+ 		  | USB_REQ_GET_DESCRIPTOR):
+@@ -562,7 +557,6 @@ static int hidg_setup(struct usb_function *f,
+ 						   hidg_desc_copy.bLength);
+ 			memcpy(req->buf, &hidg_desc_copy, length);
+ 			goto respond;
+-			break;
+ 		}
+ 		case HID_DT_REPORT:
+ 			VDBG(cdev, "USB_REQ_GET_DESCRIPTOR: REPORT\n");
+@@ -570,13 +564,11 @@ static int hidg_setup(struct usb_function *f,
+ 						   hidg->report_desc_length);
+ 			memcpy(req->buf, hidg->report_desc, length);
+ 			goto respond;
+-			break;
+ 
+ 		default:
+ 			VDBG(cdev, "Unknown descriptor request 0x%x\n",
+ 				 value >> 8);
+ 			goto stall;
+-			break;
+ 		}
  		break;
--	default:
-+	case ICACHE_POLICY_RESERVED:
- 	case ICACHE_POLICY_VIPT:
- 		/* Assume aliasing */
- 		set_bit(ICACHEF_ALIASING, &__icache_flags);
-+		break;
+ 
+@@ -584,7 +576,6 @@ static int hidg_setup(struct usb_function *f,
+ 		VDBG(cdev, "Unknown request 0x%x\n",
+ 			 ctrl->bRequest);
+ 		goto stall;
+-		break;
  	}
  
- 	pr_info("Detected %s I-cache on CPU%d\n", icache_policy_str[l1ip], cpu);
+ stall:
 -- 
-2.27.0
+2.18.1
 
