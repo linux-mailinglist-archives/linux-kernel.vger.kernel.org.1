@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B072995A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A622A2995A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790261AbgJZSpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:45:36 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:35356 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443743AbgJZSpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:45:35 -0400
-Received: by mail-ej1-f67.google.com with SMTP id p5so15159792ejj.2;
-        Mon, 26 Oct 2020 11:45:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gz0y0Kg1cNPHrgAtv63xzsEjT/xY3FlDGvII1tKwfUQ=;
-        b=PbdjV1CJtx3TSD04ncdklvDN55aF/mjlpKZQBWu68n6ti+srP5yeznvkkFSkHWWJUm
-         QkWMdYBZAR/NAiMerX3RAiIGQddHAjFZu9c//HOymD33CA3yjeTudXeFbzLE8/NBCwuw
-         +GRHMswbB+yYAPUH4bv2Cn0WPKjuef8v91/TVYdaKLP6CXGwBd8KJqsYc21QoroOzddO
-         cbJsL+Oqnds6mzXtUr9t2A4j5uaYxt7rg5O1fZEgEnPzYJrLcXYlicTkdsZxqP7yQMwO
-         mJEbLtZ+sJLpCMNPMTgH0FwtmpClUpPJId1t/0DwGfzXZhcyC1CYf/SgriyYSRjvhGZY
-         5WNg==
-X-Gm-Message-State: AOAM531+6PWVC7h4JZVNzfxOkb4HeSel+XYcPdEsJCdt2HsEL9wP9EYt
-        uNnoDi1EeFsPa/7MrAb3qXY=
-X-Google-Smtp-Source: ABdhPJwbHdC4xSeWIGeRgEm2uDYFTmmY8iCHzyomd4336nfeex1zjqBAeuLflDpHoOwgQbTXL2PdDQ==
-X-Received: by 2002:a17:906:4803:: with SMTP id w3mr11735021ejq.406.1603737931324;
-        Mon, 26 Oct 2020 11:45:31 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id p14sm5615176eds.35.2020.10.26.11.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 11:45:29 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 19:45:27 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexander Dahl <ada@thorsis.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Kukjin Kim <kgene@kernel.org>
-Subject: Re: [PATCH v7 07/12] ARM: dts: exynos: Fix schema warnings for
- pwm-leds
-Message-ID: <20201026184527.GA165725@kozik-lap>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-8-post@lespocky.de>
+        id S1790276AbgJZSqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502899AbgJZSqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:46:35 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77A2420732;
+        Mon, 26 Oct 2020 18:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603737994;
+        bh=41zTD0uKHN/7L9+6DDscKiefNyVnH7VUtCoENm6S22k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=C04dpnuCOWi9kk9WlbVfybJbhFI6JwC/iNh56xPlSywRO0TZtXoj6ZTjUKzo9Le4C
+         UhjPcz+yBYDAlAS8MdEG5VgRw/AUGLLJa95hsqRGdTBAoKgKM9xQRAdxr+TNWZUXhv
+         H8G2qp706gbJuENBMPJ9ueAfsOY+wD5dKTBJCeDA=
+Date:   Mon, 26 Oct 2020 11:46:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Harald Welte <laforge@gnumonks.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Schultz <aschultz@tpip.net>,
+        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net] gtp: fix an use-before-init in gtp_newlink()
+Message-ID: <20201026114633.1b2628ae@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201026072227.7280-1-fujiwara.masahiro@gmail.com>
+References: <20201025140550.1e29f770@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201026072227.7280-1-fujiwara.masahiro@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201005203451.9985-8-post@lespocky.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:34:46PM +0200, Alexander Dahl wrote:
-> The node names for devices using the pwm-leds driver follow a certain
-> naming scheme (now).  Parent node name is not enforced, but recommended
-> by DT project.
-> 
->   DTC     arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml
->   CHECK   arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml
-> /home/alex/build/linux/arch/arm/boot/dts/exynos5410-odroidxu.dt.yaml: pwmleds: 'blueled', 'greenled' do not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
->         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+On Mon, 26 Oct 2020 16:22:27 +0900 Masahiro Fujiwara wrote:
+> v2:
+>  - leave out_hashtable: label for clarity (Jakub).
+>  - fix code and comment styles.
 
-Please trim the error logs in the future. No need to paste all warnings,
-just one or two from the same type of error.  Also your local path
-leading to Linux repo should be removed.
+Thanks!
 
-Thanks, applied.
+> diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+> index 8e47d0112e5d..07cb6d9495e8 100644
+> --- a/drivers/net/gtp.c
+> +++ b/drivers/net/gtp.c
+> @@ -663,10 +663,6 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+>  
+>  	gtp = netdev_priv(dev);
+>  
+> -	err = gtp_encap_enable(gtp, data);
+> -	if (err < 0)
+> -		return err;
+> -
+>  	if (!data[IFLA_GTP_PDP_HASHSIZE]) {
+>  		hashsize = 1024;
+>  	} else {
+> @@ -676,13 +672,17 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+>  	}
+>  
+>  	err = gtp_hashtable_new(gtp, hashsize);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	err = gtp_encap_enable(gtp, data);
+>  	if (err < 0)
+>  		goto out_encap;
 
-Best regards,
-Krzysztof
-
+This needs to say goto out_hashtable; now.
