@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4B429991D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C024429991F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390957AbgJZVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
+        id S2390985AbgJZVwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390944AbgJZVvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:51:44 -0400
+        id S2390424AbgJZVwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:52:12 -0400
 Received: from localhost.localdomain (unknown [192.30.34.233])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59C0C2084C;
-        Mon, 26 Oct 2020 21:51:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC8FE2084C;
+        Mon, 26 Oct 2020 21:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603749103;
-        bh=pdHcRLWzqUaa0qQ6CJaa/u0ZAnIZEXLVDHCAe2fOTqo=;
+        s=default; t=1603749131;
+        bh=v6OsJivCdqa8FhOgFvDk5JK3W+zbBx3yaUVMWwwWQvc=;
         h=From:To:Cc:Subject:Date:From;
-        b=z1i7YGIwDkMWCtN7K+mf+Bnc0LXqi9uirQ+g6TbK9i9UyojDTa23e3TiDqxINPFjS
-         5SEtXGWg2stWPC7yuoDGOzqJ/nJNXgQUUdsBgtpPvOF8ApEjItwKRYjlKjLIu/KYXk
-         62y22tVeUA/bKzxF0Pc+OMfqkiAI0s5VVqZklglE=
+        b=BxA2YZqjTyWIqNjLHBHj2zO4GoKKXVxgO0rzh5dgmrUaNu/HjVIdq1k+yR+7C1m3P
+         Qdfg12ta7m5CbYf7Ynz7yEtIpAejDD9EIEhe51afSRPCZbglz7OZx4L6B9oIiAsTfo
+         btwvYqcrqMSjaOZzd20QSXW5bG86OEmLpfq+ZdoI=
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] firewire: fix function type cast warning
-Date:   Mon, 26 Oct 2020 22:51:27 +0100
-Message-Id: <20201026215138.3893732-1-arnd@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Vaibhav Shankar <vaibhav.shankar@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf/x86/intel/uncore: fix Add BW copypasta
+Date:   Mon, 26 Oct 2020 22:51:57 +0100
+Message-Id: <20201026215203.3893972-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -41,96 +49,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc -Wextra complains about a suspicious cast:
+gcc -Wextra points out a duplicate initialization of one array
+member:
 
-rivers/firewire/core-cdev.c:985:8: warning: cast between incompatible function types from ‘void (*)(struct fw_iso_context *, dma_addr_t,  void *)’ {aka ‘void (*)(struct fw_iso_context *, long long unsigned int,  void *)’} to ‘void (*)(struct fw_iso_context *, u32,  size_t,  void *, void *)’ {aka ‘void (*)(struct fw_iso_context *, unsigned int,  long unsigned int,  void *, void *)’} [-Wcast-function-type]
+arch/x86/events/intel/uncore_snb.c:478:37: warning: initialized field overwritten [-Woverride-init]
+  478 |  [SNB_PCI_UNCORE_IMC_DATA_READS]  = { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
 
-The behavior is correct in the end, but this is more clearly
-expressed using a transparent union.
+The only sensible explanation is that a duplicate 'READS' was used
+instead of the correct 'WRITES', so change it back.
 
-Fixes: 872e330e3880 ("firewire: add isochronous multichannel reception")
+Fixes: 24633d901ea4 ("perf/x86/intel/uncore: Add BW counters for GT, IA and IO breakdown")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/firewire/core-cdev.c |  6 +++---
- drivers/firewire/core-iso.c  |  2 +-
- include/linux/firewire.h     | 17 ++++++++---------
- 3 files changed, 12 insertions(+), 13 deletions(-)
+ arch/x86/events/intel/uncore_snb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index fb6c651214f3..8d85d52b02ca 100644
---- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -970,7 +970,7 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 		if (a->speed > SCODE_3200 || a->channel > 63)
- 			return -EINVAL;
- 
--		cb = iso_callback;
-+		cb.sc = iso_callback;
- 		break;
- 
- 	case FW_ISO_CONTEXT_RECEIVE:
-@@ -978,11 +978,11 @@ static int ioctl_create_iso_context(struct client *client, union ioctl_arg *arg)
- 		    a->channel > 63)
- 			return -EINVAL;
- 
--		cb = iso_callback;
-+		cb.sc = iso_callback;
- 		break;
- 
- 	case FW_ISO_CONTEXT_RECEIVE_MULTICHANNEL:
--		cb = (fw_iso_callback_t)iso_mc_callback;
-+		cb.mc = iso_mc_callback;
- 		break;
- 
- 	default:
-diff --git a/drivers/firewire/core-iso.c b/drivers/firewire/core-iso.c
-index af70e74f9a7e..ddada648775a 100644
---- a/drivers/firewire/core-iso.c
-+++ b/drivers/firewire/core-iso.c
-@@ -145,7 +145,7 @@ struct fw_iso_context *fw_iso_context_create(struct fw_card *card,
- 	ctx->channel = channel;
- 	ctx->speed = speed;
- 	ctx->header_size = header_size;
--	ctx->callback.sc = callback;
-+	ctx->callback = callback;
- 	ctx->callback_data = callback_data;
- 
- 	return ctx;
-diff --git a/include/linux/firewire.h b/include/linux/firewire.h
-index aec8f30ab200..59b5e02a6d42 100644
---- a/include/linux/firewire.h
-+++ b/include/linux/firewire.h
-@@ -431,11 +431,13 @@ void fw_iso_buffer_destroy(struct fw_iso_buffer *buffer, struct fw_card *card);
- size_t fw_iso_buffer_lookup(struct fw_iso_buffer *buffer, dma_addr_t completed);
- 
- struct fw_iso_context;
--typedef void (*fw_iso_callback_t)(struct fw_iso_context *context,
--				  u32 cycle, size_t header_length,
--				  void *header, void *data);
--typedef void (*fw_iso_mc_callback_t)(struct fw_iso_context *context,
--				     dma_addr_t completed, void *data);
-+typedef union {
-+	void (*sc)(struct fw_iso_context *context, u32 cycle,
-+		   size_t header_length, void *header, void *data);
-+	void (*mc)(struct fw_iso_context *context, dma_addr_t completed,
-+		   void *data);
-+} __attribute__ ((__transparent_union__)) fw_iso_callback_t;
-+
- struct fw_iso_context {
- 	struct fw_card *card;
- 	int type;
-@@ -443,10 +445,7 @@ struct fw_iso_context {
- 	int speed;
- 	bool drop_overflow_headers;
- 	size_t header_size;
--	union {
--		fw_iso_callback_t sc;
--		fw_iso_mc_callback_t mc;
--	} callback;
-+	fw_iso_callback_t callback;
- 	void *callback_data;
- };
- 
+diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+index 39e632ed6ca9..bbd1120ae161 100644
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -475,7 +475,7 @@ enum perf_snb_uncore_imc_freerunning_types {
+ static struct freerunning_counters snb_uncore_imc_freerunning[] = {
+ 	[SNB_PCI_UNCORE_IMC_DATA_READS]		= { SNB_UNCORE_PCI_IMC_DATA_READS_BASE,
+ 							0x0, 0x0, 1, 32 },
+-	[SNB_PCI_UNCORE_IMC_DATA_READS]		= { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
++	[SNB_PCI_UNCORE_IMC_DATA_WRITES]	= { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
+ 							0x0, 0x0, 1, 32 },
+ 	[SNB_PCI_UNCORE_IMC_GT_REQUESTS]	= { SNB_UNCORE_PCI_IMC_GT_REQUESTS_BASE,
+ 							0x0, 0x0, 1, 32 },
 -- 
 2.27.0
 
