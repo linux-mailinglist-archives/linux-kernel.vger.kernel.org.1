@@ -2,208 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97379298BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1581298BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773463AbgJZLTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1747080AbgJZLTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:19:35 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E7E222460;
-        Mon, 26 Oct 2020 11:19:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603711174;
-        bh=ECLdZtZi2ZiOf9v9nodXdxHO9s/+UDT9bsbzqmbZ1B4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OxOr+Z9qI2rXrmjPgKu6fHJYkS4h8AYdk/UN1r18CGYQGd4G7hZuG9nCQ60iVSdyB
-         Q3KVFdRdJKR2dcMcIEJfOcZRP/1Z/OdKF4QulAz1VxwjviDG9j3xFhrvpyVQM4qxpt
-         MveqhpaozPeXZCfhf5hg/L+NahN7ubqDQacO3teM=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        shiraz.saleem@intel.com, dan.j.williams@intel.com,
-        kiran.patil@intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH mlx5-next 11/11] RDMA/mlx5: Remove IB representors dead code
-Date:   Mon, 26 Oct 2020 13:18:49 +0200
-Message-Id: <20201026111849.1035786-12-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201026111849.1035786-1-leon@kernel.org>
-References: <20201026111849.1035786-1-leon@kernel.org>
+        id S1773508AbgJZLUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:20:30 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:10239 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773492AbgJZLU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:20:27 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201026112023epoutp036f91e06c474ce7bb2b3deb5c8bc50085~BhtxYMbhs2715927159epoutp03m
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:20:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201026112023epoutp036f91e06c474ce7bb2b3deb5c8bc50085~BhtxYMbhs2715927159epoutp03m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603711223;
+        bh=ALX/VBBXrkRH/vT6zy53USetMpfx3KI6mcBk5YrA8Ms=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=nR3TRGOGVsHRxfn6w5voF8epkeK2fgQ8GZ/BGHkJM+v2lO3Mvg/Dp4LTyLjArOghP
+         6sdiW4cyeiFqLNrUufjRiaCjYLKsV9jrLYwD0ZmZSAd8nHbZy+6W/vdeDDtqECdn3Q
+         87V2fcnhO5VABO8cJncrC4h+XWKENantMCGMOO0A=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20201026112022epcas2p17227a5af5e7ea602458ce2f5ec4ce61a~BhtxIuSQy1745817458epcas2p1L;
+        Mon, 26 Oct 2020 11:20:22 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4CKXSP5zV0zMqYkZ; Mon, 26 Oct
+        2020 11:20:21 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        37.3A.09908.5F0B69F5; Mon, 26 Oct 2020 20:20:21 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201026112021epcas2p2d13afa6c1d4628450fd0ff4f72aaad29~BhtvYuddq2412524125epcas2p2O;
+        Mon, 26 Oct 2020 11:20:21 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201026112021epsmtrp1462c59765217977039173c0948ad8d96~BhtvYHMnw3012030120epsmtrp17;
+        Mon, 26 Oct 2020 11:20:21 +0000 (GMT)
+X-AuditID: b6c32a48-123ff700000026b4-bd-5f96b0f5bd93
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.21.08604.4F0B69F5; Mon, 26 Oct 2020 20:20:21 +0900 (KST)
+Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201026112020epsmtip10bd185a8c3808bd3808aea54c1d94c77~BhtvOdb7Z2005120051epsmtip1V;
+        Mon, 26 Oct 2020 11:20:20 +0000 (GMT)
+From:   "Chanho Park" <chanho61.park@samsung.com>
+To:     "'Avri Altman'" <Avri.Altman@wdc.com>,
+        "'Bart Van Assche'" <bvanassche@acm.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+Cc:     <alim.akhtar@samsung.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+In-Reply-To: <BY5PR04MB6705B7357AFEDF3AB07E1560FC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
+Subject: RE: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+Date:   Mon, 26 Oct 2020 20:20:20 +0900
+Message-ID: <000001d6ab89$fdc00f20$f9402d60$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQE8rU9GG02+1hbAo1p5qXUnN9CPVgF+Wj0dAilh/bkB8/KS2gLgSNF8ASmcOSMBggPOgaqEe5Ow
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmme7XDdPiDd4v17V4MG8bm8XLn1fZ
+        LKZ9+MlssejGNiaLy7vmsFl0X9/BZrH8+D8mB3aPy1e8PSYsOsDo8fHpLRaPvi2rGD0+b5Lz
+        aD/QzRTAFpVjk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuW
+        mQN0ipJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwNCwQK84Mbe4NC9dLzk/18rQ
+        wMDIFKgyISfj2sZLzAVnmSrePjzI2sDYwtTFyMEhIWAisXa/UxcjF4eQwA5GidPHWlghnE+M
+        ErduP2GDcL4xSkz9c4mxi5ETrOPiyausILaQwF5Gibmz7SCKXjBK3N19iBkkwSagL/GyYxvY
+        KBGBTkaJRw3fWEH2MQvEStzdIg9Swwlkzvp1lhkkLCzgJdHw1BEkzCKgKrHu1gyw+bwClhK/
+        dzYxQdiCEidnPmEBsZkFtCWWLXzNDHGPgsTPp8vA6kUEoiT2rLjPDFEjIjG7s40Z5AQJgZkc
+        EpffHWCBaHCRWPvyJZQtLPHq+BZ2CFtK4mV/G5RdL7HiURNUcw+jxMtp/6C22UvMfLqUCeIX
+        TYn1u/QhwagsceQW1G18Eh2H/7JDhHklOtqEIBrVJQ5snw61VVaie85n1gmMSrOQfDYLyWez
+        kHwwC2HXAkaWVYxiqQXFuempxUYFJshRvYkRnEi1PHYwzn77Qe8QIxMH4yFGCQ5mJRHeOTJT
+        44V4UxIrq1KL8uOLSnNSiw8xmgLDeiKzlGhyPjCV55XEG5oamZkZWJpamJoZWSiJ84au7IsX
+        EkhPLEnNTk0tSC2C6WPi4JRqYEphOMXfb+zs4jhh892GRcFlgn+Vu5y5J2UnKkvq3jtW38+d
+        mm6Ra13/ZY4SO9uEDa27BQpdmWVVX9T+4Tt267Pohf5OI235vY/Zbn1VWh3MfsTHlj036UdD
+        23QZ6Y9/HX8JLm//EvFMKWjWlKQvi799CudYu6m0oXDpZ42Q6wl5H/X7L7wzX/pBi19/1UIe
+        XtvtancXpfLUiC5fKvW74uVstfs7jNs3diRkWD1JDaw8kLjuQM201xJsjw6XFnI521TGT78b
+        Jlm5epNv1KMT71idvS4KJD7TO+D7+r6s30PXFoGeO0YWCUrbhO69l5nPVXP0hgX39z7+Xy6V
+        NV+6ujOvFfzLiK7LtvJxnyqjxFKckWioxVxUnAgAegdN9i0EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LZdlhJTvfrhmnxBt13mSwezNvGZvHy51U2
+        i2kffjJbLLqxjcni8q45bBbd13ewWSw//o/Jgd3j8hVvjwmLDjB6fHx6i8Wjb8sqRo/Pm+Q8
+        2g90MwWwRXHZpKTmZJalFunbJXBlvF99iKXgLFNF16pHjA2MLUxdjJwcEgImEhdPXmXtYuTi
+        EBLYzSjx5dAtNoiErMSzdzvYIWxhifstR6CKnjFKtGw+BZZgE9CXeNmxDSwhItDLKLH2ykRW
+        kASzQLzEmYUT2SA65jBLzFo+iQUkwSkQKzHr11nmLkYODmEBL4mGp44gYRYBVYl1t2aA9fIK
+        WEr83tnEBGELSpyc+YQFYqa2xNObT+HsZQtfM0NcpyDx8+kysF4RgSiJPSvuM0PUiEjM7mxj
+        nsAoPAvJqFlIRs1CMmoWkpYFjCyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCI0tL
+        cwfj9lUf9A4xMnEwHmKU4GBWEuGdIzM1Xog3JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKFcUIC
+        6YklqdmpqQWpRTBZJg5OqQamzNtRG1hVWX3FY48//Jqjwlpop9mdUrzLq4u3av+JxU6fQzeu
+        NH7fmX+vIrHo0lO+x6pKXAfPLzwtaKZcwnpAkVc9x2ltZtbZfTf+TCl56rB0hfrzCS7sr1Rt
+        jWR2lV/m8NbJO/LjhbvtOZ+KvRbv3nzb76q989CLPE7HuJZ5UQ/WrE145jZ5WuL8SLlVfJde
+        9gntlKtnvXXBtuSF4NXtc5ZebPmjsFaqwmVOhq2S/c8L2SvP/PZ/b7j67nqbChWdBx/mv9p4
+        R9l+0eL0w4w39Hef+2e06GfpXWce9YMspzVSlh8wvOKjWPSnuKHHa/qmbXc27VzgpN0tHjdh
+        gVnmk2eXJXtOem3ZWsC9ueaUhhJLcUaioRZzUXEiALEGqq8bAwAA
+X-CMS-MailID: 20201026112021epcas2p2d13afa6c1d4628450fd0ff4f72aaad29
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d
+References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
+        <20201020070516.129273-1-chanho61.park@samsung.com>
+        <7fafcc82-2c42-8ef5-14a6-7906b5956363@acm.org>
+        <000a01d6a761$efafcaf0$cf0f60d0$@samsung.com>
+        <0a5eb555-af2a-196a-2376-01dc4a92ae0c@acm.org>
+        <008a01d6a830$1a109800$4e31c800$@samsung.com>
+        <BY5PR04MB6705B7357AFEDF3AB07E1560FC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+> In case you'll convince Bart that this code is needed, maybe use a IDA
+> handle for that?
 
-Delete dead code.
+Thanks for your suggestion.
+IDA is useful to maintain unique IDs with bitmap structure but the patch as=
+sumes host_no is the unique number and can be used in the bitmap for making=
+ sequential order.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/ib_rep.c           | 31 +++++--------------
- drivers/infiniband/hw/mlx5/ib_rep.h           | 31 -------------------
- drivers/net/ethernet/mellanox/mlx5/core/dev.c |  4 +--
- 3 files changed, 9 insertions(+), 57 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
-index 9810bdd7f3bc..a1a9450ed92c 100644
---- a/drivers/infiniband/hw/mlx5/ib_rep.c
-+++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-@@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
- 	struct mlx5_ib_dev *ibdev;
- 	int vport_index;
-
--	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
-+	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
- 	vport_index = rep->vport_index;
-
- 	ibdev->port[vport_index].rep = rep;
-@@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
- 	return ret;
- }
-
-+static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
-+{
-+	return rep->rep_data[REP_IB].priv;
-+}
-+
- static void
- mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
- {
-@@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
- 		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
- }
-
--static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
--{
--	return mlx5_ib_rep_to_dev(rep);
--}
--
- static const struct mlx5_eswitch_rep_ops rep_ops = {
- 	.load = mlx5_ib_vport_rep_load,
- 	.unload = mlx5_ib_vport_rep_unload,
--	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
-+	.get_proto_dev = mlx5_ib_rep_to_dev,
- };
-
--struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
--					  u16 vport_num)
--{
--	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
--}
--
- struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
- 					  u16 vport_num)
- {
- 	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
- }
-
--struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
--{
--	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
--}
--
--struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
--					   u16 vport_num)
--{
--	return mlx5_eswitch_vport_rep(esw, vport_num);
--}
--
- struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
- 						   struct mlx5_ib_sq *sq,
- 						   u16 port)
-diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
-index 93f562735e89..ce1dcb105dbd 100644
---- a/drivers/infiniband/hw/mlx5/ib_rep.h
-+++ b/drivers/infiniband/hw/mlx5/ib_rep.h
-@@ -12,11 +12,6 @@
- extern const struct mlx5_ib_profile raw_eth_profile;
-
- #ifdef CONFIG_MLX5_ESWITCH
--struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
--					  u16 vport_num);
--struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
--struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
--					   u16 vport_num);
- int mlx5r_rep_init(void);
- void mlx5r_rep_cleanup(void);
- struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
-@@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
- struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
- 					  u16 vport_num);
- #else /* CONFIG_MLX5_ESWITCH */
--static inline
--struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
--					  u16 vport_num)
--{
--	return NULL;
--}
--
--static inline
--struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
--{
--	return NULL;
--}
--
--static inline
--struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
--					   u16 vport_num)
--{
--	return NULL;
--}
--
- static inline int mlx5r_rep_init(void) { return 0; }
- static inline void mlx5r_rep_cleanup(void) {}
- static inline
-@@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
- 	return NULL;
- }
- #endif
--
--static inline
--struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
--{
--	return rep->rep_data[REP_IB].priv;
--}
- #endif /* __MLX5_IB_REP_H__ */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/dev.c b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-index 842b6f8ae457..ca65a143e4ed 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-@@ -198,14 +198,14 @@ enum {
- 	MLX5_INTERFACE_PROTOCOL_MPIB,
- 	MLX5_INTERFACE_PROTOCOL_IB,
-
--	MLX5_INTERFACE_PROTOCOL_VDPA,
-+	MLX5_INTERFACE_PROTOCOL_VNET,
- };
-
- static const struct mlx5_adev_device {
- 	const char *suffix;
- 	bool (*is_supported)(struct mlx5_core_dev *dev);
- } mlx5_adev_devices[] = {
--	[MLX5_INTERFACE_PROTOCOL_VDPA] = { .suffix = "vnet",
-+	[MLX5_INTERFACE_PROTOCOL_VNET] = { .suffix = "vnet",
- 					   .is_supported = &is_vnet_supported },
- 	[MLX5_INTERFACE_PROTOCOL_IB] = { .suffix = "rdma",
- 					 .is_supported = &is_ib_supported },
---
-2.26.2
+Best Regards,
+Chanho Park
 
