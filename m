@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CF3299697
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3228299685
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792642AbgJZTNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:13:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41840 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404516AbgJZTE1 (ORCPT
+        id S1792654AbgJZTNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:13:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26283 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1737697AbgJZTFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:04:27 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603739065;
+        Mon, 26 Oct 2020 15:05:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603739109;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ts7OvCQ8neOrMW3H2L+mcvBibMfSxHH1JqOYqWTehYI=;
-        b=Iwae16MnPoQQ3di3i54xsNOXPTmY4XB5Us6Q5Mcp5mPbMb+1S9sSU/O0ATGNYnP6Q4U+nk
-        VsFQZbL2zGqCTbQDiNWroT7UwYcM8TQ7R3kAm3+x71jfSUmtjF8bbp6IUfwFc1cxpc17lZ
-        RSrtT725UR0Hm9RVqd9Al0egcvMyZzAfkTRjEfsG2skxCbAFy1C0+hyTbMwRmQM4OtfNwt
-        qCEsw0lFJjW2hp3xkp08nNOzv9tBreqbBzy9QA0adMF0BRpo/zpZshY/31ulS8AbnRqZID
-        +LYxzab5w9eSxfPsdO0telgj8o3Ry3VIAduZ/4N9Y/YjR/cwm22um56qBplY7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603739065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ts7OvCQ8neOrMW3H2L+mcvBibMfSxHH1JqOYqWTehYI=;
-        b=0LqayT//imv88st5vOI0NJeAdqjtOjrMMYBenyRge7FnH3VcEBE6Y7XBmBg5bxzKbp4sOb
-        yhoLkREniCc8gyBQ==
-To:     psodagud@codeaurora.org
-Cc:     Elliot Berman <eberman@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-In-Reply-To: <a6d7f84679240fcf580520230a88c058@codeaurora.org>
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org> <87v9f04n8r.fsf@nanos.tec.linutronix.de> <a6d7f84679240fcf580520230a88c058@codeaurora.org>
-Date:   Mon, 26 Oct 2020 20:04:25 +0100
-Message-ID: <8736204xmu.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+         to:to:cc:cc; bh=CeSxyJXbIAWmg9ma3wabvh6TND1xY66CvqM05CqNLic=;
+        b=cVu5URo45COpMDXCOUf4+3iwE+xtON6VgJc9qrNngICUyn65ZkB9VfSRy7PcuzEUuLVkdC
+        +ihGdwwLVX/tBUV8jA3mtUmro0Ng1YHvUVcIDIfLFyk2YGAWDOawXiXoItZtLgU9ODfN+T
+        xCJwfoOpHKwufqBSZzD8zUZVpBAP5bI=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-81-8966TMy7N5qBJkFyqvQ9qw-1; Mon, 26 Oct 2020 15:05:05 -0400
+X-MC-Unique: 8966TMy7N5qBJkFyqvQ9qw-1
+Received: by mail-ot1-f71.google.com with SMTP id e1so3957722otb.21
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:05:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CeSxyJXbIAWmg9ma3wabvh6TND1xY66CvqM05CqNLic=;
+        b=sG9+k7Etjlyp38T3jcQFM04/x/HFWn6otFZPAVMR7zI0YyomUH4dHquOztthfXTOkc
+         sEFdZ1jZcNB1kFiFLmi3e2Wrd0I9OEkOw1iFDYETcRBnwUsBJ2ZzEU4JN+0DhzoxmYKq
+         YVNe1FoK4eJzDgB1ZkbOpv/jG1xXo7vCf4JNDLPlnl39vGujkcDcTPK32uFwUmApZ391
+         O6mg4bgBJfg9BjwffsNfDlop37LY5LOnb5Hhww/e0KzWWUTZSA4Q6bntHiTzYvZP7Ggi
+         gcw55+YjM6DJcDiAPnhFs+U4ixjRcc/zdrvGpGtF+WcufPUXYZxNJwSOZy2FJawjghnI
+         8S5A==
+X-Gm-Message-State: AOAM531PCJdAGx8tYDZYb8WC29g/AQq4oy4aslLRp9GvLjbJa9HNPYni
+        jGGO9E+Lya2pHTWNg1YOkHmYBQmm7C6M8moFq+x7/tfAV4LP2+NNjYwwXywz+G58mKOV/tqGmpG
+        PqmIJ5nQRzNbhY8jIBZmS9WtK
+X-Received: by 2002:aca:2b05:: with SMTP id i5mr15353015oik.57.1603739104684;
+        Mon, 26 Oct 2020 12:05:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDzUzZb1se/ghFrljj0r4jK+qZOmg7H/2p/u6170SKKqrlq3uXimvsSk1NAmvcYmDQLE9vRA==
+X-Received: by 2002:aca:2b05:: with SMTP id i5mr15352977oik.57.1603739104214;
+        Mon, 26 Oct 2020 12:05:04 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s27sm3044196otg.80.2020.10.26.12.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 12:05:03 -0700 (PDT)
+From:   trix@redhat.com
+To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH v2] usb: storage: freecom: remove unneeded break
+Date:   Mon, 26 Oct 2020 12:04:57 -0700
+Message-Id: <20201026190457.1428516-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26 2020 at 10:08, psodagud wrote:
-> Based on my understanding with maxcpus option provides, maximum no of 
-> CPUs are brough up during the device boot up. There is a different case, 
-> in which we want to restrict which CPUs to be brough up.
+From: Tom Rix <trix@redhat.com>
 
-Again: What for? Why?
+A break is not needed if it is preceded by a return.
 
-> On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 
-> are brough up during the bootup.  For example, if we want to bring 
-> core0, core3 and core4 current maxcpu(as 3) setting would not help us.
-> On some platform we want the flexibility on which CPUs to bring up 
-> during the device bootup. bootcpus command line is helping to bring 
-> specific CPUs and these patches are working downstream.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+v2 : split from original large patch
+---
+ drivers/usb/storage/freecom.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-A lot of patches work downstream by some definition of work. But that
-does not make an argument to bring them upstream.
+diff --git a/drivers/usb/storage/freecom.c b/drivers/usb/storage/freecom.c
+index 3d5f7d0ff0f1..2b098b55c4cb 100644
+--- a/drivers/usb/storage/freecom.c
++++ b/drivers/usb/storage/freecom.c
+@@ -431,7 +431,6 @@ static int freecom_transport(struct scsi_cmnd *srb, struct us_data *us)
+ 			     us->srb->sc_data_direction);
+ 		/* Return fail, SCSI seems to handle this better. */
+ 		return USB_STOR_TRANSPORT_FAILED;
+-		break;
+ 	}
+ 
+ 	return USB_STOR_TRANSPORT_GOOD;
+-- 
+2.18.1
 
-Thanks,
-
-        tglx
