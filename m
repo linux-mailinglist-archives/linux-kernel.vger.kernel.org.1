@@ -2,64 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF25299934
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C1829993F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391371AbgJZV7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:59:32 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:55205 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391338AbgJZV7b (ORCPT
+        id S2391659AbgJZWCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:02:14 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:50858 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391640AbgJZWCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:59:31 -0400
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 9674B58BF63;
-        Tue, 27 Oct 2020 08:59:24 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kXAWR-004fZW-3k; Tue, 27 Oct 2020 08:59:23 +1100
-Date:   Tue, 27 Oct 2020 08:59:23 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        peterz@infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] fs/dcache: optimize start_dir_add()
-Message-ID: <20201026215923.GA306023@dread.disaster.area>
-References: <20201022211650.25045-1-dave@stgolabs.net>
+        Mon, 26 Oct 2020 18:02:13 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 13so13158802wmf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nnyXk2pMcKjBK4+Fq7Fk4IbVXn2gczxbne31w99Uqrk=;
+        b=aNdxfyvHxW5EhJys38x8msSr36mwdr8ntNEXWK/+T2/MzKfU0VCnCWyghyZeK0cVeb
+         rA0iLh+uHuE4kyJ2TJC3GpOOr5wl+e2jm2smdq02RkePbEEuN++cEauu/TxifEzN74sA
+         tq59FL7KLoIUR9iPLa6VmUTM39rV8IcMJlYBc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nnyXk2pMcKjBK4+Fq7Fk4IbVXn2gczxbne31w99Uqrk=;
+        b=B4/Cgz1Y1mRY0dj3dg2MxbxUuK4RDbFqAcXHzrwlwDPnFrhJlIsMKY4Zlf2zGIquh3
+         iVH6pn2JbeJmSc0Se8+6aXurifxkaS1eZjmsxl1ZDTn8mIX+SaQuh/UprkpsFVYHmXVU
+         vKIxUw9KgWhvCtgWEMzupzn3SMi87AOlFuvLy5ZALlXEcmw0YUERDJheOxWqn5BzE2Zs
+         NXrUwacz8/4gihSWHLjh9z/iCs7u5Jmdqv8uL1hQisucCwDWHaelleg2NjBRsEJKuAuQ
+         gK2fq76xDTu9rVpT/KEMoHNF4KbWWl3pDUrZtETG1mZn3OLroiM0RZjhHKpLIiNuWOKm
+         mGNw==
+X-Gm-Message-State: AOAM532UDLLkcnSRwdH+BeS/CG07QKORtI/OfzT5YMgdqQZYuZZzNn49
+        sUe23XLZnheOpcLYwSeagKpxDQ==
+X-Google-Smtp-Source: ABdhPJwXQQfk3H55i6k/BF7MPc09Wr29zTiROpPA8yChYSvzhbxp82tIcqHTWfVny/00bz/9GBIJdQ==
+X-Received: by 2002:a1c:bc06:: with SMTP id m6mr19364153wmf.68.1603749728982;
+        Mon, 26 Oct 2020 15:02:08 -0700 (PDT)
+Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id t7sm23634700wrx.42.2020.10.26.15.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 15:02:08 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 22:02:06 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>
+Subject: Re: [PATCH v4 09/15] media/videbuf1|2: Mark follow_pfn usage as
+ unsafe
+Message-ID: <20201026220206.GA2802004@chromium.org>
+References: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
+ <20201026105818.2585306-10-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201022211650.25045-1-dave@stgolabs.net>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=afefHYAZSVUA:10 a=7-415B0cAAAA:8
-        a=jnOd6L2yOPG0MfuFbw4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026105818.2585306-10-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:16:50PM -0700, Davidlohr Bueso wrote:
-> Considering both end_dir_add() and d_alloc_parallel(), the
-> dir->i_dir_seq wants acquire/release semantics, therefore
-> micro-optimize for ll/sc archs and use finer grained barriers
-> to provide (load)-ACQUIRE ordering (L->S + L->L). This comes
-> at no additional cost for most of x86, as sane tso models will
-> have a nop for smp_rmb/smp_acquire__after_ctrl_dep.
+Hi Daniel,
+
+On Mon, Oct 26, 2020 at 11:58:12AM +0100, Daniel Vetter wrote:
+> The media model assumes that buffers are all preallocated, so that
+> when a media pipeline is running we never miss a deadline because the
+> buffers aren't allocated or available.
 > 
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+> This means we cannot fix the v4l follow_pfn usage through
+> mmu_notifier, without breaking how this all works. The only real fix
+> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
+> tell everyone to cut over to dma-buf memory sharing for zerocopy.
+> 
+> userptr for normal memory will keep working as-is, this only affects
+> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
+> videobuf2-dma-sg: Support io userptr operations on io memory").
+
+Note that this is true only for the videobuf2 change. The videobuf1 code
+was like this all the time and does not support normal memory in the
+dma_contig variant (because normal memory is rarely physically contiguous).
+
+If my understanding is correct that the CONFIG_STRICT_FOLLOW_PFN is not
+enabled by default, we stay backwards compatible, with only whoever
+decides to turn it on risking a breakage.
+
+I agree that this is a good first step towards deprecating this legacy
+code, so:
+
+Acked-by: Tomasz Figa <tfiga@chromium.org>
+
+Of course the last word goes to Mauro. :)
+
+Best regards,
+Tomasz
+
+> 
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Pawel Osciak <pawel@osciak.com>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: Michel Lespinasse <walken@google.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> --
+> v3:
+> - Reference the commit that enabled the zerocopy userptr use case to
+>   make it abundandtly clear that this patch only affects that, and not
+>   normal memory userptr. The old commit message already explained that
+>   normal memory userptr is unaffected, but I guess that was not clear
+>   enough.
 > ---
-> Alternatively I guess we could just use cmpxchg_acquire().
-
-Please us cmpxchg_acquire() so that people who have no clue what the
-hell smp_acquire__after_ctrl_dep() means or does have some hope of
-understanding of what objects the ordering semantics in the function
-actually apply to....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+> index 6590987c14bd..e630494da65c 100644
+> --- a/drivers/media/common/videobuf2/frame_vector.c
+> +++ b/drivers/media/common/videobuf2/frame_vector.c
+> @@ -69,7 +69,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>  			break;
+>  
+>  		while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
+> -			err = follow_pfn(vma, start, &nums[ret]);
+> +			err = unsafe_follow_pfn(vma, start, &nums[ret]);
+>  			if (err) {
+>  				if (ret == 0)
+>  					ret = err;
+> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> index 52312ce2ba05..821c4a76ab96 100644
+> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
+> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+>  	user_address = untagged_baddr;
+>  
+>  	while (pages_done < (mem->size >> PAGE_SHIFT)) {
+> -		ret = follow_pfn(vma, user_address, &this_pfn);
+> +		ret = unsafe_follow_pfn(vma, user_address, &this_pfn);
+>  		if (ret)
+>  			break;
+>  
+> -- 
+> 2.28.0
+> 
