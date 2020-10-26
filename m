@@ -2,121 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA3E299308
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CA229930D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786669AbgJZQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:55:40 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:52119 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1786658AbgJZQzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:55:40 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 103AC5805EE;
-        Mon, 26 Oct 2020 12:55:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 26 Oct 2020 12:55:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=M8kp8FUl0yBH5qF8BLQ0PYleVAI
-        QmHiMFKU0Eh6vdz8=; b=CRStDMWuLRxnLAtkavqed8uHZNGIheO7/+mVWFzjE+B
-        mOcHEp8WwqFl9YUCRRI4KfCNhfgmumWDmvblpcPPLQ+HPQJRXkS2haw0p6liOpZY
-        HWBtEGmbnK1SAXaIXknVare0K2SrjjZ7NFzIK6FXM53RnkHR50ZXh1BhAaNafNyH
-        gINVRenqnzDzLp4OYdDEpt3OFo3oilKZE2mu9pUdBRRs91dp5bqh9N2C/4JHNXrC
-        2x+IDVsc0br1zi5qJzZxG5ltZyt9RZ+SBYP7lPPM/nkf8fxE0qCiXfnYyr6fwRhU
-        ffKl1SZ9zXGLspp+p5S/QKBWCeiaotXwqz79hFlpjvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=M8kp8F
-        Ul0yBH5qF8BLQ0PYleVAIQmHiMFKU0Eh6vdz8=; b=HDegbn0mDeSBFU3jDQ7KCF
-        W6ebub140KBW2IrMWk0zW+uP0Wt7bTxnEdgNKAeL89D9qTE/QEB+NpEqxzp9SQ6p
-        gv1gQY/lCRpt6KZVsetHdQj+qkURYEKMLxoiYFK76EaJM61oIYqgU9pRSC6kIVTT
-        7MgFAMEC6+hViAIgLZ9oyUIbG1JNDb5lq7Qq4k0xp2XrucOeE35liZ2q5TMmOQW0
-        V6Z/HeICqWOuMyIYNWhj0pZDwYhVWsna0Vs0eKeouUKUube0+0nLcnu6OuSlkQdj
-        4l68vypbra9r47bOK5Fc5mWo0sFrQsYOucJQND+qdkaU4iopD20DLJ61Vc1kuV9A
-        ==
-X-ME-Sender: <xms:iv-WX70AHhjvjIAoeCM03NVd-MOp3qiVSfYP5fMts_koBhFUuiB5nw>
-    <xme:iv-WX6E6ohWAjGIx21-CIegBWIAB0nI54E300CitazGUTp-klf887-BkLetpZZKUd
-    bphYuYTqBRO4PQc57Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeejgdehlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:iv-WX770i5hYrBEXFX8AhXqhLUPxtLQNO56Ec3v3oNaeidWknUO6Ow>
-    <xmx:iv-WXw1VhVlPp3qRtFdffSpVdEHZ9FhvGAMj-9b63NsXglm_4HNRQg>
-    <xmx:iv-WX-GobtIsJS0T8yzBeBFJsQ4rlxcahrYYSb-0v-yIp3XZXjunHQ>
-    <xmx:i_-WX8_Fa4EmgNAGYp7IH8XFFGt4u-HTDf7k3axzicPgp5pwN-RIAA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 64D163064674;
-        Mon, 26 Oct 2020 12:55:38 -0400 (EDT)
-Date:   Mon, 26 Oct 2020 17:55:36 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 10/14] ARM: dts: sun8i: v3s: Add MIPI D-PHY and MIPI
- CSI-2 interface nodes
-Message-ID: <20201026165536.glmo727mzixtrtq5@gilmour.lan>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-11-paul.kocialkowski@bootlin.com>
+        id S1786688AbgJZQ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:56:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:44934 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1786681AbgJZQ4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:56:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3687106F;
+        Mon, 26 Oct 2020 09:56:07 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.56.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E07A13F719;
+        Mon, 26 Oct 2020 09:56:05 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 16:55:55 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] arm64: hide more compat_vdso code
+Message-ID: <20201026165543.GA42952@C02TD0UTHF1T.local>
+References: <20201026160342.3705327-1-arnd@kernel.org>
+ <20201026160342.3705327-2-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zcfibetqyhgzzpse"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023174546.504028-11-paul.kocialkowski@bootlin.com>
+In-Reply-To: <20201026160342.3705327-2-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 05:03:29PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_COMPAT_VDSO is disabled, we get a warning
+> about a potential out-of-bounds access:
+> 
+> arch/arm64/kernel/vdso.c: In function 'aarch32_vdso_mremap':
+> arch/arm64/kernel/vdso.c:86:37: warning: array subscript 1 is above array bounds of 'struct vdso_abi_info[1]' [-Warray-bounds]
+>    86 |  unsigned long vdso_size = vdso_info[abi].vdso_code_end -
+>       |                            ~~~~~~~~~^~~~~
+> 
+> This is all in dead code however that the compiler is unable to
+> eliminate by itself.
+> 
+> Change the array to individual local variables that can be
+> dropped in dead code elimination to let the compiler understand
+> this better.
+> 
+> Fixes: 0cbc2659123e ("arm64: vdso32: Remove a bunch of #ifdef CONFIG_COMPAT_VDSO guards")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
---zcfibetqyhgzzpse
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This looks like a nice cleanup to me! I agree we don't need the array
+here.
 
-On Fri, Oct 23, 2020 at 07:45:42PM +0200, Paul Kocialkowski wrote:
-> MIPI CSI-2 is supported on the V3s with an A31 controller, which seems
-> to be used on all Allwinner chips supporting it, except for the A83T.
-> The controller is connected to CSI0 through fwnode endpoints.
-> The mipi_csi2_in port node is provided to connect MIPI CSI-2 sensors.
->=20
-> The D-PHY part is the same that already drives DSI, but used in Rx mode.
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 
-Especially since you haven't tested CSI0 without MIPI-CSI, you can
-squash that patch into the previous one.
+Thanks,
+Mark.
 
-Maxime
-
---zcfibetqyhgzzpse
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5b/iAAKCRDj7w1vZxhR
-xbAjAP9CP/SEWp6kG8clryOH7rRuMR0ZbxY3MUewfpakLBpAAgEAukaJS8Bwt8EA
-oXawwEY8ttfUtVYweh72ULszOhy2SAk=
-=152k
------END PGP SIGNATURE-----
-
---zcfibetqyhgzzpse--
+> ---
+>  arch/arm64/kernel/vdso.c | 56 ++++++++++++++++++----------------------
+>  1 file changed, 25 insertions(+), 31 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
+> index debb8995d57f..0b69d2894742 100644
+> --- a/arch/arm64/kernel/vdso.c
+> +++ b/arch/arm64/kernel/vdso.c
+> @@ -286,36 +286,9 @@ static int aarch32_vdso_mremap(const struct vm_special_mapping *sm,
+>  	return __vdso_remap(VDSO_ABI_AA32, sm, new_vma);
+>  }
+>  
+> -enum aarch32_map {
+> -	AA32_MAP_VECTORS, /* kuser helpers */
+> -	AA32_MAP_SIGPAGE,
+> -	AA32_MAP_VVAR,
+> -	AA32_MAP_VDSO,
+> -};
+> -
+>  static struct page *aarch32_vectors_page __ro_after_init;
+>  static struct page *aarch32_sig_page __ro_after_init;
+>  
+> -static struct vm_special_mapping aarch32_vdso_maps[] = {
+> -	[AA32_MAP_VECTORS] = {
+> -		.name	= "[vectors]", /* ABI */
+> -		.pages	= &aarch32_vectors_page,
+> -	},
+> -	[AA32_MAP_SIGPAGE] = {
+> -		.name	= "[sigpage]", /* ABI */
+> -		.pages	= &aarch32_sig_page,
+> -	},
+> -	[AA32_MAP_VVAR] = {
+> -		.name = "[vvar]",
+> -		.fault = vvar_fault,
+> -		.mremap = vvar_mremap,
+> -	},
+> -	[AA32_MAP_VDSO] = {
+> -		.name = "[vdso]",
+> -		.mremap = aarch32_vdso_mremap,
+> -	},
+> -};
+> -
+>  static int aarch32_alloc_kuser_vdso_page(void)
+>  {
+>  	extern char __kuser_helper_start[], __kuser_helper_end[];
+> @@ -352,14 +325,25 @@ static int aarch32_alloc_sigpage(void)
+>  	return 0;
+>  }
+>  
+> +static struct vm_special_mapping aarch32_vdso_map_vvar = {
+> +	.name = "[vvar]",
+> +	.fault = vvar_fault,
+> +	.mremap = vvar_mremap,
+> +};
+> +
+> +static struct vm_special_mapping aarch32_vdso_map_vdso = {
+> +	.name = "[vdso]",
+> +	.mremap = aarch32_vdso_mremap,
+> +};
+> +
+>  static int __aarch32_alloc_vdso_pages(void)
+>  {
+>  
+>  	if (!IS_ENABLED(CONFIG_COMPAT_VDSO))
+>  		return 0;
+>  
+> -	vdso_info[VDSO_ABI_AA32].dm = &aarch32_vdso_maps[AA32_MAP_VVAR];
+> -	vdso_info[VDSO_ABI_AA32].cm = &aarch32_vdso_maps[AA32_MAP_VDSO];
+> +	vdso_info[VDSO_ABI_AA32].dm = &aarch32_vdso_map_vvar;
+> +	vdso_info[VDSO_ABI_AA32].cm = &aarch32_vdso_map_vdso;
+>  
+>  	return __vdso_init(VDSO_ABI_AA32);
+>  }
+> @@ -380,6 +364,11 @@ static int __init aarch32_alloc_vdso_pages(void)
+>  }
+>  arch_initcall(aarch32_alloc_vdso_pages);
+>  
+> +static struct vm_special_mapping aarch32_vdso_map_vectors = {
+> +	.name	= "[vectors]", /* ABI */
+> +	.pages	= &aarch32_vectors_page,
+> +};
+> +
+>  static int aarch32_kuser_helpers_setup(struct mm_struct *mm)
+>  {
+>  	void *ret;
+> @@ -394,11 +383,16 @@ static int aarch32_kuser_helpers_setup(struct mm_struct *mm)
+>  	ret = _install_special_mapping(mm, AARCH32_VECTORS_BASE, PAGE_SIZE,
+>  				       VM_READ | VM_EXEC |
+>  				       VM_MAYREAD | VM_MAYEXEC,
+> -				       &aarch32_vdso_maps[AA32_MAP_VECTORS]);
+> +				       &aarch32_vdso_map_vectors);
+>  
+>  	return PTR_ERR_OR_ZERO(ret);
+>  }
+>  
+> +static struct vm_special_mapping aarch32_vdso_map_sigpage = {
+> +	.name	= "[sigpage]", /* ABI */
+> +	.pages	= &aarch32_sig_page,
+> +};
+> +
+>  static int aarch32_sigreturn_setup(struct mm_struct *mm)
+>  {
+>  	unsigned long addr;
+> @@ -417,7 +411,7 @@ static int aarch32_sigreturn_setup(struct mm_struct *mm)
+>  	ret = _install_special_mapping(mm, addr, PAGE_SIZE,
+>  				       VM_READ | VM_EXEC | VM_MAYREAD |
+>  				       VM_MAYWRITE | VM_MAYEXEC,
+> -				       &aarch32_vdso_maps[AA32_MAP_SIGPAGE]);
+> +				       &aarch32_vdso_map_sigpage);
+>  	if (IS_ERR(ret))
+>  		goto out;
+>  
+> -- 
+> 2.27.0
+> 
