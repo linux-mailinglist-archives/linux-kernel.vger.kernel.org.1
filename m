@@ -2,129 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB68F2998B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949582998B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731733AbgJZVYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:24:06 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:33499 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731694AbgJZVYF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:24:05 -0400
-Received: by mail-lf1-f66.google.com with SMTP id l2so14109788lfk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 14:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SmqPQzTxMFONQmC5uW8UTd8kW/+6dHu+eNEq5/wa33c=;
-        b=wSeeY//9Rx8NmPLlC8ebnjxfkvSlOK1T651eFLQgaKlAx3ugOwHRopjfZxtKpxs6Y7
-         ntZMbZ7C2MvOLQpN4xeSh8vgG3GtJLAofXfQG5duXY5A3iYieSds0iZylRXxOiCeX0FQ
-         6NJxnkGxBUUDBYUXD8bOUVd3tB6BajLihkAtJRxR2XWDfPdEUoStvV5/vwBsdflIYJ3n
-         VEiNccaqVDntWiUVBkdBLgebFvyOH7rzSXjMgf3nu/RqKLH2lf5xznAjvvQKO6vbvyEf
-         ahULyn1oCbe/2hOzAkoMjzcPCC+mcY2xgjxoKoOcotiQarHM3SXMPWaqdJr1sqHGmrj5
-         BwRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SmqPQzTxMFONQmC5uW8UTd8kW/+6dHu+eNEq5/wa33c=;
-        b=CW0jHDz+9B9Z2UEO0QuhUcO5ch+R64/YkAoVYMgXVEdRmmv9UVNxXsJSN0gUGFFz6O
-         b1ItOMDVGGpCf8LVB3XfiqAqmdOzuWUgH26jxpzV3nIibsQfZZbmaiR8SZOEfgQHcBd4
-         BUPmL42SEBIJdvM3UqyykO7qY6oaeERCbhMi2JygI29fYz5iRck9WzzpAg2Ph4IW+lyz
-         yXhJvCsZW8VGb+Nf4I28oUwFx7zr8y5cbX+wxwdoV0JtMo9veGoxPJIgV25FMELuL8Id
-         qa41qq3pq/Y8+HgcxdCDX6580/JVxwfizK+iCibKH3mj+tA46+vZ/iwLcT/pg9IZD1ig
-         SprQ==
-X-Gm-Message-State: AOAM530lADHmz6jjb0JIc40CVc0WFoy8jkaWCeVXgvWwe6LH83vlbPFL
-        1cNd1kFhHXsJOK2nQGxmSl1Aw5YZS7IADOGF+l+iRg==
-X-Google-Smtp-Source: ABdhPJxfMX7rMGWHEd1Qd4RDbT2HrSTNYD7mItOORVkjg8nDp22FxxINJnBvFvDBminBErNddYPmM+KntioJ8s/qFy4=
-X-Received: by 2002:a05:6512:52f:: with SMTP id o15mr5485016lfc.381.1603747442929;
- Mon, 26 Oct 2020 14:24:02 -0700 (PDT)
+        id S1732797AbgJZV0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:26:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58049 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732700AbgJZV0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:26:16 -0400
+IronPort-SDR: X/nM1Fqr+fjdN6oFkONwEyW4x0xi53zOwdvbEfCUyC0hp84t5Uiw/zrlaKQxJ5UcaUM8O7hg4y
+ r7E/rA2bBLJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="155769559"
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="155769559"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 14:26:15 -0700
+IronPort-SDR: xRvsdXKraI4Nkmo7X0VbG4g/S6uNhdEMXtdpiGhBUhQqa2kTnel/ztQjknzXaTLt3gOiWbKTKv
+ Zow6vKU6SN0A==
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="535519159"
+Received: from milopez-mobl3.amr.corp.intel.com (HELO [10.251.25.55]) ([10.251.25.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 14:26:14 -0700
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+To:     Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, josh@joshtriplett.org, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200626153400.GE27151@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <1ada871a-2350-1007-c625-a00bdb0d439b@intel.com>
+Date:   Mon, 26 Oct 2020 14:26:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CACT4Y+beaHrWisaSsV90xQn+t2Xn-bxvVgmx8ih_h=yJYPjs4A@mail.gmail.com>
- <20201026200715.170261-1-ebiggers@kernel.org>
-In-Reply-To: <20201026200715.170261-1-ebiggers@kernel.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 26 Oct 2020 22:23:35 +0100
-Message-ID: <CAG48ez2Og6fWUKZbNO5EtYK-jS+J8rf6r+rOyfUp1MUuy4kMyA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: af_alg - avoid undefined behavior accessing salg_name
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-hardening@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Elena Petrova <lenaptr@google.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        syzbot <syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200626153400.GE27151@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 9:08 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> Commit 3f69cc60768b ("crypto: af_alg - Allow arbitrarily long algorithm
-> names") made the kernel start accepting arbitrarily long algorithm names
-> in sockaddr_alg.
+On 6/26/20 8:34 AM, Borislav Petkov wrote:
+>> +	if (!(atomic_read(&encl->flags) & SGX_ENCL_CREATED))
+>> +		return -EINVAL;
+>> +
+>> +	if (copy_from_user(&addp, arg, sizeof(addp)))
+>> +		return -EFAULT;
+>> +
+>> +	if (!IS_ALIGNED(addp.offset, PAGE_SIZE) ||
+>> +	    !IS_ALIGNED(addp.src, PAGE_SIZE))
+>> +		return -EINVAL;
+>> +
+>> +	if (!(access_ok(addp.src, PAGE_SIZE)))
+>> +		return -EFAULT;
+>> +
+>> +	if (addp.length & (PAGE_SIZE - 1))
+>> +		return -EINVAL;
+> How many pages are allowed? Unlimited? I'm hoping some limits are
+> checked somewhere...
 
-That's not true; it's still limited by the size of struct
-sockaddr_storage (128 bytes total for the entire address). If you make
-it longer, __copy_msghdr_from_user() will silently truncate the size.
+What were you concerned about here?  Was it how long the syscall could
+take, or that one user could exhaust all the enclave memory in one call?
 
-> This is broken because the kernel can access indices >= 64 in salg_name,
-> which is undefined behavior -- even though the memory that is accessed
-> is still located within the sockaddr structure.  It would only be
-> defined behavior if the array were properly marked as arbitrary-length
-> (either by making it a flexible array, which is the recommended way
-> these days, or by making it an array of length 0 or 1).
->
-> We can't simply change salg_name into a flexible array, since that would
-> break source compatibility with userspace programs that embed
-> sockaddr_alg into another struct, or (more commonly) declare a
-> sockaddr_alg like 'struct sockaddr_alg sa = { .salg_name = "foo" };'.
->
-> One solution would be to change salg_name into a flexible array only
-> when '#ifdef __KERNEL__'.  However, that would keep userspace without an
-> easy way to actually use the longer algorithm names.
->
-> Instead, add a new structure 'sockaddr_alg_new' that has the flexible
-> array field, and expose it to both userspace and the kernel.
-> Make the kernel use it correctly in alg_bind().
-[...]
-> @@ -147,7 +147,7 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
->         const u32 allowed = CRYPTO_ALG_KERN_DRIVER_ONLY;
->         struct sock *sk = sock->sk;
->         struct alg_sock *ask = alg_sk(sk);
-> -       struct sockaddr_alg *sa = (void *)uaddr;
-> +       struct sockaddr_alg_new *sa = (void *)uaddr;
->         const struct af_alg_type *type;
->         void *private;
->         int err;
-> @@ -155,7 +155,11 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
->         if (sock->state == SS_CONNECTED)
->                 return -EINVAL;
->
-> -       if (addr_len < sizeof(*sa))
-> +       BUILD_BUG_ON(offsetof(struct sockaddr_alg_new, salg_name) !=
-> +                    offsetof(struct sockaddr_alg, salg_name));
-> +       BUILD_BUG_ON(offsetof(struct sockaddr_alg, salg_name) != sizeof(*sa));
-> +
-> +       if (addr_len < sizeof(*sa) + 1)
->                 return -EINVAL;
->
->         /* If caller uses non-allowed flag, return error. */
-> @@ -163,7 +167,7 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
->                 return -EINVAL;
->
->         sa->salg_type[sizeof(sa->salg_type) - 1] = 0;
-> -       sa->salg_name[sizeof(sa->salg_name) + addr_len - sizeof(*sa) - 1] = 0;
-> +       sa->salg_name[addr_len - sizeof(*sa) - 1] = 0;
+Some later versions of this patch have a 1MB limit per to reduce how
+long each SGX_IOC_ENCLAVE_ADD_PAGES call spends in the kernel.  But, I'm
+not _sure_ that's what you were intending.
 
-This looks like an out-of-bounds write in the case `addr_len ==
-sizeof(struct sockaddr_storage)`.
