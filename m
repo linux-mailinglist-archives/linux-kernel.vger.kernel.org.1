@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F460298FE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7843298FE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782064AbgJZOuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:50:39 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37470 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782056AbgJZOuj (ORCPT
+        id S1782086AbgJZOvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:51:08 -0400
+Received: from sonic313-19.consmr.mail.gq1.yahoo.com ([98.137.65.82]:39787
+        "EHLO sonic313-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1782079AbgJZOvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:50:39 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09QEoWjc097759;
-        Mon, 26 Oct 2020 09:50:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603723832;
-        bh=MsywtBpRGFNcQQmKNNDaQqYeG3MCDYWN9AXhYEX29OU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Y6nZxaqwJ13Rblm6S0bCz6Fo6bAJGkpm9MbdJINwqtthIWmBFUQt9fXtyYkyHEYz7
-         1zm3GYk3KUoMNuObjy+fuPOqB1ijpoZU6ZgCFBbkHkMbfcjqls4F2KTyEMyIx+fwpF
-         zWfLQm+iGflv+q/pOwItgF+ScTVCVfK1hjicPVQA=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09QEoWIT051952
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 26 Oct 2020 09:50:32 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 26
- Oct 2020 09:50:31 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 26 Oct 2020 09:50:31 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09QEoVEp095279;
-        Mon, 26 Oct 2020 09:50:31 -0500
-Date:   Mon, 26 Oct 2020 09:50:31 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-CC:     <t-kristo@ti.com>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j7200-main: Add McASP nodes
-Message-ID: <20201026145031.ggfugctq65zvgwp2@dismiss>
-References: <20201005074850.11247-1-peter.ujfalusi@ti.com>
- <20201005115805.d6yhykn7oc6x2tbu@charm>
- <5a9ed7d3-fcfd-edbf-fc34-112a7e55aa1c@ti.com>
- <20201005120837.75cwdmcpvzbvayq7@kinfolk>
- <d0e05389-9bd1-92a9-9624-4e9ac02a6a52@ti.com>
+        Mon, 26 Oct 2020 10:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1603723865; bh=4OYHjTCszK8GvZu8W0BpB7EzFLIyHiiZ9TURM4OtAuA=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject; b=ZEHyzS9sQyFKFK+RHeOY9B8TSHnN4OZY3dfyOTYQwzqvKqj1uhjvvR6ODNWMhBgcRfpUTeRxqp9PFuyi7VFAtd/OO4pwesqywBI7fe1lnoSihkSdacntJ1C15i8VAcWCbF0xNCUWgk88FTUC3ZTKzJsF8sS6N9L/8Ts52OVbmb4oYEg0XAx40H+g3lb5qbb0ZGlEOh0/tylKdaCxRtMgcdnBj7HyTijtg2s7/11vJP4F8QIPTLnhsYZunEfze546kOgq2PV2onb/O6hMS2DkNngScCA9RkEqewJkdujR/DAmKbR/4eZDGoLSG09B+Jb9g4yXxWUFtjZrBPnwofBeFw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603723865; bh=EDfTfPvioQe8PpCrMRwtiSBS+QGvFsHcTcv+lujoYCg=; h=Date:From:Subject:To; b=HLrzTMbv5fXTW/2cP3WZjmNYB3tq6TgnqdoQ8Gf2NArn29ecltb0emYKTYnGzXOQdqGcDWYAxhMn0hOWZEdoVm7d9k1U06coF+1lo1jAUM4OTeoBpWopC8R5BDVNL5WRBam0i/OtwgNWq3g+21fXsR/xz+9399K54eaSpCHqX3Ckam/uf9D4KXD9Vbo//exUE9CDiI3vnRZvIvPzMOGZCrfero7uOfbJli9QDroph4yojw/VvoOHyQqCvlMGLslR3ViPpon95G63XlGGIFufB62HDBh2ME4tBRzq6lPLeo6fqwMvP3DP7kKNgdtYh43Gi2lS5C1KjxNCzuTa0X87Ww==
+X-YMail-OSG: s3zOwNQVM1kQrhKa._rq9FhTLdJTucN.TiYwzxsGqotBCZh8ic1_WgSXgh3Vd7E
+ yDRf286BSUrHndTXDa29RmOHdTNCvQpbs0PIm4x0oN8euUbyfdWS9dQQ.qf1q0fV4VWs005KwPlt
+ 83i0SInZS4unl2n449n7XQT7iyiZCm0zfQbeeEf.ww7PLi.n7wjWwvyQsTviKrLeXv8M3lIVeFNM
+ SM0_tME.6moLBnHCW4XRlrFjOuSBbqN_zyUKiLWvYwNuBUI_cOFp_YA5LYWRNiW8E_557UxUTvqL
+ _uefpxhwQml4BNQBku2vYbFAHp0frDUwlTxobTyA5D0mG3ykEisshICSzetSEDUsyqrAXrSOf_FF
+ an9vSm54KWpxYwVnHN0KLG1qW5G8zt68Wc_miFOw6fxyZvAkqS3mm59DihEN1O.SBVmjs3S_.M35
+ gqXSYdF5.xfZJjGGcSr_UlhCNupqr8SL0OYAbgXgon_HFbsGZE.q21rG7ilkco0Ycr6A4vGiU9cd
+ BwP2Q5eOAdlM9vBbiByLo7bD3hmDS_BPWF1jLESF7JatuzrS9Jq1S4lRdBwShWekawP_QQUql0CL
+ vLOvbtIRa9C7UtXAgxz2o0fBJ59VqFMvV6Xku1vYtH9TZL9RL4FROnxdaWT39hYzkOYIhtxOeock
+ TZtzhkY.C8EF5HiZxmlySyXhj4MAn41QLQTgAANGi3GMqYnuAlx2qKnnX.Rsuj25ts3QPHR1iVGp
+ 4LLAV6cDg7D7lV9zuvOF3LoF83bOmNyhulAoMph2iSgGgmV3AemT06GlBFBKmTp90KFvMd7nj12n
+ nr9zwqgaBk6BzMWZxGuC0kHNMv2VgvFzUCJskxTGyeUqsqGTrkDrdzfT0r2erBHqff51CqvAoZGs
+ bEdlhQG7mMtI6GTkJfnv7QZ5psaTn99bBJc2fYr06.cKSHrLwg0gkWPHEQTkHZpYwIJaR_xCZ0n2
+ 5iYC35gqMZYcbTZNTtG3aashlLzZy51MDOKdZlyzeqcw4N0WI0iD_jbCc9fcA2kFfZ6FGhbUxzA2
+ tlvp7wWJhEoPwYUZBhFXttsfsodcz.KK1CbwzJ2vLx7bcarSBzxhiCYIpAj_GgZ32nnv2pMcl54f
+ 9RCJ.fMpXvwYZZn9g3QrCwrpZblH6tH5bnluf56tripIQRF5l4oMnRQKlcyP7gwGDJgQ0S8O4ATH
+ ChRpsLhCAAs.pM6VaN89sG7OG3I6owdupHjgqII3SBydr5Ry9lDXZ3kTm0mPD26g1onYlDLyQ.TJ
+ WEwjIRNiS6DQy.c5a__ciqRq.Qeozj4BDHBVwT9Pzgchgrpz7KooxvDcb9FumFVH9otn1cs_8Egm
+ zg6rBVB50VZAu12ipoEK.8_nuq1fRef0RREUihomvOI13dEfgtsfg9Vy7IQerFI7x7XNbP6PJ9Ys
+ 8aK8YIwwVeRrlcHZsV4paV0I.rfDmOSXIXl1XWm19Nkm.oCsETACJqrAOMPhlsfF8wRA51xjRNwZ
+ zKLDRpi4CS2org5HmGFRWO6oO9JnF0zaxEUJMhprIQJO76cD5tq79YhuhUeRe3ED2wxcQgbnJaSH
+ Gq39PMbugae61Ewi7LsQaMeFchAvC5hmYqCfmPgxwZD910E_UpLTuUtCWdhm5U9JO6JhDFs9WPeJ
+ VsdIvcu8CcdMGgloHW3ivCCXT_dFpDcY2.p4pg5nd33u.PGUNbJbCcyIy8mnYTa8JSXXSNyjTBZQ
+ mJMg3NF6hiA9dRoxKty.6VCzeMLUz0NhHt4AbxZQxzGFvSs.C73g4aebtDcuGebaH016ZGvZR79n
+ ymqizFksXOnxxv4CKGWEx3RLiVHTGDV1RFHcBI6Rx3oqtYfO5p4o1VrQJBKewWqvH54_A.OJRQrp
+ Mz.vAr.SDdCTZe0Q3Y5PvOri7TF8EBmJ5_SJPu06vDJG1WwbERrekTHELzVkcBvf27stGGUrFGdH
+ jXXHvmO9jzUEKOPgExpf1MSa7qdjgxXj9w0dcr1rdGKJl6XoGy0VeSYgQztP31sM9nF.z6tcLwAn
+ Aaj1U9Hpn7lrbjZaeFjhrVAHbgyAhWUHWJJPhHfUw58LEp23xGWnsZ5wptOvcYpbInYeSpZTWNct
+ rNSUIRsJHSB228RHYU3G1BqvA9HWprKMWt8g_6d_gTIftB7SuLv3pgwo0TZpQoJRQZzvG1cv5foG
+ TOfHd41quJ5UoC5tntu09x6h3G4g5XZ4GbYrk4ThWpgr4Su928tiiMjWM2HQdeN99llElqrZc7nZ
+ 4h52MxaizvFVug5UQoFBXaR5R7Rize43QMsMBp6RKXWGNhmkSvDj4kSqHcsR_LYqJReCnd04Jggx
+ N0WEOW2sQd.YsPoEt1NwjbADwggRsSwr4EIVUKSpppSDtcR_FkPDL8Cv9bC7tDHhjjAb0bmmqUC1
+ BX56z52UEJ3sEO3AQ46zZTCX_ItGX1yAd9_7WRC1DHoUNSIhIoLSL00JwZlMCaKKt01eEi62sOr4
+ oPLsL52moeiWYuI6MpMmIcLtnR5kUuYLHI1l5CSVq.FadQ2mEz2Ejq1bHu9TkONofx2jRHYM3YV0
+ U51TvYOnENx8o6iQTC3CKtOkidZpyHXcfJXiKZDznZsZiGPQdi.7tcs7nGYyiY17nQmsk5Jo27tD
+ QEGmYJBBiddZB8gvI1fSF3CeViSQdSnW_IDv7GGtBArVZfyUlBioytNYSgIkQVDwc.wW.s0d6.rv
+ FSN.4x7H1oPO1QmDfI9FfoWkIPef8GR92mnsrPvofewewtevZZZBfknL2EolHA_kmZ94nfJMzo9z
+ _QZNGv3gJQpB5wibgGcq.LXtAED9y3QJVNSeELcnT4lb6Pf2FEGV4wHnJ9Ke.WQ4.g06vRcMVvmM
+ KZ4s5cH2155Z4_G2ycilj3bBT4PrFhNecMtJZtQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Mon, 26 Oct 2020 14:51:05 +0000
+Received: by smtp409.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c2e5d046a1da2e09e18cb22615934b6d;
+          Mon, 26 Oct 2020 14:51:00 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 10:50:55 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: RE: amdgpu crashes on OOM
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        Michel =?iso-8859-1?q?D=E4nzer?= <michel@daenzer.net>,
+        "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>,
+        "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1603684905.h43s1t0y05.none.ref@localhost>
+        <1603684905.h43s1t0y05.none@localhost>
+        <81568253-518f-43b7-6b20-432f7dbd6c2b@daenzer.net>
+        <MN2PR12MB448824F6E08D1498206EFFE6F7190@MN2PR12MB4488.namprd12.prod.outlook.com>
+In-Reply-To: <MN2PR12MB448824F6E08D1498206EFFE6F7190@MN2PR12MB4488.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d0e05389-9bd1-92a9-9624-4e9ac02a6a52@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-Id: <1603723649.ang5tduo62.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.16868 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
+Excerpts from Deucher, Alexander's message of October 26, 2020 10:34 am:
+> It was using kvzalloc, but was accidently dropped when that code was refa=
+ctored.  I just sent a patch to fix it.
 
-On 13:38-20201007, Peter Ujfalusi wrote:
-[...]
-> >>>> +		status = "disabled";
-> >>>
-> >>> I see that there is inconsistent usage of "disabled" in our SoC.dts
-> >>>
-> >>> Our generic rule has been set them to disabled in board.dtsi
-> >>> McASP and DSS for existing SoC dts do not follow this.. which is a tad
-> >>> confusing.. (considering that not even all uarts come out on every board
-> >>> and every uart needs pinmux to function..)
-> >>
-> >> "keep them disabled because several required properties are not present
-> >> as they are board specific."
-> >>
-> >> In board file the enabled mcasp must be updated with options that is
-> >> required for operation. Without those option the McASP can not be
-> >> initialized.
-> >>
-> >> I think we have been revisiting the very same discussion every time we
-> >> have a new SoC with McASP...
-> >>
-> > 
-> > Yep.. This doe'snt really follow the rest of the SoC definition. [1]
-> > came to mind. The McASP discussion is a variation in the debate of the
-> > same.
-> 
-> Right, saying status = "okay" to a node which is missing required
-> properties (which can only be added by boards when the McASP is
-> connected up) does not sound a good solution.
-> How should the SW handle that? Fail the device probe and return with
-> -EINVAL or eat up the error and just probe with broken configuration.
-> Since the peripheral is not used, the broken configuration will not
-> cause much runtime errors as there will be no runtime use of the peripheral.
-> 
-> status of fail or fail-sss is not a good one either, their definition is:
-> "Indicates that the device is not operational. A serious error was
-> detected in the device, and it is unlikely to become operational without
-> repair."
-> 
-> The peripheral is fine, we are just trying to enable it without
-> providing the needed properties.
-> 
-> > I'd argue Serdes, or for that matter any IP that has a link to
-> > outside-the-SoC world has the same discussion point.
-> 
-> status = "disabled" is still the closest thing for everything which have
-> external dependencies. There is not much point to enable an i2c bus
-> without making sure that the signals are actually routed to the pins
-> where they supposed to go.
-> 
-> Or from other pow: a board design is not based on what is _not_
-> connected to outside world, but you actually _connect_ or _enable_
-> certain peripherals to external components, connectors.
+Ah, that explains why I wasn't seeing it before. I was only looking at=20
+changes in amdgpu_dm_atomic_commit_tail, not dc_create_state.
 
-OK, I will buy the argument that the current status thingy is a bit
-overloaded and does'nt imply the correct state we need it to imply with
-"fail-sss" either - I remember an argument for "fail-incomplete", but
-that never happened anyways.
-
-Lets add this argument to the commit message and repost after testing
-on 5.10-rc1 please?
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Thanks,
+Alex.
