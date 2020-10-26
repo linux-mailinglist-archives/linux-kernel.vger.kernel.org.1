@@ -2,166 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2177B29978C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B607D299795
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725787AbgJZT6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:58:13 -0400
-Received: from mail.efficios.com ([167.114.26.124]:60334 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgJZT6N (ORCPT
+        id S1729931AbgJZUCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:02:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42126 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728205AbgJZT77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:58:13 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1B5CD243704;
-        Mon, 26 Oct 2020 15:58:12 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ZL3Q0D64S4Pw; Mon, 26 Oct 2020 15:58:11 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BB44024322C;
-        Mon, 26 Oct 2020 15:58:11 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BB44024322C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603742291;
-        bh=6bDfcNuSHP++VXZbWaV+GtEV59HKlNd9sGnU/eDxTPo=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=hWmRMomF+g5hzWDAt5usEi1hee/PZxxwyaP8NVUgqyYM56jFryFjGl2EMgEwRtBK8
-         xoQy+BClCPI1H2wzGiTS3Tbdeor4DHrnnws9DRpbcQ2HB0ifor7pKnxd2kCKwZabiB
-         jBG4sgAMARUN2EvEXtoR90sjQaqZA+zrFXlCm3OOdwx5hk4GoqBk/w02hsWgG97qqw
-         isyfeTTjiTR1rzayCP4J712yuLRDvocMIxeOdLQ7U7zsNRhcUDDQPftzIUGXuTRKps
-         DfIel7WsPtCFvBV4ujKnnwSJ8PSOXOO70RaVS6SZfVZ6GsVzsdQTv50QzpetnndpSu
-         uUGPdwgqOvkkQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LiksraaO4Ybn; Mon, 26 Oct 2020 15:58:11 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id ADC0F243624;
-        Mon, 26 Oct 2020 15:58:11 -0400 (EDT)
-Date:   Mon, 26 Oct 2020 15:58:11 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        lttng-dev <lttng-dev@lists.lttng.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1576751762.38206.1603742291604.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201022223021.GA8535@paulmck-ThinkPad-P72>
-References: <20201022223021.GA8535@paulmck-ThinkPad-P72>
-Subject: Re: [PATCH] call_rcu: Fix race between rcu_barrier() and
- call_rcu_data_free()
+        Mon, 26 Oct 2020 15:59:59 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603742396;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HcxD8cvr4m2E7nYWZH8VSGjteDBWyZgfwDuVWY+FQfs=;
+        b=FhY2z9T0i3dCMMBAUbn25V/hUkj6A2GJELIQz4b1whSe/gRIHyRWJWaWRwZKnFMS5vMF1c
+        sfGykHoEtzl5Mr9FqP2oqxOX8Q0u1zTMoX1f+yXojEDO7ztcMm2V33RGl3WRm4Bk5cTkdB
+        1/TbDGOsbuOy0gYfQZEbZy0vBmgV/6TLKZopFK+ErcTD22jv5HPc4BxSkZYFDEKFcCgdHp
+        Xe3aLtpRQIXtDg5/BgyqPtQ4Zv7ueKykRETRQPbe4adhTjbTT1aQRXxcVZGuZdB6AC0c+H
+        aUHcu0BO7X95SqOKOuFoFBbJlFwQh/qAuUt6ayIL4+XxnTgKLCe+I32Pp4DtVQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603742396;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HcxD8cvr4m2E7nYWZH8VSGjteDBWyZgfwDuVWY+FQfs=;
+        b=ThqFstrtyu1YATdBCd9nTnN0iyqg0KDpfrKuqOH/t6oREHRn1zpWAQPHKNEZ7CAvGKa1PA
+        eGHhbxhG4rukR7AA==
+To:     Guilherme Piccoli <gpiccoli@canonical.com>,
+        Pingfan Liu <kernelfans@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH 0/3] warn and suppress irqflood
+In-Reply-To: <CAHD1Q_x99XW1zDr5HpVR27F_ksHLkaxc2W83e-N6F_xLYKyGbQ@mail.gmail.com>
+References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com> <871rhq7j1h.fsf@nanos.tec.linutronix.de> <CAFgQCTvFwvvtPE0Eow4cebCEe5OD5OhgAQarckpbFc38Bphaag@mail.gmail.com> <CAHD1Q_x99XW1zDr5HpVR27F_ksHLkaxc2W83e-N6F_xLYKyGbQ@mail.gmail.com>
+Date:   Mon, 26 Oct 2020 20:59:56 +0100
+Message-ID: <87y2js3ghv.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: call_rcu: Fix race between rcu_barrier() and call_rcu_data_free()
-Thread-Index: rMNXOOdfGCDrW92dFjPnT/ePYC8HIQ==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 22, 2020, at 6:30 PM, paulmck paulmck@kernel.org wrote:
+On Mon, Oct 26 2020 at 12:06, Guilherme Piccoli wrote:
+> On Sun, Oct 25, 2020 at 8:12 AM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> Some time ago (2 years) we faced a similar issue in x86-64, a hard to
+> debug problem in kdump, that eventually was narrowed to a buggy NIC FW
+> flooding IRQs in kdump kernel, and no messages showed (although kernel
+> changed a lot since that time, today we might have better IRQ
+> handling/warning). We tried an early-boot fix, by disabling MSIs (as
+> per PCI spec) early in x86 boot, but it wasn't accepted - Bjorn asked
+> pertinent questions that I couldn't respond (I lost the reproducer)
+> [0].
+...
+> [0] lore.kernel.org/linux-pci/20181018183721.27467-1-gpiccoli@canonical.com
 
-> The current code can lose RCU callbacks at shutdown time, which can
-> result in hangs.  This lossage can happen as follows:
-> 
-> o       A thread invokes call_rcu_data_free(), which executes up through
->        the wake_call_rcu_thread().  At this point, the call_rcu_data
->        structure has been drained of callbacks, but is still on the
->        call_rcu_data_list.  Note that this thread does not hold the
->        call_rcu_mutex.
-> 
-> o       Another thread invokes rcu_barrier(), which traverses the
->        call_rcu_data_list under the protection of call_rcu_mutex,
->        a list which still includes the above newly drained structure.
->        This thread therefore adds a callback to the newly drained
->        call_rcu_data structure.  It then releases call_rcu_mutex and
->        enters a mystifying loop that does futex stuff.
-> 
-> o       The first thread finishes executing call_rcu_data_free(),
->        which acquires call_rcu_mutex just long enough to remove the
->        newly drained call_rcu_data structure from call_rcu_data_list.
->        Which causes one of the rcu_barrier() invocation's callbacks to
->        be leaked.
-> 
-> o       The second thread's rcu_barrier() invocation never returns
->        resulting in a hang.
-> 
-> This commit therefore changes call_rcu_data_free() to acquire
-> call_rcu_mutex before checking the call_rcu_data structure for callbacks.
-> In the case where there are no callbacks, call_rcu_mutex is held across
-> both the check and the removal from call_rcu_data_list, thus preventing
-> rcu_barrier() from adding a callback in the meantime.  In the case where
-> there are callbacks, call_rcu_mutex must be momentarily dropped across
-> the call to get_default_call_rcu_data(), which can itself acquire
-> call_rcu_mutex.  This momentary drop is not a problem because any
-> callbacks that rcu_barrier() might queue during that period of time will
-> be moved to the default call_rcu_data structure, and the lock will be
-> held across the full time including moving those callbacks and removing
-> the call_rcu_data structure that was passed into call_rcu_data_free()
-> from call_rcu_data_list.
-> 
-> With this fix, a several-hundred-CPU test successfully completes more
-> than 5,000 executions.  Without this fix, it fails within a few tens
-> of executions.  Although the failures happen more quickly on larger
-> systems, in theory this could happen on a single-CPU system, courtesy
-> of preemption.
+With that broken firmware the NIC continued to send MSI messages to the
+vector/CPU which was assigned to it before the crash. But the crash
+kernel has no interrupt descriptor for this vector installed. So Liu's
+patches wont print anything simply because the interrupt core cannot
+detect it.
 
-I agree with this fix, will merge in liburcu master, stable-0.12, and stable-2.11.
-Out of curiosity, which test is hanging ?  Is it a test which is part of the liburcu
-tree or some out-of-tree test ? I wonder why we did not catch it in our CI [1].
+To answer Bjorns still open question about when the point X is:
+
+  https://lore.kernel.org/linux-pci/20181023170343.GA4587@bhelgaas-glaptop.roam.corp.google.com/
+
+It gets flooded right at the point where the crash kernel enables
+interrupts in start_kernel(). At that point there is no device driver
+and no interupt requested. All you can see on the console for this is
+
+ "common_interrupt: $VECTOR.$CPU No irq handler for vector"
+
+And contrary to Liu's patches which try to disable a requested interrupt
+if too many of them arrive, the kernel cannot do anything because there
+is nothing to disable in your case. That's why you needed to do the MSI
+disable magic in the early PCI quirks which run before interrupts get
+enabled.
+
+Also Liu's patch only works if:
+
+  1) CONFIG_IRQ_TIME_ACCOUNTING is enabled
+
+  2) the runaway interrupt has been requested by the relevant driver in
+     the dump kernel.
+
+Especially #1 is not a sensible restriction.
 
 Thanks,
 
-Mathieu
+        tglx
 
-[1] https://ci.lttng.org/view/Liburcu/
 
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Stephen Hemminger <stephen@networkplumber.org>
-> Cc: Alan Stern <stern@rowland.harvard.edu>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: <lttng-dev@lists.lttng.org>
-> Cc: <linux-kernel@vger.kernel.org>
-> 
-> ---
-> 
-> urcu-call-rcu-impl.h |    7 +++++--
-> 1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/src/urcu-call-rcu-impl.h b/src/urcu-call-rcu-impl.h
-> index b6ec6ba..18fd65a 100644
-> --- a/src/urcu-call-rcu-impl.h
-> +++ b/src/urcu-call-rcu-impl.h
-> @@ -772,9 +772,13 @@ void call_rcu_data_free(struct call_rcu_data *crdp)
-> 		while ((uatomic_read(&crdp->flags) & URCU_CALL_RCU_STOPPED) == 0)
-> 			(void) poll(NULL, 0, 1);
-> 	}
-> +	call_rcu_lock(&call_rcu_mutex);
-> 	if (!cds_wfcq_empty(&crdp->cbs_head, &crdp->cbs_tail)) {
-> -		/* Create default call rcu data if need be */
-> +		call_rcu_unlock(&call_rcu_mutex);
-> +		/* Create default call rcu data if need be. */
-> +		/* CBs queued here will be handed to the default list. */
-> 		(void) get_default_call_rcu_data();
-> +		call_rcu_lock(&call_rcu_mutex);
-> 		__cds_wfcq_splice_blocking(&default_call_rcu_data->cbs_head,
-> 			&default_call_rcu_data->cbs_tail,
-> 			&crdp->cbs_head, &crdp->cbs_tail);
-> @@ -783,7 +787,6 @@ void call_rcu_data_free(struct call_rcu_data *crdp)
-> 		wake_call_rcu_thread(default_call_rcu_data);
-> 	}
-> 
-> -	call_rcu_lock(&call_rcu_mutex);
-> 	cds_list_del(&crdp->list);
->  	call_rcu_unlock(&call_rcu_mutex);
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
