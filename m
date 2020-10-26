@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8078298A3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAB7298A45
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769507AbgJZKRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:17:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38870 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1767647AbgJZKRh (ORCPT
+        id S1769586AbgJZKUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:20:43 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:65460 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1768190AbgJZKUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:17:37 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603707455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XEs6q0M6+amLhDVT3NGXs0NEgPMAQCIZm6eZQ7Qmwwk=;
-        b=cpT6teSYGRFwwrHCfzU+aoyYiNYUWRHmKiIw4w/3b+TmIISq+ShWSm5eagk+Mx+aBjXmXr
-        fjlZoLSl6mSRX2EXJgjrI02j95hodIyx/AbxvR6Ou2l1vLy/1aniCdUH7teUcoEpag6q+i
-        upXYNbLb2htUfdwP44ApW9u8A97yQfRQ3P/u0kicGQRopI0ln4kkm10/uPmpP5hZpV4P2c
-        GBf44ZFibqyBcFdBQjv3QkmMleLrZPKWFRlXwraNriaw5YxtroVfcMC2WRH0CnFkBaJefz
-        mCflNndgRpVunJ+n2g2Ax8SYtemv4RsGMe/BnzCDuCKK+ydrZlqGPh9MuMTEfA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603707455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XEs6q0M6+amLhDVT3NGXs0NEgPMAQCIZm6eZQ7Qmwwk=;
-        b=4s1cJhwvysTLV6BIhOlkS8Jb7/Q8Ng0DdO5TwzwXcIFA6ECg0M8yLELzZ1dYz+1LLTUfyK
-        CwCTgod9UpX7ICCQ==
-To:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com
-Subject: Re: [PATCHSET v6] Add support for TIF_NOTIFY_SIGNAL
-In-Reply-To: <bf373428-bbc2-be66-db6b-0fa6352fa4ef@kernel.dk>
-References: <20201016154547.1573096-1-axboe@kernel.dk> <bf373428-bbc2-be66-db6b-0fa6352fa4ef@kernel.dk>
-Date:   Mon, 26 Oct 2020 11:17:35 +0100
-Message-ID: <87mu0947gg.fsf@nanos.tec.linutronix.de>
+        Mon, 26 Oct 2020 06:20:43 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09QAGZU2007483;
+        Mon, 26 Oct 2020 05:20:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=lkYlli3OMljai2JtkMwxmqFfOi6BNmDtsvof4JQOCZA=;
+ b=khzBKqeg/FqD/A73fGDr+fubPuyfLzptTVNl3i4wbpObRQO7CHk2n2dwmuztoK4PmLE9
+ 1QKAeohO4TxgNX04hz+8EgZKzqF1ZrZlX2ogCpCuS61f/vpHFoZwrHUk9IOklabkuVvy
+ ExY55d0nO8AZrCjwxlpHQeGVS/13vUO4GkKlZbT3Kh6C90kD5271Y5e+B1CYFU72rOkB
+ D6SrS6m6w+kui8uDug5siTVTz7P31Q1cajhUFQYLIjKcM8wkeaufFmp1nJ22OpasX3u8
+ KwjuQ/NI3MglYw67omnnto9FouD5YYiNnYq5l3gZRh46Ygz8ifK54H5HLFno5KUNME6n uQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 34chp1jnw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Oct 2020 05:20:39 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 26 Oct
+ 2020 10:20:37 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 26 Oct 2020 10:20:37 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 675762C1;
+        Mon, 26 Oct 2020 10:20:37 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 10:20:37 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <trix@redhat.com>
+CC:     <sre@kernel.org>, <patches@opensource.cirrus.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] power: remove unneeded break
+Message-ID: <20201026102037.GC10899@ediswmail.ad.cirrus.com>
+References: <20201019185937.7012-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201019185937.7012-1-trix@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=1 priorityscore=1501 mlxlogscore=705
+ mlxscore=0 spamscore=0 clxscore=1011 impostorscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22 2020 at 20:22, Jens Axboe wrote:
-> On 10/16/20 9:45 AM, Jens Axboe wrote:
-> Thomas, would be nice to know if you're good with patch 2+3 at this
-> point. Once we get outside of the merge window next week, I'll post
-> the updated series since we get a few conflicts at this point, and
-> would be great if you could carry this for 5.11.
+On Mon, Oct 19, 2020 at 11:59:37AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> A break is not needed if it is preceded by a goto
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
 
-LGTM
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
