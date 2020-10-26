@@ -2,153 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEC929967D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CF3299697
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792626AbgJZTNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:13:41 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45200 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1735309AbgJZTET (ORCPT
+        id S1792642AbgJZTNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:13:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41840 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404516AbgJZTE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:04:19 -0400
-Received: by mail-wr1-f68.google.com with SMTP id e17so13919665wru.12;
-        Mon, 26 Oct 2020 12:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vv8QX0mXek+iVwa0PLmBZRi4t6g6SQqpZZ7vrfZ8LxM=;
-        b=t8GeCQ8YvzAivbqfQO+3MRLLzvwgvvHV4+49F67htNXPgFVWZwyejS/cqBRttKYG7Q
-         3MThZmh0WRGcOEAXHnSG1TGeI0a6GKa7ciFimqyMPMjNSwTVVcaLoElxdu0E2PuXRiqW
-         g2RbceWU+CGpJHRvM/A579Rk9LSo5sIC1YkdjJ6VeL2RJRmP+PHzNVNgb1t3cDB350V7
-         erzHBbq6hsqDaCHk+WbZJPjuKR5AABK+2dbBDF3hP76YxNRUDkqqeGmrEspaOXbv7QZA
-         D3DLGpOEp6bN08ZuOXn0vFzidNiP7DsFZKRLGIfXg5+trni10fQKtapZ5y7i/VoQXGkR
-         xPRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vv8QX0mXek+iVwa0PLmBZRi4t6g6SQqpZZ7vrfZ8LxM=;
-        b=Be4oKO5VNFjmxUbjUwQpqIu2JaQ55NHL1IrBHTPOebtsbQTXQ+JaAp1oCOE93Awt5d
-         c2wQKR+PNYYkciKDJ8GZsSicWG9B0ndvWFwe6ZJPCJfuBHsUjKQO8NA69GTQ+8CITLRx
-         uZOLHLUGOdb8eRPNLBJSrCDAj8TyKPvEXQw7eudpQj8UCiERLUx4vVZbL6bP3HhcYkBe
-         DHUKhR5MWHTmTHkW6noDpwGa5uAMYa66gnnIjGQHMI4s6U7YQHzfxZCXmrwOparBu3Ru
-         XdRhlejM3tkTlzHlKyZxKOpU3wbCxlkm56LHZENdMjK+8ie7og1xl3YQMLuh/iCsunvd
-         K/sQ==
-X-Gm-Message-State: AOAM531UtLcyr+y+Esp71FFhAGI14GkYiXBWrbWv5+WtUW2VtACaMtLY
-        /ChB99sNO3rnTrucqtX78xcvjlHyUEkP1g==
-X-Google-Smtp-Source: ABdhPJwxym73bt0NMXBaGG36oenzzsBNpxOTH9eF4YGx66Xb2iNsnijSuHGwKn8KQsb4LS1YGxys8w==
-X-Received: by 2002:a5d:4010:: with SMTP id n16mr18635180wrp.97.1603739055074;
-        Mon, 26 Oct 2020 12:04:15 -0700 (PDT)
-Received: from [192.168.2.28] (39.35.broadband4.iol.cz. [85.71.35.39])
-        by smtp.gmail.com with ESMTPSA id t62sm22625877wmf.22.2020.10.26.12.04.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 12:04:14 -0700 (PDT)
-Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Milan Broz <gmazyland@gmail.com>
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org
-References: <20201026130450.6947-1-gilad@benyossef.com>
- <20201026130450.6947-4-gilad@benyossef.com>
- <20201026175231.GG858@sol.localdomain>
- <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
- <20201026183936.GJ858@sol.localdomain>
-From:   Milan Broz <gmazyland@gmail.com>
-Message-ID: <fd5e46ce-a4bf-8025-05ea-e20d35485446@gmail.com>
-Date:   Mon, 26 Oct 2020 20:04:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 26 Oct 2020 15:04:27 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603739065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ts7OvCQ8neOrMW3H2L+mcvBibMfSxHH1JqOYqWTehYI=;
+        b=Iwae16MnPoQQ3di3i54xsNOXPTmY4XB5Us6Q5Mcp5mPbMb+1S9sSU/O0ATGNYnP6Q4U+nk
+        VsFQZbL2zGqCTbQDiNWroT7UwYcM8TQ7R3kAm3+x71jfSUmtjF8bbp6IUfwFc1cxpc17lZ
+        RSrtT725UR0Hm9RVqd9Al0egcvMyZzAfkTRjEfsG2skxCbAFy1C0+hyTbMwRmQM4OtfNwt
+        qCEsw0lFJjW2hp3xkp08nNOzv9tBreqbBzy9QA0adMF0BRpo/zpZshY/31ulS8AbnRqZID
+        +LYxzab5w9eSxfPsdO0telgj8o3Ry3VIAduZ/4N9Y/YjR/cwm22um56qBplY7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603739065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ts7OvCQ8neOrMW3H2L+mcvBibMfSxHH1JqOYqWTehYI=;
+        b=0LqayT//imv88st5vOI0NJeAdqjtOjrMMYBenyRge7FnH3VcEBE6Y7XBmBg5bxzKbp4sOb
+        yhoLkREniCc8gyBQ==
+To:     psodagud@codeaurora.org
+Cc:     Elliot Berman <eberman@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
+In-Reply-To: <a6d7f84679240fcf580520230a88c058@codeaurora.org>
+References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org> <87v9f04n8r.fsf@nanos.tec.linutronix.de> <a6d7f84679240fcf580520230a88c058@codeaurora.org>
+Date:   Mon, 26 Oct 2020 20:04:25 +0100
+Message-ID: <8736204xmu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201026183936.GJ858@sol.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26 2020 at 10:08, psodagud wrote:
+> Based on my understanding with maxcpus option provides, maximum no of 
+> CPUs are brough up during the device boot up. There is a different case, 
+> in which we want to restrict which CPUs to be brough up.
 
+Again: What for? Why?
 
-On 26/10/2020 19:39, Eric Biggers wrote:
-> On Mon, Oct 26, 2020 at 07:29:57PM +0100, Milan Broz wrote:
->> On 26/10/2020 18:52, Eric Biggers wrote:
->>> On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
->>>> Replace the explicit EBOIV handling in the dm-crypt driver with calls
->>>> into the crypto API, which now possesses the capability to perform
->>>> this processing within the crypto subsystem.
->>>>
->>>> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
->>>>
->>>> ---
->>>>  drivers/md/Kconfig    |  1 +
->>>>  drivers/md/dm-crypt.c | 61 ++++++++++++++-----------------------------
->>>>  2 files changed, 20 insertions(+), 42 deletions(-)
->>>>
->>>> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
->>>> index 30ba3573626c..ca6e56a72281 100644
->>>> --- a/drivers/md/Kconfig
->>>> +++ b/drivers/md/Kconfig
->>>> @@ -273,6 +273,7 @@ config DM_CRYPT
->>>>  	select CRYPTO
->>>>  	select CRYPTO_CBC
->>>>  	select CRYPTO_ESSIV
->>>> +	select CRYPTO_EBOIV
->>>>  	help
->>>>  	  This device-mapper target allows you to create a device that
->>>>  	  transparently encrypts the data on it. You'll need to activate
->>>
->>> Can CRYPTO_EBOIV please not be selected by default?  If someone really wants
->>> Bitlocker compatibility support, they can select this option themselves.
->>
->> Please no! Until this move of IV to crypto API, we can rely on
->> support in dm-crypt (if it is not supported, it is just a very old kernel).
->> (Actually, this was the first thing I checked in this patchset - if it is
->> unconditionally enabled for compatibility once dmcrypt is selected.)
->>
->> People already use removable devices with BitLocker.
->> It was the whole point that it works out-of-the-box without enabling anything.
->>
->> If you insist on this to be optional, please better keep this IV inside dmcrypt.
->> (EBOIV has no other use than for disk encryption anyway.)
->>
->> Or maybe another option would be to introduce option under dm-crypt Kconfig that
->> defaults to enabled (like support for foreign/legacy disk encryption schemes) and that
->> selects these IVs/modes.
->> But requiring some random switch in crypto API will only confuse users.
-> 
-> CONFIG_DM_CRYPT can either select every weird combination of algorithms anyone
-> can ever be using, or it can select some defaults and require any other needed
-> algorithms to be explicitly selected.
-> 
-> In reality, dm-crypt has never even selected any particular block ciphers, even
-> AES.  Nor has it ever selected XTS.  So it's actually always made users (or
-> kernel distributors) explicitly select algorithms.  Why the Bitlocker support
-> suddenly different?
-> 
-> I'd think a lot of dm-crypt users don't want to bloat their kernels with random
-> legacy algorithms.
+> On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 
+> are brough up during the bootup.  For example, if we want to bring 
+> core0, core3 and core4 current maxcpu(as 3) setting would not help us.
+> On some platform we want the flexibility on which CPUs to bring up 
+> during the device bootup. bootcpus command line is helping to bring 
+> specific CPUs and these patches are working downstream.
 
-Yes, but IV is in reality not a cryptographic algorithm, it is kind-of a configuration
-"option" of sector encryption mode here.
+A lot of patches work downstream by some definition of work. But that
+does not make an argument to bring them upstream.
 
-We had all of disk-IV inside dmcrypt before - but once it is partially moved into crypto API
-(ESSIV, EBOIV for now), it becomes much more complicated for user to select what he needs.
+Thanks,
 
-I think we have no way to check that IV is available from userspace - it
-will report the same error as if block cipher is not available, not helping user much
-with the error.
-
-But then I also think we should add abstract dm-crypt options here (Legacy TrueCrypt modes,
-Bitlocker modes) that will select these crypto API configuration switches.
-Otherwise it will be only a complicated matrix of crypto API options...
-
-Milan
+        tglx
