@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C551299667
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4936B299676
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1791418AbgJZTD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:03:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49010 "EHLO mail.kernel.org"
+        id S1741117AbgJZTNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781699AbgJZTD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:03:57 -0400
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2404216AbgJZTEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:04:08 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C81B420790
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:03:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEBF820720;
+        Mon, 26 Oct 2020 19:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603739037;
-        bh=qwnoRCo1R4RfJLgUjcT/fdMEYl7CJRbP6ocAzrkNLc8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MgUhgfSgdtw/dkwD+e8pHlzGqwXBQdVDIIaELNdCvhxKk8wpo7ikZASYsmdz4v166
-         bKVneTYzkYXnHXqxQUh/KvzsIdhKMukDu/badg4jZPf1U8AC031dgVbhctk2jrb9Sd
-         0GTpdmy7aCzeRMLCawEuurS/tsWnsGHuKqhtyD/E=
-Received: by mail-qk1-f182.google.com with SMTP id 140so9426365qko.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:03:56 -0700 (PDT)
-X-Gm-Message-State: AOAM530zr5vTPCbehgvbWSvm2C1YIyEPUbnzkQLvirzbdOSiQeH79Uqq
-        kuEU6K51Jgak0SXx1s/wVL3flPjj0kXf7ePAJxg=
-X-Google-Smtp-Source: ABdhPJw6BBoPGjGlIDtQwuPEhCx7xKTVaToDIWOa6kzLyFFyrrXvnTRFloxWvctqCe7Wkj7ht0lbN1hIjBMZuLAo7ok=
-X-Received: by 2002:a05:620a:22c9:: with SMTP id o9mr2593705qki.286.1603739035860;
- Mon, 26 Oct 2020 12:03:55 -0700 (PDT)
+        s=default; t=1603739048;
+        bh=AHD3Q5NMnAqW/PwhjTlDcGnCMCU3a5L5yG8ci6S0zhI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=je72NyXI3XtA5RGI7O1keBA4S4KImpY9W/vjiVJSHGSVtL2pwKwmGfA5MP6TvN5lJ
+         p/fBZvTsQYNNIVnr0cVEUuAxTTbUYSjyqcOuR4cZuEp99fi2ohvYGBSmF5bebvB/Uz
+         /6GjcduJqU53mmtwYXmfSYHEcxZ/8aEbiHjM6YNQ=
+Date:   Mon, 26 Oct 2020 12:04:06 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [PATCH v3 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION ioctl
+Message-ID: <20201026190406.GL858@sol.localdomain>
+References: <20201026041656.2785980-1-daeho43@gmail.com>
 MIME-Version: 1.0
-References: <20201026165715.3723704-1-arnd@kernel.org> <s5h4kmg537s.wl-tiwai@suse.de>
-In-Reply-To: <s5h4kmg537s.wl-tiwai@suse.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 26 Oct 2020 20:03:39 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2kdNuipus=_Jr=Scd5_E+68LDi4zxPLqrT05ffXzD7Xg@mail.gmail.com>
-Message-ID: <CAK8P3a2kdNuipus=_Jr=Scd5_E+68LDi4zxPLqrT05ffXzD7Xg@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: make snd_kcontrol_new name a normal string
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026041656.2785980-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 6:03 PM Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 26 Oct 2020 17:52:18 +0100,
-> Arnd Bergmann wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > When building with W=2, there are lots of warnings about the
-> > snd_kcontrol_new name field being an array of 'unsigned char'
-> > but initialized to a string:
-> >
-> > include/sound/soc.h:93:48: warning: pointer targets in initialization of 'const unsigned char *' from 'char *' differ in signedness [-Wpointer-sign]
-> >
-> > Make it a regular 'char *' to avoid flooding the build log with this.
-> >
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> I'm fine to apply this, but I thought we agreed to ignore pointer
-> signedness intentionally?  There are lots of such places and we were
-> fed up in the past when gcc complained a lot about those...
+On Mon, Oct 26, 2020 at 01:16:55PM +0900, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added a new F2FS_IOC_GET_COMPRESS_OPTION ioctl to get file compression
+> option of a file.
+> 
+> struct f2fs_comp_option {
+>     u8 algorithm;         => compression algorithm
+>                           => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+>     u8 log_cluster_size;  => log scale cluster size
+>                           => 2 ~ 8
+> };
+> 
+> struct f2fs_comp_option option;
+> 
+> ioctl(fd, F2FS_IOC_GET_COMPRESS_OPTION, &option);
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Reviewed-by: Eric Biggers <ebiggers@kernel.org>
 
-I'm only sending fixes for the ones in headers that get included in
-a lot of places. There are good reasons for building being able to
-build specific drivers or directories with W=2, but it's less helpful
-if there are many identical warnings.
+Please don't add Reviewed-by until it is explicitly given.
 
-       Arnd
+The actual code looks fine, but there's still no mention of documentation,
+tests, or use cases.
+
+- Eric
