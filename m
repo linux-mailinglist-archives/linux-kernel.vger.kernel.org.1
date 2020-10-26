@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDAB298DE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3A2298DEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780066AbgJZNah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:30:37 -0400
-Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:42034 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1780052AbgJZNac (ORCPT
+        id S1780059AbgJZNag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:30:36 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34416 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775160AbgJZNa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:30:32 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id B3ED1182CF668;
-        Mon, 26 Oct 2020 13:30:25 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3868:3873:4321:5007:6691:7576:10004:10400:10848:11232:11658:11914:12114:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21451:21627:30054:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: arch63_1d0ef5f27273
-X-Filterd-Recvd-Size: 1713
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 26 Oct 2020 13:30:24 +0000 (UTC)
-Message-ID: <6e36c8cf2c9cdcf7e6d8fd607b52c5e3621d9925.camel@perches.com>
-Subject: Re: [PATCH] um: include compiler_attributes.h where used
-From:   Joe Perches <joe@perches.com>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christopher Obbard <chris.obbard@collabora.com>
-Date:   Mon, 26 Oct 2020 06:30:22 -0700
-In-Reply-To: <20201026124702.874c23068ecc.I4c3cbf992dc2c038117a01c2cd9a4c406b89ec94@changeid>
-References: <20201026124702.874c23068ecc.I4c3cbf992dc2c038117a01c2cd9a4c406b89ec94@changeid>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 26 Oct 2020 09:30:26 -0400
+Received: by mail-ot1-f68.google.com with SMTP id k3so7394929otp.1;
+        Mon, 26 Oct 2020 06:30:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cPBCTWshldNb+DyrWEllGuNdGSidH3ORsb+qdtp0qFc=;
+        b=rCYLp0lKLhilYMH4M1V1NMurIX+CU4bJZ4Qe15QwngOWgfzMzhkhYeUHV6/jf26b29
+         RT1C3l7ztJ/lVyyUWCJo7rZtFd+KKnw82TGab0LWtftIRDHfzU6alSuK6wSDZrYvAJgW
+         OftFHbJHPap44zYcZDr3Oa2RMvsvO6tW3+YezCsSdbFNpccgKF/xv1bq3fG9DBbAnHJq
+         Cz/mln2Tt5pc6KPrLa74RApqvj7O6ojC5J3Haow4hqXZ955bj8e+kABgb1tyFByoeDC2
+         h2V/8nf2MPl/KWJ7GqlgDxb0+zRhEZmAPi94kMnkII0EE+4mT0ABrh5JVGfE1c1Br6Qg
+         VfQw==
+X-Gm-Message-State: AOAM533K3Dr8RCYUx7zOe5HhgjBUWw85sZz5+eCwm2iYRy5tuJy/ed8B
+        K/xiReZasIhzFbpD5+PXwA==
+X-Google-Smtp-Source: ABdhPJzw6SoFVouAT7FkD/EIAwqrhDs04Eu79z3EyjHzdSZ38W/xzJ6Hl2NKvxsG0Ebl93ht3jFp6Q==
+X-Received: by 2002:a05:6830:17d8:: with SMTP id p24mr13901537ota.111.1603719025655;
+        Mon, 26 Oct 2020 06:30:25 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u1sm3884802ooj.28.2020.10.26.06.30.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 06:30:25 -0700 (PDT)
+Received: (nullmailer pid 33081 invoked by uid 1000);
+        Mon, 26 Oct 2020 13:30:24 -0000
+Date:   Mon, 26 Oct 2020 08:30:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     robh+dt@kernel.org, tglx@linutronix.de, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, daniel.lezcano@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        matthias.bgg@gmail.com
+Subject: Re: [PATCH 1/2] dt-bindings: timer: mtk-timer: add optional 13m and
+ bus clock
+Message-ID: <20201026133024.GA33031@bogus>
+References: <20201017153857.2494845-1-fparent@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201017153857.2494845-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-26 at 12:47 +0100, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
+On Sat, 17 Oct 2020 17:38:56 +0200, Fabien Parent wrote:
+> The timer IP on MT8516 requires two clocks to be enabled. Add both
+> clocks.
 > 
-> Joe's commit didn't only convert uses of __section(...) to add
-> the quotes, but _also_ converted 'raw' uses of __attribute__(())
-> for setting the section to use __section, but didn't update the
-> includes where necessary. Add them now.
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  .../devicetree/bindings/timer/mediatek,mtk-timer.txt         | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
-Apologies and thank you.
-I believed the robot had done these compilation tests.
- 
-> Fixes: 33def8498fdd ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cause-identified-by: Christopher Obbard <chris.obbard@collabora.com>
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-
-
+Acked-by: Rob Herring <robh@kernel.org>
