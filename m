@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16382989FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF75298A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769083AbgJZKHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1769076AbgJZKHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Oct 2020 06:07:31 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20703 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1769061AbgJZKGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:06:25 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-123-FRXv3T00OYCnRUjgXufYdQ-1; Mon, 26 Oct 2020 10:06:22 +0000
-X-MC-Unique: FRXv3T00OYCnRUjgXufYdQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 26 Oct 2020 10:06:21 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 26 Oct 2020 10:06:21 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arvind Sankar' <nivedita@alum.mit.edu>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: RE: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
-Thread-Topic: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
-Thread-Index: AQHWqtuIw2smrl1NBkSqLe7bNPuvsKmonqLggAAjnQCAADBjsIAAC9GAgAClsAA=
-Date:   Mon, 26 Oct 2020 10:06:21 +0000
-Message-ID: <0f039c0c94a64b329d09ae4a18261ba4@AcuMS.aculab.com>
-References: <20201025143119.1054168-1-nivedita@alum.mit.edu>
- <20201025143119.1054168-7-nivedita@alum.mit.edu>
- <05150bdb3a4c4b2682ab9cb8fb2ed411@AcuMS.aculab.com>
- <20201025201820.GA1237388@rani.riverdale.lan>
- <5d8f86fcfe84441fa5c9877959069ff1@AcuMS.aculab.com>
- <20201025235349.GA1281192@rani.riverdale.lan>
-In-Reply-To: <20201025235349.GA1281192@rani.riverdale.lan>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+Received: from mail.kernel.org ([198.145.29.99]:51198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1768496AbgJZKHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 06:07:19 -0400
+Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8ACE320723;
+        Mon, 26 Oct 2020 10:07:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603706838;
+        bh=oRd2QZwcb5kvNpN6vkk7OPKwRr2fGcwBASgsEzTaYvA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TPv71Y5NKNxjMYIif68gFIjqobO5fdY6L9BaEwJBedVyaDLWrQoaDngZoQCtEwg3o
+         B2+YfCA9bI17y/jzdCHJvb5ShDz81KP3GbFKIaPWAJGz5rVw06hSbNVlAby53bOqwi
+         armEP65itz4B6iICAzPXmWu/pEfe3lW+vY28HAv8=
+Date:   Mon, 26 Oct 2020 11:07:12 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 53/56] shed: fix kernel-doc markup
+Message-ID: <20201026110712.2f9cec69@coco.lan>
+In-Reply-To: <20201023135341.450727fc@gandalf.local.home>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+        <21eac4426e02193aab877564f7d7d99114627a46.1603469755.git.mchehab+huawei@kernel.org>
+        <20201023135341.450727fc@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAyNSBPY3RvYmVyIDIwMjAgMjM6NTQNCi4uLg0K
-PiA+IFRoYXQncyBvZGQsIHRoZSBCTEVORCBsb29wIGlzIGFib3V0IDIwIGluc3RydWN0aW9ucy4N
-Cj4gPiBJIHdvdWxkbid0IGV4cGVjdCB1bnJvbGxpbmcgdG8gaGVscCAtIHVubGVzcyB5b3UgbWFu
-YWdlDQo+ID4gdG8gdXNlIDE2IHJlZ2lzdGVycyBmb3IgdGhlIGFjdGl2ZSBXW10gdmFsdWVzLg0K
-PiA+DQo+IA0KPiBJIGFtIG5vdCBzdXJlIGFib3V0IHdoYXQncyBnb2luZyBvbiBpbnNpZGUgdGhl
-IGhhcmR3YXJlLCBidXQgZXZlbiB3aXRoDQo+IGEgc3RyYWlnaHRmb3J3YXJkIGFzc2VtYmx5IHZl
-cnNpb24gdGhhdCBqdXN0IHJlYWRzIG91dCBvZiBtZW1vcnkgdGhlIHdheQ0KPiB0aGUgY2FsY3Vs
-YXRpb24gaXMgc3BlY2lmaWVkLCB1bnJvbGxpbmcgdGhlIEJMRU5EIGxvb3AgOHggc3BlZWRzIHVw
-IHRoZQ0KPiBwZXJmb3JtYW5jZSBieSA3LTglLg0KPiANCj4gVGhlIGNvbXBpbGVyIGlzIGFjdHVh
-bGx5IHByZXR0eSBiYWQgaGVyZSwganVzdCB0cmFuc2xhdGluZyBldmVyeXRoaW5nDQo+IGludG8g
-YXNzZW1ibGVyIHdpdGggbm8gYXR0ZW1wdCB0byBvcHRpbWl6ZSBhbnl0aGluZyBnZXRzIGEgMTAt
-MTIlDQo+IHNwZWVkdXAgb3ZlciB0aGUgQyB2ZXJzaW9uLg0KDQpJJ20gbm90IHNlZWluZyBhbnl0
-aGluZyBwYXJ0aWN1bGFybHkgc3R1cGlkLg0KVGhlIGxvb3AgYm9keSAoZXhjbHVkaW5nIGxvb3Ag
-Y29udHJvbCkgaXMgMjMgaW5zdHJ1Y3Rpb25zLg0KRG91YmxlcyB0byA0NiBpZiBJIHVucm9sbCBv
-bmNlLg0KVW5yb2xsaW5nIDQgdGltZXMgZG9lcyBzYXZlIGEgY291cGxlIG9mIGluc3RydWN0aW9u
-cyBwZXIgaXRlcmF0aW9uLg0KDQpUaGUgb25seSBob3JyaWQgcGFydCBvZiB0aGUgY29kZSBpcyB0
-aGUgbG9uZyBkZXBlbmRlbmN5DQpjaGFpbiBhdCB0aGUgZW5kIHdoZW4gdGhlIHZhbHVlcyBnZXQg
-eG9yJ2VkIHRvZ2V0aGVyLg0KZ2NjIGlzIHZlcnkgYmFkIGF0IHRoYXQsIGl0IGNvbnZlcnRzIChh
-ICsgYikgKyAoYyArIGQpDQp0byAoKChhICsgYikgKyBjKSArIGQpIHdoaWNoIHRha2VzIGFuIGV4
-dHJhIGNsb2NrLg0KDQpVbnJvbGxpbmcgNCB0aW1lcyBnaXZlcyBhbG1vc3QgYWxsIHRoZSBnYWlu
-Lg0KQnV0IGl0IHJlYWxseSBzaG91bGRuJ3QgYmUgbmVlZGVkIGF0IGFsbC4NCg0KCURhdmlkDQoN
-Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
-LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
-YWxlcykNCg==
+Em Fri, 23 Oct 2020 13:53:41 -0400
+Steven Rostedt <rostedt@goodmis.org> escreveu:
+
+> On Fri, 23 Oct 2020 18:33:40 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> 
+> > Kernel-doc requires that a kernel-doc markup to be immediatly
+> > below the function prototype, as otherwise it will rename it.
+> > So, move sys_sched_yield() markup to the right place.
+> > 
+> > Also fix the cpu_util() markup: Kernel-doc markups
+> > should use this format:
+> >         identifier - description  
+> 
+> The first change looks fine to me, but as I'm getting a new shed delivered
+> soon, I originally thought this email was about that delivery!
+
+:-)
+
+> I do have a nit about the second change.
+> 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index aa4c6227cd6d..94386fcfafcf 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6287,7 +6287,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+> >  }
+> >  
+> >  /**
+> > - * Amount of capacity of a CPU that is (estimated to be) used by CFS tasks
+> > + * cpu_util - Amount of capacity of a CPU that is (estimated to be)
+> > + *	used by CFS tasks  
+> 
+> The description is to be a single line. The line break is ugly, and the 80
+> col rule, is more of a guideline, and not something that *has* to be done.
+> 
+> Either shorten it, or just let it go a little longer.
+
+Agreed, but there are already some other descriptions over there that have
+multiple lines[1]:
+
+Anyway, on this specific case, I guess it can be easily shorten to
+80 columns without losing anything. Would that work for you?
+
+	/**
+	 * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
+
+Regards,
+Mauro
+
+[1] like this one:
+
+	/**
+	 * calculate_imbalance - Calculate the amount of imbalance present within the
+	 *			 groups of a given sched_domain during load balance.
+	 * @env: load balance environment
+	 * @sds: statistics of the sched_domain whose imbalance is to be calculated.
+	 */
 
