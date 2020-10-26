@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1955C298CD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBD3298C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775067AbgJZMYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:24:38 -0400
-Received: from s3.sipsolutions.net ([144.76.43.62]:34864 "EHLO
-        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775059AbgJZMYi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:24:38 -0400
-X-Greylist: delayed 2231 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 08:24:37 EDT
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kX0yB-00CvJH-Pf; Mon, 26 Oct 2020 12:47:23 +0100
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-um@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christopher Obbard <chris.obbard@collabora.com>
-Subject: [PATCH] um: include compiler_attributes.h where used
-Date:   Mon, 26 Oct 2020 12:47:03 +0100
-Message-Id: <20201026124702.874c23068ecc.I4c3cbf992dc2c038117a01c2cd9a4c406b89ec94@changeid>
-X-Mailer: git-send-email 2.26.2
+        id S1774624AbgJZMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1769395AbgJZMBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 08:01:06 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C97122263;
+        Mon, 26 Oct 2020 12:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603713666;
+        bh=CkldyogWfo/ivLO62VlJzz6D/OzTlHFeOpOL9uzt8ws=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=k492nic/qQb8HJzA+fwAwpk0/r1YvIdKoJLyndQDWWSNIZzxeW5NoASmTIPxfLB6C
+         Ra3TdEZnkeQhAguW6yWA5SSigg6EkYT1wxklv0ytqNl0tMRpwdQ+b5qdy7Boua7A1M
+         bS2AItSKlVAWs17f2NJUoZUzP1HiQxmrZbPVCTgI=
+Message-ID: <9a07dd50505d16d0a2db155ab3a3938ab35320a3.camel@kernel.org>
+Subject: Re: [PATCH v3 36/56] locks: fix a typo at a kernel-doc markup
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 26 Oct 2020 08:01:04 -0400
+In-Reply-To: <901134db80ae9763d3ce2bc42faa1b2105c29d7f.1603469755.git.mchehab+huawei@kernel.org>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+         <901134db80ae9763d3ce2bc42faa1b2105c29d7f.1603469755.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Fri, 2020-10-23 at 18:33 +0200, Mauro Carvalho Chehab wrote:
+> locks_delete_lock -> locks_delete_block
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  fs/locks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/locks.c b/fs/locks.c
+> index 1f84a03601fe..f3c3ce82a455 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -750,7 +750,7 @@ static void __locks_wake_up_blocks(struct file_lock *blocker)
+>  }
+>  
+>  /**
+> - *	locks_delete_lock - stop waiting for a file lock
+> + *	locks_delete_block - stop waiting for a file lock
+>   *	@waiter: the lock which was waiting
+>   *
+>   *	lockd/nfsd need to disconnect the lock while working on it.
 
-Joe's commit didn't only convert uses of __section(...) to add
-the quotes, but _also_ converted 'raw' uses of __attribute__(())
-for setting the section to use __section, but didn't update the
-includes where necessary. Add them now.
+Thanks, merged. Should make 5.11.
 
-Fixes: 33def8498fdd ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cause-identified-by: Christopher Obbard <chris.obbard@collabora.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/skas/clone.c | 1 +
- arch/x86/um/stub_segv.c     | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index 95c355181dcd..dfd81d4d0f5f 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
- 
-+#include <linux/compiler_attributes.h>
- #include <signal.h>
- #include <sched.h>
- #include <asm/unistd.h>
-diff --git a/arch/x86/um/stub_segv.c b/arch/x86/um/stub_segv.c
-index fdcd58af707a..95110ad4f313 100644
---- a/arch/x86/um/stub_segv.c
-+++ b/arch/x86/um/stub_segv.c
-@@ -3,6 +3,7 @@
-  * Licensed under the GPL
-  */
- 
-+#include <linux/compiler_attributes.h>
- #include <sysdep/stub.h>
- #include <sysdep/faultinfo.h>
- #include <sysdep/mcontext.h>
+Cheers,
 -- 
-2.26.2
+Jeff Layton <jlayton@kernel.org>
 
