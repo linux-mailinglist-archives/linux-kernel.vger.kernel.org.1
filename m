@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C28C299213
+	by mail.lfdr.de (Postfix) with ESMTP id F3490299214
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785272AbgJZQO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:14:28 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44253 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1774168AbgJZQO0 (ORCPT
+        id S1785282AbgJZQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:14:32 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:41590 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1785273AbgJZQOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:14:26 -0400
-Received: by mail-ed1-f68.google.com with SMTP id t20so9958552edr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:14:25 -0700 (PDT)
+        Mon, 26 Oct 2020 12:14:30 -0400
+Received: by mail-qk1-f195.google.com with SMTP id b69so8836928qkg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:14:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3H2p+iuwydYaEIXGXh3Sr6LBfik6Qa35VEO/8RXDAl4=;
-        b=ZK+AbE/BobLoYSkWq9G6gbh2PODwStnn3Utfx3MnougE5GCN+7r68dBTfd8KyojKZf
-         u1LUgbtGEbm7I7CLw3qLmhNMlIcMQy6BUlXiPdQJep1ZO+L53QFelzIwl9z+KSuKoy6+
-         FD2JG9aY5Wt9aueay9Qf4lms+LwJLoVlveXE+EGe1Bv6ls4MsYaBBRiWbizkiPmht39q
-         SU2D7hwwl0/MIF0xwoss3mNLW0f4G7YBoRWTViXI34AEVGcRag1rxdyTCUxneAlUa0V7
-         tpJ6ie6hxSzX+jVhbO8eUFi1uyPHeMk3O50PtPmv3CP6lXusH+cGaVHDibnq55voM000
-         r8PQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=AgsCVvVVi5zahjTQtXlH0bFPvX/kmCfXE/gXgQHrFBM=;
+        b=TpTpFRXdjiotIPmItDkB4NCggi2nBTENuWXJ+qsBeUIVa8ya8+VsFxbGlB0fVwvh1v
+         HFF1PAaZP+JKrVJCJFEoMwg1cdUw5NIQiactP1xdwIEw1f5AoRzdMdHnQua+O0OgAkS4
+         ywxajl54kO1vqQPPiqc5mdi4qXjKmDlQQR7sdYelRbgMhwd6FjUoi8lpLRkSryd6Slq2
+         9Af8Lh3TWbfV/bU0dvTN6R8GgEiT/1lCmTuAm9yzgMCqdG2IX94EdoMb9cXX8imCMmvZ
+         B1doOK/V2kG9bgkTBBFquJXl3rU6WT1wMWiA4NWQ5+uc/C3uCMjKtLeocQ2BOE37CvUK
+         4zIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3H2p+iuwydYaEIXGXh3Sr6LBfik6Qa35VEO/8RXDAl4=;
-        b=tFX11Nku6v3Cn4HaBCWCRJb48f6YCSXRWPSVKUoRq1Gq0cqUzS10zkaXX1qv90WJE2
-         EaxVS7QkzG03zshG3dj30kAbdHg3jJNfiqXtGFpPdmvTG/+VqMzdI3t7xYNMCrmRLQUm
-         PeEy8Hmar6vBcgm1EcvdcNWYIRAe3QCc/yD5tSv7Ye6AYgssPZ4VYm1CdWIjNyZck8ne
-         GZUcuYlEJRZAS0x1p1xhR/Cl3i0dztpuDe9iGePm1Fa44dtCDaSlCVdMHs93PeLmAOU4
-         /XVdbus1xphl11C/NhZkBUIoRYF2edPfoMMn+yUTNk9ZnpwK+6aWfbOxARlizc89+IQO
-         IsVw==
-X-Gm-Message-State: AOAM533lJOrH9A5vxyCtVh73RZrNknUpUuEdag8sLAVQTGKdyTg6lKnX
-        LxOLJx56DvrlkKop/W/e7FQCYz1LxXSuJ582AhX6/Q==
-X-Google-Smtp-Source: ABdhPJwv0K1VrTH65RZm5WT1r8T06WuHs73DuCD2AlndBawXbhg2SMt8W9kBeaw+h6q96I5BEVpiqh1YA0aEh/Wfnnk=
-X-Received: by 2002:a05:6402:1148:: with SMTP id g8mr17037484edw.271.1603728864766;
- Mon, 26 Oct 2020 09:14:24 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=AgsCVvVVi5zahjTQtXlH0bFPvX/kmCfXE/gXgQHrFBM=;
+        b=gPMxWKYmm5FdMC+s2wyi0xkuW3zTSYAznCuvi1XSuhTGxZ+WEDlyF5Hh7v8120vCD8
+         xib/mVeKa0bX/sBrQBPJWXVUcTyDE413Kg5h2xJOdMaHT0L1Y2nIwWcBqJ0v2DjmgrgV
+         4Qi9MzLhMIR3hbT9VHz133RNZaFSaqyGNwT2DIx7Q9hAZBY13mz7d1CU+jCFybpcXK/u
+         vouG9svrhSRqP521GtlXQsiUJxJT9HPrG+Kj1Al9XWlvNJ+N2BBHKerGpQALOiHBmlnq
+         5uKnfDXoM1ZFRBqBCPan2nF30VBwiIgiHtGNjm3t0qY68pEaDLwaYp3L1w4vm8Kb8JWb
+         Hi+w==
+X-Gm-Message-State: AOAM531dzESMVQVQp1UQIg7IcMrHsFJfIjL+LiKA92zLH/p05o9IzfaX
+        aCVF7SgVuT3UjW01h04DojulqlG4c0H/WkX3jOU=
+X-Google-Smtp-Source: ABdhPJy+ToQa7yRyZk5c1q6HRbWNDqHsRabh1coK45NVGzVR5KQ4HiVBTRF3VO3V7LGvx7z2uNnSGnv5HtDqJMBzKpY=
+X-Received: by 2002:a37:6c04:: with SMTP id h4mr19586035qkc.100.1603728868954;
+ Mon, 26 Oct 2020 09:14:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
- <20201026155521.GQ2594@hirez.programming.kicks-ass.net> <20201026160513.GC2651@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201026160513.GC2651@hirez.programming.kicks-ass.net>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Mon, 26 Oct 2020 09:14:13 -0700
-Message-ID: <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
- longer reported in dr6
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>
+Received: by 2002:a0c:ba24:0:0:0:0:0 with HTTP; Mon, 26 Oct 2020 09:14:27
+ -0700 (PDT)
+Reply-To: koffiakouasolange@hotmail.com
+From:   "Ms. Katherine Pierce Koffi" <messagetoyou01@gmail.com>
+Date:   Mon, 26 Oct 2020 09:14:27 -0700
+Message-ID: <CA+64X4g_EJsXzuOwic5eKX2DQO44LwxtWZYTCP7kHGgUzE_WeQ@mail.gmail.com>
+Subject: Re. I am looking forward to hear from you
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 9:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Oct 26, 2020 at 04:55:21PM +0100, Peter Zijlstra wrote:
-> > On Mon, Oct 26, 2020 at 07:33:08AM -0700, Kyle Huey wrote:
-> > > After resuming a ptracee with PTRACE_SINGLESTEP, in the following
-> > > ptrace stop retrieving the dr6 value for the tracee gets a value that
-> > > does not include DR_STEP (it is in fact always DR6_RESERVED). I
-> > > bisected this to the 13cb73490f475f8e7669f9288be0bcfa85399b1f merge. I
-> > > did not bisect further.
-> > >
-> > > I don't see any handling to ever set DR_STEP in virtual_dr6, so I
-> > > think this code is just broken.
-> > >
-> > > Sorry for not testing this when I was CCd on the original patch series :)
-> >
-> > Urgh, now I have to try and remember how all that worked again ...
-> >
-> > I suspect it's either one (or both) of the last two:
-> >
-> >   f4956cf83ed1 ("x86/debug: Support negative polarity DR6 bits")
-> >   d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
-> >
-> >
-> > Just to clarify, the sequence is something like:
-> >
-> >  - tracer: ptrace(PTRACE_SINGLESTEP)
-> >  - tracee: #DB, DR6 contains DR_STEP
-> >  - tracer: ptrace_get_debugreg(6)
-> >
-> > ?
-> >
-> > You're right that that would be broken, let me try and figure out what
-> > the best way would be 'fix' that.
-> >
-> > Also, can you confirm that pthread_set_debugreg(6) should not do
-> > anything useful?
->
->
-> Does something like this make sense?
->
->
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index 3c70fb34028b..0e7641ac19a8 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -799,6 +799,13 @@ static __always_inline unsigned long debug_read_clear_dr6(void)
->          */
->         current->thread.virtual_dr6 = 0;
->
-> +       /*
-> +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
-> +        * the ptrace visible DR6 copy.
-> +        */
-> +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
-> +               current->thread.virtual_dr6 |= dr6 & DR_STEP;
-> +
->         /*
->          * The SDM says "The processor clears the BTF flag when it
->          * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+Hello dear,
 
-I don't think the `& DR_STEP` should be necessary, that bit should be
-set by the hardware, I believe.
+My name is Ms. Katherine Pierce Koffi. I worked with Vedanta Resources
+Ltd, the United Kingdom for 25 years, but I retired in the year 2013.
+I didn't marry and I have no child of my own due to my health issues.
+Presently, I am 68 years old and suffering from chronic tract cancer.
+From doctor's  indications, my condition is really deteriorating and
+is quite obvious that my death is very  close to me as  I can see my
+life quickly ebbing away. I am bedridden and in constant pain.
 
-Also if a program sets TF on itself in EFLAGS and generates a trap it
-should still have DR_STEP set in the ptrace-visible dr6, which this
-won't do.
+The stage is worst for more than two months now and I have been
+hospitalized which affected my ability to talk. I am an orphan, no
+Parents, no brother, no sister but my country home origin is Cote
+d'Ivoire. I was  working with Vedanta Resources Ltd in United Kingdom,
+company's headquarters here in the United  Kingdom; I am working with
+this particular company for 25 years before i was promoted as deputy
+accountant general.
 
-Is there a reason not to always copy dr6 into virtual_dr6 here,
-regardless of TIF_SINGLESTEP/etc?
+When I was working with Vedanta Resources Ltd, the United Kingdom, I
+deposited the sum of USD$910,000.00 in African Development Bank Cote
+d'Ivoire. This money is still with the bank, but due to my poor health
+condition and based on doctor's indications, I am scared that my life
+is almost at the end, so I have decided to donate this USD$910,000.00
+to the Charity.
 
-- Kyle
+I took this decision because I don't have any child that will inherit
+this money. Please, I want the Africa Development Bank (ADB) to
+transfer this USD$910,000.00 to you so that you  can help me to donate
+70% of the money to any Charity Organization in Cote d'Ivoire, while
+you  take the remaining 30% of the money as your reward for your
+assistance in fulfilling my heart  desire.I know that I have never met
+you before, I got your email address from Google and my confidence
+reposed on you.If I receive your reply,
+
+I will write to the African Development Bank to transfer the money to you.
+
+Send your response to my private email at: koffiakouasolange@hotmail.com
+
+I expect your prompt reply and wish you will put me in your prayers henceforth.
+
+Thanks and God bless you.
+Ms. Katherine Pierce Koffi.
