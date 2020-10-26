@@ -2,176 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F59299534
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DFC299537
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788790AbgJZSYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:24:18 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:33245 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1784549AbgJZSYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:24:18 -0400
-Received: by mail-wm1-f66.google.com with SMTP id l20so5752588wme.0;
-        Mon, 26 Oct 2020 11:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=etvGadW+3Q8LgTJlwqBN3viqL9TDU3OPQW5Mj92hM1M=;
-        b=qLXPG59Gsqt6ffBX+s9FGywFCFRT0zE8R13zd7HwUYgijswWoDpF1+vlhjm+1ugFy2
-         5L0d3I9u7f5H+lrBF/Sz6T3p+d210t/EerXOhoVshoDA0jSjvaJQxWxmHEAfknVJb52j
-         RKAssGt+lmq1obeLlddpx8KDPBf5eautdn5/iArOGB4vGZ9AN2zfn07tx+B5cKmRV1/U
-         QoQZtIl5lslAuBh9KcmEEGJOYNCej+AeOaePm5cTYTOLeL3BjTvnD1hsDSp152NyFVTz
-         /+7IULo/SGTFPcGJKvKdF/30yPY2wGJiV3wWU6q9EMzx0csN3wyJlrJVz57mHQUneXWl
-         9+tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=etvGadW+3Q8LgTJlwqBN3viqL9TDU3OPQW5Mj92hM1M=;
-        b=gPC5WRYKJo/2kZBGayPHYGUX2PQXR6VomQDKJOhFbJY815h9f/Utrluo48st8unUCH
-         lrynVP7C3f71ZM+e+Sc6j0dChxd/iUzKYbSWKtnaBd/P+HjdTCnCBWsPx3igGK+FZxw3
-         ARZ2J2sjQHJvaIMVTW47FZQQhIrpaixB9pplQoMuYO0tGhc1LSrZ89xiJ6bxdKARDuFz
-         7/Z3+6YymUF8sabizynNaUJsfO/oDLDaSoDLsHKGJV/XEZV3kKSpdWpVCX9wSuF5FJn/
-         3KhvCZj+JfL4WV28JWlEoKswJbMFlXX0F0H0HSTJa7OMP3mpn7mIYpb2vFBGIEQUgxh3
-         4tsg==
-X-Gm-Message-State: AOAM532wrHjNGM8tytXpU/5HromyxRMpltHQuvzRUIYfzJbvC209AO4V
-        o4nFDfSgEfCTclS9Qe7v6ex6lBrNBtLOnwdJT6M=
-X-Google-Smtp-Source: ABdhPJz4bV0JFM77SRaYXyikcLHwfMO2Klyg87DVyBh54afs+S1MvMFy+2Gf0p/1uh68laXhnC3XK5+CSuwk/4yMaks=
-X-Received: by 2002:a7b:c015:: with SMTP id c21mr17167222wmb.22.1603736655213;
- Mon, 26 Oct 2020 11:24:15 -0700 (PDT)
+        id S1789663AbgJZSYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:24:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1789629AbgJZSYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:24:50 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16F6420874;
+        Mon, 26 Oct 2020 18:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603736690;
+        bh=pZtkwJFSCeODA5g8jJTbVzyl+tkAvkYZ0pQKwAfbKms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MXJnyZULJvfM5FCW2M1yQUmUn+KBASoMKqBil2lhJ3cYxLZshxXex5dWXA8WqdlRH
+         VoJsTwJE5pJ51CsHjvHchy9/s9RLsmYwFm3mzjjgiP505mTUI8BbadbVicuPoi7MXL
+         DZ5akyCRdHPOAz9q4sw5HbobRbU76zn2EDpoQ3bM=
+Date:   Mon, 26 Oct 2020 11:24:48 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 1/4] crypto: add eboiv as a crypto API template
+Message-ID: <20201026182448.GH858@sol.localdomain>
+References: <20201026130450.6947-1-gilad@benyossef.com>
+ <20201026130450.6947-2-gilad@benyossef.com>
 MIME-Version: 1.0
-References: <20201024105111.15829-1-kholk11@gmail.com> <20201024105111.15829-3-kholk11@gmail.com>
-In-Reply-To: <20201024105111.15829-3-kholk11@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 26 Oct 2020 20:24:39 +0200
-Message-ID: <CAHp75VeRagDvpZBFZ4+T8JgsjOKxuZjxRHw_azXKQx5O3Cx5yw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] Input: Add Novatek NT36xxx touchscreen driver
-To:     kholk11@gmail.com
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>, priv.luk@gmail.com,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
-        Martin Botka <martin.botka1@gmail.com>,
-        phone-devel@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026130450.6947-2-gilad@benyossef.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 1:51 PM <kholk11@gmail.com> wrote:
->
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->
-> This is a driver for the Novatek in-cell touch controller and
-> supports various chips from the NT36xxx family, currently
-> including NT36525, NT36672A, NT36676F, NT36772 and NT36870.
->
-> Functionality like wake gestures and firmware flashing is not
-> included: I am not aware of any of these DrIC+Touch combo
-> chips not including a non-volatile memory and it should be
-> highly unlikely to find one, since the touch firmware is
-> embedded into the DriverIC one, which is obviously necessary
-> to drive the display unit.
->
-> However, the necessary address for the firmware update
-> procedure was included into the address table in this driver
-> so, in the event that someone finds the need to implement it
-> for a reason or another, it will be pretty straightforward to.
->
-> This driver is lightly based on the downstream implementation [1].
-> [1] https://github.com/Rasenkai/caf-tsoft-Novatek-nt36xxx
-
-(From drafts, didn't have time to finish and see already v8, so please revisit)
-
-...
-
-> +#include <asm/unaligned.h>
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/mod_devicetable.h>
+On Mon, Oct 26, 2020 at 03:04:44PM +0200, Gilad Ben-Yossef wrote:
+> diff --git a/crypto/eboiv.c b/crypto/eboiv.c
+> new file mode 100644
+> index 000000000000..467833e89139
+> --- /dev/null
+> +++ b/crypto/eboiv.c
+> @@ -0,0 +1,295 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * EBOIV skcipher template for block encryption
+> + *
+> + * This template encapsulates the  Encrypted byte-offset IV generation algorithm
+> + * used in Bitlocker in CBC mode by dm-crypt, which converts the initial vector
+> + * for the skcipher used for block encryption, by encrypting it using the same
+> + * skcipher key as encryption key. Usually, the input IV is a 64-bit sector
+> + * offset (the byte offset of the start of the sector) in LE representation
+> + * zero-padded to the size of the IV, but this * is not assumed by this driver.
+> + *
+> + * The typical use of this template is to instantiate the skcipher
+> + * 'eboiv(cbc(aes))', which is the only instantiation used by
+> + * dm-crypt for supporting BitLocker AES-CBC mode as specified in
+> + * https://www.jedec.org/sites/default/files/docs/JESD223C.pdf
+> + *
+> + * Copyright (C) 2020 ARM Limited or its affiliates.
+> + * Written by Gilad Ben-Yossef <gilad@benyossef.com>
+> + *
+> + * Heavily based on:
+> + *
+> + * ESSIV skcipher and aead template for block encryption
+> + * Copyright (c) 2019 Linaro, Ltd. <ard.biesheuvel@linaro.org>
+> + *
+> + * and
+> + *
+> + * dm-crypt eboiv code
+> + * by Milan Broz <gmazyland@gmail.com> and Ard Biesheuvel <ardb@kernel.org>
+> + *
+> + */
+> +
+> +#include <crypto/internal/skcipher.h>
+> +#include <crypto/scatterwalk.h>
 > +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/input/mt.h>
-> +#include <linux/input/touchscreen.h>
-> +#include <linux/regulator/consumer.h>
-
-Perhaps sorted? Also, asm/* usually go after linux/*.
-
-...
-
-> +#define TOUCH_MAX_PRESSURE      1000
-
-Any units?
-
-...
-
-> +       ts = devm_kzalloc(&hw_client->dev, sizeof(struct nt36xxx_i2c), GFP_KERNEL);
-
-sizeof(*ts) ?
-
-> +       if (!ts)
-> +               return -ENOMEM;
 > +
-> +       ts->supplies = devm_kcalloc(&hw_client->dev,
-> +                                   NT36XXX_NUM_SUPPLIES,
+> +#include "internal.h"
 
-> +                                   sizeof(struct regulator_bulk_data),
+internal.h shouldn't be included here.
 
-sizeof(*ts->supplies) ?
-
-> +                                   GFP_KERNEL);
-> +       if (!ts->supplies)
-> +               return -ENOMEM;
-
-...
-
-> +       ret = devm_regulator_bulk_get(&hw_client->dev,
-> +                                     NT36XXX_NUM_SUPPLIES,
-> +                                     ts->supplies);
-
-> +       if (ret != 0) {
-
-if (ret)
-
-> +               if (ret != -EPROBE_DEFER)
-> +                       dev_err(&hw_client->dev,
-> +                               "Cannot get supplies: %d\n", ret);
-> +               return ret;
-> +       }
-
-...
-
-> +       input->phys = devm_kasprintf(&hw_client->dev, GFP_KERNEL,
-> +                                    "%s/input0", dev_name(&hw_client->dev));
-
-NULL check?
-
-...
-
-> +       ret = devm_request_threaded_irq(&hw_client->dev, hw_client->irq, NULL,
-> +                                       nt36xxx_i2c_irq_handler, IRQF_ONESHOT,
-> +                                       hw_client->name, ts);
-> +       if (ret) {
-> +               dev_err(&hw_client->dev, "request irq failed: %d\n", ret);
-
-> +               return ret;
-> +       }
 > +
-> +       return 0;
+> +struct eboiv_instance_ctx {
+> +	struct crypto_skcipher_spawn skcipher_spawn;
+> +	char eboiv_cipher_name[CRYPTO_MAX_ALG_NAME];
+> +};
 
-return ret; ?
+The 'eboiv_cipher_name' field isn't used.
 
+> +static void eboiv_skcipher_iv_done(struct crypto_async_request *areq, int err)
+> +{
+> +	struct eboiv_req_ctx *req_ctx = areq->data;
+> +	struct skcipher_request *req = req_ctx->req;
+> +	int ret;
+> +
+> +	if (!err) {
+> +
+> +		ret = eboiv_skcipher_do_crypt(req, req_ctx->enc);
+> +
+> +		if ((ret == -EINPROGRESS) || (ret == -EBUSY))
+> +			return;
+> +	}
+> +
+> +	skcipher_request_complete(req, err);
 > +}
 
+This looks wrong, because if eboiv_skcipher_do_crypt() fails,
+skcipher_request_complete() will be called with err=0.
 
---
-With Best Regards,
-Andy Shevchenko
+> +static int eboiv_create(struct crypto_template *tmpl, struct rtattr **tb)
+> +{
+> +	struct crypto_attr_type *algt;
+> +	const char *inner_cipher_name;
+> +	struct skcipher_instance *skcipher_inst = NULL;
+> +	struct crypto_instance *inst;
+> +	struct crypto_alg *base, *block_base;
+> +	struct eboiv_instance_ctx *ictx;
+> +	struct skcipher_alg *skcipher_alg = NULL;
+> +	int ivsize;
+> +	u32 mask;
+> +	int err;
+> +
+> +	algt = crypto_get_attr_type(tb);
+> +	if (IS_ERR(algt))
+> +		return PTR_ERR(algt);
+
+Need to check that the algorithm is being instantiated as skcipher.
+crypto_check_attr_type() should be used.
+
+> +
+> +	inner_cipher_name = crypto_attr_alg_name(tb[1]);
+> +	if (IS_ERR(inner_cipher_name))
+> +		return PTR_ERR(inner_cipher_name);
+
+The result of crypto_attr_alg_name() can be passed directly to
+crypto_grab_skcipher().
+
+> +	mask = crypto_algt_inherited_mask(algt);
+> +
+> +	skcipher_inst = kzalloc(sizeof(*skcipher_inst) + sizeof(*ictx), GFP_KERNEL);
+> +	if (!skcipher_inst)
+> +		return -ENOMEM;
+> +
+> +	inst = skcipher_crypto_instance(skcipher_inst);
+> +	base = &skcipher_inst->alg.base;
+> +	ictx = crypto_instance_ctx(inst);
+> +
+> +	/* Symmetric cipher, e.g., "cbc(aes)" */
+> +	err = crypto_grab_skcipher(&ictx->skcipher_spawn, inst, inner_cipher_name, 0, mask);
+> +	if (err)
+> +		goto out_free_inst;
+> +
+> +	skcipher_alg = crypto_spawn_skcipher_alg(&ictx->skcipher_spawn);
+> +	block_base = &skcipher_alg->base;
+> +	ivsize = crypto_skcipher_alg_ivsize(skcipher_alg);
+> +
+> +	if (ivsize != block_base->cra_blocksize)
+> +		goto out_drop_skcipher;
+
+Shouldn't it be verified that the underlying algorithm is actually cbc?
+
+> +	skcipher_inst->alg.chunksize	= crypto_skcipher_alg_chunksize(skcipher_alg);
+> +	skcipher_inst->alg.walksize	= crypto_skcipher_alg_walksize(skcipher_alg);
+
+Setting these isn't necessary.
+
+> +
+> +	skcipher_inst->free		= eboiv_skcipher_free_instance;
+> +
+> +	err = skcipher_register_instance(tmpl, skcipher_inst);
+> +
+> +	if (err)
+> +		goto out_drop_skcipher;
+> +
+> +	return 0;
+> +
+> +out_drop_skcipher:
+> +	crypto_drop_skcipher(&ictx->skcipher_spawn);
+> +out_free_inst:
+> +	kfree(skcipher_inst);
+> +	return err;
+> +}
+
+eboiv_skcipher_free_instance() can be called on the error path.
+
+> +/* eboiv(cipher_name) */
+> +static struct crypto_template eboiv_tmpl = {
+> +	.name	= "eboiv",
+> +	.create	= eboiv_create,
+> +	.module	= THIS_MODULE,
+> +};
+
+"cipher_name" => "cbc_cipher_name", since it wraps something like "cbc(aes)",
+not "aes".
+
+- Eric
