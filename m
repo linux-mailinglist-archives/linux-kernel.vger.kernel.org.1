@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE862299F7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD06299F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437658AbgJ0AWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:22:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
+        id S2441306AbgJ0AWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:22:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410931AbgJZXzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:55:41 -0400
+        id S2410954AbgJZXzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:55:46 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB45F2224A;
-        Mon, 26 Oct 2020 23:55:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3236320770;
+        Mon, 26 Oct 2020 23:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756541;
-        bh=s7HO3kJ3IJ3+Hgbu3ZKKnFqr4ZVc22GMfUCDuqNgJzk=;
+        s=default; t=1603756544;
+        bh=9t3Xistk61WoA1A0FKjUUGRtE46g0p5WJG73qvpjFDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1rnEMC28ult+gEOKO84CQWIAkVo6wq1NKGuoMwZC+q6ss1ixHjRIjIZaCpGN+QMAu
-         OpD0IWgKj0iKnxHxDhoGZvSY5Wv2KBVjyeYkcSp1TBxlelmxEHPJX0Ysgj3iygQXAb
-         h+D86cxw/heeHveAASl4RAea+X5ahB1FeKryhbI4=
+        b=w7wf35Q09SzAOUrYuIzTeVJGNtspkp5qWu0PA1zJS5pJUH6ptpsZEd4pM+yn9Epyl
+         6WXF/oqM0Ws6c/ns9n21QB8xLwfnguuFCcov72rRMJjAzvZxhMH+N5vUYSJXIsaeVW
+         DihSFli+jjRcyybIJvFh/rLqUnqN4a/dpir4KrgE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 20/80] selftests/x86/fsgsbase: Reap a forgotten child
-Date:   Mon, 26 Oct 2020 19:54:16 -0400
-Message-Id: <20201026235516.1025100-20-sashal@kernel.org>
+Cc:     Xia Jiang <xia.jiang@mediatek.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 22/80] media: platform: Improve queue set up flow for bug fixing
+Date:   Mon, 26 Oct 2020 19:54:18 -0400
+Message-Id: <20201026235516.1025100-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
 References: <20201026235516.1025100-1-sashal@kernel.org>
@@ -42,34 +46,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Xia Jiang <xia.jiang@mediatek.com>
 
-[ Upstream commit ab2dd173330a3f07142e68cd65682205036cd00f ]
+[ Upstream commit 5095a6413a0cf896ab468009b6142cb0fe617e66 ]
 
-The ptrace() test forgot to reap its child.  Reap it.
+Add checking created buffer size follow in mtk_jpeg_queue_setup().
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/e7700a503f30e79ab35a63103938a19893dbeff2.1598461151.git.luto@kernel.org
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Xia Jiang <xia.jiang@mediatek.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/x86/fsgsbase.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
-index 15a329da59fa3..5f3aea210e018 100644
---- a/tools/testing/selftests/x86/fsgsbase.c
-+++ b/tools/testing/selftests/x86/fsgsbase.c
-@@ -499,6 +499,9 @@ static void test_ptrace_write_gsbase(void)
+diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+index ee802fc3bcdfc..9fa1bc5514f3e 100644
+--- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
++++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+@@ -571,6 +571,13 @@ static int mtk_jpeg_queue_setup(struct vb2_queue *q,
+ 	if (!q_data)
+ 		return -EINVAL;
  
- END:
- 	ptrace(PTRACE_CONT, child, NULL, NULL);
-+	wait(&status);
-+	if (!WIFEXITED(status))
-+		printf("[WARN]\tChild didn't exit cleanly.\n");
- }
- 
- int main()
++	if (*num_planes) {
++		for (i = 0; i < *num_planes; i++)
++			if (sizes[i] < q_data->sizeimage[i])
++				return -EINVAL;
++		return 0;
++	}
++
+ 	*num_planes = q_data->fmt->colplanes;
+ 	for (i = 0; i < q_data->fmt->colplanes; i++) {
+ 		sizes[i] = q_data->sizeimage[i];
 -- 
 2.25.1
 
