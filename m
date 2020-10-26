@@ -2,179 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1786298B1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23375298B4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772830AbgJZK65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:58:57 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34581 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1772855AbgJZK6t (ORCPT
+        id S1772868AbgJZLDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:03:51 -0400
+Received: from mail.netline.ch ([148.251.143.178]:51998 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772365AbgJZLDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:58:49 -0400
-Received: by mail-wr1-f65.google.com with SMTP id i1so11895076wro.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 03:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rl2aV6v4BUOFD3sWM4dGPxjWFUFBHT1H6eKln2146qM=;
-        b=RdtN9nvqXygrqpRjlwyadHI2Akx5GphSp7V8MoSkao2AUFwNDdcs0pb2/4JjL395li
-         67V6FN5HHlmjn9vWJcOKZYD+h4GMXwH3UsicvAL/IRAbuzUTcqbK0mc+9nQX8VqJ0N1G
-         QvYjui1JxD/SV+BAqoPjDtW6UkWb8unscHOVc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rl2aV6v4BUOFD3sWM4dGPxjWFUFBHT1H6eKln2146qM=;
-        b=iv++uMDkQu4bnwHMHq63+w1xvo92W8OdaLLbhlvChuuLhPZEI+6AKj8Aq2vYnXCXXn
-         Rop39lc2KzOVLGlKuCoyFgQM3VmeLjUkcrAZHrNwcqwcdfjDd03JqVJpkbWmoWulCQDn
-         2o//kq3l+IoO9EoR59urjE/ryVBcDpOD0s1EjBCq3KneUlTsNZESY9EORNmPn2b77qeU
-         gLhIxRHvX0BnbgtGCiZEN7x604K2rkMczkx42uElJqYdBdZn9TLToBVBIuWpt4zstEEl
-         ggdEE4ato5TJMsH00W1q3r588qRW1Oi9eJ7ukIYcZNE7hXLiUJgM2UXiQ75++0Td+2+h
-         YrIQ==
-X-Gm-Message-State: AOAM530zfVqeZCpLvi88cRKl3qJhgI0pp4gXMTc30xz12SHc2GC587Xg
-        kpe2GZuwa1JGuPjk24nbShDBFg==
-X-Google-Smtp-Source: ABdhPJyJEgobhpYPgpR3deeCaVtbSbKMyoksav28TvwMmYamt9hp5XzgBWl2um1YOhVBMyiCN8BNmg==
-X-Received: by 2002:a5d:498a:: with SMTP id r10mr17440576wrq.106.1603709927066;
-        Mon, 26 Oct 2020 03:58:47 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id w83sm21165156wmg.48.2020.10.26.03.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 03:58:46 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: [PATCH v4 15/15] PCI: Revoke mappings like devmem
-Date:   Mon, 26 Oct 2020 11:58:18 +0100
-Message-Id: <20201026105818.2585306-16-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
-References: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
+        Mon, 26 Oct 2020 07:03:51 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id B0E252A6042;
+        Mon, 26 Oct 2020 12:03:48 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id jp4ezO7Q-qV7; Mon, 26 Oct 2020 12:03:48 +0100 (CET)
+Received: from thor (212.174.63.188.dynamic.wline.res.cust.swisscom.ch [188.63.174.212])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 5CBCB2A6016;
+        Mon, 26 Oct 2020 12:03:47 +0100 (CET)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1kX0Hy-000TLP-K6; Mon, 26 Oct 2020 12:03:46 +0100
+To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        alexander.deucher@amd.com, Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org
+References: <1603684905.h43s1t0y05.none.ref@localhost>
+ <1603684905.h43s1t0y05.none@localhost>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: amdgpu crashes on OOM
+Message-ID: <81568253-518f-43b7-6b20-432f7dbd6c2b@daenzer.net>
+Date:   Mon, 26 Oct 2020 12:03:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1603684905.h43s1t0y05.none@localhost>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
-the region") /dev/kmem zaps ptes when the kernel requests exclusive
-acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
-the default for all driver uses.
+On 2020-10-26 5:29 a.m., Alex Xu (Hello71) wrote:
+> Hi,
+> 
+> I frequently encounter OOM on my system, mostly due to my own fault.
+> Recently, I noticed that not only does a swap storm happen and OOM
+> killer gets invoked, but the graphics output freezes permanently.
+> Checking the kernel messages, I see:
+> 
+> kworker/u24:4: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null)
+> CPU: 6 PID: 279469 Comm: kworker/u24:4 Tainted: G        W         5.9.0-14732-g20b1adb60cf6 #2
+> Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B450 Pro4, BIOS P4.20 06/18/2020
+> Workqueue: events_unbound commit_work
+> Call Trace:
+>   ? dump_stack+0x57/0x6a
+>   ? warn_alloc.cold+0x69/0xcd
+>   ? __alloc_pages_direct_compact+0xfb/0x116
+>   ? __alloc_pages_slowpath.constprop.0+0x9c2/0xc14
+>   ? __alloc_pages_nodemask+0x143/0x167
+>   ? kmalloc_order+0x24/0x64
+>   ? dc_create_state+0x1a/0x4d
+>   ? amdgpu_dm_atomic_commit_tail+0x1b19/0x227d
 
-Except there's two more ways to access PCI BARs: sysfs and proc mmap
-support. Let's plug that hole.
+Looks like dc_create_state should use kvzalloc instead of kzalloc 
+(dc_state_free already uses kvfree).
 
-For revoke_devmem() to work we need to link our vma into the same
-address_space, with consistent vma->vm_pgoff. ->pgoff is already
-adjusted, because that's how (io_)remap_pfn_range works, but for the
-mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
-to adjust this at at ->open time:
+order:5 means it's trying to allocate 32 physically contiguous pages, 
+which can be hard to fulfill even with lower memory pressure.
 
-- for sysfs this is easy, now that binary attributes support this. We
-  just set bin_attr->mapping when mmap is supported
-- for procfs it's a bit more tricky, since procfs pci access has only
-  one file per device, and access to a specific resources first needs
-  to be set up with some ioctl calls. But mmap is only supported for
-  the same resources as sysfs exposes with mmap support, and otherwise
-  rejected, so we can set the mapping unconditionally at open time
-  without harm.
 
-A special consideration is for arch_can_pci_mmap_io() - we need to
-make sure that the ->f_mapping doesn't alias between ioport and iomem
-space. There's only 2 ways in-tree to support mmap of ioports: generic
-pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
-architecture hand-rolling. Both approach support ioport mmap through a
-special pfn range and not through magic pte attributes. Aliasing is
-therefore not a problem.
-
-The only difference in access checks left is that sysfs PCI mmap does
-not check for CAP_RAWIO. I'm not really sure whether that should be
-added or not.
-
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Jérôme Glisse <jglisse@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
---
-v2:
-- Totally new approach: Adjust filp->f_mapping at open time. Note that
-  this now works on all architectures, not just those support
-  ARCH_GENERIC_PCI_MMAP_RESOURCE
----
- drivers/pci/pci-sysfs.c | 4 ++++
- drivers/pci/proc.c      | 1 +
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 6d78df981d41..cee38fcb4a86 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -928,6 +928,7 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_io->read = pci_read_legacy_io;
- 	b->legacy_io->write = pci_write_legacy_io;
- 	b->legacy_io->mmap = pci_mmap_legacy_io;
-+	b->legacy_io->mapping = iomem_get_mapping();
- 	pci_adjust_legacy_attr(b, pci_mmap_io);
- 	error = device_create_bin_file(&b->dev, b->legacy_io);
- 	if (error)
-@@ -940,6 +941,7 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_mem->size = 1024*1024;
- 	b->legacy_mem->attr.mode = 0600;
- 	b->legacy_mem->mmap = pci_mmap_legacy_mem;
-+	b->legacy_io->mapping = iomem_get_mapping();
- 	pci_adjust_legacy_attr(b, pci_mmap_mem);
- 	error = device_create_bin_file(&b->dev, b->legacy_mem);
- 	if (error)
-@@ -1155,6 +1157,8 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
- 			res_attr->mmap = pci_mmap_resource_uc;
- 		}
- 	}
-+	if (res_attr->mmap)
-+		res_attr->mapping = iomem_get_mapping();
- 	res_attr->attr.name = res_attr_name;
- 	res_attr->attr.mode = 0600;
- 	res_attr->size = pci_resource_len(pdev, num);
-diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index 3a2f90beb4cb..9bab07302bbf 100644
---- a/drivers/pci/proc.c
-+++ b/drivers/pci/proc.c
-@@ -298,6 +298,7 @@ static int proc_bus_pci_open(struct inode *inode, struct file *file)
- 	fpriv->write_combine = 0;
- 
- 	file->private_data = fpriv;
-+	file->f_mapping = iomem_get_mapping();
- 
- 	return 0;
- }
 -- 
-2.28.0
-
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
