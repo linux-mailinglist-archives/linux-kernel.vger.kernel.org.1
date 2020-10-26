@@ -2,191 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10407298F9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828D3298FA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781805AbgJZOlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:41:21 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:34765 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781799AbgJZOlT (ORCPT
+        id S1781822AbgJZOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:41:54 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:5954 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781813AbgJZOlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:41:19 -0400
-Received: by mail-io1-f70.google.com with SMTP id l12so6036696ioj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:41:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2HM/wCeXg7cLFuWJ8AHGUKtpGpttFNH8NsHAu4nzABU=;
-        b=o3UlxobYS5bWwVNbk0YAWzX3kehbA9j6eZWVc+0zn4lclaV0ly/kjDexSF+PNkOimO
-         T8BuXAe05UUlcg59xS2NYlNGBYNWen+ZgpdEqfgcoBG24slY3rKAA6ws8+ezPy9Q5r/C
-         o8zrFJqNq9V0ZM57e7/0lhzdh+XqOi8/W00F/+9INUGk3iJstduE+CcXp6oW37gahiqo
-         rf9HH6K31tu5KBhBuPj6A/UIDeHPBh+iDP/Uqy6+nEGPsdSK/XZ+0kk3qByC5n6/6++7
-         b931ibaNmvHuNWYLbI9UDWsnWXhXvGf/AIuf7aWPzRbTrY2zxWN6eNzoJnFZwTBNiNkT
-         6YPA==
-X-Gm-Message-State: AOAM5329FXPgnaKN59asYhVXxMXcXH765S+s9VvC6TCFwR9L/FJkLffm
-        Gy68a9JHoXX+QVgCHKYpbwsWwDNDGLgpVOYhQ108acFdVpzD
-X-Google-Smtp-Source: ABdhPJwNlQL+qJ6qgdwblfAgQPlcIcbRuu03KJz+bAqJRGV+u2B9AgR1dyf8aIlbX2nDWxC/Jb8+f0zjCMsj1NkcWY4IIq/NuEpa
+        Mon, 26 Oct 2020 10:41:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1603723312; x=1635259312;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=Z51Y0WPuxfySceJvyCg6OljYCBlpG10jvErN7/lqG0I=;
+  b=R+NiQfz5B+DbyhcfeUE5eJ5esnaiMONIGQPcVmK9Dpjlzg2LvD8rgAZ0
+   m9W71NXMUI8i/MeR5zcSN7JQ9Vsc9L/XaFOh94HwBnPR6rip1tPSueraN
+   h59kR0O7hsqSiJWRxFAUQKynfDdyTC+6E0TcRP2H9tDmh4bAQXE6/TL8S
+   DsOl6XOVHVQnOuNYFsCeZmg0r+wIciDpqWRTZcGrGpAt7RZ+nhK/n7EGF
+   mm26htIActEplS1nE5LCBOdnPBgMfiZdtWO4eCaCj+WCAWTKXdp33CG/T
+   X66uSJhWLtWVpqgzemq8t8WclcT6gwYX+MBPpZXPMHL89bdMjCLSqT2Ks
+   Q==;
+IronPort-SDR: ur/iatolHsSQLlPgkra01jpyP5UkFR+f5oGAiX4Pjn2n9J/D9MuDMyL3kv6VEXO9c7A7mTJwUg
+ xkaD593Pxs3tt+NKcnSCwp5g5iVK4g1VwkmMkzF89Uf/vF0WGR5HTRPPs9RTW9rmrMcJ7rRppO
+ +mmBam0NpSmUlFv7OHKc9fODnfUkoz/5riwLNb2Z99G3KTobhCNw8swQiqoscQVQAhUOIWCOPy
+ ChnKC2dgkrJ97Jg3lR297+N8NYLzL+SR8oX+M2jADYlFdtkF7Mkpl/29SgZ4F3uB5IkWi3WB3T
+ AK4=
+X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
+   d="scan'208";a="91396107"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Oct 2020 07:41:52 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 26 Oct 2020 07:41:51 -0700
+Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Mon, 26 Oct 2020 07:41:49 -0700
+References: <20201014100707.2728637-1-lars.povlsen@microchip.com> <20201014100707.2728637-3-lars.povlsen@microchip.com> <CAHp75Vdd6ECJaWytYVz+5GYZrwybzZmviUOt3H=t-4LH=_idKg@mail.gmail.com>
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-arm Mailing List" <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v6 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO
+In-Reply-To: <CAHp75Vdd6ECJaWytYVz+5GYZrwybzZmviUOt3H=t-4LH=_idKg@mail.gmail.com>
+Date:   Mon, 26 Oct 2020 15:41:48 +0100
+Message-ID: <87blgp9hhv.fsf@soft-dev15.microsemi.net>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5a17:: with SMTP id o23mr8648240iob.101.1603723276443;
- Mon, 26 Oct 2020 07:41:16 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 07:41:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000035e65c05b293ec0e@google.com>
-Subject: KASAN: use-after-free Read in j1939_xtp_rx_dat_one
-From:   syzbot <syzbot+220c1a29987a9a490903@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+Hi Andy!
 
-HEAD commit:    0adc313c Merge tag 'gfs2-for-5.10' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=134ebaef900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df5c8291513455a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=220c1a29987a9a490903
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
+Andy Shevchenko writes:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> On Wed, Oct 14, 2020 at 6:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>>
+>> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
+>> (SGPIO) device used in various SoC's.
+>
+> ...
+>
+>> +#define PIN_NAM_SZ     (sizeof("SGPIO_D_pXXbY")+1)
+>
+> +1 for what?
+>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+220c1a29987a9a490903@syzkaller.appspotmail.com
+Reverse fencepost :-). I'll remove it.
 
-vcan0: j1939_xtp_rx_dat_one: 0x000000009262b4a1: Data of RX-looped back packet (00 ff ff ff ff ff ff) doesn't match TX data (00 00 00 00 00 00 00)!
-==================================================================
-BUG: KASAN: use-after-free in j1939_xtp_rx_dat_one+0x108d/0x1130 net/can/j1939/transport.c:1825
-Read of size 1 at addr ffff8880219f308e by task ksoftirqd/0/10
+> ...
+>
+>> +#define __shf(x)               (__builtin_ffsll(x) - 1)
+>> +#define __BF_PREP(bf, x)       (bf & ((x) << __shf(bf)))
+>> +#define __BF_GET(bf, x)                (((x & bf) >> __shf(bf)))
+>
+> This smells like bitfield.h.
+>
 
-CPU: 0 PID: 10 Comm: ksoftirqd/0 Not tainted 5.9.0-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- j1939_xtp_rx_dat_one+0x108d/0x1130 net/can/j1939/transport.c:1825
- j1939_xtp_rx_dat net/can/j1939/transport.c:1875 [inline]
- j1939_tp_recv+0x544/0xb40 net/can/j1939/transport.c:2057
- j1939_can_recv+0x5bc/0x7d0 net/can/j1939/main.c:101
- deliver net/can/af_can.c:571 [inline]
- can_rcv_filter+0x5d4/0x8d0 net/can/af_can.c:605
- can_receive+0x2e3/0x520 net/can/af_can.c:662
- can_rcv+0x12a/0x1a0 net/can/af_can.c:688
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5311
- __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5425
- process_backlog+0x232/0x6c0 net/core/dev.c:6315
- napi_poll net/core/dev.c:6759 [inline]
- net_rx_action+0x4dc/0x1100 net/core/dev.c:6829
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
- run_ksoftirqd kernel/softirq.c:653 [inline]
- run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
- smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Yes, and I would use it if I could, just bitfield.h don't like anything
+but constexpr. The driver support 3 SoC variants which (unfortunately)
+have different register layouts in some areas.
 
-Allocated by task 15076:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:526 [inline]
- slab_alloc_node mm/slub.c:2891 [inline]
- kmem_cache_alloc_node+0x132/0x480 mm/slub.c:2927
- __alloc_skb+0x71/0x550 net/core/skbuff.c:198
- alloc_skb include/linux/skbuff.h:1094 [inline]
- alloc_skb_with_frags+0x92/0x570 net/core/skbuff.c:5832
- sock_alloc_send_pskb+0x72a/0x880 net/core/sock.c:2329
- j1939_sk_alloc_skb net/can/j1939/socket.c:857 [inline]
- j1939_sk_send_loop net/can/j1939/socket.c:1039 [inline]
- j1939_sk_sendmsg+0x6bb/0x1380 net/can/j1939/socket.c:1174
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- sock_no_sendpage+0xee/0x130 net/core/sock.c:2833
- kernel_sendpage.part.0+0x1ab/0x350 net/socket.c:3646
- kernel_sendpage net/socket.c:3643 [inline]
- sock_sendpage+0xe5/0x140 net/socket.c:944
- pipe_to_sendpage+0x2ad/0x380 fs/splice.c:364
- splice_from_pipe_feed fs/splice.c:418 [inline]
- __splice_from_pipe+0x3dc/0x830 fs/splice.c:562
- splice_from_pipe fs/splice.c:597 [inline]
- generic_splice_sendpage+0xd4/0x140 fs/splice.c:743
- do_splice_from fs/splice.c:764 [inline]
- do_splice+0xbb8/0x1790 fs/splice.c:1061
- __do_sys_splice fs/splice.c:1306 [inline]
- __se_sys_splice fs/splice.c:1288 [inline]
- __ia32_sys_splice+0x195/0x250 fs/splice.c:1288
- do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
- __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> ...
+>
+>> +static int sgpio_input_get(struct sgpio_priv *priv,
+>> +                          struct sgpio_port_addr *addr)
+>> +{
+>
+>> +       int ret;
+>> +
+>> +       ret = !!(sgpio_readl(priv, REG_INPUT_DATA, addr->bit) &
+>> +                BIT(addr->port));
+>> +
+>> +       return ret;
+>
+> Sounds like one line.
+>
 
-Freed by task 22:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:622
- __kfree_skb net/core/skbuff.c:679 [inline]
- kfree_skb net/core/skbuff.c:696 [inline]
- kfree_skb+0x140/0x3f0 net/core/skbuff.c:690
- j1939_session_skb_drop_old net/can/j1939/transport.c:333 [inline]
- j1939_xtp_rx_cts_one net/can/j1939/transport.c:1394 [inline]
- j1939_xtp_rx_cts+0xb59/0xec0 net/can/j1939/transport.c:1433
- j1939_tp_cmd_recv net/can/j1939/transport.c:2001 [inline]
- j1939_tp_recv+0x8be/0xb40 net/can/j1939/transport.c:2067
- j1939_can_recv+0x5bc/0x7d0 net/can/j1939/main.c:101
- deliver net/can/af_can.c:571 [inline]
- can_rcv_filter+0x5d4/0x8d0 net/can/af_can.c:605
- can_receive+0x2e3/0x520 net/can/af_can.c:662
- can_rcv+0x12a/0x1a0 net/can/af_can.c:688
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5311
- __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5425
- process_backlog+0x232/0x6c0 net/core/dev.c:6315
- napi_poll net/core/dev.c:6759 [inline]
- net_rx_action+0x4dc/0x1100 net/core/dev.c:6829
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
+Yes, I'll change that.
 
-The buggy address belongs to the object at ffff8880219f3040
- which belongs to the cache skbuff_head_cache of size 224
-The buggy address is located 78 bytes inside of
- 224-byte region [ffff8880219f3040, ffff8880219f3120)
-The buggy address belongs to the page:
-page:000000007e0b9bbc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x219f2
-head:000000007e0b9bbc order:1 compound_mapcount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff88804030a500
-raw: 0000000000000000 0000000000190019 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+>> +}
+>
+>> +static int sgpio_get_functions_count(struct pinctrl_dev *pctldev)
+>> +{
+>
+>> +       return 1;
+>
+> I didn't get why it's not a pure GPIO driver?
+> It has only one function (no pinmux).
+> I didn't find any pin control features either.
+>
+> What did I miss?
 
-Memory state around the buggy address:
- ffff8880219f2f80: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
- ffff8880219f3000: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
->ffff8880219f3080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                      ^
- ffff8880219f3100: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880219f3180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+The hardware has more functions, which are planned to be added
+later. This has already been agreed with Linux Walleij.
 
+>
+> ...
+>
+>> +static int microchip_sgpio_get_value(struct gpio_chip *gc, unsigned int gpio)
+>> +{
+>> +       struct sgpio_bank *bank = gpiochip_get_data(gc);
+>> +       struct sgpio_priv *priv = bank->priv;
+>> +       struct sgpio_port_addr addr;
+>
+>> +       int ret;
+>
+> No need.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Ok, I'll trim it.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+>> +
+>> +       sgpio_pin_to_addr(priv, gpio, &addr);
+>> +
+>> +       if (bank->is_input)
+>> +               ret = sgpio_input_get(priv, &addr);
+>> +       else
+>> +               ret = sgpio_output_get(priv, &addr);
+>> +
+>> +       return ret;
+>> +}
+>
+>
+> ...
+>
+>
+>> +       ret = devm_gpiochip_add_data(dev, gc, bank);
+>> +       if (ret == 0)
+>
+>> +               dev_info(dev, "Registered %d GPIOs\n", ngpios);
+>
+> No noise.
+>
+
+OK, gone.
+
+>> +       else
+>> +               dev_err(dev, "Failed to register: ret %d\n", ret);
+>> +
+>
+> ...
+>
+>> +       /* Get register map */
+>> +       regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       priv->regs = devm_ioremap_resource(dev, regs);
+>
+> devm_platform_ioremap_resource();
+
+Yes, I'll replace with that.
+
+>
+>> +       if (IS_ERR(priv->regs))
+>> +               return PTR_ERR(priv->regs);
+>
+>> +       priv->properties = of_device_get_match_data(dev);
+>
+> It's interesting you have a mix between OF APIs and device property
+> APIs. Choose one. If you stick with OF, use of_property_ and so,
+> otherwise replace of_*() by corresponding device_*() or generic calls.
+
+Sure. I will change the device_property_read_u32() with
+of_property_read_u32().
+
+>
+> Can you use gpio-regmap APIs?
+
+No, I think the sgpio hardware is a little too odd for that
+(of_gpio_n_cells == 3). And then there's alternate pinctrl functions.
+
+Thank you for your comments, they are very much appreciated. Let me know
+if I missed anything.
+
+I will refresh the series shortly (on v5.10-rc1).
+
+---Lars
+
+-- 
+Lars Povlsen,
+Microchip
