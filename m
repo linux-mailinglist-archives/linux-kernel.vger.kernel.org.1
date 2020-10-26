@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A368299C64
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C46E299C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436949AbgJZX6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:58:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33740 "EHLO mail.kernel.org"
+        id S2436971AbgJZX6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:58:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410914AbgJZXze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:55:34 -0400
+        id S2410956AbgJZXzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:55:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0F8C221F8;
-        Mon, 26 Oct 2020 23:55:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0139121655;
+        Mon, 26 Oct 2020 23:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756533;
-        bh=cme9WN7qcSRNiUJET6MwAsG0RRGkGz8drNhlzUhFiZE=;
+        s=default; t=1603756542;
+        bh=12+N3Sl8anEqlF04IUgnWUIyuoEjcEJ7JjgNNWWKPJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vgGGCtmxOVSdyq+NBIM2cHdp719qnuKGkncaGxDSI6ihv45vSC5XiTqQviuKKc3CI
-         YJi6FOZLAMKUBgCd8MwBWFwpvZ74zdUvOgdjGSYRPhZyzDSoaY1I6C2OESDBCOce/8
-         TLnVTIn/Jlh4+dRPBFdZBhjhLccYif6R54mz+fn4=
+        b=nyRPW1JGbcBM7xtXUMzs46mQBvVhAB/dQRLokASpD8uOPOCrnpvR5N44uOpT0MxzX
+         r8clV80Z1ZDRdL9V9G89EEjWgMwNTWr/Kn14sW/Oqrjbsin4VBNRLdwdQx98fpOqMW
+         AhBnjcIuOH4LPBG5s1L3jHbB7ofp/2WquSItDFuQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Wysochanski <dwysocha@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 13/80] NFS4: Fix oops when copy_file_range is attempted with NFS4.0 source
-Date:   Mon, 26 Oct 2020 19:54:09 -0400
-Message-Id: <20201026235516.1025100-13-sashal@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-doc@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 21/80] media: videodev2.h: RGB BT2020 and HSV are always full range
+Date:   Mon, 26 Oct 2020 19:54:17 -0400
+Message-Id: <20201026235516.1025100-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
 References: <20201026235516.1025100-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit d8a6ad913c286d4763ae20b14c02fe6f39d7cd9f ]
+[ Upstream commit b305dfe2e93434b12d438434461b709641f62af4 ]
 
-The following oops is seen during xfstest/565 when the 'test'
-(source of the copy) is NFS4.0 and 'scratch' (destination) is NFS4.2
-[   59.692458] run fstests generic/565 at 2020-08-01 05:50:35
-[   60.613588] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[   60.624970] #PF: supervisor read access in kernel mode
-[   60.627671] #PF: error_code(0x0000) - not-present page
-[   60.630347] PGD 0 P4D 0
-[   60.631853] Oops: 0000 [#1] SMP PTI
-[   60.634086] CPU: 6 PID: 2828 Comm: xfs_io Kdump: loaded Not tainted 5.8.0-rc3 #1
-[   60.637676] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-[   60.639901] RIP: 0010:nfs4_check_serverowner_major_id+0x5/0x30 [nfsv4]
-[   60.642719] Code: 89 ff e8 3e b3 b8 e1 e9 71 fe ff ff 41 bc da d8 ff ff e9 c3 fe ff ff e8 e9 9d 08 e2 66 0f 1f 84 00 00 00 00 00 66 66 66 66 90 <8b> 57 08 31 c0 3b 56 08 75 12 48 83 c6 0c 48 83 c7 0c e8 c4 97 bb
-[   60.652629] RSP: 0018:ffffc265417f7e10 EFLAGS: 00010287
-[   60.655379] RAX: ffffa0664b066400 RBX: 0000000000000000 RCX: 0000000000000001
-[   60.658754] RDX: ffffa066725fb000 RSI: ffffa066725fd000 RDI: 0000000000000000
-[   60.662292] RBP: 0000000000020000 R08: 0000000000020000 R09: 0000000000000000
-[   60.666189] R10: 0000000000000003 R11: 0000000000000000 R12: ffffa06648258d00
-[   60.669914] R13: 0000000000000000 R14: 0000000000000000 R15: ffffa06648258100
-[   60.673645] FS:  00007faa9fb35800(0000) GS:ffffa06677d80000(0000) knlGS:0000000000000000
-[   60.677698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   60.680773] CR2: 0000000000000008 CR3: 0000000203f14000 CR4: 00000000000406e0
-[   60.684476] Call Trace:
-[   60.685809]  nfs4_copy_file_range+0xfc/0x230 [nfsv4]
-[   60.688704]  vfs_copy_file_range+0x2ee/0x310
-[   60.691104]  __x64_sys_copy_file_range+0xd6/0x210
-[   60.693527]  do_syscall_64+0x4d/0x90
-[   60.695512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   60.698006] RIP: 0033:0x7faa9febc1bd
+The default RGB quantization range for BT.2020 is full range (just as for
+all the other RGB pixel encodings), not limited range.
 
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Update the V4L2_MAP_QUANTIZATION_DEFAULT macro and documentation
+accordingly.
+
+Also mention that HSV is always full range and cannot be limited range.
+
+When RGB BT2020 was introduced in V4L2 it was not clear whether it should
+be limited or full range, but full range is the right (and consistent)
+choice.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4file.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../media/uapi/v4l/colorspaces-defs.rst         |  9 ++++-----
+ .../media/uapi/v4l/colorspaces-details.rst      |  5 ++---
+ include/uapi/linux/videodev2.h                  | 17 ++++++++---------
+ 3 files changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
-index 534b6fd70ffdb..6b31cb5f9c9db 100644
---- a/fs/nfs/nfs4file.c
-+++ b/fs/nfs/nfs4file.c
-@@ -138,7 +138,8 @@ static ssize_t __nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
- 	/* Only offload copy if superblock is the same */
- 	if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
- 		return -EXDEV;
--	if (!nfs_server_capable(file_inode(file_out), NFS_CAP_COPY))
-+	if (!nfs_server_capable(file_inode(file_out), NFS_CAP_COPY) ||
-+	    !nfs_server_capable(file_inode(file_in), NFS_CAP_COPY))
- 		return -EOPNOTSUPP;
- 	if (file_inode(file_in) == file_inode(file_out))
- 		return -EOPNOTSUPP;
+diff --git a/Documentation/media/uapi/v4l/colorspaces-defs.rst b/Documentation/media/uapi/v4l/colorspaces-defs.rst
+index e122bbe3d799d..aabb08130354a 100644
+--- a/Documentation/media/uapi/v4l/colorspaces-defs.rst
++++ b/Documentation/media/uapi/v4l/colorspaces-defs.rst
+@@ -36,8 +36,7 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
+ :c:type:`v4l2_hsv_encoding` specifies which encoding is used.
+ 
+ .. note:: The default R'G'B' quantization is full range for all
+-   colorspaces except for BT.2020 which uses limited range R'G'B'
+-   quantization.
++   colorspaces. HSV formats are always full range.
+ 
+ .. tabularcolumns:: |p{6.7cm}|p{10.8cm}|
+ 
+@@ -169,8 +168,8 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
+       - Details
+     * - ``V4L2_QUANTIZATION_DEFAULT``
+       - Use the default quantization encoding as defined by the
+-	colorspace. This is always full range for R'G'B' (except for the
+-	BT.2020 colorspace) and HSV. It is usually limited range for Y'CbCr.
++	colorspace. This is always full range for R'G'B' and HSV.
++	It is usually limited range for Y'CbCr.
+     * - ``V4L2_QUANTIZATION_FULL_RANGE``
+       - Use the full range quantization encoding. I.e. the range [0…1] is
+ 	mapped to [0…255] (with possible clipping to [1…254] to avoid the
+@@ -180,4 +179,4 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
+     * - ``V4L2_QUANTIZATION_LIM_RANGE``
+       - Use the limited range quantization encoding. I.e. the range [0…1]
+ 	is mapped to [16…235]. Cb and Cr are mapped from [-0.5…0.5] to
+-	[16…240].
++	[16…240]. Limited Range cannot be used with HSV.
+diff --git a/Documentation/media/uapi/v4l/colorspaces-details.rst b/Documentation/media/uapi/v4l/colorspaces-details.rst
+index 8b0ba3668101d..fd0cf57691d87 100644
+--- a/Documentation/media/uapi/v4l/colorspaces-details.rst
++++ b/Documentation/media/uapi/v4l/colorspaces-details.rst
+@@ -377,9 +377,8 @@ Colorspace BT.2020 (V4L2_COLORSPACE_BT2020)
+ The :ref:`itu2020` standard defines the colorspace used by Ultra-high
+ definition television (UHDTV). The default transfer function is
+ ``V4L2_XFER_FUNC_709``. The default Y'CbCr encoding is
+-``V4L2_YCBCR_ENC_BT2020``. The default R'G'B' quantization is limited
+-range (!), and so is the default Y'CbCr quantization. The chromaticities
+-of the primary colors and the white reference are:
++``V4L2_YCBCR_ENC_BT2020``. The default Y'CbCr quantization is limited range.
++The chromaticities of the primary colors and the white reference are:
+ 
+ 
+ 
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 530638dffd934..3210b3c82a4a2 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -371,9 +371,9 @@ enum v4l2_hsv_encoding {
+ 
+ enum v4l2_quantization {
+ 	/*
+-	 * The default for R'G'B' quantization is always full range, except
+-	 * for the BT2020 colorspace. For Y'CbCr the quantization is always
+-	 * limited range, except for COLORSPACE_JPEG: this is full range.
++	 * The default for R'G'B' quantization is always full range.
++	 * For Y'CbCr the quantization is always limited range, except
++	 * for COLORSPACE_JPEG: this is full range.
+ 	 */
+ 	V4L2_QUANTIZATION_DEFAULT     = 0,
+ 	V4L2_QUANTIZATION_FULL_RANGE  = 1,
+@@ -382,14 +382,13 @@ enum v4l2_quantization {
+ 
+ /*
+  * Determine how QUANTIZATION_DEFAULT should map to a proper quantization.
+- * This depends on whether the image is RGB or not, the colorspace and the
+- * Y'CbCr encoding.
++ * This depends on whether the image is RGB or not, the colorspace.
++ * The Y'CbCr encoding is not used anymore, but is still there for backwards
++ * compatibility.
+  */
+ #define V4L2_MAP_QUANTIZATION_DEFAULT(is_rgb_or_hsv, colsp, ycbcr_enc) \
+-	(((is_rgb_or_hsv) && (colsp) == V4L2_COLORSPACE_BT2020) ? \
+-	 V4L2_QUANTIZATION_LIM_RANGE : \
+-	 (((is_rgb_or_hsv) || (colsp) == V4L2_COLORSPACE_JPEG) ? \
+-	 V4L2_QUANTIZATION_FULL_RANGE : V4L2_QUANTIZATION_LIM_RANGE))
++	(((is_rgb_or_hsv) || (colsp) == V4L2_COLORSPACE_JPEG) ? \
++	 V4L2_QUANTIZATION_FULL_RANGE : V4L2_QUANTIZATION_LIM_RANGE)
+ 
+ /*
+  * Deprecated names for opRGB colorspace (IEC 61966-2-5)
 -- 
 2.25.1
 
