@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBB0298989
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624882989B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1767683AbgJZJkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:40:16 -0400
-Received: from mail-qk1-f202.google.com ([209.85.222.202]:46278 "EHLO
-        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1421738AbgJZJkP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:40:15 -0400
-Received: by mail-qk1-f202.google.com with SMTP id f9so1904634qkg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 02:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=iuncRZU/n/qdgI7S//uwAQmqKe3LmFdZ5wVUdpPMh/w=;
-        b=hmJWGdpqiRn4Qj3L1IygZpzGMSUe6R8DMaJrpkXSHQNw39KBa6RMIe5uzIiB6ALHx6
-         7mf+S0RUDSiwwxcgUUs2g6tU+OdLYm1nKIqq5KDm6ufIwwB0GIU1jQKNY/1b7RjRCnxP
-         5Y4ejCYnwj0alqRFXaHpjum/4p0iNzF2DB9ksst+SKHVKXZqfeJI5gWldJTvvAU/kl2X
-         lkvCJ4do2DG/ivLaxOTCeXASrBgPukGqE1x6TWKC+Vm+f8ZGS54j9kCS/fF+YnD1VuPU
-         yENvmvyMy1Tn74qP91YQFTRR4CPScRNkvVnq/ITJEE9/ncpgTc1eudPTKtluTEgNMexN
-         LKFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=iuncRZU/n/qdgI7S//uwAQmqKe3LmFdZ5wVUdpPMh/w=;
-        b=GNFHe1EhQwknGY6D0F8HRKwk/Ul2tQGwzNMXGEwFfGpHQvmbcm6YMg/5JQArPqdhHg
-         uUM97VX6gYGsm25GnIB/3hsgpDivg7vrJjBk8nRDG426Ok8gLLqoNfGCsXge93zLMhbf
-         GPGCt/TTOTKkEcSUrD+holNwoAJdyKwFnIf0mtLZX3/AIAgBUQnXpORjhaFao6dWHYdc
-         9JrP8Cdk3v8JW3NR9uCKTOwUlzbtfEpBua42tjUfwYSmfqspY/0dQgcywp1KATbeEBCv
-         eujw8huCQiiBHEU9R8iru80vfO5g/h75Qe/K9zDy7tJYCtZjtXK22fgm2NZ7BtN1IyNH
-         485A==
-X-Gm-Message-State: AOAM533jKaXzUJ109XM0QrgtpaghAcvNTTHPcH2Wp3A5WUYjLMX+WHev
-        W6MD4axFiVNDhCbPBx47G1+25gp7I7TX8Q==
-X-Google-Smtp-Source: ABdhPJy+mI0vnmKylwtlFsmVxcnM1tY+7eaIo+ulq7WWs25n80yx/lSw9fa2rKak9PfsRXDP0qke3U9F+1cAUQ==
-Sender: "robinhsu via sendgmr" <robinhsu@robinhsu-p520.ntc.corp.google.com>
-X-Received: from robinhsu-p520.ntc.corp.google.com ([2401:fa00:fc:202:1ea0:b8ff:fe77:fe45])
- (user=robinhsu job=sendgmr) by 2002:a0c:e054:: with SMTP id
- y20mr16670180qvk.30.1603705214218; Mon, 26 Oct 2020 02:40:14 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 17:40:00 +0800
-Message-Id: <20201026094000.1500425-1-robinhsu@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH 1/1] f2fs-toos:fsck.f2fs Fix bad return value
-From:   Robin Hsu <robinhsu@google.com>
-To:     linux-f2fs-devel@lists.sourceforge.net, jaegeuk@kernel.org,
-        chao@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1768333AbgJZJqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:46:14 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4371 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1737002AbgJZJpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:45:25 -0400
+IronPort-SDR: LRp2Pq0hdNZR9kuoAPxiHUBFlDvQR8hvTs61hbU9JhNgwMeZcfk7rfDvfn8RVbv4KbuZLEe4la
+ b8y4Q/F4UGqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="167996119"
+X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
+   d="scan'208";a="167996119"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 02:45:24 -0700
+IronPort-SDR: +4f6t+bRId8OogIE8CiaMfzJT8Yb/TR2Y7wG2L6Ihv4svWmm5uBadc1AS61VdoS4oAw1/vIZYt
+ aTck8qk/q07g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
+   d="scan'208";a="424042896"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2020 02:45:21 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
+        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v3 0/6] spi: cadence-quadspi: Add QSPI controller support for Intel LGM SoC
+Date:   Mon, 26 Oct 2020 17:45:13 +0800
+Message-Id: <20201026094519.56083-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ret' should not have been used here: otherwise, it would be wrongly used
-as the error code and then be returned from main().
+Add QSPI controller support for Intel LGM SoC.
 
-Signed-off-by: Robin Hsu <robinhsu@google.com>
+Note from Vignesh(mtd subsystem maintainer):
+This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
+support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
+<vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
+cadence-quadspi driver to spi-mem framework
+
+Those patches were trying to accomplish too many things in a single set
+of patches and need to split into smaller patches. This is reduced
+version of above series.
+
+Changes that are intended to make migration easy are split into separate
+patches. Patches 1 to 3 drop features that cannot be supported under
+spi-mem at the moment (backward compatibility is maintained).
+Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
+spi-mem and patch 7 moves the driver to drivers/spi folder.
+
+I have tested both INDAC mode (used by non TI platforms like Altera
+SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
+
+Patches to move move bindings over to
+"Documentation/devicetree/bindings/spi/" directory and also conversion
+of bindig doc to YAML will be posted separately.  Support for Intel
+platform would follow that.
+
+Reference:
+        https://lkml.org/lkml/2020/6/1/50
+
 ---
- fsck/fsck.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v3:
+  - Pratyush review comments update
+  - CQSPI_SUPPORTS_MULTI_CHIPSELECT macro used instead of cqspi->use_direct_mode
+  - disable DAC support placed in end of controller_init
+v2:
+  - Rob's review comments update for dt-bindings
+  - add 'oneOf' for compatible selection
+  - drop un-neccessary descriptions
+  - add the cdns,is-decoded-cs and cdns,rclk-en properties as schema
+  - remove 'allOf' in not required place
+  - add AdditionalProperties false
+  - add minItems/maxItems for qspi reset attributes
 
-diff --git a/fsck/fsck.c b/fsck/fsck.c
-index f97e9fb..66e4e3f 100644
---- a/fsck/fsck.c
-+++ b/fsck/fsck.c
-@@ -3137,8 +3137,7 @@ int fsck_verify(struct f2fs_sb_info *sbi)
- 		char ans[255] = {0};
- 
- 		printf("\nDo you want to restore lost files into ./lost_found/? [Y/N] ");
--		ret = scanf("%s", ans);
--		ASSERT(ret >= 0);
-+		ASSERT(scanf("%s", ans) >= 0);
- 		if (!strcasecmp(ans, "y")) {
- 			for (i = 0; i < fsck->nr_nat_entries; i++) {
- 				if (f2fs_test_bit(i, fsck->nat_area_bitmap))
+resend-v1:
+  - As per Mark's suggestion , reorder the patch series 1-3 driver
+    support patches, series 4-6 dt-bindings patches.
+v1:
+  - initial version
+
+Ramuthevar Vadivel Murugan (6):
+  spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
+  spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+  spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+  spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
+  dt-bindings: spi: Convert cadence-quadspi.txt to cadence-quadspi.yaml
+  dt-bindings: spi: Add compatible for Intel LGM SoC
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 ---------
+ .../devicetree/bindings/spi/cadence-quadspi.yaml   | 149 +++++++++++++++++++++
+ drivers/spi/Kconfig                                |   2 +-
+ drivers/spi/spi-cadence-quadspi.c                  |  31 +++++
+ 4 files changed, 181 insertions(+), 68 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+
 -- 
-2.29.0.rc2.309.g374f81d7ae-goog
+2.11.0
 
