@@ -2,207 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE54A298782
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC1B298789
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769819AbgJZHfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 03:35:52 -0400
-Received: from mail-pl1-f171.google.com ([209.85.214.171]:34879 "EHLO
-        mail-pl1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769811AbgJZHfv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 03:35:51 -0400
-Received: by mail-pl1-f171.google.com with SMTP id 1so4341617ple.2;
-        Mon, 26 Oct 2020 00:35:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wdNguVUHccJzb5/IlRDZZnRmjAKBAtuqpF6efG+Ef+A=;
-        b=QhwJc0qPF2Nw6+uHpOfqOwvRpwGp4oVIc7VVOH0hKD4yQG4DS9GhPGxuuOLxaBMTo7
-         OhSb2FG8/wam+tX20fJe7ANk8q67+76wQci8TBVprKMukT2Az5ebwc8dx2E6TiFxPU3S
-         NBc/McU9upqMt5dEaWopMlAjarq8GfQOoR8EV3PvZyHXRnm6B2eDsiS+rji9h74w9IoP
-         jCkkcpt892jAtGqRc5eBymj6mZc1uv8GC19vTm3coreDbdoGaH5GIcf2JUYjg08K1Qek
-         cL+W8uYYa2FP+jZ1UazcHsgAGZLCir1S2P2uxiJXluO/ei2OEv81A4rDpNRzPee6K3av
-         PZTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wdNguVUHccJzb5/IlRDZZnRmjAKBAtuqpF6efG+Ef+A=;
-        b=gurI1x0fw2sZQ5MAVxpamACDLZfLKwUPdD4jdsRUbSOBp8C9DQgSrtGALHKEX9byku
-         zYEYhYlxWr6mb1lpNKfWkotQuGryg3PIrZ8X51ObGf0TwCzCnKMOMW1cJXI91JPv0sRT
-         YoWreuRfc0UiaNBBcJE7N5+5zEUfzRQxUJcq9IIV0SERD1BVhJhkd+mnNdFnfg5K6FRI
-         xl68bmakMo6ZY/IrwIqJlfo0RuFKCjhh0igX8tn0OAO8cfxfwjPK8Cku8VEdwTDEHPpp
-         umi4CHH5lqsO2ezhG6k0NNzJE+d+ZV2djM13QzeebVxB9n4su4ePrquOP3GWZ2Xsp3Po
-         fBjg==
-X-Gm-Message-State: AOAM533EvBCE3QtgKkt/1YBY54Jvik4BGPhnmoDcu8K15qsZvQO7Dg8m
-        h3zviPDfy5zctVlA7jGpeZ8=
-X-Google-Smtp-Source: ABdhPJzvG7VACb7LMgs1lX6W7e2CVH+r7CUfaJjXYV6E5/5M/WMd15pKJJGIUNLzmekT6m2TQc4Vjw==
-X-Received: by 2002:a17:90a:aa18:: with SMTP id k24mr15125428pjq.231.1603697750411;
-        Mon, 26 Oct 2020 00:35:50 -0700 (PDT)
-Received: from ruantu-3.localdomain ([103.230.142.242])
-        by smtp.gmail.com with ESMTPSA id r6sm11363177pfg.85.2020.10.26.00.35.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 00:35:49 -0700 (PDT)
-From:   Yu-Tung Chang <mtwget@gmail.com>
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yu-Tung Chang <mtwget@gmail.com>
-Subject: [PATCH v3 1/1] ARM: dts: sun8i: add FriendlyArm ZeroPi support
-Date:   Mon, 26 Oct 2020 15:35:36 +0800
-Message-Id: <20201026073536.13617-2-mtwget@gmail.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201026073536.13617-1-mtwget@gmail.com>
-References: <20201026073536.13617-1-mtwget@gmail.com>
+        id S1769979AbgJZHjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 03:39:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1769970AbgJZHjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 03:39:09 -0400
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D33D7223EA;
+        Mon, 26 Oct 2020 07:39:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603697948;
+        bh=KtMkJ7nwQ38q/iA1mhWoniEbrFh5tS9XP1v8T2SqjsY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UPrPGt4EO4jIor52LqpNzL90RZQzlllRp44EOZ2BvZZIqAMTkdKVHgCguL5DKNHW0
+         M9I/jCVsChBQuzREHfCk4z/K3FSGJ/EU7mBaq2v1zikwbOfg13unGBFR9epb0x4stN
+         qOl36rDdX03NHv1x7n2aTgOmXAnNdOAwd4FkdogM=
+Received: by mail-oi1-f175.google.com with SMTP id f7so9640893oib.4;
+        Mon, 26 Oct 2020 00:39:08 -0700 (PDT)
+X-Gm-Message-State: AOAM530qnQgFtC6QnP/aRg4cKP6JvWD7kyzs6V4h3oa4ta6x4dPVBgxo
+        uW8oP231vbz/YfCwzXyerjGWjiOZ8SFKlkod1h4=
+X-Google-Smtp-Source: ABdhPJyabEPtHwS6evle82W//kYJRbOgvmepI59+zn/Cwz36p/IkrolcavYOjAKSO8q1zbmjN7eScsMmQXlHC0YwsxM=
+X-Received: by 2002:aca:5a56:: with SMTP id o83mr9534366oib.47.1603697948024;
+ Mon, 26 Oct 2020 00:39:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201024162515.30032-1-wens@kernel.org> <20201024162515.30032-2-wens@kernel.org>
+ <79894e1266db69e463ee74a52551101298cae03e.camel@aosc.io> <2859076.BEgH6Mo0Pn@jernej-laptop>
+ <9D317C52-5F28-41A9-80DA-DBADA142B042@aosc.io>
+In-Reply-To: <9D317C52-5F28-41A9-80DA-DBADA142B042@aosc.io>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 26 Oct 2020 08:38:57 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG2MOX4kWbN-zRVnGwpT3Mk7-1gitj0wUB9ZzwAazGPrw@mail.gmail.com>
+Message-ID: <CAMj1kXG2MOX4kWbN-zRVnGwpT3Mk7-1gitj0wUB9ZzwAazGPrw@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH 02/10] ARM: dts: sun6i: a31-hummingbird:
+ Enable RGMII RX/TX delay on Ethernet PHY
+To:     Icenowy Zheng <icenowy@aosc.io>, Jakub Kicinski <kuba@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>,
+        wens@kernel.org, Maxime Ripard <mripard@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-sunxi@googlegroups.com,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ZeroPi is another fun board developed
-by FriendlyELEC for makers,
-hobbyists and fans.
+On Sat, 24 Oct 2020 at 20:40, Icenowy Zheng <icenowy@aosc.io> wrote:
+>
+>
+>
+> =E4=BA=8E 2020=E5=B9=B410=E6=9C=8825=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=
+=882:30:35, "Jernej =C5=A0krabec" <jernej.skrabec@siol.net> =E5=86=99=E5=88=
+=B0:
+> >Dne sobota, 24. oktober 2020 ob 19:51:06 CEST je Icenowy Zheng
+> >napisal(a):
+> >> =E5=9C=A8 2020-10-25=E6=98=9F=E6=9C=9F=E6=97=A5=E7=9A=84 00:25 +0800=
+=EF=BC=8CChen-Yu Tsai=E5=86=99=E9=81=93=EF=BC=9A
+> >>
+> >> > From: Chen-Yu Tsai <wens@csie.org>
+> >> >
+> >> > The Ethernet PHY on the A31 Hummingbird has the RX and TX delays
+> >> > enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
+> >> >
+> >> > Fix the phy-mode description to correct reflect this so that the
+> >> > implementation doesn't reconfigure the delays incorrectly. This
+> >> > happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+> >> > rx/tx delay config").
+> >>
+> >> Personally I think they should revert this commit, and consider other
+> >> solution.
+> >>
+> >> This commit breaks everything.
+> >>
+> >
+> >Previously broken driver allowed inproper DT to work, so you have to
+> >fix
+> >everything eventually.
+>
+> There is no "improper DT" if it's already shipped, DT should suffer drive=
+r
+> change, not changed to match driver.
+>
+> I think at least Fedora tends to ship a DT with a system image that will
+> not get updated when kernel gets updated.
+>
 
-ZeroPi key features
-- Allwinner H3, Quad-core Cortex-A7@1.2GHz
-- 256MB/512MB DDR3 RAM
-- microsd slot
-- 10/100/1000Mbps Ethernet
-- Debug Serial Port
-- DC 5V/2A power-supply
+This same issue is under discussion in other places as well:
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
----
- .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
- arch/arm/boot/dts/Makefile                    |  1 +
- arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 87 +++++++++++++++++++
- 3 files changed, 93 insertions(+)
- create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+The following commit from v5.2
 
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-index efc9118233b4..9392a9a3f7e7 100644
---- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -246,6 +246,11 @@ properties:
-           - const: friendlyarm,nanopi-neo-plus2
-           - const: allwinner,sun50i-h5
- 
-+      - description: FriendlyARM ZeroPi
-+        items:
-+          - const: friendlyarm,zeropi
-+          - const: allwinner,sun50i-h3
-+
-       - description: Gemei G9 Tablet
-         items:
-           - const: gemei,g9
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4572db3fa5ae..f05e54257947 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1187,6 +1187,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
- 	sun8i-h3-orangepi-plus2e.dtb \
- 	sun8i-h3-orangepi-zero-plus2.dtb \
- 	sun8i-h3-rervision-dvk.dtb \
-+	sun8i-h3-zeropi.dtb \
- 	sun8i-h3-emlid-neutis-n5h3-devboard.dtb \
- 	sun8i-r16-bananapi-m2m.dtb \
- 	sun8i-r16-nintendo-nes-classic.dtb \
-diff --git a/arch/arm/boot/dts/sun8i-h3-zeropi.dts b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
-new file mode 100644
-index 000000000000..09c7e2988af6
---- /dev/null
-+++ b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
-@@ -0,0 +1,87 @@
-+/*
-+ * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
-+ *
-+ * This file is dual-licensed: you can use it either under the terms
-+ * of the GPL or the X11 license, at your option. Note that this dual
-+ * licensing only applies to this file, and not this project as a
-+ * whole.
-+ *
-+ *  a) This file is free software; you can redistribute it and/or
-+ *     modify it under the terms of the GNU General Public License as
-+ *     published by the Free Software Foundation; either version 2 of the
-+ *     License, or (at your option) any later version.
-+ *
-+ *     This file is distributed in the hope that it will be useful,
-+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *     GNU General Public License for more details.
-+ *
-+ * Or, alternatively,
-+ *
-+ *  b) Permission is hereby granted, free of charge, to any person
-+ *     obtaining a copy of this software and associated documentation
-+ *     files (the "Software"), to deal in the Software without
-+ *     restriction, including without limitation the rights to use,
-+ *     copy, modify, merge, publish, distribute, sublicense, and/or
-+ *     sell copies of the Software, and to permit persons to whom the
-+ *     Software is furnished to do so, subject to the following
-+ *     conditions:
-+ *
-+ *     The above copyright notice and this permission notice shall be
-+ *     included in all copies or substantial portions of the Software.
-+ *
-+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-+ *     OTHER DEALINGS IN THE SOFTWARE.
-+ */
-+
-+#include "sun8i-h3-nanopi.dtsi"
-+
-+/ {
-+	model = "FriendlyARM ZeroPi";
-+	compatible = "friendlyarm,zeropi", "allwinner,sun8i-h3";
-+
-+	aliases {
-+		ethernet0 = &emac;
-+	};
-+
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gmac_power_pin_nanopi>;
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-+	};
-+};
-+
-+&external_mdio {
-+	ext_rgmii_phy: ethernet-phy@7 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <7>;
-+	};
-+};
-+
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii-id";
-+
-+	allwinner,leds-active-low;
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	status = "okay";
-+	dr_mode = "host";
-+};
--- 
-2.29.0
+f81dadbcf7fd ("net: phy: realtek: Add rtl8211e rx/tx delays config")
 
+added handling of the TX/RX delay controls on the PHY, but did so
+incorrectly, and therefore had no effect on any of these systems.
+
+Commit
+
+bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+
+fixed TX/RX delay handling in v5.9, and now, incorrect phy-mode
+settings in DT means losing Ethernet connectivity. This patch has been
+backported to -stable, even though it is not clear at all that the
+patch fixes any regressions, it only fixes some broken code that did
+not turn out to be active in the first place.
+
+
+The result of this is that affected systems in the field using v5.4 or
+v5.8 stable kernels will lose their Ethernet connectivity once they
+upgrade to a newer release of the same v5.x tree that they shipped
+with. We may have ways to work around this more cleanly, but in the
+meantime, the stable backports of bbc4d71d6354 should simply be
+reverted (IMHO)
