@@ -2,68 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578AF298CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C3D298CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775105AbgJZM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:27:12 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:35736 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1775098AbgJZM1I (ORCPT
+        id S1775115AbgJZM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:27:38 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36588 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775108AbgJZM1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:27:08 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08011946|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0174674-0.00699969-0.975533;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=liush@allwinnertech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.Iode2WR_1603715216;
-Received: from localhost.localdomain(mailfrom:liush@allwinnertech.com fp:SMTPD_---.Iode2WR_1603715216)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Mon, 26 Oct 2020 20:27:01 +0800
-From:   liush <liush@allwinnertech.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, penberg@kernel.org,
-        akpm@linux-foundation.org, peterx@redhat.com, vbabka@suse.cz,
-        walken@google.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Liu Shaohua <liush@allwinnertech.com>
-Subject: [PATCH v3] riscv: fix pfn_to_virt err in do_page_fault().
-Date:   Mon, 26 Oct 2020 20:26:54 +0800
-Message-Id: <1603715214-29082-1-git-send-email-liush@allwinnertech.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 26 Oct 2020 08:27:37 -0400
+Received: by mail-wr1-f66.google.com with SMTP id x7so12285169wrl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0MCnq8BmFjuuQiWlm9eCLlDK+PBQ3cEnax3hxzmA1BQ=;
+        b=ar94P11IWiyu+ZMvtAZ0o8i4GpU+IiVeYFg89QsdI4Fl/IfyIMiNvV/ZBSWjvk12JL
+         58V//LBZI+rtWYw0X4Bn2oQNQLHEXiQT+aA1o2ncEPIO5ySDB1Sasg6ygemtGS+Yf6E8
+         Deuk/6Lq84fTVm91LMKsVd7MT+EPyWJS7L+b6GF4Q7qsSfgMUI+t5nwiDO698lrFFbYG
+         UY6rhFiTw9d+amHmlcN5VPEXfiCbY2b88eOhowYD2Kka+QGuLhT40GFSLTnfNR4mOcSp
+         R6GNaOoy354+YRxF730RTb7Gtu2Yenz4VT+Vp/CMiz0T9gr87B3r8tAE3xpKxj6Rc3TN
+         uW1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0MCnq8BmFjuuQiWlm9eCLlDK+PBQ3cEnax3hxzmA1BQ=;
+        b=hYUflz0YteTv5DjkIunLsR9uAkAjqEBvEHIyBDWn3Pb3Si0nQthXlAx6IDIhEvC/XY
+         qJP/Lb4/4lZfKu+tXglsROAYxDC7WEAa5Y8X9EYdhnxyu6pUQKwBgn8R6QQCqHPYu//U
+         tdpWC+NjAkhnQCd3tWVM7fQuh3VGkRRWniKNYcvhLjMfTO6q4o8MPbzRLKKOwqtln3dM
+         9brruFLauKNu19qhiG+CjcKOE0qjgOVcy9XLI4Uc1/K26I9lQCGYYZNjuOERCE+/WLQW
+         S118+m+lesMiAh5HVszIQoQBHQBFX/q0rNcRXfc91bygE6mjmuZwhztu06oHGcDPvd+k
+         a2CA==
+X-Gm-Message-State: AOAM532ptY9F07EFUqBRojemuQ2w3Vk4TU3kB2utnx8x/bdSokocakQf
+        GE13siYvZYFB0ihOWcMAtXXAxw==
+X-Google-Smtp-Source: ABdhPJykqsUdvqnzDLVx3Y6zQHVZGy66Nmr5/EwbDk99qg/Yz+ltenhMndi6h/B+t6ruiV5vqxcNmQ==
+X-Received: by 2002:adf:f841:: with SMTP id d1mr17571389wrq.297.1603715255563;
+        Mon, 26 Oct 2020 05:27:35 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
+        by smtp.gmail.com with ESMTPSA id p4sm23401025wrf.67.2020.10.26.05.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 05:27:34 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] devres: zero the memory in devm_krealloc() if needed
+Date:   Mon, 26 Oct 2020 13:27:28 +0100
+Message-Id: <20201026122728.8522-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Shaohua <liush@allwinnertech.com>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
+If we're returning the same pointer (when new size is smaller or equal
+to the old size) we need to check if the user wants the memory zeroed
+and memset() it manually if so.
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Signed-off-by: liush <liush@allwinnertech.com>
+Fixes: f82485722e5d devres: provide devm_krealloc()
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/riscv/mm/fault.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/base/devres.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-index 1359e21..3c8b9e4 100644
---- a/arch/riscv/mm/fault.c
-+++ b/arch/riscv/mm/fault.c
-@@ -86,6 +86,7 @@ static inline void vmalloc_fault(struct pt_regs *regs, int code, unsigned long a
- 	pmd_t *pmd, *pmd_k;
- 	pte_t *pte_k;
- 	int index;
-+	unsigned long pfn;
- 
- 	/* User mode accesses just cause a SIGSEGV */
- 	if (user_mode(regs))
-@@ -100,7 +101,8 @@ static inline void vmalloc_fault(struct pt_regs *regs, int code, unsigned long a
- 	 * of a task switch.
+diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+index 586e9a75c840..e522ad5f8342 100644
+--- a/drivers/base/devres.c
++++ b/drivers/base/devres.c
+@@ -895,8 +895,12 @@ void *devm_krealloc(struct device *dev, void *ptr, size_t new_size, gfp_t gfp)
+ 	 * If new size is smaller or equal to the actual number of bytes
+ 	 * allocated previously - just return the same pointer.
  	 */
- 	index = pgd_index(addr);
--	pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
-+	pfn = csr_read(CSR_SATP) & SATP_PPN;
-+	pgd = (pgd_t *)pfn_to_virt(pfn) + index;
- 	pgd_k = init_mm.pgd + index;
+-	if (total_new_size <= total_old_size)
++	if (total_new_size <= total_old_size) {
++		if (gfp & __GFP_ZERO)
++			memset(ptr, 0, new_size);
++
+ 		return ptr;
++	}
  
- 	if (!pgd_present(*pgd_k)) {
+ 	/*
+ 	 * Otherwise: allocate new, larger chunk. We need to allocate before
 -- 
-2.7.4
+2.29.1
 
