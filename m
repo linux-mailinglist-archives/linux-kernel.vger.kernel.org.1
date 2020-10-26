@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E83299921
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C485F299925
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391046AbgJZVwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52312 "EHLO mail.kernel.org"
+        id S2391073AbgJZVx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:53:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390998AbgJZVwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:52:44 -0400
+        id S2391058AbgJZVx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:53:28 -0400
 Received: from localhost.localdomain (unknown [192.30.34.233])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCA6B20708;
-        Mon, 26 Oct 2020 21:52:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 443852084C;
+        Mon, 26 Oct 2020 21:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603749163;
-        bh=+A7DvgqVh3Qf7w5qcuvrismxVJ2EIHUYl5GuVTb5ydQ=;
+        s=default; t=1603749208;
+        bh=cbvz8JZpRk6jgUksGk7xL97fNKKDmg9abo4AHqnljqE=;
         h=From:To:Cc:Subject:Date:From;
-        b=wyVVhrq93KdEDAvh1iHH2almfUrbFHJf9tQ0VURpt6O1AVUWpGAUzkMMzNf6JUkzQ
-         j0HGfydVjDgeUVhEXRS/sfBjXBiDj+gzYAAEwex+U0V6X0j/lL7/7E332J3D2gg7Hp
-         t8mXYMpIsPWH/7gi3k2BKF9jocoCy6Pxn9mX1mNo=
+        b=sRv3EjZur1PCPWhhj3mdgNha05v1M2MO1n/C3QZ7d2HyClMSDBGuYjcwreXwAsxn+
+         IMHaDbYbvkwvvSLHQEaesminOpgedDGwc4KNOCEqAODKQXa2j2qGkyqRiGtOo60imy
+         bl0plDlCdKtBqZo3GC5uXKq0wQQavhw03XU38t1A=
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Toshiharu Harada <haradats@nttdata.co.jp>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] tomoyo: fix clang pointer arithmetic warning
-Date:   Mon, 26 Oct 2020 22:52:31 +0100
-Message-Id: <20201026215236.3894200-1-arnd@kernel.org>
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Amir Goldstein <amir73il@gmail.com>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] seq_file: fix clang warning for NULL pointer arithmetic
+Date:   Mon, 26 Oct 2020 22:52:56 +0100
+Message-Id: <20201026215321.3894419-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,33 +46,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-clang warns about additions on NULL pointers being undefined in C:
+Clang points out that adding something to NULL is notallowed
+in standard C:
 
-security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
-        securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
+fs/kernfs/file.c:127:15: warning: performing pointer arithmetic on a
+null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+                return NULL + !*ppos;
+                       ~~~~ ^
+fs/seq_file.c:529:14: warning: performing pointer arithmetic on a
+null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+        return NULL + (*pos == 0);
 
-Change the code to instead use a cast through uintptr_t to avoid
-the warning.
+Rephrase the function to do the same thing without triggering that
+warning. Linux already relies on a specific binary representation
+of NULL, so it makes no real difference here. The instance in
+kernfs was copied from single_start, so fix both at once.
 
-Fixes: 9590837b89aa ("Common functions for TOMOYO Linux.")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: c2b19daf6760 ("sysfs, kernfs: prepare read path for kernfs")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- security/tomoyo/securityfs_if.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/kernfs/file.c | 2 +-
+ fs/seq_file.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
-index 546281c5b233..0a5f00073ef1 100644
---- a/security/tomoyo/securityfs_if.c
-+++ b/security/tomoyo/securityfs_if.c
-@@ -223,7 +223,7 @@ static const struct file_operations tomoyo_operations = {
- static void __init tomoyo_create_entry(const char *name, const umode_t mode,
- 				       struct dentry *parent, const u8 key)
- {
--	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
-+	securityfs_create_file(name, mode, parent, (u8 *)(uintptr_t)key,
- 			       &tomoyo_operations);
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index f277d023ebcd..b55e6ef4d677 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -124,7 +124,7 @@ static void *kernfs_seq_start(struct seq_file *sf, loff_t *ppos)
+ 		 * The same behavior and code as single_open().  Returns
+ 		 * !NULL if pos is at the beginning; otherwise, NULL.
+ 		 */
+-		return NULL + !*ppos;
++		return (void *)(uintptr_t)!*ppos;
+ 	}
  }
  
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 31219c1db17d..d456468eb934 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -526,7 +526,7 @@ EXPORT_SYMBOL(seq_dentry);
+ 
+ static void *single_start(struct seq_file *p, loff_t *pos)
+ {
+-	return NULL + (*pos == 0);
++	return (void *)(uintptr_t)(*pos == 0);
+ }
+ 
+ static void *single_next(struct seq_file *p, void *v, loff_t *pos)
 -- 
 2.27.0
 
