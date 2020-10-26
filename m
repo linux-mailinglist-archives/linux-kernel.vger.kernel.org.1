@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294FE299838
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A50129983C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgJZUwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:52:40 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8330 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgJZUwM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:52:12 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9737030000>; Mon, 26 Oct 2020 13:52:19 -0700
-Received: from [10.2.57.113] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
- 2020 20:52:08 +0000
-Subject: Re: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to
- access guest memory
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Liran Alon" <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, <x86@kernel.org>,
-        <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
- <c8b0405f-14ed-a1bb-3a91-586a30bdf39b@nvidia.com>
- <20201022114946.GR20115@casper.infradead.org>
- <30ce6691-fd70-76a2-8b61-86d207c88713@nvidia.com>
- <20201026042158.GN20115@casper.infradead.org>
- <ee308d1d-8762-6bcf-193e-85fea29743c3@nvidia.com>
- <20201026132830.GQ20115@casper.infradead.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <e78fb7af-627b-ce80-275e-51f97f1f3168@nvidia.com>
-Date:   Mon, 26 Oct 2020 13:52:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728038AbgJZUw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:52:56 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:13574 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728017AbgJZUwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 16:52:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603745575; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mH1ppLB1bjTbcIIdnHKn7TDzomVstmyqNeLzh7eO2fQ=;
+ b=lUdGfD6QwXfPAe0d/lJqEd9gLCLbHmmMrkA46VXVycf9qMcLd1x/o5uW47OwAF8GmRRSq8OP
+ 3MtrwIW5X7b6rTbbvZEFJWupp8t/ceWqZ0aQiLYPL9neqRecrmciRNPZd66xDdsqT0PaV/l6
+ gNYij39Ysd9vkzF1zdbfXy0N7us=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f9737262421c5ebfbd81fec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 20:52:54
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4ED0C43395; Mon, 26 Oct 2020 20:52:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0C93C433F0;
+        Mon, 26 Oct 2020 20:52:52 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201026132830.GQ20115@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603745539; bh=En7RBhVPDASyx1ikAPEMmxLBTKzCwYVMSmAZAOLt4F0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=f0ZInIoMhho0FwiYGbQmy/cFCjcszWJ4ksz0xVHxCfriMfXl/ArnCzev6eJCdK5Kk
-         SKcPrGBhvbj9FFXYX8Kulgwm5LFJf/IF7ahfg9uFG11y1RvMDvuI37jYONs5JdsFSg
-         CxTXCx0QKuCpH2ZkZxYB1l7X5xDV7JdA2Du5WAkA56/8NFydmbJwGc5RoWQehk9kqm
-         Z5+4oEawXJxSHhRq56HXamNmJcwBNs2E97FfuQjnEN8NwaLF/fEVnvK2FXYZeu8GDF
-         /AKMvqHg1ckc040vGzeuNsTOkhUWrgg0uCbyuLSpMP4N+gNEOlUGPQaNqNBEiWf5lp
-         dv+cEOmOP0/IQ==
+Date:   Mon, 26 Oct 2020 13:52:52 -0700
+From:   abhinavk@codeaurora.org
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Rob Clark <robdclark@chromium.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Shubhashree Dhar <dhar@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Raviteja Tamatam <travitej@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        freedreno@lists.freedesktop.org
+Subject: Re: [Freedreno] [PATCH 3/4] drm/msm: fix -Woverride-init warning
+In-Reply-To: <20201026194110.3817470-3-arnd@kernel.org>
+References: <20201026194110.3817470-1-arnd@kernel.org>
+ <20201026194110.3817470-3-arnd@kernel.org>
+Message-ID: <5a99adc26963c0a64fe6de41b87c6244@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/20 6:28 AM, Matthew Wilcox wrote:
-> On Sun, Oct 25, 2020 at 09:44:07PM -0700, John Hubbard wrote:
->> On 10/25/20 9:21 PM, Matthew Wilcox wrote:
->>> I don't think the page pinning approach is ever valid.  For file
->>
->> Could you qualify that? Surely you don't mean that the entire pin_user_pages
->> story is a waste of time--I would have expected you to make more noise
->> earlier if you thought that, yes?
+On 2020-10-26 12:41, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> I do think page pinning is the wrong approach for everything.  I did say
-
-
-Not *everything*, just "pinning for DMA", right? Because I don't recall
-any viable solutions for Direct IO that avoided gup/pup!
-
-Also, back to Case 5: I *could* create a small patchset to change over
-the very few Case 5 call sites to use "gup, lock_page(), write to
-page...etc", instead of pup. And also, update pin_user_pages.rst to
-recommend that approach in similar situations. After all, it's not
-really a long-term DMA pin, which is really what pin_user_pages*() is
-intended for.
-
-Would that be something you'd like to see happen? It's certainly easy
-enough to fix that up. And your retroactive NAK is sufficient motivation
-to do so.
-
-
-> so at the time, and I continue to say so when the opportunity presents
-> itself.  But shouting about it constantly only annoys people, so I don't
-> generally bother.  I have other things to work on, and they're productive,
-> so I don't need to spend my time arguing.
-
-
-Sure. As a practical matter, I've assumed that page pinning is not going
-to go away any time soon, so I want it to work properly while it's here.
-But if there is a viable way to eventually replace dma-pinning with
-something better, then let's keep thinking about it. I'm glad to help in
-that area.
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+> There is one harmless duplicate initialization that causes a warning
+> with 'make W=1':
+> 
+> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c:122:19: warning:
+> initialized field overwritten [-Woverride-init]
+>   122 |  .max_linewidth = 4096,
+>       |                   ^~~~
+> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c:122:19: note: (near
+> initialization for 'sm8250_dpu_caps.max_linewidth')
+> 
+> Remove one of the two identical initializers to avoid the warning.
+> 
+> Fixes: af776a3e1c30 ("drm/msm/dpu: add SM8250 to hw catalog")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index 60b304b72b7c..9c23f814ccaf 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -111,7 +111,6 @@ static const struct dpu_caps sm8150_dpu_caps = {
+>  static const struct dpu_caps sm8250_dpu_caps = {
+>  	.max_mixer_width = DEFAULT_DPU_OUTPUT_LINE_WIDTH,
+>  	.max_mixer_blendstages = 0xb,
+> -	.max_linewidth = 4096,
+>  	.qseed_type = DPU_SSPP_SCALER_QSEED3, /* TODO: qseed3 lite */
+>  	.smart_dma_rev = DPU_SSPP_SMART_DMA_V2, /* TODO: v2.5 */
+>  	.ubwc_version = DPU_HW_UBWC_VER_40,
