@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C25298F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E0A298F6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781542AbgJZOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:32:24 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38622 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781286AbgJZOcG (ORCPT
+        id S1781576AbgJZOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:34:21 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:39616 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781502AbgJZOdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:32:06 -0400
-Received: by mail-ot1-f68.google.com with SMTP id b2so7589887ots.5;
-        Mon, 26 Oct 2020 07:32:05 -0700 (PDT)
+        Mon, 26 Oct 2020 10:33:17 -0400
+Received: by mail-ed1-f66.google.com with SMTP id a6so8216138edx.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:33:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NL7oE/FOu1FdsHVXtgRhlmVNZvxP63/3P1s2iUbijps=;
+        b=dK5R82NlOAMd7fUkIrlIbQkTB2oerujWd4Mw9WtN4FTE/lPkGh171HrY27lBvKr6vu
+         qjeipXZx6EA0OZLi04vOur2lkzUlmykDa5Peh3TMCwIaXnlrVZmmmSCHtC9EHGluDTSj
+         tYj+lv8ffsMq6neJxq2dtDet7+yC0lJRaaJjDyyKthx41MdC8b86hIecqPKtSLemLD/t
+         zIZTwFv6lxsX88YYwjCy3zHyUGPgC93hjOO0r4ks2iHDE5V05fhH0E36/UBhLyv1CHO/
+         Ufsvsj1cxwWXG+EyElFbNdTmz2hNcg/YATpDxiXP/JVY6Wq3RnrFEwzqBJgBLlCqLGhy
+         rnbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JBvgDt7emBztIGO8StCH4tfzHv+hqLMzjAEA52hgcqM=;
-        b=Bg+LMomwUIHq9QK6BP9P6VW4m/VwhkaGHiLyOGnIMMkgGq7Wvni0rZkl5cUQZz0jmZ
-         GWEqKOeoc4xLFgLhLbnryjagXlIQO13dsDJ4o4XVmAzSmyc/5r5IuxakxbJR1uwfKgWU
-         ZRC0lTTQ0nJvFw+zSgO8mfMdL8fzGB/bVjsOoOrCVYHJzswLIaL6TUtpgoTmvWC3WXjO
-         cOZ0PzqmNSTrhZfKtd5n9lx3gIA8StfmNTIc7mDeWengOum78uMg9JjTRtG4LumxpCs8
-         T+WII5MTyMUiOZyUOr4sDW4bQUHYbUlBArMO8F/P3lES5pNzPuYqbiFZh2Bg37h3/PXJ
-         JcRg==
-X-Gm-Message-State: AOAM530gn5SFnK5wCTMwKgF022iqA6+WMHNNKfnAHCEG3JcbDkVhqjG8
-        +mgcBGevljaEtnGlrtkMOE5qpi2cag==
-X-Google-Smtp-Source: ABdhPJz3h/R6/JxK/xTIyb4YBd7u1ygBvi4k+eafrmmQJBWLoUwvrZ+WynbrruqpPyAs4xMZOP+DWA==
-X-Received: by 2002:a05:6830:1d8:: with SMTP id r24mr14271488ota.283.1603722725156;
-        Mon, 26 Oct 2020 07:32:05 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s189sm4040211oig.46.2020.10.26.07.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 07:32:04 -0700 (PDT)
-Received: (nullmailer pid 114717 invoked by uid 1000);
-        Mon, 26 Oct 2020 14:32:03 -0000
-Date:   Mon, 26 Oct 2020 09:32:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: cpus: Document
- 'qcom,freq-domain' property
-Message-ID: <20201026143203.GA112606@bogus>
-References: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NL7oE/FOu1FdsHVXtgRhlmVNZvxP63/3P1s2iUbijps=;
+        b=k8tlOX6drTE8Hz+2ehBV2RYoEaGbx3u1GaeNmp+ZAMHQj/obm5ibf+S5zSS5loBv7o
+         MNsqWLfe8nT4KoQ4/66PMSlXUYn6czmvs7bp60w3wsIAshtkgKu6NTqZYfB/NVyS4p/9
+         pWI/PLuv7x1D3YOSb0faCKfFO4/nHOdE3ZpYz+hAhDcY6u57x6xxuOmbRfz33WfER/y6
+         T54oU52X1FfLHdtc7oN8WL6sJCOXGE1c7o32g7fT/u7xqRUQfSid8pNeFXetRjRzPU1B
+         +f7s7gTBGwhZRfDbvTAj43TWDzocoojPKxl9hXBTwcEoA19zQ6PogfZlGtMuwoqrYugS
+         QAtA==
+X-Gm-Message-State: AOAM531BfI0kDYw96L2vL0GNdDD8ERI2r7AjuX8S0bBAq6ldbLOmf/Sn
+        NDlmR3lh4V5GXuYB5o+HyQnioJD0hegjnEyjLoafXg==
+X-Google-Smtp-Source: ABdhPJzKi4tmV2Cv4sbeMgWAKFUg/xRJTcrF5bAtYkBBrbRRCZ/yk3UOFCsJ5Ct+BNZnK7a4S1TUBkEdvwENFEdk8+E=
+X-Received: by 2002:a50:99c3:: with SMTP id n3mr6280737edb.213.1603722795508;
+ Mon, 26 Oct 2020 07:33:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
+References: <20201009060302.6220-1-mike.looijmans@topic.nl>
+In-Reply-To: <20201009060302.6220-1-mike.looijmans@topic.nl>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 26 Oct 2020 15:33:04 +0100
+Message-ID: <CAMpxmJVkM_Jp-PZwgYU2mrACy1z8-aCk+OkihKq8idWfobU3Qg@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: gpio: pca953x: Add support for the NXP PCAL9554B/C
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:09:43PM +0530, Manivannan Sadhasivam wrote:
-> Add devicetree documentation for 'qcom,freq-domain' property specific
-> to Qualcomm CPUs. This property is used to reference the CPUFREQ node
-> along with Domain ID (0/1).
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Fri, Oct 9, 2020 at 8:03 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
+>
+> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
+> with 8 GPIOs, latched interrupts and some advanced configuration
+> options. The "C" version only differs in I2C address.
+>
+> This adds the entry to the devicetree bindings.
+>
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
 > ---
->  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
-> index 1222bf1831fa..f40564bf004f 100644
-> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
-> @@ -290,6 +290,12 @@ properties:
->  
->        * arm/msm/qcom,kpss-acc.txt
->  
-> +  qcom,freq-domain:
-> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-> +    description: |
-> +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
-> +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
-
-There's no 3 patches doing the same thing. Mediatek and SCMI are the 
-others. This will need to be common. 
-
-> +
->    rockchip,pmu:
->      $ref: '/schemas/types.yaml#/definitions/phandle'
->      description: |
-> -- 
+> v2: Split devicetree and code into separate patches
+> v3: Devicetree bindings in yaml format
+>
+>  Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> index 183ec23eda39..f5ee23c2df60 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> @@ -48,6 +48,7 @@ properties:
+>        - nxp,pcal6416
+>        - nxp,pcal6524
+>        - nxp,pcal9535
+> +      - nxp,pcal9554b
+>        - nxp,pcal9555a
+>        - onnn,cat9554
+>        - onnn,pca9654
+> --
 > 2.17.1
-> 
+>
+
+Hi Mike,
+
+please resend this rebased on top of v5.10-rc1 with tags collected if
+you still want it merged.
+
+Bartosz
