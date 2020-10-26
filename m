@@ -2,105 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460F9298F7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C184298F7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781673AbgJZOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1781666AbgJZOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Oct 2020 10:38:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781656AbgJZOhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:37:33 -0400
-Received: from localhost (bny93-h09-176-172-152-46.dsl.sta.abo.bbox.fr [176.172.152.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E0012168B;
-        Mon, 26 Oct 2020 14:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603723051;
-        bh=qliYb5Jm4kq0Yk2JVt5lkmPGHuxX8X18w3Jd/VKdIR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mXmTpqbCz5DteFwZJHXNkeAWK4XvEQ3A14Q0Sy/y3SadoN1V6vViwcRX4EwZIDhQZ
-         71H3lCdaEqpAuEpfKi4fOuB8AmxoQsX9Botj3wOgwq4iwmdeAyWLksozu/48/Naark
-         45RBhzMWk4atDqEOlMG5UuD+yfFq4VWGsg0VFeqg=
-Date:   Mon, 26 Oct 2020 15:37:28 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Phil Auld <pauld@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 3/5] sched: Detect call to schedule from critical entry
- code
-Message-ID: <20201026143728.GA120760@lothringen>
-References: <20201005104919.5250-1-frederic@kernel.org>
- <20201005104919.5250-4-frederic@kernel.org>
- <20201005112353.GI2628@hirez.programming.kicks-ass.net>
- <20201005122648.GA1743@lothringen>
- <20201007093436.GG3165@suse.de>
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37853 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781581AbgJZOiE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:38:04 -0400
+Received: by mail-ot1-f67.google.com with SMTP id m22so8178436ots.4;
+        Mon, 26 Oct 2020 07:38:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dmc6xs39pOcvaguHHkLHxd4UeG9+n4WiLiCISEFRVvE=;
+        b=QNzSufadAIFPypbUPh8FSEdeb3L7uSEbpVO02bmHaeRNdvSfxjxiDZKXs0oEpgWclm
+         czcpS6ltZnGaVVXr0Og5OolpG3A/cRV+r5zijcJSb0dNSUvo0HUS5XkUpEFKvC/zcm5+
+         GWhNhXmzQCpyznzQ24WlgJrC70CVSDBYO69ImN85+oO1kI6eRZ4J+Bzi5Yr6loGvG2xc
+         wmKmfvVN21pyzFOmw45t0/FQXkZZkaGzb+wCjjDJt4PtybHlFKgXv3TRx4gYJIJv1x0/
+         UcWJutViWrz3YfzPPD3FGTAjjoyJVUlZv5K/Akt4ulrNXL9OTufvMNKKANYItJoSDOWP
+         QaHg==
+X-Gm-Message-State: AOAM533WDlPuFWFUn2jhGSDKrL/+89mQ+8GlCLED4cRzRAHpdidlKqaf
+        npu8Tm848xWqkNl24qbTwQ==
+X-Google-Smtp-Source: ABdhPJxI/8VTP5i/7wxqiKj0bWHUYN05SkqR0BiJs/0nllrZpJVEWuPVO0ce25saT4lDP9QNHLdr9Q==
+X-Received: by 2002:a9d:411:: with SMTP id 17mr14374161otc.191.1603723083071;
+        Mon, 26 Oct 2020 07:38:03 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u22sm4032299oor.13.2020.10.26.07.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 07:38:01 -0700 (PDT)
+Received: (nullmailer pid 123037 invoked by uid 1000);
+        Mon, 26 Oct 2020 14:38:01 -0000
+Date:   Mon, 26 Oct 2020 09:38:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-rpi-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        jeremy.linton@arm.com, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        hch@lst.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, ardb@kernel.org, will@kernel.org,
+        guohanjun@huawei.com, robin.murphy@arm.com,
+        Frank Rowand <frowand.list@gmail.com>,
+        lorenzo.pieralisi@arm.com
+Subject: Re: [PATCH v4 4/7] of: unittest: Add test for
+ of_dma_get_max_cpu_address()
+Message-ID: <20201026143801.GA122988@bogus>
+References: <20201021123437.21538-1-nsaenzjulienne@suse.de>
+ <20201021123437.21538-5-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007093436.GG3165@suse.de>
+In-Reply-To: <20201021123437.21538-5-nsaenzjulienne@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:34:36AM +0100, Mel Gorman wrote:
-> On Mon, Oct 05, 2020 at 02:26:48PM +0200, Frederic Weisbecker wrote:
-> > On Mon, Oct 05, 2020 at 01:23:53PM +0200, Peter Zijlstra wrote:
-> > > On Mon, Oct 05, 2020 at 12:49:17PM +0200, Frederic Weisbecker wrote:
-> > > > Detect calls to schedule() between user_enter() and user_exit(). Those
-> > > > are symptoms of early entry code that either forgot to protect a call
-> > > > to schedule() inside exception_enter()/exception_exit() or, in the case
-> > > > of HAVE_CONTEXT_TRACKING_OFFSTACK, enabled interrupts or preemption in
-> > > > a wrong spot.
-> > > > 
-> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > Cc: Marcelo Tosatti <mtosatti@redhat.com>
-> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > > Cc: Phil Auld <pauld@redhat.com>
-> > > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > > ---
-> > > >  kernel/sched/core.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > > 
-> > > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > > index 2d95dc3f4644..d31a79e073e3 100644
-> > > > --- a/kernel/sched/core.c
-> > > > +++ b/kernel/sched/core.c
-> > > > @@ -4295,6 +4295,7 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
-> > > >  		preempt_count_set(PREEMPT_DISABLED);
-> > > >  	}
-> > > >  	rcu_sleep_check();
-> > > > +	WARN_ON_ONCE(ct_state() == CONTEXT_USER);
-> > > 
-> > > 	SCHED_WARN_ON() ?
-> > 
-> > Bah! That's exactly what I was looking for.
-> > 
-> > > No point in unconditionally polluting that path. Although, per MeL, we
-> > > should probably invest in CONFIG_SCHED_DEBUG_I_MEANS_IT :/
-> > 
-> > Because CONFIG_SCHED_DEBUG is often used by default on distros?
-> > 
+On Wed, 21 Oct 2020 14:34:34 +0200, Nicolas Saenz Julienne wrote:
+> Introduce a test for of_dma_get_max_cup_address(), it uses the same DT
+> data as the rest of dma-ranges unit tests.
 > 
-> SCHED_DEBUG is generally useful (e.g. figuring out weird topology problems
-> on new hardware). The overhead isn't too bad when schedstats are
-> disabled so it would be nice to avoid adding too much overhead via
-> SCHED_DEBUG.
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 > 
-> Other debugging options -- not so much. A lot of them are useful for
-> development but there are people who request them be enabled anyway
-> thinking that they improve security somehow when in reality they might,
-> at best, detect a hardware issue that happens to hit a specific structure.
+> ---
+> Changes since v3:
+>  - Remove HAS_DMA guards
+> 
+>  drivers/of/unittest.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
 
-
-So we are good with SCHED_WARN_ON(), right?
-
-I'll reissue with that.
-
-Thanks.
+Reviewed-by: Rob Herring <robh@kernel.org>
