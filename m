@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE84298746
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12F0298748
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768913AbgJZHOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 03:14:06 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14387 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1768904AbgJZHOF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 03:14:05 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9677440000>; Mon, 26 Oct 2020 00:14:12 -0700
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
- 2020 07:13:49 +0000
-Date:   Mon, 26 Oct 2020 09:13:45 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-CC:     <mst@redhat.com>, <jasowang@redhat.com>, <eli@mellanox.com>,
-        <parav@mellanox.com>, <alex.dewar@gmx.co.uk>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vdpa/mlx5: Fix error return in map_direct_mr()
-Message-ID: <20201026071345.GB232593@mtl-vdi-166.wap.labs.mlnx>
-References: <20201026070637.164321-1-jingxiangfeng@huawei.com>
+        id S1768981AbgJZHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 03:16:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1768973AbgJZHQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 03:16:12 -0400
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21DA92231B;
+        Mon, 26 Oct 2020 07:16:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603696571;
+        bh=CQ9MMeJK8IiX2zTHx9I5QZWhpOCCMI9BEx0OR7BGlV0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fMZevWHapQ+IQJUhp9b/w1z5DkxjzivvG0u6Zcgox+bp7unovt8UTgUQqHd8X8LaO
+         TvsBd9RK29T/gAI4KM+4/0tr0H3tN2TQZ9ObKOB+MbYrtq3hYb4BPOlci+OoMYrQIb
+         eVDYiB2vzvbUg1apuU2cgn1ZwCjIi3ItzUSRrWmE=
+Received: by mail-oi1-f173.google.com with SMTP id m128so9579001oig.7;
+        Mon, 26 Oct 2020 00:16:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531T67i5FqYpUnfjORoZ9V5JnfZnB9p4Luq7iwlMOBeGpulIRQPF
+        rr4wPGhZiDwGxiFf6vue1lk30BZYfBZmVmipxic=
+X-Google-Smtp-Source: ABdhPJwNVKiSePeVxbGMzgURAguH0pxG3OyFiSVvclR/g+b4rsKvJeTpvjZxloBNXXkV/PnQ7CxNzWcYxsjCEBL1lco=
+X-Received: by 2002:aca:d64f:: with SMTP id n76mr13038005oig.174.1603696570431;
+ Mon, 26 Oct 2020 00:16:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201026070637.164321-1-jingxiangfeng@huawei.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603696453; bh=2gdDZLRn+zzx0MBj46NVFGhrup4ApwXxpZuOgBZsaqM=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=HzQqU18LtujLylS7/uEvuHBBUPwLEjds4YkGmbSIXJix643ZD6TEdggjJe0E+KSNW
-         Wx9OxHvnXqM5PFZK67knMFui1hguhHmpiEa+UDVmssu8DUHmfS09wd3abBvG6SQB9G
-         bAj7/VpvzHtqru3K2/nOrfAoHGDXqAgg6nBCHAWI8Nmqbwsw5Eo58gcicqw/eS+z0U
-         K3nw/cxdZSwOstMAEDqhTTYfTxWEAwDRZN29cbBoy+ddQ20OwP34yKeShOMKw6DfYD
-         LTiZXQzhyBQX0r1KMYyGIn/yjZD1ESwG0AmSpnIY8RDwOuhnjnWwLK3Ts925siQzUo
-         atdBRK7t4cssw==
+References: <20201023115429.GA2479@cosmos>
+In-Reply-To: <20201023115429.GA2479@cosmos>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 26 Oct 2020 08:15:59 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEaLF7kvWORrTF+UM8qCbgzXzr4WLtOTM_aDm8Ggyao5Q@mail.gmail.com>
+Message-ID: <CAMj1kXEaLF7kvWORrTF+UM8qCbgzXzr4WLtOTM_aDm8Ggyao5Q@mail.gmail.com>
+Subject: Re: [PATCH] efivarfs: fix memory leak in efivarfs_create()
+To:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Cc:     Matthew Garrett <matthew.garrett@nebula.com>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 03:06:37PM +0800, Jing Xiangfeng wrote:
-> Fix to return the variable "err" from the error handling case instead
-> of "ret".
-> 
-> Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+On Fri, 23 Oct 2020 at 13:54, Vamshi K Sthambamkadi
+<vamshi.k.sthambamkadi@gmail.com> wrote:
+>
+> kmemleak report:
+>   unreferenced object 0xffff9b8915fcb000 (size 4096):
+>   comm "efivarfs.sh", pid 2360, jiffies 4294920096 (age 48.264s)
+>   hex dump (first 32 bytes):
+>     2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<00000000cc4d897c>] kmem_cache_alloc_trace+0x155/0x4b0
+>     [<000000007d1dfa72>] efivarfs_create+0x6e/0x1a0
+>     [<00000000e6ee18fc>] path_openat+0xe4b/0x1120
+>     [<000000000ad0414f>] do_filp_open+0x91/0x100
+>     [<00000000ce93a198>] do_sys_openat2+0x20c/0x2d0
+>     [<000000002a91be6d>] do_sys_open+0x46/0x80
+>     [<000000000a854999>] __x64_sys_openat+0x20/0x30
+>     [<00000000c50d89c9>] do_syscall_64+0x38/0x90
+>     [<00000000cecd6b5f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> In efivarfs_create(), inode->i_private is setup with efivar_entry
+> object which is never freed.
+>
+> Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 
-Acked-by: Eli Cohen <elic@nvidia.com>
+Queued as a fix, thanks!
 
 > ---
->  drivers/vdpa/mlx5/core/mr.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index ef1c550f8266..4b6195666c58 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -239,7 +239,6 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
->  	u64 paend;
->  	struct scatterlist *sg;
->  	struct device *dma = mvdev->mdev->device;
-> -	int ret;
->  
->  	for (map = vhost_iotlb_itree_first(iotlb, mr->start, mr->end - 1);
->  	     map; map = vhost_iotlb_itree_next(map, start, mr->end - 1)) {
-> @@ -277,8 +276,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
->  done:
->  	mr->log_size = log_entity_size;
->  	mr->nsg = nsg;
-> -	ret = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-> -	if (!ret)
-> +	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-> +	if (!err)
->  		goto err_map;
->  
->  	err = create_direct_mr(mvdev, mr);
-> -- 
-> 2.17.1
-> 
+>  fs/efivarfs/super.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index 15880a6..f943fd0 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -21,6 +21,7 @@ LIST_HEAD(efivarfs_list);
+>  static void efivarfs_evict_inode(struct inode *inode)
+>  {
+>         clear_inode(inode);
+> +       kfree(inode->i_private);
+>  }
+>
+>  static const struct super_operations efivarfs_ops = {
+> --
+> 2.7.4
+>
