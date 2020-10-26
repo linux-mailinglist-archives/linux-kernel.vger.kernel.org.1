@@ -2,188 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB39299189
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F0A29918B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784576AbgJZP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:58:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:43246 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784569AbgJZP5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:57:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3F8E11FB;
-        Mon, 26 Oct 2020 08:57:45 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 589CC3F719;
-        Mon, 26 Oct 2020 08:57:43 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v4 2/2] arm64: kvm: Introduce MTE VCPU feature
-Date:   Mon, 26 Oct 2020 15:57:27 +0000
-Message-Id: <20201026155727.36685-3-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201026155727.36685-1-steven.price@arm.com>
-References: <20201026155727.36685-1-steven.price@arm.com>
+        id S1784601AbgJZP6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:58:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60346 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2444240AbgJZP5g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:57:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603727855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XtIg8kCXjeLzHwMGzqXo41x42k9dsaG3Y++Yc06Zfug=;
+        b=GIk+20tHj/68YBnYvBaAmTV+EdPHLdkIyKg2HT0MjXMWaDMNsV1xMGI9u1Vnn+5t4JstOc
+        EFuyfq/RangxguVi2UD1VepML3omFhC1QdLjPPRtA2mSK1qjFCbmScVql37Qxyw9/yJKiy
+        2SiKXYAoL0vXgJ6zSZkCW8plO/qRidI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-IQ5xuMxoN4ejX9L8vlKzSQ-1; Mon, 26 Oct 2020 11:57:33 -0400
+X-MC-Unique: IQ5xuMxoN4ejX9L8vlKzSQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0513E106B26E;
+        Mon, 26 Oct 2020 15:57:32 +0000 (UTC)
+Received: from sulaco.redhat.com (ovpn-112-242.rdu2.redhat.com [10.10.112.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E4F25B4B2;
+        Mon, 26 Oct 2020 15:57:31 +0000 (UTC)
+From:   Tony Asleson <tasleson@redhat.com>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] buffer_io_error: Use dev_err_ratelimited
+Date:   Mon, 26 Oct 2020 10:57:30 -0500
+Message-Id: <20201026155730.542020-1-tasleson@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
-for a VM. This exposes the feature to the guest and automatically tags
-memory pages touched by the VM as PG_mte_tagged (and clears the tags
-storage) to ensure that the guest cannot see stale tags, and so that the
-tags are correctly saved/restored across swap.
+Replace printk_ratelimited with dev_err_ratelimited which
+adds dev_printk meta data. This is used by journald to
+add disk ID information to the journal entry.
 
-Signed-off-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+This re-worked change is from a different patch series
+and utilizes the following suggestions.
+
+- Reduce indentation level (Andy Shevchenko)
+- Remove unneeded () for conditional operator (Sergei Shtylyov)
+
+Signed-off-by: Tony Asleson <tasleson@redhat.com>
 ---
- arch/arm64/include/asm/kvm_emulate.h |  3 +++
- arch/arm64/include/asm/kvm_host.h    |  3 +++
- arch/arm64/kvm/arm.c                 |  9 +++++++++
- arch/arm64/kvm/mmu.c                 | 20 ++++++++++++++++++++
- arch/arm64/kvm/sys_regs.c            |  6 +++++-
- include/uapi/linux/kvm.h             |  1 +
- 6 files changed, 41 insertions(+), 1 deletion(-)
+ fs/buffer.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-index 5ef2669ccd6c..66c0d9e7c2b4 100644
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
- 	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
- 	    vcpu_el1_is_32bit(vcpu))
- 		vcpu->arch.hcr_el2 |= HCR_TID2;
-+
-+	if (vcpu->kvm->arch.mte_enabled)
-+		vcpu->arch.hcr_el2 |= HCR_ATA;
- }
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 50bbc99e3d96..18175fbb1101 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -125,10 +125,17 @@ EXPORT_SYMBOL(__wait_on_buffer);
  
- static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 95ab7345dcc8..cd993aec0440 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -118,6 +118,9 @@ struct kvm_arch {
- 	 */
- 	unsigned long *pmu_filter;
- 	unsigned int pmuver;
-+
-+	/* Memory Tagging Extension enabled for the guest */
-+	bool mte_enabled;
- };
- 
- struct kvm_vcpu_fault_info {
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index f56122eedffc..7ee93bcac017 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -89,6 +89,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
- 		r = 0;
- 		kvm->arch.return_nisv_io_abort_to_user = true;
- 		break;
-+	case KVM_CAP_ARM_MTE:
-+		if (!system_supports_mte() || kvm->created_vcpus)
-+			return -EINVAL;
-+		r = 0;
-+		kvm->arch.mte_enabled = true;
-+		break;
- 	default:
- 		r = -EINVAL;
- 		break;
-@@ -210,6 +216,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		 */
- 		r = 1;
- 		break;
-+	case KVM_CAP_ARM_MTE:
-+		r = system_supports_mte();
-+		break;
- 	case KVM_CAP_STEAL_TIME:
- 		r = kvm_arm_pvtime_supported();
- 		break;
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 19aacc7d64de..38fe25310ca1 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -862,6 +862,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (vma_pagesize == PAGE_SIZE && !force_pte)
- 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
- 							   &pfn, &fault_ipa);
-+
-+	/*
-+	 * The otherwise redundant test for system_supports_mte() allows the
-+	 * code to be compiled out when CONFIG_ARM64_MTE is not present.
-+	 */
-+	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
-+		/*
-+		 * VM will be able to see the page's tags, so we must ensure
-+		 * they have been initialised.
-+		 */
-+		struct page *page = pfn_to_page(pfn);
-+		long i, nr_pages = compound_nr(page);
-+
-+		/* if PG_mte_tagged is set, tags have already been initialised */
-+		for (i = 0; i < nr_pages; i++, page++) {
-+			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-+				mte_clear_page_tags(page_address(page));
-+		}
-+	}
-+
- 	if (writable) {
- 		prot |= KVM_PGTABLE_PROT_W;
- 		kvm_set_pfn_dirty(pfn);
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 430e36e1a13d..35a3dc448231 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
- 		    arm64_get_spectre_v2_state() == SPECTRE_UNAFFECTED)
- 			val |= (1UL << ID_AA64PFR0_CSV2_SHIFT);
- 	} else if (id == SYS_ID_AA64PFR1_EL1) {
--		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-+		if (!vcpu->kvm->arch.mte_enabled)
-+			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
- 	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
- 		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
- 			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
-@@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
- 				   const struct sys_reg_desc *rd)
+ static void buffer_io_error(struct buffer_head *bh, char *msg)
  {
-+	if (vcpu->kvm->arch.mte_enabled)
-+		return 0;
+-	if (!test_bit(BH_Quiet, &bh->b_state))
+-		printk_ratelimited(KERN_ERR
+-			"Buffer I/O error on dev %pg, logical block %llu%s\n",
+-			bh->b_bdev, (unsigned long long)bh->b_blocknr, msg);
++	struct device *gendev;
 +
- 	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
++	if (test_bit(BH_Quiet, &bh->b_state))
++		return;
++
++	gendev = bh->b_bdev->bd_disk ?
++		disk_to_dev(bh->b_bdev->bd_disk) : NULL;
++
++	dev_err_ratelimited(gendev,
++		"Buffer I/O error, logical block %llu%s\n",
++		(unsigned long long)bh->b_blocknr, msg);
  }
  
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index ca41220b40b8..3e6fb5b580a9 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1053,6 +1053,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_X86_USER_SPACE_MSR 188
- #define KVM_CAP_X86_MSR_FILTER 189
- #define KVM_CAP_ENFORCE_PV_FEATURE_CPUID 190
-+#define KVM_CAP_ARM_MTE 191
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
+ /*
+
+base-commit: bbf5c979011a099af5dc76498918ed7df445635b
 -- 
-2.20.1
+2.26.2
 
