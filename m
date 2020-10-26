@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FCF298E71
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C265298E78
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780647AbgJZNs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:48:57 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:43221 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780638AbgJZNs5 (ORCPT
+        id S1780684AbgJZNuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:50:18 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33233 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404378AbgJZNuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:48:57 -0400
-Received: by mail-oo1-f66.google.com with SMTP id z14so2101815oom.10;
-        Mon, 26 Oct 2020 06:48:56 -0700 (PDT)
+        Mon, 26 Oct 2020 09:50:16 -0400
+Received: by mail-qt1-f193.google.com with SMTP id j62so6691398qtd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 06:50:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TxfXjOwfBykntP1Jpf/tQTb6j5RyS9vTmp3y0ZTz9iY=;
+        b=hj2Xzb1lS89qCPlK7eJpZN6WVDn7yEvhz2twlUFqiehOWCaTaej0//mbn2FMaBLWIn
+         F8DmpTbIeRFOrtl/Okvy7RHEq7WiFTwBo+PePbx+LWTp2YCj4xddlYVuscGpZ3IJ+oG5
+         b3UES6VFcG9UeaEmeEa9bqNb87n5yviccl9+PDzNl894xBrHxr5ZNPj92FHGAHIAN8TY
+         ooyxG4RgS33cDTqkBXOv0bc2i+LsBV1CkYSOwgTxt0QD7bG3eqnfluHeFkPQfBDRrIBs
+         gRLxte4i3wvSPNT3sKqXiR5eJ+1OqAy2afreeXeTYcDBDdHkf0qFclAlhIc3y/aZheQ/
+         65TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/W3rXMOeU4UW4iv7U7wh96qR+8ca/6ZnYv5sDQ2FeyY=;
-        b=dXGYoRA9IRQJI4yEkK4EsaPcA2mHpbU/yLy444JyKmHPkEaCsZrGn8LpykGcWEbfmG
-         G/MQ2qJdb/0zDxaR3hbQOAaFj9c3ZepxqdHqeQXr5McYE+wFeBi23Lwfrawi8Atyh4nr
-         JFK7o5MuE51YhM80S6V6IsqTF7ryQGvQsdnxVfjAyQT38s1df7Op8ANQArabEaW3f9Vi
-         VPvsHr9AiLbTXO4e+1xdQkm2cJh99TVVc5wOGbi4v1y6aYuoK5IGW5Ov8v2pbMaeN6Oa
-         aKK5hhWBQ/DJ+E4fsEzGhRlqXvIZ1QavWE/Y2IPuQNt0gsUIKCGiZ/j0gvvh+QXz7yh0
-         fViQ==
-X-Gm-Message-State: AOAM533CA7foCiZVE3HuvRUdm9IopAvTxYVoValNTfMJlHqehHfhLYED
-        lOqkYmd/ko3ns+tQpZyjew==
-X-Google-Smtp-Source: ABdhPJwDqkBUrTzPmtu85Tlq/UdpQobzvMsc1i0t7ux0poD1zKv5XdGkpQhLohJO9HaBgZ/KeaiFkA==
-X-Received: by 2002:a4a:d815:: with SMTP id f21mr14009344oov.44.1603720134465;
-        Mon, 26 Oct 2020 06:48:54 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 19sm1747519oin.54.2020.10.26.06.48.53
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=TxfXjOwfBykntP1Jpf/tQTb6j5RyS9vTmp3y0ZTz9iY=;
+        b=iJI8sNtDWNnFl/UhxLhrVZlDLd7fEnDLoGDxV4OY/Hl+c5VBGpkdG/iLXdN0qbjQRa
+         RTfOSEvHe0TXmF5iYI27KiDr8b4SpTuiI/U2Kb9iuYO6QWAwSMIRyPnopdUeZadafpBy
+         PR/PA9rg9w1vqwb9jgjxD++Ud6IB0GJx4rtX5PwDKq8JqNfdLOENUIVP3GtrELqwniJi
+         2h94da/nBz3H6uFjngzP8UYXJrb39k9m9G1CsicV/g5xTkeFLhQejo1PlwuLBs5wVZgn
+         MIldqHE2roygieN7EQ/xh710oxPSt0EdU1NVzc4PYkhlMB+pqqBNfN3ObCz+0xiKR3ZA
+         jzlw==
+X-Gm-Message-State: AOAM532KpkkfcxQQ3ID4tcFgJIlla71CbAc7sES/TgYIdhQzgh4gNdrc
+        TLETncapBukAMDv0u6r58ZzWxuI0g128+w==
+X-Google-Smtp-Source: ABdhPJxOEtJ6n3AC1FOzURdLuieNu+2Vq5bFekGeLN4FlTYCZJELfdfRy36ovzb2dYtDTXJBwu97mQ==
+X-Received: by 2002:aed:31e3:: with SMTP id 90mr1350645qth.300.1603720215250;
+        Mon, 26 Oct 2020 06:50:15 -0700 (PDT)
+Received: from localhost (dhcp-48-d6-d5-c6-42-27.cpe.echoes.net. [199.96.181.106])
+        by smtp.gmail.com with ESMTPSA id b191sm6651842qkg.81.2020.10.26.06.50.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 06:48:53 -0700 (PDT)
-Received: (nullmailer pid 57625 invoked by uid 1000);
-        Mon, 26 Oct 2020 13:48:52 -0000
-Date:   Mon, 26 Oct 2020 08:48:52 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org
-Subject: Re: [PATCH v2 2/5] dt-bindings: gpio: Binding for MStar MSC313 GPIO
- controller
-Message-ID: <20201026134852.GA54362@bogus>
-References: <20201019141008.871177-1-daniel@0x0f.com>
- <20201019141008.871177-3-daniel@0x0f.com>
+        Mon, 26 Oct 2020 06:50:14 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 26 Oct 2020 09:50:11 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     qiang.zhang@windriver.com
+Cc:     pmladek@suse.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] kthread_worker: re-set CPU affinities if CPU come online
+Message-ID: <20201026135011.GC73258@mtj.duckdns.org>
+References: <20201026065213.30477-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201019141008.871177-3-daniel@0x0f.com>
+In-Reply-To: <20201026065213.30477-1-qiang.zhang@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 11:10:05PM +0900, Daniel Palmer wrote:
-> Add a binding description for the MStar/SigmaStar GPIO controller
-> found in the MSC313 and later ARMv7 SoCs.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> ---
->  .../bindings/gpio/mstar,msc313-gpio.yaml      | 61 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml b/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
-> new file mode 100644
-> index 000000000000..8c69153ac27e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/mstar,msc313-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+On Mon, Oct 26, 2020 at 02:52:13PM +0800, qiang.zhang@windriver.com wrote:
+> @@ -737,8 +741,11 @@ __kthread_create_worker(int cpu, unsigned int flags,
+>  	if (IS_ERR(task))
+>  		goto fail_task;
+>  
+> -	if (cpu >= 0)
+> +	if (cpu >= 0) {
+>  		kthread_bind(task, cpu);
+> +		worker->bind_cpu = cpu;
+> +		cpuhp_state_add_instance_nocalls(kworker_online, &worker->cpuhp_node);
+> +	}
+>  
+>  	worker->flags = flags;
+>  	worker->task = task;
+...
+> +static int kworker_cpu_online(unsigned int cpu, struct hlist_node *node)
+> +{
+> +	struct kthread_worker *worker = hlist_entry(node, struct kthread_worker, cpuhp_node);
+> +	struct task_struct *task = worker->task;
 > +
-> +title: MStar/SigmaStar GPIO controller
-> +
-> +maintainers:
-> +  - Daniel Palmer <daniel@thingy.jp>
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^gpio@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    const: mstar,msc313-gpio
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  gpio-controller: true
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  gpio-ranges: true
-> +
-> +  gpio-ranges-group-names:
-> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +	if (cpu == worker->bind_cpu)
+> +		WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpumask_of(cpu)) < 0);
+> +	return 0;
+> +}
 
-The strings in your header should be defined here.
+I don't think this works. The kthread may have changed its binding while
+running using set_cpus_allowed_ptr() as you're doing above. Besides, when a
+cpu goes offline, the bound kthread can fall back to other cpus but its cpu
+mask isn't cleared, is it?
 
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpio-controller
-> +  - "#gpio-cells"
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
+Thanks.
 
-additionalProperties: false
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/msc313-gpio.h>
-> +
-> +    gpio: gpio@207800 {
-> +      compatible = "mstar,msc313e-gpio";
-> +      #gpio-cells = <2>;
-> +      reg = <0x207800 0x200>;
-> +      gpio-controller;
-> +      gpio-ranges = <&pinctrl 0 36 22>,
-> +                    <&pinctrl 22 63 4>,
-> +                    <&pinctrl 26 68 6>;
-> +      #interrupt-cells = <2>;
-> +      interrupt-controller;
-> +      interrupt-parent = <&intc_fiq>;
-> +      status = "okay";
-
-Don't show status in examples.
-
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a188fae8c04e..102aedca81dc 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2130,6 +2130,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Maintained
->  W:	http://linux-chenxing.org/
->  F:	Documentation/devicetree/bindings/arm/mstar/*
-> +F:	Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
->  F:	arch/arm/boot/dts/mstar-*
->  F:	arch/arm/mach-mstar/
->  F:	include/dt-bindings/gpio/msc313-gpio.h
-> -- 
-> 2.28.0
-> 
+-- 
+tejun
