@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3074E2987FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E718D29881D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771241AbgJZIJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:09:57 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:38722 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771221AbgJZIJy (ORCPT
+        id S1771370AbgJZIMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:12:33 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7870 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1770350AbgJZIMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:09:54 -0400
-Received: by mail-pg1-f194.google.com with SMTP id i26so5319078pgl.5;
-        Mon, 26 Oct 2020 01:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r7+hYfn+gbSeLrAAfhP7X98tPIxZ+UfIaYisMl/0Cuk=;
-        b=N7xNbXh7i6ECJp2De64rcZn7TNhAcIQ5rNbsSa5K1K0hSjYYtCJSSDwDeIQsBLfIp3
-         u+bp8OCR38zSbYZz4IiP3LU26tAi78jMHEDhTH5AX5LJ+GHK6MSn9K+9PSao0Xe3kvvs
-         s/Ltivgw0AoUizq9AlX8mPpExgVZbnl0jdoNfeUH+p4qgixYXmIkoTGhQ0kygPavqGbi
-         MhOrumdOQ/Ave531LoEWE7F9RAZ+u5Nl4AKIh3bGupCyRxGmM+ZYnsT+4s7n/9RCawAg
-         uhV2IKuMv1KVkUW5nEEJCBEAhcdKKRBNEteI30j6FAZtCcnYhOOtV3gxaVudKk7QUZl5
-         NcQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r7+hYfn+gbSeLrAAfhP7X98tPIxZ+UfIaYisMl/0Cuk=;
-        b=Jegajih3Lu1PctkwpuvyPgigDllLw9PKJSJ7YHt+GCcuvZ+y29nSzNV6JuqLa60wYi
-         XJynPLdfKrOIXiR1bJ5K57jCwF5mDbMZlN1hc4G3nmV919s+U65y95RZRVWDF8A31X93
-         wuBKPf/XYXGTrJvQ5kmLSrSCqQ+drLJzf1Cq5B1ZwZCZuZtQau6U4GEjXICpqDFOq7bl
-         lGfL+RVRzDo21111Hrd2udY65XMqVBaSnk7sviB5GSiEH46LUdECS5ovMTvH3DZGwRAG
-         iaXKWEzPVN+RxmWmzgLIdoak14hdX137RzYC/Oo5HMhNyu4/7ETruFNs5+q9N8TG2JvN
-         aV3Q==
-X-Gm-Message-State: AOAM532/KGno3nA1996dgCm9EvfON7fRx5OdfMMf2jaavT5CSM8nysAV
-        YrBTDUBSbjUMnUQDPwooCk8=
-X-Google-Smtp-Source: ABdhPJwN6e0Xq0ARGK5+rVycn4cMrVwi1rpBUFn+xzN2qNxTYUhk8ed7nwiG+tQIsG83Q3MtbB1WUA==
-X-Received: by 2002:a65:5c86:: with SMTP id a6mr15148191pgt.227.1603699792318;
-        Mon, 26 Oct 2020 01:09:52 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id j2sm542825pgi.48.2020.10.26.01.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 01:09:51 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH 3/3] watchdog: sprd: check busy bit before kick watchdog
-Date:   Mon, 26 Oct 2020 16:09:19 +0800
-Message-Id: <20201026080919.28413-4-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201026080919.28413-1-zhang.lyra@gmail.com>
-References: <20201026080919.28413-1-zhang.lyra@gmail.com>
+        Mon, 26 Oct 2020 04:12:32 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09Q8BiPj030048;
+        Mon, 26 Oct 2020 09:12:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=IJtekzXmv9vxatMxkzleF5Mc4SjVvGCd4JV42MjXd1s=;
+ b=lBfFwwFq8lydzld/V0z0+73qjeH43FVB82XfKUjag/S610ajGRlb0/lb9RJughCs2khu
+ 4deVm9PxoBOnVNcuPq1TUQzMAwUCwbO016alB/eBjTRCUOKym0CFSWIyYXIEW2UiR+LU
+ 0qJBkVqxouP68KY61q+i7brvrrThZmvkNi/s84tgEyQ/gQC9PsgYw6MtOtgHWJcRkC3L
+ NF5cQu85xmBNL5GAdYGS4WEucn+6cgEE0i7lB4x5+3Nqr8iZz9rHH/zvl6R0lyVDXqPH
+ 0BMWYouUwAtndXE9fTsoyo6HGarM6r1WI1S+d/si6rVcKixshzMEHHG5q5TlyefUwKuQ rg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34ccmqk1kh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Oct 2020 09:12:27 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B8879100034;
+        Mon, 26 Oct 2020 09:12:26 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A9CF22ADA16;
+        Mon, 26 Oct 2020 09:12:26 +0100 (CET)
+Received: from SFHDAG1NODE3.st.com (10.75.127.3) by SFHDAG3NODE3.st.com
+ (10.75.127.9) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
+ 2020 09:12:26 +0100
+Received: from SFHDAG1NODE3.st.com ([fe80::ad8b:a44d:504a:670d]) by
+ SFHDAG1NODE3.st.com ([fe80::ad8b:a44d:504a:670d%20]) with mapi id
+ 15.00.1473.003; Mon, 26 Oct 2020 09:12:26 +0100
+From:   Fabien DESSENNE <fabien.dessenne@st.com>
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>
+CC:     "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mailbox: stm32-ipcc: remove duplicate error message
+Thread-Topic: [PATCH 2/2] mailbox: stm32-ipcc: remove duplicate error message
+Thread-Index: AQHWqgodECjhJ37krEyKtF2uVISUUampepkA
+Date:   Mon, 26 Oct 2020 08:12:26 +0000
+Message-ID: <fc47f0cd-ebbf-8093-6197-43e98e7ffc73@st.com>
+References: <20201024133154.22767-1-martin@kaiser.cx>
+ <20201024133154.22767-2-martin@kaiser.cx>
+In-Reply-To: <20201024133154.22767-2-martin@kaiser.cx>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.45]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2E3CF5225217A24BA58D4A4D273B94B5@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-26_04:2020-10-26,2020-10-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lingling Xu <ling_ling.xu@unisoc.com>
-
-As the specification described, checking busy bit must be done before kick
-watchdog.
-
-Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
-Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/watchdog/sprd_wdt.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
-index 4f2a8c6d6485..14071c66ff49 100644
---- a/drivers/watchdog/sprd_wdt.c
-+++ b/drivers/watchdog/sprd_wdt.c
-@@ -108,20 +108,8 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
- 	u32 tmr_step = timeout * SPRD_WDT_CNT_STEP;
- 	u32 prtmr_step = pretimeout * SPRD_WDT_CNT_STEP;
- 
--	sprd_wdt_unlock(wdt->base);
--	writel_relaxed((tmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
--		      SPRD_WDT_LOW_VALUE_MASK, wdt->base + SPRD_WDT_LOAD_HIGH);
--	writel_relaxed((tmr_step & SPRD_WDT_LOW_VALUE_MASK),
--		       wdt->base + SPRD_WDT_LOAD_LOW);
--	writel_relaxed((prtmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
--			SPRD_WDT_LOW_VALUE_MASK,
--		       wdt->base + SPRD_WDT_IRQ_LOAD_HIGH);
--	writel_relaxed(prtmr_step & SPRD_WDT_LOW_VALUE_MASK,
--		       wdt->base + SPRD_WDT_IRQ_LOAD_LOW);
--	sprd_wdt_lock(wdt->base);
--
- 	/*
--	 * Waiting the load value operation done,
-+	 * Waiting the last load value operation done,
- 	 * it needs two or three RTC clock cycles.
- 	 */
- 	do {
-@@ -134,6 +122,19 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
- 
- 	if (delay_cnt >= SPRD_WDT_LOAD_TIMEOUT)
- 		return -EBUSY;
-+
-+	sprd_wdt_unlock(wdt->base);
-+	writel_relaxed((tmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
-+		      SPRD_WDT_LOW_VALUE_MASK, wdt->base + SPRD_WDT_LOAD_HIGH);
-+	writel_relaxed((tmr_step & SPRD_WDT_LOW_VALUE_MASK),
-+		       wdt->base + SPRD_WDT_LOAD_LOW);
-+	writel_relaxed((prtmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
-+			SPRD_WDT_LOW_VALUE_MASK,
-+		       wdt->base + SPRD_WDT_IRQ_LOAD_HIGH);
-+	writel_relaxed(prtmr_step & SPRD_WDT_LOW_VALUE_MASK,
-+		       wdt->base + SPRD_WDT_IRQ_LOAD_LOW);
-+	sprd_wdt_lock(wdt->base);
-+
- 	return 0;
- }
- 
--- 
-2.20.1
-
+SGkgTWFydGluDQoNCg0KVGhhbmsgeW91IGZvciB0aGUgcGF0Y2gNCg0KT24gMjQvMTAvMjAyMCAz
+OjMxIHBtLCBNYXJ0aW4gS2Fpc2VyIHdyb3RlOg0KPiBwbGF0Zm9ybV9nZXRfaXJxX2J5bmFtZSBh
+bHJlYWR5IHByaW50cyBhbiBlcnJvciBtZXNzYWdlIGlmIHRoZSByZXF1ZXN0ZWQgaXJxDQo+IHdh
+cyBub3QgZm91bmQuIERvbid0IHByaW50IGFub3RoZXIgbWVzc2FnZSBpbiB0aGUgZHJpdmVyLg0K
+Pg0KPiBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4gS2Fpc2VyIDxtYXJ0aW5Aa2Fpc2VyLmN4Pg0KDQoN
+ClJldmlld2VkLWJ5OiBGYWJpZW4gRGVzc2VubmUgPGZhYmllbi5kZXNzZW5uZUBzdC5jb20+DQoN
+Cg0KPiAtLS0NCj4gICBkcml2ZXJzL21haWxib3gvc3RtMzItaXBjYy5jIHwgMyAtLS0NCj4gICAx
+IGZpbGUgY2hhbmdlZCwgMyBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bWFpbGJveC9zdG0zMi1pcGNjLmMgYi9kcml2ZXJzL21haWxib3gvc3RtMzItaXBjYy5jDQo+IGlu
+ZGV4IGVmOTY2ODg3YWExNS4uYWI4ZmU1NmFmOTQ4IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL21h
+aWxib3gvc3RtMzItaXBjYy5jDQo+ICsrKyBiL2RyaXZlcnMvbWFpbGJveC9zdG0zMi1pcGNjLmMN
+Cj4gQEAgLTI1Nyw5ICsyNTcsNiBAQCBzdGF0aWMgaW50IHN0bTMyX2lwY2NfcHJvYmUoc3RydWN0
+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gICAJZm9yIChpID0gMDsgaSA8IElQQ0NfSVJRX05V
+TTsgaSsrKSB7DQo+ICAgCQlpcGNjLT5pcnFzW2ldID0gcGxhdGZvcm1fZ2V0X2lycV9ieW5hbWUo
+cGRldiwgaXJxX25hbWVbaV0pOw0KPiAgIAkJaWYgKGlwY2MtPmlycXNbaV0gPCAwKSB7DQo+IC0J
+CQlpZiAoaXBjYy0+aXJxc1tpXSAhPSAtRVBST0JFX0RFRkVSKQ0KPiAtCQkJCWRldl9lcnIoZGV2
+LCAibm8gSVJRIHNwZWNpZmllZCAlc1xuIiwNCj4gLQkJCQkJaXJxX25hbWVbaV0pOw0KPiAgIAkJ
+CXJldCA9IGlwY2MtPmlycXNbaV07DQo+ICAgCQkJZ290byBlcnJfY2xrOw0KPiAgIAkJfQ==
