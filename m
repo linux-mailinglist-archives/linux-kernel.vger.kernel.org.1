@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A411D298847
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E1829884F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771690AbgJZI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:28:01 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:39334 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771683AbgJZI2A (ORCPT
+        id S1771745AbgJZI3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:29:40 -0400
+Received: from casper.infradead.org ([90.155.50.34]:33830 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771738AbgJZI3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:28:00 -0400
-Received: by mail-lf1-f67.google.com with SMTP id 184so10636214lfd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4q79d55ID3Bf9O2H+Un8Zr9ufQ3leLyMW7CEeiGEmtE=;
-        b=XBdr2IkuNHK2a0R61eLOEMb/qNEha7Oxs9+R/wiQRJeZUF3cIousXkxwQdgl15gzVA
-         Fyc0Vr3A2hO2cDOIaoH6TGTBWsnak1pZCaSKMJoeCcg8Vxolc1IymOGLyS7kW4c0mKto
-         hmuA0xrfDwI+hONsw1TjVSUhjL96t+raB2fO62AGghwKuplvvYiIxqiBgQaft/Yickh1
-         phdZu4XRvlKMKWBx0xifEbVjBoxkdQfKlZAOO9QKAXy554M1uiE9ImglWqBs9wEhQGkJ
-         A+NPg8XvX6EV5sN2ju+AeGHoKCKQ6hTkWNvJFgjyxIyr5s9d0Qj6MCA1ofa6/MBBdmhD
-         vTjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4q79d55ID3Bf9O2H+Un8Zr9ufQ3leLyMW7CEeiGEmtE=;
-        b=Ay7ehjjd6tsT2GRf9mwG/3iohGFkSKTS0wJ/G37YD/cC0RS7d1fns3SUo6DsfPU1qX
-         YkdvCzQ44B5F3LbRdSzrPBTP9TycMwog03PD3fiCVK3jNDNSf8brOrW5mUcXlrAp5x0m
-         2JG54xHsnT3mwffvJtlU/3mN4ZlF06XUSeZC1qkwsFf9irnItSIsrSRu1EEn0pU697wa
-         gx3jHVzswwz3f84XUeKjCB+kXfyI8dqSoMPpWi69VrmUfRnJVozVBZ7zasPyJGhaIex7
-         hHZhWADaIyZziR+3RxB6t31fXyB7C1ICfYkZ2HuMzJ+G1+2ALX9HVAmTnTvIHvP3/0yB
-         Hi4w==
-X-Gm-Message-State: AOAM531XZN1atw0sbqYf8y8MBvYFB8M4r+CLVo4cCkXa770hMGkPqtT/
-        P38jwqA3t2QarvycQkcEwuWaD+5qZXS+HfUOb4Wcbw==
-X-Google-Smtp-Source: ABdhPJyAZ1kYr8wb0J+VNfSip1H3LgwRgXs/qQ2d44b3JJ0rJyyfQXycIaLmqhsl3/rS/34EUnCesEou2UWBIXJ3Wtk=
-X-Received: by 2002:a19:4a88:: with SMTP id x130mr4401986lfa.31.1603700878745;
- Mon, 26 Oct 2020 01:27:58 -0700 (PDT)
+        Mon, 26 Oct 2020 04:29:40 -0400
+X-Greylist: delayed 1110 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 04:29:40 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UsL8E9iVmc/lWtGbrYDIulGBi0tVH0FebsF/SBaFmTY=; b=j2qonDVpg4fqmF4j6JkHRuPokA
+        t1PaGw7qhx0Y1Rw3gWxuJ4ZMR8UkUdml5lF0FeddsG91CoiHOGrGTlMNNsm01vYibkEouYd+Vya3J
+        ejG4ekbtyZKbHmF2MrpmXZc1yHc6XALWfuWG7nZ7Bl0ut+MRfqMhr5+y9T0MthyUrLk6HQVVCQJT5
+        WufGOv2K9vdr7Gpp6IE+LyunM/Z0vUezlUzl9us2fFEJoq0XQE9A3RH23CQphsyHQVKUlgNSn69rv
+        rBYLLNXugcM1TwEnXbx+SrzR8KiBBayc8caU9dSkIx5/NntjijrFpwzZ0uSgJekV6Ygs7VFRZHy3L
+        kZvyjbuw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kWxrX-0005A7-94; Mon, 26 Oct 2020 08:28:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7DD68301179;
+        Mon, 26 Oct 2020 09:28:14 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5D2BA20325EC8; Mon, 26 Oct 2020 09:28:14 +0100 (CET)
+Date:   Mon, 26 Oct 2020 09:28:14 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 06/26] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20201026082814.GD2628@hirez.programming.kicks-ass.net>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-7-joel@joelfernandes.org>
+ <20201023135129.GS2611@hirez.programming.kicks-ass.net>
+ <20201023135400.GA2651@hirez.programming.kicks-ass.net>
+ <20201023175724.GA3563800@google.com>
+ <20201023192654.GH2974@worktop.programming.kicks-ass.net>
+ <20201023213118.GD3563800@google.com>
 MIME-Version: 1.0
-References: <20201022134354.3485-1-vincent.guittot@linaro.org>
- <jhj1rhqqplq.mognet@arm.com> <CAKfTPtBP8GntXP40mkq6NeppeFU1vZfFN_u41Athwouw-BBAMA@mail.gmail.com>
- <2a2699ee-e62f-1590-c846-009af0478c59@arm.com>
-In-Reply-To: <2a2699ee-e62f-1590-c846-009af0478c59@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 26 Oct 2020 09:27:47 +0100
-Message-ID: <CAKfTPtBFy2aG3wVAgF2CwhORBn194dm7M_4RpCAm5YpUv8YPpQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: prefer prev cpu in asymmetric wakeup path
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023213118.GD3563800@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 at 19:14, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 22/10/2020 17:33, Vincent Guittot wrote:
-> > On Thu, 22 Oct 2020 at 16:53, Valentin Schneider
-> > <valentin.schneider@arm.com> wrote:
-> >>
-> >>
-> >> Hi Vincent,
-> >>
-> >> On 22/10/20 14:43, Vincent Guittot wrote:
->
-> [...]
->
-> >>>  static int
-> >>> -select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
-> >>> +select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int prev, int target)
-> >>>  {
-> >>>       unsigned long best_cap = 0;
-> >>>       int cpu, best_cpu = -1;
-> >>> @@ -6178,9 +6178,22 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
-> >>>
-> >>>       sync_entity_load_avg(&p->se);
-> >>>
-> >>> +     if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-> >>> +         task_fits_capacity(p, capacity_of(target)))
-> >>> +             return target;
-> >>> +
-> >>
-> >> I think we still need to check for CPU affinity here.
-> >
-> > yes good point
->
-> We don't check CPU affinity on target and prev in the symmetric case.
+On Fri, Oct 23, 2020 at 05:31:18PM -0400, Joel Fernandes wrote:
+> BTW, as further optimization in the future, isn't it better for the
+> schedule() loop on 1 HT to select for all HT *even if* need_sync == false to
+> begin with?  i.e. no cookied tasks are runnable.
+> 
+> That way the pick loop in schedule() running on other HTs can directly pick
+> what was pre-selected for it via:
+>         if (rq->core->core_pick_seq == rq->core->core_task_seq &&
+>             rq->core->core_pick_seq != rq->core_sched_seq &&
+>             rq->core_pick)
+> .. which I think is more efficient. Its just a thought and may not be worth doing.
 
-Yes that's what i have noticed while reworking the patch to merge asym
-and symmetric
->
-> I always thought that since we:
->
-> (1) check 'want_affine = ... && cpumask_test_cpu(cpu, p->cpus_ptr);' in
->     select_task_rq_fair() and
->
-> (2) we have the select_fallback_rq() in select_task_rq() for prev
->
-> that this would be sufficient?
->
-> [...]
+I'm not sure that works. Imagine a sibling doing a wakeup (or sleep)
+just after you done your core wide pick. Then it will have to repick and
+you end up with having to do 2*nr_smt picks instead of 2 picks.
+
+
