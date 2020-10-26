@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5972990D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89D32990D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783566AbgJZPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:16:42 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60404 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783559AbgJZPQm (ORCPT
+        id S1783576AbgJZPRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:17:08 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:44685 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783117AbgJZPRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:16:42 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 27E241F44A65
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH 07/12] soc: mediatek: pm-domains: Add extra sram control
-To:     Matthias Brugger <mbrugger@suse.com>, linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        weiyi.lu@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
- <20200910172826.3074357-8-enric.balletbo@collabora.com>
- <277b1656-4a64-4fdd-865d-88cf253b7b0e@suse.com>
-Message-ID: <59d2decc-029a-709b-7796-fc9f370b67c6@collabora.com>
-Date:   Mon, 26 Oct 2020 16:16:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 26 Oct 2020 11:17:07 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 133so364964pfx.11;
+        Mon, 26 Oct 2020 08:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=di8I+7zkkzzJPYqlZpUDLV/inPRzF5jNJ9WXrF568Xc=;
+        b=u7+ZjBc3LjDKw3EdrvGsl6XjcNC3wznvJ0A6hqhbcsQI+CdL0jFdhByjDE6yibCk9A
+         ZkT2J5W5jPsy60hP1/OdQ/YDZgoOK4bPd3zJ/HUqXO0OkW8rImwfisMRmdpKP7bSOh/u
+         UH8H6MUwQhE6hRaBeqRpc+AHOU8/+AihBslSJc3K51XkFtxXyOIK3gMN8pjfO8YcIMnF
+         eB9OIoo7EbFwRbvyP9S8GgrFOf03L96gIjOhHzhBrfurjS7CpPiH2QB3URN9c+yP0Fyl
+         Ig1je7NIJ4/aYoKpH0Sr+8zvsCaVn9gOpWOlTVbzTgtABYAq771NFWBCuqpwqSxVE+Lj
+         7Zfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=di8I+7zkkzzJPYqlZpUDLV/inPRzF5jNJ9WXrF568Xc=;
+        b=WfOKKpyUn+urm8DlFSa0WBzCIlXIFu4HPffjV0nHmceex/nMHpGjIb+MIRrj3lnvXR
+         YcyX5OBm/1FQbEqpJgAjatpPPONDfdxnETyfz2RxVQONiSc6oBxBtH0XL1B5UixWmrcb
+         ma9Ryk/ej2/rfRTZBHF4WmNRd66D8Jfa1HTYG8b/VGeRkW7IgCUtelBfWoimbogoVDcm
+         inWJ+64C/e+6yPD8T6+FGImShrQ8wo8kj9PSyQhBGEPK1Rk0/hU/WYi38EZIsySYqVgb
+         bBwfGwTmL0A8CYruFRCmBu6kqYZaK1dkIoFq2fO2KP6bN/PDq4SZ6ICPXV0wGSMSyEhJ
+         G/ZA==
+X-Gm-Message-State: AOAM531K+WIiJeuLqREsd9/SZA4yO3P2+rMFjIbQKtiP0rCf2XB3F36u
+        bIAxEnV8No21UrT+YcLll5Aw9e3GbB1JZrXV
+X-Google-Smtp-Source: ABdhPJzlJR+qoP7hJ7syQhLfcBzPhFbPELyI20T+kacCxJK/9RmHX+OgDHBjGecQzZXlfMuEH7YqKA==
+X-Received: by 2002:a62:f846:0:b029:15f:f897:7647 with SMTP id c6-20020a62f8460000b029015ff8977647mr13987358pfm.75.1603725426883;
+        Mon, 26 Oct 2020 08:17:06 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id b185sm11101262pgc.68.2020.10.26.08.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 08:17:06 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Mon, 26 Oct 2020 23:16:42 +0800
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pinctrl: amd: print debounce filter info in debugfs
+Message-ID: <20201026151642.r5uqfgiptvk4wrjv@Rk>
+References: <20201024061552.4497-1-coiby.xu@gmail.com>
+ <CAHp75VdRBPcdRaTjnDNk5nSN8fMY--Gq=042+fYGddv=Xs6uHw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <277b1656-4a64-4fdd-865d-88cf253b7b0e@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdRBPcdRaTjnDNk5nSN8fMY--Gq=042+fYGddv=Xs6uHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+On Sun, Oct 25, 2020 at 07:12:16PM +0200, Andy Shevchenko wrote:
+>On Sat, Oct 24, 2020 at 2:32 PM Coiby Xu <coiby.xu@gmail.com> wrote:
+>>
+>> Print out the status of debounce filter as follows,
+>> $ cat /sys/kernel/debug/gpio|grep pin130
+>> pin130          interrupt is disabled| interrupt is masked| disable wakeup in S0i3 state| disable wakeup in S3 state|
+>>  disable wakeup in S4/S5 state| input is high|   pull-up is disabled| Pull-down is disabled|   output is disabled| debouncing filter (high) enabled| debouncing timeout is 124800 (us)| 0x503c8
+>
+>
+>> +                               if (!tmr_large) {
+>> +                                       if (!tmr_out_unit)
+>> +                                               unit = 61;
+>> +                                       else
+>> +                                               unit = 244;
+>> +                               } else {
+>> +                                       if (!tmr_out_unit)
+>> +                                               unit = 15600;
+>> +                                       else
+>> +                                               unit = 62500;
+>> +                               }
+>
+>In all three if:s can you use positive conditionals?
+>
+Thank you for the suggestion! I've reversed the order of debounce
+timeout in v2.
 
-On 10/9/20 20:27, Matthias Brugger wrote:
-> 
-> 
-> On 10/09/2020 19:28, Enric Balletbo i Serra wrote:
->> From: Matthias Brugger <mbrugger@suse.com>
->>
->> For some power domains like vpu_core on MT8183 whose sram need to do clock
->> and internal isolation while power on/off sram. We add a cap
->> "MTK_SCPD_SRAM_ISO" to judge if we need to do the extra sram isolation
->> control or not.
->>
->> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
->> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->>   drivers/soc/mediatek/mtk-pm-domains.c | 22 ++++++++++++++++++++--
->>   1 file changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c
->> b/drivers/soc/mediatek/mtk-pm-domains.c
->> index 3aa430a60602..0802eccc3a0b 100644
->> --- a/drivers/soc/mediatek/mtk-pm-domains.c
->> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
->> @@ -21,6 +21,7 @@
->>     #define MTK_SCPD_ACTIVE_WAKEUP        BIT(0)
->>   #define MTK_SCPD_FWAIT_SRAM        BIT(1)
->> +#define MTK_SCPD_SRAM_ISO        BIT(2)
->>   #define MTK_SCPD_CAPS(_scpd, _x)    ((_scpd)->data->caps & (_x))
->>     #define SPM_VDE_PWR_CON            0x0210
->> @@ -42,6 +43,8 @@
->>   #define PWR_ON_BIT            BIT(2)
->>   #define PWR_ON_2ND_BIT            BIT(3)
->>   #define PWR_CLK_DIS_BIT            BIT(4)
->> +#define PWR_SRAM_CLKISO_BIT        BIT(5)
->> +#define PWR_SRAM_ISOINT_B_BIT        BIT(6)
->>     #define PWR_STATUS_DISP            BIT(3)
->>   #define PWR_STATUS_MFG            BIT(4)
->> @@ -162,6 +165,14 @@ static int scpsys_sram_enable(struct scpsys_domain *pd,
->> void __iomem *ctl_addr)
->>       if (ret < 0)
->>           return ret;
->>   +    if (MTK_SCPD_CAPS(pd, MTK_SCPD_SRAM_ISO))    {
->> +        val = readl(ctl_addr) | PWR_SRAM_ISOINT_B_BIT;
->> +        writel(val, ctl_addr);
->> +        udelay(1);
->> +        val &= ~PWR_SRAM_CLKISO_BIT;
->> +        writel(val, ctl_addr);
->> +    }
->> +
->>       return 0;
->>   }
->>   @@ -171,8 +182,15 @@ static int scpsys_sram_disable(struct scpsys_domain
->> *pd, void __iomem *ctl_addr)
->>       u32 val;
->>       int tmp;
->>   -    val = readl(ctl_addr);
->> -    val |= pd->data->sram_pdn_bits;
->> +    if (MTK_SCPD_CAPS(pd, MTK_SCPD_SRAM_ISO))    {
->> +        val = readl(ctl_addr) | PWR_SRAM_CLKISO_BIT;
->> +        writel(val, ctl_addr);
->> +        val &= ~PWR_SRAM_ISOINT_B_BIT;
->> +        writel(val, ctl_addr);
->> +        udelay(1);
->> +    }
->> +
->> +    val = readl(ctl_addr) | pd->data->sram_pdn_bits;
-> 
-> Nit, I'd prefer:
-> val = readl(ctl_addr);
-> val |= pd->data->sram_pdn_bits;
-> 
+>--
+>With Best Regards,
+>Andy Shevchenko
 
-done in next version.
-
-> 
->>       writel(val, ctl_addr);
->>         /* Either wait until SRAM_PDN_ACK all 1 or 0 */
->>
+--
+Best regards,
+Coiby
