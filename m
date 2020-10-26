@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCD3299856
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B48429985B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgJZU7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:59:47 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:46326 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728888AbgJZU7p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:59:45 -0400
-Received: by mail-pf1-f194.google.com with SMTP id y14so6857960pfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jDa/MGBFJVWKF38l+qbilXRFIDAZ0WwGP8FkHRMbDLM=;
-        b=dsCNxm9ZAC2U/MfvTm4u+yvOauAENsiVo2Rmb1x7pLODRq4d6i1vwYBfrXXUOp9bFA
-         NyJH5FUyUvQvuujg0d7UowhOIl6YVcbFLTO8KIXr1Ifg/5lE3nklJj0z2wVXrP9+zl6t
-         PqnJJOMoB8HpuOk7anRcvVJhcfvYREUEC1CkM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jDa/MGBFJVWKF38l+qbilXRFIDAZ0WwGP8FkHRMbDLM=;
-        b=Qb5m/Tm3gBKE3fMPq50Mm6hopDjtPU9W3vsZlFaOABdzDLNKbO35UQijQuekzpNXqP
-         iGx8A5ny6Dy2LClI0m25eJPu6njantWRPolgx6SikhFlhrtaDmpIk70USIojvCoKjawJ
-         FGbHRmfmo5o8s3iGvS7OpG0Unai1TWFXiI93J/Qj+a4vQEhkE5H8btReC0iCC9baBaEx
-         QRo5t8aU5oG2AtfcjG3AjfWtVoLSmZi1yGf1H/iEQdOm1VjgY12KP+WkEoVOZTkMT14a
-         nXPQOSxeMremQqAH0BgbKb0tjAwqgaZ1uhKbj81QWIZkEa5xTV0mnjmLwPFpiBBpGjty
-         xXZQ==
-X-Gm-Message-State: AOAM531K6x4TTk49FTvg+kauYEukwaSJZErxsdP6CY7SuXYs9C+Faclt
-        AX4Uu0VpiydD28bnv4qGk+f2kw==
-X-Google-Smtp-Source: ABdhPJy7syG26RCaKNemvkfSQbbmIEGNmH1Y5kQJ+b7ZtCTMxuxIZv6OreN7JgpZWxMYg0kWADuP6Q==
-X-Received: by 2002:a63:4c42:: with SMTP id m2mr14767029pgl.122.1603745984540;
-        Mon, 26 Oct 2020 13:59:44 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id b1sm9155501pjd.11.2020.10.26.13.59.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 13:59:44 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] phy: qcom-qmp: Initialize another pointer to NULL
-Date:   Mon, 26 Oct 2020 13:59:42 -0700
-Message-Id: <20201026205942.2861828-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S1729059AbgJZVAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:00:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729011AbgJZVAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:00:46 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B36520B1F;
+        Mon, 26 Oct 2020 21:00:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603746046;
+        bh=igjkUN6wESAd/DH60fWZ+VmAdJIU5sWPvyCPO5XJN48=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VzUdhLcPpA/VYtY4oGcXxakGk/klmGlbWxN7jUe4lHINDG2OR0v498DkIilt3SKQx
+         9EgiYQT80bpyfptSqnLQC0nlOAwQ27biV7F2UzJBbeJzhw12tMcXZhs3tumDFTCB5/
+         EPQlB8+1RK2gG1f7tadgZIZl9RITJf45G3X7XF84=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] drm/amdgpu: fix enum mismatches
+Date:   Mon, 26 Oct 2020 22:00:29 +0100
+Message-Id: <20201026210039.3884312-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This probe function is too complicated and should be refactored. For now
-let's just set this variable to NULL and keep the static analysis tools
-happy.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Fixes: 52e013d0bffa ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+gcc -Wextra warns about an incorrect prototype causing multiple
+mismatched enums:
+
+display/dc/gpio/gpio_service.c: In function 'dal_gpio_service_create':
+display/dc/gpio/gpio_service.c:70:50: warning: implicit conversion from 'enum dce_environment' to 'enum dce_version' [-Wenum-conversion]
+display/dc/gpio/gpio_service.c:71:4: warning: implicit conversion from 'enum dce_version' to 'enum dce_environment' [-Wenum-conversion]
+display/dc/gpio/gpio_service.c:76:46: warning: implicit conversion from 'enum dce_environment' to 'enum dce_version' [-Wenum-conversion]
+display/dc/gpio/gpio_service.c:77:4: warning: implicit conversion from 'enum dce_version' to 'enum dce_environment' [-Wenum-conversion]
+
+display/dc/core/dc.c: In function 'dc_construct':
+display/dc/core/dc.c:718:10: warning: implicit conversion from 'enum dce_version' to 'enum dce_environment' [-Wenum-conversion]
+display/dc/core/dc.c:719:10: warning: implicit conversion from 'enum dce_environment' to 'enum dce_version' [-Wenum-conversion]
+
+Fixes: 4562236b3bc0 ("drm/amd/dc: Add dc display driver (v2)")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c           | 2 +-
+ drivers/gpu/drm/amd/display/include/gpio_service_interface.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index 5d33ad4d06f2..0cda16846962 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -3926,7 +3926,7 @@ static int qcom_qmp_phy_probe(struct platform_device *pdev)
- 	struct phy_provider *phy_provider;
- 	void __iomem *serdes;
- 	void __iomem *usb_serdes;
--	void __iomem *dp_serdes;
-+	void __iomem *dp_serdes = NULL;
- 	const struct qmp_phy_combo_cfg *combo_cfg = NULL;
- 	const struct qmp_phy_cfg *cfg = NULL;
- 	const struct qmp_phy_cfg *usb_cfg = NULL;
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c b/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
+index 92280cc05e2d..67bb5cc67255 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
++++ b/drivers/gpu/drm/amd/display/dc/gpio/gpio_service.c
+@@ -54,7 +54,7 @@
+ 
+ struct gpio_service *dal_gpio_service_create(
+ 	enum dce_version dce_version_major,
+-	enum dce_version dce_version_minor,
++	enum dce_environment dce_version_minor,
+ 	struct dc_context *ctx)
+ {
+ 	struct gpio_service *service;
+diff --git a/drivers/gpu/drm/amd/display/include/gpio_service_interface.h b/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
+index 9c55d247227e..5f0f94e83d19 100644
+--- a/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
++++ b/drivers/gpu/drm/amd/display/include/gpio_service_interface.h
+@@ -43,7 +43,7 @@ void dal_gpio_destroy(
+ 
+ struct gpio_service *dal_gpio_service_create(
+ 	enum dce_version dce_version_major,
+-	enum dce_version dce_version_minor,
++	enum dce_environment dce_version_minor,
+ 	struct dc_context *ctx);
+ 
+ struct gpio *dal_gpio_service_create_irq(
 -- 
-Sent by a computer, using git, on the internet
+2.27.0
 
