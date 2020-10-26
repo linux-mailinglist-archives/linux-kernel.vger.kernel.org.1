@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C8A2994A4
+	by mail.lfdr.de (Postfix) with ESMTP id BFBAC2994A5
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788911AbgJZR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:58:12 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:54435 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782135AbgJZR6J (ORCPT
+        id S1788936AbgJZR60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:58:26 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:42692 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782135AbgJZR6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:58:09 -0400
-Received: by mail-pj1-f67.google.com with SMTP id az3so3634097pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:58:09 -0700 (PDT)
+        Mon, 26 Oct 2020 13:58:15 -0400
+Received: by mail-pg1-f195.google.com with SMTP id s22so6475509pga.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jVqFrGJ54qznF12EgJgnYEytgLpa/16deYrykuVS5Rk=;
-        b=ZOOw+V2RHRZn8HxQIHaNmwEX9HGWCqhQ6DHV/MT0C3Rp3Amv/+2dZBRKec0rKvIx7d
-         QOLN9EQ2s2Ve/eWQJZydilAgqLnLxN0OZls4cB+SxV6QEuUadkBlJ2nwI133LYHphuFU
-         MAGSYY9jpJ+dMiWxWQ184HapvtHCF87KI2UQJFuZ4TxTXjmZVAKrD5/bPhD8ib+8UiPi
-         SbrGzY3mvZyat/E6dGLrHxOrC0V3aY974cLwKvBBJix2xB57NUK+HT4K8Pdk09OoQ8wd
-         FjIFQQ0RgTs6w8qpYhI7fBDtyi1jexSkkK019NqWZR6rWsr4qGrMciRNByssmjlmx374
-         Pu1Q==
+        bh=Yo0mnlsSy3YgKGeUG02IRLcGcjRgZwwdFoj2NxiD5lI=;
+        b=CaGYb9fwKX1t4/s7hL5McQiJsJosjdSgPtgRrXcOVEv9geNhsgv06QlYZxq9MmypsM
+         8h2YGCwMDt5AFwQAVzFT9qgQDYt93HasEwsXY9F8AWf+nt41cl4k+rKcfknOH1hgOUks
+         iNyNuzmEHIavPzF4GUjUo8btX9rmkJo7bx1Jo0qClUL2fxlqB+etlyZ4ygfoXJfgOFf9
+         y30GRFWWH1aR0AL5e2Pe/R/+yhSkRAj3Lbcg95C8vcfqdWrthKHcBeF1axLUW5Gif+CD
+         hUtko2x5J+g2cgiNr/cDNfys9Pg7rqVVOYO4UtgMHH7GZZmOPI9vgSEoW/ddjc6QnUcs
+         PgnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jVqFrGJ54qznF12EgJgnYEytgLpa/16deYrykuVS5Rk=;
-        b=TO7c6G4f+lQYt2j8vF7OQa/KD4iIEclf88sAe3qGjTmCbdm+K/zi57+VnN7+sA8X7E
-         gK83NEIVaXTOdVIS/39rc0R19zYgQWDUbuN5k1SGHRxy+XCUvVZ/cYK2fGrSGa3xcsy4
-         t2LWxU4xw+1uGHgSaZkgWpkz+d5Ev571dLYYvA4pAZtcVxq1W5rGj3Xazk8cASL96Gel
-         P4EmcFzG/ePD2AcwWN+i9Ra1wmoBqYzoQ7p6Rb+IV7rsYwJY3sd2PQqjt0YS1Z9kaqbr
-         UBncBlxkm45553lJG/95Ij0Edk/16lQaKwpuzt4rUaoXYyze6gHY0Ul+YTZkh3mnCXgA
-         WDWA==
-X-Gm-Message-State: AOAM533TBvrd13XnmNo/T5ukE07oKbbgBNXdMO6ddXppYXtuajAWqLVD
-        YZb94P7OG5/JDB5oLqzVEHYy
-X-Google-Smtp-Source: ABdhPJzgATxazG66Vln/+4UlHaSHpaVSkUndwcviy4e28WWIsUcCoLM3wud9RK8Mjr2Ro4ZSZPzfug==
-X-Received: by 2002:a17:902:b70f:b029:d6:5bcb:1b24 with SMTP id d15-20020a170902b70fb02900d65bcb1b24mr181099pls.82.1603735088185;
-        Mon, 26 Oct 2020 10:58:08 -0700 (PDT)
+        bh=Yo0mnlsSy3YgKGeUG02IRLcGcjRgZwwdFoj2NxiD5lI=;
+        b=buhO9L5AGMvvGba8gpCCQuU8EC48g/uYPet5tS1Pj8s7V8Bdjgqx5MtaFc/OzalufM
+         PTo4RJfsp2TAcoTYSqJvFdc4L95eUvyiXDkBWTF1yQ2GVh9KdTmOsaQq8BzqTERD4wui
+         d/OGUnic3gFJXyAofCbMrmsBw6dUOGUNX3r5FIrRGqNGQWcBcxxpqQ6gKGZdlERnpFvI
+         JjTRsmWKMhGTc/LXH/XLvpU11UKeBEG2QYUjbwDhEjmeeXMkF1h9YKVfZGNtiTyeqFfg
+         UFVCY5DdYSjGfrYelJaslR9UXbx8CeR0z7fxV+Bc82VMogGelryVJRQE2fMHJXEEvJHM
+         d1gg==
+X-Gm-Message-State: AOAM531ttQbwe5kMMLStYysHgiPzr676GUJsZhlaW6K1N0o8aL+5tdj1
+        dndB16lFFTqJeckT+D9AKbgm
+X-Google-Smtp-Source: ABdhPJyKADO7GsN5K7F28og4HF+KdQfGGrByPskuE8rwr33F4aFXWfsWuMVwDc84lw/9USAHHy9q7A==
+X-Received: by 2002:a63:3e0a:: with SMTP id l10mr12627239pga.420.1603735094882;
+        Mon, 26 Oct 2020 10:58:14 -0700 (PDT)
 Received: from localhost.localdomain ([116.68.74.56])
-        by smtp.gmail.com with ESMTPSA id o65sm11583088pga.42.2020.10.26.10.58.04
+        by smtp.gmail.com with ESMTPSA id o65sm11583088pga.42.2020.10.26.10.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 10:58:07 -0700 (PDT)
+        Mon, 26 Oct 2020 10:58:14 -0700 (PDT)
 From:   Vaishnav M A <vaishnav@beagleboard.org>
 To:     johan@kernel.org
 Cc:     ribalda@kernel.org, robh@kernel.org, gregkh@linuxfoundation.org,
@@ -53,9 +53,9 @@ Cc:     ribalda@kernel.org, robh@kernel.org, gregkh@linuxfoundation.org,
         linux-serial@vger.kernel.org, linux-kbuild@vger.kernel.org,
         jkridner@beagleboard.org, drew@beagleboard.org,
         robertcnelson@beagleboard.org, vaishnav@beagleboard.org
-Subject: [RFC PATCH 3/5] serdev: add of_ helper to get serdev controller
-Date:   Mon, 26 Oct 2020 23:27:16 +0530
-Message-Id: <20201026175718.965773-4-vaishnav@beagleboard.org>
+Subject: [RFC PATCH 4/5] gnss: ubx add MODULE_DEVICE_TABLE(serdev)
+Date:   Mon, 26 Oct 2020 23:27:17 +0530
+Message-Id: <20201026175718.965773-5-vaishnav@beagleboard.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026175718.965773-1-vaishnav@beagleboard.org>
 References: <20201026175718.965773-1-vaishnav@beagleboard.org>
@@ -65,67 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add of_find_serdev_controller_by_node() to obtain a
-serdev_controller from the device_node, which can 
-help if the serdev_device is not described over 
-device tree and instantiation of the device happens later
-from a different driver, for the same purpose an option
-to not delete an empty serdev controller is added.
+export serdev id table to the module header.
 
 Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
 ---
- drivers/tty/serdev/core.c | 17 +++++++++++++++++
- include/linux/serdev.h    |  2 ++
- 2 files changed, 19 insertions(+)
+ drivers/gnss/ubx.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
-index 01b248fdc264..85977b36ed7f 100644
---- a/drivers/tty/serdev/core.c
-+++ b/drivers/tty/serdev/core.c
-@@ -582,6 +582,17 @@ static int of_serdev_register_devices(struct serdev_controller *ctrl)
- 	return 0;
- }
+diff --git a/drivers/gnss/ubx.c b/drivers/gnss/ubx.c
+index 7b05bc40532e..e50056cc4223 100644
+--- a/drivers/gnss/ubx.c
++++ b/drivers/gnss/ubx.c
+@@ -138,6 +138,14 @@ static const struct of_device_id ubx_of_match[] = {
+ MODULE_DEVICE_TABLE(of, ubx_of_match);
+ #endif
  
-+struct serdev_controller *of_find_serdev_controller_by_node(struct device_node *node)
-+{
-+	struct device *dev = bus_find_device_by_of_node(&serdev_bus_type, node);
++static const struct serdev_device_id ubx_serdev_id[] = {
++	{ "neo-6m", },
++	{ "neo-8", },
++	{ "neo-m8", },
++	{}
++};
++MODULE_DEVICE_TABLE(serdev, ubx_serdev_id);
 +
-+	if (!dev)
-+		return NULL;
-+
-+	return (dev->type == &serdev_ctrl_type) ? to_serdev_controller(dev) : NULL;
-+}
-+EXPORT_SYMBOL_GPL(of_find_serdev_controller_by_node);
-+
- #ifdef CONFIG_ACPI
+ static struct serdev_device_driver ubx_driver = {
+ 	.driver	= {
+ 		.name		= "gnss-ubx",
+@@ -146,6 +154,7 @@ static struct serdev_device_driver ubx_driver = {
+ 	},
+ 	.probe	= ubx_probe,
+ 	.remove	= ubx_remove,
++	.id_table = ubx_serdev_id,
+ };
+ module_serdev_device_driver(ubx_driver);
  
- #define SERDEV_ACPI_MAX_SCAN_DEPTH 32
-@@ -779,6 +790,12 @@ int serdev_controller_add(struct serdev_controller *ctrl)
- 
- 	pm_runtime_enable(&ctrl->dev);
- 
-+	/* provide option to not delete a serdev controller without devices
-+	 * if property is present
-+	 */
-+	if (device_property_present(&ctrl->dev, "force-empty-serdev-controller"))
-+		return 0;
-+
- 	ret_of = of_serdev_register_devices(ctrl);
- 	ret_acpi = acpi_serdev_register_devices(ctrl);
- 	if (ret_of && ret_acpi) {
-diff --git a/include/linux/serdev.h b/include/linux/serdev.h
-index 0d9c90a250b0..2e1eb4d17e1b 100644
---- a/include/linux/serdev.h
-+++ b/include/linux/serdev.h
-@@ -115,6 +115,8 @@ static inline struct serdev_controller *to_serdev_controller(struct device *d)
- 	return container_of(d, struct serdev_controller, dev);
- }
- 
-+struct serdev_controller *of_find_serdev_controller_by_node(struct device_node *node);
-+
- static inline void *serdev_device_get_drvdata(const struct serdev_device *serdev)
- {
- 	return dev_get_drvdata(&serdev->dev);
 -- 
 2.25.1
 
