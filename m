@@ -2,179 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D483298CA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A37298CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774693AbgJZMCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:02:41 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35253 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1774677AbgJZMCe (ORCPT
+        id S1774712AbgJZMFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:05:22 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:2659 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1770973AbgJZMFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:02:34 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n15so12170804wrq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=csBLm3ebHLvfnJwPW+GEPGSRmaYpvOkO16WRyubpNjA=;
-        b=CQIAGolIi3P6jCUGq3bE7yNJUS8cGXQlkYbPeWnfSZI2Re9PMP2NGmoKpRJgos+56C
-         6XC5SlNv9I601RC7hw5EpUkYn/cbaXdMjzoFRbclzk4KqyBWe5jOPcIA/rr64wL8/llG
-         UtRhwTIXV9CQlqacrc0AblA4tObwYY6JtGNS7WPLPjH11QK4dqr9MqRXmYV+N3j0Vesn
-         9KXLbO5i5dL9c+My0IdBW3/HPanw8gG1BJOJrZtM1UK/OEPKY3ZFKpJsNC8arZm1P7nY
-         R3rucSgFx+N7KaWss5CcLr0/ygXTYWuADBACQXm2uPNUL92mR1P07GSXVFTZoug1ujHL
-         Ggng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=csBLm3ebHLvfnJwPW+GEPGSRmaYpvOkO16WRyubpNjA=;
-        b=BgVsaqXKVLWQrm2wx9IHM76lDqRBBk1qKbmc6r/dTUmmQePq9h7tgX/JEh13wXqahN
-         PDccRKeu4PNbXdGaAcs/FBLnnjY6Z/vdL0v46CJ17nvK64F5p5P2eNQU5CyGKRYRE+cC
-         RSLZYsyQDhJBkuJdHF4CCNp9xes1+B44i9bh/bM3ywcjCCoQyrqlXAz9LDEZ4lPbaBLL
-         Uqu3asx8OZVLTxkcDxUO6uVzZdCbw1iXpMC1sMcRk1pkkwFXUAGW8ftDb/Rn6HGRjA9G
-         kJdG0c1T9fAVs+hMAwjF1TdwmPdVgGkLcZeOQQDSbRTC2StrUwPXLxZcKMwMPqO2LoOT
-         yH6g==
-X-Gm-Message-State: AOAM5328qzoTElSwD4YayCA/3uV5qfVUkJab9iTD229+oWWBaPGyQNE1
-        brvdJ16tE8EQHX470jc3d7QWeg==
-X-Google-Smtp-Source: ABdhPJzvTiSwyyzXUeBSenhdhpVq0hdbhCKuhAOzN/jtLyXmbp+scZip35ykfHF+Y8xfNaFN4XkHgA==
-X-Received: by 2002:a5d:4282:: with SMTP id k2mr16794414wrq.270.1603713750422;
-        Mon, 26 Oct 2020 05:02:30 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id i33sm23659337wri.79.2020.10.26.05.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:02:29 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [RESEND PATCH v3 4/4] clk: qcom: Add support to LPASS AON_CC Glitch Free Mux clocks
-Date:   Mon, 26 Oct 2020 12:02:21 +0000
-Message-Id: <20201026120221.18984-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201026120221.18984-1-srinivas.kandagatla@linaro.org>
-References: <20201026120221.18984-1-srinivas.kandagatla@linaro.org>
+        Mon, 26 Oct 2020 08:05:21 -0400
+Subject: Re: [RFC PATCH 0/6] Sleepable tracepoints
+To:     Michael Jeanson <mjeanson@efficios.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>, <bpf@vger.kernel.org>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <083f3ffa-3395-d66b-bb8b-d6a3fd7f6177@sony.com>
+Date:   Mon, 26 Oct 2020 13:05:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201023195352.26269-1-mjeanson@efficios.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=EbK2v8uC c=1 sm=1 tr=0 a=CGteIMthFL3x4Fb36c5kWA==:117 a=IkcTkHD0fZMA:10 a=afefHYAZSVUA:10 a=meVymXHHAAAA:8 a=JfrnYn6hAAAA:8 a=VwQbUJbxAAAA:8 a=FOH2dFAWAAAA:8 a=20KFwNOVAAAA:8 a=7CQSdrXTAAAA:8 a=QyXUC8HyAAAA:8 a=qqdB56dbAAAA:8 a=3C5PsIaMDjZkp0q5FAMA:9 a=QEXdDO2ut3YA:10 a=2JgSa4NbpEOStq-L5dxp:22 a=1CNFftbPRP8L7MoqJWF3:22 a=AjGcO6oz07-iQ99wixmX:22 a=i3VuKzQdj-NEYjvDI-p3:22 a=a-qgeE7W1pNrGK8U0ZQC:22 a=ccaIO3UgQCpleZvgly2v:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LPASS Always ON Clock controller has one GFM mux to control VA
-and TX clocks to codec macro on LPASS.
-This patch adds support to this mux.
+On 10/23/20 9:53 PM, Michael Jeanson wrote:
+> When invoked from system call enter/exit instrumentation, accessing
+> user-space data is a common use-case for tracers. However, tracepoints
+> currently disable preemption around iteration on the registered
+> tracepoint probes and invocation of the probe callbacks, which prevents
+> tracers from handling page faults.
+>
+> Extend the tracepoint and trace event APIs to allow specific tracer
+> probes to take page faults. Adapt ftrace, perf, and ebpf to allow being
+> called from sleepable context, and convert the system call enter/exit
+> instrumentation to sleepable tracepoints.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/clk/qcom/lpass-gfm-sm8250.c | 63 +++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+Will this not be a problem for analyse of the trace? It get two
+relevant times, one it when it is called and one when it returns.
 
-diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
-index 48a73dd97d0d..d366c7c2abc7 100644
---- a/drivers/clk/qcom/lpass-gfm-sm8250.c
-+++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
-@@ -18,6 +18,7 @@
- #include <linux/platform_device.h>
- #include <linux/of_device.h>
- #include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
-+#include <dt-bindings/clock/qcom,sm8250-lpass-aoncc.h>
- 
- struct lpass_gfm {
- 	struct device *dev;
-@@ -65,6 +66,46 @@ static const struct clk_ops clk_gfm_ops = {
- 	.determine_rate = __clk_mux_determine_rate,
- };
- 
-+static struct clk_gfm lpass_gfm_va_mclk = {
-+	.mux_reg = 0x20000,
-+	.mux_mask = BIT(0),
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "VA_MCLK",
-+		.ops = &clk_gfm_ops,
-+		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
-+		.num_parents = 2,
-+		.parent_data = (const struct clk_parent_data[]){
-+			{
-+				.index = 0,
-+				.fw_name = "LPASS_CLK_ID_TX_CORE_MCLK",
-+			}, {
-+				.index = 1,
-+				.fw_name = "LPASS_CLK_ID_VA_CORE_MCLK",
-+			},
-+		},
-+	},
-+};
-+
-+static struct clk_gfm lpass_gfm_tx_npl = {
-+	.mux_reg = 0x20000,
-+	.mux_mask = BIT(0),
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "TX_NPL",
-+		.ops = &clk_gfm_ops,
-+		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
-+		.parent_data = (const struct clk_parent_data[]){
-+			{
-+				.index = 0,
-+				.fw_name = "LPASS_CLK_ID_TX_CORE_NPL_MCLK",
-+			}, {
-+				.index = 1,
-+				.fw_name = "LPASS_CLK_ID_VA_CORE_2X_MCLK",
-+			},
-+		},
-+		.num_parents = 2,
-+	},
-+};
-+
- static struct clk_gfm lpass_gfm_wsa_mclk = {
- 	.mux_reg = 0x220d8,
- 	.mux_mask = BIT(0),
-@@ -145,6 +186,19 @@ static struct clk_gfm lpass_gfm_rx_npl = {
- 	},
- };
- 
-+static struct clk_gfm *aoncc_gfm_clks[] = {
-+	[LPASS_CDC_VA_MCLK]		= &lpass_gfm_va_mclk,
-+	[LPASS_CDC_TX_NPL]		= &lpass_gfm_tx_npl,
-+};
-+
-+static struct clk_hw_onecell_data aoncc_hw_onecell_data = {
-+	.hws = {
-+		[LPASS_CDC_VA_MCLK]	= &lpass_gfm_va_mclk.hw,
-+		[LPASS_CDC_TX_NPL]	= &lpass_gfm_tx_npl.hw,
-+	},
-+	.num = ARRAY_SIZE(aoncc_gfm_clks),
-+};
-+
- static struct clk_gfm *audiocc_gfm_clks[] = {
- 	[LPASS_CDC_WSA_NPL]		= &lpass_gfm_wsa_npl,
- 	[LPASS_CDC_WSA_MCLK]		= &lpass_gfm_wsa_mclk,
-@@ -172,6 +226,11 @@ static struct lpass_gfm_data audiocc_data = {
- 	.gfm_clks = audiocc_gfm_clks,
- };
- 
-+static struct lpass_gfm_data aoncc_data = {
-+	.onecell_data = &aoncc_hw_onecell_data,
-+	.gfm_clks = aoncc_gfm_clks,
-+};
-+
- static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
- {
- 	const struct lpass_gfm_data *data;
-@@ -233,6 +292,10 @@ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id lpass_gfm_clk_match_table[] = {
-+	{
-+		.compatible = "qcom,sm8250-lpass-aoncc",
-+		.data = &aoncc_data,
-+	},
- 	{
- 		.compatible = "qcom,sm8250-lpass-audiocc",
- 		.data = &audiocc_data,
--- 
-2.21.0
+It makes things harder to correlate in what order things happen.
+
+And handling of tracing of contexts that already are not preamptable?
+
+Eg the same tracepoint are used in different places and contexts.
+
+
+> This series only implements the tracepoint infrastructure required to
+> allow tracers to handle page faults. Modifying each tracer to handle
+> those page faults would be a next step after we all agree on this piece
+> of instrumentation infrastructure.
+>
+> This patchset is base on v5.9.1.
+>
+> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Cc: bpf@vger.kernel.org
+>
+> Mathieu Desnoyers (1):
+>   tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
+>
+> Michael Jeanson (5):
+>   tracing: introduce sleepable tracepoints
+>   tracing: ftrace: add support for sleepable tracepoints
+>   tracing: bpf-trace: add support for sleepable tracepoints
+>   tracing: perf: add support for sleepable tracepoints
+>   tracing: convert sys_enter/exit to sleepable tracepoints
+>
+>  include/linux/tracepoint-defs.h |  11 ++++
+>  include/linux/tracepoint.h      | 104 +++++++++++++++++++++-----------
+>  include/trace/bpf_probe.h       |  23 ++++++-
+>  include/trace/define_trace.h    |   7 +++
+>  include/trace/events/syscalls.h |   4 +-
+>  include/trace/perf.h            |  26 ++++++--
+>  include/trace/trace_events.h    |  79 ++++++++++++++++++++++--
+>  init/Kconfig                    |   1 +
+>  kernel/trace/bpf_trace.c        |   5 +-
+>  kernel/trace/trace_events.c     |  15 ++++-
+>  kernel/trace/trace_syscalls.c   |  68 +++++++++++++--------
+>  kernel/tracepoint.c             | 104 +++++++++++++++++++++++++-------
+>  12 files changed, 351 insertions(+), 96 deletions(-)
+>
 
