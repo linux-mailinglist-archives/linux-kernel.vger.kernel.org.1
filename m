@@ -2,185 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C20C298ECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160C4298ECF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780922AbgJZODZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:03:25 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:35442 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780899AbgJZODY (ORCPT
+        id S1780934AbgJZOEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:04:36 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:32818 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1780184AbgJZOEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:03:24 -0400
-Received: by mail-oi1-f194.google.com with SMTP id w191so10586526oif.2;
-        Mon, 26 Oct 2020 07:03:23 -0700 (PDT)
+        Mon, 26 Oct 2020 10:04:35 -0400
+Received: by mail-lj1-f196.google.com with SMTP id c21so10292614ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LCu5NdXBK+BnODvbd1GTi0JZKwfTZXfo+pz+umxASK4=;
+        b=tvwCOSX5EFJijvWw1JdH67BVPCYHm9suCIfuUI36ADhRfXqOLHZg5XTAOv6vs/3bKW
+         13UsKz23cC5zgvvbum9dpShhqBTfIBAqMHxinwSasiy9eWCQ4TROxPO6zHRTR76THw7G
+         bsOCXQ3cfTslJsKsCftuoxUkkCxROpdWDsqgsMlMYOUBvCIzNH/KVHMaydtvbgIPwnga
+         S+G6GMZExad3WKPUSadyohbiZcrzos6yUGcMXixnf26YMxOx1DKvP+g1CKNffuM6/L/d
+         YxOnrzPGoLvSxxBCJE1fnEzfjo5VWZ0NOMe3sKXTmkONnVNR82aPE5FuVhXq4zXwz5W4
+         iwvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yQxCiGiE7NlPiloxFNOWyASBwj4I+02Aby8eDq3BwvA=;
-        b=gXLbk9s66qOcwEISHScNu4//+fdfyJt+KP98hIw03EQI1N5mmXjRjcx3LU5LLAdae9
-         ZCraOCZByflwuhEXWCAryyWanE36YhI6k+kku7YZl7nzBQYY4oAZVHm7NXrrZNdFWUjD
-         4AUTY7tP/Lh7KwBnGvCYTkrVZ7d2XqjC3cZyyHLmgxPV89q5+Q1RIdEvdwRcGQNhqZsu
-         tKTjVSJWQi2QKhv1MtTnr6uoUYaVAKgJrMyycxz3aE7u1mySsAsQRIKLo5qF51XAhJVa
-         28iLrkMw7HsOsEGBNkWJ/oAwQviyZmjpUBUvQwG+RieCDX6HE3YXxdmqIEdR0tPwC0Qt
-         LGkg==
-X-Gm-Message-State: AOAM532FwJUanJUip95cMsjytSqHhnLXmgzSbUoAyQdd3nLggzN25Arz
-        FoAhF98fSgd+Yy8chW5JxQ==
-X-Google-Smtp-Source: ABdhPJwBgb/kRoqMlR8y8yxrn2+kkR7ptzRTb5/SIg4FuVbYd/YN5Ca9yXxPi6QzUO6OrkEilgZ53g==
-X-Received: by 2002:a05:6808:a90:: with SMTP id q16mr12745941oij.17.1603721003220;
-        Mon, 26 Oct 2020 07:03:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h3sm3911140oom.18.2020.10.26.07.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 07:03:22 -0700 (PDT)
-Received: (nullmailer pid 77066 invoked by uid 1000);
-        Mon, 26 Oct 2020 14:03:21 -0000
-Date:   Mon, 26 Oct 2020 09:03:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v11 02/10] dt-bindings: usb: Maxim type-c controller
- device tree binding document
-Message-ID: <20201026140321.GA73964@bogus>
-References: <20201020093627.256885-1-badhri@google.com>
- <20201020093627.256885-3-badhri@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LCu5NdXBK+BnODvbd1GTi0JZKwfTZXfo+pz+umxASK4=;
+        b=bFYx0m5IMc6zj6XJp3E4rdo3OlXvgkYEYJh0jmq0j8C8ktU61ndJLKx1a2R2BrOYqf
+         9eixv53h1LtRzeFj6izJfZaHmiH1tasLLsc0s9APj7Fq4GRNbqW+UxRJb0HwFTzwOIYb
+         XcKE2/LqiSaTzIbS5JurrLWdpjWTpCCiyPtI81OWqmTO60BKHIxfq8DaJC3m7todsMca
+         wgm+LWIIaHa61K3xCrc3GYvHPaU2dsZygUAykxneS/x0FJ4bxHhAxTaFa1idbxNvl5Q+
+         nLetvs2V93hStk+r9g/TTZakLxuGGp4a2SjZyro3tSMJrSgm8tiyrBBd74soqexV6FQB
+         Q7wQ==
+X-Gm-Message-State: AOAM530ODMAtW6i9EwQRotwe6p0Duv6aFgdiY9j3HP3JNpPrgTcrZ59O
+        sqmfbEk0eCe/p/+Srp+fHyo=
+X-Google-Smtp-Source: ABdhPJxY97SmL0cjT9t2a/BRFAnk4TX4v/rtK06n18qOXY4GRJFVy8n+1oLXRxjQTwzMpoQ0VrzHqA==
+X-Received: by 2002:a2e:9ccf:: with SMTP id g15mr6248166ljj.353.1603721073488;
+        Mon, 26 Oct 2020 07:04:33 -0700 (PDT)
+Received: from [192.168.0.10] (89-109-58-109.dynamic.mts-nn.ru. [89.109.58.109])
+        by smtp.gmail.com with ESMTPSA id c202sm1045798lfg.133.2020.10.26.07.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 07:04:32 -0700 (PDT)
+Subject: Re: [PATCH v2 08/15] perf record: write trace data into mmap trace
+ files
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        budankov.lore@gmail.com
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <1202e665-6321-28d4-eca3-b21693364467@linux.intel.com>
+ <20201024154423.GG2589351@krava>
+ <adc90ef5-58cc-8578-13f7-cbce895f1a28@gmail.com>
+ <20201026103227.GB2726983@krava>
+From:   Alexei Budankov <budankov.lore@gmail.com>
+Organization: Intel Corp.
+Message-ID: <51d818e7-cee7-e826-5d1c-008e27e9fe68@gmail.com>
+Date:   Mon, 26 Oct 2020 17:04:31 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020093627.256885-3-badhri@google.com>
+In-Reply-To: <20201026103227.GB2726983@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:36:19AM -0700, Badhri Jagan Sridharan wrote:
-> Add device tree binding document for Maxim 33359 Type-C chip driver
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
-> Changes since v1:
-> - Changing patch version to v6 to fix version number confusion.
-> 
-> Changes since v6:
-> - Migrated to yaml format.
-> 
-> Changes since v7:
-> - Rebase on usb-next
-> 
-> Changes since v8:
-> - Fix errors from make dt_binding_check as suggested by
->   Rob Herring.
-> 
-> Changes since v9:
-> - additionalProperties: false as suggested by Rob Herring.
-> 
-> Changes since v10:
-> - Added the chip number to the binding as suggested by Rob Herring.
-> - Renamed the filename as well.
-> 
-> ---
->  .../devicetree/bindings/usb/maxim,33359.yaml  | 75 +++++++++++++++++++
->  1 file changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/maxim,33359.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/maxim,33359.yaml b/Documentation/devicetree/bindings/usb/maxim,33359.yaml
-> new file mode 100644
-> index 000000000000..b02e7b228cde
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/maxim,33359.yaml
-> @@ -0,0 +1,75 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/usb/maxim,33359.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Maxim TCPCI Type-C PD controller DT bindings
-> +
-> +maintainers:
-> +  - Badhri Jagan Sridharan <badhri@google.com>
-> +
-> +description: Maxim TCPCI Type-C PD controller
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - maxim,33359
 
-Maxim parts are generally named 'maxim,max[0-9]+'
+On 26.10.2020 13:32, Jiri Olsa wrote:
+> On Mon, Oct 26, 2020 at 11:52:21AM +0300, Alexei Budankov wrote:
+>>
+>> On 24.10.2020 18:44, Jiri Olsa wrote:
+>>> On Wed, Oct 21, 2020 at 07:02:56PM +0300, Alexey Budankov wrote:
+>>>
+>>> SNIP
+>>>
+>>>>  
+>>>>  	record__synthesize(rec, true);
+>>>> -	/* this will be recalculated during process_buildids() */
+>>>> -	rec->samples = 0;
+>>>>  
+>>>>  	if (!err) {
+>>>>  		if (!rec->timestamp_filename) {
+>>>> @@ -2680,9 +2709,12 @@ int cmd_record(int argc, const char **argv)
+>>>>  
+>>>>  	}
+>>>>  
+>>>> -	if (rec->opts.kcore)
+>>>> +	if (rec->opts.kcore || record__threads_enabled(rec))
+>>>>  		rec->data.is_dir = true;
+>>>>  
+>>>> +	if (record__threads_enabled(rec))
+>>>> +		rec->opts.affinity = PERF_AFFINITY_CPU;
+>>>
+>>> so all the threads will pin to cpu and back before reading?
+>>
+>> No, they will not back. Thread mask compares to mmap mask before
+>> read and the thread migrates if masks don't match. This happens
+>> once on the first mmap read. So explicit pinning can be avoided.
+> 
+> hum, is that right? the check in record__adjust_affinity
+> is checking global 'rec->affinity_mask', at lest I assume
+> it's still global ;-)
 
-With that,
+Yes, rec->affinity_mask should also be per-thread. Good catch. Thanks!
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Alexei
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  connector:
-> +    type: object
-> +    $ref: ../connector/usb-connector.yaml#
-> +    description:
-> +      Properties for usb c connector.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - connector
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/usb/pd.h>
-> +    i2c0 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        maxtcpc@25 {
-> +            compatible = "maxim,33359";
-> +            reg = <0x25>;
-> +            interrupt-parent = <&gpa8>;
-> +            interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +            connector {
-> +                compatible = "usb-c-connector";
-> +                label = "USB-C";
-> +                data-role = "dual";
-> +                power-role = "dual";
-> +                try-power-role = "sink";
-> +                self-powered;
-> +                op-sink-microwatt = <2600000>;
-> +                new-source-frs-typec-current = <FRS_5V_1P5A>;
-> +                source-pdos = <PDO_FIXED(5000, 900,
-> +                                         PDO_FIXED_SUSPEND |
-> +                                         PDO_FIXED_USB_COMM |
-> +                                         PDO_FIXED_DATA_SWAP |
-> +                                         PDO_FIXED_DUAL_ROLE)>;
-> +                sink-pdos = <PDO_FIXED(5000, 3000,
-> +                                       PDO_FIXED_USB_COMM |
-> +                                       PDO_FIXED_DATA_SWAP |
-> +                                       PDO_FIXED_DUAL_ROLE)
-> +                                       PDO_FIXED(9000, 2000, 0)>;
-> +            };
-> +        };
-> +    };
-> +...
-> -- 
-> 2.29.0.rc1.297.gfa9743e501-goog
+> 
+>         if (rec->opts.affinity != PERF_AFFINITY_SYS &&
+>             !bitmap_equal(rec->affinity_mask.bits, map->affinity_mask.bits,
+>                           rec->affinity_mask.nbits)) {
+> 
+> I think this can never be equal if you have more than one map
+> 
+> when I check on sched_setaffinity syscalls:
+> 
+>   # perf trace -e syscalls:sys_enter_sched_setaffinity
+> 
+> while running record --threads, I see sched_setaffinity
+> calls all the time
+> 
+> jirka
 > 
