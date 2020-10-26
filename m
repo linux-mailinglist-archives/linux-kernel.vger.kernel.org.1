@@ -2,168 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FDC29908C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BCA299093
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783190AbgJZPIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:08:19 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:32818 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783037AbgJZPIR (ORCPT
+        id S1783211AbgJZPIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:08:52 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:46780 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783097AbgJZPIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:08:17 -0400
-Received: by mail-wr1-f65.google.com with SMTP id b8so13049891wrn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:autocrypt:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bQMMK10pVsGVaQhX0SB+QBAQIdK4zL3JxYo517Br/R8=;
-        b=EesCMtOaaUuW+wHIIWIytdfqnv7YN/mqxi4qOGkB8i12J+Nrxm6zxSvf36lIhsx6Q9
-         QrodOsuN1Rde2gwIozSuPwMFN7D5J45xeHxznTdpKk/XXK68qkFEimD34HsrQgzYI0j5
-         RWLFES+28qSCeK8ZLxfpfSkVeh9zbT7DqDJ1YcKcsbFHbRP2yAxuoeo4EEq/3wjPm8Pj
-         ukxMGEp4slEuiRg4E8spXekmRzaGcyt6REDO5TYGIlb6q73qIwpltC0gkJT5JRcASt18
-         gxJDqdJ+0U2oRsTTM/pdl6mfyaQAOu76QoDMOshjUo4ngLAc8pR1pXJZhR3on+tG40oQ
-         ITUg==
+        Mon, 26 Oct 2020 11:08:52 -0400
+Received: by mail-ej1-f66.google.com with SMTP id t25so14030158ejd.13;
+        Mon, 26 Oct 2020 08:08:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=bQMMK10pVsGVaQhX0SB+QBAQIdK4zL3JxYo517Br/R8=;
-        b=dawfOUKGBxwcEh57phENAJDT5T0NVL366uwU7HtA1oeMntrKidBkVe/PJy4RjvP7bP
-         Q173nSXAQfZrNqYyAEhwDpnuHmYaOM7buBwNx0maYPI6JE4dUZRMBEblUKkKcJ3zY8zo
-         JSGTGcMeV3vEUkVbaW/lYOfn7PzGQpEKvdky6qFhF0iILf0ua7kADpcQIkKgt+eDF29/
-         2V0PBFjf9KOIEr+8VJj4SRmOh75amSRYWVsgkkCY2FQB7swgTHZJQDIXGWjI+8WApsAG
-         fLE8opHAqI25Kbz3fN/TGDYtV2bjJbQcDfEVp2tSr4SUtg2h+k4OcMl2CaXEDVRP7CTs
-         mCpA==
-X-Gm-Message-State: AOAM5313QNkm0SlJORslAAkl3EC+2GQ8Snvz9VnMFHEoSjbIf/nBIqM+
-        8mtd46hJEccvuKwbVlGg6hAp5XByhUlnig==
-X-Google-Smtp-Source: ABdhPJwURzikJsQAEkn4jK2wYbxNB2fTipxtGw2XszI4NcOBndCR8dISXtoff9wLN+U1H0/fA+5YFA==
-X-Received: by 2002:adf:b787:: with SMTP id s7mr19404722wre.390.1603724893628;
-        Mon, 26 Oct 2020 08:08:13 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:9903:a744:403b:cb1d? ([2a01:e35:2ec0:82b0:9903:a744:403b:cb1d])
-        by smtp.gmail.com with ESMTPSA id u3sm1476533wme.0.2020.10.26.08.08.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 08:08:12 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: meson: remove empty lines from aml-s905x-cc
- v2 dts
-To:     Christian Hewitt <christianshewitt@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5iSdu1PXK0XmR2WnB9STaXKJ3YlzmlR/0SoXDLvMrSM=;
+        b=mB4u5aGvm1i76+ojEE9SAzVpwgrIMVQaBFh/xptJuKzHNkjQada1ROqUjX6U40OxB1
+         D+m52xn4M9rVIKR9fP6FcC4UtFjXRGjQKNmoJBUSjVplb+GPoHEMpq0XTTYQjyrq7VVy
+         XHJrJS6+zNiS3g3xybjthqNvbima5OG9P6/XuI3VGoTedDZTT5HDO4Ou1nh+VhvlVMro
+         Pomsq48+4U9wnfM5258+8T5xc8hMpvyNHHsC2iQqza14ODWE5oUQw9hyiagVzG7mAQw/
+         tJ4s5icB4iwj/xooOlHoFmfT5q26d7A0m2kKg4cZmsZtWTA2vctJMzcRGE1WKTXpymzq
+         NSyQ==
+X-Gm-Message-State: AOAM531sjv6fBKdb2qUPdNaBo1vL5Hkl7qiOnuDjNhjzuM+tLOMmk45o
+        Q3X3lZI2qonT6XYlN04gTRg=
+X-Google-Smtp-Source: ABdhPJzjOQyo/e3kBWa/0LWJrvv9aB0EgvPcyQ0RaOH16AfjnowP+uij6FgtMEz6bs/a8mLsEfLJ3Q==
+X-Received: by 2002:a17:906:8401:: with SMTP id n1mr15669965ejx.215.1603724929210;
+        Mon, 26 Oct 2020 08:08:49 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id d24sm5360000edq.34.2020.10.26.08.08.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 08:08:48 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 16:08:45 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201026134101.10594-1-christianshewitt@gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <1cf726fc-cd78-c2d4-ceee-fe099d550e9f@baylibre.com>
-Date:   Mon, 26 Oct 2020 16:08:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 00/52] Introduce memory interconnect for NVIDIA Tegra
+ SoCs
+Message-ID: <20201026150845.GA87050@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201026134101.10594-1-christianshewitt@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2020 14:41, Christian Hewitt wrote:
-> Fixes: 63fafc5a046b ("arm64: dts: meson: initial support for aml-s905x-cc v2")
+On Mon, Oct 26, 2020 at 01:16:43AM +0300, Dmitry Osipenko wrote:
+> Hello,
 > 
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
->  .../boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts      | 4 ----
->  1 file changed, 4 deletions(-)
+> This series brings initial support for memory interconnect to Tegra20,
+> Tegra30 and Tegra124 SoCs.
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
-> index 675eaa87963e..9a3c08e6e6cc 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts
-> @@ -84,7 +84,6 @@
->  		regulator-always-on;
->  	};
->  
-> -
->  	vcck: regulator-vcck {
->  		compatible = "regulator-fixed";
->  		regulator-name = "VCCK";
-> @@ -124,7 +123,6 @@
->  		regulator-always-on;
->  	};
->  
-> -
->  	vddio_card: regulator-vddio-card {
->  		compatible = "regulator-gpio";
->  		regulator-name = "VDDIO_CARD";
-> @@ -195,7 +193,6 @@
->  	};
->  };
->  
-> -
->  &aiu {
->  	status = "okay";
->  };
-> @@ -207,7 +204,6 @@
->  	hdmi-phandle = <&hdmi_tx>;
->  };
->  
-> -
->  &ethmac {
->  	status = "okay";
->  };
-> 
+> For the starter only display controllers and devfreq devices are getting
+> interconnect API support, others could be supported later on. The display
+> controllers have the biggest demand for interconnect API right now because
+> dynamic memory frequency scaling can't be done safely without taking into
+> account bandwidth requirement from the displays. In particular this series
+> fixes distorted display output on T30 Ouya and T124 TK1 devices.
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Hi,
+
+You introduced in v6 multiple new patches. Could you describe the
+dependencies, if any?
+
+Best regards,
+Krzysztof
+
+> Changelog:
+> 
+> v6: - This series was massively reworked in comparison to v5, most of the
+>       patches that previously got r-b need a new round of a review (!).
+> 
+>     - Added missed clk-rounding to the set() callback of EMC ICC providers.
+>       Now clk_set_min_rate() doesn't error out on rate overflow.
+> 
+>     - Now peak bandwidth is properly taken into account by the set() callback
+>       of EMC ICC providers.
+> 
+>     - EMC runs at 2x of the DRAM bus only on Tegra20, this now taken in account
+>       properly by the EMC ICC set() callbacks.
+> 
+>     - ICC drivers use new icc_sync_state() and xlate_extended().
+> 
+>     - ICC drivers support new TEGRA_MC_ICC_TAG_ISO for ICC paths, which
+>       conveys to ICC driver that memory path uses isochronous transfers.
+> 
+>     - Added support for memory latency scaling to Tegra30 ICC provider.
+>       It's required for fixing display FIFO underflows on T30.
+> 
+>     - Added basic interconnect support to Tegra124 drivers.
+> 
+>     - Tegra20/30/124 EMC drivers now support voltage scaling using generic
+>       OPP API.
+> 
+>     - The display bandwidth management is reworked and improved. It now
+>       supports both bandwidth and latency allocations. The nv-display is
+>       now also taken into account properly, i.e. it's kept untouched.
+>       The extra bandwidth reservation required for ISO clients is moved
+>       from DC driver to the ICC drivers.
+> 
+>     - Dropped patch that tuned T20 display controller memory client because
+>       turned out that it kills ~30% of memory bandwidth. It should be possible
+>       to support client tuning, but it's too complicated for now.
+> 
+>     - Corrected display's cursor and winb-vfilter ICC clients.
+>       The winb-vfilter was erroneously used in place of cursor's client
+>       in device-trees.
+> 
+>     - Added devm_tegra_get_memory_controller() and switched drivers to
+>       use it.
+> 
+>     - Device-tree OPP tables are now supported by memory and devfreq
+>       drivers.
+> 
+>     - Tegra20-devfeq driver is reworked and now uses EMC-stats instead
+>       of IMC-stats (which are nearly identical modules) because previously
+>       I failed to understand how EMC-stats work and succeeded this time,
+>       thinking that it simply doesn't work. This removes a bit icky dependency
+>       on using both EMC and MC drivers simultaneously by the devfreq driver.
+> 
+>     - Tegra20-devfeq driver now is a sub-device of the EMC, it also now uses
+>       interconnect API for driving memory bandwidth.
+> 
+>     - Tegra30-devfreq got interconnect support.
+> 
+>     - Devfreq patches now use dev_err_probe(), which was suggested by
+>       Chanwoo Choi.
+> 
+>     - Added acks from Chanwoo Choi and Rob Herring to the reviewed and
+>       unchanged patches.
+> 
+>     - Added tested-by from Peter Geis and Nicolas Chauvet, who tested this
+>       series on Ouya and TK1 devices, reporting that it fixes display
+>       corruption on these devices which happened due to insufficient memory
+>       bandwidth.
+> 
+>     - Added patches to fix T20 EMC registers size.
+> 
+>     - Fixed missing LA entry for PTC in the Tegra MC drivers.
+> 
+>     - New and updated patches in v6:
+> 
+>         dt-bindings: memory: tegra20: emc: Correct registers range in example
+>         dt-bindings: memory: tegra20: emc: Document nvidia,memory-controller property
+>         dt-bindings: memory: tegra20: emc: Document OPP table and voltage regulator
+>         dt-bindings: memory: tegra20: emc: Document mfd-simple compatible and statistics sub-device
+>         dt-bindings: memory: tegra30: emc: Document OPP table and voltage regulator
+>         dt-bindings: memory: tegra124: mc: Document new interconnect property
+>         dt-bindings: memory: tegra124: emc: Document new interconnect property
+>         dt-bindings: memory: tegra124: emc: Document OPP table and voltage regulator
+>         dt-bindings: tegra30-actmon: Document OPP and interconnect properties
+>         dt-bindings: memory: tegra124: Add memory client IDs
+>         ARM: tegra: Correct EMC registers size in Tegra20 device-tree
+>         ARM: tegra: Add interconnect properties to Tegra124 device-tree
+>         ARM: tegra: Add nvidia,memory-controller phandle to Tegra20 EMC device-tree
+>         ARM: tegra: Add DVFS properties to Tegra20 EMC device-tree node
+>         ARM: tegra: Add DVFS properties to Tegra30 EMC and ACTMON device-tree nodes
+>         ARM: tegra: Add DVFS properties to Tegra124 EMC and ACTMON device-tree nodes
+>         memory: tegra: Add and use devm_tegra_get_memory_controller()
+>         memory: tegra-mc: Add interconnect framework
+>         memory: tegra20: Support interconnect framework
+>         memory: tegra20-emc: Skip parsing of emc-stats DT sub-node
+>         memory: tegra: Add missing latency allowness entry for Page Table Cache
+>         memory: tegra: Add FIFO sizes to Tegra30 memory clients
+>         memory: tegra30: Support interconnect framework
+>         memory: tegra124-emc: Make driver modular
+>         memory: tegra124: Support interconnect framework
+>         memory: tegra: Remove superfluous error messages around platform_get_irq()
+>         drm/tegra: dc: Support memory bandwidth management
+>         drm/tegra: dc: Extend debug stats with total number of events
+>         PM / devfreq: tegra20: Convert to EMC_STAT driver, support interconnect and device-tree
+>         PM / devfreq: tegra30: Support interconnect and OPPs from device-tree
+>         PM / devfreq: tegra30: Separate configurations per-SoC generation
+>         opp: Put interconnect paths outside of opp_table_lock
