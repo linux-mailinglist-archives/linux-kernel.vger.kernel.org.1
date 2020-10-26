@@ -2,90 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7843298FE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D22F298FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782086AbgJZOvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:51:08 -0400
-Received: from sonic313-19.consmr.mail.gq1.yahoo.com ([98.137.65.82]:39787
-        "EHLO sonic313-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1782079AbgJZOvG (ORCPT
+        id S1782167AbgJZOxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:53:14 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:34980 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782158AbgJZOxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:51:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1603723865; bh=4OYHjTCszK8GvZu8W0BpB7EzFLIyHiiZ9TURM4OtAuA=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject; b=ZEHyzS9sQyFKFK+RHeOY9B8TSHnN4OZY3dfyOTYQwzqvKqj1uhjvvR6ODNWMhBgcRfpUTeRxqp9PFuyi7VFAtd/OO4pwesqywBI7fe1lnoSihkSdacntJ1C15i8VAcWCbF0xNCUWgk88FTUC3ZTKzJsF8sS6N9L/8Ts52OVbmb4oYEg0XAx40H+g3lb5qbb0ZGlEOh0/tylKdaCxRtMgcdnBj7HyTijtg2s7/11vJP4F8QIPTLnhsYZunEfze546kOgq2PV2onb/O6hMS2DkNngScCA9RkEqewJkdujR/DAmKbR/4eZDGoLSG09B+Jb9g4yXxWUFtjZrBPnwofBeFw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603723865; bh=EDfTfPvioQe8PpCrMRwtiSBS+QGvFsHcTcv+lujoYCg=; h=Date:From:Subject:To; b=HLrzTMbv5fXTW/2cP3WZjmNYB3tq6TgnqdoQ8Gf2NArn29ecltb0emYKTYnGzXOQdqGcDWYAxhMn0hOWZEdoVm7d9k1U06coF+1lo1jAUM4OTeoBpWopC8R5BDVNL5WRBam0i/OtwgNWq3g+21fXsR/xz+9399K54eaSpCHqX3Ckam/uf9D4KXD9Vbo//exUE9CDiI3vnRZvIvPzMOGZCrfero7uOfbJli9QDroph4yojw/VvoOHyQqCvlMGLslR3ViPpon95G63XlGGIFufB62HDBh2ME4tBRzq6lPLeo6fqwMvP3DP7kKNgdtYh43Gi2lS5C1KjxNCzuTa0X87Ww==
-X-YMail-OSG: s3zOwNQVM1kQrhKa._rq9FhTLdJTucN.TiYwzxsGqotBCZh8ic1_WgSXgh3Vd7E
- yDRf286BSUrHndTXDa29RmOHdTNCvQpbs0PIm4x0oN8euUbyfdWS9dQQ.qf1q0fV4VWs005KwPlt
- 83i0SInZS4unl2n449n7XQT7iyiZCm0zfQbeeEf.ww7PLi.n7wjWwvyQsTviKrLeXv8M3lIVeFNM
- SM0_tME.6moLBnHCW4XRlrFjOuSBbqN_zyUKiLWvYwNuBUI_cOFp_YA5LYWRNiW8E_557UxUTvqL
- _uefpxhwQml4BNQBku2vYbFAHp0frDUwlTxobTyA5D0mG3ykEisshICSzetSEDUsyqrAXrSOf_FF
- an9vSm54KWpxYwVnHN0KLG1qW5G8zt68Wc_miFOw6fxyZvAkqS3mm59DihEN1O.SBVmjs3S_.M35
- gqXSYdF5.xfZJjGGcSr_UlhCNupqr8SL0OYAbgXgon_HFbsGZE.q21rG7ilkco0Ycr6A4vGiU9cd
- BwP2Q5eOAdlM9vBbiByLo7bD3hmDS_BPWF1jLESF7JatuzrS9Jq1S4lRdBwShWekawP_QQUql0CL
- vLOvbtIRa9C7UtXAgxz2o0fBJ59VqFMvV6Xku1vYtH9TZL9RL4FROnxdaWT39hYzkOYIhtxOeock
- TZtzhkY.C8EF5HiZxmlySyXhj4MAn41QLQTgAANGi3GMqYnuAlx2qKnnX.Rsuj25ts3QPHR1iVGp
- 4LLAV6cDg7D7lV9zuvOF3LoF83bOmNyhulAoMph2iSgGgmV3AemT06GlBFBKmTp90KFvMd7nj12n
- nr9zwqgaBk6BzMWZxGuC0kHNMv2VgvFzUCJskxTGyeUqsqGTrkDrdzfT0r2erBHqff51CqvAoZGs
- bEdlhQG7mMtI6GTkJfnv7QZ5psaTn99bBJc2fYr06.cKSHrLwg0gkWPHEQTkHZpYwIJaR_xCZ0n2
- 5iYC35gqMZYcbTZNTtG3aashlLzZy51MDOKdZlyzeqcw4N0WI0iD_jbCc9fcA2kFfZ6FGhbUxzA2
- tlvp7wWJhEoPwYUZBhFXttsfsodcz.KK1CbwzJ2vLx7bcarSBzxhiCYIpAj_GgZ32nnv2pMcl54f
- 9RCJ.fMpXvwYZZn9g3QrCwrpZblH6tH5bnluf56tripIQRF5l4oMnRQKlcyP7gwGDJgQ0S8O4ATH
- ChRpsLhCAAs.pM6VaN89sG7OG3I6owdupHjgqII3SBydr5Ry9lDXZ3kTm0mPD26g1onYlDLyQ.TJ
- WEwjIRNiS6DQy.c5a__ciqRq.Qeozj4BDHBVwT9Pzgchgrpz7KooxvDcb9FumFVH9otn1cs_8Egm
- zg6rBVB50VZAu12ipoEK.8_nuq1fRef0RREUihomvOI13dEfgtsfg9Vy7IQerFI7x7XNbP6PJ9Ys
- 8aK8YIwwVeRrlcHZsV4paV0I.rfDmOSXIXl1XWm19Nkm.oCsETACJqrAOMPhlsfF8wRA51xjRNwZ
- zKLDRpi4CS2org5HmGFRWO6oO9JnF0zaxEUJMhprIQJO76cD5tq79YhuhUeRe3ED2wxcQgbnJaSH
- Gq39PMbugae61Ewi7LsQaMeFchAvC5hmYqCfmPgxwZD910E_UpLTuUtCWdhm5U9JO6JhDFs9WPeJ
- VsdIvcu8CcdMGgloHW3ivCCXT_dFpDcY2.p4pg5nd33u.PGUNbJbCcyIy8mnYTa8JSXXSNyjTBZQ
- mJMg3NF6hiA9dRoxKty.6VCzeMLUz0NhHt4AbxZQxzGFvSs.C73g4aebtDcuGebaH016ZGvZR79n
- ymqizFksXOnxxv4CKGWEx3RLiVHTGDV1RFHcBI6Rx3oqtYfO5p4o1VrQJBKewWqvH54_A.OJRQrp
- Mz.vAr.SDdCTZe0Q3Y5PvOri7TF8EBmJ5_SJPu06vDJG1WwbERrekTHELzVkcBvf27stGGUrFGdH
- jXXHvmO9jzUEKOPgExpf1MSa7qdjgxXj9w0dcr1rdGKJl6XoGy0VeSYgQztP31sM9nF.z6tcLwAn
- Aaj1U9Hpn7lrbjZaeFjhrVAHbgyAhWUHWJJPhHfUw58LEp23xGWnsZ5wptOvcYpbInYeSpZTWNct
- rNSUIRsJHSB228RHYU3G1BqvA9HWprKMWt8g_6d_gTIftB7SuLv3pgwo0TZpQoJRQZzvG1cv5foG
- TOfHd41quJ5UoC5tntu09x6h3G4g5XZ4GbYrk4ThWpgr4Su928tiiMjWM2HQdeN99llElqrZc7nZ
- 4h52MxaizvFVug5UQoFBXaR5R7Rize43QMsMBp6RKXWGNhmkSvDj4kSqHcsR_LYqJReCnd04Jggx
- N0WEOW2sQd.YsPoEt1NwjbADwggRsSwr4EIVUKSpppSDtcR_FkPDL8Cv9bC7tDHhjjAb0bmmqUC1
- BX56z52UEJ3sEO3AQ46zZTCX_ItGX1yAd9_7WRC1DHoUNSIhIoLSL00JwZlMCaKKt01eEi62sOr4
- oPLsL52moeiWYuI6MpMmIcLtnR5kUuYLHI1l5CSVq.FadQ2mEz2Ejq1bHu9TkONofx2jRHYM3YV0
- U51TvYOnENx8o6iQTC3CKtOkidZpyHXcfJXiKZDznZsZiGPQdi.7tcs7nGYyiY17nQmsk5Jo27tD
- QEGmYJBBiddZB8gvI1fSF3CeViSQdSnW_IDv7GGtBArVZfyUlBioytNYSgIkQVDwc.wW.s0d6.rv
- FSN.4x7H1oPO1QmDfI9FfoWkIPef8GR92mnsrPvofewewtevZZZBfknL2EolHA_kmZ94nfJMzo9z
- _QZNGv3gJQpB5wibgGcq.LXtAED9y3QJVNSeELcnT4lb6Pf2FEGV4wHnJ9Ke.WQ4.g06vRcMVvmM
- KZ4s5cH2155Z4_G2ycilj3bBT4PrFhNecMtJZtQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Mon, 26 Oct 2020 14:51:05 +0000
-Received: by smtp409.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c2e5d046a1da2e09e18cb22615934b6d;
-          Mon, 26 Oct 2020 14:51:00 +0000 (UTC)
-Date:   Mon, 26 Oct 2020 10:50:55 -0400
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: RE: amdgpu crashes on OOM
-To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        Michel =?iso-8859-1?q?D=E4nzer?= <michel@daenzer.net>,
-        "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>,
-        "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1603684905.h43s1t0y05.none.ref@localhost>
-        <1603684905.h43s1t0y05.none@localhost>
-        <81568253-518f-43b7-6b20-432f7dbd6c2b@daenzer.net>
-        <MN2PR12MB448824F6E08D1498206EFFE6F7190@MN2PR12MB4488.namprd12.prod.outlook.com>
-In-Reply-To: <MN2PR12MB448824F6E08D1498206EFFE6F7190@MN2PR12MB4488.namprd12.prod.outlook.com>
+        Mon, 26 Oct 2020 10:53:13 -0400
+Received: by mail-pf1-f195.google.com with SMTP id b3so2983129pfo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VlMBblbmRytojibzU/j52EgLGR+Q0tdS6I4eRGdWIMU=;
+        b=S5keWXE59lJCym5FyqVjdIRlNh4zCQn0VXzBCqKMZJRBnLZ9UqU0LUvangA1dorBJ9
+         UHsbc4Hdtz+CCyV86RY7UhghNmkzNmS03Y4LKgLUF6ZFCGisycP4ts9xc58SiFm6EqNq
+         XejO0UZ5fCvtvNRNWLC52fbA0C75YORav6Gr61uAj6jpbOimbVjDtlXatXLgrqvkDfmd
+         +i/uf5BjGyCf/XTdBph9xA83PoSWzxegvIRxgX7I5sv6EAS09k1DEcOXsfRxmzfthXWQ
+         gVUHjOYu+xQ3iLc5r04JB3k0gkAKV6px9TE/vzlyhAu7Lez5Wm1T0/1wRXH5gkAnRECI
+         GCdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VlMBblbmRytojibzU/j52EgLGR+Q0tdS6I4eRGdWIMU=;
+        b=UkEW9xxdhYybPYt9yetr5W6FngOQi53rmUTv1jEmb1mXa18pgSNgoLHtheP5NbxpnF
+         ILG62f/iXKBaUpfQyrV5wpi4VWVX44MXtq6a8o+jD6pVU6dlD7Dq/pUEf+NfrbjRJpEh
+         NREO6BT+MgmmyM7h5QlqPWkERM9hawQYRFsi3oiygGd+15x0gFPSi5eCZcAlMQsty501
+         KT9NKWd0Q6Q2VJPlvciYRUkYMVPJxX+IftST0mINoQ3FQVwtONmjiW5j2p+TUMFiwLpv
+         LA7wQgNOOCz5/SQDBq3MyFD16svqPaATIk8Qi2MsMxTSrot/YRG7l8ObG5kLeRbcXwKr
+         VKiA==
+X-Gm-Message-State: AOAM531EF7AXb12d/Ne1SpMiLKePzXzZbHRa3UxkTWHPJLu7bgjzat+L
+        LeDKIXYAs7o2BTXNNZryrB6JIg==
+X-Google-Smtp-Source: ABdhPJy5jPK58YPRIufu6al4DMwGRDvPaOtJSMZxZepTlg9IN7o4kftDFuksdY79WSCwX9uzlRXYiQ==
+X-Received: by 2002:a05:6a00:7cb:b029:152:94b3:b2ee with SMTP id n11-20020a056a0007cbb029015294b3b2eemr13653849pfu.58.1603723992276;
+        Mon, 26 Oct 2020 07:53:12 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.220.89])
+        by smtp.gmail.com with ESMTPSA id x123sm12042726pfb.212.2020.10.26.07.53.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Oct 2020 07:53:11 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2 00/19] Free some vmemmap pages of hugetlb page
+Date:   Mon, 26 Oct 2020 22:50:55 +0800
+Message-Id: <20201026145114.59424-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Message-Id: <1603723649.ang5tduo62.none@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.16868 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Deucher, Alexander's message of October 26, 2020 10:34 am:
-> It was using kvzalloc, but was accidently dropped when that code was refa=
-ctored.  I just sent a patch to fix it.
+Hi all,
 
-Ah, that explains why I wasn't seeing it before. I was only looking at=20
-changes in amdgpu_dm_atomic_commit_tail, not dc_create_state.
+This patch series will free some vmemmap pages(struct page structures)
+associated with each hugetlbpage when preallocated to save memory.
 
-Thanks,
-Alex.
+Nowadays we track the status of physical page frames using `struct page`
+arranged in one or more arrays. And here exists one-to-one mapping between
+the physical page frame and the corresponding `struct page`.
+
+The hugetlbpage support is built on top of multiple page size support
+that is provided by most modern architectures. For example, x86 CPUs
+normally support 4K and 2M (1G if architecturally supported) page sizes.
+Every hugetlbpage has more than one `struct page`. The 2M hugetlbpage
+has 512 `struct page` and 1G hugetlbpage has 4096 `struct page`. But
+in the core of hugetlbpage only uses the first 4 `struct page` to store
+metadata associated with each hugetlbpage. The rest of the `struct page`
+are usually read the compound_head field which are all the same value.
+If we can free some struct page memory to buddy system so that we can
+save a lot of memory.
+
+When the system boot up, every 2M hugetlbpage has 512 `struct page` which
+is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+
+   hugetlbpage                  struct pages(8 pages)          page frame(8 pages)
+  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+  |           |                     |     0     | -------------> |     0     |
+  |           |                     |     1     | -------------> |     1     |
+  |           |                     |     2     | -------------> |     2     |
+  |           |                     |     3     | -------------> |     3     |
+  |           |                     |     4     | -------------> |     4     |
+  |     2M    |                     |     5     | -------------> |     5     |
+  |           |                     |     6     | -------------> |     6     |
+  |           |                     |     7     | -------------> |     7     |
+  |           |                     +-----------+                +-----------+
+  |           |
+  |           |
+  +-----------+
+
+
+When a hugetlbpage is preallocated, we can change the mapping from above to
+bellow.
+
+   hugetlbpage                  struct pages(8 pages)          page frame(8 pages)
+  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+  |           |                     |     0     | -------------> |     0     |
+  |           |                     |     1     | -------------> |     1     |
+  |           |                     |     2     | -------------> +-----------+
+  |           |                     |     3     | -----------------^ ^ ^ ^ ^
+  |           |                     |     4     | -------------------+ | | |
+  |     2M    |                     |     5     | ---------------------+ | |
+  |           |                     |     6     | -----------------------+ |
+  |           |                     |     7     | -------------------------+
+  |           |                     +-----------+
+  |           |
+  |           |
+  +-----------+
+
+For tail pages, the value of compound_dtor is the same. So we can reuse
+first page of tail page structs. We map the virtual addresses of the
+remaining 6 pages of tail page structs to the first tail page struct,
+and then free these 6 pages. Therefore, we need to reserve at least 2
+pages as vmemmap areas.
+
+When a hugetlbpage is freed to the buddy system, we should allocate 6
+pages for vmemmap pages and restore the previous mapping relationship.
+
+If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
+substantial gain. On our server, run some SPDK/QEMU applications which
+will use 1000GB hugetlbpage. With this feature enabled, we can save
+~16GB(1G hugepage)/~11GB(2MB hugepage) memory.
+
+  changelog in v2:
+  1. Fix do not call dissolve_compound_page in alloc_huge_page_vmemmap().
+  2. Fix some typo and code style problems.
+  3. Remove unused handle_vmemmap_fault().
+  4. Merge some commits to one commit suggested by Mike.
+
+Muchun Song (19):
+  mm/memory_hotplug: Move bootmem info registration API to
+    bootmem_info.c
+  mm/memory_hotplug: Move {get,put}_page_bootmem() to bootmem_info.c
+  mm/hugetlb: Introduce a new config HUGETLB_PAGE_FREE_VMEMMAP
+  mm/hugetlb: Introduce nr_free_vmemmap_pages in the struct hstate
+  mm/hugetlb: Introduce pgtable allocation/freeing helpers
+  mm/bootmem_info: Introduce {free,prepare}_vmemmap_page()
+  mm/hugetlb: Free the vmemmap pages associated with each hugetlb page
+  mm/hugetlb: Defer freeing of hugetlb pages
+  mm/hugetlb: Allocate the vmemmap pages associated with each hugetlb
+    page
+  mm/hugetlb: Introduce remap_huge_page_pmd_vmemmap helper
+  mm/hugetlb: Use PG_slab to indicate split pmd
+  mm/hugetlb: Support freeing vmemmap pages of gigantic page
+  mm/hugetlb: Add a BUILD_BUG_ON to check if struct page size is a power
+    of two
+  mm/hugetlb: Clear PageHWPoison on the non-error memory page
+  mm/hugetlb: Flush work when dissolving hugetlb page
+  mm/hugetlb: Add a kernel parameter hugetlb_free_vmemmap
+  mm/hugetlb: Merge pte to huge pmd only for gigantic page
+  mm/hugetlb: Gather discrete indexes of tail page
+  mm/hugetlb: Add BUILD_BUG_ON to catch invalid usage of tail struct
+    page
+
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ Documentation/admin-guide/mm/hugetlbpage.rst  |   3 +
+ arch/x86/include/asm/hugetlb.h                |  20 +
+ arch/x86/include/asm/pgtable_64_types.h       |   8 +
+ arch/x86/mm/init_64.c                         |   5 +-
+ fs/Kconfig                                    |  16 +
+ include/linux/bootmem_info.h                  |  65 ++
+ include/linux/hugetlb.h                       |  50 ++
+ include/linux/hugetlb_cgroup.h                |  15 +-
+ include/linux/memory_hotplug.h                |  27 -
+ mm/Makefile                                   |   1 +
+ mm/bootmem_info.c                             | 125 +++
+ mm/hugetlb.c                                  | 795 +++++++++++++++++-
+ mm/memory_hotplug.c                           | 116 ---
+ mm/sparse.c                                   |   1 +
+ 15 files changed, 1091 insertions(+), 165 deletions(-)
+ create mode 100644 include/linux/bootmem_info.h
+ create mode 100644 mm/bootmem_info.c
+
+-- 
+2.20.1
+
