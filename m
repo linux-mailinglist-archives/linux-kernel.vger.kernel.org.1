@@ -2,190 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3634298C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7C3298C27
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772330AbgJZLyI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 07:54:08 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:45135 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771727AbgJZLyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:54:08 -0400
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kX0mY-0002Sw-TZ; Mon, 26 Oct 2020 12:35:22 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kX0mX-00083t-G9; Mon, 26 Oct 2020 12:35:21 +0100
-Message-ID: <c8ea80c2eb79f80539911f3563398957beedaa41.camel@pengutronix.de>
-Subject: Re: [PATCH 9/9] remoteproc/wkup_m3: Use reset control driver if
- available
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org
-Cc:     "Andrew F . Davis" <afd@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
-        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        id S1773891AbgJZLgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:36:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:36262 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1773883AbgJZLgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:36:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A68D3101E;
+        Mon, 26 Oct 2020 04:36:05 -0700 (PDT)
+Received: from [10.57.50.191] (unknown [10.57.50.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3DC63F719;
+        Mon, 26 Oct 2020 04:36:02 -0700 (PDT)
+Subject: Re: [PATCH v3 11/24] iommu/io-pgtable-arm-v7s: Quad lvl1 pgtable for
+ MediaTek
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-Date:   Mon, 26 Oct 2020 12:35:21 +0100
-In-Reply-To: <20201026111049.54835-10-tony@atomide.com>
-References: <20201026111049.54835-1-tony@atomide.com>
-         <20201026111049.54835-10-tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+References: <20200930070647.10188-1-yong.wu@mediatek.com>
+ <20200930070647.10188-12-yong.wu@mediatek.com>
+ <a5713949-1d95-40f1-d35d-d99735b48294@arm.com>
+ <1603698083.26323.87.camel@mhfsdcap03>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7a03faf4-b382-2923-b9fa-9a55861f49d6@arm.com>
+Date:   Mon, 26 Oct 2020 11:35:56 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1603698083.26323.87.camel@mhfsdcap03>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
-
-On Mon, 2020-10-26 at 13:10 +0200, Tony Lindgren wrote:
-> In order to move wkup_m3 to probe without platform data, let's add
-> support for using optional reset control driver if configured in the
-> dts. With this change and the related dts change, we can start
-> dropping the platform data for am335x.
+On 2020-10-26 07:41, Yong Wu wrote:
+> On Fri, 2020-10-23 at 15:10 +0100, Robin Murphy wrote:
+>> On 2020-09-30 08:06, Yong Wu wrote:
+>>> The standard input iova bits is 32. MediaTek quad the lvl1 pagetable
+>>> (4 * lvl1). No change for lvl2 pagetable. Then the iova bits can reach
+>>> 34bit.
+>>>
+>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+>>> ---
+>>>    drivers/iommu/io-pgtable-arm-v7s.c | 13 ++++++++++---
+>>>    drivers/iommu/mtk_iommu.c          |  2 +-
+>>>    2 files changed, 11 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+>>> index 8362fdf76657..306bae2755ed 100644
+>>> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+>>> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+>>> @@ -50,10 +50,17 @@
+>>>     */
+>>>    #define ARM_V7S_ADDR_BITS		32
+>>>    #define _ARM_V7S_LVL_BITS(lvl)		(16 - (lvl) * 4)
+>>> +/* MediaTek: totally 34bits, 14bits at lvl1 and 8bits at lvl2. */
+>>> +#define _ARM_V7S_LVL_BITS_MTK(lvl)	(20 - (lvl) * 6)
+>>
+>> This should defined in terms of both lvl and cfg->ias. The formula here
+>> is nothing more than a disgusting trick I made up since a linear
+>> interpolation happened to fit the required numbers. That said, all of
+>> these bits pretending that short-descriptor is a well-defined recursive
+>> format only served to allow the rest of the code to look more like the
+>> LPAE code - IIRC they've already diverged a fair bit since then, so
+>> frankly a lot of this could stand to be unpicked and made considerably
+>> clearer by simply accepting that level 1 and level 2 are different from
+>> each other.
 > 
-> And once wkup_m3 no longer needs platform data, we can simply drop the
-> related legacy reset platform data callbacks from wkup_m3 driver later
-> on after also am437x no longer depends on it.
+> If the formula is not good and make it clearer, How about this?
 > 
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Dave Gerlach <d-gerlach@ti.com>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
 > 
-> Please review and ack if no issues. If you guys instead want to set up an
-> immutable remoteproc branch with just this patch in it against v5.10-rc1
-> that works too :)
-> 
-> ---
->  drivers/remoteproc/wkup_m3_rproc.c | 28 +++++++++++++++++++++-------
->  1 file changed, 21 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/wkup_m3_rproc.c b/drivers/remoteproc/wkup_m3_rproc.c
-> --- a/drivers/remoteproc/wkup_m3_rproc.c
-> +++ b/drivers/remoteproc/wkup_m3_rproc.c
-> @@ -17,6 +17,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/remoteproc.h>
-> +#include <linux/reset.h>
->  
->  #include <linux/platform_data/wkup_m3.h>
->  
-> @@ -43,11 +44,13 @@ struct wkup_m3_mem {
->   * @rproc: rproc handle
->   * @pdev: pointer to platform device
->   * @mem: WkupM3 memory information
-> + * @rsts: reset control
+> /*
+>   * We have 32 bits total; 12 bits resolved at level 1, 8 bits at level
+> 2,
+> -* and 12 bits in a page. With some carefully-chosen coefficients we can
+> -* hide the ugly inconsistencies behind these macros and at least let
+> the
+> -* rest of the code pretend to be somewhat sane.
+> +* and 12 bits in a page.
+> +*
+> +* MediaTek extend 2 bits to reach 34 bits, 14 bits at lvl1 and 8 bits
+> at lvl2.
 >   */
->  struct wkup_m3_rproc {
->  	struct rproc *rproc;
->  	struct platform_device *pdev;
->  	struct wkup_m3_mem mem[WKUPM3_MEM_MAX];
-> +	struct reset_control *rsts;
->  };
->  
->  static int wkup_m3_rproc_start(struct rproc *rproc)
-> @@ -57,6 +60,9 @@ static int wkup_m3_rproc_start(struct rproc *rproc)
->  	struct device *dev = &pdev->dev;
->  	struct wkup_m3_platform_data *pdata = dev_get_platdata(dev);
->  
-> +	if (wkupm3->rsts)
-
-No need for this check, reset_control_deassert() just returns 0 if the
-rstc parameter is NULL.
-
-> +		return reset_control_deassert(wkupm3->rsts);
+> 
+> -#define _ARM_V7S_LVL_BITS(lvl)		(16 - (lvl) * 4)
+> +#define _ARM_V7S_LVL1_BITS_NR(cfg)     (((cfg)->ias == 32) ? 12 : 14)
+> +#define _ARM_V7S_LVL2_BITS_NR		8
 > +
->  	if (pdata->deassert_reset(pdev, pdata->reset_name)) {
->  		dev_err(dev, "Unable to reset wkup_m3!\n");
->  		return -ENODEV;
-> @@ -72,6 +78,9 @@ static int wkup_m3_rproc_stop(struct rproc *rproc)
->  	struct device *dev = &pdev->dev;
->  	struct wkup_m3_platform_data *pdata = dev_get_platdata(dev);
->  
-> +	if (wkupm3->rsts)
+> +#define _ARM_V7S_LVL_BITS(lvl, cfg)    \
+> +      (((lvl) == 1) ? _ARM_V7S_LVL1_BITS_NR(cfg):_ARM_V7S_LVL2_BITS_NR)
 
-Same as above.
+Well, I'd have gone for something really simple and clear like:
 
-> +		return reset_control_assert(wkupm3->rsts);
-> +
->  	if (pdata->assert_reset(pdev, pdata->reset_name)) {
->  		dev_err(dev, "Unable to assert reset of wkup_m3!\n");
->  		return -ENODEV;
-> @@ -132,12 +141,6 @@ static int wkup_m3_rproc_probe(struct platform_device *pdev)
->  	int ret;
->  	int i;
->  
-> -	if (!(pdata && pdata->deassert_reset && pdata->assert_reset &&
-> -	      pdata->reset_name)) {
-> -		dev_err(dev, "Platform data missing!\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	ret = of_property_read_string(dev->of_node, "ti,pm-firmware",
->  				      &fw_name);
->  	if (ret) {
-> @@ -165,6 +168,17 @@ static int wkup_m3_rproc_probe(struct platform_device *pdev)
->  	wkupm3->rproc = rproc;
->  	wkupm3->pdev = pdev;
->  
-> +	wkupm3->rsts = devm_reset_control_get_optional_shared(dev, "rstctrl");
-> +	if (PTR_ERR_OR_ZERO(wkupm3->rsts)) {
+#define ARM_V7S_LVL_BITS(lvl, cfg) ((lvl) == 1 ? (cfg)->ias - 20 : 8)
+#define ARM_V7S_LVL_SHIFT(lvl)     ((lvl) == 1 ? 20 : 12)
 
-Please properly return errors. rsts will be NULL if the optional rstctrl
-reset is not specified:
+Then maybe see if enough of the users could resolve lvl significantly 
+earlier to make it worth splitting things up further.
 
-	if (IS_ERR(wkump3->rsts))
-		return PTR_ERR(wkump3->rsts);
+Robin.
 
-	if (!wkump3->rsts) {
-> +		if (!(pdata && pdata->deassert_reset && pdata->assert_reset &&
-> +		      pdata->reset_name)) {
-> +			dev_err(dev, "Platform data missing!\n");
-> +			ret = -ENODEV;
-> +			goto err_put_rproc;
-> +		}
-> +		wkupm3->rsts = NULL;
-
-I assume this will later be dropped with the platform data support?
-
-> +	}
-> +
->  	for (i = 0; i < ARRAY_SIZE(mem_names); i++) {
->  		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->  						   mem_names[i]);
-> @@ -173,7 +187,7 @@ static int wkup_m3_rproc_probe(struct platform_device *pdev)
->  			dev_err(&pdev->dev, "devm_ioremap_resource failed for resource %d\n",
->  				i);
->  			ret = PTR_ERR(wkupm3->mem[i].cpu_addr);
-> -			goto err;
-> +			goto err_put_rproc;
->  		}
->  		wkupm3->mem[i].bus_addr = res->start;
->  		wkupm3->mem[i].size = resource_size(res);
-
-regards
-Philipp
+>>>    #define ARM_V7S_LVL_SHIFT(lvl)		(ARM_V7S_ADDR_BITS - (4 + 8 * (lvl)))
+>>>    #define ARM_V7S_TABLE_SHIFT		10
+>>>    
+>>> -#define ARM_V7S_PTES_PER_LVL(lvl, cfg)	(1 << _ARM_V7S_LVL_BITS(lvl))
+>>> +#define ARM_V7S_PTES_PER_LVL(lvl, cfg)	({				\
+>>> +	int _lvl = lvl;							\
+>>> +	!arm_v7s_is_mtk_enabled(cfg) ?					\
+>>> +	 (1 << _ARM_V7S_LVL_BITS(_lvl)) : (1 << _ARM_V7S_LVL_BITS_MTK(_lvl));\
+>>> +})
+>>> +
+>>>    #define ARM_V7S_TABLE_SIZE(lvl, cfg)					\
+>>>    	(ARM_V7S_PTES_PER_LVL(lvl, cfg) * sizeof(arm_v7s_iopte))
+>>>    
+>>> @@ -63,7 +70,7 @@
+>>>    #define _ARM_V7S_IDX_MASK(lvl, cfg)	(ARM_V7S_PTES_PER_LVL(lvl, cfg) - 1)
+>>>    #define ARM_V7S_LVL_IDX(addr, lvl, cfg)	({			\
+>>>    	int _l = lvl;							\
+>>> -	((u32)(addr) >> ARM_V7S_LVL_SHIFT(_l)) & _ARM_V7S_IDX_MASK(_l, cfg); \
+>>> +	((addr) >> ARM_V7S_LVL_SHIFT(_l)) & _ARM_V7S_IDX_MASK(_l, cfg); \
+>>>    })
+>>>    
+>>>    /*
+>>> @@ -755,7 +762,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
+>>>    {
+>>>    	struct arm_v7s_io_pgtable *data;
+>>>    
+>>> -	if (cfg->ias > ARM_V7S_ADDR_BITS)
+>>> +	if (cfg->ias > (arm_v7s_is_mtk_enabled(cfg) ? 34 : ARM_V7S_ADDR_BITS))
+>>>    		return NULL;
+>>>    
+>>>    	if (cfg->oas > (arm_v7s_is_mtk_enabled(cfg) ? 35 : ARM_V7S_ADDR_BITS))
+>>> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+>>> index f6a2e3eb59d2..6e85c9976a33 100644
+>>> --- a/drivers/iommu/mtk_iommu.c
+>>> +++ b/drivers/iommu/mtk_iommu.c
+>>> @@ -316,7 +316,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
+>>>    			IO_PGTABLE_QUIRK_TLBI_ON_MAP |
+>>>    			IO_PGTABLE_QUIRK_ARM_MTK_EXT,
+>>>    		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
+>>> -		.ias = 32,
+>>> +		.ias = 34,
+>>>    		.oas = 35,
+>>>    		.tlb = &mtk_iommu_flush_ops,
+>>>    		.iommu_dev = data->dev,
+>>>
+> 
