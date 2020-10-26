@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7F3299C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DB0299C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437037AbgJZX6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
+        id S2437046AbgJZX62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411138AbgJZX42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:56:28 -0400
+        id S2436509AbgJZX4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:56:38 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BFCA2222C;
-        Mon, 26 Oct 2020 23:56:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35E79221FA;
+        Mon, 26 Oct 2020 23:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756587;
-        bh=kSRjWKkqerygM1Ug3EBCrHCDhUr4RdXYzpftCIvXDsw=;
+        s=default; t=1603756595;
+        bh=JKjFI77i7gZoC6zNEMxkzRxcHFE7FTZDCPVf1sy6D2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=np8Z8v07aqhoDZU53+Ni6HErdXNrU7TbL/KgoActkvwdA1ciNhvCLz0kd+odOevng
-         ydP3LWnSWy93YFwr/AEt9aF9E3rkJzkgNoujonSyBdHS49N1TkHCgziHS4uQogVkWi
-         GhK/tDgjrAyLyrp/AQ/tI6xUycyjI1jfZOiX7hrk=
+        b=1LtPYQ8I6/LPn/kse7H7Xj5HUCtQVbhmRvPq86Kb0mf6KKLolu1VXjn+iE3WXm43W
+         v3Rd/bzpVCfiZui+dkD2gN31TtQLD/U7V+ih7TJXc+OEStBuISzqu/6Ya9j0FPGJLC
+         c7PcRtbK+2zRD6/ujJ6fXFTNOvJnrCyK4YflvBdM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chris Lew <clew@codeaurora.org>,
-        Arun Kumar Neelakantam <aneela@codeaurora.org>,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 59/80] rpmsg: glink: Use complete_all for open states
-Date:   Mon, 26 Oct 2020 19:54:55 -0400
-Message-Id: <20201026235516.1025100-59-sashal@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Andreas Dilger <adilger@dilger.ca>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 65/80] ext4: Detect already used quota file early
+Date:   Mon, 26 Oct 2020 19:55:01 -0400
+Message-Id: <20201026235516.1025100-65-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
 References: <20201026235516.1025100-1-sashal@kernel.org>
@@ -45,55 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Lew <clew@codeaurora.org>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 4fcdaf6e28d11e2f3820d54dd23cd12a47ddd44e ]
+[ Upstream commit e0770e91424f694b461141cbc99adf6b23006b60 ]
 
-The open_req and open_ack completion variables are the state variables
-to represet a remote channel as open. Use complete_all so there are no
-races with waiters and using completion_done.
+When we try to use file already used as a quota file again (for the same
+or different quota type), strange things can happen. At the very least
+lockdep annotations may be wrong but also inode flags may be wrongly set
+/ reset. When the file is used for two quota types at once we can even
+corrupt the file and likely crash the kernel. Catch all these cases by
+checking whether passed file is already used as quota file and bail
+early in that case.
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-Link: https://lore.kernel.org/r/1593017121-7953-2-git-send-email-deesin@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+This fixes occasional generic/219 failure due to lockdep complaint.
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20201015110330.28716-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rpmsg/qcom_glink_native.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ext4/super.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-index 1995f5b3ea677..d5114abcde197 100644
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -970,7 +970,7 @@ static int qcom_glink_rx_open_ack(struct qcom_glink *glink, unsigned int lcid)
- 		return -EINVAL;
- 	}
- 
--	complete(&channel->open_ack);
-+	complete_all(&channel->open_ack);
- 
- 	return 0;
- }
-@@ -1178,7 +1178,7 @@ static int qcom_glink_announce_create(struct rpmsg_device *rpdev)
- 	__be32 *val = defaults;
- 	int size;
- 
--	if (glink->intentless)
-+	if (glink->intentless || !completion_done(&channel->open_ack))
- 		return 0;
- 
- 	prop = of_find_property(np, "qcom,intents", NULL);
-@@ -1413,7 +1413,7 @@ static int qcom_glink_rx_open(struct qcom_glink *glink, unsigned int rcid,
- 	channel->rcid = ret;
- 	spin_unlock_irqrestore(&glink->idr_lock, flags);
- 
--	complete(&channel->open_req);
-+	complete_all(&channel->open_req);
- 
- 	if (create_device) {
- 		rpdev = kzalloc(sizeof(*rpdev), GFP_KERNEL);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 4aae7e3e89a12..2603537b1f66b 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5856,6 +5856,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
+ 	/* Quotafile not on the same filesystem? */
+ 	if (path->dentry->d_sb != sb)
+ 		return -EXDEV;
++
++	/* Quota already enabled for this file? */
++	if (IS_NOQUOTA(d_inode(path->dentry)))
++		return -EBUSY;
++
+ 	/* Journaling quota? */
+ 	if (EXT4_SB(sb)->s_qf_names[type]) {
+ 		/* Quotafile not in fs root? */
 -- 
 2.25.1
 
