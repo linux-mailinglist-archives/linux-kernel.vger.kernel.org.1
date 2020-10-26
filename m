@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CB229877E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAA4298780
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769801AbgJZHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 03:35:29 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:36468 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769791AbgJZHf2 (ORCPT
+        id S1769808AbgJZHfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 03:35:46 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:34081 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1768408AbgJZHfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 03:35:28 -0400
-Received: by mail-pf1-f194.google.com with SMTP id w65so2897328pfd.3;
-        Mon, 26 Oct 2020 00:35:28 -0700 (PDT)
+        Mon, 26 Oct 2020 03:35:45 -0400
+Received: by mail-pf1-f181.google.com with SMTP id o129so163926pfb.1;
+        Mon, 26 Oct 2020 00:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CI3vWPl8k1Jbjm4zcRL1dzvW2GroWE4ViyULbDeW7tE=;
-        b=jnwlplfGJlvMbotV1BTE9FRhh6dY30lA13rcqxgkEQEwwQPijEo5WK1aUldXkkj4s8
-         A57O+/fK6UYLCh0/kL5oPq4MMycvlZttramPfdNUZz0GiXO0bdLKxYKmqSVAwxjMeruM
-         an7Okue+io5GKdxNx8Py0+Bn4VTYvEGjmqAz+9nSic+7roECf4X7dbxX/PoAeze+wl9D
-         +OlXO8rYSaLWdznI/ySQlTFxi24T641m/qjWQELHr/uQZ9r2s2iYuMOEOO5Ynd37rmAI
-         1x6Cq4PBaIKLlyqYG4sOLUFxjqJEF/OHx/O4PqT4/EWZNg5x2xzSs9nJyhGpRKUPiX2E
-         8I+A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+i2ZlhR3b0Er71SY9bYb8Ka8p9qIWWGIB2GLx3viGtw=;
+        b=FC1oEmHmqmY07wzOxKG/Vgo553H/vhMUdwoBflh0aaGRumO5ZdOx8l06C2aozufKji
+         ZY5JJIDe7pwoYfo5Imqztcn+hpina9gb77FgjpLEB/iX52brJsfl/JOtfztlvSkhdQTK
+         I3P0s2c+PYhVvEiBRXV8NTHjs1rhy71KDfdCAJI53lUAr/igCclHng9NfZO0C/HZtdtl
+         VwLua20vTDMjILgTeX+iLEEFo5NjcSZK8a1mAXpPfUy6ssQ0UppyKFObW3rjXihTXoZp
+         m9m+9lU8eYpPYh6ZHW/as/r4biyaFJQfRx1uLrLLLfUIwfxOIR99iA9kx3mj7mKTo6gd
+         z29Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CI3vWPl8k1Jbjm4zcRL1dzvW2GroWE4ViyULbDeW7tE=;
-        b=uiz4rv6ekHozujn1QqZoKnGyTRQJFj+pNESb8OBpSd18J0LKBGSqvmMgXvGdoB7TvJ
-         DWRDHiOfV/pGqXuZkoTk32Sl3/98BD99sb+4OiBgKtPbpChFDj9Mgd9ca9xn/7VR1xOY
-         QZs69CMCo2GCj9uSps5XzhfUurectFiL5NM8oHA7CBaJ/XY6guMgV+Jfiwpqvvlcr4rT
-         HGp0hRT54y9CIq/mELYmyxFrMbsWeChTRLl7dhoMSHIbk6gEMFpuumv79YTjLayFZ8Fl
-         35Dnaj+O2i1MCNGfrvLlh0gcq+uYEQ4PBLvCDMqkeyMRNPbkVxr+krg2ZIJ5aVYCNaLO
-         e6AQ==
-X-Gm-Message-State: AOAM532s9FIKIgg8XM5epSehoJj7I3e/UrZy3tJfbyW0aNtcnj/7EHzq
-        jgPVnAWHZjHuencfJE1SS10=
-X-Google-Smtp-Source: ABdhPJwWltliyR9yyP+QGJYPEogmll/0VkXsakMpR3a/mq+vvaCEdzc4l5+rIGz8R98A4RWPcDcYCA==
-X-Received: by 2002:a65:4cce:: with SMTP id n14mr15363159pgt.349.1603697728029;
-        Mon, 26 Oct 2020 00:35:28 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id gm14sm11616517pjb.2.2020.10.26.00.35.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+i2ZlhR3b0Er71SY9bYb8Ka8p9qIWWGIB2GLx3viGtw=;
+        b=EARQ6cOmTaIlX6th8WtpkRvwH56EoN6kOHaAWMUMSI8eoNG5sWLf3vs3aShBmIkgZZ
+         d1zcsPOk+J/Uxx9nvRNt4ssS5zuYBsK79+o3u+S4h8AVTAaPJhnM8Ovra92w8dgK6x4u
+         nESMfsIYiPt9fkPRYJ6MQItt3e1Q0GAEYWAuhV4tB1CIFRBS+G5GPaczJ4r955h4NLaM
+         bIkJaVakrE2376PP9NX/6KKrpzzrbzFMoG/rRJMtg6XPBOIBV6iEOYaZsHakysblU/cY
+         V/CGHE4f35E4cvgwZoCTXxRkNKpeGDgHCAPTffpXhOYl+VTKfcc9zN/6p1EUDSAT128Y
+         t33w==
+X-Gm-Message-State: AOAM530qUe5nQvQxFuD3a+rIOVk/rGTD4FkgpZSy1kxUfIjVLLHxkxnY
+        VL4jtwUdr8Tii5tYM4xnpI7MVNu8UgukzFKa
+X-Google-Smtp-Source: ABdhPJyKjTcv+NB2442ZD275Zc2SMrFQXo+a4qGY+Lh91Dys6wP3sFk7p9MN6jXDesDS7DmLSbZORA==
+X-Received: by 2002:a65:4302:: with SMTP id j2mr12188353pgq.177.1603697745008;
+        Mon, 26 Oct 2020 00:35:45 -0700 (PDT)
+Received: from ruantu-3.localdomain ([103.230.142.242])
+        by smtp.gmail.com with ESMTPSA id r6sm11363177pfg.85.2020.10.26.00.35.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 00:35:27 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH 2/2] hwspinlock: sprd: use module_platform_driver() instead postcore initcall
-Date:   Mon, 26 Oct 2020 15:35:21 +0800
-Message-Id: <20201026073521.24492-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201026073009.24164-2-zhang.lyra@gmail.com>
-References: <20201026073009.24164-2-zhang.lyra@gmail.com>
+        Mon, 26 Oct 2020 00:35:44 -0700 (PDT)
+From:   Yu-Tung Chang <mtwget@gmail.com>
+To:     robh+dt@kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yu-Tung Chang <mtwget@gmail.com>
+Subject: [PATCH v3 0/1] ARM: dts: sun8i: add FriendlyArm ZeroPi support
+Date:   Mon, 26 Oct 2020 15:35:35 +0800
+Message-Id: <20201026073536.13617-1-mtwget@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+This patch add FriendlyArm ZeroPi support.
 
-The hardware spinlock devices are defined in the DT, there's no need for
-init calls order, remove boilerplate code by using module_platform_driver.
+Wiki:
+http://wiki.friendlyarm.com/wiki/index.php/ZeroPi
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/hwspinlock/sprd_hwspinlock.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Schematic:
+http://wiki.friendlyarm.com/wiki/images/7/71/ZeroPi_20190731_Schematic.pdf
 
-diff --git a/drivers/hwspinlock/sprd_hwspinlock.c b/drivers/hwspinlock/sprd_hwspinlock.c
-index e7b55217293c..179231cec5a6 100644
---- a/drivers/hwspinlock/sprd_hwspinlock.c
-+++ b/drivers/hwspinlock/sprd_hwspinlock.c
-@@ -151,18 +151,7 @@ static struct platform_driver sprd_hwspinlock_driver = {
- 		.of_match_table = sprd_hwspinlock_of_match,
- 	},
- };
--
--static int __init sprd_hwspinlock_init(void)
--{
--	return platform_driver_register(&sprd_hwspinlock_driver);
--}
--postcore_initcall(sprd_hwspinlock_init);
--
--static void __exit sprd_hwspinlock_exit(void)
--{
--	platform_driver_unregister(&sprd_hwspinlock_driver);
--}
--module_exit(sprd_hwspinlock_exit);
-+module_platform_driver(sprd_hwspinlock_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Hardware spinlock driver for Spreadtrum");
+v1:
+- Remove the extra spaces in description text.
+
+v2:
+- Remove the ehci0 and ohci0 device nodes.
+- Remove the usbphy->usb0_id_det-gpios property.
+
+v3:
+- Enable RGMII RX/TX delay on PHY.
+
+Yu-Tung Chang (1):
+  ARM: dts: sun8i: add FriendlyArm ZeroPi support
+
+ .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
+ arch/arm/boot/dts/Makefile                    |  1 +
+ arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 87 +++++++++++++++++++
+ 3 files changed, 93 insertions(+)
+ create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+
 -- 
-2.20.1
+2.29.0
 
