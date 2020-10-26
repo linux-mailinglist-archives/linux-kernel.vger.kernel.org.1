@@ -2,201 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DAB29999D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246662999A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394171AbgJZWZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:25:35 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:37650 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394113AbgJZWZf (ORCPT
+        id S2394361AbgJZW01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:26:27 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:42625 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394247AbgJZW0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:25:35 -0400
-Received: by mail-il1-f195.google.com with SMTP id y17so10622711ilg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:25:34 -0700 (PDT)
+        Mon, 26 Oct 2020 18:26:23 -0400
+Received: by mail-yb1-f196.google.com with SMTP id a12so9017609ybg.9;
+        Mon, 26 Oct 2020 15:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NhnLh9Zc0nPouSEKwRorWay32zoFBTTF0SDuN2VaMBI=;
-        b=qunfsM1kxnBXcsgS8cv5wkKS2IZ+EoYe2vQ3/aG7PQtArjYvyUm2UsdN3trqFa2FY3
-         Dyub1Ad2NYAcCTTY7Q+3QxLWnOr8nukBgqN3n8p2eHl1+K5YmTtaO0VL2EwTQSdDL48r
-         5nSLD/PoVsREvmHS5GM2DdLa+pHlGSnAUXKXRdsQolP4WE2kUxMKQlwrDRlXIaTRGMUe
-         XmZFFAhq/PpYuRKS9b7ndgzFOKChxfhUTpxOHhP5Q6Ej+usoZPKiMabiwhtJXcnPZkzJ
-         R9jSreyBr7Oy8wHXGnwao32StXucHfhXJzRj2iGpN6fkmn9nK9PmDs3t8c2i+tPyOaH+
-         tv+g==
+         :cc:content-transfer-encoding;
+        bh=VzKLIOn5ZNMh+ZqIZ5v07+6ceTHcQcV1XTB2DtB+0Ts=;
+        b=nQDbuLLq1Djc0WyhCdBgEHdTisZtMaVebC8GnV+hrMP6JI4XeeJVig9a6Zfjsg53yx
+         MevxN8yNaidpf2Uekxj0qq4eRVuEPdaZlWpblKVTG8B5TEl/W+iYGxXzN1IqQCXMghGo
+         nOW16tmbpqcTwkE22hJLZDw6kiGht34Pj8pM7dsEKaD/J+3WSBs5IlCrBBeupiSxs2cG
+         rGR8PXVFG0ofiUYcTp9GfxlUj23WMDhnHAY9hGUOfZSCOLrMHhkPsejM4LK0yUuhc15E
+         rEFQNNJMh9c0QgJFFQxz8eH+4nqmUvpL4JBQTxby8Ha2jFCHQ5JZ00iSXCyrWLIO1O/Q
+         BC5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NhnLh9Zc0nPouSEKwRorWay32zoFBTTF0SDuN2VaMBI=;
-        b=sAyGmAqqnuzfahEvQKhIWTFtuzJsOLeAmkKLKRQJGXifekNMozK669m/OEcZYlgWx4
-         q1f+sDebBOF6QKLB3qmPzdsXDYlnighID3opdIUd/yx7eU7f0EE0qtKXXb1MceeE5Cmi
-         O3YAuf3o12+MWB0NtJpaPzrX+2twkcTOfHCIPJtE+HBggBzUXjMLzWRp13qU50+yAEiF
-         JrapOowCEyBPPdr6bBlxOmSunDeIpWGm4XfdF8eONQTGkVf0NwIIqjzZT45akgLltJXl
-         dGmKGo+Tl9CBS7OXDMCWEbspGKk3+9CGsLJketvuTMTTCGuiXGpvYBUdEkUu7tJ5d/HY
-         RYAA==
-X-Gm-Message-State: AOAM533Tngg7D4A07XB7202E1QE16zvE1vNWjtG9/JyCIB6FkNSWy00j
-        qF3I0UbHMtWztfWVoCfmUuTQgSqaCm1ZztGd+rWHo2KFd9s=
-X-Google-Smtp-Source: ABdhPJyqO/pxu9BFKgwTdkGicsPROnlzx8pSCMyW4DusFXMtTANLFzNn8NlKlgW6B9+s/oDWtX07PpNqFEGX2E8PmWA=
-X-Received: by 2002:a92:a182:: with SMTP id b2mr12026557ill.148.1603751133721;
- Mon, 26 Oct 2020 15:25:33 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VzKLIOn5ZNMh+ZqIZ5v07+6ceTHcQcV1XTB2DtB+0Ts=;
+        b=roqICu8lh9dXPkhigrt1oHifv/o4fZCJK5VH1VQS2jBdr1dVN6UoAyjTT4EdeRjCoo
+         Jex3+6R65ks+g9McYCFCh1Pj1Oa98SHDNd4xauapSkRdYkEfD1rk3Ak+0J1ZupsQOXW8
+         ylFmDH36Xu09Fouw5yyT0smJeaxSAauc9lRr8VrWaueW/XOBURf5IxeVsIPf9jJX+H78
+         Lyh+gOsUV0uBNFG8OV1vAhthg11vkGj4YroxbLwlyTyqcWFCmzb68GZdd0/4YvMrXf+w
+         aLxutr580AMmDw2LZ2pQFeU9Ul+Za8jdFnElKOJ8HBcMafS0QOC9XFgTFOnQ6IRsgB+e
+         jUvg==
+X-Gm-Message-State: AOAM530xvdJ+SWIpdC40ByvmYKRKXmIpSri+J/X0LZ185LMdxXctDZC5
+        GhHmux2Rbn1nBh6PD2sBQHao/4pKJ4i80PoU2HA=
+X-Google-Smtp-Source: ABdhPJzRLYCjS2G1lOpTFXy7qNFv9ulEegJsGvKEB3KqUMBxYEQdJ5dyFqKL2xuWt6VfyFFZti/VFYl+McD15eFMlAE=
+X-Received: by 2002:a25:cb10:: with SMTP id b16mr23857239ybg.459.1603751182707;
+ Mon, 26 Oct 2020 15:26:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200820162738.33053904@oasis.local.home> <20201022173434.910879-1-lpy@google.com>
-In-Reply-To: <20201022173434.910879-1-lpy@google.com>
-From:   Peiyong Lin <lpy@google.com>
-Date:   Mon, 26 Oct 2020 15:25:22 -0700
-Message-ID: <CA+0soA=rrZcHsHt2oGqk0sn7QuJu=TQBdbOHPc1+UupRbWbgZg@mail.gmail.com>
-Subject: Re: [PATCH v4] Add power/gpu_frequency tracepoint.
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
-        android-kernel@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Prahlad Kilambi <prahladk@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        zzyiwei@android.com, Sidath Senanayake <sidaths@google.com>
+References: <20201026210332.3885166-1-arnd@kernel.org>
+In-Reply-To: <20201026210332.3885166-1-arnd@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 26 Oct 2020 15:26:11 -0700
+Message-ID: <CAEf4BzaKSzEbPStm8EXk4RH417jHieSF3LCazQPXZ6qGskqB6Q@mail.gmail.com>
+Subject: Re: [PATCH] bpf: suppress -Wcast-function-type warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        David Miller <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
-
-May I ask for a review please?
-
-Thanks,
-Peiyong
-
-
-On Thu, Oct 22, 2020 at 10:34 AM Peiyong Lin <lpy@google.com> wrote:
+On Mon, Oct 26, 2020 at 2:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> Historically there is no common trace event for GPU frequency, in
-> downstream Android each different hardware vendor implements their own
-> way to expose GPU frequency, for example as a debugfs node.  This patch
-> standardize it as a common trace event in upstream linux kernel to help
-> the ecosystem have a common implementation across hardware vendors.
-> Toolings in the Linux ecosystem will benefit from this especially in the
-> downstream Android, where this information is critical to graphics
-> developers.
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Signed-off-by: Peiyong Lin <lpy@google.com>
+> Building with -Wextra shows lots of warnings in the bpf
+> code such as
+>
+> kernel/bpf/verifier.c: In function =E2=80=98jit_subprogs=E2=80=99:
+> include/linux/filter.h:345:4: warning: cast between incompatible function=
+ types from =E2=80=98unsigned int (*)(const void *, const struct bpf_insn *=
+)=E2=80=99 to =E2=80=98u64 (*)(u64,  u64,  u64,  u64,  u64)=E2=80=99 {aka =
+=E2=80=98long long unsigned int (*)(long long unsigned int,  long long unsi=
+gned int,  long long unsigned int,  long long unsigned int,  long long unsi=
+gned int)=E2=80=99} [-Wcast-function-type]
+>   345 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+>       |    ^
+> kernel/bpf/verifier.c:10706:16: note: in expansion of macro =E2=80=98BPF_=
+CAST_CALL=E2=80=99
+> 10706 |    insn->imm =3D BPF_CAST_CALL(func[subprog]->bpf_func) -
+>       |                ^~~~~~~~~~~~~
+>
+> This appears to be intentional, so change the cast in a way that
+> suppresses the warning.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  include/linux/filter.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Changelog since v3:
->  - Correct copyright title.
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 1b62397bd124..20ba04583eaa 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -342,7 +342,7 @@ static inline bool insn_is_zext(const struct bpf_insn=
+ *insn)
+>  /* Function call */
 >
-> Changelog since v2:
->  - Add more comments to indicate when the event should be emitted.
->  - Change state to frequency.
+>  #define BPF_CAST_CALL(x)                                       \
+> -               ((u64 (*)(u64, u64, u64, u64, u64))(x))
+> +               ((u64 (*)(u64, u64, u64, u64, u64))(uintptr_t)(x))
 >
-> Changelog since v1:
->  - Use %u in TP_printk
->
->  drivers/gpu/Makefile                    |  1 +
->  drivers/gpu/trace/Kconfig               |  3 +++
->  drivers/gpu/trace/Makefile              |  1 +
->  drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++++
->  include/trace/events/power.h            | 33 +++++++++++++++++++++++++
->  5 files changed, 51 insertions(+)
->  create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
->
-> diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
-> index 835c88318cec..f289a47eb031 100644
-> --- a/drivers/gpu/Makefile
-> +++ b/drivers/gpu/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)      += host1x/
->  obj-y                  += drm/ vga/
->  obj-$(CONFIG_IMX_IPUV3_CORE)   += ipu-v3/
->  obj-$(CONFIG_TRACE_GPU_MEM)            += trace/
-> +obj-$(CONFIG_TRACE_GPU_FREQUENCY)              += trace/
-> diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
-> index c24e9edd022e..ac4aec8d5845 100644
-> --- a/drivers/gpu/trace/Kconfig
-> +++ b/drivers/gpu/trace/Kconfig
-> @@ -2,3 +2,6 @@
->
->  config TRACE_GPU_MEM
->         bool
-> +
-> +config TRACE_GPU_FREQUENCY
-> +       bool
-> diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
-> index b70fbdc5847f..2b7ae69327d6 100644
-> --- a/drivers/gpu/trace/Makefile
-> +++ b/drivers/gpu/trace/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
->
->  obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
-> +obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
-> diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
-> new file mode 100644
-> index 000000000000..668fabd6b77a
-> --- /dev/null
-> +++ b/drivers/gpu/trace/trace_gpu_frequency.c
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * GPU frequency trace points
-> + *
-> + * Copyright (C) 2020 Google LLC
-> + */
-> +
-> +#include <linux/module.h>
-> +
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/power.h>
-> +
-> +EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
-> diff --git a/include/trace/events/power.h b/include/trace/events/power.h
-> index af5018aa9517..343825a76953 100644
-> --- a/include/trace/events/power.h
-> +++ b/include/trace/events/power.h
-> @@ -500,6 +500,39 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
->
->         TP_ARGS(name, type, new_value)
->  );
-> +
-> +/**
-> + * gpu_frequency - Reports the GPU frequency in GPU clock domains.
-> + *
-> + * This event should be emitted whenever there's a GPU frequency change happens,
-> + * or a GPU goes from idle state to active state, or vice versa.
-> + *
-> + * When the GPU goes from idle state to active state, this event should report
-> + * the GPU frequency of the active state. When the GPU goes from active state to
-> + * idle state, this event should report a zero frequency value.
-> + *
-> + * @frequency:  New frequency (in KHz)
-> + * @gpu_id: Id for each GPU clock domain
-> + */
-> +TRACE_EVENT(gpu_frequency,
-> +
-> +       TP_PROTO(unsigned int frequency, unsigned int gpu_id),
-> +
-> +       TP_ARGS(frequency, gpu_id),
-> +
-> +       TP_STRUCT__entry(
-> +               __field(unsigned int, frequency)
-> +               __field(unsigned int, gpu_id)
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->frequency = frequency;
-> +               __entry->gpu_id = gpu_id;
-> +       ),
-> +
-> +       TP_printk("frequency=%u gpu_id=%u",
-> +               __entry->frequency, __entry->gpu_id)
-> +);
->  #endif /* _TRACE_POWER_H */
->
->  /* This part must be outside protection */
+>  #define BPF_EMIT_CALL(FUNC)                                    \
+>         ((struct bpf_insn) {                                    \
 > --
-> 2.29.0.rc1.297.gfa9743e501-goog
+> 2.27.0
 >
