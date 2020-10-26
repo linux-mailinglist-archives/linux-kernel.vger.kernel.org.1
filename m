@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE80298FEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A427429902E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782102AbgJZOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:51:14 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:40812 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782079AbgJZOvM (ORCPT
+        id S1782666AbgJZOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:55:18 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:36965 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782654AbgJZOzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:51:12 -0400
-Received: by mail-oi1-f193.google.com with SMTP id m128so10724962oig.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:51:11 -0700 (PDT)
+        Mon, 26 Oct 2020 10:55:16 -0400
+Received: by mail-pf1-f196.google.com with SMTP id 126so5903185pfu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:55:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mWob+tzedQRU+r/coolBGzfAZbJH7LoTHZ6SLSxbMY4=;
-        b=twUIGiwfWIRMWBeJSy6dgI4GpWSLHpg3THcr1YyNW+Z5jLeHYls96uEMFambf5NboL
-         Z5hPI5udjL7TykBpTYqfdhQiGroQJSBHYxqUbkD+eSy4RgOf+drJCHUsQb0gQY4LrXr8
-         zxUS2JEuPLIrJ7Rjs4D9kagvqVywc4Or4SsmfPQNB9BuGVo+irPKERbLXXwdnSGeSZ8C
-         GUzRL77BG9+zozZciuwVmMcuIRqpwv9txfdbhpMYi1SAd3JYUHNCASvj+GyPJOOb8wYS
-         VUxpCtJS0Im6wWHp6hUpXp1Opoiubk0MwV62lp8vhCwZ8edpucuhSo+mwuCQJuPDpLtI
-         20ig==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3mpciXNwuWcA5SxSfqhs9A4AXvA+acZr3rKf1/b+yZ4=;
+        b=wxpBUBnO46XYx1IyrgXw8jKQbFTfCS8wmkAHMTfSnaTjj3luNYlMLPhMZetrgkwfvx
+         macN5wvljeYhYqBA560CER6ZjGtMQvNn1j9+UjUuaRdetFNulNxaYRbh1j66KudSwQWI
+         eDRXiIwG2Hht2uvTqtKe1iUTUE5PVzZy/hVr9ipDqvXbcxEryyzfHe7RnNsDVEEJ95v+
+         lENGhvYH7S9+Jx72NaLpfo5QBPozjAIpU8u7V3pgpFLztrajR3ZMBMYE3IH+s5dtvJKN
+         b8n3nFPnhOcCmq4Kf67F8IzSHOhCHkw3I5af0KzOV1gYUDtfBFis0u1qwULZH00Sn4f3
+         WNFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mWob+tzedQRU+r/coolBGzfAZbJH7LoTHZ6SLSxbMY4=;
-        b=VT/Id9FYIn+d+FDvpFerq8AHkNP28M6n+/0vhl87gJYsqHzBPP8FdNB1CWS+5p/mue
-         ZD6/jftlRqCOHhz8hPYzBoBH/CjlEJEXP7/HIzGoSYuKGjP6ZkDH0NHV/T/z6gSwyGOm
-         NuvfOQR5v0EdXLeo7ngaR9sbieQNqSMjXMOsm3Ms7L2D3oCNZHeoL5bN3DUxWAwg9Tki
-         O+jPtxQhJOKK43WYaxCcj5Y+9dICdyFaG3A7xvGEuXhIcKaU3+znwuYg+uyGdaio5zyF
-         DBBMyCAYheYTj3g6yUnYJOJA5P5U629kw/OxGq4OZ3WuG8hCzfPYYDmx97uaIrK6S1O5
-         OFiA==
-X-Gm-Message-State: AOAM533PfWbnXQ6GucGkWitZXQ3/i8UVaO8OkhyQhGAevcFjxjxeDOQf
-        yh7fFpuGVDaY0ttdaEzKCpH/9w==
-X-Google-Smtp-Source: ABdhPJwo9kp3RaDSpiGBhV+80QW/beHexUe7tsTU0QJgn+iPVr7AP7TlvSJY20fmG/Nkh72BBqi5Bw==
-X-Received: by 2002:aca:4e4b:: with SMTP id c72mr1415245oib.96.1603723871230;
-        Mon, 26 Oct 2020 07:51:11 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w3sm4006512oov.48.2020.10.26.07.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 07:51:10 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 09:51:08 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: cpus: Document
- 'qcom,freq-domain' property
-Message-ID: <20201026145108.GG12646@builder.lan>
-References: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
- <20201026143203.GA112606@bogus>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3mpciXNwuWcA5SxSfqhs9A4AXvA+acZr3rKf1/b+yZ4=;
+        b=XzFpMvcJvWp6mixB4b3jgyTDGI8qQnmYcxa3tz6qGLEIxiDx+2Qkcibk55hzxhyCLi
+         lRotqNzCsBPT2pNG7vaG0lk4d/0sIPtMoZJ+YB3kJVIOmNgUdLB90owSQRgYFFr4ylyu
+         H9SKxk4UcJzW77+ViifmGtZpybSdnz0EpBBzOLQE9vWgc1HLsaeVmuDgWSTo853ygAtR
+         hEBCqqwe+2oJ/wkML+X9kvDGWSaE592ZpaAso2bMA9EUdCaAg/+78XSSlMDjVGGKPLDB
+         8R+zff3HGnbzbf50B+/NawNFe1YM8FOz33AUBu9tjRSXLSXgUZe6o0zShmb2gBboCdl1
+         UScQ==
+X-Gm-Message-State: AOAM533Y4NgJoXO5rJmeo/OxZyVsbFSKCN1PS3V6NWviYamdjPc5r3Ys
+        u8U8Zx7iA6l4Gklf4j5SevD3yA==
+X-Google-Smtp-Source: ABdhPJyrrJjqBxDZ4gmy4W3o6g0P8TouDAMt8VykFlzg75jHTBFST4T1YJx4SFz6D7HN8IASwdyp1A==
+X-Received: by 2002:a65:508a:: with SMTP id r10mr17564254pgp.307.1603724115200;
+        Mon, 26 Oct 2020 07:55:15 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.220.89])
+        by smtp.gmail.com with ESMTPSA id x123sm12042726pfb.212.2020.10.26.07.55.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Oct 2020 07:55:14 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2 13/19] mm/hugetlb: Add a BUILD_BUG_ON to check if struct page size is a power of two
+Date:   Mon, 26 Oct 2020 22:51:08 +0800
+Message-Id: <20201026145114.59424-14-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+In-Reply-To: <20201026145114.59424-1-songmuchun@bytedance.com>
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026143203.GA112606@bogus>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 26 Oct 09:32 CDT 2020, Rob Herring wrote:
+We only can free the unused vmemmap to the buddy system when the
+size of struct page is a power of two. So add a BUILD_BUG_ON to
+check the illegal case.
 
-> On Tue, Oct 20, 2020 at 09:09:43PM +0530, Manivannan Sadhasivam wrote:
-> > Add devicetree documentation for 'qcom,freq-domain' property specific
-> > to Qualcomm CPUs. This property is used to reference the CPUFREQ node
-> > along with Domain ID (0/1).
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
-> > index 1222bf1831fa..f40564bf004f 100644
-> > --- a/Documentation/devicetree/bindings/arm/cpus.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
-> > @@ -290,6 +290,12 @@ properties:
-> >  
-> >        * arm/msm/qcom,kpss-acc.txt
-> >  
-> > +  qcom,freq-domain:
-> > +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-> > +    description: |
-> > +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
-> > +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
-> 
-> There's no 3 patches doing the same thing. Mediatek and SCMI are the 
-> others. This will need to be common. 
-> 
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/hugetlb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-This property is used by existing dtbs for Qualcomm sdm845, sm8150,
-sm8250 and sc7180 based devices, so I expect that the support for the
-existing property will stay.
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index d98b55ad1a90..e3209fd2e6b2 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3776,6 +3776,10 @@ static int __init hugetlb_init(void)
+ {
+ 	int i;
+ 
++#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
++	BUILD_BUG_ON_NOT_POWER_OF_2(sizeof(struct page));
++#endif
++
+ 	if (!hugepages_supported()) {
+ 		if (hugetlb_max_hstate || default_hstate_max_huge_pages)
+ 			pr_warn("HugeTLB: huge pages not supported, ignoring associated command-line parameters\n");
+-- 
+2.20.1
 
-Regards,
-Bjorn
-
-> > +
-> >    rockchip,pmu:
-> >      $ref: '/schemas/types.yaml#/definitions/phandle'
-> >      description: |
-> > -- 
-> > 2.17.1
-> > 
