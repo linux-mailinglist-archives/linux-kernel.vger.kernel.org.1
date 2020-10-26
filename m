@@ -2,185 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CA229930D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5719C29931D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786688AbgJZQ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:56:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:44934 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1786681AbgJZQ4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:56:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3687106F;
-        Mon, 26 Oct 2020 09:56:07 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.56.187])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E07A13F719;
-        Mon, 26 Oct 2020 09:56:05 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:55:55 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] arm64: hide more compat_vdso code
-Message-ID: <20201026165543.GA42952@C02TD0UTHF1T.local>
-References: <20201026160342.3705327-1-arnd@kernel.org>
- <20201026160342.3705327-2-arnd@kernel.org>
+        id S1786792AbgJZQ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:58:09 -0400
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:46192 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1786741AbgJZQ5e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:57:34 -0400
+Received: by mail-vs1-f66.google.com with SMTP id s6so5110402vss.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U0IxDbw9xkqiRVjMXASTPx8jLKp0WDhukG7QJqTfdjM=;
+        b=RfB8rPwjTA8vs3E4K0ZnlkEs3pC7qo0cqceU3vJpfmcdf24Z+E6Jt+ETsXZSJjcxjR
+         UR0TOtj/NLEDWilkee0H9Mb787VHCc9Ab+boZIUrhzTLGIzGyCbOF5zjB0vKMlewdEMK
+         u0gLdIqrEwDC+kXzOwdV3BKPuCS4qMO2hVNOftHYqDeIBwkkMPVCbg9eSMUl41wBN1Dk
+         POy3ShUIQtOQUbcjNwTfQIarlS4x679gUxlein935yq0X22uDWo6f92fGAl0rsyArYwl
+         XoeJngjPMZ4l5G0jOkIPxUFFlL0AtqNuzoIsQQFiIa+fkw2k6BZeIDMTDQfHqDIwyVi9
+         oHhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U0IxDbw9xkqiRVjMXASTPx8jLKp0WDhukG7QJqTfdjM=;
+        b=Wo5iLroi0I9cLkpByT6TprR5nw6mhZmMoqtpgMvdfNGoLH/BPL0cYOYK5gp3RhvPfB
+         szi72VQKRTEhijVRD9fo3hF13mltahqXLP+tqOKE8G/v/MnZDOgBocPL+11NiJFMkQzb
+         jXsTYrKF4FabR+Dwl5iblSw6P6GYk68sFapUSeT3Lb9dxdhxRut9i217uenAU9ZCVTu8
+         OG6NmNvFrdrLNjwZ/1iWNO9RJ+66vn9goLOpBOH39izdaMVSwKXMeTjxx+BlPgRHWMCp
+         2xgETrYxqfxC48f3Y9Am2L1IuVNfZj1h0/4xN9WbLAOz/tD5LQHhYRXl9azigPtmJzY6
+         BCqA==
+X-Gm-Message-State: AOAM533pOF5ND8aLvDGBSXlmfZil68ll+Cc4zWJWaE/btYm6s4f1V1l8
+        ewG3jfhMb5DK9kJzCuWMqPGT6slwtkQ=
+X-Google-Smtp-Source: ABdhPJzOjnBBh2oAUrkUcBrfSXOWkxJX7AxtoUfN5DAcQQriePfx1iCeYC5mlCe35w++qn+9ZScJlg==
+X-Received: by 2002:a67:6ec6:: with SMTP id j189mr19110528vsc.58.1603731452418;
+        Mon, 26 Oct 2020 09:57:32 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id e125sm1512234vkh.44.2020.10.26.09.57.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 09:57:30 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id s6so5110293vss.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:57:29 -0700 (PDT)
+X-Received: by 2002:a67:b607:: with SMTP id d7mr19582090vsm.28.1603731449199;
+ Mon, 26 Oct 2020 09:57:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026160342.3705327-2-arnd@kernel.org>
+References: <20201026150851.528148-1-aleksandrnogikh@gmail.com> <20201026150851.528148-3-aleksandrnogikh@gmail.com>
+In-Reply-To: <20201026150851.528148-3-aleksandrnogikh@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 26 Oct 2020 12:56:52 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSeR5n4xSpzMxAYX=kyy0aJYz52FVR=EjqK8_-LVqcqpXA@mail.gmail.com>
+Message-ID: <CA+FuTSeR5n4xSpzMxAYX=kyy0aJYz52FVR=EjqK8_-LVqcqpXA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] net: add kcov handle to skb extensions
+To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:03:29PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_COMPAT_VDSO is disabled, we get a warning
-> about a potential out-of-bounds access:
-> 
-> arch/arm64/kernel/vdso.c: In function 'aarch32_vdso_mremap':
-> arch/arm64/kernel/vdso.c:86:37: warning: array subscript 1 is above array bounds of 'struct vdso_abi_info[1]' [-Warray-bounds]
->    86 |  unsigned long vdso_size = vdso_info[abi].vdso_code_end -
->       |                            ~~~~~~~~~^~~~~
-> 
-> This is all in dead code however that the compiler is unable to
-> eliminate by itself.
-> 
-> Change the array to individual local variables that can be
-> dropped in dead code elimination to let the compiler understand
-> this better.
-> 
-> Fixes: 0cbc2659123e ("arm64: vdso32: Remove a bunch of #ifdef CONFIG_COMPAT_VDSO guards")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-This looks like a nice cleanup to me! I agree we don't need the array
-here.
-
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-
-Thanks,
-Mark.
-
+On Mon, Oct 26, 2020 at 11:11 AM Aleksandr Nogikh
+<aleksandrnogikh@gmail.com> wrote:
+>
+> From: Aleksandr Nogikh <nogikh@google.com>
+>
+> Remote KCOV coverage collection enables coverage-guided fuzzing of the
+> code that is not reachable during normal system call execution. It is
+> especially helpful for fuzzing networking subsystems, where it is
+> common to perform packet handling in separate work queues even for the
+> packets that originated directly from the user space.
+>
+> Enable coverage-guided frame injection by adding kcov remote handle to
+> skb extensions. Default initialization in __alloc_skb and
+> __build_skb_around ensures that no socket buffer that was generated
+> during a system call will be missed.
+>
+> Code that is of interest and that performs packet processing should be
+> annotated with kcov_remote_start()/kcov_remote_stop().
+>
+> An alternative approach is to determine kcov_handle solely on the
+> basis of the device/interface that received the specific socket
+> buffer. However, in this case it would be impossible to distinguish
+> between packets that originated during normal background network
+> processes or were intentionally injected from the user space.
+>
+> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+> --
+> v2 -> v3:
+> * Reimplemented this change. Now kcov handle is added to skb
+> extensions instead of sk_buff.
+> v1 -> v2:
+> * Updated the commit message.
 > ---
->  arch/arm64/kernel/vdso.c | 56 ++++++++++++++++++----------------------
->  1 file changed, 25 insertions(+), 31 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-> index debb8995d57f..0b69d2894742 100644
-> --- a/arch/arm64/kernel/vdso.c
-> +++ b/arch/arm64/kernel/vdso.c
-> @@ -286,36 +286,9 @@ static int aarch32_vdso_mremap(const struct vm_special_mapping *sm,
->  	return __vdso_remap(VDSO_ABI_AA32, sm, new_vma);
+>  include/linux/skbuff.h | 31 +++++++++++++++++++++++++++++++
+>  net/core/skbuff.c      | 11 +++++++++++
+>  2 files changed, 42 insertions(+)
+>
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index a828cf99c521..b63d90faa8e9 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -4150,6 +4150,9 @@ enum skb_ext_id {
+>  #endif
+>  #if IS_ENABLED(CONFIG_MPTCP)
+>         SKB_EXT_MPTCP,
+> +#endif
+> +#if IS_ENABLED(CONFIG_KCOV)
+> +       SKB_EXT_KCOV_HANDLE,
+>  #endif
+>         SKB_EXT_NUM, /* must be last */
+>  };
+> @@ -4605,5 +4608,33 @@ static inline void skb_reset_redirect(struct sk_buff *skb)
+>  #endif
 >  }
->  
-> -enum aarch32_map {
-> -	AA32_MAP_VECTORS, /* kuser helpers */
-> -	AA32_MAP_SIGPAGE,
-> -	AA32_MAP_VVAR,
-> -	AA32_MAP_VDSO,
-> -};
-> -
->  static struct page *aarch32_vectors_page __ro_after_init;
->  static struct page *aarch32_sig_page __ro_after_init;
->  
-> -static struct vm_special_mapping aarch32_vdso_maps[] = {
-> -	[AA32_MAP_VECTORS] = {
-> -		.name	= "[vectors]", /* ABI */
-> -		.pages	= &aarch32_vectors_page,
-> -	},
-> -	[AA32_MAP_SIGPAGE] = {
-> -		.name	= "[sigpage]", /* ABI */
-> -		.pages	= &aarch32_sig_page,
-> -	},
-> -	[AA32_MAP_VVAR] = {
-> -		.name = "[vvar]",
-> -		.fault = vvar_fault,
-> -		.mremap = vvar_mremap,
-> -	},
-> -	[AA32_MAP_VDSO] = {
-> -		.name = "[vdso]",
-> -		.mremap = aarch32_vdso_mremap,
-> -	},
-> -};
-> -
->  static int aarch32_alloc_kuser_vdso_page(void)
->  {
->  	extern char __kuser_helper_start[], __kuser_helper_end[];
-> @@ -352,14 +325,25 @@ static int aarch32_alloc_sigpage(void)
->  	return 0;
->  }
->  
-> +static struct vm_special_mapping aarch32_vdso_map_vvar = {
-> +	.name = "[vvar]",
-> +	.fault = vvar_fault,
-> +	.mremap = vvar_mremap,
-> +};
+>
+> +#ifdef CONFIG_KCOV
 > +
-> +static struct vm_special_mapping aarch32_vdso_map_vdso = {
-> +	.name = "[vdso]",
-> +	.mremap = aarch32_vdso_mremap,
-> +};
+> +static inline void skb_set_kcov_handle(struct sk_buff *skb, const u64 kcov_handle)
+> +{
+> +       /* No reason to allocate skb extensions to set kcov_handle if kcov_handle is 0. */
+
+If the handle does not need to be set if zero, why then set it if the
+skb has extensions?
+
+> +       if (skb_has_extensions(skb) || kcov_handle) {
+> +               u64 *kcov_handle_ptr = skb_ext_add(skb, SKB_EXT_KCOV_HANDLE);
+
+skb_ext_add and skb_ext_find are not defined unless CONFIG_SKB_EXTENSIONS.
+
+Perhaps CONFIG_KCOV should be made to select that?
+
+
+
+
 > +
->  static int __aarch32_alloc_vdso_pages(void)
->  {
->  
->  	if (!IS_ENABLED(CONFIG_COMPAT_VDSO))
->  		return 0;
->  
-> -	vdso_info[VDSO_ABI_AA32].dm = &aarch32_vdso_maps[AA32_MAP_VVAR];
-> -	vdso_info[VDSO_ABI_AA32].cm = &aarch32_vdso_maps[AA32_MAP_VDSO];
-> +	vdso_info[VDSO_ABI_AA32].dm = &aarch32_vdso_map_vvar;
-> +	vdso_info[VDSO_ABI_AA32].cm = &aarch32_vdso_map_vdso;
->  
->  	return __vdso_init(VDSO_ABI_AA32);
->  }
-> @@ -380,6 +364,11 @@ static int __init aarch32_alloc_vdso_pages(void)
->  }
->  arch_initcall(aarch32_alloc_vdso_pages);
->  
-> +static struct vm_special_mapping aarch32_vdso_map_vectors = {
-> +	.name	= "[vectors]", /* ABI */
-> +	.pages	= &aarch32_vectors_page,
-> +};
+> +               if (kcov_handle_ptr)
+> +                       *kcov_handle_ptr = kcov_handle;
+> +       }
+> +}
 > +
->  static int aarch32_kuser_helpers_setup(struct mm_struct *mm)
->  {
->  	void *ret;
-> @@ -394,11 +383,16 @@ static int aarch32_kuser_helpers_setup(struct mm_struct *mm)
->  	ret = _install_special_mapping(mm, AARCH32_VECTORS_BASE, PAGE_SIZE,
->  				       VM_READ | VM_EXEC |
->  				       VM_MAYREAD | VM_MAYEXEC,
-> -				       &aarch32_vdso_maps[AA32_MAP_VECTORS]);
-> +				       &aarch32_vdso_map_vectors);
->  
->  	return PTR_ERR_OR_ZERO(ret);
->  }
->  
-> +static struct vm_special_mapping aarch32_vdso_map_sigpage = {
-> +	.name	= "[sigpage]", /* ABI */
-> +	.pages	= &aarch32_sig_page,
-> +};
+> +static inline u64 skb_get_kcov_handle(struct sk_buff *skb)
+> +{
+> +       u64 *kcov_handle = skb_ext_find(skb, SKB_EXT_KCOV_HANDLE);
 > +
->  static int aarch32_sigreturn_setup(struct mm_struct *mm)
->  {
->  	unsigned long addr;
-> @@ -417,7 +411,7 @@ static int aarch32_sigreturn_setup(struct mm_struct *mm)
->  	ret = _install_special_mapping(mm, addr, PAGE_SIZE,
->  				       VM_READ | VM_EXEC | VM_MAYREAD |
->  				       VM_MAYWRITE | VM_MAYEXEC,
-> -				       &aarch32_vdso_maps[AA32_MAP_SIGPAGE]);
-> +				       &aarch32_vdso_map_sigpage);
->  	if (IS_ERR(ret))
->  		goto out;
->  
-> -- 
-> 2.27.0
-> 
+> +       return kcov_handle ? *kcov_handle : 0;
+> +}
+> +
+> +#else
+> +
+> +static inline void skb_set_kcov_handle(struct sk_buff *skb, const u64 kcov_handle) { }
+> +
+> +static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
+> +
+> +#endif /* CONFIG_KCOV */
