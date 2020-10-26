@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67E82988FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2420D298910
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772492AbgJZJCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:02:39 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:45751 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1772468AbgJZJCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:02:38 -0400
-Received: by mail-ej1-f67.google.com with SMTP id dt13so12235599ejb.12;
-        Mon, 26 Oct 2020 02:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VzPLDonQyAo9U+lyuctB2TaEgIfVbsLYU560QT60WkI=;
-        b=Q8vCXKlGk2QyDILH1Knc0fuOnTp5Lqvftby+PpEsHgz8NQEC5sfNko0PWuq+vHj/YW
-         yrCAxFtPSt03R2pdj8docmGVEsKkD+Z4c0lczBSPPBSkE5cM7fado3AgDtwaHNI4hAUc
-         61rPHgNXehwyoP29bI0xhoY/sPU4pV8Rlrq9tRzOhN8OEpla95L4t3vya6bMF4NEEEdD
-         dHDSFaFiJe6jTFkANPsWGicAOriYtUwfPpDXwX+evI14wsFUdUomVGbjf0gPjgPp735C
-         oZu7EV60YEVBQUzzPF3zu+1sfb/Ht9Qew0jH+J/aIxLx6DYpc2Qc8ZO0D57WMxkVBRuu
-         vvgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VzPLDonQyAo9U+lyuctB2TaEgIfVbsLYU560QT60WkI=;
-        b=BU8Swd0Pgvujj2BtbRpj2VX/ReuY86BY7TFx5SqE2eY1AlDaeAyo7EhvjIPDZ9WGiN
-         kz+h+x+B899K3/jRYaAPyT9+vFeUGehwpkOzQse87sS0hcSmrsSrecZ2/PmXPeQ3CMbe
-         uUeUDU7HIrq7qgBGCJ2zyZCiRsGDUK81xyC92dncMXxEZ3VY8ga0sUcQaoJvNe/kBI4I
-         zG/BAtCdNEgTvtHrti4Jz/Jr4CLg8rUT8DeAqJd3NXoD1J9oLpLYKBs8z8lCe6jXvcem
-         wSthSvh9jmBdJUfDGtcx3IrONOmmdMs7lLRCSUZHCWpVydO2DTlT/kY8MLqUEvcnDgA8
-         R5Ew==
-X-Gm-Message-State: AOAM530mGr2bJDRmhn8tPrpFzyiC2x5E76GNZjDZg+X82nDNWqnV+H1e
-        y979NxmUkR26dZYWLG8KD38XygZ3914KcudRXXs=
-X-Google-Smtp-Source: ABdhPJw8MAIw3Y8WUOIEtj9GR44OTgWuMdGEEAMA6kcT6Q/ozil5aLKdvx1SN5RhQo/ttdxZm/awjh50AxhLfRnK1FU=
-X-Received: by 2002:a17:906:4b0f:: with SMTP id y15mr14244145eju.198.1603702954582;
- Mon, 26 Oct 2020 02:02:34 -0700 (PDT)
+        id S1772553AbgJZJFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:05:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390998AbgJZJFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:05:44 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F28122242;
+        Mon, 26 Oct 2020 09:05:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603703144;
+        bh=qV1j3o8b5aO+jtdBDoJyX5701vJJcUPPuK5bWgUroMs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n6pQeRtZ1dQZQwNLzcRvocBVxWOThQ2A3ohdsbB1ku0q9Z1z2DOVNvIaiR/xbrSRK
+         5zQtm2aEbLsKv3mU1aC9GYppS4t99gNCuK2wQoR74ofGRKXtqAOsYTKvXA+WFU2Lid
+         njOARSpftIz0V7Pd9Gh+IjN51p6qFKYl2MBmmm2s=
+Date:   Mon, 26 Oct 2020 11:05:26 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "bp@alien8.de" <bp@alien8.de>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
+ manipulation
+Message-ID: <20201026090526.GA1154158@kernel.org>
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
 MIME-Version: 1.0
-References: <20201017052057.2698588-1-bjorn.andersson@linaro.org>
- <20201017052057.2698588-3-bjorn.andersson@linaro.org> <CADQ2G_Exk7+uXMcoyFu-VOcSf48Qjvg9KUCm0P6yXdQn8K_3wQ@mail.gmail.com>
- <20201026082732.GB8884@duo.ucw.cz>
-In-Reply-To: <20201026082732.GB8884@duo.ucw.cz>
-From:   Martin Botka <martin.botka1@gmail.com>
-Date:   Mon, 26 Oct 2020 10:02:22 +0100
-Message-ID: <CADQ2G_FeBFVa+ep5N8QGMLWrMKEwQf6J2Gu0FmQYf+n942hGew@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] leds: Add driver for Qualcomm LPG
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Good way to say that is "Patches 7 and 28, Reviewed-by:"...
+On Mon, Oct 26, 2020 at 01:13:52AM +0000, Edgecombe, Rick P wrote:
+> On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
+> > Indeed, for architectures that define CONFIG_ARCH_HAS_SET_DIRECT_MAP
+> > it is
+> > possible that __kernel_map_pages() would fail, but since this
+> > function is
+> > void, the failure will go unnoticed.
+> 
+> Could you elaborate on how this could happen? Do you mean during
+> runtime today or if something new was introduced?
 
-7 and 28 ? I dont see any patches 7 and 28 (I assume thats a typo for 8)
+A failure in__kernel_map_pages() may happen today. For instance, on x86
+if the kernel is built with DEBUG_PAGEALLOC.
 
-Either way.
+	__kernel_map_pages(page, 1, 0);
 
-Reviewed-by: Martin Botka <martin.botka1@gmail.com>
+will need to split, say, 2M page and during the split an allocation of
+page table could fail.
+
+Currently, the only user of __kernel_map_pages() outside DEBUG_PAGEALLOC
+is hibernation, but I think it would be safer to entirely prevent usage
+of __kernel_map_pages() when DEBUG_PAGEALLOC=n.
+
+-- 
+Sincerely yours,
+Mike.
