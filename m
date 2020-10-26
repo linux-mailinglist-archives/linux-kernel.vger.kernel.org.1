@@ -2,181 +2,1034 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336CE2993DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804602993D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1738349AbgJZRbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:31:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23986 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1774135AbgJZRbV (ORCPT
+        id S1787842AbgJZRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:31:01 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:53282 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1787813AbgJZRa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:31:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603733479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fS08d8MBtu1ip55QD9RREObehqTj3BnkBGdOU4nJc8o=;
-        b=VOanpcLnuvd1yoT3rp46bd5uD5Gqc1ZeMqHOz498cLRCwj/J0YR7H01u2acFrwp8HN+Fz1
-        2l5ZFZAQ7qY5iPglAPObmfFrjTrNsJebdSIsO759lRUC1jVJptQvhlH2N8C5IjuQLr3919
-        3EeatD2pCrdnPJddi+U5dF2MmQ4PC88=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-6NgAv3PkPCycQ-VxP7BvvA-1; Mon, 26 Oct 2020 13:31:17 -0400
-X-MC-Unique: 6NgAv3PkPCycQ-VxP7BvvA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEEE0809DC0;
-        Mon, 26 Oct 2020 17:31:10 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 230DA19D6C;
-        Mon, 26 Oct 2020 17:31:03 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 2B9B0417F242; Mon, 26 Oct 2020 14:30:12 -0300 (-03)
-Date:   Mon, 26 Oct 2020 14:30:12 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
-        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
-        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20201026173012.GA377978@fuller.cnet>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
- <20201019140005.GB17287@fuller.cnet>
- <20201020073055.GY2611@hirez.programming.kicks-ass.net>
- <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
- <20201020134128.GT2628@hirez.programming.kicks-ass.net>
- <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
- <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
- <20201023085826.GP2611@hirez.programming.kicks-ass.net>
- <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
- <87ft6464jf.fsf@nanos.tec.linutronix.de>
+        Mon, 26 Oct 2020 13:30:58 -0400
+Received: by mail-wm1-f68.google.com with SMTP id d78so12496953wmd.3;
+        Mon, 26 Oct 2020 10:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0BerrGz1UCkt3jfZZl1gh/v8mx5F5YH0VfpQoA2pAEs=;
+        b=g/usVMKrYbvdGNAwslDHVPYehRUm6RE5sTvgG08m5KP6+ESS3Iywe+rOu+yoQwfEj9
+         IEM6/kCdMDS9feOV6SnjbYbNbpjNtDoKV9B0eCNxHK8TbwJlomFN2IsBkO4WUpVG35S2
+         zpEOAQyRj4bXKgPJ+NgGeDJRuOjLvvTxqv09+Wg4H8qXQtCd1x2vspAoR6yfmkEH0uan
+         VCTLM8FimZS2+Nd/ZKsv4mjh0Ahzhq+pDw1q/AxQAUZxOeMoZSPHIAnkNhSiVgadi1ST
+         Hj++KztjG5tSw4rIQ9V6NF+z7tGET6hL8U2ZkBZNyOAcXvM9kVF/6nkySt1+Dr0dGc5Q
+         1PSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0BerrGz1UCkt3jfZZl1gh/v8mx5F5YH0VfpQoA2pAEs=;
+        b=OTjvaotYUahf0JZZJbByQKHy5NsatBxKulyKoXil2/qtwHRotYpDg/6Z1MKVuR4ata
+         MWDKQ8nEsMVsNsCKu4Jy82rMcKDTxtrDXuCocIBOZ+EBF1TsTEbJXbB9xnusDI2gB1RB
+         PoGSDBX5EfSJfwmp2eVQZ5BiGhb5MWpCE9B0EglzHl/9i181BbuwpNC7ltxUrdmfTRpZ
+         F+xNtQFPqTa+G/9KiufP65dq94P4wjlPKHUI8oM1huujsA7Pae0k3JkxYmAjqo1XoiO5
+         mjBwhcztHySy9u2fAqDOIKZTBYX2zt3T8Y7hLOCxM7OtYTVHLnIKoPxlpRpXqdr0rBHA
+         99+g==
+X-Gm-Message-State: AOAM530GLKcYzn+MJ/a6zaA9UX8wPYhNBJ0PWjKXZBpss3k7q5WNncOy
+        LZsqAltUcQYAo5Ad7XzlB94=
+X-Google-Smtp-Source: ABdhPJxpYl6uaN/hHFssZ7en0B3AodpL+OPLUpyYUxutRH9D33RAdMGVZje8blx1MJYiQpAiBcniWw==
+X-Received: by 2002:a7b:cd96:: with SMTP id y22mr17658711wmj.126.1603733451038;
+        Mon, 26 Oct 2020 10:30:51 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id b18sm1996808wmj.41.2020.10.26.10.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 10:30:50 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     dmitry.torokhov@gmail.com
+Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org,
+        andy.shevchenko@gmail.com
+Subject: [PATCH v8 2/3] Input: Add Novatek NT36xxx touchscreen driver
+Date:   Mon, 26 Oct 2020 18:30:44 +0100
+Message-Id: <20201026173045.165236-3-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201026173045.165236-1-kholk11@gmail.com>
+References: <20201026173045.165236-1-kholk11@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ft6464jf.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 11:00:52PM +0200, Thomas Gleixner wrote:
-> On Fri, Oct 23 2020 at 09:10, Nitesh Narayan Lal wrote:
-> > On 10/23/20 4:58 AM, Peter Zijlstra wrote:
-> >> On Thu, Oct 22, 2020 at 01:47:14PM -0400, Nitesh Narayan Lal wrote:
-> >> So shouldn't we then fix the drivers / interface first, to get rid of
-> >> this inconsistency?
-> >>
-> > Considering we agree that excess vector is a problem that needs to be
-> > solved across all the drivers and that you are comfortable with the other
-> > three patches in the set. If I may suggest the following:
-> >
-> > - We can pick those three patches for now, as that will atleast fix a
-> >   driver that is currently impacting RT workloads. Is that a fair
-> >   expectation?
-> 
-> No. Blindly reducing the maximum vectors to the number of housekeeping
-> CPUs is patently wrong. The PCI core _cannot_ just nilly willy decide
-> what the right number of interrupts for this situation is.
-> 
-> Many of these drivers need more than queue interrupts, admin, error
-> interrupt and some operate best with seperate RX/TX interrupts per
-> queue. They all can "work" with a single PCI interrupt of course, but
-> the price you pay is performance.
-> 
-> An isolated setup, which I'm familiar with, has two housekeeping
-> CPUs. So far I restricted the number of network queues with a module
-> argument to two, which allocates two management interrupts for the
-> device and two interrupts (RX/TX) per queue, i.e. a total of six.
-> 
-> Now I reduced the number of available interrupts to two according to
-> your hack, which makes it use one queue RX/TX combined and one
-> management interrupt. Guess what happens? Network performance tanks to
-> the points that it breaks a carefully crafted setup.
-> 
-> The same applies to a device which is application specific and wants one
-> channel including an interrupt per isolated application core. Today I
-> can isolate 8 out of 12 CPUs and let the device create 8 channels and
-> set one interrupt and channel affine to each isolated CPU. With your
-> hack, I get only 4 interrupts and channels. Fail!
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-Good point.
+This is a driver for the Novatek in-cell touch controller and
+supports various chips from the NT36xxx family, currently
+including NT36525, NT36672A, NT36676F, NT36772 and NT36870.
 
-> You cannot declare that all this is perfectly fine, just because it does
-> not matter for your particular use case.
-> 
-> So without information from the driver which tells what the best number
-> of interrupts is with a reduced number of CPUs, this cutoff will cause
-> more problems than it solves. Regressions guaranteed.
+Functionality like wake gestures and firmware flashing is not
+included: I am not aware of any of these DrIC+Touch combo
+chips not including a non-volatile memory and it should be
+highly unlikely to find one, since the touch firmware is
+embedded into the DriverIC one, which is obviously necessary
+to drive the display unit.
 
-One might want to move from one interrupt per isolated app core
-to zero, or vice versa. It seems that "best number of interrupts 
-is with reduced number of CPUs" information, is therefore in userspace, 
-not in driver...
+However, the necessary address for the firmware update
+procedure was included into the address table in this driver
+so, in the event that someone finds the need to implement it
+for a reason or another, it will be pretty straightforward to.
 
-No?
+This driver is lightly based on the downstream implementation [1].
+[1] https://github.com/Rasenkai/caf-tsoft-Novatek-nt36xxx
 
-> Managed interrupts base their interrupt allocation and spreading on
-> information which is handed in by the individual driver and not on crude
-> assumptions. They are not imposing restrictions on the use case.
-> 
-> It's perfectly fine for isolated work to save a data set to disk after
-> computation has finished and that just works with the per-cpu I/O queue
-> which is otherwise completely silent. 
+Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+---
+ drivers/input/touchscreen/Kconfig   |  12 +
+ drivers/input/touchscreen/Makefile  |   1 +
+ drivers/input/touchscreen/nt36xxx.c | 895 ++++++++++++++++++++++++++++
+ 3 files changed, 908 insertions(+)
+ create mode 100644 drivers/input/touchscreen/nt36xxx.c
 
-Userspace could only change the mask of interrupts which are not 
-triggered by requests from the local CPU (admin, error, mgmt, etc),
-to avoid the vector exhaustion problem.
-
-However, there is no explicit way for userspace to know that, as far as
-i know.
-
- 130:      34845          0          0          0          0          0          0          0  IR-PCI-MSI 33554433-edge      nvme0q1
- 131:          0      27062          0          0          0          0          0          0  IR-PCI-MSI 33554434-edge      nvme0q2
- 132:          0          0      24393          0          0          0          0          0  IR-PCI-MSI 33554435-edge      nvme0q3
- 133:          0          0          0      24313          0          0          0          0  IR-PCI-MSI 33554436-edge      nvme0q4
- 134:          0          0          0          0      20608          0          0          0  IR-PCI-MSI 33554437-edge      nvme0q5
- 135:          0          0          0          0          0      22163          0          0  IR-PCI-MSI 33554438-edge      nvme0q6
- 136:          0          0          0          0          0          0      23020          0  IR-PCI-MSI 33554439-edge      nvme0q7
- 137:          0          0          0          0          0          0          0      24285  IR-PCI-MSI 33554440-edge      nvme0q8
-
-
-Can that be retrieved from PCI-MSI information, or drivers
-have to inform this? 
-
-> All isolated workers can do the
-> same in parallel without trampling on each other toes by competing for a
-> reduced number of queues which are affine to the housekeeper CPUs.
-> 
-> Unfortunately network multi-queue is substantially different from block
-> multi-queue (as I learned in this conversation), so the concept cannot
-> be applied one-to-one to networking as is. But there are certainly part
-> of it which can be reused.
-> 
-> This needs a lot more thought than just these crude hacks.
-> 
-> Especially under the aspect that there are talks about making isolation
-> runtime switchable. Are you going to rmmod/insmod the i40e network
-> driver to do so? That's going to work fine if you do that
-> reconfiguration over network...
-> 
-> Thanks,
-> 
->         tglx
-
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index 35c867b2d9a7..6d118b967021 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -605,6 +605,18 @@ config TOUCHSCREEN_MTOUCH
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called mtouch.
+ 
++config TOUCHSCREEN_NT36XXX
++	tristate "Novatek NT36XXX In-Cell I2C touchscreen controller"
++	depends on I2C
++	help
++	  Say Y here if you have a Novatek NT36xxx series In-Cell
++	  touchscreen connected to your system over I2C.
++
++	  If unsure, say N.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called nt36xxx.
++
+ config TOUCHSCREEN_IMX6UL_TSC
+ 	tristate "Freescale i.MX6UL touchscreen controller"
+ 	depends on (OF && GPIOLIB) || COMPILE_TEST
+diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+index 30d1e1b42492..424a555e03d5 100644
+--- a/drivers/input/touchscreen/Makefile
++++ b/drivers/input/touchscreen/Makefile
+@@ -61,6 +61,7 @@ obj-$(CONFIG_TOUCHSCREEN_MIGOR)		+= migor_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_MMS114)	+= mms114.o
+ obj-$(CONFIG_TOUCHSCREEN_MTOUCH)	+= mtouch.o
+ obj-$(CONFIG_TOUCHSCREEN_MK712)		+= mk712.o
++obj-$(CONFIG_TOUCHSCREEN_NT36XXX)	+= nt36xxx.o
+ obj-$(CONFIG_TOUCHSCREEN_HP600)		+= hp680_ts_input.o
+ obj-$(CONFIG_TOUCHSCREEN_HP7XX)		+= jornada720_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_IPAQ_MICRO)	+= ipaq-micro-ts.o
+diff --git a/drivers/input/touchscreen/nt36xxx.c b/drivers/input/touchscreen/nt36xxx.c
+new file mode 100644
+index 000000000000..cd37b1ab1cf5
+--- /dev/null
++++ b/drivers/input/touchscreen/nt36xxx.c
+@@ -0,0 +1,895 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Driver for Novatek NT36xxx series touchscreens
++ *
++ * Copyright (C) 2010 - 2017 Novatek, Inc.
++ * Copyright (C) 2020 AngeloGioacchino Del Regno <kholk11@gmail.com>
++ */
++
++#include <asm/unaligned.h>
++#include <linux/delay.h>
++#include <linux/i2c.h>
++#include <linux/interrupt.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/gpio/consumer.h>
++#include <linux/input/mt.h>
++#include <linux/input/touchscreen.h>
++#include <linux/regulator/consumer.h>
++
++/* FW Param address */
++#define NT36XXX_FW_ADDR 0x01
++
++/* Number of bytes for chip identification */
++#define NT36XXX_ID_LEN_MAX	6
++
++/* Touch info */
++#define TOUCH_DEFAULT_MAX_WIDTH  1080
++#define TOUCH_DEFAULT_MAX_HEIGHT 2246
++#define TOUCH_MAX_FINGER_NUM	 10
++#define TOUCH_MAX_PRESSURE	 1000
++
++/* Point data length */
++#define POINT_DATA_LEN		65
++
++/* Global pages */
++#define NT36XXX_PAGE_CHIP_INFO	0x0001f64e
++#define NT36XXX_PAGE_CRC	0x0003f135
++
++/* Misc */
++#define NT36XXX_NUM_SUPPLIES	 2
++#define NT36XXX_MAX_RETRIES	 5
++#define NT36XXX_MAX_FW_RST_RETRY 50
++
++struct nt36xxx_abs_object {
++	u16 x;
++	u16 y;
++	u16 z;
++	u8 tm;
++};
++
++struct nt36xxx_fw_info {
++	u8 fw_ver;
++	u8 x_num;
++	u8 y_num;
++	u8 max_buttons;
++	u16 abs_x_max;
++	u16 abs_y_max;
++	u16 nvt_pid;
++};
++
++struct nt36xxx_mem_map {
++	u32 evtbuf_addr;
++	u32 pipe0_addr;
++	u32 pipe1_addr;
++	u32 flash_csum_addr;
++	u32 flash_data_addr;
++};
++
++struct nt36xxx_i2c {
++	struct i2c_client *hw_client;
++	struct i2c_client *fw_client;
++	struct regmap *regmap;
++	struct regmap *fw_regmap;
++	struct input_dev *input;
++	struct regulator_bulk_data *supplies;
++	struct gpio_desc *reset_gpio;
++
++	struct mutex lock;
++
++	struct touchscreen_properties prop;
++	struct nt36xxx_fw_info fw_info;
++	struct nt36xxx_abs_object abs_obj;
++
++	const struct nt36xxx_mem_map *mmap;
++};
++
++enum nt36xxx_chips {
++	NT36525_IC = 0,
++	NT36672A_IC,
++	NT36676F_IC,
++	NT36772_IC,
++	NT36870_IC,
++	NTMAX_IC,
++};
++
++struct nt36xxx_trim_table {
++	u8 id[NT36XXX_ID_LEN_MAX];
++	u8 mask[NT36XXX_ID_LEN_MAX];
++	enum nt36xxx_chips mapid;
++};
++
++enum nt36xxx_cmds {
++	NT36XXX_CMD_ENTER_SLEEP = 0x11,
++	NT36XXX_CMD_ENTER_WKUP_GESTURE = 0x13,
++	NT36XXX_CMD_UNLOCK = 0x35,
++	NT36XXX_CMD_BOOTLOADER_RESET = 0x69,
++	NT36XXX_CMD_SW_RESET = 0xa5,
++	NT36XXX_CMD_SET_PAGE = 0xff,
++};
++
++/**
++ * enum nt36xxx_fw_state - Firmware state
++ * @NT36XXX_STATE_INIT: IC Reset
++ * @NT36XXX_STATE_REK: ReK baseline
++ * @NT36XXX_STATE_REK_FINISH: Baseline is ready
++ * @NT36XXX_STATE_NORMAL_RUN: Firmware is running
++ */
++enum nt36xxx_fw_state {
++	NT36XXX_STATE_INIT = 0xa0,
++	NT36XXX_STATE_REK,
++	NT36XXX_STATE_REK_FINISH,
++	NT36XXX_STATE_NORMAL_RUN,
++	NT36XXX_STATE_MAX = 0xaf
++};
++
++enum nt36xxx_i2c_events {
++	NT36XXX_EVT_REPORT = 0x00,
++	NT36XXX_EVT_CRC = 0x35,
++	NT36XXX_EVT_CHIPID = 0x4e,
++	NT36XXX_EVT_HOST_CMD = 0x50,
++	NT36XXX_EVT_HS_OR_SUBCMD = 0x51,   /* Handshake or subcommand byte */
++	NT36XXX_EVT_RESET_COMPLETE = 0x60,
++	NT36XXX_EVT_FWINFO = 0x78,
++	NT36XXX_EVT_PROJECTID = 0x9a,
++};
++
++static const struct nt36xxx_mem_map nt36xxx_memory_maps[] = {
++	[NT36525_IC]  = { 0x11a00, 0x10000, 0x12000, 0x14000, 0x14002 },
++	[NT36672A_IC] = { 0x21c00, 0x20000, 0x23000, 0x24000, 0x24002 },
++	[NT36676F_IC] = { 0x11a00, 0x10000, 0x12000, 0x14000, 0x14002 },
++	[NT36772_IC]  = { 0x11e00, 0x10000, 0x12000, 0x14000, 0x14002 },
++	[NT36870_IC]  = { 0x25000, 0x20000, 0x23000, 0x24000, 0x24002 },
++};
++
++static const struct nt36xxx_trim_table trim_id_table[] = {
++	{
++	 .id = { 0x0A, 0xFF, 0xFF, 0x72, 0x66, 0x03 },
++	 .mask = { 1, 0, 0, 1, 1, 1 },
++	 .mapid = NT36672A_IC,
++	},
++	{
++	 .id = { 0x55, 0x00, 0xFF, 0x00, 0x00, 0x00 },
++	 .mask = { 1, 1, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0x55, 0x72, 0xFF, 0x00, 0x00, 0x00 },
++	 .mask = { 1, 1, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xAA, 0x00, 0xFF, 0x00, 0x00, 0x00 },
++	 .mask = { 1, 1, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xAA, 0x72, 0xFF, 0x00, 0x00, 0x00 },
++	 .mask = { 1, 1, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x72, 0x67, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x70, 0x66, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x70, 0x67, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x72, 0x66, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x25, 0x65, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x70, 0x68, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36772_IC,
++	},
++	{
++	 .id = { 0xFF, 0xFF, 0xFF, 0x76, 0x66, 0x03 },
++	 .mask = { 0, 0, 0, 1, 1, 1 },
++	 .mapid = NT36676F_IC,
++	},
++};
++
++/**
++ * nt36xxx_set_page - Set page number for read/write
++ * @ts: Main driver structure
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_set_page(struct nt36xxx_i2c *ts, u32 pageaddr)
++{
++	u32 data = cpu_to_be32(pageaddr) >> 8;
++	int ret;
++
++	ret = regmap_noinc_write(ts->fw_regmap, NT36XXX_CMD_SET_PAGE,
++				 &data, sizeof(data));
++	if (ret)
++		return ret;
++
++	usleep_range(100, 200);
++	return ret;
++}
++
++/**
++ * nt36xxx_sw_reset_idle - Warm restart the firmware
++ * @ts: Main driver structure
++ *
++ * This function restarts the running firmware without rebooting to
++ * the bootloader (warm restart)
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_sw_reset_idle(struct nt36xxx_i2c *ts)
++{
++	int ret;
++
++	ret = regmap_write(ts->regmap, ts->hw_client->addr,
++			   NT36XXX_CMD_SW_RESET);
++	if (ret)
++		return ret;
++
++	/* Wait until the MCU resets the fw state */
++	usleep_range(15000, 16000);
++	return ret;
++}
++
++/**
++ * nt36xxx_bootloader_reset - Reset MCU to bootloader
++ * @ts: Main driver structure
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_bootloader_reset(struct nt36xxx_i2c *ts)
++{
++	int ret;
++
++	ret = regmap_write(ts->regmap, ts->hw_client->addr,
++			   NT36XXX_CMD_BOOTLOADER_RESET);
++	if (ret)
++		return ret;
++
++	/* MCU has to reboot from bootloader: this is the typical boot time */
++	msleep(35);
++	return ret;
++}
++
++/**
++ * nt36xxx_check_reset_state - Check the boot state during reset
++ * @ts: Main driver structure
++ * @fw_state: Enumeration containing firmware states
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_check_reset_state(struct nt36xxx_i2c *ts,
++				     enum nt36xxx_fw_state fw_state)
++{
++	u8 buf[2] = { 0 };
++	int ret, retry = NT36XXX_MAX_FW_RST_RETRY;
++
++	do {
++		ret = regmap_noinc_read(ts->fw_regmap,
++					NT36XXX_EVT_RESET_COMPLETE,
++					buf, sizeof(buf));
++		if (likely(ret == 0) &&
++		    (buf[0] >= fw_state) &&
++		    (buf[0] <= NT36XXX_STATE_MAX)) {
++			ret = 0;
++			break;
++		}
++		usleep_range(10000, 11000);
++	} while (--retry);
++
++	if (!retry) {
++		dev_err(&ts->hw_client->dev, "Firmware reset failed.\n");
++		ret = -EBUSY;
++	}
++
++	return ret;
++}
++
++/**
++ * nt36xxx_read_pid - Read Novatek Project ID
++ * @ts: Main driver structure
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_read_pid(struct nt36xxx_i2c *ts)
++{
++	__be16 pid;
++	int ret;
++
++	ret = nt36xxx_set_page(ts, ts->mmap->evtbuf_addr);
++	if (ret)
++		return ret;
++
++	ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_PROJECTID,
++				&pid, sizeof(pid));
++	if (ret < 0)
++		return ret;
++
++	ts->fw_info.nvt_pid = be16_to_cpu(pid);
++	return 0;
++}
++
++/**
++ * __nt36xxx_get_fw_info - Get working params from firmware
++ * @ts: Main driver structure
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int __nt36xxx_get_fw_info(struct nt36xxx_i2c *ts)
++{
++	struct nt36xxx_fw_info *fwi = &ts->fw_info;
++	u8 buf[11] = { 0 };
++	int ret = 0;
++
++	ret = nt36xxx_set_page(ts, ts->mmap->evtbuf_addr);
++	if (ret)
++		return ret;
++
++	ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_FWINFO,
++				buf, sizeof(buf));
++	if (ret)
++		return ret;
++
++	fwi->fw_ver = buf[0];
++	fwi->x_num = buf[2];
++	fwi->y_num = buf[3];
++	fwi->abs_x_max = get_unaligned_be16(&buf[4]);
++	fwi->abs_y_max = get_unaligned_be16(&buf[6]);
++	fwi->max_buttons = buf[10];
++
++	/* Check fw info integrity and clear x_num, y_num if broken */
++	if ((buf[0] + buf[1]) != 0xFF) {
++		dev_err(&ts->hw_client->dev,
++			"FW info is broken! fw_ver=0x%02X, ~fw_ver=0x%02X\n",
++			buf[0], buf[1]);
++		fwi->fw_ver = 0;
++		fwi->x_num = 18;
++		fwi->y_num = 32;
++		fwi->abs_x_max = TOUCH_DEFAULT_MAX_WIDTH;
++		fwi->abs_y_max = TOUCH_DEFAULT_MAX_HEIGHT;
++		fwi->max_buttons = 0;
++		return -EINVAL;
++	}
++
++	/* Get Novatek ProjectID */
++	return nt36xxx_read_pid(ts);
++}
++
++static int nt36xxx_get_fw_info(struct nt36xxx_i2c *ts)
++{
++	struct nt36xxx_fw_info *fwi = &ts->fw_info;
++	int i, ret = 0;
++
++	for (i = 0; i < NT36XXX_MAX_RETRIES; i++) {
++		ret = __nt36xxx_get_fw_info(ts);
++		if (ret == 0)
++			break;
++	}
++
++	dev_dbg(&ts->hw_client->dev,
++		"FW Info: PID=0x%x, ver=0x%x res=%ux%u max=%ux%u buttons=%u",
++		fwi->nvt_pid, fwi->fw_ver, fwi->x_num, fwi->y_num,
++		fwi->abs_x_max, fwi->abs_y_max, fwi->max_buttons);
++
++	return ret;
++}
++
++/**
++ * nt36xxx_report - Report touch events
++ * @ts: Main driver structure
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static void nt36xxx_report(struct nt36xxx_i2c *ts)
++{
++	struct nt36xxx_abs_object *obj = &ts->abs_obj;
++	struct input_dev *input = ts->input;
++	u8 input_id = 0;
++	u8 point[POINT_DATA_LEN + 1] = { 0 };
++	unsigned int ppos = 0;
++	int i, ret, finger_cnt = 0;
++
++	mutex_lock(&ts->lock);
++
++	ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_REPORT,
++				point, sizeof(point));
++	if (ret < 0) {
++		dev_err(&ts->hw_client->dev,
++			"Cannot read touch point data: %d\n", ret);
++		goto xfer_error;
++	}
++
++	for (i = 0; i < TOUCH_MAX_FINGER_NUM; i++) {
++		ppos = 6 * i;
++		input_id = point[ppos + 0] >> 3;
++		if ((input_id == 0) || (input_id > TOUCH_MAX_FINGER_NUM))
++			continue;
++
++		if (((point[ppos] & 0x07) == 0x01) ||
++		    ((point[ppos] & 0x07) == 0x02)) {
++			obj->x = (point[ppos + 1] << 4) +
++				 (point[ppos + 3] >> 4);
++			obj->y = (point[ppos + 2] << 4) +
++				 (point[ppos + 3] & 0xf);
++			if ((obj->x > ts->prop.max_x) ||
++			    (obj->y > ts->prop.max_y))
++				continue;
++
++			obj->tm = point[ppos + 4];
++			if (obj->tm == 0)
++				obj->tm = 1;
++
++			obj->z = point[ppos + 5];
++			if (i < 2) {
++				obj->z += point[i + 63] << 8;
++				if (obj->z > TOUCH_MAX_PRESSURE)
++					obj->z = TOUCH_MAX_PRESSURE;
++			}
++
++			if (obj->z == 0)
++				obj->z = 1;
++
++			input_mt_slot(input, input_id - 1);
++			input_mt_report_slot_state(input,
++						   MT_TOOL_FINGER, true);
++			touchscreen_report_pos(input, &ts->prop, obj->x,
++					       obj->y, true);
++
++			input_report_abs(input, ABS_MT_TOUCH_MAJOR, obj->tm);
++			input_report_abs(input, ABS_MT_PRESSURE, obj->z);
++
++			finger_cnt++;
++		}
++	}
++	input_mt_sync_frame(input);
++	input_sync(input);
++
++xfer_error:
++	enable_irq(ts->hw_client->irq);
++
++	mutex_unlock(&ts->lock);
++}
++
++static irqreturn_t nt36xxx_i2c_irq_handler(int irq, void *dev_id)
++{
++	struct nt36xxx_i2c *ts = dev_id;
++
++	disable_irq_nosync(ts->hw_client->irq);
++	nt36xxx_report(ts);
++
++	return IRQ_HANDLED;
++}
++
++static bool nt36xxx_in_crc_reboot_loop(u8 *buf)
++{
++	return ((buf[0] == 0xFC) && (buf[1] == 0xFC) && (buf[2] == 0xFC)) ||
++	       ((buf[0] == 0xFF) && (buf[1] == 0xFF) && (buf[2] == 0xFF));
++}
++
++/**
++ * nt36xxx_stop_crc_reboot - Stop CRC reboot loop and warm-reboot the firmware
++ * @ts: Main driver structure
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_stop_crc_reboot(struct nt36xxx_i2c *ts)
++{
++	u8 buf[3] = { 0 };
++	u8 val;
++	int ret, retry = NT36XXX_MAX_RETRIES;
++
++	/* Read dummy buffer to check CRC fail reboot is happening or not */
++
++	/* Change I2C index to prevent getting 0xFF, but not 0xFC */
++	ret = nt36xxx_set_page(ts, NT36XXX_PAGE_CHIP_INFO);
++	if (ret) {
++		dev_dbg(&ts->hw_client->dev,
++			"CRC reset failed: Cannot select page.\n");
++		return ret;
++	}
++
++	/* If ChipID command returns 0xFC or 0xFF, the MCU is in CRC reboot */
++	ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_CHIPID,
++				buf, sizeof(buf));
++	if (ret)
++		return ret;
++
++	if (!nt36xxx_in_crc_reboot_loop(buf))
++		return 0;
++
++	/* IC is in CRC fail reboot loop, needs to be stopped! */
++	do {
++		/* Special reset-idle sequence for CRC failure */
++		ret = regmap_write(ts->regmap, ts->hw_client->addr,
++				   NT36XXX_CMD_SW_RESET);
++		if (ret)
++			dev_dbg(&ts->hw_client->dev,
++				"SW Reset 1 failed: may not recover\n");
++
++		ret = regmap_write(ts->regmap, ts->hw_client->addr,
++				   NT36XXX_CMD_SW_RESET);
++		if (ret)
++			dev_dbg(&ts->hw_client->dev,
++				"SW Reset 2 failed: may not recover\n");
++		usleep_range(1000, 1100);
++
++		/* Clear CRC_ERR_FLAG */
++		ret = nt36xxx_set_page(ts, NT36XXX_PAGE_CRC);
++		if (ret)
++			continue;
++
++		val = 0xA5;
++		ret = regmap_raw_write(ts->fw_regmap, NT36XXX_EVT_CRC,
++				       &val, sizeof(val));
++		if (ret)
++			continue;
++
++		/* Check CRC_ERR_FLAG */
++		ret = nt36xxx_set_page(ts, NT36XXX_PAGE_CRC);
++		if (ret)
++			continue;
++
++		ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_CRC,
++					&buf, sizeof(buf));
++		if (ret)
++			continue;
++
++		if (buf[0] == 0xA5)
++			break;
++	} while (--retry);
++
++	if (retry == 0) {
++		dev_err(&ts->hw_client->dev,
++			"CRC reset failed: buf=0x%2ph\n", buf);
++	}
++
++	return ret;
++}
++
++/**
++ * nt36xxx_i2c_chip_version_init - Detect Novatek NT36xxx family IC
++ * @ts: Main driver structure
++ *
++ * This function reads the ChipID from the IC and sets the right
++ * memory map for the detected chip.
++ *
++ * Return: Always zero for success, negative number for error
++ */
++static int nt36xxx_i2c_chip_version_init(struct nt36xxx_i2c *ts)
++{
++	u8 buf[7] = { 0 };
++	int retry = NT36XXX_MAX_RETRIES;
++	int sz = sizeof(trim_id_table) / sizeof(struct nt36xxx_trim_table);
++	int i, list, mapid, ret;
++
++	ret = nt36xxx_bootloader_reset(ts);
++	if (ret) {
++		dev_err(&ts->hw_client->dev, "Can't reset the nvt IC\n");
++		return ret;
++	}
++
++	do {
++		ret = nt36xxx_sw_reset_idle(ts);
++		if (ret)
++			continue;
++
++		ret = regmap_write(ts->regmap, ts->hw_client->addr, NT36XXX_CMD_UNLOCK);
++		if (ret)
++			continue;
++		usleep_range(10000, 11000);
++
++		ret = nt36xxx_set_page(ts, NT36XXX_PAGE_CHIP_INFO);
++		if (ret)
++			continue;
++
++		memset(buf, 0, ARRAY_SIZE(buf));
++		ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_CHIPID,
++					buf, sizeof(buf));
++		if (ret)
++			continue;
++
++		/* Compare read chip id with trim list */
++		for (list = 0; list < sz; list++) {
++			/* Compare each not masked byte */
++			for (i = 0; i < NT36XXX_ID_LEN_MAX; i++) {
++				if (trim_id_table[list].mask[i] &&
++				    buf[i] != trim_id_table[list].id[i])
++					break;
++			}
++
++			if (i == NT36XXX_ID_LEN_MAX) {
++				mapid = trim_id_table[list].mapid;
++				ts->mmap = &nt36xxx_memory_maps[mapid];
++				return 0;
++			}
++
++			ts->mmap = NULL;
++			ret = -ENOENT;
++		}
++
++		/* Stop CRC check to prevent IC auto reboot */
++		if (nt36xxx_in_crc_reboot_loop(buf)) {
++			ret = nt36xxx_stop_crc_reboot(ts);
++			if (ret)
++				continue;
++		}
++
++		usleep_range(10000, 11000);
++	} while (--retry);
++
++	return ret;
++}
++
++static const struct regmap_config nt36xxx_i2c_regmap_hw_config = {
++	.name = "nt36xxx_i2c_hw",
++	.reg_bits = 8,
++	.val_bits = 8,
++	.cache_type = REGCACHE_NONE,
++};
++
++static const struct regmap_config nt36xxx_i2c_regmap_fw_config = {
++	.name = "nt36xxx_i2c_fw",
++	.reg_bits = 8,
++	.val_bits = 8,
++	.cache_type = REGCACHE_NONE,
++};
++
++static void nt36xxx_disable_regulators(void *data)
++{
++	struct nt36xxx_i2c *ts = data;
++
++	regulator_bulk_disable(NT36XXX_NUM_SUPPLIES, ts->supplies);
++}
++
++static int nt36xxx_i2c_probe(struct i2c_client *hw_client,
++			     const struct i2c_device_id *id)
++{
++	struct nt36xxx_i2c *ts;
++	struct input_dev *input;
++	int ret;
++
++	if (!i2c_check_functionality(hw_client->adapter, I2C_FUNC_I2C)) {
++		dev_err(&hw_client->dev, "i2c_check_functionality error\n");
++		return -EIO;
++	}
++
++	if (!hw_client->irq) {
++		dev_err(&hw_client->dev, "No irq specified\n");
++		return -EINVAL;
++	}
++
++	ts = devm_kzalloc(&hw_client->dev, sizeof(struct nt36xxx_i2c), GFP_KERNEL);
++	if (!ts)
++		return -ENOMEM;
++
++	ts->supplies = devm_kcalloc(&hw_client->dev,
++				    NT36XXX_NUM_SUPPLIES,
++				    sizeof(struct regulator_bulk_data),
++				    GFP_KERNEL);
++	if (!ts->supplies)
++		return -ENOMEM;
++
++	input = devm_input_allocate_device(&hw_client->dev);
++	if (!input)
++		return -ENOMEM;
++
++	ts->fw_client = i2c_new_dummy_device(hw_client->adapter,
++					     NT36XXX_FW_ADDR);
++	if (IS_ERR(ts->fw_client)) {
++		dev_err(&hw_client->dev, "Cannot add FW I2C device\n");
++		return PTR_ERR(ts->fw_client);
++	}
++
++	ts->hw_client = hw_client;
++	ts->input = input;
++	i2c_set_clientdata(ts->hw_client, ts);
++	i2c_set_clientdata(ts->fw_client, ts);
++
++	ts->reset_gpio = devm_gpiod_get_optional(&hw_client->dev, "reset",
++						 GPIOD_OUT_HIGH);
++	if (IS_ERR(ts->reset_gpio))
++		return PTR_ERR(ts->reset_gpio);
++	gpiod_set_consumer_name(ts->reset_gpio, "nt36xxx reset");
++
++	/* These supplies are optional */
++	ts->supplies[0].supply = "vdd";
++	ts->supplies[1].supply = "vio";
++	ret = devm_regulator_bulk_get(&hw_client->dev,
++				      NT36XXX_NUM_SUPPLIES,
++				      ts->supplies);
++	if (ret != 0) {
++		if (ret != -EPROBE_DEFER)
++			dev_err(&hw_client->dev,
++				"Cannot get supplies: %d\n", ret);
++		return ret;
++	}
++
++	ts->regmap = devm_regmap_init_i2c(ts->hw_client,
++					  &nt36xxx_i2c_regmap_hw_config);
++	if (IS_ERR(ts->regmap)) {
++		dev_err(&hw_client->dev, "regmap (hw-addr) init failed\n");
++		return PTR_ERR(ts->regmap);
++	}
++
++	ts->fw_regmap = devm_regmap_init_i2c(ts->fw_client,
++					     &nt36xxx_i2c_regmap_fw_config);
++	if (IS_ERR(ts->fw_regmap)) {
++		dev_err(&hw_client->dev, "regmap (fw-addr) init failed\n");
++		return PTR_ERR(ts->fw_regmap);
++	}
++
++	ret = regulator_bulk_enable(NT36XXX_NUM_SUPPLIES, ts->supplies);
++	if (ret)
++		return ret;
++
++	usleep_range(10000, 11000);
++
++	ret = devm_add_action_or_reset(&hw_client->dev,
++				       nt36xxx_disable_regulators, ts);
++	if (ret)
++		return ret;
++
++	mutex_init(&ts->lock);
++
++	/* Set memory maps for the specific chip version */
++	ret = nt36xxx_i2c_chip_version_init(ts);
++	if (ret) {
++		dev_err(&hw_client->dev, "Failed to check chip version\n");
++		return ret;
++	}
++
++	/* Reset the MCU */
++	ret = nt36xxx_bootloader_reset(ts);
++	if (ret < 0)
++		return ret;
++
++	/* Check and eventually wait until the MCU goes in reset state */
++	ret = nt36xxx_check_reset_state(ts, NT36XXX_STATE_INIT);
++	if (ret < 0)
++		return ret;
++
++	/* Get informations from the TS firmware */
++	ret = nt36xxx_get_fw_info(ts);
++	if (ret < 0)
++		return ret;
++
++	input->phys = devm_kasprintf(&hw_client->dev, GFP_KERNEL,
++				     "%s/input0", dev_name(&hw_client->dev));
++
++	input->name = "Novatek NT36XXX Touchscreen";
++	input->id.bustype = BUS_I2C;
++	input->dev.parent = &hw_client->dev;
++
++	__set_bit(EV_KEY, input->evbit);
++	__set_bit(EV_ABS, input->evbit);
++	input_set_capability(input, EV_KEY, BTN_TOUCH);
++
++	ret = input_mt_init_slots(input, TOUCH_MAX_FINGER_NUM,
++				  INPUT_MT_DIRECT | INPUT_MT_DROP_UNUSED);
++	if (ret) {
++		dev_err(&hw_client->dev, "Cannot init MT slots (%d)\n", ret);
++		return ret;
++	}
++
++	input_set_abs_params(input, ABS_MT_PRESSURE, 0,
++			     TOUCH_MAX_PRESSURE, 0, 0);
++	input_set_abs_params(input, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
++
++	input_set_abs_params(input, ABS_MT_POSITION_X, 0,
++			     ts->fw_info.abs_x_max - 1, 0, 0);
++	input_set_abs_params(input, ABS_MT_POSITION_Y, 0,
++			     ts->fw_info.abs_y_max - 1, 0, 0);
++
++	/* Override the firmware defaults, if needed */
++	touchscreen_parse_properties(input, true, &ts->prop);
++
++	input_set_drvdata(input, ts);
++
++	ret = input_register_device(ts->input);
++	if (ret) {
++		dev_err(&hw_client->dev, "Failed to register input device: %d\n",
++			ret);
++		return ret;
++	}
++
++	ret = devm_request_threaded_irq(&hw_client->dev, hw_client->irq, NULL,
++					nt36xxx_i2c_irq_handler, IRQF_ONESHOT,
++					hw_client->name, ts);
++	if (ret) {
++		dev_err(&hw_client->dev, "request irq failed: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int __maybe_unused nt36xxx_i2c_suspend(struct device *dev)
++{
++	struct nt36xxx_i2c *ts = i2c_get_clientdata(to_i2c_client(dev));
++	int ret;
++
++	disable_irq(ts->hw_client->irq);
++
++	ret = regmap_write(ts->fw_regmap, NT36XXX_EVT_HOST_CMD,
++			   NT36XXX_CMD_ENTER_SLEEP);
++	if (ret) {
++		dev_err(&ts->hw_client->dev, "Cannot enter suspend!!\n");
++		return ret;
++	}
++
++	gpiod_set_value(ts->reset_gpio, 1);
++
++	return 0;
++}
++
++static int __maybe_unused nt36xxx_i2c_resume(struct device *dev)
++{
++	struct nt36xxx_i2c *ts = i2c_get_clientdata(to_i2c_client(dev));
++	int ret;
++
++	mutex_lock(&ts->lock);
++
++	gpiod_set_value(ts->reset_gpio, 0);
++
++	/* Reboot the MCU (also recalibrates the TS) */
++	ret = nt36xxx_bootloader_reset(ts);
++	if (ret < 0)
++		goto end;
++
++	ret = nt36xxx_check_reset_state(ts, NT36XXX_STATE_REK);
++	if (ret < 0)
++		goto end;
++
++	enable_irq(ts->hw_client->irq);
++end:
++	mutex_unlock(&ts->lock);
++	return ret;
++}
++
++static SIMPLE_DEV_PM_OPS(nt36xxx_i2c_pm,
++			 nt36xxx_i2c_suspend, nt36xxx_i2c_resume);
++
++static const struct of_device_id nt36xxx_of_match[] = {
++	{ .compatible = "novatek,nt36525" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, nt36xxx_of_match);
++
++static const struct i2c_device_id nt36xxx_i2c_ts_id[] = {
++	{ "NVT-ts", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, nt36xxx_i2c_ts_id);
++
++static struct i2c_driver nt36xxx_i2c_ts_driver = {
++	.driver = {
++		.name	= "nt36xxx_ts",
++		.pm	= &nt36xxx_i2c_pm,
++		.of_match_table = nt36xxx_of_match,
++	},
++	.id_table	= nt36xxx_i2c_ts_id,
++	.probe		= nt36xxx_i2c_probe,
++};
++module_i2c_driver(nt36xxx_i2c_ts_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Novatek NT36XXX Touchscreen Driver");
++MODULE_AUTHOR("AngeloGioacchino Del Regno <kholk11@gmail.com>");
+-- 
+2.28.0
 
