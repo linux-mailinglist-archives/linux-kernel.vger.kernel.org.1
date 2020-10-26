@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147112991FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2B62991E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785150AbgJZQM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:12:27 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:45904 "EHLO inva020.nxp.com"
+        id S1785071AbgJZQL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442385AbgJZQKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:10:48 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 852FA1A0287;
-        Mon, 26 Oct 2020 17:10:47 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 781C91A0052;
-        Mon, 26 Oct 2020 17:10:47 +0100 (CET)
-Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 2A52020308;
-        Mon, 26 Oct 2020 17:10:47 +0100 (CET)
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v4 11/11] arm64: dts: lx2160ardb: add nodes for the AQR107 PHYs
-Date:   Mon, 26 Oct 2020 18:10:05 +0200
-Message-Id: <20201026161005.5421-12-ioana.ciornei@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201026161005.5421-1-ioana.ciornei@nxp.com>
-References: <20201026161005.5421-1-ioana.ciornei@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2441629AbgJZQKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:10:32 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13D4F239D2;
+        Mon, 26 Oct 2020 16:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603728631;
+        bh=MvvTXPhG69td+8D1sJTke2O2+T03PtpLlVCyAQkLTEQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nQZFvp9CrLRIw6Zqkh2IRhJv6+Thc9Skfmt5Y/hpWBs9uNqojRF7hQEKsDQ4buhmo
+         7NpCkZpWhoiOuYgu/z2Oteq49BV1bnQRB9PTmjMWcE9SHLiYJ3crPvAA3UNoIw8Oyt
+         OMBirbmnjJCywhByg4xFB6F/b5sNEAkMWifgDmV4=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Thierry Reding <treding@nvidia.com>,
+        Timo Alho <talho@nvidia.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: tegra: fix strncpy()/strncat() confusion
+Date:   Mon, 26 Oct 2020 17:10:19 +0100
+Message-Id: <20201026161026.3707545-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Annotate the EMDIO1 node and describe the 2 AQR107 PHYs found on the
-LX2160ARDB board. Also, add the necessary phy-handles for DPMACs 3 and 4
-to their associated PHY.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+The way that bpmp_populate_debugfs_inband() uses strncpy()
+and strncat() makes no sense since the size argument for
+the first is insufficient to contain the trailing '/'
+and the second passes the length of the input rather than
+the output, which triggers a warning:
+
+In function 'strncat',
+    inlined from 'bpmp_populate_debugfs_inband' at ../drivers/firmware/tegra/bpmp-debugfs.c:422:4:
+include/linux/string.h:289:30: warning: '__builtin_strncat' specified bound depends on the length of the source argument [-Wstringop-overflow=]
+  289 | #define __underlying_strncat __builtin_strncat
+      |                              ^
+include/linux/string.h:367:10: note: in expansion of macro '__underlying_strncat'
+  367 |   return __underlying_strncat(p, q, count);
+      |          ^~~~~~~~~~~~~~~~~~~~
+drivers/firmware/tegra/bpmp-debugfs.c: In function 'bpmp_populate_debugfs_inband':
+include/linux/string.h:288:29: note: length computed here
+  288 | #define __underlying_strlen __builtin_strlen
+      |                             ^
+include/linux/string.h:321:10: note: in expansion of macro '__underlying_strlen'
+  321 |   return __underlying_strlen(p);
+
+Simplify this to use an snprintf() instead.
+
+Fixes: 5e37b9c137ee ("firmware: tegra: Add support for in-band debug")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-Changes in v2:
- - none
-Changes in v3:
- - none
-Changes in v4:
- - none
+ drivers/firmware/tegra/bpmp-debugfs.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
- .../boot/dts/freescale/fsl-lx2160a-rdb.dts    | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-index 54fe8cd3a711..7723ad5efd37 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-@@ -35,6 +35,18 @@ &crypto {
- 	status = "okay";
- };
+diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
+index c1bbba9ee93a..9ec20ddc9a6b 100644
+--- a/drivers/firmware/tegra/bpmp-debugfs.c
++++ b/drivers/firmware/tegra/bpmp-debugfs.c
+@@ -412,16 +412,12 @@ static int bpmp_populate_debugfs_inband(struct tegra_bpmp *bpmp,
+ 				goto out;
+ 			}
  
-+&dpmac3 {
-+	phy-handle = <&aquantia_phy1>;
-+	phy-connection-type = "usxgmii";
-+	managed = "in-band-status";
-+};
-+
-+&dpmac4 {
-+	phy-handle = <&aquantia_phy2>;
-+	phy-connection-type = "usxgmii";
-+	managed = "in-band-status";
-+};
-+
- &dpmac17 {
- 	phy-handle = <&rgmii_phy1>;
- 	phy-connection-type = "rgmii-id";
-@@ -61,6 +73,18 @@ rgmii_phy2: ethernet-phy@2 {
- 		reg = <0x2>;
- 		eee-broken-1000t;
- 	};
-+
-+	aquantia_phy1: ethernet-phy@4 {
-+		/* AQR107 PHY */
-+		compatible = "ethernet-phy-ieee802.3-c45";
-+		reg = <0x4>;
-+	};
-+
-+	aquantia_phy2: ethernet-phy@5 {
-+		/* AQR107 PHY */
-+		compatible = "ethernet-phy-ieee802.3-c45";
-+		reg = <0x5>;
-+	};
- };
+-			len = strlen(ppath) + strlen(name) + 1;
++			len = snprintf("%s%s/", pathlen, ppath, name);
+ 			if (len >= pathlen) {
+ 				err = -EINVAL;
+ 				goto out;
+ 			}
  
- &esdhc0 {
-@@ -156,6 +180,14 @@ rtc@51 {
- 	};
- };
- 
-+&pcs_mdio3 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio4 {
-+	status = "okay";
-+};
-+
- &sata0 {
- 	status = "okay";
- };
+-			strncpy(pathbuf, ppath, pathlen);
+-			strncat(pathbuf, name, strlen(name));
+-			strcat(pathbuf, "/");
+-
+ 			err = bpmp_populate_debugfs_inband(bpmp, dentry,
+ 							   pathbuf);
+ 			if (err < 0)
 -- 
-2.28.0
+2.27.0
 
