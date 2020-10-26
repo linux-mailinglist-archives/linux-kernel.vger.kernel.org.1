@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6F829999F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5412999A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394280AbgJZW0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:26:20 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:39266 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394247AbgJZW0T (ORCPT
+        id S2394404AbgJZW1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:27:51 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35455 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394392AbgJZW1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:26:19 -0400
-Received: by mail-ej1-f67.google.com with SMTP id qh17so16168694ejb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:26:18 -0700 (PDT)
+        Mon, 26 Oct 2020 18:27:51 -0400
+Received: by mail-wr1-f66.google.com with SMTP id n15so14753969wrq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=l8o/PxZLRUsXqbfQdaHQ/PhODuJFQTqIyS1z/DNGmXE=;
-        b=bJXsNdd/HVaV4ZTybcdKOcYzHO+3oSm/cNO5xOP5Dkmc9QexZ3dknF+N8I+5YE91fp
-         VFExSvShRysqF5QDtU3c56LhTc5G3uq2L6hdpvh6gb7TJWxPspzPvTyOQMRpVkwayvof
-         ziYv9iKzGqeiZOtJvLl9juOlF5n6rkYbpRYRRQSyM0PIu/xLEcGx2hLMLb10/xhGOvj1
-         R5KemTaaSY/5mhJoDnoZ8GHh/8nxSwPCiLtfqQTDPDAorzw2f/mF9gYfirgdHH4dWqzo
-         I9ynV95pUiOnaiLxHZPzXl2g40zSwyZA5fbbPDjWHi4cCgOoAZyLQ+Ly1Qd0lET5okfm
-         2hTA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WMbMX3sYFZTiJxDi6iVMxqXLQXyV4ObR+OkEErhzWA4=;
+        b=V6y8gYz2uGh3oaHY97GwUW2s1K/w8PS0UsgPgXbieiH1dISczKtT5DxdG6OL70eZpw
+         CQE3lwb/M0LbX9jLqdrNgyLQG0Y99JNuZvlXCqzICU8GviVnmC+xoOK9Phx1MkU80zvX
+         sekY8eEravQlxRqhh8NAGEJt/iFxEZnfSXOH4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=l8o/PxZLRUsXqbfQdaHQ/PhODuJFQTqIyS1z/DNGmXE=;
-        b=RmvaWg1PnLs8dRlNGKnIho0KtHETFWJqM8DqK2029t8p+Xp1Bg/u2VOISfY9MoGaxb
-         hxoxSjayfHXCvUqm2IXc6/54fNHkblfndwAx9wVynURkd7n/D8y8aQ3ozzoxjtAh3zVN
-         Iva2rhw+xsqOaUWUd+eimOcB0pCsAkpJbM56vo2nOeiM6GeFg890Npg/Rsp3uMlptt1b
-         d0LWeSL9axL4RdUtoctNcIzl99gltC3810rm7SxwCtRbawkD0h2NOPf5rluXw1OMhKNt
-         pSpdmFScc/cUbohDRXngebmelV8Ge6ihhaZKusTRKT3zWVETzpaKXJzQOK27+9u1Xebf
-         raYw==
-X-Gm-Message-State: AOAM5301K9x7Er2Ts+5hnEpxIaQpHzsLs+YETY6T5ThB85VPBeOsbHmT
-        mBpDPvhehM4VGiDlSZFOEJV03AAtFzKUj6aTd74=
-X-Google-Smtp-Source: ABdhPJzPf/v/ucNqOSNN6n6EKD2zYHT1DcWr6osP2+8pBHaukq6AUpS0xLUOf1VkJrzfamosq3w0411gEDFHEINi77I=
-X-Received: by 2002:a17:906:4d44:: with SMTP id b4mr17047135ejv.131.1603751177855;
- Mon, 26 Oct 2020 15:26:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WMbMX3sYFZTiJxDi6iVMxqXLQXyV4ObR+OkEErhzWA4=;
+        b=F/oyIo46RyDxMSiRaMj6drJDvZnPJDA0UGNJOX+GBVpbfMat/570MkwjgdjWrl1Qco
+         R63K2N6PWE3HJ8Ndo3D5H1mZDBaWpas0s5oc7s8ZjnvEz8dUwUvy7oa15zChePJ0TiD/
+         tYYkrX0behs0TU7EfTU3ZMV5yqCsnibc7QFHTBpVFq8m7Z/Fda4ZFYTuJfWVgy7fLU1c
+         viOSUlBqsrQ/J1dyRIMwXJ1SNaDLk569CEt8B1HGNhLuLErAQxqKQ52uXodS+tcG7tks
+         hseEYqbLZPB0VrBjzYdEdarDbfqcXKMCIEs6ht7MB5SNmkfYv4qM/QF4OKuot0QagmLF
+         ya5Q==
+X-Gm-Message-State: AOAM532MIKcd/QGoYPd7dlWhzFPvxU08RP0LynjvjFYjboJSVkLH0hzT
+        mxfw/Axp2mqwpgQPos7IZGdJow==
+X-Google-Smtp-Source: ABdhPJyzFE0ncLcgFAJvvEYWHlsKTBfl+UVWKA2K4j/MUCo1aOoPDSIeht7MXSnGCzK8nfdetUXT2w==
+X-Received: by 2002:adf:bbcb:: with SMTP id z11mr19957431wrg.130.1603751269585;
+        Mon, 26 Oct 2020 15:27:49 -0700 (PDT)
+Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id o5sm23230396wrw.76.2020.10.26.15.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 15:27:49 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 22:27:47 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, cujomalainey@chromium.org,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lmajczak@google.com>
+Subject: Re: [PATCH] ASoC: Intel: kbl_rt5663_max98927: Fix kabylake_ssp_fixup
+ function
+Message-ID: <20201026222747.GD2802004@chromium.org>
+References: <20201014141624.4143453-1-tfiga@chromium.org>
+ <20201014190226.GE4580@sirena.org.uk>
 MIME-Version: 1.0
-Sender: djmacdon5@gmail.com
-Received: by 2002:ab4:a1d1:0:0:0:0:0 with HTTP; Mon, 26 Oct 2020 15:26:17
- -0700 (PDT)
-From:   Donna Louise <donnamcinneslouise@gmail.com>
-Date:   Mon, 26 Oct 2020 10:26:17 -1200
-X-Google-Sender-Auth: iX-wKhsy3q0g7xCIEVTiDGj51qI
-Message-ID: <CAKGPEqi0TnJVUQ8y1W+RAgB=RFA83rJan6X54AOk-mNQFb+Fuw@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014190226.GE4580@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Dear Friend,
+On Wed, Oct 14, 2020 at 08:02:26PM +0100, Mark Brown wrote:
+> On Wed, Oct 14, 2020 at 02:16:24PM +0000, Tomasz Figa wrote:
+> 
+> > Fixes a boot crash on a HP Chromebook x2:
+> > 
+> > [   16.582225] BUG: kernel NULL pointer dereference, address: 0000000000000050
+> > [   16.582231] #PF: supervisor read access in kernel mode
+> > [   16.582233] #PF: error_code(0x0000) - not-present page
+> > [   16.582234] PGD 0 P4D 0
+> > [   16.582238] Oops: 0000 [#1] PREEMPT SMP PTI
+> > [   16.582241] CPU: 0 PID: 1980 Comm: cras Tainted: G         C        5.4.58 #1
+> > [   16.582243] Hardware name: HP Soraka/Soraka, BIOS Google_Soraka.10431.75.0 08/30/2018
+> 
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative (it often is
+> for search engines if nothing else) then it's usually better to pull out
+> the relevant sections.
 
-  I am glad to know you, but God knows you better and he knows why he
-has directed me to you at this point in time so do not be surprised at
-all. My name is Mrs. Donna Louise McInnes, a widow, i have been
-suffering from ovarian cancer disease. At this moment i am about to
-end the race like this because the illness has gotten to a very bad
-stage, without any family members and no child. I hope that you will
-not expose or betray this trust and confidence that I am about to
-entrust to you for the mutual benefit of the orphans and the less
-privileged ones. I have some funds I inherited from my late husband,
-the sum of ($11.000.000 Eleven million dollars.) deposited in the
-Bank.  Having known my present health status, I decided to entrust
-this fund to you believing that you will utilize it the way i am going
-to instruct herein.
+Okay, I'll trim things down next time. Somehow I was convinced it's a
+common practice.
 
-Therefore I need you to assist me and reclaim this money and use it
-for Charity works, for orphanages and giving justice and help to the
-poor, needy and to promote the words of God and the effort that the
-house of God will be maintained says The Lord." Jeremiah 22:15-16.=E2=80=9C
-
-It will be my great pleasure to compensate you with 35 % percent of
-the total money for your personal use, 5 % percent for any expenses
-that may occur during the international transfer process while 60% of
-the money will go to the charity project.
-
-All I require from you is sincerity and the ability to complete God's
-task without any failure. It will be my pleasure to see that the bank
-has finally released and transferred the fund into your bank account
-therein your country even before I die here in the hospital, because
-of my present health status everything needs to be processed rapidly
-as soon as possible. I am waiting for your immediate reply, if only
-you are interested for further details of the transaction and
-execution of this charitable project.
-
-Best Regards your friend Mrs.
-Donna Louise McInnes.
+Best regards,
+Tomasz
