@@ -2,129 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195C02996BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89CF2996BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792963AbgJZTWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:22:01 -0400
-Received: from mga02.intel.com ([134.134.136.20]:57938 "EHLO mga02.intel.com"
+        id S1792979AbgJZTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1792950AbgJZTWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:22:01 -0400
-IronPort-SDR: tIUcMgvP9ru4BL/jqCsX3aYygbzY/vKAX+82XqZUd+Gz6Y/ngkw4nBFy1ujQOnGp8GQ9uvLjyk
- y85078KGIRxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="154942543"
-X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
-   d="scan'208";a="154942543"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 12:21:59 -0700
-IronPort-SDR: KP+zyN+pYWUHbv0ikkIrw3/C2WzNNgBx9rO1UOu5LO0PYHwHroIgJAPxnc1rIULGeCHLmKnuUm
- idHHtaWLyVYw==
-X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
-   d="scan'208";a="524397909"
-Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.215.218]) ([10.212.215.218])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 12:21:51 -0700
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
- CPUs
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
- <20201019140005.GB17287@fuller.cnet>
- <20201020073055.GY2611@hirez.programming.kicks-ass.net>
- <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
- <20201020134128.GT2628@hirez.programming.kicks-ass.net>
- <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
- <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
- <20201023085826.GP2611@hirez.programming.kicks-ass.net>
- <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
- <87ft6464jf.fsf@nanos.tec.linutronix.de>
- <20201026173012.GA377978@fuller.cnet>
- <875z6w4xt4.fsf@nanos.tec.linutronix.de>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-Organization: Intel Corporation
-Message-ID: <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
-Date:   Mon, 26 Oct 2020 12:21:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1792972AbgJZTW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:22:27 -0400
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FCBF20709
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:22:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603740146;
+        bh=rdH81gD1U2kWovShxEgNuY3bLKkO1T+WW3kWNRVjGSM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aJh9wWLPIUesyXx4C/tJnh1fen8x6evPyIjc4sNU9/OXhrCUzi3HByo+f+zVzHoiO
+         nhQcqaHq/SbaA7hajmnZy5YpxPHMgl7pRfJz69iMhLzBhA7pCQm/qHDVVGAGOBBEsw
+         BBEoyGvLgxuHQtMwW1gqjMjJ5T4C0obkHzWwvTRA=
+Received: by mail-qt1-f176.google.com with SMTP id i7so6878628qti.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:22:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531GluqPVzgTH0dYV0R7oLw48M9Rck7GPZsNJMig6MW/Z0LxDeMK
+        iTiCTZGL5LIv4z3ul89efZap2C2mbyA1afSyei0=
+X-Google-Smtp-Source: ABdhPJxIDPTufr52kNTMJQnBoyCopCXHnR8khLPhNjUFIpf1FOQGvvF5QClP5Galtq9B9t1VsDSyijq96IO2iH+YvIs=
+X-Received: by 2002:ac8:4808:: with SMTP id g8mr17753337qtq.18.1603740145367;
+ Mon, 26 Oct 2020 12:22:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <875z6w4xt4.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201026162336.3711040-1-arnd@kernel.org> <CAKwvOdmdv6wABToSpJt5b66E1vD3Ec0QC3DnyZm7f2sJkcsNuw@mail.gmail.com>
+In-Reply-To: <CAKwvOdmdv6wABToSpJt5b66E1vD3Ec0QC3DnyZm7f2sJkcsNuw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 26 Oct 2020 20:22:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a32dWaCQV8Q1g0eoQD2PFb8Jt2pDHEkTJOMAoyJpOhD3w@mail.gmail.com>
+Message-ID: <CAK8P3a32dWaCQV8Q1g0eoQD2PFb8Jt2pDHEkTJOMAoyJpOhD3w@mail.gmail.com>
+Subject: Re: [PATCH] ctype.h: remove duplicate isdigit() helper
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 7:23 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Mon, Oct 26, 2020 at 9:23 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > gcc warns a few thousand times about the isdigit() shadow:
+> >
+> > include/linux/ctype.h:26:19: warning: declaration of 'isdigit' shadows a built-in function [-Wshadow]
+>
+> Don't all functions defined here shadow builtins in GCC?  Why is
+> `isdigit` unique?  Is that because it's a `static inline` definition
+> vs a function like macro?  If that's the case, what's the harm in
+> converting it to a function like macro if that silences the warning?
 
+It was originally a macro but got changed to an inline function in
+1204c77f9b6a ("include/linux/ctype.h: make isdigit() table lookupless"),
+apparently in order to avoid evaluating the argument more than once.
 
-On 10/26/2020 12:00 PM, Thomas Gleixner wrote:
-> On Mon, Oct 26 2020 at 14:30, Marcelo Tosatti wrote:
->> On Fri, Oct 23, 2020 at 11:00:52PM +0200, Thomas Gleixner wrote:
->>> So without information from the driver which tells what the best number
->>> of interrupts is with a reduced number of CPUs, this cutoff will cause
->>> more problems than it solves. Regressions guaranteed.
->>
->> One might want to move from one interrupt per isolated app core
->> to zero, or vice versa. It seems that "best number of interrupts 
->> is with reduced number of CPUs" information, is therefore in userspace, 
->> not in driver...
-> 
-> How does userspace know about the driver internals? Number of management
-> interrupts, optimal number of interrupts per queue?
-> 
+I suppose we could make it a statement expression with a local
+variable like
 
-I guess this is the problem solved in part by the queue management work
-that would make queues a thing that userspace is aware of.
+#define isdigit(c) ({ __auto_type __c = (c);  '0' <= __c && __c <= '9'; })
 
-Are there drivers which use more than one interrupt per queue? I know
-drivers have multiple management interrupts.. and I guess some drivers
-do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
-have multiple queues for one interrupt .. I'm not sure how a single
-queue with multiple interrupts would work though.
+> > @@ -39,6 +35,18 @@ static inline int isdigit(int c)
+> >  #define isascii(c) (((unsigned char)(c))<=0x7f)
+> >  #define toascii(c) (((unsigned char)(c))&0x7f)
+> >
+> > +#if defined __has_builtin
+>
+> #ifdef
+>
+> only use `defined` explicitly when there's more than one condition
+> being checked with logical `&&` or `||`.
+>
+> > +#if __has_builtin(__builtin_isdigit)
+>
+> GCC only recently gained the `__has_builtin` macro (I filed the bug);
+> I would like to see something akin to
+> include/linux/compiler_attributes.h but using `__has_builtin` like
+> compiler_attributes.h uses `__has_attribute`.  That way we avoid
+> spaghetti like this throughout the kernel.
 
->>> Managed interrupts base their interrupt allocation and spreading on
->>> information which is handed in by the individual driver and not on crude
->>> assumptions. They are not imposing restrictions on the use case.
->>>
->>> It's perfectly fine for isolated work to save a data set to disk after
->>> computation has finished and that just works with the per-cpu I/O queue
->>> which is otherwise completely silent. 
->>
->> Userspace could only change the mask of interrupts which are not 
->> triggered by requests from the local CPU (admin, error, mgmt, etc),
->> to avoid the vector exhaustion problem.
->>
->> However, there is no explicit way for userspace to know that, as far as
->> i know.
->>
->>  130:      34845          0          0          0          0          0          0          0  IR-PCI-MSI 33554433-edge      nvme0q1
->>  131:          0      27062          0          0          0          0          0          0  IR-PCI-MSI 33554434-edge      nvme0q2
->>  132:          0          0      24393          0          0          0          0          0  IR-PCI-MSI 33554435-edge      nvme0q3
->>  133:          0          0          0      24313          0          0          0          0  IR-PCI-MSI 33554436-edge      nvme0q4
->>  134:          0          0          0          0      20608          0          0          0  IR-PCI-MSI 33554437-edge      nvme0q5
->>  135:          0          0          0          0          0      22163          0          0  IR-PCI-MSI 33554438-edge      nvme0q6
->>  136:          0          0          0          0          0          0      23020          0  IR-PCI-MSI 33554439-edge      nvme0q7
->>  137:          0          0          0          0          0          0          0      24285  IR-PCI-MSI 33554440-edge      nvme0q8
->>
->> Can that be retrieved from PCI-MSI information, or drivers
->> have to inform this?
-> 
-> The driver should use a different name for the admin queues.
-> 
-> Thanks,
-> 
->         tglx
-> 
+Ok. I've added a 'has_builtin()' macro (without underscores)
+in linux/compiler.h in version 2. I don't use it anywhere else
+in my current series, so there should be no dependencies.
+
+     Arnd
