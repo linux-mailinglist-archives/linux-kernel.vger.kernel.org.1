@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F5E29962B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE67299631
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1791002AbgJZS4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:56:42 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:41318 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782924AbgJZS4m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:56:42 -0400
-Received: by mail-ed1-f65.google.com with SMTP id l24so10577733edj.8;
-        Mon, 26 Oct 2020 11:56:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZapFfo48nLdK89lmKH5z6puJUVQRUqCTYV3aNDgABQc=;
-        b=Io8qY9IukHwd3oMBqWpbsMobm7WfBg5vb7rCGaUlkRN/MBJ2cR8eOw1iEw7pvO5sEW
-         24P7tX0xyAqZqL79UlOYiJfsxD/iubhcet9TmqZX2HuUVHcjDVy8kk0JiR3RNOH3J3m0
-         q5hUBZPA266oLN+IURqx0LyeoZcAD1gD0fyPjLjrLHuB+aKMOOOsKxhSMjaqZ0EuOa9d
-         0hExLaNHD7j2Ov1DZ47nweR/JDK0NXydP8xlbqEfQywBW+4oa94N5RnFb9k8IY3wKjh4
-         mYBJaDoGo1O/3MTqQvSXflQrHPV+ddDX4zXH1UbgI4Qu1365byMVI/ZG2MTB1xH4Qseq
-         N16g==
-X-Gm-Message-State: AOAM531fLeuvtZwIxh3wB50hTcGH3UN5M32eFF0i7mYtozKoyfIr3g9T
-        DzNbQEAq0mIWjKrpnn0MJ5V7ekiv9qE=
-X-Google-Smtp-Source: ABdhPJzbdS07OQalwMtMxqAa94+07UzaG8fMVEH5mvnueFa5GlaN0WreGMbtCmxLrMcd4SnV1ZgFFw==
-X-Received: by 2002:aa7:c608:: with SMTP id h8mr16772774edq.16.1603738599946;
-        Mon, 26 Oct 2020 11:56:39 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id p20sm4467362ejd.78.2020.10.26.11.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 11:56:38 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 19:56:36 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 19/29] arm: dts: exynos: Harmonize DWC USB3 DT nodes name
-Message-ID: <20201026185636.GB170936@kozik-lap>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-20-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201020115959.2658-20-Sergey.Semin@baikalelectronics.ru>
+        id S1791006AbgJZS5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:57:09 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46460 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1783214AbgJZS5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:57:08 -0400
+IronPort-SDR: CTaCBP5upYd7NRs0oV3s1Xp3JIheMEXC8G459BoffeZe6Yxfb8ssHz/DumtAnPCZb14rJ+9OpY
+ l6cKYMavFVnQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="155752386"
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="155752386"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 11:57:07 -0700
+IronPort-SDR: 15F2yqHjNs2FiJ64nFI+beVytYDa8Fha+tRdffFVd6WOmBD3voLrHOELcXnY+xbiK4eat46D7d
+ 9sfwzbxVks6g==
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="525607171"
+Received: from dhrubajy-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.53])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 11:57:06 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        knsathya@kernel.org
+Subject: [PATCH v10 0/5] Simplify PCIe native ownership detection logic
+Date:   Mon, 26 Oct 2020 11:56:38 -0700
+Message-Id: <cover.1603738449.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:59:49PM +0300, Serge Semin wrote:
-> In accordance with the DWC USB3 bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> named.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  arch/arm/boot/dts/exynos5250.dtsi | 2 +-
->  arch/arm/boot/dts/exynos54xx.dtsi | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+Currently, PCIe capabilities ownership status is detected by
+verifying the status of pcie_ports_native, pcie_ports_dpc_native
+and _OSC negotiated results (cached in  struct pci_host_bridge
+->native_* members). But this logic can be simplified, and we can
+use only struct pci_host_bridge ->native_* members to detect it. 
 
-Thanks, applied.
+This patchset removes the distributed checks for pcie_ports_native,
+pcie_ports_dpc_native parameters.
 
-Best regards,
-Krzysztof
+Changes since v9:
+ * Rebased on top of v5.10-rc1
+
+Changes since v8:
+ * Simplified setting _OSC ownwership logic
+ * Moved bridge->native_ltr out of #ifdef CONFIG_PCIEPORTBUS.
+
+Changes since v7:
+ * Fixed "fix array_size.cocci warnings".
+
+Changes since v6:
+ * Created new patch for CONFIG_PCIEPORTBUS check in
+   pci_init_host_bridge().
+ * Added warning message for a case when pcie_ports_native
+   overrides _OSC negotiation result.
+
+Changes since v5:
+ * Rebased on top of v5.8-rc1
+
+Changes since v4:
+ * Changed the patch set title (Original link: https://lkml.org/lkml/2020/5/26/1710)
+ * Added AER/DPC dependency logic cleanup fixes.
+ 
+
+Kuppuswamy Sathyanarayanan (5):
+  PCI: Conditionally initialize host bridge native_* members
+  ACPI/PCI: Ignore _OSC negotiation result if pcie_ports_native is set.
+  ACPI/PCI: Ignore _OSC DPC negotiation result if pcie_ports_dpc_native
+    is set.
+  PCI/portdrv: Remove redundant pci_aer_available() check in DPC enable
+    logic
+  PCI/DPC: Move AER/DPC dependency checks out of DPC driver
+
+ drivers/acpi/pci_root.c           | 37 ++++++++++++++++++++++---------
+ drivers/pci/hotplug/pciehp_core.c |  2 +-
+ drivers/pci/pci-acpi.c            |  3 ---
+ drivers/pci/pcie/aer.c            |  2 +-
+ drivers/pci/pcie/dpc.c            |  3 ---
+ drivers/pci/pcie/portdrv.h        |  2 --
+ drivers/pci/pcie/portdrv_core.c   | 13 +++++------
+ drivers/pci/probe.c               |  6 +++--
+ include/linux/acpi.h              |  2 ++
+ include/linux/pci.h               |  2 ++
+ 10 files changed, 42 insertions(+), 30 deletions(-)
+
+-- 
+2.17.1
 
