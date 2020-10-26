@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E49298DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09867298DDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1770534AbgJZN1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:27:38 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34109 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1770342AbgJZN1f (ORCPT
+        id S1774874AbgJZN3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:29:16 -0400
+Received: from casper.infradead.org ([90.155.50.34]:39728 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1774827AbgJZN3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:27:35 -0400
-Received: by mail-ot1-f68.google.com with SMTP id k3so7386549otp.1;
-        Mon, 26 Oct 2020 06:27:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dICAa5zihRqkfMFzmU2zbHT9Gkg7gGmUMAo66qHLtrs=;
-        b=oJ5b3I09ASxMC1a4S/wEdbOgSnhfskK2c0FyONvdKwramL46iNLKkMk8XWmhNXyX0a
-         WsWbesxVUFotNcmBr1G+djTct+vZJeWJyiQfKuvaBZqJc7UwWllNM4O/Nal+bapdGF8z
-         f2Gy3u6zNK9iaNO5KNwGPN/XgBPsMRGek9tis3bytyIkEPMbU/65Za9bmHx7Tz1oGUiQ
-         hiH6674Xnxrmm1p0QCXeSOsv7K4eD0WIkIyfPb0HshIOoSHtSeSjDegkBQI/BdNQyS9m
-         RrVoUnk9n9xr+rKy9qhnVMJJ87C1bP3JuG0N8DlP0E28q/2T9SwtQJlbsxoSgZqthniG
-         Bbpg==
-X-Gm-Message-State: AOAM533WIn8xubU1lG21YYH1oZiezHa7uB399LMJL/447QEsnSu7jkG7
-        t1/IbfIb35Sg9APWEGsf8wa5BkObOQ==
-X-Google-Smtp-Source: ABdhPJzB7uZlU7aojvgwdRg+bswvuVs94ivjynutrDsKpFzPNHbjZFMSqkJiWvL1Z9l//D7tryYCNA==
-X-Received: by 2002:a9d:822:: with SMTP id 31mr13921986oty.224.1603718852758;
-        Mon, 26 Oct 2020 06:27:32 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l44sm3924052ooi.44.2020.10.26.06.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 06:27:31 -0700 (PDT)
-Received: (nullmailer pid 29159 invoked by uid 1000);
-        Mon, 26 Oct 2020 13:27:31 -0000
-Date:   Mon, 26 Oct 2020 08:27:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     matthias.bgg@gmail.com, thierry.reding@gmail.com,
-        linux-mediatek@lists.infradead.org, linux-pwm@vger.kernel.org,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: pwm: mtk-disp: add MT8167 SoC binding
-Message-ID: <20201026132731.GA29104@bogus>
-References: <20201016185015.3371433-1-fparent@baylibre.com>
+        Mon, 26 Oct 2020 09:29:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=34Y6r4GAweG7Mt/E2/mBFuI95NWQikkATWq3rx/SY8E=; b=ibm1wh4V//Ao40finn9v+c/DR0
+        WKib4xCrTtJVXIcaYUSJ1zU9hxgEEylo/MOwv+q5ZiA8y+g2DZLWIzl8wDZgPrphU363e/eovSkbe
+        wa8+Q/VSuBNCwj2sFg7XcOvhFS/EE0Svh1QiUwmtbID0haANDZN3FPixUgMNfP2TKAwyB7du+BqX3
+        57Zm9kGjWCqnlE1u6dMQSnpHdc1Q3QeMZ4MsfZ5NFLADi86YvqhE8PZsiwcstdJ9d6eQLLgTALS2D
+        qTsGz1vLwcBqGa+R08Uhn6VTC1hgBXjQz19Ryi4baKdQnioISiyXvnUwX4F1y7aH0k8+ydR8NXeyq
+        T3YFjdTQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX2Y2-000704-4d; Mon, 26 Oct 2020 13:28:30 +0000
+Date:   Mon, 26 Oct 2020 13:28:30 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to
+ access guest memory
+Message-ID: <20201026132830.GQ20115@casper.infradead.org>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
+ <c8b0405f-14ed-a1bb-3a91-586a30bdf39b@nvidia.com>
+ <20201022114946.GR20115@casper.infradead.org>
+ <30ce6691-fd70-76a2-8b61-86d207c88713@nvidia.com>
+ <20201026042158.GN20115@casper.infradead.org>
+ <ee308d1d-8762-6bcf-193e-85fea29743c3@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016185015.3371433-1-fparent@baylibre.com>
+In-Reply-To: <ee308d1d-8762-6bcf-193e-85fea29743c3@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 20:50:15 +0200, Fabien Parent wrote:
-> Add binding for MT8167 SoC. The IP is compatible with MT8173.
+On Sun, Oct 25, 2020 at 09:44:07PM -0700, John Hubbard wrote:
+> On 10/25/20 9:21 PM, Matthew Wilcox wrote:
+> > I don't think the page pinning approach is ever valid.  For file
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> Could you qualify that? Surely you don't mean that the entire pin_user_pages
+> story is a waste of time--I would have expected you to make more noise
+> earlier if you thought that, yes?
 
-Acked-by: Rob Herring <robh@kernel.org>
+I do think page pinning is the wrong approach for everything.  I did say
+so at the time, and I continue to say so when the opportunity presents
+itself.  But shouting about it constantly only annoys people, so I don't
+generally bother.  I have other things to work on, and they're productive,
+so I don't need to spend my time arguing.
+
+> > It's been five years since DAX was merged, and page pinning still
+> > doesn't work.  How much longer before the people who are pushing it
+> > realise that it's fundamentally flawed?
+> 
+> Is this a separate rant about *only* DAX, or is general RDMA in your sights
+> too? :)
+
+This is a case where it's not RDMA's _fault_ that there's no good API
+for it to do what it needs to do.  There's a lot of work needed to wean
+Linux device drivers off their assumption that there's a struct page
+for every byte of memory.
