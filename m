@@ -2,277 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB8129988E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED05299894
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730123AbgJZVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:09:17 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34619 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730085AbgJZVJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:09:16 -0400
-Received: by mail-ot1-f66.google.com with SMTP id k3so8733631otp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 14:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dQMkIjhrBGIcH4BkK1b0L54eYjGzpyihmX/ddTl1/z8=;
-        b=WpWfpSsWEljzeAo9BgcXjva+uM7Syije3ZkmMSwxfTfV3jc5tRInHXQ6gqyoYfcajP
-         4up8975YXIb1Mdx5+mx+L8kDViLLgTUUgn6kZUZRqw2hdl8GkXeSD29usozPcSCjA2Jm
-         FhLfpehCLEBIU7BXNhLagAmwhrweZCW/HKTOhHtgRdaaocFBAkM26rOnmfFKisVAZvLF
-         vTpXYnKMNmEvouXdpgei1X32qza1AWtG33x4PRyycvvZHNfTzr+9WkV9tWpjCJyWLbkC
-         /Lt9NJayoG21oCS3GcX1Qyk+vzl3EMTkVNwrsTRqyAwBsk1/Y3+iseYSlwnxl3fzmNoY
-         6cnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dQMkIjhrBGIcH4BkK1b0L54eYjGzpyihmX/ddTl1/z8=;
-        b=YA+w0bRWC3kw0VNe6wEsi/rEqlOy/PxtwTlRPFM9eTf9dm1BallIJnejTVagHoEv3m
-         Dj6HikbrF5GeKfdskb6ygHMZMNuER/LEljxoIdYiNINCZVi97mJcD0SUQsIZtR/tYj9o
-         YsNXHYdP7uNGf9Qpgt4XgFCdIhoB1uuLUOszusep1wUE8HYOZEWi5kvpodIfDSMwVSMC
-         DUIHcuqr/qqn9RvnMIr6f97Zr457/kOwhCZ7jpYwRYbNy7OUpnnol6JCfbn3h06J1qqt
-         /3eVQT+Wrx2oI1UNUzPL93jX4Nynp3R6EZlSy79MJkH72CHCdbw+VgWUysibu60zuoMp
-         rZ3g==
-X-Gm-Message-State: AOAM530+EgaRmDw5C1US9YQzMqcRUIKpMrOaa8xsqA0epUw8S1NGotzH
-        9V3Si9qDnreyBPtLp22VrpC6CA==
-X-Google-Smtp-Source: ABdhPJxCAXdOF6XzdZnXikN9EaIFGf9iC54nMk+ZVlBCK5TB7hdM98ic3z/CjKy4fc8yq1On5EF3WA==
-X-Received: by 2002:a05:6830:1282:: with SMTP id z2mr14889462otp.301.1603746555264;
-        Mon, 26 Oct 2020 14:09:15 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v11sm4305971otj.73.2020.10.26.14.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 14:09:14 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:09:12 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     agross@kernel.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 2/4] remoteproc: coredump: Add minidump functionality
-Message-ID: <20201026210912.GA4611@builder.lan>
-References: <1601690757-25726-1-git-send-email-sidgup@codeaurora.org>
- <1601690757-25726-3-git-send-email-sidgup@codeaurora.org>
+        id S1730406AbgJZVL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:11:29 -0400
+Received: from mga06.intel.com ([134.134.136.31]:30562 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730313AbgJZVL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:11:29 -0400
+IronPort-SDR: OBHfSZJkRgtTQlDFowXcjp+EnOVX1b6l776nQzQEAD4lglZNwCnwtm7mRYJEH4SDZzfZKDfbz9
+ VYjHBLs3i1pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="229624396"
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="229624396"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 14:11:28 -0700
+IronPort-SDR: Ubn4S/P+VpD/ORx74RsTV5F4jduNtxi7OAPIPg67McVnBCBtoTpZ3ZvNLS8g/fQBzTRu1ElV6b
+ 7qQpVQB2BfsQ==
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="524430113"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.215.218]) ([10.212.215.218])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 14:11:27 -0700
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
+ CPUs
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
+ <20201019140005.GB17287@fuller.cnet>
+ <20201020073055.GY2611@hirez.programming.kicks-ass.net>
+ <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
+ <20201020134128.GT2628@hirez.programming.kicks-ass.net>
+ <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
+ <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
+ <20201023085826.GP2611@hirez.programming.kicks-ass.net>
+ <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
+ <87ft6464jf.fsf@nanos.tec.linutronix.de>
+ <20201026173012.GA377978@fuller.cnet>
+ <875z6w4xt4.fsf@nanos.tec.linutronix.de>
+ <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
+ <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <85b5f53e-5be2-beea-269a-f70029bea298@intel.com>
+Date:   Mon, 26 Oct 2020 14:11:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601690757-25726-3-git-send-email-sidgup@codeaurora.org>
+In-Reply-To: <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02 Oct 21:05 CDT 2020, Siddharth Gupta wrote:
 
-> This change adds a new kind of core dump mechanism which instead of dumping
-> entire program segments of the firmware, dumps sections of the remoteproc
-> memory which are sufficient to allow debugging the firmware. This function
-> thus uses section headers instead of program headers during creation of the
-> core dump elf.
+
+On 10/26/2020 1:11 PM, Thomas Gleixner wrote:
+> On Mon, Oct 26 2020 at 12:21, Jacob Keller wrote:
+>> On 10/26/2020 12:00 PM, Thomas Gleixner wrote:
+>>> How does userspace know about the driver internals? Number of management
+>>> interrupts, optimal number of interrupts per queue?
+>>
+>> I guess this is the problem solved in part by the queue management work
+>> that would make queues a thing that userspace is aware of.
+>>
+>> Are there drivers which use more than one interrupt per queue? I know
+>> drivers have multiple management interrupts.. and I guess some drivers
+>> do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
+>> have multiple queues for one interrupt .. I'm not sure how a single
+>> queue with multiple interrupts would work though.
 > 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> ---
->  drivers/remoteproc/remoteproc_coredump.c    | 132 ++++++++++++++++++++++++++++
->  drivers/remoteproc/remoteproc_elf_helpers.h |  27 ++++++
->  include/linux/remoteproc.h                  |   1 +
->  3 files changed, 160 insertions(+)
+> For block there is always one interrupt per queue. Some Network drivers
+> seem to have seperate RX and TX interrupts per queue.
 > 
-> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
-> index bb15a29..e7d1394 100644
-> --- a/drivers/remoteproc/remoteproc_coredump.c
-> +++ b/drivers/remoteproc/remoteproc_coredump.c
-> @@ -13,6 +13,8 @@
->  #include "remoteproc_internal.h"
->  #include "remoteproc_elf_helpers.h"
->  
-> +#define MAX_STRTBL_SIZE 512
-> +
->  struct rproc_coredump_state {
->  	struct rproc *rproc;
->  	void *header;
-> @@ -323,3 +325,133 @@ void rproc_coredump(struct rproc *rproc)
->  	 */
->  	wait_for_completion(&dump_state.dump_done);
->  }
-> +
-> +/**
-> + * rproc_minidump() - perform minidump
-> + * @rproc:	rproc handle
-> + *
-> + * This function will generate an ELF header for the registered sections of
-> + * segments and create a devcoredump device associated with rproc. Based on
-> + * the coredump configuration this function will directly copy the segments
-> + * from device memory to userspace or copy segments from device memory to
-> + * a separate buffer, which can then be read by userspace.
-> + * The first approach avoids using extra vmalloc memory. But it will stall
-> + * recovery flow until dump is read by userspace.
-> + */
-> +void rproc_minidump(struct rproc *rproc)
+> Thanks,
+> 
+>         tglx
+> 
 
-Just to confirm, this does the same thing as rproc_coredump() with the
-difference that instead of storing the segments in program headers, you
-reference them using section headers?
+That's true when thinking of Tx and Rx as a single queue. Another way to
+think about it is "one rx queue" and "one tx queue" each with their own
+interrupt...
 
-> +{
-> +	struct rproc_dump_segment *segment;
-> +	void *shdr;
-> +	void *ehdr;
-> +	size_t data_size;
-> +	size_t offset;
-> +	void *data;
-> +	u8 class = rproc->elf_class;
-> +	int shnum;
-> +	struct rproc_coredump_state dump_state;
-> +	unsigned int dump_conf = rproc->dump_conf;
-> +	char *str_tbl = "STR_TBL";
-> +
-> +	if (list_empty(&rproc->dump_segments) ||
-> +	    dump_conf == RPROC_COREDUMP_DISABLED)
-> +		return;
-> +
-> +	if (class == ELFCLASSNONE) {
-> +		dev_err(&rproc->dev, "Elf class is not set\n");
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * We allocate two extra section headers. The first one is null.
-> +	 * Second section header is for the string table. Also space is
-> +	 * allocated for string table.
-> +	 */
-> +	data_size = elf_size_of_hdr(class) + 2 * elf_size_of_shdr(class) +
-> +		    MAX_STRTBL_SIZE;
+Even if there are devices which force there to be exactly queue pairs,
+you could still think of them as separate entities?
 
-Once you start populating the string table there's no checks that this
-isn't overrun.
-
-But really
-
-> +	shnum = 2;
-> +
-> +	list_for_each_entry(segment, &rproc->dump_segments, node) {
-> +		data_size += elf_size_of_shdr(class);
-> +		if (dump_conf == RPROC_COREDUMP_DEFAULT)
-> +			data_size += segment->size;
-> +		shnum++;
-> +	}
-> +
-> +	data = vmalloc(data_size);
-> +	if (!data)
-> +		return;
-> +
-> +	ehdr = data;
-> +	memset(ehdr, 0, elf_size_of_hdr(class));
-> +	/* e_ident field is common for both elf32 and elf64 */
-> +	elf_hdr_init_ident(ehdr, class);
-> +
-> +	elf_hdr_set_e_type(class, ehdr, ET_CORE);
-> +	elf_hdr_set_e_machine(class, ehdr, rproc->elf_machine);
-> +	elf_hdr_set_e_version(class, ehdr, EV_CURRENT);
-> +	elf_hdr_set_e_entry(class, ehdr, rproc->bootaddr);
-> +	elf_hdr_set_e_shoff(class, ehdr, elf_size_of_hdr(class));
-> +	elf_hdr_set_e_ehsize(class, ehdr, elf_size_of_hdr(class));
-> +	elf_hdr_set_e_shentsize(class, ehdr, elf_size_of_shdr(class));
-> +	elf_hdr_set_e_shnum(class, ehdr, shnum);
-> +	elf_hdr_set_e_shstrndx(class, ehdr, 1);
-> +
-> +	/* Set the first section header as null and move to the next one. */
-> +	shdr = data + elf_hdr_get_e_shoff(class, ehdr);
-> +	memset(shdr, 0, elf_size_of_shdr(class));
-> +	shdr += elf_size_of_shdr(class);
-> +
-> +	/* Initialize the string table. */
-> +	offset = elf_hdr_get_e_shoff(class, ehdr) +
-> +		 elf_size_of_shdr(class) * elf_hdr_get_e_shnum(class, ehdr);
-> +	memset(data + offset, 0, MAX_STRTBL_SIZE);
-> +
-> +	/* Fill in the string table section header. */
-> +	memset(shdr, 0, elf_size_of_shdr(class));
-> +	elf_shdr_set_sh_type(class, shdr, SHT_STRTAB);
-> +	elf_shdr_set_sh_offset(class, shdr, offset);
-> +	elf_shdr_set_sh_size(class, shdr, MAX_STRTBL_SIZE);
-> +	elf_shdr_set_sh_entsize(class, shdr, 0);
-> +	elf_shdr_set_sh_flags(class, shdr, 0);
-> +	elf_shdr_set_sh_name(class, shdr, set_section_name(str_tbl, ehdr, class));
-> +	offset += elf_shdr_get_sh_size(class, shdr);
-> +	shdr += elf_size_of_shdr(class);
-
-I assume this last part creates the null entry? How about mentioning
-that in a comment - and perhaps why there needs to be a null entry.
-
-> +
-> +	list_for_each_entry(segment, &rproc->dump_segments, node) {
-> +		memset(shdr, 0, elf_size_of_shdr(class));
-> +		elf_shdr_set_sh_type(class, shdr, SHT_PROGBITS);
-> +		elf_shdr_set_sh_offset(class, shdr, offset);
-> +		elf_shdr_set_sh_addr(class, shdr, segment->da);
-> +		elf_shdr_set_sh_size(class, shdr, segment->size);
-> +		elf_shdr_set_sh_entsize(class, shdr, 0);
-> +		elf_shdr_set_sh_flags(class, shdr, SHF_WRITE);
-> +		elf_shdr_set_sh_name(class, shdr,
-> +				     set_section_name(segment->priv, ehdr, class));
-> +
-> +		/* No need to copy segments for inline dumps */
-> +		if (dump_conf == RPROC_COREDUMP_DEFAULT)
-> +			rproc_copy_segment(rproc, data + offset, segment, 0,
-> +					   segment->size);
-> +		offset += elf_shdr_get_sh_size(class, shdr);
-> +		shdr += elf_size_of_shdr(class);
-> +	}
-> +
-> +	if (dump_conf == RPROC_COREDUMP_DEFAULT) {
-> +		dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
-> +		return;
-> +	}
-> +
-> +	/* Initialize the dump state struct to be used by rproc_coredump_read */
-> +	dump_state.rproc = rproc;
-> +	dump_state.header = data;
-> +	init_completion(&dump_state.dump_done);
-> +
-> +	dev_coredumpm(&rproc->dev, NULL, &dump_state, data_size, GFP_KERNEL,
-> +		      rproc_coredump_read, rproc_coredump_free);
-> +
-> +	/* Wait until the dump is read and free is called. Data is freed
-> +	 * by devcoredump framework automatically after 5 minutes.
-> +	 */
-> +	wait_for_completion(&dump_state.dump_done);
-> +}
-> +EXPORT_SYMBOL(rproc_minidump);
-> diff --git a/drivers/remoteproc/remoteproc_elf_helpers.h b/drivers/remoteproc/remoteproc_elf_helpers.h
-> index 4b6be7b..d83ebca 100644
-> --- a/drivers/remoteproc/remoteproc_elf_helpers.h
-> +++ b/drivers/remoteproc/remoteproc_elf_helpers.h
-> @@ -11,6 +11,7 @@
->  #include <linux/elf.h>
->  #include <linux/types.h>
->  
-> +#define MAX_NAME_LENGTH 16
-
-This name is too generic. Why is it 16?
-
-> +static inline unsigned int set_section_name(const char *name, void *ehdr,
-> +					    u8 class)
-> +{
-> +	u16 shstrndx = elf_hdr_get_e_shstrndx(class, ehdr);
-> +	void *shdr;
-> +	char *strtab;
-> +	static int strtable_idx = 1;
-
-This can't be static as this will only start at 1 on the first
-invocation of rproc_minidump().
-
-I think it would be perfectly fine if you simply scan the string list to
-find the next available slot.
-
-> +	int idx, ret = 0;
-
-No need to initialize ret as the first usage is an assignment.
-
-Regards,
-Bjorn
+Hmm.
