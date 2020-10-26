@@ -2,131 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBA1298ABE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0679298AC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771829AbgJZKvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:51:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39090 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1770960AbgJZKvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:51:05 -0400
-Date:   Mon, 26 Oct 2020 10:51:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603709462;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qAT90Ww8AO0M+YiJyfFcemR1v6O5CkiPMwWvyQYV/fY=;
-        b=JI5VgPrlb2sTVfT/EimV2Coyich9hMADy/nTs8fJ0wSeBt6g6kgFuvS4BrThrly+nihtjQ
-        rhvbypVaCm5OEE3UanpOVdBWg5a+jR9SMCnMfAo59UTRF1I3JcuGZfr4uyhwKVov83tYK+
-        Ca9XdnPF6wKGgsMbHCcr0R3CXoJdcf3JKcFde/qYrettkSKEoXxMJhROFPWUyujJmIuaM0
-        /ntZWqhnt0XMxzEm1etYlUxwh3f/kfmNH/Sv9q4PCosTzExDJ8WOE23naogACZpNIb59HU
-        /soV9A73uxCc4Tz9UcDzYPOOF4JA7wsGlYnbpbkuqyXrnC2pKSi6PRuAyAiIMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603709462;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qAT90Ww8AO0M+YiJyfFcemR1v6O5CkiPMwWvyQYV/fY=;
-        b=/EyD07S9+m1wwo4b3U5xNZT8cbgDs5As2B7r9hqv9utfobVOpsUCcNFT39wM1fuwc0Ctp3
-        O0XbT5N76ZQufhAQ==
-From:   "tip-bot2 for Zeng Tao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] time: Prevent undefined behaviour in timespec64_to_ns()
-Cc:     Zeng Tao <prime.zeng@hisilicon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com>
-References: <1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com>
-MIME-Version: 1.0
-Message-ID: <160370946176.397.12992652264857362737.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1771861AbgJZKwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:52:20 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:58370 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1771748AbgJZKwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 06:52:19 -0400
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 09QApT06030457;
+        Mon, 26 Oct 2020 05:51:30 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 09QApSXE030456;
+        Mon, 26 Oct 2020 05:51:28 -0500
+Date:   Mon, 26 Oct 2020 05:51:28 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20201026105128.GA30004@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20201024143744.GA17727@wind.enjellic.com> <3655FF47-15D7-4433-81B7-FC070E32B541@amacapital.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3655FF47-15D7-4433-81B7-FC070E32B541@amacapital.net>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Mon, 26 Oct 2020 05:51:30 -0500 (CDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
+On Sat, Oct 24, 2020 at 08:33:21AM -0700, Andy Lutomirski wrote:
 
-Commit-ID:     cb47755725da7b90fecbb2aa82ac3b24a7adb89b
-Gitweb:        https://git.kernel.org/tip/cb47755725da7b90fecbb2aa82ac3b24a7adb89b
-Author:        Zeng Tao <prime.zeng@hisilicon.com>
-AuthorDate:    Tue, 01 Sep 2020 17:30:13 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 26 Oct 2020 11:48:11 +01:00
+Good morning, I hope the week is starting well for everyone.
 
-time: Prevent undefined behaviour in timespec64_to_ns()
+> > On Oct 24, 2020, at 7:38 AM, Dr. Greg <greg@enjellic.com> wrote:
+> > I can't bring myself to believe that LSM's are going to be written
+> > that will be making enclave security decisions on a page by page
+> > basis.  Given what I have written above, I think all of this comes
+> > down to giving platform administrators one of three decisions, in
+> > order of most to least secure:
+> > 
+> > 1.) Block dynamic code loading and execution.
 
-UBSAN reports:
+> I don't understand what you're trying to say. Unless we're going to
+> split enclaves into multiple VMAs with different permissions, how do
+> you expect to block dynamic code loading unless you have separate RW
+> and RX pages?  That would be ???page-by-page???, right?
 
-Undefined behaviour in ./include/linux/time64.h:127:27
-signed integer overflow:
-17179869187 * 1000000000 cannot be represented in type 'long long int'
-Call Trace:
- timespec64_to_ns include/linux/time64.h:127 [inline]
- set_cpu_itimer+0x65c/0x880 kernel/time/itimer.c:180
- do_setitimer+0x8e/0x740 kernel/time/itimer.c:245
- __x64_sys_setitimer+0x14c/0x2c0 kernel/time/itimer.c:336
- do_syscall_64+0xa1/0x540 arch/x86/entry/common.c:295
+I believe that there are multiple knobs that can be manipulated to
+achieve the effects that are desired.  I am advocating that we have a
+clear and reasoned understanding, with appropriate documentation, as
+to what we are doing and why we are doing it.
 
-Commit bd40a175769d ("y2038: itimer: change implementation to timespec64")
-replaced the original conversion which handled time clamping correctly with
-timespec64_to_ns() which has no overflow protection.
+To advance this understanding, I would advocate that anyone interested
+in these issues review the papers that describe the design and use of
+the SGX2 architecture instructions.  Fore convenience we have them
+available on our FTP server via the following links:
 
-Fix it in timespec64_to_ns() as this is not necessarily limited to the
-usage in itimers.
+ftp://ftp.enjellic.com/pub/sgx/docs/hasp4.pdf
 
-[ tglx: Added comment and adjusted the fixes tag ]
+ftp://ftp.enjellic.com/pub/sgx/docs/hasp5.pdf
 
-Fixes: 361a3bf00582 ("time64: Add time64.h header and define struct timespec64")
-Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com
----
- include/linux/time64.h | 4 ++++
- kernel/time/itimer.c   | 4 ----
- 2 files changed, 4 insertions(+), 4 deletions(-)
+They are both from HASP 2016 and are readily available elsewhere as
+well.
 
-diff --git a/include/linux/time64.h b/include/linux/time64.h
-index c9dcb3e..5117cb5 100644
---- a/include/linux/time64.h
-+++ b/include/linux/time64.h
-@@ -124,6 +124,10 @@ static inline bool timespec64_valid_settod(const struct timespec64 *ts)
-  */
- static inline s64 timespec64_to_ns(const struct timespec64 *ts)
- {
-+	/* Prevent multiplication overflow */
-+	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
-+		return KTIME_MAX;
-+
- 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
- }
- 
-diff --git a/kernel/time/itimer.c b/kernel/time/itimer.c
-index ca4e6d5..00629e6 100644
---- a/kernel/time/itimer.c
-+++ b/kernel/time/itimer.c
-@@ -172,10 +172,6 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
- 	u64 oval, nval, ointerval, ninterval;
- 	struct cpu_itimer *it = &tsk->signal->it[clock_id];
- 
--	/*
--	 * Use the to_ktime conversion because that clamps the maximum
--	 * value to KTIME_MAX and avoid multiplication overflows.
--	 */
- 	nval = timespec64_to_ns(&value->it_value);
- 	ninterval = timespec64_to_ns(&value->it_interval);
- 
+The first paper discusses the SGX2 architecture instructions and why
+they were implemented.  The second paper discusses how Enclave Dynamic
+Memory Management (EDMM) can be implemented from the OS perspective
+using these instructions.
+
+Full disclosure, I've had the opportunity to have direct exchanges
+with a number of the authors on those papers.
+
+The design of all this was heavily influenced by Marcus Peinado's
+group at Microsoft.  They did the first implementation of an SGX
+library OS (Haven) and in the process addressed the issue of dynamic
+memory and code loading.  Their work also resulted in the
+documentation of a number of errata in the SGX silicon implementation.
+
+Like the company or not, I don't think the case can be made that they
+don't understand operating system design and theory.  It would thus
+seem prudent to understand the prior art that went into the design of
+all this.
+
+To summarize at a high level, EDMM requires a rather intricate
+choreography between enclave code and the device driver, the latter of
+which needs to execute ring-0 privileged instructions in order to
+expand the virtual address space of an enclave.
+
+The easiest way to generically block dynamic code loading is to not
+allow the ENCLS[EAUG] instruction to be executed, the purpose of which
+is to augment a defined but sparse ELRANGE with additional physical
+pages from the EPC.  It doesn't require ->mprotect or anything else,
+just a physical decision by the OS to not allow execution of that
+instruction.
+
+All of which is consistent with my recomendation for a global disable
+knob on the kernel command-line for sites that do not want to tolerate
+completely anonymous code execution.
+
+Since this driver does not yet support EDMM, the most immediate
+situation that we are dealing with are the potential security
+implications of SGX2 ENCLU instructions being executed inside of an
+enclave.  The most principal issue is the ENCLU[EMODPE] instruction
+that allows a running enclave to extend the current permissions of a
+page.
+
+I've been assuming that Sean's desire for ->mprotect is to block the
+ability of an initialized enclave, on a non-EDMM enabled driver, to
+collaborate with its untrusted component to self-modify its page
+permissions and thus allow execution of code that the operating system
+has no visibility into.  That would make far more sense then the
+notion of someone trying to create an LSM that makes page by page
+security decisions.
+
+The open question in all of this is that the EDMM paper, as well as
+the SDM, indicate the effects of an ENCLU[EMODPE] are immediate inside
+of a running enclave.  I'm assuming that this does NOT mean that once
+a context of execution is running in enclave mode it would be capable
+of evading standard page protections but the 'immediate' is somewhat
+disquieting and probably deserves clarification, despite Dave Hansen's
+adament concerns about discussing the instruction... :-)
+
+At the risk of being widely unpopular, it may be worth calling the
+question if we shouldn't bite the bullet and implement full SGX2
+support in the driver.  Given the trajectory that SGX is on it is what
+everyone wants and will be using.  We are currently in somewhat of a
+bad place since we have to be cognizant of the implications of SGX2
+hardware, which is going to be the only relevant platform for this
+driver, without actually addressing all of the issues it brings to the
+table.
+
+Hopefully all of the above helps advance an understanding of the
+issues at hand.
+
+Have a good day.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: dg@enjellic.com
+------------------------------------------------------------------------------
+"Five year projections, are you kidding me.  We don't know what we are
+ supposed to be doing at the 4 o'clock meeting this afternoon."
+                                -- Terry Wieland
+                                   Resurrection
