@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6750629A098
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129C429A10E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443727AbgJ0Abm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52038 "EHLO mail.kernel.org"
+        id S2443714AbgJ0Abl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409385AbgJZXvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:51:23 -0400
+        id S2409434AbgJZXvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:51:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E5D820872;
-        Mon, 26 Oct 2020 23:51:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1727520B1F;
+        Mon, 26 Oct 2020 23:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756282;
-        bh=RpW8AAx90tevwrwQ61EkNQUi+DmJ0/NrE4kk7Uy+70g=;
+        s=default; t=1603756290;
+        bh=JioVImbrp2d+nxdJUU6J6DSaUlYENFzCjy/MlR6npKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kMgVREqs36T1oymvYW8ps+7i4VMSysR5P+bG+JZuoXeMBpYF1r6OX9QxwL6oat+i+
-         Wr/dJdwe4OZSg791q1nT8F6S7S3Bizx/tS/xbdH70dC8x6BjfE9RqFiTQiz/UQBdAw
-         6IsQ4rdNaPjqeDUXUc5DMtCE6jXq4/UQ5e8PAQ44=
+        b=TD54PydgvELEcg7yBR3avbTDTKbHmN2iJcg+jRTpGwwqiU0yemdwcCjHSvfAFtE0Q
+         D+DS69kDMCmz9bf+YhNBH8ooYtdJ+XP2mepEgMLC1N8YsfHbNFtbPKmqFBqnv+gkhd
+         tvF5OAPLYu+E2vN0viXmg3BuDun5EIBpRBiGEKX0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hou Tao <houtao1@huawei.com>, Chuck Lever <chuck.lever@oracle.com>,
-        "J . Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 112/147] nfsd: rename delegation related tracepoints to make them less confusing
-Date:   Mon, 26 Oct 2020 19:48:30 -0400
-Message-Id: <20201026234905.1022767-112-sashal@kernel.org>
+Cc:     changfengnan <fengnanchang@foxmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Fengnan Chang <changfengnan@hikvision.com>,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 118/147] jbd2: avoid transaction reuse after reformatting
+Date:   Mon, 26 Oct 2020 19:48:36 -0400
+Message-Id: <20201026234905.1022767-118-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -42,73 +45,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: changfengnan <fengnanchang@foxmail.com>
 
-[ Upstream commit 3caf91757ced158e6c4a44d8b105bd7b3e1767d8 ]
+[ Upstream commit fc750a3b44bdccb9fb96d6abbc48a9b8e480ce7b ]
 
-Now when a read delegation is given, two delegation related traces
-will be printed:
+When ext4 is formatted with lazy_journal_init=1 and transactions from
+the previous filesystem are still on disk, it is possible that they are
+considered during a recovery after a crash. Because the checksum seed
+has changed, the CRC check will fail, and the journal recovery fails
+with checksum error although the journal is otherwise perfectly valid.
+Fix the problem by checking commit block time stamps to determine
+whether the data in the journal block is just stale or whether it is
+indeed corrupt.
 
-    nfsd_deleg_open: client 5f45b854:e6058001 stateid 00000030:00000001
-    nfsd_deleg_none: client 5f45b854:e6058001 stateid 0000002f:00000001
-
-Although the intention is to let developers know two stateid are
-returned, the traces are confusing about whether or not a read delegation
-is handled out. So renaming trace_nfsd_deleg_none() to trace_nfsd_open()
-and trace_nfsd_deleg_open() to trace_nfsd_deleg_read() to make
-the intension clearer.
-
-The patched traces will be:
-
-    nfsd_deleg_read: client 5f48a967:b55b21cd stateid 00000003:00000001
-    nfsd_open: client 5f48a967:b55b21cd stateid 00000002:00000001
-
-Suggested-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Signed-off-by: Fengnan Chang <changfengnan@hikvision.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20201012164900.20197-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4state.c | 4 ++--
- fs/nfsd/trace.h     | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/jbd2/recovery.c | 78 +++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 66 insertions(+), 12 deletions(-)
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index c09a2a4281ec9..0525acfe31314 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -5126,7 +5126,7 @@ nfs4_open_delegation(struct svc_fh *fh, struct nfsd4_open *open,
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index faa97d748474d..fb134c7a12c89 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -428,6 +428,8 @@ static int do_one_pass(journal_t *journal,
+ 	__u32			crc32_sum = ~0; /* Transactional Checksums */
+ 	int			descr_csum_size = 0;
+ 	int			block_error = 0;
++	bool			need_check_commit_time = false;
++	__u64			last_trans_commit_time = 0, commit_time;
  
- 	memcpy(&open->op_delegate_stateid, &dp->dl_stid.sc_stateid, sizeof(dp->dl_stid.sc_stateid));
+ 	/*
+ 	 * First thing is to establish what we expect to find in the log
+@@ -520,12 +522,21 @@ static int do_one_pass(journal_t *journal,
+ 			if (descr_csum_size > 0 &&
+ 			    !jbd2_descriptor_block_csum_verify(journal,
+ 							       bh->b_data)) {
+-				printk(KERN_ERR "JBD2: Invalid checksum "
+-				       "recovering block %lu in log\n",
+-				       next_log_block);
+-				err = -EFSBADCRC;
+-				brelse(bh);
+-				goto failed;
++				/*
++				 * PASS_SCAN can see stale blocks due to lazy
++				 * journal init. Don't error out on those yet.
++				 */
++				if (pass != PASS_SCAN) {
++					pr_err("JBD2: Invalid checksum recovering block %lu in log\n",
++					       next_log_block);
++					err = -EFSBADCRC;
++					brelse(bh);
++					goto failed;
++				}
++				need_check_commit_time = true;
++				jbd_debug(1,
++					"invalid descriptor block found in %lu\n",
++					next_log_block);
+ 			}
  
--	trace_nfsd_deleg_open(&dp->dl_stid.sc_stateid);
-+	trace_nfsd_deleg_read(&dp->dl_stid.sc_stateid);
- 	open->op_delegate_type = NFS4_OPEN_DELEGATE_READ;
- 	nfs4_put_stid(&dp->dl_stid);
- 	return;
-@@ -5243,7 +5243,7 @@ nfsd4_process_open2(struct svc_rqst *rqstp, struct svc_fh *current_fh, struct nf
- 	nfs4_open_delegation(current_fh, open, stp);
- nodeleg:
- 	status = nfs_ok;
--	trace_nfsd_deleg_none(&stp->st_stid.sc_stateid);
-+	trace_nfsd_open(&stp->st_stid.sc_stateid);
- out:
- 	/* 4.1 client trying to upgrade/downgrade delegation? */
- 	if (open->op_delegate_type == NFS4_OPEN_DELEGATE_NONE && dp &&
-diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-index 1861db1bdc670..99bf07800cd09 100644
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -289,8 +289,8 @@ DEFINE_STATEID_EVENT(layout_recall_done);
- DEFINE_STATEID_EVENT(layout_recall_fail);
- DEFINE_STATEID_EVENT(layout_recall_release);
+ 			/* If it is a valid descriptor block, replay it
+@@ -535,6 +546,7 @@ static int do_one_pass(journal_t *journal,
+ 			if (pass != PASS_REPLAY) {
+ 				if (pass == PASS_SCAN &&
+ 				    jbd2_has_feature_checksum(journal) &&
++				    !need_check_commit_time &&
+ 				    !info->end_transaction) {
+ 					if (calc_chksums(journal, bh,
+ 							&next_log_block,
+@@ -683,11 +695,41 @@ static int do_one_pass(journal_t *journal,
+ 			 *	 mentioned conditions. Hence assume
+ 			 *	 "Interrupted Commit".)
+ 			 */
++			commit_time = be64_to_cpu(
++				((struct commit_header *)bh->b_data)->h_commit_sec);
++			/*
++			 * If need_check_commit_time is set, it means we are in
++			 * PASS_SCAN and csum verify failed before. If
++			 * commit_time is increasing, it's the same journal,
++			 * otherwise it is stale journal block, just end this
++			 * recovery.
++			 */
++			if (need_check_commit_time) {
++				if (commit_time >= last_trans_commit_time) {
++					pr_err("JBD2: Invalid checksum found in transaction %u\n",
++					       next_commit_ID);
++					err = -EFSBADCRC;
++					brelse(bh);
++					goto failed;
++				}
++			ignore_crc_mismatch:
++				/*
++				 * It likely does not belong to same journal,
++				 * just end this recovery with success.
++				 */
++				jbd_debug(1, "JBD2: Invalid checksum ignored in transaction %u, likely stale data\n",
++					  next_commit_ID);
++				err = 0;
++				brelse(bh);
++				goto done;
++			}
  
--DEFINE_STATEID_EVENT(deleg_open);
--DEFINE_STATEID_EVENT(deleg_none);
-+DEFINE_STATEID_EVENT(open);
-+DEFINE_STATEID_EVENT(deleg_read);
- DEFINE_STATEID_EVENT(deleg_break);
- DEFINE_STATEID_EVENT(deleg_recall);
+-			/* Found an expected commit block: if checksums
+-			 * are present verify them in PASS_SCAN; else not
++			/*
++			 * Found an expected commit block: if checksums
++			 * are present, verify them in PASS_SCAN; else not
+ 			 * much to do other than move on to the next sequence
+-			 * number. */
++			 * number.
++			 */
+ 			if (pass == PASS_SCAN &&
+ 			    jbd2_has_feature_checksum(journal)) {
+ 				struct commit_header *cbh =
+@@ -719,6 +761,8 @@ static int do_one_pass(journal_t *journal,
+ 			    !jbd2_commit_block_csum_verify(journal,
+ 							   bh->b_data)) {
+ 			chksum_error:
++				if (commit_time < last_trans_commit_time)
++					goto ignore_crc_mismatch;
+ 				info->end_transaction = next_commit_ID;
  
+ 				if (!jbd2_has_feature_async_commit(journal)) {
+@@ -728,11 +772,24 @@ static int do_one_pass(journal_t *journal,
+ 					break;
+ 				}
+ 			}
++			if (pass == PASS_SCAN)
++				last_trans_commit_time = commit_time;
+ 			brelse(bh);
+ 			next_commit_ID++;
+ 			continue;
+ 
+ 		case JBD2_REVOKE_BLOCK:
++			/*
++			 * Check revoke block crc in pass_scan, if csum verify
++			 * failed, check commit block time later.
++			 */
++			if (pass == PASS_SCAN &&
++			    !jbd2_descriptor_block_csum_verify(journal,
++							       bh->b_data)) {
++				jbd_debug(1, "JBD2: invalid revoke block found in %lu\n",
++					  next_log_block);
++				need_check_commit_time = true;
++			}
+ 			/* If we aren't in the REVOKE pass, then we can
+ 			 * just skip over this block. */
+ 			if (pass != PASS_REVOKE) {
+@@ -800,9 +857,6 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
+ 	offset = sizeof(jbd2_journal_revoke_header_t);
+ 	rcount = be32_to_cpu(header->r_count);
+ 
+-	if (!jbd2_descriptor_block_csum_verify(journal, header))
+-		return -EFSBADCRC;
+-
+ 	if (jbd2_journal_has_csum_v2or3(journal))
+ 		csum_size = sizeof(struct jbd2_journal_block_tail);
+ 	if (rcount > journal->j_blocksize - csum_size)
 -- 
 2.25.1
 
