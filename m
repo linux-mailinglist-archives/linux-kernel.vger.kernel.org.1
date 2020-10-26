@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE57D299C3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFA8299C14
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410531AbgJZXyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59380 "EHLO mail.kernel.org"
+        id S2410544AbgJZXym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410295AbgJZXyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:54:04 -0400
+        id S2410312AbgJZXyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:54:06 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2DF621D7B;
-        Mon, 26 Oct 2020 23:54:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FCD2221FA;
+        Mon, 26 Oct 2020 23:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756443;
-        bh=ZQ4rUae0MFq+q+xuLJba7D1u85eRkZ30SW3jH8xmVcU=;
+        s=default; t=1603756445;
+        bh=dbIidrHvO2LTZ1rtd68b6hEu80AhIwSMM0OmTrHsQ/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hQXqtrP80TWlx33MJA302I5zH1tepTFDHvmd6njEAhxvJif76Bmacgxrkucxc5+mR
-         nb1EQjQ0Na+FUG+uqW750sBgdbVpmknXT915YnalfKqDD6F55O4BMQqdv31YTA+GyD
-         YriL+s26Qf1lnUX/O0uwhJPGkJTluRntUImQBKwI=
+        b=Cu3jCKoj/KPfng9JBS5B/VZU0QdNQoN3Cav6gmw7WCJmHNuubPsgZuMEW+GPajtIi
+         HkGsh3M4LOGWwmj43wRFtAZQNr+3YImFYBGcVH6t4sE8+6N9Rj7ttkvNpnB2FDzXst
+         wO0IRO6LCnv96Te7taKh7i3c8SxzmpPrYUv0Zm2U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 096/132] btrfs: fix replace of seed device
-Date:   Mon, 26 Oct 2020 19:51:28 -0400
-Message-Id: <20201026235205.1023962-96-sashal@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.8 098/132] f2fs: fix to set SBI_NEED_FSCK flag for inconsistent inode
+Date:   Mon, 26 Oct 2020 19:51:30 -0400
+Message-Id: <20201026235205.1023962-98-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -42,113 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit c6a5d954950c5031444173ad2195efc163afcac9 ]
+[ Upstream commit d662fad143c0470ad7f46ea7b02da539f613d7d7 ]
 
-If you replace a seed device in a sprouted fs, it appears to have
-successfully replaced the seed device, but if you look closely, it
-didn't.  Here is an example.
+If compressed inode has inconsistent fields on i_compress_algorithm,
+i_compr_blocks and i_log_cluster_size, we missed to set SBI_NEED_FSCK
+to notice fsck to repair the inode, fix it.
 
-  $ mkfs.btrfs /dev/sda
-  $ btrfstune -S1 /dev/sda
-  $ mount /dev/sda /btrfs
-  $ btrfs device add /dev/sdb /btrfs
-  $ umount /btrfs
-  $ btrfs device scan --forget
-  $ mount -o device=/dev/sda /dev/sdb /btrfs
-  $ btrfs replace start -f /dev/sda /dev/sdc /btrfs
-  $ echo $?
-  0
-
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
-
-  $ btrfs fi show
-  Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
-	  Total devices 2 FS bytes used 256.00KiB
-	  devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
-	  devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
-
-  Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
-	  Total devices 1 FS bytes used 128.00KiB
-	  devid    1 size 3.00GiB used 536.00MiB path /dev/sda
-
-So as per the replace start command and kernel log replace was successful.
-Now let's try to clean mount.
-
-  $ umount /btrfs
-  $ btrfs device scan --forget
-
-  $ mount -o device=/dev/sdc /dev/sdb /btrfs
-  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
-
-  [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
-  [  636.180177] BTRFS error (device sdc): open_ctree failed
-
-That's because per dev items it is still looking for the original seed
-device.
-
- $ btrfs inspect-internal dump-tree -d /dev/sdb
-
-	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-		devid 1 total_bytes 3221225472 bytes_used 545259520
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 6 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
-		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
-	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
-		devid 2 total_bytes 3221225472 bytes_used 939524096
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 0 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
-		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
-
-But the replaced target has the following uuid+fsid in its superblock
-which doesn't match with the expected uuid+fsid in its devitem.
-
-  $ btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
-  generation	20
-  dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
-  dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
-  dev_item.devid	1
-
-So if you provide the original seed device the mount shall be
-successful.  Which so long happening in the test case btrfs/163.
-
-  $ btrfs device scan --forget
-  $ mount -o device=/dev/sda /dev/sdb /btrfs
-
-Fix in this patch:
-If a seed is not sprouted then there is no replacement of it, because of
-its read-only filesystem with a read-only device. Similarly, in the case
-of a sprouted filesystem, the seed device is still read only. So, mark
-it as you can't replace a seed device, you can only add a new device and
-then delete the seed device. If replace is attempted then returns
--EINVAL.
-
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/dev-replace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/inode.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index e4a1c6afe35dc..0cb36746060da 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -230,7 +230,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	int ret = 0;
- 
- 	*device_out = NULL;
--	if (fs_info->fs_devices->seeding) {
-+	if (srcdev->fs_devices->seeding) {
- 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
- 		return -EINVAL;
- 	}
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 44582a4db513e..657a39c82e57d 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -292,6 +292,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 			F2FS_FITS_IN_INODE(ri, fi->i_extra_isize,
+ 						i_log_cluster_size)) {
+ 		if (ri->i_compress_algorithm >= COMPRESS_MAX) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has unsupported "
+ 				"compress algorithm: %u, run fsck to fix",
+ 				  __func__, inode->i_ino,
+@@ -300,6 +301,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 		}
+ 		if (le64_to_cpu(ri->i_compr_blocks) >
+ 				SECTOR_TO_BLOCK(inode->i_blocks)) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has inconsistent "
+ 				"i_compr_blocks:%llu, i_blocks:%llu, run fsck to fix",
+ 				  __func__, inode->i_ino,
+@@ -309,6 +311,7 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
+ 		}
+ 		if (ri->i_log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+ 			ri->i_log_cluster_size > MAX_COMPRESS_LOG_SIZE) {
++			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			f2fs_warn(sbi, "%s: inode (ino=%lx) has unsupported "
+ 				"log cluster size: %u, run fsck to fix",
+ 				  __func__, inode->i_ino,
 -- 
 2.25.1
 
