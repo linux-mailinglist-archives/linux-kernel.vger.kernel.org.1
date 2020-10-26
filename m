@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0E6298D4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4A2298D48
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775771AbgJZMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:53:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39802 "EHLO
+        id S1775758AbgJZMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:53:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39808 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775644AbgJZMwh (ORCPT
+        with ESMTP id S1775645AbgJZMwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Oct 2020 08:52:37 -0400
-Date:   Mon, 26 Oct 2020 12:52:33 -0000
+Date:   Mon, 26 Oct 2020 12:52:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603716754;
+        s=2020; t=1603716755;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aWja56kiyleHUM5SBKQ0/ST78s6JhvG0FAk3yFd43Q0=;
-        b=1mHkQ6wsDG/VsYhtCjQXOkzh8alb4qGrZ+UE8zKM/14hbWedPwoVZdoKIc/q/hZkh+tOrw
-        vm88HOwVIv96Zxw9tvALsCzhhQLzdyqlqtdnVKXGiiE/3D1iRjdsUdErRHwXlBHydal36V
-        RShMuL7+b5CjgqzLJA9O/mirPWAMp+SauXMnY0+Wv/wfjodAeNgfg3q/rK+c6gC2nopbHj
-        vibufq7gf5+htE10OZIqHvYGpQw6qFh6Z5k9IOazzbkNm5wlZf35vK8wwvQjT+zT63JrxH
-        /e9HG50te50BAOCLOFsKcHvfqqVULCFTRCvVxhpfn17r5oV6z7YcLbxwXKHGoA==
+        bh=+ucx2XDwRjlh5JkD6w0gCnJGAUjalx/nAoD9UnfnH5o=;
+        b=iTcmv8iOmJv/pKl7anjx/+sAHh4v1aUCvIV+9jEkmc+iGv3ogWWOFADU1sIOwIilLZvkPr
+        YygOE9tS46+NmYBpRQ/dyLeQA5Qrb9lmJlkvf62cWl5u+3XySxjc/ewaEx6a/bUu//ad6i
+        ds3fDfpMIDd3KOI9AvajnEHog7+tgVKgfboBIcHBL0/oZzSY5xb+GTY0kneK3d4rmy9FbD
+        N0C1oRhaEbMin5NIr92iW8xD/3vRUkvie+oqKl4slB61maFz+umSU5fhWSiaYCz4sO3Qby
+        yjXLEMlWuIUCOCqQ2+sD54LZ/SqUgWFMCIluwhe397P1IHfLUSBX+fcbUvGYkw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603716754;
+        s=2020e; t=1603716755;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aWja56kiyleHUM5SBKQ0/ST78s6JhvG0FAk3yFd43Q0=;
-        b=8UdOZwM3GxM7IFbCbM8m19D5OKN9pV2+8JNBUmujVmJ9PD3CgxWmWpPgR0RySc9n1k9PwB
-        RBJwRar7aPN0vlDA==
+        bh=+ucx2XDwRjlh5JkD6w0gCnJGAUjalx/nAoD9UnfnH5o=;
+        b=PlqUJJfiWLN6GubJqiCZ2dOZhBxsUzYtzrXptvAu0uJlYAtllULkwNZ1kACeeQBnBOSKlw
+        Uisb+F+sVk70XnDA==
 From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/elf: Use e_machine to check for x32/ia32 in
- setup_additional_pages()
+Subject: [tip: x86/cleanups] elf: Expose ELF header on arch_setup_additional_pages()
 Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201004032536.1229030-9-krisman@collabora.com>
-References: <20201004032536.1229030-9-krisman@collabora.com>
+In-Reply-To: <20201004032536.1229030-8-krisman@collabora.com>
+References: <20201004032536.1229030-8-krisman@collabora.com>
 MIME-Version: 1.0
-Message-ID: <160371675357.397.304357916170024051.tip-bot2@tip-bot2>
+Message-ID: <160371675422.397.2436396266153701102.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,64 +58,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     3316ec8ccd34e19690a12e65801d605d25155031
-Gitweb:        https://git.kernel.org/tip/3316ec8ccd34e19690a12e65801d605d25155031
+Commit-ID:     9a29a671902c2be05d636045a4dd365219ca716c
+Gitweb:        https://git.kernel.org/tip/9a29a671902c2be05d636045a4dd365219ca716c
 Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
-AuthorDate:    Sat, 03 Oct 2020 23:25:34 -04:00
+AuthorDate:    Sat, 03 Oct 2020 23:25:33 -04:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Mon, 26 Oct 2020 13:46:47 +01:00
 
-x86/elf: Use e_machine to check for x32/ia32 in setup_additional_pages()
+elf: Expose ELF header on arch_setup_additional_pages()
 
-Since TIF_X32 is going away, avoid using it to find the ELF type when
-choosing which additional pages to set up.
+Like it is done for SET_PERSONALITY with ARM, which requires the ELF
+header to select correct personality parameters, x86 requires the
+headers when selecting which VDSO to load, instead of relying on the
+going-away TIF_IA32/X32 flags.
 
-According to SysV AMD64 ABI Draft, an AMD64 ELF object using ILP32 must
-have ELFCLASS32 with (E_MACHINE == EM_X86_64), so use that ELF field to
-differentiate a x32 object from a IA32 object when executing
-setup_additional_pages() in compat mode.
+Add an indirection macro to arch_setup_additional_pages(), that x86 can
+reimplement to receive the extra parameter just for ELF files.  This
+requires no changes to other architectures, who can continue to use the
+original arch_setup_additional_pages for ELF and non-ELF binaries.
 
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201004032536.1229030-9-krisman@collabora.com
-
+Link: https://lore.kernel.org/r/20201004032536.1229030-8-krisman@collabora.com
 
 ---
- arch/x86/entry/vdso/vma.c  | 4 ++--
- arch/x86/include/asm/elf.h | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ fs/binfmt_elf.c        |  2 +-
+ fs/compat_binfmt_elf.c | 11 ++++++++---
+ include/linux/elf.h    |  5 +++++
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-index 9185cb1..50e5d3a 100644
---- a/arch/x86/entry/vdso/vma.c
-+++ b/arch/x86/entry/vdso/vma.c
-@@ -413,10 +413,10 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index b23f755..aabc11f 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1246,7 +1246,7 @@ out_free_interp:
+ 	set_binfmt(&elf_format);
  
- #ifdef CONFIG_COMPAT
- int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
--				       int uses_interp)
-+				       int uses_interp, bool x32)
- {
- #ifdef CONFIG_X86_X32_ABI
--	if (test_thread_flag(TIF_X32)) {
-+	if (x32) {
- 		if (!vdso64_enabled)
- 			return 0;
- 		return map_vdso_randomized(&vdso_image_x32);
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 109697a..44a9b99 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -383,8 +383,10 @@ struct linux_binprm;
- extern int arch_setup_additional_pages(struct linux_binprm *bprm,
- 				       int uses_interp);
- extern int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
--					      int uses_interp);
--#define compat_arch_setup_additional_pages compat_arch_setup_additional_pages
-+					      int uses_interp, bool x32);
-+#define COMPAT_ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter)	\
-+	compat_arch_setup_additional_pages(bprm, interpreter,		\
-+					   (ex->e_machine == EM_X86_64))
+ #ifdef ARCH_HAS_SETUP_ADDITIONAL_PAGES
+-	retval = arch_setup_additional_pages(bprm, !!interpreter);
++	retval = ARCH_SETUP_ADDITIONAL_PAGES(bprm, elf_ex, !!interpreter);
+ 	if (retval < 0)
+ 		goto out;
+ #endif /* ARCH_HAS_SETUP_ADDITIONAL_PAGES */
+diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
+index 12b9913..2c55722 100644
+--- a/fs/compat_binfmt_elf.c
++++ b/fs/compat_binfmt_elf.c
+@@ -115,11 +115,16 @@
+ #define START_THREAD		COMPAT_START_THREAD
+ #endif
  
- /* Do not change the values. See get_align_mask() */
- enum align_flags {
+-#ifdef	compat_arch_setup_additional_pages
++#ifdef compat_arch_setup_additional_pages
++#define COMPAT_ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter) \
++	compat_arch_setup_additional_pages(bprm, interpreter)
++#endif
++
++#ifdef	COMPAT_ARCH_SETUP_ADDITIONAL_PAGES
+ #undef	ARCH_HAS_SETUP_ADDITIONAL_PAGES
+ #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
+-#undef	arch_setup_additional_pages
+-#define	arch_setup_additional_pages compat_arch_setup_additional_pages
++#undef	ARCH_SETUP_ADDITIONAL_PAGES
++#define	ARCH_SETUP_ADDITIONAL_PAGES COMPAT_ARCH_SETUP_ADDITIONAL_PAGES
+ #endif
+ 
+ #ifdef	compat_elf_read_implies_exec
+diff --git a/include/linux/elf.h b/include/linux/elf.h
+index 6dbcfe7..c9a46c4 100644
+--- a/include/linux/elf.h
++++ b/include/linux/elf.h
+@@ -27,6 +27,11 @@
+ 	start_thread(regs, elf_entry, start_stack)
+ #endif
+ 
++#if defined(ARCH_HAS_SETUP_ADDITIONAL_PAGES) && !defined(ARCH_SETUP_ADDITIONAL_PAGES)
++#define ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter) \
++	arch_setup_additional_pages(bprm, interpreter)
++#endif
++
+ #define ELF32_GNU_PROPERTY_ALIGN	4
+ #define ELF64_GNU_PROPERTY_ALIGN	8
+ 
