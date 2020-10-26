@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195042992BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D74B2992BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786329AbgJZQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:46:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55454 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1780212AbgJZQpz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:45:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603730753;
+        id S1786296AbgJZQqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:46:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42392 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1780572AbgJZQp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:45:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603730756;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EtQ7ATZf42jwj5zA9pcp/oVxiJsLAJssQKkbBhG+zyg=;
-        b=WhU8hFXq6r60r7p6nPa0werS3FQw2gn8ny1eL5ecfRnW2dV/Q35dyUgG5SLu4pMwg9yVza
-        /TOtR2bzd6zTZWIzDJeExl50eDnFwiAbctyzZI7c4Z4vamjfOvdEjhmbj3HQ/WxB29+/YT
-        rgQrCmbIhLPoLe3IX0N0bOrVEiSpJQU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-N3pw_MRnMBKF2Of_PM6O7A-1; Mon, 26 Oct 2020 12:45:49 -0400
-X-MC-Unique: N3pw_MRnMBKF2Of_PM6O7A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC861879526;
-        Mon, 26 Oct 2020 16:45:46 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-114-87.ams2.redhat.com [10.36.114.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 495D65C1BB;
-        Mon, 26 Oct 2020 16:45:44 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Dave Martin via Libc-alpha <libc-alpha@sourceware.org>
-Cc:     Jeremy Linton <jeremy.linton@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, toiwoton@gmail.com,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: BTI interaction between seccomp filters in systemd and glibc
- mprotect calls, causing service failures
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
-        <20201026162410.GB27285@arm.com>
-Date:   Mon, 26 Oct 2020 17:45:42 +0100
-In-Reply-To: <20201026162410.GB27285@arm.com> (Dave Martin via Libc-alpha's
-        message of "Mon, 26 Oct 2020 16:24:11 +0000")
-Message-ID: <87r1pl9brd.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        bh=kChY8deJI75T79lVGPftJ4ey9Ah/Bxr9MOF++yylAmI=;
+        b=SruZRHB4/2X2tN68C38bbrDleSxEM9/1XPl7zpK3UMO1y3WFzNYzatV+nzV8NadcdHHQxw
+        EaF376ONJgPFsNo0RJ9i+pJb4ScpsYVjrGVzUUVWVHQqycyW9EwB+oJScCLHg8d+UPHzOk
+        rICI4ymhR4Isaxz+2JTlwFsVnMb/8T8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D7B56ACD8;
+        Mon, 26 Oct 2020 16:45:55 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 17:45:55 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     qiang.zhang@windriver.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] kthread_worker: re-set CPU affinities if CPU come online
+Message-ID: <20201026164555.GA7544@alley>
+References: <20201026065213.30477-1-qiang.zhang@windriver.com>
+ <20201026135011.GC73258@mtj.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026135011.GC73258@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dave Martin via Libc-alpha:
+On Mon 2020-10-26 09:50:11, Tejun Heo wrote:
+> On Mon, Oct 26, 2020 at 02:52:13PM +0800, qiang.zhang@windriver.com wrote:
+> > @@ -737,8 +741,11 @@ __kthread_create_worker(int cpu, unsigned int flags,
+> >  	if (IS_ERR(task))
+> >  		goto fail_task;
+> >  
+> > -	if (cpu >= 0)
+> > +	if (cpu >= 0) {
+> >  		kthread_bind(task, cpu);
+> > +		worker->bind_cpu = cpu;
+> > +		cpuhp_state_add_instance_nocalls(kworker_online, &worker->cpuhp_node);
+> > +	}
+> >  
+> >  	worker->flags = flags;
+> >  	worker->task = task;
+> ...
+> > +static int kworker_cpu_online(unsigned int cpu, struct hlist_node *node)
+> > +{
+> > +	struct kthread_worker *worker = hlist_entry(node, struct kthread_worker, cpuhp_node);
+> > +	struct task_struct *task = worker->task;
+> > +
+> > +	if (cpu == worker->bind_cpu)
+> > +		WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpumask_of(cpu)) < 0);
+> > +	return 0;
+> > +}
+> 
+> I don't think this works. The kthread may have changed its binding while
+> running using set_cpus_allowed_ptr() as you're doing above. Besides, when a
+> cpu goes offline, the bound kthread can fall back to other cpus but its cpu
+> mask isn't cleared, is it?
 
-> Would it now help to add something like:
->
-> int mchangeprot(void *addr, size_t len, int old_flags, int new_flags)
-> {
-> 	int ret = -EINVAL;
-> 	mmap_write_lock(current->mm);
-> 	if (all vmas in [addr .. addr + len) have
-> 			their mprotect flags set to old_flags) {
->
-> 		ret = mprotect(addr, len, new_flags);
-> 	}
-> 	
-> 	mmap_write_unlock(current->mm);
-> 	return ret;
-> }
+If I get it correctly, select_fallback_rq() calls
+do_set_cpus_allowed() explicitly or in cpuset_cpus_allowed_fallback().
+It seems that the original mask gets lost.
 
-I suggested something similar as well.  Ideally, the interface would
-subsume pkey_mprotect, though, and have a separate flags argument from
-the protection flags.  But then we run into argument list length limits.
+It would make sense to assume that kthread_worker API will take care of
+the affinity when it was set by kthread_create_worker_on_cpu().
 
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+But is it safe to assume that the work can be safely proceed also
+on another CPU? We should probably add a warning into
+kthread_worker_fn() when it detects wrong CPU.
 
+BTW: kthread_create_worker_on_cpu() is currently used only by
+     start_power_clamp_worker(). And it has its own CPU hotplug
+     handling. The kthreads are stopped and started again
+     in powerclamp_cpu_predown() and  powerclamp_cpu_online().
+
+
+I havn't checked all details yet. But in principle, the patch looks
+sane to me.
+
+Best Regards,
+Petr
