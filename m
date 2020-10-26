@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2D4299849
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0B3299850
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgJZU4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:56:12 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:35680 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgJZU4K (ORCPT
+        id S1728596AbgJZU5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:57:49 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59018 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728557AbgJZU5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:56:10 -0400
-Received: by mail-pg1-f195.google.com with SMTP id f38so6755936pgm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=5HeFLa89GKRfQ1XZepG1+Qq8mgTYnKfDuFsFx2t5hik=;
-        b=ZnwvKThmJJRc7XtDD9S148ZbXLzkCKb13MMwlf6PpcbaAKGllxcAeTrBPlQWXgTyTt
-         Cx9vp+bKlaRXdjdLVvrUhc0kkbtvE1ETmzQbN2aQjvswcZDdCrMC7UgjyuftV57g4WTy
-         wSkVDm1l6tdzpNw8nxONLM/sGb/ogqbo+ymcw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=5HeFLa89GKRfQ1XZepG1+Qq8mgTYnKfDuFsFx2t5hik=;
-        b=h8+tRizRSbWeow3t2MTSx+jO15jHDL0FzPEsgYqL3vDWydF1Ts1vb99bASM3xWI8IH
-         61234LKpZdXLmXnhZW7sgDD/Z+n2xIkSHC9/846uMpm/Lh+pJlEbQpC+ki3Z+ok0C+qY
-         sGWtzp0dYv5lu6udzqv77huYrM8uFCFF+u9xSU3mGoM0OPBnstS9iEXQa192XM1fiLmw
-         1XFo3aOdemHzlT701s6bXBv4j2WzVjybjmLgSoPjBN88piJIcF98MTADy/IkUjKRsG1s
-         XSeKbCIMt00ppqu8lHpsLysoIMxkUzH+rFX9l6EmkudMvif+WMDGkwKpts3M0tSCoRX+
-         hI2g==
-X-Gm-Message-State: AOAM533m4dDl0L4DQyGR4hJrH44vajV8KrcMBR0Tna+oWkWsUtsakRz9
-        CEFCb4RuYN6eGPneHE0Qnq6rqX2jJXkKFg==
-X-Google-Smtp-Source: ABdhPJxi7nbZgFH7nWutnr3b3SCmGRv6cRm4tL4fle6uvBxMr2G6t7oz6Oswhe2y151V4jCatLqa3A==
-X-Received: by 2002:a63:e705:: with SMTP id b5mr14922382pgi.230.1603745769694;
-        Mon, 26 Oct 2020 13:56:09 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id n19sm12588831pfu.24.2020.10.26.13.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 13:56:09 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 26 Oct 2020 16:57:48 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QKsTmn102446;
+        Mon, 26 Oct 2020 20:57:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=gNEIQOIVcRf/UxQtEMIApb6sRiQ4CW4rFIAipHvLmnA=;
+ b=kLpEm4VAk5YCSraOYQRGv2tsONAb+CJVVrdP4aOYleng97336wlfA2c7Vaz1rT5N8BvN
+ fp+mwepci/3GDpyzZvGpnfRyalRJxXWogaub51gFC43eCWPKSek/WDtxCt46Q0tbJrbu
+ 4FZbtY0Fp1dzU1qn43A7L0lgzO+PW+p2/qKO7nBdD85TkvTpp84aLxhQDJnJuW/iW+KE
+ 103y8CHyWe8FwZFGot6rdrD+eGtVJiNjC+IRraEnJNwuLFwKubJdsmYgpXFNy5lKRyaq
+ JbJtS8u1jFHxJoiypSLeyBhpNOFmq++l9XHGoSJ3xeAviYv8JVqeP+TFDgFb8WP+dvYN 2g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34dgm3vd50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 20:57:40 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QKtwYM140084;
+        Mon, 26 Oct 2020 20:57:39 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 34cx5wc9t4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 20:57:39 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09QKvZds028632;
+        Mon, 26 Oct 2020 20:57:37 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Oct 2020 13:57:34 -0700
+To:     Helge Deller <deller@gmx.de>
+Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Subject: Re: [PATCH] scsi: mptfusion: Fix null pointer dereferences in
+ mptscsih_remove()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v9ew903w.fsf@ca-mkp.ca.oracle.com>
+References: <20201022090005.GA9000@ls3530.fritz.box>
+Date:   Mon, 26 Oct 2020 16:57:31 -0400
+In-Reply-To: <20201022090005.GA9000@ls3530.fritz.box> (Helge Deller's message
+        of "Thu, 22 Oct 2020 11:00:05 +0200")
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201026194110.3817470-3-arnd@kernel.org>
-References: <20201026194110.3817470-1-arnd@kernel.org> <20201026194110.3817470-3-arnd@kernel.org>
-Subject: Re: [PATCH 3/4] drm/msm: fix -Woverride-init warning
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Clark <robdclark@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Shubhashree Dhar <dhar@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-To:     Arnd Bergmann <arnd@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Date:   Mon, 26 Oct 2020 13:56:07 -0700
-Message-ID: <160374576766.884498.794065087413944435@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=974
+ suspectscore=1 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=1 clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Arnd Bergmann (2020-10-26 12:41:03)
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> There is one harmless duplicate initialization that causes a warning
-> with 'make W=3D1':
->=20
-> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c:122:19: warning: initializ=
-ed field overwritten [-Woverride-init]
->   122 |  .max_linewidth =3D 4096,
->       |                   ^~~~
-> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c:122:19: note: (near initia=
-lization for 'sm8250_dpu_caps.max_linewidth')
->=20
-> Remove one of the two identical initializers to avoid the warning.
->=20
-> Fixes: af776a3e1c30 ("drm/msm/dpu: add SM8250 to hw catalog")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Helge,
+
+> The mptscsih_remove() function triggers a kernel oops if the
+> Scsi_Host pointer (ioc->sh) is NULL, as can be seen in this syslog:
+
+Applied to 5.10/scsi-fixes, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
