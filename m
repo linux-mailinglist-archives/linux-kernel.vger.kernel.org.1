@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3019298D79
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA85298D74
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1776219AbgJZNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:07:54 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18176 "EHLO mga01.intel.com"
+        id S1776210AbgJZNGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:06:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60692 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773920AbgJZNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:07:53 -0400
-IronPort-SDR: z1ZAUR0Ecj3TGol77GdcYiKbGoNSYdERzGWf+KeEc7x60KZNVtcv2ucHclM4RVt3Vcxw+BqwWs
- qttJFUvr0m5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="185644041"
-X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
-   d="scan'208";a="185644041"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 06:05:25 -0700
-IronPort-SDR: zM/xi1SkIfHhwXPa0Want6A593UHClAIAWlA9t1jJoEYhWIxF/AQQ8gYEm4x/J9ly4paZhtCUD
- rY57F6XYcOyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
-   d="scan'208";a="424088518"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 26 Oct 2020 06:05:22 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 26 Oct 2020 15:05:22 +0200
-Date:   Mon, 26 Oct 2020 15:05:22 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Sriharsha Allenki <sallenki@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jackp@codeaurora.org,
-        mgautam@codeaurora.org, stable@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: Prevent setting invalid opmode value
-Message-ID: <20201026130522.GC1442058@kuha.fi.intel.com>
-References: <1603359734-2931-1-git-send-email-sallenki@codeaurora.org>
+        id S1776202AbgJZNGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 09:06:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603717573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EuwFJyJQ6SmPuAbO6WZVV9gzy3Y+dmWIYy6nUyKrvlQ=;
+        b=iqLgAPO48MiqAX3rtL+4tN5/NcwJLZK8oF05ptfg38DudFqf3Jodgtb7j9jiHUP10eSxqS
+        InPw92TNQDRDDkgeRzcNTpxhh0v9/cAfMCfzTUsdtMNgZ+hyDq2EfxH0M4e2zfm8mKP0qm
+        Lk6mYyMXSnhiqkX7M/7PemX0EoB9xM4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 127AFACD0;
+        Mon, 26 Oct 2020 13:06:13 +0000 (UTC)
+Subject: Re: possible lockdep regression introduced by 4d004099a668 ("lockdep:
+ Fix lockdep recursion")
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+ <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+ <20201026125524.GP2594@hirez.programming.kicks-ass.net>
+From:   Filipe Manana <fdmanana@suse.com>
+Message-ID: <7edd5299-6b12-b8f1-046b-bccc8b0799b6@suse.com>
+Date:   Mon, 26 Oct 2020 13:06:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603359734-2931-1-git-send-email-sallenki@codeaurora.org>
+In-Reply-To: <20201026125524.GP2594@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 03:12:14PM +0530, Sriharsha Allenki wrote:
-> Setting opmode to invalid values would lead to a
-> paging fault failure when there is an access to the
-> power_operation_mode.
+
+
+On 26/10/20 12:55, Peter Zijlstra wrote:
+> On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
+>>> That smells like the same issue reported here:
+>>>
+>>>   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+>>>
+>>> Make sure you have commit:
+>>>
+>>>   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+>>>
+>>> (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+>>
+>> Yes, CONFIG_DEBUG_PREEMPT is enabled.
 > 
-> Prevent this by checking the validity of the value
-> that the opmode is being set.
+> Bummer :/
 > 
-> Cc: <stable@vger.kernel.org>
-> Fixes: fab9288428ec ("usb: USB Type-C connector class")
-> Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
-> ---
->  drivers/usb/typec/class.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>> I'll try with that commit and let you know, however it's gonna take a
+>> few hours to build a kernel and run all fstests (on that test box it
+>> takes over 3 hours) to confirm that fixes the issue.
 > 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index 35eec70..63efe16 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -1427,7 +1427,8 @@ void typec_set_pwr_opmode(struct typec_port *port,
->  {
->  	struct device *partner_dev;
->  
-> -	if (port->pwr_opmode == opmode)
-> +	if ((port->pwr_opmode == opmode) || (opmode < TYPEC_PWR_MODE_USB) ||
+> *ouch*, 3 hours is painful. How long to make it sick with the current
+> kernel? quicker I would hope?
 
-You don't need to check if opmode < anything. opmode is enum which
-apparently means that GCC handles it as unsigned. Since
-TYPEC_PWR_MODE_USB is 0 it means opmode < TYPEC_PWR_MODE_USB is never
-true.
+If generic/068 triggers the bug, than it's about 1 hour. If that passes,
+which rarely happens, then have to wait to get into generic/390, which
+is over 2 hours.
 
-> +						(opmode > TYPEC_PWR_MODE_PD))
->  		return;
-
-You really need to print an error at the very least. Otherwise we will
-just silently hide possible driver bugs.
-
-To be honest, I'm not a big fan of this kind of checks. They have
-created more problems than they have fixed in more than one occasion
-to me. For example, there really is no guarantee that the maximum will
-always be TYPEC_PWR_MODE_PD, which means we probable should have
-something like TYPEC_PWR_MODE_MAX defined somewhere that you compare
-the opmode value to instead of TYPEC_PWR_MODE_PD to play it safe, but
-let's not bother with that for now (it will create other problems).
-
-Basically, with functions like this, especially since it doesn't
-return anything, the responsibility of checking the validity of the
-parameters that the caller supplies to it belongs to the caller IMO,
-not the function itself. I would be happy to explain that in the
-kernel doc style comment of the function.
-
-If you still feel that this change is really necessary, meaning you
-have some actual case where the caller can _not_ check the range
-before calling this function, then explain the case you have carefully
-in the commit message and add the check as a separate condition:
-
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 35eec707cb512..7de6913d90f9c 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -1430,6 +1430,11 @@ void typec_set_pwr_opmode(struct typec_port *port,
-        if (port->pwr_opmode == opmode)
-                return;
- 
-+       if (opmode > TYPEC_PWR_OPMODE_PD) {
-+               dev_err(&port->dev, "blah-blah-blah\n");
-+               return;
-+       }
-+
-        port->pwr_opmode = opmode;
-        sysfs_notify(&port->dev.kobj, NULL, "power_operation_mode");
-        kobject_uevent(&port->dev.kobj, KOBJ_CHANGE);
-
-Otherwise you can just propose a patch that improves the documentation
-of this function, explaining that it does not take any responsibility
-over the parameters passed to it for now.
+It sucks that running those tests alone never trigger the issue, but
+running all fstests (first btrfs specific ones, followed by the generic
+ones) reliably triggers the bug, almost always at generic/068, when that
+passes, it's triggered by generic/390. To confirm everything is ok, I
+let all tests run (last generic is 612).
 
 
-thanks,
+> 
+>> Thanks for the quick reply!
+> 
+> Anyway, I don't think that commit can actually explain the issue :/
+> 
+> The false positive on lockdep_assert_held() happens when the recursion
+> count is !0, however we _should_ be having IRQs disabled when
+> lockdep_recursion > 0, so that should never be observable.
+> 
+> My hope was that DEBUG_PREEMPT would trigger on one of the
+> __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
+> then be a clear violation.
+> 
+> And you're seeing this on x86, right?
 
--- 
-heikki
+Right.
+It's in a qemu vm on x86, with '-cpu host' passed to qemu and kvm enabled.
+
+Thanks.
+
+
+> 
+> Let me puzzle moar..
+> 
