@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18649299BB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ADB299BB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409878AbgJZXws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:52:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54882 "EHLO mail.kernel.org"
+        id S2409923AbgJZXw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:52:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409744AbgJZXw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:28 -0400
+        id S2409753AbgJZXwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42DCA221FC;
-        Mon, 26 Oct 2020 23:52:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 998652222C;
+        Mon, 26 Oct 2020 23:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756348;
-        bh=w0uZkIBPFkHlQusjZwsNbcCZPMu3R56Y4qKBAIYwQCY=;
+        s=default; t=1603756350;
+        bh=mPBuKbaS/hmJtHA4/4Z3Ltibrw3uuXcBuYlOE2nTEe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vh1PGS59EScit+720h3NSkct7XXU0d4iaZ953x+D9QToqaiqhZ/3oFdSD7pb+C6Z7
-         aL1ucrGWcCB1eK3Ba9BdvUG+SQiOPbUh6PVHeea/vVt0VV6i8kU1Em/AFX/JyD6tGF
-         cuEhONeFS71idjCaR9u9ukDDFeJ5UiiX7kFzRMVo=
+        b=GEEj66RpvzbJAQ/gHVoEq564EZfFOnspGvE2yHwoiR4vsoAL8kcGBcNP0Kmpvb9A+
+         Opb7sCmKVtJQjw/maltbZD1W+Z3sbo1JhSHck+5aVNukgxfdTv7ZOFtQBPl6LOEVxM
+         ReoU0MdcSasGOVwbmtYJayi2VTokYejYHQ++EYWc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.8 019/132] ARM: 8997/2: hw_breakpoint: Handle inexact watchpoint addresses
-Date:   Mon, 26 Oct 2020 19:50:11 -0400
-Message-Id: <20201026235205.1023962-19-sashal@kernel.org>
+Cc:     Chandan Babu R <chandanrlinux@gmail.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 021/132] xfs: Set xfs_buf type flag when growing summary/bitmap files
+Date:   Mon, 26 Oct 2020 19:50:13 -0400
+Message-Id: <20201026235205.1023962-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -45,186 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Chandan Babu R <chandanrlinux@gmail.com>
 
-[ Upstream commit 22c9e58299e5f18274788ce54c03d4fb761e3c5d ]
+[ Upstream commit 72cc95132a93293dcd0b6f68353f4741591c9aeb ]
 
-This is commit fdfeff0f9e3d ("arm64: hw_breakpoint: Handle inexact
-watchpoint addresses") but ported to arm32, which has the same
-problem.
+The following sequence of commands,
 
-This problem was found by Android CTS tests, notably the
-"watchpoint_imprecise" test [1].  I tested locally against a copycat
-(simplified) version of the test though.
+  mkfs.xfs -f -m reflink=0 -r rtdev=/dev/loop1,size=10M /dev/loop0
+  mount -o rtdev=/dev/loop1 /dev/loop0 /mnt
+  xfs_growfs  /mnt
 
-[1] https://android.googlesource.com/platform/bionic/+/master/tests/sys_ptrace_test.cpp
+... causes the following call trace to be printed on the console,
 
-Link: https://lkml.kernel.org/r/20191019111216.1.I82eae759ca6dc28a245b043f485ca490e3015321@changeid
+XFS: Assertion failed: (bip->bli_flags & XFS_BLI_STALE) || (xfs_blft_from_flags(&bip->__bli_format) > XFS_BLFT_UNKNOWN_BUF && xfs_blft_from_flags(&bip->__bli_format) < XFS_BLFT_MAX_BUF), file: fs/xfs/xfs_buf_item.c, line: 331
+Call Trace:
+ xfs_buf_item_format+0x632/0x680
+ ? kmem_alloc_large+0x29/0x90
+ ? kmem_alloc+0x70/0x120
+ ? xfs_log_commit_cil+0x132/0x940
+ xfs_log_commit_cil+0x26f/0x940
+ ? xfs_buf_item_init+0x1ad/0x240
+ ? xfs_growfs_rt_alloc+0x1fc/0x280
+ __xfs_trans_commit+0xac/0x370
+ xfs_growfs_rt_alloc+0x1fc/0x280
+ xfs_growfs_rt+0x1a0/0x5e0
+ xfs_file_ioctl+0x3fd/0xc70
+ ? selinux_file_ioctl+0x174/0x220
+ ksys_ioctl+0x87/0xc0
+ __x64_sys_ioctl+0x16/0x20
+ do_syscall_64+0x3e/0x70
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+This occurs because the buffer being formatted has the value of
+XFS_BLFT_UNKNOWN_BUF assigned to the 'type' subfield of
+bip->bli_formats->blf_flags.
+
+This commit fixes the issue by assigning one of XFS_BLFT_RTSUMMARY_BUF
+and XFS_BLFT_RTBITMAP_BUF to the 'type' subfield of
+bip->bli_formats->blf_flags before committing the corresponding
+transaction.
+
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Chandan Babu R <chandanrlinux@gmail.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/hw_breakpoint.c | 100 +++++++++++++++++++++++---------
- 1 file changed, 72 insertions(+), 28 deletions(-)
+ fs/xfs/xfs_rtalloc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
-index 7fff88e612525..4b0e4b19b04ed 100644
---- a/arch/arm/kernel/hw_breakpoint.c
-+++ b/arch/arm/kernel/hw_breakpoint.c
-@@ -683,6 +683,40 @@ static void disable_single_step(struct perf_event *bp)
- 	arch_install_hw_breakpoint(bp);
- }
+diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
+index 6209e7b6b895b..04b953c3ffa75 100644
+--- a/fs/xfs/xfs_rtalloc.c
++++ b/fs/xfs/xfs_rtalloc.c
+@@ -767,8 +767,14 @@ xfs_growfs_rt_alloc(
+ 	struct xfs_bmbt_irec	map;		/* block map output */
+ 	int			nmap;		/* number of block maps */
+ 	int			resblks;	/* space reservation */
++	enum xfs_blft		buf_type;
+ 	struct xfs_trans	*tp;
  
-+/*
-+ * Arm32 hardware does not always report a watchpoint hit address that matches
-+ * one of the watchpoints set. It can also report an address "near" the
-+ * watchpoint if a single instruction access both watched and unwatched
-+ * addresses. There is no straight-forward way, short of disassembling the
-+ * offending instruction, to map that address back to the watchpoint. This
-+ * function computes the distance of the memory access from the watchpoint as a
-+ * heuristic for the likelyhood that a given access triggered the watchpoint.
-+ *
-+ * See this same function in the arm64 platform code, which has the same
-+ * problem.
-+ *
-+ * The function returns the distance of the address from the bytes watched by
-+ * the watchpoint. In case of an exact match, it returns 0.
-+ */
-+static u32 get_distance_from_watchpoint(unsigned long addr, u32 val,
-+					struct arch_hw_breakpoint_ctrl *ctrl)
-+{
-+	u32 wp_low, wp_high;
-+	u32 lens, lene;
-+
-+	lens = __ffs(ctrl->len);
-+	lene = __fls(ctrl->len);
-+
-+	wp_low = val + lens;
-+	wp_high = val + lene;
-+	if (addr < wp_low)
-+		return wp_low - addr;
-+	else if (addr > wp_high)
-+		return addr - wp_high;
++	if (ip == mp->m_rsumip)
++		buf_type = XFS_BLFT_RTSUMMARY_BUF;
 +	else
-+		return 0;
-+}
++		buf_type = XFS_BLFT_RTBITMAP_BUF;
 +
- static int watchpoint_fault_on_uaccess(struct pt_regs *regs,
- 				       struct arch_hw_breakpoint *info)
- {
-@@ -692,23 +726,25 @@ static int watchpoint_fault_on_uaccess(struct pt_regs *regs,
- static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 			       struct pt_regs *regs)
- {
--	int i, access;
--	u32 val, ctrl_reg, alignment_mask;
-+	int i, access, closest_match = 0;
-+	u32 min_dist = -1, dist;
-+	u32 val, ctrl_reg;
- 	struct perf_event *wp, **slots;
- 	struct arch_hw_breakpoint *info;
- 	struct arch_hw_breakpoint_ctrl ctrl;
- 
- 	slots = this_cpu_ptr(wp_on_reg);
- 
-+	/*
-+	 * Find all watchpoints that match the reported address. If no exact
-+	 * match is found. Attribute the hit to the closest watchpoint.
-+	 */
-+	rcu_read_lock();
- 	for (i = 0; i < core_num_wrps; ++i) {
--		rcu_read_lock();
--
- 		wp = slots[i];
--
- 		if (wp == NULL)
--			goto unlock;
-+			continue;
- 
--		info = counter_arch_bp(wp);
- 		/*
- 		 * The DFAR is an unknown value on debug architectures prior
- 		 * to 7.1. Since we only allow a single watchpoint on these
-@@ -717,33 +753,31 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		 */
- 		if (debug_arch < ARM_DEBUG_ARCH_V7_1) {
- 			BUG_ON(i > 0);
-+			info = counter_arch_bp(wp);
- 			info->trigger = wp->attr.bp_addr;
- 		} else {
--			if (info->ctrl.len == ARM_BREAKPOINT_LEN_8)
--				alignment_mask = 0x7;
--			else
--				alignment_mask = 0x3;
--
--			/* Check if the watchpoint value matches. */
--			val = read_wb_reg(ARM_BASE_WVR + i);
--			if (val != (addr & ~alignment_mask))
--				goto unlock;
--
--			/* Possible match, check the byte address select. */
--			ctrl_reg = read_wb_reg(ARM_BASE_WCR + i);
--			decode_ctrl_reg(ctrl_reg, &ctrl);
--			if (!((1 << (addr & alignment_mask)) & ctrl.len))
--				goto unlock;
--
- 			/* Check that the access type matches. */
- 			if (debug_exception_updates_fsr()) {
- 				access = (fsr & ARM_FSR_ACCESS_MASK) ?
- 					  HW_BREAKPOINT_W : HW_BREAKPOINT_R;
- 				if (!(access & hw_breakpoint_type(wp)))
--					goto unlock;
-+					continue;
- 			}
- 
-+			val = read_wb_reg(ARM_BASE_WVR + i);
-+			ctrl_reg = read_wb_reg(ARM_BASE_WCR + i);
-+			decode_ctrl_reg(ctrl_reg, &ctrl);
-+			dist = get_distance_from_watchpoint(addr, val, &ctrl);
-+			if (dist < min_dist) {
-+				min_dist = dist;
-+				closest_match = i;
-+			}
-+			/* Is this an exact match? */
-+			if (dist != 0)
-+				continue;
+ 	/*
+ 	 * Allocate space to the file, as necessary.
+ 	 */
+@@ -830,6 +836,8 @@ xfs_growfs_rt_alloc(
+ 					mp->m_bsize, 0, &bp);
+ 			if (error)
+ 				goto out_trans_cancel;
 +
- 			/* We have a winner. */
-+			info = counter_arch_bp(wp);
- 			info->trigger = addr;
- 		}
- 
-@@ -765,13 +799,23 @@ static void watchpoint_handler(unsigned long addr, unsigned int fsr,
- 		 * we can single-step over the watchpoint trigger.
- 		 */
- 		if (!is_default_overflow_handler(wp))
--			goto unlock;
--
-+			continue;
- step:
- 		enable_single_step(wp, instruction_pointer(regs));
--unlock:
--		rcu_read_unlock();
- 	}
-+
-+	if (min_dist > 0 && min_dist != -1) {
-+		/* No exact match found. */
-+		wp = slots[closest_match];
-+		info = counter_arch_bp(wp);
-+		info->trigger = addr;
-+		pr_debug("watchpoint fired: address = 0x%x\n", info->trigger);
-+		perf_bp_event(wp, regs);
-+		if (is_default_overflow_handler(wp))
-+			enable_single_step(wp, instruction_pointer(regs));
-+	}
-+
-+	rcu_read_unlock();
- }
- 
- static void watchpoint_single_step_handler(unsigned long pc)
++			xfs_trans_buf_set_type(tp, bp, buf_type);
+ 			memset(bp->b_addr, 0, mp->m_sb.sb_blocksize);
+ 			xfs_trans_log_buf(tp, bp, 0, mp->m_sb.sb_blocksize - 1);
+ 			/*
 -- 
 2.25.1
 
