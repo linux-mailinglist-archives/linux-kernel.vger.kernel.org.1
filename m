@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E4F299FAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0157F299FA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441459AbgJ0AXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:23:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59432 "EHLO mail.kernel.org"
+        id S2441445AbgJ0AXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:23:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410298AbgJZXyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:54:05 -0400
+        id S2410330AbgJZXyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:54:09 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AF2021655;
-        Mon, 26 Oct 2020 23:54:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CC1922202;
+        Mon, 26 Oct 2020 23:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756444;
-        bh=vl6O4oqa8oou/C33lhU3F45BLVant7tmaE2Yu+Cjurw=;
+        s=default; t=1603756448;
+        bh=ZINp8YjkcbCqBF3mGLrWPfe+q+VQGBkIUU7W9Q9bY2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FQ/YDg89Yp8bezeQCGq6KsKlVJUZpi4gPXR7BipP/3CgYrCOAv6liLYiAKFuB5xfc
-         GfTpbS0DdS4tsN+Z6+BZEqzN9ASLXkd/q+Y9pSTKIP58s99oYkjO1t7B4e6kJvqTQ1
-         47GnZuYI+UsZpRyf0JuxLTU7Clq/cyMEGstR1Z6I=
+        b=b01/WRLihUB6Jy2jJU6RExn1FgaUkmk1t8HE4AnqFVK7cfMFyGxb64Vdim2Cx61gd
+         aps1BT+etIdBNrHo7GT6rgyMfNrrLR6BKcCPbRpewnlAeyUi41dFoS3/pHfRWXY2j5
+         vZpSe9xtl13aEo+RQVVWcRS20va924lfZMP3uf6s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhao Heming <heming.zhao@suse.com>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>, linux-raid@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 097/132] md/bitmap: md_bitmap_get_counter returns wrong blocks
-Date:   Mon, 26 Oct 2020 19:51:29 -0400
-Message-Id: <20201026235205.1023962-97-sashal@kernel.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 100/132] binfmt_elf: take the mmap lock around find_extend_vma()
+Date:   Mon, 26 Oct 2020 19:51:32 -0400
+Message-Id: <20201026235205.1023962-100-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -42,51 +49,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Heming <heming.zhao@suse.com>
+From: Jann Horn <jannh@google.com>
 
-[ Upstream commit d837f7277f56e70d82b3a4a037d744854e62f387 ]
+[ Upstream commit b2767d97f5ff758250cf28684aaa48bbfd34145f ]
 
-md_bitmap_get_counter() has code:
+create_elf_tables() runs after setup_new_exec(), so other tasks can
+already access our new mm and do things like process_madvise() on it.  (At
+the time I'm writing this commit, process_madvise() is not in mainline
+yet, but has been in akpm's tree for some time.)
 
-```
-    if (bitmap->bp[page].hijacked ||
-        bitmap->bp[page].map == NULL)
-        csize = ((sector_t)1) << (bitmap->chunkshift +
-                      PAGE_COUNTER_SHIFT - 1);
-```
+While I believe that there are currently no APIs that would actually allow
+another process to mess up our VMA tree (process_madvise() is limited to
+MADV_COLD and MADV_PAGEOUT, and uring and userfaultfd cannot reach an mm
+under which no syscalls have been executed yet), this seems like an
+accident waiting to happen.
 
-The minus 1 is wrong, this branch should report 2048 bits of space.
-With "-1" action, this only report 1024 bit of space.
+Let's make sure that we always take the mmap lock around GUP paths as long
+as another process might be able to see the mm.
 
-This bug code returns wrong blocks, but it doesn't inflence bitmap logic:
-1. Most callers focus this function return value (the counter of offset),
-   not the parameter blocks.
-2. The bug is only triggered when hijacked is true or map is NULL.
-   the hijacked true condition is very rare.
-   the "map == null" only true when array is creating or resizing.
-3. Even the caller gets wrong blocks, current code makes caller just to
-   call md_bitmap_get_counter() one more time.
+(Yes, this diff looks suspicious because we drop the lock before doing
+anything with `vma`, but that's because we actually don't do anything with
+it apart from the NULL check.)
 
-Signed-off-by: Zhao Heming <heming.zhao@suse.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Jann Horn <jannh@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Michel Lespinasse <walken@google.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Link: https://lkml.kernel.org/r/CAG48ez1-PBCdv3y8pn-Ty-b+FmBSLwDuVKFSt8h7wARLy0dF-Q@mail.gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md-bitmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/binfmt_elf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index 95a5f3757fa30..32a96559cb366 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -1367,7 +1367,7 @@ __acquires(bitmap->lock)
- 	if (bitmap->bp[page].hijacked ||
- 	    bitmap->bp[page].map == NULL)
- 		csize = ((sector_t)1) << (bitmap->chunkshift +
--					  PAGE_COUNTER_SHIFT - 1);
-+					  PAGE_COUNTER_SHIFT);
- 	else
- 		csize = ((sector_t)1) << bitmap->chunkshift;
- 	*blocks = csize - (offset & (csize - 1));
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 9fe3b51c116a6..6a0d0427c7433 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -309,7 +309,10 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+ 	 * Grow the stack manually; some architectures have a limit on how
+ 	 * far ahead a user-space access may be in order to grow the stack.
+ 	 */
++	if (mmap_read_lock_killable(mm))
++		return -EINTR;
+ 	vma = find_extend_vma(mm, bprm->p);
++	mmap_read_unlock(mm);
+ 	if (!vma)
+ 		return -EFAULT;
+ 
 -- 
 2.25.1
 
