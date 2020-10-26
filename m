@@ -2,1208 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16067298538
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 02:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAC229853A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 02:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421029AbgJZBGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 21:06:04 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30724 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1421022AbgJZBGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 21:06:03 -0400
-IronPort-SDR: CvpLpYTCq58kf7vq6TJDuqLUFIaW/3y4IznFo+FIC43k6G+ERbHdygFRgiPDWUCwwVhUE5PXyu
- wIABLGFM4kTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="185584262"
-X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
-   d="scan'208";a="185584262"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2020 18:06:02 -0700
-IronPort-SDR: VlA535M4Mcv2BHVdBMXZTuzKOCaptHFXIVgW6iUpIQAYDr9ph4P+aqBGFzoEwlX4/iNjKd6ia/
- IWEHXEUCT4WQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
-   d="scan'208";a="360832513"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
-  by orsmga007.jf.intel.com with ESMTP; 25 Oct 2020 18:05:52 -0700
-Subject: Re: [PATCH v8 -tip 24/26] sched: Move core-scheduler interfacing code
- to a new file
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-25-joel@joelfernandes.org>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <c7466b5d-9850-9eff-3e67-f0cb1b578cc3@linux.intel.com>
-Date:   Mon, 26 Oct 2020 09:05:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1421051AbgJZBK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 21:10:28 -0400
+Received: from nl101-3.vfemail.net ([149.210.219.33]:39133 "EHLO
+        nl101-3.vfemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1421044AbgJZBK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 21:10:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=vfemail.net; h=date:from
+        :to:cc:subject:message-id:in-reply-to:references:mime-version
+        :content-type:content-transfer-encoding; s=2018; bh=+AyKyspfmNmY
+        h7t+ALReRJ9sL9+ffzOSDrF3csyyKPU=; b=KR6SdeBLkWcbmhLC8Apfwv2oAnzx
+        PQnsWK3zDaUC+hT6WKFit08IXFNdOqLn+BMfd3uxFNYVy+uKSPsuv4ZasM9774CB
+        hTNqI0eTbLzaikUD7mmpEN4ceCrd+/GHz+YTSP0yoMs5JW1Q30czfjiEJ8c/IEZS
+        gafeMDoUWVvCSCE=
+Received: (qmail 23719 invoked from network); 26 Oct 2020 01:10:26 -0000
+Received: by simscan 1.4.0 ppid: 23701, pid: 23712, t: 0.4055s
+         scanners:none
+Received: from unknown (HELO d3d3MTkyLnZmZW1haWwubmV0) (aGdudGt3aXNAdmZlbWFpbC5uZXQ=@MTkyLjE2OC4xLjE5Mg==)
+  by nl101.vfemail.net with ESMTPA; 26 Oct 2020 01:10:25 -0000
+Date:   Sun, 25 Oct 2020 21:07:58 -0400
+From:   David Niklas <Hgntkwis@vfemail.net>
+To:     Edward Shishkin <edward.shishkin@gmail.com>
+Cc:     <reiserfs-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: PROBLEM: Reiser4 hard lockup
+Message-ID: <20201025210758.034aa947@Phenom-II-x6.niklas.com>
+In-Reply-To: <20201025090422.D80F56FB40E1@huitzilopochtli.metztli-it.com>
+References: <20201025090422.D80F56FB40E1@huitzilopochtli.metztli-it.com>
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201020014336.2076526-25-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/20 9:43, Joel Fernandes (Google) wrote:
-> core.c is already huge. The core-tagging interface code is largely
-> independent of it. Move it to its own file to make both files easier to
-> maintain.
-> 
-> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/sched/Makefile  |   1 +
->  kernel/sched/core.c    | 481 +----------------------------------------
->  kernel/sched/coretag.c | 468 +++++++++++++++++++++++++++++++++++++++
->  kernel/sched/sched.h   |  56 ++++-
->  4 files changed, 523 insertions(+), 483 deletions(-)
->  create mode 100644 kernel/sched/coretag.c
-> 
-> diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-> index 5fc9c9b70862..c526c20adf9d 100644
-> --- a/kernel/sched/Makefile
-> +++ b/kernel/sched/Makefile
-> @@ -36,3 +36,4 @@ obj-$(CONFIG_CPU_FREQ_GOV_SCHEDUTIL) += cpufreq_schedutil.o
->  obj-$(CONFIG_MEMBARRIER) += membarrier.o
->  obj-$(CONFIG_CPU_ISOLATION) += isolation.o
->  obj-$(CONFIG_PSI) += psi.o
-> +obj-$(CONFIG_SCHED_CORE) += coretag.o
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index b3afbba5abe1..211e0784675f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -162,11 +162,6 @@ static bool sched_core_empty(struct rq *rq)
->  	return RB_EMPTY_ROOT(&rq->core_tree);
->  }
->  
-> -static bool sched_core_enqueued(struct task_struct *task)
-> -{
-> -	return !RB_EMPTY_NODE(&task->core_node);
-> -}
-> -
->  static struct task_struct *sched_core_first(struct rq *rq)
->  {
->  	struct task_struct *task;
-> @@ -188,7 +183,7 @@ static void sched_core_flush(int cpu)
->  	rq->core->core_task_seq++;
->  }
->  
-> -static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
-> +void sched_core_enqueue(struct rq *rq, struct task_struct *p)
->  {
->  	struct rb_node *parent, **node;
->  	struct task_struct *node_task;
-> @@ -215,7 +210,7 @@ static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
->  	rb_insert_color(&p->core_node, &rq->core_tree);
->  }
->  
-> -static void sched_core_dequeue(struct rq *rq, struct task_struct *p)
-> +void sched_core_dequeue(struct rq *rq, struct task_struct *p)
->  {
->  	rq->core->core_task_seq++;
->  
-> @@ -310,7 +305,6 @@ static int __sched_core_stopper(void *data)
->  }
->  
->  static DEFINE_MUTEX(sched_core_mutex);
-> -static DEFINE_MUTEX(sched_core_tasks_mutex);
->  static int sched_core_count;
->  
->  static void __sched_core_enable(void)
-> @@ -346,16 +340,6 @@ void sched_core_put(void)
->  		__sched_core_disable();
->  	mutex_unlock(&sched_core_mutex);
->  }
-> -
-> -static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
-> -
-> -#else /* !CONFIG_SCHED_CORE */
-> -
-> -static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
-> -static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-> -static bool sched_core_enqueued(struct task_struct *task) { return false; }
-> -static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
-> -
->  #endif /* CONFIG_SCHED_CORE */
->  
->  /*
-> @@ -8505,9 +8489,6 @@ void sched_offline_group(struct task_group *tg)
->  	spin_unlock_irqrestore(&task_group_lock, flags);
->  }
->  
-> -#define SCHED_CORE_GROUP_COOKIE_MASK ((1UL << (sizeof(unsigned long) * 4)) - 1)
-> -static unsigned long cpu_core_get_group_cookie(struct task_group *tg);
-> -
->  static void sched_change_group(struct task_struct *tsk, int type)
->  {
->  	struct task_group *tg;
-> @@ -8583,11 +8564,6 @@ void sched_move_task(struct task_struct *tsk)
->  	task_rq_unlock(rq, tsk, &rf);
->  }
->  
-> -static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
-> -{
-> -	return css ? container_of(css, struct task_group, css) : NULL;
-> -}
-> -
->  static struct cgroup_subsys_state *
->  cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->  {
-> @@ -9200,459 +9176,6 @@ static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
->  }
->  #endif /* CONFIG_RT_GROUP_SCHED */
->  
-> -#ifdef CONFIG_SCHED_CORE
-> -/*
-> - * A simple wrapper around refcount. An allocated sched_core_cookie's
-> - * address is used to compute the cookie of the task.
-> - */
-> -struct sched_core_cookie {
-> -	refcount_t refcnt;
-> -};
-> -
-> -/*
-> - * sched_core_tag_requeue - Common helper for all interfaces to set a cookie.
-> - * @p: The task to assign a cookie to.
-> - * @cookie: The cookie to assign.
-> - * @group: is it a group interface or a per-task interface.
-> - *
-> - * This function is typically called from a stop-machine handler.
-> - */
-> -void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
-> -{
-> -	if (!p)
-> -		return;
-> -
-> -	if (group)
-> -		p->core_group_cookie = cookie;
-> -	else
-> -		p->core_task_cookie = cookie;
-> -
-> -	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-> -	p->core_cookie = (p->core_task_cookie <<
-> -				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
-> -
-> -	if (sched_core_enqueued(p)) {
-> -		sched_core_dequeue(task_rq(p), p);
-> -		if (!p->core_cookie)
-> -			return;
-> -	}
-> -
-> -	if (sched_core_enabled(task_rq(p)) &&
-> -			p->core_cookie && task_on_rq_queued(p))
-> -		sched_core_enqueue(task_rq(p), p);
-> -}
-> -
-> -/* Per-task interface */
-> -static unsigned long sched_core_alloc_task_cookie(void)
-> -{
-> -	struct sched_core_cookie *ptr =
-> -		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
-> -
-> -	if (!ptr)
-> -		return 0;
-> -	refcount_set(&ptr->refcnt, 1);
-> -
-> -	/*
-> -	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> -	 * is done after the stopper runs.
-> -	 */
-> -	sched_core_get();
-> -	return (unsigned long)ptr;
-> -}
-> -
-> -static bool sched_core_get_task_cookie(unsigned long cookie)
-> -{
-> -	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> -
-> -	/*
-> -	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> -	 * is done after the stopper runs.
-> -	 */
-> -	sched_core_get();
-> -	return refcount_inc_not_zero(&ptr->refcnt);
-> -}
-> -
-> -static void sched_core_put_task_cookie(unsigned long cookie)
-> -{
-> -	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> -
-> -	if (refcount_dec_and_test(&ptr->refcnt))
-> -		kfree(ptr);
-> -}
-> -
-> -struct sched_core_task_write_tag {
-> -	struct task_struct *tasks[2];
-> -	unsigned long cookies[2];
-> -};
-> -
-> -/*
-> - * Ensure that the task has been requeued. The stopper ensures that the task cannot
-> - * be migrated to a different CPU while its core scheduler queue state is being updated.
-> - * It also makes sure to requeue a task if it was running actively on another CPU.
-> - */
-> -static int sched_core_task_join_stopper(void *data)
-> -{
-> -	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
-> -	int i;
-> -
-> -	for (i = 0; i < 2; i++)
-> -		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
-> -
-> -	return 0;
-> -}
-> -
-> -static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-> -{
-> -	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
-> -	bool sched_core_put_after_stopper = false;
-> -	unsigned long cookie;
-> -	int ret = -ENOMEM;
-> -
-> -	mutex_lock(&sched_core_tasks_mutex);
-> -
-> -	/*
-> -	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
-> -	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
-> -	 *       by this function *after* the stopper removes the tasks from the
-> -	 *       core queue, and not before. This is just to play it safe.
-> -	 */
-> -	if (t2 == NULL) {
-> -		if (t1->core_task_cookie) {
-> -			sched_core_put_task_cookie(t1->core_task_cookie);
-> -			sched_core_put_after_stopper = true;
-> -			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
-> -		}
-> -	} else if (t1 == t2) {
-> -		/* Assign a unique per-task cookie solely for t1. */
-> -
-> -		cookie = sched_core_alloc_task_cookie();
-> -		if (!cookie)
-> -			goto out_unlock;
-> -
-> -		if (t1->core_task_cookie) {
-> -			sched_core_put_task_cookie(t1->core_task_cookie);
-> -			sched_core_put_after_stopper = true;
-> -		}
-> -		wr.tasks[0] = t1;
-> -		wr.cookies[0] = cookie;
-> -	} else
-> -	/*
-> -	 * 		t1		joining		t2
-> -	 * CASE 1:
-> -	 * before	0				0
-> -	 * after	new cookie			new cookie
-> -	 *
-> -	 * CASE 2:
-> -	 * before	X (non-zero)			0
-> -	 * after	0				0
-> -	 *
-> -	 * CASE 3:
-> -	 * before	0				X (non-zero)
-> -	 * after	X				X
-> -	 *
-> -	 * CASE 4:
-> -	 * before	Y (non-zero)			X (non-zero)
-> -	 * after	X				X
-> -	 */
-> -	if (!t1->core_task_cookie && !t2->core_task_cookie) {
-> -		/* CASE 1. */
-> -		cookie = sched_core_alloc_task_cookie();
-> -		if (!cookie)
-> -			goto out_unlock;
-> -
-> -		/* Add another reference for the other task. */
-> -		if (!sched_core_get_task_cookie(cookie)) {
-> -			return -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -
-> -		wr.tasks[0] = t1;
-> -		wr.tasks[1] = t2;
-> -		wr.cookies[0] = wr.cookies[1] = cookie;
-> -
-> -	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-> -		/* CASE 2. */
-> -		sched_core_put_task_cookie(t1->core_task_cookie);
-> -		sched_core_put_after_stopper = true;
-> -
-> -		wr.tasks[0] = t1; /* Reset cookie for t1. */
-> -
-> -	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-> -		/* CASE 3. */
-> -		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> -			ret = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -
-> -		wr.tasks[0] = t1;
-> -		wr.cookies[0] = t2->core_task_cookie;
-> -
-> -	} else {
-> -		/* CASE 4. */
-> -		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> -			ret = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -		sched_core_put_task_cookie(t1->core_task_cookie);
-> -		sched_core_put_after_stopper = true;
-> -
-> -		wr.tasks[0] = t1;
-> -		wr.cookies[0] = t2->core_task_cookie;
-> -	}
-> -
-> -	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
-> -
-> -	if (sched_core_put_after_stopper)
-> -		sched_core_put();
-> -
-> -	ret = 0;
-> -out_unlock:
-> -	mutex_unlock(&sched_core_tasks_mutex);
-> -	return ret;
-> -}
-> -
-> -/* Called from prctl interface: PR_SCHED_CORE_SHARE */
-> -int sched_core_share_pid(pid_t pid)
-> -{
-> -	struct task_struct *task;
-> -	int err;
-> -
-> -	if (pid == 0) { /* Recent current task's cookie. */
-> -		/* Resetting a cookie requires privileges. */
-> -		if (current->core_task_cookie)
-> -			if (!capable(CAP_SYS_ADMIN))
-> -				return -EPERM;
-> -		task = NULL;
-> -	} else {
-> -		rcu_read_lock();
-> -		task = pid ? find_task_by_vpid(pid) : current;
-> -		if (!task) {
-> -			rcu_read_unlock();
-> -			return -ESRCH;
-> -		}
-> -
-> -		get_task_struct(task);
-> -
-> -		/*
-> -		 * Check if this process has the right to modify the specified
-> -		 * process. Use the regular "ptrace_may_access()" checks.
-> -		 */
-> -		if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
-> -			rcu_read_unlock();
-> -			err = -EPERM;
-> -			goto out_put;
-> -		}
-> -		rcu_read_unlock();
-> -	}
-> -
-> -	err = sched_core_share_tasks(current, task);
-> -out_put:
-> -	if (task)
-> -		put_task_struct(task);
-> -	return err;
-> -}
-> -
-> -/* CGroup interface */
-> -
-> -/*
-> - * Helper to get the cookie in a hierarchy.
-> - * The cookie is a combination of a tag and color. Any ancestor
-> - * can have a tag/color. tag is the first-level cookie setting
-> - * with color being the second. Atmost one color and one tag is
-> - * allowed.
-> - */
-> -static unsigned long cpu_core_get_group_cookie(struct task_group *tg)
-> -{
-> -	unsigned long color = 0;
-> -
-> -	if (!tg)
-> -		return 0;
-> -
-> -	for (; tg; tg = tg->parent) {
-> -		if (tg->core_tag_color) {
-> -			WARN_ON_ONCE(color);
-> -			color = tg->core_tag_color;
-> -		}
-> -
-> -		if (tg->core_tagged) {
-> -			unsigned long cookie = ((unsigned long)tg << 8) | color;
-> -			cookie &= SCHED_CORE_GROUP_COOKIE_MASK;
-> -			return cookie;
-> -		}
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -/* Determine if any group in @tg's children are tagged or colored. */
-> -static bool cpu_core_check_descendants(struct task_group *tg, bool check_tag,
-> -					bool check_color)
-> -{
-> -	struct task_group *child;
-> -
-> -	rcu_read_lock();
-> -	list_for_each_entry_rcu(child, &tg->children, siblings) {
-> -		if ((child->core_tagged && check_tag) ||
-> -		    (child->core_tag_color && check_color)) {
-> -			rcu_read_unlock();
-> -			return true;
-> -		}
-> -
-> -		rcu_read_unlock();
-> -		return cpu_core_check_descendants(child, check_tag, check_color);
-> -	}
-> -
-> -	rcu_read_unlock();
-> -	return false;
-> -}
-> -
-> -static u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
-> -{
-> -	struct task_group *tg = css_tg(css);
-> -
-> -	return !!tg->core_tagged;
-> -}
-> -
-> -static u64 cpu_core_tag_color_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
-> -{
-> -	struct task_group *tg = css_tg(css);
-> -
-> -	return tg->core_tag_color;
-> -}
-> -
-> -#ifdef CONFIG_SCHED_DEBUG
-> -static u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
-> -{
-> -	return cpu_core_get_group_cookie(css_tg(css));
-> -}
-> -#endif
-> -
-> -struct write_core_tag {
-> -	struct cgroup_subsys_state *css;
-> -	unsigned long cookie;
-> -};
-> -
-> -static int __sched_write_tag(void *data)
-> -{
-> -	struct write_core_tag *tag = (struct write_core_tag *) data;
-> -	struct task_struct *p;
-> -	struct cgroup_subsys_state *css;
-> -
-> -	rcu_read_lock();
-> -	css_for_each_descendant_pre(css, tag->css) {
-> -		struct css_task_iter it;
-> -
-> -		css_task_iter_start(css, 0, &it);
-> -		/*
-> -		 * Note: css_task_iter_next will skip dying tasks.
-> -		 * There could still be dying tasks left in the core queue
-> -		 * when we set cgroup tag to 0 when the loop is done below.
-> -		 */
-> -		while ((p = css_task_iter_next(&it)))
-> -			sched_core_tag_requeue(p, tag->cookie, true /* group */);
-> -
-> -		css_task_iter_end(&it);
-> -	}
-> -	rcu_read_unlock();
-> -
-> -	return 0;
-> -}
-> -
-> -static int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
-> -{
-> -	struct task_group *tg = css_tg(css);
-> -	struct write_core_tag wtag;
-> -
-> -	if (val > 1)
-> -		return -ERANGE;
-> -
-> -	if (!static_branch_likely(&sched_smt_present))
-> -		return -EINVAL;
-> -
-> -	if (!tg->core_tagged && val) {
-> -		/* Tag is being set. Check ancestors and descendants. */
-> -		if (cpu_core_get_group_cookie(tg) ||
-> -		    cpu_core_check_descendants(tg, true /* tag */, true /* color */))
-> -			return -EBUSY;
-> -	} else if (tg->core_tagged && !val) {
-> -		/* Tag is being reset. Check descendants. */
-> -		if (cpu_core_check_descendants(tg, true /* tag */, true /* color */))
-> -			return -EBUSY;
-> -	} else {
-> -		return 0;
-> -	}
-> -
-> -	if (!!val)
-> -		sched_core_get();
-> -
-> -	wtag.css = css;
-> -	wtag.cookie = (unsigned long)tg << 8; /* Reserve lower 8 bits for color. */
-> -
-> -	/* Truncate the upper 32-bits - those are used by the per-task cookie. */
-> -	wtag.cookie &= (1UL << (sizeof(unsigned long) * 4)) - 1;
-> -
-> -	tg->core_tagged = val;
-> -
-> -	stop_machine(__sched_write_tag, (void *) &wtag, NULL);
-> -	if (!val)
-> -		sched_core_put();
-> -
-> -	return 0;
-> -}
-> -
-> -static int cpu_core_tag_color_write_u64(struct cgroup_subsys_state *css,
-> -					struct cftype *cft, u64 val)
-> -{
-> -	struct task_group *tg = css_tg(css);
-> -	struct write_core_tag wtag;
-> -	u64 cookie;
-> -
-> -	if (val > 255)
-> -		return -ERANGE;
-> -
-> -	if (!static_branch_likely(&sched_smt_present))
-> -		return -EINVAL;
-> -
-> -	cookie = cpu_core_get_group_cookie(tg);
-> -	/* Can't set color if nothing in the ancestors were tagged. */
-> -	if (!cookie)
-> -		return -EINVAL;
-> -
-> -	/*
-> -	 * Something in the ancestors already colors us. Can't change the color
-> -	 * at this level.
-> -	 */
-> -	if (!tg->core_tag_color && (cookie & 255))
-> -		return -EINVAL;
-> -
-> -	/*
-> -	 * Check if any descendants are colored. If so, we can't recolor them.
-> -	 * Don't need to check if descendants are tagged, since we don't allow
-> -	 * tagging when already tagged.
-> -	 */
-> -	if (cpu_core_check_descendants(tg, false /* tag */, true /* color */))
-> -		return -EINVAL;
-> -
-> -	cookie &= ~255;
-> -	cookie |= val;
-> -	wtag.css = css;
-> -	wtag.cookie = cookie;
-> -	tg->core_tag_color = val;
-> -
-> -	stop_machine(__sched_write_tag, (void *) &wtag, NULL);
-> -
-> -	return 0;
-> -}
-> -
-> -void sched_tsk_free(struct task_struct *tsk)
-> -{
-> -	if (!tsk->core_task_cookie)
-> -		return;
-> -	sched_core_put_task_cookie(tsk->core_task_cookie);
-> -	sched_core_put();
-> -}
-> -#endif
-> -
->  static struct cftype cpu_legacy_files[] = {
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->  	{
-> diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
-> new file mode 100644
-> index 000000000000..3333c9b0afc5
-> --- /dev/null
-> +++ b/kernel/sched/coretag.c
-> @@ -0,0 +1,468 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * kernel/sched/core-tag.c
-> + *
-> + * Core-scheduling tagging interface support.
-> + *
-> + * Copyright(C) 2020, Joel Fernandes.
-> + * Initial interfacing code  by Peter Ziljstra.
-> + */
-> +
-> +#include "sched.h"
-> +
-> +/*
-> + * A simple wrapper around refcount. An allocated sched_core_cookie's
-> + * address is used to compute the cookie of the task.
-> + */
-> +struct sched_core_cookie {
-> +	refcount_t refcnt;
-> +};
-> +
-> +static DEFINE_MUTEX(sched_core_tasks_mutex);
-> +
-> +/*
-> + * sched_core_tag_requeue - Common helper for all interfaces to set a cookie.
-> + * @p: The task to assign a cookie to.
-> + * @cookie: The cookie to assign.
-> + * @group: is it a group interface or a per-task interface.
-> + *
-> + * This function is typically called from a stop-machine handler.
-> + */
-> +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
-> +{
-> +	if (!p)
-> +		return;
-> +
-> +	if (group)
-> +		p->core_group_cookie = cookie;
-> +	else
-> +		p->core_task_cookie = cookie;
-> +
-> +	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-> +	p->core_cookie = (p->core_task_cookie <<
-> +				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
-> +
-> +	if (sched_core_enqueued(p)) {
-> +		sched_core_dequeue(task_rq(p), p);
-> +		if (!p->core_cookie)
-> +			return;
-> +	}
-> +
-> +	if (sched_core_enabled(task_rq(p)) &&
-> +			p->core_cookie && task_on_rq_queued(p))
-> +		sched_core_enqueue(task_rq(p), p);
-> +}
-> +
-> +/* Per-task interface: Used by fork(2) and prctl(2). */
-> +static unsigned long sched_core_alloc_task_cookie(void)
-> +{
-> +	struct sched_core_cookie *ptr =
-> +		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
-> +
-> +	if (!ptr)
-> +		return 0;
-> +	refcount_set(&ptr->refcnt, 1);
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return (unsigned long)ptr;
-> +}
-> +
-> +static bool sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	/*
-> +	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-> +	 * is done after the stopper runs.
-> +	 */
-> +	sched_core_get();
-> +	return refcount_inc_not_zero(&ptr->refcnt);
-> +}
-> +
-> +static void sched_core_put_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-> +
-> +	if (refcount_dec_and_test(&ptr->refcnt))
-> +		kfree(ptr);
-> +}
-> +
-> +struct sched_core_task_write_tag {
-> +	struct task_struct *tasks[2];
-> +	unsigned long cookies[2];
-> +};
-> +
-> +/*
-> + * Ensure that the task has been requeued. The stopper ensures that the task cannot
-> + * be migrated to a different CPU while its core scheduler queue state is being updated.
-> + * It also makes sure to requeue a task if it was running actively on another CPU.
-> + */
-> +static int sched_core_task_join_stopper(void *data)
-> +{
-> +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
-> +	int i;
-> +
-> +	for (i = 0; i < 2; i++)
-> +		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
-> +
-> +	return 0;
-> +}
-> +
-> +int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-> +{
-> +	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
-> +	bool sched_core_put_after_stopper = false;
-> +	unsigned long cookie;
-> +	int ret = -ENOMEM;
-> +
-> +	mutex_lock(&sched_core_tasks_mutex);
-> +
-> +	/*
-> +	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
-> +	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
-> +	 *       by this function *after* the stopper removes the tasks from the
-> +	 *       core queue, and not before. This is just to play it safe.
-> +	 */
-> +	if (t2 == NULL) {
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
-> +		}
-> +	} else if (t1 == t2) {
-> +		/* Assign a unique per-task cookie solely for t1. */
-> +
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +		}
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = cookie;
-> +	} else
-> +	/*
-> +	 * 		t1		joining		t2
-> +	 * CASE 1:
-> +	 * before	0				0
-> +	 * after	new cookie			new cookie
-> +	 *
-> +	 * CASE 2:
-> +	 * before	X (non-zero)			0
-> +	 * after	0				0
-> +	 *
-> +	 * CASE 3:
-> +	 * before	0				X (non-zero)
-> +	 * after	X				X
-> +	 *
-> +	 * CASE 4:
-> +	 * before	Y (non-zero)			X (non-zero)
-> +	 * after	X				X
-> +	 */
-> +	if (!t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 1. */
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +
-> +		/* Add another reference for the other task. */
-> +		if (!sched_core_get_task_cookie(cookie)) {
-> +			return -EINVAL;
+I'll reply to both of you in this email.
 
-ret = -EINVAL; mutex is not released otherwise... 
+On Sun, 25 Oct 2020 02:04:22 -0700 (PDT)
+Metztli Information Technology <jose.r.r@metztli.com> wrote:
+> Niltze, David-
+> 
+> A few observations are in order below:
+> 
+> On Sat, Oct 24, 2020 at 1:39 PM David Niklas <Hgntkwis@vfemail.net>
+> wrote:
+> >
+> > Hello,
+> >
+<snip>
+> reiser4progs 1.1.x Software Framework Release Number (SFRN) 4.0.1 file
+> system utilities should not be used to check/fix media formatted 'a
+> priori' in SFRN 4.0.2 and vice-versa.
 
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.tasks[1] = t2;
-> +		wr.cookies[0] = wr.cookies[1] = cookie;
-> +
-> +	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 2. */
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1; /* Reset cookie for t1. */
-> +
-> +	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-> +		/* CASE 3. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +
-> +	} else {
-> +		/* CASE 4. */
-> +		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +	}
-> +
-> +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
-> +
-> +	if (sched_core_put_after_stopper)
-> +		sched_core_put();
-> +
-> +	ret = 0;
-> +out_unlock:
-> +	mutex_unlock(&sched_core_tasks_mutex);
-> +	return ret;
-> +}
-> +
-> +/* Called from prctl interface: PR_SCHED_CORE_SHARE */
-> +int sched_core_share_pid(pid_t pid)
-> +{
-> +	struct task_struct *task;
-> +	int err;
-> +
-> +	if (pid == 0) { /* Recent current task's cookie. */
-> +		/* Resetting a cookie requires privileges. */
-> +		if (current->core_task_cookie)
-> +			if (!capable(CAP_SYS_ADMIN))
-> +				return -EPERM;
-> +		task = NULL;
-> +	} else {
-> +		rcu_read_lock();
-> +		task = pid ? find_task_by_vpid(pid) : current;
-> +		if (!task) {
-> +			rcu_read_unlock();
-> +			return -ESRCH;
-> +		}
-> +
-> +		get_task_struct(task);
-> +
-> +		/*
-> +		 * Check if this process has the right to modify the specified
-> +		 * process. Use the regular "ptrace_may_access()" checks.
-> +		 */
-> +		if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
-> +			rcu_read_unlock();
-> +			err = -EPERM;
-> +			goto out_put;
-> +		}
-> +		rcu_read_unlock();
-> +	}
-> +
-> +	err = sched_core_share_tasks(current, task);
-> +out_put:
-> +	if (task)
-> +		put_task_struct(task);
-> +	return err;
-> +}
-> +
-> +/* CGroup core-scheduling interface support. */
-> +
-> +/*
-> + * Helper to get the cookie in a hierarchy.
-> + * The cookie is a combination of a tag and color. Any ancestor
-> + * can have a tag/color. tag is the first-level cookie setting
-> + * with color being the second. Atmost one color and one tag is
-> + * allowed.
-> + */
-> +unsigned long cpu_core_get_group_cookie(struct task_group *tg)
-> +{
-> +	unsigned long color = 0;
-> +
-> +	if (!tg)
-> +		return 0;
-> +
-> +	for (; tg; tg = tg->parent) {
-> +		if (tg->core_tag_color) {
-> +			WARN_ON_ONCE(color);
-> +			color = tg->core_tag_color;
-> +		}
-> +
-> +		if (tg->core_tagged) {
-> +			unsigned long cookie = ((unsigned long)tg << 8) | color;
-> +			cookie &= SCHED_CORE_GROUP_COOKIE_MASK;
-> +			return cookie;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* Determine if any group in @tg's children are tagged or colored. */
-> +static bool cpu_core_check_descendants(struct task_group *tg, bool check_tag,
-> +				       bool check_color)
-> +{
-> +	struct task_group *child;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(child, &tg->children, siblings) {
-> +		if ((child->core_tagged && check_tag) ||
-> +		    (child->core_tag_color && check_color)) {
-> +			rcu_read_unlock();
-> +			return true;
-> +		}
-> +
-> +		rcu_read_unlock();
-> +		return cpu_core_check_descendants(child, check_tag, check_color);
-> +	}
-> +
-> +	rcu_read_unlock();
-> +	return false;
-> +}
-> +
-> +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
-> +			  struct cftype *cft)
-> +{
-> +	struct task_group *tg = css_tg(css);
-> +
-> +	return !!tg->core_tagged;
-> +}
-> +
-> +u64 cpu_core_tag_color_read_u64(struct cgroup_subsys_state *css,
-> +				struct cftype *cft)
-> +{
-> +	struct task_group *tg = css_tg(css);
-> +
-> +	return tg->core_tag_color;
-> +}
-> +
-> +#ifdef CONFIG_SCHED_DEBUG
-> +u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css,
-> +				   struct cftype *cft)
-> +{
-> +	return cpu_core_get_group_cookie(css_tg(css));
-> +}
-> +#endif
-> +
-> +struct write_core_tag {
-> +	struct cgroup_subsys_state *css;
-> +	unsigned long cookie;
-> +};
-> +
-> +static int __sched_write_tag(void *data)
-> +{
-> +	struct write_core_tag *tag = (struct write_core_tag *) data;
-> +	struct task_struct *p;
-> +	struct cgroup_subsys_state *css;
-> +
-> +	rcu_read_lock();
-> +	css_for_each_descendant_pre(css, tag->css) {
-> +		struct css_task_iter it;
-> +
-> +		css_task_iter_start(css, 0, &it);
-> +		/*
-> +		 * Note: css_task_iter_next will skip dying tasks.
-> +		 * There could still be dying tasks left in the core queue
-> +		 * when we set cgroup tag to 0 when the loop is done below.
-> +		 */
-> +		while ((p = css_task_iter_next(&it)))
-> +			sched_core_tag_requeue(p, tag->cookie, true /* group */);
-> +
-> +		css_task_iter_end(&it);
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return 0;
-> +}
-> +
-> +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
-> +			   u64 val)
-> +{
-> +	struct task_group *tg = css_tg(css);
-> +	struct write_core_tag wtag;
-> +
-> +	if (val > 1)
-> +		return -ERANGE;
-> +
-> +	if (!static_branch_likely(&sched_smt_present))
-> +		return -EINVAL;
-> +
-> +	if (!tg->core_tagged && val) {
-> +		/* Tag is being set. Check ancestors and descendants. */
-> +		if (cpu_core_get_group_cookie(tg) ||
-> +		    cpu_core_check_descendants(tg, true /* tag */, true /* color */))
-> +			return -EBUSY;
-> +	} else if (tg->core_tagged && !val) {
-> +		/* Tag is being reset. Check descendants. */
-> +		if (cpu_core_check_descendants(tg, true /* tag */, true /* color */))
-> +			return -EBUSY;
-> +	} else {
-> +		return 0;
-> +	}
-> +
-> +	if (!!val)
-> +		sched_core_get();
-> +
-> +	wtag.css = css;
-> +	wtag.cookie = (unsigned long)tg << 8; /* Reserve lower 8 bits for color. */
-> +
-> +	/* Truncate the upper 32-bits - those are used by the per-task cookie. */
-> +	wtag.cookie &= (1UL << (sizeof(unsigned long) * 4)) - 1;
-> +
-> +	tg->core_tagged = val;
-> +
-> +	stop_machine(__sched_write_tag, (void *) &wtag, NULL);
-> +	if (!val)
-> +		sched_core_put();
-> +
-> +	return 0;
-> +}
-> +
-> +int cpu_core_tag_color_write_u64(struct cgroup_subsys_state *css,
-> +				 struct cftype *cft, u64 val)
-> +{
-> +	struct task_group *tg = css_tg(css);
-> +	struct write_core_tag wtag;
-> +	u64 cookie;
-> +
-> +	if (val > 255)
-> +		return -ERANGE;
-> +
-> +	if (!static_branch_likely(&sched_smt_present))
-> +		return -EINVAL;
-> +
-> +	cookie = cpu_core_get_group_cookie(tg);
-> +	/* Can't set color if nothing in the ancestors were tagged. */
-> +	if (!cookie)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Something in the ancestors already colors us. Can't change the color
-> +	 * at this level.
-> +	 */
-> +	if (!tg->core_tag_color && (cookie & 255))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Check if any descendants are colored. If so, we can't recolor them.
-> +	 * Don't need to check if descendants are tagged, since we don't allow
-> +	 * tagging when already tagged.
-> +	 */
-> +	if (cpu_core_check_descendants(tg, false /* tag */, true /* color */))
-> +		return -EINVAL;
-> +
-> +	cookie &= ~255;
-> +	cookie |= val;
-> +	wtag.css = css;
-> +	wtag.cookie = cookie;
-> +	tg->core_tag_color = val;
-> +
-> +	stop_machine(__sched_write_tag, (void *) &wtag, NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +void sched_tsk_free(struct task_struct *tsk)
-> +{
-> +	if (!tsk->core_task_cookie)
-> +		return;
-> +	sched_core_put_task_cookie(tsk->core_task_cookie);
-> +	sched_core_put();
-> +}
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index aebeb91c4a0f..290a3b8be3d3 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -437,6 +437,11 @@ struct task_group {
->  
->  };
->  
-> +static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
-> +{
-> +	return css ? container_of(css, struct task_group, css) : NULL;
-> +}
-> +
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->  #define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
->  
-> @@ -1104,6 +1109,8 @@ static inline int cpu_of(struct rq *rq)
->  #ifdef CONFIG_SCHED_CORE
->  DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
->  
-> +#define SCHED_CORE_GROUP_COOKIE_MASK ((1UL << (sizeof(unsigned long) * 4)) - 1)
-> +
->  static inline bool sched_core_enabled(struct rq *rq)
->  {
->  	return static_branch_unlikely(&__sched_core_enabled) && rq->core_enabled;
-> @@ -1148,10 +1155,54 @@ static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
->  	return idle_core || rq->core->core_cookie == p->core_cookie;
->  }
->  
-> -extern void queue_core_balance(struct rq *rq);
-> +static inline bool sched_core_enqueued(struct task_struct *task)
-> +{
-> +	return !RB_EMPTY_NODE(&task->core_node);
-> +}
-> +
-> +void queue_core_balance(struct rq *rq);
-> +
-> +void sched_core_enqueue(struct rq *rq, struct task_struct *p);
-> +void sched_core_dequeue(struct rq *rq, struct task_struct *p);
-> +void sched_core_get(void);
-> +void sched_core_put(void);
-> +
-> +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie,
-> +			    bool group);
-> +
-> +int sched_core_share_pid(pid_t pid);
-> +int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
-> +
-> +unsigned long cpu_core_get_group_cookie(struct task_group *tg);
-> +
-> +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
-> +			  struct cftype *cft);
-> +
-> +u64 cpu_core_tag_color_read_u64(struct cgroup_subsys_state *css,
-> +				struct cftype *cft);
-> +
-> +#ifdef CONFIG_SCHED_DEBUG
-> +u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css,
-> +				   struct cftype *cft);
-> +#endif
-> +
-> +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
-> +			   u64 val);
-> +
-> +int cpu_core_tag_color_write_u64(struct cgroup_subsys_state *css,
-> +				 struct cftype *cft, u64 val);
-> +
-> +#ifndef TIF_UNSAFE_RET
-> +#define TIF_UNSAFE_RET (0)
-> +#endif
->  
->  #else /* !CONFIG_SCHED_CORE */
->  
-> +static inline bool sched_core_enqueued(struct task_struct *task) { return false; }
-> +static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
-> +static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-> +static inline int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
-> +
->  static inline bool sched_core_enabled(struct rq *rq)
->  {
->  	return false;
-> @@ -2779,7 +2830,4 @@ void swake_up_all_locked(struct swait_queue_head *q);
->  void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
->  
->  #ifdef CONFIG_SCHED_CORE
-> -#ifndef TIF_UNSAFE_RET
-> -#define TIF_UNSAFE_RET (0)
-> -#endif
->  #endif
+Honestly, this is the first time I've heard about a Linux FS having
+versioning other than a major one (NTFS IIRC is infamous for it's
+incompatibilities).
+
+<snip>
+
+> Conclusion: I suggest you read up on the published reiser4
+> documentation and build *both* your kernel and reiser4progs utilities
+> conforming to the more recent stable SFRN 4.0.2.
+
+I religiously read the reiser4 documentation prior to changing my FS. No
+where do I recall seeing, on the wiki, or in the man pages, that there
+was a need to use a newer reiser4 progs.
+Ok, here it is:
+https://reiser4.wiki.kernel.org/index.php/Reiser4_development_model
+I'm not normally going to read a page that looks like it's for developers
+as an end user which is why I didn't initially read it.
+
+> Prior to build reiser4progs 1.2.1 SFRN 4.0.2:
+> libaal-1.0.7.tar.gz
+> < https://sourceforge.net/projects/reiser4/files/reiser4-utils/ >
+> 
+> then build reiser4progs-1.2.1.tar.gz SFRN 4.0.2
+> <
+> https://sourceforge.net/projects/reiser4/files/reiser4-utils/reiser4progs/
+> >
+> 
+> as any reiser4 patches for kernel 4.14 and higher conform to SFRN 4.0.2:
+> https://sourceforge.net/projects/reiser4/files/reiser4-for-linux-5.x/
+> 
+> citing, for the third time, reference email documenting the change,
+> i.e. '2017-11-26 23:01:53 reiser4 SFRN 4.0.2 is not your father's
+> reiser4 SFRN 4.0.1' <
+> https://marc.info/?l=reiserfs-devel&m=151173731709826&w=2 >
+> 
+> If you are going to use reiser4 kernel patches for linux 4.15.xy -
+> 5.4.5 range, please make sure to *also* apply: [PATCH] reiser4: prevent
+> system lockups: <
+> https://marc.info/?l=reiserfs-devel&m=158086248927420&w=2 >
+<snip>
+
+I was using 5.7.13 at the time. Should the crashes still be happening
+because this patch is missing? It seems odd you'd mention it knowing
+which kernel version I was using.
+
+
+On Sun, 25 Oct 2020 13:50:15 +0100
+Edward Shishkin <edward.shishkin@gmail.com> wrote:
+> On 10/24/2020 10:36 PM, David Niklas wrote:
+> > Hello,
+> >   
+> 
+> Hi David,
+> 
+> Thanks for the comprehensive report, which is definitely useful!
+> Below you can find some hints and comments.
 > 
 
+(:
+
+<snip>
+> 
+> It's a pity..
+> To be honest, I received complaints that reiser4 doesn't make
+> a friendship with torrents long time ago. Unfortunately, I am in Europe,
+> where it is impossible to use torrents that simply, without conflicts
+> with local legislation. Respectively, I am not able to reproduce it,
+> and the problem is still unfixed..
+> 
+I might try to reproduce this later and log the actual write patterns so
+you can reproduce these crashes. Obviously, I'll have to learn how to
+first.
+
+<snip>
+> reiser4 mount option "dont_load_bitmap" is your friend.
+
+I knew about that, but I'm uncertain if it would change how reiser4 works
+and then it will not cause the crash.
+
+> > I had also to manually chew through all the kernel .o files to find
+> > where the kernel broke at (also attached).
+> > 
+> > The command I used to create the reiser4 FS was:
+> > mkfs.reiser4 -o
+> > create=reg40,fibration=ext_3_fibre,hash=r5_hash,key=key_large,node=node40,compress=lzo1,compressMode=conv /dev/md7p1
+> > I wanted to use reg40 as opposed to ccreg40 because I wanted an
+> > unencrypted partition.  
+> 
+> 
+> You got confused. Reiser4 doesn't support encryption without special
+> patches (which are not public). With "create=reg40" you get a "classic"
+> setup without compression.
+> 
+> There is a "getting started" page, which provides some recommendations
+> on reiser4 mkfs and mount options:
+> https://reiser4.wiki.kernel.org/index.php/Reiser4_Howto
+
+Ah, I read that page 4 times but thought it out of date because the
+plugin description said something else.
+
+> > Likewise, I changed the fibration to ext_3_fibre
+> > from ext_1_fibre. Other then that, everything is set to it's defaults.
+> > Interestingly, if I try to set the key to short and change the mode to
+> > tea (a time compute trade off AFAIK), I crashes mkfs.reiser4.
+> > I need to report this to the developers.  
+> 
+> Short keys is an exotic option (are you restricted in disk space?).
+
+Quite the contrary, I wanted an excuse to try using tea. IDK what the key
+lengths are (I've been really curious about that), but I decided to try
+using tea and short hashes as a fun exercise as a time/compute trade off.
+
+> But that crash needs to be fixed, of course. I'll create a ticket.
+
+Nice!
+ 
+> > When trying to remount the FS after this crash I got an error from
+> > fsck that I needed to rebuild the super block. Considering that all
+> > transactions are atomic, this was quite a surprise to me.
+> > This failed because the format version was somehow greater than my
+> > tools version.  
+> 
+> 
+> Absolutely.
+> 
+> SFRN (Software Framework Release Number) of your tools is 4.0.1.
+> SFRN of your reiser4 module is 4.0.2.
+> Right after formatting your partition had format 4.0.1.
+> After mounting to the kernel of greater SFRN, it was automatically
+> upgraded to 4.0.2, so you are not able to check that partition with
+> fsck of smaller SFRN anymore. All you needed was to upgrade your
+> reiser4progs.
+>
+> More about compatibility is here:
+> https://reiser4.wiki.kernel.org/index.php/Reiser4_development_model
+
+Ah! I wondered how I could create an FS that had a larger version than my
+tools.
+
+
+> > One thing that was quite interesting about this is that the Linux
+> > kernel said I needed to upgrade my disk format of reiser 4.
+> > Sep 19 04:21:16 Phenom-II-x6 kernel: [   37.113970][ T2122]
+> > Loading Reiser4 (format release: 4.0.2) See www.namesys.com for a
+> > description of Reiser4.
+> > Sep 19 04:21:16 Phenom-II-x6 kernel: [   37.132956][ T2121]
+> > reiser4: md7p1: found disk format 4.0.2.
+> > Sep 19 04:21:16 Phenom-II-x6 kernel: [   37.133792][ T2121]
+> > reiser4: md7p1: use 'fsck.reiser4 --fix' to complete disk format
+> > upgrade. 
+> 
+> 
+> It is expected, since you mounted partition 4.0.1 by reiser4 module
+> 4.0.2. No hurry to complete disk format upgrade. It is needed by fsck
+> only.
+
+So the upgrade was only partial?
+
+> > IDR If I tried to issue the above recommended command.
+> > 
+> > 
+> > Overall, after over a decade of development, I had hoped that reiser4
+> > would prove to be a fast, space efficient, and stable FS.  
+> 
+> 
+> So, as I understand, the only problem is stability?
+> What can I say... We are not enterprise. We are like the upstream
+> vanilla kernel, which can always be corrupted in some configuration
+> under a specific workload, despite 30 years(!) of development history.
+> Motivation to fix bugs is driven mostly by users and their bug reports
+> (similar to ones that you have provided)..
+
+I know. I know. It's just after reading several months of emails from the
+LKML where Hans goes on and on about how wonderfully stable it is and
+every bug is quickly quashed, I thought it would be as stable as a
+boulder.
+And using ext3 as a baseline didn't help either. (:
+
+<snip>
+> Thanks again for the report.
+> Once we fix the problem with torrents, we'll let you know..
+> 
+> Edward.
+
+
+Thanks,
+David
