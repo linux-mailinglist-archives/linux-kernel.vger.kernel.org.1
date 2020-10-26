@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C73298E38
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C784B298E3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780344AbgJZNip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:38:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39746 "EHLO mail.kernel.org"
+        id S1780358AbgJZNjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:39:03 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:14228 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1780181AbgJZNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:38:44 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1775693AbgJZNjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 09:39:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603719539; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+hVdywHHZmfZ44penl6jEODMuz9wxI7cPJN7PB3/jd4=; b=M0CQSaqZTfZmYK3E0pA+1qn/2j+ep80TuDqq3t0Cgl+9W1Pg4TFNxfgKihuln36c6zW9h7f6
+ 3gDoDEtJCEeZGNR0XGbQpoH3yGJ2DE+4yIbeisXWYFv3LUhPcyTWGcQWIFplWay57SrAdNlr
+ Nv8bYwJXjKowwSTPmPbCsXzpKO0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f96d1686311e6e92006aec7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 13:38:48
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7385EC433C9; Mon, 26 Oct 2020 13:38:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=ham autolearn_force=no version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 722F121BE5;
-        Mon, 26 Oct 2020 13:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603719524;
-        bh=+nkoyj7yQTKFExiVobUJ42WV3wBkEKoQDjVeQdK1uug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IzjepBlChROEPkQZXalULKXWZ6z0gcY6RHrUBqmueM940tkxh4zgu3aaoHDuPjOeM
-         1RPIJOM67NJy8KBEjo+X4zUUm3Wp0xn/qy5+/f00KV7DyBM3w1Tz/YHtCkZgvZEhRV
-         YekLsrViYQLPDnDdel3LexZ5PHxKndmJAv17TMsM=
-Date:   Mon, 26 Oct 2020 13:38:39 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        nsaenzjulienne@suse.de, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/7] ASoC: audio-graph-card: Add plls and sysclks DT
- bindings
-Message-ID: <20201026133839.GE7402@sirena.org.uk>
-References: <20201016173541.21180-1-rf@opensource.cirrus.com>
- <20201016173541.21180-3-rf@opensource.cirrus.com>
- <20201026132704.GA19204@bogus>
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3BE41C433FF;
+        Mon, 26 Oct 2020 13:38:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3BE41C433FF
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v9 3/4] docs: Add documentation for userspace client
+ interface
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+Cc:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org
+References: <1603495075-11462-1-git-send-email-hemantk@codeaurora.org>
+ <1603495075-11462-4-git-send-email-hemantk@codeaurora.org>
+ <20201025144627.65b2324e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <e92a5a5b-ac62-a6d8-b6b4-b65587e64255@codeaurora.org>
+Date:   Mon, 26 Oct 2020 07:38:46 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ZRyEpB+iJ+qUx0kp"
-Content-Disposition: inline
-In-Reply-To: <20201026132704.GA19204@bogus>
-X-Cookie: Safety Third.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201025144627.65b2324e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/25/2020 3:46 PM, Jakub Kicinski wrote:
+> On Fri, 23 Oct 2020 16:17:54 -0700 Hemant Kumar wrote:
+>> +UCI driver enables userspace clients to communicate to external MHI devices
+>> +like modem and WLAN. UCI driver probe creates standard character device file
+>> +nodes for userspace clients to perform open, read, write, poll and release file
+>> +operations.
+> 
+> What's the user space that talks to this?
+> 
 
---ZRyEpB+iJ+qUx0kp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Multiple.
 
-On Mon, Oct 26, 2020 at 08:27:04AM -0500, Rob Herring wrote:
-> On Fri, Oct 16, 2020 at 06:35:36PM +0100, Richard Fitzgerald wrote:
+Each channel has a different purpose.  There it is expected that a 
+different userspace application would be using it.
 
-> > +- plls: A list of component pll settings that will be applied with
-> > +      snd_soc_component_set_pll. Each entry is a phandle to the node o=
-f the
-> > +      codec or cpu component, followed by the four arguments id, sourc=
-e,
-> > +      frequency_in, frequency_out. Multiple entries can have the same =
-phandle
-> > +      so that several plls can be set in the same component.
+Hemant implemented the loopback channel, which is a simple channel that 
+just sends you back anything you send it.  Typically this is consumed by 
+a test application.
 
-> Where do the values of id and source come from?
+Diag is a typical channel to be consumed by userspace.  This is consumed 
+by various applications that talk to the remote device for diagnostic 
+information (logs and such).
 
-The device bindings will need to define them.
+Sahara is another common channel that is usually used for the multistage 
+firmware loading process.
 
-> > +- sysclks: A list of component sysclk settings that will be applied wi=
-th
-> > +      snd_soc_component_set_sysclk. Each entry is a phandle to the nod=
-e of
-> > +      the codec or cpu component, followed by the four arguments id, s=
-ource,
-> > +      frequency, direction. Direction is 0 if the clock is an input, 1=
- if it
-> > +      is an output. Multiple entries can have the same phandle so that=
- several
-> > +      clocks can be set in the same component.
-
-> Are these really common properties? They seem kind of Cirrus specific=20
-> and perhaps should be located in the codec node(s).
-
-It's very common for audio devices to have very flexible clocking, to
-the exetent this is Linux specific it's issues with the clock API not
-being able to handle clock controllers on buses that need clock control
-to access rather than conceptually.
-
---ZRyEpB+iJ+qUx0kp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+W0V4ACgkQJNaLcl1U
-h9AVQwf5AeZ5FzIxFAqR5KS3Q6dg/QnmdfAqWm5oroiARb2nuHh+2WKL2jFKLyiR
-/mycXkP/S3TVoedKycpB4pAWXpyk0bYpsbZDolvZK8Yqygx8JKtxjzhw5N2fubCn
-uKsxDBOuWxK8T4iQUqPI0xlA6CoziSx8jVT8xYEuuQ040IUmyR361aK6OTGxr2p3
-Yq/fQyZeswr4i09lwsNk2BpDGKuVaKonvsLqGULZ+j10YQEOi6HKajvxbiyB0/yS
-316Siu3n1TpYzclqs4CNsXVa1st0abkNSRvkVKajZo3/8MpCknXIRUI5aGD+cTx6
-5MDUXLhvotazUVdZ886Vuqoig378yg==
-=qTFO
------END PGP SIGNATURE-----
-
---ZRyEpB+iJ+qUx0kp--
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
