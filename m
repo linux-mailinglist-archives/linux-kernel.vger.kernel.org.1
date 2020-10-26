@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED945298CE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AB0298CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775138AbgJZMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:30:04 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:52017 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769973AbgJZMaE (ORCPT
+        id S1775145AbgJZMaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:30:35 -0400
+Received: from casper.infradead.org ([90.155.50.34]:38830 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772574AbgJZMaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:30:04 -0400
-Received: by mail-pj1-f68.google.com with SMTP id a17so3173654pju.1;
-        Mon, 26 Oct 2020 05:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pcz4v9qNpJpGQqOygE63AfxlkJy8GhDQp2EqnyOnpYI=;
-        b=vXi/8+raD5BBJ/yEktEkkIhrN9SsWeDU+1BTPh0lD6PkFV8X4KOB/jq3Ca456Bsjnv
-         pwMRn86jqIq6sCgLI14pMVFkxXWhsHAmGd6dl/5TVuxTxCsMb8thfNp1mDsmWAsWUJdv
-         U0UDg0jZHJyqfZZUSK0sjSlDdZgppJ56s1QV92sGnTGzYpslmZC3Xd2KNMtn9g4IuVB4
-         oaXjoOzlMwJlo8/P4lHC71SecpH01p9PXx0Bno2qnq5wykEK3vBSKqbiMw++CEwzjVv0
-         M1Ucd0fCPajxdpT3LTXkljBES3CnbngAYYjuC4h2sNnDAQQWwCL6c83dZ6OvX4Wu1s9f
-         dckg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pcz4v9qNpJpGQqOygE63AfxlkJy8GhDQp2EqnyOnpYI=;
-        b=rk4fqrxnhaBf3jlbLBiWL+uReMeZWTOLn6V63HBf+cqWOCiX3k0oln3YhUOIBvToWk
-         IJVHvFvgvhJGf0y+GyWWpFF4rg4TU+zDOVHaAPu67z7OTjzpzRxRknzGQy9hRZAzkxtf
-         7cyEXokmzIC61EH7ArkM7KH3aciY3itLYJn8dgKnpv/Y9SsJLYi/y+u2XySOIrr+IyDE
-         actD+25KcF4moy1YGG7y+Tf8DIdBvw5I5YBhZS0ghg+oVX7EDBOrISJKBFRpxJWfkwsZ
-         F5ZpEOcmfth9dUPJ8rwn21JFwdF/h1wpdmY4C+kWmIziPbvk6nCDp8LRpxxH3/T5dDar
-         5w0w==
-X-Gm-Message-State: AOAM530D3mdn7o+xJjuwyBqZ2ujcqVs6KUV5sbHsYGqPzrzkwAiL7k8f
-        oRC8mZ+Zy1JAPmJK1GLMaZ0vDpN3fyM=
-X-Google-Smtp-Source: ABdhPJzDEnxCyv6iz9EVDiNZw2jCJ3A5aZA+tW0dmPvYOc7YR+fSXpHaCGoAet5ydjUK7Akdwyll2Q==
-X-Received: by 2002:a17:90a:7c0c:: with SMTP id v12mr16221998pjf.71.1603715403364;
-        Mon, 26 Oct 2020 05:30:03 -0700 (PDT)
-Received: from guoguo-omen.lan ([2001:250:3000:3cc2:288c:5ed9:5348:b71b])
-        by smtp.gmail.com with ESMTPSA id 5sm919201pfn.83.2020.10.26.05.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:30:02 -0700 (PDT)
-From:   Chuanhong Guo <gch981213@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Chuanhong Guo <gch981213@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] MIPS: zboot: put appended dtb into a section
-Date:   Mon, 26 Oct 2020 20:29:25 +0800
-Message-Id: <20201026122926.1774569-1-gch981213@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 26 Oct 2020 08:30:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Znund5dzpNvYlhDHBzhUjlY+phwH7Vak7oEwCdGxkkc=; b=JjISarcW8F96RIHDmKzzcQjdsI
+        RdmOxcC2njE+zbyedtE8cjk8bgjlQ5PYpRBuLR9momxqthEZt6iUyzxpidPRYplTFOHxIGxhGiu+w
+        +aWH4WfIAviGcuNp3jZ9ksTZh5vKQB4Y5bI3F+8eOBGRdzgm6Qd0dp1KXbudp1BAVgTAfeQ5Kt5Mv
+        2uLfelZ/7Y05lqf9IOuAca1hgXDbbmVEFdOPXX34iMUX1Zp5OSohywcdL1mSYXA/19d0G4+2LVR5a
+        7xXfaSxGkYZVNrCB3HgrpaawHFR1vGOT5dbUBKThWrFrBxwkz+IB3ZiwEMkTLp5q2wYLH6Dd8UOpO
+        D9G0nWFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX1dw-0003Tp-Mn; Mon, 26 Oct 2020 12:30:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBE1C302526;
+        Mon, 26 Oct 2020 13:30:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D39D320325EC8; Mon, 26 Oct 2020 13:30:31 +0100 (CET)
+Date:   Mon, 26 Oct 2020 13:30:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: possible lockdep regression introduced by 4d004099a668
+ ("lockdep: Fix lockdep recursion")
+Message-ID: <20201026123031.GO2594@hirez.programming.kicks-ass.net>
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+ <20201026115541.GC28769@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026115541.GC28769@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will make a separated section for dtb appear in ELF, and we can
-then use objcopy to patch a dtb into vmlinuz when RAW_APPENDED_DTB
-is set in kernel config.
+On Mon, Oct 26, 2020 at 12:55:41PM +0100, Jan Kara wrote:
+> > Make sure you have commit:
+> > 
+> >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+> > 
+> > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+> 
+> Hum, I am at 5.10-rc1 now and above mentioned commit doesn't appear to be
+> there? Also googling for the title doesn't help...
 
-command to patch a dtb:
-objcopy --set-section-flags=.appended_dtb=alloc,contents \
-        --update-section=.appended_dtb=<target>.dtb vmlinuz
+*groan*... I seem to have forgotten to push it out to tip/locking/urgent on
+Friday :/
 
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
-Note:
-This should supersede this patch on linux-mips:
-[2/2] mips: boot compressed: add support for vlinuz ELF DTB [0]
+Find it here:
 
-[0] https://patchwork.kernel.org/project/linux-mips/patch/20201015201100.4130-2-git@johnthomson.fastmail.com.au/
- 
- arch/mips/boot/compressed/ld.script | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/urgent
 
-diff --git a/arch/mips/boot/compressed/ld.script b/arch/mips/boot/compressed/ld.script
-index 2ed08fbef8e7..0ebb667274d6 100644
---- a/arch/mips/boot/compressed/ld.script
-+++ b/arch/mips/boot/compressed/ld.script
-@@ -31,9 +31,12 @@ SECTIONS
- 		CONSTRUCTORS
- 		. = ALIGN(16);
- 	}
--	__appended_dtb = .;
--	/* leave space for appended DTB */
--	. += 0x100000;
-+
-+	.appended_dtb : {
-+		__appended_dtb = .;
-+		/* leave space for appended DTB */
-+		. += 0x100000;
-+	}
- 
- 	_edata = .;
- 	/* End of data section */
--- 
-2.26.2
 
