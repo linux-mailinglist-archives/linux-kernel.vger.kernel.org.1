@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237D0299275
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3064C299277
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786012AbgJZQb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:31:28 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:45284 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1786003AbgJZQb1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:31:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8418oRRVSf4j+/KAvzQ3JMGBsl1wnAf6vFE04ew71fA=; b=olfBZEvTnx8bUo67pmMm/aWASZ
-        2fLxEVVNy1DKgRT0tLHmyxutuvSX1vAPLZ4BzlKzdWqLhaOod18ZdkxrWaeq8ZKH/+PGOix+lkhPh
-        E/wQTIspMoB1byzG6c/iymcPMICBVV2rPBlGp+hcDVdXP0l2L9oL1qzf67Mk1BaG3G6IC97MuQ1St
-        a2nF2aMAtjOyIUWHP47hiltSn7uHpimag1eBHGLDO6LdyDRL5YSoC2/w+faaB3sPeIIdBdAeSmlHk
-        EwyuKPx2Qhg97fK9f5s+XUO4C1A2lbQqS2XMKiXUxZqEY3xwia/dL3x8Mv+pNlsj95wuurouprneQ
-        G/DLq9CQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX5Og-0000IZ-DY; Mon, 26 Oct 2020 16:31:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 888FE3010D2;
-        Mon, 26 Oct 2020 17:31:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7D5FB203BE3CD; Mon, 26 Oct 2020 17:31:00 +0100 (CET)
-Date:   Mon, 26 Oct 2020 17:31:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
- longer reported in dr6
-Message-ID: <20201026163100.GR2594@hirez.programming.kicks-ass.net>
-References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
- <20201026155521.GQ2594@hirez.programming.kicks-ass.net>
- <20201026160513.GC2651@hirez.programming.kicks-ass.net>
- <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
+        id S1786022AbgJZQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:32:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1776159AbgJZQcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:32:03 -0400
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A6AA22450
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:32:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603729922;
+        bh=KqSdKY+izZYAso/LodvdUpM0mIjxLgpRtbZFyE7+WXc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RZlzALNJWEUYU8IvvwoaazV9B/nMKRCCUUhD1ITIdv4xvCsetSwZfw7zX8ouKLt5y
+         pAWFAcb7bF7koQDiL3dC5lO9qIYPj/yz8kAk7dqU7uYUMLPbuK2a4oBjSmoNEC07yt
+         csqEO5yHuFb/58mDklrysgT9kZaTtcLijhmWAQro=
+Received: by mail-qt1-f182.google.com with SMTP id r8so7131283qtp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:32:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532uHrnWLrBYxdXK+qMObWYHXEALUJ3E5A5GHO5fRLrzhvJQOrvz
+        NIMWaA4Hshqkfne2sVr7TZfGGotn3VZTrUImCZ4=
+X-Google-Smtp-Source: ABdhPJxIS+LNv9KoIukM1F6ZgtabuCwPY9owwG2ywnHfUkFx59vnJRY6LwwN3KdlS4WyW3EyZ9azbF+RfeAeiuwwNGs=
+X-Received: by 2002:ac8:7955:: with SMTP id r21mr7181469qtt.204.1603729921595;
+ Mon, 26 Oct 2020 09:32:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
+References: <20201026160342.3705327-1-arnd@kernel.org> <20201026160342.3705327-4-arnd@kernel.org>
+ <20201026162314.GA42396@C02TD0UTHF1T.local>
+In-Reply-To: <20201026162314.GA42396@C02TD0UTHF1T.local>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 26 Oct 2020 17:31:45 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1zWTj=Q6T0mSBYnk4qVMQfua1ZZTyAvfiZXpufkb_Hbw@mail.gmail.com>
+Message-ID: <CAK8P3a1zWTj=Q6T0mSBYnk4qVMQfua1ZZTyAvfiZXpufkb_Hbw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] arm64: traps: fix -Woverride-init warnings
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christoffer Dall <christoffer.dall@linaro.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 09:14:13AM -0700, Kyle Huey wrote:
-> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> > index 3c70fb34028b..0e7641ac19a8 100644
-> > --- a/arch/x86/kernel/traps.c
-> > +++ b/arch/x86/kernel/traps.c
-> > @@ -799,6 +799,13 @@ static __always_inline unsigned long debug_read_clear_dr6(void)
-> >          */
-> >         current->thread.virtual_dr6 = 0;
+On Mon, Oct 26, 2020 at 5:23 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> On Mon, Oct 26, 2020 at 05:03:31PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > +       /*
-> > +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
-> > +        * the ptrace visible DR6 copy.
-> > +        */
-> > +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
-> > +               current->thread.virtual_dr6 |= dr6 & DR_STEP;
-> > +
-> >         /*
-> >          * The SDM says "The processor clears the BTF flag when it
-> >          * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
-> 
-> I don't think the `& DR_STEP` should be necessary, that bit should be
-> set by the hardware, I believe.
+> > There are many warnings in this file when we re-enable the
+> > Woverride-init flag:
+> >
+> > arch/arm64/kernel/traps.c:704:26: warning: initialized field overwritten [-Woverride-init]
+> >   704 |  [ESR_ELx_EC_UNKNOWN]  = "Unknown/Uncategorized",
+> >       |                          ^~~~~~~~~~~~~~~~~~~~~~~
+> > arch/arm64/kernel/traps.c:704:26: note: (near initialization for 'esr_class_str[0]')
+> > arch/arm64/kernel/traps.c:705:22: warning: initialized field overwritten [-Woverride-init]
+> >   705 |  [ESR_ELx_EC_WFx]  = "WFI/WFE",
+> >       |                      ^~~~~~~~~
+> >
+> > This is harmless since they are only informational strings,
+> > but it's easy to change the code to ignore missing initialization
+> > and instead warn about possible duplicate initializers.
+>
+> This has come up before, and IMO the warning is more hindrance than
+> helpful, given the prevalance of spurious warnings, and the (again IMO)
+> the rework needed to avoid those making the code harder to reason about.
+>
+> We use this pattern all througout the kernel (e.g. in the syscall
+> wrappers), so unless the plan is to avoid this everywhere, I don't think
+> that we should alter individual cases.
 
-Yeah, the idea is to only 'copy' the DR_STEP bit, not any others.
+I have patches for all instances, yes.
 
-> Also if a program sets TF on itself in EFLAGS and generates a trap it
-> should still have DR_STEP set in the ptrace-visible dr6, which this
-> won't do.
+> I also don't think that the Fixes tag is appropriate given the code is correct.
 
-Why? The state was not requested by ptrace(). And the signal should have
-it's si_code set to TRACE_TRACE.
+I tend to add fixes tags even for false-positive warnings, as they
+are helpful whenever someone tries to backport the warning
+suppression patch to older kernels. That could easily be dropped
+here of course.
 
-> Is there a reason not to always copy dr6 into virtual_dr6 here,
-> regardless of TIF_SINGLESTEP/etc?
+> Could we instead convince the compiler folk to give us better tools to
+> deal with this? For example, if we could annotate assignmments as
+> overridable or being an override, it'd be possible to distinguish the
+> benign cases from bad ones, without forcing us to have dynamic checks.
 
-Why should we expose DR6 bits that are the result of kernel internal
-actions?
+There are only a handful of instances that need this, and half of these
+are in arch/arm64/. I have another patch that disables the warning
+locally in arch/arm64/kernel/{perf_event,sys,sys32}.c and
+arch/arm64/kvm/handle_exit.c, but this needs some extra
+infrastructure to make it possible to disable it for both gcc
+and clang (which use different warning flags for it), so I did not
+include the patch in this series.
 
-Suppose someone sets an in-kernel breakpoint (perf can do that for
-example), the #DB happens and we write whatever into virtual_dr6.
+I had also considered disabling the two warning flags for the
+entire arch/arm64/kernel/ directory, but that seemed wrong
+after I noticed the cpu_errata.c warnings that are indeed suspicious
+and could lead to bugs when additional changes are made to
+that file.
 
-Even if you have a userspace breakpoint not through ptrace(), then why
-should we expose that in dr6 ?
-
-
-In that respect, I think the current virtual_dr6 = 0 is placed wrong, it
-should only be in exc_debug_user(). The only 'problem' then is that we
-seem to be able to loose BTF, but perhaps that is already an extant bug.
-
-Consider:
-
- - perf: setup in-kernel #DB
- - tracer: ptrace(PTRACE_SINGLEBLOCK)
- - tracee: #DB on perf breakpoint, looses BTF
- - tracee .. never triggers actual blockstep
-
-Hmm ? Should we re-set BTF when TIF_BLOCKSTEP && !user_mode(regs) ?
-
-
+     Arnd
