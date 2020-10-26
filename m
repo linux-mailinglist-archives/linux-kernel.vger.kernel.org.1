@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F7B298CD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C755B298CD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774919AbgJZMTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:19:10 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:33182 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1774881AbgJZMTK (ORCPT
+        id S1775056AbgJZMYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:24:11 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:44686 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775048AbgJZMYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:19:10 -0400
-Received: by mail-ed1-f67.google.com with SMTP id w23so9046261edl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:19:07 -0700 (PDT)
+        Mon, 26 Oct 2020 08:24:10 -0400
+Received: by mail-ej1-f67.google.com with SMTP id d6so8486181ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=DTHIg975ANe/3LfUGyg9LuIsi6dFt4edztioVJoG9b0=;
-        b=yERvvOV8x1xvJ3GOCWEQoKMVeaybAVKQsoOQzIUh3UGYg4KIfqYkrLZlr7wFu/MTmT
-         TyZfn1/k59cczTQUOgFKs4isPncDBrUHPT54vLyC8407/iTpth4wqyAMT0JgZgnkZ/4h
-         9Xk7FMRIk5tDTpg0oqzYEwn2M6eN4DINuoGB/7I/BDFgeNX9PE2QRugdHsG3Inh5XTno
-         za+a4P3rsOZE/LLyOoaSSoAb/fI/O1rP5bPfbILobSRLUCS0udt5B5atIZUXvriKCyNZ
-         teTDzujV+AUdOi4Y6DkLYpT0UqsVq5g3t63GukBnCwsjjj5cl/Q5CWb/zbbjG6XnCCyU
-         k43g==
+        bh=eGby+2zJZQt+xl1Ks+/fOh3kPBu1tezKXvK1QRyMfQU=;
+        b=arBhpAtkyaHsOjcwLgR2QA3gEoCULDZausMIXPC4PCxeDGo6bLHwWdszLCdzSXkc+7
+         jcjqNImXVui56DwPfXLjehl3MbIuKxNm8vHJSSJQWYom7GCz9So08w+ctrmKbq34h5nv
+         xBQ1dAp49FUhI28ixIEKtfzNECSm0xhSCFj0Bc9+4buYn3uZbcwlbjNVbedj43EwXYsS
+         UNgGdDdXeQem+eReD6OTMWOzzg9xuWnBsu/ZUK3W+zcxVjcvooyXsuzW4o8/C4pkhz6M
+         SnjUCqYR4vrOhXXk24OupfHkxYw1oPJGiPswY5ZqicWz6kdI2vtkbpOjb+4zlPUAf0v/
+         y5og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=DTHIg975ANe/3LfUGyg9LuIsi6dFt4edztioVJoG9b0=;
-        b=k8W/QptGr3ArDg+tY4R44GnZcyMLIyIg7vO3j7Z3cIj5gFIPc3O8KXScKr7tDwoqz8
-         pHyPF6cW3tqNXGwiJTxj2F93aqol1ldtL5r3FO4Q0bUqFr4BX0Y7yx1zCj7ewbH8OyIU
-         Hvcz/+MsMPEFdCt6/r/uq+jdDyLh3bKgRXpzyfI6kRIwqowVESKIZF2MJd1q7Rw2PTdg
-         kFyg4mPvQ3E75GNgbnOmEFBJXgtnxMdN9mOrpgaIT6jwyyGSa/pvS5VRJUOcyjnLOw9P
-         EHHkriBOgehmiviiY7BE8oMDzSxWI1/y7XwNhj8djFiHlnf/h6z1zZiB+7YUrgnd83Lt
-         3ORA==
-X-Gm-Message-State: AOAM530zfLNUAmdry0nei+2ii0b2Km4XqfD6oKz4OMjTyTqIYt0yyeG/
-        lzQjHW8FJIIizSJyh37briAS
-X-Google-Smtp-Source: ABdhPJxvoB4OTz/ZcMzArqgkoGqn4HcBF4UMQzbBwnp9NUKJExS/s8O1BU64YrvQov6Vz6sRITLk8A==
-X-Received: by 2002:aa7:d54f:: with SMTP id u15mr15387076edr.239.1603714746737;
-        Mon, 26 Oct 2020 05:19:06 -0700 (PDT)
+        bh=eGby+2zJZQt+xl1Ks+/fOh3kPBu1tezKXvK1QRyMfQU=;
+        b=kxtfmCj0Tzfw/B6HIvShn7SBGU8Q+iO5+t9CDpQ+wiBkOrhzf95hmH4N1z/ulsnspN
+         lIgXt496Fdp/IgkGHb5vtfgbv2RwNt+NlWKI5962q6sIgsL+7jn/glVluQvBEbOZqPyC
+         qHPwcnk5/4tEvYwwpG9Ervf0cxTaAM3aNS+6XP4df9kCI1xeDcCJBF/lVMyaQlXXDC5l
+         eNz36389aQ4MbZ6MX98S5RyezEtUdGZZmM354UwvqZ4fjpJT4LtsJi4jBQFvBodRPKM1
+         cJV6JShOoRVqRwOBPjtKLmFoMchBM5G+YbDmbyVkej4bUSNKYHpZ5+z1tos4JREWb94/
+         C/tA==
+X-Gm-Message-State: AOAM533e4fTYVHQbci62rFy3V9wsezlP7dGRcCzKqDbIIqXLM94GGeLt
+        oAiw1fbglQe2GA/9kCWjaLQ7
+X-Google-Smtp-Source: ABdhPJwPMz4Mi9A5FZ+cDa3fdsZuXdu1YoG+/C5EoFnka+m4H3ERlmyzvNuIAF8+2HqNlUuSci8iBQ==
+X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr15136065ejb.334.1603715047367;
+        Mon, 26 Oct 2020 05:24:07 -0700 (PDT)
 Received: from localhost.localdomain (cm-2252.cable.globalnet.hr. [213.149.62.253])
-        by smtp.gmail.com with ESMTPSA id o15sm5847472ejm.38.2020.10.26.05.19.05
+        by smtp.gmail.com with ESMTPSA id r11sm5058094edi.91.2020.10.26.05.24.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:19:06 -0700 (PDT)
+        Mon, 26 Oct 2020 05:24:06 -0700 (PDT)
 From:   Vladimir Vid <vladimir.vid@sartura.hr>
 To:     devicetree@vger.kernel.org
 Cc:     pali@kernel.org, a.heider@gmail.com, linux-kernel@vger.kernel.org,
@@ -52,9 +52,9 @@ Cc:     pali@kernel.org, a.heider@gmail.com, linux-kernel@vger.kernel.org,
         sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
         andrew@lunn.ch, jason@lakedaemon.net, robh+dt@kernel.org,
         Vladimir Vid <vladimir.vid@sartura.hr>
-Subject: [PATCH v3] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
-Date:   Mon, 26 Oct 2020 13:36:34 +0100
-Message-Id: <20201026123633.82758-1-vladimir.vid@sartura.hr>
+Subject: [PATCH v4] arm64: dts: marvell: add DT for ESPRESSObin-Ultra
+Date:   Mon, 26 Oct 2020 13:41:32 +0100
+Message-Id: <20201026124131.84086-1-vladimir.vid@sartura.hr>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -91,9 +91,8 @@ Full specifications:
 Signed-off-by: Vladimir Vid <vladimir.vid@sartura.hr>
 ---
 
-v3 changes:
-- added aliases for DSA
-- updated sdhci0 node based on the latest changes
+v4:
+-fix aliases order
 
 ---
  arch/arm64/boot/dts/marvell/Makefile          |   1 +
@@ -115,7 +114,7 @@ index 3e5f2e7a040c..094f451fdd1d 100644
  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
 diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
 new file mode 100644
-index 000000000000..f664c7dfab87
+index 000000000000..14ae74415360
 --- /dev/null
 +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
 @@ -0,0 +1,165 @@
@@ -136,15 +135,6 @@ index 000000000000..f664c7dfab87
 +	compatible = "globalscale,espressobin-ultra", "marvell,armada3720",
 +		     "marvell,armada3710";
 +
-+	reg_usb3_vbus: usb3-vbus {
-+		compatible = "regulator-fixed";
-+		regulator-name = "usb3-vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		enable-active-high;
-+		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
-+	};
-+
 +	aliases {
 +		/* ethernet1 is WAN port */
 +		ethernet1 = &switch0port5;
@@ -152,6 +142,15 @@ index 000000000000..f664c7dfab87
 +		ethernet3 = &switch0port2;
 +		ethernet4 = &switch0port3;
 +		ethernet5 = &switch0port4;
++	};
++
++	reg_usb3_vbus: usb3-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "usb3-vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		enable-active-high;
++		gpio = <&gpionb 19 GPIO_ACTIVE_HIGH>;
 +	};
 +
 +	usb3_phy: usb3-phy {
