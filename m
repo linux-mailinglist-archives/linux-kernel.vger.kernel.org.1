@@ -2,84 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF27299376
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF62A299378
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787384AbgJZRM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:12:29 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:34504 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1787215AbgJZRM3 (ORCPT
+        id S1787397AbgJZRMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:12:47 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:44861 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1787389AbgJZRMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:12:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6BL74GG/GU7T+OZHWA4ZwCz98Vw3V+JJr/MYkeOc1pw=; b=KMYHIio0bD27ubImFg/uC09LdZ
-        ThlxstJV1PpLhIweeWjkIbu6I85HAlUOTHo0lBd8V8wR5woEWEB9hWGnGv+bnSh/UmMB23PNAQUwp
-        PvgxPDYtlI8CU5il6r3tJrozpU5+/odZQK5/APHnUzyrxL/m9H5RRrqSsbnpfUtcvO9L040izpkT7
-        5XoPdYkYQ5rVmodTu2F94mjEYaJFWLmHLpTD+ZSr0tZA6nHIFNsf1MVrm+QnvRu6RlK6XA6hSi1C5
-        QIfWyndmIdnnS68XgLd6PvV1T6bW3hyiS5CKJD4eB/tXJetGqEadYX2o36sRVAZVtID702biRTGhR
-        2wTYyCDg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX62j-0000OZ-Hs; Mon, 26 Oct 2020 17:12:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39F873006D0;
-        Mon, 26 Oct 2020 18:12:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2C5E02BAA7DD6; Mon, 26 Oct 2020 18:12:24 +0100 (CET)
-Date:   Mon, 26 Oct 2020 18:12:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     psodagud@codeaurora.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Elliot Berman <eberman@codeaurora.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-Message-ID: <20201026171224.GV2611@hirez.programming.kicks-ass.net>
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
- <87v9f04n8r.fsf@nanos.tec.linutronix.de>
- <a6d7f84679240fcf580520230a88c058@codeaurora.org>
+        Mon, 26 Oct 2020 13:12:47 -0400
+Received: by mail-ej1-f68.google.com with SMTP id d6so10055514ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:12:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mhjQk9pWrZ2ODeE3ruxT9vPMWpV1kCCg3a9DVTYLYlA=;
+        b=PANW3EDTlWyAXfuUjjrurj0a/QTd7SLz4wQhzBVHQDwdvR639mDyS69NGd6hH5hqHk
+         f7YtIuOXcV3V8jhoPllVWm0HGRZeJndjVSzlFPoUUgnwNpAv1d1kmnIGtzPgG+InNXkh
+         w3JnDCDPmdSr/qdjuvMzfBZvR4ayokuWkA5h7n5PM5Rw0zGjpY903I1XnTzldp54xdCZ
+         Bm82SNZY+TlS8+RxF6bbEolo545eXbPknOxoX7HnNZ772QtzDZO0J3pbQVE5j4pAYmIW
+         aNK/wMdmmMDrqpdn0DzJd4pYzhBjaB06Ky8H2yVG3a1ZzBLbhL47WU2yfi/3q9kUfHmX
+         btAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mhjQk9pWrZ2ODeE3ruxT9vPMWpV1kCCg3a9DVTYLYlA=;
+        b=QjMUXaBlNW+/i0tNmwddQ/YxNeY0R2w4QYeLThv/5VgosphyPQjI0xpERHCOF1gHGe
+         xH4d2XKf03CKIGbw4kkeB0XT6cjvnlDVafHkfGU3I361Ngv18rqDomRvfhDrx9V54JCw
+         2nshYGAqa/xF/4CyANOuoYeLyg+p0HBq9dWnaokvxWiD3kc3nXSnHBcHVhrjPmem4+5K
+         0AgvWbleyuGOcS3V9FLFSRFKYpa0wRgRdfcXecagvzXUoLN/ySzyX48Sbd+Ro72MpVan
+         7ySfZnFxSYbNWT8VUKg/QXtu7Qa5Z+GXwJAaZcrMQqW2NfkyHE5WrMonGHTHnllxKGh5
+         CXuQ==
+X-Gm-Message-State: AOAM533Vvfc/hbyF0LQJeqyKSFxGlwI7BBTP9lADgbiQlduK/DkBYe6t
+        67B5GfPMQRfDtMsij8BZY4wu69kksqOXxTQURu6rsyP6NKjze+SN
+X-Google-Smtp-Source: ABdhPJzW6mfIwfGEGkjG94g+hkwsT71iK/C55YQjz5H/vpkx12at10R6OURwD0ql6oCibVZOOxUPQe1iZ9tck5A/KvI=
+X-Received: by 2002:a17:906:6a07:: with SMTP id o7mr16307637ejr.454.1603732362968;
+ Mon, 26 Oct 2020 10:12:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6d7f84679240fcf580520230a88c058@codeaurora.org>
+References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+ <20201026155521.GQ2594@hirez.programming.kicks-ass.net> <20201026160513.GC2651@hirez.programming.kicks-ass.net>
+ <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
+ <20201026163100.GR2594@hirez.programming.kicks-ass.net> <20201026165519.GD2651@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201026165519.GD2651@hirez.programming.kicks-ass.net>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Mon, 26 Oct 2020 10:12:30 -0700
+Message-ID: <CAP045ArgMKSpt3Qa3TwzeE+xc78BJ5DPRazaP+bxNi570s+A=Q@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
+ longer reported in dr6
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:08:47AM -0700, psodagud@codeaurora.org wrote:
-> On 2020-10-23 14:59, Thomas Gleixner wrote:
-> > On Thu, Oct 22 2020 at 15:04, Elliot Berman wrote:
-> > > In a heterogeneous multiprocessor system, specifying the 'maxcpus'
-> > > parameter on kernel command line does not provide sufficient control
-> > > over which CPUs are brought online at kernel boot time, since CPUs may
-> > > have nonuniform performance characteristics. Thus, add bootcpus kernel
-> > > parameter to control which CPUs should be brought online during kernel
-> > > boot. When both maxcpus and bootcpus is set, the more restrictive of
-> > > the
-> > > two are booted.
-> > 
-> > What for? 'maxcpus' is a debug hack at best and outright dangerous on
-> > certain architectures. Why do we need more of that? Just let the machine
-> > boot and offline the CPUs from user space.
-> 
-> Hi Thomas and Peter,
-> 
-> Based on my understanding with maxcpus option provides, maximum no of CPUs
-> are brough up during the device boot up. There is a different case, in which
-> we want to restrict which CPUs to be brough up.
-> On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 are
-> brough up during the bootup.  For example, if we want to bring core0, core3
-> and core4 current maxcpu(as 3) setting would not help us.
-> On some platform we want the flexibility on which CPUs to bring up during
-> the device bootup. bootcpus command line is helping to bring specific CPUs
-> and these patches are working downstream.
+On Mon, Oct 26, 2020 at 9:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Oct 26, 2020 at 05:31:00PM +0100, Peter Zijlstra wrote:
+> > In that respect, I think the current virtual_dr6 = 0 is placed wrong, it
+> > should only be in exc_debug_user(). The only 'problem' then is that we
+> > seem to be able to loose BTF, but perhaps that is already an extant bug.
+> >
+> > Consider:
+> >
+> >  - perf: setup in-kernel #DB
+> >  - tracer: ptrace(PTRACE_SINGLEBLOCK)
+> >  - tracee: #DB on perf breakpoint, looses BTF
+> >  - tracee .. never triggers actual blockstep
+> >
+> > Hmm ? Should we re-set BTF when TIF_BLOCKSTEP && !user_mode(regs) ?
+>
+> Something like so then.
+>
+> Or sould we also have the userspace #DB re-set BTF when it was !DR_STEP?
+> I need to go untangle that ptrace stuff :/
+>
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index 3c70fb34028b..31de8b0980ca 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -793,19 +793,6 @@ static __always_inline unsigned long debug_read_clear_dr6(void)
+>         set_debugreg(DR6_RESERVED, 6);
+>         dr6 ^= DR6_RESERVED; /* Flip to positive polarity */
+>
+> -       /*
+> -        * Clear the virtual DR6 value, ptrace routines will set bits here for
+> -        * things we want signals for.
+> -        */
+> -       current->thread.virtual_dr6 = 0;
+> -
+> -       /*
+> -        * The SDM says "The processor clears the BTF flag when it
+> -        * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+> -        * TIF_BLOCKSTEP in sync with the hardware BTF flag.
+> -        */
+> -       clear_thread_flag(TIF_BLOCKSTEP);
+> -
+>         return dr6;
+>  }
+>
+> @@ -873,6 +860,20 @@ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+>          */
+>         WARN_ON_ONCE(user_mode(regs));
+>
+> +       if (test_thread_flag(TIF_BLOCKSTEP)) {
+> +               /*
+> +                * The SDM says "The processor clears the BTF flag when it
+> +                * generates a debug exception." but PTRACE_BLOCKSTEP requested
+> +                * it for userspace, but we just took a kernel #DB, so re-set
+> +                * BTF.
+> +                */
+> +               unsigned long debugctl;
+> +
+> +               rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+> +               debugctl |= DEBUGCTLMSR_BTF;
+> +               wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+> +       }
+> +
+>         /*
+>          * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
+>          * watchpoint at the same time then that will still be handled.
+> @@ -935,6 +936,26 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+>         irqentry_enter_from_user_mode(regs);
+>         instrumentation_begin();
+>
+> +       /*
+> +        * Clear the virtual DR6 value, ptrace routines will set bits here for
+> +        * things we want signals for.
+> +        */
+> +       current->thread.virtual_dr6 = 0;
+> +
+> +       /*
+> +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
+> +        * the ptrace visible DR6 copy.
+> +        */
+> +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
+> +               current->thread.virtual_dr6 |= (dr6 & DR_STEP);
+> +
+> +       /*
+> +        * The SDM says "The processor clears the BTF flag when it
+> +        * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+> +        * TIF_BLOCKSTEP in sync with the hardware BTF flag.
+> +        */
+> +       clear_thread_flag(TIF_BLOCKSTEP);
+> +
+>         /*
+>          * If dr6 has no reason to give us about the origin of this trap,
+>          * then it's very likely the result of an icebp/int01 trap.
 
-That's a lot of words, but exactly 0 on _WHY_ you would want to do that.
+This looks good to me (at least the non BTF parts), and I'll test it
+shortly, but especially now that clearing virtual_dr6 is moved to
+exc_debug_user I still don't see why it's not ok to copy the entire
+dr6 value into virtual_dr6 unconditionally.  Any extraneous dr6 state
+from an in-kernel #DB would have been picked up and cleared already
+when we entered exc_debug_kernel.
+
+- Kyle
