@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A2C29A147
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43BD29A149
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444621AbgJ0AjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:39:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49976 "EHLO mail.kernel.org"
+        id S2501878AbgJ0AjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:39:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409124AbgJZXub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:50:31 -0400
+        id S2409135AbgJZXue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:50:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F1CC20874;
-        Mon, 26 Oct 2020 23:50:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBAD720773;
+        Mon, 26 Oct 2020 23:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756231;
-        bh=BIP6Ywvq2AJS2Oz7ARKJM4JshElUyl/dKPhlquHf2qM=;
+        s=default; t=1603756233;
+        bh=FwGCC5je+qSALh6pUyJFCTlFd8RGLBo3/olgLlei+uQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WzOsG6cgwPxLccrZ4c9etEyFX/B4h6PUNc+1cxzoCxWx3k5MWAeCL13sgn9Q3lmZ+
-         BhSYspZIqenfRcvXH3ga/vNIiYsODz/D2o/nM5iy/YziK0nkmz7ODcufiWHN+SVNnC
-         PqmFgn7kDfNVQ6ts0NTIgXacgIL4ExsFraGvv37k=
+        b=ZzAkbfRq/w/rOVQVB6OPm10O49lsC9XqUqiOf6emtf/HuLH2QpY9aoFWSoSNogNsv
+         OGqGBt7EKJNila2g5xUCAv7LA2Ob8TkIlOsexWfpqXYJ50EcXXkfZSF4Q4IzY91V/R
+         T0RiR1x7PgD+p/CCe7b1eeMG7G5D3Wqq9gDruyhA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 069/147] samples/bpf: Fix possible deadlock in xdpsock
-Date:   Mon, 26 Oct 2020 19:47:47 -0400
-Message-Id: <20201026234905.1022767-69-sashal@kernel.org>
+Cc:     Zong Li <zong.li@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.9 071/147] riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+Date:   Mon, 26 Oct 2020 19:47:49 -0400
+Message-Id: <20201026234905.1022767-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -43,39 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Zong Li <zong.li@sifive.com>
 
-[ Upstream commit 5a2a0dd88f0f267ac5953acd81050ae43a82201f ]
+[ Upstream commit b5fca7c55f9fbab5ad732c3bce00f31af6ba5cfa ]
 
-Fix a possible deadlock in the l2fwd application in xdpsock that can
-occur when there is no space in the Tx ring. There are two ways to get
-the kernel to consume entries in the Tx ring: calling sendto() to make
-it send packets and freeing entries from the completion ring, as the
-kernel will not send a packet if there is no space for it to add a
-completion entry in the completion ring. The Tx loop in l2fwd only
-used to call sendto(). This patches adds cleaning the completion ring
-in that loop.
+AT_VECTOR_SIZE_ARCH should be defined with the maximum number of
+NEW_AUX_ENT entries that ARCH_DLINFO can contain, but it wasn't defined
+for RISC-V at all even though ARCH_DLINFO will contain one NEW_AUX_ENT
+for the VDSO address.
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/1599726666-8431-3-git-send-email-magnus.karlsson@gmail.com
+Signed-off-by: Zong Li <zong.li@sifive.com>
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Reviewed-by: Pekka Enberg <penberg@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/xdpsock_user.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/include/uapi/asm/auxvec.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 19c679456a0e2..ffb61d4bb93e9 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -1111,6 +1111,7 @@ static void l2fwd(struct xsk_socket_info *xsk, struct pollfd *fds)
- 	while (ret != rcvd) {
- 		if (ret < 0)
- 			exit_with_error(-ret);
-+		complete_tx_l2fwd(xsk, fds);
- 		if (xsk_ring_prod__needs_wakeup(&xsk->tx))
- 			kick_tx(xsk);
- 		ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
+diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
+index d86cb17bbabe6..22e0ae8884061 100644
+--- a/arch/riscv/include/uapi/asm/auxvec.h
++++ b/arch/riscv/include/uapi/asm/auxvec.h
+@@ -10,4 +10,7 @@
+ /* vDSO location */
+ #define AT_SYSINFO_EHDR 33
+ 
++/* entries in ARCH_DLINFO */
++#define AT_VECTOR_SIZE_ARCH	1
++
+ #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
 -- 
 2.25.1
 
