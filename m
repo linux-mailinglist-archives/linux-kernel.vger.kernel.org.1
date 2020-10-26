@@ -2,98 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89CF2996BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF762996BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792979AbgJZTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:22:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57790 "EHLO mail.kernel.org"
+        id S1792970AbgJZTWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:22:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1792972AbgJZTW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:22:27 -0400
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1784492AbgJZTWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:22:17 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FCBF20709
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:22:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89B3A2080A;
+        Mon, 26 Oct 2020 19:22:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603740146;
-        bh=rdH81gD1U2kWovShxEgNuY3bLKkO1T+WW3kWNRVjGSM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aJh9wWLPIUesyXx4C/tJnh1fen8x6evPyIjc4sNU9/OXhrCUzi3HByo+f+zVzHoiO
-         nhQcqaHq/SbaA7hajmnZy5YpxPHMgl7pRfJz69iMhLzBhA7pCQm/qHDVVGAGOBBEsw
-         BBEoyGvLgxuHQtMwW1gqjMjJ5T4C0obkHzWwvTRA=
-Received: by mail-qt1-f176.google.com with SMTP id i7so6878628qti.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:22:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531GluqPVzgTH0dYV0R7oLw48M9Rck7GPZsNJMig6MW/Z0LxDeMK
-        iTiCTZGL5LIv4z3ul89efZap2C2mbyA1afSyei0=
-X-Google-Smtp-Source: ABdhPJxIDPTufr52kNTMJQnBoyCopCXHnR8khLPhNjUFIpf1FOQGvvF5QClP5Galtq9B9t1VsDSyijq96IO2iH+YvIs=
-X-Received: by 2002:ac8:4808:: with SMTP id g8mr17753337qtq.18.1603740145367;
- Mon, 26 Oct 2020 12:22:25 -0700 (PDT)
+        s=default; t=1603740136;
+        bh=pd2RJCqAVpfNGQ5ypEduTt4rIlya9sC2k1zp9YD13i0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dRWOwXFDqYd72SEFlryt/ijWt1i6SGzSPaHhD88/dqEhU4VIN7/w6ZdGVY7PGWef+
+         97z5PlapHJycTe7li8HfPblsL1kS48G7f4n0rnY+QWrRMM61Q8drP17VRa87ySmvTB
+         lFU9jvShyDA9DgTWerjpXzODnzq5hoNe7ewvyBv8=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: call f2fs_get_meta_page_retry for nat page
+Date:   Mon, 26 Oct 2020 12:22:14 -0700
+Message-Id: <20201026192214.4156137-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-References: <20201026162336.3711040-1-arnd@kernel.org> <CAKwvOdmdv6wABToSpJt5b66E1vD3Ec0QC3DnyZm7f2sJkcsNuw@mail.gmail.com>
-In-Reply-To: <CAKwvOdmdv6wABToSpJt5b66E1vD3Ec0QC3DnyZm7f2sJkcsNuw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 26 Oct 2020 20:22:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a32dWaCQV8Q1g0eoQD2PFb8Jt2pDHEkTJOMAoyJpOhD3w@mail.gmail.com>
-Message-ID: <CAK8P3a32dWaCQV8Q1g0eoQD2PFb8Jt2pDHEkTJOMAoyJpOhD3w@mail.gmail.com>
-Subject: Re: [PATCH] ctype.h: remove duplicate isdigit() helper
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 7:23 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Mon, Oct 26, 2020 at 9:23 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc warns a few thousand times about the isdigit() shadow:
-> >
-> > include/linux/ctype.h:26:19: warning: declaration of 'isdigit' shadows a built-in function [-Wshadow]
->
-> Don't all functions defined here shadow builtins in GCC?  Why is
-> `isdigit` unique?  Is that because it's a `static inline` definition
-> vs a function like macro?  If that's the case, what's the harm in
-> converting it to a function like macro if that silences the warning?
+When running fault injection test, if we don't stop checkpoint, some stale
+NAT entries were flushed which breaks consistency.
 
-It was originally a macro but got changed to an inline function in
-1204c77f9b6a ("include/linux/ctype.h: make isdigit() table lookupless"),
-apparently in order to avoid evaluating the argument more than once.
+Fixes: 86f33603f8c5 ("f2fs: handle errors of f2fs_get_meta_page_nofail")
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/node.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I suppose we could make it a statement expression with a local
-variable like
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index d5d8ce077f29..42394de6c7eb 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -109,7 +109,7 @@ static void clear_node_page_dirty(struct page *page)
+ 
+ static struct page *get_current_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+ {
+-	return f2fs_get_meta_page(sbi, current_nat_addr(sbi, nid));
++	return f2fs_get_meta_page_retry(sbi, current_nat_addr(sbi, nid));
+ }
+ 
+ static struct page *get_next_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-#define isdigit(c) ({ __auto_type __c = (c);  '0' <= __c && __c <= '9'; })
-
-> > @@ -39,6 +35,18 @@ static inline int isdigit(int c)
-> >  #define isascii(c) (((unsigned char)(c))<=0x7f)
-> >  #define toascii(c) (((unsigned char)(c))&0x7f)
-> >
-> > +#if defined __has_builtin
->
-> #ifdef
->
-> only use `defined` explicitly when there's more than one condition
-> being checked with logical `&&` or `||`.
->
-> > +#if __has_builtin(__builtin_isdigit)
->
-> GCC only recently gained the `__has_builtin` macro (I filed the bug);
-> I would like to see something akin to
-> include/linux/compiler_attributes.h but using `__has_builtin` like
-> compiler_attributes.h uses `__has_attribute`.  That way we avoid
-> spaghetti like this throughout the kernel.
-
-Ok. I've added a 'has_builtin()' macro (without underscores)
-in linux/compiler.h in version 2. I don't use it anywhere else
-in my current series, so there should be no dependencies.
-
-     Arnd
