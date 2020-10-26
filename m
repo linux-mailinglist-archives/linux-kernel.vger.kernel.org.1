@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5E3299B57
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC03D299B0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409143AbgJZXuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:50:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48540 "EHLO mail.kernel.org"
+        id S2408416AbgJZXrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408963AbgJZXt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:59 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2408400AbgJZXrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:47:24 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D94E20872;
-        Mon, 26 Oct 2020 23:49:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34F4B20872;
+        Mon, 26 Oct 2020 23:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756197;
-        bh=iWq+kWKnrKXiGx+p27rK1ZDgY1h1EZj7pDFxBn7JNGI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eTztFtjWGJDkbWwn9csYADnf7ftcK0R/qMAP/eDST8Kh3bSXZOSv44gSJjZikcWD4
-         c5PMt2hYNIJ+ya6I/6dm8GZntlFcEFDYUdowp7lqV2R0fF1Frve86Kai6ff03XDQaF
-         dY8ytqQeFCrxQen+dmpxKlkh8+2xEWRdQknurT2U=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Bilal Wasim <bwasim.lkml@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.9 041/147] drm/bridge_connector: Set default status connected for eDP connectors
-Date:   Mon, 26 Oct 2020 19:47:19 -0400
-Message-Id: <20201026234905.1022767-41-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
-References: <20201026234905.1022767-1-sashal@kernel.org>
+        s=default; t=1603756043;
+        bh=CCd/1eClEmV4GdkYGGj4s8i+deHWYDJGw3SoCtNf2O8=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=HEJKt+S9wdzTfdcyniRnE8GEYdxxMBjI4RH+tQDmKl+RC2dU/9SdSyui3E7dsz6Z0
+         mUBHYtTOGfwRwTWGDVW7XbDz2ng6Ck+gBlEW6x+HbAjKjoO5BvwnmitmzHiefY1Dvq
+         hM2QD+afILHXb5BCNVUFGshMpVbGIWJb5WqnBvVk=
+Date:   Mon, 26 Oct 2020 23:47:19 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20201023131925.334864-1-dmitry.baryshkov@linaro.org>
+References: <20201023131925.334864-1-dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v2 0/5]
+Message-Id: <160375603445.32304.15800152990447798405.b4-ty@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+On Fri, 23 Oct 2020 16:19:20 +0300, Dmitry Baryshkov wrote:
+> On SM8250 MDSS_GDSC (and the rest of display clock controller) is
+> supplied power by MMCX power domain. Handle this link in GDSC code by
+> binding the power domain in dts file.
+> 
+> This patchset depends on [1]
+> 
+> Changes since v1:
+>  - Define fixed-regulator-domain regulator using power domain
+>    performance state for enabling/disabling.
+>  - Rework to use new fixed regulator type (fixed-regulator-domain)
+>    instead of controlling power domain directly from gdsc code.
+> 
+> [...]
 
-[ Upstream commit c5589b39549d1875bb506da473bf4580c959db8c ]
+Applied to
 
-In an eDP application, HPD is not required and on most bridge chips
-useless. If HPD is not used, we need to set initial status as connected,
-otherwise the connector created by the drm_bridge_connector API remains
-in an unknown state.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Bilal Wasim <bwasim.lkml@gmail.com>
-Tested-by: Bilal Wasim <bwasim.lkml@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200826081526.674866-2-enric.balletbo@collabora.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/drm_bridge_connector.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks!
 
-diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
-index c6994fe673f31..a58cbde59c34a 100644
---- a/drivers/gpu/drm/drm_bridge_connector.c
-+++ b/drivers/gpu/drm/drm_bridge_connector.c
-@@ -187,6 +187,7 @@ drm_bridge_connector_detect(struct drm_connector *connector, bool force)
- 		case DRM_MODE_CONNECTOR_DPI:
- 		case DRM_MODE_CONNECTOR_LVDS:
- 		case DRM_MODE_CONNECTOR_DSI:
-+		case DRM_MODE_CONNECTOR_eDP:
- 			status = connector_status_connected;
- 			break;
- 		default:
--- 
-2.25.1
+[1/2] regulator: fixed: provide bindings using power domain
+      commit: d4189bc55d5c40251abaa1f341796aac84ddfb10
+[2/2] regulator: fixed: support using power domain for enable/disable
+      commit: bf3a28cf42412c0a85631da94f198048bb37a8e5
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
