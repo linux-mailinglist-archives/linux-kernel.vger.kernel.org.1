@@ -2,226 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F290298D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4027B298D06
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775365AbgJZMmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:42:55 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:44188 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768636AbgJZMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:42:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603716173; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=pAO6FzkFim7w2227Z74WQRknu64DzjlpQ5jvS3Im4M0=; b=MIFf9/2RXvbvFRdRXnlhEXRLit9HuNlc3+ye7kvmnDDOmYuv8Qf6bKhTLl+svGzj1Mr4eWyf
- VyDPlNarOWNLjuwJ+5diIvZLdJR+7yPZxPVRJ0dYMOLxt/pdWyb0tzh/TsLtQymOf/vO0dpn
- H37Qoodi3HTW2YNn9qTKJQKWv7I=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f96c43c2421c5ebfb57dbd5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 12:42:36
- GMT
-Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A9358C433FF; Mon, 26 Oct 2020 12:42:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zhenhuah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85A95C433CB;
-        Mon, 26 Oct 2020 12:42:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 85A95C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
-Date:   Mon, 26 Oct 2020 20:42:26 +0800
-From:   Zhenhua Huang <zhenhuah@codeaurora.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, tingwei@codeaurora.org
-Subject: Re: [PATCH] mm: fix page_owner initializing issue for arm32
-Message-ID: <20201026124226.GC20612@codeaurora.org>
-References: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
- <20201025154253.GH392079@kernel.org>
- <20201026071255.GA31027@codeaurora.org>
- <20201026093934.GD1154158@kernel.org>
+        id S1775385AbgJZMpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:45:45 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24418 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1775378AbgJZMpo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 08:45:44 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QCjWhg022962;
+        Mon, 26 Oct 2020 05:45:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=yolc5uT0uLumkC/QzdVirxCiUWujmaCq4+8aNuvLj3c=;
+ b=mAM+WxkKu6drCU4EWIYTWcXTIfn0y7MKJVvSFN3UUS9s/pYjHa+gPFXGnbAxGukxR4V6
+ AyUT9WbajtEkKRSaDvUz1oZcZ44VuI8esvTz+BW7c9KAfxJJYjYGha48LDWt4QfcrV3M
+ +1rhdLj30Z5AYTTn06blvmcifflxPYPjisk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34d3rtvrdr-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Oct 2020 05:45:33 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 26 Oct 2020 05:45:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C3A2Mi3eASwtHknT5bVlLHG6pr7gjV3rydPKAD22n4qJsWbvgLs7gkiwizBAU1H0fUUthZAGMXDr+0xt+eUQp2CWsW3ESIrf5IYNYshaA2gWjya5dpsRmioX7y64FMovT+bhiIfGObkZeUcelNnQcwDPNHImF4c1mpwkpl3Nw6cQJJkRUIjNQirWBdc1wd50z6+zyOoN47QluuuRfpR8W0Yzh6De7Eld5MN7s65tWyWW2jNaZy9in2cEVJDeumdbNi4QlkTGf1ebJa4h5WPwiD/0h1o1tAgWKUknX8ZzUPw4cpj3CClEuES1FTaAD54Awxn7LJ49iWOYKBZiFYg1PA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yolc5uT0uLumkC/QzdVirxCiUWujmaCq4+8aNuvLj3c=;
+ b=GVotokIJLeukQtqPUuXqBEj9FQTrytapEoW+TSvyDuy+1ppn8Ieproiqe7IHKgroSjBvwV1zAfiykGZWAyqcWWyih0jq3oPtBH/jg2a16mgOnHvhyjrI6bQU5zpNt4AKIQ7YwltH7wdsaRbVuWBwOD1WP06XDfZ70IYnjvr3uOU4IFdn/gs01GZyb3ULIUmHYpGwNov63ZFiXD/UKK0CHsCGECDWLU4aw4+5ACoqud6y+RYFfuojyFrFgFX+tOR4YIRWg/BQBmewZ0ejE/8wtBklp2B8FZ/rdTlCebhNDeUdfp+rXi4xgFxW+F9L54T9lnKwctqRJhFkNb+RlhVPrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yolc5uT0uLumkC/QzdVirxCiUWujmaCq4+8aNuvLj3c=;
+ b=YZ579b00L8DCWJibnbELB3+GVhNK8VDx7z0BkRXm8gIMaEYT7jgkaxhEQscG+xbYkkhvC59FP01HB2a8HrG2kK7DcgAovSvGWuzROjduKdyes5sziXCcXugsZZ6C6lMFhdYrzcGwTPz+Oe9Eorc+358BjLIM89pl3eUvG+R38n4=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=fb.com;
+Received: from MN2PR15MB2878.namprd15.prod.outlook.com (2603:10b6:208:e9::12)
+ by MN2PR15MB2767.namprd15.prod.outlook.com (2603:10b6:208:125::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 26 Oct
+ 2020 12:45:31 +0000
+Received: from MN2PR15MB2878.namprd15.prod.outlook.com
+ ([fe80::38aa:c2b:59bf:1d7]) by MN2PR15MB2878.namprd15.prod.outlook.com
+ ([fe80::38aa:c2b:59bf:1d7%6]) with mapi id 15.20.3477.029; Mon, 26 Oct 2020
+ 12:45:31 +0000
+From:   "Chris Mason" <clm@fb.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework
+ load_balance()"
+Date:   Mon, 26 Oct 2020 08:45:27 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
+In-Reply-To: <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com>
+ <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Originating-IP: [172.101.208.204]
+X-ClientProxiedBy: CH2PR19CA0023.namprd19.prod.outlook.com
+ (2603:10b6:610:4d::33) To MN2PR15MB2878.namprd15.prod.outlook.com
+ (2603:10b6:208:e9::12)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.129] (172.101.208.204) by CH2PR19CA0023.namprd19.prod.outlook.com (2603:10b6:610:4d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 26 Oct 2020 12:45:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b99cf933-f6f9-426b-7595-08d879ad05ab
+X-MS-TrafficTypeDiagnostic: MN2PR15MB2767:
+X-Microsoft-Antispam-PRVS: <MN2PR15MB276734A23F17BCF7F014D7C6D3190@MN2PR15MB2767.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DQVp1bjCAs6Z5MVSHuko37JuMi9O745AEaX2icpOuHX2jqRKtnARwpLYn6l/KWpV76hZC+vX32+JNOP1PTq89jZxS4+W+5We1oM6NzBvG7WQ1pO3R1lju8Rxgi4pABT+6hpAuJqqFNSSnb7MthzCdgE51CG+HmE+DjgBEzTnCoCyEJvE7M3nbBc2Fb8V7DfjbbG3yBOsZ9GXP0oYHmmCjmZMR4RxzGbakD5orWmsqVBzBGBi8MtndcVHxNSNO+cqQX/HMqlIBCOfopb+Jy0MdU3z8fd0Z5wIKznr/TiTDjFfGYkJYbu2fWKOANNPNrk8/L7/D30CaLcDhsqcg1wfKYlC2q5B063LCUzdW/t5WGSgOZHWkZf1R6XV1Jmt7OlT7YE/WUBRxWWAD41BlN2AMA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB2878.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(66946007)(66556008)(16576012)(66476007)(86362001)(33656002)(5660300002)(54906003)(4326008)(966005)(956004)(2906002)(186003)(8676002)(36756003)(6486002)(316002)(16526019)(2616005)(52116002)(26005)(53546011)(8936002)(478600001)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Pm8MORjbx1YomYVJ+8ewyOY92h++OI7e/7ZRgMPn0mz/PqkhjqN34yCKdalO/dAnVL8n9mf5wFsoRCNGOqutTiIOUpGZqyQcit98fKG79NG1/A+VvzyioZErRoU8RzTr5x9aYnteuEsGPY8dzohLzeGzg1Csi54GboeUZ3zL28p/cNTlOFnVt6jgPAf+n2DyEOEZyTVrKDVAhFRPXiO+aQQejxIhfRUlAk2kFw3g6b8WoGU82qBSSupguZeqODQAQjAPV4pB2Gj7ujtWrjnYjZhPhzN+ci4zrg8iFzCakmigciIpt2L4OwZD4XrX3MGejLDEZ4n3OWXqHVpCDKEqPEXWv4q3Zm0wSpvvaVw1bAIVtA3z1zWSag4znLjf04lnfUHkSxOadXjnYeT9DX20KN9lUboyBITy5PZkzNhTjz5rE+bhTy/BH9ViXf4ssq0dBjb9kjLPl/o8ZfAy3r26ERIytcSN9fs2ct0Nd1it0zIu2vsS8xVhTzH6+kazc2m5OFaw6nS1DjU4UeTS6Y0EBK0fSDeYg2Fc5RO0ojEmD4c8UHi8FnNhaeLqL4b4fNaj1vGcBZfBHPCJijKtEe/PJGy8NWvrh8Jvs+JclFYA3pvvctzTkqhyh8RoWzt/fJrt0OsXVPJY66PUbVeLhYB56w==
+X-MS-Exchange-CrossTenant-Network-Message-Id: b99cf933-f6f9-426b-7595-08d879ad05ab
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB2878.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2020 12:45:30.9498
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Co84lPmAU1CRL8JRnr+Ml8BNJrXTiX8ssiaIku/ko1ynY9gRsWhNVryHT4QI3akZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2767
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026093934.GD1154158@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-26_06:2020-10-26,2020-10-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 clxscore=1015 bulkscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010260091
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:39:34PM +0800, Mike Rapoport wrote:
-> On Mon, Oct 26, 2020 at 03:12:55PM +0800, Zhenhua Huang wrote:
-> > Hi Mike,
-> > 
-> > On Sun, Oct 25, 2020 at 11:42:53PM +0800, Mike Rapoport wrote:
-> > > On Fri, Oct 16, 2020 at 05:14:00PM +0800, Zhenhua Huang wrote:
-> > > > Page owner of pages used by page owner itself used is missing on
-> arm32
-> > > targets.
-> > > > The reason is dummy_handle and failure_handle is not initialized
-> > > correctly.
-> > > > Buddy allocator is used to initialize these two handles. However,
-> buddy
-> > > > allocator is not ready when page owner calls it. This change fixed
-> that
-> > > by
-> > > > initializing page owner after buddy initialization.
-> > > > 
-> > > > The working flow before and after this change are:
-> > > > original logic:
-> > > > 1. allocated memory for page_ext(using memblock).
-> > > 
-> > > Is anything that requires a memblock allocation FLATMEM?
-> > > Any fundamental reason why wouldn't
-> alloc_pages_exact_nid/vzalloc_node()
-> > > work in this case?
-> > > 
-> > > It seems to me that for FLATMEM configuration we can allocate the
-> > > page_ext using alloc_pages() with a fallback to vzalloc_node() and
-> then
-> > > we can unify lot's of page_ext code and entirely drop
-> > > page_ext_init_flatmem().
-> >
-> > From comments in codes: "page_ext requires contiguous pages, bigger than
-> > MAX_ORDER unless SPARSEMEM."
-> > The size of page_ext for FLATMEM(which used pgdat) should be much larger
-> than
-> > the size for SPARSEMEM which used section.
-> 
-> Well, the vzalloc_node() fallback in alloc_page_ext() for SPARSEMEM case
-> implies that using pages that are not physically contiguous should be
-> fine. So, it seems to me that the comment is stale and vzalloc_node()
-> would work just fine for FLATMEM case if the allocation of page_ext
-> would exceed MAX_ORDER.
-> 
+On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
 
-Thanks Mike, got it. I agree with you for this point. I also haven't got why
-it needs physical continuous... and haven't found detailed commit message
-explained it.
+> Hi Chris
+>
+> On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
+>>
+>> Hi everyone,
+>>
+>> We’re validating a new kernel in the fleet, and compared with v5.2,
+>
+> Which version are you using ?
+> several improvements have been added since v5.5 and the rework of 
+> load_balance
 
-> > > > 2. invoke the init callback of page_ext_ops like
-> > > > page_owner(using buddy allocator).
-> > > > 3. initialize buddy.
-> > > > 
-> > > > after this change:
-> > > > 1. allocated memory for page_ext(using memblock).
-> > > > 2. initialize buddy.
-> > > > 3. invoke the init callback of page_ext_ops like
-> > > > page_owner(using buddy allocator).
-> > > > 
-> > > > with the change, failure/dummy_handle can get its correct value and
-> > > > page owner output for example has the one for page owner itself:
-> > > > Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN),
-> pid
-> > > 1006, ts
-> > > > 67278156558 ns
-> > > > PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
-> > > >  init_page_owner+0x28/0x2f8
-> > > >  invoke_init_callbacks_flatmem+0x24/0x34
-> > > >  start_kernel+0x33c/0x5d8
-> > > >    (null)
-> > > > 
-> > > > Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
-> > > > ---
-> > > >  include/linux/page_ext.h | 8 ++++++++
-> > > >  init/main.c              | 2 ++
-> > > >  mm/page_ext.c            | 8 +++++++-
-> > > >  3 files changed, 17 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-> > > > index cfce186..aff81ba 100644
-> > > > --- a/include/linux/page_ext.h
-> > > > +++ b/include/linux/page_ext.h
-> > > > @@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
-> > > >  {
-> > > >  }
-> > > >  extern void page_ext_init(void);
-> > > > +static inline void page_ext_init_flatmem_late(void)
-> > > > +{
-> > > > +}
-> > > >  #else
-> > > >  extern void page_ext_init_flatmem(void);
-> > > > +extern void page_ext_init_flatmem_late(void);
-> > > >  static inline void page_ext_init(void)
-> > > >  {
-> > > >  }
-> > > > @@ -76,6 +80,10 @@ static inline void page_ext_init(void)
-> > > >  {
-> > > >  }
-> > > >  
-> > > > +static inline void page_ext_init_flatmem_late(void)
-> > > > +{
-> > > > +}
-> > > > +
-> > > >  static inline void page_ext_init_flatmem(void)
-> > > >  {
-> > > >  }
-> > > > diff --git a/init/main.c b/init/main.c
-> > > > index 130376e..b34c475 100644
-> > > > --- a/init/main.c
-> > > > +++ b/init/main.c
-> > > > @@ -818,6 +818,8 @@ static void __init mm_init(void)
-> > > >  	init_debug_pagealloc();
-> > > >  	report_meminit();
-> > > >  	mem_init();
-> > > > +	/* page_owner must be initialized after buddy is ready */
-> > > > +	page_ext_init_flatmem_late();
-> > > >  	kmem_cache_init();
-> > > >  	kmemleak_init();
-> > > >  	pgtable_init();
-> > > > diff --git a/mm/page_ext.c b/mm/page_ext.c
-> > > > index a3616f7..373f7a1 100644
-> > > > --- a/mm/page_ext.c
-> > > > +++ b/mm/page_ext.c
-> > > > @@ -99,6 +99,13 @@ static void __init invoke_init_callbacks(void)
-> > > >  	}
-> > > >  }
-> > > >  
-> > > > +#if !defined(CONFIG_SPARSEMEM)
-> > > > +void __init page_ext_init_flatmem_late(void)
-> > > > +{
-> > > > +	invoke_init_callbacks();
-> > > > +}
-> > > > +#endif
-> > > > +
-> > > >  static inline struct page_ext *get_entry(void *base, unsigned long
-> > > index)
-> > > >  {
-> > > >  	return base + page_ext_size * index;
-> > > > @@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
-> > > >  			goto fail;
-> > > >  	}
-> > > >  	pr_info("allocated %ld bytes of page_ext\n", total_usage);
-> > > > -	invoke_init_callbacks();
-> > > >  	return;
-> > > >  
-> > > >  fail:
-> > > > -- 
-> > > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> > > Forum,
-> > > > a Linux Foundation Collaborative Project
-> > > > 
-> > > > 
-> > > 
-> > > -- 
-> > > Sincerely yours,
-> > > Mike.
-> > > 
-> 
-> -- 
-> Sincerely yours,
-> Mike.
-> 
+We’re validating v5.6, but all of the numbers referenced in this patch 
+are against v5.9.  I usually try to back port my way to victory on this 
+kind of thing, but mainline seems to behave exactly the same as 
+0b0695f2b34a wrt this benchmark.
+
+>
+>> performance is ~2-3% lower for some of our workloads.  After some
+>> digging, Johannes found that our involuntary context switch rate was 
+>> ~2x
+>> higher, and we were leaving a CPU idle a higher percentage of the 
+>> time,
+>> even though the workload was trying to saturate the system.
+>>
+>> We were able to reproduce the problem with schbench, and Johannes
+>> bisected down to:
+>>
+>> commit 0b0695f2b34a4afa3f6e9aa1ff0e5336d8dad912
+>> Author: Vincent Guittot <vincent.guittot@linaro.org>
+>> Date:   Fri Oct 18 15:26:31 2019 +0200
+>>
+>>      sched/fair: Rework load_balance()
+>>
+>> Our working theory is the load balancing changes are leaving 
+>> processes
+>> behind busy CPUs instead of moving them onto idle ones.  I made a few
+>> schbench modifications to make this easier to demonstrate:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/mason/schbench.git/
+>>
+>> My VM has 40 cpus (20 cores, 2 threads per core), and my schbench
+>> command line is:
+>
+> What is the topology ? are they all part of the same LLC ?
+
+We’ve seen the regression on both single socket and dual socket bare 
+metal intel systems.  On the VM I reproduced with, I saw similar 
+latencies with and without siblings configured into the topology.
+
+-chris
