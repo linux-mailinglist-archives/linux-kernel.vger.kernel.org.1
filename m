@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496C0299FDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2233299FBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410011AbgJZXxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55904 "EHLO mail.kernel.org"
+        id S2410022AbgJZXxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409866AbgJZXwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:47 -0400
+        id S2409744AbgJZXwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:49 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F36A220B1F;
-        Mon, 26 Oct 2020 23:52:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BFCB21BE5;
+        Mon, 26 Oct 2020 23:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756366;
-        bh=N+QUqyILg2SxO8jRm/qHzOz1JqZ74n+tGeJYBcQYaTI=;
+        s=default; t=1603756369;
+        bh=s7HO3kJ3IJ3+Hgbu3ZKKnFqr4ZVc22GMfUCDuqNgJzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NclGZai13iyYU96LqINQIx+gS+hmZsWkS3dDlfnAopzGakrb/doSpReNpHNNJhAU4
-         tpZN0RE2uDsEOYwaLHoKlrZTVIZ2aiLvm74WNKLHXAk58udnI454SUs3Fu85dyQN2D
-         9xPbSOtnnZmJNPZqcPqzL9zihSPOXwFUX9zhr83Y=
+        b=A4w1L3Wzpx4dvkwqgvBnnJgMtOnRgBh/N0dszLwmMwB/zIK8eKUhZkOZ5aA0yJVtb
+         jToXFbweERqG7YBd1lbKo0jK5Oookl5AUH/L8aXKJMJRuEn9ZDhIEiteiiKf0oFwKD
+         9HSsmIcYzSzDvgBl6FniIE8uzqkpTQifltaiwwY4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nadezda Lutovinova <lutovinova@ispras.ru>,
-        Sam Ravnborg <sam@ravnborg.org>,
+Cc:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.8 034/132] drm/brige/megachips: Add checking if ge_b850v3_lvds_init() is working correctly
-Date:   Mon, 26 Oct 2020 19:50:26 -0400
-Message-Id: <20201026235205.1023962-34-sashal@kernel.org>
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 036/132] selftests/x86/fsgsbase: Reap a forgotten child
+Date:   Mon, 26 Oct 2020 19:50:28 -0400
+Message-Id: <20201026235205.1023962-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,57 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Andy Lutomirski <luto@kernel.org>
 
-[ Upstream commit f688a345f0d7a6df4dd2aeca8e4f3c05e123a0ee ]
+[ Upstream commit ab2dd173330a3f07142e68cd65682205036cd00f ]
 
-If ge_b850v3_lvds_init() does not allocate memory for ge_b850v3_lvds_ptr,
-then a null pointer dereference is accessed.
+The ptrace() test forgot to reap its child.  Reap it.
 
-The patch adds checking of the return value of ge_b850v3_lvds_init().
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200819143756.30626-1-lutovinova@ispras.ru
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/e7700a503f30e79ab35a63103938a19893dbeff2.1598461151.git.luto@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ tools/testing/selftests/x86/fsgsbase.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-index 6200f12a37e69..ab8174831cf40 100644
---- a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-+++ b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-@@ -302,8 +302,12 @@ static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
- 				       const struct i2c_device_id *id)
- {
- 	struct device *dev = &stdp4028_i2c->dev;
-+	int ret;
-+
-+	ret = ge_b850v3_lvds_init(dev);
+diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
+index 15a329da59fa3..5f3aea210e018 100644
+--- a/tools/testing/selftests/x86/fsgsbase.c
++++ b/tools/testing/selftests/x86/fsgsbase.c
+@@ -499,6 +499,9 @@ static void test_ptrace_write_gsbase(void)
  
--	ge_b850v3_lvds_init(dev);
-+	if (ret)
-+		return ret;
+ END:
+ 	ptrace(PTRACE_CONT, child, NULL, NULL);
++	wait(&status);
++	if (!WIFEXITED(status))
++		printf("[WARN]\tChild didn't exit cleanly.\n");
+ }
  
- 	ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
- 	i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
-@@ -361,8 +365,12 @@ static int stdp2690_ge_b850v3_fw_probe(struct i2c_client *stdp2690_i2c,
- 				       const struct i2c_device_id *id)
- {
- 	struct device *dev = &stdp2690_i2c->dev;
-+	int ret;
-+
-+	ret = ge_b850v3_lvds_init(dev);
- 
--	ge_b850v3_lvds_init(dev);
-+	if (ret)
-+		return ret;
- 
- 	ge_b850v3_lvds_ptr->stdp2690_i2c = stdp2690_i2c;
- 	i2c_set_clientdata(stdp2690_i2c, ge_b850v3_lvds_ptr);
+ int main()
 -- 
 2.25.1
 
