@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26492299826
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4F2299824
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389143AbgJZUow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:44:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33949 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJZUov (ORCPT
+        id S1727372AbgJZUop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:44:45 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:39535 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgJZUop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:44:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603745090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=JB8IelFUdHYx6FcbDlk23KKu8O+uAJKCTr7eR6lhytw=;
-        b=HKdk/zBHCDWwEExMR+kbKGsMnMmeK4mexABUvV5my3wNtw7bWgB3+2WQ4tEMK08WqVfrQl
-        eFcGy3ANdWAKIAtSdwabjVHPX+BA6IIUM7AC3GMdaK3I9t9uXnJudUVzy9rG7/0RkTLT1m
-        yvQLOqnQ3mnauIqPXESrcZ0T6USWq8E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-NE68nPDhMIuKJv3P-HnPdA-1; Mon, 26 Oct 2020 16:44:46 -0400
-X-MC-Unique: NE68nPDhMIuKJv3P-HnPdA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20BD0107B476;
-        Mon, 26 Oct 2020 20:44:45 +0000 (UTC)
-Received: from llong.com (ovpn-118-122.rdu2.redhat.com [10.10.118.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B08636EF46;
-        Mon, 26 Oct 2020 20:44:38 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca BRUNO <lucab@redhat.com>, Waiman Long <longman@redhat.com>
-Subject: [PATCH] inotify: Increase default inotify.max_user_watches limit to 1048576
-Date:   Mon, 26 Oct 2020 16:44:18 -0400
-Message-Id: <20201026204418.23197-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 26 Oct 2020 16:44:45 -0400
+Received: by mail-pg1-f196.google.com with SMTP id o7so6728155pgv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CXoBtb7hZg65eUO5Skt0IZ7KKc+QKlYeerwa/eOfSGQ=;
+        b=j3nVfTLfrQADpl0INIZy5QtGpAuuKuwsllTEBcNuaN7bttWfpOO1ARbJEZbEIoZLzu
+         yqyL75Q9qQVSD2oG47onib/wJaJI5MYz/xuC3Mq3TEsNg8t9StZwThI1DwkOv1Dcl4Wy
+         juxbKlVizYkYQaTYhEXGKk2KlIdfKWHxxfLvvwRKZ8VyTEHawpTX6Q/3u6nlQTH0QLus
+         +dZULHFwZoXtc/R55kZgQudJZd+dWJLqyywDC4CuVknjfGcVR1plj639HZ7yuhdZsmvg
+         ddUW+NNCStRG5onZJ+oN4H+7/3nMYsTlyWFeSOt0vt0YD9o6bM85UtS7f43cjIrGdWwQ
+         KwNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CXoBtb7hZg65eUO5Skt0IZ7KKc+QKlYeerwa/eOfSGQ=;
+        b=a88UqzCPJk9cPXdnVOEo1k8C4HWqORPTHfIY/uj4i5JRdzoN2fjd4w8UkwJGnCItbq
+         PMOMjsTktyGefhu27ztDc4xMrdIb8fg9um0E9rTcKe1sdCgt+BKCGtiCQU2c8THogFhd
+         5QMsKgDJJ38ncohaqRfSEMhmRh3oolup5tziSSVjYmWznS7euZx7R8An8kRVVTOKGzvJ
+         WhXv7daI/QK5CWVIRsfAtFmNjvTPtsBd1p2Jgqnlw0aT/RRQMBp/pMtx2j1L1jjOTtFL
+         z/bshLbEBmCrqcegriya09+MwdvBt3u/ITdAy8svFLwaczB0eHJV7ul1dOx0jZBWODeD
+         aPvg==
+X-Gm-Message-State: AOAM5310coIyW/TA51ByUqUElaB+qky50beIqPZS7xaBK1xqmyT88TXQ
+        Solp6ILe/GZi3JJqPuqoEObb9IB8EjVra/EelK+Lsg==
+X-Google-Smtp-Source: ABdhPJzAJHZdaHLqZ+e5l/ypR2UFgs1n9sRrJr/lJKrbWsJNPX7rD/s7XOYH2ghPx1yqE+pDgbxxly1kBIL35ym68Y4=
+X-Received: by 2002:a63:495d:: with SMTP id y29mr13514203pgk.384.1603745084311;
+ Mon, 26 Oct 2020 13:44:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAFd5g44CxPuXbHund397PJSQPHGhWy1-7ij7JnJNzCO0NF6dCA@mail.gmail.com>
+ <20201022063526.12554-1-sjpark@amazon.com> <20201025124459.GA1157488@surfacebook.localdomain>
+In-Reply-To: <20201025124459.GA1157488@surfacebook.localdomain>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 26 Oct 2020 13:44:33 -0700
+Message-ID: <CAFd5g45N_7HTTObU799_S-9QPFXhQkeQ=yqvH-J79ROvKSXs4A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kunit: tool: Mark 'kunittest_config' as constant again
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default value of inotify.max_user_watches sysctl parameter was set
-to 8192 since the introduction of the inotify feature in 2005 by
-commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
-small for many modern usage. As a result, users have to explicitly set
-it to a larger value to make it work.
+On Sun, Oct 25, 2020 at 5:45 AM <andy@surfacebook.localdomain> wrote:
+>
+> On Thu, Oct 22, 2020 at 08:35:26AM +0200, SeongJae Park wrote:
+> > On Wed, 21 Oct 2020 14:32:52 -0700 Brendan Higgins <brendanhiggins@google.com> wrote:
+> >
+> > > On Mon, Oct 12, 2020 at 3:27 AM SeongJae Park <sjpark@amazon.com> wrote:
+> > > >
+> > > > From: SeongJae Park <sjpark@amazon.de>
+> > > >
+> > > > 'kunit_kernel.kunittest_config' was constant at first, and therefore it
+> > > > used UPPER_SNAKE_CASE naming convention that usually means it is
+> > > > constant in Python world.  But, commit e3212513a8f0 ("kunit: Create
+> > > > default config in '--build_dir'") made it modifiable to fix a use case
+> > > > of the tool and thus the naming also changed to lower_snake_case.
+> > > > However, this resulted in a confusion.  As a result, some successing
+> > > > changes made the tool unittest fail, and a fix[1] of it again incurred
+> > > > the '--build_dir' use case failure.
+> > > >
+> > > > As the previous commit fixed the '--build_dir' use case without
+> > > > modifying the variable again, this commit marks the variable as constant
+> > > > again with UPPER_SNAKE_CASE, to reduce future confusions.
+> > > >
+> > > > [1] Commit d43c7fb05765 ("kunit: tool: fix improper treatment of file location")
+> > > >
+> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > >
+> > > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> >
+> > Thanks :)
+> >
+> > >
+> > > Thanks for this! This is something I meant to fix a while ago and forgot about.
+> > >
+> > > One minor issue, this patch does not apply on torvalds/master right
+> > > now. Could you please rebase this?
+> >
+> > Surely of course, I will send next version soon.
+>
+> May I ask what happened to [1]?
+> I mean it seems these two are goind to collide.
+>
+> Brendan?
+>
+> [1]: https://lore.kernel.org/linux-kselftest/20201015152348.65147-1-andriy.shevchenko@linux.intel.com/
 
-After some searching around the web, these are the
-inotify.max_user_watches values used by some projects:
- - vscode:  524288
- - dropbox support: 100000
- - users on stackexchange: 12228
- - lsyncd user: 2000000
- - code42 support: 1048576
- - monodevelop: 16384
- - tectonic: 524288
- - openshift origin: 65536
+Sorry for the confusion here. After an initial glance at your patches
+(before I did the review end of last week) I thought only the first
+patch from SeongJae would potentially conflict with yours (Andy's)
+(hence why I hadn't reviewed it yet, I was waiting until after I
+looked at yours).
 
-Each watch point adds an inotify_inode_mark structure to an inode to be
-watched. Modeled after the epoll.max_user_watches behavior to adjust the
-default value according to the amount of addressable memory available,
-make inotify.max_user_watches behave in a similar way to make it use
-no more than 1% of addressable memory within the range [8192, 1048576].
+I noticed on Friday that SeongJae's changes were actually fully
+encompassed by Andy's, so I am taking Andy's not SongJae's. Sorry, I
+was going to notify SongJae today, but you beat me to it.
 
-For 64-bit archs, inotify_inode_mark should have a size of 80 bytes. That
-means a system with 8GB or more memory will have the maximum value of
-1048576 for inotify.max_user_watches. This default should be big enough
-for most of the use cases.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- fs/notify/inotify/inotify_user.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 186722ba3894..2da8b7a84b12 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -801,6 +801,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
-  */
- static int __init inotify_user_setup(void)
- {
-+	unsigned int watches_max;
-+	struct sysinfo si;
-+
-+	si_meminfo(&si);
-+	/*
-+	 * Allow up to 1% of addressible memory to be allocated for inotify
-+	 * watches (per user) limited to the range [8192, 1048576].
-+	 */
-+	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
-+			sizeof(struct inotify_inode_mark);
-+	watches_max = min(1048576U, max(watches_max, 8192U));
-+
- 	BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
- 	BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
- 	BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
-@@ -827,7 +839,7 @@ static int __init inotify_user_setup(void)
- 
- 	inotify_max_queued_events = 16384;
- 	init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
--	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
-+	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
- 
- 	return 0;
- }
--- 
-2.18.1
-
+Sorry everyone.
