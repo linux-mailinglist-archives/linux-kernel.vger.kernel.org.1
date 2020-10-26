@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67E6298F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C25298F57
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781547AbgJZOc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:32:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51442 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781420AbgJZObw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:31:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3D1FAAD07;
-        Mon, 26 Oct 2020 14:31:50 +0000 (UTC)
-Message-ID: <2ca7430db77ca2924cb6f4b99e858f155d261a18.camel@suse.de>
-Subject: Re: [PATCH v2 05/10] soc: bcm: raspberrypi-power: Release firmware
- handle on unbind
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        wahrenst@gmx.net, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-rpi-kernel@lists.infradead.org
-Date:   Mon, 26 Oct 2020 15:31:47 +0100
-In-Reply-To: <20201022155858.20867-6-nsaenzjulienne@suse.de>
-References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
-         <20201022155858.20867-6-nsaenzjulienne@suse.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-iro0+jQoAZrbRkqhy4O6"
-User-Agent: Evolution 3.36.5 
+        id S1781542AbgJZOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:32:24 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:38622 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781286AbgJZOcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:32:06 -0400
+Received: by mail-ot1-f68.google.com with SMTP id b2so7589887ots.5;
+        Mon, 26 Oct 2020 07:32:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JBvgDt7emBztIGO8StCH4tfzHv+hqLMzjAEA52hgcqM=;
+        b=Bg+LMomwUIHq9QK6BP9P6VW4m/VwhkaGHiLyOGnIMMkgGq7Wvni0rZkl5cUQZz0jmZ
+         GWEqKOeoc4xLFgLhLbnryjagXlIQO13dsDJ4o4XVmAzSmyc/5r5IuxakxbJR1uwfKgWU
+         ZRC0lTTQ0nJvFw+zSgO8mfMdL8fzGB/bVjsOoOrCVYHJzswLIaL6TUtpgoTmvWC3WXjO
+         cOZ0PzqmNSTrhZfKtd5n9lx3gIA8StfmNTIc7mDeWengOum78uMg9JjTRtG4LumxpCs8
+         T+WII5MTyMUiOZyUOr4sDW4bQUHYbUlBArMO8F/P3lES5pNzPuYqbiFZh2Bg37h3/PXJ
+         JcRg==
+X-Gm-Message-State: AOAM530gn5SFnK5wCTMwKgF022iqA6+WMHNNKfnAHCEG3JcbDkVhqjG8
+        +mgcBGevljaEtnGlrtkMOE5qpi2cag==
+X-Google-Smtp-Source: ABdhPJz3h/R6/JxK/xTIyb4YBd7u1ygBvi4k+eafrmmQJBWLoUwvrZ+WynbrruqpPyAs4xMZOP+DWA==
+X-Received: by 2002:a05:6830:1d8:: with SMTP id r24mr14271488ota.283.1603722725156;
+        Mon, 26 Oct 2020 07:32:05 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s189sm4040211oig.46.2020.10.26.07.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 07:32:04 -0700 (PDT)
+Received: (nullmailer pid 114717 invoked by uid 1000);
+        Mon, 26 Oct 2020 14:32:03 -0000
+Date:   Mon, 26 Oct 2020 09:32:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: cpus: Document
+ 'qcom,freq-domain' property
+Message-ID: <20201026143203.GA112606@bogus>
+References: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-iro0+jQoAZrbRkqhy4O6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2020-10-22 at 17:58 +0200, Nicolas Saenz Julienne wrote:
-> Upon unbinding the device make sure we release RPi's firmware interface.
->=20
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+On Tue, Oct 20, 2020 at 09:09:43PM +0530, Manivannan Sadhasivam wrote:
+> Add devicetree documentation for 'qcom,freq-domain' property specific
+> to Qualcomm CPUs. This property is used to reference the CPUFREQ node
+> along with Domain ID (0/1).
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
->  drivers/soc/bcm/raspberrypi-power.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->=20
-> diff --git a/drivers/soc/bcm/raspberrypi-power.c b/drivers/soc/bcm/raspbe=
-rrypi-power.c
-> index 5d1aacdd84ef..a0b38db5886c 100644
-> --- a/drivers/soc/bcm/raspberrypi-power.c
-> +++ b/drivers/soc/bcm/raspberrypi-power.c
-> @@ -225,6 +225,20 @@ static int rpi_power_probe(struct platform_device *p=
-dev)
->  	return 0;
->  }
-> =20
-> +static int rpi_power_remove(struct platform_device *pdev)
-> +{
-> +	struct rpi_power_domains *rpi_domains =3D platform_get_drvdata(pdev);
-> +
-> +	of_genpd_del_provider(dev->of_node);
-> +
-> +	for (i =3D 0; i < RPI_POWER_DOMAIN_COUNT; i++)
-> +		pm_genpd_remove(&rpi_domains->domains[i].base);
-> +
-> +	rpi_firmware_put(rpi_domaina->fw);
+>  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> index 1222bf1831fa..f40564bf004f 100644
+> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> @@ -290,6 +290,12 @@ properties:
+>  
+>        * arm/msm/qcom,kpss-acc.txt
+>  
+> +  qcom,freq-domain:
+> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+> +    description: |
+> +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
+> +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
 
-I Just realised I failed to squash a fix for this patch, so this will not
-build. Sorry for that.
-
-Regards,
-Nicolas
+There's no 3 patches doing the same thing. Mediatek and SCMI are the 
+others. This will need to be common. 
 
 > +
-> +	return 0;
-> +}
-> +
->  static const struct of_device_id rpi_power_of_match[] =3D {
->  	{ .compatible =3D "raspberrypi,bcm2835-power", },
->  	{},
-> @@ -237,6 +251,7 @@ static struct platform_driver rpi_power_driver =3D {
->  		.of_match_table =3D rpi_power_of_match,
->  	},
->  	.probe		=3D rpi_power_probe,
-> +	.remove		=3D rpi_power_remove,
->  };
->  builtin_platform_driver(rpi_power_driver);
-> =20
-
-
---=-iro0+jQoAZrbRkqhy4O6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+W3dMACgkQlfZmHno8
-x/7DPAf/W6V8Brdbgq2QtE27YW5fEMV34Zg8X73FdarZ4ek3YR4/DxGnBXwz6/o3
-Uf4CVOLfSOnlwf+nO26rHfvMl8WBwo14AR37nVAiHBFUOSiTvExBO+aHFDvHfHRP
-LMcZeVRWNrH1XiVuYsXMlQ5BgeTba6ii+awS2itDOeR61xraPONJHgc0sVSbnjh+
-AqDo4TxRZHP7CifFfwTZFC/yYt5RXYGyVYvvi4rWu9FZbwjy06rlmMcGZyguGpgj
-grC4TlIs1actEIgrFa8cSS+zLNpcYCBgFe5HzVjqkyrhGu5lJZbFqmgbACV27+Jr
-nBhLMJ/JZSnUSDFMhDuAJtC0/132LA==
-=AyH+
------END PGP SIGNATURE-----
-
---=-iro0+jQoAZrbRkqhy4O6--
-
+>    rockchip,pmu:
+>      $ref: '/schemas/types.yaml#/definitions/phandle'
+>      description: |
+> -- 
+> 2.17.1
+> 
