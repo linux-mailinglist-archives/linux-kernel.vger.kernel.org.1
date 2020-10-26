@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30862994E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315472994F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789275AbgJZSMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:12:49 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:44010 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783561AbgJZSMt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:12:49 -0400
-Received: by mail-pl1-f195.google.com with SMTP id o9so5109767plx.10;
-        Mon, 26 Oct 2020 11:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=5HO3BVg0bRzxOwVnCXHaH7lLzHwWVLX1pNvQSsPVR34=;
-        b=rOPmEVV1mJNejym0bVuvH9D4QxMR/bgR/uiSbmV/sI7ehBqx9zE3tPQI3irbzRxDDd
-         NVkrepuMoOB1w0rze3dUFqEABBGq17D70yo/wQS+XFRhJ1knlr0TapHWZeaLm0lLgVCk
-         ajbJ95GkSBe22vslkDkxh0/mNDW9UCzxwEqwbcAtBcZ3rWDFT8cs/8wr40BP+cKqQAHf
-         Xqaj+8TzKs8sGYoowwCqyFoKjAJxNF44AEdMxKebFyX5QZoG10rCJsWZXnAoU8L+BFA/
-         TxvFoEMzVN/jfugVoIQqz07xC2kpg1KYm5gwFSxpUVe5PR3Uwti4rO2g8TWdiFD7Ja6N
-         cmJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=5HO3BVg0bRzxOwVnCXHaH7lLzHwWVLX1pNvQSsPVR34=;
-        b=hJjUPnzRcU0CDylnY5MTueLeZfswLbDbI3vHy+iIVLocsl9shvOH9lnvKKN9XNvi+4
-         GPazkX8anEvfjSsw4Jsn6svgX8n1IfUEWRmx+F5jF7cE9sYbngaEf/65XuhfFMtR6QM4
-         U/kXY6IKeebr/PZpO6b3fF6oLSb+TSEIzUay6w3moA9w4gLN15227F6pOdCZoIxJQnLF
-         ggTat6JE4iYol9rRo6iMWogUbiz27N6iUa/xEdbuES/0w8Ubh0ovCIrZAig7vowGKRH4
-         wiS23oahCeknW9r/XeWMfGF6LXpXy5RcpGltTauyGpuDPVMzF+lV8bzcP6uaHlWeh8HL
-         sOdw==
-X-Gm-Message-State: AOAM5334yd3ebPj/JmoRyf9FzSl+w2tm0eINznjS0xPArG253k8GqJT6
-        CgveekQWjtgMhjwt8uIXAzI=
-X-Google-Smtp-Source: ABdhPJw3MC9VJsJhf5LCjsccN1B3MXJSG0DukEpFAVyN8RH/TmAVMPOYgh2O/ngXwLl+nzdW6ZCrPw==
-X-Received: by 2002:a17:90a:ca:: with SMTP id v10mr22381893pjd.18.1603735968845;
-        Mon, 26 Oct 2020 11:12:48 -0700 (PDT)
-Received: from adolin ([49.207.196.21])
-        by smtp.gmail.com with ESMTPSA id m3sm7813796pfd.217.2020.10.26.11.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 11:12:48 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 23:42:42 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     daniel@ffwll.ch, Felix.Kuehling@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie,
-        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, melissa.srw@gmail.com
-Subject: [Outreachy][PATCH] drm/amdgpu: use true and false for bool
- initialisations
-Message-ID: <20201026181242.76bf3b6gx2yx7hr7@adolin>
+        id S1789329AbgJZSPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:15:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1789318AbgJZSPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:15:38 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.184])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 352052087C;
+        Mon, 26 Oct 2020 18:15:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603736137;
+        bh=XNkTurHxcTSdlJysblP2MMoMZiIHUkTVmgg0ibKLaq0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SKaDfHKO6sHcYaKcllCDJt+l8POWAF21/mPD0TP20vC7Kf4uKwu3JZTh83RLanWGo
+         QzF+NrUG4dM2sRRlNpSuRqp/IN1u2BBH4zYfO8MmzrEzaXMCzVVt1Kkf+5rn7nt9r/
+         TUz0WAIXtoA6uKwf1bUlAgD64Zot59UHrp+60SrM=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH 00/12] ARM: dts: samsung: minor node name cleanups
+Date:   Mon, 26 Oct 2020 19:15:16 +0100
+Message-Id: <20201026181528.163143-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bool initialisation should use 'true' and 'false' values instead of 0
-and 1.
+Hi All,
 
-Modify amdgpu_amdkfd_gpuvm.c to initialise variable is_imported
-to false instead of 0.
+A new Exynos4412 board was recently submitted and it (as expected)
+copied all not-the-best patterns from existing DTSes.  Let's fix few of
+them so any new boards will not copy old choices.
 
-Issue found with Coccinelle.
+I plan to follow up on this and fix few of such naming and style issues.
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best regards,
+Krzysztof
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index 64d4b5ff95d6..ba4bd06bfcc5 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -1288,7 +1288,7 @@ int amdgpu_amdkfd_gpuvm_free_memory_of_gpu(
- 	struct ttm_validate_buffer *bo_list_entry;
- 	unsigned int mapped_to_gpu_memory;
- 	int ret;
--	bool is_imported = 0;
-+	bool is_imported = false;
- 
- 	mutex_lock(&mem->lock);
- 	mapped_to_gpu_memory = mem->mapped_to_gpu_memory;
+Krzysztof Kozlowski (12):
+  ARM: dts: exynos: adjust node names to DT spec in Exynos3250 boards
+  ARM: dts: exynos: adjust node names to DT spec in Exynos4210 boards
+  ARM: dts: exynos: override GPIO keys node by label in Exynos4412
+    Odroid family
+  ARM: dts: exynos: adjust node names to DT spec in Exynos4412 boards
+  ARM: dts: exynos: remove redundant status=okay in Exynos4412 boards
+  ARM: dts: exynos: adjust node names to DT spec in Exynos5250 boards
+  ARM: dts: exynos: adjust node names to DT spec in Odroid XU
+  ARM: dts: exynos: adjust node names to DT spec in Exynos542x boards
+  ARM: dts: s5pv210: adjust node names to DT spec
+  arm64: dts: exynos: adjust node names to DT spec in Exynos5433 TM2
+  arm64: dts: exynos: adjust node names to DT spec in Exynos7 Espresso
+  arm64: dts: exynos: remove redundant status=okay in Exynos5433 TM2
+
+ arch/arm/boot/dts/exynos3250-artik5.dtsi      |  2 +-
+ arch/arm/boot/dts/exynos3250-monk.dts         |  8 +++---
+ arch/arm/boot/dts/exynos3250-rinato.dts       |  8 +++---
+ arch/arm/boot/dts/exynos4210-i9100.dts        |  6 ++--
+ arch/arm/boot/dts/exynos4210-origen.dts       |  4 +--
+ arch/arm/boot/dts/exynos4210-smdkv310.dts     | 22 +++++++--------
+ arch/arm/boot/dts/exynos4210-trats.dts        |  4 +--
+ arch/arm/boot/dts/exynos4412-galaxy-s3.dtsi   |  9 +++---
+ arch/arm/boot/dts/exynos4412-itop-elite.dts   |  2 +-
+ .../boot/dts/exynos4412-itop-scp-core.dtsi    |  2 +-
+ arch/arm/boot/dts/exynos4412-midas.dtsi       | 15 ++++------
+ arch/arm/boot/dts/exynos4412-n710x.dts        |  2 +-
+ .../boot/dts/exynos4412-odroid-common.dtsi    | 10 +++----
+ arch/arm/boot/dts/exynos4412-odroidx.dts      | 28 +++++++++----------
+ arch/arm/boot/dts/exynos4412-origen.dts       | 14 +++++-----
+ arch/arm/boot/dts/exynos4412-smdk4412.dts     | 20 ++++++-------
+ arch/arm/boot/dts/exynos5250-arndale.dts      |  4 +--
+ arch/arm/boot/dts/exynos5250-smdk5250.dts     |  4 +--
+ arch/arm/boot/dts/exynos5250-snow-common.dtsi |  4 +--
+ arch/arm/boot/dts/exynos5250-spring.dts       |  2 +-
+ arch/arm/boot/dts/exynos5410-odroidxu.dts     |  2 +-
+ arch/arm/boot/dts/exynos5420-arndale-octa.dts |  4 +--
+ arch/arm/boot/dts/exynos5420-peach-pit.dts    |  4 +--
+ arch/arm/boot/dts/exynos5420-smdk5420.dts     |  2 +-
+ arch/arm/boot/dts/exynos5422-odroid-core.dtsi |  2 +-
+ .../boot/dts/exynos5422-odroidxu3-audio.dtsi  |  2 +-
+ .../boot/dts/exynos5422-odroidxu3-common.dtsi |  4 +--
+ arch/arm/boot/dts/exynos5422-odroidxu3.dts    |  8 +++---
+ arch/arm/boot/dts/exynos5800-peach-pi.dts     |  4 +--
+ arch/arm/boot/dts/s5pv210-aquila.dts          | 12 ++++----
+ arch/arm/boot/dts/s5pv210-aries.dtsi          |  4 +--
+ arch/arm/boot/dts/s5pv210-goni.dts            | 14 +++++-----
+ arch/arm/boot/dts/s5pv210-smdkv210.dts        | 20 ++++++-------
+ .../dts/exynos/exynos5433-tm2-common.dtsi     | 11 ++++----
+ .../boot/dts/exynos/exynos7-espresso.dts      |  2 +-
+ 35 files changed, 130 insertions(+), 135 deletions(-)
+
 -- 
 2.25.1
 
