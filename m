@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A97D298E9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34666298EA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780789AbgJZNzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:55:48 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:37874 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780771AbgJZNzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:55:47 -0400
-Received: by mail-il1-f193.google.com with SMTP id y17so8381308ilg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 06:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T34Jne3WnifRc7iEE9z5MUbPKqS9loF5a16qtrLnLG8=;
-        b=j13Zm+0XnwOqcOGOpuQET9O2RfehNckeb8yaPUyDzmtyqhCdwkEKn1I9C2QpMi5U9U
-         2lIk4rBKl1/VajB7yyDvgkoWFWMg+AuX62uIyF1Qic0dsnPlz6c/9aS7zesD/7REIdud
-         9ZyPYuia+JMp67LRB3AxAihbvlBN1iq+FE0G0j+9WQXZsEseZo3i218DB5TAgu15HsGv
-         EebICGF+VNRtM0z01N9Ls10+g87Zn64WNjwWTfW0pCzyAD6QBRx6MAlM2SJfwbNg9jx/
-         SI7m+jC+QKREaYWL5MUj2ByZwvaq6JIhdqwZbiPkGwzZFPjkZKftD6g1QNp46MWdzJeQ
-         KrSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T34Jne3WnifRc7iEE9z5MUbPKqS9loF5a16qtrLnLG8=;
-        b=g4rdoVHU+FxiluzqgHgs8BjJyQLCOU4hrerLDe2JxU+4ThGK8G1tSNL1lAuLCUTDT4
-         I5GfVMTUzX7n/G29arSshlg/wdA5qgNjoPPkQfn8QBqIvB/8ndsIrpK777NT/iRs2+vF
-         mUXXL7eyKqP+/gsE5cZ6r+42u+Miw8dpQRAxialJM/uac/AgRkGuFHndudQ2YW5xKA1e
-         MhtHxrQ2l9bkU6Zra4iaN+s+IudwpIw1oh5UjxyRfyRQpJlD7T9FbNN4tSpm9SytCaHd
-         u3a9iUJtVUxCiB/uvwIo9S/hp6LaLDBafRtBOfB4wzsrZilMffl1uHpSaO3RTM2fV6TJ
-         Ywow==
-X-Gm-Message-State: AOAM530f5waN9WhWQ59Om3n4a4WYznYJe0OCj5Cg2MFx7IM4udrsiIrF
-        R3GNMnfKaAKQKILc5Lr0P8NNVg==
-X-Google-Smtp-Source: ABdhPJwK5V1blQj7A/QIgGgFf9Cdacir5v6joT876+ZwpB24wbUU3k/sgn/wFZ3NJkNxVSUkcPHV+A==
-X-Received: by 2002:a05:6e02:5c7:: with SMTP id l7mr11066619ils.43.1603720545201;
-        Mon, 26 Oct 2020 06:55:45 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v85sm6156874ilk.50.2020.10.26.06.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 06:55:44 -0700 (PDT)
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-To:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
-Cc:     Qian Cai <cai@lca.pw>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
- <20201022004906.GQ20115@casper.infradead.org>
- <20201026094948.GA29758@quack2.suse.cz>
- <20201026131353.GP20115@casper.infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d06d3d2a-7032-91da-35fa-a9dee4440a14@kernel.dk>
-Date:   Mon, 26 Oct 2020 07:55:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1774828AbgJZN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:56:49 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:63524 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1780802AbgJZN4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 09:56:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603720607; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=6WReYE7EsI0TzLP4fHRo6o5oMyKnwMkBqs5Ms1eH5XM=; b=YVpbzR1SsSWlG3V688m4DsZ5JlYHzTYFiNrB1UNdIdzhTyYZYU260Fqp1xo86fOb6rvNe4Rx
+ 6CzVMqJDn9dxGtSzDbdUwGVaIWZ25gmcAXHVBXE595BiDjATHy+SqnM7AORTTCuKzyIG/H/F
+ hInIYP03K1Ys+WkiAu78vk11yfM=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f96d5936b827c4eefbbd18e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 13:56:35
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C74A9C43385; Mon, 26 Oct 2020 13:56:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 520CDC433C9;
+        Mon, 26 Oct 2020 13:56:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 520CDC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v9 3/4] docs: Add documentation for userspace client
+ interface
+To:     Dan Williams <dcbw@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+Cc:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org
+References: <1603495075-11462-1-git-send-email-hemantk@codeaurora.org>
+ <1603495075-11462-4-git-send-email-hemantk@codeaurora.org>
+ <20201025144627.65b2324e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <e92a5a5b-ac62-a6d8-b6b4-b65587e64255@codeaurora.org>
+ <4e4dc63d0a0b5a820f7a70e30e29746fd6735a96.camel@redhat.com>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <7934e50d-72bd-f20a-54da-33f29c66c3fa@codeaurora.org>
+Date:   Mon, 26 Oct 2020 07:56:33 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201026131353.GP20115@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <4e4dc63d0a0b5a820f7a70e30e29746fd6735a96.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/20 7:13 AM, Matthew Wilcox wrote:
-> On Mon, Oct 26, 2020 at 10:49:48AM +0100, Jan Kara wrote:
->> On Thu 22-10-20 01:49:06, Matthew Wilcox wrote:
->>> On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
->>>> Today's linux-next starts to trigger this wondering if anyone has any clue.
+On 10/26/2020 7:46 AM, Dan Williams wrote:
+> On Mon, 2020-10-26 at 07:38 -0600, Jeffrey Hugo wrote:
+>> On 10/25/2020 3:46 PM, Jakub Kicinski wrote:
+>>> On Fri, 23 Oct 2020 16:17:54 -0700 Hemant Kumar wrote:
+>>>> +UCI driver enables userspace clients to communicate to external
+>>>> MHI devices
+>>>> +like modem and WLAN. UCI driver probe creates standard character
+>>>> device file
+>>>> +nodes for userspace clients to perform open, read, write, poll
+>>>> and release file
+>>>> +operations.
 >>>
->>> I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
->>> to try to get a clue about it.  Good to know it's not the THP patches
->>> since they aren't in linux-next.
+>>> What's the user space that talks to this?
 >>>
->>> I don't understand how it can happen.  We have the page locked, and then we do:
->>>
->>>                         if (PageWriteback(page)) {
->>>                                 if (wbc->sync_mode != WB_SYNC_NONE)
->>>                                         wait_on_page_writeback(page);
->>>                                 else
->>>                                         goto continue_unlock;
->>>                         }
->>>
->>>                         VM_BUG_ON_PAGE(PageWriteback(page), page);
->>>
->>> Nobody should be able to put this page under writeback while we have it
->>> locked ... right?  The page can be redirtied by the code that's supposed
->>> to be writing it back, but I don't see how anyone can make PageWriteback
->>> true while we're holding the page lock.
 >>
->> FWIW here's very similar report for ext4 [1] and I strongly suspect this
->> started happening after Linus' rewrite of the page bit waiting logic. Linus
->> thinks it's preexisting bug which just got exposed by his changes (which is
->> possible). I've been searching a culprit for some time but so far I failed.
->> It's good to know it isn't ext4 specific so we should be searching in the
->> generic code ;). So far I was concentrating more on ext4 bits...
+>> Multiple.
 >>
->> 								Honza
+>> Each channel has a different purpose.  There it is expected that a
+>> different userspace application would be using it.
 >>
->> [1] https://lore.kernel.org/lkml/000000000000d3a33205add2f7b2@google.com/
+>> Hemant implemented the loopback channel, which is a simple channel
+>> that
+>> just sends you back anything you send it.  Typically this is consumed
+>> by
+>> a test application.
+>>
+>> Diag is a typical channel to be consumed by userspace.  This is
+>> consumed
+>> by various applications that talk to the remote device for
+>> diagnostic
+>> information (logs and such).
 > 
-> Oh good, I was wondering if it was an XFS bug ;-)
-> 
-> I hope Qian gets it to reproduce soon with the assert because that will
-> tell us whether it's a spurious wakeup or someone calling SetPageWriteback
-> without holding the page lock.
+> QMI too?
+> Dan
 
-I've tried to reproduce this as well, to no avail. Qian, could you perhaps
-detail the setup? What kind of storage, kernel config, compiler, etc.
+Interesting question.  My product doesn't use QMI.  I would expect that 
+all QMI runs through Router these days, but I am seeing some QMI 
+channels in the downstream source.
+
+Hemant, Do you know what is the usecase for the QMI0/QMI1 channels?
 
 -- 
-Jens Axboe
-
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
