@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E252998CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B91D2998D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388225AbgJZVbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43926 "EHLO mail.kernel.org"
+        id S2388493AbgJZVcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:32:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387923AbgJZVbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:31:52 -0400
+        id S2388283AbgJZVcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:32:19 -0400
 Received: from localhost.localdomain (unknown [192.30.34.233])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3697A207F7;
-        Mon, 26 Oct 2020 21:31:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C3D520829;
+        Mon, 26 Oct 2020 21:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603747912;
-        bh=RfaaRXXDypEyfGrWvZfAg+SElczaMQlEQ5YNcGDpRao=;
+        s=default; t=1603747938;
+        bh=d6pPfEEbX5k/KDYCx6kqlaHhLndASZeYrNepQsjxTcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HaO9wKfnBQEhqzxbcvXQWCZkQT61uifKjtS2TlNL2jxYl/QBgN96WVqx5XzuSVvrl
-         9P2JNjkliN/CVl1wFiRR+eJQUWsc++ZryEY8ZBgvVDFb1IDPG5lIdPXaI1DUWQXRVj
-         +0NltgMWpfLu93k3QYq9n/89GsDnoKfnAzWqv5tM=
+        b=eDcrZbBEXvP4JfDpeCvOwiqU3bVDQW3cnF0+E9aLr+odeTZbpAxXgrZh4wIJndFEP
+         tNy+SVhHz+fU1E2lrzNAtmHbOju6xeWyI4Yx8iZPZOU88uyeHtS+xexVS0/P3Y6Llj
+         Q8nLlyRaC1P4gSGvVCNbWav1EiviHhmTD/48PAvk=
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH net-next 03/11] rsxx: remove extraneous 'const' qualifier
-Date:   Mon, 26 Oct 2020 22:29:50 +0100
-Message-Id: <20201026213040.3889546-3-arnd@kernel.org>
+To:     Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        linux-wimax@intel.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
+Date:   Mon, 26 Oct 2020 22:29:51 +0100
+Message-Id: <20201026213040.3889546-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201026213040.3889546-1-arnd@kernel.org>
 References: <20201026213040.3889546-1-arnd@kernel.org>
@@ -47,32 +45,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The returned string from rsxx_card_state_to_str is 'const',
-but the other qualifier doesn't change anything here except
-causing a warning with 'clang -Wextra':
+gcc -Wextra points out multiple fields that use the same index '1'
+in the wimax_gnl_policy definition:
 
-drivers/block/rsxx/core.c:393:21: warning: 'const' type qualifier on return type has no effect [-Wignored-qualifiers]
-static const char * const rsxx_card_state_to_str(unsigned int state)
+net/wimax/stack.c:393:29: warning: initialized field overwritten [-Woverride-init]
+net/wimax/stack.c:397:28: warning: initialized field overwritten [-Woverride-init]
+net/wimax/stack.c:398:26: warning: initialized field overwritten [-Woverride-init]
 
-Fixes: f37912039eb0 ("block: IBM RamSan 70/80 trivial changes.")
+This seems to work since all four use the same NLA_U32 value, but it
+still appears to be wrong. In addition, there is no intializer for
+WIMAX_GNL_MSG_PIPE_NAME, which uses the same index '2' as
+WIMAX_GNL_RFKILL_STATE.
+
+Johannes already changed this twice to improve it, but I don't think
+there is a good solution, so try to work around it by using a
+numeric index and adding comments.
+
+Cc: Johannes Berg <johannes.berg@intel.com>
+Fixes: 3b0f31f2b8c9 ("genetlink: make policy common to family")
+Fixes: b61a5eea5904 ("wimax: use genl_register_family_with_ops()")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/block/rsxx/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/wimax/stack.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 63f549889f87..d0af46d7b681 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -390,7 +390,7 @@ static irqreturn_t rsxx_isr(int irq, void *pdata)
+diff --git a/net/wimax/stack.c b/net/wimax/stack.c
+index b6dd9d956ed8..3a62af3f80bf 100644
+--- a/net/wimax/stack.c
++++ b/net/wimax/stack.c
+@@ -388,17 +388,24 @@ void wimax_dev_init(struct wimax_dev *wimax_dev)
  }
+ EXPORT_SYMBOL_GPL(wimax_dev_init);
  
- /*----------------- Card Event Handler -------------------*/
--static const char * const rsxx_card_state_to_str(unsigned int state)
-+static const char *rsxx_card_state_to_str(unsigned int state)
- {
- 	static const char * const state_strings[] = {
- 		"Unknown", "Shutdown", "Starting", "Formatting",
++/*
++ * There are multiple enums reusing the same values, adding
++ * others is only possible if they use a compatible policy.
++ */
+ static const struct nla_policy wimax_gnl_policy[WIMAX_GNL_ATTR_MAX + 1] = {
+-	[WIMAX_GNL_RESET_IFIDX] = { .type = NLA_U32, },
+-	[WIMAX_GNL_RFKILL_IFIDX] = { .type = NLA_U32, },
+-	[WIMAX_GNL_RFKILL_STATE] = {
+-		.type = NLA_U32		/* enum wimax_rf_state */
+-	},
+-	[WIMAX_GNL_STGET_IFIDX] = { .type = NLA_U32, },
+-	[WIMAX_GNL_MSG_IFIDX] = { .type = NLA_U32, },
+-	[WIMAX_GNL_MSG_DATA] = {
+-		.type = NLA_UNSPEC,	/* libnl doesn't grok BINARY yet */
+-	},
++	/*
++	 * WIMAX_GNL_RESET_IFIDX, WIMAX_GNL_RFKILL_IFIDX,
++	 * WIMAX_GNL_STGET_IFIDX, WIMAX_GNL_MSG_IFIDX
++	 */
++	[1] = { .type = NLA_U32, },
++	/*
++	 * WIMAX_GNL_RFKILL_STATE, WIMAX_GNL_MSG_PIPE_NAME
++	 */
++	[2] = { .type = NLA_U32, }, /* enum wimax_rf_state */
++	/*
++	 * WIMAX_GNL_MSG_DATA
++	 */
++	[3] = { .type = NLA_UNSPEC, }, /* libnl doesn't grok BINARY yet */
+ };
+ 
+ static const struct genl_small_ops wimax_gnl_ops[] = {
 -- 
 2.27.0
 
