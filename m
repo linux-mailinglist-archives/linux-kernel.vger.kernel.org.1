@@ -2,281 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D13C29926F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBA2299332
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785989AbgJZQa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:30:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52973 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1785969AbgJZQa0 (ORCPT
+        id S1786887AbgJZQ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:59:01 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:52885 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1786532AbgJZQvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:30:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603729824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQY/TDx5VDPwtvi1ueBk5n9nYxAtGXDK6XBdjXRtePc=;
-        b=bpwxy8MMs40u62qTbmkLmJ4j7fZo1MgpuNGz5+30S32twS56qbYn8cGlejlkTCkz2RNkDB
-        DPGRFMk++uSVPYM4XAgeFSemdSUeeC18B1MEApA7XlJvGDTjC3wbakcJnkf3UOqkfLhVv6
-        MJ2Ch7KibmUs1NehrcYKM+m3Ca2ulNg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-wVb4Er4OPWOa3dpk1pX9Lw-1; Mon, 26 Oct 2020 12:30:22 -0400
-X-MC-Unique: wVb4Er4OPWOa3dpk1pX9Lw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CD2F803F4D;
-        Mon, 26 Oct 2020 16:30:21 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F8C95B4AC;
-        Mon, 26 Oct 2020 16:30:19 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
-Date:   Mon, 26 Oct 2020 17:30:13 +0100
-Message-Id: <20201026163013.3164236-3-vkuznets@redhat.com>
-In-Reply-To: <20201026163013.3164236-1-vkuznets@redhat.com>
-References: <20201026163013.3164236-1-vkuznets@redhat.com>
+        Mon, 26 Oct 2020 12:51:07 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 426435803A5;
+        Mon, 26 Oct 2020 09:54:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 26 Oct 2020 09:54:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=kSlmCz4sMFUpsf1HbCzP26yHEmE
+        YsedB9bo55NEitI0=; b=N4fIzdPOUD1FSZrnwa2E7VEULe6OJqrA2CsQZlPvzjn
+        A4K4V8+EJas1kemxLgNUuhsVKO0VEtLEQHUwL0qNs9wjnkW18+qh9UPQzw+DcKo8
+        rYniR/ZEdcoE5geH4YpVShEPL0jnKr4U9YNmZgduQ2laP7uftOMUHNUypMzpqiYL
+        zsGqBH8gZR6iIJ9p3Auas3F1spAE58zuLCGS3ghT54lKR+L1OJqDcofB7ZHQ0A1k
+        N0SHC6wpJvnC1xofdLgwGAjTCHyO+8pPqwYfT8SPTaVGY3OqmKA/XQKRSaTzg6HN
+        umdfBxJwIaQld1u/QhCxRIWhgWaRu+g9VD43Re0c9Ng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=kSlmCz
+        4sMFUpsf1HbCzP26yHEmEYsedB9bo55NEitI0=; b=YuQfMmAWddZ6lzY9qWi8De
+        EevwqyqTBdJRixuGyQIT6/ZmQFtn9T4cRS7b7P+UeP+zQ/mDkA3y0ORseuhX/i1b
+        MuUulsY7k7lSpnVuD7fljwxY9AEpjYGoLgay7pe8T12QH8E3sRoVLcfcGHlmIjog
+        6JVamt9TXagKIBNFIJr620UlxSLgoaCqv3jWQoDC2VrOVpX3wOmLtot4HGPCo7v+
+        REgLdwBAMbl/4sAXoDvJ5yv8EbevdsT7K3CU5/H15r0iC+Zof5ikWozdr3c228uP
+        wzogu2ZY1Q2Fd+/s//ek2xKslyKmTgNG02Xvz/viuOD9RG6p9RlP6hYO71AC5shg
+        ==
+X-ME-Sender: <xms:EdWWX5VaK4tBn26X7NRJAKNR621-QVwQ6-3Jj6tLOaxVMKa3NWS2oA>
+    <xme:EdWWX5mLKTTvbV7HVXTcnZ_mJwqu0kbBRieTjN6T1UlmI2--M-3PXEE_hDSCXDfB5
+    H-HU4goxbfazN2Q28I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeejgddvtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghhohcu
+    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
+    htvghrnhepffeukeekudejfefhjeevgeejgffhkefhffetleduvddufeekteelkeekhfef
+    udejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvkedruddtjedrvd
+    eguddrudejgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpehthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:EdWWX1Y-iN_dPhavTsiWDhW8O14gI07LeLWCiMZcd-nvUA0pTi8Lag>
+    <xmx:EdWWX8U6L-Vgl4RDX8wGC_x1DdmA6O2Zm44U4ZRWolHfVPh-Q0qqJA>
+    <xmx:EdWWXznIyENZ5PuS1xp4fHcM5gl2Kp9-xEqU1FVGQLgiwOuLn0oFbg>
+    <xmx:EtWWX48Duu-mXEqntjuYz12lM5eQhpxwIb5Ar9N9tnpiIz_u6v0_NA>
+Received: from cisco (unknown [128.107.241.174])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 555F5306467E;
+        Mon, 26 Oct 2020 09:54:21 -0400 (EDT)
+Date:   Mon, 26 Oct 2020 07:54:18 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+Message-ID: <20201026135418.GN1884107@cisco>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM_GET_SUPPORTED_HV_CPUID is now supported as both vCPU and VM ioctl,
-test that.
+On Mon, Oct 26, 2020 at 10:55:04AM +0100, Michael Kerrisk (man-pages) wrote:
+> Hi all (and especially Tycho and Sargun),
+> 
+> Following review comments on the first draft (thanks to Jann, Kees,
+> Christian and Tycho), I've made a lot of changes to this page.
+> I've also added a few FIXMEs relating to outstanding API issues.
+> I'd like a second pass review of the page before I release it.
+> But also, this mail serves as a way of noting the outstanding API
+> issues.
+> 
+> Tycho: I still have an outstanding question for you at [2].
+> [2] https://lore.kernel.org/linux-man/8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com/
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- .../testing/selftests/kvm/include/kvm_util.h  |  2 +
- tools/testing/selftests/kvm/lib/kvm_util.c    | 26 ++++++
- .../selftests/kvm/x86_64/hyperv_cpuid.c       | 87 +++++++++++--------
- 3 files changed, 77 insertions(+), 38 deletions(-)
+I don't have that thread in my inbox any more, but I can reply here:
+no, I don't know any users of this info, but I also don't anticipate
+knowing how people will all use this feature :)
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index 919e161dd289..59482e4eb308 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -112,6 +112,8 @@ void vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
- int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
- 		void *arg);
- void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
-+void kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
-+int _kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
- void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
- void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
- void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot);
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 74776ee228f2..d49e24a15836 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1518,6 +1518,32 @@ void vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
- 		cmd, ret, errno, strerror(errno));
- }
- 
-+/*
-+ * KVM system ioctl
-+ *
-+ * Input Args:
-+ *   vm - Virtual Machine
-+ *   cmd - Ioctl number
-+ *   arg - Argument to pass to the ioctl
-+ *
-+ * Return: None
-+ *
-+ * Issues an arbitrary ioctl on a KVM fd.
-+ */
-+void kvm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
-+{
-+	int ret;
-+
-+	ret = ioctl(vm->kvm_fd, cmd, arg);
-+	TEST_ASSERT(ret == 0, "KVM ioctl %lu failed, rc: %i errno: %i (%s)",
-+		cmd, ret, errno, strerror(errno));
-+}
-+
-+int _kvm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
-+{
-+	return ioctl(vm->kvm_fd, cmd, arg);
-+}
-+
- /*
-  * VM Dump
-  *
-diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c b/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
-index 745b708c2d3b..88a595b7fbdd 100644
---- a/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
-+++ b/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
-@@ -46,19 +46,19 @@ static bool smt_possible(void)
- }
- 
- static void test_hv_cpuid(struct kvm_cpuid2 *hv_cpuid_entries,
--			  bool evmcs_enabled)
-+			  bool evmcs_expected)
- {
- 	int i;
- 	int nent = 9;
- 	u32 test_val;
- 
--	if (evmcs_enabled)
-+	if (evmcs_expected)
- 		nent += 1; /* 0x4000000A */
- 
- 	TEST_ASSERT(hv_cpuid_entries->nent == nent,
- 		    "KVM_GET_SUPPORTED_HV_CPUID should return %d entries"
- 		    " with evmcs=%d (returned %d)",
--		    nent, evmcs_enabled, hv_cpuid_entries->nent);
-+		    nent, evmcs_expected, hv_cpuid_entries->nent);
- 
- 	for (i = 0; i < hv_cpuid_entries->nent; i++) {
- 		struct kvm_cpuid_entry2 *entry = &hv_cpuid_entries->entries[i];
-@@ -68,7 +68,7 @@ static void test_hv_cpuid(struct kvm_cpuid2 *hv_cpuid_entries,
- 			    "function %x is our of supported range",
- 			    entry->function);
- 
--		TEST_ASSERT(evmcs_enabled || (entry->function != 0x4000000A),
-+		TEST_ASSERT(evmcs_expected || (entry->function != 0x4000000A),
- 			    "0x4000000A leaf should not be reported");
- 
- 		TEST_ASSERT(entry->index == 0,
-@@ -87,7 +87,7 @@ static void test_hv_cpuid(struct kvm_cpuid2 *hv_cpuid_entries,
- 			TEST_ASSERT(entry->eax == test_val,
- 				    "Wrong max leaf report in 0x40000000.EAX: %x"
- 				    " (evmcs=%d)",
--				    entry->eax, evmcs_enabled
-+				    entry->eax, evmcs_expected
- 				);
- 			break;
- 		case 0x40000004:
-@@ -110,20 +110,23 @@ static void test_hv_cpuid(struct kvm_cpuid2 *hv_cpuid_entries,
- 
- }
- 
--void test_hv_cpuid_e2big(struct kvm_vm *vm)
-+void test_hv_cpuid_e2big(struct kvm_vm *vm, bool system)
- {
- 	static struct kvm_cpuid2 cpuid = {.nent = 0};
- 	int ret;
- 
--	ret = _vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, &cpuid);
-+	if (!system)
-+		ret = _vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, &cpuid);
-+	else
-+		ret = _kvm_ioctl(vm, KVM_GET_SUPPORTED_HV_CPUID, &cpuid);
- 
- 	TEST_ASSERT(ret == -1 && errno == E2BIG,
--		    "KVM_GET_SUPPORTED_HV_CPUID didn't fail with -E2BIG when"
--		    " it should have: %d %d", ret, errno);
-+		    "%s KVM_GET_SUPPORTED_HV_CPUID didn't fail with -E2BIG when"
-+		    " it should have: %d %d", system ? "KVM" : "vCPU", ret, errno);
- }
- 
- 
--struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm)
-+struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm, bool system)
- {
- 	int nent = 20; /* should be enough */
- 	static struct kvm_cpuid2 *cpuid;
-@@ -137,7 +140,10 @@ struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm)
- 
- 	cpuid->nent = nent;
- 
--	vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, cpuid);
-+	if (!system)
-+		vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, cpuid);
-+	else
-+		kvm_ioctl(vm, KVM_GET_SUPPORTED_HV_CPUID, cpuid);
- 
- 	return cpuid;
- }
-@@ -146,45 +152,50 @@ struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm)
- int main(int argc, char *argv[])
- {
- 	struct kvm_vm *vm;
--	int rv, stage;
- 	struct kvm_cpuid2 *hv_cpuid_entries;
--	bool evmcs_enabled;
- 
- 	/* Tell stdout not to buffer its content */
- 	setbuf(stdout, NULL);
- 
--	rv = kvm_check_cap(KVM_CAP_HYPERV_CPUID);
--	if (!rv) {
-+	if (!kvm_check_cap(KVM_CAP_HYPERV_CPUID)) {
- 		print_skip("KVM_CAP_HYPERV_CPUID not supported");
- 		exit(KSFT_SKIP);
- 	}
- 
--	for (stage = 0; stage < 3; stage++) {
--		evmcs_enabled = false;
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
- 
--		vm = vm_create_default(VCPU_ID, 0, guest_code);
--		switch (stage) {
--		case 0:
--			test_hv_cpuid_e2big(vm);
--			continue;
--		case 1:
--			break;
--		case 2:
--			if (!nested_vmx_supported() ||
--			    !kvm_check_cap(KVM_CAP_HYPERV_ENLIGHTENED_VMCS)) {
--				print_skip("Enlightened VMCS is unsupported");
--				continue;
--			}
--			vcpu_enable_evmcs(vm, VCPU_ID);
--			evmcs_enabled = true;
--			break;
--		}
-+	/* Test vCPU ioctl version */
-+	test_hv_cpuid_e2big(vm, false);
-+
-+	hv_cpuid_entries = kvm_get_supported_hv_cpuid(vm, false);
-+	test_hv_cpuid(hv_cpuid_entries, false);
-+	free(hv_cpuid_entries);
- 
--		hv_cpuid_entries = kvm_get_supported_hv_cpuid(vm);
--		test_hv_cpuid(hv_cpuid_entries, evmcs_enabled);
--		free(hv_cpuid_entries);
--		kvm_vm_free(vm);
-+	if (!nested_vmx_supported() ||
-+	    !kvm_check_cap(KVM_CAP_HYPERV_ENLIGHTENED_VMCS)) {
-+		print_skip("Enlightened VMCS is unsupported");
-+		goto do_sys;
- 	}
-+	vcpu_enable_evmcs(vm, VCPU_ID);
-+	hv_cpuid_entries = kvm_get_supported_hv_cpuid(vm, false);
-+	test_hv_cpuid(hv_cpuid_entries, true);
-+	free(hv_cpuid_entries);
-+
-+do_sys:
-+	/* Test system ioctl version */
-+	if (!kvm_check_cap(KVM_CAP_SYS_HYPERV_CPUID)) {
-+		print_skip("KVM_CAP_SYS_HYPERV_CPUID not supported");
-+		goto out;
-+	}
-+
-+	test_hv_cpuid_e2big(vm, true);
-+
-+	hv_cpuid_entries = kvm_get_supported_hv_cpuid(vm, true);
-+	test_hv_cpuid(hv_cpuid_entries, nested_vmx_supported());
-+	free(hv_cpuid_entries);
-+
-+out:
-+	kvm_vm_free(vm);
- 
- 	return 0;
- }
--- 
-2.25.4
-
+Tycho
