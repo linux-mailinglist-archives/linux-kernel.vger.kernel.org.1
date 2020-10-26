@@ -2,165 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5D829934B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E68C299358
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787146AbgJZREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:04:53 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1762 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1775769AbgJZREV (ORCPT
+        id S1787175AbgJZRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:06:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40734 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406381AbgJZRGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:04:21 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QH1DYR003742;
-        Mon, 26 Oct 2020 13:04:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rIkKZqw4JwCfXVcPcQ2/l4ZZou8Q+qQQCobXbD2a1Sg=;
- b=BFgaRghqFD0rSeJfkydmGya9LkWc2e6zRyi8MOK4F1JsmsI1VWBpFnBYIGQbpzjCH/WF
- o1uJoazVAoAOJNkUFFYix99XP25T6yTjIb8pBRtsXAjvjaaNkQ86hV4XYO0y9rb49jmb
- JG25Lx+EULXBiOrPhNSZo1VlqgdH1pERFSUMM1qIYtZJLk+M63Qm2yNV+k+LwKwf6PS8
- szF8XEVejRLNzdIgbheajYZVo8E3f19lIO3oVkMVf3u6wtDN/LQuD5GzImJYYEdEmsF7
- tnEgmjW6vhM/cII17+oApkWwXYVvRBvWpsyXFUCfZBzzwiM5mSFqtNHpQ2ut+gCGvNwH 5w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34dbg5pe0a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Oct 2020 13:04:18 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09QH22pP010286;
-        Mon, 26 Oct 2020 13:04:17 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34dbg5pdyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Oct 2020 13:04:17 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09QH2DDP009673;
-        Mon, 26 Oct 2020 17:04:17 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04dal.us.ibm.com with ESMTP id 34cbw8wg6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Oct 2020 17:04:17 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09QH47hd47972702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Oct 2020 17:04:07 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 69396136053;
-        Mon, 26 Oct 2020 17:04:15 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 463EF13605E;
-        Mon, 26 Oct 2020 17:04:14 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.190.62])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 26 Oct 2020 17:04:14 +0000 (GMT)
-Subject: Re: [PATCH v11 08/14] s390/vfio-ap: hot plug/unplug queues on
- bind/unbind of queue device
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, freude@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com
-References: <20201022171209.19494-9-akrowiak@linux.ibm.com>
- <202010230422.zcNkhr2n-lkp@intel.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <6f8c339e-3d7e-c8c5-cda3-782ba5e68219@linux.ibm.com>
-Date:   Mon, 26 Oct 2020 13:04:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 26 Oct 2020 13:06:36 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09QH6V8l017926;
+        Mon, 26 Oct 2020 12:06:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603731991;
+        bh=u2nOf5B4jTgtANv4nynXigj9qU3x+BwKMHlxahpnqe0=;
+        h=From:To:CC:Subject:Date;
+        b=hPTlX7tXN+GsF81l3Kv+7rjFmvEERzT/hMJf3cMezXJKLL5qkr7ORcp6Js14eztT5
+         9IQgRVXeUOQBrYZNSYyDE1+ARAeHpB+NaeQJkEdWZ0edBrLg6bbDKpwQyW1GKejp/0
+         aWu2fAm8IpxAOo5Mg38swG28tntxZ+BgH0Mn8TNU=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09QH6V1M128404
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 12:06:31 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 26
+ Oct 2020 12:06:31 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 26 Oct 2020 12:06:31 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09QH6Vit112043;
+        Mon, 26 Oct 2020 12:06:31 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Santosh Shilimkar <ssantosh@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
+Date:   Mon, 26 Oct 2020 12:06:24 -0500
+Message-ID: <20201026170624.24241-1-nm@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <202010230422.zcNkhr2n-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-26_08:2020-10-26,2020-10-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
- impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010260112
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+With the integration of chip-id detection scheme in kernel[1], there
+is no specific need to maintain multitudes of SoC specific config
+options, discussed as per [2], we have deprecated the usage in other
+places for v5.10-rc1. Drop the configuration for the follow on kernel.
 
+[1] drivers/soc/ti/k3-socinfo.c commit 907a2b7e2fc7 ("soc: ti: add k3 platforms chipid module driver")
+[2] https://lore.kernel.org/linux-arm-kernel/20200908112534.t5bgrjf7y3a6l2ss@akan/
 
-On 10/22/20 4:30 PM, kernel test robot wrote:
-> Hi Tony,
->
-> I love your patch! Perhaps something to improve:
->
-> [auto build test WARNING on s390/features]
-> [also build test WARNING on linus/master kvms390/next linux/master v5.9 next-20201022]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Tony-Krowiak/s390-vfio-ap-dynamic-configuration-support/20201023-011543
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
-> config: s390-allyesconfig (attached as .config)
-> compiler: s390-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/0day-ci/linux/commit/aea9ab29b77facc3bb09415ebe464fd6a22ec22e
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Tony-Krowiak/s390-vfio-ap-dynamic-configuration-support/20201023-011543
->          git checkout aea9ab29b77facc3bb09415ebe464fd6a22ec22e
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
->     drivers/s390/crypto/vfio_ap_ops.c:1370:5: warning: no previous prototype for 'vfio_ap_mdev_reset_queue' [-Wmissing-prototypes]
->      1370 | int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
->           |     ^~~~~~~~~~~~~~~~~~~~~~~~
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+ drivers/soc/ti/Kconfig | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-My mistake, need to be a static function.
-
->>> drivers/s390/crypto/vfio_ap_ops.c:1617:6: warning: no previous prototype for 'vfio_ap_mdev_hot_unplug_queue' [-Wmissing-prototypes]
->      1617 | void vfio_ap_mdev_hot_unplug_queue(struct vfio_ap_queue *q)
->           |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ditto here, but this was reported for patch 01/14 and will be fixed there.
-
->
-> vim +/vfio_ap_mdev_hot_unplug_queue +1617 drivers/s390/crypto/vfio_ap_ops.c
->
->    1616	
->> 1617	void vfio_ap_mdev_hot_unplug_queue(struct vfio_ap_queue *q)
->    1618	{
->    1619		unsigned long apid = AP_QID_CARD(q->apqn);
->    1620	
->    1621		if ((q->matrix_mdev == NULL) || !vfio_ap_mdev_has_crycb(q->matrix_mdev))
->    1622			return;
->    1623	
->    1624		/*
->    1625		 * If the APID is assigned to the guest, then let's
->    1626		 * go ahead and unplug the adapter since the
->    1627		 * architecture does not provide a means to unplug
->    1628		 * an individual queue.
->    1629		 */
->    1630		if (test_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm)) {
->    1631			clear_bit_inv(apid, q->matrix_mdev->shadow_apcb.apm);
->    1632	
->    1633			if (bitmap_empty(q->matrix_mdev->shadow_apcb.apm, AP_DEVICES))
->    1634				bitmap_clear(q->matrix_mdev->shadow_apcb.aqm, 0,
->    1635					     AP_DOMAINS);
->    1636	
->    1637			vfio_ap_mdev_commit_shadow_apcb(q->matrix_mdev);
->    1638		}
->    1639	}
->    1640	
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+diff --git a/drivers/soc/ti/Kconfig b/drivers/soc/ti/Kconfig
+index f5b82ffa637b..7e2fb1c16af1 100644
+--- a/drivers/soc/ti/Kconfig
++++ b/drivers/soc/ti/Kconfig
+@@ -1,22 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-# 64-bit ARM SoCs from TI
+-if ARM64
+-
+-if ARCH_K3
+-
+-config ARCH_K3_AM6_SOC
+-	bool "K3 AM6 SoC"
+-	help
+-	  Enable support for TI's AM6 SoC Family support
+-
+-config ARCH_K3_J721E_SOC
+-	bool "K3 J721E SoC"
+-	help
+-	  Enable support for TI's J721E SoC Family support
+-
+-endif
+-
+-endif
+ 
+ #
+ # TI SOC drivers
+-- 
+2.28.0
 
