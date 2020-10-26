@@ -2,135 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528AF299962
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C875299965
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392349AbgJZWNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60322 "EHLO mail.kernel.org"
+        id S2392394AbgJZWOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:14:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392293AbgJZWNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:13:09 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2392365AbgJZWOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 18:14:12 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B34D2087C;
-        Mon, 26 Oct 2020 22:13:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51E3720878;
+        Mon, 26 Oct 2020 22:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603750388;
-        bh=f0idueNbzqRlhkTogMiypojEnDUyWyo/XNCqE3F7uRE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zTD5e269fz+20uxJBRw/ih6GDFDui1uGorCBESU2VbLxs4uJP90GQ3lEjOIZzihQG
-         bnL+RGP3N5gUmohGaWqhvCyI0wuCBCmcs4CA/lsIoOwNsr7feSsl5EGObhl6Z57qyP
-         NWxZoJltWIRiL3W1rW/dn9zqbsh0BoLsh6TodsPE=
-Date:   Mon, 26 Oct 2020 15:13:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <87lffs3bd6.fsf@nanos.tec.linutronix.de>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
-        <20201019140005.GB17287@fuller.cnet>
-        <20201020073055.GY2611@hirez.programming.kicks-ass.net>
-        <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
-        <20201020134128.GT2628@hirez.programming.kicks-ass.net>
-        <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
-        <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
-        <20201023085826.GP2611@hirez.programming.kicks-ass.net>
-        <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
-        <87ft6464jf.fsf@nanos.tec.linutronix.de>
-        <20201026173012.GA377978@fuller.cnet>
-        <875z6w4xt4.fsf@nanos.tec.linutronix.de>
-        <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
-        <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
-        <85b5f53e-5be2-beea-269a-f70029bea298@intel.com>
-        <87lffs3bd6.fsf@nanos.tec.linutronix.de>
+        s=default; t=1603750451;
+        bh=5HgpGay1769N+hQB4R88C35uikGXhoSToFZ6LUeyRC0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T5MJEepbCL3JfYHXBO8rcIE1dYVpKP2U5MbdM6RzPu9B6PvmY5MVCSVKxKZ0Sol+P
+         vl3Qjbua7V8JUNdtkFIZY2WD2qH7PoA/n2Vpz9tAZedEkziCpIjp/+VH+rNc7Ge/Pl
+         Gx95gbbn3ePFg3Sx2Kdk7fflMPPAZruZpCIS92fQ=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: atags_compat: avoid -Warray-bounds warning
+Date:   Mon, 26 Oct 2020 23:13:16 +0100
+Message-Id: <20201026221406.3897734-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 22:50:45 +0100 Thomas Gleixner wrote:
-> On Mon, Oct 26 2020 at 14:11, Jacob Keller wrote:
-> > On 10/26/2020 1:11 PM, Thomas Gleixner wrote:  
-> >> On Mon, Oct 26 2020 at 12:21, Jacob Keller wrote:  
-> >>> Are there drivers which use more than one interrupt per queue? I know
-> >>> drivers have multiple management interrupts.. and I guess some drivers
-> >>> do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
-> >>> have multiple queues for one interrupt .. I'm not sure how a single
-> >>> queue with multiple interrupts would work though.  
-> >> 
-> >> For block there is always one interrupt per queue. Some Network drivers
-> >> seem to have seperate RX and TX interrupts per queue.  
-> > That's true when thinking of Tx and Rx as a single queue. Another way to
-> > think about it is "one rx queue" and "one tx queue" each with their own
-> > interrupt...
-> >
-> > Even if there are devices which force there to be exactly queue pairs,
-> > you could still think of them as separate entities?  
-> 
-> Interesting thought.
-> 
-> But as Jakub explained networking queues are fundamentally different
-> from block queues on the RX side. For block the request issued on queue
-> X will raise the complete interrupt on queue X.
-> 
-> For networking the TX side will raise the TX interrupt on the queue on
-> which the packet was queued obviously or should I say hopefully. :)
-> 
-> But incoming packets will be directed to some receive queue based on a
-> hash or whatever crystallball logic the firmware decided to implement.
-> 
-> Which makes this not really suitable for the managed interrupt and
-> spreading approach which is used by block-mq. Hrm...
-> 
-> But I still think that for curing that isolation stuff we want at least
-> some information from the driver. Alternative solution would be to grant
-> the allocation of interrupts and queues and have some sysfs knob to shut
-> down queues at runtime. If that shutdown results in releasing the queue
-> interrupt (via free_irq()) then the vector exhaustion problem goes away.
-> 
-> Needs more thought and information (for network oblivious folks like
-> me).
+From: Arnd Bergmann <arnd@arndb.de>
 
-One piece of information that may be useful is that even tho the RX
-packets may be spread semi-randomly the user space can still control
-which queues are included in the mechanism. There is an indirection
-table in the HW which allows to weigh queues differently, or exclude
-selected queues from the spreading. Other mechanisms exist to filter
-flows onto specific queues.
+gcc-11 reports a struct member overflow when copying a string
+into a single-character array:
 
-IOW just because a core has an queue/interrupt does not mean that
-interrupt will ever fire, provided its excluded from RSS.
+In file included from arch/arm/kernel/atags_compat.c:17:
+In function 'strcpy',
+    inlined from 'build_tag_list' at arch/arm/kernel/atags_compat.c:200:2:
+include/linux/string.h:287:29: warning: '__builtin_strcpy' offset 108 from the object at 'taglist' is out of the bounds of referenced subobject 'cmdline' with type 'char[1]' at offset 108 [-Warray-bounds]
+  287 | #define __underlying_strcpy __builtin_strcpy
+      |                             ^
+include/linux/string.h:481:10: note: in expansion of macro '__underlying_strcpy'
+  481 |   return __underlying_strcpy(p, q);
+      |          ^~~~~~~~~~~~~~~~~~~
+In file included from arch/arm/include/asm/setup.h:14,
+                 from arch/arm/kernel/atags_compat.c:20:
+arch/arm/kernel/atags_compat.c: In function 'build_tag_list':
+arch/arm/include/uapi/asm/setup.h:127:7: note: subobject 'cmdline' declared here
+  127 |  char cmdline[1]; /* this is the minimum size */
+      |       ^~~~~~~
 
-Another piece is that by default we suggest drivers allocate 8 RX
-queues, and online_cpus TX queues. The number of queues can be
-independently controlled via ethtool -L. Drivers which can't support
-separate queues will default to online_cpus queue pairs, and let
-ethtool -L only set the "combined" parameter.
+The code is otherwise correct, so just shut up the warning by
+not letting the compiler see the underlying type.
 
-There are drivers which always allocate online_cpus interrupts, 
-and then some of them will go unused if #qs < #cpus.
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/kernel/atags_compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/arm/kernel/atags_compat.c b/arch/arm/kernel/atags_compat.c
+index 10da11c212cc..3f1f631763ba 100644
+--- a/arch/arm/kernel/atags_compat.c
++++ b/arch/arm/kernel/atags_compat.c
+@@ -197,7 +197,7 @@ static void __init build_tag_list(struct param_struct *params, void *taglist)
+ 	tag->hdr.tag = ATAG_CMDLINE;
+ 	tag->hdr.size = (strlen(params->commandline) + 3 +
+ 			 sizeof(struct tag_header)) >> 2;
+-	strcpy(tag->u.cmdline.cmdline, params->commandline);
++	strcpy((void*)&tag->u, params->commandline);
+ 
+ 	tag = tag_next(tag);
+ 	tag->hdr.tag = ATAG_NONE;
+-- 
+2.27.0
 
-My unpopular opinion is that for networking devices all the heuristics
-we may come up with are going to be a dead end. We need an explicit API
-to allow users placing queues on cores, and use managed IRQs for data
-queues. (I'm assuming that managed IRQs will let us reliably map a MSI-X
-vector to a core :))
