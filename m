@@ -2,340 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1766F2991D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2402991D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784954AbgJZQGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:06:06 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:39464 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1774604AbgJZQGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:06:05 -0400
-Received: by mail-lj1-f196.google.com with SMTP id m16so10790233ljo.6;
-        Mon, 26 Oct 2020 09:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i6SNfrIeRdhbIJ2K270eovGd8McyAIKhl+WbtW1/vTg=;
-        b=qoUXlPfQMIw4Ui+CML3nZUmm6TBm9LwbPLPgySWg1W5Qby/RfMOQf/k2L0Kt3CgPdA
-         KCmLwmdP0HVjSq8sTaDZrZgSeyXDlX4u6JK6E1u0k2igVUoUA+U2Px4C1RLa4+wL59H8
-         1ukBgPuGAa9fhKvNJwqP6iIyEVormAK1dY2tFZiDg6zOF7IZAobfuFt8dmD/gzlsCi6x
-         WkKBfa8mG+0sTQEMi5sVb3QSpGg1m328u75H3htvBkqLJ/qy+OdGQrYRDhC0Wu3Zn5nG
-         4dlkQzWZF0/a6t+d0DxxmHPmW1sVsA4bbNNUmmeLFMCzkXB76FnRU1S7+LPEHd67tT2p
-         yK7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i6SNfrIeRdhbIJ2K270eovGd8McyAIKhl+WbtW1/vTg=;
-        b=HK4+HaHW8/vGUuLzwvOLtJar/Oifbmb7zohApUHJFeRlsgv4e4f59xny5RDZZaO6/1
-         vHRhbWratuVJbN9rRgz95YmDWA7Xq3FrF/5o1TGYkgG9gJ2jlaG04jJOtvWNaVJ7YEz6
-         UXk3JItI7OcbN6Q3cP9bOZbb8EG9+dFoBA2gxzZy8Z+F1oIi3ke8bBWa7a73WwDP/WWF
-         zoBZr6Wc2Zo+Ulo5tT0qGRMKoWIUhV9dEAMJ+oPuCGjyu+58kZ9GYHeDZlTTyzdwfoNO
-         3ocUAddb4MNI5jf9zD9pNyb9dMLbjUwdKy2ig1yWJT/YNK4S8yBw5Jsdo5jC4i7PpUfH
-         MVIQ==
-X-Gm-Message-State: AOAM532cMhBtEKZgO/JFtNbV+KGMMffDxY5L1XVq32YBysjoFkXQ3cGK
-        7zD7RR8yLZ8s2NRMEyjhGXwWIJlNvPk=
-X-Google-Smtp-Source: ABdhPJxceJ7qG/cEAKOJqIcrGmxd7hVOyKZLuovvAwlOtosnmpTXf6GkNkDq14SYmeGcMxvsROudMQ==
-X-Received: by 2002:a05:651c:32a:: with SMTP id b10mr3782921ljp.256.1603728360089;
-        Mon, 26 Oct 2020 09:06:00 -0700 (PDT)
-Received: from localhost.localdomain (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id l5sm493491lfg.146.2020.10.26.09.05.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 09:05:59 -0700 (PDT)
-From:   Topi Miettinen <toiwoton@gmail.com>
-To:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Topi Miettinen <toiwoton@gmail.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
-Date:   Mon, 26 Oct 2020 18:05:18 +0200
-Message-Id: <20201026160518.9212-1-toiwoton@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1784930AbgJZQFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:05:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1784922AbgJZQFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:05:40 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBDD922409;
+        Mon, 26 Oct 2020 16:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603728339;
+        bh=q/sLyZoxAzN0WQctrlHt+ewBfmRDQkL2JNNfDqnhmeg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TcEjf6oDy/GWhQ4DvDQy3OR3ocnpBES8xgp+3A25JN0VPqEyjdYePKix6Fw/TJhdI
+         8Kzxa/U3iJYx3Eh3ohScJhnR2UJiYzdCg5dFIGOv2XSuroEYCo4jugJZEHHbLBDfEf
+         TkK67pjKsjwSPngA/HXWkbmabEYJbjwXyLP2NkWk=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] remoteproc: ti_k3: fix -Wcast-function-type warning
+Date:   Mon, 26 Oct 2020 17:05:23 +0100
+Message-Id: <20201026160533.3705998-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
-enables full randomization of memory mappings created with mmap(NULL,
-...). With 2, the base of the VMA used for such mappings is random,
-but the mappings are created in predictable places within the VMA and
-in sequential order. With 3, new VMAs are created to fully randomize
-the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
-even if not necessary.
+From: Arnd Bergmann <arnd@arndb.de>
 
-The method is to randomize the new address without considering
-VMAs. If the address fails checks because of overlap with the stack
-area (or in case of mremap(), overlap with the old mapping), the
-operation is retried a few times before falling back to old method.
+The function cast causes a warning with "make W=1"
 
-On 32 bit systems this may cause problems due to increased VM
-fragmentation if the address space gets crowded.
+drivers/remoteproc/ti_k3_r5_remoteproc.c: In function 'k3_r5_probe':
+drivers/remoteproc/ti_k3_r5_remoteproc.c:1368:12: warning: cast between incompatible function types from 'int (*)(struct platform_device *)' to 'void (*)(void *)' [-Wcast-function-type]
 
-On all systems, it will reduce performance and increase memory
-usage due to less efficient use of page tables and inability to
-merge adjacent VMAs with compatible attributes.
+Rewrite the code to avoid the cast, and fix the incorrect return
+type of the callback.
 
-In this example with value of 2, dynamic loader, libc, anonymous
-memory reserved with mmap() and locale-archive are located close to
-each other:
-
-$ cat /proc/self/maps (only first line for each object shown for brevity)
-58c1175b1000-58c1175b3000 r--p 00000000 fe:0c 1868624                    /usr/bin/cat
-79752ec17000-79752f179000 r--p 00000000 fe:0c 2473999                    /usr/lib/locale/locale-archive
-79752f179000-79752f279000 rw-p 00000000 00:00 0
-79752f279000-79752f29e000 r--p 00000000 fe:0c 2402415                    /usr/lib/x86_64-linux-gnu/libc-2.31.so
-79752f43a000-79752f440000 rw-p 00000000 00:00 0
-79752f46f000-79752f470000 r--p 00000000 fe:0c 2400484                    /usr/lib/x86_64-linux-gnu/ld-2.31.so
-79752f49b000-79752f49c000 rw-p 00000000 00:00 0
-7ffdcad9e000-7ffdcadbf000 rw-p 00000000 00:00 0                          [stack]
-7ffdcadd2000-7ffdcadd6000 r--p 00000000 00:00 0                          [vvar]
-7ffdcadd6000-7ffdcadd8000 r-xp 00000000 00:00 0                          [vdso]
-
-With 3, they are located at unrelated addresses:
-$ echo 3 > /proc/sys/kernel/randomize_va_space
-$ cat /proc/self/maps (only first line for each object shown for brevity)
-1206a8fa000-1206a8fb000 r--p 00000000 fe:0c 2400484                      /usr/lib/x86_64-linux-gnu/ld-2.31.so
-1206a926000-1206a927000 rw-p 00000000 00:00 0
-19174173000-19174175000 rw-p 00000000 00:00 0
-ac82f419000-ac82f519000 rw-p 00000000 00:00 0
-afa66a42000-afa66fa4000 r--p 00000000 fe:0c 2473999                      /usr/lib/locale/locale-archive
-d8656ba9000-d8656bce000 r--p 00000000 fe:0c 2402415                      /usr/lib/x86_64-linux-gnu/libc-2.31.so
-d8656d6a000-d8656d6e000 rw-p 00000000 00:00 0
-5df90b712000-5df90b714000 r--p 00000000 fe:0c 1868624                    /usr/bin/cat
-7ffe1be4c000-7ffe1be6d000 rw-p 00000000 00:00 0                          [stack]
-7ffe1bf07000-7ffe1bf0b000 r--p 00000000 00:00 0                          [vvar]
-7ffe1bf0b000-7ffe1bf0d000 r-xp 00000000 00:00 0                          [vdso]
-
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: Jann Horn <jannh@google.com>
-CC: Kees Cook <keescook@chromium.org>
-CC: Matthew Wilcox <willy@infradead.org>
-CC: Mike Rapoport <rppt@kernel.org>
-Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
+Fixes: 6dedbd1d5443 ("remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: also randomize mremap(..., MREMAP_MAYMOVE)
-v3: avoid stack area and retry in case of bad random address (Jann
-Horn), improve description in kernel.rst (Matthew Wilcox)
-v4: use /proc/$pid/maps in the example (Mike Rapaport), CCs (Andrew
-Morton), only check randomize_va_space == 3
----
- Documentation/admin-guide/hw-vuln/spectre.rst |  6 ++--
- Documentation/admin-guide/sysctl/kernel.rst   | 15 ++++++++++
- init/Kconfig                                  |  2 +-
- mm/internal.h                                 |  8 +++++
- mm/mmap.c                                     | 30 +++++++++++++------
- mm/mremap.c                                   | 27 +++++++++++++++++
- 6 files changed, 75 insertions(+), 13 deletions(-)
+ drivers/remoteproc/ti_k3_r5_remoteproc.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-index e05e581af5cf..9ea250522077 100644
---- a/Documentation/admin-guide/hw-vuln/spectre.rst
-+++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-@@ -254,7 +254,7 @@ Spectre variant 2
-    left by the previous process will also be cleared.
- 
-    User programs should use address space randomization to make attacks
--   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
-+   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
- 
- 3. A virtualized guest attacking the host
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-@@ -499,8 +499,8 @@ Spectre variant 2
-    more overhead and run slower.
- 
-    User programs should use address space randomization
--   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
--   difficult.
-+   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
-+   more difficult.
- 
- 3. VM mitigation
- ^^^^^^^^^^^^^^^^
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index d4b32cc32bb7..bc3bb74d544d 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -1060,6 +1060,21 @@ that support this feature.
-     Systems with ancient and/or broken binaries should be configured
-     with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
-     address space randomization.
-+
-+3   Additionally enable full randomization of memory mappings created
-+    with mmap(NULL, ...). With 2, the base of the VMA used for such
-+    mappings is random, but the mappings are created in predictable
-+    places within the VMA and in sequential order. With 3, new VMAs
-+    are created to fully randomize the mappings. Also mremap(...,
-+    MREMAP_MAYMOVE) will move the mappings even if not necessary.
-+
-+    On 32 bit systems this may cause problems due to increased VM
-+    fragmentation if the address space gets crowded.
-+
-+    On all systems, it will reduce performance and increase memory
-+    usage due to less efficient use of page tables and inability to
-+    merge adjacent VMAs with compatible attributes.
-+
- ==  ===========================================================================
- 
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index c9446911cf41..6146e2cd3b77 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1863,7 +1863,7 @@ config COMPAT_BRK
- 	  also breaks ancient binaries (including anything libc5 based).
- 	  This option changes the bootup default to heap randomization
- 	  disabled, and can be overridden at runtime by setting
--	  /proc/sys/kernel/randomize_va_space to 2.
-+	  /proc/sys/kernel/randomize_va_space to 2 or 3.
- 
- 	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index c43ccdddb0f6..b964c8dbb242 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -618,4 +618,12 @@ struct migration_target_control {
- 	gfp_t gfp_mask;
- };
- 
-+#ifndef arch_get_mmap_end
-+#define arch_get_mmap_end(addr)	(TASK_SIZE)
-+#endif
-+
-+#ifndef arch_get_mmap_base
-+#define arch_get_mmap_base(addr, base) (base)
-+#endif
-+
- #endif	/* __MM_INTERNAL_H */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index d91ecb00d38c..3677491e999b 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -47,6 +47,7 @@
- #include <linux/pkeys.h>
- #include <linux/oom.h>
- #include <linux/sched/mm.h>
-+#include <linux/elf-randomize.h>
- 
- #include <linux/uaccess.h>
- #include <asm/cacheflush.h>
-@@ -73,6 +74,8 @@ const int mmap_rnd_compat_bits_max = CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX;
- int mmap_rnd_compat_bits __read_mostly = CONFIG_ARCH_MMAP_RND_COMPAT_BITS;
- #endif
- 
-+#define MAX_RANDOM_MMAP_RETRIES			5
-+
- static bool ignore_rlimit_data;
- core_param(ignore_rlimit_data, ignore_rlimit_data, bool, 0644);
- 
-@@ -206,7 +209,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
- #ifdef CONFIG_COMPAT_BRK
- 	/*
- 	 * CONFIG_COMPAT_BRK can still be overridden by setting
--	 * randomize_va_space to 2, which will still cause mm->start_brk
-+	 * randomize_va_space to >= 2, which will still cause mm->start_brk
- 	 * to be arbitrarily shifted
- 	 */
- 	if (current->brk_randomized)
-@@ -1445,6 +1448,23 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 	if (mm->map_count > sysctl_max_map_count)
- 		return -ENOMEM;
- 
-+	/* Pick a random address even outside current VMAs? */
-+	if (!addr && randomize_va_space == 3) {
-+		int i = MAX_RANDOM_MMAP_RETRIES;
-+		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
-+
-+		do {
-+			/* Try a few times to find a free area */
-+			addr = arch_mmap_rnd();
-+			if (addr >= max_addr)
-+				continue;
-+			addr = get_unmapped_area(file, addr, len, pgoff, flags);
-+		} while (--i >= 0 && !IS_ERR_VALUE(addr));
-+
-+		if (IS_ERR_VALUE(addr))
-+			addr = 0;
-+	}
-+
- 	/* Obtain the address to map to. we verify (or select) it and ensure
- 	 * that it represents a valid section of the address space.
- 	 */
-@@ -2142,14 +2162,6 @@ unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info)
- 	return addr;
+diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+index d9307935441d..40fa7a4d2ec8 100644
+--- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
++++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
+@@ -940,9 +940,9 @@ static int k3_r5_cluster_rproc_init(struct platform_device *pdev)
+ 	return ret;
  }
  
--#ifndef arch_get_mmap_end
--#define arch_get_mmap_end(addr)	(TASK_SIZE)
--#endif
--
--#ifndef arch_get_mmap_base
--#define arch_get_mmap_base(addr, base) (base)
--#endif
--
- /* Get an address range which is currently unmapped.
-  * For shmat() with addr=0.
-  *
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 138abbae4f75..c5b2ed2bfd2d 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -24,12 +24,15 @@
- #include <linux/uaccess.h>
- #include <linux/mm-arch-hooks.h>
- #include <linux/userfaultfd_k.h>
-+#include <linux/elf-randomize.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
- 
- #include "internal.h"
- 
-+#define MAX_RANDOM_MREMAP_RETRIES		5
-+
- static pmd_t *get_old_pmd(struct mm_struct *mm, unsigned long addr)
+-static int k3_r5_cluster_rproc_exit(struct platform_device *pdev)
++static void k3_r5_cluster_rproc_exit(void *data)
  {
- 	pgd_t *pgd;
-@@ -720,6 +723,30 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
- 		goto out;
+-	struct k3_r5_cluster *cluster = platform_get_drvdata(pdev);
++	struct k3_r5_cluster *cluster = platform_get_drvdata(data);
+ 	struct k3_r5_rproc *kproc;
+ 	struct k3_r5_core *core;
+ 	struct rproc *rproc;
+@@ -967,8 +967,6 @@ static int k3_r5_cluster_rproc_exit(struct platform_device *pdev)
+ 		rproc_free(rproc);
+ 		core->rproc = NULL;
+ 	}
+-
+-	return 0;
+ }
+ 
+ static int k3_r5_core_of_get_internal_memories(struct platform_device *pdev,
+@@ -1255,9 +1253,9 @@ static void k3_r5_core_of_exit(struct platform_device *pdev)
+ 	devres_release_group(dev, k3_r5_core_of_init);
+ }
+ 
+-static void k3_r5_cluster_of_exit(struct platform_device *pdev)
++static void k3_r5_cluster_of_exit(void *data)
+ {
+-	struct k3_r5_cluster *cluster = platform_get_drvdata(pdev);
++	struct k3_r5_cluster *cluster = platform_get_drvdata(data);
+ 	struct platform_device *cpdev;
+ 	struct k3_r5_core *core, *temp;
+ 
+@@ -1351,9 +1349,7 @@ static int k3_r5_probe(struct platform_device *pdev)
+ 		return ret;
  	}
  
-+	if ((flags & MREMAP_MAYMOVE) && randomize_va_space == 3) {
-+		/*
-+		 * Caller is happy with a different address, so let's
-+		 * move even if not necessary!
-+		 */
-+		int i = MAX_RANDOM_MREMAP_RETRIES;
-+		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
-+
-+		do {
-+			/* Try a few times to find a free area */
-+			new_addr = arch_mmap_rnd();
-+			if (new_addr >= max_addr)
-+				continue;
-+			ret = mremap_to(addr, old_len, new_addr, new_len,
-+					&locked, flags, &uf, &uf_unmap_early,
-+					&uf_unmap);
-+			if (!IS_ERR_VALUE(ret))
-+				goto out;
-+		} while (--i >= 0);
-+
-+		/* Give up and try the old address */
-+		new_addr = addr;
-+	}
-+
- 	/*
- 	 * Always allow a shrinking remap: that just unmaps
- 	 * the unnecessary pages..
-
-base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
+-	ret = devm_add_action_or_reset(dev,
+-				       (void(*)(void *))k3_r5_cluster_of_exit,
+-				       pdev);
++	ret = devm_add_action_or_reset(dev, k3_r5_cluster_of_exit, pdev);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1364,9 +1360,7 @@ static int k3_r5_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_add_action_or_reset(dev,
+-				       (void(*)(void *))k3_r5_cluster_rproc_exit,
+-				       pdev);
++	ret = devm_add_action_or_reset(dev, k3_r5_cluster_rproc_exit, pdev);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-2.28.0
+2.27.0
 
