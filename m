@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDC0299235
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57A0299241
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785735AbgJZQVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:21:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
+        id S1785757AbgJZQXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:23:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45150 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1785714AbgJZQVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:21:17 -0400
-Received: from localhost.localdomain (unknown [192.30.34.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94F9D2463C;
-        Mon, 26 Oct 2020 16:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603729276;
-        bh=zNT9+W068f8fERQD91gIVDc2JWuRGhG2olBuXuEAQR8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tAdyWuxL2Bzw7oE+dUgBV64nS6vuHJPeka7/xu+pQhqKCdA0l382kbDE+FJimtTmg
-         c78OkIKYOQD9pIb0FAyrcswvqjvO9zb6Qzr5KPUabvhtuYopJtrBGXDRC25fTfZSYi
-         z/B93BmAO3idbxlYJOaKNVja1t4y15i02YGDl3fE=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: fix -Wshadow warnings
-Date:   Mon, 26 Oct 2020 17:20:50 +0100
-Message-Id: <20201026162110.3710415-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1775605AbgJZQXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:23:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8CA9CAB8F;
+        Mon, 26 Oct 2020 16:23:14 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 06C89DA6E2; Mon, 26 Oct 2020 17:21:39 +0100 (CET)
+Date:   Mon, 26 Oct 2020 17:21:39 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
+        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, stable@vger.kernel.org
+Subject: Re: [PATCH 7/7] btrfs: Promote to unsigned long long before
+ multiplying
+Message-ID: <20201026162139.GO6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
+        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, stable@vger.kernel.org
+References: <20201004180428.14494-1-willy@infradead.org>
+ <20201004180428.14494-8-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004180428.14494-8-willy@infradead.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Sun, Oct 04, 2020 at 07:04:28PM +0100, Matthew Wilcox (Oracle) wrote:
+> On 32-bit systems, these shifts will overflow for files larger than 4GB.
+> Add helper functions to avoid this problem coming back.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 73ff61dbe5ed ("Btrfs: fix device replace of a missing RAID 5/6 device")
+> Fixes: be50a8ddaae1 ("Btrfs: Simplify scrub_setup_recheck_block()'s argument")
+> Fixes: ff023aac3119 ("Btrfs: add code to scrub to copy read data to another disk")
+> Fixes: b5d67f64f9bc ("Btrfs: change scrub to support big blocks")
+> Fixes: a2de733c78fa ("btrfs: scrub")
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/btrfs/scrub.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 354ab9985a34..ccbaf9c6e87a 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -1262,12 +1262,17 @@ static inline void scrub_stripe_index_and_offset(u64 logical, u64 map_type,
+>  	}
+>  }
+>  
+> +static u64 sblock_length(struct scrub_block *sblock)
+> +{
+> +	return (u64)sblock->page_count * PAGE_SIZE;
 
-There are thousands of warnings about one macro in a W=2 build:
-
-include/linux/filter.h:561:6: warning: declaration of 'ret' shadows a previous local [-Wshadow]
-
-Prefix all the locals in that macro with __ to avoid most of
-these warnings.
-
-Fixes: 492ecee892c2 ("bpf: enable program stats")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/filter.h | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 954f279fde01..20ba04583eaa 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -558,21 +558,21 @@ struct sk_filter {
- DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
- 
- #define __BPF_PROG_RUN(prog, ctx, dfunc)	({			\
--	u32 ret;							\
-+	u32 __ret;							\
- 	cant_migrate();							\
- 	if (static_branch_unlikely(&bpf_stats_enabled_key)) {		\
--		struct bpf_prog_stats *stats;				\
--		u64 start = sched_clock();				\
--		ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);	\
--		stats = this_cpu_ptr(prog->aux->stats);			\
--		u64_stats_update_begin(&stats->syncp);			\
--		stats->cnt++;						\
--		stats->nsecs += sched_clock() - start;			\
--		u64_stats_update_end(&stats->syncp);			\
-+		struct bpf_prog_stats *__stats;				\
-+		u64 __start = sched_clock();				\
-+		__ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);	\
-+		__stats = this_cpu_ptr(prog->aux->stats);		\
-+		u64_stats_update_begin(&__stats->syncp);		\
-+		__stats->cnt++;						\
-+		__stats->nsecs += sched_clock() - __start;		\
-+		u64_stats_update_end(&__stats->syncp);			\
- 	} else {							\
--		ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);	\
-+		__ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);	\
- 	}								\
--	ret; })
-+	__ret; })
- 
- #define BPF_PROG_RUN(prog, ctx)						\
- 	__BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func)
--- 
-2.27.0
-
+page_count will be 32 at most, the type is int and this will never
+overflow. The value is usualy number of pages in the arrays scrub_bio::pagev or
+scrub_block::pagev bounded by SCRUB_PAGES_PER_WR_BIO (32) or
+SCRUB_MAX_PAGES_PER_BLOCK (16).  The scrub code does not use mappings
+and it reads raw blocks to own pages and does the checksum verification.
