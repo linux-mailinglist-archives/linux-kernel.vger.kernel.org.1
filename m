@@ -2,195 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95817299802
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D170C299809
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732346AbgJZUc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:32:57 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:42146 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732103AbgJZUci (ORCPT
+        id S1732531AbgJZUd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:33:28 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:55961 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732481AbgJZUdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:32:38 -0400
-Received: by mail-io1-f68.google.com with SMTP id k21so11839658ioa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:32:38 -0700 (PDT)
+        Mon, 26 Oct 2020 16:33:19 -0400
+Received: by mail-wm1-f67.google.com with SMTP id a72so12979159wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WqNJgzUJ730nftaXzhmDP2PjcBlHnvqhfXXpoZKk+Cg=;
-        b=rHPO5+VVrPfse+fV612DyhXyGzf2LsPDSv9jbH/n2+OtjYsIZZQ99L+5XyRWdOras1
-         xwr6Y049mpLLuYYTwAiLYjugjCp/Y8Gm8+wZqnBte95dw1RMPHOFj4gDLLlyTnJ0wtqK
-         vr8kJUe7xpsGyxF8tHRMahnO8PQMDUFAcULaDaUw78txqMcYx6zUOLUuEqg/W32WFX2J
-         2QGNnozOFvMmD7XuPCfmq0w+nAzHgg4PYPpDXC/ZFOie8mqavk7S9AbmrPNFPy5QVRFp
-         EMo9yR3jP2O173Rt5qd34B1146FlFGa9a/29UPsoPHST4NcU3T2WhqqDNibLoDcNTnwk
-         C4Vg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/O8B5tDsbMKoWPbr5etGrG3WN9TQf/YvulQxtm1JNqc=;
+        b=fgGtA4dZkC7fJbJEp77T2zNmJPL+rQzgZ1HlLKVt9cz6ql8n6Ew8NtQxmH48a25heT
+         lkDvFDx9tZgelHI68g+i3kcvouujmjmCv6AQVtHFRvt07YjyP2EZmGVBm8Wt56o2cORX
+         wRO+5ZqpFhdG6Ac53AX7WPmPeLDNH2bucLyVDtdurw0THcKB7xgZ0qdUjmnAhov8y8E4
+         xSEIBjkL944sHXH0benknMyN3QHAffKFDnglOwcPQUYcAr32JBvTBWqT/5UXf0dnsww+
+         1f8kFHIKp3KuUV2ogMZyU++YgUpCB4zQs0wa7WvtqQBO+mf3QgBdjrAb2KkzSy3M9uJf
+         0QwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WqNJgzUJ730nftaXzhmDP2PjcBlHnvqhfXXpoZKk+Cg=;
-        b=b/vQBuWg68tx405JbOhCnu4rOMeQhjZnvIdC+6Gxt53Bd4u3v3nL7SuR14F33pZ5P7
-         4CsBPmPCYnPsbOKBjfcjShqbJyx15R0ZTLLJqlEOU9/25UwLtaQGsJ1JBNDvNtapT5l5
-         Ow8yzPxFSR0mEsfqsLfp13QIRhyoNKLyHq3EbuuHLZoJLtQ6zTWJpJjobKje5VrO/fLn
-         0OIm8hMJTDudHwMce5k1lfHI/b7FezHfFtfnwuc19O/8gH5EVCzG+6mPnMmw+sEextKN
-         L0dU5SiDYWQQpZqz3B9HcqWrVHjdXS49LynyCQvUnY2F7k7FEIJeTl4+X1lrSFnZhU0G
-         cLqQ==
-X-Gm-Message-State: AOAM530xLS3z2dVE1GnZbJHzGXRs66iYA29H4vWBivtfIt2dDiIY3PTh
-        JUyySRuO0r86KGJ+m5Fe7gdZgOSALQPLQA==
-X-Google-Smtp-Source: ABdhPJw7/DJO/4KNfjJqHXElP5SoVmaIK2Tj6PlGMYmDQjAPG1tc2o34EoVoUAdlIx4P+/LJPugmqw==
-X-Received: by 2002:a6b:92c6:: with SMTP id u189mr12162338iod.192.1603744357353;
-        Mon, 26 Oct 2020 13:32:37 -0700 (PDT)
-Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e12sm6770373ilq.65.2020.10.26.13.32.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 13:32:36 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>,
-        Roman Gershman <romger@amazon.com>
-Subject: [PATCH 4/4] task_work: use TIF_NOTIFY_SIGNAL if available
-Date:   Mon, 26 Oct 2020 14:32:30 -0600
-Message-Id: <20201026203230.386348-5-axboe@kernel.dk>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201026203230.386348-1-axboe@kernel.dk>
-References: <20201026203230.386348-1-axboe@kernel.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/O8B5tDsbMKoWPbr5etGrG3WN9TQf/YvulQxtm1JNqc=;
+        b=mHvnk73W01/gF2SXmyyWOvrbTdcJ6hWR9dRDmAaVFPf4V07MYhYL7MenIolnNjLsON
+         loychQ9xVhW/YzJv76eI7oyO/xabryVEhtRvlUa15iYzuah9mbMxUBtpDTIKt6D4JHV1
+         +beDpl4p60MJgIUQH/GJuMwbfL/omD1CYI46Bl2SUiIF5piKAKcWzEN+771w0i/9njrq
+         FfZy6GwSCWrWLNQ9ay/wEAUDcBvO2zOja7SixypfThO3Eatbd7od4P3Tcu/o+tA1wNtU
+         UL0Csjk5mYq7K9DprtRDCWVetbKbLX4mBwFOZn+xv/BSlnGGqQnMax0h7CrlvxVmhECT
+         Lbkw==
+X-Gm-Message-State: AOAM531Mr2qTgRwB66AyDeiFmbQY+TZiGi+QiR06K15Hyql+Osa1Jv08
+        aRTMv2T5EKcdwNuV3TFngmy5mGew+7fWCZHeIII=
+X-Google-Smtp-Source: ABdhPJwMDiAiLRKHlrvYhOBxCY24XJ9FgKn7gwnrmpvOmcovyvuheNcYl6kswwxOccE6N3E2mp6N1hUoQVyoAadJXtE=
+X-Received: by 2002:a05:600c:25a:: with SMTP id 26mr17442752wmj.39.1603744397278;
+ Mon, 26 Oct 2020 13:33:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201023074656.11855-1-tiwai@suse.de> <1d3e22ef-a301-f557-79ca-33d6520bb64e@amd.com>
+ <CADnq5_OY8tRqs-bao9mkKxgcXC=305-_71U=04C5z9HM0+5MuQ@mail.gmail.com> <22ab9117-0281-2ff3-8328-d7780e353643@amd.com>
+In-Reply-To: <22ab9117-0281-2ff3-8328-d7780e353643@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 26 Oct 2020 16:33:06 -0400
+Message-ID: <CADnq5_NVPRpiOj+Cpzh1TM=2J-ym8xbKbxGc_hUL=4_j_MAo6A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm/amd/display: Fix kernel panic by breakpoint
+To:     "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
+Cc:     Luben Tuikov <luben.tuikov@amd.com>, Takashi Iwai <tiwai@suse.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the arch supports TIF_NOTIFY_SIGNAL, then use that for TWA_SIGNAL as
-it's more efficient than using the signal delivery method. This is
-especially true on threaded applications, where ->sighand is shared
-across threads, but it's also lighter weight on non-shared cases.
+Applied.  Thanks!
 
-io_uring is a heavy consumer of TWA_SIGNAL based task_work. On my test
-box, even just using 16 threads shows a nice improvement running an
-io_uring based echo server.
+Alex
 
-stock kernel:
-0.01% <= 0.1 milliseconds
-95.86% <= 0.2 milliseconds
-98.27% <= 0.3 milliseconds
-99.71% <= 0.4 milliseconds
-100.00% <= 0.5 milliseconds
-100.00% <= 0.6 milliseconds
-100.00% <= 0.7 milliseconds
-100.00% <= 0.8 milliseconds
-100.00% <= 0.9 milliseconds
-100.00% <= 1.0 milliseconds
-100.00% <= 1.1 milliseconds
-100.00% <= 2 milliseconds
-100.00% <= 3 milliseconds
-100.00% <= 3 milliseconds
-1378930.00 requests per second
-~1600% CPU
-
-1.38M requests/second, and all 16 CPUs are maxed out.
-
-patched kernel:
-0.01% <= 0.1 milliseconds
-98.24% <= 0.2 milliseconds
-99.47% <= 0.3 milliseconds
-99.99% <= 0.4 milliseconds
-100.00% <= 0.5 milliseconds
-100.00% <= 0.6 milliseconds
-100.00% <= 0.7 milliseconds
-100.00% <= 0.8 milliseconds
-100.00% <= 0.9 milliseconds
-100.00% <= 1.2 milliseconds
-1666111.38 requests per second
-~1450% CPU
-
-1.67M requests/second, and we're no longer just hammering on the sighand
-lock. The original reporter states:
-
-"For 5.7.15 my benchmark achieves 1.6M qps and system cpu is at ~80%.
- for 5.7.16 or later it achieves only 1M qps and the system cpu is is
- at ~100%"
-
-with the only difference there being that TWA_SIGNAL is used
-unconditionally in 5.7.16, since we need it to be able to solve an
-inability to run task_work if the application is waiting in the kernel
-already on an event that needs task_work run to be satisfied. Also
-see commit 0ba9c9edcd15.
-
-Reported-by: Roman Gershman <romger@amazon.com>
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- kernel/task_work.c | 41 +++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 8d6e1217c451..15b087286bea 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -5,6 +5,34 @@
- 
- static struct callback_head work_exited; /* all we need is ->next == NULL */
- 
-+/*
-+ * TWA_SIGNAL signaling - use TIF_NOTIFY_SIGNAL, if available, as it's faster
-+ * than TIF_SIGPENDING as there's no dependency on ->sighand. The latter is
-+ * shared for threads, and can cause contention on sighand->lock. Even for
-+ * the non-threaded case TIF_NOTIFY_SIGNAL is more efficient, as no locking
-+ * or IRQ disabling is involved for notification (or running) purposes.
-+ */
-+static void task_work_notify_signal(struct task_struct *task)
-+{
-+#if defined(TIF_NOTIFY_SIGNAL)
-+	set_notify_signal(task);
-+#else
-+	unsigned long flags;
-+
-+	/*
-+	 * Only grab the sighand lock if we don't already have some
-+	 * task_work pending. This pairs with the smp_store_mb()
-+	 * in get_signal(), see comment there.
-+	 */
-+	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
-+	    lock_task_sighand(task, &flags)) {
-+		task->jobctl |= JOBCTL_TASK_WORK;
-+		signal_wake_up(task, 0);
-+		unlock_task_sighand(task, &flags);
-+	}
-+#endif
-+}
-+
- /**
-  * task_work_add - ask the @task to execute @work->func()
-  * @task: the task which should run the callback
-@@ -33,7 +61,6 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
- 		  enum task_work_notify_mode notify)
- {
- 	struct callback_head *head;
--	unsigned long flags;
- 
- 	do {
- 		head = READ_ONCE(task->task_works);
-@@ -49,17 +76,7 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
- 		set_notify_resume(task);
- 		break;
- 	case TWA_SIGNAL:
--		/*
--		 * Only grab the sighand lock if we don't already have some
--		 * task_work pending. This pairs with the smp_store_mb()
--		 * in get_signal(), see comment there.
--		 */
--		if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
--		    lock_task_sighand(task, &flags)) {
--			task->jobctl |= JOBCTL_TASK_WORK;
--			signal_wake_up(task, 0);
--			unlock_task_sighand(task, &flags);
--		}
-+		task_work_notify_signal(task);
- 		break;
- 	default:
- 		WARN_ON_ONCE(1);
--- 
-2.29.0
-
+On Mon, Oct 26, 2020 at 4:22 PM Kazlauskas, Nicholas
+<nicholas.kazlauskas@amd.com> wrote:
+>
+> Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+>
+> Looks fine to me. Feel free to apply.
+>
+> Regards,
+> Nicholas Kazlauskas
+>
+> On 2020-10-26 3:34 p.m., Alex Deucher wrote:
+> > Yes, looks good to me as well.  Series is:
+> > Acked-by: Alex Deucher <alexander.deucher@amd.com>
+> > I'll give the display guys a few more days to look this over, but if
+> > there are no objections, I'll apply them.
+> >
+> > Thanks!
+> >
+> > Alex
+> >
+> > On Fri, Oct 23, 2020 at 7:16 PM Luben Tuikov <luben.tuikov@amd.com> wrote:
+> >>
+> >> On 2020-10-23 03:46, Takashi Iwai wrote:
+> >>> Hi,
+> >>>
+> >>> the amdgpu driver's ASSERT_CRITICAL() macro calls the
+> >>> kgdb_breakpoing() even if no debug option is set, and this leads to a
+> >>> kernel panic on distro kernels.  The first two patches are the
+> >>> oneliner fixes for those, while the last one is the cleanup of those
+> >>> debug macros.
+> >>
+> >> This looks like good work and solid. Hopefully it gets picked up.
+> >>
+> >> Regards,
+> >> Luben
+> >>
+> >>>
+> >>>
+> >>> Takashi
+> >>>
+> >>> ===
+> >>>
+> >>> Takashi Iwai (3):
+> >>>    drm/amd/display: Fix kernel panic by dal_gpio_open() error
+> >>>    drm/amd/display: Don't invoke kgdb_breakpoint() unconditionally
+> >>>    drm/amd/display: Clean up debug macros
+> >>>
+> >>>   drivers/gpu/drm/amd/display/Kconfig             |  1 +
+> >>>   drivers/gpu/drm/amd/display/dc/gpio/gpio_base.c |  4 +--
+> >>>   drivers/gpu/drm/amd/display/dc/os_types.h       | 33 +++++++++----------------
+> >>>   3 files changed, 15 insertions(+), 23 deletions(-)
+> >>>
+> >>
+> >> _______________________________________________
+> >> amd-gfx mailing list
+> >> amd-gfx@lists.freedesktop.org
+> >> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> > _______________________________________________
+> > amd-gfx mailing list
+> > amd-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> >
+>
