@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FB1299467
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9B829946B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788613AbgJZRxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:53:42 -0400
-Received: from casper.infradead.org ([90.155.50.34]:46426 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781494AbgJZRxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:53:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=FBYzkNP+Cx2t2+3fMBPbsAF59I/mFG4FBtQVNq5FELU=; b=OOi9IhPPOXxjSjoIy5MiTJk6Zk
-        3x3IjQEqzm0akf8SgC6HRY7vPt354oCO5ldxZDm7wddxMLSxc/06+SWeIfqeFjR7YZ/GvzdaTqLjO
-        D4SOc3xGC94d8GQtMsKBjt3GvrIxgo/RuTORS5H+24MfdUd3yePkQbFfntv0AgRR942Z8cC/EWrza
-        JmFm3I7Rrc+y8uBWe/nVAqfh27Ho1ScOTfkzNwJVGWozsi4skFFQOgoTGDP1UCx7ZEQTGlsI8hoLm
-        sKgSQbmrSsX5O+qzHWG9ENThF5W7P1BsEgLTOHd/I5Oe0ZjuFwu1Hw+4cP38ZpKthir9fUflqH79r
-        udE24Rww==;
-Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX6gQ-0008Em-C8; Mon, 26 Oct 2020 17:53:27 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1kX6gP-002SMG-Um; Mon, 26 Oct 2020 17:53:25 +0000
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [RFC PATCH 1/2] sched/wait: Add add_wait_queue_priority()
-Date:   Mon, 26 Oct 2020 17:53:24 +0000
-Message-Id: <20201026175325.585623-1-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1788622AbgJZRxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1780913AbgJZRxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 13:53:53 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C63720791;
+        Mon, 26 Oct 2020 17:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603734832;
+        bh=1+7x8X20mneBgmOpqia3W6ELvfpsExV2ATsV8SIe8ig=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jCtZnhDs/sE7iw6ZGxPHBrsb6Jo/jdUFZy0AOrL1tSHO9Inr540hHV/I7fwQ2EfG0
+         5UiWs+SX8voaGg4ULdsp/27DzxeLjqRtIB8hiyy2p9mDGjclYqMB/9Jyqzatoq9dqm
+         10NrRiAgDGec9MDEwYROXQwQbmJadJ/bARGrvFMs=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 16E99403C2; Mon, 26 Oct 2020 14:53:49 -0300 (-03)
+Date:   Mon, 26 Oct 2020 14:53:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v2 2/2] perf stat: Support regex pattern in
+ --for-each-cgroup
+Message-ID: <20201026175349.GA2449445@kernel.org>
+References: <20201024025918.453431-1-namhyung@kernel.org>
+ <20201024025918.453431-2-namhyung@kernel.org>
+ <20201026114009.GD2726983@krava>
+ <CAM9d7chdStkY7-tRjw9Fo+3wKdhrDYAkbNT0b-g6ftGoaZfMDQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chdStkY7-tRjw9Fo+3wKdhrDYAkbNT0b-g6ftGoaZfMDQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+Em Mon, Oct 26, 2020 at 09:32:34PM +0900, Namhyung Kim escreveu:
+> Hi Jiri,
+> 
+> On Mon, Oct 26, 2020 at 8:40 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Sat, Oct 24, 2020 at 11:59:18AM +0900, Namhyung Kim wrote:
+> > > To make the command line even more compact with cgroups, support regex
+> > > pattern matching in cgroup names.
+> > >
+> > >   $ perf stat -a -e cpu-clock,cycles --for-each-cgroup ^foo sleep 1
+> > >
+> > >           3,000.73 msec cpu-clock                 foo #    2.998 CPUs utilized
+> > >     12,530,992,699      cycles                    foo #    7.517 GHz                      (100.00%)
+> > >           1,000.61 msec cpu-clock                 foo/bar #    1.000 CPUs utilized
+> > >      4,178,529,579      cycles                    foo/bar #    2.506 GHz                      (100.00%)
+> > >           1,000.03 msec cpu-clock                 foo/baz #    0.999 CPUs utilized
+> > >      4,176,104,315      cycles                    foo/baz #    2.505 GHz                      (100.00%)
+> >
+> > just curious.. there was another foo/XXX group using the
+> > rest of the cycles, right?
+> 
+> No, if so it should be displayed too.  But actually there was a process
+> in the foo cgroup itself.
+> 
+> >
+> > also perhaps we want to warn if there's no match found:
+> >
+> >         $ sudo ./perf stat -a -e cpu-clock,cycles --for-each-cgroup ^foo sleep 1
+> >
+> >          Performance counter stats for 'system wide':
+> >
+> >
+> >                1.002375575 seconds time elapsed
+> >
+> 
+> Right, will check this case.
 
-This allows an exclusive wait_queue_entry to be added at the head of the
-queue, instead of the tail as normal. Thus, it gets to consume events
-first.
+Hum, I thought that could be done on top of this one, but then, the
+ambiguity of:
 
-The problem I'm trying to solve here is interrupt remapping invalidation
-vs. MSI interrupts from VFIO. I'd really like KVM IRQFD to be able to
-consume events before (and indeed instead of) userspace.
+1. No samples for a cgroups matching that expression
 
-When the remapped MSI target in the KVM routing table is invalidated,
-the VMM needs to *deassociate* the IRQFD and fall back to handling the
-next IRQ in userspace, so it can be retranslated and a fault reported
-if appropriate.
+2. No cgroups match that expression
 
-It's possible to do that by constantly registering and deregistering the
-fd in the userspace poll loop, but it gets ugly especially because the
-fallback handler isn't really local to the core MSI handling.
+Is real and warrants a warning for the 'no cgroups match the
+--for-each-group regexp' case.
 
-It's much nicer if the userspace handler can just remain registered all
-the time, and it just doesn't get any events when KVM steals them first.
-Which is precisely what happens with posted interrupts, and this makes
-it consistent. (Unless I'm missing something that prevents posted
-interrupts from working when there's another listener on the eventfd?)
+So I'll wait for v3 with that warning,
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- include/linux/wait.h | 12 +++++++++++-
- kernel/sched/wait.c  | 11 +++++++++++
- 2 files changed, 22 insertions(+), 1 deletion(-)
+Thanks,
 
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 27fb99cfeb02..fe10e8570a52 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -22,6 +22,7 @@ int default_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int
- #define WQ_FLAG_BOOKMARK	0x04
- #define WQ_FLAG_CUSTOM		0x08
- #define WQ_FLAG_DONE		0x10
-+#define WQ_FLAG_PRIORITY	0x20
- 
- /*
-  * A single wait-queue entry structure:
-@@ -164,11 +165,20 @@ static inline bool wq_has_sleeper(struct wait_queue_head *wq_head)
- 
- extern void add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
- extern void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
-+extern void add_wait_queue_priority(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
- extern void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
- 
- static inline void __add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
- {
--	list_add(&wq_entry->entry, &wq_head->head);
-+	struct list_head *head = &wq_head->head;
-+	struct wait_queue_entry *wq;
-+
-+	list_for_each_entry(wq, &wq_head->head, entry) {
-+		if (!(wq->flags & WQ_FLAG_PRIORITY))
-+			break;
-+		head = &wq->entry;
-+	}
-+	list_add(&wq_entry->entry, head);
- }
- 
- /*
-diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
-index 01f5d3020589..d2a84c8e88bf 100644
---- a/kernel/sched/wait.c
-+++ b/kernel/sched/wait.c
-@@ -37,6 +37,17 @@ void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue
- }
- EXPORT_SYMBOL(add_wait_queue_exclusive);
- 
-+void add_wait_queue_priority(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
-+{
-+	unsigned long flags;
-+
-+	wq_entry->flags |= WQ_FLAG_EXCLUSIVE | WQ_FLAG_PRIORITY;
-+	spin_lock_irqsave(&wq_head->lock, flags);
-+	__add_wait_queue(wq_head, wq_entry);
-+	spin_unlock_irqrestore(&wq_head->lock, flags);
-+}
-+EXPORT_SYMBOL_GPL(add_wait_queue_priority);
-+
- void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
- {
- 	unsigned long flags;
--- 
-2.26.2
-
+- Arnaldo
