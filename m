@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BCC298CC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3478298CBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774842AbgJZMNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1774805AbgJZMNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:13:21 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4596320874;
-        Mon, 26 Oct 2020 12:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603714400;
-        bh=KbAfpS5AGRw5GfH3m/mCuY+N0Ih33X21Px2gXTmbOKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BrT63QoEtM/OdfjjrX6o5GPSeccdFPpsBnbBzIPFgAAREFTx7HUK8cSq8W9qXB8CM
-         4cK90m4mOUJM/yXNseO/y+8zH+eieL0kRdBjvzXQXxnEIcZ667D1WedHxzJZrcYm4j
-         iTrOTygDy3S0CaBJWIXoSA0r6W+aki5znY5h55ts=
-Date:   Mon, 26 Oct 2020 12:13:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: regulator: add support for MT6392
-Message-ID: <20201026121316.GB7402@sirena.org.uk>
-References: <20201024200304.1427864-1-fparent@baylibre.com>
+        id S1774831AbgJZMNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:13:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39554 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1774804AbgJZMNW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 08:13:22 -0400
+Date:   Mon, 26 Oct 2020 13:13:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603714399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1EwMJJrJoq9M72TuxMBVkcuO2bqjZo2iMyJDC0rzzx4=;
+        b=4rqaZXU4BBSEieae/fD/UGWny5Um/PgmeSsKtbbvd3XwaRSFEvkXCQUYylCa3X9FXwzPUe
+        6F5IyWwp3nTmg7kVE4yO5bgJgMyy6d7nNjyy8x+eyMrtFtIAw5zfK9FbzxmiLLJZP4DXWX
+        zd/cEIchm5x0eJz9JpWlj72h2J4IXYU3aCn331T9gdoUO754LVHCpv4WOvo1j9MY3QxGRw
+        gfW3nwHFMiIpIOSZMheth+36grrmG5NtUdF4VxhRlqctvMvtTgMmTpsDnK1JV/lAEI3q0w
+        1z0Qde68NzXTR8KD4wiilKoCdmECf5/jK0SyTqofpKD7PypK/BNzrEH1pt8Z/A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603714399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1EwMJJrJoq9M72TuxMBVkcuO2bqjZo2iMyJDC0rzzx4=;
+        b=jGsY1SweRtkh/BsUgjkXv2LNWyvLH3vVRVOWKbeSYvleZzXbN1974NtEJ6CbLbCg9zmDi1
+        xN33/mCoWSv/o6CA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org,
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/14] USB: serial: keyspan_pda: fix up write
+ implementation
+Message-ID: <20201026121318.4mqwkkhahnsujngw@linutronix.de>
+References: <20201025174600.27896-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201024200304.1427864-1-fparent@baylibre.com>
-X-Cookie: Safety Third.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201025174600.27896-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-25 18:45:46 [+0100], Johan Hovold wrote:
+> This series fixes a number of long-standing issues with the keyspan_pda
+> driver and reworks its write implementation so that it can be used with
+> any line discipline or for a system console.
+> 
+> The last few patches cleans up the xircom device support and some style
+> issues.
 
---SkvwRMAIpAhPCcCJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you Johan. This series fixes quite some issues including the
+in_interrupt() part. I added the buffer part because it hurt to see an
+allocation for one byte. There is no loss without it :)
 
-On Sat, Oct 24, 2020 at 10:03:03PM +0200, Fabien Parent wrote:
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-> +Required properties:
-> +- compatible: "mediatek,mt6392-regulator"
+> Johan
 
-This is no longer used by the driver, should be unneeded and therefore
-should be removed.
-
-> +- mt6392regulator: List of regulators provided by this controller. It is named
-
-This property doesn't seem to appear anywhere - there's regulators, the
-collection of subnodes for each individual regulator which I think is
-what is referenced here, but nothing called mt6392regulator.
-
---SkvwRMAIpAhPCcCJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+WvVsACgkQJNaLcl1U
-h9COeAf9G6DwjRqvGX5pwncOY8E6kwgs2U7scP5J99ohq9wz9+kF8shwvsGPt2fj
-SBfCd0U2GnI653lSXhxJntBFX5NeEyeLayYK/lUr3Xt35POLywsFM+kz08YvYDDL
-WC+1pLt3CHQOSZF7FAOYATGzQi3Fah2VdJyNiA/FJxBbomJIomfpSo5PxVW15jlI
-gFnUDzCWCtC4XjW8pA0el03F9PzKevC8lnYu51OxzaztC+qiPTYX/l1Kk5yA3ose
-jHVRKfU9xIM0k3C/kr1O0Om7z6aRBVQTxpKwQxZURvDGcRoSQm1V43ksgKkfAVtJ
-xdKXp5fIp3hAHFlXRxo3B+cARA9OWw==
-=XYZl
------END PGP SIGNATURE-----
-
---SkvwRMAIpAhPCcCJ--
+Sebastian
