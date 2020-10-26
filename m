@@ -2,114 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD852992FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 615772992FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786593AbgJZQxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1786600AbgJZQxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1786585AbgJZQxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Oct 2020 12:53:18 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:43465 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1786584AbgJZQxR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:53:17 -0400
-Received: by mail-qv1-f67.google.com with SMTP id bl9so4605868qvb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tRGzOr0ebxa8PA89MZHTDFpEs7q7Dz3b2th/oGGJY/I=;
-        b=B1PoPwPmVENh9APWJE9yBymBpwfHajobryt05CnlXJl+v5q5n7ClEUHus5RDVAmF/b
-         5qzeta/rkT/M9pbNKoD/6DJNpqFfhYeq5UDdD+hLk/xtwoYXGyOGUqgBmX+8TXg51ozK
-         cpJsw52UzryS42fK2g71D3NDf6X7i9DEyWm7ipdzAjKevscnD560PcDVd0arGY3lpg4K
-         4+u3bjBKcFczN6wqnSq4ymxRTp5ZMfC/jLhcT/1qJ5pUVVKnWk79h53OFWBC5fmHCrfG
-         F/Jz1pTm7BW6fSXLHT55tlnNZvSeOqBXcfTlH2LVRJso4A4hnMOpdxq/9E75vX5qKf7X
-         9+qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=tRGzOr0ebxa8PA89MZHTDFpEs7q7Dz3b2th/oGGJY/I=;
-        b=AcWhk/hb+Fwpl0ACZ/zd8+cyb/gKMfFzsghEimrJl8UXEfYHeKCwuR6CcwYhJn19jL
-         8LKmNJmmhrcU2Zksl1u6RF3AfDOCc1L2warYNm7TXzNXZQaPQYY9eo7Pp70VVkI14cZ6
-         fnJOAd0M0mKTCOs2ybfOMFzTEsr64Fzu7WhfWejhoGEFlzbcoE1ZHPzLa6/1JgQeLW1Y
-         iSqQaDD5CXbM9VyXkrNxu/9AQiJrqSCWVntH0qhJ3terwwnPXx1eHjHIVX914biGR6oa
-         +7+dSX/y8nqPXuQPRwnmhj4IK3SITEK5xUX16tVDkKPV/OWcEtexrc1qNBI7xSzp8dJH
-         NWbw==
-X-Gm-Message-State: AOAM5318BjJjp+0bSVK6bPDWDyXgp/vZCOGrOr2FOSZu5RjrINOXFiFM
-        M5gVWVqXWSqNYTCV6ZBbomjIVd6UzOj/Gg==
-X-Google-Smtp-Source: ABdhPJzT9a0QQE8CYV+cIfwLyXKbu3bBCHITSkRTe6isI7Sk32lRpJw2KKqpaWDA5kE8Wc6XBP5+mA==
-X-Received: by 2002:a0c:a482:: with SMTP id x2mr18539898qvx.47.1603731195996;
-        Mon, 26 Oct 2020 09:53:15 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:c37])
-        by smtp.gmail.com with ESMTPSA id d188sm7141118qkb.10.2020.10.26.09.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 09:53:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 26 Oct 2020 12:53:11 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     qiang.zhang@windriver.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] kthread_worker: re-set CPU affinities if CPU come online
-Message-ID: <20201026165311.GA97873@mtj.duckdns.org>
-References: <20201026065213.30477-1-qiang.zhang@windriver.com>
- <20201026135011.GC73258@mtj.duckdns.org>
- <20201026164555.GA7544@alley>
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A37942224A;
+        Mon, 26 Oct 2020 16:53:16 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 12:53:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH v2] tracing, synthetic events: Replace buggy strcat() with
+ seq_buf operations
+Message-ID: <20201026125314.705e53ba@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026164555.GA7544@alley>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Petr.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-On Mon, Oct 26, 2020 at 05:45:55PM +0100, Petr Mladek wrote:
-> > I don't think this works. The kthread may have changed its binding while
-> > running using set_cpus_allowed_ptr() as you're doing above. Besides, when a
-> > cpu goes offline, the bound kthread can fall back to other cpus but its cpu
-> > mask isn't cleared, is it?
-> 
-> If I get it correctly, select_fallback_rq() calls
-> do_set_cpus_allowed() explicitly or in cpuset_cpus_allowed_fallback().
-> It seems that the original mask gets lost.
+There was a memory corruption bug happening while running the synthetic
+event selftests:
 
-Oh, I see.
+ kmemleak: Cannot insert 0xffff8c196fa2afe5 into the object search tree (overlaps existing)
+ CPU: 5 PID: 6866 Comm: ftracetest Tainted: G        W         5.9.0-rc5-test+ #577
+ Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
+ Call Trace:
+  dump_stack+0x8d/0xc0
+  create_object.cold+0x3b/0x60
+  slab_post_alloc_hook+0x57/0x510
+  ? tracing_map_init+0x178/0x340
+  __kmalloc+0x1b1/0x390
+  tracing_map_init+0x178/0x340
+  event_hist_trigger_func+0x523/0xa40
+  trigger_process_regex+0xc5/0x110
+  event_trigger_write+0x71/0xd0
+  vfs_write+0xca/0x210
+  ksys_write+0x70/0xf0
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7fef0a63a487
+ Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+ RSP: 002b:00007fff76f18398 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+ RAX: ffffffffffffffda RBX: 0000000000000039 RCX: 00007fef0a63a487
+ RDX: 0000000000000039 RSI: 000055eb3b26d690 RDI: 0000000000000001
+ RBP: 000055eb3b26d690 R08: 000000000000000a R09: 0000000000000038
+ R10: 000055eb3b2cdb80 R11: 0000000000000246 R12: 0000000000000039
+ R13: 00007fef0a70b500 R14: 0000000000000039 R15: 00007fef0a70b700
+ kmemleak: Kernel memory leak detector disabled
+ kmemleak: Object 0xffff8c196fa2afe0 (size 8):
+ kmemleak:   comm "ftracetest", pid 6866, jiffies 4295082531
+ kmemleak:   min_count = 1
+ kmemleak:   count = 0
+ kmemleak:   flags = 0x1
+ kmemleak:   checksum = 0
+ kmemleak:   backtrace:
+      __kmalloc+0x1b1/0x390
+      tracing_map_init+0x1be/0x340
+      event_hist_trigger_func+0x523/0xa40
+      trigger_process_regex+0xc5/0x110
+      event_trigger_write+0x71/0xd0
+      vfs_write+0xca/0x210
+      ksys_write+0x70/0xf0
+      do_syscall_64+0x33/0x40
+      entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> It would make sense to assume that kthread_worker API will take care of
-> the affinity when it was set by kthread_create_worker_on_cpu().
+The cause came down to a use of strcat() that was adding an string that was
+shorten, but the strcat() did not take that into account.
 
-I was for some reason thinking this was for all kthreads. Yeah, for
-kthread_workers it does make sense.
+strcat() is extremely dangerous as it does not care how big the buffer is.
+Replace it with seq_buf operations that prevent the buffer from being
+overwritten if what is being written is bigger than the buffer.
 
-> But is it safe to assume that the work can be safely proceed also
-> on another CPU? We should probably add a warning into
-> kthread_worker_fn() when it detects wrong CPU.
+Fixes: 10819e25799a ("tracing: Handle synthetic event array field type checking correctly")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
 
-Per-cpu workqueues behave like that too. When the CPU goes down, per-cpu
-workers on that CPU are unbound and may run anywhere. They get rebound when
-CPU comes back up.
+Changes since v1, Dan's scripts detected a double free.
+   Just needed to move, the freeing after the error branch
+   to freeing.
 
-> BTW: kthread_create_worker_on_cpu() is currently used only by
->      start_power_clamp_worker(). And it has its own CPU hotplug
->      handling. The kthreads are stopped and started again
->      in powerclamp_cpu_predown() and  powerclamp_cpu_online().
+ kernel/trace/trace_events_synth.c | 36 +++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
 
-And users which have hard dependency on CPU binding are expected to
-implement hotplug events so that e.g. per-cpu work items are flushed when
-CPU goes down and scheduled back when it comes back online.
-
-There are pros and cons to the current workqueue behavior but it'd be a good
-idea to keep kthread_worker's behavior in sync.
-
-> I havn't checked all details yet. But in principle, the patch looks
-> sane to me.
-
-Yeah, agreed.
-
-Thanks.
-
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 3212e2c653b3..84b7cab55291 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -585,6 +585,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 	struct synth_field *field;
+ 	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
+ 	int len, ret = 0;
++	struct seq_buf s;
+ 	ssize_t size;
+ 
+ 	if (field_type[0] == ';')
+@@ -630,13 +631,9 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 		field_type++;
+ 	len = strlen(field_type) + 1;
+ 
+-        if (array) {
+-                int l = strlen(array);
++	if (array)
++		len += strlen(array);
+ 
+-                if (l && array[l - 1] == ';')
+-                        l--;
+-                len += l;
+-        }
+ 	if (prefix)
+ 		len += strlen(prefix);
+ 
+@@ -645,14 +642,18 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 		ret = -ENOMEM;
+ 		goto free;
+ 	}
++	seq_buf_init(&s, field->type, len);
+ 	if (prefix)
+-		strcat(field->type, prefix);
+-	strcat(field->type, field_type);
++		seq_buf_puts(&s, prefix);
++	seq_buf_puts(&s, field_type);
+ 	if (array) {
+-		strcat(field->type, array);
+-		if (field->type[len - 1] == ';')
+-			field->type[len - 1] = '\0';
++		seq_buf_puts(&s, array);
++		if (s.buffer[s.len - 1] == ';')
++			s.len--;
+ 	}
++	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
++		goto free;
++	s.buffer[s.len] = '\0';
+ 
+ 	size = synth_field_size(field->type);
+ 	if (size < 0) {
+@@ -663,14 +664,21 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 		if (synth_field_is_string(field->type)) {
+ 			char *type;
+ 
+-			type = kzalloc(sizeof("__data_loc ") + strlen(field->type) + 1, GFP_KERNEL);
++			len = sizeof("__data_loc ") + strlen(field->type) + 1;
++			type = kzalloc(len, GFP_KERNEL);
+ 			if (!type) {
+ 				ret = -ENOMEM;
+ 				goto free;
+ 			}
+ 
+-			strcat(type, "__data_loc ");
+-			strcat(type, field->type);
++			seq_buf_init(&s, type, len);
++			seq_buf_puts(&s, "__data_loc ");
++			seq_buf_puts(&s, field->type);
++
++			if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
++				goto free;
++			s.buffer[s.len] = '\0';
++
+ 			kfree(field->type);
+ 			field->type = type;
+ 
 -- 
-tejun
+2.25.4
+
