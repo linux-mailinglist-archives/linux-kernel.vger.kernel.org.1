@@ -2,93 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33CD298C6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250B7298C67
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774161AbgJZLzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:55:15 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:28744 "EHLO z5.mailgun.us"
+        id S1774138AbgJZLzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772568AbgJZLzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:55:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603713313; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=gWbIE7C0uttXUDIpuGQCOy8JhDjczIXQfYWdOHE0ZWM=; b=bdAZ8stfStRAch1eoe5iSfUjE6Pr4Phl3xDie5jUPLseOsm9OMrxFLjOE8i3KKavGja/hO5f
- AvbJHdJpx1rxcbxa2v8YlgY2eaEXFUzr4ll0lEj5XDC4uevEZxZeiutewsYcW36r7hzBQ8n+
- LVm2uqE4gA/YFXQANgzKSyRvyRI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f96b90befbfd79b377138d2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 11:54:51
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44C64C4344D; Mon, 26 Oct 2020 11:54:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S2441155AbgJZLy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:54:58 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D905C43395;
-        Mon, 26 Oct 2020 11:54:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D905C43395
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     iommu@lists.linux-foundation.org,
+        by mail.kernel.org (Postfix) with ESMTPSA id 5891822265;
+        Mon, 26 Oct 2020 11:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603713297;
+        bh=JL5L+tjAdTtgTIzF1IyLb8dhJjCHzTjL2OJ0c6FU4w4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=beAfxtxVzIWG7/PQSB9oT8HrWkddsR0PDdaGNijlEC3AuMvcZUXxJY9R8puB77jj0
+         rPlZw+P1uGuAIqPmVzWmAkw1wLYd5tKrK+EpdZCOH48DMhCjDSmOkzAPgP4u1ZC3/i
+         Sc+DoqTEeolhEbCvCJLclcbZXLgz0JV5qw710moE=
+Date:   Mon, 26 Oct 2020 13:54:43 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv6 6/6] iommu: arm-smmu-impl: Add a space before open parenthesis
-Date:   Mon, 26 Oct 2020 17:24:05 +0530
-Message-Id: <2f53c9fb61613c7531d142c30e12789c60276201.1603448364.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1603448364.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1603448364.git.saiprakash.ranjan@codeaurora.org>
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 1/4] mm: introduce debug_pagealloc_map_pages() helper
+Message-ID: <20201026115443.GF1154158@kernel.org>
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <20201025101555.3057-2-rppt@kernel.org>
+ <8720c067-7dc5-2b02-918b-e54dd642bfd6@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8720c067-7dc5-2b02-918b-e54dd642bfd6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the checkpatch warning for space required before the open
-parenthesis.
-
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-index ffaf3f91ba52..f16da4a21270 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-@@ -12,7 +12,7 @@
+On Mon, Oct 26, 2020 at 12:05:13PM +0100, David Hildenbrand wrote:
+> On 25.10.20 11:15, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > When CONFIG_DEBUG_PAGEALLOC is enabled, it unmaps pages from the
+> > kernel direct mapping after free_pages(). The pages than need to be
+> > mapped back before they could be used. Theese mapping operations use 
+> > __kernel_map_pages() guarded with with debug_pagealloc_enabled().
+> > 
+> > The only place that calls __kernel_map_pages() without checking
+> > whether DEBUG_PAGEALLOC is enabled is the hibernation code that
+> > presumes availability of this function when ARCH_HAS_SET_DIRECT_MAP
+> > is set. Still, on arm64, __kernel_map_pages() will bail out when
+> > DEBUG_PAGEALLOC is not enabled but set_direct_map_invalid_noflush()
+> > may render some pages not present in the direct map and hibernation
+> > code won't be able to save such pages.
+> > 
+> > To make page allocation debugging and hibernation interaction more
+> > robust, the dependency on DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP
+> > has to be made more explicit.
+> > 
+> > Start with combining the guard condition and the call to 
+> > __kernel_map_pages() into a single debug_pagealloc_map_pages()
+> > function to emphasize that __kernel_map_pages() should not be called
+> > without DEBUG_PAGEALLOC and use this new function to map/unmap pages
+> > when page allocation debug is enabled.
+> > 
+> > As the only remaining user of kernel_map_pages() is the hibernation
+> > code, mode that function into kernel/power/snapshot.c closer to a
+> > caller.
+> 
+> s/mode/move/
+> 
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com> --- 
+> > include/linux/mm.h      | 16 +++++++--------- kernel/power/snapshot.c
+> > | 11 +++++++++++ mm/memory_hotplug.c     |  3 +-- mm/page_alloc.c
+> > |  6 ++---- mm/slab.c               |  8 +++----- 5 files changed, 24
+> > insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h index
+> > ef360fe70aaf..14e397f3752c 100644 --- a/include/linux/mm.h +++
+> > b/include/linux/mm.h @@ -2927,21 +2927,19 @@ static inline bool
+> > debug_pagealloc_enabled_static(void) #if
+> > defined(CONFIG_DEBUG_PAGEALLOC) ||
+> > defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP) extern void
+> > __kernel_map_pages(struct page *page, int numpages, int enable);
+> > 
+> > -/* - * When called in DEBUG_PAGEALLOC context, the call should most
+> > likely be - * guarded by debug_pagealloc_enabled() or
+> > debug_pagealloc_enabled_static() - */ -static inline void 
+> > -kernel_map_pages(struct page *page, int numpages, int enable) 
+> > +static inline void debug_pagealloc_map_pages(struct page *page, +
+> > int numpages, int enable) { -	__kernel_map_pages(page, numpages,
+> > enable); +	if (debug_pagealloc_enabled_static()) +
+> > __kernel_map_pages(page, numpages, enable); } + #ifdef
+> > CONFIG_HIBERNATION extern bool kernel_page_present(struct page
+> > *page); #endif	/* CONFIG_HIBERNATION */ #else	/*
+> > CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */ -static
+> > inline void -kernel_map_pages(struct page *page, int numpages, int
+> > enable) {} +static inline void debug_pagealloc_map_pages(struct page
+> > *page, +					     int numpages, int enable) {} #ifdef
+> > CONFIG_HIBERNATION static inline bool kernel_page_present(struct page
+> > *page) { return true; } #endif	/* CONFIG_HIBERNATION */ diff --git
+> > a/kernel/power/snapshot.c b/kernel/power/snapshot.c index
+> > 46b1804c1ddf..fa499466f645 100644 --- a/kernel/power/snapshot.c +++
+> > b/kernel/power/snapshot.c @@ -76,6 +76,17 @@ static inline void
+> > hibernate_restore_protect_page(void *page_address) {} static inline
+> > void hibernate_restore_unprotect_page(void *page_address) {} #endif
+> > /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
+> > 
+> > +#if defined(CONFIG_DEBUG_PAGEALLOC) ||
+> > defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP) +static inline void 
+> > +kernel_map_pages(struct page *page, int numpages, int enable) +{ +
+> > __kernel_map_pages(page, numpages, enable); +} +#else +static inline
+> > void +kernel_map_pages(struct page *page, int numpages, int enable)
+> > {} +#endif +
+> 
+> That change should go into a separate patch.
  
- static int arm_smmu_gr0_ns(int offset)
- {
--	switch(offset) {
-+	switch (offset) {
- 	case ARM_SMMU_GR0_sCR0:
- 	case ARM_SMMU_GR0_sACR:
- 	case ARM_SMMU_GR0_sGFSR:
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Hmm, I beleive you refer to moving kernel_map_pages() to snapshot.c,
+right?
 
+> For the debug_pagealloc_map_pages() parts
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+ 
+Thanks!
+
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+
+-- 
+Sincerely yours,
+Mike.
