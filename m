@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380362992B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 522B82992BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780389AbgJZQod convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 12:44:33 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56823 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1780417AbgJZQoW (ORCPT
+        id S1786354AbgJZQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:46:29 -0400
+Received: from casper.infradead.org ([90.155.50.34]:45024 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408380AbgJZQot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:44:22 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-207-h8hdN9cJOPCoHNdXogrewg-1; Mon, 26 Oct 2020 16:44:19 +0000
-X-MC-Unique: h8hdN9cJOPCoHNdXogrewg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 26 Oct 2020 16:44:18 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 26 Oct 2020 16:44:18 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-CC:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] asm-generic: fix ffs -Wshadow warning
-Thread-Topic: [PATCH] asm-generic: fix ffs -Wshadow warning
-Thread-Index: AQHWq7EebIuZ4VoVUEKeYhqtQ7gn0qmqFTpQ
-Date:   Mon, 26 Oct 2020 16:44:18 +0000
-Message-ID: <086e45b325074fc89f51354901aa5af6@AcuMS.aculab.com>
-References: <20201026160006.3704027-1-arnd@kernel.org>
-In-Reply-To: <20201026160006.3704027-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 26 Oct 2020 12:44:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ulnqTjMrBKaF480Abr2+mk3fNXPi753tTvCmHg1d4pg=; b=f1NI3CAsOSysuZzKkwfJhVuIWR
+        3mXIQtiVD7DD/2SdiUrYbTpuJuX6lgF28b/95rFLxUerMdwSVmj/ZV+tnAz6dfDbVkSdMl8QQJJ3n
+        rpRsqBFIv8JAhq+bzsja5A3WUI151bKwWdqER6/6DpsxpQ5cju9L+9HnwftwJrMUJsnBY7ZyiSaZE
+        8qIFt38vcTDLCQX9rCsElOM2Ls24D0mI6Qa8Th4tgk+hFQHG+OuASqdjaqYMzYmn28LiHoaDg4WOl
+        jNsaZjcAxkuv+tE9b6PitSKZTpk4b1W73VyFNGg8Te+nIR/QvFEqofI+P0lH20xmNgUMLOXbB4jLN
+        dNv1gxow==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX5bu-0003Lt-GL; Mon, 26 Oct 2020 16:44:42 +0000
+Date:   Mon, 26 Oct 2020 16:44:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     dsterba@suse.cz, linux-fsdevel@vger.kernel.org, ericvh@gmail.com,
+        lucho@ionkov.net, viro@zeniv.linux.org.uk, jlayton@kernel.org,
+        idryomov@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
+        joseph.qi@linux.alibaba.com, v9fs-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, linux-btrfs@vger.kernel.org,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 6/7] btrfs: Promote to unsigned long long before shifting
+Message-ID: <20201026164442.GU20115@casper.infradead.org>
+References: <20201004180428.14494-1-willy@infradead.org>
+ <20201004180428.14494-7-willy@infradead.org>
+ <20201026163546.GP6756@twin.jikos.cz>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026163546.GP6756@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 26 October 2020 16:00
+On Mon, Oct 26, 2020 at 05:35:46PM +0100, David Sterba wrote:
+> On Sun, Oct 04, 2020 at 07:04:27PM +0100, Matthew Wilcox (Oracle) wrote:
+> > On 32-bit systems, this shift will overflow for files larger than 4GB.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > ---
+> >  fs/btrfs/raid56.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> > index 255490f42b5d..5ee0a53301bd 100644
+> > --- a/fs/btrfs/raid56.c
+> > +++ b/fs/btrfs/raid56.c
+> > @@ -1089,7 +1089,7 @@ static int rbio_add_io_page(struct btrfs_raid_bio *rbio,
+> >  	u64 disk_start;
+> >  
+> >  	stripe = &rbio->bbio->stripes[stripe_nr];
+> > -	disk_start = stripe->physical + (page_index << PAGE_SHIFT);
+> > +	disk_start = stripe->physical + ((loff_t)page_index << PAGE_SHIFT);
 > 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc -Wshadow warns about the ffs() definition that has the
-> same name as the global ffs() built-in:
-> 
-> include/asm-generic/bitops/builtin-ffs.h:13:28: warning: declaration of 'ffs' shadows a built-in
-> function [-Wshadow]
-> 
-> This is annoying because 'make W=2' warns every time this
-> header gets included.
-> 
-> Change it to use a #define instead, making callers directly
-> reference the builtin.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/asm-generic/bitops/builtin-ffs.h | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/include/asm-generic/bitops/builtin-ffs.h b/include/asm-generic/bitops/builtin-ffs.h
-> index 458c85ebcd15..1dacfdb4247e 100644
-> --- a/include/asm-generic/bitops/builtin-ffs.h
-> +++ b/include/asm-generic/bitops/builtin-ffs.h
-> @@ -10,9 +10,6 @@
->   * the libc and compiler builtin ffs routines, therefore
->   * differs in spirit from the above ffz (man ffs).
->   */
-> -static __always_inline int ffs(int x)
-> -{
-> -	return __builtin_ffs(x);
-> -}
-> +#define ffs(x) __builtin_ffs(x)
-> 
->  #endif
-> --
-> 2.27.0
+> It seems that this patch is mechanical replacement. If you check the
+> callers, the page_index is passed from an int that iterates over bits
+> set in an unsigned long (bitmap). The result won't overflow.
 
-An alternative would be to add #define ffs(x) our_inline_ffs(x)
-before the inline function definition.
-
-I though the idea of the __builtin_ prefix was that you could
-have a function with the same name :-(
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Not mechanical, but I clearly made mistakes.  Will you pick up the
+patches which actually fix bugs?
