@@ -2,341 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C68298CD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578AF298CDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775086AbgJZM0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:26:30 -0400
-Received: from newton.telenet-ops.be ([195.130.132.45]:38006 "EHLO
-        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775080AbgJZM03 (ORCPT
+        id S1775105AbgJZM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:27:12 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:35736 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1775098AbgJZM1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:26:29 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4CKYwc4KBlzMqwWK
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:26:24 +0100 (CET)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id kcSQ2300G4C55Sk06cSQG8; Mon, 26 Oct 2020 13:26:24 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kX1Zv-000IKK-VM; Mon, 26 Oct 2020 13:26:23 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kX1Zv-00CyYL-5i; Mon, 26 Oct 2020 13:26:23 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Enable KUnit tests
-Date:   Mon, 26 Oct 2020 13:26:22 +0100
-Message-Id: <20201026122622.3092658-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 26 Oct 2020 08:27:08 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08011946|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0174674-0.00699969-0.975533;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=liush@allwinnertech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.Iode2WR_1603715216;
+Received: from localhost.localdomain(mailfrom:liush@allwinnertech.com fp:SMTPD_---.Iode2WR_1603715216)
+          by smtp.aliyun-inc.com(10.147.40.7);
+          Mon, 26 Oct 2020 20:27:01 +0800
+From:   liush <liush@allwinnertech.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, penberg@kernel.org,
+        akpm@linux-foundation.org, peterx@redhat.com, vbabka@suse.cz,
+        walken@google.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Liu Shaohua <liush@allwinnertech.com>
+Subject: [PATCH v3] riscv: fix pfn_to_virt err in do_page_fault().
+Date:   Mon, 26 Oct 2020 20:26:54 +0800
+Message-Id: <1603715214-29082-1-git-send-email-liush@allwinnertech.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable KUnit and all KUnit tests for modular builds, so they are
-available when needed, just like non-KUnit tests.
+From: Liu Shaohua <liush@allwinnertech.com>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
+
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+Signed-off-by: liush <liush@allwinnertech.com>
 ---
-To be queued for v5.11.
+ arch/riscv/mm/fault.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
- arch/m68k/configs/amiga_defconfig    | 5 +++++
- arch/m68k/configs/apollo_defconfig   | 5 +++++
- arch/m68k/configs/atari_defconfig    | 5 +++++
- arch/m68k/configs/bvme6000_defconfig | 5 +++++
- arch/m68k/configs/hp300_defconfig    | 5 +++++
- arch/m68k/configs/mac_defconfig      | 5 +++++
- arch/m68k/configs/multi_defconfig    | 5 +++++
- arch/m68k/configs/mvme147_defconfig  | 5 +++++
- arch/m68k/configs/mvme16x_defconfig  | 5 +++++
- arch/m68k/configs/q40_defconfig      | 5 +++++
- arch/m68k/configs/sun3_defconfig     | 5 +++++
- arch/m68k/configs/sun3x_defconfig    | 5 +++++
- 12 files changed, 60 insertions(+)
-
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 8fc77002f074c30b..19b40b6bc4b7f4d9 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -626,6 +626,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -652,6 +654,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index f84cd9b20b9dcea3..07516abe04898d3d 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -582,6 +582,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -608,6 +610,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index fd89ad1e50a001cb..5e9ebd8590527801 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -611,6 +611,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -637,6 +639,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index b5b6f25dbff36a02..fc9a94aa7d6b1b70 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -575,6 +575,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -601,6 +603,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 016f6708b8511f23..260f1206c81030fa 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -584,6 +584,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -610,6 +612,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 2e03fd20b79c459c..f6d50b3fe8c207d4 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -607,6 +607,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -633,6 +635,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 50c087e9e3fe6937..fbe000ca0003f9ea 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -693,6 +693,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -719,6 +721,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 884b413dbbeab4d1..25ca836a5701fe0a 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -574,6 +574,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -600,6 +602,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 45cccbb5f068eb92..5794e43a2acb0543 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -575,6 +575,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -601,6 +603,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 4b66b5b185bc1b52..dbfb18938e11e219 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -593,6 +593,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -619,6 +621,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 243f5d5dfa44175b..e6afbeee7c4abc38 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -576,6 +576,8 @@ CONFIG_STRING_SELFTEST=m
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -602,6 +604,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 2553db10a7e9b08b..5340507a9fff26b1 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -576,6 +576,8 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-+CONFIG_KUNIT=m
-+CONFIG_KUNIT_ALL_TESTS=m
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
-@@ -602,6 +604,9 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
-+CONFIG_BITFIELD_KUNIT=m
-+CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
+diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+index 1359e21..3c8b9e4 100644
+--- a/arch/riscv/mm/fault.c
++++ b/arch/riscv/mm/fault.c
+@@ -86,6 +86,7 @@ static inline void vmalloc_fault(struct pt_regs *regs, int code, unsigned long a
+ 	pmd_t *pmd, *pmd_k;
+ 	pte_t *pte_k;
+ 	int index;
++	unsigned long pfn;
+ 
+ 	/* User mode accesses just cause a SIGSEGV */
+ 	if (user_mode(regs))
+@@ -100,7 +101,8 @@ static inline void vmalloc_fault(struct pt_regs *regs, int code, unsigned long a
+ 	 * of a task switch.
+ 	 */
+ 	index = pgd_index(addr);
+-	pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
++	pfn = csr_read(CSR_SATP) & SATP_PPN;
++	pgd = (pgd_t *)pfn_to_virt(pfn) + index;
+ 	pgd_k = init_mm.pgd + index;
+ 
+ 	if (!pgd_present(*pgd_k)) {
 -- 
-2.25.1
+2.7.4
 
