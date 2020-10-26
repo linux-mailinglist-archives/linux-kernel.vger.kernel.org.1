@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28822995DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885B92995D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790946AbgJZSxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:53:47 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50590 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1790531AbgJZSw5 (ORCPT
+        id S1790921AbgJZSx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:53:29 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:41150 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1790542AbgJZSxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:52:57 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 13so12723231wmf.0;
-        Mon, 26 Oct 2020 11:52:56 -0700 (PDT)
+        Mon, 26 Oct 2020 14:53:00 -0400
+Received: by mail-wr1-f68.google.com with SMTP id s9so13866395wro.8;
+        Mon, 26 Oct 2020 11:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8Id6RP1VS5hXJUMhUzwY34yVBORZ0nCdjPMNOwgBnW8=;
-        b=WlXgi3ymiC/Ubo/PzKwduzc4BIThfTVXjlRLU4CHZSknn92zErmgO84jYxWUTyYyCL
-         YpSvJ1XB2cYCyWzRrpdXYjdiMMprVs9FCJEXzR+p43kkMa8G16C2Pvu+OXyxdMwoqRLL
-         EX4+mlJqVx92boQCiTBE+aSCk3k0k/eoyEh7kRn00cVnvdgGhZC/cb8uUYdLcmDjJ3wA
-         54kjh2qL863imX1xYwi/ZFXB4+kLiufojw1o8LdLKOD0/+MKmIfHyqJ7ZcdV0rbKtVNh
-         f9dRRMwYxBJXg8yaIXWjJwIJpnbAUQlCnpm5qXwRaV4trcvTcDHUHXE5oBUy8Jf3XXp/
-         qZ0Q==
+        bh=9Q1L59OjiDLpqGnNODju6fMwtd7Ss5Fh+8syeSPkSMs=;
+        b=iw8Tt0Is9e1poafENrpZRdDGZVwI7kf1UF12fsc7eBsHdZG7m/c+OWT9rpHv00odup
+         dtimc86iK7hxhdNQiK1T2fHMKOB41WAQarBsqN7LAHDC/vE/NMqBNRwLgU/ojm1MWIRe
+         TrpqOy0sgIPCyhQ6iJp9FdUq6gpdFdyFj+a1Pi2qU8WzCPgj089ano7c43mgJwr1SCLZ
+         VBQqHv/KZRwg1VYINGpImGAbKEdYS5t36i3vLyjSEII8IZlxSTYIxcYx9JVCLyden0Mg
+         Jo/OYJxHDb7A9p2M/q2S3MGkYq+DfxE97bporPOXdUEgZX3RuNpmRqe3g8iH/MVFb/L1
+         yJ9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8Id6RP1VS5hXJUMhUzwY34yVBORZ0nCdjPMNOwgBnW8=;
-        b=bpLvcVzTNyz4PY2bBSl1ysh/YSX93Mw++Dp1tyIAFpQxKEt/yWjCBwd7w/jUaJ82L1
-         9SU/w3+mNle9875D6gTFn+R2S8aOYuZnw6rzBlFi6RTGvQ9BeLucI92pYw07EkH/Ym4A
-         01j5WPDpSBLE4L0VFLfxkfXDhLKpRSUjnsExL32vCMbDn8FqY2UsSZT47tVEv5Vo3K9B
-         lR+K6eDZZSCRoSsw0dwzMH7GLgkUVi3ylFo4v1HoWp+RC9bVNJRHp073lTvUJueMHuJ0
-         G4bjGufXYWd5qvVP876mTJiXllXny4/opezRHvG1YDUN+M0vWu/s2AWoC2J/rycxHlMa
-         Lpbw==
-X-Gm-Message-State: AOAM532uigwuPLz1uUMguhys6gs1yZkWRDsXhweB3PvcporUAgUqcuUg
-        +FDm3klgCdydXOGbIwOFdeM=
-X-Google-Smtp-Source: ABdhPJyN4CjTNG4J5Ml9NRNFEcWr332Wcn8VdYW4a5pi8ZXoEXVceEdrWEj8A0jVkbJ6B+hg437e6Q==
-X-Received: by 2002:a1c:48c3:: with SMTP id v186mr18754491wma.16.1603738375499;
-        Mon, 26 Oct 2020 11:52:55 -0700 (PDT)
+        bh=9Q1L59OjiDLpqGnNODju6fMwtd7Ss5Fh+8syeSPkSMs=;
+        b=O5Oeq9u+2o95v1phVkFxFhY7iX+jag7ykdg8yej119n3A2VQqQbHmVlgYt4zoinFS/
+         DQc62WjVGNf4ZW5WwKGVZ3kXrsazqqnS2M5cAtK2/slSpCbgjylli9TYoIAusDs1DJph
+         hmO9kBIu2PrVci6MIOpjZncNdwhTcujMtMhbOPxUKAr7kfTl95zn3+hlSstpgb2fPhP5
+         D1i+kCfRLB7B/gKP0CvWomazQHiaNCy+uJGIDA6YcRU3Ls7PEQUGshJgRkJU8EvenXFS
+         Fujf8+Ga8z9WS143AZR4i8PA2LZLVCDfD4RdO/bsQ09W7vOkDvZnDOYgD/BxQLIahKz/
+         NEGA==
+X-Gm-Message-State: AOAM531JYTHlzfsZXh1tFJdXqFsAP4E+rZe22rxToQV1eQdL0XXp8ch0
+        5Kj+qyt4YabAiTpbH9g2/ow=
+X-Google-Smtp-Source: ABdhPJyiT4V5gb6oDpX/aFZI1JeMO7JWfrwtaDrhwLJO/4XfXKX9LirC57kBfE+n68pmsi9+UXUx2A==
+X-Received: by 2002:a5d:4409:: with SMTP id z9mr19000599wrq.236.1603738376721;
+        Mon, 26 Oct 2020 11:52:56 -0700 (PDT)
 Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
-        by smtp.gmail.com with ESMTPSA id f7sm24885193wrx.64.2020.10.26.11.52.54
+        by smtp.gmail.com with ESMTPSA id f7sm24885193wrx.64.2020.10.26.11.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 11:52:54 -0700 (PDT)
+        Mon, 26 Oct 2020 11:52:55 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -57,9 +57,9 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v8 11/14] arm64: dts: allwinner: a64: Add I2S2 node
-Date:   Mon, 26 Oct 2020 19:52:36 +0100
-Message-Id: <20201026185239.379417-12-peron.clem@gmail.com>
+Subject: [PATCH v8 12/14] arm64: defconfig: Enable Allwinner i2s driver
+Date:   Mon, 26 Oct 2020 19:52:37 +0100
+Message-Id: <20201026185239.379417-13-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026185239.379417-1-peron.clem@gmail.com>
 References: <20201026185239.379417-1-peron.clem@gmail.com>
@@ -70,43 +70,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+Enable Allwinner I2S driver for arm64 defconfig.
 
-Add the I2S2 node connected to the HDMI interface.
-
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index dc238814013c..51cc30e84e26 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -846,6 +846,20 @@ i2s1: i2s@1c22400 {
- 			status = "disabled";
- 		};
- 
-+		i2s2: i2s@1c22800 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-a64-i2s",
-+				     "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "rx", "tx";
-+			dmas = <&dma 27>, <&dma 27>;
-+			status = "disabled";
-+		};
-+
- 		dai: dai@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-a64-codec-i2s";
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 17a2df6a263e..3f89f427a355 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -706,6 +706,7 @@ CONFIG_SND_SOC_ROCKCHIP_RT5645=m
+ CONFIG_SND_SOC_RK3399_GRU_SOUND=m
+ CONFIG_SND_SOC_SAMSUNG=y
+ CONFIG_SND_SOC_RCAR=m
++CONFIG_SND_SUN4I_I2S=m
+ CONFIG_SND_SUN4I_SPDIF=m
+ CONFIG_SND_SOC_TEGRA=m
+ CONFIG_SND_SOC_TEGRA210_AHUB=m
 -- 
 2.25.1
 
