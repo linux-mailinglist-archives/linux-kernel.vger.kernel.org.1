@@ -2,84 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C875299965
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FD129996E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392394AbgJZWOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:14:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392365AbgJZWOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:14:12 -0400
-Received: from localhost.localdomain (unknown [192.30.34.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51E3720878;
-        Mon, 26 Oct 2020 22:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603750451;
-        bh=5HgpGay1769N+hQB4R88C35uikGXhoSToFZ6LUeyRC0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=T5MJEepbCL3JfYHXBO8rcIE1dYVpKP2U5MbdM6RzPu9B6PvmY5MVCSVKxKZ0Sol+P
-         vl3Qjbua7V8JUNdtkFIZY2WD2qH7PoA/n2Vpz9tAZedEkziCpIjp/+VH+rNc7Ge/Pl
-         Gx95gbbn3ePFg3Sx2Kdk7fflMPPAZruZpCIS92fQ=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: atags_compat: avoid -Warray-bounds warning
-Date:   Mon, 26 Oct 2020 23:13:16 +0100
-Message-Id: <20201026221406.3897734-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S2392655AbgJZWP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:15:27 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:33289 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392613AbgJZWP0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 18:15:26 -0400
+Received: by mail-wm1-f65.google.com with SMTP id l20so6118805wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wSFQl5tEZJlMW2FF6sx0fmEDfKkZOvTzLyUG7GjevAQ=;
+        b=kkBWmOfRGiGfynKFUUsY6Bg1cuklrhT3VBOwm/J9YiPw9z4cVdpY9sATV1o7Idrq4y
+         00hLvWtKsiLWja7bX9HLg4TGqnRGU4YCOAVHW3FIdKeAgKvYbKa00UPb9+F6C9BiFdwx
+         tqpkyBwyQ5Oqzusk6GTT3vSRGHf/YxvJsuWk8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wSFQl5tEZJlMW2FF6sx0fmEDfKkZOvTzLyUG7GjevAQ=;
+        b=K5n2KUVGPGtfY1Banf4cTYLEyXvQ+b/KhQxKUtyPUwEjaZwPy8bLjRoY/ZpyRCYO1u
+         /SJzOHA0l7iVVDZTNrDGbP/k0hzyprdmEasxTNpqF5mLCDhUI+iDjvNqTUbLaJxptBs6
+         ervnJN63psNclXLRUIa/SGPRDb7Wm9GECBFfNzq/lqlz7DhnumM1eiah1UWiww+UCtTt
+         /iU0q82VUEpu/6xjpmOEOiACV+CZ0F8vUdnR2TCs8BtTGTvjb956t8/GLOAOlyn4Dbfl
+         dPA51o27mE1Z8YPtq3RcAmd6i+r4JSUYAiKrvFOqMLdH9rBdGP9DtEOye19TapwRo6Hj
+         vqww==
+X-Gm-Message-State: AOAM530KasB8Q80W1epwKVwVDuSiXV7KftJy2kBjaMKpOCTg08ZNHYoE
+        P3ae6eBDtMFmBHnzpm+kVNQSnQ==
+X-Google-Smtp-Source: ABdhPJyCNb7QwTcRnF+7btKQht31eA1jnpozPoni78IGAJc6AIIgtmLd2KT94mvBmswfJX1TK6OixA==
+X-Received: by 2002:a1c:3243:: with SMTP id y64mr18039466wmy.175.1603750522164;
+        Mon, 26 Oct 2020 15:15:22 -0700 (PDT)
+Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id f17sm23103391wme.22.2020.10.26.15.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 15:15:21 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 22:15:20 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v4 05/15] mm/frame-vector: Use FOLL_LONGTERM
+Message-ID: <20201026221520.GC2802004@chromium.org>
+References: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
+ <20201026105818.2585306-6-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026105818.2585306-6-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Daniel,
 
-gcc-11 reports a struct member overflow when copying a string
-into a single-character array:
+On Mon, Oct 26, 2020 at 11:58:08AM +0100, Daniel Vetter wrote:
+> This is used by media/videbuf2 for persistent dma mappings, not just
+> for a single dma operation and then freed again, so needs
+> FOLL_LONGTERM.
+> 
+> Unfortunately current pup_locked doesn't support FOLL_LONGTERM due to
+> locking issues. Rework the code to pull the pup path out from the
+> mmap_sem critical section as suggested by Jason.
+> 
+> By relying entirely on the vma checks in pin_user_pages and follow_pfn
+> (for vm_flags and vma_is_fsdax) we can also streamline the code a lot.
+> 
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Pawel Osciak <pawel@osciak.com>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> --
+> v2: Streamline the code and further simplify the loop checks (Jason)
+> ---
+>  mm/frame_vector.c | 50 ++++++++++++++---------------------------------
+>  1 file changed, 15 insertions(+), 35 deletions(-)
+> 
 
-In file included from arch/arm/kernel/atags_compat.c:17:
-In function 'strcpy',
-    inlined from 'build_tag_list' at arch/arm/kernel/atags_compat.c:200:2:
-include/linux/string.h:287:29: warning: '__builtin_strcpy' offset 108 from the object at 'taglist' is out of the bounds of referenced subobject 'cmdline' with type 'char[1]' at offset 108 [-Warray-bounds]
-  287 | #define __underlying_strcpy __builtin_strcpy
-      |                             ^
-include/linux/string.h:481:10: note: in expansion of macro '__underlying_strcpy'
-  481 |   return __underlying_strcpy(p, q);
-      |          ^~~~~~~~~~~~~~~~~~~
-In file included from arch/arm/include/asm/setup.h:14,
-                 from arch/arm/kernel/atags_compat.c:20:
-arch/arm/kernel/atags_compat.c: In function 'build_tag_list':
-arch/arm/include/uapi/asm/setup.h:127:7: note: subobject 'cmdline' declared here
-  127 |  char cmdline[1]; /* this is the minimum size */
-      |       ^~~~~~~
+Thank you for the patch. Please see my comments inline.
 
-The code is otherwise correct, so just shut up the warning by
-not letting the compiler see the underlying type.
+> diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+> index 10f82d5643b6..d44779e56313 100644
+> --- a/mm/frame_vector.c
+> +++ b/mm/frame_vector.c
+> @@ -38,7 +38,6 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>  	struct vm_area_struct *vma;
+>  	int ret = 0;
+>  	int err;
+> -	int locked;
+>  
+>  	if (nr_frames == 0)
+>  		return 0;
+> @@ -48,40 +47,25 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>  
+>  	start = untagged_addr(start);
+>  
+> -	mmap_read_lock(mm);
+> -	locked = 1;
+> -	vma = find_vma_intersection(mm, start, start + 1);
+> -	if (!vma) {
+> -		ret = -EFAULT;
+> -		goto out;
+> -	}
+> -
+> -	/*
+> -	 * While get_vaddr_frames() could be used for transient (kernel
+> -	 * controlled lifetime) pinning of memory pages all current
+> -	 * users establish long term (userspace controlled lifetime)
+> -	 * page pinning. Treat get_vaddr_frames() like
+> -	 * get_user_pages_longterm() and disallow it for filesystem-dax
+> -	 * mappings.
+> -	 */
+> -	if (vma_is_fsdax(vma)) {
+> -		ret = -EOPNOTSUPP;
+> -		goto out;
+> -	}
+> -
+> -	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> +	ret = pin_user_pages_fast(start, nr_frames,
+> +				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+> +				  (struct page **)(vec->ptrs));
+> +	if (ret > 0) {
+>  		vec->got_ref = true;
+>  		vec->is_pfns = false;
+> -		ret = pin_user_pages_locked(start, nr_frames,
+> -			gup_flags, (struct page **)(vec->ptrs), &locked);
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/kernel/atags_compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Should we drop the gup_flags argument, since it's ignored now?
 
-diff --git a/arch/arm/kernel/atags_compat.c b/arch/arm/kernel/atags_compat.c
-index 10da11c212cc..3f1f631763ba 100644
---- a/arch/arm/kernel/atags_compat.c
-+++ b/arch/arm/kernel/atags_compat.c
-@@ -197,7 +197,7 @@ static void __init build_tag_list(struct param_struct *params, void *taglist)
- 	tag->hdr.tag = ATAG_CMDLINE;
- 	tag->hdr.size = (strlen(params->commandline) + 3 +
- 			 sizeof(struct tag_header)) >> 2;
--	strcpy(tag->u.cmdline.cmdline, params->commandline);
-+	strcpy((void*)&tag->u, params->commandline);
- 
- 	tag = tag_next(tag);
- 	tag->hdr.tag = ATAG_NONE;
--- 
-2.27.0
+> -		goto out;
+> +		goto out_unlocked;
+>  	}
+>  
 
+Should we initialize ret with 0 here, since pin_user_pages_fast() can
+return a negative error code, but below we use it as a counter for the
+looked up frames?
+
+Best regards,
+Tomasz
+
+> +	mmap_read_lock(mm);
+>  	vec->got_ref = false;
+>  	vec->is_pfns = true;
+>  	do {
+>  		unsigned long *nums = frame_vector_pfns(vec);
+>  
+> +		vma = find_vma_intersection(mm, start, start + 1);
+> +		if (!vma)
+> +			break;
+> +
+>  		while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
+>  			err = follow_pfn(vma, start, &nums[ret]);
+>  			if (err) {
+> @@ -92,17 +76,13 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>  			start += PAGE_SIZE;
+>  			ret++;
+>  		}
+> -		/*
+> -		 * We stop if we have enough pages or if VMA doesn't completely
+> -		 * cover the tail page.
+> -		 */
+> -		if (ret >= nr_frames || start < vma->vm_end)
+> +		/* Bail out if VMA doesn't completely cover the tail page. */
+> +		if (start < vma->vm_end)
+>  			break;
+> -		vma = find_vma_intersection(mm, start, start + 1);
+> -	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
+> +	} while (ret < nr_frames);
+>  out:
+> -	if (locked)
+> -		mmap_read_unlock(mm);
+> +	mmap_read_unlock(mm);
+> +out_unlocked:
+>  	if (!ret)
+>  		ret = -EFAULT;
+>  	if (ret > 0)
+> -- 
+> 2.28.0
+> 
