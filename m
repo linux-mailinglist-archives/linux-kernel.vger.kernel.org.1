@@ -2,68 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0F729A991
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95B929A999
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898066AbgJ0K0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:26:09 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41972 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898046AbgJ0K0F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:26:05 -0400
-Received: by mail-wr1-f68.google.com with SMTP id s9so1235296wro.8;
-        Tue, 27 Oct 2020 03:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qLG8HT/Mlv9M4LmYodAr5CWZX0Y3ZAsGE5UGgEezEGg=;
-        b=Iydivj8UDtVRIkriCxVC6L3hv7zmWqlgdUMcMIHoIjsadiHhjQs4D5YU4VfJyAdG4u
-         t9q1CZ0+aOBCNjPXu+IZ/oztHDei5PK2gVBrAl5xMXEeozUVcUTAOUt4721mJPWRbmop
-         UzvRRcJ+U4GaW6DlWZnljumnRTHroh5itrDOtvB9bIXP6VsXsqTI1BTYHYeV0IvUMQ3d
-         5lFnES1ZvRfLONqO1GArQo3nBJkXtCbeciU+tsuuQNuZObEh4Qk7bCWyUV1yNsORG9XD
-         61NLfQ4fdZOiee+7bXniRdDnHMGzPgrf7ydsrmbCXXrr+eT8Rzss2irjleqOzzACxTb8
-         9FQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qLG8HT/Mlv9M4LmYodAr5CWZX0Y3ZAsGE5UGgEezEGg=;
-        b=i1bKiYdWk4LsnJalBlSlN1EbvmG9WNm89jHB+YwCWdHPeFsXN+U4kJ6rloNBImR9L8
-         z85OdZNozTqLOeDXMfjXT1yJPvkeDDToZ1srpUM+KjC0beJVb6ZGcls3ovndGGeV+LaG
-         dFgvb2AhcBtV3FF4+Xqb7keGM0DH4/hVTlSii/FZdCLdIXA4HiSAHUnfA5lztAuNRUr1
-         1coSZfEnWKntlusU48OD3wApUqgl+tdb8MTnEi1YC7VguHLVNUdWwXzMoFgAdP9YgOG/
-         +uGad7GSMdItr3l7Z2cHI1L9AFqX46vY+uSyt2PMwzE2Qd/BGZlKr93/QtYyd8ssrOHP
-         knDg==
-X-Gm-Message-State: AOAM53027n/iE7h7ka9CLQr7iRpLFnApLKe51Anwn7Gp6hNDrmSKwr2P
-        TWF7xe2MXV+DDYcXrOphY5k=
-X-Google-Smtp-Source: ABdhPJyJS1diLzgQhtPIEDKUGQZ12t0ydx30T3gdaD6BkMglnZXU83UYALJGS1fnFYYJjEloEAjPPA==
-X-Received: by 2002:a5d:494c:: with SMTP id r12mr1947246wrs.406.1603794357330;
-        Tue, 27 Oct 2020 03:25:57 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.117.206])
-        by smtp.gmail.com with ESMTPSA id n83sm1362890wma.39.2020.10.27.03.25.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 03:25:56 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] soc: mediatek: pm-domains: Add default power off
- flag
-To:     Weiyi Lu <weiyi.lu@mediatek.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com
-References: <1603370857-30646-1-git-send-email-weiyi.lu@mediatek.com>
- <1603370857-30646-3-git-send-email-weiyi.lu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <32fbc5c6-88e4-7cdc-2491-5226d819db37@gmail.com>
-Date:   Tue, 27 Oct 2020 11:25:55 +0100
+        id S2898107AbgJ0K1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:27:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:37612 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2898092AbgJ0K1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:27:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F84530E;
+        Tue, 27 Oct 2020 03:27:12 -0700 (PDT)
+Received: from [10.57.11.195] (unknown [10.57.11.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ED633F66E;
+        Tue, 27 Oct 2020 03:27:08 -0700 (PDT)
+Subject: Re: [PATCH 2/6] kselftest/arm64: Fix check_tags_inclusion test
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Gabor Kertesz <gabor.kertesz@arm.com>
+References: <20201026121248.2340-1-vincenzo.frascino@arm.com>
+ <20201026121248.2340-3-vincenzo.frascino@arm.com>
+From:   Amit Kachhap <amit.kachhap@arm.com>
+Message-ID: <4783a06c-f9a1-73fa-9cf3-73f8e258989d@arm.com>
+Date:   Tue, 27 Oct 2020 15:57:06 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <1603370857-30646-3-git-send-email-weiyi.lu@mediatek.com>
+In-Reply-To: <20201026121248.2340-3-vincenzo.frascino@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,70 +43,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 22/10/2020 14:47, Weiyi Lu wrote:
-> For some power domain, like conn on MT8192, it should be default OFF.
-> Because the power on/off control relies the function of connectivity chip
-> and its firmware. And if project choose other chip vendor solution,
-> those necessary connectivity functions will not provided.
+On 10/26/20 5:42 PM, Vincenzo Frascino wrote:
+> The check_tags_inclusion test reports the error below because the test
+> plan is not declared correctly:
 > 
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+>    # Planned tests != run tests (0 != 4)
+> 
+> Fix the test adding the correct test plan declaration.
+
+This change is required and got missed earlier.
+Acked by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+
+> 
+> Fixes: f3b2a26ca78d ("kselftest/arm64: Verify mte tag inclusion via prctl")
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Gabor Kertesz <gabor.kertesz@arm.com>
+> Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 > ---
->   drivers/soc/mediatek/mtk-pm-domains.c | 23 +++++++++++++++++------
->   1 file changed, 17 insertions(+), 6 deletions(-)
+>   tools/testing/selftests/arm64/mte/check_tags_inclusion.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-> index b7ccf94..50a7ae1 100644
-> --- a/drivers/soc/mediatek/mtk-pm-domains.c
-> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-> @@ -24,6 +24,7 @@
->   #define MTK_SCPD_ACTIVE_WAKEUP		BIT(0)
->   #define MTK_SCPD_FWAIT_SRAM		BIT(1)
->   #define MTK_SCPD_SRAM_ISO		BIT(2)
-> +#define MTK_SCPD_KEEP_DEFAULT_OFF	BIT(3)
->   #define MTK_SCPD_CAPS(_scpd, _x)	((_scpd)->data->caps & (_x))
+> diff --git a/tools/testing/selftests/arm64/mte/check_tags_inclusion.c b/tools/testing/selftests/arm64/mte/check_tags_inclusion.c
+> index 94d245a0ed56..deaef1f61076 100644
+> --- a/tools/testing/selftests/arm64/mte/check_tags_inclusion.c
+> +++ b/tools/testing/selftests/arm64/mte/check_tags_inclusion.c
+> @@ -170,6 +170,9 @@ int main(int argc, char *argv[])
+>   	/* Register SIGSEGV handler */
+>   	mte_register_signal(SIGSEGV, mte_default_handler);
 >   
->   #define SPM_VDE_PWR_CON			0x0210
-> @@ -506,17 +507,26 @@ static int scpsys_add_one_domain(struct scpsys *scpsys, struct device_node *node
->   	 * software.  The unused domains will be switched off during
->   	 * late_init time.
->   	 */
-> -	ret = scpsys_power_on(&pd->genpd);
-> -	if (ret < 0) {
-> -		dev_err_probe(scpsys->dev, ret, "failed to power on domain %pOFN\n", node);
-> -		goto err_unprepare_clocks;
-> +	if (MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF)) {
-> +		if (scpsys_domain_is_on(pd))
-> +			dev_warn(scpsys->dev,
-> +				 "A default off power domain %pOFN has been ON\n", node);
-> +	} else {
-> +		ret = scpsys_power_on(&pd->genpd);
-> +		if (ret < 0) {
-> +			dev_err_probe(scpsys->dev, ret, "failed to power on domain %pOFN\n", node);
-> +			goto err_unprepare_clocks;
-> +		}
->   	}
->   
->   	pd->genpd.name = node->name;
->   	pd->genpd.power_off = scpsys_power_off;
->   	pd->genpd.power_on = scpsys_power_on;
->   
-> -	pm_genpd_init(&pd->genpd, NULL, false);
-> +	if (MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF))
-> +		pm_genpd_init(&pd->genpd, NULL, true);
-> +	else
-> +		pm_genpd_init(&pd->genpd, NULL, false);
->   
->   	scpsys->domains[id] = &pd->genpd;
->   	return 0;
-> @@ -603,7 +613,8 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
->   			"failed to remove domain '%s' : %d - state may be inconsistent\n",
->   			pd->genpd.name, ret);
->   
-> -	scpsys_power_off(&pd->genpd);
-> +	if (!MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF))
-> +		scpsys_power_off(&pd->genpd);
-
-Is that really needed? Turning the domain off when it's already off shouldn't hurt.
-
-Regards,
-Matthias
+> +	/* Set test plan */
+> +	ksft_set_plan(4);
+> +
+>   	evaluate_test(check_single_included_tags(USE_MMAP, MTE_SYNC_ERR),
+>   		      "Check an included tag value with sync mode\n");
+>   	evaluate_test(check_multiple_included_tags(USE_MMAP, MTE_SYNC_ERR),
+> 
