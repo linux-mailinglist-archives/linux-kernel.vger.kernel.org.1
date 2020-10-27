@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310B929A29F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0D529A2A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504451AbgJ0CRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 22:17:37 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:21250 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504440AbgJ0CRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 22:17:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603765055; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZzFhkO2QNn27KCRuwRwy9HGYUS6mSmOvRLivBwN26xE=;
- b=mtGpzp6HrhPwwIzQLWoGALvpTIBKS9B1eWt++zhSuTlnKy4UTSRoOUI0nkQdmjnQ5JRLq17d
- tSJJQyqxsVEu8sH3ePLJnty8PacfgrSJYJ29Qvj1XK4XdVXXAd8CLgBUAUa53CYrbfBsyUoB
- AGgmPoBXGKnFxuvS2tIO0EYQtbs=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f97833f7955e2c7cd1033fb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 02:17:35
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4E101C43382; Tue, 27 Oct 2020 02:17:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDFC6C433C9;
-        Tue, 27 Oct 2020 02:17:34 +0000 (UTC)
+        id S2504466AbgJ0CS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 22:18:56 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34172 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504454AbgJ0CS4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 22:18:56 -0400
+Received: by mail-qk1-f195.google.com with SMTP id x20so10429469qkn.1;
+        Mon, 26 Oct 2020 19:18:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z7k2jFeuyFxR40oKjqp6f6jzB45rr1tSUQm9Sp7Fuu8=;
+        b=emCTFPfbMA8sqwapkNGv73E7/ekn1Du95YiS6OJf6VKhj83eNKepggO/2T4LRV4NO1
+         PkbCx2E+A5beMSWBNmgrliLMH6pDiIY1xkZqGjRmOjAoodhsLVTIOzxsGPre5zCjbbss
+         dPrY42iAFezg5u4Dt2arPi7ADacfYvJUbN2xU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z7k2jFeuyFxR40oKjqp6f6jzB45rr1tSUQm9Sp7Fuu8=;
+        b=LUoJj30pR8TDGscW52gJtfAdRL6oJ9JTDTnD7vWh3+LRY8v3zwgwUC5vUCdEVFaiNi
+         o2I2ntEaGMZNhjWwTcIM4OBJf9OK5VtRUV2c51k5u+Kqky9qz3wt5n2rojuOrT2Q86al
+         LB042AnTwN10zEm9JQShwSvMKjAbzurYAN+umU54JF+ioJdaFz+lOQzeqmim2/NqOJjU
+         PORm9h19tnShzgYDRw/USIeNDhWxCJikyhc8CGJ++GooLUqJ3Iyrt6ATm05mYmnQK9/g
+         OZm7JXGGA/18DD6UPYMs66V5qb2IC0RRB76W+zrz8sc159ls7O1mU+I0QD30ZTNyEXbl
+         fRtQ==
+X-Gm-Message-State: AOAM530dI9SOyCT01mKPlDq5y2Txhtmg8eXTMpamlaOr0/RxKbG/rsER
+        d0QBkwvTWaLe4Yia5YudYYPa5lB23VPIdbI9xas=
+X-Google-Smtp-Source: ABdhPJwLM6M52ok+8DkCFDJBuR8rBAX3I0lJIGG88g+lugudrUqWAV3/suj2AD1bT6mETyOedwi0T/fgRJegAvl+rLk=
+X-Received: by 2002:a37:a81:: with SMTP id 123mr39228qkk.487.1603765133628;
+ Mon, 26 Oct 2020 19:18:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Oct 2020 10:17:34 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        Jaegeuk Kim <jaegeuk@google.com>
-Subject: Re: [PATCH v4 1/5] scsi: ufs: atomic update for clkgating_enable
-In-Reply-To: <20201026195124.363096-2-jaegeuk@kernel.org>
-References: <20201026195124.363096-1-jaegeuk@kernel.org>
- <20201026195124.363096-2-jaegeuk@kernel.org>
-Message-ID: <20d1c2ca06e95beb207fd4ba1b61dc80@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+ <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+ <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+ <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
+ <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
+ <529612e1-c6c4-4d33-91df-2a30bf2e1675@www.fastmail.com> <PS1PR0601MB18498469F0263306A6E5183F9C1A0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+ <e6c8e96bb26a5505e967e697946d359c22ac68c5.camel@kernel.crashing.org>
+In-Reply-To: <e6c8e96bb26a5505e967e697946d359c22ac68c5.camel@kernel.crashing.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 27 Oct 2020 02:18:41 +0000
+Message-ID: <CACPK8XdPB0wnvuvwxO5BST7EzDuPqGcjHTkZm=7A0ZofzyXHag@mail.gmail.com>
+Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        netdev <netdev@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 03:51, Jaegeuk Kim wrote:
-> From: Jaegeuk Kim <jaegeuk@google.com>
-> 
-> When giving a stress test which enables/disables clkgating, we hit 
-> device
-> timeout sometimes. This patch avoids subtle racy condition to address 
-> it.
-> 
-> Note that, this requires a patch to address the device stuck by 
-> REQ_CLKS_OFF in
-> __ufshcd_release().
-> 
-> The fix is "scsi: ufs: avoid to call REQ_CLKS_OFF to CLKS_OFF".
+On Mon, 26 Oct 2020 at 22:22, Benjamin Herrenschmidt
+<benh@kernel.crashing.org> wrote:
+>
+> On Fri, 2020-10-23 at 13:08 +0000, Dylan Hung wrote:
+> > The issue was found on our test chip (ast2600 version A0) which is
+> > just for testing and won't be mass-produced.  This HW bug has been
+> > fixed on ast2600 A1 and later versions.
+> >
+> > To verify the HW fix, I run overnight iperf and kvm tests on
+> > ast2600A1 without this patch, and get stable result without hanging.
+> > So I think we can discard this patch.
+>
+> This is great news. Thanks !
 
-Why don't you just squash the fix into this one?
+That is excellent news. I agree; we do not need fixes for A0 issues to
+be kept in the mainline kernel. Thanks for updating us Dylan.
 
-Thanks,
+Cheers,
 
-Can Guo.
-
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index cc8d5f0c3fdc..6c9269bffcbd 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1808,19 +1808,19 @@ static ssize_t
-> ufshcd_clkgate_enable_store(struct device *dev,
->  		return -EINVAL;
-> 
->  	value = !!value;
-> +
-> +	spin_lock_irqsave(hba->host->host_lock, flags);
->  	if (value == hba->clk_gating.is_enabled)
->  		goto out;
-> 
-> -	if (value) {
-> -		ufshcd_release(hba);
-> -	} else {
-> -		spin_lock_irqsave(hba->host->host_lock, flags);
-> +	if (value)
-> +		__ufshcd_release(hba);
-> +	else
->  		hba->clk_gating.active_reqs++;
-> -		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> -	}
-> 
->  	hba->clk_gating.is_enabled = value;
->  out:
-> +	spin_unlock_irqrestore(hba->host->host_lock, flags);
->  	return count;
->  }
+Joel
