@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0D529A2A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB2729A2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504466AbgJ0CS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 22:18:56 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34172 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504454AbgJ0CS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 22:18:56 -0400
-Received: by mail-qk1-f195.google.com with SMTP id x20so10429469qkn.1;
-        Mon, 26 Oct 2020 19:18:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z7k2jFeuyFxR40oKjqp6f6jzB45rr1tSUQm9Sp7Fuu8=;
-        b=emCTFPfbMA8sqwapkNGv73E7/ekn1Du95YiS6OJf6VKhj83eNKepggO/2T4LRV4NO1
-         PkbCx2E+A5beMSWBNmgrliLMH6pDiIY1xkZqGjRmOjAoodhsLVTIOzxsGPre5zCjbbss
-         dPrY42iAFezg5u4Dt2arPi7ADacfYvJUbN2xU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z7k2jFeuyFxR40oKjqp6f6jzB45rr1tSUQm9Sp7Fuu8=;
-        b=LUoJj30pR8TDGscW52gJtfAdRL6oJ9JTDTnD7vWh3+LRY8v3zwgwUC5vUCdEVFaiNi
-         o2I2ntEaGMZNhjWwTcIM4OBJf9OK5VtRUV2c51k5u+Kqky9qz3wt5n2rojuOrT2Q86al
-         LB042AnTwN10zEm9JQShwSvMKjAbzurYAN+umU54JF+ioJdaFz+lOQzeqmim2/NqOJjU
-         PORm9h19tnShzgYDRw/USIeNDhWxCJikyhc8CGJ++GooLUqJ3Iyrt6ATm05mYmnQK9/g
-         OZm7JXGGA/18DD6UPYMs66V5qb2IC0RRB76W+zrz8sc159ls7O1mU+I0QD30ZTNyEXbl
-         fRtQ==
-X-Gm-Message-State: AOAM530dI9SOyCT01mKPlDq5y2Txhtmg8eXTMpamlaOr0/RxKbG/rsER
-        d0QBkwvTWaLe4Yia5YudYYPa5lB23VPIdbI9xas=
-X-Google-Smtp-Source: ABdhPJwLM6M52ok+8DkCFDJBuR8rBAX3I0lJIGG88g+lugudrUqWAV3/suj2AD1bT6mETyOedwi0T/fgRJegAvl+rLk=
-X-Received: by 2002:a37:a81:: with SMTP id 123mr39228qkk.487.1603765133628;
- Mon, 26 Oct 2020 19:18:53 -0700 (PDT)
+        id S2441172AbgJ0CWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 22:22:09 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:56065 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2410334AbgJ0CWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 22:22:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603765328; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=AGhgURyohfn/3Ju6PDZpb7S7TBRxmdJD5RBwWfLer5k=;
+ b=MIC3JvbvSj0aPmIR8/lK7tKsdi1ZAZKtKmY2XiEDoJxuAo5OzfVYdKUdQBtbY8EoUTTH7cCu
+ TYNezXkn/O+RWE0laD5RHX/YR6x8ukhc62H4/KNPpXxfLiWRhUa0Jk0gvdwBdzPZ5HPcvPRr
+ 35djOCHz7vTWkEDzXK1TYGh7GEc=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f978403d6826c2dbd07e4ae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 02:20:51
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DA7B4C433FF; Tue, 27 Oct 2020 02:20:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38B42C433CB;
+        Tue, 27 Oct 2020 02:20:50 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
- <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
- <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
- <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
- <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
- <529612e1-c6c4-4d33-91df-2a30bf2e1675@www.fastmail.com> <PS1PR0601MB18498469F0263306A6E5183F9C1A0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
- <e6c8e96bb26a5505e967e697946d359c22ac68c5.camel@kernel.crashing.org>
-In-Reply-To: <e6c8e96bb26a5505e967e697946d359c22ac68c5.camel@kernel.crashing.org>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 27 Oct 2020 02:18:41 +0000
-Message-ID: <CACPK8XdPB0wnvuvwxO5BST7EzDuPqGcjHTkZm=7A0ZofzyXHag@mail.gmail.com>
-Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>,
-        netdev <netdev@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 10:20:50 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        Asutosh Das <asutoshd@codeaurora.org>
+Subject: Re: [PATCH v4 5/5] scsi: ufs: fix clkgating on/off correctly
+In-Reply-To: <20201026195124.363096-6-jaegeuk@kernel.org>
+References: <20201026195124.363096-1-jaegeuk@kernel.org>
+ <20201026195124.363096-6-jaegeuk@kernel.org>
+Message-ID: <bcc5dd8f6da818247b420a1559ef4b25@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 at 22:22, Benjamin Herrenschmidt
-<benh@kernel.crashing.org> wrote:
->
-> On Fri, 2020-10-23 at 13:08 +0000, Dylan Hung wrote:
-> > The issue was found on our test chip (ast2600 version A0) which is
-> > just for testing and won't be mass-produced.  This HW bug has been
-> > fixed on ast2600 A1 and later versions.
-> >
-> > To verify the HW fix, I run overnight iperf and kvm tests on
-> > ast2600A1 without this patch, and get stable result without hanging.
-> > So I think we can discard this patch.
->
-> This is great news. Thanks !
+On 2020-10-27 03:51, Jaegeuk Kim wrote:
+> The below call stack prevents clk_gating at every IO completion.
+> We can remove the condition, ufshcd_any_tag_in_use(), since 
+> clkgating_work
+> will check it again.
+> 
+> ufshcd_complete_requests(struct ufs_hba *hba)
+>   ufshcd_transfer_req_compl()
+>     __ufshcd_transfer_req_compl()
+>       __ufshcd_release(hba)
+>         if (ufshcd_any_tag_in_use() == 1)
+>            return;
+>   ufshcd_tmc_handler(hba);
+>     blk_mq_tagset_busy_iter();
+> 
+> Note that, this still requires a work to deal with a potential racy 
+> condition
+> when user sets clkgating.delay_ms to very small value. That can cause 
+> preventing
+> clkgating by the check of ufshcd_any_tag_in_use() in gate_work.
+> 
+> Fixes: 7252a3603015 ("scsi: ufs: Avoid busy-waiting by eliminating tag
+> conflicts")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
 
-That is excellent news. I agree; we do not need fixes for A0 issues to
-be kept in the mainline kernel. Thanks for updating us Dylan.
+Reviewed-by: Can Guo <cang@codeaurora.org>
 
-Cheers,
-
-Joel
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index b8a54d09e750..86c8dee01ca9 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
+> 
+>  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
+>  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
+> -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
+> +	    hba->outstanding_tasks ||
+>  	    hba->active_uic_cmd || hba->uic_async_done ||
+>  	    hba->clk_gating.state == CLKS_OFF)
+>  		return;
