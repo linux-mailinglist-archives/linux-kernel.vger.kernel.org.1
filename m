@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B1F29C939
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C1629C944
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830541AbgJ0Tsp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 15:48:45 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40162 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1830518AbgJ0Tsj (ORCPT
+        id S2504043AbgJ0Tv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:51:59 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:36134 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503972AbgJ0Tv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:48:39 -0400
-Received: by mail-ed1-f67.google.com with SMTP id p93so2704752edd.7;
-        Tue, 27 Oct 2020 12:48:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DCnp21W838z3J54dqoT+LPZURnglQ0VUhiX4g0DgzEM=;
-        b=t6BUAd/p6xwdy6r6cAW1AjllXbBOFhn/BnO5pUxZ1kEnSTJAXkJVU61whMB6qBxRTD
-         yITiHFXnaHwSqcymOJxNywv1YJ5JcEV/aAp5XhHogrnNmKGxqQNIB6qihPPoCX8PRsOI
-         OAxPvJFr5bDMqqU+hJobkc8Dzb1HhxIzWbgyrd51kHv2HR2u05EwPl+bi3tPH7ThU4oj
-         rWrhyrVYrQvEyE9OMTP0ovTp3ZUQhZ4DOev8Dkxb2i3fHhJeXXRpKKV6M6KowJZIg28W
-         Jgm9C/lzpfcrGWwSBnIrzt/PnWA18NdIy8QSL9vn9acEGQqu5mH7+pbWEyVYf7PrUazx
-         w01Q==
-X-Gm-Message-State: AOAM5336xRqrJxnkNPctZ40cCDUM0KTCxuB0IrsFRVRRLhobPOCZxwB5
-        N2i+EcWzoVpC57auddFu7n0=
-X-Google-Smtp-Source: ABdhPJyGc94tfyRFl9VLzlaneyVsIYgUVM3YkjJxfOPWRF2V8kbYt5rWKEKhzQ7H5M62+MCIviirCw==
-X-Received: by 2002:a50:e447:: with SMTP id e7mr4040757edm.263.1603828117108;
-        Tue, 27 Oct 2020 12:48:37 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id ss7sm1615086ejb.28.2020.10.27.12.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 12:48:35 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 20:48:33 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 13/52] dt-bindings: memory: tegra124: emc: Document
- new interconnect property
-Message-ID: <20201027194833.GE140636@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-14-digetx@gmail.com>
- <20201027102506.GB17089@kozik-lap>
- <f38984b6-d53f-a43d-0387-e787b3c1924d@gmail.com>
+        Tue, 27 Oct 2020 15:51:59 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 1230E2006D;
+        Tue, 27 Oct 2020 20:51:54 +0100 (CET)
+Date:   Tue, 27 Oct 2020 20:51:52 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        robdclark@chromium.org, Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] drm: panel: simple: Allow timing constraints, not
+ fixed delays
+Message-ID: <20201027195152.GA457661@ravnborg.org>
+References: <20201027094553.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+ <20201027171459.GA2097755@ulmo>
+ <20201027192318.GR401619@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <f38984b6-d53f-a43d-0387-e787b3c1924d@gmail.com>
+In-Reply-To: <20201027192318.GR401619@phenom.ffwll.local>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=vq_p0UsYEco_LHjtCy4A:9
+        a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:19:28PM +0300, Dmitry Osipenko wrote:
-> 27.10.2020 13:25, Krzysztof Kozlowski пишет:
-> > On Mon, Oct 26, 2020 at 01:16:56AM +0300, Dmitry Osipenko wrote:
-> >> External memory controller is interconnected with memory controller and
-> >> with external memory. Document new interconnect property which turns
-> >> External Memory Controller into interconnect provider.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 +++++++
-> >>  1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
-> >> index 278549f9e051..ac00832ceac1 100644
-> >> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
-> >> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
-> >> @@ -29,6 +29,9 @@ properties:
-> >>      items:
-> >>        - const: emc
-> >>  
-> >> +  "#interconnect-cells":
-> >> +    const: 0
-> >> +
-> >>    nvidia,memory-controller:
-> >>      $ref: /schemas/types.yaml#/definitions/phandle
-> >>      description:
-> >> @@ -327,6 +330,7 @@ required:
-> >>    - clocks
-> >>    - clock-names
-> >>    - nvidia,memory-controller
-> >> +  - "#interconnect-cells"
+On Tue, Oct 27, 2020 at 08:23:18PM +0100, Daniel Vetter wrote:
+> On Tue, Oct 27, 2020 at 06:14:59PM +0100, Thierry Reding wrote:
+> > On Tue, Oct 27, 2020 at 09:45:54AM -0700, Douglas Anderson wrote:
+> > > The simple panel code currently allows panels to define fixed delays
+> > > at certain stages of initialization.  These work OK, but they don't
+> > > really map all that clearly to the requirements presented in many
+> > > panel datasheets.  Instead of defining a fixed delay, those datasheets
+> > > provide a timing diagram and specify a minimum amount of time that
+> > > needs to pass from event A to event B.
+> > > 
+> > > Because of the way things are currently defined, most panels end up
+> > > over-delaying.  One prime example here is that a number of panels I've
+> > > looked at define the amount of time that must pass between turning a
+> > > panel off and turning it back on again.  Since there is no way to
+> > > specify this, many developers have listed this as the "unprepare"
+> > > delay.  However, if nobody ever tried to turn the panel on again in
+> > > the next 500 ms (or whatever the delay was) then this delay was
+> > > pointless.  It's better to do the delay only in the case that someone
+> > > tried to turn the panel on too quickly.
+> > > 
+> > > Let's support specifying delays as constraints.  We'll start with the
+> > > one above and also a second one: the minimum time between prepare
+> > > being done and doing the enable.  On the panel I'm looking at, there's
+> > > an 80 ms minimum time between HPD being asserted by the panel and
+> > > setting the backlight enable GPIO.  By specifying as a constraint we
+> > > can enforce this without over-delaying.  Specifically the link
+> > > training is allowed to happen in parallel with this delay so adding a
+> > > fixed 80 ms delay isn't ideal.
+> > > 
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > > 
+> > >  drivers/gpu/drm/panel/panel-simple.c | 51 ++++++++++++++++++++++++----
+> > >  1 file changed, 44 insertions(+), 7 deletions(-)
 > > 
-> > Another required property, what about all existing users of this binding?
-> 
-> EMC/devfreq drivers check presence of the new properties and ask users
-> to upgrade the DT. The kernel will continue to work fine using older
-> DTBs, but devfreq driver won't load.
-
-If the devfreq was working fine before (with these older DTBs and older
-kernel) then you break the feature.
-
-If devfreq was not working or was not stable enough, then nothing is
-broken so such change is accepted.
-
-Which one is then?
-
-> 
-> >>  additionalProperties: false
-> >>  
-> >> @@ -345,6 +349,7 @@ examples:
-> >>  
-> >>          #iommu-cells = <1>;
-> >>          #reset-cells = <1>;
-> >> +        #interconnect-cells = <1>;
+> > This has always been bugging me a bit about the current setup, so I very
+> > much like this idea.
 > > 
-> > You meant '0'?
+> > > 
+> > > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> > > index 2be358fb46f7..cbbe71a2a940 100644
+> > > --- a/drivers/gpu/drm/panel/panel-simple.c
+> > > +++ b/drivers/gpu/drm/panel/panel-simple.c
+> > > @@ -92,6 +92,19 @@ struct panel_desc {
+> > >  		unsigned int unprepare;
+> > >  	} delay;
+> > >  
+> > > +	/**
+> > > +	 * @prepare_to_enable_ms: If this many milliseconds hasn't passed after
+> > > +	 *                        prepare finished, add a delay to the start
+> > > +	 *                        of enable.
+> > > +	 * @unprepare_to_prepare_ms: If this many milliseconds hasn't passed
+> > > +	 *                           unprepare finished, add a delay to the
+> > > +	 *                           start of prepare.
+> > 
+> > I find this very difficult to understand and it's also not clear from
+> > this what exactly the delay is. Perhaps this can be somewhat clarified
+> > Something like the below perhaps?
+> > 
+> > 	@prepare_to_enable_ms: The minimum time, in milliseconds, that
+> > 	    needs to have passed between when prepare finished and enable
+> > 	    may begin. If at enable time less time has passed since
+> > 	    prepare finished, the driver waits for the remaining time.
 > 
-> '1' is for the "mc" node in the example (not "emc" node).
-> 
-> Anyways, I'll move this hunk to the previous patch in order to fix the
-> kernel bot warning.
+> Also maybe split the kerneldoc into the sub-structure (this should work I
+> think), so that you can go really wild on formatting :-)
+I have a patch somewhere where I inlined all the comments and polished
+them a bit. Will try to dig it up in the weekend.
+It was motivated by a small W=1 detour.
 
-Right, thanks.
-
-Best regards,
-Krzysztof
-
+	Sam
