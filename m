@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577AA29B7B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF76229B9CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795636AbgJ0PPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47790 "EHLO mail.kernel.org"
+        id S1803232AbgJ0Pw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:52:27 -0400
+Received: from m12-15.163.com ([220.181.12.15]:39571 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794438AbgJ0PLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:11:50 -0400
-Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6EF820657;
-        Tue, 27 Oct 2020 15:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811509;
-        bh=MEOHJpFg/hSBwnyU+/C/N9+Qa7RXtkpK49digCQfxBc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KnT5lraBfZ/7vx1hN0P7obGVygBSAmfYDK5mhWAeewS2ufv945b4XfWIPctftNSu2
-         6uV1JiXXLV7UI09v6GGxXzmfoI3hQKzpePSNzgHbsdJQDf3txT0lub1uHSc+Qo5OQJ
-         lMeyoA/vUucITAcnBqlmd1TsxQJZ0VFWzZINtLi8=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, will@kernel.org,
-        catalin.marinas@arm.com, Ard Biesheuvel <ardb@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH] module: use hidden visibility for weak symbol references
-Date:   Tue, 27 Oct 2020 16:11:32 +0100
-Message-Id: <20201027151132.14066-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1799224AbgJ0Pa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:30:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=3oDqx
+        WCgFd8JrOidOt8LxnLGY8nQi1Gnn/BvOHEBY+o=; b=kDCrMmSDYdZ646fXY9nLz
+        nCe9pWrGjLJ/nZ6Q6MMhTn6yiklMIDkI815NVkqgpNl3/QPjdYPxVu3km4J+STnM
+        7gYHpH7BifJacAGkr4lYaYveHzEQC7FIEkkNQpCMXz1jKCXppetg01YdVByI1swl
+        +OQalbyoan2/VOdA13DlEI=
+Received: from localhost (unknown [101.86.209.121])
+        by smtp11 (Coremail) with SMTP id D8CowACnzxO8OJhfdX+LFA--.52256S2;
+        Tue, 27 Oct 2020 23:11:57 +0800 (CST)
+Date:   Tue, 27 Oct 2020 23:11:56 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/oom_kill.c: remove the unmatched comments
+Message-ID: <20201027151156.GA4336@rlk>
+References: <20201027144529.GA3558@rlk>
+ <20201027145814.GY20500@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027145814.GY20500@dhcp22.suse.cz>
+X-CM-TRANSID: D8CowACnzxO8OJhfdX+LFA--.52256S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrurW8tF43XFWfur1rKryDWrg_yoWktFbE9a
+        nrtw4DJr4kGF95CF4IkayrZ39rWr4kAa15Z3W0qr12q34YqFZ3Wrn2qFn3Xa4DXFWIy34j
+        9FyDJay3AwnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1JPEPUUUUU==
+X-Originating-IP: [101.86.209.121]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJh3KX1v2eytZOgAAsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
-unwanted sections") results in build errors on arm64 for configurations
-that have CONFIG_MODULES disabled.
+On Tue, Oct 27, 2020 at 03:58:14PM +0100, Michal Hocko wrote:
+> On Tue 27-10-20 22:45:29, Hui Su wrote:
+> > is_dump_unreclaim_slabs() just check whether nr_unreclaimable
+> > slabs amount is greater than user memory, not match witch comment.
+> 
+> As I've tried to explain, the comment is not explaining what the
+> function does but how it should be used. It is not a kerneldoc afterall.
+> So it is a good match. I can see how that might confuse somebody so I am
+> not against changing this but the changelog shouldn't really be
+> confusing on its own. What do you think about the following instead.
+> 
 
-The commit in question added ASSERT()s to the arm64 linker script to
-ensure that linker generated sections such as .got, .plt etc are empty,
-but as it turns out, there are corner cases where the linker does emit
-content into those sections. More specifically, weak references to
-function symbols (which can remain unsatisfied, and can therefore not
-be emitted as relative references) will be emitted as GOT and PLT
-entries when linking the kernel in PIE mode (which is the case when
-CONFIG_RELOCATABLE is enabled, which is on by default).
+Hi, Michal:
 
-What happens is that code such as
+Thanks for your fast reply, your changlog is much more accurate.
 
-	struct device *(*fn)(struct device *dev);
-	struct device *iommu_device;
+And should i resend a patch V3 use the changlog below?
 
-	fn = symbol_get(mdev_get_iommu_device);
-	if (fn) {
-		iommu_device = fn(dev);
+Thanks.
 
-essentially gets converted into the following when CONFIG_MODULES is off:
+> "
+> Comment for is_dump_unreclaim_slabs is not really clear whether it is
+> meant to instruct how to use the function or whether it is an outdated
+> information of the past implementation of the function. it doesn't realy
+> help that is_dump_unreclaim_slabs is hard to grasp on its own.
+> Rename the helper to should_dump_unreclaim_slabs which should make it
+> clear what it is meant to do and drop the comment as the purpose should
+> be pretty evident now.
+> "
+> 
 
-	struct device *iommu_device;
-
-	if (&mdev_get_iommu_device) {
-		iommu_device = mdev_get_iommu_device(dev);
-
-where mdev_get_iommu_device is emitted as a weak symbol reference into
-the object file. The first reference is decorated with an ordinary
-ABS64 data relocation (which yields 0x0 if the reference remains
-unsatisfied). However, the indirect call is turned into a direct call
-covered by a R_AARCH64_CALL26 relocation, which is converted into a
-call via a PLT entry taking the target address from the associated
-GOT entry.
-
-Given that such GOT and PLT entries are unnecessary for fully linked
-binaries such as the kernel, let's give these weak symbol references
-hidden visibility, so that the linker knows that the weak reference
-via R_AARCH64_CALL26 can simply remain unsatisfied.
-
-Cc: Jessica Yu <jeyu@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- include/linux/module.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 7ccdf87f376f..6264617bab4d 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -740,7 +740,7 @@ static inline bool within_module(unsigned long addr, const struct module *mod)
- }
- 
- /* Get/put a kernel symbol (calls should be symmetric) */
--#define symbol_get(x) ({ extern typeof(x) x __attribute__((weak)); &(x); })
-+#define symbol_get(x) ({ extern typeof(x) x __attribute__((weak,visibility("hidden"))); &(x); })
- #define symbol_put(x) do { } while (0)
- #define symbol_put_addr(x) do { } while (0)
- 
--- 
-2.17.1
 
