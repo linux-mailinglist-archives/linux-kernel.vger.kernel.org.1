@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA6429AECE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109AD29B015
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754099AbgJ0OEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52412 "EHLO mail.kernel.org"
+        id S1757089AbgJ0OQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:16:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754082AbgJ0OEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:04:08 -0400
+        id S2507374AbgJ0OMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:12:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8156B22282;
-        Tue, 27 Oct 2020 14:04:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 249EB2072D;
+        Tue, 27 Oct 2020 14:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807447;
-        bh=VgxF2QNfXRW6QrY3IZNXW8MRJL0l28w6H9RqN1OQ7iA=;
+        s=default; t=1603807934;
+        bh=5NG3eD9zc0lmriwJ5temmDBGc+pz2/k/yZoP6lSaXnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bKnMK4onT3pAeZBVJzUZutOPySe/+uFMo7ml67M8wNHCryrWHPVsJh5CbK4dTBzU6
-         6C/uFxOX+2K8pHA4ScuOMXOMa1m6xYKjjQ8DNS0KPbZLfcyWOeOZ9PO7BPuGtS8Q2t
-         jiireBX4YCMWjODBo+tw/W0Z+KsgEmp0wZSLdCeI=
+        b=NudXea8PIbkReKMdPZ+lSxvdhpXrXeG1ntFD9ilkTTyqB+bzORm6mis4PkDIKLQeh
+         rIucyNjqjRdvfZzyxFcfKTw90i6edHFY49TjuISiMd6YLocd1j79KSvQC2rzvFhYbw
+         zrGlR/DDXDLgnb3DamPIXvrHF7p9VBWOb3BASrC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 056/139] IB/mlx4: Fix starvation in paravirt mux/demux
+Subject: [PATCH 4.14 095/191] powerpc/tau: Use appropriate temperature sample interval
 Date:   Tue, 27 Oct 2020 14:49:10 +0100
-Message-Id: <20201027134904.788326995@linuxfoundation.org>
+Message-Id: <20201027134914.264394230@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,176 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Håkon Bugge <haakon.bugge@oracle.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 7fd1507df7cee9c533f38152fcd1dd769fcac6ce ]
+[ Upstream commit 66943005cc41f48e4d05614e8f76c0ca1812f0fd ]
 
-The mlx4 driver will proxy MAD packets through the PF driver. A VM or an
-instantiated VF will send its MAD packets to the PF driver using
-loop-back. The PF driver will be informed by an interrupt, but defer the
-handling and polling of CQEs to a worker thread running on an ordered
-work-queue.
+According to the MPC750 Users Manual, the SITV value in Thermal
+Management Register 3 is 13 bits long. The present code calculates the
+SITV value as 60 * 500 cycles. This would overflow to give 10 us on
+a 500 MHz CPU rather than the intended 60 us. (But according to the
+Microprocessor Datasheet, there is also a factor of 266 that has to be
+applied to this value on certain parts i.e. speed sort above 266 MHz.)
+Always use the maximum cycle count, as recommended by the Datasheet.
 
-Consider the following scenario: the VMs will in short proximity in time,
-for example due to a network event, send many MAD packets to the PF
-driver. Lets say there are K VMs, each sending N packets.
-
-The interrupt from the first VM will start the worker thread, which will
-poll N CQEs. A common case here is where the PF driver will multiplex the
-packets received from the VMs out on the wire QP.
-
-But before the wire QP has returned a send CQE and associated interrupt,
-the other K - 1 VMs have sent their N packets as well.
-
-The PF driver has to multiplex K * N packets out on the wire QP. But the
-send-queue on the wire QP has a finite capacity.
-
-So, in this scenario, if K * N is larger than the send-queue capacity of
-the wire QP, we will get MAD packets dropped on the floor with this
-dynamic debug message:
-
-mlx4_ib_multiplex_mad: failed sending GSI to wire on behalf of slave 2 (-11)
-
-and this despite the fact that the wire send-queue could have capacity,
-but the PF driver isn't aware, because the wire send CQEs have not yet
-been polled.
-
-We can also have a similar scenario inbound, with a wire recv-queue larger
-than the tunnel QP's send-queue. If many remote peers send MAD packets to
-the very same VM, the tunnel send-queue destined to the VM could allegedly
-be construed to be full by the PF driver.
-
-This starvation is fixed by introducing separate work queues for the wire
-QPs vs. the tunnel QPs.
-
-With this fix, using a dual ported HCA, 8 VFs instantiated, we could run
-cmtime on each of the 18 interfaces towards a similar configured peer,
-each cmtime instance with 800 QPs (all in all 14400 QPs) without a single
-CM packet getting lost.
-
-Fixes: 3cf69cc8dbeb ("IB/mlx4: Add CM paravirtualization")
-Link: https://lore.kernel.org/r/20200803061941.1139994-5-haakon.bugge@oracle.com
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/896f542e5f0f1d6cf8218524c2b67d79f3d69b3c.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/mad.c     | 34 +++++++++++++++++++++++++---
- drivers/infiniband/hw/mlx4/mlx4_ib.h |  2 ++
- 2 files changed, 33 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/reg.h |  2 +-
+ arch/powerpc/kernel/tau_6xx.c  | 12 ++++--------
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/mad.c b/drivers/infiniband/hw/mlx4/mad.c
-index f32ffd74ec476..bf4e0d7a3ec21 100644
---- a/drivers/infiniband/hw/mlx4/mad.c
-+++ b/drivers/infiniband/hw/mlx4/mad.c
-@@ -1276,6 +1276,18 @@ static void mlx4_ib_tunnel_comp_handler(struct ib_cq *cq, void *arg)
- 	spin_unlock_irqrestore(&dev->sriov.going_down_lock, flags);
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 05f3c2b3aa0ec..d6be5781a97ce 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -753,7 +753,7 @@
+ #define THRM1_TIN	(1 << 31)
+ #define THRM1_TIV	(1 << 30)
+ #define THRM1_THRES(x)	((x&0x7f)<<23)
+-#define THRM3_SITV(x)	((x&0x3fff)<<1)
++#define THRM3_SITV(x)	((x & 0x1fff) << 1)
+ #define THRM1_TID	(1<<2)
+ #define THRM1_TIE	(1<<1)
+ #define THRM1_V		(1<<0)
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index a3374e8a258c6..64a27b20cf55e 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -175,15 +175,11 @@ static void tau_timeout(void * info)
+ 	 * complex sleep code needs to be added. One mtspr every time
+ 	 * tau_timeout is called is probably not a big deal.
+ 	 *
+-	 * Enable thermal sensor and set up sample interval timer
+-	 * need 20 us to do the compare.. until a nice 'cpu_speed' function
+-	 * call is implemented, just assume a 500 mhz clock. It doesn't really
+-	 * matter if we take too long for a compare since it's all interrupt
+-	 * driven anyway.
+-	 *
+-	 * use a extra long time.. (60 us @ 500 mhz)
++	 * The "PowerPC 740 and PowerPC 750 Microprocessor Datasheet"
++	 * recommends that "the maximum value be set in THRM3 under all
++	 * conditions."
+ 	 */
+-	mtspr(SPRN_THRM3, THRM3_SITV(500*60) | THRM3_E);
++	mtspr(SPRN_THRM3, THRM3_SITV(0x1fff) | THRM3_E);
+ 
+ 	local_irq_restore(flags);
  }
- 
-+static void mlx4_ib_wire_comp_handler(struct ib_cq *cq, void *arg)
-+{
-+	unsigned long flags;
-+	struct mlx4_ib_demux_pv_ctx *ctx = cq->cq_context;
-+	struct mlx4_ib_dev *dev = to_mdev(ctx->ib_dev);
-+
-+	spin_lock_irqsave(&dev->sriov.going_down_lock, flags);
-+	if (!dev->sriov.is_going_down && ctx->state == DEMUX_PV_STATE_ACTIVE)
-+		queue_work(ctx->wi_wq, &ctx->work);
-+	spin_unlock_irqrestore(&dev->sriov.going_down_lock, flags);
-+}
-+
- static int mlx4_ib_post_pv_qp_buf(struct mlx4_ib_demux_pv_ctx *ctx,
- 				  struct mlx4_ib_demux_pv_qp *tun_qp,
- 				  int index)
-@@ -1978,7 +1990,8 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
- 		cq_size *= 2;
- 
- 	cq_attr.cqe = cq_size;
--	ctx->cq = ib_create_cq(ctx->ib_dev, mlx4_ib_tunnel_comp_handler,
-+	ctx->cq = ib_create_cq(ctx->ib_dev,
-+			       create_tun ? mlx4_ib_tunnel_comp_handler : mlx4_ib_wire_comp_handler,
- 			       NULL, ctx, &cq_attr);
- 	if (IS_ERR(ctx->cq)) {
- 		ret = PTR_ERR(ctx->cq);
-@@ -2015,6 +2028,7 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
- 		INIT_WORK(&ctx->work, mlx4_ib_sqp_comp_worker);
- 
- 	ctx->wq = to_mdev(ibdev)->sriov.demux[port - 1].wq;
-+	ctx->wi_wq = to_mdev(ibdev)->sriov.demux[port - 1].wi_wq;
- 
- 	ret = ib_req_notify_cq(ctx->cq, IB_CQ_NEXT_COMP);
- 	if (ret) {
-@@ -2158,7 +2172,7 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
- 		goto err_mcg;
- 	}
- 
--	snprintf(name, sizeof name, "mlx4_ibt%d", port);
-+	snprintf(name, sizeof(name), "mlx4_ibt%d", port);
- 	ctx->wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
- 	if (!ctx->wq) {
- 		pr_err("Failed to create tunnelling WQ for port %d\n", port);
-@@ -2166,7 +2180,15 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
- 		goto err_wq;
- 	}
- 
--	snprintf(name, sizeof name, "mlx4_ibud%d", port);
-+	snprintf(name, sizeof(name), "mlx4_ibwi%d", port);
-+	ctx->wi_wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
-+	if (!ctx->wi_wq) {
-+		pr_err("Failed to create wire WQ for port %d\n", port);
-+		ret = -ENOMEM;
-+		goto err_wiwq;
-+	}
-+
-+	snprintf(name, sizeof(name), "mlx4_ibud%d", port);
- 	ctx->ud_wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
- 	if (!ctx->ud_wq) {
- 		pr_err("Failed to create up/down WQ for port %d\n", port);
-@@ -2177,6 +2199,10 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
- 	return 0;
- 
- err_udwq:
-+	destroy_workqueue(ctx->wi_wq);
-+	ctx->wi_wq = NULL;
-+
-+err_wiwq:
- 	destroy_workqueue(ctx->wq);
- 	ctx->wq = NULL;
- 
-@@ -2224,12 +2250,14 @@ static void mlx4_ib_free_demux_ctx(struct mlx4_ib_demux_ctx *ctx)
- 				ctx->tun[i]->state = DEMUX_PV_STATE_DOWNING;
- 		}
- 		flush_workqueue(ctx->wq);
-+		flush_workqueue(ctx->wi_wq);
- 		for (i = 0; i < dev->dev->caps.sqp_demux; i++) {
- 			destroy_pv_resources(dev, i, ctx->port, ctx->tun[i], 0);
- 			free_pv_object(dev, i, ctx->port);
- 		}
- 		kfree(ctx->tun);
- 		destroy_workqueue(ctx->ud_wq);
-+		destroy_workqueue(ctx->wi_wq);
- 		destroy_workqueue(ctx->wq);
- 	}
- }
-diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-index 35141f451e5c7..91c89ef6ce04f 100644
---- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
-+++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-@@ -439,6 +439,7 @@ struct mlx4_ib_demux_pv_ctx {
- 	struct ib_pd *pd;
- 	struct work_struct work;
- 	struct workqueue_struct *wq;
-+	struct workqueue_struct *wi_wq;
- 	struct mlx4_ib_demux_pv_qp qp[2];
- };
- 
-@@ -446,6 +447,7 @@ struct mlx4_ib_demux_ctx {
- 	struct ib_device *ib_dev;
- 	int port;
- 	struct workqueue_struct *wq;
-+	struct workqueue_struct *wi_wq;
- 	struct workqueue_struct *ud_wq;
- 	spinlock_t ud_lock;
- 	atomic64_t subnet_prefix;
 -- 
 2.25.1
 
