@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C651C29AF14
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A05729AEF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754748AbgJ0OGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:06:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47336 "EHLO mail.kernel.org"
+        id S1754561AbgJ0OF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753288AbgJ0N7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:59:51 -0400
+        id S1754520AbgJ0OFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:05:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6AB4221F7;
-        Tue, 27 Oct 2020 13:59:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95DD022263;
+        Tue, 27 Oct 2020 14:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807190;
-        bh=QG/7ueEdEbsOxP7DxEbnpurwvC9xet4KgQ6y7mIGmCc=;
+        s=default; t=1603807550;
+        bh=TMvl6JqP5QWLLoIB7AQcGC1r6OKMz+DhBZQmQMC6+rA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGmHMttKDKWqCrTEZSJacZHPwiV5oKu+xq4acixAz3knKa2OS6bMUBpvvCWnauSYD
-         Fpq7nXwr6KGBt41zPDO0dJKPXc9Kh/gv5GaBSMd4KTWREJ+9Jwj6h3SwlappeGn9qu
-         R/I/wNOos2YEcjOUyQ/n8UYHbLon+b4Frf7J7LyA=
+        b=yw00NDlmS4C6VZCyG1dnI5GvNi80UEJYui7p/jn1t8W29qcVtM90ox3OKAjwHnXUG
+         n6zVv9YatipLIJsiOOuoZSRXR7RsJjIIA3HY6v1HlR0WPF8/WU6RBLnVAmpIFPR3uX
+         1h5pposkNTS3uAWjRU62DqFmTX2atvtN6A7ejNks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 076/112] powerpc/powernv/dump: Fix race while processing OPAL dump
-Date:   Tue, 27 Oct 2020 14:49:46 +0100
-Message-Id: <20201027134904.153332418@linuxfoundation.org>
+        stable@vger.kernel.org, Kaige Li <likaige@loongson.cn>,
+        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 093/139] NTB: hw: amd: fix an issue about leak system resources
+Date:   Tue, 27 Oct 2020 14:49:47 +0100
+Message-Id: <20201027134906.550742570@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,115 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+From: Kaige Li <likaige@loongson.cn>
 
-[ Upstream commit 0a43ae3e2beb77e3481d812834d33abe270768ab ]
+[ Upstream commit 44a0a3c17919db1498cebb02ecf3cf4abc1ade7b ]
 
-Every dump reported by OPAL is exported to userspace through a sysfs
-interface and notified using kobject_uevent(). The userspace daemon
-(opal_errd) then reads the dump and acknowledges that the dump is
-saved safely to disk. Once acknowledged the kernel removes the
-respective sysfs file entry causing respective resources to be
-released including kobject.
+The related system resources were not released when pci_set_dma_mask(),
+pci_set_consistent_dma_mask(), or pci_iomap() return error in the
+amd_ntb_init_pci() function. Add pci_release_regions() to fix it.
 
-However it's possible the userspace daemon may already be scanning
-dump entries when a new sysfs dump entry is created by the kernel.
-User daemon may read this new entry and ack it even before kernel can
-notify userspace about it through kobject_uevent() call. If that
-happens then we have a potential race between
-dump_ack_store->kobject_put() and kobject_uevent which can lead to
-use-after-free of a kernfs object resulting in a kernel crash.
-
-This patch fixes this race by protecting the sysfs file
-creation/notification by holding a reference count on kobject until we
-safely send kobject_uevent().
-
-The function create_dump_obj() returns the dump object which if used
-by caller function will end up in use-after-free problem again.
-However, the return value of create_dump_obj() function isn't being
-used today and there is no need as well. Hence change it to return
-void to make this fix complete.
-
-Fixes: c7e64b9ce04a ("powerpc/powernv Platform dump interface")
-Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201017164210.264619-1-hegdevasant@linux.vnet.ibm.com
+Fixes: a1b3695820aa ("NTB: Add support for AMD PCI-Express Non-Transparent Bridge")
+Signed-off-by: Kaige Li <likaige@loongson.cn>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/powernv/opal-dump.c | 41 +++++++++++++++-------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+ drivers/ntb/hw/amd/ntb_hw_amd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/powernv/opal-dump.c b/arch/powerpc/platforms/powernv/opal-dump.c
-index 4c827826c05eb..e21e2c0af69d2 100644
---- a/arch/powerpc/platforms/powernv/opal-dump.c
-+++ b/arch/powerpc/platforms/powernv/opal-dump.c
-@@ -319,15 +319,14 @@ static ssize_t dump_attr_read(struct file *filep, struct kobject *kobj,
- 	return count;
- }
+diff --git a/drivers/ntb/hw/amd/ntb_hw_amd.c b/drivers/ntb/hw/amd/ntb_hw_amd.c
+index 6ccba0d862df7..927b574e5d596 100644
+--- a/drivers/ntb/hw/amd/ntb_hw_amd.c
++++ b/drivers/ntb/hw/amd/ntb_hw_amd.c
+@@ -994,6 +994,7 @@ static int amd_ntb_init_pci(struct amd_ntb_dev *ndev,
  
--static struct dump_obj *create_dump_obj(uint32_t id, size_t size,
--					uint32_t type)
-+static void create_dump_obj(uint32_t id, size_t size, uint32_t type)
- {
- 	struct dump_obj *dump;
- 	int rc;
- 
- 	dump = kzalloc(sizeof(*dump), GFP_KERNEL);
- 	if (!dump)
--		return NULL;
-+		return;
- 
- 	dump->kobj.kset = dump_kset;
- 
-@@ -347,21 +346,39 @@ static struct dump_obj *create_dump_obj(uint32_t id, size_t size,
- 	rc = kobject_add(&dump->kobj, NULL, "0x%x-0x%x", type, id);
- 	if (rc) {
- 		kobject_put(&dump->kobj);
--		return NULL;
-+		return;
- 	}
- 
-+	/*
-+	 * As soon as the sysfs file for this dump is created/activated there is
-+	 * a chance the opal_errd daemon (or any userspace) might read and
-+	 * acknowledge the dump before kobject_uevent() is called. If that
-+	 * happens then there is a potential race between
-+	 * dump_ack_store->kobject_put() and kobject_uevent() which leads to a
-+	 * use-after-free of a kernfs object resulting in a kernel crash.
-+	 *
-+	 * To avoid that, we need to take a reference on behalf of the bin file,
-+	 * so that our reference remains valid while we call kobject_uevent().
-+	 * We then drop our reference before exiting the function, leaving the
-+	 * bin file to drop the last reference (if it hasn't already).
-+	 */
-+
-+	/* Take a reference for the bin file */
-+	kobject_get(&dump->kobj);
- 	rc = sysfs_create_bin_file(&dump->kobj, &dump->dump_attr);
--	if (rc) {
-+	if (rc == 0) {
-+		kobject_uevent(&dump->kobj, KOBJ_ADD);
-+
-+		pr_info("%s: New platform dump. ID = 0x%x Size %u\n",
-+			__func__, dump->id, dump->size);
-+	} else {
-+		/* Drop reference count taken for bin file */
- 		kobject_put(&dump->kobj);
--		return NULL;
- 	}
- 
--	pr_info("%s: New platform dump. ID = 0x%x Size %u\n",
--		__func__, dump->id, dump->size);
--
--	kobject_uevent(&dump->kobj, KOBJ_ADD);
--
--	return dump;
-+	/* Drop our reference */
-+	kobject_put(&dump->kobj);
-+	return;
- }
- 
- static irqreturn_t process_dump(int irq, void *data)
+ err_dma_mask:
+ 	pci_clear_master(pdev);
++	pci_release_regions(pdev);
+ err_pci_regions:
+ 	pci_disable_device(pdev);
+ err_pci_enable:
 -- 
 2.25.1
 
