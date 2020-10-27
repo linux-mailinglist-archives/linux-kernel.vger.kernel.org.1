@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0C129C923
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20C129C92A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372197AbgJ0TmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:42:05 -0400
-Received: from casper.infradead.org ([90.155.50.34]:54492 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731531AbgJ0TmF (ORCPT
+        id S372218AbgJ0Tob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:44:31 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:34894 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503729AbgJ0Toa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j4LrKWJEbSOSPlHf/FcHKAmDO1RYdRaPQ3Vf00QxAFE=; b=Cq+DcDPwaFpIYRZZeskZs0uju4
-        fy1325Fs41oM/aQU9KveU95Up85GLyZiA9WLbdcbITBrRc7QHlMJkwDg5xAq/6av/GWZHI8VlDHo9
-        wz315QPIppnRBe5Rlmg8fUaDdvlnScHQfFjU2Y25+AAaH65qbkVs4KGGkxEE4Mt2Cldga71kBOSmm
-        sKI1zyYJAaHClAj8bmLDgEUWifSObnMwAGwch6LZMbl9nIUs5k2ktwxrsAGC4myon6e+aegbDEua7
-        RVtWod64f50GPmjuLiBAAgzUjHJjtbqWd7ozLeY2PAFdqPctkbcYBkkCBiQhZstbcIE78uokMqehO
-        P03M3Amw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXUqV-0007NG-GT; Tue, 27 Oct 2020 19:41:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CB23307A34;
-        Tue, 27 Oct 2020 20:41:26 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3856120315071; Tue, 27 Oct 2020 20:41:26 +0100 (CET)
-Date:   Tue, 27 Oct 2020 20:41:26 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, luto@kernel.org, me@kylehuey.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, rocallahan@gmail.com,
-        alexandre.chartre@oracle.com, paulmck@kernel.org,
-        frederic@kernel.org, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, mhiramat@kernel.org,
-        pmladek@suse.com, joel@joelfernandes.org, rostedt@goodmis.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, brgerst@gmail.com,
-        jpoimboe@redhat.com, daniel.thompson@linaro.org,
-        julliard@winehq.org, pgofman@codeweavers.com
-Subject: Re: [PATCH 1/3] x86/debug: Fix BTF handling
-Message-ID: <20201027194126.GR2628@hirez.programming.kicks-ass.net>
-References: <20201027091504.712183781@infradead.org>
- <20201027093607.956147736@infradead.org>
+        Tue, 27 Oct 2020 15:44:30 -0400
+Received: by mail-oo1-f68.google.com with SMTP id n16so625932ooj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:44:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/b5O6FPaHNp9MQasn/J3mPbI+olxJ1Djuu2IqydSnVU=;
+        b=EMb0D/Ny5cL/MFLCU7G50YrlFojujNMKsnbTEnpmxixf4rsp0EbJbHrjHy56RQuZoM
+         wHsKPwNbhOCUq+2ndA+xma40qTBz2VkpcfFucDsuo15QHHnMMOF64/eRExlicLs9FKNy
+         RrWFVDk4e5MC51Oizck+tUce2A2n4acHt+MrXmpbHyLIq1Xk69o/nLHKcQRi8Q6uyx/X
+         GOinnK57UTYzxER4pmViMZJE/6e1PI/Xl+xEEeEuyjEqm/9ZVSOR2pvNbWpVScdUwk65
+         GyQ4e9xZVj7w8jhJdafqCcYZmWXDeBCkCgk7xVqFhS2CXcJYmxwuGZjfVIsLuhinzx/o
+         AsMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/b5O6FPaHNp9MQasn/J3mPbI+olxJ1Djuu2IqydSnVU=;
+        b=KNmnh+wYYOpzLpVKoKLikQZM4QnzM+xwMXkhh/19hJL0ceV28QEp0EzVX4nDe/af63
+         LtQp7+ajZSobx+dfKI2v+t7pl/RUiT0Fi5KzgWCx627CMYd5MQEmfxezZrNDNqCd5IEr
+         3k4nPtjTmaeiMyUP5wfBRBIdtY+4/qThnI/v2ecH99h2DEgGVPGJb6s0gWuyqTlBQ69+
+         hAjO6RCP5gNKLfb6+LokHNT+VFdynaiBJhpryQc4htIcHfXNgm3YYY96M0vyghkuaGFB
+         jjbNNe0TwGuT2K5WkfUb6zGKDn7/oB+aaW6keWgFJYBC3QCSs71o0nxFkOfy4LQRZ7Dj
+         QtRw==
+X-Gm-Message-State: AOAM531yWPF5sEiCNBf21BHuS3F9HFwiCUJwQZl1n1ffhoTzF3dm1jUO
+        6swXNPLRdCXqqedjDLVKBQI1LH4PlZoLXoXONno=
+X-Google-Smtp-Source: ABdhPJy+3jgkpd3OG4prEhXki/9d9tUVRu13ucOY50PK75BmTVXh3cLofjvOES5m/c1qe173nxTEOj6oDoNqjk3YFME=
+X-Received: by 2002:a4a:be14:: with SMTP id l20mr3023952oop.27.1603827867842;
+ Tue, 27 Oct 2020 12:44:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027093607.956147736@infradead.org>
+References: <20201026160825.3706944-1-arnd@kernel.org> <20201027075655.GC22487@lst.de>
+In-Reply-To: <20201027075655.GC22487@lst.de>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Tue, 27 Oct 2020 21:43:58 +0200
+Message-ID: <CAFCwf12M5Hk-_7g6bofLBDm4EunJmd7C_wPFU6U8fHOyqL_Bxg@mail.gmail.com>
+Subject: Re: [PATCH] habanalabs: fix kernel pointer type
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Zhang Li <li.zhang@bitmain.com>,
+        Ding Z Nan <oshack@hotmail.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Dotan Barak <dbarak@habana.ai>,
+        Moti Haimovski <mhaimovski@habana.ai>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:15:05AM +0100, Peter Zijlstra wrote:
+On Tue, Oct 27, 2020 at 9:56 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Looks sensible.  Btw, I've wondered for a while if we need a gen_pool
+> variant that works on kernel pointers.
+>
+> Acked-by: Christoph Hellwig <hch@lst.de>
 
-> @@ -873,6 +866,20 @@ static __always_inline void exc_debug_ke
->  	 */
->  	WARN_ON_ONCE(user_mode(regs));
->  
-> +	if (test_thread_flag(TIF_BLOCKSTEP)) {
-> +		/*
-> +		 * The SDM says "The processor clears the BTF flag when it
-> +		 * generates a debug exception." but PTRACE_BLOCKSTEP requested
-> +		 * it for userspace, but we just took a kernel #DB, so re-set
-> +		 * BTF.
-> +		 */
-> +		unsigned long debugctl;
-> +
-> +		rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-> +		debugctl |= DEBUGCTLMSR_BTF;
-> +		wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-> +	}
-> +
->  	/*
->  	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
->  	 * watchpoint at the same time then that will still be handled.
-
-Masami, how does BTF interact with !optimized kprobes that single-step?
-
-The best answer I can come up with is 'poorly' :/
+Looks good. I'll give it a spin in our C/I just to make sure.
+Assuming nothing bad happens, I'll add it to my -fixes tree.
+Thanks,
+Oded
