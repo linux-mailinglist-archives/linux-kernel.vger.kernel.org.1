@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF03A29CB70
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156BC29CB73
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374354AbgJ0Vnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:43:41 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:39590 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374343AbgJ0Vnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:43:37 -0400
-Received: by mail-io1-f66.google.com with SMTP id p7so3202693ioo.6;
-        Tue, 27 Oct 2020 14:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M4DMtRusIBSeOgDXKaZMtL3aNFUYRHrBj1yi1ElNljs=;
-        b=e78D+C4YPOWMj2c9KFCPYCIg3bvAvcyQqVd3q0U9IzxX7aqpzFtPrfQOFokVNN1PNX
-         XVrypVrbod4hLwzuZGhyHb/+PDmB3ar1be3vzd1WBJfTgQniWRrX8wn39wKbAhJQpN0A
-         oWejHK6i+TG4BlPd+/oJEn1latxU4lUUd8Xv2e2G6Pa7x6z2WF7U8Ot8KajYAwiqxmb5
-         42vF/PLb6KUXH7JMRLIW1AeHyRBEqLvvmqbnLwPR3AkCXIvwbCLdl6AHUllzTiBbHgup
-         lsgxRaktKlyNrDii/jNalYObBXJQKkUeLo44XP3oS1+49RWV5Hlj51ZCHgtr7+Iz9cNW
-         85wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M4DMtRusIBSeOgDXKaZMtL3aNFUYRHrBj1yi1ElNljs=;
-        b=d6wzK8f/KvuLIuCFNCsY2VyxMtQ6KFHpjI83DbFaQ+lhGRi6F9X1d5Y0EobpMBCg37
-         VURxNkB8YsUwxiTQgK171QpDbhJcvgh/8FRx1eKvfR05oYF1eSQ6zEVgNkxJn54Xroli
-         9fSRRhYYFvHO438LQTJ3sBUzW8c2rvxXBd78TRXyT9a3CS0tHfA7aqhkY881kLUvOYbV
-         eJPYZJEVR+iUrsd15XHGVF7MBXGYuvEF2zHjU37KYfzyNuv9KXo6p/fbaVSdepwX3AZ7
-         pfmImKBCYZqlHoMVMeOsw9LOdPfsuB7B3oP+OrGQHgjj+JgHrOZuK27o27q71K723pQj
-         kE0Q==
-X-Gm-Message-State: AOAM530wOjVlL1t719NYD14kkEJ4ZSoNfJ7omfwqiOBMdIqZ5wjSqfOn
-        nA48QcfP2KO0Qmh5rit8WsHY9qY6XJ7EybQz/iE=
-X-Google-Smtp-Source: ABdhPJx80PPcZMpfUlBGECvO/rasjkvCl7waBT4W4GSuQJBtLI91Ef08UVD8zq/hY18wjm/GR+zGD6+MmyoxhgDmCBw=
-X-Received: by 2002:a6b:8b95:: with SMTP id n143mr3933217iod.36.1603835014568;
- Tue, 27 Oct 2020 14:43:34 -0700 (PDT)
+        id S2505464AbgJ0Vpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:45:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:64054 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442558AbgJ0Vpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:45:36 -0400
+IronPort-SDR: G3l3hjlDKDCO5D0js167JyXc/jUfVNS1BmMmYByH4OfO1T5AGGDb+i8rySqZMbAfNNtjqJfphG
+ cYNh4TgEgxKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="232351165"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="232351165"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 14:45:35 -0700
+IronPort-SDR: RkGFTuST7nnifjeRYaoyh9qYMXMI337t5xZ2s1iFzCtu1Hp4R+Xl8tTlElpp2VdqtR3fvL3zDa
+ nK4INudzzjcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="303897794"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2020 14:45:35 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH] x86: Drop RDPID macro to discourage use of RDPID in the kernel
+Date:   Tue, 27 Oct 2020 14:45:32 -0700
+Message-Id: <20201027214532.1792-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201027183149.145165-1-peron.clem@gmail.com> <20201027183149.145165-2-peron.clem@gmail.com>
- <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com>
-In-Reply-To: <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Tue, 27 Oct 2020 22:43:23 +0100
-Message-ID: <CAJiuCcdX7jc-VMWYfPPL3qu9RcUU7VMdjshyPH_xLA0yVXftUw@mail.gmail.com>
-Subject: Re: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre-Louis,
+Drop the GAS-compatible RDPID macro as RDPID shouldn't be used in the
+kernel, excepting the vDSO, which handcodes RDPID in inline asm.  RDPID
+is unsafe in the kernel because KVM loads guest's TSC_AUX on VM-entry
+and may not restore the host's value until the CPU returns to userspace.
 
-On Tue, 27 Oct 2020 at 19:59, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->
-> > @@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> >       case SND_SOC_DAIFMT_DSP_B:
-> >       case SND_SOC_DAIFMT_LEFT_J:
-> >       case SND_SOC_DAIFMT_RIGHT_J:
-> > -             lrck_period = params_physical_width(params) * slots;
-> > +             lrck_period = slot_width * slots;
-> >               break;
-> >
-> >       case SND_SOC_DAIFMT_I2S:
-> > -             lrck_period = params_physical_width(params);
-> > +             lrck_period = slot_width;
-> >               break;
->
-> Aren't I2S, LEFT_J and RIGHT_J pretty much the same in terms of lrclk
-> rate/period? the only thing that can change is the polarity, no?
->
-> Not sure why it's handled differently here?
+See commit 6a3ea3e68b8a ("x86/entry/64: Do not use RDPID in paranoid
+entry to accomodate KVM") for details.
 
-I just had a look at the User Manual for H3 and H6 and I didn't find
-any reason why LEFT_J and RIGHT_J should be computed in a different
-way as I2S.
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/include/asm/inst.h | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-Also the commit introducing this doesn't mention it.
-7ae7834ec446 ("ASoC: sun4i-i2s: Add support for DSP formats")
+diff --git a/arch/x86/include/asm/inst.h b/arch/x86/include/asm/inst.h
+index bd7f02480ca1..438ccd4f3cc4 100644
+--- a/arch/x86/include/asm/inst.h
++++ b/arch/x86/include/asm/inst.h
+@@ -143,21 +143,6 @@
+ 	.macro MODRM mod opd1 opd2
+ 	.byte \mod | (\opd1 & 7) | ((\opd2 & 7) << 3)
+ 	.endm
+-
+-.macro RDPID opd
+-	REG_TYPE rdpid_opd_type \opd
+-	.if rdpid_opd_type == REG_TYPE_R64
+-	R64_NUM rdpid_opd \opd
+-	.else
+-	R32_NUM rdpid_opd \opd
+-	.endif
+-	.byte 0xf3
+-	.if rdpid_opd > 7
+-	PFX_REX rdpid_opd 0
+-	.endif
+-	.byte 0x0f, 0xc7
+-	MODRM 0xc0 rdpid_opd 0x7
+-.endm
+ #endif
+ 
+ #endif
+-- 
+2.28.0
 
-I can't test it with my board but if nobody complains about it, I will
-introduce a fix for this in the next version and change this also for
-H6.
-
-Thanks for your review,
-Clement
