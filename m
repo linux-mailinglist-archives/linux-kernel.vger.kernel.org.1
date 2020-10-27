@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEB829BD4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA8029BE4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799215AbgJ0Plk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
+        id S1794628AbgJ0PMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:12:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799771AbgJ0PdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:33:17 -0400
+        id S1788787AbgJ0PAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:00:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5644022400;
-        Tue, 27 Oct 2020 15:33:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 238AF20714;
+        Tue, 27 Oct 2020 15:00:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812796;
-        bh=MpVFyXvmU22aMbT2nKeSrSIFiErrcqK8w80LEe4LQcA=;
+        s=default; t=1603810834;
+        bh=c3eVX2rW9IL+JatQCuUpN638FaBb3LtCewNoITz+JtE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ld5qxJjo9xX2Emrpr8eerbcqtweskVu+YBVGWL1rsc0MhuG5XZBYXMY5UyilbleO0
-         Ue5Dhwtme8GQ0asgngCHEic9+N125zleTSpFNCZjSZxzdBKEUtAgLZf8RYE6uD7YiX
-         eeQ7HPJn8bioB4aLgKeEQWLGPDN5x9fhPAWBuzR8=
+        b=Ynm3FIkBDefFKppmueML7B7wk+fJA4mHa0cPzu9fIH2E6FWfjVcHk2wqhSAm1Ud0d
+         PdQEKBaMTT0L55Gvg2tJXUUHy5PE2/+4+s9NQHkGpWMkxw1IjF1nxkZ99n6amp94CB
+         jmDhmI7u8VAsIjRNNTZQkGEWGaGHf5v5DBqVoOGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 333/757] tty: serial: imx: fix link error with CONFIG_SERIAL_CORE_CONSOLE=n
-Date:   Tue, 27 Oct 2020 14:49:43 +0100
-Message-Id: <20201027135506.175752907@linuxfoundation.org>
+Subject: [PATCH 5.8 248/633] ASoC: tas2770: Fix required DT properties in the code
+Date:   Tue, 27 Oct 2020 14:49:51 +0100
+Message-Id: <20201027135534.312845190@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Dan Murphy <dmurphy@ti.com>
 
-[ Upstream commit 24c796926e2f88b383a76ddc871a7cdd62484f3a ]
+[ Upstream commit 4b8ab8a7761fe2ba1c4e741703a848cb8f390f79 ]
 
-aarch64-linux-gnu-ld: drivers/tty/serial/imx_earlycon.o: in function `imx_uart_console_early_write':
-imx_earlycon.c:(.text+0x84): undefined reference to `uart_console_write'
+The devicetree binding indicates that the ti,asi-format, ti,imon-slot-no
+and ti,vmon-slot-no are not required but the driver requires them or it
+fails to probe. Honor the binding and allow these entries to be optional
+and set the corresponding values to the default values for each as defined
+in the data sheet.
 
-The driver uses the uart_console_write(), but SERIAL_CORE_CONSOLE is not
-selected, so uart_console_write is not defined, then we get the error.
-Fix this by selecting SERIAL_CORE_CONSOLE.
-
-Fixes: 699cc4dfd140 ("tty: serial: imx: add imx earlycon driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20200919063240.2754965-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/r/20200918190548.12598-4-dmurphy@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tas2770.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 54586c1aba60b..20b98a3ba0466 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -521,6 +521,7 @@ config SERIAL_IMX_EARLYCON
- 	depends on ARCH_MXC || COMPILE_TEST
- 	depends on OF
- 	select SERIAL_EARLYCON
-+	select SERIAL_CORE_CONSOLE
- 	help
- 	  If you have enabled the earlycon on the Freescale IMX
- 	  CPU you can make it the earlycon by answering Y to this option.
+diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
+index 4d67b1c160380..f6c3c5aaab653 100644
+--- a/sound/soc/codecs/tas2770.c
++++ b/sound/soc/codecs/tas2770.c
+@@ -707,29 +707,28 @@ static int tas2770_parse_dt(struct device *dev, struct tas2770_priv *tas2770)
+ 	rc = fwnode_property_read_u32(dev->fwnode, "ti,asi-format",
+ 					&tas2770->asi_format);
+ 	if (rc) {
+-		dev_err(tas2770->dev, "Looking up %s property failed %d\n",
+-			"ti,asi-format", rc);
+-		goto end;
++		dev_info(tas2770->dev, "Property %s is missing setting default slot\n",
++			"ti,asi-format");
++		tas2770->asi_format = 0;
+ 	}
+ 
+ 	rc = fwnode_property_read_u32(dev->fwnode, "ti,imon-slot-no",
+ 			&tas2770->i_sense_slot);
+ 	if (rc) {
+-		dev_err(tas2770->dev, "Looking up %s property failed %d\n",
+-			"ti,imon-slot-no", rc);
+-		goto end;
++		dev_info(tas2770->dev, "Property %s is missing setting default slot\n",
++			"ti,imon-slot-no");
++		tas2770->i_sense_slot = 0;
+ 	}
+ 
+ 	rc = fwnode_property_read_u32(dev->fwnode, "ti,vmon-slot-no",
+ 				&tas2770->v_sense_slot);
+ 	if (rc) {
+-		dev_err(tas2770->dev, "Looking up %s property failed %d\n",
+-			"ti,vmon-slot-no", rc);
+-		goto end;
++		dev_info(tas2770->dev, "Property %s is missing setting default slot\n",
++			"ti,vmon-slot-no");
++		tas2770->v_sense_slot = 2;
+ 	}
+ 
+-end:
+-	return rc;
++	return 0;
+ }
+ 
+ static int tas2770_i2c_probe(struct i2c_client *client,
 -- 
 2.25.1
 
