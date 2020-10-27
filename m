@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA0429C649
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F34E829C6BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826042AbgJ0SPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:15:24 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:35357 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756361AbgJ0SPT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:15:19 -0400
-Received: by mail-oo1-f68.google.com with SMTP id n16so560270ooj.2;
-        Tue, 27 Oct 2020 11:15:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A2dok45yhaRnIcTqCubcIb/b2anQyaAQwImVQf/Na3Y=;
-        b=ck81QMG+M2Kr38q+4/TgGvHYJLJi4S8Bye1aHJKy3KWGkqr61lpFh9y4v4Y5is13Nc
-         XBE2+xpIO/pUde1Wetonkr2lXiekSU+OQocGt7zHmwJVa2edrSPJFcuDrzQb2cgnmRLj
-         s4YDJwtB6HBEKn8iqnfqTGSzAzP7ZTJTuS5DGfLFtCqvL+Kbl4hKmVG/V9kOgp7NnURM
-         jTOu8Q+Xzx+qm+SDAPT3306btv8meLMWMN6x8XJXHyVJnoG+Y4stP82q3+gx8AOT/DfG
-         +YZdV2Z4ROPSM0CxOhbFIN/vXk0lLY4RTIgVs5g483spDUFKMc1VPweYId24eqIdCufM
-         m42g==
-X-Gm-Message-State: AOAM5338wTUR1zRlRH+tQyWxJl30xvHOH08s+xDvdsVr7Fx8smkNM9ZD
-        V1YcHtq1YUt0dPMAVn9OB1CxixUdN1hdW5E5SFg=
-X-Google-Smtp-Source: ABdhPJyHgyvdIkXdXHc9qAAC9APnfwLpfPgElkuVsTmXd7ixIP5oTtu+ZRGaKCORK5xRhIyTceH+yzE0wVfl1jv6aYA=
-X-Received: by 2002:a4a:d815:: with SMTP id f21mr2776641oov.44.1603822517820;
- Tue, 27 Oct 2020 11:15:17 -0700 (PDT)
+        id S1827212AbgJ0SWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:22:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49322 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1826497AbgJ0SUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 14:20:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E2118ADCA;
+        Tue, 27 Oct 2020 18:20:07 +0000 (UTC)
+Subject: Re: [PATCH 1/8] mm: slab: provide krealloc_array()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20201027121725.24660-1-brgl@bgdev.pl>
+ <20201027121725.24660-2-brgl@bgdev.pl>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <21ae795b-c0f4-bbf3-20f6-830d0980a673@suse.cz>
+Date:   Tue, 27 Oct 2020 19:20:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201027124319.1448-1-jackie.zamow@gmail.com>
-In-Reply-To: <20201027124319.1448-1-jackie.zamow@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 27 Oct 2020 19:15:06 +0100
-Message-ID: <CAJZ5v0jo8B-vpSyet7u04To5M7tE79JyXZFe0jVqUzhsDfhsbg@mail.gmail.com>
-Subject: Re: [PATCH] power: fix typo in kernel/power/process.c
-To:     Jackie Zamow <jackie.zamow@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201027121725.24660-2-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 1:43 PM Jackie Zamow <jackie.zamow@gmail.com> wrote:
->
-> This patch fixes a typo found in the function freeze_processes()
->
-> Signed-off-by: Jackie Zamow <jackie.zamow@gmail.com>
->
-> ---
->  kernel/power/process.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/power/process.c b/kernel/power/process.c
-> index 4b6a54da7e65..45b054b7b5ec 100644
-> --- a/kernel/power/process.c
-> +++ b/kernel/power/process.c
-> @@ -146,7 +146,7 @@ int freeze_processes(void)
->         BUG_ON(in_atomic());
->
->         /*
-> -        * Now that the whole userspace is frozen we need to disbale
-> +        * Now that the whole userspace is frozen we need to disable
->          * the OOM killer to disallow any further interference with
->          * killable tasks. There is no guarantee oom victims will
->          * ever reach a point they go away we have to wait with a timeout.
-> --
+On 10/27/20 1:17 PM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> When allocating an array of elements, users should check for
+> multiplication overflow or preferably use one of the provided helpers
+> like: kmalloc_array().
+> 
+> There's no krealloc_array() counterpart but there are many users who use
+> regular krealloc() to reallocate arrays. Let's provide an actual
+> krealloc_array() implementation.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Applied as 5.10-rc material with some subject and changelog edits, thanks!
+Makes sense.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>   include/linux/slab.h | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index dd6897f62010..0e6683affee7 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -592,6 +592,17 @@ static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
+>   	return __kmalloc(bytes, flags);
+>   }
+>   
+> +static __must_check inline void *
+> +krealloc_array(void *p, size_t new_n, size_t new_size, gfp_t flags)
+> +{
+> +	size_t bytes;
+> +
+> +	if (unlikely(check_mul_overflow(new_n, new_size, &bytes)))
+> +		return NULL;
+> +
+> +	return krealloc(p, bytes, flags);
+> +}
+> +
+>   /**
+>    * kcalloc - allocate memory for an array. The memory is set to zero.
+>    * @n: number of elements.
+> 
+
