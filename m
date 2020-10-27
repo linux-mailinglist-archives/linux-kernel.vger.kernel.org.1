@@ -2,229 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E321A29A9E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE47929A9E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898660AbgJ0Kkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:40:40 -0400
-Received: from wind.enjellic.com ([76.10.64.91]:58558 "EHLO wind.enjellic.com"
+        id S2898639AbgJ0KkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:40:16 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:46398 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898508AbgJ0KjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:39:20 -0400
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 09RAcf2K012871;
-        Tue, 27 Oct 2020 05:38:41 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 09RAce9n012870;
-        Tue, 27 Oct 2020 05:38:40 -0500
-Date:   Tue, 27 Oct 2020 05:38:40 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Mikko Ylinen <mikko.ylinen@intel.com>
-Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-Message-ID: <20201027103840.GA12095@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com> <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com> <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com> <20201023101736.GG168477@linux.intel.com> <f2ff64e6-8fe1-55ee-ae7c-f19d7907d60e@intel.com> <20201024113403.GA29427@kernel.org> <CALCETrWxA6AgU8zg=npS=4NaA1_Pu9UwScEnr_Gk0wF-BOmqqQ@mail.gmail.com> <20201024194632.GA3642@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2898507AbgJ0Kiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:38:55 -0400
+Received: from zn.tnic (p200300ec2f0dae00bd0b3d5f265e51fe.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:bd0b:3d5f:265e:51fe])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF2241EC038E;
+        Tue, 27 Oct 2020 11:38:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603795134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=XaOZ8iDEo6bzyk47Zcy/Tow7zQzmSGGtifM1Mj5WYTo=;
+        b=hP7C/6JDx3RSdjXHeEtJkinSbE2r+NUTz9oJMB8vkFY9GBTxeyimfaHAELlVUb1dTQIbpq
+        jKyc4c9OEuA4kfgg5X9+h1lswGWI6mPeGgfQtMakwC7TPUarlnhCA2AgqxLVWBmJ7tju53
+        H6MLy+yo8u7ztUPzv7oyJvZVmbWVUt8=
+Date:   Tue, 27 Oct 2020 11:38:46 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] x86/boot/compressed/64: Add CPUID sanity check to
+ early #VC handler
+Message-ID: <20201027103846.GB15580@zn.tnic>
+References: <20201021123938.3696-1-joro@8bytes.org>
+ <20201021123938.3696-3-joro@8bytes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201024194632.GA3642@kernel.org>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Tue, 27 Oct 2020 05:38:41 -0500 (CDT)
+In-Reply-To: <20201021123938.3696-3-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 11:23:11PM +0300, Jarkko Sakkinen wrote:
-
-Good morning, I hope the day is starting well for everyone.
-
-> On Sat, Oct 24, 2020 at 08:47:28AM -0700, Andy Lutomirski wrote:
-> > On Sat, Oct 24, 2020 at 4:34 AM Jarkko Sakkinen <kernel.org@kernel.org> wrote:
-> > >
-> > > On Fri, Oct 23, 2020 at 07:19:05AM -0700, Dave Hansen wrote:
-> > > > On 10/23/20 3:17 AM, Jarkko Sakkinen wrote:
-> > > > > On Tue, Oct 20, 2020 at 02:19:26PM -0700, Dave Hansen wrote:
-> > > > >> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
-> > > > >>> + * Failure to explicitly request access to a restricted attribute will cause
-> > > > >>> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
-> > > > >>> + * is access to the PROVISION_KEY.
-> > > > >> Could we also justify why access is restricted, please?  Maybe:
-> > > > >>
-> > > > >>    Access is restricted because PROVISION_KEY is burned uniquely
-> > > > >>    into each each processor, making it a perfect unique identifier
-> > > > >>    with privacy and fingerprinting implications.
-> > > > >>
-> > > > >> Are there any other reasons for doing it this way?
-> > > > > AFAIK, if I interperet the SDM correctl, PROVISION_KEY and
-> > > > > PROVISION_SEALING_KEY also have random salt added, i.e. they change
-> > > > > every boot cycle.
-> > > > >
-> > > > > There is "RAND = yes" on those keys in Table 40-64 of Intel SDM volume
-> > > > > 3D :-)
-> > > >
-> > > > Does that mean there are no privacy implications from access to the
-> > > > provisioning keys?  If that's true, why do we need a separate permission
-> > > > framework for creating provisioning enclaves?
-> > >
-> > > As I've understood it, the key material for those keys is not even
-> > > required in the current SGX architecture, it was used in the legacy EPID
-> > > scheme, but the attribute itself is useful.
-> > >
-> > > Let's assume that we have some sort of quoting enclave Q, which guards a
-> > > public key pair, which signs quotes of other enclaves. Let's assume we
-> > > have an attestation server A, which will enable some capabilities [*],
-> > > if it receives a quote signed with that public key pair.
-> > >
-> > > 1. E gets the report key with EGETKEY.
-> > > 2. E constructs REPORTDATA (37.16) and TARGETINFO (37.17) structures.
-> > >    The former describes the enclaves contents and attributes and latter
-> > >    the target, i.e. Q in this artitificial example.
-> > > 3. E calls EREPORT to generate a structure called REPORT MAC'd with the
-> > >    *targets* report key. It knows, which key to usue from REPORTDATA.
-> > > 4. The runtime will then pass this to Q.
-> > > 5. Q will check if ATTRIBUTE.PROVISION_KEY is set. If it is, Q will
-> > >    know that the enclave is allowed to get attested. Then it will
-> > >    sign the report with the guarded public key pair and send it to
-> > >    the attestation server.
-> > 
-> > I think you have this a little bit off.  AIUI E won't have
-> > ATTRIBUTE.PROVISION_KEY set -- Q will.  Q uses the provisioning key to
-> > convince an Intel server that it's running on a genuine Intel CPU, and
-> > the Intel server will return a signed certificate that Q can chain off
-> > of to generate attestations for E.
-
-> Right, I was confused by that RAND column, until Jethro corrected me.
-
-The RAND column is probably misnamed, it doesn't really imply random
-in the common sense of the meaning.  It implies that a 256 bit nonce
-(keyid) can be supplied to the ENCLU[EGETKEY] instruction to perturb
-the key derivation process.
-
-The value is actually available in plaintext form as part of the
-metadata for sealed data.
-
-If it was really a random value, attestation wouldn't work.
-
-> Actually, quoting enclave (QE) authorizes itself with a provisioning
-> certification enclave (PCE), which holds certificates and revocation
-> lists for provisioning secrets unique to a CPU. And the sequence that I
-> described happens between PCE and QE. It accepts requests from enclaves
-> with ATTRIBUTES.PROVISION key bits set to 1 according to:
+On Wed, Oct 21, 2020 at 02:39:35PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
->   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-sgx-support-for-third-party-attestation-801017.pdf
+> The early #VC handler which doesn't have a GHCB can only handle CPUID
+> exit codes. It is needed by the early boot code to handle #VC
+> exceptions raised in verify_cpu() and to get the position of the C
+> bit.
 > 
-> The source code for the reference  is available here:
+> But the CPUID information comes from the hypervisor, which is untrusted
+> and might return results which trick the guest into the no-SEV boot path
+> with no C bit set in the page-tables. All data written to memory would
+> then be unencrypted and could leak sensitive data to the hypervisor.
 > 
->   https://github.com/intel/SGXDataCenterAttestationPrimitives
+> Add sanity checks to the early #VC handlers to make sure the hypervisor
+> can not pretend that SEV is disabled.
 > 
-> And binaries are here:
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/kernel/sev-es-shared.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
->   https://01.org/intel-softwareguard-extensions/downloads/intel-sgx-dcap-1.6-release
->
-> They are provided for the inevitable reason that, it is the way bind
-> to the hardware, i.e. proof that you are running on a genuine CPU.
->
-> The network part is that PCE and QE can certify to an application,
-> if an enclave running in a different computer is an enclave.
+> diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
+> index 5f83ccaab877..48bb14563dcd 100644
+> --- a/arch/x86/kernel/sev-es-shared.c
+> +++ b/arch/x86/kernel/sev-es-shared.c
+> @@ -178,6 +178,32 @@ void __init do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code)
+>  		goto fail;
+>  	regs->dx = val >> 32;
+>  
+> +	/*
+> +	 * This is a VC handler and it is only raised when SEV-ES is active,
 
-All of this discussion has lacked a certain amount of precision, as a
-result the original issue with respect to Dave's concern regarding the
-privacy implications of an enclave posessing the PROVISION_KEY
-attribute has been lost.
+				and the #VC is only raised...
 
-First of all, it is important to note that two types of attestation
-are available, EPID and DCAP/ECDSA.  They differ in their
-implementation with respect to which enclaves need to have access to
-derivation of the PROVISION_KEY.  What does remain constant is the
-role that the PROVISION_KEY plays in all this.
+> +	 * which means SEV must be active too. Do sanity checks on the CPUID
+> +	 * results to make sure the hypervisor does not trick the kernel into
+> +	 * the no-sev path. This could map sensitive data unencrypted and make
+> +	 * it accessible to the hypervisor.
+> +	 *
+> +	 * In particular, check for:
+> +	 *	- Hypervisor CPUID bit
+> +	 *	- Availability of CPUID leaf 0x8000001f
+> +	 *	- SEV CPUID bit.
+> +	 *
+> +	 * The hypervisor might still report the wrong C-bit position, but this
+> +	 * can't be checked here.
 
-The Platform Certification Enclave (PCE) has two roles:
+So why are we doing those checks here at all then? I mean, the HV
+can tell us whatever it wants, i.e., make sure those checks pass but
+still report the C-bit at the wrong position. Which means that those
+checks are simply meh. So why are we doing them at all? To catch stupid
+hypervisors who can't even lie properly to the guest? :-)
 
-1.) Generate a Platform Provisioning IDentifier (PPID).
+> +	 */
+> +
+> +	if ((fn == 1 && !(regs->cx & BIT(31))))
+> +		/* Hypervisor Bit */
 
-2.) Certification of the fact that an enclave, other then the PCE, is
-running on the same platform at a particular Trusted Computing Base
-(TCB) level.
+s/Bit/bit/g
 
-Being able to generate a PPID is the most privacy sensitive operation
-that an enclave can peform, hence the recommendation to restrict
-access to the attribute bit that allows an enclave to create a
-derivation of the root provisioning key.
+> +		goto fail;
+> +	else if (fn == 0x80000000 && (regs->ax < 0x8000001f))
+> +		/* SEV Leaf check */
+> +		goto fail;
+> +	else if ((fn == 0x8000001f && !(regs->ax & BIT(1))))
+> +		/* SEV Bit */
+> +		goto fail;
+> +
+>  	/* Skip over the CPUID two-byte opcode */
+>  	regs->ip += 2;
+>  
+> -- 
+> 2.28.0
+> 
 
-The PPID is a 256 bit symmetric key that is generated with the keyid
-and security version values all set to null values.  As a result, any
-enclave with a given MRSIGNER value will generate the same key value.
-That value is used by Intel, and potentially others, to uniquely
-identify the platform as long as it exists.
+-- 
+Regards/Gruss,
+    Boris.
 
-The PPID can be admixed with other information, such as the platform
-security version of an enclave, to create a unique identifier for the
-TCB state of enclave based software running on a particular platform.
-This is role 2 of the PCE that I noted above.
-
-In DCAP attestation, which is what Jarkko is referring to, both the
-Quoting Enclave (QE) and PCE have access to PROVISION_KEY derivation.
-
-In EPID attestation the PCE and the Provisioning Enclave (PVE) have
-access to PROVISION_KEY derivation.
-
-I guess it is up to community consensus as to whether or not this is a
-privacy/security sensitive issue.  It provides precise enough
-identification that Intel uses it to determine whether or not a
-platform should be allowed or denied the ability to participate in
-EPID attestation.
-
-I believe that this is being used to to force the cloud based
-platforms to use DCAP rather then EPID based attestation.  The
-provision keys for these SKU's are not included in the Intel
-Attestation Service (IAS) database so they cannot identify themselves
-for provisioning of an EPID private key.
-
-Since Intel has access to the root provisioning keys it can identify a
-platform a-priori.  Other entities can use this infrastructure for
-uniquely identifying platforms but it has to be done via an enrollment
-process for a given signing key.
-
-> /Jarkko
-
-Hopefully the above clarifications are helpful.
-
-Have a good day.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"I suppose that could could happen but he wouldn't know a Galois Field
- if it kicked him in the nuts."
-                                -- Anonymous mathematician
-                                   Resurrection.
+https://people.kernel.org/tglx/notes-about-netiquette
