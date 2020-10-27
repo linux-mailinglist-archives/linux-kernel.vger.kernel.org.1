@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7BD29B9BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77ECF29B8B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802756AbgJ0PvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:51:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51790 "EHLO mail.kernel.org"
+        id S1801701AbgJ0PnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799909AbgJ0PeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:34:01 -0400
+        id S1800120AbgJ0PfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:35:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10BBA2225E;
-        Tue, 27 Oct 2020 15:33:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECD6D2225E;
+        Tue, 27 Oct 2020 15:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812840;
-        bh=1K4IyKtTGdCKuLc8OaFFPtQR+H0MRKtuszcqdPsT14I=;
+        s=default; t=1603812904;
+        bh=ZxkpQIgEWIQoiM8qTiWxMoB60zakyUYyXHGwt/vZj9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kDfRCGOLs9gF9KfbsRw4Z73PJR9i32nYOFdbZ3d26XPTxQtrdPtBnzCe3yVelynvL
-         Vu+iZI8WxZZXJc/yTn1F2O5eI6QDfFMEHvkhxwoGPSoc/dPe7L6eiBvLfINp/e+cpC
-         bTpeTiLKESQtYHbt3wH9F7qmvHpj9io/4kXWelvM=
+        b=qpDa3OK30pERBS8rHaWnJhx6It1eThE3sPsnDJrzd+7U0CgUfO33FYvoXjtp8pYGX
+         JhTifNvK/oFGJafav7YKpoRhELGJVo+O+u11Vwivs6Fm4vuH9Gu0V+2WNTyMXsH4eO
+         ZIpMI13wiSmwm+onPKKPxQnfpSxM4BHtBwVLm5i0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 341/757] coresight: etm4x: Fix save and restore of TRCVMIDCCTLR1 register
-Date:   Tue, 27 Oct 2020 14:49:51 +0100
-Message-Id: <20201027135506.568961727@linuxfoundation.org>
+Subject: [PATCH 5.9 343/757] bpf: disallow attaching modify_return tracing functions to other BPF programs
+Date:   Tue, 27 Oct 2020 14:49:53 +0100
+Message-Id: <20201027135506.657819238@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,51 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 3477326277451000bc667dfcc4fd0774c039184c ]
+[ Upstream commit 1af9270e908cd50a4f5d815c9b6f794c7d57ed07 ]
 
-In commit f188b5e76aae ("coresight: etm4x: Save/restore state
-across CPU low power states"), mistakenly TRCVMIDCCTLR1 register
-value was saved in trcvmidcctlr0 state variable which is used to
-store TRCVMIDCCTLR0 register value in etm4x_cpu_save() and then
-same value is written back to both TRCVMIDCCTLR0 and TRCVMIDCCTLR1
-in etm4x_cpu_restore(). There is already a trcvmidcctlr1 state
-variable available for TRCVMIDCCTLR1, so use it.
+>From the checks and commit messages for modify_return, it seems it was
+never the intention that it should be possible to attach a tracing program
+with expected_attach_type == BPF_MODIFY_RETURN to another BPF program.
+However, check_attach_modify_return() will only look at the function name,
+so if the target function starts with "security_", the attach will be
+allowed even for bpf2bpf attachment.
 
-Fixes: f188b5e76aae ("coresight: etm4x: Save/restore state across CPU low power states")
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200928163513.70169-26-mathieu.poirier@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this oversight by also blocking the modification if a target program is
+supplied.
+
+Fixes: 18644cec714a ("bpf: Fix use-after-free in fmod_ret check")
+Fixes: 6ba43b761c41 ("bpf: Attachment verification for BPF_MODIFY_RETURN")
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-etm4x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index 944c7a7cc1d91..fd678792b755d 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -1237,7 +1237,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index fba52d9ec8fc4..5b9d2cf06fc6b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11046,6 +11046,11 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		}
  
- 	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
--	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR1);
-+	state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
- 
- 	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
- 
-@@ -1347,7 +1347,7 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 	writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
- 
- 	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
--	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR1);
-+	writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
- 
- 	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
- 
+ 		if (prog->expected_attach_type == BPF_MODIFY_RETURN) {
++			if (tgt_prog) {
++				verbose(env, "can't modify return codes of BPF programs\n");
++				ret = -EINVAL;
++				goto out;
++			}
+ 			ret = check_attach_modify_return(prog, addr);
+ 			if (ret)
+ 				verbose(env, "%s() is not modifiable\n",
 -- 
 2.25.1
 
