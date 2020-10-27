@@ -2,275 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428F129A69E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3396929A6A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894930AbgJ0Icw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:32:52 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34578 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894921AbgJ0Icu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:32:50 -0400
-Received: by mail-lj1-f193.google.com with SMTP id y16so801758ljk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X82VobCub5wdmETS8bjf+vsdYdzdCr0PUmctvSLcEXs=;
-        b=KhZ5AD7Jw9jBSL5FbMoztfPKGbPuygHGVL/xEfq2XjOAML/HDO8WCDbzSkhKyibuAU
-         EdS7G74Z4xdzPbTaGFJM60aGA7elIq0mM1xpSG+76kNXuXg6Zy8JHG5XHUqOGhpK34S2
-         GBXe4XxWKlqFmjAjWTSutGi7pdAEaHPAGR/I6Ugdxfahk/n85pfH7WdokpQ4nweP/5aU
-         vnGoTK/26xRIqlW1NPVseaIbS5jZF3f1FigFuawXl+oSZfctnBZn0uvRAMMYelFfoK8V
-         oRGzJyg+Yn7kqncPCe2KU5YcVp2fuIKuT5nFQCCis7SYNgPo0hG5Xb9SkGKPfW0vnSPc
-         d6Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X82VobCub5wdmETS8bjf+vsdYdzdCr0PUmctvSLcEXs=;
-        b=RRIziHdsQGCYtLu83YuQNJBERKB+hnpDBk5ZBCy2Fd56Dd+gMOhtFrjeGKoY5OIQ8h
-         eBdNriGeUuTe7Wdkw1N14T2YABx720I9uDm35nNFh+N1DYCuYiuivyc6wEyQvQev4gFJ
-         BWo6Ek4zB/kfWf7lWNvL+GjaH8C6jonaO7Rp6lc1sOOEZX0CRUQIt9q8qlckwAfKSPjM
-         THx7HdCCBtTpm0/9ChejwPwYloZZV1qbNn0fmtn2nF/S/qK32lCSHpyfhnf6DgXW7RZq
-         B2voWcODG+cn1EHomDmlDHyfD9Wm6SH5gpFY5VBXi+6qUNFYrK5g2J3h/1l8wyYFHczJ
-         C5PA==
-X-Gm-Message-State: AOAM530/3fmHzvAYfkSbt06isZirE2rFlefO/F2/OEyO8kiw7Qkhyc7d
-        ECKzQsnTEzFmGxo3RS/4HlQOfg==
-X-Google-Smtp-Source: ABdhPJz1bsKo5yTgSnDzbbvP5V2jQw+5aQqoUkmOwX1eV8OBkkpGpm8QyCzEOzVMO02QIpg+mOjbYQ==
-X-Received: by 2002:a2e:874c:: with SMTP id q12mr579587ljj.148.1603787565936;
-        Tue, 27 Oct 2020 01:32:45 -0700 (PDT)
-Received: from [192.168.1.211] ([188.162.64.248])
-        by smtp.gmail.com with ESMTPSA id c4sm67675lfr.14.2020.10.27.01.32.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 01:32:45 -0700 (PDT)
-Subject: Re: [PATCH 3/3] drm/msm/dpu: add support for clk and bw scaling for
- display
-To:     Rob Clark <robdclark@gmail.com>,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        nganji@codeaurora.org
-References: <1594899334-19772-1-git-send-email-kalyan_t@codeaurora.org>
- <1594899334-19772-3-git-send-email-kalyan_t@codeaurora.org>
- <CAF6AEGsYmxwmG2OWdX3Q-5tio+kU-AwhiL_0EyLTVb0=gWgwgw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <1faa4d88-7acf-1895-f93b-59fd20d6de06@linaro.org>
-Date:   Tue, 27 Oct 2020 11:32:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S2894951AbgJ0IdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:33:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2894935AbgJ0IdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:33:17 -0400
+Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B82A32070E;
+        Tue, 27 Oct 2020 08:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603787597;
+        bh=wdgjE1mW9Gtb6qoZEGa/P3kKvyZpArLH7eHRde/bpmA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=LlworunyfhWsNDoJJ1Nea71XDrxG3oj2OJ6mvb99C87rZULcu15ZO1DLx4iaQ9EvU
+         TYoe76CYZmN286N0bO9g0W4tdT+jcVN07Q5xDVlanl7YPWkT2JMTVwMsRA9R0l/wFS
+         RproVUIBnrb6vgCoXrSyEcUAjdLOTVE4AxOLL+m4=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: Re: [PATCH v3] usb: dwc3: core: fix a issue about clear connect state
+In-Reply-To: <20201020135806.30268-1-zhengdejin5@gmail.com>
+References: <20201020135806.30268-1-zhengdejin5@gmail.com>
+Date:   Tue, 27 Oct 2020 10:33:09 +0200
+Message-ID: <875z6wdq62.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGsYmxwmG2OWdX3Q-5tio+kU-AwhiL_0EyLTVb0=gWgwgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 04/08/2020 18:40, Rob Clark wrote:
-> On Thu, Jul 16, 2020 at 4:36 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->>
->> This change adds support to scale src clk and bandwidth as
->> per composition requirements.
->>
->> Interconnect registration for bw has been moved to mdp
->> device node from mdss to facilitate the scaling.
->>
->> Changes in v1:
->>   - Address armv7 compilation issues with the patch (Rob)
->>
->> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-
-Kalyan, back in July you promised to provide a followup patchset, 
-removing code duplication. It's close to November now. Are there any 
-plans for the followup or is a forgotten topic?
-
-> 
-> Reviewed-by: Rob Clark <robdclark@chromium.org>
-> 
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c  | 109 +++++++++++++++++++++----
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c |   5 +-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h |   4 +
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c        |  37 ++++++++-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h        |   4 +
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c       |   9 +-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c      |  84 +++++++++++++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.h      |   4 +
->>   8 files changed, 233 insertions(+), 23 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
->> index 7c230f7..e52bc44 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c
->> @@ -29,6 +29,74 @@ enum dpu_perf_mode {
->>          DPU_PERF_MODE_MAX
->>   };
->>
->> +/**
->> + * @_dpu_core_perf_calc_bw() - to calculate BW per crtc
->> + * @kms -  pointer to the dpu_kms
->> + * @crtc - pointer to a crtc
->> + * Return: returns aggregated BW for all planes in crtc.
->> + */
->> +static u64 _dpu_core_perf_calc_bw(struct dpu_kms *kms,
->> +               struct drm_crtc *crtc)
->> +{
->> +       struct drm_plane *plane;
->> +       struct dpu_plane_state *pstate;
->> +       u64 crtc_plane_bw = 0;
->> +       u32 bw_factor;
->> +
->> +       drm_atomic_crtc_for_each_plane(plane, crtc) {
->> +               pstate = to_dpu_plane_state(plane->state);
->> +               if (!pstate)
->> +                       continue;
->> +
->> +               crtc_plane_bw += pstate->plane_fetch_bw;
->> +       }
->> +
->> +       bw_factor = kms->catalog->perf.bw_inefficiency_factor;
->> +       if (bw_factor) {
->> +               crtc_plane_bw *= bw_factor;
->> +               do_div(crtc_plane_bw, 100);
->> +       }
->> +
->> +       return crtc_plane_bw;
->> +}
->> +
->> +/**
->> + * _dpu_core_perf_calc_clk() - to calculate clock per crtc
->> + * @kms -  pointer to the dpu_kms
->> + * @crtc - pointer to a crtc
->> + * @state - pointer to a crtc state
->> + * Return: returns max clk for all planes in crtc.
->> + */
->> +static u64 _dpu_core_perf_calc_clk(struct dpu_kms *kms,
->> +               struct drm_crtc *crtc, struct drm_crtc_state *state)
->> +{
->> +       struct drm_plane *plane;
->> +       struct dpu_plane_state *pstate;
->> +       struct drm_display_mode *mode;
->> +       u64 crtc_clk;
->> +       u32 clk_factor;
->> +
->> +       mode = &state->adjusted_mode;
->> +
->> +       crtc_clk = mode->vtotal * mode->hdisplay * drm_mode_vrefresh(mode);
->> +
->> +       drm_atomic_crtc_for_each_plane(plane, crtc) {
->> +               pstate = to_dpu_plane_state(plane->state);
->> +               if (!pstate)
->> +                       continue;
->> +
->> +               crtc_clk = max(pstate->plane_clk, crtc_clk);
->> +       }
->> +
->> +       clk_factor = kms->catalog->perf.clk_inefficiency_factor;
->> +       if (clk_factor) {
->> +               crtc_clk *= clk_factor;
->> +               do_div(crtc_clk, 100);
->> +       }
->> +
->> +       return crtc_clk;
->> +}
->> +
->>   static struct dpu_kms *_dpu_crtc_get_kms(struct drm_crtc *crtc)
->>   {
->>          struct msm_drm_private *priv;
->> @@ -51,12 +119,7 @@ static void _dpu_core_perf_calc_crtc(struct dpu_kms *kms,
->>          dpu_cstate = to_dpu_crtc_state(state);
->>          memset(perf, 0, sizeof(struct dpu_core_perf_params));
->>
->> -       if (!dpu_cstate->bw_control) {
->> -               perf->bw_ctl = kms->catalog->perf.max_bw_high *
->> -                                       1000ULL;
->> -               perf->max_per_pipe_ib = perf->bw_ctl;
->> -               perf->core_clk_rate = kms->perf.max_core_clk_rate;
->> -       } else if (kms->perf.perf_tune.mode == DPU_PERF_MODE_MINIMUM) {
->> +       if (kms->perf.perf_tune.mode == DPU_PERF_MODE_MINIMUM) {
->>                  perf->bw_ctl = 0;
->>                  perf->max_per_pipe_ib = 0;
->>                  perf->core_clk_rate = 0;
-
-Now bw_control is unused and can be removed alltogether.
-
->> @@ -64,6 +127,10 @@ static void _dpu_core_perf_calc_crtc(struct dpu_kms *kms,
->>                  perf->bw_ctl = kms->perf.fix_core_ab_vote;
->>                  perf->max_per_pipe_ib = kms->perf.fix_core_ib_vote;
->>                  perf->core_clk_rate = kms->perf.fix_core_clk_rate;
->> +       } else {
->> +               perf->bw_ctl = _dpu_core_perf_calc_bw(kms, crtc);
->> +               perf->max_per_pipe_ib = kms->catalog->perf.min_dram_ib;
->> +               perf->core_clk_rate = _dpu_core_perf_calc_clk(kms, crtc, state);
->>          }
->>
->>          DPU_DEBUG(
->> @@ -115,11 +182,7 @@ int dpu_core_perf_crtc_check(struct drm_crtc *crtc,
->>                          DPU_DEBUG("crtc:%d bw:%llu ctrl:%d\n",
->>                                  tmp_crtc->base.id, tmp_cstate->new_perf.bw_ctl,
->>                                  tmp_cstate->bw_control);
->> -                       /*
->> -                        * For bw check only use the bw if the
->> -                        * atomic property has been already set
->> -                        */
->> -                       if (tmp_cstate->bw_control)
->> +
->>                                  bw_sum_of_intfs += tmp_cstate->new_perf.bw_ctl;
-
-Just a nitpick: indent is wrong.
-
->>                  }
->>
->> @@ -131,9 +194,7 @@ int dpu_core_perf_crtc_check(struct drm_crtc *crtc,
->>
->>                  DPU_DEBUG("final threshold bw limit = %d\n", threshold);
->>
->> -               if (!dpu_cstate->bw_control) {
->> -                       DPU_DEBUG("bypass bandwidth check\n");
->> -               } else if (!threshold) {
->> +               if (!threshold) {
->>                          DPU_ERROR("no bandwidth limits specified\n");
->>                          return -E2BIG;
->>                  } else if (bw > threshold) {
->> @@ -154,7 +215,11 @@ static int _dpu_core_perf_crtc_update_bus(struct dpu_kms *kms,
->>                                          = dpu_crtc_get_client_type(crtc);
->>          struct drm_crtc *tmp_crtc;
->>          struct dpu_crtc_state *dpu_cstate;
->> -       int ret = 0;
->> +       int i, ret = 0;
->> +       u64 avg_bw;
->> +
->> +       if (!kms->num_paths)
->> +               return -EINVAL;
-
-This broke bandwidth setting for everybody except sc7180, since 
-_dpu_core_perf_crtc_update_bus will be still called for them, and 
-returning -EINVAL here prevents dpu_core_perf_crtc_update() from setting 
-clock rate. Returning 0 here fixes the issue.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 
->>
->>          drm_for_each_crtc(tmp_crtc, crtc->dev) {
->>                  if (tmp_crtc->enabled &&
->> @@ -165,10 +230,20 @@ static int _dpu_core_perf_crtc_update_bus(struct dpu_kms *kms,
+Hi,
 
+Dejin Zheng <zhengdejin5@gmail.com> writes:
+> According to Synopsys Programming Guide chapter 2.2 Register Resets,
+> it cannot reset the DCTL register by setting DCTL.CSFTRST for core soft
+> reset, if DWC3 controller as a slave device and stay connected with a usb
+> host, then, while rebooting linux, it will fail to reinitialize dwc3 as a
+> slave device when the DWC3 controller did not power off. because the
+> connection status is incorrect, so we also need to clear DCTL.RUN_STOP
+> bit for disabling connect when doing core soft reset. There will still
+> be other stale configuration in DCTL, so reset the other fields of DCTL
+> to the default value 0.
 
--- 
-With best wishes
-Dmitry
+This commit log is a bit hard to understand. When does this problem
+actually happen? It seems like it's in the case of, perhaps, kexecing
+into a new kernel, is that right?
+
+At the time dwc3_core_soft_reset() is called, the assumption is that
+we're starting with a clean core, from power up. If we have stale
+configuration from a previous run, we should fix this on the exit
+path. Note that if we're reaching probe with pull up connected, we
+already have issues elsewhere.
+
+I think this is not the right fix for the problem.
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+X20YRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQYvPBAA0dAVUpFk1ZWtu2G8dmKzdZH5mqolEUqW
+Vr8KwPcqSwv6nDdBvFGJjVd0qYXWWDD5DWk7Sn/YN485BOKEHHaMIF0P08dANIW7
+AFYa8QjP2iW1gfQAqTXNJLpzzC9n1/AqChugYnBAQDCmnbjddIYW7T/qhBhllhDj
+uDFJVRnFPMJi1Zn3HabDFprQ1L1uh0EdvtvggX91J7TggNGV9aeCsnWNkloVFExG
+ZqVuLqPogpZeMhIges6U0Qd16E94g4d+pkPw8DluQGH7++tNXItsh7kVQ5/MJ40r
+rk6XsGL/fy3So3F9HsTZKSJKmO1av3XobfyUiyi7AR1RsW1S5KoyGtuY/GJunsad
+9mOQmYk3LmxaaL1w05eTcqOi1IlEEusi9So7rNEUNzfPMyZedXbay8HY6WPdXgxo
+2VoNph/hD5uKTH6UeeHcuBi5M3KZQ5JbnMKuelxHCaovS/i49o2jqKBVu4Tmb5Ne
+0/EAOo6uET4DMKzpGC5k/lNf8h10775E+vNIbDQBsw3VRIiQv3PF2sTvrphlM8Jn
+fYi2STtU7HeVmWClJlDMdne2V/CgnWFofMfIxMxQvSINjnW9XLH04ynEqmRItBoW
+ZTTqPZBfE2FIIgPUTx3ftUby3qOCS0vlqOc7oLXM4F0GIZlRYOQxMQJJBQAQlfrq
+lxS8TOqH5jU=
+=D0Nn
+-----END PGP SIGNATURE-----
+--=-=-=--
