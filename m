@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5809D29B6B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D72B29B737
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797578AbgJ0PYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:24:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
+        id S1799240AbgJ0Paa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796875AbgJ0PWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:45 -0400
+        id S1797391AbgJ0PXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:23:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94CB820728;
-        Tue, 27 Oct 2020 15:22:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56CB820728;
+        Tue, 27 Oct 2020 15:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812164;
-        bh=Kga7vEfZO3kPRLsus9Py7qIoN3l60BwB1lXwXne9Ku8=;
+        s=default; t=1603812195;
+        bh=LtHlKlO1w6/1RhyxtCP/uZoykyCsCOzAeBKr5hXX2tM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jiSkXMmxzT18/aWUcn2rg0J8LcbMfrshl2zWtmVFms9k90A3bIpyIiDchIfth7hBf
-         eEd3GcZK9gVKJ5upNeKfgpVjKnaS3eB/ZnXdevqThtmVCrvTtg0sbf/Y5RoIqxH8ps
-         loRscj8JC12HbKOD3YneAIS+xPtsoF79sJraM+Yo=
+        b=DmpTQTubD2OO8n8zb188BUKPiyDnSmkC4FnndqAUZHmA/jON1RemDoaswdZf1ysJ6
+         PsU377CGe/AIojZ8QWoVvUfpuJzjAMy49xr0W1ZYOxM3NYzBAj/8e0b1ANDHcfafEm
+         IP7Z6YC+s0oFzRYrC1ek6COaNVM2rGY84xMgDs9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kyle Meyer <kyle.meyer@hpe.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Alexei Budankov <alexey.budankov@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 107/757] perf/x86/intel/uncore: Fix for iio mapping on Skylake Server
-Date:   Tue, 27 Oct 2020 14:45:57 +0100
-Message-Id: <20201027135455.571628328@linuxfoundation.org>
+Subject: [PATCH 5.9 108/757] perf/x86/intel/uncore: Fix the scale of the IMC free-running events
+Date:   Tue, 27 Oct 2020 14:45:58 +0100
+Message-Id: <20201027135455.620627514@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,59 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Antonov <alexander.antonov@linux.intel.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit f797f05d917ffef94249ee0aec4c14a5b50517b2 ]
+[ Upstream commit 8191016a026b8dfbb14dea64efc8e723ee99fe65 ]
 
-Introduced early attributes /sys/devices/uncore_iio_<pmu_idx>/die* are
-initialized by skx_iio_set_mapping(), however, for example, for multiple
-segment platforms skx_iio_get_topology() returns -EPERM before a list of
-attributes in skx_iio_mapping_group will have been initialized.
-As a result the list is being NULL. Thus the warning
-"sysfs: (bin_)attrs not set by subsystem for group: uncore_iio_*/" appears
-and uncore_iio pmus are not available in sysfs. Clear IIO attr_update
-to properly handle the cases when topology information cannot be
-retrieved.
+The "MiB" result of the IMC free-running bandwidth events,
+uncore_imc_free_running/read/ and uncore_imc_free_running/write/ are 16
+times too small.
 
-Fixes: bb42b3d39781 ("perf/x86/intel/uncore: Expose an Uncore unit to IIO PMON mapping")
-Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
-Suggested-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+The "MiB" value equals the raw IMC free-running bandwidth counter value
+times a "scale" which is inaccurate.
+
+The IMC free-running bandwidth events should be incremented per 64B
+cache line, not DWs (4 bytes). The "scale" should be 6.103515625e-5.
+Fix the "scale" for both Snow Ridge and Ice Lake.
+
+Fixes: 2b3b76b5ec67 ("perf/x86/intel/uncore: Add Ice Lake server uncore support")
+Fixes: ee49532b38dd ("perf/x86/intel/uncore: Add IMC uncore support for Snow Ridge")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Alexei Budankov <alexey.budankov@linux.intel.com>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lkml.kernel.org/r/20200928102133.61041-1-alexander.antonov@linux.intel.com
+Link: https://lkml.kernel.org/r/20200928133240.12977-1-kan.liang@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 62e88ad919ffc..ccfa1d6b6aa0d 100644
+index ccfa1d6b6aa0d..4f5e78a4003be 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3749,7 +3749,9 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
+@@ -4754,10 +4754,10 @@ static struct uncore_event_desc snr_uncore_imc_freerunning_events[] = {
+ 	INTEL_UNCORE_EVENT_DESC(dclk,		"event=0xff,umask=0x10"),
  
- 	ret = skx_iio_get_topology(type);
- 	if (ret)
--		return ret;
-+		goto clear_attr_update;
-+
-+	ret = -ENOMEM;
+ 	INTEL_UNCORE_EVENT_DESC(read,		"event=0xff,umask=0x20"),
+-	INTEL_UNCORE_EVENT_DESC(read.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(read.scale,	"6.103515625e-5"),
+ 	INTEL_UNCORE_EVENT_DESC(read.unit,	"MiB"),
+ 	INTEL_UNCORE_EVENT_DESC(write,		"event=0xff,umask=0x21"),
+-	INTEL_UNCORE_EVENT_DESC(write.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(write.scale,	"6.103515625e-5"),
+ 	INTEL_UNCORE_EVENT_DESC(write.unit,	"MiB"),
+ 	{ /* end: all zeroes */ },
+ };
+@@ -5215,17 +5215,17 @@ static struct uncore_event_desc icx_uncore_imc_freerunning_events[] = {
+ 	INTEL_UNCORE_EVENT_DESC(dclk,			"event=0xff,umask=0x10"),
  
- 	/* One more for NULL. */
- 	attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
-@@ -3781,8 +3783,9 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
- 	kfree(eas);
- 	kfree(attrs);
- 	kfree(type->topology);
-+clear_attr_update:
- 	type->attr_update = NULL;
--	return -ENOMEM;
-+	return ret;
- }
+ 	INTEL_UNCORE_EVENT_DESC(read,			"event=0xff,umask=0x20"),
+-	INTEL_UNCORE_EVENT_DESC(read.scale,		"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(read.scale,		"6.103515625e-5"),
+ 	INTEL_UNCORE_EVENT_DESC(read.unit,		"MiB"),
+ 	INTEL_UNCORE_EVENT_DESC(write,			"event=0xff,umask=0x21"),
+-	INTEL_UNCORE_EVENT_DESC(write.scale,		"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(write.scale,		"6.103515625e-5"),
+ 	INTEL_UNCORE_EVENT_DESC(write.unit,		"MiB"),
  
- static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
+ 	INTEL_UNCORE_EVENT_DESC(ddrt_read,		"event=0xff,umask=0x30"),
+-	INTEL_UNCORE_EVENT_DESC(ddrt_read.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_read.scale,	"6.103515625e-5"),
+ 	INTEL_UNCORE_EVENT_DESC(ddrt_read.unit,		"MiB"),
+ 	INTEL_UNCORE_EVENT_DESC(ddrt_write,		"event=0xff,umask=0x31"),
+-	INTEL_UNCORE_EVENT_DESC(ddrt_write.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_write.scale,	"6.103515625e-5"),
+ 	INTEL_UNCORE_EVENT_DESC(ddrt_write.unit,	"MiB"),
+ 	{ /* end: all zeroes */ },
+ };
 -- 
 2.25.1
 
