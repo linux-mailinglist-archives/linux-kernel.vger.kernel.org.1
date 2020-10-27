@@ -2,200 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32D629A9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D159229A9D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437093AbgJ0Kh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:37:59 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:44710 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436596AbgJ0Khi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:37:38 -0400
-Received: by mail-ej1-f66.google.com with SMTP id d6so1449710ejb.11;
-        Tue, 27 Oct 2020 03:37:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UCQxlKOKzQn6npHWL+chgiqrZv7e5KPLyCbYaVbyysg=;
-        b=FXe2lGus0CcETq/0NAZH8UCq17vj3Etk/oE0Rn8Ehqc6ciCstKd1uX3sIxY0aGEZn/
-         QQw61ccAJ7g0FEo77vxLJvEfjm0X2KAQ7wxESDHLhPs8/wgrJjC1D4llpP2Y5Zw6jIAq
-         LlZ+b+Xu/9Q5vi7fIDRn43Jzj3/KcNMGsersCfdrZ1ubGmVZsEYRNnWxF5l9If+zHt3e
-         5XTsR6mpu6/hH/WZs7pASDn7A2AuTfSUfMh7g28gD0jZA017szi978v80vQOtLK17A8I
-         ETM30TAURuU4m4Of9AqXwQO+/Ze8azputbkTiBDlS90GiLnOjP7qWracNDxlfF//zGYS
-         sprA==
-X-Gm-Message-State: AOAM530FnK42A+GkP0DpkoDOpL9oJu9NrPkBoSoaLkNNAiLL2p/KJwrN
-        OEY86ksIo+ZGIJwSZvx6bD0=
-X-Google-Smtp-Source: ABdhPJyDHPgPUFF8HO24yXsm5O+2et3SJH7AaZyv5j2kp7V8iKd5OFxvy1aK9EXyS3oSAdQ0tMhWJQ==
-X-Received: by 2002:a17:906:ca54:: with SMTP id jx20mr1775790ejb.541.1603795055225;
-        Tue, 27 Oct 2020 03:37:35 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id pw17sm762269ejb.116.2020.10.27.03.37.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 03:37:34 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 11:37:32 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH 08/12] ARM: dts: exynos: adjust node names to DT spec in
- Exynos542x boards
-Message-ID: <20201027103732.GA20429@kozik-lap>
-References: <20201026181528.163143-1-krzk@kernel.org>
- <CGME20201026181608eucas1p17927126482dc9ed2aefa2ff4c64491cd@eucas1p1.samsung.com>
- <20201026181528.163143-9-krzk@kernel.org>
- <f14a69bc-bd8f-b0d7-2967-1e7582562d5e@samsung.com>
+        id S2898496AbgJ0KiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436614AbgJ0Khj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:37:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEEE220780;
+        Tue, 27 Oct 2020 10:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603795058;
+        bh=OcnUMuBA901Kxhgnt8GvlIDOQoOTk8b7CBTnQqnMdA8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ByIyJYnP5TAv58na/z32RMBoNQLgO1yRlAqQcGR9525dLfUziBthSg+Co5jEVdMD2
+         W4tzYJ+b8d3ayNdzu0R7d1OrhEwgPKGE7uCPJgAtB9oaUaJXkaOML43XwzJ4zO/8sR
+         WiLVnMc3T66iXivOM/IoLHBB7+/CBhI6jpHtxJoo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kXMMB-004eav-WC; Tue, 27 Oct 2020 10:37:36 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f14a69bc-bd8f-b0d7-2967-1e7582562d5e@samsung.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 10:37:35 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v3 03/16] arm64: Allow IPIs to be handled as normal
+ interrupts
+In-Reply-To: <CAKfTPtBURraZh8E8p3PmncoDRVV5N42yTyJcpPf0OROciM2+xg@mail.gmail.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-4-maz@kernel.org>
+ <CAKfTPtDjPpri5Gt6kLeFp_B_zJUZ5DYXEqtJ+0VKohU-y9bFEQ@mail.gmail.com>
+ <353f13b0dcc6c7ea1b44012d9632a0cc@kernel.org>
+ <CAKfTPtBjw5ay_BcPmEXpHOHbNxNZuYmdCoHQM53u3c+RXnKONg@mail.gmail.com>
+ <CAKfTPtBURraZh8E8p3PmncoDRVV5N42yTyJcpPf0OROciM2+xg@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7b754dfe579044902d3468b9f864bd37@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: vincent.guittot@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:47:47PM +0100, Marek Szyprowski wrote:
-> Hi Krzysztof,
+On 2020-10-27 10:12, Vincent Guittot wrote:
+> HI Marc,
 > 
-> On 26.10.2020 19:15, Krzysztof Kozlowski wrote:
-> > The Devicetree specification expects device node names to have a generic
-> > name, representing the class of a device.  Also the convention for node
-> > names is to use hyphens, not underscores.
-> >
-> > No functional changes.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >   arch/arm/boot/dts/exynos5420-arndale-octa.dts      | 4 ++--
-> >   arch/arm/boot/dts/exynos5420-peach-pit.dts         | 4 ++--
-> >   arch/arm/boot/dts/exynos5420-smdk5420.dts          | 2 +-
-> >   arch/arm/boot/dts/exynos5422-odroid-core.dtsi      | 2 +-
-> >   arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi  | 2 +-
-> >   arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi | 4 ++--
-> >   arch/arm/boot/dts/exynos5422-odroidxu3.dts         | 8 ++++----
-> >   arch/arm/boot/dts/exynos5800-peach-pi.dts          | 4 ++--
-> >   8 files changed, 15 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/arch/arm/boot/dts/exynos5420-arndale-octa.dts b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-> > index dd7f8385d81e..bf457d0c02eb 100644
-> > --- a/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-> > +++ b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-> > @@ -39,7 +39,7 @@ oscclk {
-> >   		};
-> >   	};
-> >   
-> > -	gpio_keys {
-> > +	gpio-keys {
-> >   		compatible = "gpio-keys";
-> >   
-> >   		wakeup {
-> > @@ -344,7 +344,7 @@ &hdmi {
-> >   &hsi2c_4 {
-> >   	status = "okay";
-> >   
-> > -	s2mps11_pmic@66 {
-> > +	pmic@66 {
-> >   		compatible = "samsung,s2mps11-pmic";
-> >   		reg = <0x66>;
-> >   
-> > diff --git a/arch/arm/boot/dts/exynos5420-peach-pit.dts b/arch/arm/boot/dts/exynos5420-peach-pit.dts
-> > index 2bcbdf8a39bf..d54392fe6260 100644
-> > --- a/arch/arm/boot/dts/exynos5420-peach-pit.dts
-> > +++ b/arch/arm/boot/dts/exynos5420-peach-pit.dts
-> > @@ -138,7 +138,7 @@ panel_in: endpoint {
-> >   		};
-> >   	};
-> >   
-> > -	mmc1_pwrseq: mmc1_pwrseq {
-> > +	mmc1_pwrseq: mmc1-pwrseq {
-> >   		compatible = "mmc-pwrseq-simple";
-> >   		reset-gpios = <&gpx0 0 GPIO_ACTIVE_LOW>; /* WIFI_EN */
-> >   		clocks = <&max77802 MAX77802_CLK_32K_CP>;
-> > @@ -205,7 +205,7 @@ &hsi2c_4 {
-> >   	status = "okay";
-> >   	clock-frequency = <400000>;
-> >   
-> > -	max77802: max77802-pmic@9 {
-> > +	max77802: pmic@9 {
-> >   		compatible = "maxim,max77802";
-> >   		interrupt-parent = <&gpx3>;
-> >   		interrupts = <1 IRQ_TYPE_NONE>;
-> > diff --git a/arch/arm/boot/dts/exynos5420-smdk5420.dts b/arch/arm/boot/dts/exynos5420-smdk5420.dts
-> > index 4e49d8095b29..d506da9fa661 100644
-> > --- a/arch/arm/boot/dts/exynos5420-smdk5420.dts
-> > +++ b/arch/arm/boot/dts/exynos5420-smdk5420.dts
-> > @@ -129,7 +129,7 @@ &hdmi {
-> >   &hsi2c_4 {
-> >   	status = "okay";
-> >   
-> > -	s2mps11_pmic@66 {
-> > +	pmic@66 {
-> >   		compatible = "samsung,s2mps11-pmic";
-> >   		reg = <0x66>;
-> >   
-> > diff --git a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-> > index b1cf9414ce17..25fb6331c75e 100644
-> > --- a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-> > +++ b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-> > @@ -503,7 +503,7 @@ &dmc {
-> >   &hsi2c_4 {
-> >   	status = "okay";
-> >   
-> > -	s2mps11_pmic@66 {
-> > +	pmic@66 {
-> >   		compatible = "samsung,s2mps11-pmic";
-> >   		reg = <0x66>;
-> >   		samsung,s2mps11-acokb-ground;
-> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-> > index b5ec4f47eb3a..f5f9c077df74 100644
-> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-> > @@ -40,7 +40,7 @@ codec {
-> >   
-> >   &hsi2c_5 {
-> >   	status = "okay";
-> > -	max98090: max98090@10 {
-> > +	max98090: codec@10 {
-> >   		compatible = "maxim,max98090";
-> >   		reg = <0x10>;
-> >   		interrupt-parent = <&gpx3>;
-> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
-> > index 5da2d81e3be2..e35af40a55cb 100644
-> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
-> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
-> > @@ -13,12 +13,12 @@
-> >   #include "exynos5422-odroid-core.dtsi"
-> >   
-> >   / {
-> > -	gpio_keys {
-> > +	gpio-keys {
-> >   		compatible = "gpio-keys";
-> >   		pinctrl-names = "default";
-> >   		pinctrl-0 = <&power_key>;
-> >   
-> > -		power_key {
-> > +		power-key {
-> >   			/*
-> >   			 * The power button (SW2) is connected to the PWRON
-> >   			 * pin (active high) of the S2MPS11 PMIC, which acts
-> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> > index d0f6ac5fa79d..5ff493ecb6ff 100644
-> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> > @@ -21,28 +21,28 @@ &i2c_0 {
-> >   	status = "okay";
-> >   
-> >   	/* A15 cluster: VDD_ARM */
-> > -	ina231@40 {
-> > +	sensor@40 {
-> power-sensor?
+> On Mon, 19 Oct 2020 at 17:43, Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+>> 
+>> On Mon, 19 Oct 2020 at 15:04, Marc Zyngier <maz@kernel.org> wrote:
+>> >
+> 
+> ...
+> 
+>> > >>
+>> > >> One of the major difference is that we end up, in some cases
+>> > >> (such as when performing IRQ time accounting on the scheduler
+>> > >> IPI), end up with nested irq_enter()/irq_exit() pairs.
+>> > >> Other than the (relatively small) overhead, there should be
+>> > >> no consequences to it (these pairs are designed to nest
+>> > >> correctly, and the accounting shouldn't be off).
+>> > >
+>> > > While rebasing on mainline, I have faced a performance regression for
+>> > > the benchmark:
+>> > > perf bench sched pipe
+>> > > on my arm64 dual quad core (hikey) and my 2 nodes x 112 CPUS (thx2)
+>> > >
+>> > > The regression comes from:
+>> > > commit: d3afc7f12987 ("arm64: Allow IPIs to be handled as normal
+>> > > interrupts")
+>> >
+>> > That's interesting, as this patch doesn't really change anything (most
+>> > of the potential overhead comes in later). The only potential overhead
+>> > I can see is that the scheduler_ipi() call is now wrapped around
+>> > irq_enter()/irq_exit().
+>> >
+>> > >
+>> > >           v5.9              + this patch
+>> > > hikey :   48818(+/- 0.31)   37503(+/- 0.15%)  -23.2%
+>> > > thx2  :  132410(+/- 1.72)  122646(+/- 1.92%)   -7.4%
+>> > >
+>> > > By + this patch,  I mean merging branch from this patch. Whereas
+>> > > merging the previous:
+>> > > commit: 83cfac95c018 ("genirq: Allow interrupts to be excluded from
+>> > > /proc/interrupts")
+>> > >  It doesn't show any regression
+>> >
+>> > Since you are running perf, can you spot where the overhead occurs?
+> 
+> Any idea about the root cause of the regression ?
+> I have faced it on more arm64 platforms in the meantime
 
-Good point, thanks!
+two possible causes:
 
-Best regards,
-Krzysztof
+(1) irq_enter/exit on the rescheduling IPI means we reschedule much more 
+often
+(2) irq_domain lookups add some overhead.
+
+For (1), I have this series[1] which is ugly as sin and needs much more 
+testing.
+
+For (2), I have some ideas which need more work (let the irq domain 
+resolve to
+an irq_desc instead of an interrupt number, avoiding another radix-tree 
+lookup).
+
+         M.
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-fixes
+-- 
+Jazz is not dead. It just smells funny...
