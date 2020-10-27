@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463D129C2A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A59329C313
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760371AbgJ0Oeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:34:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        id S1816583AbgJ0Rm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760158AbgJ0Odk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:33:40 -0400
+        id S1760078AbgJ0OcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:32:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFB2B207BB;
-        Tue, 27 Oct 2020 14:33:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83952206DC;
+        Tue, 27 Oct 2020 14:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809219;
-        bh=6M+fV2azjk6ZCueVUTsz98HzYVcl55bUqhdL8/pzaQ0=;
+        s=default; t=1603809139;
+        bh=6LFXPfRjaXr/B6QXua9ug/OO8Xomm+86NfxiDEDLi6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jpBoHZpeg7oLK1XGE/C9q+fiShR4+w8bpy07Rq852apdetxce2aCTESx+vn6bMg7g
-         79yRTTcou9oWCci8qWc7DxR0sMGjy87dXDylra0eqUM6MJrK4Cr/8GqMgHoxr9QVIC
-         k3QQ1USiqxFdKxv9bEvCrTARgqC9IKMOtxy0o80o=
+        b=kzgvCUj6KTsltAdgOQ3cSpF6Kue8RGnOl5vo98OYVauhyGVL5Rlt6/f5P8QfhLPMY
+         XZvy5sRAq1pUYukkY5B9WUijzPCwP4bTD+o63tqTpbOL1aN/sdqd3juOdKCuer1DDy
+         ED8mJM9f2A0QhJB/C4CGC7UuLwT6a/4X1KayFXXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Fabio Estevam <festevam@gmail.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/408] media: mx2_emmaprp: Fix memleak in emmaprp_probe
-Date:   Tue, 27 Oct 2020 14:50:26 +0100
-Message-Id: <20201027135459.159685305@linuxfoundation.org>
+Subject: [PATCH 5.4 090/408] media: tc358743: cleanup tc358743_cec_isr
+Date:   Tue, 27 Oct 2020 14:50:28 +0100
+Message-Id: <20201027135459.257091560@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,42 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 21d387b8d372f859d9e87fdcc7c3b4a432737f4d ]
+[ Upstream commit 877cb8a444dad2304e891294afb0915fe3c278d6 ]
 
-When platform_get_irq() fails, we should release
-vfd and unregister pcdev->v4l2_dev just like the
-subsequent error paths.
+tc358743_cec_isr is misnammed, it is not the main isr.
+So rename it to be consistent with its siblings,
+tc358743_cec_handler.
 
-Fixes: d4e192cc44914 ("media: mx2_emmaprp: Check for platform_get_irq() error")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+It also does not check if its input parameter 'handled' is
+is non NULL like its siblings, so add a check.
+
+Fixes: a0ec8d1dc42e ("media: tc358743: add CEC support")
+Signed-off-by: Tom Rix <trix@redhat.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mx2_emmaprp.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/i2c/tc358743.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/mx2_emmaprp.c b/drivers/media/platform/mx2_emmaprp.c
-index 27779b75df543..ac112cf06ab31 100644
---- a/drivers/media/platform/mx2_emmaprp.c
-+++ b/drivers/media/platform/mx2_emmaprp.c
-@@ -852,8 +852,11 @@ static int emmaprp_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, pcdev);
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 211caade9f998..cff99cf61ed4d 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -919,8 +919,8 @@ static const struct cec_adap_ops tc358743_cec_adap_ops = {
+ 	.adap_monitor_all_enable = tc358743_cec_adap_monitor_all_enable,
+ };
  
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	if (irq < 0) {
-+		ret = irq;
-+		goto rel_vdev;
-+	}
-+
- 	ret = devm_request_irq(&pdev->dev, irq, emmaprp_irq, 0,
- 			       dev_name(&pdev->dev), pcdev);
- 	if (ret)
+-static void tc358743_cec_isr(struct v4l2_subdev *sd, u16 intstatus,
+-			     bool *handled)
++static void tc358743_cec_handler(struct v4l2_subdev *sd, u16 intstatus,
++				 bool *handled)
+ {
+ 	struct tc358743_state *state = to_state(sd);
+ 	unsigned int cec_rxint, cec_txint;
+@@ -953,7 +953,8 @@ static void tc358743_cec_isr(struct v4l2_subdev *sd, u16 intstatus,
+ 			cec_transmit_attempt_done(state->cec_adap,
+ 						  CEC_TX_STATUS_ERROR);
+ 		}
+-		*handled = true;
++		if (handled)
++			*handled = true;
+ 	}
+ 	if ((intstatus & MASK_CEC_RINT) &&
+ 	    (cec_rxint & MASK_CECRIEND)) {
+@@ -968,7 +969,8 @@ static void tc358743_cec_isr(struct v4l2_subdev *sd, u16 intstatus,
+ 			msg.msg[i] = v & 0xff;
+ 		}
+ 		cec_received_msg(state->cec_adap, &msg);
+-		*handled = true;
++		if (handled)
++			*handled = true;
+ 	}
+ 	i2c_wr16(sd, INTSTATUS,
+ 		 intstatus & (MASK_CEC_RINT | MASK_CEC_TINT));
+@@ -1432,7 +1434,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
+ 
+ #ifdef CONFIG_VIDEO_TC358743_CEC
+ 	if (intstatus & (MASK_CEC_RINT | MASK_CEC_TINT)) {
+-		tc358743_cec_isr(sd, intstatus, handled);
++		tc358743_cec_handler(sd, intstatus, handled);
+ 		i2c_wr16(sd, INTSTATUS,
+ 			 intstatus & (MASK_CEC_RINT | MASK_CEC_TINT));
+ 		intstatus &= ~(MASK_CEC_RINT | MASK_CEC_TINT);
 -- 
 2.25.1
 
