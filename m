@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B95529B73D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B298829B6BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799299AbgJ0Paq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37766 "EHLO mail.kernel.org"
+        id S1797594AbgJ0PY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797318AbgJ0PWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:50 -0400
+        id S1797323AbgJ0PWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:22:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A8B12064B;
-        Tue, 27 Oct 2020 15:22:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E1B220657;
+        Tue, 27 Oct 2020 15:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812169;
-        bh=4RuWZUZzQBdWwwc8UhIj14hBjpAmE/3TkrvqmhbmZYA=;
+        s=default; t=1603812173;
+        bh=7uyB9atqs1ASUhJEUJ6KUZQMtbf7sTKSZGFbcU0r53E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+OKIVjeZPTnfC8vG4bcjM4JnskSPAJRjx+3YREjA3vcrzlzjJtst1Z78+D1fc7l+
-         KX2KpOLMPq/oQtbFEkyQHcqgWHGQDa/j1IylLm0Sb/xYbZcGa6tlJHGGSzintavIub
-         h8kF2FmqJ+5YiE/xq52JdputxxL16jbrPhYtGsL8=
+        b=T+TR+r4RtTEkyETaCGdVWyVWKCFA3c/hERA2lNTwzb/1K+S437EF0I2Td8AcN9L31
+         ORWMzmeeTd7bWt0zIVcHcUeKWLdgfONGkiZRs8fq/ZGkSHHRm9d68WA6SqZVvdmLgi
+         xmqQRPFKffjUpiH1KVAhKfVEHKzGZFt6gXKAC8u0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wade Mealing <wmealing@redhat.com>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 117/757] perf/core: Fix race in the perf_mmap_close() function
-Date:   Tue, 27 Oct 2020 14:46:07 +0100
-Message-Id: <20201027135456.059763721@linuxfoundation.org>
+Subject: [PATCH 5.9 118/757] regulator: set of_node for qcom vbus regulator
+Date:   Tue, 27 Oct 2020 14:46:08 +0100
+Message-Id: <20201027135456.110742616@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,101 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@redhat.com>
+From: Jonathan Marek <jonathan@marek.ca>
 
-[ Upstream commit f91072ed1b7283b13ca57fcfbece5a3b92726143 ]
+[ Upstream commit 66c3b96a7bd042427d2e0eaa8704536828f8235f ]
 
-There's a possible race in perf_mmap_close() when checking ring buffer's
-mmap_count refcount value. The problem is that the mmap_count check is
-not atomic because we call atomic_dec() and atomic_read() separately.
+This allows the regulator to be found by devm_regulator_get().
 
-  perf_mmap_close:
-  ...
-   atomic_dec(&rb->mmap_count);
-   ...
-   if (atomic_read(&rb->mmap_count))
-      goto out_put;
+Fixes: 4fe66d5a62fb ("regulator: Add support for QCOM PMIC VBUS booster")
 
-   <ring buffer detach>
-   free_uid
-
-out_put:
-  ring_buffer_put(rb); /* could be last */
-
-The race can happen when we have two (or more) events sharing same ring
-buffer and they go through atomic_dec() and then they both see 0 as refcount
-value later in atomic_read(). Then both will go on and execute code which
-is meant to be run just once.
-
-The code that detaches ring buffer is probably fine to be executed more
-than once, but the problem is in calling free_uid(), which will later on
-demonstrate in related crashes and refcount warnings, like:
-
-  refcount_t: addition on 0; use-after-free.
-  ...
-  RIP: 0010:refcount_warn_saturate+0x6d/0xf
-  ...
-  Call Trace:
-  prepare_creds+0x190/0x1e0
-  copy_creds+0x35/0x172
-  copy_process+0x471/0x1a80
-  _do_fork+0x83/0x3a0
-  __do_sys_wait4+0x83/0x90
-  __do_sys_clone+0x85/0xa0
-  do_syscall_64+0x5b/0x1e0
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Using atomic decrease and check instead of separated calls.
-
-Tested-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Wade Mealing <wmealing@redhat.com>
-Fixes: 9bb5d40cd93c ("perf: Fix mmap() accounting hole");
-Link: https://lore.kernel.org/r/20200916115311.GE2301783@krava
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Link: https://lore.kernel.org/r/20200818162508.5246-1-jonathan@marek.ca
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/regulator/qcom_usb_vbus-regulator.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index e8bf92202542b..6a1ae6a62d489 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5869,11 +5869,11 @@ static void perf_pmu_output_stop(struct perf_event *event);
- static void perf_mmap_close(struct vm_area_struct *vma)
- {
- 	struct perf_event *event = vma->vm_file->private_data;
--
- 	struct perf_buffer *rb = ring_buffer_get(event);
- 	struct user_struct *mmap_user = rb->mmap_user;
- 	int mmap_locked = rb->mmap_locked;
- 	unsigned long size = perf_data_size(rb);
-+	bool detach_rest = false;
+diff --git a/drivers/regulator/qcom_usb_vbus-regulator.c b/drivers/regulator/qcom_usb_vbus-regulator.c
+index 8ba947f3585f5..457788b505720 100644
+--- a/drivers/regulator/qcom_usb_vbus-regulator.c
++++ b/drivers/regulator/qcom_usb_vbus-regulator.c
+@@ -63,6 +63,7 @@ static int qcom_usb_vbus_regulator_probe(struct platform_device *pdev)
+ 	qcom_usb_vbus_rdesc.enable_mask = OTG_EN;
+ 	config.dev = dev;
+ 	config.init_data = init_data;
++	config.of_node = dev->of_node;
+ 	config.regmap = regmap;
  
- 	if (event->pmu->event_unmapped)
- 		event->pmu->event_unmapped(event, vma->vm_mm);
-@@ -5904,7 +5904,8 @@ static void perf_mmap_close(struct vm_area_struct *vma)
- 		mutex_unlock(&event->mmap_mutex);
- 	}
- 
--	atomic_dec(&rb->mmap_count);
-+	if (atomic_dec_and_test(&rb->mmap_count))
-+		detach_rest = true;
- 
- 	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
- 		goto out_put;
-@@ -5913,7 +5914,7 @@ static void perf_mmap_close(struct vm_area_struct *vma)
- 	mutex_unlock(&event->mmap_mutex);
- 
- 	/* If there's still other mmap()s of this buffer, we're done. */
--	if (atomic_read(&rb->mmap_count))
-+	if (!detach_rest)
- 		goto out_put;
- 
- 	/*
+ 	rdev = devm_regulator_register(dev, &qcom_usb_vbus_rdesc, &config);
 -- 
 2.25.1
 
