@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D5229C87D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1570629C884
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829558AbgJ0TPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:15:41 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:37124 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1829551AbgJ0TPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:15:03 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2CCEC20130A;
-        Tue, 27 Oct 2020 20:15:02 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E1BA2012F5;
-        Tue, 27 Oct 2020 20:15:02 +0100 (CET)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 082A2202AE;
-        Tue, 27 Oct 2020 20:15:01 +0100 (CET)
-Date:   Tue, 27 Oct 2020 21:15:01 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     trix@redhat.com
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, Anson.Huang@nxp.com, peng.fan@nxp.com,
-        leonard.crestez@nxp.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: imx: remove unneeded semicolon
-Message-ID: <20201027191501.fuzc3d72774xmivz@fsr-ub1664-175>
-References: <20201027185756.1586607-1-trix@redhat.com>
+        id S1829589AbgJ0TRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:17:30 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:55048 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1818516AbgJ0TRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 15:17:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p1hEPodUXDXuSQzasXYwrS2God+lcKGnVUZasxbSQxY=; b=cdxDu3oxrBK4H243uvi9iaApqN
+        OHvlk6JIrx3YcHGxzINSmqLO7PVWeLJHMV3OtLPc2ojslPnjipWNQCWRMQQalw+icSFCM4pRO8uTg
+        aOizBQcGY7focMzkxdS44gU+M8acA2ZcOmRH1P1WyEMjSQaJ3VleyvXRczD6iq7BXw5mDmXNBMn8+
+        zFm1f48f56RhOKszhZ3Ubq1PIQU6a8j7vmFt+JCkBAfM+ekMIrn+Y4iCanRtmhtH7u0OyhzLI8VSi
+        9JgcSpuMC4/GN+wL2sHd/HFguHZyJXkxrvrWZsUSL/XcJnTbVYpPIqvPnOlm/ICapBcfkMyJasbnB
+        /0BZYQQA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXUT2-0003P2-OC; Tue, 27 Oct 2020 19:17:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4A92C307A7F;
+        Tue, 27 Oct 2020 20:17:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 32968203C2679; Tue, 27 Oct 2020 20:17:11 +0100 (CET)
+Date:   Tue, 27 Oct 2020 20:17:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH 3/3] sched: Add cond_resched_rwlock
+Message-ID: <20201027191711.GP2628@hirez.programming.kicks-ass.net>
+References: <20201027164950.1057601-1-bgardon@google.com>
+ <20201027164950.1057601-3-bgardon@google.com>
+ <20201027175634.GI1021@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201027185756.1586607-1-trix@redhat.com>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20201027175634.GI1021@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-27 11:57:56, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Tue, Oct 27, 2020 at 10:56:36AM -0700, Sean Christopherson wrote:
+> On Tue, Oct 27, 2020 at 09:49:50AM -0700, Ben Gardon wrote:
+> > Rescheduling while holding a spin lock is essential for keeping long
+> > running kernel operations running smoothly. Add the facility to
+> > cond_resched rwlocks.
 > 
-> A semicolon is not needed after a switch statement.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> This adds two new exports and two new macros without any in-tree users, which
+> is generally frowned upon.  You and I know these will be used by KVM's new
+> TDP MMU, but the non-KVM folks, and more importantly the maintainers of this
+> code, are undoubtedly going to ask "why".  I.e. these patches probably belong
+> in the KVM series to switch to a rwlock for the TDP MMU.
 
-Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+I was informed about this ;-)
 
-> ---
->  drivers/clk/imx/clk-pll14xx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Regarding the code, it's all copy-pasted from the spinlock code and darn near
+> identical.  It might be worth adding builder macros for these.
+
+I considered mentioning them; I'm typically a fan of them, but I'm not
+quite sure it's worth the effort here.
+
+> > +int __cond_resched_rwlock_read(rwlock_t *lock)
+> > +{
+> > +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+> > +	int ret = 0;
+> > +
+> > +	lockdep_assert_held(lock);
+> > +
+> > +	if (rwlock_needbreak(lock) || resched) {
+> > +		read_unlock(lock);
+> > +		if (resched)
+> > +			preempt_schedule_common();
+> > +		else
+> > +			cpu_relax();
+> > +		ret = 1;
 > 
-> diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-> index aba36e4217d2..2b5ed86b9dbb 100644
-> --- a/drivers/clk/imx/clk-pll14xx.c
-> +++ b/drivers/clk/imx/clk-pll14xx.c
-> @@ -416,7 +416,7 @@ struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
->  		       __func__, name);
->  		kfree(pll);
->  		return ERR_PTR(-EINVAL);
-> -	};
-> +	}
->  
->  	pll->base = base;
->  	pll->hw.init = &init;
-> -- 
-> 2.18.1
+> AFAICT, this rather odd code flow from __cond_resched_lock() is an artifact of
+> code changes over the years and not intentionally weird.  IMO, it would be
+> cleaner and easier to read as:
 > 
+> 	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+> 
+> 	lockdep_assert_held(lock);
+
+lockdep_assert_held_read() :-)
+
+> 
+> 	if (!rwlock_needbreak(lock) && !resched)
+> 		return 0;
+> 
+> 	read_unlock(lock);
+> 	if (resched)
+> 		preempt_schedule_common();
+> 	else
+> 		cpu_relax();
+> 	read_lock(lock)
+> 	return 1;
+> 
+
+I suppose that works, but then also change the existing one.
