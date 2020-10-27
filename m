@@ -2,200 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0E29A964
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF8429A963
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897785AbgJ0KTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:19:30 -0400
-Received: from ozlabs.ru ([107.174.27.60]:46384 "EHLO ozlabs.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897775AbgJ0KT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:19:28 -0400
-Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id 51269AE80279;
-        Tue, 27 Oct 2020 06:18:13 -0400 (EDT)
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [PATCH kernel v2 2/2] powerpc/dma: Fallback to dma_ops when persistent memory present
-Date:   Tue, 27 Oct 2020 21:18:41 +1100
-Message-Id: <20201027101841.96056-3-aik@ozlabs.ru>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027101841.96056-1-aik@ozlabs.ru>
-References: <20201027101841.96056-1-aik@ozlabs.ru>
+        id S2897777AbgJ0KT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:19:27 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:55879 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897233AbgJ0KTZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:19:25 -0400
+Received: by mail-wm1-f66.google.com with SMTP id a72so801361wme.5;
+        Tue, 27 Oct 2020 03:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dkwbI/0H97SZJixhQJH8dswlbjBm943gYERZ83AMoLY=;
+        b=hgwBPyAwrmX4gfhR16//+HwE/aO/mjjEpeDp9bXYGGvxR27aJkVXE9ZcKeBAcja9+s
+         hRwuJMyXDtLHzeW/+SBYpX3D0WQiiFP0tokRsDKAUmKIKLh/NainCGQvYP1PfEjbYhRo
+         nl9yI/xz53C1OXFvwiYN+Kk66xL+N+hPA4nzRYVK1DQ6IxM8o1To/1o2wxt77Y9kJrqs
+         /IXjY8qJONoNEoHojlr0UnHijYIMlWE0NrA0i7bn9nhPLAQKcXUtapjXk0BT1gPe0UoX
+         xSQZx8QU6hXImlu6ohqnHkjEXlg6fVkAi93H7bm6rFRb1TBWmkxeGbs/ZLw1y9j1oUNH
+         AEyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dkwbI/0H97SZJixhQJH8dswlbjBm943gYERZ83AMoLY=;
+        b=JXgvNCt5BOP/m2Yi+APs89Z0wKzxAPn8X28ZWJ0SwaNaDnniDZ5ygjtgKZljqc1h+T
+         skEBO6/DAUQI1uZ/7UpVSzZdGG01QZ63vNjuExpP+oRvpcXNdj/5z1wB7EjRpuNpdtCS
+         COHjXnQc2w210zAojZmqU4bwbckFtbZOccotVQWZ/UFiN4zw1xwwyVrD5O1Remfw1iII
+         53lGPxIHkxQ1ZL/z/6NKl+8brBTigTqQL5SsF3c2p24I97pzt8Z/ToFSW1nV5/trQ8OD
+         rxMKTDGUMwSR1qD6s75aRFBlnlzijmP+vfCDS0L8ts4R37qrbrUjr6MUZ2GHM//VKrJN
+         Lj3Q==
+X-Gm-Message-State: AOAM533dKi719t979VcylAcP876M4JogOkpfQgaO8lCn66KLBJOFVQop
+        tCyuGiYqoEZTt47w5ovqqq0=
+X-Google-Smtp-Source: ABdhPJxeO0DzMU+707HyJRwnPTQmDLgKCotn1ndnwrMruc4M8djY+myKe0PoeIdnRJJaD54MCVb9NQ==
+X-Received: by 2002:a1c:9dcc:: with SMTP id g195mr1820127wme.113.1603793962048;
+        Tue, 27 Oct 2020 03:19:22 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.117.206])
+        by smtp.gmail.com with ESMTPSA id t7sm1367711wrx.42.2020.10.27.03.19.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 03:19:21 -0700 (PDT)
+Subject: Re: [PATCH] mmc: host: mtk-sd: enable recheck_sdio_irq for MT8516 SoC
+To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, chaotian.jing@mediatek.com
+References: <20201023122950.60903-1-fparent@baylibre.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <7820dbe9-ff62-7cc3-1e60-8d5c0a069abb@gmail.com>
+Date:   Tue, 27 Oct 2020 11:19:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201023122950.60903-1-fparent@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far we have been using huge DMA windows to map all the RAM available.
-The RAM is normally mapped to the VM address space contiguously, and
-there is always a reasonable upper limit for possible future hot plugged
-RAM which makes it easy to map all RAM via IOMMU.
 
-Now there is persistent memory ("ibm,pmemory" in the FDT) which (unlike
-normal RAM) can map anywhere in the VM space beyond the maximum RAM size
-and since it can be used for DMA, it requires extending the huge window
-up to MAX_PHYSMEM_BITS which requires hypervisor support for:
-1. huge TCE tables;
-2. multilevel TCE tables;
-3. huge IOMMU pages.
 
-Certain hypervisors cannot do either so the only option left is
-restricting the huge DMA window to include only RAM and fallback to
-the default DMA window for persistent memory.
+On 23/10/2020 14:29, Fabien Parent wrote:
+> MT8516 SoC suffers from sometimes losing SDIO IRQs, this makes SDIO
+> devices sometimes unstable. Make use of the new property
+> recheck_sdio_irq to fix the SDIO stability issues on MT8516.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 
-This checks if the system has persistent memory. If it does not,
-the DMA bypass mode is selected, i.e.
-* dev->bus_dma_limit = 0
-* dev->dma_ops_bypass = true <- this avoid calling dma_ops for mapping.
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 
-If there is such memory, this creates identity mapping only for RAM and
-sets the dev->bus_dma_limit to let the generic code decide whether to
-call into the direct DMA or the indirect DMA ops.
-
-This should not change the existing behaviour when no persistent memory
-as dev->dma_ops_bypass is expected to be set.
-
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
----
- arch/powerpc/kernel/dma-iommu.c        | 12 +++++--
- arch/powerpc/platforms/pseries/iommu.c | 44 ++++++++++++++++++++------
- arch/powerpc/Kconfig                   |  1 +
- 3 files changed, 45 insertions(+), 12 deletions(-)
-
-diff --git a/arch/powerpc/kernel/dma-iommu.c b/arch/powerpc/kernel/dma-iommu.c
-index a1c744194018..d123b7205f76 100644
---- a/arch/powerpc/kernel/dma-iommu.c
-+++ b/arch/powerpc/kernel/dma-iommu.c
-@@ -90,8 +90,16 @@ int dma_iommu_dma_supported(struct device *dev, u64 mask)
- 	struct iommu_table *tbl = get_iommu_table_base(dev);
- 
- 	if (dev_is_pci(dev) && dma_iommu_bypass_supported(dev, mask)) {
--		dev->dma_ops_bypass = true;
--		dev_dbg(dev, "iommu: 64-bit OK, using fixed ops\n");
-+		/*
-+		 * dma_iommu_bypass_supported() sets dma_max when there is
-+		 * 1:1 mapping but it is somehow limited.
-+		 * ibm,pmemory is one example.
-+		 */
-+		dev->dma_ops_bypass = dev->bus_dma_limit == 0;
-+		if (!dev->dma_ops_bypass)
-+			dev_warn(dev, "iommu: 64-bit OK but using default ops\n");
-+		else
-+			dev_dbg(dev, "iommu: 64-bit OK, using fixed ops\n");
- 		return 1;
- 	}
- 
-diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index e4198700ed1a..91112e748491 100644
---- a/arch/powerpc/platforms/pseries/iommu.c
-+++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -839,7 +839,7 @@ static void remove_ddw(struct device_node *np, bool remove_prop)
- 			np, ret);
- }
- 
--static u64 find_existing_ddw(struct device_node *pdn)
-+static u64 find_existing_ddw(struct device_node *pdn, int *window_shift)
- {
- 	struct direct_window *window;
- 	const struct dynamic_dma_window_prop *direct64;
-@@ -851,6 +851,7 @@ static u64 find_existing_ddw(struct device_node *pdn)
- 		if (window->device == pdn) {
- 			direct64 = window->prop;
- 			dma_addr = be64_to_cpu(direct64->dma_base);
-+			*window_shift = be32_to_cpu(direct64->window_shift);
- 			break;
- 		}
- 	}
-@@ -1111,11 +1112,13 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
-  */
- static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- {
--	int len, ret;
-+	int len = 0, ret;
-+	bool pmem_present = of_find_node_by_type(NULL, "ibm,pmemory") != NULL;
-+	int max_ram_len = order_base_2(ddw_memory_hotplug_max());
- 	struct ddw_query_response query;
- 	struct ddw_create_response create;
- 	int page_shift;
--	u64 dma_addr, max_addr;
-+	u64 dma_addr;
- 	struct device_node *dn;
- 	u32 ddw_avail[DDW_APPLICABLE_SIZE];
- 	struct direct_window *window;
-@@ -1126,7 +1129,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 
- 	mutex_lock(&direct_window_init_mutex);
- 
--	dma_addr = find_existing_ddw(pdn);
-+	dma_addr = find_existing_ddw(pdn, &len);
- 	if (dma_addr != 0)
- 		goto out_unlock;
- 
-@@ -1212,14 +1215,26 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 	}
- 	/* verify the window * number of ptes will map the partition */
- 	/* check largest block * page size > max memory hotplug addr */
--	max_addr = ddw_memory_hotplug_max();
--	if (query.largest_available_block < (max_addr >> page_shift)) {
--		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu "
--			  "%llu-sized pages\n", max_addr,  query.largest_available_block,
--			  1ULL << page_shift);
-+	/*
-+	 * The "ibm,pmemory" can appear anywhere in the address space.
-+	 * Assuming it is still backed by page structs, try MAX_PHYSMEM_BITS
-+	 * for the upper limit and fallback to max RAM otherwise but this
-+	 * disables device::dma_ops_bypass.
-+	 */
-+	len = max_ram_len;
-+	if (pmem_present) {
-+		if (query.largest_available_block >=
-+		    (1ULL << (MAX_PHYSMEM_BITS - page_shift)))
-+			len = MAX_PHYSMEM_BITS - page_shift;
-+		else
-+			dev_info(&dev->dev, "Skipping ibm,pmemory");
-+	}
-+
-+	if (query.largest_available_block < (1ULL << (len - page_shift))) {
-+		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu %llu-sized pages\n",
-+			1ULL << len, query.largest_available_block, 1ULL << page_shift);
- 		goto out_failed;
- 	}
--	len = order_base_2(max_addr);
- 	win64 = kzalloc(sizeof(struct property), GFP_KERNEL);
- 	if (!win64) {
- 		dev_info(&dev->dev,
-@@ -1299,6 +1314,15 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 
- out_unlock:
- 	mutex_unlock(&direct_window_init_mutex);
-+
-+	/*
-+	 * If we have persistent memory and the window size is only as big
-+	 * as RAM, then we failed to create a window to cover persistent
-+	 * memory and need to set the DMA limit.
-+	 */
-+	if (pmem_present && dma_addr && (len == max_ram_len))
-+		dev->dev.bus_dma_limit = dma_addr + (1ULL << len);
-+
- 	return dma_addr;
- }
- 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index e9f13fe08492..5a8881bf140e 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -159,6 +159,7 @@ config PPC
- 	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
- 	select DMA_OPS				if PPC64
- 	select DMA_OPS_BYPASS			if PPC64
-+	select DMA_OPS_BYPASS_BUS_LIMIT		if PPC64 && PPC_PSERIES
- 	select DYNAMIC_FTRACE			if FUNCTION_TRACER
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
--- 
-2.17.1
-
+> ---
+>   drivers/mmc/host/mtk-sd.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index a704745e5882..3dc102eefe49 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -524,7 +524,7 @@ static const struct mtk_mmc_compatible mt7622_compat = {
+>   
+>   static const struct mtk_mmc_compatible mt8516_compat = {
+>   	.clk_div_bits = 12,
+> -	.recheck_sdio_irq = false,
+> +	.recheck_sdio_irq = true,
+>   	.hs400_tune = false,
+>   	.pad_tune_reg = MSDC_PAD_TUNE0,
+>   	.async_fifo = true,
+> 
