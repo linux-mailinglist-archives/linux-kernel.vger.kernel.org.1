@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D6F29B43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FBA29B5E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786268AbgJ0O7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:59:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43138 "EHLO mail.kernel.org"
+        id S1796326AbgJ0PRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:17:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762543AbgJ0OnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:43:22 -0400
+        id S1794767AbgJ0PN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:13:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C98EA206E5;
-        Tue, 27 Oct 2020 14:43:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDF8421D41;
+        Tue, 27 Oct 2020 15:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809801;
-        bh=CABQCfiIlkUUv1ROXKZhVMXVjel4c7ecedP+9uIvzSA=;
+        s=default; t=1603811605;
+        bh=gZ5hX7BiaGGoFJsUDs4rmUHdZt47slybaLRfnGmle74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M46pOOixpGpMqqcYFMMuNgrK4SydAuPpXqU4wnJo2Eu23L0fKoKEu7oOPz5byRv+h
-         OYLXSRhcw00Q5XOSpahUyW9fY+iQ8aQqk7SuwV8HkQSjwo9Z14bQa8T+lHPaAUCwYj
-         J1KWzJFY+XLG0WHJDrlJGu2vxzN/OKeTCVafJpFo=
+        b=A5KO8SfVDe636sGkOJ245DsBQrlMIq/9J3Ww9nrt//EV50HEeHJxcOGKVui8kdkJx
+         u04i/VZTS5mEAsQT8YY83wfWHRw+IMjSiBaqFmGop/DVnfFVgCGCQ7s3Q/VigDBFA5
+         O+ePeQIPV/Ft2Bt6hcQblI4dtPnA5H0OhLwcTSC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 325/408] block: ratelimit handle_bad_sector() message
-Date:   Tue, 27 Oct 2020 14:54:23 +0100
-Message-Id: <20201027135510.100900473@linuxfoundation.org>
+Subject: [PATCH 5.8 521/633] KVM: ioapic: break infinite recursion on lazy EOI
+Date:   Tue, 27 Oct 2020 14:54:24 +0100
+Message-Id: <20201027135547.206660307@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-[ Upstream commit f4ac712e4fe009635344b9af5d890fe25fcc8c0d ]
+[ Upstream commit 77377064c3a94911339f13ce113b3abf265e06da ]
 
-syzbot is reporting unkillable task [1], for the caller is failing to
-handle a corrupted filesystem image which attempts to access beyond
-the end of the device. While we need to fix the caller, flooding the
-console with handle_bad_sector() message is unlikely useful.
+During shutdown the IOAPIC trigger mode is reset to edge triggered
+while the vfio-pci INTx is still registered with a resampler.
+This allows us to get into an infinite loop:
 
-[1] https://syzkaller.appspot.com/bug?id=f1f49fb971d7a3e01bd8ab8cff2ff4572ccf3092
+ioapic_set_irq
+  -> ioapic_lazy_update_eoi
+  -> kvm_ioapic_update_eoi_one
+  -> kvm_notify_acked_irq
+  -> kvm_notify_acked_gsi
+  -> (via irq_acked fn ptr) irqfd_resampler_ack
+  -> kvm_set_irq
+  -> (via set fn ptr) kvm_set_ioapic_irq
+  -> kvm_ioapic_set_irq
+  -> ioapic_set_irq
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Commit 8be8f932e3db ("kvm: ioapic: Restrict lazy EOI update to
+edge-triggered interrupts", 2020-05-04) acknowledges that this recursion
+loop exists and tries to avoid it at the call to ioapic_lazy_update_eoi,
+but at this point the scenario is already set, we have an edge interrupt
+with resampler on the same gsi.
+
+Fortunately, the only user of irq ack notifiers (in addition to resamplefd)
+is i8254 timer interrupt reinjection.  These are edge-triggered, so in
+principle they would need the call to kvm_ioapic_update_eoi_one from
+ioapic_lazy_update_eoi, but they already disable AVIC(*), so they don't
+need the lazy EOI behavior.  Therefore, remove the call to
+kvm_ioapic_update_eoi_one from ioapic_lazy_update_eoi.
+
+This fixes CVE-2020-27152.  Note that this issue cannot happen with
+SR-IOV assigned devices because virtual functions do not have INTx,
+only MSI.
+
+Fixes: f458d039db7e ("kvm: ioapic: Lazy update IOAPIC EOI")
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Tested-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/kvm/ioapic.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 81aafb601df06..d2213220099d3 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -743,11 +743,10 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
- {
- 	char b[BDEVNAME_SIZE];
+diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+index d057376bd3d33..698969e18fe35 100644
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -197,12 +197,9 @@ static void ioapic_lazy_update_eoi(struct kvm_ioapic *ioapic, int irq)
  
--	printk(KERN_INFO "attempt to access beyond end of device\n");
--	printk(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
--			bio_devname(bio, b), bio->bi_opf,
--			(unsigned long long)bio_end_sector(bio),
--			(long long)maxsector);
-+	pr_info_ratelimited("attempt to access beyond end of device\n"
-+			    "%s: rw=%d, want=%llu, limit=%llu\n",
-+			    bio_devname(bio, b), bio->bi_opf,
-+			    bio_end_sector(bio), maxsector);
+ 		/*
+ 		 * If no longer has pending EOI in LAPICs, update
+-		 * EOI for this vetor.
++		 * EOI for this vector.
+ 		 */
+ 		rtc_irq_eoi(ioapic, vcpu, entry->fields.vector);
+-		kvm_ioapic_update_eoi_one(vcpu, ioapic,
+-					  entry->fields.trig_mode,
+-					  irq);
+ 		break;
+ 	}
  }
- 
- #ifdef CONFIG_FAIL_MAKE_REQUEST
 -- 
 2.25.1
 
