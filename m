@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CCE29C0D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71DD29C0FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818392AbgJ0RTc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 13:19:32 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:46567 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782511AbgJ0O5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:57:08 -0400
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kXQP4-0006mx-IB; Tue, 27 Oct 2020 15:56:50 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kXQP2-0004zR-6Y; Tue, 27 Oct 2020 15:56:48 +0100
-Message-ID: <646d8a1e39b403803500218b62138cce440950be.camel@pengutronix.de>
-Subject: Re: [PATCH 2/4] drm/imx: tve remove extraneous type qualifier
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Arnd Bergmann <arnd@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Markus Elfring <elfring@users.sourceforge.net>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Date:   Tue, 27 Oct 2020 15:56:48 +0100
-In-Reply-To: <20201026194110.3817470-2-arnd@kernel.org>
-References: <20201026194110.3817470-1-arnd@kernel.org>
-         <20201026194110.3817470-2-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1818012AbgJ0RQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:16:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2899694AbgJ0O6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:58:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603810695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QHfC50u4+qYFKShn9vmVFysfcHnRXhgSobOLpg9p0W8=;
+        b=YmmqkqV0zXjnwZ/n/we8egpCPIWoJQ40xIiaz72oAbg1N9ZYj1HNm3osroivK/OGnF/b5Z
+        uClP6ikE0YuEZg/hQbgUXTPOFyDo/qVedZdPyp+gs59yeRufDMFViY3kby3riztNmgorP9
+        IOhcFQ9z5x8D27pj9l+4X7eFpdFAGnE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C1CFFAE7B;
+        Tue, 27 Oct 2020 14:58:15 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 15:58:14 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Hui Su <sh_def@163.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/oom_kill.c: remove the unmatched comments
+Message-ID: <20201027145814.GY20500@dhcp22.suse.cz>
+References: <20201027144529.GA3558@rlk>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027144529.GA3558@rlk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-26 at 20:41 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang warns about functions returning a 'const int' result:
-> 
-> drivers/gpu/drm/imx/imx-tve.c:487:8: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
-> 
-> Remove the extraneous 'const' qualifier here. I would guess that the
-> function was intended to be marked __attribute__((const)) instead,
-> but that would also be wrong since it call other functions without
-> that attribute.
-> 
-> Fixes: fcbc51e54d2a ("staging: drm/imx: Add support for Television Encoder (TVEv2)")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue 27-10-20 22:45:29, Hui Su wrote:
+> is_dump_unreclaim_slabs() just check whether nr_unreclaimable
+> slabs amount is greater than user memory, not match witch comment.
 
-Thank you, applied to imx-drm/next with Nick's R-b.
+As I've tried to explain, the comment is not explaining what the
+function does but how it should be used. It is not a kerneldoc afterall.
+So it is a good match. I can see how that might confuse somebody so I am
+not against changing this but the changelog shouldn't really be
+confusing on its own. What do you think about the following instead.
 
-regards
-Philipp
+"
+Comment for is_dump_unreclaim_slabs is not really clear whether it is
+meant to instruct how to use the function or whether it is an outdated
+information of the past implementation of the function. it doesn't realy
+help that is_dump_unreclaim_slabs is hard to grasp on its own.
+Rename the helper to should_dump_unreclaim_slabs which should make it
+clear what it is meant to do and drop the comment as the purpose should
+be pretty evident now.
+"
+
+> So delete the comment, and rename it to should_dump_unreclaim_slabs().
+> 
+> Signed-off-by: Hui Su <sh_def@163.com>
+> ---
+>  mm/oom_kill.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 8b84661a6410..d181e24d7193 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -170,11 +170,7 @@ static bool oom_unkillable_task(struct task_struct *p)
+>  	return false;
+>  }
+>  
+> -/*
+> - * Print out unreclaimble slabs info when unreclaimable slabs amount is greater
+> - * than all user memory (LRU pages)
+> - */
+> -static bool is_dump_unreclaim_slabs(void)
+> +static bool should_dump_unreclaim_slabs(void)
+>  {
+>  	unsigned long nr_lru;
+>  
+> @@ -463,7 +459,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
+>  		mem_cgroup_print_oom_meminfo(oc->memcg);
+>  	else {
+>  		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
+> -		if (is_dump_unreclaim_slabs())
+> +		if (should_dump_unreclaim_slabs())
+>  			dump_unreclaimable_slab();
+>  	}
+>  	if (sysctl_oom_dump_tasks)
+> -- 
+> 2.25.1
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
