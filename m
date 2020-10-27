@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC4129BCFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8D929BEA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811378AbgJ0Qj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46944 "EHLO mail.kernel.org"
+        id S1813688AbgJ0Qxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1765974AbgJ0Prs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:47:48 -0400
+        id S1794625AbgJ0PMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:12:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EC7E22282;
-        Tue, 27 Oct 2020 15:47:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B44BE2071A;
+        Tue, 27 Oct 2020 15:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813667;
-        bh=TlzoQOTgJdo063lAP9IImjdEtkOQ5U8LxXHV/62dbH0=;
+        s=default; t=1603811563;
+        bh=Buv2dVNq0Tkli/0x+OUC2acHwZGGA/Z5YDjL+nyPK8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBSdSYh69MsCAZl6dCCeTp+2who74sWsyJe5crYnj5XC13OekbYWWRGvEEhAYLUUD
-         NNjpkGodYllZmEFKmR6N5oOIzzRCLymjmsR62vVuNIbqR/iN6C0lUg80Umk14/jq3W
-         G27jcdYZ4di1IH24kJVanCUnctUgO/NreFxlnJRE=
+        b=bWQyjRCcVb04RGjb7UJjCcq8IXJSKt5W7UH7GQ4oFy9x4AlaN2L0cAun0SKItvJJP
+         KMKxHhwW3rbzSdjVBvI/OsFTnIgzeqthGkktl5emZBFTzS/mM/89GOVXipYrVkg0jH
+         EyUYMsJcofQvzYU+HSb1Op6fAI3jvLycS4jwtfeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 629/757] powerpc/powernv/dump: Fix race while processing OPAL dump
-Date:   Tue, 27 Oct 2020 14:54:39 +0100
-Message-Id: <20201027135520.047518649@linuxfoundation.org>
+Subject: [PATCH 5.8 537/633] media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync
+Date:   Tue, 27 Oct 2020 14:54:40 +0100
+Message-Id: <20201027135547.980556644@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,115 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 0a43ae3e2beb77e3481d812834d33abe270768ab ]
+[ Upstream commit 7ef64ceea0008c17e94a8a2c60c5d6d46f481996 ]
 
-Every dump reported by OPAL is exported to userspace through a sysfs
-interface and notified using kobject_uevent(). The userspace daemon
-(opal_errd) then reads the dump and acknowledges that the dump is
-saved safely to disk. Once acknowledged the kernel removes the
-respective sysfs file entry causing respective resources to be
-released including kobject.
+On calling pm_runtime_get_sync() the reference count of the device
+is incremented. In case of failure, decrement the
+reference count before returning the error.
 
-However it's possible the userspace daemon may already be scanning
-dump entries when a new sysfs dump entry is created by the kernel.
-User daemon may read this new entry and ack it even before kernel can
-notify userspace about it through kobject_uevent() call. If that
-happens then we have a potential race between
-dump_ack_store->kobject_put() and kobject_uevent which can lead to
-use-after-free of a kernfs object resulting in a kernel crash.
-
-This patch fixes this race by protecting the sysfs file
-creation/notification by holding a reference count on kobject until we
-safely send kobject_uevent().
-
-The function create_dump_obj() returns the dump object which if used
-by caller function will end up in use-after-free problem again.
-However, the return value of create_dump_obj() function isn't being
-used today and there is no need as well. Hence change it to return
-void to make this fix complete.
-
-Fixes: c7e64b9ce04a ("powerpc/powernv Platform dump interface")
-Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201017164210.264619-1-hegdevasant@linux.vnet.ibm.com
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/powernv/opal-dump.c | 41 +++++++++++++++-------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+ drivers/media/platform/exynos4-is/fimc-isp.c  | 4 +++-
+ drivers/media/platform/exynos4-is/fimc-lite.c | 2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powernv/opal-dump.c b/arch/powerpc/platforms/powernv/opal-dump.c
-index 543c816fa99ef..0e6693bacb7e7 100644
---- a/arch/powerpc/platforms/powernv/opal-dump.c
-+++ b/arch/powerpc/platforms/powernv/opal-dump.c
-@@ -318,15 +318,14 @@ static ssize_t dump_attr_read(struct file *filep, struct kobject *kobj,
- 	return count;
- }
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp.c b/drivers/media/platform/exynos4-is/fimc-isp.c
+index cde0d254ec1c4..a77c49b185115 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp.c
+@@ -305,8 +305,10 @@ static int fimc_isp_subdev_s_power(struct v4l2_subdev *sd, int on)
  
--static struct dump_obj *create_dump_obj(uint32_t id, size_t size,
--					uint32_t type)
-+static void create_dump_obj(uint32_t id, size_t size, uint32_t type)
- {
- 	struct dump_obj *dump;
- 	int rc;
+ 	if (on) {
+ 		ret = pm_runtime_get_sync(&is->pdev->dev);
+-		if (ret < 0)
++		if (ret < 0) {
++			pm_runtime_put(&is->pdev->dev);
+ 			return ret;
++		}
+ 		set_bit(IS_ST_PWR_ON, &is->state);
  
- 	dump = kzalloc(sizeof(*dump), GFP_KERNEL);
- 	if (!dump)
--		return NULL;
-+		return;
+ 		ret = fimc_is_start_firmware(is);
+diff --git a/drivers/media/platform/exynos4-is/fimc-lite.c b/drivers/media/platform/exynos4-is/fimc-lite.c
+index 394e0818f2d5c..92130d7791378 100644
+--- a/drivers/media/platform/exynos4-is/fimc-lite.c
++++ b/drivers/media/platform/exynos4-is/fimc-lite.c
+@@ -470,7 +470,7 @@ static int fimc_lite_open(struct file *file)
+ 	set_bit(ST_FLITE_IN_USE, &fimc->state);
+ 	ret = pm_runtime_get_sync(&fimc->pdev->dev);
+ 	if (ret < 0)
+-		goto unlock;
++		goto err_pm;
  
- 	dump->kobj.kset = dump_kset;
- 
-@@ -346,21 +345,39 @@ static struct dump_obj *create_dump_obj(uint32_t id, size_t size,
- 	rc = kobject_add(&dump->kobj, NULL, "0x%x-0x%x", type, id);
- 	if (rc) {
- 		kobject_put(&dump->kobj);
--		return NULL;
-+		return;
- 	}
- 
-+	/*
-+	 * As soon as the sysfs file for this dump is created/activated there is
-+	 * a chance the opal_errd daemon (or any userspace) might read and
-+	 * acknowledge the dump before kobject_uevent() is called. If that
-+	 * happens then there is a potential race between
-+	 * dump_ack_store->kobject_put() and kobject_uevent() which leads to a
-+	 * use-after-free of a kernfs object resulting in a kernel crash.
-+	 *
-+	 * To avoid that, we need to take a reference on behalf of the bin file,
-+	 * so that our reference remains valid while we call kobject_uevent().
-+	 * We then drop our reference before exiting the function, leaving the
-+	 * bin file to drop the last reference (if it hasn't already).
-+	 */
-+
-+	/* Take a reference for the bin file */
-+	kobject_get(&dump->kobj);
- 	rc = sysfs_create_bin_file(&dump->kobj, &dump->dump_attr);
--	if (rc) {
-+	if (rc == 0) {
-+		kobject_uevent(&dump->kobj, KOBJ_ADD);
-+
-+		pr_info("%s: New platform dump. ID = 0x%x Size %u\n",
-+			__func__, dump->id, dump->size);
-+	} else {
-+		/* Drop reference count taken for bin file */
- 		kobject_put(&dump->kobj);
--		return NULL;
- 	}
- 
--	pr_info("%s: New platform dump. ID = 0x%x Size %u\n",
--		__func__, dump->id, dump->size);
--
--	kobject_uevent(&dump->kobj, KOBJ_ADD);
--
--	return dump;
-+	/* Drop our reference */
-+	kobject_put(&dump->kobj);
-+	return;
- }
- 
- static irqreturn_t process_dump(int irq, void *data)
+ 	ret = v4l2_fh_open(file);
+ 	if (ret < 0)
 -- 
 2.25.1
 
