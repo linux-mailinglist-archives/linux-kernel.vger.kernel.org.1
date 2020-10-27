@@ -2,169 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6C029A6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E72D29A6BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895045AbgJ0Iif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:38:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895032AbgJ0Iid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:38:33 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C11822202;
-        Tue, 27 Oct 2020 08:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603787912;
-        bh=+dg6y245gJ/L/iVvDw0zsMRT1YcHeax7uEbyu/BJ1vU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vvKAPuYKxTdVNDwya4r3iDVjxe8A/dfT1KkHWZ2jber7PIqFofblUr/spVu5jBkBm
-         MQdFvQl0xxFyWw19nhjLmQKrxETaTmSPzdpKryLQfRCY42kv1ouILXBiwwp7JDzj+f
-         1m13PYW49F1mKn6btDBt0MyRnWGW82tINBD33+oE=
-Date:   Tue, 27 Oct 2020 10:38:16 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-Message-ID: <20201027083816.GG1154158@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
- <20201026090526.GA1154158@kernel.org>
- <a0212b073b3b2f62c3dbf1bf398f03fa402997be.camel@intel.com>
+        id S2509118AbgJ0IkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:40:23 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:45278 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509041AbgJ0IkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:40:04 -0400
+Received: by mail-pf1-f194.google.com with SMTP id e7so483961pfn.12;
+        Tue, 27 Oct 2020 01:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ZiyaeUHjFYAo8O2nb9YsSxiVAxNu61UHIsbR2dmhM8=;
+        b=DHqyU5Na/jfu0CgjXEBRZ7QpVnSFuOgsccPtxwmB+XA4WPA2U6F0rtyb58Si36ekQR
+         C8SPIVYvHA195OL3/laP+QorziaeN/NjA9qyj/tUcbgpyp8cbTwATo/BsjUmPx2S1iL5
+         +45ITpRLLFFLySIo0H41QoOZYK7NennGZSd5yifnZ33dVvEV0XtPWHsPVQcGCqro8xyC
+         3AwmU70/AsdKxVXFcYoqnRZEDCW/dP1qbMenGD9WtodVtAQEGDc8gC8xg+xfJBTq/Cx6
+         D3IacEV5Qy7mGMgQjtZomJsTo+IGhvwEPuq6AujAcNy1lWj3WpBD84k6gaa7iWtFKwkV
+         OOuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ZiyaeUHjFYAo8O2nb9YsSxiVAxNu61UHIsbR2dmhM8=;
+        b=b60d49JD6S6tes0HjdG2KLYJaU9xjixDphPHHMYAZN0WFhJbMVJ2EqcSihUTQcEnrS
+         DIR5qRyJqfcKnRKP7PzHdqDCeb4Oqr6ZBdGA9XgxEK1VcAOLyd982QxO+NllwNoAvTz9
+         WOSr3z3CPI0NCLeNB8qd1wI3QcZWvMO25WPAwolzWDeKHe6TLSeUTZEnAFEt6UaPvtUJ
+         YHZDg8N1q3TzJS361XwpMoNdgJDxUN7bss8GvjihgXGF2NlN4W3IQhGPlv6TXYRYlFA2
+         bwePCy0wie6eiegVxYoKojGG8WrQc4Kx63ncuEuU4zIbooNUIQe9nzRkHUybePVNZRsN
+         xSSA==
+X-Gm-Message-State: AOAM531+Y8WfKVAiVXxKEmYj7OC2UUywsjWDWUBwMf62k2q2kzCTlmek
+        dUzQ2KdWftiXdePPFsfPaFlqTvylzQNR+pFoI1QFHbw=
+X-Google-Smtp-Source: ABdhPJxxCmUA25gVUIxPmAa6W5aLqGOF6/2FnS/2HGGle0o+YkeMtP8HdkFdpXf/etcGVUa6ceI10ZWUue2a0n9pVX0=
+X-Received: by 2002:a63:af08:: with SMTP id w8mr1001427pge.419.1603788002072;
+ Tue, 27 Oct 2020 01:40:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a0212b073b3b2f62c3dbf1bf398f03fa402997be.camel@intel.com>
+References: <20201026085141.1179-1-rsalvaterra@gmail.com> <20201027012204.GD2412725@google.com>
+In-Reply-To: <20201027012204.GD2412725@google.com>
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+Date:   Tue, 27 Oct 2020 08:39:51 +0000
+Message-ID: <CALjTZvbf4qK6SHEe7OhkTC_o7kaY4oOKQ+kk-D2OUq_ULsYAqQ@mail.gmail.com>
+Subject: Re: [PATCH v3] zram: break the strict dependency from lzo
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 06:05:30PM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2020-10-26 at 11:05 +0200, Mike Rapoport wrote:
-> > On Mon, Oct 26, 2020 at 01:13:52AM +0000, Edgecombe, Rick P wrote:
-> > > On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
-> > > > Indeed, for architectures that define
-> > > > CONFIG_ARCH_HAS_SET_DIRECT_MAP
-> > > > it is
-> > > > possible that __kernel_map_pages() would fail, but since this
-> > > > function is
-> > > > void, the failure will go unnoticed.
-> > > 
-> > > Could you elaborate on how this could happen? Do you mean during
-> > > runtime today or if something new was introduced?
-> > 
-> > A failure in__kernel_map_pages() may happen today. For instance, on
-> > x86
-> > if the kernel is built with DEBUG_PAGEALLOC.
-> > 
-> >         __kernel_map_pages(page, 1, 0);
-> > 
-> > will need to split, say, 2M page and during the split an allocation
-> > of
-> > page table could fail.
-> 
-> On x86 at least, DEBUG_PAGEALLOC expects to never have to break a page
-> on the direct map and even disables locking in cpa because it assumes
-> this. If this is happening somehow anyway then we should probably fix
-> that. Even if it's a debug feature, it will not be as useful if it is
-> causing its own crashes.
-> 
-> I'm still wondering if there is something I'm missing here. It seems
-> like you are saying there is a bug in some arch's, so let's add a WARN
-> in cross-arch code to log it as it crashes. A warn and making things
-> clearer seem like good ideas, but if there is a bug we should fix it.
-> The code around the callers still functionally assume re-mapping can't
-> fail.
+Hi, Sergey,
 
-Oh, I've meant x86 kernel *without* DEBUG_PAGEALLOC, and indeed the call
-that unmaps pages back in safe_copy_page will just reset a 4K page to
-NP because whatever made it NP at the first place already did the split.
+On Tue, 27 Oct 2020 at 01:22, Sergey Senozhatsky
+<sergey.senozhatsky.work@gmail.com> wrote:
+>
+> Honestly, I'm not entirely excited. lzo is a fallback compression
+> algorithm. If you want to use zram with something else thenconfigure
+> zram to use something else. What do all these #if/#elif buy us?
 
-Still, on arm64 with DEBUG_PAGEALLOC=n there is a possibility of a race
-between map/unmap dance in __vunmap() and safe_copy_page() that may
-cause access to unmapped memory:
+The idea is to allow us to select a single compression algorithm at
+build time, if we're sure to use something other than lzo. The status
+quo only allows us to select additional algorithms, as lzo is a hard
+dependency. I dislike the "iffery" as much as the next guy, but in
+this case the default selection stops being static (as lzo may not be
+available at run time), so we have to fall back to an algorithm which
+is enabled, otherwise zram won't work out of the box (we'd always need
+to choose the algorithm manually in sysfs).
+Personally, I always use zram with zstd, and the only lzo dependency I
+have is zram. Disabling lzo saves me about 3 kiB in the final
+(xz-compressed) vmlinuz image. It's not much, for sure, but when your
+total storage is 4 MiB (and your RAM is 32 MiB), every bit counts. :)
 
-__vunmap()
-    vm_remove_mappings()
-        set_direct_map_invalid()
-					safe_copy_page()	
-					    __kernel_map_pages()
-					    	return
-					    do_copy_page() -> fault
-					   	
-This is a theoretical bug, but it is still not nice :) 							
-
-> > Currently, the only user of __kernel_map_pages() outside
-> > DEBUG_PAGEALLOC
-> > is hibernation, but I think it would be safer to entirely prevent
-> > usage
-> > of __kernel_map_pages() when DEBUG_PAGEALLOC=n.
-> 
-> I totally agree it's error prone FWIW. On x86, my mental model of how
-> it is supposed to work is: If a page is 4k and NP it cannot fail to be
-> remapped. set_direct_map_invalid_noflush() should result in 4k NP
-> pages, and DEBUG_PAGEALLOC should result in all 4k pages on the direct
-> map. Are you seeing this violated or do I have wrong assumptions?
-
-You are right, there is a set of assumptions about the remapping of the
-direct map pages that make it all work, at least on x86.
-But this is very subtle and it's not easy to wrap one's head around
-this.
-
-That's why putting __kernel_map_pages() out of "common" use and
-keep it only for DEBUG_PAGEALLOC would make things clearer.
-
-> Beyond whatever you are seeing, for the latter case of new things
-> getting introduced to an interface with hidden dependencies... Another
-> edge case could be a new caller to set_memory_np() could result in
-> large NP pages. None of the callers today should cause this AFAICT, but
-> it's not great to rely on the callers to know these details.
- 
-A caller of set_memory_*() or set_direct_map_*() should expect a failure
-and be ready for that. So adding a WARN to safe_copy_page() is the first
-step in that direction :)
-
--- 
-Sincerely yours,
-Mike.
+Thanks,
+Rui
