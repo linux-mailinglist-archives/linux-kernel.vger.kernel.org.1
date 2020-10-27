@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BEC29C71B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8563529C6BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827783AbgJ0S1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:27:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44810 "EHLO mail.kernel.org"
+        id S1827202AbgJ0SWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:22:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504140AbgJ0N5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:45 -0400
+        id S1741360AbgJ0OCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:02:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A164C2072E;
-        Tue, 27 Oct 2020 13:57:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98D7F221F8;
+        Tue, 27 Oct 2020 14:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807064;
-        bh=I6ItegFF5/0mB3bA4/y65+UrSzJEeBIb/GuBLhWEBSs=;
+        s=default; t=1603807361;
+        bh=WF/DrwobkPc8AnN036NJDYo4EzAFWL4v58QCOOMGz6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C0NA3bKroKFAMb4PkEuOjcxFY95CCvHYQyc2lENqyOTCV16zJXix3uPzPgz+zQORZ
-         JH8YlL3k2NSUZ0T9hl63blOj8X1m6rKzErGrHvbJwaVntCm/JtvTCWjmxawYxGvl8s
-         pD+ydR8g1wOgmjCOCPDQsdri16PFpY7b6hyl5WZQ=
+        b=AHhtGkz7+2GSpyOfYzM62pVFgUGR+bU5MhNn6LgGfCo4SVBNQhK4QWrlHt31WNl34
+         27w78AR6L1YjvqLTqvybe/BqHLBu6Mp8kM5vlNWa4yXnM6XPEXU0j14O20MhbHIlCm
+         9SBZlef5Z9VvfeUQ94/ajsoJWBv3CIR9E+98Zxlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.4 007/112] mm/kasan: add API to check memory regions
-Date:   Tue, 27 Oct 2020 14:48:37 +0100
-Message-Id: <20201027134900.893996677@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 024/139] regulator: resolve supply after creating regulator
+Date:   Tue, 27 Oct 2020 14:48:38 +0100
+Message-Id: <20201027134903.282607455@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,67 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Ryabinin <aryabinin@virtuozzo.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit 64f8ebaf115bcddc4aaa902f981c57ba6506bc42 upstream.
+[ Upstream commit aea6cb99703e17019e025aa71643b4d3e0a24413 ]
 
-Memory access coded in an assembly won't be seen by KASAN as a compiler
-can instrument only C code.  Add kasan_check_[read,write]() API which is
-going to be used to check a certain memory range.
+When creating a new regulator its supply cannot create the sysfs link
+because the device is not yet published. Remove early supply resolving
+since it will be done later anyway. This makes the following error
+disappear and the symlinks get created instead.
 
-Link: http://lkml.kernel.org/r/1462538722-1574-3-git-send-email-aryabinin@virtuozzo.com
-Signed-off-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Acked-by: Alexander Potapenko <glider@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-[bwh: Backported to 4.4: drop change in MAINTAINERS]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  DCDC_REG1: supplied by VSYS
+  VSYS: could not add device link regulator.3 err -2
+
+Note: It doesn't fix the problem for bypassed regulators, though.
+
+Fixes: 45389c47526d ("regulator: core: Add early supply resolution for regulators")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Link: https://lore.kernel.org/r/ba09e0a8617ffeeb25cb4affffe6f3149319cef8.1601155770.git.mirq-linux@rere.qmqm.pl
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/kasan-checks.h |   12 ++++++++++++
- mm/kasan/kasan.c             |   12 ++++++++++++
- 2 files changed, 24 insertions(+)
- create mode 100644 include/linux/kasan-checks.h
+ drivers/regulator/core.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
---- /dev/null
-+++ b/include/linux/kasan-checks.h
-@@ -0,0 +1,12 @@
-+#ifndef _LINUX_KASAN_CHECKS_H
-+#define _LINUX_KASAN_CHECKS_H
-+
-+#ifdef CONFIG_KASAN
-+void kasan_check_read(const void *p, unsigned int size);
-+void kasan_check_write(const void *p, unsigned int size);
-+#else
-+static inline void kasan_check_read(const void *p, unsigned int size) { }
-+static inline void kasan_check_write(const void *p, unsigned int size) { }
-+#endif
-+
-+#endif
---- a/mm/kasan/kasan.c
-+++ b/mm/kasan/kasan.c
-@@ -278,6 +278,18 @@ static void check_memory_region(unsigned
- 	check_memory_region_inline(addr, size, write, ret_ip);
- }
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 9355b65920ab4..0f730e4bf6bcb 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -4029,15 +4029,20 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 	else if (regulator_desc->supply_name)
+ 		rdev->supply_name = regulator_desc->supply_name;
  
-+void kasan_check_read(const void *p, unsigned int size)
-+{
-+	check_memory_region((unsigned long)p, size, false, _RET_IP_);
-+}
-+EXPORT_SYMBOL(kasan_check_read);
-+
-+void kasan_check_write(const void *p, unsigned int size)
-+{
-+	check_memory_region((unsigned long)p, size, true, _RET_IP_);
-+}
-+EXPORT_SYMBOL(kasan_check_write);
-+
- #undef memset
- void *memset(void *addr, int c, size_t len)
- {
+-	/*
+-	 * Attempt to resolve the regulator supply, if specified,
+-	 * but don't return an error if we fail because we will try
+-	 * to resolve it again later as more regulators are added.
+-	 */
+-	if (regulator_resolve_supply(rdev))
+-		rdev_dbg(rdev, "unable to resolve supply\n");
+-
+ 	ret = set_machine_constraints(rdev, constraints);
++	if (ret == -EPROBE_DEFER) {
++		/* Regulator might be in bypass mode and so needs its supply
++		 * to set the constraints */
++		/* FIXME: this currently triggers a chicken-and-egg problem
++		 * when creating -SUPPLY symlink in sysfs to a regulator
++		 * that is just being created */
++		ret = regulator_resolve_supply(rdev);
++		if (!ret)
++			ret = set_machine_constraints(rdev, constraints);
++		else
++			rdev_dbg(rdev, "unable to resolve supply early: %pe\n",
++				 ERR_PTR(ret));
++	}
+ 	if (ret < 0)
+ 		goto wash;
+ 
+-- 
+2.25.1
+
 
 
