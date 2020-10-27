@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFE129B749
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D84F29B746
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799403AbgJ0PbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36888 "EHLO mail.kernel.org"
+        id S1799373AbgJ0PbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:31:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797187AbgJ0PWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:07 -0400
+        id S1797205AbgJ0PWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:22:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1F832224A;
-        Tue, 27 Oct 2020 15:22:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BE3B20657;
+        Tue, 27 Oct 2020 15:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812126;
-        bh=huI7hy4Mxt2yRSeKlfuXeDbe3ZIKDWw1ulXgTzvE3rk=;
+        s=default; t=1603812132;
+        bh=7HZTw5mvbuZFFcdTHl4abAjmB3vQWgFC+dGVsKVI8Bc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmRUkm8ltowMgzlC9Ve+NpQ7sYCqs+cZWGJJmXCApzvaKDJBREc/Y78iepxYDRoSG
-         2eA+VH7C8wmYGlbIYbh1KwWkOP12qNF+SE6lnY+63fCLufewxFKN6psaK91AZF0cTe
-         x4xNgkrkMPozdstc80Z2uASQ7vJZYLvjGJ1gX5YU=
+        b=tLRRBqBo6c6QacNTW37pXTkjgm/wKYPvYHTUPSGqKj2Ch3MrlYA6TkCp7gb15hbLx
+         GpuPDnP9xGQDUbq4QDLelyrroFh0Kd+mXveh2xHvxYeVOVpeTG5bFXAbTM5IDSIUsb
+         wMt10DkqLtjMrjYRzBp9EkTYSL+pFtjJ9mDSj7uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Salter <msalter@redhat.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 101/757] drivers/perf: thunderx2_pmu: Fix memory resource error handling
-Date:   Tue, 27 Oct 2020 14:45:51 +0100
-Message-Id: <20201027135455.288474809@linuxfoundation.org>
+        stable@vger.kernel.org, Wetp Zhang <wetp.zy@linux.alibaba.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 102/757] sched/fair: Fix wrong cpu selecting from isolated domain
+Date:   Tue, 27 Oct 2020 14:45:52 +0100
+Message-Id: <20201027135455.338768160@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -42,57 +46,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Salter <msalter@redhat.com>
+From: Xunlei Pang <xlpang@linux.alibaba.com>
 
-[ Upstream commit 688494a407d1419a6b158c644b262c61cde39f48 ]
+[ Upstream commit df3cb4ea1fb63ff326488efd671ba3c39034255e ]
 
-In tx2_uncore_pmu_init_dev(), a call to acpi_dev_get_resources() is used
-to create a list _CRS resources which is searched for the device base
-address. There is an error check following this:
+We've met problems that occasionally tasks with full cpumask
+(e.g. by putting it into a cpuset or setting to full affinity)
+were migrated to our isolated cpus in production environment.
 
-   if (!rentry->res)
-           return NULL
+After some analysis, we found that it is due to the current
+select_idle_smt() not considering the sched_domain mask.
 
-In no case, will rentry->res be NULL, so the test is useless. Even
-if the test worked, it comes before the resource list memory is
-freed. None of this really matters as long as the ACPI table has
-the memory resource. Let's clean it up so that it makes sense and
-will give a meaningful error should firmware leave out the memory
-resource.
+Steps to reproduce on my 31-CPU hyperthreads machine:
+1. with boot parameter: "isolcpus=domain,2-31"
+   (thread lists: 0,16 and 1,17)
+2. cgcreate -g cpu:test; cgexec -g cpu:test "test_threads"
+3. some threads will be migrated to the isolated cpu16~17.
 
-Fixes: 69c32972d593 ("drivers/perf: Add Cavium ThunderX2 SoC UNCORE PMU driver")
-Signed-off-by: Mark Salter <msalter@redhat.com>
-Link: https://lore.kernel.org/r/20200915204110.326138-2-msalter@redhat.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fix it by checking the valid domain mask in select_idle_smt().
+
+Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
+Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
+Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/thunderx2_pmu.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
-index aac9823b0c6bb..e116815fa8092 100644
---- a/drivers/perf/thunderx2_pmu.c
-+++ b/drivers/perf/thunderx2_pmu.c
-@@ -805,14 +805,17 @@ static struct tx2_uncore_pmu *tx2_uncore_pmu_init_dev(struct device *dev,
- 	list_for_each_entry(rentry, &list, node) {
- 		if (resource_type(rentry->res) == IORESOURCE_MEM) {
- 			res = *rentry->res;
-+			rentry = NULL;
- 			break;
- 		}
- 	}
-+	acpi_dev_free_resource_list(&list);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 51408ebd76c27..ea3d20be3e756 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+ /*
+  * Scan the local SMT mask for idle CPUs.
+  */
+-static int select_idle_smt(struct task_struct *p, int target)
++static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	int cpu;
  
--	if (!rentry->res)
-+	if (rentry) {
-+		dev_err(dev, "PMU type %d: Fail to find resource\n", type);
- 		return NULL;
-+	}
+@@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
+ 		return -1;
  
--	acpi_dev_free_resource_list(&list);
- 	base = devm_ioremap_resource(dev, &res);
- 	if (IS_ERR(base)) {
- 		dev_err(dev, "PMU type %d: Fail to map resource\n", type);
+ 	for_each_cpu(cpu, cpu_smt_mask(target)) {
+-		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
++		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
++		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+ 			continue;
+ 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+ 			return cpu;
+@@ -6099,7 +6100,7 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
+ 	return -1;
+ }
+ 
+-static inline int select_idle_smt(struct task_struct *p, int target)
++static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	return -1;
+ }
+@@ -6274,7 +6275,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
+ 
+-	i = select_idle_smt(p, target);
++	i = select_idle_smt(p, sd, target);
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
+ 
 -- 
 2.25.1
 
