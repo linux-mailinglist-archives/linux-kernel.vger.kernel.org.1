@@ -2,54 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9906A29CA75
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2EC29CA76
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831865AbgJ0Ujk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:39:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45580 "EHLO mail.kernel.org"
+        id S1831873AbgJ0Ujm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1831852AbgJ0UjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:39:23 -0400
+        id S1831857AbgJ0Uj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:39:27 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BFC920791;
-        Tue, 27 Oct 2020 20:39:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA80D21D24;
+        Tue, 27 Oct 2020 20:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603831162;
-        bh=Dmex8B7MuY24WP9Gh+Qt7EKTYyT+ok3PmAB+LZ5455E=;
+        s=default; t=1603831167;
+        bh=mYpKtnquAkaw0Puhc9R5givJhzU92gCc5aMlJAvKy5A=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Pb8K5NLuo1CeNsg3hnSHB+nEPtvOZeMqdLccL+x0KA1VpGfE7LILNC4AiHxE18l7V
-         U3YRYef8o/DS+tFLTytH+8BOD5k9MJbcgSliBRrk7j2KbWHBy3oAzlATKVGFaxY588
-         5DAxYRKvN/ptmgApJ3owaHOggN4oppAXTYsO8R7Q=
-Date:   Tue, 27 Oct 2020 20:39:16 +0000
+        b=yuWXYEvWJqnUWwZ4LArKjQ2rNVy5ldDSAbAh5w030eTKUu/0QoxGDghRhsVEe967e
+         fdki/g21ZM1CyWRCyb4OSNjxGYZPVPKe2SvScRP/cGDL6whBEeawOjQvRtcINcf2to
+         VytAQ5NV5Bf6PmhFvqXEiKa9l3/dp1GIfg/k9CjM=
+Date:   Tue, 27 Oct 2020 20:39:22 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Cheng-Yi Chiang <cychiang@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, tzungbi@chromium.org,
-        Taniya Das <tdas@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>, dgreid@chromium.org,
-        xuyuqing@huaqin.corp-partner.google.com,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        dianders@chromium.org, Heiko Stuebner <heiko@sntech.de>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        devicetree@vger.kernel.org,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        alsa-devel@alsa-project.org,
-        Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20201027032234.1705835-1-cychiang@chromium.org>
-References: <20201027032234.1705835-1-cychiang@chromium.org>
-Subject: Re: [PATCH v12 0/2] Add documentation and machine driver for SC7180 sound card
-Message-Id: <160383115673.25818.3743728810770710217.b4-ty@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20201022130254.29937-1-srinivas.kandagatla@linaro.org>
+References: <20201022130254.29937-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: qdsp6: make use of devm_of_platform_populate
+Message-Id: <160383115672.25818.3206390931221282078.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -57,15 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 11:22:32 +0800, Cheng-Yi Chiang wrote:
-> Note:
-> - The machine driver patch is made by the collaboration of
->   Cheng-Yi Chiang <cychiang@chromium.org>
->   Rohit kumar <rohitkr@codeaurora.org>
->   Ajit Pandey <ajitp@codeaurora.org>
->   But Ajit has left codeaurora.
-> 
-> [...]
+On Thu, 22 Oct 2020 14:02:54 +0100, Srinivas Kandagatla wrote:
+> make use of devm_of_platform_populate to remove some redundant code!
 
 Applied to
 
@@ -73,10 +48,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: google: dt-bindings: Add sc7180-trogdor machine bindings
-      commit: e158d2d83cab59ec7f4661548627ac171c797c9d
-[2/2] ASoC: qcom: sc7180: Add machine driver for sound card registration
-      commit: 9e3ecb5b16818abd0bc5f3997cf4d641a710f837
+[1/1] ASoC: qcom: qdsp6: make use of devm_of_platform_populate
+      commit: 023e1b1f1164a5e2da2ad20588cf164de9ef67bb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
