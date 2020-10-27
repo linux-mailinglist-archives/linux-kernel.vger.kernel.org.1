@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CC629B683
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B177F29B6AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796921AbgJ0PUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:20:36 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:24760 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796337AbgJ0PR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:17:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603811848; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=qzW8YMnl+1hEgHMlfrnCir6CmAPG6BS63/6JCiKRGlg=; b=nQGe/xZXvBLg9BXGofCxfmET//mO8v45G38dUtDOh+V5LRaM81YsP5BjQF3zX49J8p8XsW39
- EZyIIhRo/LTlZycgzkSHNFbdWcpV13yJluEd1Je6J5NpDlHHPKcUPJiVZMQWfkr57Q08gyEA
- NtI+EIBysuyIDhm+ygBscIZ6wrI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f98370b00143fe65276828d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 15:04:43
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 15711C4344B; Tue, 27 Oct 2020 15:04:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3E8C8C433FF;
-        Tue, 27 Oct 2020 15:04:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3E8C8C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     ath10k@lists.infradead.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuabhs@chromium.org, dianders@chromium.org,
-        briannorris@chromium.org, Rakesh Pillai <pillair@codeaurora.org>
-Subject: [PATCH] ath10k: Fix the parsing error in service available event
-Date:   Tue, 27 Oct 2020 20:34:27 +0530
-Message-Id: <1603811067-23058-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1797510AbgJ0PX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:23:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47546 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1797180AbgJ0PWG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:22:06 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603812124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZpUA5T6GnqkL1oqvAwNtwEv/lxjhPPmZ7O6sI+tfvDs=;
+        b=hU3438/GeulhC9U+rgBa3ne3IR8cwYgHVtt2xgj/3xw2gcU7K4hAW9oSqCCYHRzD2MxkAS
+        uimd452kFnZN1CUwPDy4lCcm8ifmX5RLu9kU/dRMAzGZp2a7kTIEs4KWTEAvEKjVX8V7kE
+        OtUilBoYiURaWY68Oxf4CqALxC1Dvg03zb5U6W8qWYAHn4cFUML1nn9gJOd+Zxd2Vr82KE
+        0Jc2107h2FUzhxVnY7vC9yUh5CjhJhWXtA+EQHu6KZkfwOnHs5rRBBbJA7eAl3IdDvdsKw
+        vceNhfjfoS0QJrPSDhFO3fw0GnMuEtxFdX8p2MRASdaoGdsCp36Eoo0e44Si4A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603812124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZpUA5T6GnqkL1oqvAwNtwEv/lxjhPPmZ7O6sI+tfvDs=;
+        b=edxYOTDdAdOBYBCllantSJcHX9nVuXGxgiGlV1ORSUid3sz6uG5u5fR6RfdvSFbxpbSjZz
+        idH1FJgq7zjdXfBA==
+To:     John Garry <john.garry@huawei.com>, gregkh@linuxfoundation.org,
+        rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com
+Cc:     linuxarm@huawei.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org,
+        John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH 1/3] genirq/affinity: Add irq_update_affinity_desc()
+In-Reply-To: <1603800624-180488-2-git-send-email-john.garry@huawei.com>
+References: <1603800624-180488-1-git-send-email-john.garry@huawei.com> <1603800624-180488-2-git-send-email-john.garry@huawei.com>
+Date:   Tue, 27 Oct 2020 16:22:03 +0100
+Message-ID: <87h7qf1yp0.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wmi service available event has been
-extended to contain extra 128 bit for new services
-to be indicated by firmware.
+John,
 
-Currently the presence of any optional TLVs in
-the wmi service available event leads to a parsing
-error with the below error message:
-ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+On Tue, Oct 27 2020 at 20:10, John Garry wrote:
 
-The wmi service available event parsing should
-not return error for the newly added optional TLV.
-Fix this parsing for service available event message.
+> From: Thomas Gleixner <tglx@linutronix.de>
+>
+> Add a function to allow the affinity of an interrupt be switched to
+> managed, such that interrupts allocated for platform devices may be
+> managed.
+>
+> <Insert author sob>
+>
+> [jpg: Add commit message and add prototypes]
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+> Thomas, I just made you author since you provided the original code, hope
+> it's ok.
 
-Tested-on: WCN3990 hw1.0 SNOC
+I already forgot about this. And in fact I only gave you a broken
+example. So just make yourself the author and add Suggested-by: tglx.
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+Vs. merging. I'd like to pick that up myself as I might have other
+changes in that area coming up.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 932266d..3b49e29 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1404,9 +1404,12 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
- 		arg->service_map_ext_len = *(__le32 *)ptr;
- 		arg->service_map_ext = ptr + sizeof(__le32);
- 		return 0;
-+	case WMI_TLV_TAG_FIRST_ARRAY_ENUM:
-+		return 0;
- 	default:
- 		break;
- 	}
-+
- 	return -EPROTO;
- }
- 
--- 
-2.7.4
+I'll do it as a single commit on top of rc1 and tag it so the scsi
+people can just pull it in.
 
+Thanks,
+
+        tglx
