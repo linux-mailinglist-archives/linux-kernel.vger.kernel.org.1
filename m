@@ -2,130 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1E829BBA2
+	by mail.lfdr.de (Postfix) with ESMTP id ED4CA29BBA4
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808826AbgJ0QXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:23:06 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:46299 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1808817AbgJ0QXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:23:02 -0400
-Received: by mail-oi1-f193.google.com with SMTP id x1so1834384oic.13;
-        Tue, 27 Oct 2020 09:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=NEJ75eazugIxTiGgov7ny2tg8dhF8KBwSIY/K2VIUa4=;
-        b=O6BYLLD7y1Vk9bu2wUHfOKew52+BSy/G3UANd5GsnvOksCmPTZM6XzRMX6pG8XRLYY
-         F43lGUVn8quNwsf7xHNiHrHCXBlbn4gDBhQBNyjXtXuBDovLDwWG3LnA6zKrhdZiRqR/
-         bFS2hCjDrSymA9iNx23lwLR1cXN6T9nnGPkBKTn4puwxX6A4CExtUTZIij1EOB6YfkuN
-         cp6KanxdKWRhO284dAOozKVWujcZXcqiTXvBxlxvnfPeragd4ozfYxLXcVjJqTi8yr8G
-         6q5tItYqe9RYccPO44Qv5TL38MLk5YN/P+d/Xw/bsibXG5utHuQ5a+Yc6tQ4bGexCQpn
-         DHFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=NEJ75eazugIxTiGgov7ny2tg8dhF8KBwSIY/K2VIUa4=;
-        b=bgT1gnvT5IJyjqDWCnSZX4aQHt74YmEzk23Tnpq9ZInCzF+BhsSlmTwP3DP0D1Nau2
-         UaNw6PaL98UB6GBkM7STYGfmAO9LAYJ0O9/rrMFgW8tXMO9yXvkJz1BnSTh0grWqYC7F
-         NGOq6dFJjekT9QDtm9j5fPPZmLTJxPEmaAEoNfeMzHlB5wCGttYj9M1LyJ3HFvAw+XXL
-         /rXJuiIRw92VJxTr0LY88E3kHVMI2+3XJkz5BOa01v6E6ouVQ1jotlJpBfotjtO2rkJl
-         6eEBUdgG8fA/XdcuLAQhfzanGt8G064ibXV31Em3j5FX09pB09MNWI93i5DDN0pUJsBz
-         G10g==
-X-Gm-Message-State: AOAM533dq3lQ85l6jE4shy18BT6Ymh7VeRuYbar7+u59UuaNGSpESr1Z
-        HBha9Q1ruHrTFufcOCMJSl1sIQIESVf3m9P5Eso9qsmR
-X-Google-Smtp-Source: ABdhPJxf30OOcub3IUjG3SD5xn1r3e8t3j3owMe5pBN43+O9xqetjoMtHQUUeD/+aW6OVOclzmoCD0eA0meBVq01ZQ0=
-X-Received: by 2002:aca:bb41:: with SMTP id l62mr2000939oif.148.1603815779450;
- Tue, 27 Oct 2020 09:22:59 -0700 (PDT)
+        id S1808840AbgJ0QXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1808828AbgJ0QXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:23:07 -0400
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C062B22264;
+        Tue, 27 Oct 2020 16:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603815786;
+        bh=r7rQVF9LabIVD7nWmXvKsRhnaf835k2Wdgbqs+CkJTc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Rg1Hj1yb4XBiRX8YVgp30MC6dAekeTlenDxWOU6mVJ4Y1NXUsiI2jabdUjZmJECji
+         d/gqU+xC8IGbMMULth+G1aVYKskM/6yQ1rB4KvNY2tE0LnTMcsePFkrNVkc8Mm9xEY
+         odxv1fW6rH2J2WFc9278lQk0+ZyYiAam7cI0v5Wc=
+Received: by mail-qv1-f46.google.com with SMTP id s1so916813qvm.13;
+        Tue, 27 Oct 2020 09:23:06 -0700 (PDT)
+X-Gm-Message-State: AOAM532/WeygaOT8RXCkIHhuEonbYfVRhnIS9rEXoJDreal8DVNwPmRm
+        HUC36ENzrCDRfWz2CBXdT4eWhbaunrNTUJAe7L8=
+X-Google-Smtp-Source: ABdhPJxsz9IgovQ0POJj/hyJTIMJyG/SHG3D287fQI+OPUkfvbn07uZDzhZ795PgfFU0fYqDJl6hab9mpFYefWxFIXA=
+X-Received: by 2002:a0c:b58c:: with SMTP id g12mr3294297qve.16.1603815785774;
+ Tue, 27 Oct 2020 09:23:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
- <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com> <87faeeeb-f2e0-7f1e-5692-78b43242f20b@gmail.com>
- <bcfbf8ec-ca90-b736-1516-e096ef03222f@gmail.com> <1e587ddc-99a3-f05a-857d-9d221c0818b1@gmail.com>
-In-Reply-To: <1e587ddc-99a3-f05a-857d-9d221c0818b1@gmail.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+References: <20201026165807.3724647-1-arnd@kernel.org> <022365e9-f7fe-5589-7867-d2ad2d33cfa3@redhat.com>
+ <20201027074726.GX2611@hirez.programming.kicks-ass.net> <CAK8P3a2vUK5scbtcRTE98ZvwxMF3xMBT61JODV__RHMj+D0G2A@mail.gmail.com>
+ <20201027103236.GZ2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201027103236.GZ2611@hirez.programming.kicks-ass.net>
+From:   Arnd Bergmann <arnd@kernel.org>
 Date:   Tue, 27 Oct 2020 17:22:48 +0100
-Message-ID: <CAKgNAkhuL9JRG_YhVG6Y-yjobDVAGjrUSdcQ4kV-4MABjZiwRQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] system_data_types.7: Add 'off_t'
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        lkml <linux-kernel@vger.kernel.org>
+X-Gmail-Original-Message-ID: <CAK8P3a3GqsXcdA59V7XGd_yFr_68yCaftdc-wMM6bHG8NEE1+g@mail.gmail.com>
+Message-ID: <CAK8P3a3GqsXcdA59V7XGd_yFr_68yCaftdc-wMM6bHG8NEE1+g@mail.gmail.com>
+Subject: Re: [PATCH] qspinlock: use signed temporaries for cmpxchg
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-On Tue, 27 Oct 2020 at 16:25, Alejandro Colomar <colomar.6.4.3@gmail.com> wrote:
+On Tue, Oct 27, 2020 at 11:32 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
->
->
-> On 2020-10-27 14:47, Michael Kerrisk (man-pages) wrote:
-> > On 10/27/20 11:23 AM, Alejandro Colomar wrote:
-> >> Hi Michael,
-> >>
-> >> On 2020-10-07 08:53, Michael Kerrisk (man-pages) wrote:
-> >>> On 10/6/20 12:12 AM, Alejandro Colomar wrote:
-> >>>> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
-> >>>
-> >>> Hi Alex,
-> >>>
-> >>> Thanks, patch applied. And I trimmed the "See also" a little.
-> >>> I'd hold off on documenting loff_t and off64_t for the
-> >>> moment. As you note in another mail, the *lseek* man page
-> >>> situation is a bit of a mess. I'm not yet sure what to do.
-> >>
-> >>
-> >> I saw a TODO in the page about loff_t.
-> >> Just wanted to ping you in case you forgot about it (I did).
+> On Tue, Oct 27, 2020 at 09:33:32AM +0100, Arnd Bergmann wrote:
+> > On Tue, Oct 27, 2020 at 8:47 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > On Mon, Oct 26, 2020 at 02:03:06PM -0400, Waiman Long wrote:
+> > > > On 10/26/20 12:57 PM, Arnd Bergmann wrote:
+> > > > Yes, it shouldn't really matter if the value is defined as int or u32.
+> > > > However, the only caveat that I see is queued_spin_lock_slowpath() is
+> > > > expecting a u32 argument. Maybe you should cast it back to (u32) when
+> > > > calling it.
+> > >
+> > > No, we're not going to confuse the code. That stuff is hard enough as it
+> > > is. This warning is garbage and just needs to stay off.
 > >
-> > I didn't forget it exactly. I just don't know that I have the
-> > inclination to do anything about the messy *llseek* pages.
-> >
-> > Thanks,
-> >
-> > Michael
-> >
-> >
+> > Ok, so the question then becomes: should we drop -Wpointer-sign from
+> > W=2 and move it to W=3, or instead disable it locally. I could add
+> > __diag_ignore(GCC, 4, "-Wpointer-sign") in the couple of header files
+> > that produce this kind of warning if there is a general feeling that it
+> > still helps to have this for drivers.
 >
->
-> Hi Michael,
->
-> I've been reading them to add loff_t and off64_t to sys_data_types.
-> Now that I've read them (not too deep),
-> I think that lseek64(3) is good enough,
-> and maybe we should look for small details
-> missing there but present on the others,
-> and merge those to lseek64.3.
-> And then keep links in the other pages pointing to lseek64.3.
->
-> Any thoughts?
+> What is an actual geniune bug that this warning helps find?
 
-Those pages have a long history, and I confess to not understanding
-all of the details of the history. Looking more closely at the pages,
-I think they are good enough. Let's leave them alone. (I did apply one
-patch just now.)
+I've gone through the git history to find something mentioning this
+warning, but there was no evidence of a real bug that could
+have been prevented with this warning, and lots of work wasted
+on shutting up the compiler.
 
-Thinking about it further, I don't think it's necessary to document
-loff_t in system_data_types(7). No APIs in the current glibc headers
-even use loff_t, as far as I can see. I'm not sure that 'off64_t'
-really needs documenting there either.
+The best case was
+https://lore.kernel.org/lkml/20201026213040.3889546-6-arnd@kernel.org/
+where changing the types led to also making it 'const'.
 
-Thanks,
+> If you add that __diag_ignore() it should go in atomic.h I suppose,
+> because all of atomic hard relies on this, and then the question becomes
+> how much code is left that doesn't include that header and consequently
+> doesn't ignore that warning.
 
-Michael
+I don't think it would work: the __diag_ignore() has to be in the caller,
+not the function that is called.
 
+> So, is it useful to begin with in finding actual problems? and given we
+> have to annotate away a bucket-load, how much coverage will there remain
+> if we squish the known false-positives?
 
+In an x86 allmodconfig build, I see 113618 -Wpointer-sign warnings, 68318
+of those in qspinlock.h and qrwlock.h. With the six patches I sent, the
+total number goes down to 15201, which of course is still fairly pointless
+to go through. Almost all of these are in drivers that have less than
+10 warnings, and few of them are in headers included by other drivers.
 
+I looked at the top remaining files, but couldn't find any actual bugs there.
+If there are real bugs, they are certainly hard to find among the
+false positives.
 
+I have already sent patches to move -Wnested-externs and
+-Wcast-align from W=2 to W=3, and I guess -Wpointer-sign
+could be handled the same way to make the W=2 level useful
+again.
 
---
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+      Arnd
+
+----
+   1764 ../drivers/staging/rtl8723bs/hal/HalHWImg8723B_RF.c
+    810 ../drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
+    411 ../include/linux/moduleparam.h
+    230 ../drivers/net/ethernet/neterion/vxge/vxge-ethtool.h
+    184 ../include/linux/nls.h
+    150 ../drivers/scsi/esas2r/esas2r.h
+    146 ../include/net/tls.h
+    144 ../sound/soc/codecs/wm5100.c
+    135 ../drivers/scsi/ufs/ufs-sysfs.c
+    130 ../include/sound/hda_regmap.h
+    125 ../drivers/scsi/myrs.c
+    121 ../include/linux/fscrypt.h
+    113 ../drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+    105 ../drivers/net/wireless/ath/ath9k/hw.h
+     81 ../drivers/staging/media/allegro-dvt/nal-h264.c
+     75 ../drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+     68 ../drivers/scsi/esas2r/esas2r_init.c
+     56 ../sound/soc/sof/ipc.c
+     56 ../drivers/staging/qlge/qlge_dbg.c
+     50 ../sound/usb/mixer.c
+     50 ../drivers/net/ethernet/brocade/bna/bnad_ethtool.c
+     50 ../drivers/isdn/capi/capiutil.c
+     47 ../fs/nfs/internal.h
+     46 ../drivers/scsi/esas2r/esas2r_int.c
+     45 ../drivers/scsi/qla2xxx/qla_init.c
+     44 ../drivers/platform/x86/sony-laptop.c
+     44 ../drivers/lightnvm/pblk.h
+     43 ../drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
+     43 ../drivers/media/pci/cx25821/cx25821-medusa-video.c
+     42 ../sound/pci/au88x0/au88x0_core.c
