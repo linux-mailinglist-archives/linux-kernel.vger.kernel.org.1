@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E06329BB75
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A5C29B7A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806270AbgJ0QGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42502 "EHLO mail.kernel.org"
+        id S1795185AbgJ0PPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802065AbgJ0Ppa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:45:30 -0400
+        id S1794150AbgJ0PKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:10:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7096D22265;
-        Tue, 27 Oct 2020 15:45:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7DD320657;
+        Tue, 27 Oct 2020 15:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813527;
-        bh=K5QXepUTlPLsvzjXreFIj/pzZe/3r3kaWx0hy31khZw=;
+        s=default; t=1603811411;
+        bh=EKMWqLGBnLiY7sqt7IKcLRfn/DcBW76AQ/2iXxwXAhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lo9csJ7b8lmohXR430sF5pBXfOPqIip/Ysg7zOUFGe9PpF+s3TVLzYHtYcXTNS0hH
-         JvqnXhhciuL/MCLOTEqngdkItTnvlUvKKaYPJLOrJNR0DEg6KRbuPQ2tscYb35cIV2
-         o9dW/ltrWoL6OkoM83NMZa1WYAtfkfKTAtmvuxXM=
+        b=ssUrVTXoBtBGi58fN+Swhyc8fq0q+WGOb5MiijLU667VEHT7tBx5zY++tSTLAWyng
+         XGhRpXdK11y4EkG42LNcN4wkc04sCJ8h1/k6dabPHes9gGkaH6WtKprZl42O/mEnc/
+         JAr4+H4RACGmjsyL8yJdrLaIVyjnYexSBpz6I554=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wendell Lin <wendell.lin@mediatek.com>,
-        Hanks Chen <hanks.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 540/757] clk: mediatek: add UART0 clock support
-Date:   Tue, 27 Oct 2020 14:53:10 +0100
-Message-Id: <20201027135515.818938603@linuxfoundation.org>
+Subject: [PATCH 5.8 453/633] watchdog: Fix memleak in watchdog_cdev_register
+Date:   Tue, 27 Oct 2020 14:53:16 +0100
+Message-Id: <20201027135543.969296720@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hanks Chen <hanks.chen@mediatek.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 804a892456b73604b7ecfb1b00a96a29f3d2aedf ]
+[ Upstream commit 5afb6d203d0293512aa2c6ae098274a2a4f6ed02 ]
 
-Add MT6779 UART0 clock support.
+When watchdog_kworker is NULL, we should free wd_data
+before the function returns to prevent memleak.
 
-Fixes: 710774e04861 ("clk: mediatek: Add MT6779 clock support")
-Signed-off-by: Wendell Lin <wendell.lin@mediatek.com>
-Signed-off-by: Hanks Chen <hanks.chen@mediatek.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 664a39236e718 ("watchdog: Introduce hardware maximum heartbeat in watchdog core")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200824024001.25474-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mediatek/clk-mt6779.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/watchdog/watchdog_dev.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/mediatek/clk-mt6779.c b/drivers/clk/mediatek/clk-mt6779.c
-index 9766cccf5844c..6e0d3a1667291 100644
---- a/drivers/clk/mediatek/clk-mt6779.c
-+++ b/drivers/clk/mediatek/clk-mt6779.c
-@@ -919,6 +919,8 @@ static const struct mtk_gate infra_clks[] = {
- 		    "pwm_sel", 19),
- 	GATE_INFRA0(CLK_INFRA_PWM, "infra_pwm",
- 		    "pwm_sel", 21),
-+	GATE_INFRA0(CLK_INFRA_UART0, "infra_uart0",
-+		    "uart_sel", 22),
- 	GATE_INFRA0(CLK_INFRA_UART1, "infra_uart1",
- 		    "uart_sel", 23),
- 	GATE_INFRA0(CLK_INFRA_UART2, "infra_uart2",
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index b535f5fa279b9..d772dff789f3c 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -991,8 +991,10 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
+ 	wd_data->wdd = wdd;
+ 	wdd->wd_data = wd_data;
+ 
+-	if (IS_ERR_OR_NULL(watchdog_kworker))
++	if (IS_ERR_OR_NULL(watchdog_kworker)) {
++		kfree(wd_data);
+ 		return -ENODEV;
++	}
+ 
+ 	device_initialize(&wd_data->dev);
+ 	wd_data->dev.devt = MKDEV(MAJOR(watchdog_devt), wdd->id);
 -- 
 2.25.1
 
