@@ -2,133 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57F429ADF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990EC29ADE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502046AbgJ0Nwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:52:41 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:33442 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409279AbgJ0Nwk (ORCPT
+        id S1752779AbgJ0Num (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:50:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752768AbgJ0Nuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:52:40 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDnCGM180411;
-        Tue, 27 Oct 2020 13:52:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=6J5GN4d5P1+bocAuEidN1XpSs96xBvmmrRX7NOOyVS4=;
- b=HkLdyw2l/iH/vE37I/zk6srJmKIzDiLfMKEUvrbxGmwhixxeyfQiXAL6t7TcNZ4yVfI/
- 51jLJkBSggOcS11LiNgm2oIFGkx/g+I+xPyQP6APkJZ8QrLS0jVUDYMKj89Te8rIlv2L
- 1sIebBJCBJnMtj+uXHy/Vm/Miw1eWhqWHnd+y3e+NhSwaOOq0ekcQy2EoftsU66NKFfu
- OkjrlW0nJ73yyAdckggOrzA94Fs7BcW/shE4mtZTD9clMTdMgvDsQltkkHdyzOzcKCEN
- MvaRkAguEaAqY+tBbFHj6yC0COv29TTwcp1XHQ7TFgFwbNqKgQYCq1jTHFIa06Ywohp9 3Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34c9sat6ub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 13:52:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDoJJW118430;
-        Tue, 27 Oct 2020 13:50:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 34cx1qraa9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 13:50:35 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09RDoY0W011464;
-        Tue, 27 Oct 2020 13:50:34 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Oct 2020 06:50:33 -0700
-Date:   Tue, 27 Oct 2020 16:50:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8192e, rtl8192u: use correct notation to
- define pointer
-Message-ID: <20201027135028.GZ1042@kadam>
-References: <20201026121435.GA782465@LEGION>
- <20201027112303.GA405023@kroah.com>
+        Tue, 27 Oct 2020 09:50:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603806639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ORcn3B8leoo4q9li1h7odSk682umRjCQ5ZaqggknKR8=;
+        b=Ug8qGmAo74IR3GP0hVJL5NGjiTlf/aYatc33Cq53o534DDLr4egh2D2zrm+52WXH6UlNZ9
+        hNNDl4inOMl2Zg3Lf6g/vKV7AemQyrk8BFNUEqF531ZtXnh3KlfRMroNZvdW4Xw0M0vQPK
+        uDmvMPiCXuDDOX9uXf3LcFYtuVSGQ3s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-gxCmdxOwOne1cMeZ5dFaXg-1; Tue, 27 Oct 2020 09:50:36 -0400
+X-MC-Unique: gxCmdxOwOne1cMeZ5dFaXg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAF75ADC27;
+        Tue, 27 Oct 2020 13:50:35 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A672B5D9DD;
+        Tue, 27 Oct 2020 13:50:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 05/10] afs: Fix to take ref on page when PG_private is set
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 27 Oct 2020 13:50:33 +0000
+Message-ID: <160380663388.3467511.14067951162593405018.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
+References: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027112303.GA405023@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010270087
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:23:03PM +0100, Greg KH wrote:
-> On Mon, Oct 26, 2020 at 05:14:35PM +0500, Muhammad Usama Anjum wrote:
-> > Use pointer notation instead of using array notation as info_element is
-> > a pointer not array.
-> > 
-> > Warnings from sparse:
-> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:1013:51: warning: array of flexible structures
-> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:985:51: warning: array of flexible structures
-> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:963:51: warning: array of flexible structures
-> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:996:51: warning: array of flexible structures
-> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:974:51: warning: array of flexible structures
-> > 
-> > drivers/staging/rtl8192e/rtllib.h:832:48: warning: array of flexible structures
-> > drivers/staging/rtl8192e/rtllib.h:851:48: warning: array of flexible structures
-> > drivers/staging/rtl8192e/rtllib.h:805:48: warning: array of flexible structures
-> > drivers/staging/rtl8192e/rtllib.h:843:48: warning: array of flexible structures
-> > drivers/staging/rtl8192e/rtllib.h:821:48: warning: array of flexible structures
-> > 
-> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> > ---
-> >  drivers/staging/rtl8192e/rtllib.h              | 10 +++++-----
-> >  drivers/staging/rtl8192u/ieee80211/ieee80211.h | 12 ++++++------
-> >  2 files changed, 11 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-> > index b84f00b8d18b..1dab9c3d08a8 100644
-> > --- a/drivers/staging/rtl8192e/rtllib.h
-> > +++ b/drivers/staging/rtl8192e/rtllib.h
-> > @@ -802,7 +802,7 @@ struct rtllib_authentication {
-> >  	__le16 transaction;
-> >  	__le16 status;
-> >  	/*challenge*/
-> > -	struct rtllib_info_element info_element[];
-> > +	struct rtllib_info_element *info_element;
-> >  } __packed;
-> 
-> Are you sure these changes are correct?  This isn't just a list of
-> structures after this at the end of the structure?
+Fix afs to take a ref on a page when it sets PG_private on it and to drop
+the ref when removing the flag.
 
-Definitely the patch will break things at runtime.  I was surprised that
-it compiles, but it does.
+Note that in afs_write_begin(), a lot of the time, PG_private is already
+set on a page to which we're going to add some data.  In such a case, we
+leave the bit set and mustn't increment the page count.  To this end, make
+TestSetPagePrivate() available.
 
-> 
-> Please look at commit 5979afa2c4d1 ("staging: Replace zero-length array
-> with flexible-array member") which made most of these flexible arrays.
-> 
-> This is not a pointer, it really is an array, I think sparse is really
-> wrong here, be careful.
+Fixes: 31143d5d515e ("AFS: implement basic file write support")
+Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-It's an interesting warning message.  Sparse is correct that the code
-looks strange.  If there were ever two or more elements in the array
-then the code would break.  But since the code only uses a max of one
-element then it's fine.
+ fs/afs/dir.c               |    3 +++
+ fs/afs/dir_edit.c          |    1 +
+ fs/afs/file.c              |    2 ++
+ fs/afs/write.c             |    9 +++++++--
+ include/linux/page-flags.h |    1 +
+ 5 files changed, 14 insertions(+), 2 deletions(-)
 
-I guess the question is does this warning ever catch bugs in real life?
-It seems like that the kind of bug which would be caught in testing so
-static analysis is not going to be useful.
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 1d2e61e0ab04..064eb66c33e9 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -283,6 +283,7 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
+ 
+ 			set_page_private(req->pages[i], 1);
+ 			SetPagePrivate(req->pages[i]);
++			get_page(req->pages[i]);
+ 			unlock_page(req->pages[i]);
+ 			i++;
+ 		} else {
+@@ -1977,6 +1978,7 @@ static int afs_dir_releasepage(struct page *page, gfp_t gfp_flags)
+ 
+ 	set_page_private(page, 0);
+ 	ClearPagePrivate(page);
++	put_page(page);
+ 
+ 	/* The directory will need reloading. */
+ 	if (test_and_clear_bit(AFS_VNODE_DIR_VALID, &dvnode->flags))
+@@ -2006,5 +2008,6 @@ static void afs_dir_invalidatepage(struct page *page, unsigned int offset,
+ 	if (offset == 0 && length == PAGE_SIZE) {
+ 		set_page_private(page, 0);
+ 		ClearPagePrivate(page);
++		put_page(page);
+ 	}
+ }
+diff --git a/fs/afs/dir_edit.c b/fs/afs/dir_edit.c
+index b108528bf010..997f6798beee 100644
+--- a/fs/afs/dir_edit.c
++++ b/fs/afs/dir_edit.c
+@@ -246,6 +246,7 @@ void afs_edit_dir_add(struct afs_vnode *vnode,
+ 			if (!PagePrivate(page)) {
+ 				set_page_private(page, 1);
+ 				SetPagePrivate(page);
++				get_page(page);
+ 			}
+ 			dir_page = kmap(page);
+ 		}
+diff --git a/fs/afs/file.c b/fs/afs/file.c
+index 91225421ad37..7dafa2266048 100644
+--- a/fs/afs/file.c
++++ b/fs/afs/file.c
+@@ -632,6 +632,7 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
+ 					     page->index, priv);
+ 			set_page_private(page, 0);
+ 			ClearPagePrivate(page);
++			put_page(page);
+ 		}
+ 	}
+ 
+@@ -666,6 +667,7 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
+ 				     page->index, priv);
+ 		set_page_private(page, 0);
+ 		ClearPagePrivate(page);
++		put_page(page);
+ 	}
+ 
+ 	/* indicate that the page can be released */
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index b937ec047ec9..29685947324e 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -151,7 +151,8 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 	priv |= f;
+ 	trace_afs_page_dirty(vnode, tracepoint_string("begin"),
+ 			     page->index, priv);
+-	SetPagePrivate(page);
++	if (!TestSetPagePrivate(page))
++		get_page(page);
+ 	set_page_private(page, priv);
+ 	_leave(" = 0");
+ 	return 0;
+@@ -338,6 +339,8 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
+ 			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
+ 					     pv.pages[loop]->index, priv);
+ 			set_page_private(pv.pages[loop], 0);
++			ClearPagePrivate(pv.pages[loop]);
++			put_page(pv.pages[loop]);
+ 			end_page_writeback(pv.pages[loop]);
+ 		}
+ 		first += count;
+@@ -863,7 +866,8 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	priv |= 0; /* From */
+ 	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
+ 			     vmf->page->index, priv);
+-	SetPagePrivate(vmf->page);
++	if (!TestSetPagePrivate(vmf->page))
++		get_page(vmf->page);
+ 	set_page_private(vmf->page, priv);
+ 	file_update_time(file);
+ 
+@@ -930,6 +934,7 @@ int afs_launder_page(struct page *page)
+ 			     page->index, priv);
+ 	set_page_private(page, 0);
+ 	ClearPagePrivate(page);
++	put_page(page);
+ 
+ #ifdef CONFIG_AFS_FSCACHE
+ 	if (PageFsCache(page)) {
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 4f6ba9379112..37d65b55a6c6 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -365,6 +365,7 @@ PAGEFLAG(SwapBacked, swapbacked, PF_NO_TAIL)
+  */
+ PAGEFLAG(Private, private, PF_ANY) __SETPAGEFLAG(Private, private, PF_ANY)
+ 	__CLEARPAGEFLAG(Private, private, PF_ANY)
++	TESTSETFLAG(Private, private, PF_ANY)
+ PAGEFLAG(Private2, private_2, PF_ANY) TESTSCFLAG(Private2, private_2, PF_ANY)
+ PAGEFLAG(OwnerPriv1, owner_priv_1, PF_ANY)
+ 	TESTCLEARFLAG(OwnerPriv1, owner_priv_1, PF_ANY)
 
-regards,
-dan carpenter
 
