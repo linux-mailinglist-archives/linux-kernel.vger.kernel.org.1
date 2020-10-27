@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B13929B296
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EB129B25C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762486AbgJ0OnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
+        id S1761439AbgJ0Ojo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:39:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761386AbgJ0OjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:39:24 -0400
+        id S1761400AbgJ0Oj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:39:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C562206B2;
-        Tue, 27 Oct 2020 14:39:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63BBC207BB;
+        Tue, 27 Oct 2020 14:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809563;
-        bh=eFZ/oyPdUgxHAEE7v9H/Sflidyvb+8diGlbs85+U3IU=;
+        s=default; t=1603809565;
+        bh=swme+pPfVswRQr4ie7TZzJfIuBGOUpA3V3OvIDeXIP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OQGJ7nJGCkqon4w5kTnV/M4Y2JVIBuJ9Rlqo0y7gBJiCh5LPeHbPbswy8QPQF7jSt
-         PEPVgdqctHpk0y4ZCBgb0+Jzx1gFKKpMULOhPwYpxPrl5kFE/f1d35vSG04PA4Wcrf
-         1igLHeJh/ePXowYuLvrnOh13FlViNn9Ck9OAgk5I=
+        b=VONk3xg7GXGUMwI3HSO1Iw3I/BBU+KYbFsL3Zb7w9FgtPSEpLGB0kt/d8PpC795eF
+         ZyCrrxxNRwBXwmC+j9UGXxXNRFId5kGoApbAusEFWLl7VKp5PR4IqnfdfZ1ZG8yjnq
+         CayjBU71jgefDPMyW41hUNB72kBAb/IYtDWx4pGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 240/408] mtd: spinand: gigadevice: Add QE Bit
-Date:   Tue, 27 Oct 2020 14:52:58 +0100
-Message-Id: <20201027135506.189832484@linuxfoundation.org>
+Subject: [PATCH 5.4 241/408] kdb: Fix pager search for multi-line strings
+Date:   Tue, 27 Oct 2020 14:52:59 +0100
+Message-Id: <20201027135506.238150584@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,78 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hauke Mehrtens <hauke@hauke-m.de>
+From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit aea7687e77bebce5b67fab9d03347bd8df7933c7 ]
+[ Upstream commit d081a6e353168f15e63eb9e9334757f20343319f ]
 
-The following GigaDevice chips have the QE BIT in the feature flags, I
-checked the datasheets, but did not try this.
-* GD5F1GQ4xExxG
-* GD5F1GQ4xFxxG
-* GD5F1GQ4UAYIG
-* GD5F4GQ4UAYIG
+Currently using forward search doesn't handle multi-line strings correctly.
+The search routine replaces line breaks with \0 during the search and, for
+regular searches ("help | grep Common\n"), there is code after the line
+has been discarded or printed to replace the break character.
 
-The Quad operations like 0xEB mention that the QE bit has to be set.
+However during a pager search ("help\n" followed by "/Common\n") when the
+string is matched we will immediately return to normal output and the code
+that should restore the \n becomes unreachable. Fix this by restoring the
+replaced character when we disable the search mode and update the comment
+accordingly.
 
-Fixes: c93c613214ac ("mtd: spinand: add support for GigaDevice GD5FxGQ4xA")
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Tested-by: Chuanhong Guo <gch981213@gmail.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200820165121.3192-3-hauke@hauke-m.de
+Fixes: fb6daa7520f9d ("kdb: Provide forward search at more prompt")
+Link: https://lore.kernel.org/r/20200909141708.338273-1-daniel.thompson@linaro.org
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/gigadevice.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/debug/kdb/kdb_io.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index 45f4c1f4a3d1c..b13b39763a405 100644
---- a/drivers/mtd/nand/spi/gigadevice.c
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -201,7 +201,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
- 	SPINAND_INFO("GD5F2GQ4xA", 0xF2,
-@@ -210,7 +210,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
- 	SPINAND_INFO("GD5F4GQ4xA", 0xF4,
-@@ -219,7 +219,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
- 	SPINAND_INFO("GD5F1GQ4UExxG", 0xd1,
-@@ -228,7 +228,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
- 				     gd5fxgq4uexxg_ecc_get_status)),
- 	SPINAND_INFO("GD5F1GQ4UFxxG", 0xb148,
-@@ -237,7 +237,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
- 				     gd5fxgq4ufxxg_ecc_get_status)),
- };
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index 3a5184eb6977d..46821793637a1 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -679,12 +679,16 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
+ 			size_avail = sizeof(kdb_buffer) - len;
+ 			goto kdb_print_out;
+ 		}
+-		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH)
++		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH) {
+ 			/*
+ 			 * This was a interactive search (using '/' at more
+-			 * prompt) and it has completed. Clear the flag.
++			 * prompt) and it has completed. Replace the \0 with
++			 * its original value to ensure multi-line strings
++			 * are handled properly, and return to normal mode.
+ 			 */
++			*cphold = replaced_byte;
+ 			kdb_grepping_flag = 0;
++		}
+ 		/*
+ 		 * at this point the string is a full line and
+ 		 * should be printed, up to the null.
 -- 
 2.25.1
 
