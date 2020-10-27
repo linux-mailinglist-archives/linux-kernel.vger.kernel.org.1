@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFE529BDD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA68D29BDD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1812979AbgJ0QrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:47:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
+        id S1812965AbgJ0QrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799502AbgJ0Pm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:42:29 -0400
+        id S1801538AbgJ0Pmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:42:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12D6621D42;
-        Tue, 27 Oct 2020 15:42:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6FC120657;
+        Tue, 27 Oct 2020 15:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813348;
-        bh=XrIAT1dWci8E6RSIYz7ierZt2aV5rT5Yns5W68o/SBo=;
+        s=default; t=1603813357;
+        bh=Nsuz4rEgQEWFEnjbWZ2T9bMrWhD8ArUyif3hAx0gvd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zNHvagCV54bAjmqtUqe0KtnD3eN2QEsJy7NgUo+2RPk8BLlhsvXoGtk/Fn7fdirGr
-         KvjdoHUnnY1xfog5ErMmBbxyzCsMRsPk0JymqbhhBX92m6XMOkOqKknm8h/30mjVhy
-         7kiCotJVZh56CAoTqz2QKFiGCD9+alzXZnRefj0Y=
+        b=J6s5UKR7ddB765p8sKRW8kbjQH74kBerfcyWO2+efwrIPRNWUtScLmFOZ/ijWdr9K
+         0mYT4N7kCUWRllFL+OdduydP9M078hEcMS/xRq7nQQd4citUy9y1WqZnM260ctqxM7
+         K/mBHSC07KunWA88oOaJ+gFOvfbQ2G5BWCNmV07A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ray Jui <ray.jui@broadcom.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 522/757] PCI: iproc: Set affinity mask on MSI interrupts
-Date:   Tue, 27 Oct 2020 14:52:52 +0100
-Message-Id: <20201027135514.972557738@linuxfoundation.org>
+        stable@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        kernel test robot <lkp@intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 525/757] remoteproc: stm32: Fix pointer assignement
+Date:   Tue, 27 Oct 2020 14:52:55 +0100
+Message-Id: <20201027135515.109516958@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,53 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-[ Upstream commit eb7eacaa5b9e4f665bd08d416c8f88e63d2f123c ]
+[ Upstream commit cb2d8d5b196c2e96e29343383c8c8d8db68b934e ]
 
-The core interrupt code expects the irq_set_affinity call to update the
-effective affinity for the interrupt. This was not being done, so update
-iproc_msi_irq_set_affinity() to do so.
+Fix the assignment of the @state pointer - it is obviously wrong.
 
-Link: https://lore.kernel.org/r/20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz
-Fixes: 3bc2b2348835 ("PCI: iproc: Add iProc PCIe MSI support")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Fixes: 376ffdc04456 ("remoteproc: stm32: Properly set co-processor state when attaching")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20200831213758.206690-1-mathieu.poirier@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-iproc-msi.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
-index 3176ad3ab0e52..908475d27e0e7 100644
---- a/drivers/pci/controller/pcie-iproc-msi.c
-+++ b/drivers/pci/controller/pcie-iproc-msi.c
-@@ -209,15 +209,20 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
- 	struct iproc_msi *msi = irq_data_get_irq_chip_data(data);
- 	int target_cpu = cpumask_first(mask);
- 	int curr_cpu;
-+	int ret;
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index f4da42fc0eeb1..d2414cc1d90d6 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -685,7 +685,7 @@ static int stm32_rproc_get_m4_status(struct stm32_rproc *ddata,
+ 		 * We couldn't get the coprocessor's state, assume
+ 		 * it is not running.
+ 		 */
+-		state = M4_STATE_OFF;
++		*state = M4_STATE_OFF;
+ 		return 0;
+ 	}
  
- 	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
- 	if (curr_cpu == target_cpu)
--		return IRQ_SET_MASK_OK_DONE;
-+		ret = IRQ_SET_MASK_OK_DONE;
-+	else {
-+		/* steer MSI to the target CPU */
-+		data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
-+		ret = IRQ_SET_MASK_OK;
-+	}
- 
--	/* steer MSI to the target CPU */
--	data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
-+	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
- 
--	return IRQ_SET_MASK_OK;
-+	return ret;
- }
- 
- static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,
 -- 
 2.25.1
 
