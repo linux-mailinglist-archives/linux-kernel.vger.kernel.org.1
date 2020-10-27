@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DEC29B2CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B2629B2CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1763927AbgJ0Opc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:45:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
+        id S1763973AbgJ0Opp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763857AbgJ0OpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:45:10 -0400
+        id S1763881AbgJ0OpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26F1422275;
-        Tue, 27 Oct 2020 14:45:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6976F206B2;
+        Tue, 27 Oct 2020 14:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809909;
-        bh=NmE6hQ/3FioMCYKCOFbaQxX06Kh6L1zhoofrRgH5x+8=;
+        s=default; t=1603809924;
+        bh=qmmnkl21MlSEpLMHKOuOV+oJnCDLpEXf/0WNi7aAr9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1oKusnv+ieQWo2OuTsFZ8LhFGDSFa4uK5uORYUUZ6o+51xM7rCCOxYrM/30pchbDI
-         SEt0CRN0tWsHqbV12QK5Ag3TZbbtA69IBxqqFk0Ey+hJhvZkD5WE10AJ+jWLjN+dSI
-         f4Y/MdfXge5RTou2JUlWLbyuXfp3Ph86vAMucmd4=
+        b=RGtpbZw76NeJIuHJnY0gyCgVGMqxx2rEbsSs1FpUhhzrlhAaowuRFz0Qv4Klauzho
+         n2iTxIOjPeAVR4iJxOMZkUjvFNyXFBiJkVtIZtGmw38jp5lemL26H3p0deK/sZMWd8
+         b/VqdNCmsLvyaz9xJiIGYUyFEmPT+0kadTXMHD/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 363/408] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
-Date:   Tue, 27 Oct 2020 14:55:01 +0100
-Message-Id: <20201027135511.864119649@linuxfoundation.org>
+Subject: [PATCH 5.4 367/408] misc: rtsx: Fix memory leak in rtsx_pci_probe
+Date:   Tue, 27 Oct 2020 14:55:05 +0100
+Message-Id: <20201027135512.042456427@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,92 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-[ Upstream commit 9ad02c7f4f279504bdd38ab706fdc97d5f2b2a9c ]
+[ Upstream commit bc28369c6189009b66d9619dd9f09bd8c684bb98 ]
 
-This patch implements error handling and propagates the error value of
-flexcan_chip_stop(). This function will be called from flexcan_suspend()
-in an upcoming patch in some SoCs which support LPSR mode.
+When mfd_add_devices() fail, pcr->slots should also be freed. However,
+the current implementation does not free the member, leading to a memory
+leak.
 
-Add a new function flexcan_chip_stop_disable_on_error() that tries to
-disable the chip even in case of errors.
+Fix this by adding a new goto label that frees pcr->slots.
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-[mkl: introduce flexcan_chip_stop_disable_on_error() and use it in flexcan_close()]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20200922144429.2613631-11-mkl@pengutronix.de
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Link: https://lore.kernel.org/r/20200909071853.4053-1-keitasuzuki.park@sslab.ics.keio.ac.jp
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 34 ++++++++++++++++++++++++++++------
- 1 file changed, 28 insertions(+), 6 deletions(-)
+ drivers/misc/cardreader/rtsx_pcr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index e5c207ad3c77d..aaa7ed1dc97ee 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1232,18 +1232,23 @@ static int flexcan_chip_start(struct net_device *dev)
- 	return err;
- }
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index 1958833b3b74e..4fd57052ddd3d 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -1534,12 +1534,14 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
+ 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
+ 	if (ret < 0)
+-		goto disable_irq;
++		goto free_slots;
  
--/* flexcan_chip_stop
-+/* __flexcan_chip_stop
-  *
-- * this functions is entered with clocks enabled
-+ * this function is entered with clocks enabled
-  */
--static void flexcan_chip_stop(struct net_device *dev)
-+static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
- {
- 	struct flexcan_priv *priv = netdev_priv(dev);
- 	struct flexcan_regs __iomem *regs = priv->regs;
-+	int err;
+ 	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
  
- 	/* freeze + disable module */
--	flexcan_chip_freeze(priv);
--	flexcan_chip_disable(priv);
-+	err = flexcan_chip_freeze(priv);
-+	if (err && !disable_on_error)
-+		return err;
-+	err = flexcan_chip_disable(priv);
-+	if (err && !disable_on_error)
-+		goto out_chip_unfreeze;
+ 	return 0;
  
- 	/* Disable all interrupts */
- 	priv->write(0, &regs->imask2);
-@@ -1253,6 +1258,23 @@ static void flexcan_chip_stop(struct net_device *dev)
- 
- 	flexcan_transceiver_disable(priv);
- 	priv->can.state = CAN_STATE_STOPPED;
-+
-+	return 0;
-+
-+ out_chip_unfreeze:
-+	flexcan_chip_unfreeze(priv);
-+
-+	return err;
-+}
-+
-+static inline int flexcan_chip_stop_disable_on_error(struct net_device *dev)
-+{
-+	return __flexcan_chip_stop(dev, true);
-+}
-+
-+static inline int flexcan_chip_stop(struct net_device *dev)
-+{
-+	return __flexcan_chip_stop(dev, false);
- }
- 
- static int flexcan_open(struct net_device *dev)
-@@ -1341,7 +1363,7 @@ static int flexcan_close(struct net_device *dev)
- 
- 	netif_stop_queue(dev);
- 	can_rx_offload_disable(&priv->offload);
--	flexcan_chip_stop(dev);
-+	flexcan_chip_stop_disable_on_error(dev);
- 
- 	can_rx_offload_del(&priv->offload);
- 	free_irq(dev->irq, dev);
++free_slots:
++	kfree(pcr->slots);
+ disable_irq:
+ 	free_irq(pcr->irq, (void *)pcr);
+ disable_msi:
 -- 
 2.25.1
 
