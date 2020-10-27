@@ -2,263 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910FD29CAD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD01829CAD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373480AbgJ0U6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:58:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49188 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373468AbgJ0U6K (ORCPT
+        id S373493AbgJ0U63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:58:29 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:45734 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373485AbgJ0U62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:58:10 -0400
-Date:   Tue, 27 Oct 2020 21:58:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603832287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F0fJAkaJOg8MghLZ3WG/sCJuQU/mVqUutTyE3oHxMzk=;
-        b=OCXS40Fvu9bQ6xCZaPug1KgaEmYKhXN/ZJ0k4P8VVRI2Tn6uMCLWJWkjnf8gIxEngul2+X
-        mXTIHdNex5s7rq9bE9hgbcOB73QRTEDlIjtYfQDWyP8SvmKxKyHXGwCt5loVW0lOUXk+gs
-        F7c3CaXAedTVsLkrnGdg7SJxnkpvTEF3v+8tXTCL5ErFaz2KMq/Shhqr7xu3EjgpEt4+68
-        IXHwkYjnj1GfmhodJFblNq8QlHtIvnATLxy/q2ZEz9b1m1YC4q+3okhAK9iiB2J9QR/zTd
-        Y+Te+uDDyJ7yW2qi6cdra41TXaphnfHmfogxYU1cp2F07uREdQ4iq0J1XkZIuQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603832287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F0fJAkaJOg8MghLZ3WG/sCJuQU/mVqUutTyE3oHxMzk=;
-        b=GHAeAruUaSSLW9G3JOZouivv79VFgzdGEu5igh8KPJTlMXQq2AlG8Sy380jTg6FjuJJEod
-        Rr7B6BYfwg2clIBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH RFC] blk-mq: Don't IPI requests on PREEMPT_RT
-Message-ID: <20201027205806.s7qau5xf4lzuslcu@linutronix.de>
-References: <20201021175059.GA4989@hmbx>
- <20201023110400.bx3uzsb7xy5jtsea@linutronix.de>
- <20201023112130.GA23790@infradead.org>
- <20201023135219.mzzl76eqqy6tqwhe@linutronix.de>
- <20201027092606.GA20805@infradead.org>
- <20201027101102.cvczdb3mkvtoguo5@linutronix.de>
- <20201027160742.GA19073@infradead.org>
- <87eelj1tx0.fsf@nanos.tec.linutronix.de>
- <20201027172309.GA15004@infradead.org>
+        Tue, 27 Oct 2020 16:58:28 -0400
+Received: by mail-il1-f194.google.com with SMTP id g7so2762668ilr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mCBo/dw5+eCxlwInuX3ibBdG6i4KroGcWXBgc9MM9yk=;
+        b=E6btr2a3h9jsRHGQAlpxQPGwcSUp/ZTRSB+1EQ+uSsE1eSxQks6bnsMcVHZDIBgtLu
+         6iE3V6yfWRGc3dDB+Vfw2osZrSe3oBhoahVZNYjWvUNgIYfxyjlw6Frz39/kQRp8VGQ4
+         QTB7DLORAkPmjopVOXTh6JhRblGV9O1zz0rqI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mCBo/dw5+eCxlwInuX3ibBdG6i4KroGcWXBgc9MM9yk=;
+        b=TfAElmi2I+eASfrqIkVuiGn/fY/BPcFM5MQdWh7v1dxCYy+hrKyhyiBpH93iopZcE6
+         s0MnIAqyGT5s+A4MGFGv5OW9xgHSlqIXlL8wWr7HHBNvqVPOJkdLe9htQ/0zAo4uHwiS
+         uvkKo8m9vz/4c0PRKsjnuSXlaJWRTMxq4K0DcatxGGo4NoRwtS7Oqu5i1StV1RSJBpEe
+         aTxBu0xTbke3rLF921z7hTR5cYo31rnkU/kNDqXcRBcwmnipkj1s9roxshnPKIYpXAbS
+         onX49Yx2AXZgp7WbKUjMj4sDgovguYCdMXeLCnMhrUEXU3AEA3SMo85BaQMntsYpLl0n
+         BrUA==
+X-Gm-Message-State: AOAM533/odKzgdpEi5tsFRq183tpzdZSx48mBL9sF4RE9w8j6zhT8XKh
+        S82rcbMhNbtCom299zvr/qGjXQ==
+X-Google-Smtp-Source: ABdhPJweLgguNJyriq0XoknCDhp82gHA7tUeIicg3wQa9XK+nHNdeoRTCw8tWWL9lpvo9AuJmWf8Eg==
+X-Received: by 2002:a92:844b:: with SMTP id l72mr3178687ild.244.1603832307794;
+        Tue, 27 Oct 2020 13:58:27 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id f85sm1512866ill.39.2020.10.27.13.58.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 13:58:27 -0700 (PDT)
+Subject: Re: [PATCH v3 03/21] selftests/resctrl: Fix typo in help text
+To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201020235126.1871815-1-fenghua.yu@intel.com>
+ <20201020235126.1871815-4-fenghua.yu@intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f9f1eaeb-790c-2e32-ef8c-0dc88e3395c8@linuxfoundation.org>
+Date:   Tue, 27 Oct 2020 14:58:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201027172309.GA15004@infradead.org>
+In-Reply-To: <20201020235126.1871815-4-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 17:23:09 [+0000], Christoph Hellwig wrote:
-> Ok.  I was hoping we could hide this in core code somehow, especially
-> a peterz didn't like the use of smp_call_function_single_async in the
-> blk-mq completion code very much.
+On 10/20/20 5:51 PM, Fenghua Yu wrote:
+> From: Reinette Chatre <reinette.chatre@intel.com>
+> 
+> Add a missing newline to the help text printed and fixup the next line
+> to line it up to previous line for improved readability.
+> 
+> Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
+> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> ---
+>   tools/testing/selftests/resctrl/resctrl_tests.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+> index 35a91cab1b88..b2a560c0c5dc 100644
+> --- a/tools/testing/selftests/resctrl/resctrl_tests.c
+> +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+> @@ -37,8 +37,8 @@ void detect_amd(void)
+>   static void cmd_help(void)
+>   {
+>   	printf("usage: resctrl_tests [-h] [-b \"benchmark_cmd [options]\"] [-t test list] [-n no_of_bits]\n");
+> -	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CMT");
+> -	printf("\t default benchmark is builtin fill_buf\n");
+> +	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CMT\n");
+> +	printf("\t   default benchmark is builtin fill_buf\n");
+>   	printf("\t-t test list: run tests specified in the test list, ");
+>   	printf("e.g. -t mbm, mba, cmt, cat\n");
+>   	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
+> 
 
-No idea how you could efficiently avoid smp_call_function_single_async():
-- workqueue (okay)
-- a timer_list timer which expires now. More code plus it may delay up
-  to HZ.
+The commit summary is misleading. It isn't typo. You are adding
+a space to make the message correct?
 
-> Sebastian, would this solve your preempt-rt and lockdep issues?
-
-the problem with that is that on RT/force-threaded it will always wake
-ksoftirqd thread and complete there. That are extra steps which should
-be probably avoided.
-
-Now.
-The hunk in blk_mq_complete_need_ipi() will avoid the waking a thread
-with force-threaded enabled.
-
-The remaining part is a switch to llist which avoids locking (IRQ
-off/on) and it allows invoke the IPI/raise softirq only if something was
-added. The entries are now processed in the reverse order but this
-shouldn't matter right?
-
-I would split this into two patches (the blk_mq_complete_need_ipi() hunk
-and the llist part) unless there are objections.
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 55bcee5dc0320..d2452ee9b0e2c 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -41,7 +41,7 @@
- #include "blk-mq-sched.h"
- #include "blk-rq-qos.h"
- 
--static DEFINE_PER_CPU(struct list_head, blk_cpu_done);
-+static DEFINE_PER_CPU(struct llist_head, blk_cpu_done);
- 
- static void blk_mq_poll_stats_start(struct request_queue *q);
- static void blk_mq_poll_stats_fn(struct blk_stat_callback *cb);
-@@ -565,80 +565,31 @@ void blk_mq_end_request(struct request *rq, blk_status_t error)
- }
- EXPORT_SYMBOL(blk_mq_end_request);
- 
--/*
-- * Softirq action handler - move entries to local list and loop over them
-- * while passing them to the queue registered handler.
-- */
--static __latent_entropy void blk_done_softirq(struct softirq_action *h)
-+static void blk_complete_reqs(struct llist_head *cpu_list)
- {
--	struct list_head *cpu_list, local_list;
-+	struct llist_node *entry;
-+	struct request *rq, *rq_next;
- 
--	local_irq_disable();
--	cpu_list = this_cpu_ptr(&blk_cpu_done);
--	list_replace_init(cpu_list, &local_list);
--	local_irq_enable();
-+	entry = llist_del_all(cpu_list);
- 
--	while (!list_empty(&local_list)) {
--		struct request *rq;
--
--		rq = list_entry(local_list.next, struct request, ipi_list);
--		list_del_init(&rq->ipi_list);
-+	llist_for_each_entry_safe(rq, rq_next, entry, ipi_list)
- 		rq->q->mq_ops->complete(rq);
--	}
- }
- 
--static void blk_mq_trigger_softirq(struct request *rq)
-+static __latent_entropy void blk_done_softirq(struct softirq_action *h)
- {
--	struct list_head *list;
--	unsigned long flags;
--
--	local_irq_save(flags);
--	list = this_cpu_ptr(&blk_cpu_done);
--	list_add_tail(&rq->ipi_list, list);
--
--	/*
--	 * If the list only contains our just added request, signal a raise of
--	 * the softirq.  If there are already entries there, someone already
--	 * raised the irq but it hasn't run yet.
--	 */
--	if (list->next == &rq->ipi_list)
--		raise_softirq_irqoff(BLOCK_SOFTIRQ);
--	local_irq_restore(flags);
-+	blk_complete_reqs(this_cpu_ptr(&blk_cpu_done));
- }
- 
- static int blk_softirq_cpu_dead(unsigned int cpu)
- {
--	/*
--	 * If a CPU goes away, splice its entries to the current CPU
--	 * and trigger a run of the softirq
--	 */
--	local_irq_disable();
--	list_splice_init(&per_cpu(blk_cpu_done, cpu),
--			 this_cpu_ptr(&blk_cpu_done));
--	raise_softirq_irqoff(BLOCK_SOFTIRQ);
--	local_irq_enable();
--
-+	blk_complete_reqs(&per_cpu(blk_cpu_done, cpu));
- 	return 0;
- }
- 
--
- static void __blk_mq_complete_request_remote(void *data)
- {
--	struct request *rq = data;
--
--	/*
--	 * For most of single queue controllers, there is only one irq vector
--	 * for handling I/O completion, and the only irq's affinity is set
--	 * to all possible CPUs.  On most of ARCHs, this affinity means the irq
--	 * is handled on one specific CPU.
--	 *
--	 * So complete I/O requests in softirq context in case of single queue
--	 * devices to avoid degrading I/O performance due to irqsoff latency.
--	 */
--	if (rq->q->nr_hw_queues == 1)
--		blk_mq_trigger_softirq(rq);
--	else
--		rq->q->mq_ops->complete(rq);
-+	__raise_softirq_irqoff(BLOCK_SOFTIRQ);
- }
- 
- static inline bool blk_mq_complete_need_ipi(struct request *rq)
-@@ -648,6 +599,14 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
- 	if (!IS_ENABLED(CONFIG_SMP) ||
- 	    !test_bit(QUEUE_FLAG_SAME_COMP, &rq->q->queue_flags))
- 		return false;
-+	/*
-+	 * With force threaded interrupts enabled, raising softirq from an SMP
-+	 * function call will always result in waking the ksoftirqd thread.
-+	 * This is probably worse than completing the request on a different
-+	 * cache domain.
-+	 */
-+       if (force_irqthreads)
-+               return false;
- 
- 	/* same CPU or cache domain?  Complete locally */
- 	if (cpu == rq->mq_ctx->cpu ||
-@@ -661,6 +620,7 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
- 
- bool blk_mq_complete_request_remote(struct request *rq)
- {
-+	struct llist_head *cpu_list;
- 	WRITE_ONCE(rq->state, MQ_RQ_COMPLETE);
- 
- 	/*
-@@ -671,14 +631,21 @@ bool blk_mq_complete_request_remote(struct request *rq)
- 		return false;
- 
- 	if (blk_mq_complete_need_ipi(rq)) {
--		rq->csd.func = __blk_mq_complete_request_remote;
--		rq->csd.info = rq;
--		rq->csd.flags = 0;
--		smp_call_function_single_async(rq->mq_ctx->cpu, &rq->csd);
-+		unsigned int cpu;
-+
-+		cpu = rq->mq_ctx->cpu;
-+		cpu_list = &per_cpu(blk_cpu_done, cpu);
-+		if (llist_add(&rq->ipi_list, cpu_list)) {
-+			rq->csd.func = __blk_mq_complete_request_remote;
-+			rq->csd.flags = 0;
-+			smp_call_function_single_async(cpu, &rq->csd);
-+		}
- 	} else {
- 		if (rq->q->nr_hw_queues > 1)
- 			return false;
--		blk_mq_trigger_softirq(rq);
-+		cpu_list = this_cpu_ptr(&blk_cpu_done);
-+		if (llist_add(&rq->ipi_list, cpu_list))
-+			raise_softirq(BLOCK_SOFTIRQ);
- 	}
- 
- 	return true;
-@@ -3909,7 +3876,7 @@ static int __init blk_mq_init(void)
- 	int i;
- 
- 	for_each_possible_cpu(i)
--		INIT_LIST_HEAD(&per_cpu(blk_cpu_done, i));
-+		init_llist_head(&per_cpu(blk_cpu_done, i));
- 	open_softirq(BLOCK_SOFTIRQ, blk_done_softirq);
- 
- 	cpuhp_setup_state_nocalls(CPUHP_BLOCK_SOFTIRQ_DEAD,
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 639cae2c158b5..331b2b675b417 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -156,7 +156,7 @@ struct request {
- 	 */
- 	union {
- 		struct hlist_node hash;	/* merge hash */
--		struct list_head ipi_list;
-+		struct llist_node ipi_list;
- 	};
- 
- 	/*
+thanks,
+-- Shuah
