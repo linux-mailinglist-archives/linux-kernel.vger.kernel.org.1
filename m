@@ -2,130 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949C429A2B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FD029A2BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgJ0CjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 22:39:04 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53965 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgJ0CjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 22:39:04 -0400
-IronPort-SDR: iM/8/tU0pEVZlMwTRkqLxcZQBfXgitxTa8y55HCCzAZnDyvmq8kLMVfa3X+iOTA9G7H3qx53Zq
- nDlHJP+PyTag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="229654143"
-X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
-   d="scan'208";a="229654143"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 19:39:03 -0700
-IronPort-SDR: dGxjWQwCTVLj1uQPrbtsN/moj71jVwos+OHzw9al21xHLh17oCZJ00hL0PB7nt2roPy6VkHY3c
- YDARziN33ykQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
-   d="scan'208";a="361219355"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga007.jf.intel.com with ESMTP; 26 Oct 2020 19:38:59 -0700
-Date:   Tue, 27 Oct 2020 10:33:41 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, mdf@kernel.org,
-        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, netdev@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        yilun.xu@intel.com
-Subject: Re: [RFC PATCH 1/6] docs: networking: add the document for DFL
-  Ether  Group driver
-Message-ID: <20201027023341.GB10743@yilunxu-OptiPlex-7050>
-References: <1603442745-13085-1-git-send-email-yilun.xu@intel.com>
- <1603442745-13085-2-git-send-email-yilun.xu@intel.com>
- <20201023153731.GC718124@lunn.ch>
- <20201026085246.GC25281@yilunxu-OptiPlex-7050>
- <20201026130001.GC836546@lunn.ch>
- <20201026173803.GA10743@yilunxu-OptiPlex-7050>
- <20201026113552.78e7a2b4@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        id S2389905AbgJ0ClZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 22:41:25 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:41351 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389248AbgJ0ClZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 22:41:25 -0400
+Received: by mail-vs1-f65.google.com with SMTP id e3so51682vsr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bmk0UTS3x9Tp1HCmgDXGjH+YpS7EiLVNFjl9WtxBa50=;
+        b=oBV6h+fG2Mxgvbs1jMZ3U+Dxxal0evBf3S3wH6YrlK/pFt5T+D1VlhP3XbltSFGRcA
+         KzpitOQ+M8phttR+1pxWGAtS9qNRLYQT/6uK9ZbWQk29CBjo2W4v/iYMfh5Gl9P4GbZN
+         AiiY05SllXB9izzEZiG8uONUBp2kiLuegya7I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bmk0UTS3x9Tp1HCmgDXGjH+YpS7EiLVNFjl9WtxBa50=;
+        b=GBIQcw7PFatRpjaXAQvHHt2r+7r5SA9CyxdhV+dFLWSez8UPZ4fJLxluj+y6B3ho2w
+         2BRxrC0bZNOA01XKrOjXw7OF/9EZMKG9lXRGWFF3HkX8V4JAS2yAQ/JAw5iUcIMOED8h
+         kAF9OBvfkh674qngD5fxHqoHPxqYlvRroFbRGXRxA8fq1uxx1OqTj69oJoqS9VQzO7uL
+         ql3JWXafrcifpHnU2sFTmvW+HZA2rEPKVLUhxbEYIWRNqTMA7jTHVRh3r9vRiU8w7BRh
+         vTNONh4FzMGxDEoz2zWqPiEMViOzo4Hss8u+fSinA3sUbQyw9uXwv7/IUTH5HCUFM1iw
+         /hTA==
+X-Gm-Message-State: AOAM5308e4C8DPTFKnKKlbAl+QhS0P0vjwnL6+BMlfVCvt7MocfRvMBV
+        2FPmAh84JLH4FIUgjJUcffGlFxdSnwpmRHDUEXVgIA==
+X-Google-Smtp-Source: ABdhPJx2W7iE7ZtLv3PQAdx32ue6WAArJMZ6rjaKeAAEEdusvUyHsnHXrL0Eekr9cHR06NHe8++RceLGNh3DACqb/8k=
+X-Received: by 2002:a67:15c6:: with SMTP id 189mr6110vsv.16.1603766483061;
+ Mon, 26 Oct 2020 19:41:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026113552.78e7a2b4@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201026175526.2915399-1-enric.balletbo@collabora.com> <20201026175526.2915399-6-enric.balletbo@collabora.com>
+In-Reply-To: <20201026175526.2915399-6-enric.balletbo@collabora.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 27 Oct 2020 10:41:12 +0800
+Message-ID: <CANMq1KBXBEWwweuGFYGTbVrhYXgdjZuwhWVC6SedArFH2GJHoQ@mail.gmail.com>
+Subject: Re: [PATCH v3 05/16] soc: mediatek: pm_domains: Make bus protection generic
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Miles Chen <miles.chen@mediatek.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:35:52AM -0700, Jakub Kicinski wrote:
-> On Tue, 27 Oct 2020 01:38:04 +0800 Xu Yilun wrote:
-> > > > The line/host side Ether Group is not the terminal of the network data stream.
-> > > > Eth1 will not paticipate in the network data exchange to host.
-> > > > 
-> > > > The main purposes for eth1 are:
-> > > > 1. For users to monitor the network statistics on Line Side, and by comparing the
-> > > > statistics between eth0 & eth1, users could get some knowledge of how the User
-> > > > logic is taking function.
-> > > > 
-> > > > 2. Get the link state of the front panel. The XL710 is now connected to
-> > > > Host Side of the FPGA and the its link state would be always on. So to
-> > > > check the link state of the front panel, we need to query eth1.  
-> > > 
-> > > This is very non-intuitive. We try to avoid this in the kernel and the
-> > > API to userspace. Ethernet switches are always modelled as
-> > > accelerators for what the Linux network stack can already do. You
-> > > configure an Ethernet switch port in just the same way configure any
-> > > other netdev. You add an IP address to the switch port, you get the
-> > > Ethernet statistics from the switch port, routing protocols use the
-> > > switch port.
-> > > 
-> > > You design needs to be the same. All configuration needs to happen via
-> > > eth1.
-> > > 
-> > > Please look at the DSA architecture. What you have here is very
-> > > similar to a two port DSA switch. In DSA terminology, we would call
-> > > eth0 the master interface.  It needs to be up, but otherwise the user
-> > > does not configure it. eth1 is the slave interface. It is the user
-> > > facing interface of the switch. All configuration happens on this
-> > > interface. Linux can also send/receive packets on this netdev. The
-> > > slave TX function forwards the frame to the master interface netdev,
-> > > via a DSA tagger. Frames which eth0 receive are passed through the
-> > > tagger and then passed to the slave interface.
-> > > 
-> > > All the infrastructure you need is already in place. Please use
-> > > it. I'm not saying you need to write a DSA driver, but you should make
-> > > use of the same ideas and low level hooks in the network stack which
-> > > DSA uses.  
-> > 
-> > I did some investigation about the DSA, and actually I wrote a
-> > experimental DSA driver. It works and almost meets my need, I can make
-> > configuration, run pktgen on slave inf.
-> > 
-> > A main concern for dsa is the wiring from slave inf to master inf depends
-> > on the user logic. If FPGA users want to make their own user logic, they
-> > may need a new driver. But our original design for the FPGA is, kernel
-> > drivers support the fundamental parts - FPGA FIU (where Ether Group is in)
-> > & other peripherals on board, and userspace direct I/O access for User
-> > logic. Then FPGA user don't have to write & compile a driver for their
-> > user logic change.
-> > It seems not that case for netdev. The user logic is a part of the whole
-> > functionality of the netdev, we cannot split part of the hardware
-> > component to userspace and the rest in kernel. I really need to
-> > reconsider this.
-> 
-> This is obviously on purpose. Your design as it stands will not fly
-> upstream, sorry.
-> 
-> >From netdev perspective the user should not care how many hardware
-> blocks are in the pipeline, and on which piece of silicon. You have 
-> a 2 port (modulo port splitting) card, there should be 2 netdevs, and
-> the link config and forwarding should be configured through those.
-> 
-> Please let folks at Intel know that we don't like the "SDK in user
-> space with reuse [/abuse] of parts of netdev infra" architecture.
-> This is a second of those we see in a short time. Kernel is not a
-> library for your SDK to use. 
+On Tue, Oct 27, 2020 at 1:55 AM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> From: Matthias Brugger <mbrugger@suse.com>
+>
+> Bus protection is not exclusively done by calling the infracfg misc driver.
+> Make the calls for setting and clearing the bus protection generic so
+> that we can use other blocks for it as well.
+>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+>
+> Changes in v3: None
+> Changes in v2: None
+>
+>  drivers/soc/mediatek/mtk-infracfg.c   |  5 ---
+>  drivers/soc/mediatek/mtk-pm-domains.c | 53 +++++++++++++++++++++------
+>  include/linux/soc/mediatek/infracfg.h |  5 +++
+>  3 files changed, 47 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/soc/mediatek/mtk-infracfg.c b/drivers/soc/mediatek/mtk-infracfg.c
+> index 4a123796aad3..0590b68e0d78 100644
+> --- a/drivers/soc/mediatek/mtk-infracfg.c
+> +++ b/drivers/soc/mediatek/mtk-infracfg.c
+> @@ -12,11 +12,6 @@
+>  #define MTK_POLL_DELAY_US   10
+>  #define MTK_POLL_TIMEOUT    (jiffies_to_usecs(HZ))
+>
+> -#define INFRA_TOPAXI_PROTECTEN         0x0220
+> -#define INFRA_TOPAXI_PROTECTSTA1       0x0228
+> -#define INFRA_TOPAXI_PROTECTEN_SET     0x0260
+> -#define INFRA_TOPAXI_PROTECTEN_CLR     0x0264
+> -
+>  /**
+>   * mtk_infracfg_set_bus_protection - enable bus protection
+>   * @infracfg: The infracfg regmap
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index 2121e05cb9a4..92c61e59255b 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -87,18 +87,24 @@ static int scpsys_sram_disable(struct scpsys_domain *pd)
+>                                         MTK_POLL_TIMEOUT);
+>  }
+>
+> -static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
+> +static int _scpsys_bus_protect_enable(const struct scpsys_bus_prot_data *bpd, struct regmap *regmap)
+>  {
+> -       const struct scpsys_bus_prot_data *bpd = pd->data->bp_infracfg;
+>         int i, ret;
+>
+>         for (i = 0; i < SPM_MAX_BUS_PROT_DATA; i++) {
+> -               if (!bpd[i].bus_prot_mask)
+> +               u32 val, mask = bpd[i].bus_prot_mask;
+> +
+> +               if (!mask)
+>                         break;
+>
+> -               ret = mtk_infracfg_set_bus_protection(pd->infracfg,
+> -                                                     bpd[i].bus_prot_mask,
+> -                                                     bpd[i].bus_prot_reg_update);
+> +               if (bpd[i].bus_prot_reg_update)
+> +                       regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, mask);
+> +               else
+> +                       regmap_write(regmap, INFRA_TOPAXI_PROTECTEN_SET, mask);
+> +
+> +               ret = regmap_read_poll_timeout(regmap, INFRA_TOPAXI_PROTECTSTA1,
+> +                                              val, (val & mask) == mask,
+> +                                              MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
+>                 if (ret)
+>                         return ret;
+>         }
+> @@ -106,18 +112,34 @@ static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
+>         return 0;
+>  }
+>
+> -static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
+> +static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
+>  {
+>         const struct scpsys_bus_prot_data *bpd = pd->data->bp_infracfg;
+> +       int ret;
+> +
+> +       ret = _scpsys_bus_protect_enable(bpd, pd->infracfg);
+> +       return ret;
+> +}
+> +
+> +static int _scpsys_bus_protect_disable(const struct scpsys_bus_prot_data *bpd,
+> +                                      struct regmap *regmap)
+> +{
+>         int i, ret;
+>
+>         for (i = 0; i < SPM_MAX_BUS_PROT_DATA; i++) {
+> -               if (!bpd[i].bus_prot_mask)
+> +               u32 val, mask = bpd[i].bus_prot_mask;
+> +
+> +               if (!mask)
+>                         return 0;
+>
+> -               ret = mtk_infracfg_clear_bus_protection(pd->infracfg,
+> -                                                       bpd[i].bus_prot_mask,
+> -                                                       bpd[i].bus_prot_reg_update);
+> +               if (bpd[i].bus_prot_reg_update)
+> +                       regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, 0);
+> +               else
+> +                       regmap_write(regmap, INFRA_TOPAXI_PROTECTEN_CLR, mask);
+> +
+> +               ret = regmap_read_poll_timeout(regmap, INFRA_TOPAXI_PROTECTSTA1,
+> +                                              val, !(val & mask),
+> +                                              MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
+>                 if (ret)
+>                         return ret;
+>         }
+> @@ -125,6 +147,15 @@ static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
+>         return 0;
+>  }
+>
+> +static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
+> +{
+> +       const struct scpsys_bus_prot_data *bpd = pd->data->bp_infracfg;
 
-I get your point. I'll share the information internally and reconsider
-the design.
+More of a nit: The next patch gets rid of this line, so maybe you
+don't need to add it here.
 
-Thanks,
-Yilun
+Also `int ret` isn't really needed, but I think that's ok since the
+next CL needs to add another call.
+
+> +       int ret;
+> +
+> +       ret = _scpsys_bus_protect_disable(bpd, pd->infracfg);
+> +       return ret;
+> +}
+> +
+>  static int scpsys_power_on(struct generic_pm_domain *genpd)
+>  {
+>         struct scpsys_domain *pd = container_of(genpd, struct scpsys_domain, genpd);
+> diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
+> index 233463d789c6..5bcaab767f6a 100644
+> --- a/include/linux/soc/mediatek/infracfg.h
+> +++ b/include/linux/soc/mediatek/infracfg.h
+> @@ -32,6 +32,11 @@
+>  #define MT7622_TOP_AXI_PROT_EN_WB              (BIT(2) | BIT(6) | \
+>                                                  BIT(7) | BIT(8))
+>
+> +#define INFRA_TOPAXI_PROTECTEN                 0x0220
+> +#define INFRA_TOPAXI_PROTECTSTA1               0x0228
+> +#define INFRA_TOPAXI_PROTECTEN_SET             0x0260
+> +#define INFRA_TOPAXI_PROTECTEN_CLR             0x0264
+> +
+>  #define REG_INFRA_MISC                         0xf00
+>  #define F_DDR_4GB_SUPPORT_EN                   BIT(13)
+>
+> --
+> 2.28.0
+>
