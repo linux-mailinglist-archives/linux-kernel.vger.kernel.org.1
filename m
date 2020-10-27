@@ -2,115 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020A229C8BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8555229C8A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829905AbgJ0TW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:22:57 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:56080 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1829784AbgJ0TUh (ORCPT
+        id S1829844AbgJ0TWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:22:13 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:36838 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1829597AbgJ0TVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:20:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VEzFHgL0HPz0HMmGxJDO5yInCLZElbuDa2OIjgfzZ8M=; b=tpxkmnDk/FCCJupXnig4CJyTKD
-        wqtXyBehLYOouAr6EZs2c+4d7jblmNUhhyIu4fWjZ9C8eCRQS7aCE4VnxXHtJAwp2AxIVpTuqPEr0
-        QKmqeRzZB87Fp/hySJwK6B218j+T4YFLLem45IUZDMtq990235v/AVMvytMKr4bE7HrG5hqMHa7Ir
-        rEoRZfX9s8d37kuXuq20v9jWo7PUawNDcKf5M9GmPuEpsWcEc78yapXo6MFSvnbTFBz7CBqHoH2EK
-        159QDtn7lJy9pFEgm/jvVoqDrxmxxVc0uCLzfwOkvnN0JWbSaKJOvDjIPY9NCsGq7mlLVG2Mz4LsN
-        OZUlMaiw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXUVv-0003jm-1Y; Tue, 27 Oct 2020 19:20:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47ECD307ABA;
-        Tue, 27 Oct 2020 20:20:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 352A7203C2679; Tue, 27 Oct 2020 20:20:09 +0100 (CET)
-Date:   Tue, 27 Oct 2020 20:20:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
- longer reported in dr6
-Message-ID: <20201027192009.GQ2628@hirez.programming.kicks-ass.net>
-References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
- <20201026155521.GQ2594@hirez.programming.kicks-ass.net>
- <20201026160513.GC2651@hirez.programming.kicks-ass.net>
- <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
- <20201026163100.GR2594@hirez.programming.kicks-ass.net>
- <20201026165519.GD2651@hirez.programming.kicks-ass.net>
- <CALCETrVwzcpk88jWeNb+iCGBFsyzgbZ0E9_x330A2P-CMzSr4g@mail.gmail.com>
- <20201027081932.GY2611@hirez.programming.kicks-ass.net>
- <CALCETrUcx_GaYhUbdc82faeftn+PssdWbWSPWELZ7Npcrbd92w@mail.gmail.com>
+        Tue, 27 Oct 2020 15:21:19 -0400
+Received: by mail-ot1-f67.google.com with SMTP id 32so2169128otm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nq9zEmsra/I9FskgMrWZwW4jiUKeh83zVbLmEJ7frGY=;
+        b=hvjUrxeTnpKW11JqdRolGFlbjn/yYSrDZSBljizuyw98mqP/+42EJQeRg9IQ5N+mbt
+         YK2asUVglRI0DGIMMA0SukSkVKO7BBMoEon9z5v8NkWZ9NvpMjDliPv4EDItaiS4FvwQ
+         QgYoAx6QZCybILjrpxVneAnrCX85O3TAAA+oqfx7fhQxAhGcMxJfgaiq9Rt0Ezd82qdo
+         rY7s7IViuNeP83O+ESncQvl8OwQZRhroog8poJljzzQIzrwxTnEwKDThGOkxQb3BPAxe
+         W094rE9JA/5P+q8mqfIk8HX63+GoKCRylqUyl98aSIgjs2n5ZsAZ4D4STjBTdagEkVgd
+         fH1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nq9zEmsra/I9FskgMrWZwW4jiUKeh83zVbLmEJ7frGY=;
+        b=IFQ38G/Evkl1S5hP+0596FEs3pHHJaF9B3gcJpysHqgydYDqMGJvcntDhBQh88z+xn
+         +mLRdm4ZznW3+7hJ9omXng1pqXxdPIcEsxnLnp0fQiRGSIgFjw2akeZ+/E4kES5ej8+F
+         jx0i9VdEj8/IJQXYJHKz8o9oOz1Ec1n5MAc2vFCG3jm9gGW+N1ERxqBdtOQcCBTgaZgx
+         m4QUHtwRJ8L3JFAa2yrgnpX8n63U9aTM/RuyS3TDU0eJQ5yueE3icuyWZz30wrB6hwrg
+         GzUSRi4Bk2058pGezezOHnWtxUtzc1yxTrJ3HG6SYrm8zsOXRH1nHxQQr6iwE+TI3SVc
+         XlFw==
+X-Gm-Message-State: AOAM530iWNFtfAiZKUACH/6qRUvemuETmShfoouPk4a10HPEl4RuUszU
+        6fL4sl0++qqcuzofIViV23YT/4cEFN0q9sdzrsGTQg==
+X-Google-Smtp-Source: ABdhPJy41BE4xOtJgLoRUFUKd9T1jBqd55u8WiBk96SxzAPFBFX6yYc4b2eAoutgdTlEIJ0P6ZKJ3efEcKknqzr3n/M=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr2645328otn.233.1603826477947;
+ Tue, 27 Oct 2020 12:21:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUcx_GaYhUbdc82faeftn+PssdWbWSPWELZ7Npcrbd92w@mail.gmail.com>
+References: <20201027174630.85213-1-98.arpi@gmail.com>
+In-Reply-To: <20201027174630.85213-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 20:21:05 +0100
+Message-ID: <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:00:52AM -0700, Andy Lutomirski wrote:
-> On Tue, Oct 27, 2020 at 1:19 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Oct 26, 2020 at 04:30:32PM -0700, Andy Lutomirski wrote:
-> >
-> > > > @@ -935,6 +936,26 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
-> > > >         irqentry_enter_from_user_mode(regs);
-> > > >         instrumentation_begin();
-> > > >
-> > > > +       /*
-> > > > +        * Clear the virtual DR6 value, ptrace routines will set bits here for
-> > > > +        * things we want signals for.
-> > > > +        */
-> > > > +       current->thread.virtual_dr6 = 0;
-> > > > +
-> > > > +       /*
-> > > > +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
-> > > > +        * the ptrace visible DR6 copy.
-> > > > +        */
-> > > > +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
-> > > > +               current->thread.virtual_dr6 |= (dr6 & DR_STEP);
-> > >
-> > > I'm guessing that this would fail a much simpler test, though: have a
-> > > program use PUSHF to set TF and then read out DR6 from the SIGTRAP.  I
-> > > can whip up such a test if you like.
-> >
-> > Kyle also mentioned it. The reason I didn't do that is because ptrace()
-> > didn't set the TF, so why should it see it in ptrace_get_debugreg(6) ?
-> 
-> I assume you already figured this out, but my specific concern is with
-> the get_si_code(dr6) part -- that's sent directly to the task being
-> debugged or debugging itself (and, sadly, to ptrace, and who knows
-> what debuggers do).
+On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> Changes v3->v4:
+> - Rename kunit variables
+> - Rename generator function helper macro
+> - Add documentation for generator approach
+> - Display test case name in case of failure along with param index
+> Changes v2->v3:
+> - Modifictaion of generator macro and method
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+>
+>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
+>  2 files changed, 54 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 9197da792336..ec2307ee9bb0 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -107,6 +107,13 @@ struct kunit;
+>   *
+>   * @run_case: the function representing the actual test case.
+>   * @name:     the name of the test case.
+> + * @generate_params: the generator function for parameterized tests.
+> + *
+> + * The generator function is used to lazily generate a series of
+> + * arbitrarily typed values that fit into a void*. The argument @prev
+> + * is the previously returned value, which should be used to derive the
+> + * next value; @prev is set to NULL on the initial generator call.
+> + * When no more values are available, the generator must return NULL.
+>   *
 
-Right, so for a task doing TF on its own, DR_STEP should remain set in
-our on-stack dr6 variable, nothing should consume it.
+Hmm, should this really be the first paragraph? I think it should be
+the paragraph before "Example:" maybe. But then that paragraph should
+refer to generate_params e.g. "The generator function @generate_params
+is used to ........".
 
-So the get_si_code(dr6) should be identical. So the only difference is
-if DR_STEP is visible in ptrace or not.
+The other option you have is to move this paragraph to the kernel-doc
+comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
+comment.
+
+>   * A test case is a function with the signature,
+>   * ``void (*)(struct kunit *)``
+> @@ -141,6 +148,7 @@ struct kunit;
+>  struct kunit_case {
+>         void (*run_case)(struct kunit *test);
+>         const char *name;
+> +       void* (*generate_params)(void *prev);
+>
+>         /* private: internal use only. */
+>         bool success;
+> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
+>   * &struct kunit_case for an example on how to use it.
+>   */
+>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+
+I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
+simply move the paragraph describing the generator protocol into that
+comment.
+
+> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
+> +               { .run_case = test_name, .name = #test_name,    \
+> +                 .generate_params = gen_params }
+>
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +219,15 @@ struct kunit {
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+> +       /* param_value points to test case parameters in parameterized tests */
+
+Hmm, not quite: param_value is the current parameter value for a test
+case. Most likely it's a pointer, but it doesn't need to be.
+
+> +       void *param_value;
+> +       /*
+> +        * param_index stores the index of the parameter in
+> +        * parameterized tests. param_index + 1 is printed
+> +        * to indicate the parameter that causes the test
+> +        * to fail in case of test failure.
+> +        */
+
+I think this comment needs to be reformatted, because you can use at
+the very least use 80 cols per line. (If you use vim, visual select
+and do 'gq'.)
+
+> +       int param_index;
+>         /*
+>          * success starts as true, and may only be set to false during a
+>          * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1762,18 @@ do {                                                                            \
+>                                                 fmt,                           \
+>                                                 ##__VA_ARGS__)
+>
+> +/**
+> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
+> + *                      required in parameterized tests.
+> + * @name:  prefix of the name for the test parameter generator function.
+> + *        It will be suffixed by "_gen_params".
+> + * @array: a user-supplied pointer to an array of test parameters.
+> + */
+> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
+> +       static void *name##_gen_params(void *prev)                                              \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+> +       }
+> +
+>  #endif /* _KUNIT_TEST_H */
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 750704abe89a..8ad908b61494 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>
+> +static void kunit_print_failed_param(struct kunit *test)
+> +{
+> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
+> +                                               test->name, test->param_index + 1);
+> +}
+
+Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
+test case successes are presented: they are not, and it's all bunched
+into a single test case.
+
+Firstly, kunit_err() already prints the test name, so if we want
+something like "  # : the_test_case_name: failed at parameter #X",
+simply having
+
+    kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
+
+would be what you want.
+
+But I think I missed that parameters do not actually produce a set of
+test cases (sorry for noticing late). I think in their current form,
+the parameterized tests would not be useful for my tests, because each
+of my tests have test cases that have specific init and exit
+functions. For each parameter, these would also need to run.
+
+Ideally, each parameter produces its own independent test case
+"test_case#param_index". That way, CI systems will also be able to
+logically separate different test case params, simply because each
+param produced its own distinct test case.
+
+So, for example, we would get a series of test cases from something
+like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
+we'd see:
+
+    ok X - test_case#1
+    ok X - test_case#2
+    ok X - test_case#3
+    ok X - test_case#4
+    ....
+
+Would that make more sense?
+
+That way we'd ensure that test-case specific initialization and
+cleanup done in init and exit functions is properly taken care of, and
+you wouldn't need kunit_print_failed_param().
+
+AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
+(show param_index if parameterized test) and probably
+kunit_run_case_catch_errors() (generate params and set
+test->param_value and param_index).
+
+Was there a reason why each param cannot be a distinct test case? If
+not, I think this would be more useful.
+
+>  static void kunit_print_string_stream(struct kunit *test,
+>                                       struct string_stream *stream)
+>  {
+> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>         assert->format(assert, stream);
+>
+>         kunit_print_string_stream(test, stream);
+> +       if (test->param_value)
+> +               kunit_print_failed_param(test);
+>
+>         WARN_ON(string_stream_destroy(stream));
+>  }
+> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>                 }
+>         }
+>
+> -       test_case->run_case(test);
+> +       if (!test_case->generate_params) {
+> +               test_case->run_case(test);
+> +       } else {
+> +               test->param_value = test_case->generate_params(NULL);
+> +               test->param_index = 0;
+> +
+> +               while (test->param_value) {
+> +                       test_case->run_case(test);
+> +                       test->param_value = test_case->generate_params(test->param_value);
+> +                       test->param_index++;
+> +               }
+> +       }
+
+Thanks,
+-- Marco
