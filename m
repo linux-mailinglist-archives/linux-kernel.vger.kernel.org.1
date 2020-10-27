@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822EC29A998
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ABA29A9A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898116AbgJ0K1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:27:16 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:37915 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898088AbgJ0K1N (ORCPT
+        id S2898263AbgJ0Kad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:30:33 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:38143 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2898246AbgJ0K3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:27:13 -0400
-Received: by mail-ej1-f66.google.com with SMTP id ce10so1452429ejc.5;
-        Tue, 27 Oct 2020 03:27:12 -0700 (PDT)
+        Tue, 27 Oct 2020 06:29:52 -0400
+Received: by mail-pj1-f65.google.com with SMTP id gi3so522255pjb.3;
+        Tue, 27 Oct 2020 03:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TL4B+5yGPsuzk8YLy1Eb/baT+Nq11wWNa0Lsz50auDk=;
+        b=EykaKmttOBuXKBD9Zv5StJFK7gLO7kju3F1ajh/rQFgazI8+C72rrVEcJQSDgd471i
+         rGMjUvCNSI0fPzHuySmn3xF+HIwFPHVqRhmXvElpsxLhGUjA/riQFutmXqfXSJWtRkOa
+         uWt5UMK4vAbgs0k1v0SfJejNjrgh+eWSMf7DFLBYVmwcuYgcWFnqVO2pyADNyTPYYq5N
+         WFKuBC24JywqIjfHJrLcD5C+KUEXH2lvIj2VUKW3ahFUayCu2yLVOlmvw63C996ghhY/
+         pyeiB+xCM3JPkfs2oYUMtPRAxUYAcsN2KFxkSUMI36jTdo+u7sxJvYyqsrybc9CrYQSU
+         k4IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GA4OG+9SkS1dLHEsjc3Yoh5BLzXMpIvERF6qvUQNUY4=;
-        b=YAAHhQsyCGuwceyID1pvebu0hBqjx9cqJdplZSmf1a54PjabEYmiPCoVqUHlk8AGjn
-         LyGPJzXzIFZzLfz+UhQRRV4fsuqrIbx9cz+K+Ufn2MUNKoOTL7HWLeF+6z2gHi1rgqKX
-         hBOSPVPPYkbgEU3OEzxEmzSEaJ0wh2FY68d9cWKFA9TrWu/AUtRP9GJ/TRgwgAbRvoCe
-         SMr9VML3FaOil9SExdLJcAmCBljc9sG2Yjpgh3lhewmOuvzTEVbTSO1mhUMsVisONR5k
-         9nSZZ8GPQ5LbCvNG1HzGf+Eiz5/eJu8Nkd2kotLskUd2/ohOS8D88a+rR13MQIN7V3/d
-         9rmg==
-X-Gm-Message-State: AOAM530UDQHtRqCQAPkkZrjkT2p80p1K6KxEwA0Y0MrPe/6998JPN6YM
-        1A5HuqWUmVNszmrcbpijMuo=
-X-Google-Smtp-Source: ABdhPJwIxxoNhNQ2HMjdRGaVcneAee1se1I+5gUMBtanj7k+CUK0Tcdt0/GUf0w3biz06LUetV9mlw==
-X-Received: by 2002:a17:906:1e45:: with SMTP id i5mr1606932ejj.203.1603794431491;
-        Tue, 27 Oct 2020 03:27:11 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id u8sm752822ejt.46.2020.10.27.03.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 03:27:10 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 11:27:07 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 41/52] memory: tegra124-emc: Use
- devm_platform_ioremap_resource()
-Message-ID: <20201027102707.GC17089@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-42-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TL4B+5yGPsuzk8YLy1Eb/baT+Nq11wWNa0Lsz50auDk=;
+        b=AMJ68oLWu3IFo0lrH1/1SyBN9+WyQH+oxzwYQ2W9xvVX1W61L38ClqI9xiA3BYXd6b
+         Lo76+4o6k6GyMQEJikTfG4nBU5ZyRos50i0wu/ZKSUHHB/1MbaoE1wQIAIjwZQRjV86S
+         o728hOaN4UVjLeOw0tFxm0/9Z067K3RxVehz4uRI4m48Kiy2EsCLD02qKXngF8i19DRz
+         ySh9EgL0mbR9512sOg20ado5EvyZmWCee07m0VXYCO2mloaRj1w7w8xX1eUQihjpGhgF
+         06rZfv4TPQwLV2pqDEUVyXIStGmrDgRqnIOTVvhyMk4L0VNSMX5ROChaqxlGqumB6Eo/
+         JQqA==
+X-Gm-Message-State: AOAM530JJPEqNeYTBq05KL6wi9IrG+af+suPilNOLwXz826/tVKIRHZy
+        rRP1hK7Qnhc05wJpI1ZYovcdjUXCiEC2+O4ZaZo=
+X-Google-Smtp-Source: ABdhPJzUoXCVKJFrmUfM7e4Fpi5fgz1J3WZ4IdEcHTIE8NfBDGKstOyUcEh08iVe42sVUErGgpuqFfXiXS9nC9LDJWo=
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr1437134pjb.228.1603794592208;
+ Tue, 27 Oct 2020 03:29:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-42-digetx@gmail.com>
+References: <20201026133609.24262-1-brgl@bgdev.pl> <20201026133609.24262-3-brgl@bgdev.pl>
+ <CAHp75VfeBXszvhrz_YgtX6=HY=TJJXhWdTSTC1=S4UV2cOkJvA@mail.gmail.com> <CAMRc=Mf33JMNMT1vcrHx33QK7wj_gPY-CPaPUsqtON8X8S-JtQ@mail.gmail.com>
+In-Reply-To: <CAMRc=Mf33JMNMT1vcrHx33QK7wj_gPY-CPaPUsqtON8X8S-JtQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Oct 2020 12:30:41 +0200
+Message-ID: <CAHp75Vf-z8yba-QX4G51PRkMV9VKAczd_79sma96zHRf+bMD2w@mail.gmail.com>
+Subject: Re: [PATCH 2/5] iio: adc: xilinx: use devm_krealloc() instead of
+ kfree() + kcalloc()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:17:24AM +0300, Dmitry Osipenko wrote:
-> Use devm_platform_ioremap_resource() helper which makes code a bit
-> cleaner.
+On Tue, Oct 27, 2020 at 12:04 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> On Tue, Oct 27, 2020 at 10:33 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Mon, Oct 26, 2020 at 4:03 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > >
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > >
+> > > We now have devm_krealloc() in the kernel Use it indstead of calling
+> > > kfree() and kcalloc() separately.
+> >
+> > Which is completely lawful when size > previous_size (I mean, the
+> > additional patch you sent previously seems not related to this).
+> >
+>
+> Sure but devm_krealloc() is cleaner and adds the benefit of resource management.
 
-Such cleanups (and few other in this patchset) should be at beginning of
-patchset or even as part of a separate one.  I think there is not much
-stopping anyone from applying these... except that you put them in the
-middle of big dependency.
+I meant devm_krealloc(). It should work in this case without your
+additional "fix" patch.
 
-Best regards,
-Krzysztof
+> > > -       kfree(xadc->data);
+> > > -       xadc->data = kcalloc(n, sizeof(*xadc->data), GFP_KERNEL);
+> > > +       xadc->data = devm_krealloc(indio_dev->dev.parent, xadc->data,
+> > > +                                  n * sizeof(*xadc->data),
+> >
+> > I think you need to use something from overflow.h instead of explicit
+> > multiplication here.
+> >
+>
+> Or maybe add devm_krealloc_array() which would perform the checks
+> behind the scenes?
 
+Maybe. But what to do in the cases when you have struct with flexible
+arrays, like
+struct foo {
+...
+ type bar[];
+};
+
+?
+
+And you do kzalloc(sizeof(foo)) followed by krealloc(). The above name
+(krealloc_array) may be a bit ambiguous.
+
+> > > +                                  GFP_KERNEL | __GFP_ZERO);
+
+-- 
+With Best Regards,
+Andy Shevchenko
