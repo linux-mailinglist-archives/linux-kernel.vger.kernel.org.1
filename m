@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3F829BD41
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77FA29BECA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794888AbgJ0POI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:14:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43174 "EHLO mail.kernel.org"
+        id S1814623AbgJ0Q54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:57:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793754AbgJ0PII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:08:08 -0400
+        id S1789833AbgJ0PKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:10:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09A5121D41;
-        Tue, 27 Oct 2020 15:08:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F2D62072E;
+        Tue, 27 Oct 2020 15:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811286;
-        bh=ntyt1F34ZiEDyr6C3hbVye6v7FuMXWb0duiduz2krT4=;
+        s=default; t=1603811417;
+        bh=u+P8taGnXTkfA+jbB0zYHAsYbU+dXSCyDapA67S5iXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1hN0OicUES9gP+49DxfXwu/QA6milghIpaUVDMYEdZsbvS3JiO7W/A/goBGdI37MU
-         w16zaoZX7aw0w8KAwfdLaSbvGVVplS1IyyVL5syIf9sZHRUPizFGIuOnWTsqG2rqQm
-         Ee4l3tVBn1Lt7M5rybmXWeFoHnJFoFMMmfDO66pE=
+        b=nHR4X/KOjjLQDqHhQoSP69M/cidbGXX/TyUwCmZuX0/rDRE5PsclGYa1IqOkv4Lcg
+         wFJcyrCrO6XU6vVkpOyPFM1sgVpYt/OYBaR62tfQm8J0KKjKMeJw95ThvInYPKfeeX
+         IjDLhNJoN4IUCagva2Yr4Fn7wdIPRbWSYeDVDERg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 439/633] vfio: fix a missed vfio group put in vfio_pin_pages
-Date:   Tue, 27 Oct 2020 14:53:02 +0100
-Message-Id: <20201027135543.317608540@linuxfoundation.org>
+Subject: [PATCH 5.8 445/633] remoteproc/mediatek: fix null pointer dereference on null scp pointer
+Date:   Tue, 27 Oct 2020 14:53:08 +0100
+Message-Id: <20201027135543.598129402@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,38 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yan Zhao <yan.y.zhao@intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 28b130244061863cf0437b7af1625fb45ec1a71e ]
+[ Upstream commit 434ac4d51407ce3764a6ae96a89d90b8ae2826fb ]
 
-When error occurs, need to put vfio group after a successful get.
+Currently when pointer scp is null a dev_err is being called that
+references the pointer which is the very thing we are trying to
+avoid doing. Remove the extraneous error message to avoid this
+issue.
 
-Fixes: 95fc87b44104 ("vfio: Selective dirty page tracking if IOMMU backed device pins pages")
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Addresses-Coverity: ("Dereference after null check")
+Fixes: 63c13d61eafe ("remoteproc/mediatek: add SCP support for mt8183")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20200918152428.27258-1-colin.king@canonical.com
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/vfio.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/remoteproc/mtk_scp_ipi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-index 2a70e25cfe954..fbff5c4743c5e 100644
---- a/drivers/vfio/vfio.c
-+++ b/drivers/vfio/vfio.c
-@@ -1948,8 +1948,10 @@ int vfio_pin_pages(struct device *dev, unsigned long *user_pfn, int npage,
- 	if (!group)
- 		return -ENODEV;
+diff --git a/drivers/remoteproc/mtk_scp_ipi.c b/drivers/remoteproc/mtk_scp_ipi.c
+index 3d3d87210ef2c..58d1d7e571d66 100644
+--- a/drivers/remoteproc/mtk_scp_ipi.c
++++ b/drivers/remoteproc/mtk_scp_ipi.c
+@@ -30,10 +30,8 @@ int scp_ipi_register(struct mtk_scp *scp,
+ 		     scp_ipi_handler_t handler,
+ 		     void *priv)
+ {
+-	if (!scp) {
+-		dev_err(scp->dev, "scp device is not ready\n");
++	if (!scp)
+ 		return -EPROBE_DEFER;
+-	}
  
--	if (group->dev_counter > 1)
--		return -EINVAL;
-+	if (group->dev_counter > 1) {
-+		ret = -EINVAL;
-+		goto err_pin_pages;
-+	}
- 
- 	ret = vfio_group_add_container_user(group);
- 	if (ret)
+ 	if (WARN_ON(id >= SCP_IPI_MAX) || WARN_ON(handler == NULL))
+ 		return -EINVAL;
 -- 
 2.25.1
 
