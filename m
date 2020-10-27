@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA1129B5B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148FA29B5B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795040AbgJ0POz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:14:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
+        id S1795167AbgJ0PPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793940AbgJ0PJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:09:16 -0400
+        id S2505295AbgJ0PJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:09:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B67CD20657;
-        Tue, 27 Oct 2020 15:09:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AFC320657;
+        Tue, 27 Oct 2020 15:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811355;
-        bh=x1EDnlZsOqbu2+4MmNy9W7wKce9oqgcPdzsk3pWum4Y=;
+        s=default; t=1603811397;
+        bh=cCBaorZKmdqODlo4rM88rfT8ZNelAO1jCRQ8rpDgCTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hZ7/FAkup9czjJwG+efmrN3LRDv8l3xZ3zrx1o/VI+G0hExOOARqWRpkvPnoPvJDs
-         wbY1YttlejNcGXuYZAqLkubsgbhJsRXts/oNyec4MJDb1BcK12lbUMhOIP+IAWCS0/
-         ExDOquCy3BYhsfFRZy7ytU8Adkt+p2bokaPqc7Cg=
+        b=RkUFd6Tw0g0XexzNus2WLjMoqgVeQV/ecjtp86VLtv7q15Yaf4hdmWz47r6q/8COw
+         pmvLtlS4a5KZhOLMkzfTYD0IIK5C9wLllz67UyQaQu5dgafna+k0tZ72V3kkpW5yYs
+         yHJP2t9WYopl+4izqnfJUkmOx/1nqpGazon8iF9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        =?UTF-8?q?Timoth=C3=A9e=20COCAULT?= <timothee.cocault@orange.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 464/633] SUNRPC: fix copying of multiple pages in gss_read_proxy_verf()
-Date:   Tue, 27 Oct 2020 14:53:27 +0100
-Message-Id: <20201027135544.494855204@linuxfoundation.org>
+Subject: [PATCH 5.8 477/633] netfilter: ebtables: Fixes dropping of small packets in bridge nat
+Date:   Tue, 27 Oct 2020 14:53:40 +0100
+Message-Id: <20201027135545.115866452@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,82 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
+From: Timothée COCAULT <timothee.cocault@orange.com>
 
-[ Upstream commit d48c8124749c9a5081fe68680f83605e272c984b ]
+[ Upstream commit 63137bc5882a1882c553d389fdeeeace86ee1741 ]
 
-When the passed token is longer than 4032 bytes, the remaining part
-of the token must be copied from the rqstp->rq_arg.pages. But the
-copy must make sure it happens in a consecutive way.
+Fixes an error causing small packets to get dropped. skb_ensure_writable
+expects the second parameter to be a length in the ethernet payload.=20
+If we want to write the ethernet header (src, dst), we should pass 0.
+Otherwise, packets with small payloads (< ETH_ALEN) will get dropped.
 
-With the existing code, the first memcpy copies 'length' bytes from
-argv->iobase, but since the header is in front, this never fills the
-whole first page of in_token->pages.
-
-The mecpy in the loop copies the following bytes, but starts writing at
-the next page of in_token->pages.  This leaves the last bytes of page 0
-unwritten.
-
-Symptoms were that users with many groups were not able to access NFS
-exports, when using Active Directory as the KDC.
-
-Signed-off-by: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
-Fixes: 5866efa8cbfb "SUNRPC: Fix svcauth_gss_proxy_init()"
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: c1a831167901 ("netfilter: bridge: convert skb_make_writable to skb_ensure_writable")
+Signed-off-by: Timothée COCAULT <timothee.cocault@orange.com>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/auth_gss/svcauth_gss.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ net/bridge/netfilter/ebt_dnat.c     | 2 +-
+ net/bridge/netfilter/ebt_redirect.c | 2 +-
+ net/bridge/netfilter/ebt_snat.c     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-index c28051f7d217d..653c317694406 100644
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -1104,9 +1104,9 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
- 			       struct gssp_in_token *in_token)
+diff --git a/net/bridge/netfilter/ebt_dnat.c b/net/bridge/netfilter/ebt_dnat.c
+index 12a4f4d936810..3fda71a8579d1 100644
+--- a/net/bridge/netfilter/ebt_dnat.c
++++ b/net/bridge/netfilter/ebt_dnat.c
+@@ -21,7 +21,7 @@ ebt_dnat_tg(struct sk_buff *skb, const struct xt_action_param *par)
  {
- 	struct kvec *argv = &rqstp->rq_arg.head[0];
--	unsigned int page_base, length;
--	int pages, i, res;
--	size_t inlen;
-+	unsigned int length, pgto_offs, pgfrom_offs;
-+	int pages, i, res, pgto, pgfrom;
-+	size_t inlen, to_offs, from_offs;
+ 	const struct ebt_nat_info *info = par->targinfo;
  
- 	res = gss_read_common_verf(gc, argv, authp, in_handle);
- 	if (res)
-@@ -1134,17 +1134,24 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
- 	memcpy(page_address(in_token->pages[0]), argv->iov_base, length);
- 	inlen -= length;
+-	if (skb_ensure_writable(skb, ETH_ALEN))
++	if (skb_ensure_writable(skb, 0))
+ 		return EBT_DROP;
  
--	i = 1;
--	page_base = rqstp->rq_arg.page_base;
-+	to_offs = length;
-+	from_offs = rqstp->rq_arg.page_base;
- 	while (inlen) {
--		length = min_t(unsigned int, inlen, PAGE_SIZE);
--		memcpy(page_address(in_token->pages[i]),
--		       page_address(rqstp->rq_arg.pages[i]) + page_base,
-+		pgto = to_offs >> PAGE_SHIFT;
-+		pgfrom = from_offs >> PAGE_SHIFT;
-+		pgto_offs = to_offs & ~PAGE_MASK;
-+		pgfrom_offs = from_offs & ~PAGE_MASK;
-+
-+		length = min_t(unsigned int, inlen,
-+			 min_t(unsigned int, PAGE_SIZE - pgto_offs,
-+			       PAGE_SIZE - pgfrom_offs));
-+		memcpy(page_address(in_token->pages[pgto]) + pgto_offs,
-+		       page_address(rqstp->rq_arg.pages[pgfrom]) + pgfrom_offs,
- 		       length);
+ 	ether_addr_copy(eth_hdr(skb)->h_dest, info->mac);
+diff --git a/net/bridge/netfilter/ebt_redirect.c b/net/bridge/netfilter/ebt_redirect.c
+index 0cad62a4052b9..307790562b492 100644
+--- a/net/bridge/netfilter/ebt_redirect.c
++++ b/net/bridge/netfilter/ebt_redirect.c
+@@ -21,7 +21,7 @@ ebt_redirect_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct ebt_redirect_info *info = par->targinfo;
  
-+		to_offs += length;
-+		from_offs += length;
- 		inlen -= length;
--		page_base = 0;
--		i++;
- 	}
- 	return 0;
- }
+-	if (skb_ensure_writable(skb, ETH_ALEN))
++	if (skb_ensure_writable(skb, 0))
+ 		return EBT_DROP;
+ 
+ 	if (xt_hooknum(par) != NF_BR_BROUTING)
+diff --git a/net/bridge/netfilter/ebt_snat.c b/net/bridge/netfilter/ebt_snat.c
+index 27443bf229a3b..7dfbcdfc30e5d 100644
+--- a/net/bridge/netfilter/ebt_snat.c
++++ b/net/bridge/netfilter/ebt_snat.c
+@@ -22,7 +22,7 @@ ebt_snat_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	const struct ebt_nat_info *info = par->targinfo;
+ 
+-	if (skb_ensure_writable(skb, ETH_ALEN * 2))
++	if (skb_ensure_writable(skb, 0))
+ 		return EBT_DROP;
+ 
+ 	ether_addr_copy(eth_hdr(skb)->h_source, info->mac);
 -- 
 2.25.1
 
