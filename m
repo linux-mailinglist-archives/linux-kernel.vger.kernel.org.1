@@ -2,146 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA4829C602
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F48B29C601
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371055AbgJ0SLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:11:53 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33288 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370876AbgJ0SJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1825603AbgJ0SLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:11:43 -0400
+Received: from mout.gmx.net ([212.227.17.22]:36399 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S370875AbgJ0SJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 14:09:55 -0400
-Received: by mail-oi1-f193.google.com with SMTP id s21so2247377oij.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:09:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AbtM77OT6aQe5O8Ox954GJxlxfD2p5sa6teRjX/1SN8=;
-        b=pwhx2yL1CnKxx7CZib8/ETDnnTvrTzS75dqV0K56tlxVaJvk63RhZazHhkiKeHEoz+
-         2zxW9auPsD28EafZG09Ism+tMdO+qwWauV6rnpZTaPu+NmZm3jfyRb60Bt1uKqanXUbU
-         tdro4XI5ytvsYCoTB6kn6jJ55jZIydC7NYtZ4bVbt0In2HRa+3YFUQpJAKXnQUep6hU6
-         yEKvhWL59GnbvbGDYjh+GkcglNRP14o7ffmTTIIReKt9o6gqzmm1y+4byl6li6lxD8Ru
-         3yP1BBjz5FcJgA+ZaqWupFMhu0JlTOwRC737N2ZOGtEvvkHnjTRNu9zJ1Af7NHk8c/gi
-         VDxA==
-X-Gm-Message-State: AOAM530VumfifdUy0fTzK6PDgTzSJb4hX5t91apkmEjKCnuhEIR8yOYH
-        MLaiK/0EsIXWc1VnOQeXCnmppsiLBpdngTljJWs=
-X-Google-Smtp-Source: ABdhPJwZ4tzgLp/lQf+OQYf41GjeEiZ97xC3RsEV6LdRYmqwYR1dNOCn4YKnQCti8TJKFj9VQUQ9R9W0a5vVzeyFJGA=
-X-Received: by 2002:aca:c490:: with SMTP id u138mr2429970oif.54.1603822193919;
- Tue, 27 Oct 2020 11:09:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603822192;
+        bh=zA8b8iEZnR62pVkknxiYTwugku/0pg36V3tGvfFDfdc=;
+        h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
+        b=LbIu/ppO3O04hDG1p54UDX4KvdBmEjDu1J5dVCgAcup7kNmkl+0PBzXlOW2OfufSv
+         tzGT9d5KSZJODH74A2LoENoxX/GNTFoE0n42tTbis57Cy6B7T+pzyu3fpakczH+lFx
+         tYC97YRwG+ewR+q3MVT8YIdvjNkvTDV+feNiR3zY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from obelix.fritz.box ([46.142.1.253]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MRCKC-1klj0e2xd6-00N811; Tue, 27
+ Oct 2020 19:09:52 +0100
+From:   Ronald Warsow <rwarsow@gmx.de>
+Subject: Re: [PATCH 5.9 000/757] 5.9.2-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Message-ID: <d8211fcd-ddb5-34e1-1f9e-aa5b94a03889@gmx.de>
+Date:   Tue, 27 Oct 2020 19:09:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20200901224842.1787825-1-saravanak@google.com>
- <CAMuHMdUcxX1Zvb7X+uxLa1u0WkOtS8hAZ000+Ta+7SCdkeJO8g@mail.gmail.com> <CAGETcx9MVi53Fp3sGXap8iyfHO5VMVpwe9BV7B7SLwmkxR4WOQ@mail.gmail.com>
-In-Reply-To: <CAGETcx9MVi53Fp3sGXap8iyfHO5VMVpwe9BV7B7SLwmkxR4WOQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Oct 2020 19:09:42 +0100
-Message-ID: <CAMuHMdV43-mcMutEzjXZkC1DfJc4j8by3mSJUV+rd+UcjGxQfQ@mail.gmail.com>
-Subject: Re: [PATCH v1] scripts/dev-needs: Add script to list device dependencies
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:I9xvZjsrjTMp4jQljnYKxrka7wvg/oc9aUbKQDl+4fBQlrbCrWn
+ gdVpVVhsEPWdXYovuDBxW7m2vB0tTRAC5z231A1qJJjU5nxUkXSzFkm4PgDybz39czhP5ni
+ hFdftBEBiUE94l5fDMNFEcMKxJ3IBGEBATxk0FQrsoxR18UKqmdGpvR+42wwgWTr8NmviJm
+ wIZegE1MDlBdDTU5EHCEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8rdK7K7AsPo=:jyi1NZdthEvfGxD9qEk7VQ
+ K0/2UIwZcXt+OTKat3mpfHK33gUk+r3RLcqFTI1i7AtL/1i9kzmROrId0+Ii9KkvFUQTn9h7b
+ ixls8OutXm82UBRQCsd5IpK3vqXrqu+/Zgnx6OuVA2CcWnvOc74HuUh1z2FtwIsg8ne7HW50r
+ j+hBQT4kAv9TKeqzwVUSqnXfeKRNx/uBnANDEj5cHIpHunZ2Rh07tpQqcF6V03KARAg7j0GQh
+ eni0JT9zQvneZqHxqz8hzfpsQ7fGoWlrpuc88Mcb2r99T16GQ2al2C/MvqpnBIiWNT7GBTroF
+ W1wjkBvIL2GTwZRBClR2ghKuJka/hbfMbtAOTG/GEo3Zz+xe/xamA9JfPex3tv2qQBSp1AZaQ
+ Qyn7jACGyFqv5LmRWCDuSO027cQx1QwvMM+SF0vFIGbP2sGPOHjZkHBuCUShGIP6svwpn0cke
+ ltI8OEucN2tV8ZDRp9aXk7sPpEcV0HWXFcIUUf7k4io1U8nq5rRiGoW/Xa3QKuWVY4DXdKg2B
+ A7A8WszWZjGamoisCg2OB03C991PioXelb8OkiOVc+2uN30BWZYI2XyMaZH7eMqtq3bfvBz48
+ tCzJHeuqyPyJwI0YKlxykfyTbn7XHv8SAgtDpTICsgVi/HkLT6Qb6oGdTQMGIEbGbA2+eSE+e
+ I5Eim0UnUxpSX/nlc/G+uAPf93m6Y0cQ+sa2mjCZ4mHQekDM4DxpwLqKFw5UWksdBGopTtksL
+ sh88XB3xUY8pylXlPquUntRyRJZB4GN2FkR6og1t37yLusJvILPs2FsaF8pizB7C49TDnXmok
+ maVL3d6JEhn7exYggtFGmfB1xB/uZOMV4/fE5sL1FufaCMMl5O/OuW5rAnFniR7knDRtDLnpu
+ vvJcZAjT/RH6CsNmXJUA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Hallo
 
-On Tue, Oct 27, 2020 at 6:31 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Tue, Oct 27, 2020 at 3:12 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Sep 2, 2020 at 12:51 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > This script can be useful for:
-> > > - Figuring out the list of modules you need to pack in initrd
-> > > - Figuring out the list of drivers you need to modularize for a device
-> > >   to be fully functional without building in any dependencies.
-> > > - Figuring out which drivers to enable first, when porting drivers
-> > >   between kernels (say, to upstream).
-> > > - Plotting graphs of system dependencies, etc.
-> > >
-> > > Usage: dev-needs.sh [-c|-d|-m|-f] [filter options] <list of devices>
-> > >
-> > > This script needs to be run on the target device once it has booted to a
-> > > shell.
-> > >
-> > > The script takes as input a list of one or more device directories under
-> > > /sys/devices and then lists the probe dependency chain (suppliers and
-> > > parents) of these devices. It does a breadth first search of the dependency
-> > > chain, so the last entry in the output is close to the root of the
-> > > dependency chain.
-> >
-> > Thanks for your patch!
-> >
-> > > --- /dev/null
-> > > +++ b/scripts/dev-needs.sh
-> > > @@ -0,0 +1,315 @@
-> > > +#! /bin/sh
-> >
-> > On Debian, where /bin/sh -> dash:
-> >
-> >     dev-needs.sh: 6: dev-needs.sh: Syntax error: "(" unexpected
->
-> dash doesn't like () after the function name maybe? If so, we could
-> drop it. I think it'll still work with toybox and bash.
+this rc1 runs here (pure Intel-box) without errors.
+Thanks !
 
-That's not sufficient:
 
-    ./dev-needs.sh: 47: ./dev-needs.sh: Syntax error: "}" unexpected
+An RPC (I'm thinking about since some month)
+=3D=3D=3D=3D=3D=3D
 
-> > When using bash, I get:
-> >
-> > # ./dev-needs.sh /sys/devices/platform/soc/feb00000.display
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> >
-> > # ./dev-needs.sh -c /sys/devices/platform/soc/feb00000.display
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
-> > ./dev-needs.sh: line 255: detail: command not found
->
-> This is odd. bash definitely works with this script on my Debian x86 machine.
->
-> This error happens when the "detail" alias is not "seen" by the shell
-> when it interprets detail_chosen function. Sigh, every shell seems to
-> want a different order. Can you try to debug it on your end?
+Wouldn't it be better (and not so much add. work) to sort the
+Pseudo-Shortlog towards subsystem/driver ?
 
-The bash man page says:
+something like this:
 
-    Aliases are not expanded when the shell is not interactive,
-    unless the expand_aliases shell option is set using shopt
+...
+usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
+usb: cdns3: gadget: free interrupt after gadget has deleted
 
-And adding "shopt -s expand_aliases" at the top makes it work.
+    Lorenzo Colitti <lorenzo@google.com>
+    Peter Chen <peter.chen@nxp.com>
+...
 
-Nevertheless, the bash man page says "... do not use alias in
-compound commands".
 
-> This is the version I have:
-> GNU bash, version 5.1.0(1)-rc1
+Think of searching a bugfix in the shortlog.
 
-# /bin/bash --version
-GNU bash, version 5.0.3(1)-release (aarch64-unknown-linux-gnu)
+With the current layout I need to read/"visual grep" the whole log.
 
-Gr{oetje,eeting}s,
+With the new layout I'm able to jump to the "buggy" subsystem/driver and
+only need to read that part of the log to get the info if the bug is
+fixed or not yet
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Well, surely there are other ways to get the info I need, e.g.
+search-function of my favorite browser, but ...
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+=2D-
+regards
+
+Ronald
