@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C53529BE98
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218F629BE96
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813638AbgJ0Qws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:52:48 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:40537 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1802500AbgJ0Qqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:46:33 -0400
-Received: by mail-pl1-f194.google.com with SMTP id j5so1052441plk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W1454WDznDDB4HVIvN+ksGK2VxFOSrCXsfMI/gG/Yms=;
-        b=oQJPpPIG4EaovjrBVzzsMnpryDFa6cLQiDvG730jBV7G1T19BJIabWlTnnwm6tnxlf
-         wxaGcCC/RFSUQWdAUld+hhWK4M4QScQiVorHIHDJvNVBOvfO5Jn2adPf7wHc1Wksr0rC
-         c/AFy6YdyjqctKqUGRTUlcZZhfLYWs8p5SQn4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W1454WDznDDB4HVIvN+ksGK2VxFOSrCXsfMI/gG/Yms=;
-        b=j8BVcQMcT2U/RNBhRV0PlQ9FpBqyglI89nDs+SCoMSNlSclZ6nqszUo1lizmLywOHU
-         ahYcbv2uEZmUpvZ3QWzR+q5c4+MHJ5siEM+z5KMsgn/o9drz7GuAo/KGoVlf682GYaY3
-         K/mLtyF1l74MP118vAYWzyPpCdobxVswAUIQ460KGHFM6AvALJZLFljM+9jUJcNCJL53
-         QAtJLbcXZWaAp96hGutg13y9fpI6EnCLoeB15gDiQNo4T+2zXhcW60bENFu0VtzEyn2E
-         m4/vlBkCx47UXCbhHZDQ2vwFtcLQw/MvxPU9PbHekygx+qHvIwel4unnPzQcu6ycJrty
-         4psA==
-X-Gm-Message-State: AOAM532p6b1mhU3XUGLjcG4N6fqqxEQ+PouLE0yJsPYY744UQQ0SfEkR
-        QXuGkKU6QgjuAlNa3hUV39bjUg==
-X-Google-Smtp-Source: ABdhPJyTpzBwPzGSyUpO+81xeAo7gZN3jmfx8jUfWWRehiMcepTWOtraQ9wfdIcT5SHgrA95ky7pUA==
-X-Received: by 2002:a17:902:8545:b029:d5:dbd4:4ab5 with SMTP id d5-20020a1709028545b02900d5dbd44ab5mr3459355plo.31.1603817191235;
-        Tue, 27 Oct 2020 09:46:31 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id c12sm3002688pgi.14.2020.10.27.09.46.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 09:46:30 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, robdclark@chromium.org,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] dt-bindings: dt-bindings: display: simple: Add BOE NV110WTM-N61
-Date:   Tue, 27 Oct 2020 09:45:56 -0700
-Message-Id: <20201027094553.3.I28d9e32b3cc0aae980ecc39d364263a3f9871298@changeid>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-In-Reply-To: <20201027094553.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
-References: <20201027094553.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+        id S1813599AbgJ0QwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1813037AbgJ0Qro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:47:44 -0400
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A965122258
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603817263;
+        bh=14VCZuMIZdKHx03aGNmXB5dNYm5faUHR21s+UNmqFh8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o0znKZzfNARqXqXgudOl2dKYU4+zaQKp7LO7aPAT2kl5pThO7ZAUBZ2vp1j95lPFc
+         Tu4tuL1O8y12YI4yyQT7eWSz75QETEQ/5X+Jarrad5ZSy7qJVZH1q7UU5khhskMWu1
+         D341/4pAjsSBGhRkR8Fvsg5RPnLEdDxhy63t3Dj4=
+Received: by mail-qt1-f175.google.com with SMTP id i7so1476583qti.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:47:43 -0700 (PDT)
+X-Gm-Message-State: AOAM531mXTMoialC4CQK34OpZUzoxSga6DEzpOh5tx0TeLg9Gcl4ZEUH
+        IKndj4k36WKgYLvFWmOYRIsX0nrUl8EbNH6UTrU=
+X-Google-Smtp-Source: ABdhPJzDxfxuqhyC3F1KlAS2KtqALZJShCvFATA4o/kSVnGw7CNfbS7DXVsgAuvYANqZQgGAATCzis/Yz3c7AX45550=
+X-Received: by 2002:ac8:7955:: with SMTP id r21mr2948934qtt.204.1603817262708;
+ Tue, 27 Oct 2020 09:47:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201026194110.3817470-1-arnd@kernel.org> <19af29c5-91e7-055f-cffa-0c813ed5233b@ti.com>
+In-Reply-To: <19af29c5-91e7-055f-cffa-0c813ed5233b@ti.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 17:47:25 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2Ha+SEmdP9bd-HKN_AwAo9LAfW5LWTkODFOCAUd69QnQ@mail.gmail.com>
+Message-ID: <CAK8P3a2Ha+SEmdP9bd-HKN_AwAo9LAfW5LWTkODFOCAUd69QnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] drm/tilcdc: avoid 'make W=2' build failure
+To:     Jyri Sarha <jsarha@ti.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add yet another eDP panel.
+On Tue, Oct 27, 2020 at 4:31 PM Jyri Sarha <jsarha@ti.com> wrote:
+> On 26/10/2020 21:41, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The -Wmissing-field-initializer warning when building with W=2
+> > turns into an error because tilcdc is built with -Werror:
+> >
+> > drm/tilcdc/tilcdc_drv.c:431:33: error: missing field 'data' initializer [-Werror,-Wmissing-field-initializers] { "regs", tilcdc_regs_show, 0 },
+> > drm/tilcdc/tilcdc_drv.c:432:33: error: missing field 'data' initializer [-Werror,-Wmissing-field-initializers] { "mm",   tilcdc_mm_show,   0 },
+> >
+> > Add the missing field initializers to address the warning.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Reviewed-by: Jyri Sarha <jsarha@ti.com>
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Thanks
 
- .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
- 1 file changed, 2 insertions(+)
+> Please let me know if you want me to merge this.
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index edb53ab0d9eb..93e244c67e8a 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -76,6 +76,8 @@ properties:
-         # BOE OPTOELECTRONICS TECHNOLOGY 10.1" WXGA TFT LCD panel
-       - boe,nv101wxmn51
-         # BOE NV133FHM-N61 13.3" FHD (1920x1080) TFT LCD Panel
-+      - boe,nv110wtm-n61
-+        # BOE NV110WTM-N61 11.0" 2160x1440 TFT LCD Panel
-       - boe,nv133fhm-n61
-         # BOE NV133FHM-N62 13.3" FHD (1920x1080) TFT LCD Panel
-       - boe,nv133fhm-n62
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
+Yes, it would be good if you can merge it directly.
 
+      Arnd
