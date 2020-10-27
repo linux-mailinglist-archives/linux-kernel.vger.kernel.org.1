@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F6E29BDA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC9729BD17
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811912AbgJ0Qnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:43:42 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:3001 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1811880AbgJ0Qng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:43:36 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 890D77F814ACED51556B;
-        Tue, 27 Oct 2020 16:43:34 +0000 (GMT)
-Received: from [10.47.8.138] (10.47.8.138) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 27 Oct
- 2020 16:43:33 +0000
-Subject: Re: [PATCH 1/3] genirq/affinity: Add irq_update_affinity_desc()
-To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <martin.petersen@oracle.com>,
-        <jejb@linux.ibm.com>
-CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
-References: <1603800624-180488-1-git-send-email-john.garry@huawei.com>
- <1603800624-180488-2-git-send-email-john.garry@huawei.com>
- <87h7qf1yp0.fsf@nanos.tec.linutronix.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <0f12f562-e4e1-0c0b-be4c-00f40e86d9bc@huawei.com>
-Date:   Tue, 27 Oct 2020 16:40:13 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1811747AbgJ0QlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:41:09 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:43616 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1811706AbgJ0Qkv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:40:51 -0400
+Received: by mail-ej1-f68.google.com with SMTP id k3so3134302ejj.10;
+        Tue, 27 Oct 2020 09:40:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=whgiE5mkniKGwNlADQ4aF2iRZstl2eVAqQyrroOhp7I=;
+        b=ouxnTOZqdyiymOCtooGaHR1k5LkYLpUX/UawsmhwKB8H1inu1JvjXQH7JCFxzfAJ8b
+         uxSwd/kxhxFSHOUAKKrooIjxaBUhXMlc7Zx77067JCZcdk1P13Z+b3ctWxZJShJqyFQz
+         gEFjuLEO1+2iqNZHcQrUF85/yQBTLpPEf8eEem16ie+4TU0VZ8Sh4zM8ssRTDNsg4yu6
+         HS5vvvI3l/GkRhvewvzew5lBtH3IkL4drrYzU+zleLr5KgCyMHGDcbaYl7rHTtbln0tm
+         sBLZXG7hga+QEXKnPIG9QUFWYd6r5qPmPkvNrZA19LwZdkyBznZvt/GDyVIGwoGhbLTC
+         oSgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=whgiE5mkniKGwNlADQ4aF2iRZstl2eVAqQyrroOhp7I=;
+        b=SinYjZ8VatrNEggUJzOcGYz3tmRVlHBvG/pplXyuzhvYaA66I2vjUcxhB8UPd/Wo7z
+         dVm370eaNiPNac0cQtsFMJO+c+6Ht2yMqlqKw7pYJjjGb1iCxyEqMiBhD45iJ5cweo0N
+         kdnSLSkOnyAXbMiaMAo5sj8XkfIU3QCWiOhy5qUBOSKhViF/6nqpoEp+iT7J8chy0nvC
+         LYYuCM25b2ghucIeupiR8KU2tbmnvgAB9DomLyGhG+WyHkI6pnp3v/CB0Pj2UfgSOpxH
+         5iFAm3C6ZfC0HC5lfX9MtH6oxK8zH/kTubOoegMFn82+p18sOp8LD5BiOBUcs2C+vh6X
+         MGUA==
+X-Gm-Message-State: AOAM532KtQ+iSPrSaQEpRn6JOhMLIfNMm4p3v9V507uBjjJ6kU7YktWo
+        EYWfcEl9saqeaavyzXaPOj4jCOeIS/8=
+X-Google-Smtp-Source: ABdhPJziJBh4R8Lb8wVZR6jDy/SW8hlkuj/6Q45kiU19NRiXBgFuGFkfYROxwksv9OquKfS2d/h/tQ==
+X-Received: by 2002:a17:906:7e43:: with SMTP id z3mr3380288ejr.143.1603816848730;
+        Tue, 27 Oct 2020 09:40:48 -0700 (PDT)
+Received: from ?IPv6:2a01:110f:b59:fd00:659b:3847:24e3:b881? ([2a01:110f:b59:fd00:659b:3847:24e3:b881])
+        by smtp.gmail.com with ESMTPSA id ss7sm1372379ejb.28.2020.10.27.09.40.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 09:40:47 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
+ led controller
+To:     Pavel Machek <pavel@ucw.cz>, cy_huang <u0084500@gmail.com>
+Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+        devicetree@vger.kernel.org
+References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
+ <20201027082900.GA21354@amd>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <b0f5b3c8-bebd-eeb6-20b2-15529816720c@gmail.com>
+Date:   Tue, 27 Oct 2020 17:40:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <87h7qf1yp0.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201027082900.GA21354@amd>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.138]
-X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi Pavel, ChiYuan,
 
->> From: Thomas Gleixner <tglx@linutronix.de>
+On 10/27/20 9:29 AM, Pavel Machek wrote:
+> Hi!
+> 
+>> From: ChiYuan Huang <cy_huang@richtek.com>
 >>
->> Add a function to allow the affinity of an interrupt be switched to
->> managed, such that interrupts allocated for platform devices may be
->> managed.
->>
->> <Insert author sob>
->>
->> [jpg: Add commit message and add prototypes]
->> Signed-off-by: John Garry <john.garry@huawei.com>
+>> Add support for RT4505 flash led controller. It can support up to 1.5A
+>> flash current with hardware timeout and low input voltage
+>> protection.
+> 
+> Please use upper-case "LED" everywhere.
+> 
+> This should be 2nd in the series, after DT changes.
+> 
+>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 >> ---
->> Thomas, I just made you author since you provided the original code, hope
->> it's ok.
+>>   drivers/leds/Kconfig       |  11 ++
+>>   drivers/leds/Makefile      |   1 +
+>>   drivers/leds/leds-rt4505.c | 397 +++++++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 409 insertions(+)
+>>   create mode 100644 drivers/leds/leds-rt4505.c
+[...]
+>> +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
+>> +{
 > 
-> I already forgot about this.
-
-We needed some changes to go in to make the block CPU hotplug handling 
-usable for some scsi drivers, which took a while.
-
-> And in fact I only gave you a broken
-> example. So just make yourself the author and add Suggested-by: tglx.
+> 80 columns, where easy.
 > 
-
-ok, will repost with that, cheers
-
-> Vs. merging. I'd like to pick that up myself as I might have other
-> changes in that area coming up.
+>> +	struct rt4505_priv *priv = container_of(lcdev, struct rt4505_priv, flash.led_cdev);
+>> +	u32 val = 0;
+>> +	int ret;
+>> +
+>> +	mutex_lock(&priv->lock);
+>> +
+>> +	if (level != LED_OFF) {
+>> +		ret = regmap_update_bits(priv->regmap, RT4505_REG_ILED, RT4505_ITORCH_MASK,
+>> +					 (level - 1) << RT4505_ITORCH_SHIFT);
+>> +		if (ret)
+>> +			goto unlock;
+>> +
+>> +		val = RT4505_TORCH_SET;
+>> +	}
+>> +
+>> +	ret = regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4505_ENABLE_MASK, val);
+>> +
+>> +unlock:
+>> +	mutex_unlock(&priv->lock);
+>> +	return ret;
+>> +}
 > 
-> I'll do it as a single commit on top of rc1 and tag it so the scsi
-> people can just pull it in.
+> Why is the locking needed? What will the /sys/class/leds interface
+> look like on system with your flash?
 
-I guess it's ok, I will defer to the maintainers on that.
+The locking is needed since this can be called via led_set_brightness()
+from any place in the kernel, and especially from triggers.
 
-Thanks,
-John
-
+-- 
+Best regards,
+Jacek Anaszewski
