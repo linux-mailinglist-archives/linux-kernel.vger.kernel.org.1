@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6A429CB4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1866929CB51
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374086AbgJ0V0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:26:09 -0400
-Received: from ozlabs.org ([203.11.71.1]:50495 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S374082AbgJ0VZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:25:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLPrg2QqJz9sRk;
-        Wed, 28 Oct 2020 08:25:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603833955;
-        bh=5TzWojLfR5wPPCfBJL59xdfX/iM136TguBSnvWAqY/E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XP2KaI+M1foSz93/SN+jvmJbI7D37Dgm1sW2UmD8u/k7h8LREziAWEKbdpcU9xm+z
-         GYgtvAng+XFqvfZRIBX92khUROea2q8vzyaqn6wC5qGRXz8IrhN5MS3Nc7ApO104ij
-         if6N3/49JCRvj5dzG4sYoBcrapDc1imdtgbzapxB/Hr5xYKvYLreu4SiNB7n69T10S
-         wQP2g0jP6Qt2qIuhdEyeMOHLm0Nh4LKJzE6sXdOl66+5Gtil4x5XYEl6BD4mk6Awyi
-         vzRvE3rubPhKxjyDaanm+ojB9xH0tf4ARZ0PGMkFGUWwDBjloX3NqlOT0YJp6oZT7T
-         bmtg79fVPr2ug==
-Date:   Wed, 28 Oct 2020 08:25:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the mmc tree
-Message-ID: <20201028082554.3a486ebe@canb.auug.org.au>
+        id S374155AbgJ0Veu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:34:50 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41574 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S374132AbgJ0Ves (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:34:48 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09RLQbBt015134
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Oct 2020 17:26:38 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9F4BB420107; Tue, 27 Oct 2020 17:26:37 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 17:26:37 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 23/32] jbd2: fix a kernel-doc markup
+Message-ID: <20201027212637.GF5691@mit.edu>
+References: <cover.1603791716.git.mchehab+huawei@kernel.org>
+ <6055927ada2015b55b413cdd2670533bdc9a8da2.1603791716.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7FvpXCn_KqDi/gk2yyWsDrt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6055927ada2015b55b413cdd2670533bdc9a8da2.1603791716.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7FvpXCn_KqDi/gk2yyWsDrt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 27, 2020 at 10:51:27AM +0100, Mauro Carvalho Chehab wrote:
+> The kernel-doc markup that documents _fc_replay_callback is
+> missing an asterisk, causing this warning:
+> 
+> 	../include/linux/jbd2.h:1271: warning: Function parameter or member 'j_fc_replay_callback' not described in 'journal_s'
+> 
+> When building the docs.
+> 
+> Fixes: 609f928af48f ("jbd2: fast commit recovery path")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Hi all,
+Thanks, I'm accomulating some bug fix patches to push to Linus, so
+I'll grab this for the ext4 git tree.
 
-Commit
-
-  4a890911ffdb ("mmc: sdhci-of-esdhc: make sure delay chain locked for HS40=
-0")
-
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7FvpXCn_KqDi/gk2yyWsDrt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+YkGIACgkQAVBC80lX
-0Gyg5gf6AxlZpWys4faOk0cWcrUjX34Ao0JCe3Bwp5ZKlHDB9tQSSIrtxdpLIdTy
-TE5eCabRNSq/hp0vfFFTbLBz4kk+VScTZQmSHAGDn9ObRXvOm1OyfK+RIsMEzuSS
-X0O9NVvPbSfZ4io+ppS9hEKB89R0lnVFu+V117yrqJAgdB4xOPWQgKFtkqtG1tEn
-As23zNWUaKPuYW5HYAqX2OdCCPz6GGvysZmSTZTzYjt7RyHy7uEipDYWfB9u0/mk
-2+cY9eHTeaWvg7d/0cnjoLRCExZ8qg4ndvVm1ovSb6orcbO4vCzgts1+/Hf1+KAC
-gdkUv8u3dh+EEf88qx9gfmmMOdhirw==
-=vgwK
------END PGP SIGNATURE-----
-
---Sig_/7FvpXCn_KqDi/gk2yyWsDrt--
+     	       	       	    	- Ted
