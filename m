@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2235629C72E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B58929C728
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827835AbgJ0S23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:28:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44022 "EHLO mail.kernel.org"
+        id S1827813AbgJ0S2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:28:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368165AbgJ0N5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:15 -0400
+        id S368177AbgJ0N5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:57:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4309D21D7B;
-        Tue, 27 Oct 2020 13:57:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C80F21D42;
+        Tue, 27 Oct 2020 13:57:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807034;
-        bh=5k4jKEzXkpTOJwJa1aWqwExMCq4YxvN7L5K90HjaWjo=;
+        s=default; t=1603807040;
+        bh=9y+m+r1F1TV5hF00OHKbbN9tY2ZlfbSVeuXL32U4pI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ijrga37J1FCS4fkxalYL4HFbsTnHy/m4N3hksxUTVs/Jyfdm8YLQA7fEjowtzGdBr
-         r3Fx3WEC+htL9yw9E9rQwRrhWK3ssI2SA2LIaFIBgO3x0hKCA4Z1GZ2yp4TTEb7f8a
-         HjCQmY8+AKhpVQCq3RLJ1VJ1nMHfznDAPgfe/a0U=
+        b=ECAJkZHPe8io6KgQSZ4GqwpNABEiGmAbAEREi9JC8Zvj5C78p3GoQ67G/qWKA5fTm
+         onzZoRXvm5EUcaCEdGfNqHnNIcr/Xc47wCfklheqAp2RJJIrJ/6J8QSf+W6zUNgBht
+         ZInm1WWxAH9l2SpijFAc/5M9sXTsiK+3YOSzhFd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 019/112] EDAC/i5100: Fix error handling order in i5100_init_one()
-Date:   Tue, 27 Oct 2020 14:48:49 +0100
-Message-Id: <20201027134901.480954454@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 020/112] crypto: ixp4xx - Fix the size used in a dma_free_coherent() call
+Date:   Tue, 27 Oct 2020 14:48:50 +0100
+Message-Id: <20201027134901.529686500@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -42,67 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 857a3139bd8be4f702c030c8ca06f3fd69c1741a ]
+[ Upstream commit f7ade9aaf66bd5599690acf0597df2c0f6cd825a ]
 
-When pci_get_device_func() fails, the driver doesn't need to execute
-pci_dev_put(). mci should still be freed, though, to prevent a memory
-leak. When pci_enable_device() fails, the error injection PCI device
-"einj" doesn't need to be disabled either.
+Update the size used in 'dma_free_coherent()' in order to match the one
+used in the corresponding 'dma_alloc_coherent()', in 'setup_crypt_desc()'.
 
- [ bp: Massage commit message, rename label to "bail_mc_free". ]
-
-Fixes: 52608ba205461 ("i5100_edac: probe for device 19 function 0")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200826121437.31606-1-dinghao.liu@zju.edu.cn
+Fixes: 81bef0150074 ("crypto: ixp4xx - Hardware crypto support for IXP4xx CPUs")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/i5100_edac.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/crypto/ixp4xx_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/edac/i5100_edac.c b/drivers/edac/i5100_edac.c
-index 40917775dca1c..59d10f48ed6ab 100644
---- a/drivers/edac/i5100_edac.c
-+++ b/drivers/edac/i5100_edac.c
-@@ -1075,16 +1075,15 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 				    PCI_DEVICE_ID_INTEL_5100_19, 0);
- 	if (!einj) {
- 		ret = -ENODEV;
--		goto bail_einj;
-+		goto bail_mc_free;
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index 8f27903532812..13657105cfb93 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -533,7 +533,7 @@ static void release_ixp_crypto(struct device *dev)
+ 
+ 	if (crypt_virt) {
+ 		dma_free_coherent(dev,
+-			NPE_QLEN_TOTAL * sizeof( struct crypt_ctl),
++			NPE_QLEN * sizeof(struct crypt_ctl),
+ 			crypt_virt, crypt_phys);
  	}
- 
- 	rc = pci_enable_device(einj);
- 	if (rc < 0) {
- 		ret = rc;
--		goto bail_disable_einj;
-+		goto bail_einj;
- 	}
- 
--
- 	mci->pdev = &pdev->dev;
- 
- 	priv = mci->pvt_info;
-@@ -1151,14 +1150,14 @@ static int i5100_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- bail_scrub:
- 	priv->scrub_enable = 0;
- 	cancel_delayed_work_sync(&(priv->i5100_scrubbing));
--	edac_mc_free(mci);
--
--bail_disable_einj:
- 	pci_disable_device(einj);
- 
- bail_einj:
- 	pci_dev_put(einj);
- 
-+bail_mc_free:
-+	edac_mc_free(mci);
-+
- bail_disable_ch1:
- 	pci_disable_device(ch1mm);
- 
+ 	return;
 -- 
 2.25.1
 
