@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE54C29BFC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1FA29BF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1816604AbgJ0RH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
+        id S1793543AbgJ0PGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1787599AbgJ0PAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:00:14 -0400
+        id S1789367AbgJ0PCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:02:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF8B520714;
-        Tue, 27 Oct 2020 15:00:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32FB522264;
+        Tue, 27 Oct 2020 15:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810813;
-        bh=09BtgDStkjmQQSw+UuaeyxieHWs44qv+TUAKa6HcKmM=;
+        s=default; t=1603810922;
+        bh=Soar+9iFU5zxuhxDG/8Q9NsPO1ihnEkKCV4/P53vNus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dfy3DNB0b3NXTSbM/GoHyfc7iOSXAJ1VevhhdRk0+CUPY3r0brLunp5Faw7fXWv/x
-         0j2EtgGUW82cDr6VsfQTtJ7umTc17s0jrsFdWqkOy3gTohZpikd5yZXZ29hK2yPNWd
-         BEboXt4oIyCkMigS5Dxsr8JKHFNnRpDdgboVN0+s=
+        b=k9NrcTYfc+isnIvI3gvQWMBlbuHpoDJltsta6DCjExMHZSizQqnHf8nbWlALlKIWv
+         SgtOrRMQke8ttN+SGXK3N9N7LdW64aCJmd9TFIlLRgYKvsvQq+xI9Nje/S1/lHvgCE
+         pn54b4Mn+U+50dPcGpd010NQNF717+GqGsXC9WHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 272/633] slimbus: qcom-ngd-ctrl: disable ngd in qmi server down callback
-Date:   Tue, 27 Oct 2020 14:50:15 +0100
-Message-Id: <20201027135535.427361599@linuxfoundation.org>
+Subject: [PATCH 5.8 309/633] platform/x86: mlx-platform: Remove PSU EEPROM configuration
+Date:   Tue, 27 Oct 2020 14:50:52 +0100
+Message-Id: <20201027135537.173963709@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,43 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-[ Upstream commit 709ec3f7fc5773ac4aa6fb22c3f0ac8103c674db ]
+[ Upstream commit c071afcea6ecf24a3c119f25ce9f71ffd55b5dc2 ]
 
-In QMI new server notification we enable the NGD however during
-delete server notification we do not disable the NGD.
+Remove PSU EEPROM configuration for systems class equipped with
+Mellanox chip Spectrume-2. Till now all the systems from this class
+used few types of power units, all equipped with EEPROM device with
+address space two bytes. Thus, all these devices have been handled by
+EEPROM driver "24c32".
+There is a new requirement is to support power unit replacement by "off
+the shelf" device, matching electrical required parameters. Such device
+could be equipped with different EEPROM type, which could be one byte
+address space addressing or even could be not equipped with EEPROM.
+In such case "24c32" will not work.
 
-This can lead to multiple instances of NGD being enabled, so make
-sure that we disable NGD in delete server callback to fix this issue!
-
-Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200925095520.27316-4-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1bd42d94ccab ("platform/x86: mlx-platform: Add support for new 200G IB and Ethernet systems")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20200923172053.26296-2-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/platform/x86/mlx-platform.c | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 743ee7b4e63f2..218aefc3531cd 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1277,9 +1277,13 @@ static void qcom_slim_ngd_qmi_del_server(struct qmi_handle *hdl,
- {
- 	struct qcom_slim_ngd_qmi *qmi =
- 		container_of(hdl, struct qcom_slim_ngd_qmi, svc_event_hdl);
-+	struct qcom_slim_ngd_ctrl *ctrl =
-+		container_of(qmi, struct qcom_slim_ngd_ctrl, qmi);
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index c27548fd386ac..0d2ed6d1f9c79 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -319,15 +319,6 @@ static struct i2c_board_info mlxplat_mlxcpld_psu[] = {
+ 	},
+ };
  
- 	qmi->svc_info.sq_node = 0;
- 	qmi->svc_info.sq_port = 0;
-+
-+	qcom_slim_ngd_enable(ctrl, false);
- }
+-static struct i2c_board_info mlxplat_mlxcpld_ng_psu[] = {
+-	{
+-		I2C_BOARD_INFO("24c32", 0x51),
+-	},
+-	{
+-		I2C_BOARD_INFO("24c32", 0x50),
+-	},
+-};
+-
+ static struct i2c_board_info mlxplat_mlxcpld_pwr[] = {
+ 	{
+ 		I2C_BOARD_INFO("dps460", 0x59),
+@@ -752,15 +743,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_default_ng_psu_items_data[] = {
+ 		.label = "psu1",
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+ 		.mask = BIT(0),
+-		.hpdev.brdinfo = &mlxplat_mlxcpld_ng_psu[0],
+-		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
++		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+ 	},
+ 	{
+ 		.label = "psu2",
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+ 		.mask = BIT(1),
+-		.hpdev.brdinfo = &mlxplat_mlxcpld_ng_psu[1],
+-		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
++		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+ 	},
+ };
  
- static struct qmi_ops qcom_slim_ngd_qmi_svc_event_ops = {
 -- 
 2.25.1
 
