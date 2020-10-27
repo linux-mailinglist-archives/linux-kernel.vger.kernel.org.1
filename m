@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FD829A8DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289B829A8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896900AbgJ0KCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:02:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42516 "EHLO mail.kernel.org"
+        id S2896863AbgJ0KBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:01:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896031AbgJ0Jvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:51:42 -0400
+        id S2896037AbgJ0Jvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:51:43 -0400
 Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49ADD223AB;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5710A22403;
         Tue, 27 Oct 2020 09:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603792301;
-        bh=4Bu6akfKjaahqyWEGXpzqa8kviAzcp1lUCJxl8zFrWQ=;
+        bh=GXxTZan9lCjKZoVF0lUNE8RECi6/oK6GikJCLqZEg9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vntfPDjZdT2gTCYKiegEGjUfFDRECf8mdyMsr1tqgA0lruUT8kyHr6xO4C/cZFEEk
-         GvZtryzyEdBNjQsBhau+bn/DlTHMjAq9d0tt6F4ltEadnvHmVoS3fTPoE7O5GOfnKD
-         NhT4fVuELY20BAiin4QgPu5X9l/8TMu9l/1vil1Y=
+        b=CA3IYj1Fzt6EDUWDkvZVmekclltK8XNXWCleUkiU9mCzICo8dgbIJjO8TabbYNfGm
+         dYvZXxQkPyXED1kP5TFCJFNzFcQf2TDIHlKznDzRTAsvbs629tWNadxZ6/4mp8bf7+
+         ZnOJZqrTJbkAZAhZy835FyGXOdfJC9u1oned1KQA=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kXLdj-003FEr-8B; Tue, 27 Oct 2020 10:51:39 +0100
+        id 1kXLdj-003FEt-92; Tue, 27 Oct 2020 10:51:39 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Jeevan B <jeevan.b@intel.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Lyude Paul <lyude@redhat.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
-        Oleg Vasilev <oleg.vasilev@intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/32] drm: kernel-doc: document drm_dp_set_subconnector_property() params
-Date:   Tue, 27 Oct 2020 10:51:14 +0100
-Message-Id: <0870be85a77bea4ba5cf1715010834289a4e10b1.1603791716.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 11/32] drm/dp: fix kernel-doc warnings at drm_dp_helper.c
+Date:   Tue, 27 Oct 2020 10:51:15 +0100
+Message-Id: <03c9c8ba3f492aca76e2b4836803219cd9c971cf.1603791716.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
 References: <cover.1603791716.git.mchehab+huawei@kernel.org>
@@ -52,41 +50,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset e5b92773287c ("drm: report dp downstream port type as a subconnector property")
-added a new function to the kAPI, but didn't add any documentation
-for the parameters for drm_dp_set_subconnector_property().
+As warned by kernel-doc:
 
-Fixes: e5b92773287c ("drm: report dp downstream port type as a subconnector property")
+	./drivers/gpu/drm/drm_dp_helper.c:385: warning: Function parameter or member 'type' not described in 'drm_dp_downstream_is_type'
+	./drivers/gpu/drm/drm_dp_helper.c:886: warning: Function parameter or member 'dev' not described in 'drm_dp_downstream_mode'
+
+Some function parameters weren't documented.
+
+Fixes: 38784f6f8805 ("drm/dp: Add helpers to identify downstream facing port types")
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_helper.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_dp_helper.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 90807a6b415c..b1c71af88579 100644
+index b1c71af88579..deeed73f4ed6 100644
 --- a/drivers/gpu/drm/drm_dp_helper.c
 +++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -1028,7 +1028,8 @@ EXPORT_SYMBOL(drm_dp_downstream_debug);
- 
- /**
-  * drm_dp_subconnector_type() - get DP branch device type
-- *
-+ * @dpcd: DisplayPort configuration data
-+ * @port_cap: port capabilities
-  */
- enum drm_mode_subconnector
- drm_dp_subconnector_type(const u8 dpcd[DP_RECEIVER_CAP_SIZE],
-@@ -1079,6 +1080,10 @@ EXPORT_SYMBOL(drm_dp_subconnector_type);
- 
- /**
-  * drm_mode_set_dp_subconnector_property - set subconnector for DP connector
-+ * @connector: connector to set property on
-+ * @status: connector status
-+ * @dpcd: DisplayPort configuration data
-+ * @port_cap: port capabilities
+@@ -374,6 +374,10 @@ static bool is_edid_digital_input_dp(const struct edid *edid)
+  * drm_dp_downstream_is_type() - is the downstream facing port of certain type?
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: port capabilities
++ * @type: port type to be checked. Can be:
++ * 	  %DP_DS_PORT_TYPE_DP, %DP_DS_PORT_TYPE_VGA, %DP_DS_PORT_TYPE_DVI,
++ * 	  %DP_DS_PORT_TYPE_HDMI, %DP_DS_PORT_TYPE_NON_EDID,
++ *	  %DP_DS_PORT_TYPE_DP_DUALMODE or %DP_DS_PORT_TYPE_WIRELESS.
   *
-  * Called by a driver on every detect event.
-  */
+  * Caveat: Only works with DPCD 1.1+ port caps.
+  *
+@@ -870,6 +874,7 @@ EXPORT_SYMBOL(drm_dp_downstream_444_to_420_conversion);
+ 
+ /**
+  * drm_dp_downstream_mode() - return a mode for downstream facing port
++ * @dev: DRM device
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: port capabilities
+  *
 -- 
 2.26.2
 
