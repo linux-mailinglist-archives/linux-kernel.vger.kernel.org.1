@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D408429B42F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9065F29B43C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784329AbgJ0O7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:59:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        id S1784726AbgJ0O7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763116AbgJ0Ooo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:44:44 -0400
+        id S1762782AbgJ0Oo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:44:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D550521527;
-        Tue, 27 Oct 2020 14:44:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D554521527;
+        Tue, 27 Oct 2020 14:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809884;
-        bh=AGYOV/Hmur2XNcduLhRatyeBVAK1wfJ200zWnFeF+1c=;
+        s=default; t=1603809867;
+        bh=BdAJ4MjlzbJj6K5lFc8PuQNl8sUHh1kH3DZ5xn5jEHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nyvwhJdTqxCe1vN6AO/mnbMv2B2yn6Wc8V2RlNeLF88VZ8uFKJjUVHHaICce6yTOr
-         bi4iUP0+UAraXydSqFdUHQUFIyJUjMV6tNRz6lkC+OmHV+BmU9NVU+YDcZNXY6uYPZ
-         7cm22lwba1nW2xb/rnBc83bU8EpzIf5ZqUng5b0k=
+        b=0biU/cGmQkJh3XWjekfKM/AWcvC2IB80yhrth8CRgWqbJ48ZmPIaTpM6sSLGauF5V
+         X2HUeUtW2Cx+WYX9zuIlT5b6PXHbC3Rd9GLJ4gMppKSIUq6olgRLpsYaFL8Q1/qsQq
+         cd4a5oo9depcYyQMns1PJh1hWsBszz4Iu/1uRkSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 312/408] soc: fsl: qbman: Fix return value on success
-Date:   Tue, 27 Oct 2020 14:54:10 +0100
-Message-Id: <20201027135509.505152820@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 316/408] lightnvm: fix out-of-bounds write to array devices->info[]
+Date:   Tue, 27 Oct 2020 14:54:14 +0100
+Message-Id: <20201027135509.690511278@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -42,36 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 750cf40c0f7088f36a8a5d102e0488b1ac47faf5 ]
+[ Upstream commit a48faebe65b0db55a73b9220c3d919eee849bb79 ]
 
-On error the function was meant to return -ERRNO.  This also fixes
-compile warning:
+There is an off-by-one array check that can lead to a out-of-bounds
+write to devices->info[i].  Fix this by checking by using >= rather
+than > for the size check. Also replace hard-coded array size limit
+with ARRAY_SIZE on the array.
 
-  drivers/soc/fsl/qbman/bman.c:640:6: warning: variable 'err' set but not used [-Wunused-but-set-variable]
-
-Fixes: 0505d00c8dba ("soc/fsl/qbman: Cleanup buffer pools if BMan was initialized prior to bootup")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: cd9e9808d18f ("lightnvm: Support for Open-Channel SSDs")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/fsl/qbman/bman.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/lightnvm/core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/fsl/qbman/bman.c b/drivers/soc/fsl/qbman/bman.c
-index f4fb527d83018..c5dd026fe889f 100644
---- a/drivers/soc/fsl/qbman/bman.c
-+++ b/drivers/soc/fsl/qbman/bman.c
-@@ -660,7 +660,7 @@ int bm_shutdown_pool(u32 bpid)
- 	}
- done:
- 	put_affine_portal();
--	return 0;
-+	return err;
- }
+diff --git a/drivers/lightnvm/core.c b/drivers/lightnvm/core.c
+index 7543e395a2c64..a2ebc75af8c79 100644
+--- a/drivers/lightnvm/core.c
++++ b/drivers/lightnvm/core.c
+@@ -1316,8 +1316,9 @@ static long nvm_ioctl_get_devices(struct file *file, void __user *arg)
+ 		strlcpy(info->bmname, "gennvm", sizeof(info->bmname));
+ 		i++;
  
- struct gen_pool *bm_bpalloc;
+-		if (i > 31) {
+-			pr_err("max 31 devices can be reported.\n");
++		if (i >= ARRAY_SIZE(devices->info)) {
++			pr_err("max %zd devices can be reported.\n",
++			       ARRAY_SIZE(devices->info));
+ 			break;
+ 		}
+ 	}
 -- 
 2.25.1
 
