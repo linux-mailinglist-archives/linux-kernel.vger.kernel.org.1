@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13A029BEF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0449F29BF39
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1814688AbgJ0Q6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:58:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
+        id S1787200AbgJ0PAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794055AbgJ0PJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:09:55 -0400
+        id S1762439AbgJ0Omy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D359F206F4;
-        Tue, 27 Oct 2020 15:09:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDFC3206E5;
+        Tue, 27 Oct 2020 14:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811394;
-        bh=AHPu6VlPpb0XC/2887H1Sa35fVDy3w65m8Olms9NGyU=;
+        s=default; t=1603809773;
+        bh=KEqOOfrAnkfyiT2/q98UFhQvP+8j/UPZzmzHPa4vKyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RmanrJiCImoUHUD702mCrdsRXaXcsSkWuLM+d8COc9ES0PqnmImRIXWNJq3wWOC5v
-         /dozVAqQd4UvuzvmqwEZyrHNsPXkdP82x9NJtx7aTuWzwXbwNEvBna7Vr92YmCHrWE
-         YdPwxXXOurIe9dRva5FE0AgP4Hdnr0ywZjkaFaXU=
+        b=zX3EJS2kzJfXKffc+z7I8NCOUSkNlvqXzXqL5EEbX3jzWD9/o7LPLzuFvoLG/TVI2
+         BFOHYXzW9jFosEn6oOJ1U0PL0DP3r6GiZUmPNSJM1gUDHT7f6lNYaWivItFaA8lF9t
+         wRRhrHWJCwH6QBSlNkwJGRPeQLQuHX/ogwXYux5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Francesco Ruggeri <fruggeri@arista.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 476/633] netfilter: conntrack: connection timeout after re-register
-Date:   Tue, 27 Oct 2020 14:53:39 +0100
-Message-Id: <20201027135545.068416120@linuxfoundation.org>
+Subject: [PATCH 5.4 284/408] Input: imx6ul_tsc - clean up some errors in imx6ul_tsc_resume()
+Date:   Tue, 27 Oct 2020 14:53:42 +0100
+Message-Id: <20201027135508.225508790@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Francesco Ruggeri <fruggeri@arista.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 4f25434bccc28cf8a07876ef5142a2869a674353 ]
+[ Upstream commit 30df23c5ecdfb8da5b0bc17ceef67eff9e1b0957 ]
 
-If the first packet conntrack sees after a re-register is an outgoing
-keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to
-SND.NXT-1.
-When the peer correctly acknowledges SND.NXT, tcp_in_window fails
-check III (Upper bound for valid (s)ack: sack <= receiver.td_end) and
-returns false, which cascades into nf_conntrack_in setting
-skb->_nfct = 0 and in later conntrack iptables rules not matching.
-In cases where iptables are dropping packets that do not match
-conntrack rules this can result in idle tcp connections to time out.
+If imx6ul_tsc_init() fails then we need to clean up the clocks.
 
-v2: adjust td_end when getting the reply rather than when sending out
-    the keepalive packet.
+I reversed the "if (input_dev->users) {" condition to make the code a
+bit simpler.
 
-Fixes: f94e63801ab2 ("netfilter: conntrack: reset tcp maxwin on re-register")
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 6cc527b05847 ("Input: imx6ul_tsc - propagate the errors")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20200905124942.GC183976@mwanda
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto_tcp.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/input/touchscreen/imx6ul_tsc.c | 27 +++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index 1926fd56df56a..848b137151c26 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -541,13 +541,20 @@ static bool tcp_in_window(const struct nf_conn *ct,
- 			swin = win << sender->td_scale;
- 			sender->td_maxwin = (swin == 0 ? 1 : swin);
- 			sender->td_maxend = end + sender->td_maxwin;
--			/*
--			 * We haven't seen traffic in the other direction yet
--			 * but we have to tweak window tracking to pass III
--			 * and IV until that happens.
--			 */
--			if (receiver->td_maxwin == 0)
-+			if (receiver->td_maxwin == 0) {
-+				/* We haven't seen traffic in the other
-+				 * direction yet but we have to tweak window
-+				 * tracking to pass III and IV until that
-+				 * happens.
-+				 */
- 				receiver->td_end = receiver->td_maxend = sack;
-+			} else if (sack == receiver->td_end + 1) {
-+				/* Likely a reply to a keepalive.
-+				 * Needed for III.
-+				 */
-+				receiver->td_end++;
-+			}
+diff --git a/drivers/input/touchscreen/imx6ul_tsc.c b/drivers/input/touchscreen/imx6ul_tsc.c
+index 9ed258854349b..5e6ba5c4eca2a 100644
+--- a/drivers/input/touchscreen/imx6ul_tsc.c
++++ b/drivers/input/touchscreen/imx6ul_tsc.c
+@@ -530,20 +530,25 @@ static int __maybe_unused imx6ul_tsc_resume(struct device *dev)
+ 
+ 	mutex_lock(&input_dev->mutex);
+ 
+-	if (input_dev->users) {
+-		retval = clk_prepare_enable(tsc->adc_clk);
+-		if (retval)
+-			goto out;
+-
+-		retval = clk_prepare_enable(tsc->tsc_clk);
+-		if (retval) {
+-			clk_disable_unprepare(tsc->adc_clk);
+-			goto out;
+-		}
++	if (!input_dev->users)
++		goto out;
+ 
+-		retval = imx6ul_tsc_init(tsc);
++	retval = clk_prepare_enable(tsc->adc_clk);
++	if (retval)
++		goto out;
 +
- 		}
- 	} else if (((state->state == TCP_CONNTRACK_SYN_SENT
- 		     && dir == IP_CT_DIR_ORIGINAL)
++	retval = clk_prepare_enable(tsc->tsc_clk);
++	if (retval) {
++		clk_disable_unprepare(tsc->adc_clk);
++		goto out;
+ 	}
+ 
++	retval = imx6ul_tsc_init(tsc);
++	if (retval) {
++		clk_disable_unprepare(tsc->tsc_clk);
++		clk_disable_unprepare(tsc->adc_clk);
++		goto out;
++	}
+ out:
+ 	mutex_unlock(&input_dev->mutex);
+ 	return retval;
 -- 
 2.25.1
 
