@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1822729BA7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 009CC29BB68
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805989AbgJ0QFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:05:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
+        id S1806006AbgJ0QFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:05:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802362AbgJ0Pqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:46:42 -0400
+        id S1802363AbgJ0Pqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:46:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D71CE21D42;
-        Tue, 27 Oct 2020 15:46:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CF4122202;
+        Tue, 27 Oct 2020 15:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813600;
-        bh=Ma5tQLwAexCdpaRnUqiP1t9fEZr+EXFkw/s2QpzBDes=;
+        s=default; t=1603813603;
+        bh=iw0xB0davzaLJ4JvMSTJORI/V37yRkL7UqoVBjq6OPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/wu/1qQsN/OLCGcXBRotFORgsesbNiVNkQBkUcru11avtP6xBZSFP9KrZmnH0k2T
-         RMgT5E/J8O4hkn49ZFHWhQrZ8zabu5TcNDRKqW6oEihySQub/Auf+lbLIvSfpgo/AR
-         c1H7obz+354D0xqSqrCFSuV4ITi+b8vsJXvTjw5M=
+        b=SHgzLLLavviqZ5rrb6fCSo21KwmQZcAomG3ldczbghOSdhgkr+hOEpTXWxDH2KEKX
+         ybtJQs7dgFs5naYYRWNDjl/Be+WEEm+WpkQjhGLfKGlNYP2iuo1tu3GDI09+4eNiDu
+         c8OCcXqFuUVxYzbKSDhKhocGnbmEfnKElAEB0xN0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 605/757] arm64: dts: qcom: msm8916: Remove one more thermal trip point unit name
-Date:   Tue, 27 Oct 2020 14:54:15 +0100
-Message-Id: <20201027135518.926760424@linuxfoundation.org>
+Subject: [PATCH 5.9 606/757] arm64: dts: qcom: pm8916: Remove invalid reg size from wcd_codec
+Date:   Tue, 27 Oct 2020 14:54:16 +0100
+Message-Id: <20201027135518.975822109@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,66 +45,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit e6859ae8603c5946b8f3ecbd9b4f02b72955b9d0 ]
+[ Upstream commit c2f0cbb57dbac6da3d38b47b5b96de0fe4e23884 ]
 
-Commit fe2aff0c574d2 ("arm64: dts: qcom: msm8916: remove unit name for thermal trip points")
-removed the unit names for most of the thermal trip points defined
-in msm8916.dtsi, but missed to update the one for cpu0_1-thermal.
+Tha parent node of "wcd_codec" specifies #address-cells = <1>
+and #size-cells = <0>, which means that each resource should be
+described by one cell for the address and size omitted.
 
-So why wasn't this spotted by "make dtbs_check"? Apparently, the name
-of the thermal zone is already invalid: thermal-zones.yaml specifies
-a regex of ^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$, so it is not allowed
-to contain underscores. Therefore the thermal zone was never verified
-using the DTB schema.
+However, wcd_codec currently lists 0x200 as second cell (probably
+the size of the resource). When parsing this would be treated like
+another memory resource - which is entirely wrong.
 
-After replacing the underscore in the thermal zone name, the warning
-shows up:
+To quote the device tree specification [1]:
+  "If the parent node specifies a value of 0 for #size-cells,
+   the length field in the value of reg shall be omitted."
 
-    apq8016-sbc.dt.yaml: thermal-zones: cpu0-1-thermal:trips: 'trip-point@0'
-    does not match any of the regexes: '^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$', 'pinctrl-[0-9]+'
+[1]: https://www.devicetree.org/specifications/
 
-Fix up the thermal zone names and remove the unit name for the trip point.
-
-Cc: Amit Kucheria <amit.kucheria@linaro.org>
-Fixes: fe2aff0c574d2 ("arm64: dts: qcom: msm8916: remove unit name for thermal trip points")
+Fixes: 5582fcb3829f ("arm64: dts: apq8016-sbc: add analog audio support with multicodec")
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200915071221.72895-3-stephan@gerhold.net
+Link: https://lore.kernel.org/r/20200915071221.72895-4-stephan@gerhold.net
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/pm8916.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index 67cae5f9e47e6..c2fb9f7291c5e 100644
---- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -229,14 +229,14 @@ pmu {
- 	};
+diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+index 0bcdf04711079..adf9a5988cdc2 100644
+--- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+@@ -119,7 +119,7 @@ pm8916_vib: vibrator@c000 {
  
- 	thermal-zones {
--		cpu0_1-thermal {
-+		cpu0-1-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 
- 			thermal-sensors = <&tsens 5>;
- 
- 			trips {
--				cpu0_1_alert0: trip-point@0 {
-+				cpu0_1_alert0: trip-point0 {
- 					temperature = <75000>;
- 					hysteresis = <2000>;
- 					type = "passive";
-@@ -259,7 +259,7 @@ map0 {
- 			};
- 		};
- 
--		cpu2_3-thermal {
-+		cpu2-3-thermal {
- 			polling-delay-passive = <250>;
- 			polling-delay = <1000>;
- 
+ 		wcd_codec: codec@f000 {
+ 			compatible = "qcom,pm8916-wcd-analog-codec";
+-			reg = <0xf000 0x200>;
++			reg = <0xf000>;
+ 			reg-names = "pmic-codec-core";
+ 			clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
+ 			clock-names = "mclk";
 -- 
 2.25.1
 
