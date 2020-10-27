@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1471E29C4F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11C029C4E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823987AbgJ0SBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:01:17 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36162 "EHLO mail.skyhub.de"
+        id S1823666AbgJ0R71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:59:27 -0400
+Received: from mga03.intel.com ([134.134.136.65]:34126 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1823165AbgJ0R6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:58:00 -0400
-Received: from zn.tnic (p200300ec2f0dae00bf53706700052072.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:bf53:7067:5:2072])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5D73B1EC0212;
-        Tue, 27 Oct 2020 18:57:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1603821478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=PcBBjvmUlrdDxr38KUZIhpPwMouOj8fg4OjrMu6hCbE=;
-        b=EBE4rOX8RfY2fsRpCaNe3G86XjUmuTltaO2O/n2A64BIkpbqZ1bCEFwm2TjCf95Av0bHk9
-        kuw8ydvgA2RMpHUsk3R4DNvN1UJl1VKKhgElrkWmoeSP909eBGm26u1CaPXqMcCZPrlpug
-        R0rqsETg5TjhqSnqd+lvPK2YC/PIskU=
-Date:   Tue, 27 Oct 2020 18:57:48 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [PATCH v3 2/2] x86/resctrl: Correct MBM total and local values
-Message-ID: <20201027175748.GJ15580@zn.tnic>
-References: <20201014004927.1839452-1-fenghua.yu@intel.com>
- <20201014004927.1839452-3-fenghua.yu@intel.com>
+        id S1823203AbgJ0R6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:58:11 -0400
+IronPort-SDR: fW7T60hx1U28IPgMbQ/ufL/NsJsLrDr8h6qOpKkB5QSrnKFjB6eeDphAXriX73rCczz297b1SU
+ KEzTXfMmJZLg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="168230686"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="168230686"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 10:58:10 -0700
+IronPort-SDR: pVBI96o6WMqJ6mq5a8oXe8bATKbSaxP/VCM1wYfH+mNa36hNrOtpMcv+1HKUfbt7UIprRLPVTs
+ BcddLyFjzpHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="303841822"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2020 10:58:07 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id E4DE0179; Tue, 27 Oct 2020 19:58:06 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-usb@vger.kernel.org, Peng Hao <peng.hao2@zte.com.cn>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v1 1/5] driver core: platform: Introduce platform_get_mem_or_io_resource()
+Date:   Tue, 27 Oct 2020 19:58:02 +0200
+Message-Id: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201014004927.1839452-3-fenghua.yu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 12:49:27AM +0000, Fenghua Yu wrote:
-> +static const struct mbm_correction_factor_table {
-> +	u32 rmidthreshold;
-> +	u64 cf;
-> +} mbm_cf_table[] = {
+There are at least few existing users of the proposed API which
+retrieves either MEM or IO resource from platform device.
 
-That thing wants to be __initdata, AFAICT, since the only function
-touching it is __init.
+Make it common to utilize in the existing and new users.
 
-Made it so.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Eric Auger <eric.auger@redhat.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Cornelia Huck <cohuck@redhat.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: Peng Hao <peng.hao2@zte.com.cn>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/platform_device.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 77a2aada106d..eb8d74744e29 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -52,6 +52,19 @@ extern struct device platform_bus;
+ 
+ extern struct resource *platform_get_resource(struct platform_device *,
+ 					      unsigned int, unsigned int);
++static inline
++struct resource *platform_get_mem_or_io_resource(struct platform_device *pdev,
++						 unsigned int num)
++{
++	struct resource *res;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, num);
++	if (res)
++		return res;
++
++	return platform_get_resource(pdev, IORESOURCE_IO, num);
++}
++
+ extern struct device *
+ platform_find_device_by_driver(struct device *start,
+ 			       const struct device_driver *drv);
 -- 
-Regards/Gruss,
-    Boris.
+2.28.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
