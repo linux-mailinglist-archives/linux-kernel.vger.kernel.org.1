@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA1D29A967
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B6029A96B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897796AbgJ0KUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:20:01 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:54218 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897798AbgJ0KTv (ORCPT
+        id S2897937AbgJ0KU2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 06:20:28 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:41437 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897922AbgJ0KU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:19:51 -0400
-Received: by mail-wm1-f67.google.com with SMTP id d78so810610wmd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pZ4tF9Q35IB/PKnNsjsCcJxf1aDEpdznaVzDYuv50v0=;
-        b=C/n8t7qiHHIkKH6qBlW/WOBQPU58wfsvqwRg3TcTxZVnfjMweZXACSUeQ2Yr0SJona
-         bdgxQpS37set3XzGvi8D9HYTSw1RmWWModldxM0e+cGehXYXRU3K1mTjOK4kL6y6nXo5
-         /axUIi8EVPPR1jt57T2cmyeoVG/atnjZdaO6/010kCwExM5C4qTg8Gv2OwtoRDRI/Wxn
-         BmXfJXcLVV6OgliOWyqFM9J+HmGm+kg7QrCtLylTtWhX7bp2PpYVCEtkQbYr2pOTj/vX
-         hOgbmlhiz1rrdO/0zg6f1qwltCzISSTi3Q6IV68wglD4tuMZOCdDa7vWfcS9uy2c4oGG
-         wz9g==
+        Tue, 27 Oct 2020 06:20:27 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k65so730158oih.8;
+        Tue, 27 Oct 2020 03:20:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pZ4tF9Q35IB/PKnNsjsCcJxf1aDEpdznaVzDYuv50v0=;
-        b=GduZe0MPD7/llQzk7RtRQfZch54wkEx3s2Kl63gK/RC9jpUKWnk/4CfWvyBZGmWWqn
-         wzkmWfJvoXvuFQvmadCVTBxVRn4lWxmQ/9reh7gmjFEx43zUIgITMtbSBn1bFcxs5lfW
-         tyj6XIFHs96uldcxsgwq6FTSd7Ss4FnhGUAR1InZfQXAjdm7y22g7mDYbtkxnAleGnOX
-         uO39HHXSC40aASewjOuxv2DprYke0fiwbJTU6ZP+tFoI/cFB8PdWrjo4+8ZyQKyGKW+R
-         XCl3QmCdvrm7OgHFm/QGMW489vQJRB7BsYbrYm/juGdWvDiESb2n35rX1VqhiceqZjhe
-         mnTQ==
-X-Gm-Message-State: AOAM530tXVqaPYLLnbkqMQ0mkR01WJ+Kme57nuUPn64tFBMOCBTfrm1e
-        e5rDUkSq8Fk36Aa1htzNXjU/Cg==
-X-Google-Smtp-Source: ABdhPJzce/1cq7vO5et/wMCpGxoUY58Gq/wHtjsAUhmiTgM1W35aRGvgZYGxLwfJWRUAVClAG3qCoA==
-X-Received: by 2002:a7b:c8da:: with SMTP id f26mr1911316wml.178.1603793987905;
-        Tue, 27 Oct 2020 03:19:47 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451? ([2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451])
-        by smtp.googlemail.com with ESMTPSA id l16sm1472264wrx.5.2020.10.27.03.19.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 03:19:47 -0700 (PDT)
-Subject: Re: [PATCH 1/3] dt-bindings: thermal: mediatek: make resets property
- optional
-To:     Fabien Parent <fparent@baylibre.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, amitk@kernel.org,
-        rui.zhang@intel.com
-References: <20201021164231.3029956-1-fparent@baylibre.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d8a5ce64-04da-7a4a-bcb9-1cc25cea42db@linaro.org>
-Date:   Tue, 27 Oct 2020 11:19:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=k0U7EsdK27CwbcUqJCGedR1nNrqKkk5RW5FI4v5npXo=;
+        b=E2T2Mn6JpaQq29BPpUCVSSqk2rIWupY+ARah58gduPZgTRXhQe1O4gA8uBoFSUGiR2
+         leOxnuANyMAnvPjpaJUiSrf+z3kY5tvYDuBDAUY5EdfAoDgaEfdTrCv8nqy7jas8XZb/
+         TFbjDPE3JRtYYvThbV+3EKYK+NyYblTIJTJwLOSFGXtD8Vr7aVvapWSqQYlC2CP+qNVQ
+         0cAC+sNHxph8pP12uWTecOvBfrdAzBoQ1ONsul+uUmYdvDNHOIGkFZf7CaWQFy2Deq7j
+         IXigVkN9O6ZAm5mvbbckO/NfOJM57a1au0vJ5lA4/322ARjQXkUWTuXBw1KSilQTnNGl
+         6fqw==
+X-Gm-Message-State: AOAM5331TZlcYxc5muTzVBdqB/PMSA3PDhkjbmrVNgIe+uLi1fSyu9RQ
+        KvuMMce2y5FVKWJSYomUe7SAurvLwoUHcEMuzLU=
+X-Google-Smtp-Source: ABdhPJw4HQ61g6rVXqyTtbb78Rn47UEHJe9bDdBu8AbiaNpB6oIm6efRk6qrhEp2sIBryvI8UpkznvmJCNtaaKlBHI0=
+X-Received: by 2002:aca:f40c:: with SMTP id s12mr858558oih.153.1603794026088;
+ Tue, 27 Oct 2020 03:20:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201021164231.3029956-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200821194310.3089815-1-keescook@chromium.org>
+ <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
+ <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
+ <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
+ <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com> <20201027100844.GA1514990@myrica>
+In-Reply-To: <20201027100844.GA1514990@myrica>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Oct 2020 11:20:14 +0100
+Message-ID: <CAMuHMdVkLXmJEiV-uwOqKnfGQZX65tMFMTjs0O8q5BJsAhCGzg@mail.gmail.com>
+Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2020 18:42, Fabien Parent wrote:
-> MT8516 Thermal IP does not support reset. Make the resets property
-> optional in order to be able to support MT8516 SoC.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
+Hi Jean-Philippe,
 
-Applied, thanks
+On Tue, Oct 27, 2020 at 11:09 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+> On Mon, Oct 26, 2020 at 06:38:46PM +0100, Ard Biesheuvel wrote:
+> > > > > Note that even on plain be2881824ae9eb92, I get:
+> > > > >
+> > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+> > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
+> > > > >
+> > > > > The parent commit obviously doesn't show that (but probably still has
+> > > > > the problem).
+> > >
+> > > Reverting both
+> > > b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section placement")
+> > > be2881824ae9eb92 ("arm64/build: Assert for unwanted sections")
+> > > seems to solve my problems, without any ill effects?
+> > >
+> >
+> > I cannot reproduce the issue here with my distro GCC+binutils (Debian 8.3.0)
+>
+> I have the same problem with one of my debug configs and Linux v5.10-rc1,
+> and can reproduce with the Debian 8.3.0 toolchain, by using the arm64
+> defconfig and disabling CONFIG_MODULES:
+>
+> ld -EL -maarch64elf --no-undefined -X -z norelro -shared -Bsymbolic -z notext --no-apply-dynamic-relocs --fix-cortex-a53-843419 --orphan-handling=warn --build-id=sha1 --strip-debug -o .tmp_vmlinux.kallsyms1 -T ./arch/arm64/kernel/vmlinux.lds --whole-archive arch/arm64/kernel/head.o init/built-in.a usr/built-in.a arch/arm64/built-in.a kernel/built-in.a certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a security/built-in.a crypto/built-in.a block/built-in.a arch/arm64/lib/built-in.a lib/built-in.a drivers/built-in.a sound/built-in.a net/built-in.a virt/built-in.a --no-whole-archive --start-group arch/arm64/lib/lib.a lib/lib.a ./drivers/firmware/efi/libstub/lib.a --end-group
+> ld: Unexpected GOT/PLT entries detected!
+> ld: Unexpected run-time procedure linkages detected!
+>
+> Adding -fno-pie to this command doesn't fix the problem.
+>
+> Note that when cross-building with a GCC 10.2 and binutils 2.35.1 I also
+> get several "aarch64-linux-gnu-ld: warning: -z norelro ignored" in
+> addition to the error, but I don't get that warning with the 8.3.0
+> toolchain.
 
+Thanks, my config (renesas_defconfig) also had CONFIG_MODULES disabled.
+Enabling that fixes the link error due to unexpected entries, but the
+.eh_frame orphan section warning is still there.
 
+Gr{oetje,eeting}s,
 
+                        Geert
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
