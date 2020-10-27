@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4CA29BBA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F8F29BBA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808840AbgJ0QXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:23:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1808828AbgJ0QXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:23:07 -0400
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C062B22264;
-        Tue, 27 Oct 2020 16:23:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603815786;
-        bh=r7rQVF9LabIVD7nWmXvKsRhnaf835k2Wdgbqs+CkJTc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Rg1Hj1yb4XBiRX8YVgp30MC6dAekeTlenDxWOU6mVJ4Y1NXUsiI2jabdUjZmJECji
-         d/gqU+xC8IGbMMULth+G1aVYKskM/6yQ1rB4KvNY2tE0LnTMcsePFkrNVkc8Mm9xEY
-         odxv1fW6rH2J2WFc9278lQk0+ZyYiAam7cI0v5Wc=
-Received: by mail-qv1-f46.google.com with SMTP id s1so916813qvm.13;
-        Tue, 27 Oct 2020 09:23:06 -0700 (PDT)
-X-Gm-Message-State: AOAM532/WeygaOT8RXCkIHhuEonbYfVRhnIS9rEXoJDreal8DVNwPmRm
-        HUC36ENzrCDRfWz2CBXdT4eWhbaunrNTUJAe7L8=
-X-Google-Smtp-Source: ABdhPJxsz9IgovQ0POJj/hyJTIMJyG/SHG3D287fQI+OPUkfvbn07uZDzhZ795PgfFU0fYqDJl6hab9mpFYefWxFIXA=
-X-Received: by 2002:a0c:b58c:: with SMTP id g12mr3294297qve.16.1603815785774;
- Tue, 27 Oct 2020 09:23:05 -0700 (PDT)
+        id S1808849AbgJ0QXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:23:19 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51400 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1808828AbgJ0QXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:23:16 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RGNBq1009068;
+        Tue, 27 Oct 2020 11:23:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603815791;
+        bh=yrHwBlL1eUnwnAL3OM85lEQF4sNPXZDR54SkK1s3gEM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=rhhTFLbpY2gjpWezRwCKfbOky78+eRTqGOl+G47RZyrM6gWrTyc7UfWSed5lyeXvH
+         5+bU5fIsnBnmqmInkjQA8aV3yyR5HIFG15Ac9av35QasmTb8sLnDNOhLevynyToqMu
+         6OHkX0oSTQct8M/YyFpV7KotOMP48r3tf+fFXUnY=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RGNBq7035093
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 11:23:11 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
+ Oct 2020 11:23:11 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 27 Oct 2020 11:23:11 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RGNBnl130559;
+        Tue, 27 Oct 2020 11:23:11 -0500
+Date:   Tue, 27 Oct 2020 11:23:11 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+CC:     Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
+Message-ID: <20201027162311.jyia2it4o4u2ajda@snorkel>
+References: <20201026170624.24241-1-nm@ti.com>
+ <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
+ <20201026190808.im4nb32jn4rd3xhu@crayon>
+ <30760d91-cfe0-1b25-ab3d-2cb6a58f7b45@ti.com>
 MIME-Version: 1.0
-References: <20201026165807.3724647-1-arnd@kernel.org> <022365e9-f7fe-5589-7867-d2ad2d33cfa3@redhat.com>
- <20201027074726.GX2611@hirez.programming.kicks-ass.net> <CAK8P3a2vUK5scbtcRTE98ZvwxMF3xMBT61JODV__RHMj+D0G2A@mail.gmail.com>
- <20201027103236.GZ2611@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201027103236.GZ2611@hirez.programming.kicks-ass.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 27 Oct 2020 17:22:48 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3GqsXcdA59V7XGd_yFr_68yCaftdc-wMM6bHG8NEE1+g@mail.gmail.com>
-Message-ID: <CAK8P3a3GqsXcdA59V7XGd_yFr_68yCaftdc-wMM6bHG8NEE1+g@mail.gmail.com>
-Subject: Re: [PATCH] qspinlock: use signed temporaries for cmpxchg
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Waiman Long <longman@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <30760d91-cfe0-1b25-ab3d-2cb6a58f7b45@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:32 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Oct 27, 2020 at 09:33:32AM +0100, Arnd Bergmann wrote:
-> > On Tue, Oct 27, 2020 at 8:47 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > On Mon, Oct 26, 2020 at 02:03:06PM -0400, Waiman Long wrote:
-> > > > On 10/26/20 12:57 PM, Arnd Bergmann wrote:
-> > > > Yes, it shouldn't really matter if the value is defined as int or u32.
-> > > > However, the only caveat that I see is queued_spin_lock_slowpath() is
-> > > > expecting a u32 argument. Maybe you should cast it back to (u32) when
-> > > > calling it.
-> > >
-> > > No, we're not going to confuse the code. That stuff is hard enough as it
-> > > is. This warning is garbage and just needs to stay off.
-> >
-> > Ok, so the question then becomes: should we drop -Wpointer-sign from
-> > W=2 and move it to W=3, or instead disable it locally. I could add
-> > __diag_ignore(GCC, 4, "-Wpointer-sign") in the couple of header files
-> > that produce this kind of warning if there is a general feeling that it
-> > still helps to have this for drivers.
->
-> What is an actual geniune bug that this warning helps find?
+On 21:29-20201027, Lokesh Vutla wrote:
+> 
+> 
+> On 27/10/20 12:38 am, Nishanth Menon wrote:
+> > On 23:30-20201026, Lokesh Vutla wrote:
+> > [..]
+> >> ➜  linux git:(master) git grep -in ARCH_K3_AM6_SOC
+> >> arch/arm64/configs/defconfig:961:CONFIG_ARCH_K3_AM6_SOC=y
+> >> drivers/soc/ti/Kconfig:7:config ARCH_K3_AM6_SOC
+> >> ➜  linux git:(master) git grep -in ARCH_K3_J721E_SOC
+> >> arch/arm64/configs/defconfig:962:CONFIG_ARCH_K3_J721E_SOC=y
+> >> drivers/gpu/drm/bridge/cadence/Kconfig:16:  depends on ARCH_K3_J721E_SOC ||
+> >> COMPILE_TEST
+> >> drivers/soc/ti/Kconfig:12:config ARCH_K3_J721E_SOC
+> >>
+> >>
+> >> I see drm bridge Kconfig is cleaned[0]. Please clean the defconfig as well.
+> >>
+> >> [0]
+> >> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
+> >>
+> > 
+> > Yes, the defconfig patches have to be queued up in a different queue,
+> > Lets see where the two patches fall and will post the defconfig
+> > updates as well.
+> 
+> Sure. IMHO, the cleanup patches should get merged before this Kconfig removal patch.
+> 
+> Otherwise, this patch as-is looks good to me.
+> 
+> Acked-by: Lokesh Vutla <lokeshvutla@ti.com>
 
-I've gone through the git history to find something mentioning this
-warning, but there was no evidence of a real bug that could
-have been prevented with this warning, and lots of work wasted
-on shutting up the compiler.
 
-The best case was
-https://lore.kernel.org/lkml/20201026213040.3889546-6-arnd@kernel.org/
-where changing the types led to also making it 'const'.
+Ofcourse, thanks for highlighting the dependencies.
 
-> If you add that __diag_ignore() it should go in atomic.h I suppose,
-> because all of atomic hard relies on this, and then the question becomes
-> how much code is left that doesn't include that header and consequently
-> doesn't ignore that warning.
-
-I don't think it would work: the __diag_ignore() has to be in the caller,
-not the function that is called.
-
-> So, is it useful to begin with in finding actual problems? and given we
-> have to annotate away a bucket-load, how much coverage will there remain
-> if we squish the known false-positives?
-
-In an x86 allmodconfig build, I see 113618 -Wpointer-sign warnings, 68318
-of those in qspinlock.h and qrwlock.h. With the six patches I sent, the
-total number goes down to 15201, which of course is still fairly pointless
-to go through. Almost all of these are in drivers that have less than
-10 warnings, and few of them are in headers included by other drivers.
-
-I looked at the top remaining files, but couldn't find any actual bugs there.
-If there are real bugs, they are certainly hard to find among the
-false positives.
-
-I have already sent patches to move -Wnested-externs and
--Wcast-align from W=2 to W=3, and I guess -Wpointer-sign
-could be handled the same way to make the W=2 level useful
-again.
-
-      Arnd
-
-----
-   1764 ../drivers/staging/rtl8723bs/hal/HalHWImg8723B_RF.c
-    810 ../drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
-    411 ../include/linux/moduleparam.h
-    230 ../drivers/net/ethernet/neterion/vxge/vxge-ethtool.h
-    184 ../include/linux/nls.h
-    150 ../drivers/scsi/esas2r/esas2r.h
-    146 ../include/net/tls.h
-    144 ../sound/soc/codecs/wm5100.c
-    135 ../drivers/scsi/ufs/ufs-sysfs.c
-    130 ../include/sound/hda_regmap.h
-    125 ../drivers/scsi/myrs.c
-    121 ../include/linux/fscrypt.h
-    113 ../drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-    105 ../drivers/net/wireless/ath/ath9k/hw.h
-     81 ../drivers/staging/media/allegro-dvt/nal-h264.c
-     75 ../drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-     68 ../drivers/scsi/esas2r/esas2r_init.c
-     56 ../sound/soc/sof/ipc.c
-     56 ../drivers/staging/qlge/qlge_dbg.c
-     50 ../sound/usb/mixer.c
-     50 ../drivers/net/ethernet/brocade/bna/bnad_ethtool.c
-     50 ../drivers/isdn/capi/capiutil.c
-     47 ../fs/nfs/internal.h
-     46 ../drivers/scsi/esas2r/esas2r_int.c
-     45 ../drivers/scsi/qla2xxx/qla_init.c
-     44 ../drivers/platform/x86/sony-laptop.c
-     44 ../drivers/lightnvm/pblk.h
-     43 ../drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-     43 ../drivers/media/pci/cx25821/cx25821-medusa-video.c
-     42 ../sound/pci/au88x0/au88x0_core.c
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
