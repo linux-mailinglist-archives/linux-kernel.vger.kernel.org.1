@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95B929A999
+	by mail.lfdr.de (Postfix) with ESMTP id 822EC29A998
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898107AbgJ0K1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2898116AbgJ0K1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:27:16 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:37915 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2898088AbgJ0K1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 06:27:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:37612 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898092AbgJ0K1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:27:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F84530E;
+Received: by mail-ej1-f66.google.com with SMTP id ce10so1452429ejc.5;
         Tue, 27 Oct 2020 03:27:12 -0700 (PDT)
-Received: from [10.57.11.195] (unknown [10.57.11.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ED633F66E;
-        Tue, 27 Oct 2020 03:27:08 -0700 (PDT)
-Subject: Re: [PATCH 2/6] kselftest/arm64: Fix check_tags_inclusion test
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Gabor Kertesz <gabor.kertesz@arm.com>
-References: <20201026121248.2340-1-vincenzo.frascino@arm.com>
- <20201026121248.2340-3-vincenzo.frascino@arm.com>
-From:   Amit Kachhap <amit.kachhap@arm.com>
-Message-ID: <4783a06c-f9a1-73fa-9cf3-73f8e258989d@arm.com>
-Date:   Tue, 27 Oct 2020 15:57:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GA4OG+9SkS1dLHEsjc3Yoh5BLzXMpIvERF6qvUQNUY4=;
+        b=YAAHhQsyCGuwceyID1pvebu0hBqjx9cqJdplZSmf1a54PjabEYmiPCoVqUHlk8AGjn
+         LyGPJzXzIFZzLfz+UhQRRV4fsuqrIbx9cz+K+Ufn2MUNKoOTL7HWLeF+6z2gHi1rgqKX
+         hBOSPVPPYkbgEU3OEzxEmzSEaJ0wh2FY68d9cWKFA9TrWu/AUtRP9GJ/TRgwgAbRvoCe
+         SMr9VML3FaOil9SExdLJcAmCBljc9sG2Yjpgh3lhewmOuvzTEVbTSO1mhUMsVisONR5k
+         9nSZZ8GPQ5LbCvNG1HzGf+Eiz5/eJu8Nkd2kotLskUd2/ohOS8D88a+rR13MQIN7V3/d
+         9rmg==
+X-Gm-Message-State: AOAM530UDQHtRqCQAPkkZrjkT2p80p1K6KxEwA0Y0MrPe/6998JPN6YM
+        1A5HuqWUmVNszmrcbpijMuo=
+X-Google-Smtp-Source: ABdhPJwIxxoNhNQ2HMjdRGaVcneAee1se1I+5gUMBtanj7k+CUK0Tcdt0/GUf0w3biz06LUetV9mlw==
+X-Received: by 2002:a17:906:1e45:: with SMTP id i5mr1606932ejj.203.1603794431491;
+        Tue, 27 Oct 2020 03:27:11 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id u8sm752822ejt.46.2020.10.27.03.27.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 03:27:10 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 11:27:07 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 41/52] memory: tegra124-emc: Use
+ devm_platform_ioremap_resource()
+Message-ID: <20201027102707.GC17089@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-42-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201026121248.2340-3-vincenzo.frascino@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-42-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 01:17:24AM +0300, Dmitry Osipenko wrote:
+> Use devm_platform_ioremap_resource() helper which makes code a bit
+> cleaner.
 
+Such cleanups (and few other in this patchset) should be at beginning of
+patchset or even as part of a separate one.  I think there is not much
+stopping anyone from applying these... except that you put them in the
+middle of big dependency.
 
-On 10/26/20 5:42 PM, Vincenzo Frascino wrote:
-> The check_tags_inclusion test reports the error below because the test
-> plan is not declared correctly:
-> 
->    # Planned tests != run tests (0 != 4)
-> 
-> Fix the test adding the correct test plan declaration.
+Best regards,
+Krzysztof
 
-This change is required and got missed earlier.
-Acked by: Amit Daniel Kachhap <amit.kachhap@arm.com>
-
-> 
-> Fixes: f3b2a26ca78d ("kselftest/arm64: Verify mte tag inclusion via prctl")
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Gabor Kertesz <gabor.kertesz@arm.com>
-> Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->   tools/testing/selftests/arm64/mte/check_tags_inclusion.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/arm64/mte/check_tags_inclusion.c b/tools/testing/selftests/arm64/mte/check_tags_inclusion.c
-> index 94d245a0ed56..deaef1f61076 100644
-> --- a/tools/testing/selftests/arm64/mte/check_tags_inclusion.c
-> +++ b/tools/testing/selftests/arm64/mte/check_tags_inclusion.c
-> @@ -170,6 +170,9 @@ int main(int argc, char *argv[])
->   	/* Register SIGSEGV handler */
->   	mte_register_signal(SIGSEGV, mte_default_handler);
->   
-> +	/* Set test plan */
-> +	ksft_set_plan(4);
-> +
->   	evaluate_test(check_single_included_tags(USE_MMAP, MTE_SYNC_ERR),
->   		      "Check an included tag value with sync mode\n");
->   	evaluate_test(check_multiple_included_tags(USE_MMAP, MTE_SYNC_ERR),
-> 
