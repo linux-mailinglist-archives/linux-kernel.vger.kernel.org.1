@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B8729C226
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FA029C251
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820011AbgJ0RcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41516 "EHLO mail.kernel.org"
+        id S1819997AbgJ0Rb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2899416AbgJ0OmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:00 -0400
+        id S2899424AbgJ0OmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1385420773;
-        Tue, 27 Oct 2020 14:41:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9110207BB;
+        Tue, 27 Oct 2020 14:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809719;
-        bh=95HFYb+janRGtB6F7zuGEo2ExcIBnvjQ2yxvuyWyvZU=;
+        s=default; t=1603809725;
+        bh=PwPPeiHYBMjSpxfh+yO9wk1ZFodOs2Jz9HFikE4IjCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A6ydMhLTbiuNq7TmyyzOQmB2mTYObSW99ZDLohpk69pt7LZmcXZ1aIBAIMLBjhlxI
-         zgTy/GS8FNsO2vyaPwKoFrhLjugtxrbIf0srSzRXXTIw9vq0towiPwLyuSjb/ApROE
-         Sy16FPCd/DPlQgzntG9ycTAreFqc6EJeX0kCcGdo=
+        b=Foyqnk2lfguzCMpGaYXoSxKILPbSy+CcPwR1/5klznbOIa1AwFFLDNgxogrhM4pPH
+         shMp+2bQIRVNHPvver3qbtO/6qqHVNJol6KEGSF4mSDYA1uzAC+yn5NZI15lycOuwS
+         sVILa91tzjtHzOIlGtG2YnyyEkMEgeIyT80dLy8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 296/408] ARM: dts: imx6sl: fix rng node
-Date:   Tue, 27 Oct 2020 14:53:54 +0100
-Message-Id: <20201027135508.771652408@linuxfoundation.org>
+Subject: [PATCH 5.4 298/408] ARM: s3c24xx: fix mmc gpio lookup tables
+Date:   Tue, 27 Oct 2020 14:53:56 +0100
+Message-Id: <20201027135508.856092086@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,40 +44,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 82ffb35c2ce63ef8e0325f75eb48022abcf8edbe ]
+[ Upstream commit 3af4e8774b6d03683932b0961998e01355bccd74 ]
 
-rng DT node was added without a compatible string.
+The gpio controller names differ between s3c24xx and s3c64xx,
+and it seems that these all got the wrong names, using GPx instead
+of GPIOx.
 
-i.MX driver for RNGC (drivers/char/hw_random/imx-rngc.c) also claims
-support for RNGB, and is currently used for i.MX25.
-
-Let's use this driver also for RNGB block in i.MX6SL.
-
-Fixes: e29fe21cff96 ("ARM: dts: add device tree source for imx6sl SoC")
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: d2951dfa070d ("mmc: s3cmci: Use the slot GPIO descriptor")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20200806182059.2431-3-krzk@kernel.org
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6sl.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/mach-s3c24xx/mach-at2440evb.c | 2 +-
+ arch/arm/mach-s3c24xx/mach-h1940.c     | 4 ++--
+ arch/arm/mach-s3c24xx/mach-mini2440.c  | 4 ++--
+ arch/arm/mach-s3c24xx/mach-n30.c       | 4 ++--
+ arch/arm/mach-s3c24xx/mach-rx1950.c    | 4 ++--
+ 5 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
-index 3a96b5538a2a1..540880f0413fd 100644
---- a/arch/arm/boot/dts/imx6sl.dtsi
-+++ b/arch/arm/boot/dts/imx6sl.dtsi
-@@ -936,8 +936,10 @@ memory-controller@21b0000 {
- 			};
- 
- 			rngb: rngb@21b4000 {
-+				compatible = "fsl,imx6sl-rngb", "fsl,imx25-rngb";
- 				reg = <0x021b4000 0x4000>;
- 				interrupts = <0 5 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clks IMX6SL_CLK_DUMMY>;
- 			};
- 
- 			weim: weim@21b8000 {
+diff --git a/arch/arm/mach-s3c24xx/mach-at2440evb.c b/arch/arm/mach-s3c24xx/mach-at2440evb.c
+index 58c5ef3cf1d7e..2d370f7f75fa2 100644
+--- a/arch/arm/mach-s3c24xx/mach-at2440evb.c
++++ b/arch/arm/mach-s3c24xx/mach-at2440evb.c
+@@ -143,7 +143,7 @@ static struct gpiod_lookup_table at2440evb_mci_gpio_table = {
+ 	.dev_id = "s3c2410-sdi",
+ 	.table = {
+ 		/* Card detect S3C2410_GPG(10) */
+-		GPIO_LOOKUP("GPG", 10, "cd", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOG", 10, "cd", GPIO_ACTIVE_LOW),
+ 		{ },
+ 	},
+ };
+diff --git a/arch/arm/mach-s3c24xx/mach-h1940.c b/arch/arm/mach-s3c24xx/mach-h1940.c
+index 74d6b68e91c74..8d9d8e7c71d4c 100644
+--- a/arch/arm/mach-s3c24xx/mach-h1940.c
++++ b/arch/arm/mach-s3c24xx/mach-h1940.c
+@@ -468,9 +468,9 @@ static struct gpiod_lookup_table h1940_mmc_gpio_table = {
+ 	.dev_id = "s3c2410-sdi",
+ 	.table = {
+ 		/* Card detect S3C2410_GPF(5) */
+-		GPIO_LOOKUP("GPF", 5, "cd", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOF", 5, "cd", GPIO_ACTIVE_LOW),
+ 		/* Write protect S3C2410_GPH(8) */
+-		GPIO_LOOKUP("GPH", 8, "wp", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOH", 8, "wp", GPIO_ACTIVE_LOW),
+ 		{ },
+ 	},
+ };
+diff --git a/arch/arm/mach-s3c24xx/mach-mini2440.c b/arch/arm/mach-s3c24xx/mach-mini2440.c
+index 9035f868fb34e..3a5b1124037b2 100644
+--- a/arch/arm/mach-s3c24xx/mach-mini2440.c
++++ b/arch/arm/mach-s3c24xx/mach-mini2440.c
+@@ -244,9 +244,9 @@ static struct gpiod_lookup_table mini2440_mmc_gpio_table = {
+ 	.dev_id = "s3c2410-sdi",
+ 	.table = {
+ 		/* Card detect S3C2410_GPG(8) */
+-		GPIO_LOOKUP("GPG", 8, "cd", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOG", 8, "cd", GPIO_ACTIVE_LOW),
+ 		/* Write protect S3C2410_GPH(8) */
+-		GPIO_LOOKUP("GPH", 8, "wp", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("GPIOH", 8, "wp", GPIO_ACTIVE_HIGH),
+ 		{ },
+ 	},
+ };
+diff --git a/arch/arm/mach-s3c24xx/mach-n30.c b/arch/arm/mach-s3c24xx/mach-n30.c
+index d856f23939aff..ffa20f52aa832 100644
+--- a/arch/arm/mach-s3c24xx/mach-n30.c
++++ b/arch/arm/mach-s3c24xx/mach-n30.c
+@@ -359,9 +359,9 @@ static struct gpiod_lookup_table n30_mci_gpio_table = {
+ 	.dev_id = "s3c2410-sdi",
+ 	.table = {
+ 		/* Card detect S3C2410_GPF(1) */
+-		GPIO_LOOKUP("GPF", 1, "cd", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOF", 1, "cd", GPIO_ACTIVE_LOW),
+ 		/* Write protect S3C2410_GPG(10) */
+-		GPIO_LOOKUP("GPG", 10, "wp", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOG", 10, "wp", GPIO_ACTIVE_LOW),
+ 		{ },
+ 	},
+ };
+diff --git a/arch/arm/mach-s3c24xx/mach-rx1950.c b/arch/arm/mach-s3c24xx/mach-rx1950.c
+index 29f9b345a5311..534e9c1d8161f 100644
+--- a/arch/arm/mach-s3c24xx/mach-rx1950.c
++++ b/arch/arm/mach-s3c24xx/mach-rx1950.c
+@@ -567,9 +567,9 @@ static struct gpiod_lookup_table rx1950_mmc_gpio_table = {
+ 	.dev_id = "s3c2410-sdi",
+ 	.table = {
+ 		/* Card detect S3C2410_GPF(5) */
+-		GPIO_LOOKUP("GPF", 5, "cd", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOF", 5, "cd", GPIO_ACTIVE_LOW),
+ 		/* Write protect S3C2410_GPH(8) */
+-		GPIO_LOOKUP("GPH", 8, "wp", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("GPIOH", 8, "wp", GPIO_ACTIVE_LOW),
+ 		{ },
+ 	},
+ };
 -- 
 2.25.1
 
