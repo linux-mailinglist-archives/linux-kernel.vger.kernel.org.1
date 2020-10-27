@@ -2,111 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DAF29CACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A9C29CACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373434AbgJ0U4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:56:54 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:39117 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443607AbgJ0U4y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:56:54 -0400
-Received: by mail-il1-f193.google.com with SMTP id q1so2771179ilt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GVN1lj+hI+FAZzFZbIZ9juB2x8dpAvsvHkDsUzwa/7Y=;
-        b=L94FUgVn6iBO2xMDfBxztypNluIqPA50kKKvelC4df66ptg2+SC1MYbpFEeL1FRsJB
-         QIvMIui33nYqCUMbQcQuYUANB7n4kEEzcZqfyW0MwMoOTii0OaA5LS9MCdiEgKrP0uDq
-         XNnHVtG4STE77LXd4aYAkW6FuVfBXMckptgoI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GVN1lj+hI+FAZzFZbIZ9juB2x8dpAvsvHkDsUzwa/7Y=;
-        b=JcjrbOwV8/Gea9GYxcaS9SA1E4cr/Ayk8OsjE2/9ctqJ0X8VMGo6/BzS2MGanw3Vfy
-         C8WFBZZoivE+zFu/VraszWx0/VaMnW6M8JQAJQpE6ykwSv8hPy1oEpg0Cmle5VHkx2X/
-         K+H7MdLL5+J+rNDvVkaon42mfGYUT0tFneDw8KhRSle7nlFj7Ssfp3GdRsBMPzG37pJ1
-         uKVmApD/OycKBKPWOhmFplV7jDXHuA2TdfBTfgN5hWKOhT3aL/Jj97OMirmJ1wEaDGOw
-         QdJysCDHIz7uVikY7D4tcS3iMqmVnbm+gxfhBdEOzxt1+3LPDBOuXZ3RwZ7TkOiRjXjt
-         OUWw==
-X-Gm-Message-State: AOAM531aY0QTXjXwutFYPUNPI8dRAnpERGgPRrFAdgjRfV6+aL9LqVL9
-        oD4NyYvp+iR2pFfETUH6LmlJARzuMYlR0w==
-X-Google-Smtp-Source: ABdhPJwpUyiduNOqVkumnC4/8YpHfmYYxrB4ELvD+HGmX+L95WMxEsT4oSP05Yyv7jADALMDQjCvPg==
-X-Received: by 2002:a92:dac1:: with SMTP id o1mr3159909ilq.191.1603832213035;
-        Tue, 27 Oct 2020 13:56:53 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u8sm1459675ilm.36.2020.10.27.13.56.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 13:56:52 -0700 (PDT)
-Subject: Re: [PATCH v3 02/21] selftests/resctrl: Fix typo
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@alien8.de>,
+        id S373462AbgJ0U5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443729AbgJ0U5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:57:43 -0400
+Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3635020706;
+        Tue, 27 Oct 2020 20:57:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603832263;
+        bh=1HIv2+pHzyYp8hpDB0NxtuBOQ5Za1hvza5Qv+Vu4Q90=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Xz1663r3QuVB6qtvYj+hWv6Y0/0mCAtXKMBUxSc5p7H2qrdBZP9fh5sCiaz/gGRYz
+         no1odXBalplpep8WUZ6WKa9INSgbCA0f2jqpCnDuzWlKbJv2D7Mnhtbt//+7L/0TST
+         MNbZvf/skyuR+zB070g6PH/ufSNL1wVdLbftf0ns=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201020235126.1871815-1-fenghua.yu@intel.com>
- <20201020235126.1871815-3-fenghua.yu@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5c8ecfd2-6ade-9733-b56f-5fce535462f2@linuxfoundation.org>
-Date:   Tue, 27 Oct 2020 14:56:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201020235126.1871815-3-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to disable GCSE
+Date:   Tue, 27 Oct 2020 21:57:23 +0100
+Message-Id: <20201027205723.12514-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 5:51 PM, Fenghua Yu wrote:
-> From: Reinette Chatre <reinette.chatre@intel.com>
-> 
-> The format "%sok" is used to print results of a test. If the test passes,
-> the empty string is printed and if the test fails "not " is printed. This
-> results in output of "ok" when test passes and "not ok"
-> when test fails.
-> 
-> Fix one instance where "not" (without a space) is printed on test
-> failure resulting in output of "notok" on test failure.
-> 
+Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
+___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
+function scope __attribute__((optimize("-fno-gcse"))), to disable a
+GCC specific optimization that was causing trouble on x86 builds, and
+was not expected to have any positive effect in the first place.
 
-The commit summary is misleading. It isn't typo. You are adding
-a space to make the message correct?
+However, as the GCC manual documents, __attribute__((optimize))
+is not for production use, and results in all other optimization
+options to be forgotten for the function in question. This can
+cause all kinds of trouble, but in one particular reported case,
+it causes -fno-asynchronous-unwind-tables to be disregarded,
+resulting in .eh_frame info to be emitted for the function
+inadvertently.
 
-> Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
-> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> ---
->   tools/testing/selftests/resctrl/cmt_test.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-> index 13b01e010238..6ffb56c6a1e2 100644
-> --- a/tools/testing/selftests/resctrl/cmt_test.c
-> +++ b/tools/testing/selftests/resctrl/cmt_test.c
-> @@ -58,7 +58,7 @@ static void show_cache_info(unsigned long sum_llc_occu_resc, int no_of_bits,
->   	else
->   		res = false;
->   
-> -	printf("%sok CMT: diff within %d, %d\%%\n", res ? "" : "not",
-> +	printf("%sok CMT: diff within %d, %d\%%\n", res ? "" : "not ",
->   	       MAX_DIFF, (int)MAX_DIFF_PERCENT);
->   
->   	printf("# diff: %ld\n", avg_diff);
-> 
+This reverts commit 3193c0836f203, and instead, it disables the -fgcse
+optimization for the entire source file, but only when building for
+X86.
 
-thanks,
--- Shuah
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kees Cook <keescook@chromium.org>
+Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ include/linux/compiler-gcc.h   | 2 --
+ include/linux/compiler_types.h | 4 ----
+ kernel/bpf/Makefile            | 4 +++-
+ kernel/bpf/core.c              | 2 +-
+ 4 files changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index d1e3c6896b71..5deb37024574 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -175,5 +175,3 @@
+ #else
+ #define __diag_GCC_8(s)
+ #endif
+-
+-#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 6e390d58a9f8..ac3fa37a84f9 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -247,10 +247,6 @@ struct ftrace_likely_data {
+ #define asm_inline asm
+ #endif
+ 
+-#ifndef __no_fgcse
+-# define __no_fgcse
+-#endif
+-
+ /* Are two types/vars the same type (ignoring qualifiers)? */
+ #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+ 
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index bdc8cd1b6767..02b58f44c479 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -1,6 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-y := core.o
+-CFLAGS_core.o += $(call cc-disable-warning, override-init)
++# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
++cflags-core-$(CONFIG_X86) := -fno-gcse
++CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
+ 
+ obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
+ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 9268d77898b7..55454d2278b1 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+  *
+  * Decode and execute eBPF instructions.
+  */
+-static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
++static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ {
+ #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
+ #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
+-- 
+2.17.1
+
