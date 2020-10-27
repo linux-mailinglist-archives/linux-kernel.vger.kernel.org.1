@@ -2,232 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5436129BF26
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFE929BF93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1815015AbgJ0RBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:01:14 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:43854 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1815002AbgJ0RBL (ORCPT
+        id S1815596AbgJ0RD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:03:26 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38971 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1793627AbgJ0RDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:01:11 -0400
-Received: by mail-pf1-f196.google.com with SMTP id a200so1256437pfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:01:10 -0700 (PDT)
+        Tue, 27 Oct 2020 13:03:24 -0400
+Received: by mail-ed1-f66.google.com with SMTP id a6so2208774edx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=71+u6FRijkoEpDOdg3DRr0Oc2oaGmI+yxEaraGKKORg=;
-        b=yO1RhcWmIgUhFqLNVBEtSTONRWDrGMS3rdb2Z48LtItApUZWRciYT3ctZo4Ahoq0Nh
-         74lSzz9i3vLwXMLn7J8JjIbQ+XMjqIgqguv0pxstLHcrPPOK/qvqhDsehSPS1ILmEbiR
-         Bxh6xnWxAM8YQeuutDQTCfT1ne/8vX2v1pcH7o55UZAPC4D8DBf8sbeoFKw6mHrVYsFn
-         f8jGm89J6Q+8Y/kikTt0act9yzAC2ekyT23XhGBaNTe2zVSzfdjcePzko6p13VmYkLP5
-         192XYSNjNpxdSL4quO8WnCbCYVto/8szf8T58xxD4juSP9s4j5WngYsX42uAWaF6HFrq
-         4tNw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VcwOwa9EHhzsLgIT0w+isolvWhZrELRj+sCf5wcyL5o=;
+        b=bu6iuWWpweGAMhCSz/ektPdwFCA/R7pnbEw9LoYrlMJ+sbahe1oO6FFaIjNuaVzpZx
+         Uf9AuMFXhFodPPYhIIjV4xpMslgCGY3fp8ZqAMvOr9FZzlzjW4pt7+tZavv//VfZVtVy
+         EAKFROGybNBzpGmu9Vs+lckBwI/oAvY0L4SVA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=71+u6FRijkoEpDOdg3DRr0Oc2oaGmI+yxEaraGKKORg=;
-        b=k6cevjkWUHUX4p+Epzs4EKgZnqXUyxd3uz8YigvhmgdNBo0xRtviZA3thSEPtXIGEz
-         bVJ5PxDsayATUACoeOdAmmfj5RgAjnXouYpy6U9MHllu3HjqhhrJuxh6qAK6gxfmjUia
-         z37C3Ie9I+LZxCaEF1+YQ6F0l6mY6gQR0AyhEr7YmI/zan+R25IU5vo64y9xAuUCFkZo
-         S3hAQH1jaHRRiRk8kCNCFnVFd29FjwOSGd7rKlnFpip1NRbCCfm7lGyHUfzvAmi37xF2
-         2S4eFkYmxaxlI0MO+eIZmDZC1wT4NQxTpSIBndcVfYDM1CPW5NYGGYWaeA8ToiJW0TyZ
-         S+3g==
-X-Gm-Message-State: AOAM531vB6Dhb3Bd+CBBe3aYJK6u6BUir4Q/IeWe1pqPlZfAIQfuqq79
-        LWVgJDIN1FrP1KlQpzO552Gx
-X-Google-Smtp-Source: ABdhPJyT682CP4WnIlBCpAnGRH1ruBybut7MV6l+wroy5IG+kF5XMgQ6/zwezjjeJZr3jT3yZypwzA==
-X-Received: by 2002:a63:3d8b:: with SMTP id k133mr2693111pga.413.1603818069652;
-        Tue, 27 Oct 2020 10:01:09 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id x26sm2845206pfn.178.2020.10.27.10.01.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VcwOwa9EHhzsLgIT0w+isolvWhZrELRj+sCf5wcyL5o=;
+        b=dqm+cpV3jqkVlkapY5jwJuGjMVnsUeC/aCczaRZz/kS+7+iRnPykcJIEjlGOmh/CQk
+         FiIO19JZtB7Gbn5f+Frrwn/U1SJxaP3s/DA9P+Ao6csxSPkEohWAPiN103AdVEAVUjhk
+         CxkXgCXKNYUxs0z8sroGUJgMcfVc5GNe0j59eDpyskIbA3svVfIraNWCB6idIeBb7zBn
+         5VN7GYDrU4FSh8zAjJOMxR9isDPEVQkf019cGznFdJi79GIRu1Xiea9NvuK+pSOVy6gV
+         9X13mKhB8NBf0pdL6F8bAywU71WZTjyb56sDmHZSzVftEBTez/wRG+oAxAh7YmLl5j5H
+         e1Lg==
+X-Gm-Message-State: AOAM531oyRiqIJ91DKHdSPooOykXePKxLyFndtLR8xGkoRCYHRFGdGD8
+        Zy6AJSEuWDnZF6s0isuzhafplIUZfIfk5S2y
+X-Google-Smtp-Source: ABdhPJxr6mJXRzOgH1Mizg8jwVSb6kkt7H3J5bQ1rwoJ4/eDrIB7JU+oab7eG697io25gxJbaFOdXA==
+X-Received: by 2002:a50:fc85:: with SMTP id f5mr3345693edq.187.1603818201541;
+        Tue, 27 Oct 2020 10:03:21 -0700 (PDT)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id ba6sm1315006edb.61.2020.10.27.10.03.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 10:01:09 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org
-Cc:     svarbanov@mm-sol.com, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org,
-        truong@codeaurora.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v5 5/5] PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
-Date:   Tue, 27 Oct 2020 22:30:33 +0530
-Message-Id: <20201027170033.8475-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027170033.8475-1-manivannan.sadhasivam@linaro.org>
-References: <20201027170033.8475-1-manivannan.sadhasivam@linaro.org>
+        Tue, 27 Oct 2020 10:03:20 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next 0/5]  Implement task_local_storage
+Date:   Tue, 27 Oct 2020 18:03:12 +0100
+Message-Id: <20201027170317.2011119-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For SM8250, we need to write the BDF to SID mapping in PCIe controller
-register space for proper working. This is accomplished by extracting
-the BDF and SID values from "iommu-map" property in DT and writing those
-in the register address calculated from the hash value of BDF. In case
-of collisions, the index of the next entry will also be written.
+From: KP Singh <kpsingh@google.com>
 
-For the sake of it, let's introduce a "config_sid" callback and do it
-conditionally for SM8250.
+We already have socket and inode local storage since [1]
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+This patch series:
 
-Rob: I've dropped your review tag as this patch has gone through some
-change (mostly cleanups though)
+* Implements bpf_local_storage for task_struct.
+* Implements the bpf_get_current_task_btf helper which returns a BTF
+  pointer to the current task. Not only is this generally cleaner
+  (reading from the task_struct currently requires BPF_CORE_READ), it
+  also allows the BTF pointer to be used in task_local_storage helpers.
+* In order to implement this helper, a RET_PTR_TO_BTF_ID is introduced
+  which works similar to RET_PTR_TO_BTF_ID_OR_NULL but does not require
+  a nullness check.
+* Implements a detection in selftests which uses the
+  task local storage to deny a running executable from unlinking itself.
 
- drivers/pci/controller/dwc/Kconfig     |  1 +
- drivers/pci/controller/dwc/pcie-qcom.c | 81 ++++++++++++++++++++++++++
- 2 files changed, 82 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index bc049865f8e0..875ebc6e8884 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -169,6 +169,7 @@ config PCIE_QCOM
- 	depends on OF && (ARCH_QCOM || COMPILE_TEST)
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
-+	select CRC8
- 	help
- 	  Say Y here to enable PCIe controller support on Qualcomm SoCs. The
- 	  PCIe controller uses the DesignWare core plus Qualcomm-specific
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 0b180a19b0ea..2148fcf74294 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/crc8.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
-@@ -57,6 +58,7 @@
- #define PCIE20_PARF_SID_OFFSET			0x234
- #define PCIE20_PARF_BDF_TRANSLATE_CFG		0x24C
- #define PCIE20_PARF_DEVICE_TYPE			0x1000
-+#define PCIE20_PARF_BDF_TO_SID_TABLE_N		0x2000
- 
- #define PCIE20_ELBI_SYS_CTRL			0x04
- #define PCIE20_ELBI_SYS_CTRL_LT_ENABLE		BIT(0)
-@@ -97,6 +99,9 @@
- 
- #define QCOM_PCIE_2_1_0_MAX_SUPPLY	3
- #define QCOM_PCIE_2_1_0_MAX_CLOCKS	5
-+
-+#define QCOM_PCIE_CRC8_POLYNOMIAL (BIT(2) | BIT(1) | BIT(0))
-+
- struct qcom_pcie_resources_2_1_0 {
- 	struct clk_bulk_data clks[QCOM_PCIE_2_1_0_MAX_CLOCKS];
- 	struct reset_control *pci_reset;
-@@ -179,6 +184,7 @@ struct qcom_pcie_ops {
- 	void (*deinit)(struct qcom_pcie *pcie);
- 	void (*post_deinit)(struct qcom_pcie *pcie);
- 	void (*ltssm_enable)(struct qcom_pcie *pcie);
-+	int (*config_sid)(struct qcom_pcie *pcie);
- };
- 
- struct qcom_pcie {
-@@ -1261,6 +1267,74 @@ static int qcom_pcie_link_up(struct dw_pcie *pci)
- 	return !!(val & PCI_EXP_LNKSTA_DLLLA);
- }
- 
-+static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
-+{
-+	/* iommu map structure */
-+	struct {
-+		u32 bdf;
-+		u32 phandle;
-+		u32 smmu_sid;
-+		u32 smmu_sid_len;
-+	} *map;
-+	void __iomem *bdf_to_sid_base = pcie->parf + PCIE20_PARF_BDF_TO_SID_TABLE_N;
-+	struct device *dev = pcie->pci->dev;
-+	u8 qcom_pcie_crc8_table[CRC8_TABLE_SIZE];
-+	int i, nr_map, size = 0;
-+	u32 smmu_sid_base;
-+
-+	of_get_property(dev->of_node, "iommu-map", &size);
-+	if (!size)
-+		return 0;
-+
-+	map = kzalloc(size, GFP_KERNEL);
-+	if (!map)
-+		return -ENOMEM;
-+
-+	of_property_read_u32_array(dev->of_node,
-+		"iommu-map", (u32 *)map, size / sizeof(u32));
-+
-+	nr_map = size / (sizeof(*map));
-+
-+	crc8_populate_msb(qcom_pcie_crc8_table, QCOM_PCIE_CRC8_POLYNOMIAL);
-+
-+	/* Registers need to be zero out first */
-+	memset_io(bdf_to_sid_base, 0, CRC8_TABLE_SIZE * sizeof(u32));
-+
-+	/* Look for an available entry to hold the mapping */
-+	for (i = 0; i < nr_map; i++) {
-+		u16 bdf_be = cpu_to_be16(map[i].bdf);
-+		u32 val;
-+		u8 hash;
-+
-+		hash = crc8(qcom_pcie_crc8_table, (u8 *)&bdf_be, sizeof(bdf_be),
-+			0);
-+
-+		val = readl(bdf_to_sid_base + hash * sizeof(u32));
-+
-+		/* If the register is already populated, look for next available entry */
-+		while (val) {
-+			u8 current_hash = hash++;
-+			u8 next_mask = 0xff;
-+
-+			/* If NEXT field is NULL then update it with next hash */
-+			if (!(val & next_mask)) {
-+				val |= (u32)hash;
-+				writel(val, bdf_to_sid_base + current_hash * sizeof(u32));
-+			}
-+
-+			val = readl(bdf_to_sid_base + hash * sizeof(u32));
-+		}
-+
-+		/* BDF [31:16] | SID [15:8] | NEXT [7:0] */
-+		val = map[i].bdf << 16 | (map[i].smmu_sid - smmu_sid_base) << 8 | 0;
-+		writel(val, bdf_to_sid_base + hash * sizeof(u32));
-+	}
-+
-+	kfree(map);
-+
-+	return 0;
-+}
-+
- static int qcom_pcie_host_init(struct pcie_port *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-@@ -1292,6 +1366,12 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
- 	if (ret)
- 		goto err;
- 
-+	if (pcie->ops->config_sid) {
-+		ret = pcie->ops->config_sid(pcie);
-+		if (ret)
-+			goto err;
-+	}
-+
- 	return 0;
- err:
- 	qcom_ep_reset_assert(pcie);
-@@ -1369,6 +1449,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
- 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
- 	.post_init = qcom_pcie_post_init_2_7_0,
- 	.post_deinit = qcom_pcie_post_deinit_2_7_0,
-+	.config_sid = qcom_pcie_config_sid_sm8250,
- };
- 
- static const struct dw_pcie_ops dw_pcie_ops = {
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=f836a56e84ffc9f1a1cd73f77e10404ca46a4616
+
+KP Singh (5):
+  bpf: Implement task local storage
+  bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
+  bpf: Fix tests for local_storage
+  bpf: Update selftests for local_storage to use vmlinux.h
+  bpf: Add tests for task_local_storage
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpf_lsm.h                       |  23 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  48 +++
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/bpf_lsm.c                          |   4 +
+ kernel/bpf/bpf_task_storage.c                 | 327 ++++++++++++++++++
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  20 +-
+ kernel/trace/bpf_trace.c                      |  16 +
+ security/bpf/hooks.c                          |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   2 +-
+ tools/bpf/bpftool/map.c                       |   4 +-
+ tools/include/uapi/linux/bpf.h                |  48 +++
+ tools/lib/bpf/libbpf_probes.c                 |   2 +
+ .../bpf/prog_tests/test_local_storage.c       |  89 ++++-
+ .../selftests/bpf/progs/local_storage.c       |  78 +++--
+ 18 files changed, 625 insertions(+), 47 deletions(-)
+ create mode 100644 kernel/bpf/bpf_task_storage.c
+
 -- 
-2.17.1
+2.29.0.rc2.309.g374f81d7ae-goog
 
