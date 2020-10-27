@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CE529B1BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538F729B1BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760171AbgJ0Odm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:33:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58282 "EHLO mail.kernel.org"
+        id S2902480AbgJ0Odv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:33:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902215AbgJ0Obc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:31:32 -0400
+        id S2897378AbgJ0Obf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:31:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54AC620754;
-        Tue, 27 Oct 2020 14:31:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DAD2206DC;
+        Tue, 27 Oct 2020 14:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809092;
-        bh=rllpgQs9JIB2p9eU4I8VCpqd+uIoLcXqtmw9u5w+YZk=;
+        s=default; t=1603809094;
+        bh=5PeYcanFkuDfqhc8YhOoYXsGarkvnJEjS9L5CZOjriU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ouml0w/euwJMO4yMU9/OGttEEGLJqCDGAxJBBzQBA3rvbmB7LmUCwzTt3/yWLVU78
-         nSYr7tO7vKMjcZyrxG42UKKlpDChmoxp+u8tW89BUvfm6rRnVwuDf6iq8ydZWq3wzK
-         xwsUWtUc6Uf9XyLwb2mQhzTX0BQUKjfuvzHNgbo4=
+        b=zLDSoaKuCEQfUjCGpfqNFUoBSS40gEl5rL1PuShrmoIpZP+A10JGw4MNA1L1C/Mx4
+         RL1Dmydu/s+PRzZmHDSxl/nDXN9MdWEC0ZitYRZbGXMCAGxjd+iAfN5lLDPruU0ouC
+         5fEgOdsqPdZ+ozSxWjedxQx037nbmlmAompu7eBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 072/408] media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
-Date:   Tue, 27 Oct 2020 14:50:10 +0100
-Message-Id: <20201027135458.406389391@linuxfoundation.org>
+Subject: [PATCH 5.4 073/408] media: ov5640: Correct Bit Div register in clock tree diagram
+Date:   Tue, 27 Oct 2020 14:50:11 +0100
+Message-Id: <20201027135458.448099198@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,44 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
-[ Upstream commit 00d21f325d58567d81d9172096692d0a9ea7f725 ]
+[ Upstream commit 4c85f628f6639e3e3e0a7788416154f28dfcae4f ]
 
-The "idle" pinctrl state is optional as documented in the DT binding.
-The change introduced by the commit being reverted makes that pinctrl state
-mandatory and breaks initialization of the whole media driver, since the
-"idle" state is not specified in any mainline dts.
+Although the code is correct and doing the right thing, the clock diagram
+showed the wrong register for the bit divider, which had me doubting the
+understanding of the tree. Fix this to avoid doubts in the future.
 
-This reverts commit 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
-to fix the regression.
-
-Fixes: 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Fixes: aa2882481cada ("media: ov5640: Adjust the clock based on the expected rate")
+Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/media-dev.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/media/i2c/ov5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-index 9c31d950cddf7..2f90607c3797d 100644
---- a/drivers/media/platform/exynos4-is/media-dev.c
-+++ b/drivers/media/platform/exynos4-is/media-dev.c
-@@ -1268,11 +1268,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
- 	if (IS_ERR(pctl->state_default))
- 		return PTR_ERR(pctl->state_default);
- 
-+	/* PINCTRL_STATE_IDLE is optional */
- 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
- 					PINCTRL_STATE_IDLE);
--	if (IS_ERR(pctl->state_idle))
--		return PTR_ERR(pctl->state_idle);
--
- 	return 0;
- }
- 
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index 266e947572c1e..b21ddbd514465 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -740,7 +740,7 @@ static int ov5640_mod_reg(struct ov5640_dev *sensor, u16 reg,
+  *               +->| PLL Root Div | - reg 0x3037, bit 4
+  *                  +-+------------+
+  *                    |  +---------+
+- *                    +->| Bit Div | - reg 0x3035, bits 0-3
++ *                    +->| Bit Div | - reg 0x3034, bits 0-3
+  *                       +-+-------+
+  *                         |  +-------------+
+  *                         +->| SCLK Div    | - reg 0x3108, bits 0-1
 -- 
 2.25.1
 
