@@ -2,285 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C307D29A86D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5392929A879
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896235AbgJ0Jwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:52:33 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51921 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409569AbgJ0Jwb (ORCPT
+        id S2896295AbgJ0Jwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:52:55 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44673 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409641AbgJ0Jwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:52:31 -0400
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 34CAC20010;
-        Tue, 27 Oct 2020 09:52:22 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 10:52:21 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 07/14] dt-bindings: media: i2c: Add A31 MIPI CSI-2
- bindings documentation
-Message-ID: <20201027095221.GE168350@aptenodytes>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-8-paul.kocialkowski@bootlin.com>
- <20201026161450.gr3dqpltxw2ccc3s@gilmour.lan>
+        Tue, 27 Oct 2020 05:52:51 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k27so652954oij.11;
+        Tue, 27 Oct 2020 02:52:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4k15uLlQPDyibib9c7Zvh6tW8H4LI+JfDQ0J2WXNZIA=;
+        b=BBMZlwMKMJkpNdRA8EKcd0GPztw/WrRCoPddZTk8RlrfDyCOTE9vN3eahJ53uIvydJ
+         isBdqKSVeEDUZLuTMeD7AxxjWtUHlufyZhzSZ8QBC7TrplYpO2xkZvrVyeSx+7CXJ0dF
+         aF0V/jxAr/jiRc+3oifutExZM8FfZQ+6wWVznTAeyM57M8Ic8a6N3Pgb4BQQWy8Hw+l2
+         Z2LQXE/6LXJaEDdAR+P/Gdmn10Iv88yOu6pa7kUkdl2ftzJJG86So85lmZ5mR715TTew
+         vjn0bfz1cTLTBYlFwDOoKzyyCgfTemb2U4m79bB3flh5INW24/sTUUgJEZwj5GkpRwn1
+         macw==
+X-Gm-Message-State: AOAM530hG5i6VoZeYl9BsJx5N3SfXn+2R+96A2EHFIy/WBXEv5eqHHKu
+        zbd0VXjGdiTCQmnTOCi3EPpu0omvD7Nc8H23oRwKui47u8y4cg==
+X-Google-Smtp-Source: ABdhPJy1dLvdgv16AoCtLqymByBSY+KWH3iutF2PlZlpY9aTJDLry4PFiC4VtXAbn52n7pE6xNSdtr52Vl0GaJY40Gk=
+X-Received: by 2002:aca:f40c:: with SMTP id s12mr785596oih.153.1603792370966;
+ Tue, 27 Oct 2020 02:52:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
-Content-Disposition: inline
-In-Reply-To: <20201026161450.gr3dqpltxw2ccc3s@gilmour.lan>
+References: <cover.1600951211.git.yifeifz2@illinois.edu> <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+In-Reply-To: <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Oct 2020 10:52:39 +0100
+Message-ID: <CAMuHMdXTLKr6pvoE+JAdn_P5kVxL6gx8PJ8mqfXcS+SF+pRbkQ@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to arch/Kconfig
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yifei,
 
---ILuaRSyQpoVaJ1HG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 24, 2020 at 2:48 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
+>
+> In order to make adding configurable features into seccomp
+> easier, it's better to have the options at one single location,
+> considering easpecially that the bulk of seccomp code is
+> arch-independent. An quick look also show that many SECCOMP
+> descriptions are outdated; they talk about /proc rather than
+> prctl.
+>
+> As a result of moving the config option and keeping it default
+> on, architectures arm, arm64, csky, riscv, sh, and xtensa
+> did not have SECCOMP on by default prior to this and SECCOMP will
+> be default in this change.
+>
+> Architectures microblaze, mips, powerpc, s390, sh, and sparc
+> have an outdated depend on PROC_FS and this dependency is removed
+> in this change.
+>
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com/
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 
-Hi,
+Thanks for your patch. which is now commit 282a181b1a0d66de ("seccomp:
+Move config option SECCOMP to arch/Kconfig") in v5.10-rc1.
 
-On Mon 26 Oct 20, 17:14, Maxime Ripard wrote:
-> i2c? :)
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -458,6 +462,23 @@ config HAVE_ARCH_SECCOMP_FILTER
+>             results in the system call being skipped immediately.
+>           - seccomp syscall wired up
+>
+> +config SECCOMP
+> +       def_bool y
+> +       depends on HAVE_ARCH_SECCOMP
+> +       prompt "Enable seccomp to safely compute untrusted bytecode"
+> +       help
+> +         This kernel feature is useful for number crunching applications
+> +         that may need to compute untrusted bytecode during their
+> +         execution. By using pipes or other transports made available to
+> +         the process as file descriptors supporting the read/write
+> +         syscalls, it's possible to isolate those applications in
+> +         their own address space using seccomp. Once seccomp is
+> +         enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
+> +         and the task is only allowed to execute a few safe syscalls
+> +         defined by each seccomp mode.
+> +
+> +         If unsure, say Y. Only embedded should say N here.
+> +
 
-Oops, good catch!
-=20
-> On Fri, Oct 23, 2020 at 07:45:39PM +0200, Paul Kocialkowski wrote:
-> > This introduces YAML bindings documentation for the A31 MIPI CSI-2
-> > controller.
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 ++++++++++++++++++
-> >  1 file changed, 168 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/allwinner,s=
-un6i-a31-mipi-csi2.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a3=
-1-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-=
-a31-mipi-csi2.yaml
-> > new file mode 100644
-> > index 000000000000..9adc0bc27033
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-mipi-=
-csi2.yaml
-> > @@ -0,0 +1,168 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-mipi-csi2=
-=2Eyaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Allwinner A31 MIPI CSI-2 Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - const: allwinner,sun6i-a31-mipi-csi2
-> > +      - items:
-> > +          - const: allwinner,sun8i-v3s-mipi-csi2
-> > +          - const: allwinner,sun6i-a31-mipi-csi2
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: Bus Clock
-> > +      - description: Module Clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: bus
-> > +      - const: mod
-> > +
-> > +  phys:
-> > +    items:
-> > +      - description: MIPI D-PHY
-> > +
-> > +  phy-names:
-> > +    items:
-> > +      - const: dphy
-> > +
-> > +  resets:
-> > +    maxItems: 1
-> > +
-> > +  # See ./video-interfaces.txt for details
-> > +  ports:
-> > +    type: object
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        type: object
-> > +        description: Input port, connect to a MIPI CSI-2 sensor
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 0
-> > +
-> > +          endpoint:
-> > +            type: object
-> > +
-> > +            properties:
-> > +              remote-endpoint: true
-> > +
-> > +              bus-type:
-> > +                const: 4
-> > +
-> > +              clock-lanes:
-> > +                maxItems: 1
-> > +
-> > +              data-lanes:
-> > +                minItems: 1
-> > +                maxItems: 4
-> > +
-> > +            required:
-> > +              - bus-type
-> > +              - data-lanes
-> > +              - remote-endpoint
-> > +
-> > +            additionalProperties: false
-> > +
-> > +        required:
-> > +          - endpoint
-> > +
-> > +        additionalProperties: false
-> > +
-> > +      port@1:
-> > +        type: object
-> > +        description: Output port, connect to a CSI controller
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 1
-> > +
-> > +          endpoint:
-> > +            type: object
-> > +
-> > +            properties:
-> > +              remote-endpoint: true
-> > +
-> > +              bus-type:
-> > +                const: 4
->=20
-> That one seems a bit weird. If the input and output ports are using the
-> same format, what is that "bridge" supposed to be doing?
+Please tell me why SECCOMP is special, and deserves to default to be
+enabled.  Is it really that critical, given only 13.5 (half of sparc
+;-) out of 24
+architectures implement support for it?
 
-Fair enough. What this represents is the internal link (likely a FIFO) betw=
-een
-the two controllers. It is definitely not a MIPI CSI-2 bus but there's no
-mbus type for an internal link (probably because it's not a bus after all).
+Thanks!
 
-Note that on the CSI controller side, we need the bus-type to be set to 4 f=
-or it
-to properly select the MIPI CSI-2 input. So it just felt more logical to ha=
-ve
-the same on the other side of the endpoint. On the other hand, we can just
-remove it on the MIPI CSI-2 controller side since it won't check it and hav=
-e it
-fallback to the unknown mbus type.
+Gr{oetje,eeting}s,
 
-But that would make the types inconsistent on the two sides of the link.
-I don't think V4L2 will complain about it at the moment, but it would also =
-make
-sense that it does eventually.
+                        Geert
 
-What do you think?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> > +            additionalProperties: false
-> > +
-> > +        required:
-> > +          - endpoint
-> > +
-> > +        additionalProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +  - resets
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    #include <dt-bindings/clock/sun8i-v3s-ccu.h>
-> > +    #include <dt-bindings/reset/sun8i-v3s-ccu.h>
-> > +
-> > +    mipi_csi2: mipi-csi2@1cb1000 {
->=20
-> The unit name should be pretty standard, with the list here:
->=20
-> https://github.com/devicetree-org/devicetree-specification/blob/master/so=
-urce/chapter2-devicetree-basics.rst#generic-names-recommendation
->=20
-> there's nothing really standing out for us in that list, but given that
-> there's dsi, we should stick with csi
-
-Then what really surprises me is that the CSI controllers are called "camer=
-a",
-not "csi". If "camera" is supposed to cover both image sensor and camera se=
-nsor
-interfaces, it would probably fit MIPI CSI-2 as well.
-
-I see lots of names with -controller for controllers with specific devices
-attached, like "nand-controller" or "lcd-controller". Maybe using
-"camera-controller" for the CSI and MIPI CSI-2 controllers would make the m=
-ost
-sense, while keeping "camera" for the actual image sensors.
-
-What do you think?
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---ILuaRSyQpoVaJ1HG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+X7dUACgkQ3cLmz3+f
-v9HIzgf/VU3frpGzprIvTeXBh32se5uXZB/3cj0cUb++7oXeTXSc/db0LOwDu7jo
-/UyfvdYNUhuUMMOPT/ltm0ObonZzOv4GkAl0rjQYccWmwqAhi9/m/ac++ub7WjUk
-yv159tAbN+dorR6X2Q548Y8JKAYXBM/of0RVIs0ms/J8rnBkozXBv89gxTiIxrnH
-3swwmgsFAYEklUApRcIUcgSdsbxyRu10JTQ7vlmimb5/4Z3mEmOXGe7SkxKREFym
-fGumuTIXAWceJ0NLAXkUw3XxHku1Xczzmj78crBFvE0L8fUDKAoMFOG96oQqbI5t
-GlF0jyE3FZO/rbmGafQtSqE/B9JOFw==
-=CWwJ
------END PGP SIGNATURE-----
-
---ILuaRSyQpoVaJ1HG--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
