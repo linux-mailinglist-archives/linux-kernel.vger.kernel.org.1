@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8942F29B825
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BA729B823
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799670AbgJ0Pcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:32:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41000 "EHLO mail.kernel.org"
+        id S1799660AbgJ0Pcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:32:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798155AbgJ0P0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:26:11 -0400
+        id S1798150AbgJ0P0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:26:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CA8B20728;
-        Tue, 27 Oct 2020 15:26:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE0AE20657;
+        Tue, 27 Oct 2020 15:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812370;
-        bh=QgWdJZNgePbsSEzN20yVh1V9PoMCz1+WSmJL9coPhpI=;
+        s=default; t=1603812373;
+        bh=ml0WXOPEPyk5UVVFixp6s8DuJPKjVpg0UlZkG48Mp2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ndX69hoEAb52C1vi5G1g54/llcKYCAXTo38M/BLSuL9/TX/W28RHjqf6xD1oTlBx9
-         gmM3RUVPLqGrCC+fD3Gc1BIfE/zfXYTQjopUcCm+rn4oGesk/OliLPhU52wYZWE8at
-         iv2cULMCyXE9ZAGrLzmScUQZP4XwR7U3UBJaqq88=
+        b=xmT3Y89LukxUTlwJE4UfPtsHASJ8bSnAA7kQErFbBNWRFlFZUX01Y5oAFFP5BFXke
+         7J6Hy6nC4nsqWUFDbjyKOL0BsUDQw88PxSnmS6AbZmx0ep9nRdDx6DejOQNZNp7eIa
+         bvp9R0COv7yAi7GbKxQ3B3ZV4W4eE8rsUZIrryRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 186/757] drm/amd/display: Fix wrong return value in dm_update_plane_state()
-Date:   Tue, 27 Oct 2020 14:47:16 +0100
-Message-Id: <20201027135459.333545564@linuxfoundation.org>
+Subject: [PATCH 5.9 187/757] drm/vgem: add missing platform_device_unregister() in vgem_init()
+Date:   Tue, 27 Oct 2020 14:47:17 +0100
+Message-Id: <20201027135459.377597678@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,36 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit c35376137e940c3389df2726a92649c01a9844b4 ]
+[ Upstream commit 57fb54082d5d14512dfd21bc39d91945d3ad1ee9 ]
 
-On an error exit path, a negative error code should be returned
-instead of a positive return value.
+When vgem_init() get into out_put, the unregister call of
+vgem_device->platform is missing. So add it before return.
 
-Fixes: 9e869063b0021 ("drm/amd/display: Move iteration out of dm_update_planes")
-Cc: Leo Li <sunpeng.li@amd.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 363de9e7d4f6 ("drm/vgem: Use drmm_add_final_kfree")
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200810125942.186637-1-miaoqinglang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index a717a4904268e..5474f7e4c75b1 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8217,8 +8217,7 @@ static int dm_update_plane_state(struct dc *dc,
- 				dm_old_plane_state->dc_state,
- 				dm_state->context)) {
+diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+index a775feda1cc73..313339bbff901 100644
+--- a/drivers/gpu/drm/vgem/vgem_drv.c
++++ b/drivers/gpu/drm/vgem/vgem_drv.c
+@@ -471,8 +471,8 @@ static int __init vgem_init(void)
  
--			ret = EINVAL;
--			return ret;
-+			return -EINVAL;
- 		}
- 
- 
+ out_put:
+ 	drm_dev_put(&vgem_device->drm);
++	platform_device_unregister(vgem_device->platform);
+ 	return ret;
+-
+ out_unregister:
+ 	platform_device_unregister(vgem_device->platform);
+ out_free:
 -- 
 2.25.1
 
