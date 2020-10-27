@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C2E29C064
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EDF29C02F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783156AbgJ0O55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:57:57 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:43572 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1763848AbgJ0OpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:45:10 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 58DB441322;
-        Tue, 27 Oct 2020 14:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :x-mailer:message-id:date:date:subject:subject:from:from
-        :received:received:received; s=mta-01; t=1603809904; x=
-        1605624305; bh=1m8uarmjdRkDWcGuUdyHdL9iYHTwqt293cUSaWiTucs=; b=k
-        RZXp/RaEK34u/S36mAglM9hDAtwB4ABCo5C4NzG3etQjLHNS2TCeBoVKxJn0KCTQ
-        kZg8Gw3rYOKpIN0SnUxXeZqyfV8+rB1Z+pI6UAVSpnXN2kjxgLrJd/RxY6FRzHxv
-        pp0l7AaqgIgEcSRJEN6Pns5csOXxruVdDgAKbbCS9c=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rtHMC_wE91VR; Tue, 27 Oct 2020 17:45:04 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 9F8DA412DF;
-        Tue, 27 Oct 2020 17:45:03 +0300 (MSK)
-Received: from localhost.dev.yadro.com (10.199.0.215) by
- T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Tue, 27 Oct 2020 17:45:02 +0300
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     "David S . Miller" <davem@davemloft.net>,
+        id S1784502AbgJ0O7N convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 10:59:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:26400 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1773160AbgJ0Ovk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:51:40 -0400
+IronPort-SDR: 8ygIKS9jiWCfU+dllPCfxa+qXGMDkl0nBUZ8RNm6/IjDAbYPbUHuWD3CANk41cBq5HwUWA19QZ
+ Q3ByahE6XbMQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="232278238"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="232278238"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:51:39 -0700
+IronPort-SDR: QsN1CmXeuCWCB83XI37JPoftKcFSesGTOGfClnAFj9tL3jY3rHZErjuxhjhP26FmlSh1ZMJegN
+ QJSCZXQiY/vQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="468337811"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by orsmga004.jf.intel.com with ESMTP; 27 Oct 2020 07:51:39 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 27 Oct 2020 07:51:38 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 27 Oct 2020 07:51:37 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
+ Tue, 27 Oct 2020 07:51:37 -0700
+From:   "Perez-Gonzalez, Inaky" <inaky.perez-gonzalez@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>
+CC:     linux-wimax <linux-wimax@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>
-CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-Subject: [PATCH v2 0/2] add ast2400/2500 phy-handle support
-Date:   Tue, 27 Oct 2020 17:49:22 +0300
-Message-ID: <20201027144924.22183-1-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.21.1
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
+Thread-Topic: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
+Thread-Index: AQHWq9+IizPtCG0Uk0iW2uocMKyLWamrgVyAgABLJQD//7tyFw==
+Date:   Tue, 27 Oct 2020 14:51:37 +0000
+Message-ID: <b102ea5e9e2e4365a1c05a1c24e66cc4@intel.com>
+References: <20201026213040.3889546-1-arnd@kernel.org>
+ <20201026213040.3889546-4-arnd@kernel.org>
+ <03c5bc171594c884c903994ef82d703776bfcbc0.camel@sipsolutions.net>,<CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.199.0.215]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces ast2400/2500 phy-handle support with an embedded
-MDIO controller. At the current moment it is not possible to set options
-with this format on ast2400/2500:
+> From: Arnd Bergmann <arnd@kernel.org>
+> 
+> Makes sense. I checked
+> https://en.wikipedia.org/wiki/List_of_WiMAX_networks, and it appears
+> that these entries are all stale, after everyone has migrated to LTE
+> or discontinued their service altogether.
+> 
+> NetworkManager appears to have dropped userspace support in 2015
+> https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
+> www.linuxwimax.org site had already shut down earlier.
+> 
+> WiMax is apparently still being deployed on airport campus
+> networks ("AeroMACS"), but in a frequency band that was not
+> supported by the old Intel 2400m (used in Sandy Bridge laptops
+> and earlier), which is the only driver using the kernel's wimax
+> stack.
+> 
+> Inaky, do you have any additional information about possible
+> users? If we are sure there are none, then I'd suggest removing
+> all the wimax code directly, otherwise it could go through
+> drivers/staging/ for a release or two (and move it back in case
+> there are users after all). I can send a patch if you like.
 
-mac {
-	phy-handle = <&phy>;
-	phy-mode = "rgmii";
+I have not
 
-	mdio {
-		#address-cells = <1>;
-		#size-cells = <0>;
+Every now and then I get the occasional message from a student or
+researcher asking for support about a production network, but they
+have dwindled in the last years.
 
-		phy: ethernet-phy@0 {
-			compatible = "ethernet-phy-idxxxx.yyyy";
-			reg = <0>;
-		};
-	};
-};
-
-The patch fixes it and gets possible PHYs and register them with
-of_mdiobus_register.
-
-Changes from v2:
-   1. change manual phy interface type check on phy_interface_mode_is_rgmii
-      function.
-   2. add err_phy_connect label.
-   3. split ftgmac100_destroy_mdio into ftgmac100_phy_disconnect and
-      ftgmac100_destroy_mdio.
-   4. remove unneeded mdio_np checks.
-
-Changes from v1:
-   1. split one patch into two.
-
-
-Ivan Mikhaylov (2):
-  net: ftgmac100: move phy connect out from ftgmac100_setup_mdio
-  net: ftgmac100: add handling of mdio/phy nodes for ast2400/2500
-
- drivers/net/ethernet/faraday/ftgmac100.c | 122 +++++++++++++----------
- 1 file changed, 71 insertions(+), 51 deletions(-)
-
--- 
-2.21.1
-
+My vote would be to scrap the whole thing; if there are die hard
+users, they can always rise up and move it back from staging.
