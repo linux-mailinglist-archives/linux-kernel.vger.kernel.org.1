@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB9529B5CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD23429B413
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796014AbgJ0PPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49662 "EHLO mail.kernel.org"
+        id S1752915AbgJ0O5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794675AbgJ0PNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:13:01 -0400
+        id S1763868AbgJ0OpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 876C220657;
-        Tue, 27 Oct 2020 15:12:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D37D8206B2;
+        Tue, 27 Oct 2020 14:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811580;
-        bh=L2+RJXccCaMCISHwYIWzmgF0+1Wiq4nILRjct3Rac6w=;
+        s=default; t=1603809918;
+        bh=v1Z+kyM00XJqxJX/GQ2PGnu5D3WwgfqCSvSBlCHzPZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M8CPxEjRf+ry85wrni3YlZ1VwYI/KNb4gHYWFvz2tG8xRzBPCZn7LUS8cX7z9BOM4
-         QL8xVI8G/mU84fbpFMrI/vwvCE6VdtaHqGrI5ysoljJac+e7IAukuVTJHbP1sHPMDy
-         dgjRCRL4jrAxFTkmkNw+eRljYKtY1K4RnNhFxX0A=
+        b=HTlSWSoH1XAqg2maPlqVMkZVkcT7jd/NRb78xNVeZeQncQN632y7T2LtD+BgG3qLe
+         76bz3e28ahJ5iVJ2QT7IFMAMVms2sh7dnUqqxqW2GAVYFgJRLBKdQFMIXiGoCCRdeS
+         dm8jCxm5/3w/PF/JIdMg4rW+AQuzgTEnfSoDBOK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 542/633] media: platform: sti: hva: Fix runtime PM imbalance on error
-Date:   Tue, 27 Oct 2020 14:54:45 +0100
-Message-Id: <20201027135548.217682629@linuxfoundation.org>
+Subject: [PATCH 5.4 348/408] ntfs: add check for mft record size in superblock
+Date:   Tue, 27 Oct 2020 14:54:46 +0100
+Message-Id: <20201027135511.159364177@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-[ Upstream commit d912a1d9e9afe69c6066c1ceb6bfc09063074075 ]
+[ Upstream commit 4f8c94022f0bc3babd0a124c0a7dcdd7547bd94e ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+Number of bytes allocated for mft record should be equal to the mft record
+size stored in ntfs superblock as reported by syzbot, userspace might
+trigger out-of-bounds read by dereferencing ctx->attr in ntfs_attr_find()
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+Link: https://syzkaller.appspot.com/bug?extid=aed06913f36eff9b544e
+Link: https://lkml.kernel.org/r/20200824022804.226242-1-rkovhaev@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sti/hva/hva-hw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ntfs/inode.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
-index bb13348be0832..43f279e2a6a38 100644
---- a/drivers/media/platform/sti/hva/hva-hw.c
-+++ b/drivers/media/platform/sti/hva/hva-hw.c
-@@ -389,7 +389,7 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
- 		dev_err(dev, "%s     failed to set PM\n", HVA_PREFIX);
--		goto err_clk;
-+		goto err_pm;
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index d4359a1df3d5e..84933a0af49b6 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -1809,6 +1809,12 @@ int ntfs_read_inode_mount(struct inode *vi)
+ 		brelse(bh);
  	}
  
- 	/* check IP hardware version */
++	if (le32_to_cpu(m->bytes_allocated) != vol->mft_record_size) {
++		ntfs_error(sb, "Incorrect mft record size %u in superblock, should be %u.",
++				le32_to_cpu(m->bytes_allocated), vol->mft_record_size);
++		goto err_out;
++	}
++
+ 	/* Apply the mst fixups. */
+ 	if (post_read_mst_fixup((NTFS_RECORD*)m, vol->mft_record_size)) {
+ 		/* FIXME: Try to use the $MFTMirr now. */
 -- 
 2.25.1
 
