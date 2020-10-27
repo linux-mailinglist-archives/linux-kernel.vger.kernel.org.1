@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD88629A4AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698D629A4B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506737AbgJ0Gcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:32:55 -0400
+        id S2506747AbgJ0Gc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:32:59 -0400
 Received: from mga12.intel.com ([192.55.52.136]:9330 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506728AbgJ0Gcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:32:55 -0400
-IronPort-SDR: vPAboqC/BklHk2VaiGJE5G0MQIqSCk6mfKmYbpiRED9Oln0QUu4RT7WsDcwCHvw4lxM1yJokIX
- FkMcc9tnxeDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="147317852"
+        id S2506728AbgJ0Gc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 02:32:58 -0400
+IronPort-SDR: kVnyi8BA3YcPGifa0KXaMlsNMQa2DcECoD44T/M5XDNS31Aiot230Yx+VNwKLW7PZe7iYmGx7W
+ 3+KGrimgXADg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="147317856"
 X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
-   d="scan'208";a="147317852"
+   d="scan'208";a="147317856"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 23:32:54 -0700
-IronPort-SDR: MLrRYf6MDx88wDb+Pjg+TRX7VD+hlJUOxZEBW2k6nc/lSpHKDNdqgfUHVjQDHflqRQg4Jk8Z4y
- 13IWVo4m4QFw==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 23:32:57 -0700
+IronPort-SDR: A6kp+fotA24xEG+2T/Y0wgzk+Szd0DZTmHTY7L6K1JOnHOVnTf4705ktCfSa9yxZGnE18qntQ2
+ ukVi/9aMlVzA==
 X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
-   d="scan'208";a="535666676"
+   d="scan'208";a="535666689"
 Received: from lzhengha-mobl.ccr.corp.intel.com (HELO yhuang-mobile.ccr.corp.intel.com) ([10.254.213.46])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 23:32:51 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 23:32:54 -0700
 From:   Huang Ying <ying.huang@intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -35,10 +35,12 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Dan Williams <dan.j.williams@intel.com>
-Subject: [RFC -V4 0/6] autonuma: Optimize memory placement for memory tiering system
-Date:   Tue, 27 Oct 2020 14:32:11 +0800
-Message-Id: <20201027063217.211096-1-ying.huang@intel.com>
+Subject: [RFC -V4 1/6] autonuma: Optimize page placement for memory tiering system
+Date:   Tue, 27 Oct 2020 14:32:12 +0800
+Message-Id: <20201027063217.211096-2-ying.huang@intel.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201027063217.211096-1-ying.huang@intel.com>
+References: <20201027063217.211096-1-ying.huang@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -51,121 +53,269 @@ memory subsystem of these machines can be called memory tiering
 system, because the performance of the different types of memory are
 usually different.
 
-After commit c221c0b0308f ("device-dax: "Hotplug" persistent memory
-for use like normal RAM"), the PMEM could be used as the
-cost-effective volatile memory in separate NUMA nodes.  In a typical
-memory tiering system, there are CPUs, DRAM and PMEM in each physical
-NUMA node.  The CPUs and the DRAM will be put in one logical node,
-while the PMEM will be put in another (faked) logical node.
+In such system, because of the memory accessing pattern changing etc,
+some pages in the slow memory may become hot globally.  So in this
+patch, the AutoNUMA mechanism is enhanced to optimize the page
+placement among the different memory types according to hot/cold
+dynamically.
 
-To optimize the system overall performance, the hot pages should be
-placed in DRAM node.  To do that, we need to identify the hot pages in
-the PMEM node and migrate them to DRAM node via NUMA migration.
+In a typical memory tiering system, there are CPUs, fast memory and
+slow memory in each physical NUMA node.  The CPUs and the fast memory
+will be put in one logical node (called fast memory node), while the
+slow memory will be put in another (faked) logical node (called slow
+memory node).  That is, the fast memory is regarded as local while the
+slow memory is regarded as remote.  So it's possible for the recently
+accessed pages in the slow memory node to be promoted to the fast
+memory node via the existing AutoNUMA mechanism.
 
-In the original AutoNUMA, there are already a set of existing
-mechanisms to identify the pages recently accessed by the CPUs in a
-node and migrate the pages to the node.  So we can reuse these
-mechanisms to build the mechanisms to optimize the page placement in
-the memory tiering system.  This has been implemented in this
-patchset.
+The original AutoNUMA mechanism will stop to migrate pages if the free
+memory of the target node will become below the high watermark.  This
+is a reasonable policy if there's only one memory type.  But this
+makes the original AutoNUMA mechanism almost not work to optimize page
+placement among different memory types.  Details are as follows.
 
-At the other hand, the cold pages should be placed in PMEM node.  So,
-we also need to identify the cold pages in the DRAM node and migrate
-them to PMEM node.
+It's the common cases that the working-set size of the workload is
+larger than the size of the fast memory nodes.  Otherwise, it's
+unnecessary to use the slow memory at all.  So in the common cases,
+there are almost always no enough free pages in the fast memory nodes,
+so that the globally hot pages in the slow memory node cannot be
+promoted to the fast memory node.  To solve the issue, we have 2
+choices as follows,
 
-In the following patchset,
+a. Ignore the free pages watermark checking when promoting hot pages
+   from the slow memory node to the fast memory node.  This will
+   create some memory pressure in the fast memory node, thus trigger
+   the memory reclaiming.  So that, the cold pages in the fast memory
+   node will be demoted to the slow memory node.
 
-[RFC][PATCH 0/9] [v4][RESEND] Migrate Pages in lieu of discard
-https://lore.kernel.org/linux-mm/20201007161736.ACC6E387@viggo.jf.intel.com/
+b. Make kswapd of the fast memory node to reclaim pages until the free
+   pages are a little more (about 10MB) than the high watermark.  Then,
+   if the free pages of the fast memory node reaches high watermark, and
+   some hot pages need to be promoted, kswapd of the fast memory node
+   will be waken up to demote some cold pages in the fast memory node to
+   the slow memory node.  This will free some extra space in the fast
+   memory node, so the hot pages in the slow memory node can be
+   promoted to the fast memory node.
 
-A mechanism to demote the cold DRAM pages to PMEM node under memory
-pressure is implemented.  Based on that, the cold DRAM pages can be
-demoted to PMEM node proactively to free some memory space on DRAM
-node.  And this frees the space on DRAM node for the hot PMEM pages to
-be promoted to.  This has been implemented in this patchset too.
+The choice "a" will create the memory pressure in the fast memory
+node.  If the memory pressure of the workload is high, the memory
+pressure may become so high that the memory allocation latency of the
+workload is influenced, e.g. the direct reclaiming may be triggered.
 
-The patchset is based on the following not-yet-merged patchset,
+The choice "b" works much better at this aspect.  If the memory
+pressure of the workload is high, the hot pages promotion will stop
+earlier because its allocation watermark is higher than that of the
+normal memory allocation.  So in this patch, choice "b" is
+implemented.
 
-[RFC][PATCH 0/9] [v4][RESEND] Migrate Pages in lieu of discard
-https://lore.kernel.org/linux-mm/20201007161736.ACC6E387@viggo.jf.intel.com/
+In addition to the original page placement optimization among sockets,
+the AutoNUMA mechanism is extended to be used to optimize page
+placement according to hot/cold among different memory types.  So the
+sysctl user space interface (numa_balancing) is extended in a backward
+compatible way as follow, so that the users can enable/disable these
+functionality individually.
 
-This is part of a larger patch set.  If you want to apply these or
-play with them, I'd suggest using the tree from below,
+The sysctl is converted from a Boolean value to a bits field.  The
+definition of the flags is,
 
-https://github.com/hying-caritas/linux/commits/autonuma-r4
+- 0x0: NUMA_BALANCING_DISABLED
+- 0x1: NUMA_BALANCING_NORMAL
+- 0x2: NUMA_BALANCING_MEMORY_TIERING
 
-We have tested the solution with the pmbench memory accessing
-benchmark with the 80:20 read/write ratio and the normal access
-address distribution on a 2 socket Intel server with Optane DC
-Persistent Memory Model.  The test results of the base kernel and step
-by step optimizations are as follows,
+TODO:
 
-                Throughput	Promotion      DRAM bandwidth
-		  access/s           MB/s                MB/s
-               -----------     ----------      --------------
-Base            74238178.0                             4291.7
-Patch 1        146050652.3          359.4             11248.6
-Patch 2        146300787.1          355.2             11237.2
-Patch 3        162536383.0          211.7             11890.4
-Patch 4        157187775.0          105.9             10412.3
-Patch 5        164028415.2           73.3             10810.6
-Patch 6        162666229.4           74.6             10715.1
+- Update ABI document: Documentation/sysctl/kernel.txt
 
-The whole patchset improves the benchmark score up to 119.1%.  The
-basic AutoNUMA based optimization solution (patch 1), the hot page
-selection algorithm (patch 3), and the threshold automatic adjustment
-algorithms (patch 5) improves the performance or reduce the overhead
-(promotion MB/s) mostly.
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@redhat.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+---
+ include/linux/sched/sysctl.h |  5 +++++
+ kernel/sched/core.c          |  9 +++------
+ kernel/sysctl.c              |  7 ++++---
+ mm/migrate.c                 | 30 +++++++++++++++++++++++++++---
+ mm/vmscan.c                  | 15 +++++++++++++++
+ 5 files changed, 54 insertions(+), 12 deletions(-)
 
-Changelog:
-
-v4:
-
-- Rebased on the latest page demotion patchset. (which bases on v5.9-rc6)
-
-- Add page promotion counter.
-
-v3:
-
-- Move the rate limit control as late as possible per Mel Gorman's
-  comments.
-
-- Revise the hot page selection implementation to store page scan time
-  in struct page.
-
-- Code cleanup.
-
-- Rebased on the latest page demotion patchset.
-
-v2:
-
-- Addressed comments for V1.
-
-- Rebased on v5.5.
-
-Huang Ying (6):
-  autonuma: Optimize page placement for memory tiering system
-  autonuma, memory tiering: Skip to scan fast memory
-  autonuma, memory tiering: Hot page selection with hint page fault latency
-  autonuma, memory tiering: Rate limit NUMA migration throughput
-  autonuma, memory tiering: Adjust hot threshold automatically
-  autonuma, memory tiering: Add page promotion counter
-
- include/linux/mm.h           |  29 ++++++++
- include/linux/mmzone.h       |  11 ++++
- include/linux/node.h         |   5 ++
- include/linux/sched/sysctl.h |  12 ++++
- kernel/sched/core.c          |   9 +--
- kernel/sched/fair.c          | 124 +++++++++++++++++++++++++++++++++++
- kernel/sysctl.c              |  22 ++++++-
- mm/huge_memory.c             |  41 ++++++++----
- mm/memory.c                  |  11 +++-
- mm/migrate.c                 |  52 +++++++++++++--
- mm/mmzone.c                  |  17 +++++
- mm/mprotect.c                |  19 +++++-
- mm/vmscan.c                  |  15 +++++
- mm/vmstat.c                  |   4 ++
- 14 files changed, 345 insertions(+), 26 deletions(-)
-
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index 3c31ba88aca5..9d85450bc30a 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -39,6 +39,11 @@ enum sched_tunable_scaling {
+ };
+ extern enum sched_tunable_scaling sysctl_sched_tunable_scaling;
+ 
++#define NUMA_BALANCING_DISABLED		0x0
++#define NUMA_BALANCING_NORMAL		0x1
++#define NUMA_BALANCING_MEMORY_TIERING	0x2
++
++extern int sysctl_numa_balancing_mode;
+ extern unsigned int sysctl_numa_balancing_scan_delay;
+ extern unsigned int sysctl_numa_balancing_scan_period_min;
+ extern unsigned int sysctl_numa_balancing_scan_period_max;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2d95dc3f4644..bccf8eacc9b7 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3106,6 +3106,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+ }
+ 
+ DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
++int sysctl_numa_balancing_mode;
+ 
+ #ifdef CONFIG_NUMA_BALANCING
+ 
+@@ -3121,20 +3122,16 @@ void set_numabalancing_state(bool enabled)
+ int sysctl_numa_balancing(struct ctl_table *table, int write,
+ 			  void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-	struct ctl_table t;
+ 	int err;
+-	int state = static_branch_likely(&sched_numa_balancing);
+ 
+ 	if (write && !capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+-	t = *table;
+-	t.data = &state;
+-	err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
++	err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+ 	if (err < 0)
+ 		return err;
+ 	if (write)
+-		set_numabalancing_state(state);
++		set_numabalancing_state(*(int *)table->data);
+ 	return err;
+ }
+ #endif
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index afad085960b8..7d5f12d86489 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -113,6 +113,7 @@ static int sixty = 60;
+ 
+ static int __maybe_unused neg_one = -1;
+ static int __maybe_unused two = 2;
++static int __maybe_unused three = 3;
+ static int __maybe_unused four = 4;
+ static unsigned long zero_ul;
+ static unsigned long one_ul = 1;
+@@ -1755,12 +1756,12 @@ static struct ctl_table kern_table[] = {
+ 	},
+ 	{
+ 		.procname	= "numa_balancing",
+-		.data		= NULL, /* filled in by handler */
+-		.maxlen		= sizeof(unsigned int),
++		.data		= &sysctl_numa_balancing_mode,
++		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+ 		.proc_handler	= sysctl_numa_balancing,
+ 		.extra1		= SYSCTL_ZERO,
+-		.extra2		= SYSCTL_ONE,
++		.extra2		= &three,
+ 	},
+ #endif /* CONFIG_NUMA_BALANCING */
+ #endif /* CONFIG_SCHED_DEBUG */
+diff --git a/mm/migrate.c b/mm/migrate.c
+index fc6ee1b183d8..2079a69b40ed 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -50,6 +50,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/oom.h>
+ #include <linux/memory.h>
++#include <linux/sched/sysctl.h>
+ 
+ #include <asm/tlbflush.h>
+ 
+@@ -2038,13 +2039,36 @@ static struct page *alloc_misplaced_dst_page(struct page *page,
+ 
+ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+ {
+-	int page_lru;
++	int page_lru, nr = compound_nr(page), order = compound_order(page);
+ 
+-	VM_BUG_ON_PAGE(compound_order(page) && !PageTransHuge(page), page);
++	VM_BUG_ON_PAGE(order && !PageTransHuge(page), page);
+ 
+ 	/* Avoid migrating to a node that is nearly full */
+-	if (!migrate_balanced_pgdat(pgdat, compound_nr(page)))
++	if (!migrate_balanced_pgdat(pgdat, nr)) {
++		int migration_node, z;
++		pg_data_t *migration_pgdat;
++
++		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) ||
++		    !(node_reclaim_mode & RECLAIM_MIGRATE))
++			return 0;
++		/*
++		 * The slow memory node need to have enough
++		 * free pages to demote the cold pages in the
++		 * fast memory node to it.
++		 */
++		migration_node = next_demotion_node(pgdat->node_id);
++		if (migration_node == NUMA_NO_NODE)
++			return 0;
++		migration_pgdat = NODE_DATA(migration_node);
++		if (!migrate_balanced_pgdat(migration_pgdat, nr))
++			return 0;
++		for (z = pgdat->nr_zones - 1; z >= 0; z--) {
++			if (populated_zone(pgdat->node_zones + z))
++				break;
++		}
++		wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
+ 		return 0;
++	}
+ 
+ 	if (isolate_lru_page(page))
+ 		return 0;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 4a4c9941c969..0a54ad7e74cb 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -58,6 +58,7 @@
+ 
+ #include <linux/swapops.h>
+ #include <linux/balloon_compaction.h>
++#include <linux/sched/sysctl.h>
+ 
+ #include "internal.h"
+ 
+@@ -3542,6 +3543,12 @@ static bool pgdat_watermark_boosted(pg_data_t *pgdat, int highest_zoneidx)
+ 	return false;
+ }
+ 
++/*
++ * Keep the free pages on fast memory node a little more than the high
++ * watermark to accommodate the promoted pages.
++ */
++#define NUMA_BALANCING_ADDON_WATERMARK		(10UL * 1024 * 1024 >> PAGE_SHIFT)
++
+ /*
+  * Returns true if there is an eligible zone balanced for the request order
+  * and highest_zoneidx
+@@ -3563,6 +3570,14 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 			continue;
+ 
+ 		mark = high_wmark_pages(zone);
++		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
++		    next_demotion_node(pgdat->node_id) != NUMA_NO_NODE) {
++			unsigned long addon_mark;
++
++			addon_mark = min(NUMA_BALANCING_ADDON_WATERMARK,
++					 pgdat->node_present_pages >> 6);
++			mark += addon_mark;
++		}
+ 		if (zone_watermark_ok_safe(zone, order, mark, highest_zoneidx))
+ 			return true;
+ 	}
 -- 
 2.28.0
+
