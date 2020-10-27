@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C84D29B81C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B7229B807
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799496AbgJ0Pbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40882 "EHLO mail.kernel.org"
+        id S1799178AbgJ0P35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:29:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798145AbgJ0PZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:55 -0400
+        id S1798071AbgJ0PZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:25:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 073762064B;
-        Tue, 27 Oct 2020 15:25:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F1522064B;
+        Tue, 27 Oct 2020 15:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812355;
-        bh=bKe3MNMrhUKZGjJmilsT28wL8uxdUhmboq/eRPyBLps=;
+        s=default; t=1603812327;
+        bh=MKdIcZFigxGEm5Ll1r8U5dgmoPxrQX53Q37S9YRTPvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l9x+7b9ZxMzY1rRabKgqnTuBCMoAWllfghYUvooDphN24qcx6/WdGeYHZk+5QaLwm
-         3wRgFSQU/MIRh0cM70IJrxfzwTNmS+mdGg5EaQWVnWdX9mdHzBfCn0wtI85Z9EwEhg
-         EwybSXvjyca+yegFswYMnew4tUFk2mDzf26RlKWw=
+        b=XDMquoetpvFh6qbxMmNEPlbpGoT++Qo0jaONdzUHeDB/Aeu3HB3Lsj7wtipsbeRcU
+         3fROdzU9SZBZal3lyp9kafT/C5xAAVe3hPI77NKnuDvdpSxCi6euD1pMgI0A9SaaHD
+         wIw9ZfHd5+3KrMM+zktQwARgMs+YQ4R3dQ7cgh1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,9 +31,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 140/757] media: rcar_drif: Fix fwnode reference leak when parsing DT
-Date:   Tue, 27 Oct 2020 14:46:30 +0100
-Message-Id: <20201027135457.168015663@linuxfoundation.org>
+Subject: [PATCH 5.9 143/757] media: i2c: max9286: Allocate v4l2_async_subdev dynamically
+Date:   Tue, 27 Oct 2020 14:46:33 +0100
+Message-Id: <20201027135457.303071341@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -47,59 +47,113 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 
-[ Upstream commit cdd4f7824994c9254acc6e415750529ea2d2cfe0 ]
+[ Upstream commit 86d37bf31af647760f1f17e7c1afa1bdba075198 ]
 
-The fwnode reference corresponding to the endpoint is leaked in an error
-path of the rcar_drif_parse_subdevs() function. Fix it, and reorganize
-fwnode reference handling in the function to release references early,
-simplifying error paths.
+v4l2_async_notifier_add_subdev() requires the asd to be allocated
+dynamically, but the max9286 driver embeds it in the max9286_source
+structure. This causes memory corruption when the notifier is destroyed
+at remove time with v4l2_async_notifier_cleanup().
 
+Fix this issue by registering the asd with
+v4l2_async_notifier_add_fwnode_subdev(), which allocates it dynamically
+internally. A new max9286_asd structure is introduced, to store a
+pointer to the corresonding max9286_source that needs to be accessed
+from bound and unbind callbacks. There's no need to take an extra
+explicit reference to the fwnode anymore as
+v4l2_async_notifier_add_fwnode_subdev() does so internally.
+
+While at it, use %u instead of %d to print the unsigned index in the
+error message from the v4l2_async_notifier_add_fwnode_subdev() error
+path.
+
+Fixes: 66d8c9d2422d ("media: i2c: Add MAX9286 driver")
 Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar_drif.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/media/i2c/max9286.c | 40 +++++++++++++++++++------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/media/platform/rcar_drif.c b/drivers/media/platform/rcar_drif.c
-index 3d2451ac347d7..3f1e5cb8b1976 100644
---- a/drivers/media/platform/rcar_drif.c
-+++ b/drivers/media/platform/rcar_drif.c
-@@ -1227,28 +1227,22 @@ static int rcar_drif_parse_subdevs(struct rcar_drif_sdr *sdr)
- 	if (!ep)
- 		return 0;
+diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+index b364a3f604861..c82c1493e099d 100644
+--- a/drivers/media/i2c/max9286.c
++++ b/drivers/media/i2c/max9286.c
+@@ -135,13 +135,19 @@
+ #define MAX9286_SRC_PAD			4
  
-+	/* Get the endpoint properties */
-+	rcar_drif_get_ep_properties(sdr, ep);
+ struct max9286_source {
+-	struct v4l2_async_subdev asd;
+ 	struct v4l2_subdev *sd;
+ 	struct fwnode_handle *fwnode;
+ };
+ 
+-#define asd_to_max9286_source(_asd) \
+-	container_of(_asd, struct max9286_source, asd)
++struct max9286_asd {
++	struct v4l2_async_subdev base;
++	struct max9286_source *source;
++};
 +
- 	fwnode = fwnode_graph_get_remote_port_parent(ep);
-+	fwnode_handle_put(ep);
- 	if (!fwnode) {
- 		dev_warn(sdr->dev, "bad remote port parent\n");
--		fwnode_handle_put(ep);
- 		return -EINVAL;
++static inline struct max9286_asd *to_max9286_asd(struct v4l2_async_subdev *asd)
++{
++	return container_of(asd, struct max9286_asd, base);
++}
+ 
+ struct max9286_priv {
+ 	struct i2c_client *client;
+@@ -481,7 +487,7 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+ 				struct v4l2_async_subdev *asd)
+ {
+ 	struct max9286_priv *priv = sd_to_max9286(notifier->sd);
+-	struct max9286_source *source = asd_to_max9286_source(asd);
++	struct max9286_source *source = to_max9286_asd(asd)->source;
+ 	unsigned int index = to_index(priv, source);
+ 	unsigned int src_pad;
+ 	int ret;
+@@ -545,7 +551,7 @@ static void max9286_notify_unbind(struct v4l2_async_notifier *notifier,
+ 				  struct v4l2_async_subdev *asd)
+ {
+ 	struct max9286_priv *priv = sd_to_max9286(notifier->sd);
+-	struct max9286_source *source = asd_to_max9286_source(asd);
++	struct max9286_source *source = to_max9286_asd(asd)->source;
+ 	unsigned int index = to_index(priv, source);
+ 
+ 	source->sd = NULL;
+@@ -570,23 +576,19 @@ static int max9286_v4l2_notifier_register(struct max9286_priv *priv)
+ 
+ 	for_each_source(priv, source) {
+ 		unsigned int i = to_index(priv, source);
+-
+-		source->asd.match_type = V4L2_ASYNC_MATCH_FWNODE;
+-		source->asd.match.fwnode = source->fwnode;
+-
+-		ret = v4l2_async_notifier_add_subdev(&priv->notifier,
+-						     &source->asd);
+-		if (ret) {
+-			dev_err(dev, "Failed to add subdev for source %d", i);
++		struct v4l2_async_subdev *asd;
++
++		asd = v4l2_async_notifier_add_fwnode_subdev(&priv->notifier,
++							    source->fwnode,
++							    sizeof(*asd));
++		if (IS_ERR(asd)) {
++			dev_err(dev, "Failed to add subdev for source %u: %ld",
++				i, PTR_ERR(asd));
+ 			v4l2_async_notifier_cleanup(&priv->notifier);
+-			return ret;
++			return PTR_ERR(asd);
+ 		}
+ 
+-		/*
+-		 * Balance the reference counting handled through
+-		 * v4l2_async_notifier_cleanup()
+-		 */
+-		fwnode_handle_get(source->fwnode);
++		to_max9286_asd(asd)->source = source;
  	}
  
- 	sdr->ep.asd.match.fwnode = fwnode;
- 	sdr->ep.asd.match_type = V4L2_ASYNC_MATCH_FWNODE;
- 	ret = v4l2_async_notifier_add_subdev(notifier, &sdr->ep.asd);
--	if (ret) {
--		fwnode_handle_put(fwnode);
--		return ret;
--	}
--
--	/* Get the endpoint properties */
--	rcar_drif_get_ep_properties(sdr, ep);
--
- 	fwnode_handle_put(fwnode);
--	fwnode_handle_put(ep);
- 
--	return 0;
-+	return ret;
- }
- 
- /* Check if the given device is the primary bond */
+ 	priv->notifier.ops = &max9286_notify_ops;
 -- 
 2.25.1
 
