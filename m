@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0447329BA80
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B8E29BB65
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806036AbgJ0QF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:05:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43148 "EHLO mail.kernel.org"
+        id S1805911AbgJ0QBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802205AbgJ0PqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:46:00 -0400
+        id S1802252AbgJ0PqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:46:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 578092231B;
-        Tue, 27 Oct 2020 15:45:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBFCC22265;
+        Tue, 27 Oct 2020 15:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813558;
-        bh=8q1iBLBaIebp3wRZiThfQ1xCp7msHz/VyOF2lfbaHrg=;
+        s=default; t=1603813564;
+        bh=2hK27uyi8KX0nlZwWnPThF77ntKgOGIt5gBXDfs2hZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HjkfIwzo4AKxCgeaFdyfIajiZBp8q0HkoXQwkiOCbXA0HrZ+VD6FlN3IKs6TSz4B+
-         M1Zvc711NiZj3FTlcHa0py8OWyQ+Y70qlzJsUmUrZibpsabwAFvrMU24O5AjIi1/Dt
-         LqMEtnHNdmrnYTvQeBfQ7tJ/h7TTnyjtW8hzovOI=
+        b=rHIYzilSV2w4TSUO2Uotomm1faOlNPtncsUM9enciW+CI2pjFEJjX4VmXlBhWcVsz
+         Tf79g2wu9WCeqKJEXmCnieAuglDyFboUdfzdVxJtj9rTYm4SxGdxEHiQT6FLAoWBLQ
+         ATxJL3sL0zutoiN9jVqZk7AIzbdpUAagJ8EnBdts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 593/757] arm64: dts: qcom: sdm845-db845c: Fix hdmi nodes
-Date:   Tue, 27 Oct 2020 14:54:03 +0100
-Message-Id: <20201027135518.349329167@linuxfoundation.org>
+Subject: [PATCH 5.9 594/757] arm64: dts: qcom: sm8150: fix up primary USB nodes
+Date:   Tue, 27 Oct 2020 14:54:04 +0100
+Message-Id: <20201027135518.398183118@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,50 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Jonathan Marek <jonathan@marek.ca>
 
-[ Upstream commit bca4339bda0989e49189c164795b120eb261970c ]
+[ Upstream commit 79493db5bb573017767b4f48b0fc69bfd01b82d2 ]
 
-As per binding documentation, we should have dsi as node 0 and hdmi
-audio as node 1, so fix it
+The compatible for hsphy has out of place indentation, and the assigned
+clock rate for GCC_USB30_PRIM_MASTER_CLK is incorrect, the clock doesn't
+support a rate of 150000000. Use a rate of 200000000 to match downstream.
 
-Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Fixes: aef9a119dfb9 ("arm64: dts: qcom: sdm845-db845c: Add hdmi bridge nodes")
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20200828074347.3788518-1-vkoul@kernel.org
+Fixes: b33d2868e8d3 ("arm64: dts: qcom: sm8150: Add USB and PHY device nodes")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Link: https://lore.kernel.org/r/20200818160445.14008-1-jonathan@marek.ca
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index a2a98680ccf53..99d33955270ec 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -451,16 +451,16 @@ ports {
- 			port@0 {
- 				reg = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index b86a7ead30067..ab8680c6672e4 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -767,7 +767,7 @@ glink-edge {
  
--				lt9611_out: endpoint {
--					remote-endpoint = <&hdmi_con>;
-+				lt9611_a: endpoint {
-+					remote-endpoint = <&dsi0_out>;
- 				};
- 			};
+ 		usb_1_hsphy: phy@88e2000 {
+ 			compatible = "qcom,sm8150-usb-hs-phy",
+-							"qcom,usb-snps-hs-7nm-phy";
++				     "qcom,usb-snps-hs-7nm-phy";
+ 			reg = <0 0x088e2000 0 0x400>;
+ 			status = "disabled";
+ 			#phy-cells = <0>;
+@@ -833,7 +833,7 @@ usb_1: usb@a6f8800 {
  
--			port@1 {
--				reg = <1>;
-+			port@2 {
-+				reg = <2>;
+ 			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+ 					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+-			assigned-clock-rates = <19200000>, <150000000>;
++			assigned-clock-rates = <19200000>, <200000000>;
  
--				lt9611_a: endpoint {
--					remote-endpoint = <&dsi0_out>;
-+				lt9611_out: endpoint {
-+					remote-endpoint = <&hdmi_con>;
- 				};
- 			};
- 		};
+ 			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.25.1
 
