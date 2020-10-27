@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEF929B054
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCCB29AFEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901065AbgJ0OST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36712 "EHLO mail.kernel.org"
+        id S1756584AbgJ0OOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:14:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754586AbgJ0OO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:14:58 -0400
+        id S1754744AbgJ0OGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:06:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CA792076A;
-        Tue, 27 Oct 2020 14:14:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 477C822258;
+        Tue, 27 Oct 2020 14:06:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808097;
-        bh=CjoBqnIUwU8OsjDiYAN4C8ltkaGbcwBB0IHARfU1d0I=;
+        s=default; t=1603807609;
+        bh=grUqw/DYVQzulCJPfyXD4JR5EqVAtyYq6JiU5FRZc6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TKBaq2LVx+pdMAo8yP6StsjtuEYTi5fxbPdM9lK9mtowN8vzx/aZif8TH7Oj7No+l
-         htlHc8ymZ2bzxuyUyNHWnAJxXvPuUX+n3QDfEhQWoO6erP1SsKotbQ66NvbbREGiyi
-         scHz1vuk9RTeOwq538j0VgKhK8jKAJ/26IG70Dt8=
+        b=kKZ9yzITHaaJifwu/Y7ppxj9Fzq9bQSuce8/g//slGk0xHrApJzRSwz7pZQHSVq52
+         hlr1jZkTgJI68mp7FwFBPUEMo5Xnk9BWOTVyDjRgvMpf3/g1TQ5YskCSp9gNWfELda
+         iMnE2darW4HTPxVEt75sr3NIrLs1g3wzjnJClfy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Pedersen <thomas@adapt-ip.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 155/191] mac80211: handle lack of sband->bitrates in rates
+        stable@vger.kernel.org,
+        syzbot+9991561e714f597095da@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 116/139] udf: Limit sparing table size
 Date:   Tue, 27 Oct 2020 14:50:10 +0100
-Message-Id: <20201027134917.164877462@linuxfoundation.org>
+Message-Id: <20201027134907.647267552@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Pedersen <thomas@adapt-ip.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 8b783d104e7f40684333d2ec155fac39219beb2f ]
+[ Upstream commit 44ac6b829c4e173fdf6df18e6dd86aecf9a3dc99 ]
 
-Even though a driver or mac80211 shouldn't produce a
-legacy bitrate if sband->bitrates doesn't exist, don't
-crash if that is the case either.
+Although UDF standard allows it, we don't support sparing table larger
+than a single block. Check it during mount so that we don't try to
+access memory beyond end of buffer.
 
-This fixes a kernel panic if station dump is run before
-last_rate can be updated with a data frame when
-sband->bitrates is missing (eg. in S1G bands).
-
-Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
-Link: https://lore.kernel.org/r/20201005164522.18069-1-thomas@adapt-ip.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reported-by: syzbot+9991561e714f597095da@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c      | 3 ++-
- net/mac80211/sta_info.c | 4 ++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ fs/udf/super.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index c883cb67b7311..0b82d8da4ab0a 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -661,7 +661,8 @@ void sta_set_rate_info_tx(struct sta_info *sta,
- 		u16 brate;
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index 4abdba453885e..c8c037e8e57b5 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -1391,6 +1391,12 @@ static int udf_load_sparable_map(struct super_block *sb,
+ 			(int)spm->numSparingTables);
+ 		return -EIO;
+ 	}
++	if (le32_to_cpu(spm->sizeSparingTable) > sb->s_blocksize) {
++		udf_err(sb, "error loading logical volume descriptor: "
++			"Too big sparing table size (%u)\n",
++			le32_to_cpu(spm->sizeSparingTable));
++		return -EIO;
++	}
  
- 		sband = ieee80211_get_sband(sta->sdata);
--		if (sband) {
-+		WARN_ON_ONCE(sband && !sband->bitrates);
-+		if (sband && sband->bitrates) {
- 			brate = sband->bitrates[rate->idx].bitrate;
- 			rinfo->legacy = DIV_ROUND_UP(brate, 1 << shift);
- 		}
-diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
-index 6af5fda6461ce..2a18687019003 100644
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -2004,6 +2004,10 @@ static void sta_stats_decode_rate(struct ieee80211_local *local, u16 rate,
- 
- 		rinfo->flags = 0;
- 		sband = local->hw.wiphy->bands[band];
-+
-+		if (WARN_ON_ONCE(!sband->bitrates))
-+			break;
-+
- 		brate = sband->bitrates[rate_idx].bitrate;
- 		if (rinfo->bw == RATE_INFO_BW_5)
- 			shift = 2;
+ 	for (i = 0; i < spm->numSparingTables; i++) {
+ 		loc = le32_to_cpu(spm->locSparingTable[i]);
 -- 
 2.25.1
 
