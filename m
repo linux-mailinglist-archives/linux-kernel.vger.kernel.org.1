@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8CA29B5C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34C929B5C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795859AbgJ0PPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1795875AbgJ0PPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 11:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49050 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794593AbgJ0PMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:12:35 -0400
+        id S1794604AbgJ0PMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:12:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36BA020728;
-        Tue, 27 Oct 2020 15:12:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17CD02071A;
+        Tue, 27 Oct 2020 15:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811554;
-        bh=lnUQmhdxI1R7NBgmIqelYj+WNGdFerjAL0lYGwFQWbo=;
+        s=default; t=1603811557;
+        bh=vJFXUUXbzdk6b30x0KD3inikwaRRFzDEaCtkhqDKtxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ScmyJ+S2fxrxeY9PinpCjH7Yi+jB91ZDpo0/vxF64Ee9tAZtK4nJIDMA5M0/diL4Z
-         D7744oJu/e3un3XpbP9oRT6iO6T2Cuw37GYlJ+KEbtLYBJjsHW2Q7ZacHpXb9QtTvv
-         FU2xoCM9IoJZXMxHIOvMAfZLDSyzqyN8yBXCjL5o=
+        b=piB9J3wVnboYsJY2lBR0uNcKj/ustGzwYbEe0+8wnfY4W0ZUKZkVn7tyKJMcgZHqD
+         1Lv/kXS9NSL8WsrCAGfNOUHwe7ujrd36niiXnXwrgXs/6g0ATtL+X1dwbmXbvbynaj
+         uBbSik/xvw8jD+1GTYYuU1Oqhod6VBuanLl4xB8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+998261c2ae5932458f6c@syzkaller.appspotmail.com,
-        Oliver Neukum <oneukum@suse.com>, Sean Young <sean@mess.org>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 534/633] media: ati_remote: sanity check for both endpoints
-Date:   Tue, 27 Oct 2020 14:54:37 +0100
-Message-Id: <20201027135547.831371182@linuxfoundation.org>
+Subject: [PATCH 5.8 535/633] media: st-delta: Fix reference count leak in delta_run_work
+Date:   Tue, 27 Oct 2020 14:54:38 +0100
+Message-Id: <20201027135547.880535614@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,38 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit a8be80053ea74bd9c3f9a3810e93b802236d6498 ]
+[ Upstream commit 57cc666d36adc7b45e37ba4cd7bc4e44ec4c43d7 ]
 
-If you do sanity checks, you should do them for both endpoints.
-Hence introduce checking for endpoint type for the output
-endpoint, too.
+delta_run_work() calls delta_get_sync() that increments
+the reference counter. In case of failure, decrement the reference
+count by calling delta_put_autosuspend().
 
-Reported-by: syzbot+998261c2ae5932458f6c@syzkaller.appspotmail.com
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/ati_remote.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/platform/sti/delta/delta-v4l2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/rc/ati_remote.c b/drivers/media/rc/ati_remote.c
-index 9cdef17b4793f..c12dda73cdd53 100644
---- a/drivers/media/rc/ati_remote.c
-+++ b/drivers/media/rc/ati_remote.c
-@@ -835,6 +835,10 @@ static int ati_remote_probe(struct usb_interface *interface,
- 		err("%s: endpoint_in message size==0? \n", __func__);
- 		return -ENODEV;
+diff --git a/drivers/media/platform/sti/delta/delta-v4l2.c b/drivers/media/platform/sti/delta/delta-v4l2.c
+index 2503224eeee51..c691b3d81549d 100644
+--- a/drivers/media/platform/sti/delta/delta-v4l2.c
++++ b/drivers/media/platform/sti/delta/delta-v4l2.c
+@@ -954,8 +954,10 @@ static void delta_run_work(struct work_struct *work)
+ 	/* enable the hardware */
+ 	if (!dec->pm) {
+ 		ret = delta_get_sync(ctx);
+-		if (ret)
++		if (ret) {
++			delta_put_autosuspend(ctx);
+ 			goto err;
++		}
  	}
-+	if (!usb_endpoint_is_int_out(endpoint_out)) {
-+		err("%s: Unexpected endpoint_out\n", __func__);
-+		return -ENODEV;
-+	}
  
- 	ati_remote = kzalloc(sizeof (struct ati_remote), GFP_KERNEL);
- 	rc_dev = rc_allocate_device(RC_DRIVER_SCANCODE);
+ 	/* decode this access unit */
 -- 
 2.25.1
 
