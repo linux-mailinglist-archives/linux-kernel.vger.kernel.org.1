@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A7529CBB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A311D29CBC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832152AbgJ0WDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 18:03:45 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:45704 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1760112AbgJ0WDo (ORCPT
+        id S1832216AbgJ0WJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 18:09:23 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:45378 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505872AbgJ0WJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:03:44 -0400
-Received: by mail-pf1-f196.google.com with SMTP id e7so1707994pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 15:03:43 -0700 (PDT)
+        Tue, 27 Oct 2020 18:09:23 -0400
+Received: by mail-il1-f195.google.com with SMTP id g7so2909685ilr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 15:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BIgA23QX48XZ046Ge9ljl2tKSIQwwh1UxXCcpF43RtQ=;
-        b=DQ4QYs8mm70+rmT6lRf4l6/moOr/APcehE0qI2sTetrRpD0rKQcuE06shQpHs4ISpv
-         +xskUF2josJN6OZ7d1A7Szw1vnt+kuUpFQR9AMXT1EDP+t9+TC0zAGPXYCQYI2F+v573
-         ncdjsWm5Lk/qtYVSspLjcRFflT9AVKO93yQwXSpZpqGOZKI8TOiMPnggSNISM68S9udt
-         G/QCm6BtoytS6FFs4Cib7tax4L4ONjrZI1HVW00ZAS1uygE38BcNPpv+dzMtTzFMC0ss
-         +BqJM6oJmL3i3yTBUH/czr/Y7LWL8D5KjZVFlF+xNlOG+YauJn6iVtG0d7sgAr1HwTVy
-         UYZQ==
+        bh=QtLd4MZtASQ2zrGtGhpf+MoowsKrVZdCQedmVoJd9Rc=;
+        b=SueMScFfjbh8XdzU6F54EIkMXs8/Wtn/eXnJRab8hMwLvr8ZYxl9q4sbIuHjn6xIZM
+         gNu7A9DCdnVKmAFaRgH1p8pHuaDP8b31v2ISiN+iH4o/QAohO08LS6eP75LpqUKGbo5t
+         0QToa+81/KVB1jd4PH9AFE75XKUJ8pbo8pF/yez9VjMJTaehId5F9mPLuIu+vtA2Frxf
+         UPJba55YPJ1EvpCJeA4JnQLXVUo45vtF24vQf0+at8Ha9ehe0+J0AQiwX729a8++U8wU
+         cxKwN/occG1uD9K/uClYiEaKCKws1mpNXP4t1R4EivxxlkljqqOM7SvFykOTcSaX1+sJ
+         XBKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BIgA23QX48XZ046Ge9ljl2tKSIQwwh1UxXCcpF43RtQ=;
-        b=mFW9KuM+weFR98vQhCP+0QxlrNG5Pg3jwNoRN4MW2tW4vItp+oOlYTdShAp3lPIrpS
-         CqaADxyz4xY67nSU7lOAY186OPX+e7layK8s6qJUGWt4XA27ocLSjvavXzlUsWg5YiLP
-         DV8tf+BoITnIG7InvQtYr/22StrJLkfFMlV0nxEPEdQG79PinDo+8dk6fvqdJjdV7lyS
-         XhuBdSlSIFhJknAlomjQ2Nqo1lNZd0BaOFOkwxN+dL4UTEVoJVwLVlTY2LJI+PgKRB2/
-         x8dITnbecQGF25uHPHWQHIhTq/XCj/FjTD0KW28OZ8Wtn4qJLD2BTPzIIF6ar+AZdE3c
-         jgMA==
-X-Gm-Message-State: AOAM5327wQMcAm3bMdbh/SBvJbsZYhf1ybIO+Op0KERbOjwKvQeeLuTc
-        eDiy8BR82wRflT9V20W77Y1sm4VdbzvDlT5oMcdOT8H6gYg=
-X-Google-Smtp-Source: ABdhPJx8L1OiCbNFAi5Sliu7v9cXX6Ed/uwWX333oVtC4BVqOz5Cs6zhmcXllfQaAoaMy9QHY2yTF0fhz6TiuhuH5rw=
-X-Received: by 2002:a62:ce41:0:b029:160:c0c:e03d with SMTP id
- y62-20020a62ce410000b02901600c0ce03dmr4426890pfg.15.1603836222920; Tue, 27
- Oct 2020 15:03:42 -0700 (PDT)
+        bh=QtLd4MZtASQ2zrGtGhpf+MoowsKrVZdCQedmVoJd9Rc=;
+        b=NRlYZGlGJMS9+X7iV/SOTF8VuCaVZm5BkmWo4QrjxJt/sCoa07o/64zArcUilKEkda
+         O/thC8fvshyURMIFaINk4z6mK07XLuB69b/Kf7+bSfuHSnskH9mlWeZOLfyAfFSy4l/c
+         d+mw0pgbyZIqggYjOvdJx5n1xnCiEZ2K6z7tq4m95e7G7GnsEWeWzwv063SYgSJzGsPp
+         kPZwqVOpAaDG6o+PG+9p+/B3mszEd1nLp9raSL1Ex9taaPQjwPAGLx7pvgOR8/fv5Lmi
+         04Vp1H+AlNzYVIRhzXD3fTYmhj2FGndtIJPtMiyDr9gojKnIbeo6v8iNb/M7KWMSjLgL
+         zYqA==
+X-Gm-Message-State: AOAM5326SVZHid+YIT6TIKwQ4o4Pnl6B8Q/liFttygz8UZPiNNQHPJG5
+        /Fv3WSnUEZZNT4IG3byUSKRHxX2tUN5NN63Ztmp6dg==
+X-Google-Smtp-Source: ABdhPJypKDAq1rQjjgvHDQbdQftG1QcR2f98eezxhqgOKx9tvzDnLVPDf+6LM+Ik0DY5aif+/6IHMAGLZz31pkPLlgQ=
+X-Received: by 2002:a92:d5c4:: with SMTP id d4mr3228850ilq.154.1603836561979;
+ Tue, 27 Oct 2020 15:09:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org> <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
- <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com>
-In-Reply-To: <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Oct 2020 15:03:31 -0700
-Message-ID: <CAKwvOdnfkZXJdZkKO6qT53j6nH4HF=CcpUZcr7XOqdnQLSShmw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
+References: <20201027214300.1342-1-sean.j.christopherson@intel.com> <20201027214300.1342-4-sean.j.christopherson@intel.com>
+In-Reply-To: <20201027214300.1342-4-sean.j.christopherson@intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 27 Oct 2020 15:09:11 -0700
+Message-ID: <CANgfPd-cOrEnEbtPkRHgW3yVZQJtpbzr77+nj5+Hq6W2TJys-g@mail.gmail.com>
+Subject: Re: [PATCH 3/3] KVM: x86/mmu: Use hugepage GFN mask to compute GFN
+ offset mask
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 2:50 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+On Tue, Oct 27, 2020 at 2:43 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
 >
-> On Tue, 27 Oct 2020 at 22:20, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Tue, Oct 27, 2020 at 1:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> > > index 6e390d58a9f8..ac3fa37a84f9 100644
-> > > --- a/include/linux/compiler_types.h
-> > > +++ b/include/linux/compiler_types.h
-> > > @@ -247,10 +247,6 @@ struct ftrace_likely_data {
-> > >  #define asm_inline asm
-> > >  #endif
-> > >
-> > > -#ifndef __no_fgcse
-> > > -# define __no_fgcse
-> > > -#endif
-> > > -
-> > Finally, this is going to disable GCSE for the whole translation unit,
-> > which may be overkill.   Previously it was isolated to one function
-> > definition.  You could lower the definition of the preprocessor define
-> > into kernel/bpf/core.c to keep its use isolated as far as possible.
-> >
->
-> Which preprocessor define?
+> Use the logical NOT of KVM_HPAGE_GFN_MASK() to compute the GFN offset
+> mask instead of open coding the equivalent in a variety of locations.
 
-__no_fgcse
+I don't see a "no functional change expected" note on this patch as
+was on the previous one, but I don't think this represents any
+functional change.
 
 >
-> > I'm fine with either approach, but we should avoid new warnings for
-> > clang.  Thanks for the patch!
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
--- 
-Thanks,
-~Nick Desaulniers
+Reviewed-by: Ben Gardon <bgardon@google.com>
+
+> ---
+>  arch/x86/kvm/mmu/mmu.c      | 2 +-
+>  arch/x86/kvm/mmu/mmutrace.h | 2 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c  | 2 +-
+>  arch/x86/kvm/x86.c          | 6 +++---
+>  4 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 3bfc7ee44e51..9fb50c666ec5 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2827,7 +2827,7 @@ int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
+>          * mmu_notifier_retry() was successful and mmu_lock is held, so
+>          * the pmd can't be split from under us.
+>          */
+> -       mask = KVM_PAGES_PER_HPAGE(level) - 1;
+> +       mask = ~KVM_HPAGE_GFN_MASK(level);
+>         VM_BUG_ON((gfn & mask) != (pfn & mask));
+>         *pfnp = pfn & ~mask;
+>
+> diff --git a/arch/x86/kvm/mmu/mmutrace.h b/arch/x86/kvm/mmu/mmutrace.h
+> index 213699b27b44..4432ca3c7e4e 100644
+> --- a/arch/x86/kvm/mmu/mmutrace.h
+> +++ b/arch/x86/kvm/mmu/mmutrace.h
+> @@ -372,7 +372,7 @@ TRACE_EVENT(
+>
+>         TP_fast_assign(
+>                 __entry->gfn = addr >> PAGE_SHIFT;
+> -               __entry->pfn = pfn | (__entry->gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
+> +               __entry->pfn = pfn | (__entry->gfn & ~KVM_HPAGE_GFN_MASK(level));
+>                 __entry->level = level;
+>         ),
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 27e381c9da6c..681686608c0b 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -209,7 +209,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>
+>         WARN_ON(level > PT64_ROOT_MAX_LEVEL);
+>         WARN_ON(level < PG_LEVEL_4K);
+> -       WARN_ON(gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
+> +       WARN_ON(gfn & ~KVM_HPAGE_GFN_MASK(level));
+>
+>         /*
+>          * If this warning were to trigger it would indicate that there was a
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 397f599b20e5..faf4c4ddde94 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10451,16 +10451,16 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>
+>                 slot->arch.lpage_info[i - 1] = linfo;
+>
+> -               if (slot->base_gfn & (KVM_PAGES_PER_HPAGE(level) - 1))
+> +               if (slot->base_gfn & ~KVM_HPAGE_GFN_MASK(level))
+>                         linfo[0].disallow_lpage = 1;
+> -               if ((slot->base_gfn + npages) & (KVM_PAGES_PER_HPAGE(level) - 1))
+> +               if ((slot->base_gfn + npages) & ~KVM_HPAGE_GFN_MASK(level))
+>                         linfo[lpages - 1].disallow_lpage = 1;
+>                 ugfn = slot->userspace_addr >> PAGE_SHIFT;
+>                 /*
+>                  * If the gfn and userspace address are not aligned wrt each
+>                  * other, disable large page support for this slot.
+>                  */
+> -               if ((slot->base_gfn ^ ugfn) & (KVM_PAGES_PER_HPAGE(level) - 1)) {
+> +               if ((slot->base_gfn ^ ugfn) & ~KVM_HPAGE_GFN_MASK(level)) {
+>                         unsigned long j;
+>
+>                         for (j = 0; j < lpages; ++j)
+> --
+> 2.28.0
+>
