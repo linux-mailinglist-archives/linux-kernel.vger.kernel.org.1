@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F8729AE50
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6264B29AE53
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752817AbgJ0N66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46296 "EHLO mail.kernel.org"
+        id S2438932AbgJ0N7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:59:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733580AbgJ0N6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:58:53 -0400
+        id S2504289AbgJ0N7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:59:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 297212068D;
-        Tue, 27 Oct 2020 13:58:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D7DF21D42;
+        Tue, 27 Oct 2020 13:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807132;
-        bh=gAnXIdKLsqUvOJAAyBxNNufl+z8q4nno/Dh7BsCrLTg=;
+        s=default; t=1603807141;
+        bh=oj5HLCgTap0UE8B9NbqNauRQX8CuLpo1hR0Pot0m9Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y7uGJlls4rXB0mC9WmaGAhmKsAeW2BQ+gkjPAyB/Jadij/Rqkw5ciOP27402L6GtE
-         qMrPU6IxiGFklqegbe5wqlgTzcYC+jT04rkeCaD6+C4KBobLkVRsEpWVbCBHpMTB6m
-         dBdizCfi8k9LiiSgWKzA/+Tq/yL2pgMvGkg9r4oU=
+        b=nYdmOma7w78R3AJ1eFp8kpSlfwBt8YmQuYQ8IyvsgVvWYVFvW2hD1KS2ac3qYzXGv
+         0+zXryaQbyjILXtPZ6GIHLa6YJ2LWIYbZaXp/84ooyrtSf1kcRz/pvU/dg0AD+kcna
+         JyOhF8wCLCeOUDDZaUpfbruQIt0u74P/78SmYBb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 054/112] powerpc/pseries: Fix missing of_node_put() in rng_init()
-Date:   Tue, 27 Oct 2020 14:49:24 +0100
-Message-Id: <20201027134903.128807758@linuxfoundation.org>
+Subject: [PATCH 4.4 056/112] mtd: lpddr: fix excessive stack usage with clang
+Date:   Tue, 27 Oct 2020 14:49:26 +0100
+Message-Id: <20201027134903.215575613@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -43,35 +44,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Mc Guire <hofrat@osadl.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 67c3e59443f5fc77be39e2ce0db75fbfa78c7965 ]
+[ Upstream commit 3e1b6469f8324bee5927b063e2aca30d3e56b907 ]
 
-The call to of_find_compatible_node() returns a node pointer with
-refcount incremented thus it must be explicitly decremented here
-before returning.
+Building lpddr2_nvm with clang can result in a giant stack usage
+in one function:
 
-Fixes: a489043f4626 ("powerpc/pseries: Implement arch_get_random_long() based on H_RANDOM")
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1530522496-14816-1-git-send-email-hofrat@osadl.org
+drivers/mtd/lpddr/lpddr2_nvm.c:399:12: error: stack frame size of 1144 bytes in function 'lpddr2_nvm_probe' [-Werror,-Wframe-larger-than=]
+
+The problem is that clang decides to build a copy of the mtd_info
+structure on the stack and then do a memcpy() into the actual version. It
+shouldn't really do it that way, but it's not strictly a bug either.
+
+As a workaround, use a static const version of the structure to assign
+most of the members upfront and then only set the few members that
+require runtime knowledge at probe time.
+
+Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200505140136.263461-1-arnd@arndb.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/rng.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/lpddr/lpddr2_nvm.c | 35 ++++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/rng.c b/arch/powerpc/platforms/pseries/rng.c
-index 31ca557af60bc..262b8c5e1b9d0 100644
---- a/arch/powerpc/platforms/pseries/rng.c
-+++ b/arch/powerpc/platforms/pseries/rng.c
-@@ -40,6 +40,7 @@ static __init int rng_init(void)
- 
- 	ppc_md.get_random_seed = pseries_get_random_long;
- 
-+	of_node_put(dn);
- 	return 0;
+diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
+index 2342277c9bcb0..5e36366d9b36d 100644
+--- a/drivers/mtd/lpddr/lpddr2_nvm.c
++++ b/drivers/mtd/lpddr/lpddr2_nvm.c
+@@ -408,6 +408,17 @@ static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
+ 	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
  }
- machine_subsys_initcall(pseries, rng_init);
+ 
++static const struct mtd_info lpddr2_nvm_mtd_info = {
++	.type		= MTD_RAM,
++	.writesize	= 1,
++	.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
++	._read		= lpddr2_nvm_read,
++	._write		= lpddr2_nvm_write,
++	._erase		= lpddr2_nvm_erase,
++	._unlock	= lpddr2_nvm_unlock,
++	._lock		= lpddr2_nvm_lock,
++};
++
+ /*
+  * lpddr2_nvm driver probe method
+  */
+@@ -448,6 +459,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+ 		.pfow_base	= OW_BASE_ADDRESS,
+ 		.fldrv_priv	= pcm_data,
+ 	};
++
+ 	if (IS_ERR(map->virt))
+ 		return PTR_ERR(map->virt);
+ 
+@@ -459,22 +471,13 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+ 		return PTR_ERR(pcm_data->ctl_regs);
+ 
+ 	/* Populate mtd_info data structure */
+-	*mtd = (struct mtd_info) {
+-		.dev		= { .parent = &pdev->dev },
+-		.name		= pdev->dev.init_name,
+-		.type		= MTD_RAM,
+-		.priv		= map,
+-		.size		= resource_size(add_range),
+-		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
+-		.writesize	= 1,
+-		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
+-		.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
+-		._read		= lpddr2_nvm_read,
+-		._write		= lpddr2_nvm_write,
+-		._erase		= lpddr2_nvm_erase,
+-		._unlock	= lpddr2_nvm_unlock,
+-		._lock		= lpddr2_nvm_lock,
+-	};
++	*mtd = lpddr2_nvm_mtd_info;
++	mtd->dev.parent		= &pdev->dev;
++	mtd->name		= pdev->dev.init_name;
++	mtd->priv		= map;
++	mtd->size		= resource_size(add_range);
++	mtd->erasesize		= ERASE_BLOCKSIZE * pcm_data->bus_width;
++	mtd->writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width;
+ 
+ 	/* Verify the presence of the device looking for PFOW string */
+ 	if (!lpddr2_nvm_pfow_present(map)) {
 -- 
 2.25.1
 
