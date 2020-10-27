@@ -2,140 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F124D29AD53
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6AA29AD5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900718AbgJ0NaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:30:18 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40244 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900708AbgJ0NaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:30:17 -0400
-Received: by mail-ed1-f67.google.com with SMTP id p93so1430841edd.7;
-        Tue, 27 Oct 2020 06:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wudM5QwSA7l9nftYeilMZoiCCrd5fiqvQMUjjhFgGSI=;
-        b=PYVULImcz4Gnw1D04xpjc7uvWArCoNx6vXY4XNxSB1csz3VRtD5dmEaYz8rBijDZrV
-         Lnx6KlbQB5TfWQMwSmg1VSKDph3GRaYI8gCg2s1VXSyZp8AVZAt5VDEv5V2HA3xFtCWH
-         FMAlOkuUl+Jah3vd4YXsfW1CpfJdxHwAfSZx7HM1aai17vpMwEgAjOqtu6YDKp73YO0s
-         9ZTWzN7l04bvlMX9VZThvwmO0UbES/E82rcU/aGpH+3Xt7NF2jKZCz9HuBfZYvZu8EqS
-         cdKznbSFIPbsVZpjMeTFDdHqCcpxmfyiqWlHYBvTROodcB1FYiF6XXEnd5Z3tlyD2AX6
-         2qzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wudM5QwSA7l9nftYeilMZoiCCrd5fiqvQMUjjhFgGSI=;
-        b=US2CR5Rz0JbhYKqFS7uVY5DTbT5qAPnab6uxzV8Y7rwdhVTZlSSlDxL65FYgLuCG2r
-         oaoTgfLw099cKg3kCnh8q6WWrD4K2sq984pe6sInD5U0gQZcaEhoP3N7+vUXKn7mZICj
-         tGaNnmLWBjK5rwXVBbUSbNHmjhda00PD3Sf0O9lhgaWfOuee4GKH0dLclGEqdn8aaCkx
-         k0yUYIobguFzvOE4JZbHnPTMMxISW5UQ8vOoTWBRL1XFAX4O9kk0j5tjjwd/GZHR5DD1
-         VJ1G4hTgtTih3DotbHGDItwtmeKNklFlk9N2/0SmP6sxB3TZ6uUHVsIkElPl4j+syDbv
-         7igw==
-X-Gm-Message-State: AOAM533VFGgYXEihXsnb/hLVnmnNZG7qyF69FKKGsqix8DpbIxebH09N
-        eEv663JKsLGDdA42nM4PZCw=
-X-Google-Smtp-Source: ABdhPJyKqvL1G68+mtN3mL7LT5Bd5npDhA+ZcNbEOm7IUY11Z/Hx999HcvRW/1K0hoGytjj30+zKTA==
-X-Received: by 2002:a50:fb13:: with SMTP id d19mr2265371edq.215.1603805411492;
-        Tue, 27 Oct 2020 06:30:11 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id s12sm990258edu.28.2020.10.27.06.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:30:10 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 14:30:08 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 21/52] ARM: tegra: Add interconnect properties to
- Tegra20 device-tree
-Message-ID: <20201027133008.GH1822510@ulmo>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-22-digetx@gmail.com>
- <20201027091247.GK4244@kozik-lap>
+        id S1752138AbgJ0Nc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:32:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752128AbgJ0Nc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:32:27 -0400
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC19021707
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603805547;
+        bh=CbUeUpMdw/X/SyWGfEXt6jB93bwDky53wIkxwqqVWKI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TYfKssTNNZmwDMbEYlSUpaFdFQEidgNbsrNVyHSOPsIsUzDZwv4e2qAtnxCubWTuG
+         PRaymH184FNwV0nz+8UeCCydsKMZBH54Pb2kqc/+jSfKpBmmI65gdKO9+t1gVum9O4
+         f8+r37c7zPiJ0iFUnfBeSmtEkxWZ6IjAGbpePWBc=
+Received: by mail-qv1-f54.google.com with SMTP id bl9so615334qvb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 06:32:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531V3iAyOd97VeYcSjh0NJSXxYAoeK4YHADvbjle0zdemIAegPsl
+        Fb5PgnyeXGJ6ETWXeHdFxnC1Ns3AQdHG/CG5uKw=
+X-Google-Smtp-Source: ABdhPJyDAWO2c8YXaCfdwYDVM63x0QlLv1H0JOe+wV5o/LcUXj0FysvKlwLbUXrHqWQK5LMBfdL5V3RLe9S6E7TfRGM=
+X-Received: by 2002:a0c:f447:: with SMTP id h7mr2384178qvm.7.1603805545978;
+ Tue, 27 Oct 2020 06:32:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="e5bfZ/T2xnjpUIbw"
-Content-Disposition: inline
-In-Reply-To: <20201027091247.GK4244@kozik-lap>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20201026155449.3703142-1-arnd@kernel.org> <459e03f1-2a9e-5bc4-4bf6-9a0ddf5c4a70@xilinx.com>
+In-Reply-To: <459e03f1-2a9e-5bc4-4bf6-9a0ddf5c4a70@xilinx.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 14:32:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2nnnh81fUbrua5eG1km=2h0BzfiDGm-axYtkdoLGw60A@mail.gmail.com>
+Message-ID: <CAK8P3a2nnnh81fUbrua5eG1km=2h0BzfiDGm-axYtkdoLGw60A@mail.gmail.com>
+Subject: Re: [PATCH] firmware: xilinx: fix out-of-bounds access
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Rajan Vaja <rajanv@xilinx.com>, Rajan Vaja <rajan.vaja@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejas Patel <tejas.patel@xilinx.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 10:53 AM Michal Simek <michal.simek@xilinx.com> wrote:
+> On 26. 10. 20 16:54, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The zynqmp_pm_set_suspend_mode() and zynqmp_pm_get_trustzone_version()
+> > functions pass values as api_id into zynqmp_pm_invoke_fn
+> > that are beyond PM_API_MAX, resulting in an out-of-bounds access:
+> >
+> > drivers/firmware/xilinx/zynqmp.c: In function 'zynqmp_pm_set_suspend_mode':
+> > drivers/firmware/xilinx/zynqmp.c:150:24: warning: array subscript 2562 is above array bounds of 'u32[64]' {aka 'unsigned int[64]'} [-Warray-bounds]
+> >   150 |  if (zynqmp_pm_features[api_id] != PM_FEATURE_UNCHECKED)
+> >       |      ~~~~~~~~~~~~~~~~~~^~~~~~~~
+> > drivers/firmware/xilinx/zynqmp.c:28:12: note: while referencing 'zynqmp_pm_features'
+> >    28 | static u32 zynqmp_pm_features[PM_API_MAX];
+> >       |            ^~~~~~~~~~~~~~~~~~
+>
+> Which CONFIG option/tool is reporting this issue?
 
---e5bfZ/T2xnjpUIbw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is with gcc-10. Commit 44720996e2d7 ("gcc-10: disable
+'array-bounds' warning for
+now") turned off this warning globally, but most of the reported warnings got
+fixed in the meantime. I'm trying to take care of the rest so we can enabled it
+again.
 
-On Tue, Oct 27, 2020 at 10:12:47AM +0100, Krzysztof Kozlowski wrote:
-> On Mon, Oct 26, 2020 at 01:17:04AM +0300, Dmitry Osipenko wrote:
-> > Add interconnect properties to the Memory Controller, External Memory
-> > Controller and the Display Controller nodes in order to describe hardwa=
-re
-> > interconnection.
-> >=20
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  arch/arm/boot/dts/tegra20.dtsi | 26 +++++++++++++++++++++++++-
-> >  1 file changed, 25 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20=
-=2Edtsi
-> > index 9347f7789245..2e1304493f7d 100644
-> > --- a/arch/arm/boot/dts/tegra20.dtsi
-> > +++ b/arch/arm/boot/dts/tegra20.dtsi
-> > @@ -111,6 +111,17 @@ dc@54200000 {
-> > =20
-> >  			nvidia,head =3D <0>;
-> > =20
-> > +			interconnects =3D <&mc TEGRA20_MC_DISPLAY0A &emc>,
->=20
-> I think you just added the defines and did not include them here, so
-> this should not even build. Did you test it?
+You should be able to reproduce the problem by removing the cc-disable-warning
+line from the top-level Makefile.
 
-The dt-bindings/memory/tegra20-mc.h header is already included in
-existing DTS files for MC hot flush resets, so this should be fine.
-
-Thierry
-
---e5bfZ/T2xnjpUIbw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YIOAACgkQ3SOs138+
-s6GYyg/9G9pB/bwzgqQzz+wOHyuNUCHPbkIx9CUIUnXDndybQYoKI/moPxY1ulfd
-AygGLzhvDB/jOVPQbwykmE08zxduCfUaJrN0gSRpK1UjaUJ8DTW5Et4cvYegiH0C
-nq1edcOtncfzxoeOCR4FdBMML1WxzfU5io5SEhaVcVgvyj6Av4MEfjLUSZX6aNzQ
-vtmdx6GE5/ppkA47N/45K/p4ltdUo79NaFFocOoTM2LIAyR5b1wCpxzdQHivcsNI
-6pqTq6jcXI2OMPl6/RGb0adksk7r4xJ5X/om6TxMSm9rds6TZWJujmhs4QH/WLFp
-CBUQRWDFFic15MG6gaamN/bvUPE7w6Ue90b/c53CT0mYI6KhxpNoAUsJKWhgxWWx
-iBOmUo1g1Wh50meliaNrvMdwyEJfi1ZDGEecz8LTXwX8jXMTiW8B9Nq/I1nGSy+T
-iwkzs4cqWkQKjd9JsHKxWNAvHx/MNr6ilMssX8EPoG14xb+5bkwtPA94Dm5IbC3l
-JMng8h98+LVsBd6JiJQnuyDv5AmaE3Tr5qHVA3NWXMatKKhOWzmqjyPrDQcCuvKJ
-VGYb6t8ZpyedxjJjBUpkKp4yBD7bkuNBMaQ/QTsd5rNSF2PVoSLn5REgnFl9jSfB
-gK5H5gs9J5ihRLtZQ7Lw2JyoTZ2vCMnAAW65LoFJp/oqp8A3O4c=
-=uebE
------END PGP SIGNATURE-----
-
---e5bfZ/T2xnjpUIbw--
+        Arnd
