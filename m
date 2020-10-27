@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A49129BEDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38B329BED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368348AbgJ0PJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
+        id S1793962AbgJ0PJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790305AbgJ0PEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:04:24 -0400
+        id S1790448AbgJ0PEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34A9F20747;
-        Tue, 27 Oct 2020 15:04:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D7DD2071A;
+        Tue, 27 Oct 2020 15:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811063;
-        bh=RFMwSIua67ij+5d8vhBow1V7AfxFAiUOljRmCneloQY=;
+        s=default; t=1603811075;
+        bh=NBWrKiOKLvc1rcrG2hn1zvGYfhmSjU7XGLJMBk+FY9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BPEvzyKjoa8JWnpTZ3I+EuNcDji6kPW+50zT6aAtj32vwnrHxMUwDlNI8BodEPXfc
-         YTHboTC5P3FfXQdbXzEArLT9hFnd8kn5ZSFMmZfm01rbJfyHzbZ0ilW0UV/8Uw4P9w
-         8mUnrkcqCDbwyHtF9/tmSy9eBSc2Ia7KKuOwKzbA=
+        b=Ng4UYI0nM5IpWvpZrbMPje3uL1IjDm6M1k8bWMbkTJ1O4G60BBXV/o4gNZJAO2czz
+         F3Rf+d2N4yVrrmtcjZLu/ESSe9w0NHlXFbsPwmIEfxJukOA14IbrQg/md58b7O7Vw5
+         XJm6aYTigyBKCH1mAwB4yJiDCHnr07dZREkRMXUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 361/633] powerpc/watchpoint: Fix handling of vector instructions
-Date:   Tue, 27 Oct 2020 14:51:44 +0100
-Message-Id: <20201027135539.627901619@linuxfoundation.org>
+Subject: [PATCH 5.8 364/633] powerpc/tau: Use appropriate temperature sample interval
+Date:   Tue, 27 Oct 2020 14:51:47 +0100
+Message-Id: <20201027135539.771956755@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,37 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 4441eb02333a9b46a0d919aa7a6d3b137b5f2562 ]
+[ Upstream commit 66943005cc41f48e4d05614e8f76c0ca1812f0fd ]
 
-Vector load/store instructions are special because they are always
-aligned. Thus unaligned EA needs to be aligned down before comparing
-it with watch ranges. Otherwise we might consider valid event as
-invalid.
+According to the MPC750 Users Manual, the SITV value in Thermal
+Management Register 3 is 13 bits long. The present code calculates the
+SITV value as 60 * 500 cycles. This would overflow to give 10 us on
+a 500 MHz CPU rather than the intended 60 us. (But according to the
+Microprocessor Datasheet, there is also a factor of 266 that has to be
+applied to this value on certain parts i.e. speed sort above 266 MHz.)
+Always use the maximum cycle count, as recommended by the Datasheet.
 
-Fixes: 74c6881019b7 ("powerpc/watchpoint: Prepare handler to handle more than one watchpoint")
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200902042945.129369-3-ravi.bangoria@linux.ibm.com
+Link: https://lore.kernel.org/r/896f542e5f0f1d6cf8218524c2b67d79f3d69b3c.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/hw_breakpoint.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/include/asm/reg.h |  2 +-
+ arch/powerpc/kernel/tau_6xx.c  | 12 ++++--------
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
-index f39e86d751144..2190be70c7fd9 100644
---- a/arch/powerpc/kernel/hw_breakpoint.c
-+++ b/arch/powerpc/kernel/hw_breakpoint.c
-@@ -643,6 +643,8 @@ static void get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
- 	if (*type == CACHEOP) {
- 		*size = cache_op_size();
- 		*ea &= ~(*size - 1);
-+	} else if (*type == LOAD_VMX || *type == STORE_VMX) {
-+		*ea &= ~(*size - 1);
- 	}
- }
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 88e6c78100d9b..c750afc62887c 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -815,7 +815,7 @@
+ #define THRM1_TIN	(1 << 31)
+ #define THRM1_TIV	(1 << 30)
+ #define THRM1_THRES(x)	((x&0x7f)<<23)
+-#define THRM3_SITV(x)	((x&0x3fff)<<1)
++#define THRM3_SITV(x)	((x & 0x1fff) << 1)
+ #define THRM1_TID	(1<<2)
+ #define THRM1_TIE	(1<<1)
+ #define THRM1_V		(1<<0)
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index e2ab8a111b693..976d5bc1b5176 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -178,15 +178,11 @@ static void tau_timeout(void * info)
+ 	 * complex sleep code needs to be added. One mtspr every time
+ 	 * tau_timeout is called is probably not a big deal.
+ 	 *
+-	 * Enable thermal sensor and set up sample interval timer
+-	 * need 20 us to do the compare.. until a nice 'cpu_speed' function
+-	 * call is implemented, just assume a 500 mhz clock. It doesn't really
+-	 * matter if we take too long for a compare since it's all interrupt
+-	 * driven anyway.
+-	 *
+-	 * use a extra long time.. (60 us @ 500 mhz)
++	 * The "PowerPC 740 and PowerPC 750 Microprocessor Datasheet"
++	 * recommends that "the maximum value be set in THRM3 under all
++	 * conditions."
+ 	 */
+-	mtspr(SPRN_THRM3, THRM3_SITV(500*60) | THRM3_E);
++	mtspr(SPRN_THRM3, THRM3_SITV(0x1fff) | THRM3_E);
  
+ 	local_irq_restore(flags);
+ }
 -- 
 2.25.1
 
