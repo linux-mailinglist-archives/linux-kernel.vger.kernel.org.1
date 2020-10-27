@@ -2,121 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8AF29A814
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9855429A818
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895758AbgJ0Jmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:42:45 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:38951 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895750AbgJ0Jmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:42:44 -0400
-Received: by mail-pg1-f193.google.com with SMTP id o7so464567pgv.6;
-        Tue, 27 Oct 2020 02:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XCeec5IImxL2EGXfGQqgVj5bq/FQ6sYk1H41/XnYwtU=;
-        b=TIGNx8Y4jEjyo+b7+5wApbszjIMBLHM2fsBg458QxhAvvvv4s8zZxCALWrqBhRrahb
-         /odYggV8e8wy66I3MwdjPyB0gxtRUH1upAEmSo+JoSwBgViOusxtdO0WXsTn293siaF2
-         F7bgZg6O0V6uD+geGKe10nDPvH6nxrjbkHDhut2RyTFv92W7TxznWQPRr+6pEjv4ZYhe
-         QTU9eRG9o28mUDNkNPZ2Il/14ImuOuFq7w7suCFPH+uSbGpRxBMWAxFsGscN339DmVXB
-         mWkxK3JS7NyyodfQcEVmWY77ZqWqO4jhoN/a8t16TsakpZFq8KMwdFBj7tQhdh7g3oNc
-         3Iwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XCeec5IImxL2EGXfGQqgVj5bq/FQ6sYk1H41/XnYwtU=;
-        b=h7/A818XVDnQQ0V4XwNXtKhlZ990uAr2xwbhKz6wd8JGORZ6cHAnVw9+X7LP27Sc6G
-         RL4Flt7UiQDgcdSYSupzwowGAwWagh+avifHZMN9tOTOJIBLd0bgiWXCUyU58KNuUF3c
-         5EBGqZ4+nvEKQOt7bGwc0Sv1A2DhEquFi7izAa+gKToLpwl03vQUmOw2w9yiOcUj0khy
-         i2qUeDYUUEq4dEA+gn4YRfph7mCN6woPiQLy4eeYi9OHfJW0enJlHhKE12hiAg5TJD3J
-         wr5CqTsM/A3SFc2rOJl+Kg9Zg9LqxFjF/xAWQkAg9RQ0jBDSqhwJoWf6RabUdynZ/Tu4
-         AYHA==
-X-Gm-Message-State: AOAM531SyNz3gOxT/3fqL3sxjw+Tw1z2Dl0JcynB3XBsKq/BfF/CcGZJ
-        99LoenrtRakvegK7KGAU0EazdiSRqTu7ktyinmVEiLQsob8=
-X-Google-Smtp-Source: ABdhPJyw0I0ivrd4JvJPVqMDPwksBG9fNzq0U+AZ/BV8tlThqbR4h/cBHc/ggmdt2xdVB4TldoQ9xD1ZBNZqv2OWgXA=
-X-Received: by 2002:a62:343:0:b029:15c:e33c:faff with SMTP id
- 64-20020a6203430000b029015ce33cfaffmr718328pfd.7.1603791762715; Tue, 27 Oct
- 2020 02:42:42 -0700 (PDT)
+        id S2895767AbgJ0Jnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:43:33 -0400
+Received: from mail-eopbgr1300070.outbound.protection.outlook.com ([40.107.130.70]:32992
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2895720AbgJ0Jnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:43:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kCLKW5UJslk2MfgOVRef5aNc+Ve8I0pU5moNT2mOQzXkqHuQsfWYD449wiTxsbIgUWGiDJhK0c/4OlsJHK9+ogAS5rurykxSG6jJ/m4viPeICR8uNngIDKE+7gP3fLWprgTerfZtLqbZ5EMpd/JvPWQg8E1PPq7VST5bzNwgYYyb7uBqWvg36hyGXpPkyNQ7rY+18SKa4nOArnzjf1B+akqwpeqAKVPLumqLFrDokw85NJyaQIygshklhTPDkWIRokSKsfgTAunP0ljtpujm3/UUuHChtSXdkGne64o5QwE+roEKgMQYdbB/qw+c8Vhx1ea9f0nC2olcR9W7DEVMwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J+6cQ3D6jU5ZNTIWNo66SWTMmee7RoAN93Zf0mnCCWc=;
+ b=fI9Y2xOIMz4IQsoNNYIw+CAEM72K7mPN1ZMaw5Vv20BgHGBc9Z81PsQs09DgPB9sRC0tshcfo63bj8QAYzszRQsRRlBa3jIca6tSUIoSZeEPL0U/5QkJec1nN8svcx/6y0pHDJtS3Tnk56JacCwBktank3hD0H/LpFG/J545IdZiF0XK5KtQH47vlgX6dTyUMJ+F/KGMnZlb2/6Dt9pYZmMdkK3uGYNEb+h6qRYpS3daP4JyL7DJSrzwCfh8tmS0Sd5vB+ZpLfVbrEB9c2LQCwYAJP09Q7rHvKhZhMyBhtyq9YQ5eNfnQFDf96DeXhUmMPCF4cH/MNHQtdYlMdGbjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=quectel.com; dmarc=pass action=none header.from=quectel.com;
+ dkim=pass header.d=quectel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quectel.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J+6cQ3D6jU5ZNTIWNo66SWTMmee7RoAN93Zf0mnCCWc=;
+ b=bx5Qxd/Eaum+jMTPQXUvysp+uMiWpdav8nr1qpAmeIiHyNwMVkEBAVEkO9M1mz1UJZ3OW704vJnme4oH5qBqqxplcUQuTW65cZPp/3YKFODocPG6G5GV7B5VxBx2rQm5PQrsXOjS/JSiBz5rrF4LDeFcWKz7CEKc/hkrH+blY8Y=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=quectel.com;
+Received: from HK2PR06MB3507.apcprd06.prod.outlook.com (2603:1096:202:3e::14)
+ by HK0PR06MB3858.apcprd06.prod.outlook.com (2603:1096:203:ba::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.26; Tue, 27 Oct
+ 2020 09:43:27 +0000
+Received: from HK2PR06MB3507.apcprd06.prod.outlook.com
+ ([fe80::94f:c55a:f9c8:22f4]) by HK2PR06MB3507.apcprd06.prod.outlook.com
+ ([fe80::94f:c55a:f9c8:22f4%5]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
+ 09:43:26 +0000
+From:   carl.yin@quectel.com
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        sfr@canb.auug.org.au
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com
+Subject: [PATCH] bus: mhi: core: Introduce sysfs ul chan id for mhi chan device
+Date:   Tue, 27 Oct 2020 17:43:04 +0800
+Message-Id: <20201027094304.23025-1-carl.yin@quectel.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [203.93.254.82]
+X-ClientProxiedBy: HK2PR03CA0062.apcprd03.prod.outlook.com
+ (2603:1096:202:17::32) To HK2PR06MB3507.apcprd06.prod.outlook.com
+ (2603:1096:202:3e::14)
 MIME-Version: 1.0
-References: <20201026151600.2703-1-coiby.xu@gmail.com> <CAHp75VfZ+-rJFWVpowXyViA99_9tA5VaFLfJGH1WF4W=kQHr8w@mail.gmail.com>
- <20201026231631.6l6kei3z45cunzmx@Rk>
-In-Reply-To: <20201026231631.6l6kei3z45cunzmx@Rk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Oct 2020 11:42:26 +0200
-Message-ID: <CAHp75VcLRjZDckuUDSsZ5KWfqFGRZbeEMSqMYSuF4P9iWt_LhA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: amd: print debounce filter info in debugfs
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (203.93.254.82) by HK2PR03CA0062.apcprd03.prod.outlook.com (2603:1096:202:17::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.9 via Frontend Transport; Tue, 27 Oct 2020 09:43:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0320da1a-b530-49de-da84-08d87a5cc083
+X-MS-TrafficTypeDiagnostic: HK0PR06MB3858:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR06MB3858E216221E51A98590C9D686160@HK0PR06MB3858.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2QcmNNSpgvRVPiwN4YNHO3HdIm219Nml6e7mIfFlF/faQqIrTBYfoKjeI39/cFR4Vwp//CMj5qzVvZxmWWfNx8RzyLhsBdlHkBTM+T6YY6Lf338L8+YFqsC8U3FP6F5c/zCuevcksy+S6IUEnyoLnuK8wcFpnozFRyUnMjHPzOIEs15FTB/kxytW5X5mIIpGXh4KGqlU5gjHMT63WHB89J7YR0pnGY6lkHvOT9dSgBHnJgNKzahTKM+X6Vwk2KhYTvxZxtN/wxNpH7KiJsDOgZjp8UsajlFxFOK9gk1WoP5EROCrNkOBj53ExxONzzBpD0bs0o4wPx7P7ZbE/PfcSWlrEvRgi7QVJ22OzUCUbtxfsfT+Bk2n4ue7j9yBzF6l
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3507.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(366004)(346002)(376002)(6512007)(66556008)(86362001)(186003)(9686003)(36756003)(5660300002)(2906002)(316002)(66946007)(16526019)(26005)(6506007)(69590400008)(52116002)(1076003)(6666004)(107886003)(66476007)(478600001)(956004)(2616005)(4326008)(8676002)(8936002)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: cmoqx02mTT5q5gjoVn8Lutp+ZgoYeT+gYizrwIMN3WrtICXp2AJ/ggzcOX8AggJleWyF9yIgxL9o0YdfNeE1jTEHYNqz71LYD/ybFqXdxYQtBMJye+WGIk1L/8yI7txNaIZCc2NgFgNL4MUxz+gqbRl4njs3qwmxxF1PJFEDpIX9SCNGDfKK4pRfgpfwMJtyxxU7IufaWeBHBoPweWLNXSeJ2pQFqqjspxS28gugthy3jCu4UkPaDxgT4ZY3L1br/V92casCwhz9O0WjBCkLH8dBLVPo+BOGYAUnJN7d56nanP+bA93aX2tkyd7YMYo7WJY3Sj0H/QOO2g7cWti7aVdubHFv5PY0Zu4FSGXr9K+7fB4Q+eXwxqaYiy4G5zR2PRVIoT45AuHW8XygSdUecAR5hkGkt/IWW7gag3/DXiW5b/O8Ka5t3MQRZ0fzpSVwxDFlo8rQ+LetlnWH7Z8mWJr/1dPZMMswBEv0tt5YQuGoO1sTxO0Gk5mtqDUTkniPc2JGqpu82fOSD0X6KCsOrhCow22KEMuBZ2b4SjvSzGxmGD+oGf/DAxIeWb6FNbO/2qgR05XhfZDnCtDrT0oVEW2Nzd4zrqBGQsb+9cqUrs9ZxrCqXdwFw10cltKAwaz4Wm513UAy0rzVOUHn0ACcmg==
+X-OriginatorOrg: quectel.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0320da1a-b530-49de-da84-08d87a5cc083
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3507.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2020 09:43:26.6447
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 7730d043-e129-480c-b1ba-e5b6a9f476aa
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4aZSwmA6TBy/P3WRsVgld0vXGmcY8JiTuM5v2kTnZ/FtfRnP3H21pEwLGqsSvgU36b5N0tup4u0qWvnArbE//A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB3858
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 1:16 AM Coiby Xu <coiby.xu@gmail.com> wrote:
-> On Mon, Oct 26, 2020 at 05:22:45PM +0200, Andy Shevchenko wrote:
-> >On Mon, Oct 26, 2020 at 5:16 PM Coiby Xu <coiby.xu@gmail.com> wrote:
+From: "carl.yin" <carl.yin@quectel.com>
 
-...
+User space software like ModemManager can identify the function
+of the mhi chan device by ul_chan_id.
 
-> >> +                               if (tmr_large) {
-> >> +                                       if (tmr_out_unit)
-> >> +                                               unit = 62500;
-> >> +                                       else
-> >
-> >> +                                               unit = 15600;
-> >
-> >Side note: Hmm... Shouldn't be 15625? As 1/4.
->
-> Thank you for discovering the inconsistency! I wrote these code based on
-> amd_gpio_set_debounce. I'll send an email to the original author to
-> confirm it.
->
-> static int amd_gpio_set_debounce(struct gpio_chip *gc, unsigned offset,
->                 unsigned debounce)
-> {
->      ...
->         if (debounce) {
->                 pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
->                 pin_reg &= ~DB_TMR_OUT_MASK;
->                 /*
->                 Debounce        Debounce        Timer   Max
->                 TmrLarge        TmrOutUnit      Unit    Debounce
->                                                         Time
->                 0       0       61 usec (2 RtcClk)      976 usec
->                 0       1       244 usec (8 RtcClk)     3.9 msec
->                 1       0       15.6 msec (512 RtcClk)  250 msec
->                 1       1       62.5 msec (2048 RtcClk) 1 sec
->                 */
+Signed-off-by: carl.yin <carl.yin@quectel.com>
+---
+ Documentation/ABI/stable/sysfs-bus-mhi | 10 ++++++++++
+ drivers/bus/mhi/core/init.c            | 15 +++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-What the heck with HW companies! (Just an emotion based on the experience)
-They like to use really bad precision when it's clear that the numbers
-should be different (note the cycles, it's 1/4 sharp ratio).
-
->                 if (debounce < 61) {
->                         pin_reg |= 1;
->                         pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
->                         pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
->                 } else if (debounce < 976) {
->                         time = debounce / 61;
->                         pin_reg |= time & DB_TMR_OUT_MASK;
->                         pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
->                         pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
->          ...
-> >
-> >> +                               } else {
-> >> +                                       if (tmr_out_unit)
-> >> +                                               unit = 244;
-> >> +                                       else
-> >> +                                               unit = 61;
-
+diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
+index ecfe766..6d52768 100644
+--- a/Documentation/ABI/stable/sysfs-bus-mhi
++++ b/Documentation/ABI/stable/sysfs-bus-mhi
+@@ -19,3 +19,13 @@ Description:	The file holds the OEM PK Hash value of the endpoint device
+ 		read without having the device power on at least once, the file
+ 		will read all 0's.
+ Users:		Any userspace application or clients interested in device info.
++
++What:		/sys/bus/mhi/devices/.../ul_chan_id
++Date:		November 2020
++KernelVersion:	5.10
++Contact:	Carl Yin <carl.yin@quectel.com>
++Description:	The file holds the uplink chan id of the mhi chan device.
++		User space software like ModemManager can identify the function of
++		the mhi chan device. If the mhi device is not a chan device,
++		eg mhi controller device, the file read -1.
++Users:		Any userspace application or clients interested in device info.
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index c6b43e9..ac4aa5c 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -105,9 +105,24 @@ static ssize_t oem_pk_hash_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(oem_pk_hash);
+ 
++static ssize_t ul_chan_id_show(struct device *dev,
++				struct device_attribute *attr,
++				char *buf)
++{
++	struct mhi_device *mhi_dev = to_mhi_device(dev);
++	int ul_chan_id = -1;
++
++	if (mhi_dev->ul_chan)
++		ul_chan_id = mhi_dev->ul_chan_id;
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", ul_chan_id);
++}
++static DEVICE_ATTR_RO(ul_chan_id);
++
+ static struct attribute *mhi_dev_attrs[] = {
+ 	&dev_attr_serial_number.attr,
+ 	&dev_attr_oem_pk_hash.attr,
++	&dev_attr_ul_chan_id.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(mhi_dev);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
