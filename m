@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131E829BB9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C88029BAC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808775AbgJ0QWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:22:07 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:41729 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1804890AbgJ0P7s (ORCPT
+        id S1807575AbgJ0QLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:11:52 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46346 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1804959AbgJ0QAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:59:48 -0400
-Received: by mail-ed1-f66.google.com with SMTP id l24so1966060edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CvPFb4kyBEugekUbJn2sOaqGP8u3RgKrWq2nBe9yDAE=;
-        b=MXfLiAZCOyDLmDCHAn3NmON7byOVbkAO2XDk5691T3mF2z1TGHIqQVSG9CPuBAchC4
-         hC6mvrhrm5JTs2ybM2JQwI0niqdSJ7bh/2C7fjmLZE1ik3rQI5uXqN1Eefun2hrLMyso
-         rtQ+xzzIQmhy9+2ZT2b1UbSC9m56eMpMKr9XuClwL0L7e26jJrvZ7Sp5XP7glfNnmXV7
-         aAFEfDGMTlhST29rc12CBpweVPHshXJTJ91jNs85OuNupGbwZJAeeBZvrh7FL6kOvf3v
-         0EATqhGZJXc6hA3sxxPslgayjnsfq19bL0yHaf5HWxNzaxqH6kh1B7K5cigk0KE9rrpc
-         Nw4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CvPFb4kyBEugekUbJn2sOaqGP8u3RgKrWq2nBe9yDAE=;
-        b=BNATJBWdPZMgn5ekpqpm8MaD/YDTMH2cww1kX/kZRWroCgqInA1uiGZjxGfsZ3SyS4
-         zBdx8t8w2uI0kAbQI/Kl/iJBem/43VCDPnpf830FZVDCvd4K0umMQWAMhODRRnhHOtyO
-         C0fJm0CoyAY0qbQGZuG79ITbZHGKKOayhtbZkjFbRxYFMahaphB/BJSIdJEshK9yySHg
-         cWgGnCRJ3/5lmTHPbNkp2zQpCRbW9xQND1ZNXa4+CEBR1+S09RQ349AHRsHOP1GTVDNw
-         6Un8nA55EYk1KKOflRmtffX7oIPmUPta4tQy5UCRF8Ce6RLsArLc+pcUFRoybd4koUpV
-         wI8A==
-X-Gm-Message-State: AOAM531QMGCZke9CbzqZaOT8UI+3+aDEYzVMCuXYD/jjl6Ij74VO/PM9
-        HXF5+Vslx/aTHskjTGVvi2UiRQ==
-X-Google-Smtp-Source: ABdhPJxuQbeMnOycxsv8oOumQFxdFJSIacf4CbhNGbLASp6ukbC7K8gLn0zvA/v/40DlrMasJ397NQ==
-X-Received: by 2002:a05:6402:395:: with SMTP id o21mr2904999edv.2.1603814387438;
-        Tue, 27 Oct 2020 08:59:47 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:567:3dba:e4e9:3d61])
-        by smtp.gmail.com with ESMTPSA id q19sm1295053ejx.118.2020.10.27.08.59.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 08:59:46 -0700 (PDT)
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-References: <20201027135450.497324313@linuxfoundation.org>
- <20201027135517.727716271@linuxfoundation.org>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH 5.9 580/757] selftests: mptcp: depends on built-in IPv6
-Message-ID: <3cdf310c-dcef-ad91-6f30-3cd48c6c47de@tessares.net>
-Date:   Tue, 27 Oct 2020 16:59:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Tue, 27 Oct 2020 12:00:10 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RG03EB130507;
+        Tue, 27 Oct 2020 11:00:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603814403;
+        bh=nJbxpEs1Sj02R3uv62Gtsp2WcPBFGlsuy6h1U+1SaRs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pTkfiNOICv4xNbuZAX/V7eRQNNC5QRCnC7iy9rAWdkgQbSFoFr6jkiLRAdYS4WS7F
+         OBibz3Mq9eDnZKGjVFpgEtg2GoObVoncUk7P8a2DfI59w9fPa6girQD6PgVXFRbJey
+         Bvmh3Eixx04b0Tgr59r+LJVAVDfUlsvSezRCWJ00=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RG02Bw000731
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 11:00:02 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
+ Oct 2020 11:00:01 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 27 Oct 2020 11:00:01 -0500
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RFxwFY051252;
+        Tue, 27 Oct 2020 10:59:58 -0500
+Subject: Re: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
+To:     Nishanth Menon <nm@ti.com>
+CC:     Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+References: <20201026170624.24241-1-nm@ti.com>
+ <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
+ <20201026190808.im4nb32jn4rd3xhu@crayon>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <30760d91-cfe0-1b25-ab3d-2cb6a58f7b45@ti.com>
+Date:   Tue, 27 Oct 2020 21:29:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20201027135517.727716271@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20201026190808.im4nb32jn4rd3xhu@crayon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On 27/10/2020 14:53, Greg Kroah-Hartman wrote:
-> From: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+On 27/10/20 12:38 am, Nishanth Menon wrote:
+> On 23:30-20201026, Lokesh Vutla wrote:
+> [..]
+>> ➜  linux git:(master) git grep -in ARCH_K3_AM6_SOC
+>> arch/arm64/configs/defconfig:961:CONFIG_ARCH_K3_AM6_SOC=y
+>> drivers/soc/ti/Kconfig:7:config ARCH_K3_AM6_SOC
+>> ➜  linux git:(master) git grep -in ARCH_K3_J721E_SOC
+>> arch/arm64/configs/defconfig:962:CONFIG_ARCH_K3_J721E_SOC=y
+>> drivers/gpu/drm/bridge/cadence/Kconfig:16:  depends on ARCH_K3_J721E_SOC ||
+>> COMPILE_TEST
+>> drivers/soc/ti/Kconfig:12:config ARCH_K3_J721E_SOC
+>>
+>>
+>> I see drm bridge Kconfig is cleaned[0]. Please clean the defconfig as well.
+>>
+>> [0]
+>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
+>>
 > 
-> [ Upstream commit 287d35405989cfe0090e3059f7788dc531879a8d ]
-> 
-> Recently, CONFIG_MPTCP_IPV6 no longer selects CONFIG_IPV6. As a
-> consequence, if CONFIG_MPTCP_IPV6=y is added to the kconfig, it will no
-> longer ensure CONFIG_IPV6=y. If it is not enabled, CONFIG_MPTCP_IPV6
-> will stay disabled and selftests will fail.
+> Yes, the defconfig patches have to be queued up in a different queue,
+> Lets see where the two patches fall and will post the defconfig
+> updates as well.
 
-I think Sasha wanted to drop this patch [1]. But as I said earlier [2], 
-this patch is not wrong, it is just not needed in v5.9 because the 
-"Fixes" commit 010b430d5df5 ("mptcp: MPTCP_IPV6 should depend on IPV6 
-instead of selecting it") is not in v5.9.
+Sure. IMHO, the cleanup patches should get merged before this Kconfig removal patch.
 
-I guess it is certainly easier to keep it because it is not wrong and 
-doesn't hurt.
+Otherwise, this patch as-is looks good to me.
 
-[1] https://lore.kernel.org/stable/20201026142329.GJ4060117@sasha-vm/
-[2] 
-https://lore.kernel.org/stable/1de2bf78-4b47-21b0-9d56-3c8063cdf4bb@tessares.net/
+Acked-by: Lokesh Vutla <lokeshvutla@ti.com>
 
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Thanks and regards,
+Lokesh
