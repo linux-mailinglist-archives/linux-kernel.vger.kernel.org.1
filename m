@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394D329BBBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E359A29BD5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1809629AbgJ0Q1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:27:03 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46704 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1808956AbgJ0QZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:25:24 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 75B331F453F0
-Subject: Re: [PATCH v2 02/12] soc: mediatek: Add MediaTek SCPSYS power domains
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
- <20201001160154.3587848-3-enric.balletbo@collabora.com>
- <CANMq1KDSsfX3r1440qbmWggqbD7pU_iM4S36LUF8rsS2jVGqOg@mail.gmail.com>
- <ebba9def-e394-c183-dd80-6dc3716a7bd1@collabora.com>
- <CANMq1KBfKK9-RfMK89hRCGzhqZVqs6+YRdw8o2K+jA+3VN1_gw@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <2e6def0a-400c-836f-ef8b-c4fe6ac6c26e@collabora.com>
-Date:   Tue, 27 Oct 2020 17:25:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1799571AbgJ0Pm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1799876AbgJ0Pdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:53 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A96D22263;
+        Tue, 27 Oct 2020 15:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603812832;
+        bh=X0JhAcdX0GJjijwZDUlnwnbHgDOOhxJpSUNZtm3TzUc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dBVVFYyYYdR/ka3MJLl3gK9smTxxW4sTKuThiNFl5mvFhe0ESWe7kh5dOkIvCuvFr
+         j/ZDCxQcFpVeXtz5jnfuvnIuBQVd0YaQerZRluaKw4Tz0ovw0iMksII4BD7TXPrnLj
+         w0mHPyQDux4alJNLUzxcStNtY2roYG6mAKU0Vcno=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Chin-Yen Lee <timlee@realtek.com>,
+        Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 314/757] rtw88: Fix potential probe error handling race with wow firmware loading
+Date:   Tue, 27 Oct 2020 14:49:24 +0100
+Message-Id: <20201027135505.265834977@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <CANMq1KBfKK9-RfMK89hRCGzhqZVqs6+YRdw8o2K+jA+3VN1_gw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+From: Andreas Färber <afaerber@suse.de>
 
-On 27/10/20 1:19, Nicolas Boichat wrote:
-> Hi Enric,
-> 
-> On Mon, Oct 26, 2020 at 11:17 PM Enric Balletbo i Serra
-> <enric.balletbo@collabora.com> wrote:
->>
->> Hi Nicolas,
->>
->> Many thanks for looking at this.
-> 
-> Thanks to you ,-)
-> 
-> [snip]
->>>> +       if (id >= scpsys->soc_data->num_domains) {
->>>> +               dev_err_probe(scpsys->dev, -EINVAL, "%pOFn: invalid domain id %d\n", node, id);
->>>> +               return -EINVAL;
->>>> +       }
->>>> +
->>>> +       domain_data = &scpsys->soc_data->domains[id];
->>>> +       if (!domain_data) {
->>>
->>> Is that even possible at all? I mean, even if
->>> scpsys->soc_data->domains is NULL, as long as id != 0, this will no
->>> happen.
->>>
->>
->> I think could happen with a bad DT definition. I.e if for the definition of the
->> MT8173 domains you use a wrong value for the reg property, a value that is not
->> present in the SoC data. It is unlikely if you use the defines but could happen
->> if you hardcore the value. We cannot check this with the DT json-schema.
-> 
-> I wasn't clear in my explanation, and looking further there is more
-> that looks wrong.
-> 
-> This expression &scpsys->soc_data->domains[id] is a pointer to element
-> "id" of the array domains. So if you convert to integer arithmetic,
-> it'll be something like `(long)scpsys->soc_data->domains +
-> (sizeof(struct generic_pm_domain *)) * id`. The only way this can be
-> NULL is if scpsys->soc_data->domains pointer is NULL, which, actually,
-> can't really happen as it's the 5th element of a struct scpsys
-> structure `(long)scpsys->soc_data + offset_of(domains, struct scpsys)
-> + (sizeof(struct generic_pm_domain *)) * id`.
-> 
-> I think what you mean is either:
-> domain_data = &scpsys->soc_data->domains[id];
-> if (!*domain_data)
-> [but then domain_data type should be `struct generic_pm_domain **`?
+[ Upstream commit ac4bac99161e8f7a7a9faef70d8ca8f69d5493a9 ]
 
-I think you're confusing the field `struct generic_pm_domain *domains[]`from the
-`struct scpsys` with `const struct scpsys_domain_data *domains` from `struct
-scpsys_soc_data`. My bad they have the same name, I should probably rename the
-second one as domain_info or domain_data to avoid that confusion.
+If rtw_core_init() fails to load the wow firmware, rtw_core_deinit()
+will not get called to clean up the regular firmware.
 
+Ensure that an error loading the wow firmware does not produce an oops
+for the regular firmware by waiting on its completion to be signalled
+before returning. Also release the loaded firmware.
 
-diff --git a/drivers/soc/mediatek/mtk-pm-domains.h
-b/drivers/soc/mediatek/mtk-pm-domains.h
-index 7c8efcb3cef2..6ff095db8a27 100644
---- a/drivers/soc/mediatek/mtk-pm-domains.h
-+++ b/drivers/soc/mediatek/mtk-pm-domains.h
-@@ -56,7 +56,7 @@ struct scpsys_domain_data {
- };
-
- struct scpsys_soc_data {
--       const struct scpsys_domain_data *domains;
-+       const struct scpsys_domain_data *domain_data;
-        int num_domains;
-        int pwr_sta_offs;
-        int pwr_sta2nd_offs;
-
+Fixes: c8e5695eae99 ("rtw88: load wowlan firmware if wowlan is supported")
+Cc: Chin-Yen Lee <timlee@realtek.com>
+Cc: Yan-Hsuan Chuang <yhchuang@realtek.com>
+Signed-off-by: Andreas Färber <afaerber@suse.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200920132621.26468-3-afaerber@suse.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ drivers/net/wireless/realtek/rtw88/main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-struct scpsys {
-    ...
-    const struct scpsys_soc_data *soc_data;
-    ...
-    struct generic_pm_domain *domains[];
-}
+diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
+index 58c760dfd6b80..d69e4c6fc680a 100644
+--- a/drivers/net/wireless/realtek/rtw88/main.c
++++ b/drivers/net/wireless/realtek/rtw88/main.c
+@@ -1473,6 +1473,9 @@ int rtw_core_init(struct rtw_dev *rtwdev)
+ 		ret = rtw_load_firmware(rtwdev, RTW_WOWLAN_FW);
+ 		if (ret) {
+ 			rtw_warn(rtwdev, "no wow firmware loaded\n");
++			wait_for_completion(&rtwdev->fw.completion);
++			if (rtwdev->fw.firmware)
++				release_firmware(rtwdev->fw.firmware);
+ 			return ret;
+ 		}
+ 	}
+-- 
+2.25.1
 
 
-domain_data = &scpsys->soc_data->domain_data[id];
-if (!domain_data)
 
-Thanks,
-  Enric
-
-
-> Does your code compile with warnings enabled?]
-> or:
-> domain_data = scpsys->soc_data->domains[id];
-> if (!domain_data)
-> [then the test makes sense]
-> 
-> [snip]
-> 
