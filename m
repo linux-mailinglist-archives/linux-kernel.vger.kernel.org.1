@@ -2,102 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F7729A869
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C307D29A86D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896225AbgJ0Jw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:52:26 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48774 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2896060AbgJ0JwW (ORCPT
+        id S2896235AbgJ0Jwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:52:33 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51921 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409569AbgJ0Jwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:52:22 -0400
-X-UUID: f8e7e7ec608f441aa01c3ebdfbdb3071-20201027
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=LDji51ZuVtXodbYhY6ntu2rO47u7vkwshUVSjF4m5dQ=;
-        b=fXAhHZIguYrWdZk7rzJue5/OdNv0iTdE03yTAcUgDMS+CqCRd6XDwSAqDpgzT9fTDJrT0WTolTGkrHA/vJ9YZhIbkjsUWU41xwBS+H2EehFJlfgu0zcQE13qOBHG+WkY9L7JOgmv7yofcRK+D6g5V0C0X5SaHh4SDQOPTfib9kE=;
-X-UUID: f8e7e7ec608f441aa01c3ebdfbdb3071-20201027
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 818533378; Tue, 27 Oct 2020 17:52:17 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 27 Oct 2020 17:52:14 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 27 Oct 2020 17:52:14 +0800
-Message-ID: <1603792335.2104.12.camel@mtkswgap22>
-Subject: RE: [PATCH 3/4] scsi: ufs-mediatek: Fix flag of unipro low-power
- mode
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Avri Altman <Avri.Altman@wdc.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
-Date:   Tue, 27 Oct 2020 17:52:15 +0800
-In-Reply-To: <BY5PR04MB67058DE7C6B5F63E960280CBFC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <20200908064507.30774-1-stanley.chu@mediatek.com>
-         <20200908064507.30774-4-stanley.chu@mediatek.com>
-         <BY5PR04MB67058DE7C6B5F63E960280CBFC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 27 Oct 2020 05:52:31 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 34CAC20010;
+        Tue, 27 Oct 2020 09:52:22 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 10:52:21 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 07/14] dt-bindings: media: i2c: Add A31 MIPI CSI-2
+ bindings documentation
+Message-ID: <20201027095221.GE168350@aptenodytes>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-8-paul.kocialkowski@bootlin.com>
+ <20201026161450.gr3dqpltxw2ccc3s@gilmour.lan>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 58549434F085AA0CF554C6FA97DDC7A7439B1FBB93D811B8F34E8BA4BBC087112000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
+Content-Disposition: inline
+In-Reply-To: <20201026161450.gr3dqpltxw2ccc3s@gilmour.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQXZyaSwNCg0KT24gU2F0LCAyMDIwLTA5LTE5IGF0IDA4OjA4ICswMDAwLCBBdnJpIEFsdG1h
-biB3cm90ZToNCj4gPiANCj4gPiBGb3JjaWJseSBsZWF2ZSBVbmlQcm8gbG93LXBvd2VyIG1vZGUg
-aWYgVUlDIGNvbW1hbmRzIGlzIGZhaWxlZC4NCj4gPiBUaGlzIG1ha2VzIGhiYV9lbmFibGVfZGVs
-YXlfdXMgYXMgY29ycmVjdCAoZGVmYXVsdCkgdmFsdWUgZm9yDQo+ID4gcmUtZW5hYmxpbmcgdGhl
-IGhvc3QuDQo+ID4gDQo+ID4gQXQgdGhlIHNhbWUgdGltZSwgY2hhbmdlIHR5cGUgb2YgcGFyYW1l
-dGVyICJscG0iIGluIGZ1bmN0aW9uDQo+ID4gdWZzX210a191bmlwcm9fc2V0X3BtKCkgdG8gImJv
-b2wiLg0KPiBTZW1hbnRpY2FsbHksIGJldHRlciBsZWF2ZSBpdCB1MzIgYXMgaXRzIGV2ZW50dWFs
-bHkgYXNzaWduZWQgdG8gdGhlIGFyZzMgb2YgdGhlIHVpYyBjb21tYW5kIA0KPiANCg0KVGhhbmtz
-IGZvciByZW1pbmRpbmcuDQpJIHdpbGwgdXNlIHNwZWNpZmljIHUzMiB2YWx1ZXMgd2hpbGUgc2Vu
-ZGluZyBhcmczIHRvIGZpeCB0aGlzLg0KDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogU3Rhbmxl
-eSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9z
-Y3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyB8IDIwICsrKysrKysrKysrKysrLS0tLS0tDQo+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIGIvZHJpdmVycy9z
-Y3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiA+IGluZGV4IDg4N2MwM2U4YmNjMC4uZmViYTc0YTcy
-MzA5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCj4g
-PiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+ID4gQEAgLTQxOSw3ICs0
-MTksNyBAQCBzdGF0aWMgaW50IHVmc19tdGtfcHdyX2NoYW5nZV9ub3RpZnkoc3RydWN0IHVmc19o
-YmENCj4gPiAqaGJhLA0KPiA+ICAgICAgICAgcmV0dXJuIHJldDsNCj4gPiAgfQ0KPiA+IA0KPiA+
-IC1zdGF0aWMgaW50IHVmc19tdGtfdW5pcHJvX3NldF9wbShzdHJ1Y3QgdWZzX2hiYSAqaGJhLCB1
-MzIgbHBtKQ0KPiA+ICtzdGF0aWMgaW50IHVmc19tdGtfdW5pcHJvX3NldF9wbShzdHJ1Y3QgdWZz
-X2hiYSAqaGJhLCBib29sIGxwbSkNCj4gPiAgew0KPiA+ICAgICAgICAgaW50IHJldDsNCj4gPiAg
-ICAgICAgIHN0cnVjdCB1ZnNfbXRrX2hvc3QgKmhvc3QgPSB1ZnNoY2RfZ2V0X3ZhcmlhbnQoaGJh
-KTsNCj4gPiBAQCAtNDI3LDggKzQyNywxNCBAQCBzdGF0aWMgaW50IHVmc19tdGtfdW5pcHJvX3Nl
-dF9wbShzdHJ1Y3QgdWZzX2hiYQ0KPiA+ICpoYmEsIHUzMiBscG0pDQo+ID4gICAgICAgICByZXQg
-PSB1ZnNoY2RfZG1lX3NldChoYmEsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBV
-SUNfQVJHX01JQl9TRUwoVlNfVU5JUFJPUE9XRVJET1dOQ09OVFJPTCwgMCksDQo+ID4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBscG0pOw0KPiA+IC0gICAgICAgaWYgKCFyZXQpDQo+ID4g
-KyAgICAgICBpZiAoIXJldCB8fCAhbHBtKSB7DQo+ID4gKyAgICAgICAgICAgICAgIC8qDQo+ID4g
-KyAgICAgICAgICAgICAgICAqIEZvcmNpYmx5IHNldCBhcyBub24tTFBNIG1vZGUgaWYgVUlDIGNv
-bW1hbmRzIGlzIGZhaWxlZA0KPiA+ICsgICAgICAgICAgICAgICAgKiB0byB1c2UgZGVmYXVsdCBo
-YmFfZW5hYmxlX2RlbGF5X3VzIHZhbHVlIGZvciByZS1lbmFibGluZw0KPiA+ICsgICAgICAgICAg
-ICAgICAgKiB0aGUgaG9zdC4NCj4gPiArICAgICAgICAgICAgICAgICovDQo+ID4gICAgICAgICAg
-ICAgICAgIGhvc3QtPnVuaXByb19scG0gPSBscG07DQo+IE1heWJlIGp1c3QgaG9zdC0+dW5pcHJv
-X2xwbSA9IGZhbHNlOyBpbnN0ZWFkDQoNClRoaXMgc3RhdGVtZW50IHNoYWxsIHN0YXkgbGlrZSB0
-aGlzIGZvciBjYXNlOiAibHBtID0gdHJ1ZSINCg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0KDQo=
 
+--ILuaRSyQpoVaJ1HG
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon 26 Oct 20, 17:14, Maxime Ripard wrote:
+> i2c? :)
+
+Oops, good catch!
+=20
+> On Fri, Oct 23, 2020 at 07:45:39PM +0200, Paul Kocialkowski wrote:
+> > This introduces YAML bindings documentation for the A31 MIPI CSI-2
+> > controller.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 168 ++++++++++++++++++
+> >  1 file changed, 168 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/allwinner,s=
+un6i-a31-mipi-csi2.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a3=
+1-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-=
+a31-mipi-csi2.yaml
+> > new file mode 100644
+> > index 000000000000..9adc0bc27033
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-mipi-=
+csi2.yaml
+> > @@ -0,0 +1,168 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-mipi-csi2=
+=2Eyaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Allwinner A31 MIPI CSI-2 Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - const: allwinner,sun6i-a31-mipi-csi2
+> > +      - items:
+> > +          - const: allwinner,sun8i-v3s-mipi-csi2
+> > +          - const: allwinner,sun6i-a31-mipi-csi2
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: Bus Clock
+> > +      - description: Module Clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: bus
+> > +      - const: mod
+> > +
+> > +  phys:
+> > +    items:
+> > +      - description: MIPI D-PHY
+> > +
+> > +  phy-names:
+> > +    items:
+> > +      - const: dphy
+> > +
+> > +  resets:
+> > +    maxItems: 1
+> > +
+> > +  # See ./video-interfaces.txt for details
+> > +  ports:
+> > +    type: object
+> > +
+> > +    properties:
+> > +      port@0:
+> > +        type: object
+> > +        description: Input port, connect to a MIPI CSI-2 sensor
+> > +
+> > +        properties:
+> > +          reg:
+> > +            const: 0
+> > +
+> > +          endpoint:
+> > +            type: object
+> > +
+> > +            properties:
+> > +              remote-endpoint: true
+> > +
+> > +              bus-type:
+> > +                const: 4
+> > +
+> > +              clock-lanes:
+> > +                maxItems: 1
+> > +
+> > +              data-lanes:
+> > +                minItems: 1
+> > +                maxItems: 4
+> > +
+> > +            required:
+> > +              - bus-type
+> > +              - data-lanes
+> > +              - remote-endpoint
+> > +
+> > +            additionalProperties: false
+> > +
+> > +        required:
+> > +          - endpoint
+> > +
+> > +        additionalProperties: false
+> > +
+> > +      port@1:
+> > +        type: object
+> > +        description: Output port, connect to a CSI controller
+> > +
+> > +        properties:
+> > +          reg:
+> > +            const: 1
+> > +
+> > +          endpoint:
+> > +            type: object
+> > +
+> > +            properties:
+> > +              remote-endpoint: true
+> > +
+> > +              bus-type:
+> > +                const: 4
+>=20
+> That one seems a bit weird. If the input and output ports are using the
+> same format, what is that "bridge" supposed to be doing?
+
+Fair enough. What this represents is the internal link (likely a FIFO) betw=
+een
+the two controllers. It is definitely not a MIPI CSI-2 bus but there's no
+mbus type for an internal link (probably because it's not a bus after all).
+
+Note that on the CSI controller side, we need the bus-type to be set to 4 f=
+or it
+to properly select the MIPI CSI-2 input. So it just felt more logical to ha=
+ve
+the same on the other side of the endpoint. On the other hand, we can just
+remove it on the MIPI CSI-2 controller side since it won't check it and hav=
+e it
+fallback to the unknown mbus type.
+
+But that would make the types inconsistent on the two sides of the link.
+I don't think V4L2 will complain about it at the moment, but it would also =
+make
+sense that it does eventually.
+
+What do you think?
+
+> > +            additionalProperties: false
+> > +
+> > +        required:
+> > +          - endpoint
+> > +
+> > +        additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - clocks
+> > +  - clock-names
+> > +  - resets
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/clock/sun8i-v3s-ccu.h>
+> > +    #include <dt-bindings/reset/sun8i-v3s-ccu.h>
+> > +
+> > +    mipi_csi2: mipi-csi2@1cb1000 {
+>=20
+> The unit name should be pretty standard, with the list here:
+>=20
+> https://github.com/devicetree-org/devicetree-specification/blob/master/so=
+urce/chapter2-devicetree-basics.rst#generic-names-recommendation
+>=20
+> there's nothing really standing out for us in that list, but given that
+> there's dsi, we should stick with csi
+
+Then what really surprises me is that the CSI controllers are called "camer=
+a",
+not "csi". If "camera" is supposed to cover both image sensor and camera se=
+nsor
+interfaces, it would probably fit MIPI CSI-2 as well.
+
+I see lots of names with -controller for controllers with specific devices
+attached, like "nand-controller" or "lcd-controller". Maybe using
+"camera-controller" for the CSI and MIPI CSI-2 controllers would make the m=
+ost
+sense, while keeping "camera" for the actual image sensors.
+
+What do you think?
+
+Cheers,
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--ILuaRSyQpoVaJ1HG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+X7dUACgkQ3cLmz3+f
+v9HIzgf/VU3frpGzprIvTeXBh32se5uXZB/3cj0cUb++7oXeTXSc/db0LOwDu7jo
+/UyfvdYNUhuUMMOPT/ltm0ObonZzOv4GkAl0rjQYccWmwqAhi9/m/ac++ub7WjUk
+yv159tAbN+dorR6X2Q548Y8JKAYXBM/of0RVIs0ms/J8rnBkozXBv89gxTiIxrnH
+3swwmgsFAYEklUApRcIUcgSdsbxyRu10JTQ7vlmimb5/4Z3mEmOXGe7SkxKREFym
+fGumuTIXAWceJ0NLAXkUw3XxHku1Xczzmj78crBFvE0L8fUDKAoMFOG96oQqbI5t
+GlF0jyE3FZO/rbmGafQtSqE/B9JOFw==
+=CWwJ
+-----END PGP SIGNATURE-----
+
+--ILuaRSyQpoVaJ1HG--
