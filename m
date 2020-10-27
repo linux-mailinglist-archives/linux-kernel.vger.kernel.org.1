@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D70D29AF75
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BA529AE89
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754952AbgJ0OHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:07:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
+        id S2443699AbgJ0OBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:01:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754850AbgJ0OHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:07:23 -0400
+        id S1753568AbgJ0OAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:00:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D149322283;
-        Tue, 27 Oct 2020 14:07:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21B0321D42;
+        Tue, 27 Oct 2020 14:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807642;
-        bh=lvpSOiowpkc4Fz/zItNb7eMapzCbdBEdXFPaVboawhE=;
+        s=default; t=1603807214;
+        bh=JjFAo99wLYDWX9mwBwYWun0+eXHqmGfCOhVzOD6lR3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bWi+o2wPzD1oroJw5/HpGY7noxnVTeMN1ZJVbkhnqix5ZVT/C7KNw1NF+diE7jBaN
-         Vz84KBKpGF/ONxnJuqXHv4lr/DhwTMzYMvBN46E9BaoiV2eh/qjgTSd2cuZL0+hGvL
-         a/2D/eqTACZNVCCxXg54MD0P/TJx7uCGZv2kzSwU=
+        b=QtBgGs/RFE3hP92QR753yeWRLw+Ecm3h0DJgLlqBhnfOlCDepGw0hKWToDHSp7JJ/
+         ar4SbieebUc3SJ3hvcEiPRR7cwoEyx00uO50AOAj9221opmjKvOS+wz5th8Y3YlLQd
+         3Um8brp30RRhaz6m2Smw635qdLObLQlVcDAJHZNE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        stable@vger.kernel.org, Adam Goode <agoode@google.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 100/139] media: vsp1: Fix runtime PM imbalance on error
+Subject: [PATCH 4.4 084/112] media: uvcvideo: Ensure all probed info is returned to v4l2
 Date:   Tue, 27 Oct 2020 14:49:54 +0100
-Message-Id: <20201027134906.887895556@linuxfoundation.org>
+Message-Id: <20201027134904.516303348@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,57 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Adam Goode <agoode@google.com>
 
-[ Upstream commit 98fae901c8883640202802174a4bd70a1b9118bd ]
+[ Upstream commit 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+bFrameIndex and bFormatIndex can be negotiated by the camera during
+probing, resulting in the camera choosing a different format than
+expected. v4l2 can already accommodate such changes, but the code was
+not updating the proper fields.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Without such a change, v4l2 would potentially interpret the payload
+incorrectly, causing corrupted output. This was happening on the
+Elgato HD60 S+, which currently always renegotiates to format 1.
+
+As an aside, the Elgato firmware is buggy and should not be renegotating,
+but it is still a valid thing for the camera to do. Both macOS and Windows
+will properly probe and read uncorrupted images from this camera.
+
+With this change, both qv4l2 and chromium can now read uncorrupted video
+from the Elgato HD60 S+.
+
+[Add blank lines, remove periods at the of messages]
+
+Signed-off-by: Adam Goode <agoode@google.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/vsp1/vsp1_drv.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-index 4ac1ff482a0b3..fcb1838d670d4 100644
---- a/drivers/media/platform/vsp1/vsp1_drv.c
-+++ b/drivers/media/platform/vsp1/vsp1_drv.c
-@@ -487,7 +487,12 @@ int vsp1_device_get(struct vsp1_device *vsp1)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(vsp1->dev);
--	return ret < 0 ? ret : 0;
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(vsp1->dev);
-+		return ret;
-+	}
-+
-+	return 0;
- }
- 
- /*
-@@ -727,12 +732,12 @@ static int vsp1_probe(struct platform_device *pdev)
- 	/* Configure device parameters based on the version register. */
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = vsp1_device_get(vsp1);
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 0e7d16fe84d42..a0a544628053d 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -242,11 +242,41 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
  	if (ret < 0)
  		goto done;
  
- 	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
--	pm_runtime_put_sync(&pdev->dev);
-+	vsp1_device_put(vsp1);
++	/* After the probe, update fmt with the values returned from
++	 * negotiation with the device.
++	 */
++	for (i = 0; i < stream->nformats; ++i) {
++		if (probe->bFormatIndex == stream->format[i].index) {
++			format = &stream->format[i];
++			break;
++		}
++	}
++
++	if (i == stream->nformats) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
++			  probe->bFormatIndex);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < format->nframes; ++i) {
++		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
++			frame = &format->frame[i];
++			break;
++		}
++	}
++
++	if (i == format->nframes) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
++			  probe->bFrameIndex);
++		return -EINVAL;
++	}
++
+ 	fmt->fmt.pix.width = frame->wWidth;
+ 	fmt->fmt.pix.height = frame->wHeight;
+ 	fmt->fmt.pix.field = V4L2_FIELD_NONE;
+ 	fmt->fmt.pix.bytesperline = format->bpp * frame->wWidth / 8;
+ 	fmt->fmt.pix.sizeimage = probe->dwMaxVideoFrameSize;
++	fmt->fmt.pix.pixelformat = format->fcc;
+ 	fmt->fmt.pix.colorspace = format->colorspace;
+ 	fmt->fmt.pix.priv = 0;
  
- 	for (i = 0; i < ARRAY_SIZE(vsp1_device_infos); ++i) {
- 		if ((vsp1->version & VI6_IP_VERSION_MODEL_MASK) ==
 -- 
 2.25.1
 
