@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0DA29B5BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AD829B5BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795598AbgJ0PPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
+        id S1795225AbgJ0PPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794422AbgJ0PLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:11:44 -0400
+        id S1794185AbgJ0PKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:10:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69C3921D24;
-        Tue, 27 Oct 2020 15:11:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ECE321D41;
+        Tue, 27 Oct 2020 15:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811504;
-        bh=Z9uZAnmgGHJ32INYeOTMkXQS5l4BzWuMqHFivHWStm4=;
+        s=default; t=1603811422;
+        bh=BHTx4gmv9FC4LZ7qW6B6Sv/WDNEepcUADy5PQP4DjDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=evYlK3UMP8PvByNSirEQPeS4YiYSX4qo6kI+fe1N2U3AW2lYHMwPhjXrIOc2hIKIF
-         ParQu9FqevlR0Xylr8Ux9ovhV7ufC3TKrum4kWZOI20IwIuZB+bppBe8FCC0/Lt+N9
-         fYpr9GwlUsSBKp+1fIFnCtYVFrPiqzG9TaplsPVg=
+        b=vEolh3UGEalSyoyukx8k64++3kxJRmeAZ4j0S9lKVFyeHXO5AWwYrTx5kfzMWJU6W
+         xvtT+QfTouQY7MSNgYsbWwEvXteCdKRsSVpwg+Jdq3xeHiK6Sk+U2YaDyePlnMdtZp
+         qBNYd24LS8a5xZPDirJZoX4wpiGv80yI53Hp0RDM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 485/633] ARM: dts: sun8i: r40: bananapi-m2-ultra: Fix dcdc1 regulator
-Date:   Tue, 27 Oct 2020 14:53:48 +0100
-Message-Id: <20201027135545.489228472@linuxfoundation.org>
+Subject: [PATCH 5.8 488/633] memory: omap-gpmc: Fix build error without CONFIG_OF
+Date:   Tue, 27 Oct 2020 14:53:51 +0100
+Message-Id: <20201027135545.632324272@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,52 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 3658a2b7f3e16c7053eb8d70657b94bb62c5a0f4 ]
+[ Upstream commit 13d029ee51da365aa9c859db0c7395129252bde8 ]
 
-DCDC1 regulator powers many different subsystems. While some of them can
-work at 3.0 V, some of them can not. For example, VCC-HDMI can only work
-between 3.24 V and 3.36 V. According to OS images provided by the board
-manufacturer this regulator should be set to 3.3 V.
+If CONFIG_OF is n, gcc fails:
 
-Set DCDC1 and DCDC1SW to 3.3 V in order to fix this.
+drivers/memory/omap-gpmc.o: In function `gpmc_omap_onenand_set_timings':
+    omap-gpmc.c:(.text+0x2a88): undefined reference to `gpmc_read_settings_dt'
 
-Fixes: da7ac948fa93 ("ARM: dts: sun8i: Add board dts file for Banana Pi M2 Ultra")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20200824193649.978197-1-jernej.skrabec@siol.net
+Add gpmc_read_settings_dt() helper function, which zero the gpmc_settings
+so the caller doesn't proceed with random/invalid settings.
+
+Fixes: a758f50f10cf ("mtd: onenand: omap2: Configure driver from DT")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Roger Quadros <rogerq@ti.com>
+Link: https://lore.kernel.org/r/20200827125316.20780-1-yuehaibing@huawei.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/memory/omap-gpmc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-index 42d62d1ba1dc7..ea15073f0c79c 100644
---- a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-+++ b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-@@ -223,16 +223,16 @@ &reg_aldo3 {
- };
- 
- &reg_dc1sw {
--	regulator-min-microvolt = <3000000>;
--	regulator-max-microvolt = <3000000>;
-+	regulator-min-microvolt = <3300000>;
-+	regulator-max-microvolt = <3300000>;
- 	regulator-name = "vcc-gmac-phy";
- };
- 
- &reg_dcdc1 {
- 	regulator-always-on;
--	regulator-min-microvolt = <3000000>;
--	regulator-max-microvolt = <3000000>;
--	regulator-name = "vcc-3v0";
-+	regulator-min-microvolt = <3300000>;
-+	regulator-max-microvolt = <3300000>;
-+	regulator-name = "vcc-3v3";
- };
- 
- &reg_dcdc2 {
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index b5055577843a2..27bc417029e11 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -2274,6 +2274,10 @@ static void gpmc_probe_dt_children(struct platform_device *pdev)
+ 	}
+ }
+ #else
++void gpmc_read_settings_dt(struct device_node *np, struct gpmc_settings *p)
++{
++	memset(p, 0, sizeof(*p));
++}
+ static int gpmc_probe_dt(struct platform_device *pdev)
+ {
+ 	return 0;
 -- 
 2.25.1
 
