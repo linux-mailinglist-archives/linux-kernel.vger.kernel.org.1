@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016D229B695
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D7E29B768
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797175AbgJ0PWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:22:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57358 "EHLO mail.kernel.org"
+        id S1799647AbgJ0Pcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758669AbgJ0PTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:19:32 -0400
+        id S1796916AbgJ0PUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:20:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7087821527;
-        Tue, 27 Oct 2020 15:19:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7759520657;
+        Tue, 27 Oct 2020 15:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811972;
-        bh=N2OKTnmbyuBCrU4Q1Ih2/CK7lfVvfVFuoKzhQQcI/Gs=;
+        s=default; t=1603812035;
+        bh=DXF48mq6FhP6yJuUDLkahPrjOE9J5yn6xuCS9tNPWvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LX7Flxv3/SBYvpgACQYJVmaloebpqnlBJh//MWVC1gdEazmtAJZ4CxcQjwcJ2yPRL
-         LtfgfPRs0PfXFqJETdCx66eqVXDrTjHghvtIuU/4i46DMvDDSlCd5Sjdt4wRtIYrCR
-         lnbkUpkM5XzUgo57YzfOxhrlRmiEGV3/4ptJb/0A=
+        b=x2rO35xjcb+TsxFKYmmwSX47h54K4AZ40xW1c/O1z1dOhcwZe9pnlhil0Yd1vQkNH
+         DX11pS81uxqe11WzTycu30D2qpWjDe6QtRpvkYK/K1ViY2UltmPnInOLI+H6Mg/qfi
+         ZKcZY1eSYuHDqQoOVcbwbMqBrNO/e6EUSIw0Xw4w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
-        Joel Stanley <joel@jms.id.au>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 040/757] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
-Date:   Tue, 27 Oct 2020 14:44:50 +0100
-Message-Id: <20201027135452.402824267@linuxfoundation.org>
+        stable@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 042/757] net: hdlc_raw_eth: Clear the IFF_TX_SKB_SHARING flag after calling ether_setup
+Date:   Tue, 27 Oct 2020 14:44:52 +0100
+Message-Id: <20201027135452.497677144@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -42,54 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dylan Hung <dylan_hung@aspeedtech.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 137d23cea1c044b2d4853ac71bc68126b25fdbb2 ]
+[ Upstream commit 5fce1e43e2d5bf2f7e3224d7b99b1c65ab2c26e2 ]
 
-The new HW arbitration feature on Aspeed ast2600 will cause MAC TX to
-hang when handling scatter-gather DMA.  Disable the problematic feature
-by setting MAC register 0x58 bit28 and bit27.
+This driver calls ether_setup to set up the network device.
+The ether_setup function would add the IFF_TX_SKB_SHARING flag to the
+device. This flag indicates that it is safe to transmit shared skbs to
+the device.
 
-Fixes: 39bfab8844a0 ("net: ftgmac100: Add support for DT phy-handle property")
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+However, this is not true. This driver may pad the frame (in eth_tx)
+before transmission, so the skb may be modified.
+
+Fixes: 550fd08c2ceb ("net: Audit drivers to identify those needing IFF_TX_SKB_SHARING cleared")
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201020063420.187497-1-xie.he.0141@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/faraday/ftgmac100.c |    5 +++++
- drivers/net/ethernet/faraday/ftgmac100.h |    8 ++++++++
- 2 files changed, 13 insertions(+)
+ drivers/net/wan/hdlc_raw_eth.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1817,6 +1817,11 @@ static int ftgmac100_probe(struct platfo
- 		priv->rxdes0_edorr_mask = BIT(30);
- 		priv->txdes0_edotr_mask = BIT(30);
- 		priv->is_aspeed = true;
-+		/* Disable ast2600 problematic HW arbitration */
-+		if (of_device_is_compatible(np, "aspeed,ast2600-mac")) {
-+			iowrite32(FTGMAC100_TM_DEFAULT,
-+				  priv->base + FTGMAC100_OFFSET_TM);
-+		}
- 	} else {
- 		priv->rxdes0_edorr_mask = BIT(15);
- 		priv->txdes0_edotr_mask = BIT(15);
---- a/drivers/net/ethernet/faraday/ftgmac100.h
-+++ b/drivers/net/ethernet/faraday/ftgmac100.h
-@@ -170,6 +170,14 @@
- #define FTGMAC100_MACCR_SW_RST		(1 << 31)
- 
- /*
-+ * test mode control register
-+ */
-+#define FTGMAC100_TM_RQ_TX_VALID_DIS (1 << 28)
-+#define FTGMAC100_TM_RQ_RR_IDLE_PREV (1 << 27)
-+#define FTGMAC100_TM_DEFAULT                                                   \
-+	(FTGMAC100_TM_RQ_TX_VALID_DIS | FTGMAC100_TM_RQ_RR_IDLE_PREV)
-+
-+/*
-  * PHY control register
-  */
- #define FTGMAC100_PHYCR_MDC_CYCTHR_MASK	0x3f
+--- a/drivers/net/wan/hdlc_raw_eth.c
++++ b/drivers/net/wan/hdlc_raw_eth.c
+@@ -99,6 +99,7 @@ static int raw_eth_ioctl(struct net_devi
+ 		old_qlen = dev->tx_queue_len;
+ 		ether_setup(dev);
+ 		dev->tx_queue_len = old_qlen;
++		dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+ 		eth_hw_addr_random(dev);
+ 		call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE, dev);
+ 		netif_dormant_off(dev);
 
 
