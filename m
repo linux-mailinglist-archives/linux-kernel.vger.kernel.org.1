@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE2929C8C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1704629C891
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829512AbgJ0TOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:14:00 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:50750 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1829503AbgJ0TN6 (ORCPT
+        id S1829565AbgJ0TPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:15:48 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38433 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1829544AbgJ0TOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:13:58 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 13so2431431wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:13:56 -0700 (PDT)
+        Tue, 27 Oct 2020 15:14:55 -0400
+Received: by mail-pl1-f196.google.com with SMTP id f21so1276319plr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P3J/+0GiuC41DT0MOvT+FF9RAHnRvTVHa938Xwr2s1o=;
-        b=iAotOM6WKIuDQ6FgXb5rOAYby/U4SAR7GX1dfobxCt0NUEUYvR3JU5IbXXXzzEzb+x
-         NVw1W6NV+zW7ZjBUjaeVYKNjF3on3pNs1Hgp6GQgb8ezNmvtVbTVJ9+wG1SxiBt1nZ0N
-         E1jWM77BDsGkX6UGDdQshv1RZmgj9/9Fqg5Zw=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gV/VVwoohxFwknw5Qn01WhfBtKTfE0pEszhFmiVXe+4=;
+        b=bUUyctzcMSA6GV80xlX1omAD5lD1Q6cPzFS+DHgg4vnT5jm2fUe+9kyTyf1UtGDex9
+         e7+aXR4zgdP6JfIYXGGlXWxmD/enEyR76EowHH08WydLVpuwbGdyeqYD7pW7wyRu24Ni
+         cTpdJdaLJrOKGJEyA3oq5BVxfJ0ac1hK5p9Ck=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=P3J/+0GiuC41DT0MOvT+FF9RAHnRvTVHa938Xwr2s1o=;
-        b=ZNe4rvsor4ShO6HWf+jZ7vnkrd+VNOK/5M0GE06vTtprdgFBy3v+JTz3YlK0BPY7MP
-         PC+Sb6cvmyqN2cc9Zy+Ab2KDHLuKkAOdWkneblErAChbse6SX3OCjWPZgMO8OOkRZhpw
-         EqSIskfCHRvifuq7MRl6rn3mQshuYerT4I3Ne6SGQoW/gZWpczuwUipDuIu7cWggw8WW
-         ckqZd4B2jfjzmtjdu46qthQF3WpUA0f1wAeOgnVpNbwDuKTS8Fatfyybxk0H+pdJeayQ
-         g0I9IlPXWPdCfqnjh8yTP/Oqo/7S7djCXJpT+AyFSL/WqMY1nGUH23xh+fCY58QVCxGW
-         AEew==
-X-Gm-Message-State: AOAM532BnDGrz2YXTaz4JmdMmF40CyosngQmLL9JQBoOMYFR9DKZoL3d
-        vVSFKBWzkUjNcdMf/cCJeVEYbA==
-X-Google-Smtp-Source: ABdhPJxjvWUPnbB7pc9K8JYx7BBlTro1Je2YY0UCsz4EPGzzcVzaADg0zmoo0CDvgaDra903bJTkUw==
-X-Received: by 2002:a1c:e919:: with SMTP id q25mr4233791wmc.142.1603826035820;
-        Tue, 27 Oct 2020 12:13:55 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m1sm3070487wmm.34.2020.10.27.12.13.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gV/VVwoohxFwknw5Qn01WhfBtKTfE0pEszhFmiVXe+4=;
+        b=L1ovYiDuO7gp8N7xWV89IYOvCmM91ixMLoHnqgXXBDUC3y0xY2mvG08Xh/XDtMh85j
+         omvFB32hTZraNtmT0VZByDDosc+DJF+ptcHlqQD9S/Ctn0qqUOXfYTboIO6T/O7UokG/
+         a9S7NRLpqG682LjpP9Rx1foHQiLCWcYpegaFnLfp7w/zHTaPSXvFpa0N05FxV80PDSP4
+         mezNPymVW5eFSdDP/fH8g9RFXDWjWy6TYl9ReTi/RNldCJmwG6q1suEwv1EJm1NuBd/h
+         QIqj0OhkQVgyHjO3ho77xaMFQjmDg8/6ET64Vua/hUnh3TdWp1tCa9k+C0rYoLj8Hi0R
+         pe/Q==
+X-Gm-Message-State: AOAM531uXaKOtW5sRwkrfxf5J1TIj8uaOIs5LEHYTk0cIKyGmmdW5en5
+        fi65pKHVa+WE3/rTlJmaT8zSFQ==
+X-Google-Smtp-Source: ABdhPJyjtnpaZtReoire0YN/na6kS75vBmwzx3v3ddCq2YUxAsi++zqYgZgj/AIU9QAB6+bqwbbOtQ==
+X-Received: by 2002:a17:902:6a8c:b029:d5:da81:dc42 with SMTP id n12-20020a1709026a8cb02900d5da81dc42mr3990687plk.40.1603826094485;
+        Tue, 27 Oct 2020 12:14:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m3sm3052970pfd.217.2020.10.27.12.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 12:13:55 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 20:13:53 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] fbcon: Avoid hard-coding built-in font charcount
-Message-ID: <20201027191353.GO401619@phenom.ffwll.local>
-Mail-Followup-To: Peilin Ye <yepeilin.cs@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1603788511.git.yepeilin.cs@gmail.com>
- <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
- <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
- <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
- <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
+        Tue, 27 Oct 2020 12:14:53 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        containers@lists.linux-foundation.org
+Cc:     Kees Cook <keescook@chromium.org>, Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>, bpf@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Aleksa Sarai <cyphar@cyphar.com>
+Subject: Re: [PATCH v5 seccomp 0/5]seccomp: Add bitmap cache of constant allow filter results
+Date:   Tue, 27 Oct 2020 12:14:50 -0700
+Message-Id: <160382601078.2318738.11754677445961373147.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1602431034.git.yifeifz2@illinois.edu>
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <cover.1602431034.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:37:29PM -0400, Peilin Ye wrote:
-> fbcon_startup() and fbcon_init() are hard-coding the number of characters
-> of our built-in fonts as 256. Recently, we included that information in
-> our kernel font descriptor `struct font_desc`, so use `font->charcount`
-> instead of a hard-coded value.
+On Sun, 11 Oct 2020 10:47:41 -0500, YiFei Zhu wrote:
+> Alternative: https://lore.kernel.org/lkml/20200923232923.3142503-1-keescook@chromium.org/T/
 > 
-> This patch depends on patch "Fonts: Add charcount field to font_desc".
+> Major differences from the linked alternative by Kees:
+> * No x32 special-case handling -- not worth the complexity
+> * No caching of denylist -- not worth the complexity
+> * No seccomp arch pinning -- I think this is an independent feature
+> * The bitmaps are part of the filters rather than the task.
 > 
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> [...]
 
-So I think this is correct, but it also doesn't do a hole lot yet. fbcon.c
-still has tons of hard-coded 256 all over, and if (p->userfont).
+Applied to for-next/seccomp, thanks! I left off patch 5 for now until
+we sort out the rest of the SECCOMP_FILTER architectures, and tweaked
+patch 3 to include the architecture names.
 
-I think if we instead set vc->vc_font.charcount both in fbcon_init and in
-fbcon_do_set_font (probably just replace the userfont parameter with
-font_charcount for now), then we could replace these all with
-vc->vc_font.charcount. And the code would already improve quite a bit I
-think.
-
-With just this change here I think we have even more inconsistency, since
-for built-in fonts vc->vc_font.charcount is now set correctly, but for
-userfonts we need to instead look at FNTCHARCNT(vc->vc_font.data).
-
-We'd still need to maintain p->userfont because of the refcount chaos, but
-that is much more work.
-
-Or do I miss something here?
--Daniel
-
-> ---
->  drivers/video/fbdev/core/fbcon.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> index cef437817b0d..e563847991b7 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -1004,7 +1004,7 @@ static const char *fbcon_startup(void)
->  		vc->vc_font.width = font->width;
->  		vc->vc_font.height = font->height;
->  		vc->vc_font.data = (void *)(p->fontdata = font->data);
-> -		vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
-> +		vc->vc_font.charcount = font->charcount;
->  	} else {
->  		p->fontdata = vc->vc_font.data;
->  	}
-> @@ -1083,8 +1083,7 @@ static void fbcon_init(struct vc_data *vc, int init)
->  			vc->vc_font.width = font->width;
->  			vc->vc_font.height = font->height;
->  			vc->vc_font.data = (void *)(p->fontdata = font->data);
-> -			vc->vc_font.charcount = 256; /* FIXME  Need to
-> -							support more fonts */
-> +			vc->vc_font.charcount = font->charcount;
->  		}
->  	}
->  
-> -- 
-> 2.25.1
-> 
+[1/4] seccomp/cache: Lookup syscall allowlist bitmap for fast path
+      https://git.kernel.org/kees/c/f94defb8bf46
+[2/4] seccomp/cache: Add "emulator" to check if filter is constant allow
+      https://git.kernel.org/kees/c/e7dc9f1e5f6b
+[3/4] x86: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/1f68a4d393fe
+[4/4] selftests/seccomp: Compare bitmap vs filter overhead
+      https://git.kernel.org/kees/c/57a339117e52
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Kees Cook
+
