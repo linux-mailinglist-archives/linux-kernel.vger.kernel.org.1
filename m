@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E1629BA1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9F629BA18
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1804065AbgJ0Pxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57700 "EHLO mail.kernel.org"
+        id S1804009AbgJ0Pxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:53:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796564AbgJ0PTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:19:35 -0400
+        id S1796598AbgJ0PTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:19:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 296182064B;
-        Tue, 27 Oct 2020 15:19:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2E992064B;
+        Tue, 27 Oct 2020 15:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811974;
-        bh=gl9jYQHB64yfPpXuZ30FP/ZZmJq9n0BwfJEhUgXzYZY=;
+        s=default; t=1603811983;
+        bh=XZ7rIa5DuVwkBrTk/BZ0eU7TQQYdRzSQ2xPrn5uyWzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XYiyvbpL2lxzESXhhJJR/RCv8oqPHj2i+FfSQZYtTR+l4RGHapRmqBRt3gBUnRzIg
-         qsPSyADise96FJG58mvu6uAvjYzklvip2wxRRGi769DJmdGPZhdVHQnB5fNiWJ/xzk
-         caAo1fIN33fs7ofMmeXI0SLh3h82AbxuuclG0x6Y=
+        b=yOrIvO7vZPHbDKeb5mqSmcpcF+5dp+oLh0EGxcmbFbZisLKMMJF/zWov4ANb9lqnN
+         2DzfxzuTflFDzzNZCzELKfgrkD5Bu6EReNEg87CDyiLPGG/znFs0g3ficMdeQvKOVv
+         a8bnF+LBzh7tnT1Byly/pa9T+BsVlQzgUA/D4f9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
+        Apollon Oikonomopoulos <apoikos@dmesg.gr>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 049/757] r8169: fix operation under forced interrupt threading
-Date:   Tue, 27 Oct 2020 14:44:59 +0100
-Message-Id: <20201027135452.851788913@linuxfoundation.org>
+Subject: [PATCH 5.9 052/757] tcp: fix to update snd_wl1 in bulk receiver fast path
+Date:   Tue, 27 Oct 2020 14:45:02 +0100
+Message-Id: <20201027135452.997529528@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -42,58 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Neal Cardwell <ncardwell@google.com>
 
-[ Upstream commit 424a646e072a887aa87283b53aa6f8b19c2a7bef ]
+[ Upstream commit 18ded910b589839e38a51623a179837ab4cc3789 ]
 
-For several network drivers it was reported that using
-__napi_schedule_irqoff() is unsafe with forced threading. One way to
-fix this is switching back to __napi_schedule, but then we lose the
-benefit of the irqoff version in general. As stated by Eric it doesn't
-make sense to make the minimal hard irq handlers in drivers using NAPI
-a thread. Therefore ensure that the hard irq handler is never
-thread-ified.
+In the header prediction fast path for a bulk data receiver, if no
+data is newly acknowledged then we do not call tcp_ack() and do not
+call tcp_ack_update_window(). This means that a bulk receiver that
+receives large amounts of data can have the incoming sequence numbers
+wrap, so that the check in tcp_may_update_window fails:
+   after(ack_seq, tp->snd_wl1)
 
-Fixes: 9a899a35b0d6 ("r8169: switch to napi_schedule_irqoff")
-Link: https://lkml.org/lkml/2020/10/18/19
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/4d3ef84a-c812-5072-918a-22a6f6468310@gmail.com
+If the incoming receive windows are zero in this state, and then the
+connection that was a bulk data receiver later wants to send data,
+that connection can find itself persistently rejecting the window
+updates in incoming ACKs. This means the connection can persistently
+fail to discover that the receive window has opened, which in turn
+means that the connection is unable to send anything, and the
+connection's sending process can get permanently "stuck".
+
+The fix is to update snd_wl1 in the header prediction fast path for a
+bulk data receiver, so that it keeps up and does not see wrapping
+problems.
+
+This fix is based on a very nice and thorough analysis and diagnosis
+by Apollon Oikonomopoulos (see link below).
+
+This is a stable candidate but there is no Fixes tag here since the
+bug predates current git history. Just for fun: looks like the bug
+dates back to when header prediction was added in Linux v2.1.8 in Nov
+1996. In that version tcp_rcv_established() was added, and the code
+only updates snd_wl1 in tcp_ack(), and in the new "Bulk data transfer:
+receiver" code path it does not call tcp_ack(). This fix seems to
+apply cleanly at least as far back as v3.2.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Reported-by: Apollon Oikonomopoulos <apoikos@dmesg.gr>
+Tested-by: Apollon Oikonomopoulos <apoikos@dmesg.gr>
+Link: https://www.spinics.net/lists/netdev/msg692430.html
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20201022143331.1887495-1-ncardwell.kernel@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/ipv4/tcp_input.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -4686,7 +4686,7 @@ static int rtl8169_close(struct net_devi
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5766,6 +5766,8 @@ void tcp_rcv_established(struct sock *sk
+ 				tcp_data_snd_check(sk);
+ 				if (!inet_csk_ack_scheduled(sk))
+ 					goto no_ack;
++			} else {
++				tcp_update_wl(tp, TCP_SKB_CB(skb)->seq);
+ 			}
  
- 	phy_disconnect(tp->phydev);
- 
--	pci_free_irq(pdev, 0, tp);
-+	free_irq(pci_irq_vector(pdev, 0), tp);
- 
- 	dma_free_coherent(&pdev->dev, R8169_RX_RING_BYTES, tp->RxDescArray,
- 			  tp->RxPhyAddr);
-@@ -4737,8 +4737,8 @@ static int rtl_open(struct net_device *d
- 
- 	rtl_request_firmware(tp);
- 
--	retval = pci_request_irq(pdev, 0, rtl8169_interrupt, NULL, tp,
--				 dev->name);
-+	retval = request_irq(pci_irq_vector(pdev, 0), rtl8169_interrupt,
-+			     IRQF_NO_THREAD | IRQF_SHARED, dev->name, tp);
- 	if (retval < 0)
- 		goto err_release_fw_2;
- 
-@@ -4755,7 +4755,7 @@ out:
- 	return retval;
- 
- err_free_irq:
--	pci_free_irq(pdev, 0, tp);
-+	free_irq(pci_irq_vector(pdev, 0), tp);
- err_release_fw_2:
- 	rtl_release_firmware(tp);
- 	rtl8169_rx_clear(tp);
+ 			__tcp_ack_snd_check(sk, 0);
 
 
