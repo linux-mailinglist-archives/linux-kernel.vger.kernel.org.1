@@ -2,154 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C22B29A6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B25429A6D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509247AbgJ0Iqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:46:35 -0400
-Received: from mail-yb1-f202.google.com ([209.85.219.202]:53129 "EHLO
-        mail-yb1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444455AbgJ0Iqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:46:35 -0400
-Received: by mail-yb1-f202.google.com with SMTP id j10so628661ybl.19
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=PHSX1yllEEpVL2wWXaBXv4UsLFRKnniRVSM8yQzP6OY=;
-        b=m1iPMNbsZU6ojEjWigu9LT/5yPvJjM04VR/kS0RL5z9vq3o9VCW73xMXjIZ/z+Zxli
-         DRtbo1uHbLFT6+jCQTzU6htk6OOyzobJ0yKRlPfQ2VyJvKAFgMjlQ21gOn7feYQk+E9G
-         FLqmP/quCVYamrqTocJHlq5UbZQxySc/i+WOEF+DJ3iwVq6loaJd6rMyyBH7wvpf0HvY
-         oQHZQFDTcxIFCtjbm5DhdmDomnfyzKAQTBNL6tnF65JD8cKSCcVe/WyJHEgE8ISOpSiS
-         PR8QgJZjQTSgy0RNMrsXbBUvnVhe1zwkvASaOcgxkL70NcPqCeur/fSJKrA54JaNgBF1
-         f1kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=PHSX1yllEEpVL2wWXaBXv4UsLFRKnniRVSM8yQzP6OY=;
-        b=GN4iTj7WdEtx2g9usrabijKDnDXeHtyJ9ccOMjpO+6rQo53bNaRAkknheX3Pe9qY0K
-         rM5q/X6rSGSBKnPCHzuDbh9BHegnbwrriBgNMXRDeVKy1MbKY61SewK3oGISNesm4oTF
-         llzNPdCKMFvGu1nQuUQ9A1hOdxirL77U3XSX+Y/F9PfrzUUW2kZRdzidoj0qSI1SlCgc
-         y7aBfZgAKuDdpKV2vx/MCIvp5tevFqZnIx2GQEoyBo4yvQ1JSLo4gjmRx4g2Av67Q0Ns
-         4LWSA/GeIIwEDfowIDjVjgt/bWsKRMXCP3+u6oKTPa87fuVlj+zyWMIiVu1/0vnzbPl+
-         mMLg==
-X-Gm-Message-State: AOAM5321v0syacLHuAUBEHih/sHksMD/bo+3iC5xlzNCjKHemUN2inai
-        KSnjYK4VdY5hwfo/CZnTxmVBKwZxyu+l1LSJ9cQBGSgS86lltFrxc8x0k4dFG65oZQ4rp8IuNR2
-        KL3WXahAzuihNGj0lukGIhrI96tHm2qhAjmPnVKJWw9CNDeDuPmnbBA5NyOI+3v9waQ+lmlzkbu
-        /Ju+cK
-X-Google-Smtp-Source: ABdhPJzPQYm2BKWiGbDrkKkG4U863wayoLMRNAjsIj9mJSWCQTlU+OiLZWyK3vb37VpvVRDOrl6kajVX0900EfL0
-Sender: "victording via sendgmr" <victording@victording.syd.corp.google.com>
-X-Received: from victording.syd.corp.google.com ([2401:fa00:9:14:f693:9fff:fef4:fa73])
- (user=victording job=sendgmr) by 2002:a25:4e55:: with SMTP id
- c82mr1622346ybb.416.1603788393692; Tue, 27 Oct 2020 01:46:33 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 19:46:12 +1100
-Message-Id: <20201027084612.528301-1-victording@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH v2] mmc: sdhci-acpi: AMDI0040: Allow changing HS200/HS400
- driver strength
-From:   Victor Ding <victording@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Raul E Rangel <rrangel@chromium.org>,
-        Victor Ding <victording@google.com>, linux-mmc@vger.kernel.org
+        id S2509252AbgJ0Iqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404009AbgJ0Iqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:46:46 -0400
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90C162224E
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603788405;
+        bh=vsxUUAOXqyP7qK5QCUqe8n8ns1GI6ih7irunW79BlGE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RG7CdBgLIrBVtSdtOApL9xWA/gNp7mGQbzRLimFuWdKoBK+eAC7VmF20cOPj5wiMr
+         d2mN0cqAXxdKIBzVZ0ZF9lJZmvrfnAlxiRAPTzfBQWMuBxfCLDBdXqYWSV1yi4pOgp
+         ZUrcsDLmr4P6zYwtl2pk3VqAjp29F3ktfND+R6jQ=
+Received: by mail-qk1-f180.google.com with SMTP id k9so451916qki.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:46:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532q3UGXQzda5LNaqj8dTmPwcSZZSg6XR3L+3kYxcN78We0QBPtN
+        4fDKTAGHzUITNr0Elp42ZEF81arht6ziBjbrHVQ=
+X-Google-Smtp-Source: ABdhPJx2f7yx+xY8uUiSAjSShOB6pY+ko49lhZeA00CUJban0ASzxbn1TbQd9z2+c1kYMuxO33xr1KuMXANQbP1itAs=
+X-Received: by 2002:a05:620a:74f:: with SMTP id i15mr1070105qki.352.1603788404671;
+ Tue, 27 Oct 2020 01:46:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201026215004.3893088-1-arnd@kernel.org> <8f5c673a-0265-a6d0-57fc-98c788caadc9@rasmusvillemoes.dk>
+In-Reply-To: <8f5c673a-0265-a6d0-57fc-98c788caadc9@rasmusvillemoes.dk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 09:46:28 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2WhAP7Cj+cgYyFEVVQL-1oSOdS1mcN7=o75u24s09-Uw@mail.gmail.com>
+Message-ID: <CAK8P3a2WhAP7Cj+cgYyFEVVQL-1oSOdS1mcN7=o75u24s09-Uw@mail.gmail.com>
+Subject: Re: [PATCH] printf: fix Woverride-init warning for EDEADLK errno
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raul E Rangel <rrangel@chromium.org>
+On Tue, Oct 27, 2020 at 8:23 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+> On 26/10/2020 22.49, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+>
+> NAK. That would end up using the "EDEADLOCK" string for the value 35 on
+> those architectures where they are the same, despite EDEADLK being the
+> by far the most used symbol. See the comments and original commit log,
+> the placement of these is deliberate.
 
-This change will allow platform designers better control over signal
-integrity by allowing them to tune the HS200 and HS400 driver strengths.
+Ok, I see.
 
-The driver strength was previously hard coded to A to solve boot
-problems with certain platforms. This driver strength does not
-universally apply to all platforms so we need a knob to adjust it.
+> How about we do this instead?
+>
+> From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+>
+> The table of errno value->name contains a few duplicate entries since
+> e.g. EDEADLK == EDEADLOCK on most architectures. For the known cases,
+> the most used symbolic constant is listed last so that takes
+> precedence - the idea being that if someone sees "can't do that:
+> -EDEADLK" in dmesg, grepping for EDEADLK is more likely to find the
+> place where that error was generated (grepping for "can't do that"
+> will find the printk() that emitted it, but the source would often be
+> a few calls down).
+>
+> However, that means one gets
+>
+>   warning: initialized field overwritten [-Woverride-init]
+>
+> when building with W=1. As the use of multiple initializers for the
+> same entry here is quite deliberate, explicitly disable that warning
+> for errname.o.
+>
+> Reported-by: Arnd Bergmann <arnd@kernel.org>
+> Fixes: 57f5677e535b ("printf: add support for printing symbolic error
+> names")
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  lib/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/lib/Makefile b/lib/Makefile
+> index ce45af50983a2a5e3582..a98119519e100103818d 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -224,6 +224,7 @@ obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
+>
+>  obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
+>  obj-$(CONFIG_SYMBOLIC_ERRNAME) += errname.o
+> +CFLAGS_errname.o += $(call cc-disable-warning, override-init)
+>
 
-All older platforms currently have the SDR104 preset hard coded to A in
-the firmware. This means that switching from the hard coded value in
-the kernel to reading the SDR104 preset is a no-op for these platforms.
-Newer platforms will have properly set presets. So this change will
-support both new and old platforms.
+This works, but it conflicts with a different patch series I have, and
+it disables a potentially useful warning in case we get another conflict
+in this file, so I'd prefer to find a way to avoid the warning rather
+than force-disabling it.
 
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
-Signed-off-by: Victor Ding <victording@google.com>
+How about adding the #ifdef around the EDEADLOCK line
+instead of the EDEADLK one? Something like
 
----
+diff --git a/lib/errname.c b/lib/errname.c
+index 0c4d3e66170e..93043fb960cc 100644
+--- a/lib/errname.c
++++ b/lib/errname.c
+@@ -38,7 +38,10 @@ static const char *names_0[] = {
+        E(ECOMM),
+        E(ECONNABORTED),
+        E(ECONNRESET),
++       E(EDEADLK), /* EDEADLOCK */
++#if EDEADLK != EDEADLOCK /* mips, sparc, powerpc */
+        E(EDEADLOCK),
++#endif
+        E(EDESTADDRREQ),
+        E(EDOM),
+        E(EDOTDOT),
+@@ -169,7 +172,6 @@ static const char *names_0[] = {
+        E(ECANCELED), /* ECANCELLED */
+        E(EAGAIN), /* EWOULDBLOCK */
+        E(ECONNREFUSED), /* EREFUSED */
+-       E(EDEADLK), /* EDEADLOCK */
+ };
+ #undef E
 
-Changes in v2:
-By Victor Ding <victording@google.com>
- - Rebased the patch by using FIELD_GET for preset value bit masks.
- - (No functional changes).
-
-The original patch was developed by Raul E Rangel.
-https://patchwork.kernel.org/project/linux-mmc/patch/20200928154718.2.Ic6b6031366f090393d00a53fd69e1ada31ceb29e@changeid/
-
- drivers/mmc/host/sdhci-acpi.c | 39 ++++++++++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
-index 54205e3be9e8..225cb34cf1b9 100644
---- a/drivers/mmc/host/sdhci-acpi.c
-+++ b/drivers/mmc/host/sdhci-acpi.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2012, Intel Corporation.
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/init.h>
- #include <linux/export.h>
- #include <linux/module.h>
-@@ -545,10 +546,42 @@ struct amd_sdhci_host {
- 
- static int amd_select_drive_strength(struct mmc_card *card,
- 				     unsigned int max_dtr, int host_drv,
--				     int card_drv, int *drv_type)
-+				     int card_drv, int *host_driver_strength)
- {
--	*drv_type = MMC_SET_DRIVER_TYPE_A;
--	return MMC_SET_DRIVER_TYPE_A;
-+	struct sdhci_host *host = mmc_priv(card->host);
-+	u16 preset, preset_driver_strength;
-+
-+	/*
-+	 * This method is only called by mmc_select_hs200 so we only need to
-+	 * read from the HS200 (SDR104) preset register.
-+	 *
-+	 * Firmware that has "invalid/default" presets return a driver strength
-+	 * of A. This matches the previously hard coded value.
-+	 */
-+	preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR104);
-+	preset_driver_strength = FIELD_GET(SDHCI_PRESET_DRV_MASK, preset);
-+
-+	/*
-+	 * We want the controller driver strength to match the card's driver
-+	 * strength so they have similar rise/fall times.
-+	 *
-+	 * The controller driver strength set by this method is sticky for all
-+	 * timings after this method is called. This unfortunately means that
-+	 * while HS400 tuning is in progress we end up with mismatched driver
-+	 * strengths between the controller and the card. HS400 tuning requires
-+	 * switching from HS400->DDR52->HS->HS200->HS400. So the driver mismatch
-+	 * happens while in DDR52 and HS modes. This has not been observed to
-+	 * cause problems. Enabling presets would fix this issue.
-+	 */
-+	*host_driver_strength = preset_driver_strength;
-+
-+	/*
-+	 * The resulting card driver strength is only set when switching the
-+	 * card's timing to HS200 or HS400. The card will use the default driver
-+	 * strength (B) for any other mode.
-+	 */
-+	return preset_driver_strength;
-+
- }
- 
- static void sdhci_acpi_amd_hs400_dll(struct sdhci_host *host, bool enable)
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
-
+      Arnd
