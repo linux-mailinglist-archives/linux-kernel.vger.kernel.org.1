@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FD029B188
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948A829B191
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902148AbgJ0ObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:31:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
+        id S1759333AbgJ0ObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902112AbgJ0O34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:29:56 -0400
+        id S1759381AbgJ0OaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:30:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B69C120780;
-        Tue, 27 Oct 2020 14:29:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3718F20780;
+        Tue, 27 Oct 2020 14:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808996;
-        bh=ptos/kFt8+ZQBIpvrfHdAkl9k25O/e2wQYqrPNyGQ2s=;
+        s=default; t=1603809001;
+        bh=UPyzZ55L80cQhh6XJs2VD8+HKlxsoXxUHr+Gooe2Ltg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=URmnQB/SYyFycNAgl7aFHGG01E4tF4j9jEMaQGWGiGKXCg32fomb+utsCeVMNck4e
-         HhPUESX2M4Y4z6GnzwxA7YjbID08VgHVDQ061s3lk/qXNScqIFYHGJeQAFbnO1YLpq
-         teXLDDu3kzRMziHPgq9EnP9r2qEcV20yyftlMQc0=
+        b=BM/+ggKfeVZLwTuf87C7EtJI4tp0vUXgoB5pq74T7j0YJVOfH7WwZNupLo3fBrbL4
+         zc2lVDfbdh8099/0yzHKWwr8mKWvl67naJSQPVivsZI925thqNUeLo2NiqHbBE7kmm
+         COGQo2cTqhMK+/3KUtZo4PrO+/1JnBi/FL002mhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
+        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
+        Apollon Oikonomopoulos <apoikos@dmesg.gr>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 037/408] selftests: forwarding: Add missing rp_filter configuration
-Date:   Tue, 27 Oct 2020 14:49:35 +0100
-Message-Id: <20201027135456.803232307@linuxfoundation.org>
+Subject: [PATCH 5.4 039/408] tcp: fix to update snd_wl1 in bulk receiver fast path
+Date:   Tue, 27 Oct 2020 14:49:37 +0100
+Message-Id: <20201027135456.890580942@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,89 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Neal Cardwell <ncardwell@google.com>
 
-[ Upstream commit 71a0e29e99405d89b695882d52eec60844173697 ]
+[ Upstream commit 18ded910b589839e38a51623a179837ab4cc3789 ]
 
-When 'rp_filter' is configured in strict mode (1) the tests fail because
-packets received from the macvlan netdevs would not be forwarded through
-them on the reverse path.
+In the header prediction fast path for a bulk data receiver, if no
+data is newly acknowledged then we do not call tcp_ack() and do not
+call tcp_ack_update_window(). This means that a bulk receiver that
+receives large amounts of data can have the incoming sequence numbers
+wrap, so that the check in tcp_may_update_window fails:
+   after(ack_seq, tp->snd_wl1)
 
-Fix this by disabling the 'rp_filter', meaning no source validation is
-performed.
+If the incoming receive windows are zero in this state, and then the
+connection that was a bulk data receiver later wants to send data,
+that connection can find itself persistently rejecting the window
+updates in incoming ACKs. This means the connection can persistently
+fail to discover that the receive window has opened, which in turn
+means that the connection is unable to send anything, and the
+connection's sending process can get permanently "stuck".
 
-Fixes: 1538812e0880 ("selftests: forwarding: Add a test for VXLAN asymmetric routing")
-Fixes: 438a4f5665b2 ("selftests: forwarding: Add a test for VXLAN symmetric routing")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reported-by: Hangbin Liu <liuhangbin@gmail.com>
-Tested-by: Hangbin Liu <liuhangbin@gmail.com>
-Link: https://lore.kernel.org/r/20201015084525.135121-1-idosch@idosch.org
+The fix is to update snd_wl1 in the header prediction fast path for a
+bulk data receiver, so that it keeps up and does not see wrapping
+problems.
+
+This fix is based on a very nice and thorough analysis and diagnosis
+by Apollon Oikonomopoulos (see link below).
+
+This is a stable candidate but there is no Fixes tag here since the
+bug predates current git history. Just for fun: looks like the bug
+dates back to when header prediction was added in Linux v2.1.8 in Nov
+1996. In that version tcp_rcv_established() was added, and the code
+only updates snd_wl1 in tcp_ack(), and in the new "Bulk data transfer:
+receiver" code path it does not call tcp_ack(). This fix seems to
+apply cleanly at least as far back as v3.2.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Reported-by: Apollon Oikonomopoulos <apoikos@dmesg.gr>
+Tested-by: Apollon Oikonomopoulos <apoikos@dmesg.gr>
+Link: https://www.spinics.net/lists/netdev/msg692430.html
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20201022143331.1887495-1-ncardwell.kernel@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/net/forwarding/vxlan_asymmetric.sh |   10 ++++++++++
- tools/testing/selftests/net/forwarding/vxlan_symmetric.sh  |   10 ++++++++++
- 2 files changed, 20 insertions(+)
+ net/ipv4/tcp_input.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/tools/testing/selftests/net/forwarding/vxlan_asymmetric.sh
-+++ b/tools/testing/selftests/net/forwarding/vxlan_asymmetric.sh
-@@ -215,10 +215,16 @@ switch_create()
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5696,6 +5696,8 @@ void tcp_rcv_established(struct sock *sk
+ 				tcp_data_snd_check(sk);
+ 				if (!inet_csk_ack_scheduled(sk))
+ 					goto no_ack;
++			} else {
++				tcp_update_wl(tp, TCP_SKB_CB(skb)->seq);
+ 			}
  
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 10
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 20
-+
-+	sysctl_set net.ipv4.conf.all.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan10-v.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan20-v.rp_filter 0
- }
- 
- switch_destroy()
- {
-+	sysctl_restore net.ipv4.conf.all.rp_filter
-+
- 	bridge fdb del 00:00:5e:00:01:01 dev br1 self local vlan 20
- 	bridge fdb del 00:00:5e:00:01:01 dev br1 self local vlan 10
- 
-@@ -359,6 +365,10 @@ ns_switch_create()
- 
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 10
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 20
-+
-+	sysctl_set net.ipv4.conf.all.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan10-v.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan20-v.rp_filter 0
- }
- export -f ns_switch_create
- 
---- a/tools/testing/selftests/net/forwarding/vxlan_symmetric.sh
-+++ b/tools/testing/selftests/net/forwarding/vxlan_symmetric.sh
-@@ -237,10 +237,16 @@ switch_create()
- 
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 10
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 20
-+
-+	sysctl_set net.ipv4.conf.all.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan10-v.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan20-v.rp_filter 0
- }
- 
- switch_destroy()
- {
-+	sysctl_restore net.ipv4.conf.all.rp_filter
-+
- 	bridge fdb del 00:00:5e:00:01:01 dev br1 self local vlan 20
- 	bridge fdb del 00:00:5e:00:01:01 dev br1 self local vlan 10
- 
-@@ -402,6 +408,10 @@ ns_switch_create()
- 
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 10
- 	bridge fdb add 00:00:5e:00:01:01 dev br1 self local vlan 20
-+
-+	sysctl_set net.ipv4.conf.all.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan10-v.rp_filter 0
-+	sysctl_set net.ipv4.conf.vlan20-v.rp_filter 0
- }
- export -f ns_switch_create
- 
+ 			__tcp_ack_snd_check(sk, 0);
 
 
