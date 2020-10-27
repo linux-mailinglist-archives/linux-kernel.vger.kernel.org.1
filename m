@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4444529B8AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E581729B8DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801539AbgJ0Pmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:42:38 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41840 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1799913AbgJ0PeD (ORCPT
+        id S1802057AbgJ0Pp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:45:29 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:44138 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1800447AbgJ0Pfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:34:03 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RFXpSU122658;
-        Tue, 27 Oct 2020 10:33:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603812831;
-        bh=4o9Ae+25venqCtbBsHi5T/xxGCzMF37n9QCBec9rNak=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dIHzbiDqa6OOuGqY6jZR81uJNvCwfq3aqDSglIs4y93RbYwxacJtMGYnyUe33ya8V
-         oSj72rmHEjtinxGD7S41rL/gVHorzP9Lz10MgdS9Vasrh71KK1zdKFO1VBPUyznZe+
-         XzPDaMRxatIcn+oA7BbuPNsv/xN2PF4y9Kwftd2c=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RFXpwp087684
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 10:33:51 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
- Oct 2020 10:31:45 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 27 Oct 2020 10:31:45 -0500
-Received: from [10.1.3.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RFVYNo059550;
-        Tue, 27 Oct 2020 10:31:38 -0500
-Subject: Re: [PATCH 1/4] drm/tilcdc: avoid 'make W=2' build failure
-To:     Arnd Bergmann <arnd@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20201026194110.3817470-1-arnd@kernel.org>
-From:   Jyri Sarha <jsarha@ti.com>
-Autocrypt: addr=jsarha@ti.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <19af29c5-91e7-055f-cffa-0c813ed5233b@ti.com>
-Date:   Tue, 27 Oct 2020 17:31:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 11:35:54 -0400
+Received: from 89-64-86-244.dynamic.chello.pl (89.64.86.244) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
+ id 9e1452c9f4f6bfa2; Tue, 27 Oct 2020 16:35:51 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH v2.1 4/4] cpufreq: schedutil: Always call driver if need_freq_update is set
+Date:   Tue, 27 Oct 2020 16:35:51 +0100
+Message-ID: <12275472.W5IoEtXICo@kreacher>
+In-Reply-To: <1905098.zDJocX6404@kreacher>
+References: <2183878.gTFULuzKx9@kreacher> <1905098.zDJocX6404@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20201026194110.3817470-1-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2020 21:41, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The -Wmissing-field-initializer warning when building with W=2
-> turns into an error because tilcdc is built with -Werror:
-> 
-> drm/tilcdc/tilcdc_drv.c:431:33: error: missing field 'data' initializer [-Werror,-Wmissing-field-initializers] { "regs", tilcdc_regs_show, 0 },
-> drm/tilcdc/tilcdc_drv.c:432:33: error: missing field 'data' initializer [-Werror,-Wmissing-field-initializers] { "mm",   tilcdc_mm_show,   0 },
-> 
-> Add the missing field initializers to address the warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
+Because sugov_update_next_freq() may skip a frequency update even if
+the need_freq_update flag has been set for the policy at hand, policy
+limits updates may not take effect as expected.
 
-Please let me know if you want me to merge this.
+For example, if the intel_pstate driver operates in the passive mode
+with HWP enabled, it needs to update the HWP min and max limits when
+the policy min and max limits change, respectively, but that may not
+happen if the target frequency does not change along with the limit
+at hand.  In particular, if the policy min is changed first, causing
+the target frequency to be adjusted to it, and the policy max limit
+is changed later to the same value, the HWP max limit will not be
+updated to follow it as expected, because the target frequency is
+still equal to the policy min limit and it will not change until
+that limit is updated.
 
-Best regards,
-Jyri
+To address this issue, modify get_next_freq() to let the driver
+callback run if the CPUFREQ_NEED_UPDATE_LIMITS cpufreq driver flag
+is set regardless of whether or not the new frequency to set is
+equal to the previous one.
 
-> ---
->  drivers/gpu/drm/tilcdc/tilcdc_drv.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> index 4f5fc3e87383..754a66051a21 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-> @@ -428,8 +428,8 @@ static int tilcdc_mm_show(struct seq_file *m, void *arg)
->  }
->  
->  static struct drm_info_list tilcdc_debugfs_list[] = {
-> -		{ "regs", tilcdc_regs_show, 0 },
-> -		{ "mm",   tilcdc_mm_show,   0 },
-> +		{ "regs", tilcdc_regs_show, 0, NULL },
-> +		{ "mm",   tilcdc_mm_show,   0, NULL },
->  };
->  
->  static void tilcdc_debugfs_init(struct drm_minor *minor)
-> 
+Fixes: f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive mode with HWP enabled")
+Reported-by: Zhang Rui <rui.zhang@intel.com>
+Tested-by: Zhang Rui <rui.zhang@intel.com>
+Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v2 -> v2.1
+   * Fix typo in the subject.
+   * Make get_next_freq() and sugov_update_next_freq() ignore the
+     sg_policy->next_freq == next_freq case when CPUFREQ_NEED_UPDATE_LIMITS
+     is set for the driver.
+   * Add Tested-by from Rui (this version lets the driver callback run more
+     often than the v2, so the behavior in the Rui's case doesn't change).
+
+---
+ kernel/sched/cpufreq_schedutil.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+===================================================================
+--- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
++++ linux-pm/kernel/sched/cpufreq_schedutil.c
+@@ -102,11 +102,12 @@ static bool sugov_should_update_freq(str
+ static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+ 				   unsigned int next_freq)
+ {
+-	if (sg_policy->next_freq == next_freq)
++	if (sg_policy->next_freq == next_freq && !sg_policy->need_freq_update)
+ 		return false;
+ 
+ 	sg_policy->next_freq = next_freq;
+ 	sg_policy->last_freq_update_time = time;
++	sg_policy->need_freq_update = false;
+ 
+ 	return true;
+ }
+@@ -161,10 +162,12 @@ static unsigned int get_next_freq(struct
+ 
+ 	freq = map_util_freq(util, freq, max);
+ 
+-	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
++	if (cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS))
++		sg_policy->need_freq_update = true;
++	else if (freq == sg_policy->cached_raw_freq &&
++		 !sg_policy->need_freq_update)
+ 		return sg_policy->next_freq;
+ 
+-	sg_policy->need_freq_update = false;
+ 	sg_policy->cached_raw_freq = freq;
+ 	return cpufreq_driver_resolve_freq(policy, freq);
+ }
 
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
