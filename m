@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1704629C891
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D5229C87D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829565AbgJ0TPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:15:48 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38433 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1829544AbgJ0TOz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:14:55 -0400
-Received: by mail-pl1-f196.google.com with SMTP id f21so1276319plr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gV/VVwoohxFwknw5Qn01WhfBtKTfE0pEszhFmiVXe+4=;
-        b=bUUyctzcMSA6GV80xlX1omAD5lD1Q6cPzFS+DHgg4vnT5jm2fUe+9kyTyf1UtGDex9
-         e7+aXR4zgdP6JfIYXGGlXWxmD/enEyR76EowHH08WydLVpuwbGdyeqYD7pW7wyRu24Ni
-         cTpdJdaLJrOKGJEyA3oq5BVxfJ0ac1hK5p9Ck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gV/VVwoohxFwknw5Qn01WhfBtKTfE0pEszhFmiVXe+4=;
-        b=L1ovYiDuO7gp8N7xWV89IYOvCmM91ixMLoHnqgXXBDUC3y0xY2mvG08Xh/XDtMh85j
-         omvFB32hTZraNtmT0VZByDDosc+DJF+ptcHlqQD9S/Ctn0qqUOXfYTboIO6T/O7UokG/
-         a9S7NRLpqG682LjpP9Rx1foHQiLCWcYpegaFnLfp7w/zHTaPSXvFpa0N05FxV80PDSP4
-         mezNPymVW5eFSdDP/fH8g9RFXDWjWy6TYl9ReTi/RNldCJmwG6q1suEwv1EJm1NuBd/h
-         QIqj0OhkQVgyHjO3ho77xaMFQjmDg8/6ET64Vua/hUnh3TdWp1tCa9k+C0rYoLj8Hi0R
-         pe/Q==
-X-Gm-Message-State: AOAM531uXaKOtW5sRwkrfxf5J1TIj8uaOIs5LEHYTk0cIKyGmmdW5en5
-        fi65pKHVa+WE3/rTlJmaT8zSFQ==
-X-Google-Smtp-Source: ABdhPJyjtnpaZtReoire0YN/na6kS75vBmwzx3v3ddCq2YUxAsi++zqYgZgj/AIU9QAB6+bqwbbOtQ==
-X-Received: by 2002:a17:902:6a8c:b029:d5:da81:dc42 with SMTP id n12-20020a1709026a8cb02900d5da81dc42mr3990687plk.40.1603826094485;
-        Tue, 27 Oct 2020 12:14:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m3sm3052970pfd.217.2020.10.27.12.14.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 12:14:53 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        containers@lists.linux-foundation.org
-Cc:     Kees Cook <keescook@chromium.org>, Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>, bpf@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH v5 seccomp 0/5]seccomp: Add bitmap cache of constant allow filter results
-Date:   Tue, 27 Oct 2020 12:14:50 -0700
-Message-Id: <160382601078.2318738.11754677445961373147.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1602431034.git.yifeifz2@illinois.edu>
-References: <cover.1602263422.git.yifeifz2@illinois.edu> <cover.1602431034.git.yifeifz2@illinois.edu>
+        id S1829558AbgJ0TPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:15:41 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:37124 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1829551AbgJ0TPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 15:15:03 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2CCEC20130A;
+        Tue, 27 Oct 2020 20:15:02 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E1BA2012F5;
+        Tue, 27 Oct 2020 20:15:02 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 082A2202AE;
+        Tue, 27 Oct 2020 20:15:01 +0100 (CET)
+Date:   Tue, 27 Oct 2020 21:15:01 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     trix@redhat.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, Anson.Huang@nxp.com, peng.fan@nxp.com,
+        leonard.crestez@nxp.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: imx: remove unneeded semicolon
+Message-ID: <20201027191501.fuzc3d72774xmivz@fsr-ub1664-175>
+References: <20201027185756.1586607-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027185756.1586607-1-trix@redhat.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 10:47:41 -0500, YiFei Zhu wrote:
-> Alternative: https://lore.kernel.org/lkml/20200923232923.3142503-1-keescook@chromium.org/T/
+On 20-10-27 11:57:56, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Major differences from the linked alternative by Kees:
-> * No x32 special-case handling -- not worth the complexity
-> * No caching of denylist -- not worth the complexity
-> * No seccomp arch pinning -- I think this is an independent feature
-> * The bitmaps are part of the filters rather than the task.
+> A semicolon is not needed after a switch statement.
 > 
-> [...]
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Applied to for-next/seccomp, thanks! I left off patch 5 for now until
-we sort out the rest of the SECCOMP_FILTER architectures, and tweaked
-patch 3 to include the architecture names.
+Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
 
-[1/4] seccomp/cache: Lookup syscall allowlist bitmap for fast path
-      https://git.kernel.org/kees/c/f94defb8bf46
-[2/4] seccomp/cache: Add "emulator" to check if filter is constant allow
-      https://git.kernel.org/kees/c/e7dc9f1e5f6b
-[3/4] x86: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/1f68a4d393fe
-[4/4] selftests/seccomp: Compare bitmap vs filter overhead
-      https://git.kernel.org/kees/c/57a339117e52
-
--- 
-Kees Cook
-
+> ---
+>  drivers/clk/imx/clk-pll14xx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
+> index aba36e4217d2..2b5ed86b9dbb 100644
+> --- a/drivers/clk/imx/clk-pll14xx.c
+> +++ b/drivers/clk/imx/clk-pll14xx.c
+> @@ -416,7 +416,7 @@ struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
+>  		       __func__, name);
+>  		kfree(pll);
+>  		return ERR_PTR(-EINVAL);
+> -	};
+> +	}
+>  
+>  	pll->base = base;
+>  	pll->hw.init = &init;
+> -- 
+> 2.18.1
+> 
