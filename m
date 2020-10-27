@@ -2,357 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB7929A7D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831D129A7B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894770AbgJ0J2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:28:40 -0400
-Received: from mga06.intel.com ([134.134.136.31]:61920 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894640AbgJ0J2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:28:38 -0400
-IronPort-SDR: 7YpMaLCeurf7tNt6aOYUfIEzZVyjhLDf6k384b+WKavvRVv9VN2YnMSoC2qcbXivk5WNr9ji8Y
- W4Zz7bh7htLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="229687702"
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="229687702"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 02:28:37 -0700
-IronPort-SDR: i+/TvUi93MzHuZGAaxa+IDAMF88LfQMfBtY+O6p9ilE0n8OrWl8Hkz0UY+0aHuZExNov2u68Kr
- ETPZGiLufmcQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="468233725"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 27 Oct 2020 02:28:34 -0700
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, krzk@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v11 2/2] memory: dfl-emif: add the DFL EMIF private feature driver
-Date:   Tue, 27 Oct 2020 17:23:01 +0800
-Message-Id: <1603790581-4487-3-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603790581-4487-1-git-send-email-yilun.xu@intel.com>
-References: <1603790581-4487-1-git-send-email-yilun.xu@intel.com>
+        id S2509819AbgJ0JXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:23:36 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:36633 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509809AbgJ0JXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:23:35 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 0078E60002;
+        Tue, 27 Oct 2020 09:23:26 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 10:23:26 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 02/14] phy: allwinner: phy-sun6i-mipi-dphy: Support D-PHY
+ Rx mode for MIPI CSI-2
+Message-ID: <20201027092326.GB168350@aptenodytes>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-3-paul.kocialkowski@bootlin.com>
+ <20201026153857.iwkn4iusi2jy2yf4@gilmour.lan>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="i9LlY+UWpKt15+FH"
+Content-Disposition: inline
+In-Reply-To: <20201026153857.iwkn4iusi2jy2yf4@gilmour.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is for the EMIF private feature implemented under FPGA
-Device Feature List (DFL) framework. It is used to expose memory
-interface status information as well as memory clearing control.
 
-The purpose of memory clearing block is to zero out all private memory
-when FPGA is to be reprogrammed. This gives users a reliable method to
-prevent potential data leakage.
+--i9LlY+UWpKt15+FH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
----
-v2: Adjust the position of this driver in Kconfig.
-    Improves the name of the Kconfig option.
-    Change the include dfl-bus.h to dfl.h, cause the previous patchset
-     renames the file.
-    Some minor fixes and comment improvement.
-v3: Adjust the position of the driver in Makefile.
-v9: Add static prefix for emif attributes macro.
-    Update the kernel version of the sysfs interfaces in Doc.
-v10: Rebase due to the dfl head file moves to include/linux.
-v11: Use sysfs_emit instead of sprintf.
-     Rebase to rebase to 5.10-rc1.
----
- .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
- drivers/memory/Kconfig                             |   9 +
- drivers/memory/Makefile                            |   2 +
- drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
- 4 files changed, 243 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
- create mode 100644 drivers/memory/dfl-emif.c
+Hi,
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-new file mode 100644
-index 0000000..1ae8ebd
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-@@ -0,0 +1,25 @@
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
-+Date:		Oct 2020
-+KernelVersion:	5.11
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Read-only. It indicates if the calibration failed on this
-+		memory interface. "1" for calibration failure, "0" for OK.
-+		Format: %u
-+
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_init_done
-+Date:		Oct 2020
-+KernelVersion:	5.11
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Read-only. It indicates if the initialization completed on
-+		this memory interface. "1" for initialization complete, "0"
-+		for not yet.
-+		Format: %u
-+
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_clear
-+Date:		Oct 2020
-+KernelVersion:	5.11
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Write-only. Writing "1" to this file will zero out all memory
-+		data in this memory interface. Writing of other values is
-+		invalid.
-+		Format: %u
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 00e013b..2495bc4 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -137,6 +137,15 @@ config TI_EMIF_SRAM
- 	  sequence so this driver provides several relocatable PM functions
- 	  for the SoC PM code to use.
- 
-+config FPGA_DFL_EMIF
-+	tristate "FPGA DFL EMIF Driver"
-+	depends on FPGA_DFL && HAS_IOMEM
-+	help
-+	  This driver is for the EMIF private feature implemented under
-+	  FPGA Device Feature List (DFL) framework. It is used to expose
-+	  memory interface status information as well as memory clearing
-+	  control.
-+
- config MVEBU_DEVBUS
- 	bool "Marvell EBU Device Bus Controller"
- 	default y if PLAT_ORION
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index e71cf7b..bc7663e 100644
---- a/drivers/memory/Makefile
-+++ b/drivers/memory/Makefile
-@@ -28,6 +28,8 @@ obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
- obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
- obj-$(CONFIG_TEGRA_MC)		+= tegra/
- obj-$(CONFIG_TI_EMIF_SRAM)	+= ti-emif-sram.o
-+obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
-+
- ti-emif-sram-objs		:= ti-emif-pm.o ti-emif-sram-pm.o
- 
- AFLAGS_ti-emif-sram-pm.o	:=-Wa,-march=armv7-a
-diff --git a/drivers/memory/dfl-emif.c b/drivers/memory/dfl-emif.c
-new file mode 100644
-index 0000000..3f71981
---- /dev/null
-+++ b/drivers/memory/dfl-emif.c
-@@ -0,0 +1,207 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * DFL device driver for EMIF private feature
-+ *
-+ * Copyright (C) 2020 Intel Corporation, Inc.
-+ *
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/dfl.h>
-+#include <linux/errno.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+#define FME_FEATURE_ID_EMIF		0x9
-+
-+#define EMIF_STAT			0x8
-+#define EMIF_STAT_INIT_DONE_SFT		0
-+#define EMIF_STAT_CALC_FAIL_SFT		8
-+#define EMIF_STAT_CLEAR_BUSY_SFT	16
-+#define EMIF_CTRL			0x10
-+#define EMIF_CTRL_CLEAR_EN_SFT		0
-+#define EMIF_CTRL_CLEAR_EN_MSK		GENMASK_ULL(3, 0)
-+
-+#define EMIF_POLL_INVL			10000 /* us */
-+#define EMIF_POLL_TIMEOUT		5000000 /* us */
-+
-+struct dfl_emif {
-+	struct device *dev;
-+	void __iomem *base;
-+	spinlock_t lock;	/* Serialises access to EMIF_CTRL reg */
-+};
-+
-+struct emif_attr {
-+	struct device_attribute attr;
-+	u32 shift;
-+	u32 index;
-+};
-+
-+#define to_emif_attr(dev_attr) \
-+	container_of(dev_attr, struct emif_attr, attr)
-+
-+static ssize_t emif_state_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	struct emif_attr *eattr = to_emif_attr(attr);
-+	struct dfl_emif *de = dev_get_drvdata(dev);
-+	u64 val;
-+
-+	val = readq(de->base + EMIF_STAT);
-+
-+	return sysfs_emit(buf, "%u\n",
-+			  !!(val & BIT_ULL(eattr->shift + eattr->index)));
-+}
-+
-+static ssize_t emif_clear_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
-+{
-+	struct emif_attr *eattr = to_emif_attr(attr);
-+	struct dfl_emif *de = dev_get_drvdata(dev);
-+	u64 clear_busy_msk, clear_en_msk, val;
-+	void __iomem *base = de->base;
-+
-+	if (!sysfs_streq(buf, "1"))
-+		return -EINVAL;
-+
-+	clear_busy_msk = BIT_ULL(EMIF_STAT_CLEAR_BUSY_SFT + eattr->index);
-+	clear_en_msk = BIT_ULL(EMIF_CTRL_CLEAR_EN_SFT + eattr->index);
-+
-+	spin_lock(&de->lock);
-+	/* The CLEAR_EN field is WO, but other fields are RW */
-+	val = readq(base + EMIF_CTRL);
-+	val &= ~EMIF_CTRL_CLEAR_EN_MSK;
-+	val |= clear_en_msk;
-+	writeq(val, base + EMIF_CTRL);
-+	spin_unlock(&de->lock);
-+
-+	if (readq_poll_timeout(base + EMIF_STAT, val,
-+			       !(val & clear_busy_msk),
-+			       EMIF_POLL_INVL, EMIF_POLL_TIMEOUT)) {
-+		dev_err(de->dev, "timeout, fail to clear\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return count;
-+}
-+
-+#define emif_state_attr(_name, _shift, _index)				\
-+	static struct emif_attr emif_attr_##inf##_index##_##_name =	\
-+		{ .attr = __ATTR(inf##_index##_##_name, 0444,		\
-+				 emif_state_show, NULL),		\
-+		  .shift = (_shift), .index = (_index) }
-+
-+#define emif_clear_attr(_index)						\
-+	static struct emif_attr emif_attr_##inf##_index##_clear =	\
-+		{ .attr = __ATTR(inf##_index##_clear, 0200,		\
-+				 NULL, emif_clear_store),		\
-+		  .index = (_index) }
-+
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 0);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 1);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 2);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 3);
-+
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 0);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 1);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 2);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 3);
-+
-+emif_clear_attr(0);
-+emif_clear_attr(1);
-+emif_clear_attr(2);
-+emif_clear_attr(3);
-+
-+static struct attribute *dfl_emif_attrs[] = {
-+	&emif_attr_inf0_init_done.attr.attr,
-+	&emif_attr_inf0_cal_fail.attr.attr,
-+	&emif_attr_inf0_clear.attr.attr,
-+
-+	&emif_attr_inf1_init_done.attr.attr,
-+	&emif_attr_inf1_cal_fail.attr.attr,
-+	&emif_attr_inf1_clear.attr.attr,
-+
-+	&emif_attr_inf2_init_done.attr.attr,
-+	&emif_attr_inf2_cal_fail.attr.attr,
-+	&emif_attr_inf2_clear.attr.attr,
-+
-+	&emif_attr_inf3_init_done.attr.attr,
-+	&emif_attr_inf3_cal_fail.attr.attr,
-+	&emif_attr_inf3_clear.attr.attr,
-+
-+	NULL,
-+};
-+
-+static umode_t dfl_emif_visible(struct kobject *kobj,
-+				struct attribute *attr, int n)
-+{
-+	struct dfl_emif *de = dev_get_drvdata(kobj_to_dev(kobj));
-+	struct emif_attr *eattr = container_of(attr, struct emif_attr,
-+					       attr.attr);
-+	u64 val;
-+
-+	/*
-+	 * This device supports upto 4 memory interfaces, but not all
-+	 * interfaces are used on different platforms. The read out value of
-+	 * CLEAN_EN field (which is a bitmap) could tell how many interfaces
-+	 * are available.
-+	 */
-+	val = FIELD_GET(EMIF_CTRL_CLEAR_EN_MSK, readq(de->base + EMIF_CTRL));
-+
-+	return (val & BIT_ULL(eattr->index)) ? attr->mode : 0;
-+}
-+
-+static const struct attribute_group dfl_emif_group = {
-+	.is_visible = dfl_emif_visible,
-+	.attrs = dfl_emif_attrs,
-+};
-+
-+static const struct attribute_group *dfl_emif_groups[] = {
-+	&dfl_emif_group,
-+	NULL,
-+};
-+
-+static int dfl_emif_probe(struct dfl_device *ddev)
-+{
-+	struct device *dev = &ddev->dev;
-+	struct dfl_emif *de;
-+
-+	de = devm_kzalloc(dev, sizeof(*de), GFP_KERNEL);
-+	if (!de)
-+		return -ENOMEM;
-+
-+	de->base = devm_ioremap_resource(dev, &ddev->mmio_res);
-+	if (IS_ERR(de->base))
-+		return PTR_ERR(de->base);
-+
-+	de->dev = dev;
-+	spin_lock_init(&de->lock);
-+	dev_set_drvdata(dev, de);
-+
-+	return 0;
-+}
-+
-+static const struct dfl_device_id dfl_emif_ids[] = {
-+	{ FME_ID, FME_FEATURE_ID_EMIF },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(dfl, dfl_emif_ids);
-+
-+static struct dfl_driver dfl_emif_driver = {
-+	.drv	= {
-+		.name       = "dfl-emif",
-+		.dev_groups = dfl_emif_groups,
-+	},
-+	.id_table = dfl_emif_ids,
-+	.probe   = dfl_emif_probe,
-+};
-+module_dfl_driver(dfl_emif_driver);
-+
-+MODULE_DESCRIPTION("DFL EMIF driver");
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+On Mon 26 Oct 20, 16:38, Maxime Ripard wrote:
+> On Fri, Oct 23, 2020 at 07:45:34PM +0200, Paul Kocialkowski wrote:
+> > The Allwinner A31 D-PHY supports both Rx and Tx modes. While the latter
+> > is already supported and used for MIPI DSI this adds support for the
+> > former, to be used with MIPI CSI-2.
+> >=20
+> > This implementation is inspired by the Allwinner BSP implementation.
+>=20
+> Mentionning which BSP you took this from would be helpful
 
+Sure! It's from the Github repo linked from https://linux-sunxi.org/V3s.
+Would you like that I mention this URL explicitly or would it be enough to
+mention "Allwinner's V3s Linux SDK" as they seem to call it?
+
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  drivers/phy/allwinner/phy-sun6i-mipi-dphy.c | 164 +++++++++++++++++++-
+> >  1 file changed, 160 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c b/drivers/phy/=
+allwinner/phy-sun6i-mipi-dphy.c
+> > index 1fa761ba6cbb..8bcd4bb79f60 100644
+> > --- a/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c
+> > +++ b/drivers/phy/allwinner/phy-sun6i-mipi-dphy.c
+> > @@ -24,6 +24,14 @@
+> >  #define SUN6I_DPHY_TX_CTL_REG		0x04
+> >  #define SUN6I_DPHY_TX_CTL_HS_TX_CLK_CONT	BIT(28)
+> > =20
+> > +#define SUN6I_DPHY_RX_CTL_REG		0x08
+> > +#define SUN6I_DPHY_RX_CTL_EN_DBC	BIT(31)
+> > +#define SUN6I_DPHY_RX_CTL_RX_CLK_FORCE	BIT(24)
+> > +#define SUN6I_DPHY_RX_CTL_RX_D3_FORCE	BIT(23)
+> > +#define SUN6I_DPHY_RX_CTL_RX_D2_FORCE	BIT(22)
+> > +#define SUN6I_DPHY_RX_CTL_RX_D1_FORCE	BIT(21)
+> > +#define SUN6I_DPHY_RX_CTL_RX_D0_FORCE	BIT(20)
+> > +
+>=20
+> It's hard to tell from the diff, but it looks like you aligned the
+> BIT(..) with the register?
+
+That's correct, yes.
+
+> If so, you should follow the what the rest of this driver (ie, one more
+> indentation for register values).
+
+I'll fix it in the next revision!
+
+> >  #define SUN6I_DPHY_TX_TIME0_REG		0x10
+> >  #define SUN6I_DPHY_TX_TIME0_HS_TRAIL(n)		(((n) & 0xff) << 24)
+> >  #define SUN6I_DPHY_TX_TIME0_HS_PREPARE(n)	(((n) & 0xff) << 16)
+> > @@ -44,12 +52,29 @@
+> >  #define SUN6I_DPHY_TX_TIME4_HS_TX_ANA1(n)	(((n) & 0xff) << 8)
+> >  #define SUN6I_DPHY_TX_TIME4_HS_TX_ANA0(n)	((n) & 0xff)
+> > =20
+> > +#define SUN6I_DPHY_RX_TIME0_REG		0x30
+> > +#define SUN6I_DPHY_RX_TIME0_HS_RX_SYNC(n)	(((n) & 0xff) << 24)
+> > +#define SUN6I_DPHY_RX_TIME0_HS_RX_CLK_MISS(n)	(((n) & 0xff) << 16)
+> > +#define SUN6I_DPHY_RX_TIME0_LP_RX(n)		(((n) & 0xff) << 8)
+> > +
+> > +#define SUN6I_DPHY_RX_TIME1_REG		0x34
+> > +#define SUN6I_DPHY_RX_TIME1_RX_DLY(n)		(((n) & 0xfff) << 20)
+> > +#define SUN6I_DPHY_RX_TIME1_LP_RX_ULPS_WP(n)	((n) & 0xfffff)
+> > +
+> > +#define SUN6I_DPHY_RX_TIME2_REG		0x38
+> > +#define SUN6I_DPHY_RX_TIME2_HS_RX_ANA1(n)	(((n) & 0xff) << 8)
+> > +#define SUN6I_DPHY_RX_TIME2_HS_RX_ANA0(n)	((n) & 0xff)
+> > +
+> > +#define SUN6I_DPHY_RX_TIME3_REG		0x40
+> > +#define SUN6I_DPHY_RX_TIME3_LPRST_DLY(n)	(((n) & 0xffff) << 16)
+> > +
+> >  #define SUN6I_DPHY_ANA0_REG		0x4c
+> >  #define SUN6I_DPHY_ANA0_REG_PWS			BIT(31)
+> >  #define SUN6I_DPHY_ANA0_REG_DMPC		BIT(28)
+> >  #define SUN6I_DPHY_ANA0_REG_DMPD(n)		(((n) & 0xf) << 24)
+> >  #define SUN6I_DPHY_ANA0_REG_SLV(n)		(((n) & 7) << 12)
+> >  #define SUN6I_DPHY_ANA0_REG_DEN(n)		(((n) & 0xf) << 8)
+> > +#define SUN6I_DPHY_ANA0_REG_SFB(n)		(((n) & 3) << 2)
+> > =20
+> >  #define SUN6I_DPHY_ANA1_REG		0x50
+> >  #define SUN6I_DPHY_ANA1_REG_VTTMODE		BIT(31)
+> > @@ -92,6 +117,8 @@ struct sun6i_dphy {
+> > =20
+> >  	struct phy				*phy;
+> >  	struct phy_configure_opts_mipi_dphy	config;
+> > +
+> > +	int					submode;
+> >  };
+> > =20
+> >  static int sun6i_dphy_init(struct phy *phy)
+> > @@ -105,6 +132,18 @@ static int sun6i_dphy_init(struct phy *phy)
+> >  	return 0;
+> >  }
+> > =20
+> > +static int sun6i_dphy_set_mode(struct phy *phy, enum phy_mode mode, in=
+t submode)
+> > +{
+> > +	struct sun6i_dphy *dphy =3D phy_get_drvdata(phy);
+> > +
+> > +	if (mode !=3D PHY_MODE_MIPI_DPHY)
+> > +		return -EINVAL;
+> > +
+> > +	dphy->submode =3D submode;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int sun6i_dphy_configure(struct phy *phy, union phy_configure_o=
+pts *opts)
+> >  {
+> >  	struct sun6i_dphy *dphy =3D phy_get_drvdata(phy);
+> > @@ -119,9 +158,8 @@ static int sun6i_dphy_configure(struct phy *phy, un=
+ion phy_configure_opts *opts)
+> >  	return 0;
+> >  }
+> > =20
+> > -static int sun6i_dphy_power_on(struct phy *phy)
+> > +static int sun6i_dphy_tx_power_on(struct sun6i_dphy *dphy)
+> >  {
+> > -	struct sun6i_dphy *dphy =3D phy_get_drvdata(phy);
+> >  	u8 lanes_mask =3D GENMASK(dphy->config.lanes - 1, 0);
+> > =20
+> >  	regmap_write(dphy->regs, SUN6I_DPHY_TX_CTL_REG,
+> > @@ -211,12 +249,129 @@ static int sun6i_dphy_power_on(struct phy *phy)
+> >  	return 0;
+> >  }
+> > =20
+> > +static int sun6i_dphy_rx_power_on(struct sun6i_dphy *dphy)
+> > +{
+> > +	/* Physical clock rate is actually half of symbol rate with DDR. */
+> > +	unsigned long mipi_symbol_rate =3D dphy->config.hs_clk_rate;
+> > +	unsigned long dphy_clk_rate;
+> > +	unsigned int rx_dly;
+> > +	unsigned int lprst_dly;
+> > +	u32 value;
+> > +
+> > +	dphy_clk_rate =3D clk_get_rate(dphy->mod_clk);
+> > +	if (!dphy_clk_rate)
+> > +		return -1;
+>=20
+> Returning -1 is weird here?
+
+What do you think would be a more appropriate error code to return?
+It looks like some other drivers return -EINVAL when that happens (but many
+don't do the check).
+
+> > +
+> > +	/* Hardcoded timing parameters from the Allwinner BSP. */
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME0_REG,
+> > +		     SUN6I_DPHY_RX_TIME0_HS_RX_SYNC(255) |
+> > +		     SUN6I_DPHY_RX_TIME0_HS_RX_CLK_MISS(255) |
+> > +		     SUN6I_DPHY_RX_TIME0_LP_RX(255));
+> > +
+> > +	/*
+> > +	 * Formula from the Allwinner BSP, with hardcoded coefficients
+> > +	 * (probably internal divider/multiplier).
+> > +	 */
+> > +	rx_dly =3D 8 * (unsigned int)(dphy_clk_rate / (mipi_symbol_rate / 8));
+> > +
+> > +	/*
+> > +	 * The Allwinner BSP has an alternative formula for LP_RX_ULPS_WP:
+> > +	 * lp_ulps_wp_cnt =3D lp_ulps_wp_ms * lp_clk / 1000
+> > +	 * but does not use it and hardcodes 255 instead.
+> > +	 */
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME1_REG,
+> > +		     SUN6I_DPHY_RX_TIME1_RX_DLY(rx_dly) |
+> > +		     SUN6I_DPHY_RX_TIME1_LP_RX_ULPS_WP(255));
+> > +
+> > +	/* HS_RX_ANA0 value is hardcoded in the Allwinner BSP. */
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME2_REG,
+> > +		     SUN6I_DPHY_RX_TIME2_HS_RX_ANA0(4));
+> > +
+> > +	/*
+> > +	 * Formula from the Allwinner BSP, with hardcoded coefficients
+> > +	 * (probably internal divider/multiplier).
+> > +	 */
+> > +	lprst_dly =3D 4 * (unsigned int)(dphy_clk_rate / (mipi_symbol_rate / =
+2));
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME3_REG,
+> > +		     SUN6I_DPHY_RX_TIME3_LPRST_DLY(lprst_dly));
+> > +
+> > +	/* Analog parameters are hardcoded in the Allwinner BSP. */
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA0_REG,
+> > +		     SUN6I_DPHY_ANA0_REG_PWS |
+> > +		     SUN6I_DPHY_ANA0_REG_SLV(7) |
+> > +		     SUN6I_DPHY_ANA0_REG_SFB(2));
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA1_REG,
+> > +		     SUN6I_DPHY_ANA1_REG_SVTT(4));
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA4_REG,
+> > +		     SUN6I_DPHY_ANA4_REG_DMPLVC |
+> > +		     SUN6I_DPHY_ANA4_REG_DMPLVD(1));
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA2_REG,
+> > +		     SUN6I_DPHY_ANA2_REG_ENIB);
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA3_REG,
+> > +		     SUN6I_DPHY_ANA3_EN_LDOR |
+> > +		     SUN6I_DPHY_ANA3_EN_LDOC |
+> > +		     SUN6I_DPHY_ANA3_EN_LDOD);
+> > +
+> > +	/*
+> > +	 * Delay comes from the Allwinner BSP, likely for internal regulator
+> > +	 * ramp-up.
+> > +	 */
+> > +	udelay(3);
+> > +
+> > +	value =3D SUN6I_DPHY_RX_CTL_EN_DBC | SUN6I_DPHY_RX_CTL_RX_CLK_FORCE;
+> > +
+> > +	/*
+> > +	 * Rx data lane force-enable bits are used as regular RX enable by the
+> > +	 * Allwinner BSP.
+> > +	 */
+> > +	if (dphy->config.lanes >=3D 1)
+> > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D0_FORCE;
+> > +	if (dphy->config.lanes >=3D 2)
+> > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D1_FORCE;
+> > +	if (dphy->config.lanes >=3D 3)
+> > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D2_FORCE;
+> > +	if (dphy->config.lanes =3D=3D 4)
+> > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D3_FORCE;
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_CTL_REG, value);
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_GCTL_REG,
+> > +		     SUN6I_DPHY_GCTL_LANE_NUM(dphy->config.lanes) |
+> > +		     SUN6I_DPHY_GCTL_EN);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sun6i_dphy_power_on(struct phy *phy)
+> > +{
+> > +	struct sun6i_dphy *dphy =3D phy_get_drvdata(phy);
+> > +
+> > +	switch (dphy->submode) {
+> > +	case PHY_MIPI_DPHY_SUBMODE_TX:
+> > +		return sun6i_dphy_tx_power_on(dphy);
+> > +	case PHY_MIPI_DPHY_SUBMODE_RX:
+> > +		return sun6i_dphy_rx_power_on(dphy);
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+>=20
+> Can one call power_on before set_mode?
+
+I didn't find anything indicating this is illegal. What would happen here is
+that the D-PHY would be configured to PHY_MIPI_DPHY_SUBMODE_TX (submode =3D=
+=3D 0)
+at power-on if set_mode is not called before.
+
+I think it's fair to expect that it's too late to change the mode once the =
+PHY
+was powered on. Maybe we should return -EBUSY on set_mode when power on was
+already requested?
+
+> >  static int sun6i_dphy_power_off(struct phy *phy)
+> >  {
+> >  	struct sun6i_dphy *dphy =3D phy_get_drvdata(phy);
+> > =20
+> > -	regmap_update_bits(dphy->regs, SUN6I_DPHY_ANA1_REG,
+> > -			   SUN6I_DPHY_ANA1_REG_VTTMODE, 0);
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_GCTL_REG, 0);
+> > +
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA0_REG, 0);
+> > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA1_REG, 0);
+>=20
+> This looks like a change that should be mentioned (or in a separate
+> patch).
+
+Right, this is a general change that applies to both Tx and Rx to cut-off t=
+he
+internal regulators. It's not directly related to this change so I think ma=
+king
+it a preliminary patch would make sense.
+
+Thanks for the review!
+
+Paul
+
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--i9LlY+UWpKt15+FH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+X5w4ACgkQ3cLmz3+f
+v9FxLgf7Beag4zWPwkUaVYA+c9SfUxGji/q4tWD/Oi7mzDgWmt7Tb7FIRyZ5Ojmx
+hbs94nG6CInpNw7P9leBBK5WNDJ8FIepAk2x8p7uCNF5rrr++2UYH9mlNxonx9PJ
++FgsbDTmkBHjdHn3JTpg//Kp3T0Bkk8XSUDvHNJkHiki23zDcO78TxOOO+l7zz7l
+ta9jCU1iU24sF8NWEAeecVUtWrSiCIQhsijWJzWMrWXlKpUZMWzZd/tl58UbRDUB
+nU4HJxG4SOLGSdQ/3e12lH7Rc5zBlVzbpR6k1j6OIRr9FFWFvE5GQ22JKslwDj2T
+Ws/dUwUZLQk0zkcjKgHt27pLi1q+bg==
+=2vV0
+-----END PGP SIGNATURE-----
+
+--i9LlY+UWpKt15+FH--
