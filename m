@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B17A29C85B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA5A29C874
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829418AbgJ0THh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:07:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24037 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S369529AbgJ0THg (ORCPT
+        id S1829432AbgJ0TJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:09:10 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:51824 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1762525AbgJ0TJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:07:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603825655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=l0PCwDa1wHGV+Q/jQHXorblfnJ1kxgpeCNddFrrP2u8=;
-        b=ZCVPrEyP9LT16VN31sd1O2kqvCX7gyq02fhyCJq77Dtv1rLtQ+bWhlH0HH8tMlaodXtClY
-        zSh7KMVNbjxDB4VRR55fJiklUaE/tKpH72ATrWgwnU8k2hzSyao/9pSioijuL5huSrqUUX
-        3vQ1NkZ71mN/QNmPF1sAOJ9ywDluuKs=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-8XsvLgJQNy-hiir8UNPWCA-1; Tue, 27 Oct 2020 15:07:33 -0400
-X-MC-Unique: 8XsvLgJQNy-hiir8UNPWCA-1
-Received: by mail-oo1-f72.google.com with SMTP id l13so1205848oot.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:07:33 -0700 (PDT)
+        Tue, 27 Oct 2020 15:09:09 -0400
+Received: by mail-pj1-f68.google.com with SMTP id a17so1276966pju.1;
+        Tue, 27 Oct 2020 12:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vhFHGlRt/TibQfkAL2EZLq+3HRZ+VxPAD9HYXcgWC/k=;
+        b=TDpYEM9j0VTG9y1sK6+P54LMevQ/wxvF5jiUXCKKLZ1FxRRYMYefcVyVQfAc+Om1PS
+         ZEe1VRZkmhk0ir6O43G95oBAO2XD+Bq4fVBpHzkVRZw+UriLY30a/R4X0pDFtk1z5MUB
+         yLaicL/Mrjl46F0+UFymiiwaSisHRYKw813Q0Kd47cc1WgZhvOJbmIZ6w6cxJxiecpuq
+         hwk7hhJezQPq9VDBZdwaoEdHe5L3Ab5JZ4CMwJDp3CVt6wOQRLayWvn4DBgp1j2xyiIA
+         Nfr8NKXzTh5ilnJ2tvCD46vw2NdTRtKMK/iutofss4RYEab+Vx7Vu0QT/YxkCzMOQAZw
+         APGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=l0PCwDa1wHGV+Q/jQHXorblfnJ1kxgpeCNddFrrP2u8=;
-        b=hx2BsviUzRVAN1aWuWQ1+Yi7PLn9yHIE1xGFdI+QTNY1MX74+SVWf/XvdFjHrKH/K3
-         2cj1iBe4dbSO7RhwvQbTqYhLkj018jtT2C7JZkkm6q6zSZwgUTKtvFg5dKrXzEQ3rdHO
-         eTrDV5kQrZJobNP4vdIJ8UFrjCcIq44JciVLHv5VNJi+5UdNgUn73+KP2OhKoJoC4iAG
-         cPeDGNVpdW8fwbmeD9aYhBN6KVl+LJVMpkail2j5mLNaThqo21GDGV7gXRJeRs9VNygt
-         qm80hsbOiokcRrIV9lRJZriB1pCjBpm7Q+TBzhaf7TjzNMXUtquj2mAVHDqnQukbjFQr
-         Ic0Q==
-X-Gm-Message-State: AOAM5317SyonMxOR+BMt8/WwQruyDxosofpQBs4tM3yhQxKVv+ytUvTv
-        FokEvWoazEfbMAmv7vRHBrFUP1vu1ltjYWPAnhB4cnYp9OXsBNxaetE2STGSlcAXCICvgOKwocF
-        sDmmJDlHJzdC4U0yhKxZl1LQr
-X-Received: by 2002:a9d:491:: with SMTP id 17mr2601955otm.338.1603825652821;
-        Tue, 27 Oct 2020 12:07:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWW33cuqBanM3RqWmNlIAsoMbT3S8VnWYdIw36FDCID2skFOgGdV/X/Ei7bypd9s6bTTHJSg==
-X-Received: by 2002:a9d:491:: with SMTP id 17mr2601933otm.338.1603825652601;
-        Tue, 27 Oct 2020 12:07:32 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x83sm1765339oig.39.2020.10.27.12.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 12:07:32 -0700 (PDT)
-From:   trix@redhat.com
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, jonathan.kim@amd.com,
-        harish.kasiviswanathan@amd.com, Felix.Kuehling@amd.com,
-        zhengbin13@huawei.com, luben.tuikov@amd.com,
-        Joseph.Greathouse@amd.com, Hawking.Zhang@amd.com,
-        guchun.chen@amd.com, john.clements@amd.com, tao.zhou1@amd.com,
-        Dennis.Li@amd.com, Stanley.Yang@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] drm/amdgpu: remove unneeded semicolon
-Date:   Tue, 27 Oct 2020 12:07:26 -0700
-Message-Id: <20201027190726.1588801-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vhFHGlRt/TibQfkAL2EZLq+3HRZ+VxPAD9HYXcgWC/k=;
+        b=S50P8F9V+chxT2NTgSsOOjn0hbJKehYtwcu38QQlOTafvwPZoOGGRidaMudPB6O4cw
+         qe9JVcYA7OJ0oOXyU7vlzOGgWDPCG5PDXzIzWD9wDmVl/v13f1nHl/CJthGJUrB7B949
+         CVFp00/xswSfWPB5lktOp3uvm/Mcus/YmdQ7uUDs15u8RyaGg8AlaKGrjgKkTgXCFj3f
+         J3VmhTbE9l8cz3WLkoA/SupBAIewbZeco9P9M8AE7oe1Yv+bepDxdU4I4bqyaCRgzVac
+         mw1Z6GdGYgdk2jwLXaLXayPrY1IBvecwwMjmWn4s+jYKTKaDwVx4OWCtppadRznKAw2E
+         DGug==
+X-Gm-Message-State: AOAM531XDIOQlohjO+o5YT2qzSv1m+pf+bOLFEYYZDWaQFYXtsTBdbIO
+        e/e8T2koRSw9Bj5PTOUM+WRgU/SfN4z47Pz4Wiw=
+X-Google-Smtp-Source: ABdhPJxT3MVZFdXRiktZytixxJYH/g52Rzd4ej1B/B/6AaacDeKHj7pSvVmudEo7lSKi4TSWV3mmIU7KhXAqNfkE9GM=
+X-Received: by 2002:a17:902:6803:b029:d2:42a6:312 with SMTP id
+ h3-20020a1709026803b02900d242a60312mr3734880plk.24.1603825748736; Tue, 27 Oct
+ 2020 12:09:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1600951211.git.yifeifz2@illinois.edu> <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+ <CAMuHMdXTLKr6pvoE+JAdn_P5kVxL6gx8PJ8mqfXcS+SF+pRbkQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXTLKr6pvoE+JAdn_P5kVxL6gx8PJ8mqfXcS+SF+pRbkQ@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Tue, 27 Oct 2020 14:08:56 -0500
+Message-ID: <CABqSeAQvZNF4ynayT1XjEm4eP2H-ee46zBwmVRRD1-ZpohqG4w@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to arch/Kconfig
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Oct 27, 2020 at 4:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Please tell me why SECCOMP is special, and deserves to default to be
+> enabled.  Is it really that critical, given only 13.5 (half of sparc
+> ;-) out of 24
+> architectures implement support for it?
 
-A semicolon is not needed after a switch statement.
+Good point. My thought process is that quite a few system software are
+reliant on seccomp for enforcing policies -- systemd, docker, and
+other sandboxing tools like browsers and firejail, so when I moved
+this to the non-perarch section, it at least has to be default for
+x86. Granted, I'm not super familiar with other architectures, so you
+are probably right that those that did not have it on by default
+should be kept off by default; many of them could be for embedded
+devices. What's the best way to do this? Set it as default N in
+Kconfig and add CONFIG_SECCOMP=y in each arch's defconfig?
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
-index 1b213c4ddfcb..19c0a3655228 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
-@@ -654,7 +654,7 @@ int amdgpu_pmu_init(struct amdgpu_device *adev)
- 
- 	default:
- 		return 0;
--	};
-+	}
- 
- 	return ret;
- }
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index 8bf6a7c056bc..a61cf8cfbfc3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -953,7 +953,7 @@ static char *amdgpu_ras_badpage_flags_str(unsigned int flags)
- 	case AMDGPU_RAS_RETIRE_PAGE_FAULT:
- 	default:
- 		return "F";
--	};
-+	}
- }
- 
- /**
--- 
-2.18.1
-
+YiFei Zhu
