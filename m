@@ -2,127 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1C029C579
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D852B29C5EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1825125AbgJ0SIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:08:55 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38096 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757039AbgJ0OPz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:15:55 -0400
-Received: by mail-pl1-f196.google.com with SMTP id f21so825307plr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QQKyukY3sNn8vMLwkS9RR/i1T1+mtDwNzg2ru7tNBSs=;
-        b=e7JqdiWEdyM8LSjR0QByZe6uB/TUuo5WmCWoJ2tghcFKu/g92h7L2egphj/wJCExaG
-         JXD9+u/ECQIOwwZVqiPs/MauJpBNOVCKAhboe5J/Z7LG9YRuLEleWNjcCn9WtqhJNO3o
-         49oK0+EVYHTA1BlEJ4ct3b0UDVWSsubPtihkoXv8mgHOzV0Xe4fPKn9p2M470AQzvz/7
-         qPnPXPoSKAUZlm2+h9DOw2DRGBNeBP9efzJDSVQEpUbq4lndcCYRdgEnWLPz0NKYK7zz
-         C8smlVbEJ0xzZ8HjFn38SKPvBWz+Q0eY8btSFAA/nplFKZegw1b7ieiWi+eNO+xsu6ae
-         jp0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QQKyukY3sNn8vMLwkS9RR/i1T1+mtDwNzg2ru7tNBSs=;
-        b=LR6EAoeslHMv8kzAAJ+GsrDeXOBn0z9SIVIGSWwJxaIvnHheh1kQ+FxEcygtt3uJAP
-         hJQ1zmrU3AtrfVFJEp8FwJl+cbpbNmBkiRjVo0ZE8CU8OMmGgbv9gqyANXyoYCtv0V9u
-         4rc7Ke66DED8Dy4OWKrsYXXNgcaSaQUtufa0Bof1yTzGwwfSdQO/xMFGk13aW/SrDPF2
-         XkaAjvcwf13acP7gl/gH16yD0XRsPa1p/2az5ZdX//Z7+dGFfSCyyZMhzgOq+nje70/9
-         wTu3TZT1jLHRDIbFYRKW0V4LfetgBFkcZHjNxI4ovHyRWyZR2ZztH1n+ZmkrGJQfWuGX
-         PYFw==
-X-Gm-Message-State: AOAM532X43iVNZcLmZadCdiYaN4yp7X2/ajZi5TgE1Y8ZYL8oRBBSa3D
-        8U+z6WkO7XhfZMvoNmA5+HacqbT08vpMMpMMHKadxg==
-X-Google-Smtp-Source: ABdhPJxNAz2qfK78FLwUuT+HxqGc6qfBGIvHzVQWHXky+sDLyZvezHhwafmoNl3ff9piTGKinjqr8m4za/hx9/mV/G8=
-X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr2255516pjb.13.1603808153898;
- Tue, 27 Oct 2020 07:15:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201027080256.76497-1-songmuchun@bytedance.com>
- <20201027080256.76497-6-songmuchun@bytedance.com> <20201027133639.GT20500@dhcp22.suse.cz>
-In-Reply-To: <20201027133639.GT20500@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 27 Oct 2020 22:15:16 +0800
-Message-ID: <CAMZfGtUDguQkO0nF8Vt5qUVmmu4rCQcXx4nOhqUBSLnMYs2_BA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 5/5] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, laoar.shao@gmail.com,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        id S1825176AbgJ0SJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:09:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:41304 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1756976AbgJ0OPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:15:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8E1E150C;
+        Tue, 27 Oct 2020 07:15:27 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 545943F719;
+        Tue, 27 Oct 2020 07:15:26 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 14:15:22 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        systemd-devel@lists.freedesktop.org,
         Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, toiwoton@gmail.com,
+        libc-alpha@sourceware.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+Message-ID: <20201027141522.GD27285@arm.com>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201026162410.GB27285@arm.com>
+ <20201026165755.GV3819@arm.com>
+ <20201026175230.GC27285@arm.com>
+ <45c64b49-a38b-4b0c-d9cf-6c586dacbcc9@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45c64b49-a38b-4b0c-d9cf-6c586dacbcc9@arm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 9:36 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 27-10-20 16:02:56, Muchun Song wrote:
-> > We can reuse the code of mem_cgroup_lruvec() to simplify the code
-> > of the mem_cgroup_page_lruvec().
->
-> yes, removing the code duplication is reasonable. But ...
->
+On Mon, Oct 26, 2020 at 05:39:42PM -0500, Jeremy Linton via Libc-alpha wrote:
+> Hi,
+> 
+> On 10/26/20 12:52 PM, Dave Martin wrote:
+> >On Mon, Oct 26, 2020 at 04:57:55PM +0000, Szabolcs Nagy via Libc-alpha wrote:
+> >>The 10/26/2020 16:24, Dave Martin via Libc-alpha wrote:
+> >>>Unrolling this discussion a bit, this problem comes from a few sources:
+> >>>
+> >>>1) systemd is trying to implement a policy that doesn't fit SECCOMP
+> >>>syscall filtering very well.
+> >>>
+> >>>2) The program is trying to do something not expressible through the
+> >>>syscall interface: really the intent is to set PROT_BTI on the page,
+> >>>with no intent to set PROT_EXEC on any page that didn't already have it
+> >>>set.
+> >>>
+> >>>
+> >>>This limitation of mprotect() was known when I originally added PROT_BTI,
+> >>>but at that time we weren't aware of a clear use case that would fail.
+> >>>
+> >>>
+> >>>Would it now help to add something like:
+> >>>
+> >>>int mchangeprot(void *addr, size_t len, int old_flags, int new_flags)
+> >>>{
+> >>>	int ret = -EINVAL;
+> >>>	mmap_write_lock(current->mm);
+> >>>	if (all vmas in [addr .. addr + len) have
+> >>>			their mprotect flags set to old_flags) {
+> >>>
+> >>>		ret = mprotect(addr, len, new_flags);
+> >>>	}
+> >>>	
+> >>>	mmap_write_unlock(current->mm);
+> >>>	return ret;
+> >>>}
+> >>
+> >>if more prot flags are introduced then the exact
+> >>match for old_flags may be restrictive and currently
+> >>there is no way to query these flags to figure out
+> >>how to toggle one prot flag in a future proof way,
+> >>so i don't think this solves the issue completely.
 > >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/memcontrol.h | 44 +++++++++++++++++++++++++++-----------
-> >  mm/memcontrol.c            | 40 ----------------------------------
-> >  2 files changed, 32 insertions(+), 52 deletions(-)
+> >Ack -- I illustrated this model because it makes the seccomp filter's
+> >job easy, but it does have limitations.
 > >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 95807bf6be64..5e8480e54cd8 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -451,16 +451,9 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
-> >       return memcg->nodeinfo[nid];
-> >  }
+> >>i think we might need a new api, given that aarch64
+> >>now has PROT_BTI and PROT_MTE while existing code
+> >>expects RWX only, but i don't know what api is best.
 > >
-> > -/**
-> > - * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-> > - * @memcg: memcg of the wanted lruvec
-> > - *
-> > - * Returns the lru list vector holding pages for a given @memcg &
-> > - * @node combination. This can be the node lruvec, if the memory
-> > - * controller is disabled.
-> > - */
-> > -static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-> > -                                            struct pglist_data *pgdat)
-> > +static inline struct lruvec *mem_cgroup_node_lruvec(struct mem_cgroup *memcg,
-> > +                                                 struct pglist_data *pgdat,
-> > +                                                 int nid)
->
-> This is just wrong interface. Either take nid or pgdat. You do not want
-> both because that just begs for wrong usage.
+> >An alternative option would be a call that sets / clears chosen
+> >flags and leaves others unchanged.
+> 
+> I tend to favor a set/clear API, but that could also just be done by
+> creating a new PROT_BTI_IF_X which enables BTI for areas already set to
+> _EXEC. That goes right by the seccomp filters too, and actually is closer to
+> what glibc wants to do anyway.
 
-If we want to avoid abuse of mem_cgroup_node_lruvec. We can move
-those functions to the memcontrol.c. And add the "static" attribute to the
-mem_cgroup_node_lruvec. Just export mem_cgroup_lruvec and
-mem_cgroup_page_lruvec. Is this OK?
+That works, though I'm not so keen on teating PROT_BTI as a special case,
+since the problem is likely to recur when other weird per-arch flags get
+added...
 
-Thanks.
+I also wonder whether we actually care whether the pages are marked
+executable or not here; probably the flags can just be independent.  This
+rather depends on whether the how the architecture treats the BTI (a.k.a
+GP) pagetable bit for non-executable pages.  I have a feeling we already
+allow PROT_BTI && !PROT_EXEC through anyway.
 
-> --
-> Michal Hocko
-> SUSE Labs
 
--- 
-Yours,
-Muchun
+What about a generic-ish set/clear interface that still works by just
+adding a couple of PROT_ flags:
+
+	switch (flags & (PROT_SET | PROT_CLEAR)) {
+	case PROT_SET: prot |= flags; break;
+	case PROT_CLEAR: prot &= ~flags; break;
+	case 0: prot = flags; break;
+
+	default:
+		return -EINVAL;
+	}
+
+This can't atomically set some flags while clearing some others, but for
+simple stuff it seems sufficient and shouldn't be too invasive on the
+kernel side.
+
+We will still have to take the mm lock when doing a SET or CLEAR, but
+not for the non-set/clear case.
+
+
+Anyway, libc could now do:
+
+	mprotect(addr, len, PROT_SET | PROT_BTI);
+
+with much the same effect as your PROT_BTI_IF_X.
+
+
+JITting or breakpoint setting code that wants to change the permissions
+temporarily, without needing to know whether PROT_BTI is set, say:
+
+	mprotect(addr, len, PROT_SET | PROT_WRITE);
+	*addr = BKPT_INSN;
+	mprotect(addr, len, PROT_CLEAR | PROT_WRITE);
+
+
+Thoughts?
+
+I won't claim this doesn't still have some limitations...
+
+Cheers
+---Dave
