@@ -2,105 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC28B29CB47
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6A429CB4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374062AbgJ0VZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:25:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:56183 "EHLO mga02.intel.com"
+        id S374086AbgJ0V0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:26:09 -0400
+Received: from ozlabs.org ([203.11.71.1]:50495 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373788AbgJ0VXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:23:53 -0400
-IronPort-SDR: MjaxPnqVvhOpaDtIW0aApqqjEuV0epFKE2PYvksI6ZBKZCiChXCaXYwALV+z5Q5bNJXil0QdQS
- 1xMSRS5/wwKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="155133705"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="155133705"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 14:23:51 -0700
-IronPort-SDR: vzsC4nexef7kWrWq/Cq/SPRg1mTlt51mgSCCsWjdQwg7b9VzKuCA1CkcDGQtvCW03sUxJ8nJQ6
- X7YdROI+iKpA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="524886389"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Oct 2020 14:23:51 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 05/11] KVM: VMX: Do Hyper-V TLB flush iff vCPU's EPTP hasn't been flushed
-Date:   Tue, 27 Oct 2020 14:23:40 -0700
-Message-Id: <20201027212346.23409-6-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027212346.23409-1-sean.j.christopherson@intel.com>
-References: <20201027212346.23409-1-sean.j.christopherson@intel.com>
+        id S374082AbgJ0VZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:25:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLPrg2QqJz9sRk;
+        Wed, 28 Oct 2020 08:25:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603833955;
+        bh=5TzWojLfR5wPPCfBJL59xdfX/iM136TguBSnvWAqY/E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XP2KaI+M1foSz93/SN+jvmJbI7D37Dgm1sW2UmD8u/k7h8LREziAWEKbdpcU9xm+z
+         GYgtvAng+XFqvfZRIBX92khUROea2q8vzyaqn6wC5qGRXz8IrhN5MS3Nc7ApO104ij
+         if6N3/49JCRvj5dzG4sYoBcrapDc1imdtgbzapxB/Hr5xYKvYLreu4SiNB7n69T10S
+         wQP2g0jP6Qt2qIuhdEyeMOHLm0Nh4LKJzE6sXdOl66+5Gtil4x5XYEl6BD4mk6Awyi
+         vzRvE3rubPhKxjyDaanm+ojB9xH0tf4ARZ0PGMkFGUWwDBjloX3NqlOT0YJp6oZT7T
+         bmtg79fVPr2ug==
+Date:   Wed, 28 Oct 2020 08:25:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the mmc tree
+Message-ID: <20201028082554.3a486ebe@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/7FvpXCn_KqDi/gk2yyWsDrt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combine the for-loops for Hyper-V TLB EPTP checking and flushing, and in
-doing so skip flushes for vCPUs whose EPTP matches the target EPTP.
+--Sig_/7FvpXCn_KqDi/gk2yyWsDrt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+Hi all,
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index f5e9e2f61e10..17b228c4ba19 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -505,33 +505,26 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
- 
- 	spin_lock(&kvm_vmx->ept_pointer_lock);
- 
--	if (kvm_vmx->ept_pointers_match == EPT_POINTERS_CHECK) {
-+	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
- 		kvm_vmx->ept_pointers_match = EPT_POINTERS_MATCH;
- 		kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
- 
- 		kvm_for_each_vcpu(i, vcpu, kvm) {
- 			tmp_eptp = to_vmx(vcpu)->ept_pointer;
--			if (!VALID_PAGE(tmp_eptp))
-+			if (!VALID_PAGE(tmp_eptp) ||
-+			    tmp_eptp == kvm_vmx->hv_tlb_eptp)
- 				continue;
- 
--			if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
-+			if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp))
- 				kvm_vmx->hv_tlb_eptp = tmp_eptp;
--			} else if (kvm_vmx->hv_tlb_eptp != tmp_eptp) {
--				kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
-+			else
- 				kvm_vmx->ept_pointers_match
- 					= EPT_POINTERS_MISMATCH;
--				break;
--			}
--		}
--	}
- 
--	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
--		kvm_for_each_vcpu(i, vcpu, kvm) {
--			/* If ept_pointer is invalid pointer, bypass flush request. */
--			if (VALID_PAGE(to_vmx(vcpu)->ept_pointer))
--				ret |= hv_remote_flush_eptp(to_vmx(vcpu)->ept_pointer,
--							    range);
-+			ret |= hv_remote_flush_eptp(tmp_eptp, range);
- 		}
-+		if (kvm_vmx->ept_pointers_match == EPT_POINTERS_MISMATCH)
-+			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
- 	} else if (VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
- 		ret = hv_remote_flush_eptp(kvm_vmx->hv_tlb_eptp, range);
- 	}
--- 
-2.28.0
+Commit
 
+  4a890911ffdb ("mmc: sdhci-of-esdhc: make sure delay chain locked for HS40=
+0")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7FvpXCn_KqDi/gk2yyWsDrt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+YkGIACgkQAVBC80lX
+0Gyg5gf6AxlZpWys4faOk0cWcrUjX34Ao0JCe3Bwp5ZKlHDB9tQSSIrtxdpLIdTy
+TE5eCabRNSq/hp0vfFFTbLBz4kk+VScTZQmSHAGDn9ObRXvOm1OyfK+RIsMEzuSS
+X0O9NVvPbSfZ4io+ppS9hEKB89R0lnVFu+V117yrqJAgdB4xOPWQgKFtkqtG1tEn
+As23zNWUaKPuYW5HYAqX2OdCCPz6GGvysZmSTZTzYjt7RyHy7uEipDYWfB9u0/mk
+2+cY9eHTeaWvg7d/0cnjoLRCExZ8qg4ndvVm1ovSb6orcbO4vCzgts1+/Hf1+KAC
+gdkUv8u3dh+EEf88qx9gfmmMOdhirw==
+=vgwK
+-----END PGP SIGNATURE-----
+
+--Sig_/7FvpXCn_KqDi/gk2yyWsDrt--
