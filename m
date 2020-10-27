@@ -2,67 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37E129A6D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE4429A6D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509241AbgJ0Ipi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:45:38 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:37083 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443689AbgJ0Ipf (ORCPT
+        id S2509234AbgJ0IpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:45:08 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:48239 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509219AbgJ0IpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:45:35 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 09R8fHjq035672;
-        Tue, 27 Oct 2020 16:41:17 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Oct
- 2020 16:44:23 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <andrew@aj.id.au>, <linus.walleij@linaro.org>, <joel@jms.id.au>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-        <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH] pinctrl: aspeed: Fix GPI only function problem.
-Date:   Tue, 27 Oct 2020 16:44:17 +0800
-Message-ID: <20201027084417.10137-1-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 27 Oct 2020 04:45:06 -0400
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kXKbG-0003rX-Cj; Tue, 27 Oct 2020 09:45:02 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kXKbF-0008T3-3v; Tue, 27 Oct 2020 09:45:01 +0100
+Date:   Tue, 27 Oct 2020 09:45:01 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: Re: [PATCH v1] Input: touchscreen: ads7846.c: Fix race that causes
+ missing releases
+Message-ID: <20201027084501.rjfza4il5gv7ursy@pengutronix.de>
+References: <20201026132117.20887-1-o.rempel@pengutronix.de>
+ <20201027034851.GH444962@dtor-ws>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 09R8fHjq035672
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201027034851.GH444962@dtor-ws>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:07:38 up 346 days, 23:26, 374 users,  load average: 0.11, 0.05,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some gpio pin at aspeed soc is input only and the prefix name of these
-pin is "GPI" only. This patch fine-tune the condition of GPIO check from
-"GPIO" to "GPI".
+On Mon, Oct 26, 2020 at 08:48:51PM -0700, Dmitry Torokhov wrote:
+> Hi Oleksij,
+> 
+> On Mon, Oct 26, 2020 at 02:21:17PM +0100, Oleksij Rempel wrote:
+> > From: David Jander <david@protonic.nl>
+> > 
+> > If touchscreen is released while busy reading HWMON device, the release
+> > can be missed. The IRQ thread is not started because no touch is active
+> > and BTN_TOUCH release event is never sent.
+> > 
+> > Fixes: f5a28a7d4858f94a ("Input: ads7846 - avoid pen up/down when reading hwmon")
+> > Co-Developed-by: David Jander <david@protonic.nl>
+> > Signed-off-by: David Jander <david@protonic.nl>
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  drivers/input/touchscreen/ads7846.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+> > index ea31956f3a90..0236a119c52d 100644
+> > --- a/drivers/input/touchscreen/ads7846.c
+> > +++ b/drivers/input/touchscreen/ads7846.c
+> > @@ -211,10 +211,26 @@ static void ads7846_stop(struct ads7846 *ts)
+> >  	}
+> >  }
+> >  
+> > +static int get_pendown_state(struct ads7846 *ts);
+> 
+> Not a fan forward declarations, just move the definition if needed.
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/pinctrl/aspeed/pinctrl-aspeed.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ok
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-index 53f3f8aec695..a2f5ede3f897 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-@@ -292,7 +292,7 @@ static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
- 	 *
- 	 * expr->signal might look like "GPIOT3" in the GPIO case.
- 	 */
--	return strncmp(expr->signal, "GPIO", 4) == 0;
-+	return strncmp(expr->signal, "GPI", 3) == 0;
- }
- 
- static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+> > +
+> >  /* Must be called with ts->lock held */
+> >  static void ads7846_restart(struct ads7846 *ts)
+> >  {
+> > +	unsigned int pdstate;
+> 
+> I do not see it being used. Do you have more patches for the driver?
+
+Ooops. Artifact of previous version of this patch.
+But, yes, there is one huge patch with major rework of this driver. I'll
+need to split it before sending. Or, are you ready to accept a one big
+patch? :)
+
+> > +
+> >  	if (!ts->disabled && !ts->suspended) {
+> > +		/* Check if pen was released since last stop */
+> > +		if (ts->pendown && !get_pendown_state(ts)) {
+> > +			struct input_dev *input = ts->input;
+> > +
+> > +			input_report_key(input, BTN_TOUCH, 0);
+> > +			input_report_abs(input, ABS_PRESSURE, 0);
+> > +			input_sync(input);
+> > +
+> > +			ts->pendown = false;
+> > +			dev_vdbg(&ts->spi->dev, "UP\n");
+> 
+> I wonder if we should not have ads7846_report_pen_up(struct ads7846 *ts) 
+
+Sure, which is already done in rework patch. Should I move this change
+here?
+
+> > +		}
+> > +
+> >  		/* Tell IRQ thread that it may poll the device. */
+> >  		ts->stopped = false;
+> >  		mb();
+> > -- 
+> > 2.28.0
+> > 
+> 
+
+Regards,
+Oleksij
 -- 
-2.17.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
