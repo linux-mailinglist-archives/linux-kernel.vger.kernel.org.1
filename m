@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E565029B8B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E07B29B94B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801729AbgJ0PnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
+        id S1802343AbgJ0PqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:46:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1800206AbgJ0PfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:35:20 -0400
+        id S1800239AbgJ0PfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:35:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 493C12225E;
-        Tue, 27 Oct 2020 15:35:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BD0C22275;
+        Tue, 27 Oct 2020 15:35:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812919;
-        bh=GCUZ+obrRO/mkdif81IOj6kbqeFpTp5nuaf/sZgNLYY=;
+        s=default; t=1603812924;
+        bh=c/+nvznaviyWZ/S3V/z59yTOTBOoLOD4EWGH7JCpdFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CC5LYgS/9ATnGnm2ULXmzl+M1i8u5cPD3kSOPjuuyaQ+9VtaxPeUQFqH0856s2584
-         szAWrm9Ilz3VGo32nExTS5Rdr24SEtnJTQtO0DgBBOb7OrAFJMcHaSAb4l50WxrFKV
-         wDk7Tp1/oYIb/vSVMp4TQRywfcWP2mFNZpS25Csg=
+        b=QvXVGJBgRPt2swTliiGbeZREHLaLmq7XocIlN9DwnykurxLAL+v393gA2NQ8TPYfw
+         CdTqrna3Bj23ClsJ83+aUORP46Hhog7Il44ncxJPlNA/rbs+KgLaldHLGzNs1xIvHT
+         IxIK/4r1ERjZe1oOaiN5S2FmJqw+LveVXyajPPEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Yu Kuai <yukuai3@huawei.com>, Will Deacon <will@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 345/757] qtnfmac: fix resource leaks on unsupported iftype error return path
-Date:   Tue, 27 Oct 2020 14:49:55 +0100
-Message-Id: <20201027135506.754840715@linuxfoundation.org>
+Subject: [PATCH 5.9 347/757] iommu/qcom: add missing put_device() call in qcom_iommu_of_xlate()
+Date:   Tue, 27 Oct 2020 14:49:57 +0100
+Message-Id: <20201027135506.841908370@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,44 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 63f6982075d890d7563e2469643f05a37d193f01 ]
+[ Upstream commit e2eae09939a89e0994f7965ba3c676a5eac8b4b0 ]
 
-Currently if an unsupported iftype is detected the error return path
-does not free the cmd_skb leading to a resource leak. Fix this by
-free'ing cmd_skb.
+if of_find_device_by_node() succeed, qcom_iommu_of_xlate() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 805b28c05c8e ("qtnfmac: prepare for AP_VLAN interface type support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200925132224.21638-1-colin.king@canonical.com
+Fixes: 0ae349a0f33f ("iommu/qcom: Add qcom_iommu")
+Acked-by: Rob Clark <robdclark@gmail.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20200929014037.2436663-1-yukuai3@huawei.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/quantenna/qtnfmac/commands.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/commands.c b/drivers/net/wireless/quantenna/qtnfmac/commands.c
-index f40d8c3c3d9e5..f3ccbd2b10847 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/commands.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/commands.c
-@@ -869,6 +869,7 @@ int qtnf_cmd_send_del_intf(struct qtnf_vif *vif)
- 	default:
- 		pr_warn("VIF%u.%u: unsupported iftype %d\n", vif->mac->macid,
- 			vif->vifid, vif->wdev.iftype);
-+		dev_kfree_skb(cmd_skb);
- 		ret = -EINVAL;
- 		goto out;
+diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+index af6bec3ace007..ef3dd32aa6d97 100644
+--- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
++++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+@@ -584,8 +584,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+ 	 * index into qcom_iommu->ctxs:
+ 	 */
+ 	if (WARN_ON(asid < 1) ||
+-	    WARN_ON(asid > qcom_iommu->num_ctxs))
++	    WARN_ON(asid > qcom_iommu->num_ctxs)) {
++		put_device(&iommu_pdev->dev);
+ 		return -EINVAL;
++	}
+ 
+ 	if (!dev_iommu_priv_get(dev)) {
+ 		dev_iommu_priv_set(dev, qcom_iommu);
+@@ -594,8 +596,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+ 		 * multiple different iommu devices.  Multiple context
+ 		 * banks are ok, but multiple devices are not:
+ 		 */
+-		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev)))
++		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev))) {
++			put_device(&iommu_pdev->dev);
+ 			return -EINVAL;
++		}
  	}
-@@ -1924,6 +1925,7 @@ int qtnf_cmd_send_change_sta(struct qtnf_vif *vif, const u8 *mac,
- 		break;
- 	default:
- 		pr_err("unsupported iftype %d\n", vif->wdev.iftype);
-+		dev_kfree_skb(cmd_skb);
- 		ret = -EINVAL;
- 		goto out;
- 	}
+ 
+ 	return iommu_fwspec_add_ids(dev, &asid, 1);
 -- 
 2.25.1
 
