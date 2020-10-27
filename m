@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0993F29A5AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F42229A5B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507969AbgJ0HnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 03:43:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49165 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgJ0HnB (ORCPT
+        id S2508019AbgJ0HpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 03:45:05 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:33522 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508009AbgJ0HpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 03:43:01 -0400
-Received: from mail-pl1-f200.google.com ([209.85.214.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kXJdC-000240-Rk
-        for linux-kernel@vger.kernel.org; Tue, 27 Oct 2020 07:42:59 +0000
-Received: by mail-pl1-f200.google.com with SMTP id w16so441569ply.15
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 00:42:58 -0700 (PDT)
+        Tue, 27 Oct 2020 03:45:05 -0400
+Received: by mail-oi1-f195.google.com with SMTP id s21so394634oij.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 00:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WG1A3q+GZxxNqqxlUx799dEM+Gf5oi4Zi/UVtCCwffw=;
+        b=jNrM7jvfPRxxd07tIAC6hcoCPl0lPXyXIhfjz3M82wA8u8RqW35dST2XvWdw+soPGr
+         XzhPLgJWuBGMSpqEth9gV6D190uUIPFCKyRBrO95tjHaBREJkc7B90qblOCdXzm/rGSl
+         0qS1Eh4lcQKZsukeAv/AuvW/pAvKTNqD2EnBX2Ns8aL2E3v3/LO+LjboR6rVq9eUDPkh
+         oYXT1CkZ+nNEPfo2p2cjjrnErgnEJX8SJoEB9J50UhtdY9X0r0StwRpKXYee1CL4VeQM
+         4ZTuIXk+hOkzE1vbAkVzIyroYLG/Ht0m2Qv0zuxt/7UCAMKb6T7GrFjWIJK/fp7MShdG
+         8d6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=vjBTmlur4S+6L78WlNF3x++nFUbCLvDVi46xZz3zYpE=;
-        b=b8wgA9bJlmerlS1LZn9LT8wHn29lcow9bYGHUNLalhH1VbSWIt2tjJ+BD4sjmbyOd8
-         21DXqXa/lIuY1/bsE/Ay2xK6iXbqcSxUAIkzHpS82p2C7+gU9jk+Y9t5aaRhnN6G6F1u
-         3X3Y2NBjLefNDtwHzgAJQySPns88VVqOEYkplaTP9bOn/sovM55f8V5aSLdDxXcpN4WF
-         PEsnRsD5nywltRyzRJRFtObm3C90zw1DcXTsW9qzPxrZB4QTK9v8zTP3ZjBkY6tmawF4
-         L7gqjzRI+dcAd6VSA0u/SsH/7D04AmqhaOvFGsYkQgnuC/X+P3BleuxcS7dJ2vbDjsfZ
-         U6tA==
-X-Gm-Message-State: AOAM532WMruWA/ppOrHZ/F23Y3H0h6mPlpFdL8gyRfAMU6aQlkeTXwTU
-        J0CQMJLwI4uu2P35Cze+LMj+e4RyAZ73lY686SdxzaxJI6I9kiqWCJdljhJ7NT5xgv+9xNgkTuF
-        HrCQpVHv9Fa8/qxVHetInBgyPgH6KR/wxHwqi/hUbcQ==
-X-Received: by 2002:a65:508a:: with SMTP id r10mr842463pgp.307.1603784576584;
-        Tue, 27 Oct 2020 00:42:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpWh5uvxiSN6j6mhUOK56nhuZlhIjzT3g50otq4ptMM3LFXs8p+I7SF+v5vqGOHjNuYzcwIw==
-X-Received: by 2002:a65:508a:: with SMTP id r10mr842439pgp.307.1603784576242;
-        Tue, 27 Oct 2020 00:42:56 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id s131sm998111pgc.18.2020.10.27.00.42.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 00:42:55 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2 2/4] ALSA: hda: Stop mangling PCI IRQ
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <s5hmu082k8s.wl-tiwai@suse.de>
-Date:   Tue, 27 Oct 2020 15:42:52 +0800
-Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
-        Hui Wang <hui.wang@canonical.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <5A5FF9D8-25B6-4AE0-B7A0-449BB6E40D98@canonical.com>
-References: <20201027054001.1800-1-kai.heng.feng@canonical.com>
- <20201027054001.1800-3-kai.heng.feng@canonical.com>
- <s5hmu082k8s.wl-tiwai@suse.de>
-To:     Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WG1A3q+GZxxNqqxlUx799dEM+Gf5oi4Zi/UVtCCwffw=;
+        b=dQaex0IltKnBLJEmvWiHSss+blFeq0flwPrgT2zYmcSI/POakL0VE8K2kfrVAWKcx8
+         D0xXcDni9d+fRzQMB6WyqWxqskt0mBst8NMIOaZZ6Ng1eHVAlx0vtmEA07QVXtkhbAqz
+         ex1ztUeikKy4QnClacXbXmx7GjbrrWK5plF0nX2dNEDor71xmYcfQMsv83QRSp6iysvZ
+         F3LjObKn5LE4S8JhGKqjrrRf7twYg5l6ZoWjizxqEYKcy2AhCxJ/st1XHzP8htIXmSqO
+         YyH+E6lNjaXydOcE9jMAzL7ut5cnE3RhlKF1RuocZjmnUyllJBBNEKQpQA1pk4Qr+bVz
+         dAPw==
+X-Gm-Message-State: AOAM533oZNvfU4tUujFc9ymhRerJeHmZsN8Wy/r3K4YfbNU8XxAhFWno
+        Bp/ARqAtZGEHzVu2EIp57AGzjVQQUutPOByVRCTblw==
+X-Google-Smtp-Source: ABdhPJzmEtc+5WEGyyYhU9RhAV79MqBOU0WEbvVHxMvW1J6n/n8BZyHqIE34BFg6sXrAc9mXMK78SOghyJxcS/d6XZE=
+X-Received: by 2002:a54:4812:: with SMTP id j18mr609276oij.70.1603784703052;
+ Tue, 27 Oct 2020 00:45:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201026183523.82749-1-98.arpi@gmail.com> <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
+ <f25c881d-03f9-e246-d8d4-e985d9662d04@gmail.com>
+In-Reply-To: <f25c881d-03f9-e246-d8d4-e985d9662d04@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 08:44:51 +0100
+Message-ID: <CANpmjNMVjuNOh-P6dENhyk_+=AHqkZYugQ3KQS9T3qXTrUSXGA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 27 Oct 2020 at 06:14, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+[...]
+> >> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> >> index a423fffefea0..16bf9f334e2c 100644
+> >> --- a/include/kunit/test.h
+> >> +++ b/include/kunit/test.h
+> >> @@ -142,6 +142,12 @@ struct kunit_case {
+> >>         void (*run_case)(struct kunit *test);
+> >>         const char *name;
+> >>
+> >> +       /*
+> >> +        * Pointer to test parameter generator function.
+> >> +        * Used only for parameterized tests.
+> >
+> > What I meant was to give a description of the protocol, so that if
+> > somebody wanted, they could (without reading the implementation)
+> > implement their own custom generator without the helper macro.
+> >
+> > E.g. something like: "The generator function is used to lazily
+> > generate a series of arbitrarily typed values that fit into a void*.
+> > The argument @prev is the previously returned value, which should be
+> > used to derive the next value; @prev is set to NULL on the initial
+> > generator call. When no more values are available, the generator must
+> > return NULL."
+> >
+>
+> Oh okay. I am not sure if this is the best place to add documentation for this.
 
-> On Oct 27, 2020, at 15:36, Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> On Tue, 27 Oct 2020 06:39:59 +0100,
-> Kai-Heng Feng wrote:
->> 
->> The code predates 2005, it should be unnecessary now as PCI core handles
->> IRQ much better nowadays.
->> 
->> So stop PCI IRQ mangling in suspend/resume callbacks.
->> 
->> Takashi Iwai mentioned that IRQ number can change after S3 on some
->> really old hardwares. We should use quirks to handle those platforms, as
->> most modern systems won't have that issue.
-> 
-> I believe it was S4.  And this pretty much depends on BIOS, hence it's
-> hard to apply the quirk, honestly speaking.
+I think it doesn't hurt to add, but have a look at the comment above
+this struct, which is already a kernel-doc comment. It probably makes
+sense to move the comment there to describe the new variable.
 
-Ok, S4 is indeed hard to handle.
-
-> 
-> And, if we know that we need a quirk, dropping the code completely now
-> is a bad move.  If any, this should be applied conditionally to the
-> "known to be modern" platforms, but this will make the code rather
-> messier, OTOH.
-> 
-> Do we need this change inevitably?  Otherwise I'd skip this one.
-
-Ok, please drop this one.
-
-Kai-Heng
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->> 
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->> v2:
->> - Wording.
->> - Add info on IRQ # can change on old hardwares.
->> 
->> sound/pci/hda/hda_intel.c | 15 ---------------
->> 1 file changed, 15 deletions(-)
->> 
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 749b88090970..b4aa1dcf1aae 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -1022,13 +1022,11 @@ static int azx_suspend(struct device *dev)
->> {
->> 	struct snd_card *card = dev_get_drvdata(dev);
->> 	struct azx *chip;
->> -	struct hdac_bus *bus;
->> 
->> 	if (!azx_is_pm_ready(card))
->> 		return 0;
->> 
->> 	chip = card->private_data;
->> -	bus = azx_bus(chip);
->> 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
->> 	/* An ugly workaround: direct call of __azx_runtime_suspend() and
->> 	 * __azx_runtime_resume() for old Intel platforms that suffer from
->> @@ -1038,14 +1036,6 @@ static int azx_suspend(struct device *dev)
->> 		__azx_runtime_suspend(chip);
->> 	else
->> 		pm_runtime_force_suspend(dev);
->> -	if (bus->irq >= 0) {
->> -		free_irq(bus->irq, chip);
->> -		bus->irq = -1;
->> -		chip->card->sync_irq = -1;
->> -	}
->> -
->> -	if (chip->msi)
->> -		pci_disable_msi(chip->pci);
->> 
->> 	trace_azx_suspend(chip);
->> 	return 0;
->> @@ -1060,11 +1050,6 @@ static int azx_resume(struct device *dev)
->> 		return 0;
->> 
->> 	chip = card->private_data;
->> -	if (chip->msi)
->> -		if (pci_enable_msi(chip->pci) < 0)
->> -			chip->msi = 0;
->> -	if (azx_acquire_irq(chip, 1) < 0)
->> -		return -EIO;
->> 
->> 	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
->> 		__azx_runtime_resume(chip, false);
->> -- 
->> 2.17.1
->> 
-
+Thanks,
+-- Marco
