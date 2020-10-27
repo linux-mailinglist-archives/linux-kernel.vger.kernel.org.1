@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D95129C5E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8466F29C542
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756861AbgJ0OOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:14:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
+        id S1824894AbgJ0SGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:06:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755028AbgJ0OIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:08:06 -0400
+        id S1757235AbgJ0OQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:16:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C81B0218AC;
-        Tue, 27 Oct 2020 14:08:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B5C4206F7;
+        Tue, 27 Oct 2020 14:16:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807685;
-        bh=yZxujvYKhkqY2K0QKru7IfWi0PCdpXQpY8Gi4kGmoeo=;
+        s=default; t=1603808213;
+        bh=OUQmJVpfkCPr55FpPCnjaFc5PMQInHYf5iAnutgfJ1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l7MyAJjhHUSYUE35hgE9QIKxL+Mm+8j7d8iiJcf7E+AiRn20NOz6mh833rigr/mtC
-         sqRGtzuTTMx6wYtNEY5KITp5E1SjB30jjVjYcjvLM//g7SDZBwJ+gQbyCG3bULd9ca
-         C+XcQOZ43/6jvuucsiav7IfCf+/nO2ywnbsYqAho=
+        b=BrtRHRJVlBoVfdAopLkVcoJcCBaINR9OU+CUu2pPEZgaQda43vRl5qHWB0u3OWb6u
+         pCPu4bl3nUL4NbLRg5rQivxs2f9QyjQGFk12wW0Pr3N43PZbwJ11GkWcUitMqNwdVa
+         c44uPXw22neyXssMoPpKRWojcIhTgWLM7gbPwN9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH 4.9 136/139] usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
-Date:   Tue, 27 Oct 2020 14:50:30 +0100
-Message-Id: <20201027134908.619020110@linuxfoundation.org>
+        stable@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 177/191] scsi: qedi: Fix list_del corruption while removing active I/O
+Date:   Tue, 27 Oct 2020 14:50:32 +0100
+Message-Id: <20201027134918.245634608@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,340 +44,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Nilesh Javali <njavali@marvell.com>
 
-commit a4f88430af896bf34ec25a7a5f0e053fb3d928e0 upstream.
+[ Upstream commit 28b35d17f9f8573d4646dd8df08917a4076a6b63 ]
 
-The ES58X devices has a CDC ACM interface (used for debug
-purpose). During probing, the device is thus recognized as USB Modem
-(CDC ACM), preventing the etas-es58x module to load:
-  usbcore: registered new interface driver etas_es58x
-  usb 1-1.1: new full-speed USB device number 14 using xhci_hcd
-  usb 1-1.1: New USB device found, idVendor=108c, idProduct=0159, bcdDevice= 1.00
-  usb 1-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-  usb 1-1.1: Product: ES581.4
-  usb 1-1.1: Manufacturer: ETAS GmbH
-  usb 1-1.1: SerialNumber: 2204355
-  cdc_acm 1-1.1:1.0: No union descriptor, testing for castrated device
-  cdc_acm 1-1.1:1.0: ttyACM0: USB ACM device
+While aborting the I/O, the firmware cleanup task timed out and driver
+deleted the I/O from active command list. Some time later the firmware
+sent the cleanup task response and driver again deleted the I/O from
+active command list causing firmware to send completion for non-existent
+I/O and list_del corruption of active command list.
 
-Thus, these have been added to the ignore list in
-drivers/usb/class/cdc-acm.c
+Add fix to check if I/O is present before deleting it from the active
+command list to ensure firmware sends valid I/O completion and protect
+against list_del corruption.
 
-N.B. Future firmware release of the ES58X will remove the CDC-ACM
-interface.
-
-`lsusb -v` of the three devices variant (ES581.4, ES582.1 and
-ES584.1):
-
-  Bus 001 Device 011: ID 108c:0159 Robert Bosch GmbH ES581.4
-  Device Descriptor:
-    bLength                18
-    bDescriptorType         1
-    bcdUSB               1.10
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    idVendor           0x108c Robert Bosch GmbH
-    idProduct          0x0159
-    bcdDevice            1.00
-    iManufacturer           1 ETAS GmbH
-    iProduct                2 ES581.4
-    iSerial                 3 2204355
-    bNumConfigurations      1
-    Configuration Descriptor:
-      bLength                 9
-      bDescriptorType         2
-      wTotalLength       0x0035
-      bNumInterfaces          1
-      bConfigurationValue     1
-      iConfiguration          5 Bus Powered Configuration
-      bmAttributes         0x80
-        (Bus Powered)
-      MaxPower              100mA
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        0
-        bAlternateSetting       0
-        bNumEndpoints           3
-        bInterfaceClass         2 Communications
-        bInterfaceSubClass      2 Abstract (modem)
-        bInterfaceProtocol      0
-        iInterface              4 ACM Control Interface
-        CDC Header:
-          bcdCDC               1.10
-        CDC Call Management:
-          bmCapabilities       0x01
-            call management
-          bDataInterface          0
-        CDC ACM:
-          bmCapabilities       0x06
-            sends break
-            line coding and serial state
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x81  EP 1 IN
-          bmAttributes            3
-            Transfer Type            Interrupt
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0010  1x 16 bytes
-          bInterval              10
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x82  EP 2 IN
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval               0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x03  EP 3 OUT
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval               0
-  Device Status:     0x0000
-    (Bus Powered)
-
-  Bus 001 Device 012: ID 108c:0168 Robert Bosch GmbH ES582
-  Device Descriptor:
-    bLength                18
-    bDescriptorType         1
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    idVendor           0x108c Robert Bosch GmbH
-    idProduct          0x0168
-    bcdDevice            1.00
-    iManufacturer           1 ETAS GmbH
-    iProduct                2 ES582
-    iSerial                 3 0108933
-    bNumConfigurations      1
-    Configuration Descriptor:
-      bLength                 9
-      bDescriptorType         2
-      wTotalLength       0x0043
-      bNumInterfaces          2
-      bConfigurationValue     1
-      iConfiguration          0
-      bmAttributes         0x80
-        (Bus Powered)
-      MaxPower              500mA
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        0
-        bAlternateSetting       0
-        bNumEndpoints           1
-        bInterfaceClass         2 Communications
-        bInterfaceSubClass      2 Abstract (modem)
-        bInterfaceProtocol      1 AT-commands (v.25ter)
-        iInterface              0
-        CDC Header:
-          bcdCDC               1.10
-        CDC ACM:
-          bmCapabilities       0x02
-            line coding and serial state
-        CDC Union:
-          bMasterInterface        0
-          bSlaveInterface         1
-        CDC Call Management:
-          bmCapabilities       0x03
-            call management
-            use DataInterface
-          bDataInterface          1
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x83  EP 3 IN
-          bmAttributes            3
-            Transfer Type            Interrupt
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval              16
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        1
-        bAlternateSetting       0
-        bNumEndpoints           2
-        bInterfaceClass        10 CDC Data
-        bInterfaceSubClass      0
-        bInterfaceProtocol      0
-        iInterface              0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x81  EP 1 IN
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x02  EP 2 OUT
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-  Device Qualifier (for other device speed):
-    bLength                10
-    bDescriptorType         6
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    bNumConfigurations      1
-  Device Status:     0x0000
-    (Bus Powered)
-
-  Bus 001 Device 013: ID 108c:0169 Robert Bosch GmbH ES584.1
-  Device Descriptor:
-    bLength                18
-    bDescriptorType         1
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    idVendor           0x108c Robert Bosch GmbH
-    idProduct          0x0169
-    bcdDevice            1.00
-    iManufacturer           1 ETAS GmbH
-    iProduct                2 ES584.1
-    iSerial                 3 0100320
-    bNumConfigurations      1
-    Configuration Descriptor:
-      bLength                 9
-      bDescriptorType         2
-      wTotalLength       0x0043
-      bNumInterfaces          2
-      bConfigurationValue     1
-      iConfiguration          0
-      bmAttributes         0x80
-        (Bus Powered)
-      MaxPower              500mA
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        0
-        bAlternateSetting       0
-        bNumEndpoints           1
-        bInterfaceClass         2 Communications
-        bInterfaceSubClass      2 Abstract (modem)
-        bInterfaceProtocol      1 AT-commands (v.25ter)
-        iInterface              0
-        CDC Header:
-          bcdCDC               1.10
-        CDC ACM:
-          bmCapabilities       0x02
-            line coding and serial state
-        CDC Union:
-          bMasterInterface        0
-          bSlaveInterface         1
-        CDC Call Management:
-          bmCapabilities       0x03
-            call management
-            use DataInterface
-          bDataInterface          1
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x83  EP 3 IN
-          bmAttributes            3
-            Transfer Type            Interrupt
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0040  1x 64 bytes
-          bInterval              16
-      Interface Descriptor:
-        bLength                 9
-        bDescriptorType         4
-        bInterfaceNumber        1
-        bAlternateSetting       0
-        bNumEndpoints           2
-        bInterfaceClass        10 CDC Data
-        bInterfaceSubClass      0
-        bInterfaceProtocol      0
-        iInterface              0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x81  EP 1 IN
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-        Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType         5
-          bEndpointAddress     0x02  EP 2 OUT
-          bmAttributes            2
-            Transfer Type            Bulk
-            Synch Type               None
-            Usage Type               Data
-          wMaxPacketSize     0x0200  1x 512 bytes
-          bInterval               0
-  Device Qualifier (for other device speed):
-    bLength                10
-    bDescriptorType         6
-    bcdUSB               2.00
-    bDeviceClass            2 Communications
-    bDeviceSubClass         0
-    bDeviceProtocol         0
-    bMaxPacketSize0        64
-    bNumConfigurations      1
-  Device Status:     0x0000
-    (Bus Powered)
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201002154219.4887-8-mailhol.vincent@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200908095657.26821-4-mrangankar@marvell.com
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/scsi/qedi/qedi_fw.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1852,6 +1852,17 @@ static const struct usb_device_id acm_id
- 	.driver_info = IGNORE_DEVICE,
- 	},
+diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
+index e688300faeefd..e8f2c662471e0 100644
+--- a/drivers/scsi/qedi/qedi_fw.c
++++ b/drivers/scsi/qedi/qedi_fw.c
+@@ -844,8 +844,11 @@ static void qedi_process_cmd_cleanup_resp(struct qedi_ctx *qedi,
+ 			qedi_clear_task_idx(qedi_conn->qedi, rtid);
  
-+	/* Exclude ETAS ES58x */
-+	{ USB_DEVICE(0x108c, 0x0159), /* ES581.4 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+	{ USB_DEVICE(0x108c, 0x0168), /* ES582.1 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+	{ USB_DEVICE(0x108c, 0x0169), /* ES584.1 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+
- 	{ USB_DEVICE(0x1bc7, 0x0021), /* Telit 3G ACM only composition */
- 	.driver_info = SEND_ZERO_PACKET,
- 	},
+ 			spin_lock(&qedi_conn->list_lock);
+-			list_del_init(&dbg_cmd->io_cmd);
+-			qedi_conn->active_cmd_count--;
++			if (likely(dbg_cmd->io_cmd_in_list)) {
++				dbg_cmd->io_cmd_in_list = false;
++				list_del_init(&dbg_cmd->io_cmd);
++				qedi_conn->active_cmd_count--;
++			}
+ 			spin_unlock(&qedi_conn->list_lock);
+ 			qedi_cmd->state = CLEANUP_RECV;
+ 			wake_up_interruptible(&qedi_conn->wait_queue);
+@@ -1265,6 +1268,7 @@ int qedi_cleanup_all_io(struct qedi_ctx *qedi, struct qedi_conn *qedi_conn,
+ 		qedi_conn->cmd_cleanup_req++;
+ 		qedi_iscsi_cleanup_task(ctask, true);
+ 
++		cmd->io_cmd_in_list = false;
+ 		list_del_init(&cmd->io_cmd);
+ 		qedi_conn->active_cmd_count--;
+ 		QEDI_WARN(&qedi->dbg_ctx,
+@@ -1478,8 +1482,11 @@ static void qedi_tmf_work(struct work_struct *work)
+ 	spin_unlock_bh(&qedi_conn->tmf_work_lock);
+ 
+ 	spin_lock(&qedi_conn->list_lock);
+-	list_del_init(&cmd->io_cmd);
+-	qedi_conn->active_cmd_count--;
++	if (likely(cmd->io_cmd_in_list)) {
++		cmd->io_cmd_in_list = false;
++		list_del_init(&cmd->io_cmd);
++		qedi_conn->active_cmd_count--;
++	}
+ 	spin_unlock(&qedi_conn->list_lock);
+ 
+ 	clear_bit(QEDI_CONN_FW_CLEANUP, &qedi_conn->flags);
+-- 
+2.25.1
+
 
 
