@@ -2,39 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7179829BD44
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8D529BCF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794928AbgJ0POY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
+        id S1811321AbgJ0QjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793838AbgJ0PIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:08:35 -0400
+        id S1800260AbgJ0Pne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:43:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F307D206E5;
-        Tue, 27 Oct 2020 15:08:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2894D22403;
+        Tue, 27 Oct 2020 15:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811314;
-        bh=6iNgf1jOVE5Jgq3YA/ekXFTlsyVoU1AiArcDjjJpnNg=;
+        s=default; t=1603813413;
+        bh=mrXDFDzumSc0lnTRT+bKw8DPM5Pk49dlklK8cQZ8GDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NCqRBV2HPO3lZWReLe0u1j5wW2TrWTeVoNuty+XYJ2UdPC5Mn6AfUiXuymwSqj7vA
-         0fu1ZKxI5nEqwGHXwb2ei6/M3APxgh9+Iu4bq9S6fEBviQ4YUhKv6fR9Snl/IByUMQ
-         NvO9EAeAqcox5sE2h/buj43gvZq+hLaguW15MNs8=
+        b=caZjnxWXLqVzTBrzKUL5AjrVo0bzf3PQbxp05hn7DkH3kRxUgTrqljncR9zPy4T6b
+         psEv1AAFh9RZV+b+3dTG/hGK4AoX7KgC+UXka4Q+lTcrraUBMVGPdS1sibG6OO7Biv
+         Ce7Sk8GKGzjCWL0bHJfXGyjaGg1Cx2NnNQlsnKpc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Souptick Joarder <jrdr.linux@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 418/633] RDMA/rxe: Handle skb_clone() failure in rxe_recv.c
-Date:   Tue, 27 Oct 2020 14:52:41 +0100
-Message-Id: <20201027135542.330204572@linuxfoundation.org>
+Subject: [PATCH 5.9 512/757] rapidio: fix error handling path
+Date:   Tue, 27 Oct 2020 14:52:42 +0100
+Message-Id: <20201027135514.490096453@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +52,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit 71abf20b28ff87fee6951ec2218d5ce7969c4e87 ]
+[ Upstream commit fa63f083b3492b5ed5332b8d7c90b03b5ef24a1d ]
 
-If skb_clone() is unable to allocate memory for a new sk_buff this is not
-detected by the current code.
+rio_dma_transfer() attempts to clamp the return value of
+pin_user_pages_fast() to be >= 0.  However, the attempt fails because
+nr_pages is overridden a few lines later, and restored to the undesirable
+-ERRNO value.
 
-Check for a NULL return and continue. This is similar to other errors in
-this loop over QPs attached to the multicast address and consistent with
-the unreliable UD transport.
+The return value is ultimately stored in nr_pages, which in turn is passed
+to unpin_user_pages(), which expects nr_pages >= 0, else, disaster.
 
-Fixes: e7ec96fc7932f ("RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()")
-Addresses-Coverity-ID: 1497804: Null pointer dereferences (NULL_RETURNS)
-Link: https://lore.kernel.org/r/20201013184236.5231-1-rpearson@hpe.com
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fix this by fixing the nesting of the assignment to nr_pages: nr_pages
+should be clamped to zero if pin_user_pages_fast() returns -ERRNO, or set
+to the return value of pin_user_pages_fast(), otherwise.
+
+[jhubbard@nvidia.com: new changelog]
+
+Fixes: e8de370188d09 ("rapidio: add mport char device driver")
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lkml.kernel.org/r/1600227737-20785-1-git-send-email-jrdr.linux@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_recv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/rapidio/devices/rio_mport_cdev.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index be6416a982c70..9bfb98056fc2a 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -319,6 +319,9 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 		else
- 			per_qp_skb = skb;
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index a30342942e26f..163b6c72501d6 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -871,15 +871,16 @@ rio_dma_transfer(struct file *filp, u32 transfer_mode,
+ 				rmcd_error("pin_user_pages_fast err=%ld",
+ 					   pinned);
+ 				nr_pages = 0;
+-			} else
++			} else {
+ 				rmcd_error("pinned %ld out of %ld pages",
+ 					   pinned, nr_pages);
++				/*
++				 * Set nr_pages up to mean "how many pages to unpin, in
++				 * the error handler:
++				 */
++				nr_pages = pinned;
++			}
+ 			ret = -EFAULT;
+-			/*
+-			 * Set nr_pages up to mean "how many pages to unpin, in
+-			 * the error handler:
+-			 */
+-			nr_pages = pinned;
+ 			goto err_pg;
+ 		}
  
-+		if (unlikely(!per_qp_skb))
-+			continue;
-+
- 		per_qp_pkt = SKB_TO_PKT(per_qp_skb);
- 		per_qp_pkt->qp = qp;
- 		rxe_add_ref(qp);
 -- 
 2.25.1
 
