@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8E829C522
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A1329C51F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824229AbgJ0SE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
+        id S1824215AbgJ0SEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:04:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757298AbgJ0OSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:36 -0400
+        id S1757318AbgJ0OSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:18:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1F80206FA;
-        Tue, 27 Oct 2020 14:18:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A763206F7;
+        Tue, 27 Oct 2020 14:18:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808315;
-        bh=GsP0X5HriBgeIr7OQCwjchI5S3asIbsHKu7UilN7lHI=;
+        s=default; t=1603808320;
+        bh=Ce5G3aT6s0R3Dn6U49AQ5sEQzHQ1jywGS2Wow75T/qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j7mjBKCVGwx5r313nYIHRPJ29qf1Igg/RZ1r6Ycucmks6Pri3dwIRI8Z6EjgmYQ9v
-         Ut/YZEXrfql9vr781LPfhcNw7wTRkHO+iKXF3Ed+SU6GjCbHUaqXUw3Vk3purHX358
-         jEX6FgqJeoW5vdpHcfM0YACbIEXNd/u6fs0GGmBo=
+        b=VBg2dGX1m0tYCXyG5J+BcWRaigmtnxDRuCpqvNXx48XCR9tD8vZXUPzj88Pt/jhzb
+         qKufNSa308U+uOQXH+k3YEembEQw5nIEzdr7GDE5qfUV1zMfCydT2I0aIWLT0LgZZp
+         OHMOM6gKjtQduZUq1RgEASVW8WVI2rv9NMMzdX/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Todd Kjos <tkjos@google.com>
-Subject: [PATCH 4.19 014/264] binder: fix UAF when releasing todo list
-Date:   Tue, 27 Oct 2020 14:51:12 +0100
-Message-Id: <20201027135431.335268844@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 016/264] chelsio/chtls: fix socket lock
+Date:   Tue, 27 Oct 2020 14:51:14 +0100
+Message-Id: <20201027135431.431629116@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -41,113 +43,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Todd Kjos <tkjos@google.com>
+From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
 
-commit f3277cbfba763cd2826396521b9296de67cf1bbc upstream.
+[ Upstream commit 0fb5f0160a36d7acaa8e84ce873af99f94b60484 ]
 
-When releasing a thread todo list when tearing down
-a binder_proc, the following race was possible which
-could result in a use-after-free:
+In chtls_sendpage() socket lock is released but not acquired,
+fix it by taking lock.
 
-1.  Thread 1: enter binder_release_work from binder_thread_release
-2.  Thread 2: binder_update_ref_for_handle() -> binder_dec_node_ilocked()
-3.  Thread 2: dec nodeA --> 0 (will free node)
-4.  Thread 1: ACQ inner_proc_lock
-5.  Thread 2: block on inner_proc_lock
-6.  Thread 1: dequeue work (BINDER_WORK_NODE, part of nodeA)
-7.  Thread 1: REL inner_proc_lock
-8.  Thread 2: ACQ inner_proc_lock
-9.  Thread 2: todo list cleanup, but work was already dequeued
-10. Thread 2: free node
-11. Thread 2: REL inner_proc_lock
-12. Thread 1: deref w->type (UAF)
-
-The problem was that for a BINDER_WORK_NODE, the binder_work element
-must not be accessed after releasing the inner_proc_lock while
-processing the todo list elements since another thread might be
-handling a deref on the node containing the binder_work element
-leading to the node being freed.
-
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Link: https://lore.kernel.org/r/20201009232455.4054810-1-tkjos@google.com
-Cc: <stable@vger.kernel.org> # 4.14, 4.19, 5.4, 5.8
+Fixes: 36bedb3f2e5b ("crypto: chtls - Inline TLS record Tx")
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/android/binder.c |   35 ++++++++++-------------------------
- 1 file changed, 10 insertions(+), 25 deletions(-)
+ drivers/crypto/chelsio/chtls/chtls_io.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -285,7 +285,7 @@ struct binder_device {
- struct binder_work {
- 	struct list_head entry;
+--- a/drivers/crypto/chelsio/chtls/chtls_io.c
++++ b/drivers/crypto/chelsio/chtls/chtls_io.c
+@@ -1217,6 +1217,7 @@ int chtls_sendpage(struct sock *sk, stru
+ 	copied = 0;
+ 	csk = rcu_dereference_sk_user_data(sk);
+ 	cdev = csk->cdev;
++	lock_sock(sk);
+ 	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
  
--	enum {
-+	enum binder_work_type {
- 		BINDER_WORK_TRANSACTION = 1,
- 		BINDER_WORK_TRANSACTION_COMPLETE,
- 		BINDER_WORK_RETURN_ERROR,
-@@ -895,27 +895,6 @@ static struct binder_work *binder_dequeu
- 	return w;
- }
- 
--/**
-- * binder_dequeue_work_head() - Dequeues the item at head of list
-- * @proc:         binder_proc associated with list
-- * @list:         list to dequeue head
-- *
-- * Removes the head of the list if there are items on the list
-- *
-- * Return: pointer dequeued binder_work, NULL if list was empty
-- */
--static struct binder_work *binder_dequeue_work_head(
--					struct binder_proc *proc,
--					struct list_head *list)
--{
--	struct binder_work *w;
--
--	binder_inner_proc_lock(proc);
--	w = binder_dequeue_work_head_ilocked(list);
--	binder_inner_proc_unlock(proc);
--	return w;
--}
--
- static void
- binder_defer_work(struct binder_proc *proc, enum binder_deferred_state defer);
- static void binder_free_thread(struct binder_thread *thread);
-@@ -4242,13 +4221,17 @@ static void binder_release_work(struct b
- 				struct list_head *list)
- {
- 	struct binder_work *w;
-+	enum binder_work_type wtype;
- 
- 	while (1) {
--		w = binder_dequeue_work_head(proc, list);
-+		binder_inner_proc_lock(proc);
-+		w = binder_dequeue_work_head_ilocked(list);
-+		wtype = w ? w->type : 0;
-+		binder_inner_proc_unlock(proc);
- 		if (!w)
- 			return;
- 
--		switch (w->type) {
-+		switch (wtype) {
- 		case BINDER_WORK_TRANSACTION: {
- 			struct binder_transaction *t;
- 
-@@ -4282,9 +4265,11 @@ static void binder_release_work(struct b
- 			kfree(death);
- 			binder_stats_deleted(BINDER_STAT_DEATH);
- 		} break;
-+		case BINDER_WORK_NODE:
-+			break;
- 		default:
- 			pr_err("unexpected work type, %d, not freed\n",
--			       w->type);
-+			       wtype);
- 			break;
- 		}
- 	}
+ 	err = sk_stream_wait_connect(sk, &timeo);
 
 
