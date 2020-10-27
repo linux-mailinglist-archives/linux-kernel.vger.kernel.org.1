@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9439B29CB69
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF03A29CB70
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374323AbgJ0VnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:43:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17169 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S374255AbgJ0VnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:43:03 -0400
-IronPort-SDR: vtQe7S6OjxVTlOY4aLqW2sLhQ6cY55NleS3X5S3ygGmSOjWmtiFWoKoOFbM8sYYGyHjB/ER8DX
- He47KSNQauPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="164667233"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="164667233"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 14:43:02 -0700
-IronPort-SDR: 4D3pTCaAbcbStBM3aXVM2yVSooLxxH7sGhqVMIlsTe1BGfAeRNMkRAkgnehf0hsedgP5dXIZc4
- C2V3Ka99vpbg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="334537311"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by orsmga002.jf.intel.com with ESMTP; 27 Oct 2020 14:43:01 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: [PATCH 3/3] KVM: x86/mmu: Use hugepage GFN mask to compute GFN offset mask
-Date:   Tue, 27 Oct 2020 14:43:00 -0700
-Message-Id: <20201027214300.1342-4-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027214300.1342-1-sean.j.christopherson@intel.com>
-References: <20201027214300.1342-1-sean.j.christopherson@intel.com>
+        id S374354AbgJ0Vnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:43:41 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39590 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374343AbgJ0Vnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:43:37 -0400
+Received: by mail-io1-f66.google.com with SMTP id p7so3202693ioo.6;
+        Tue, 27 Oct 2020 14:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M4DMtRusIBSeOgDXKaZMtL3aNFUYRHrBj1yi1ElNljs=;
+        b=e78D+C4YPOWMj2c9KFCPYCIg3bvAvcyQqVd3q0U9IzxX7aqpzFtPrfQOFokVNN1PNX
+         XVrypVrbod4hLwzuZGhyHb/+PDmB3ar1be3vzd1WBJfTgQniWRrX8wn39wKbAhJQpN0A
+         oWejHK6i+TG4BlPd+/oJEn1latxU4lUUd8Xv2e2G6Pa7x6z2WF7U8Ot8KajYAwiqxmb5
+         42vF/PLb6KUXH7JMRLIW1AeHyRBEqLvvmqbnLwPR3AkCXIvwbCLdl6AHUllzTiBbHgup
+         lsgxRaktKlyNrDii/jNalYObBXJQKkUeLo44XP3oS1+49RWV5Hlj51ZCHgtr7+Iz9cNW
+         85wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M4DMtRusIBSeOgDXKaZMtL3aNFUYRHrBj1yi1ElNljs=;
+        b=d6wzK8f/KvuLIuCFNCsY2VyxMtQ6KFHpjI83DbFaQ+lhGRi6F9X1d5Y0EobpMBCg37
+         VURxNkB8YsUwxiTQgK171QpDbhJcvgh/8FRx1eKvfR05oYF1eSQ6zEVgNkxJn54Xroli
+         9fSRRhYYFvHO438LQTJ3sBUzW8c2rvxXBd78TRXyT9a3CS0tHfA7aqhkY881kLUvOYbV
+         eJPYZJEVR+iUrsd15XHGVF7MBXGYuvEF2zHjU37KYfzyNuv9KXo6p/fbaVSdepwX3AZ7
+         pfmImKBCYZqlHoMVMeOsw9LOdPfsuB7B3oP+OrGQHgjj+JgHrOZuK27o27q71K723pQj
+         kE0Q==
+X-Gm-Message-State: AOAM530wOjVlL1t719NYD14kkEJ4ZSoNfJ7omfwqiOBMdIqZ5wjSqfOn
+        nA48QcfP2KO0Qmh5rit8WsHY9qY6XJ7EybQz/iE=
+X-Google-Smtp-Source: ABdhPJx80PPcZMpfUlBGECvO/rasjkvCl7waBT4W4GSuQJBtLI91Ef08UVD8zq/hY18wjm/GR+zGD6+MmyoxhgDmCBw=
+X-Received: by 2002:a6b:8b95:: with SMTP id n143mr3933217iod.36.1603835014568;
+ Tue, 27 Oct 2020 14:43:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201027183149.145165-1-peron.clem@gmail.com> <20201027183149.145165-2-peron.clem@gmail.com>
+ <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com>
+In-Reply-To: <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Tue, 27 Oct 2020 22:43:23 +0100
+Message-ID: <CAJiuCcdX7jc-VMWYfPPL3qu9RcUU7VMdjshyPH_xLA0yVXftUw@mail.gmail.com>
+Subject: Re: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the logical NOT of KVM_HPAGE_GFN_MASK() to compute the GFN offset
-mask instead of open coding the equivalent in a variety of locations.
+Hi Pierre-Louis,
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/mmu/mmu.c      | 2 +-
- arch/x86/kvm/mmu/mmutrace.h | 2 +-
- arch/x86/kvm/mmu/tdp_mmu.c  | 2 +-
- arch/x86/kvm/x86.c          | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
+On Tue, 27 Oct 2020 at 19:59, Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+> > @@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> >       case SND_SOC_DAIFMT_DSP_B:
+> >       case SND_SOC_DAIFMT_LEFT_J:
+> >       case SND_SOC_DAIFMT_RIGHT_J:
+> > -             lrck_period = params_physical_width(params) * slots;
+> > +             lrck_period = slot_width * slots;
+> >               break;
+> >
+> >       case SND_SOC_DAIFMT_I2S:
+> > -             lrck_period = params_physical_width(params);
+> > +             lrck_period = slot_width;
+> >               break;
+>
+> Aren't I2S, LEFT_J and RIGHT_J pretty much the same in terms of lrclk
+> rate/period? the only thing that can change is the polarity, no?
+>
+> Not sure why it's handled differently here?
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 3bfc7ee44e51..9fb50c666ec5 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2827,7 +2827,7 @@ int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
- 	 * mmu_notifier_retry() was successful and mmu_lock is held, so
- 	 * the pmd can't be split from under us.
- 	 */
--	mask = KVM_PAGES_PER_HPAGE(level) - 1;
-+	mask = ~KVM_HPAGE_GFN_MASK(level);
- 	VM_BUG_ON((gfn & mask) != (pfn & mask));
- 	*pfnp = pfn & ~mask;
- 
-diff --git a/arch/x86/kvm/mmu/mmutrace.h b/arch/x86/kvm/mmu/mmutrace.h
-index 213699b27b44..4432ca3c7e4e 100644
---- a/arch/x86/kvm/mmu/mmutrace.h
-+++ b/arch/x86/kvm/mmu/mmutrace.h
-@@ -372,7 +372,7 @@ TRACE_EVENT(
- 
- 	TP_fast_assign(
- 		__entry->gfn = addr >> PAGE_SHIFT;
--		__entry->pfn = pfn | (__entry->gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
-+		__entry->pfn = pfn | (__entry->gfn & ~KVM_HPAGE_GFN_MASK(level));
- 		__entry->level = level;
- 	),
- 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 27e381c9da6c..681686608c0b 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -209,7 +209,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 
- 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
- 	WARN_ON(level < PG_LEVEL_4K);
--	WARN_ON(gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
-+	WARN_ON(gfn & ~KVM_HPAGE_GFN_MASK(level));
- 
- 	/*
- 	 * If this warning were to trigger it would indicate that there was a
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 397f599b20e5..faf4c4ddde94 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10451,16 +10451,16 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
- 
- 		slot->arch.lpage_info[i - 1] = linfo;
- 
--		if (slot->base_gfn & (KVM_PAGES_PER_HPAGE(level) - 1))
-+		if (slot->base_gfn & ~KVM_HPAGE_GFN_MASK(level))
- 			linfo[0].disallow_lpage = 1;
--		if ((slot->base_gfn + npages) & (KVM_PAGES_PER_HPAGE(level) - 1))
-+		if ((slot->base_gfn + npages) & ~KVM_HPAGE_GFN_MASK(level))
- 			linfo[lpages - 1].disallow_lpage = 1;
- 		ugfn = slot->userspace_addr >> PAGE_SHIFT;
- 		/*
- 		 * If the gfn and userspace address are not aligned wrt each
- 		 * other, disable large page support for this slot.
- 		 */
--		if ((slot->base_gfn ^ ugfn) & (KVM_PAGES_PER_HPAGE(level) - 1)) {
-+		if ((slot->base_gfn ^ ugfn) & ~KVM_HPAGE_GFN_MASK(level)) {
- 			unsigned long j;
- 
- 			for (j = 0; j < lpages; ++j)
--- 
-2.28.0
+I just had a look at the User Manual for H3 and H6 and I didn't find
+any reason why LEFT_J and RIGHT_J should be computed in a different
+way as I2S.
 
+Also the commit introducing this doesn't mention it.
+7ae7834ec446 ("ASoC: sun4i-i2s: Add support for DSP formats")
+
+I can't test it with my board but if nobody complains about it, I will
+introduce a fix for this in the next version and change this also for
+H6.
+
+Thanks for your review,
+Clement
