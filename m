@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC52F29B864
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2662329B865
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800201AbgJ0PfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47834 "EHLO mail.kernel.org"
+        id S1800210AbgJ0PfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799332AbgJ0Pa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:30:57 -0400
+        id S1799339AbgJ0PbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:31:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 566D822265;
-        Tue, 27 Oct 2020 15:30:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5411020728;
+        Tue, 27 Oct 2020 15:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812657;
-        bh=Xj9ho0Kh+KTIacEk0vpVjzYRc7xqh2u/zd1mw2NTqmE=;
+        s=default; t=1603812660;
+        bh=HDFgHp5dM5AS29zdTJvc4u7p1YF4QJptFKHhbIvReiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5AJz1qwUpZ/pWZE4t1pR1bVM9BvF3+jCSHQobd9XuuQqGTXkJ8HHqVl1eScqGPpF
-         vJwxX/Z4oyY/2plhXezCisCQWiJ88wkxIB9SKW0d0XasW9ku8munK1utJK3+0XFk0y
-         41tf6XI8mBs2g5kVUOEi3ulXJRLp0JkAzKt0V+Yc=
+        b=YqyBbTtOvrorzXnQPB0bH63n4HjlxBD/EunAVREQxqM7kb3ah7Dzb/jy5tiDK8mao
+         VaHw4FeyVlVGx8AFMNTk3V09A6WIgwYOE/8Z6ohGTP4jEgH1gMpKQd74tywi0RsfRK
+         bUHybgrwYNesDvTKPsst2/GvLU95pezHzlP2G3AM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 286/757] xhci: dont create endpoint debugfs entry before ring buffer is set.
-Date:   Tue, 27 Oct 2020 14:48:56 +0100
-Message-Id: <20201027135503.983997316@linuxfoundation.org>
+Subject: [PATCH 5.9 287/757] drm/msm: Fix the a650 hw_apriv check
+Date:   Tue, 27 Oct 2020 14:48:57 +0100
+Message-Id: <20201027135504.032177121@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,49 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Jordan Crouse <jcrouse@codeaurora.org>
 
-[ Upstream commit 167657a1bb5fcde53ac304ce6c564bd90a2f9185 ]
+[ Upstream commit e9ba8d550dd1e28870a0bdc7c11af026c2a94702 ]
 
-Make sure xHC completes the configure endpoint command and xhci driver
-sets the ring pointers correctly before we create the user readable
-debugfs file.
+Commit 604234f33658 ("drm/msm: Enable expanded apriv support for a650")
+was checking the result of adreno_is_a650() before the gpu revision
+got probed in adreno_gpu_init() so it was always coming across as
+false. Snoop into the revision ID ahead of time to correctly set the
+hw_apriv flag so that it can be used by msm_gpu to properly setup
+global buffers.
 
-In theory there was a small gap where a user could have read the
-debugfs file and cause a NULL pointer dereference error as ring
-pointer was not yet set, in practise we want this change to simplify
-the upcoming streams debugfs support.
-
-Fixes: 02b6fdc2a153 ("usb: xhci: Add debugfs interface for xHCI driver")
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200918131752.16488-10-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 604234f33658 ("drm/msm: Enable expanded apriv support for a650")
+Reported-by: Jonathan Marek <jonathan@marek.ca>
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+Tested-by: Jonathan Marek <jonathan@marek.ca>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index f4cedcaee14b3..e534f524b7f87 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1915,8 +1915,6 @@ static int xhci_add_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
- 	ep_ctx = xhci_get_ep_ctx(xhci, virt_dev->in_ctx, ep_index);
- 	trace_xhci_add_endpoint(ep_ctx);
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 66a95e22b7b3d..456d729c81c39 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1048,6 +1048,8 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ {
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 	struct platform_device *pdev = priv->gpu_pdev;
++	struct adreno_platform_config *config = pdev->dev.platform_data;
++	const struct adreno_info *info;
+ 	struct device_node *node;
+ 	struct a6xx_gpu *a6xx_gpu;
+ 	struct adreno_gpu *adreno_gpu;
+@@ -1064,7 +1066,14 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ 	adreno_gpu->registers = NULL;
+ 	adreno_gpu->reg_offsets = a6xx_register_offsets;
  
--	xhci_debugfs_create_endpoint(xhci, virt_dev, ep_index);
--
- 	xhci_dbg(xhci, "add ep 0x%x, slot id %d, new drop flags = %#x, new add flags = %#x\n",
- 			(unsigned int) ep->desc.bEndpointAddress,
- 			udev->slot_id,
-@@ -2949,6 +2947,7 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- 		xhci_check_bw_drop_ep_streams(xhci, virt_dev, i);
- 		virt_dev->eps[i].ring = virt_dev->eps[i].new_ring;
- 		virt_dev->eps[i].new_ring = NULL;
-+		xhci_debugfs_create_endpoint(xhci, virt_dev, i);
- 	}
- command_cleanup:
- 	kfree(command->completion);
+-	if (adreno_is_a650(adreno_gpu))
++	/*
++	 * We need to know the platform type before calling into adreno_gpu_init
++	 * so that the hw_apriv flag can be correctly set. Snoop into the info
++	 * and grab the revision number
++	 */
++	info = adreno_info(config->rev);
++
++	if (info && info->revn == 650)
+ 		adreno_gpu->base.hw_apriv = true;
+ 
+ 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
 -- 
 2.25.1
 
