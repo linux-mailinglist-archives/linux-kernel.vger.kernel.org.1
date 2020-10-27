@@ -2,157 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A1729BEFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0AC29BF12
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1814705AbgJ0Q7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:59:07 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:40062 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1814693AbgJ0Q66 (ORCPT
+        id S1814919AbgJ0RAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:00:33 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:42215 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1814885AbgJ0RAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:58:58 -0400
-Received: by mail-ej1-f68.google.com with SMTP id z5so3249769ejw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:58:55 -0700 (PDT)
+        Tue, 27 Oct 2020 13:00:25 -0400
+Received: by mail-lf1-f67.google.com with SMTP id a7so3228521lfk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jbe/1MUIOazjJNoYCLbZSaF/EYC3tySch0SP+bPnG10=;
-        b=jVifv3wcHJtbLJO22cQhSQScaHCOkHk0uy60SV24XvvF7WpqIaa807hmufMDVKqnPF
-         3xm47weUtJacIjSqbcrwXivMAtenN13kZafFSMO2m8dHHXFLXYX56OUdOoMTcRWlbgDG
-         Thpj0UzfAOOdteCoRx63Xv7ZHZnjkyReDZ1Swoq+LyDarWGF0Mhj1KXWH3CO+MSgLHKb
-         ZCBeQPWb0noZpqy+qKiKznJoq/vsPZZzkzwPD8DcAe8kPG1EHjLxd45J8Yu892ID37T7
-         4/FpLOCqsI/vnQoRJn422RcKliIdkwc27vyhzCgMqyr6Vk10qaJ+O1CUPcx0OY5r8WIV
-         v25A==
+        bh=JOkOQdeAZBKXehea/I+LV660yUEr8YowhbHHyrQKP+k=;
+        b=BkAA9TpPQ80fpLOQAsxuO2McRglQ4sZIr18E6vJdK16Z4+CEynFp3HA/KNAGejf4xN
+         ofhlZG1se4q+R8J4SDBTz482eUNLdrmW/05+seBM1UxLmIhv00x1ICeH+0Z1VL0V8Jhf
+         xCMKnEXiJjaaOoI53CKz5rJk+dwF5ple/Kgwg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jbe/1MUIOazjJNoYCLbZSaF/EYC3tySch0SP+bPnG10=;
-        b=JF5CaD4dRHfIX0w8DcfEmrmbTJ9cA2jK8icna3TVRr5hxDCHUuKrYf05RQURIRUCTY
-         2hd+jtlTwcpZ0Ar6zNOTUrJe7dRUAe6NjJHpB6dSm45sjsD2eNs4c5iQz785VHMZ3P2H
-         Vm1uoShFtIpr6mr4Lk1jWGOhgXumjTpd4k27hEe2CmFSFXmpzuq4WIsOhD/qgqyLIJqc
-         FmDiagdIAWiULYSSTUIg3aeR3VKsYbTGd7Mm/iYt91PQrK9zx07hXgy4NCveg2R0TnbS
-         AFZtN5W1tmLF4BjjfvtefTXMCoyZB8zC0HoXmNizZyxWxrHv8vL8n9Q+JY4ZXJF40dDR
-         IGNw==
-X-Gm-Message-State: AOAM533o7/zlRHmSj/ByS81T/Pui4L/2FKwUPWAwrifKc44e9IUlPScB
-        dTustkizBWB4a/0rE2Trj5ZKV/6I4Y+Yo74ufV/OOA==
-X-Google-Smtp-Source: ABdhPJzA1XzwQDZrf0aO0vJ0GFK7TlKkhiOIHp72TDLrdQ3tpl8EeLXanxCM3mEYAMp7LHDhMqHnk4D8XhUXPqwrAS0=
-X-Received: by 2002:a17:906:d159:: with SMTP id br25mr3508153ejb.155.1603817934690;
- Tue, 27 Oct 2020 09:58:54 -0700 (PDT)
+        bh=JOkOQdeAZBKXehea/I+LV660yUEr8YowhbHHyrQKP+k=;
+        b=dAkp4yQXH+7oQkhzvYPwT3rBV4443/OOpywp7EvOJUE3ci4JLgzB6j3ostUDDJyBum
+         4r349HVyMISvdXfKN1xoEvQQlZjhTR19B92uzNXiYgetGCK/H1ZuMG0P898Scixvs41b
+         ndZhxpPbWcQL/tMbE+yUZ3PQTe1Gci4/LpDTJFJL7w1kMkC9NupiAyK5U3u5vd9Uz+Gb
+         05L3Tbm1Oept0M2HwdpAQIZUWZ/Z+vvXGCEJYmszgJXSiJSqF+HAsDDL+K7c76qSYEOW
+         GxVz1v9TqwTKc1in5WlxxVkG2bxegB51yCczTqZeAtDkJ19NuCX9UkOI52Cz8WcmBwZg
+         xtsA==
+X-Gm-Message-State: AOAM533o6g24rrthaZvRLx6CL2DeY1KJSPFlmWzDZPkv1Lj9skqgXKYI
+        fPZ8wpEsNU+pduwm3D0QEXXZg8fNWppEoQ==
+X-Google-Smtp-Source: ABdhPJyYFL0zUROZ4kEUdc+HjZaBw8kNMnXJ9Vtr8JUXkQEPF6BNiMw6r5ytAusw/db5+bWhZ87eeQ==
+X-Received: by 2002:a19:4bc9:: with SMTP id y192mr1139605lfa.447.1603818022743;
+        Tue, 27 Oct 2020 10:00:22 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id r9sm245827ljh.75.2020.10.27.10.00.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 10:00:22 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id h6so3289703lfj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:00:19 -0700 (PDT)
+X-Received: by 2002:a19:4815:: with SMTP id v21mr1314225lfa.603.1603818018994;
+ Tue, 27 Oct 2020 10:00:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027121725.24660-1-brgl@bgdev.pl> <20201027121725.24660-4-brgl@bgdev.pl>
- <20201027112607-mutt-send-email-mst@kernel.org> <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
-In-Reply-To: <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 27 Oct 2020 17:58:43 +0100
-Message-ID: <CAMpxmJU0C84DjPmqmWvPgv0zwgGLhkpKLRDuKkZHAa=wi+LvBA@mail.gmail.com>
-Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
-To:     Joe Perches <joe@perches.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-drm <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        netdev <netdev@vger.kernel.org>, linux-mm@kvack.org,
-        Linux-ALSA <alsa-devel@alsa-project.org>
+References: <f69575e0-5170-2d51-8d74-8b3453723aa3@kernel.dk>
+ <20201027000920.GE3576660@ZenIV.linux.org.uk> <20201027080135.GB22650@lst.de>
+In-Reply-To: <20201027080135.GB22650@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 27 Oct 2020 10:00:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjKhAhOF6Q5JX6a3gdcmZjFFYcBJ-JJ6wybSMHdn2M_Xg@mail.gmail.com>
+Message-ID: <CAHk-=wjKhAhOF6Q5JX6a3gdcmZjFFYcBJ-JJ6wybSMHdn2M_Xg@mail.gmail.com>
+Subject: Re: [PATCH] Fix compat regression in process_vm_rw()
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 5:50 PM Joe Perches <joe@perches.com> wrote:
+On Tue, Oct 27, 2020 at 1:01 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Tue, 2020-10-27 at 11:28 -0400, Michael S. Tsirkin wrote:
-> > On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > Use the helper that checks for overflows internally instead of manually
-> > > calculating the size of the new array.
-> > >
-> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > No problem with the patch, it does introduce some symmetry in the code.
->
-> Perhaps more symmetry by using kmemdup
-> ---
->  drivers/vhost/vringh.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index 8bd8b403f087..99222a3651cd 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -191,26 +191,23 @@ static int move_to_indirect(const struct vringh *vrh,
->  static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
->  {
->         struct kvec *new;
-> -       unsigned int flag, new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-> +       size_t new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-> +       size_t size;
->
->         if (new_num < 8)
->                 new_num = 8;
->
-> -       flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
-> -       if (flag)
-> -               new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
-> -       else {
-> -               new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
-> -               if (new) {
-> -                       memcpy(new, iov->iov,
-> -                              iov->max_num * sizeof(struct iovec));
-> -                       flag = VRINGH_IOV_ALLOCATED;
-> -               }
-> -       }
-> +       if (unlikely(check_mul_overflow(new_num, sizeof(struct iovec), &size)))
-> +               return -ENOMEM;
-> +
+> Independent of this fix I think we just need to explicitly prohibit
+> cross-access.
 
-The whole point of using helpers such as kmalloc_array() is not doing
-these checks manually.
+Well, prohibiting a 32-bit process from accessing a 64-bit one might
+make sense, since it fundamentally cannot work, and returning an
+explicit error early might help avoid confusion.
 
-Bartosz
+But a 64-bit one can certainly validly look at a 32-bit one (ie
+debugging a compat process from a 64-bit gdb or similar is not
+unreasonable).
 
-> +       if (iov->max_num & VRINGH_IOV_ALLOCATED)
-> +               new = krealloc(iov->iov, size, gfp);
-> +       else
-> +               new = kmemdup(iov->iov, size, gfp);
->         if (!new)
->                 return -ENOMEM;
->         iov->iov = new;
-> -       iov->max_num = (new_num | flag);
-> +       iov->max_num = new_num | VRINGH_IOV_ALLOCATED;
->         return 0;
->  }
->
->
->
+That said, I wonder how muich of a problem that can be, so it may be
+sufficient to just fix this compat case up and leave it alone.
+
+So applied,
+
+            Linus
