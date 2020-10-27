@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EB729CB8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5459E29CB8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374511AbgJ0VwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:52:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5106 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2506205AbgJ0VwY (ORCPT
+        id S374527AbgJ0Vwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:52:42 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:46836 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2902336AbgJ0Vwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:52:24 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RLYf95097976;
-        Tue, 27 Oct 2020 17:52:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Z2oTYETLVeUyyEXJSIeR3dyBMOi2hnxHWzwwqVREkyI=;
- b=RcKrCnQFkoOMNre1JTffqI0ApT6ghHeCTKZgIumMgWGPykSi20cuYY3d8gULdiphv686
- alI1rfIhizEdgA+a9AxyI/MQXCl7qem0vPH32XA+LKoJTzPvZuIWhS4OLH7y0uKGiHje
- VJW2lmMSSYcYQd/M6IBgdIH5/pbB1PtkezU71WEuKsir1kgHLgbVJrxVMZt8o3YbtReX
- VjcFr0lLmIb9E4f0dzQdtxa5J94KJpqeQUQzLW3C5J8ZDjluirAcxZ2Q0G/Jp8A6d46O
- XVNMNOzipXUtehEzn4yEKpbK1WPVW6NgUhOOxMI+gUMA2WkWZZEntagFASJGFB+w6kjz 6Q== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34e4jwqw8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 17:52:14 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09RLpbpD009936;
-        Tue, 27 Oct 2020 21:52:13 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 34cbw9b533-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 21:52:13 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09RLqCFC49348918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 21:52:12 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11E8BC6057;
-        Tue, 27 Oct 2020 21:52:12 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E40DDC6055;
-        Tue, 27 Oct 2020 21:52:10 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.55.172])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Oct 2020 21:52:10 +0000 (GMT)
-Subject: Re: [PATCH] ibmvfc: add new fields for version 2 of several MADs
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     james.bottomley@hansenpartnership.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201026013649.10147-1-tyreld@linux.ibm.com>
- <yq1v9ew4ekf.fsf@ca-mkp.ca.oracle.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <c94f0f87-1863-9c0a-3561-4cbc9330e011@linux.ibm.com>
-Date:   Tue, 27 Oct 2020 14:52:09 -0700
+        Tue, 27 Oct 2020 17:52:41 -0400
+Received: by mail-lj1-f195.google.com with SMTP id 2so3437882ljj.13;
+        Tue, 27 Oct 2020 14:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EOfn+rTY41ZPk98ImlWCzM2uVjjLkgWeTbnbpRiwx94=;
+        b=B4QspCpfrLoBxm8nbt/nY6Vc6pvrNIWz0XoyVAv6U5qDKlIhEpSOmL5MULuDcdRz4J
+         NdVU97JPLEFFINpxs1bR7kXaAKKRc5t1LCYjmSEpeV3k25tRxIfa+w5hulTco0XoPAL5
+         NuYRujrqdYbq/2dROB5gt/BTZEUgllml+clfdS5r0UrbBpE1TBOBE+/PavDPL2xwqXQC
+         X3UQBo8IKouDxrYKv17oC5H+7ff5WfzODsT8VtCHUrF6PnvPf8QBTXbyxtNZxLCHJioF
+         z5+/59liqD8IS9SzzLvJrOgdyLJ3wnvNbwVfCnJVNKk24nRT7n3gjTF0PfTy6hhJpJeE
+         /YcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EOfn+rTY41ZPk98ImlWCzM2uVjjLkgWeTbnbpRiwx94=;
+        b=gaNuYylAcbUkjyS2Zztvxv351HMaLvo1yTeBHmjOJojSB+4cD95r6bFbrAqTN9bgFY
+         J1xtPZ2TTmwvMqZbaOEipVz36C2o76Fsc6XJIg4YNkdgSB9vn7mvYVXBkNzz0WlUE1Ut
+         z4/VZjpXYvheBwJrgjjnvhy9h2BLjjeOR/SXEtSlbZ21Q1e0Q7QWQR0bGG4GlNlxnrMi
+         YUsoruxdjl9SVhZjdqP+N7eKsHy5pTBv/5JyP9avxgeVd2mLh/5KfiDvvkdq8ckVexdm
+         3De2tGah4SbDhbCRF3XOKMidqMvzMa2duv0+IrNUI4Eez64RUo1G3kqyG9zoodnU6e+L
+         yuJg==
+X-Gm-Message-State: AOAM530Z3fhEcSBKEWndZ53RHz0F4BiSnKxn95Vusw0y+eqXa3RXCr35
+        cFKKeKOCIj6710yJQ1EEWWo=
+X-Google-Smtp-Source: ABdhPJxqwwB2L+NAENWqofO9hI5lVEPJjt9KYwjz/a5RXKvfYnoEDFODsN2229mWTIkaTH7zqrcUAw==
+X-Received: by 2002:a2e:8985:: with SMTP id c5mr2100186lji.406.1603835559052;
+        Tue, 27 Oct 2020 14:52:39 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id v16sm303423lfq.68.2020.10.27.14.52.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 14:52:38 -0700 (PDT)
+Subject: Re: [PATCH v3 0/3] implement I2C retries for mXT1368
+To:     "Wang, Jiada" <jiada_wang@mentor.com>, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        erosca@de.adit-jv.com, andrew_gabbasov@mentor.com
+References: <20200930151259.18119-1-jiada_wang@mentor.com>
+ <653c24a4-704a-4d65-2622-49c55a82c901@mentor.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <082b9b1c-5f89-7deb-728b-3de4339ac131@gmail.com>
+Date:   Wed, 28 Oct 2020 00:52:37 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <yq1v9ew4ekf.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <653c24a4-704a-4d65-2622-49c55a82c901@mentor.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-27_15:2020-10-26,2020-10-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 adultscore=0 bulkscore=0 phishscore=0 malwarescore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010270125
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/20 6:56 PM, Martin K. Petersen wrote:
+21.10.2020 04:14, Wang, Jiada пишет:
+> Hello Dmitry and all
 > 
-> Tyrel,
-> 
->> Introduce a targetWWPN field to several MADs. Its possible that a scsi
->> ID of a target can change due to some fabric changes. The WWPN of the
->> scsi target provides a better way to identify the target. Also, add
->> flags for receiving MAD versioning information and advertising client
->> support for targetWWPN with the VIOS. This latter capability flag will
->> be required for future clients capable of requesting multiple hardware
->> queues from the host adapter.
-> 
-> Applied to 5.11/scsi-staging, thanks!
-> 
+> Kind reminder on this patch-set
 
-Hi Martin,
+Hello Jiada,
 
-I'm going to have to ask that this patch be unstaged.
+Thinking a bit more about these patches, I'm coming back to the variant
+with the atmel,wakeup-method property. There are three possible wake-up
+variants for mXT1368:
 
-After some clarification from our VIOS folks I made the assumption that the MAD
-size was staying the same and new fields just used up existing reserved padding.
-Turns out they chose to keep the same amount of padding increasing the size of
-those structures. So, this patch needs to be reworked.
+  - NONE
+  - GPIO
+  - I2C-SCL
 
-Sorry about that,
+and this series covers only the I2C-SCL.
 
--Tyrel
+I was also skimming through datasheets of other maxtouch touchscreens
+and noticed that the retries aren't unique to mXT1368. For example
+mXT3432 controller also needs exactly the same retrying logic.
+
+Hence I think it should be better if we could generalize the
+wakeup-method in the device-tree. What do you think?
