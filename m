@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047EA29BA8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CDE29BA5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806534AbgJ0QGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:06:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53196 "EHLO mail.kernel.org"
+        id S1805019AbgJ0QAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:00:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802820AbgJ0Pvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:51:41 -0400
+        id S1794439AbgJ0PQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:16:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6686F21D42;
-        Tue, 27 Oct 2020 15:51:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D08E2224A;
+        Tue, 27 Oct 2020 15:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813900;
-        bh=FBqAX4Nlux7a4Uu4dXBl/qkcr0gRMHjl7qMm6n+y1Xk=;
+        s=default; t=1603811804;
+        bh=ir6FlJ9wXpWc5edmvnrn9AviT3w1Aidz7OhxTJybd7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZFPk7GCusFRaCTrzXWGPkP9Vo98GPBwoaFVFpOIdSY2s/RgcC6l6rFqoP+XJP+qlm
-         8u3tQLaxlr7Q3E2sL0xihpVWWXKghnVunBL1zvcfWDho0fVudoTLCNtMhcmMQlAFy/
-         snCYMTtXJA+1zwErglioQ4839s7EDOIOoMeO7eDc=
+        b=iZmRSShOmW+Ggwl2wEHhtyy3zLupSyPjG9au0fU5uLdt0pZ0GJWw7aOorxAGodM+F
+         k++MbDwbDkRGyG+vHppZROWg4jyoRm32Py6EchbyqjMxa8eTWvHcghpbdRrnlriX4u
+         b/l+g51OP7M+UqOzOWIxwta3GoGqcKEDlNjZmQnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
+        stable@vger.kernel.org,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 707/757] usb: ohci: Default to per-port over-current protection
-Date:   Tue, 27 Oct 2020 14:55:57 +0100
-Message-Id: <20201027135523.662796763@linuxfoundation.org>
+Subject: [PATCH 5.8 615/633] ASoC: Intel: sof_rt5682: override quirk data for tgl_max98373_rt5682
+Date:   Tue, 27 Oct 2020 14:55:58 +0100
+Message-Id: <20201027135551.678564878@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,76 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-[ Upstream commit b77d2a0a223bc139ee8904991b2922d215d02636 ]
+[ Upstream commit 3e1734b64ce786c54dc98adcfe67941e6011d735 ]
 
-Some integrated OHCI controller hubs do not expose all ports of the hub
-to pins on the SoC. In some cases the unconnected ports generate
-spurious over-current events. For example the Broadcom 56060/Ranger 2 SoC
-contains a nominally 3 port hub but only the first port is wired.
+A Chrome System based on tgl_max98373_rt5682 has different SSP interface
+configurations. Using DMI data of this variant DUT, override quirk
+data.
 
-Default behaviour for ohci-platform driver is to use global over-current
-protection mode (AKA "ganged"). This leads to the spurious over-current
-events affecting all ports in the hub.
-
-We now alter the default to use per-port over-current protection.
-
-This patch results in the following configuration changes depending
-on quirks:
-- For quirk OHCI_QUIRK_SUPERIO no changes. These systems remain set up
-  for ganged power switching and no over-current protection.
-- For quirk OHCI_QUIRK_AMD756 or OHCI_QUIRK_HUB_POWER power switching
-  remains at none, while over-current protection is now guaranteed to be
-  set to per-port rather than the previous behaviour where it was either
-  none or global over-current protection depending on the value at
-  function entry.
-
-Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20200910212512.16670-1-hamish.martin@alliedtelesis.co.nz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200821195603.215535-13-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-hcd.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-index dd37e77dae001..2845ea328a064 100644
---- a/drivers/usb/host/ohci-hcd.c
-+++ b/drivers/usb/host/ohci-hcd.c
-@@ -673,20 +673,24 @@ static int ohci_run (struct ohci_hcd *ohci)
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 13a48b0c35aef..11233c3aeadfb 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -118,6 +118,19 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+ 		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0)),
+ 	},
++	{
++		.callback = sof_rt5682_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Volteer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Terrador"),
++		},
++		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_MAX98373_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(2) |
++					SOF_RT5682_NUM_HDMIDEV(4)),
++	},
+ 	{}
+ };
  
- 	/* handle root hub init quirks ... */
- 	val = roothub_a (ohci);
--	val &= ~(RH_A_PSM | RH_A_OCPM);
-+	/* Configure for per-port over-current protection by default */
-+	val &= ~RH_A_NOCP;
-+	val |= RH_A_OCPM;
- 	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
--		/* NSC 87560 and maybe others */
-+		/* NSC 87560 and maybe others.
-+		 * Ganged power switching, no over-current protection.
-+		 */
- 		val |= RH_A_NOCP;
--		val &= ~(RH_A_POTPGT | RH_A_NPS);
--		ohci_writel (ohci, val, &ohci->regs->roothub.a);
-+		val &= ~(RH_A_POTPGT | RH_A_NPS | RH_A_PSM | RH_A_OCPM);
- 	} else if ((ohci->flags & OHCI_QUIRK_AMD756) ||
- 			(ohci->flags & OHCI_QUIRK_HUB_POWER)) {
- 		/* hub power always on; required for AMD-756 and some
--		 * Mac platforms.  ganged overcurrent reporting, if any.
-+		 * Mac platforms.
- 		 */
- 		val |= RH_A_NPS;
--		ohci_writel (ohci, val, &ohci->regs->roothub.a);
- 	}
-+	ohci_writel(ohci, val, &ohci->regs->roothub.a);
-+
- 	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
- 	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
- 						&ohci->regs->roothub.b);
 -- 
 2.25.1
 
