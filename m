@@ -2,146 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B825729AB5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6237029AB7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750468AbgJ0MBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:01:44 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:45858 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750451AbgJ0MBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:01:43 -0400
-Received: by mail-wr1-f65.google.com with SMTP id e17so1549814wru.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kbxs+J5sPfu6cPuS3bXcQQmO/u3bwvvK/wU+a8aqxLo=;
-        b=mls1NZW71oioqb2nuOh2F/GFo3uEwBxjMt7ybKLTnhGYCRk867h6Vi1sueXbwnZ8XK
-         Xx52OPkrLIMWzTT/zWUO5sM6xmW8Ho/ZFaxmE4K+hob+1Wk3DuaQE1ECnJAU2wYkc1J1
-         X3dJ1keYQpjri19sucvQwOz82/bNiAft2DFrec8JMnyvRyy4Qgc7qJfrv82Wn41lVW7F
-         2Cf7lRBowjgqjejzvreQtbiwR4ah2MfD4rvCaH6doOKN6OtFX2w5lF6v8qTH76CEa+d2
-         haBXHCdTCnY8x0JXBCx6Fe9e+Su2BVhBndpogdL/uRxtTfOZ/aSA4dzdRbejv3rzmLjc
-         NPkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kbxs+J5sPfu6cPuS3bXcQQmO/u3bwvvK/wU+a8aqxLo=;
-        b=ly0C8PX3y7QqIhIUU8CdX1JbVDZnlCg17f6zpkILICuFq8JYrf4j0NI2nHIYSsTONB
-         024MUmNpuHmRfFIAzjNA+EnsiTRA6s0arhjeLJSA0J5D2nxX7T2BfOm4LOoWQWLxRH5o
-         iORROPz+o6X2psUucgdTUmAEKun+SVayex8IhKhRYTFd+RjsXHw48lMWl5OPzCxSlPeo
-         vnNFxSgnHKj2npowNcaIsfyGEK4EnDQJxwRu06mtDoS6VDhTKAwM9Gr/R8TtzqmkIMSE
-         XQJf2AOT+BXf7N88YRNbbyVOI1Nm0LU+dUy9HlOfEzHr08J+CHJ9CmO5/n/PPQKZLQyE
-         uBpg==
-X-Gm-Message-State: AOAM530x3ZGK23oWS8EYCyeyocphtuf+xv2F9WzYl4NhabYL/A4zC6pQ
-        2zpZfYrAIdNjR7hQzc6IUrz3Pg==
-X-Google-Smtp-Source: ABdhPJwQKqwdc9xILOo6w72PaDVewOm5U5rvFiS5jqZ7niiRh5OCGOr29/crlnX7Tea/DzdXL8SuBg==
-X-Received: by 2002:a05:6000:1005:: with SMTP id a5mr2593352wrx.360.1603800099305;
-        Tue, 27 Oct 2020 05:01:39 -0700 (PDT)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id n5sm1703378wrm.2.2020.10.27.05.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 05:01:37 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 12:01:34 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net
-Subject: Re: [PATCH AUTOSEL 5.4 31/80] kgdb: Make "kgdbcon" work properly
- with "kgdb_earlycon"
-Message-ID: <20201027120134.iq44uw6bftumkivh@holly.lan>
-References: <20201026235516.1025100-1-sashal@kernel.org>
- <20201026235516.1025100-31-sashal@kernel.org>
+        id S1750730AbgJ0MLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:11:13 -0400
+Received: from elvis.franken.de ([193.175.24.41]:52160 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750685AbgJ0MLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 08:11:12 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kXNoj-0002cz-00; Tue, 27 Oct 2020 13:11:09 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 3193BC0592; Tue, 27 Oct 2020 13:01:42 +0100 (CET)
+Date:   Tue, 27 Oct 2020 13:01:42 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] MIPS: export has_transparent_hugepage() for modules
+Message-ID: <20201027120142.GA13777@alpha.franken.de>
+References: <20201023194440.13371-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026235516.1025100-31-sashal@kernel.org>
+In-Reply-To: <20201023194440.13371-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 07:54:27PM -0400, Sasha Levin wrote:
-> From: Douglas Anderson <dianders@chromium.org>
+On Fri, Oct 23, 2020 at 12:44:40PM -0700, Randy Dunlap wrote:
+> MIPS should export its local version of "has_transparent_hugepage"
+> so that loadable modules (dax) can use it.
 > 
-> [ Upstream commit b18b099e04f450cdc77bec72acefcde7042bd1f3 ]
+> Fixes this build error:
+> ERROR: modpost: "has_transparent_hugepage" [drivers/dax/dax.ko] undefined!
 > 
-> On my system the kernel processes the "kgdb_earlycon" parameter before
-> the "kgdbcon" parameter.  When we setup "kgdb_earlycon" we'll end up
-> in kgdb_register_callbacks() and "kgdb_use_con" won't have been set
-> yet so we'll never get around to starting "kgdbcon".  Let's remedy
-> this by detecting that the IO module was already registered when
-> setting "kgdb_use_con" and registering the console then.
-> 
-> As part of this, to avoid pre-declaring things, move the handling of
-> the "kgdbcon" further down in the file.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Link: https://lore.kernel.org/r/20200630151422.1.I4aa062751ff5e281f5116655c976dff545c09a46@changeid
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-kgdb[oc]_earlycon was a new feature introduced in v5.8 so, based on the
-summary above, this fix does not obviously apply to older kernels.
-
-However after looking closely...
-
-I think the issue described above would also occur if kgdbdbgp (an
-incomprehensible sequence consonants that translates to "present
-debugger via USB EHCI debug") were used in conjunction with kgdbcon
-meaning backporting does make sense.
-
-
-Daniel.
-
-
+> Fixes: fd8cfd300019 ("arch: fix has_transparent_hugepage()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: linux-nvdimm@lists.01.org
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
 > ---
->  kernel/debug/debug_core.c | 22 ++++++++++++++--------
->  1 file changed, 14 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-> index 2222f3225e53d..097ab02989f92 100644
-> --- a/kernel/debug/debug_core.c
-> +++ b/kernel/debug/debug_core.c
-> @@ -96,14 +96,6 @@ int dbg_switch_cpu;
->  /* Use kdb or gdbserver mode */
->  int dbg_kdb_mode = 1;
->  
-> -static int __init opt_kgdb_con(char *str)
-> -{
-> -	kgdb_use_con = 1;
-> -	return 0;
-> -}
-> -
-> -early_param("kgdbcon", opt_kgdb_con);
-> -
->  module_param(kgdb_use_con, int, 0644);
->  module_param(kgdbreboot, int, 0644);
->  
-> @@ -876,6 +868,20 @@ static struct console kgdbcons = {
->  	.index		= -1,
->  };
->  
-> +static int __init opt_kgdb_con(char *str)
-> +{
-> +	kgdb_use_con = 1;
-> +
-> +	if (kgdb_io_module_registered && !kgdb_con_registered) {
-> +		register_console(&kgdbcons);
-> +		kgdb_con_registered = 1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +early_param("kgdbcon", opt_kgdb_con);
-> +
->  #ifdef CONFIG_MAGIC_SYSRQ
->  static void sysrq_handle_dbg(int key)
->  {
-> -- 
-> 2.25.1
-> 
+>  arch/mips/mm/tlb-r4k.c |    1 +
+>  1 file changed, 1 insertion(+)
+
+applied to mips-fixes.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
