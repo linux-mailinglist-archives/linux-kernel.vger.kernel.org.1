@@ -2,98 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2D429A73C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D4129A740
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895280AbgJ0JDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:03:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51138 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408143AbgJ0JDo (ORCPT
+        id S2895305AbgJ0JD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:03:58 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41068 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895286AbgJ0JD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:03:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603789422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QLp0SICM2nVdk9br36TAZIwlI3d3VRJtmlACPi0OKps=;
-        b=NhkMr4W9xwqricLS3nssGdQjNePnzoBDRc8VhgpbstrmJ6Il1AHtgeOpBoPMyhEI+uDPIx
-        9JLLYIiQFlxFMxO/J7GxzoGT9S1sndvtgdcq1JhVAocu6kZ2x8Fg44SkKMP9daGFqWgY1b
-        fBcMgsxecc89+DBO2hh4yszmi8SJikY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-goJxFZZANjuGc-pKuwiwLw-1; Tue, 27 Oct 2020 05:03:38 -0400
-X-MC-Unique: goJxFZZANjuGc-pKuwiwLw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC3E1100854A;
-        Tue, 27 Oct 2020 09:03:36 +0000 (UTC)
-Received: from [10.36.113.185] (ovpn-113-185.ams2.redhat.com [10.36.113.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12B7F55772;
-        Tue, 27 Oct 2020 09:03:34 +0000 (UTC)
-Subject: Re: [PATCH 1/3] mm, page_alloc: do not rely on the order of
- page_poison and init_on_alloc/free parameters
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>
-References: <20201026173358.14704-1-vbabka@suse.cz>
- <20201026173358.14704-2-vbabka@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3784dac7-49cb-006b-7b9d-1244d5c59935@redhat.com>
-Date:   Tue, 27 Oct 2020 10:03:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 27 Oct 2020 05:03:56 -0400
+Received: by mail-ot1-f68.google.com with SMTP id n15so489950otl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mMR/HImx8HeIWOB1IW4d4ooUwHbJnSc4ChopXkol+tY=;
+        b=Xg2AvIHdQY3taxJqct+JFiPWoBWewED7SFBkf4BNfR8mWwmjMyETCb7JSxfSEs0hPf
+         rbB3JqF2ytHB7sdY7A0nMedrzTQKTen4NmuBvIyzFus5llPQA6pXSCAMQ6+FEMJnwbUL
+         PzDkMEmWnJC0dpKvP6NgS3wIU8J9wM0m/dPRroMHL7iVwBQl+PQAGqm0EpGAahxKp7IT
+         3lZ7zIO+ZPxfVkt6qx7UGfvOKrzzXSobfGAmI3qvkLKVUx5TeFmMPl7c6SP19c22VBea
+         TxQrpdjd1oQGrZUd8t3wEaghVw5V369fiJkpMO3fMWc+z2zqZvioeorot5DL4qZrwbz7
+         6Q5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mMR/HImx8HeIWOB1IW4d4ooUwHbJnSc4ChopXkol+tY=;
+        b=aXXrVtlIhWBd/Eyo2pGD/xvOZey/SZUEbZ4108bLzJTeATi0OfsiVY8xHGwogCYDnd
+         KvZQZKMCcblFkXsIZ3hpG/jHRKxZnROJiJgMTfuattDyW6e17I2MTeybRjItdu90NYxW
+         mNImSQwPrk4mjRMNyCLZFM41DT/v0oVte/uM/1+x6UmrpnH+aHMpgHvkxaBl7MEHuNqz
+         gGS7rIrQFAsCcLlmQeAHccacyCr6pOxKPZO6pGYE1Xl1G57Am2mfrRus1B2ab89FJuNs
+         0u2o0gmHVEbP6exLD7ob3cdZ7tcc6qghTJkabKGV4LexalFvbBXev7d5jVPNj13GChat
+         T5bw==
+X-Gm-Message-State: AOAM530emSiADJfSFh0ZhUW1aFW2LyCLV37CAzns0lqzsX5Kpdk1kDA3
+        hEk88ujyuPpl8S41GINH73bXh13ByDZijsACA1aErQ==
+X-Google-Smtp-Source: ABdhPJydV7HAJnVLV858KglXx9BeIvDM+HKegy4BHuUfvYe2R4pzwEQ10NdLr42Xw7Ixiclt+mW3kOlv1r6uNqDoQog=
+X-Received: by 2002:a9d:3a65:: with SMTP id j92mr811798otc.17.1603789435179;
+ Tue, 27 Oct 2020 02:03:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201026173358.14704-2-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201026183523.82749-1-98.arpi@gmail.com>
+In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 10:03:43 +0100
+Message-ID: <CANpmjNMnkXLFeQU6xZNwj3bWqE4Ap47wQKkL3-0ENX+R1YoLOg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.10.20 18:33, Vlastimil Babka wrote:
-> Enabling page_poison=1 together with init_on_alloc=1 or init_on_free=1 produces
-> a warning in dmesg that page_poison takes precendence. However, as these
-> warnings are printed in early_param handlers for init_on_alloc/free, they are
-> not printed if page_poison is enabled later on the command line (handlers are
-> called in the order of their parameters), or when init_on_alloc/free is always
-> enabled by the respective config option - before the page_poison early param
-> handler is called, it is not considered to be enabled. This is inconsistent.
-> 
-> We can remove the dependency on order by making the init_on_* parameters only
-> set a boolean variable, and postponing the evaluation after all early params
-> have been processed. Introduce a new init_mem_debugging() function for that,
-> and move the related debug_pagealloc processing there as well.
+I just tried to give this a spin on some of my tests and noticed some
+more things (apologies for the multiple rounds of comments):
 
-init_mem_debugging() is somewhat sub-optimal - init_on_alloc=1 or 
-init_on_free=1 are rather security hardening mechanisms.
+On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+[...]
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +217,15 @@ struct kunit {
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+> +       /* param_values points to test case parameters in parameterized tests */
+> +       void *param_values;
 
-... I wondered if this could be the place to initialize any kind of mm 
-parameters in the future. Like init_mem_params() or so.
+This should be singular, i.e. "param_value", since the generator only
+generates 1 value for each test. Whether or not that value is a
+pointer that points to more than 1 value or is an integer etc. is
+entirely test-dependent.
 
-> 
-> As a result init_mem_debugging() knows always accurately if init_on_* and/or
-> page_poison options were enabled. Thus we can also optimize want_init_on_alloc()
-> and want_init_on_free(). We don't need to check page_poisoning_enabled() there,
-> we can instead not enable the init_on_* tracepoint at all, if page poisoning is
-> enabled. This results in a simpler and more effective code.
+> +       /*
+> +        * current_param stores the index of the parameter in
+> +        * the array of parameters in parameterized tests.
+> +        * current_param + 1 is printed to indicate the parameter
+> +        * that causes the test to fail in case of test failure.
+> +        */
+> +       int current_param;
 
-LGTM
+I think, per your comment above, this should be named "param_index".
+Also, I would suggest removing the mention of "array" in the comment,
+because the parameters aren't dependent on use of an array.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+>         /*
+>          * success starts as true, and may only be set to false during a
+>          * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1760,18 @@ do {                                                                            \
+>                                                 fmt,                           \
+>                                                 ##__VA_ARGS__)
+>
+> +/**
+> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
+> + *                          required in parameterized tests.
+> + * @name:  prefix of the name for the test parameter generator function.
+> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
+> + * @array: a user-supplied pointer to an array of test parameters.
+> + */
+> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
+> +       static void *name##_gen_params(void *prev)                                              \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+> +       }
+> +
+>  #endif /* _KUNIT_TEST_H */
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 750704abe89a..b70ab9b12f3b 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -127,6 +127,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>
+> +static void kunit_print_failed_param(struct kunit *test)
+> +{
+> +       kunit_err(test, "\n\tTest failed at parameter: %d\n", test->current_param + 1);
+> +}
 
--- 
+Is this the only place where the param index is used? It might be
+helpful to show the index together with the test-case name, otherwise
+we get a series of test cases in the output which are all named the
+same which can be confusing.
+
+>  static void kunit_print_string_stream(struct kunit *test,
+>                                       struct string_stream *stream)
+>  {
+> @@ -168,6 +173,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>         assert->format(assert, stream);
+>
+>         kunit_print_string_stream(test, stream);
+> +       if (test->param_values)
+> +               kunit_print_failed_param(test);
+>
+>         WARN_ON(string_stream_destroy(stream));
+>  }
+> @@ -239,7 +246,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>                 }
+>         }
+>
+> -       test_case->run_case(test);
+> +       if (!test_case->generate_params) {
+> +               test_case->run_case(test);
+> +       } else {
+> +               test->param_values = test_case->generate_params(NULL);
+> +               test->current_param = 0;
+> +
+> +               while (test->param_values) {
+> +                       test_case->run_case(test);
+> +                       test->param_values = test_case->generate_params(test->param_values);
+> +                       test->current_param++;
+> +               }
+> +       }
+>  }
+
+Looking forward to v4. :-)
+
 Thanks,
-
-David / dhildenb
-
+-- Marco
