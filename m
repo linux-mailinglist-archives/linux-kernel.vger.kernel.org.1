@@ -2,204 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB70929A3E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 06:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5391129A3EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 06:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505762AbgJ0FOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 01:14:14 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:44466 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410224AbgJ0FOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 01:14:14 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 133so211076pfx.11;
-        Mon, 26 Oct 2020 22:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V6b7HwvvFZ2s1xYsjf24gbEkjeQ0R1jZb5gJGqmof84=;
-        b=QV32QpdFiFdGKP8KIf3ztwU5B2L+kQ1TISGCOSyRr7wqANt+4iKpSWIDz9FXOVJiNY
-         irLnmSzzDG34JYL9ztGPJT7Eu5o9dNRCr+tOE0KqM0LTMF2R1QqmDVmeEQnFLrO+ZweC
-         ha3pZVAxePVmy3GHH67EPgBWSFxuJKrHP+97wFhhBV6yhEdvo3FE2bbeikaYjl3tmVF/
-         mmwIaskRvfZYnHtO+qHXJ8WhB5NYnRpnt5wwgzEyqcPDWKsgDkrCg5fs4W8g/SDqlGi/
-         aYXSL0GyEmyycjfKZOBm5SKJM9vpR9Sx0ZffKH+Pn539f+rUzDYRAOo2ZEPjRTSC9CXn
-         DF7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V6b7HwvvFZ2s1xYsjf24gbEkjeQ0R1jZb5gJGqmof84=;
-        b=JUv4B7shyAacOnifvW/OsjcrsKyX5p9SbdW70EyrweELHAa0iZB3XyHnpSR7sVjacm
-         nf1F8qZ/A1Xawnp0kKbt5Nk47TjmOXsPjzicxP+GO1bLvKBX8DiBExz98wy3TqaIet8u
-         8JizuSL/Y+fXnFKDU+3lAkn6ritJjSI+UBRWrVpesH5y7vqkhurxZEycqU8N4+AdVy4P
-         8A3AJIyMdOLO3YoOi8GgITTzMNH1Yta8vCNHRqjfhInp8tWcS64/S7HlFU4UbdRrYHRz
-         Aw3R+uSqo8Za/K4MSu0BJgsRpgKxYYI+9ih1XAFuufQ2mz6efxiP1aIOKoCIHlb/FutK
-         40Ag==
-X-Gm-Message-State: AOAM530Bgvgs4YydoSp2O5ekUTGqChbDOqXhFGy6U3Xlc1gGN68PWRRA
-        MR6sq0sWztnfsrhSEuRCKdY6oKNYET1yIsk6
-X-Google-Smtp-Source: ABdhPJwI7iAg84+0QDG22suSqnWNw8moOpZOVmTy5bWa+NEsj3D7XxDRHLUnPHTYynMmO4JLGk72yg==
-X-Received: by 2002:a63:af08:: with SMTP id w8mr411863pge.419.1603775651104;
-        Mon, 26 Oct 2020 22:14:11 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.240.100])
-        by smtp.gmail.com with ESMTPSA id 78sm512426pfz.211.2020.10.26.22.14.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 22:14:10 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201026183523.82749-1-98.arpi@gmail.com>
- <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <f25c881d-03f9-e246-d8d4-e985d9662d04@gmail.com>
-Date:   Tue, 27 Oct 2020 10:44:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2505788AbgJ0FSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 01:18:03 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:24610 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505776AbgJ0FSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 01:18:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603775882; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=g64XdioYWzF68Lt5U5nrTtR7/oWlvIneDTTlwIVAqXc=; b=e+8+i9D6Fg92B8eBkmSAtiqJ4ujSthF5Wbym6TXtTrr6XcE9tluPVgrYpIjuPIwVuJ9lL1Se
+ v983N8S6Q1FRBHtmaPoUV6FYSv1wqrQdfLPShXkruOuofgq67HH/H7NdecIcb8FDMQOfTrWV
+ y9D7d8LYpr8dEn769yRdhbRivNQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f97ad895c97867acefbaa03 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 05:18:01
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4440C433CB; Tue, 27 Oct 2020 05:18:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [49.205.247.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23AE3C433C9;
+        Tue, 27 Oct 2020 05:17:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 23AE3C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Doug Anderson'" <dianders@chromium.org>
+Cc:     "'Abhishek Kumar'" <kuabhs@chromium.org>,
+        "'Kalle Valo'" <kvalo@codeaurora.org>,
+        "'ath10k'" <ath10k@lists.infradead.org>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
+        "'Brian Norris'" <briannorris@chromium.org>
+References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid> <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com> <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com> <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org> <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
+Subject: RE: [PATCH] ath10k: add option for chip-id based BDF selection
+Date:   Tue, 27 Oct 2020 10:47:54 +0530
+Message-ID: <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFjEyTiGf73PRIYZgnn2adypkFjcAJI1HsxAfRirrsAqQquEAGWWD6uql40+ZA=
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/20 4:44 am, Marco Elver wrote:
-> On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>
->> Implementation of support for parameterized testing in KUnit.
->> This approach requires the creation of a test case using the
->> KUNIT_CASE_PARAM macro that accepts a generator function as input.
->> This generator function should return the next parameter given the
->> previous parameter in parameterized tests. It also provides
->> a macro to generate common-case generators.
->>
->> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->> Co-developed-by: Marco Elver <elver@google.com>
->> Signed-off-by: Marco Elver <elver@google.com>
->> ---
->> Changes v2->v3:
->> - Modifictaion of generator macro and method
-> 
-> Great to see it worked as expected!
-> 
->> Changes v1->v2:
->> - Use of a generator method to access test case parameters
->>
->>  include/kunit/test.h | 32 ++++++++++++++++++++++++++++++++
->>  lib/kunit/test.c     | 20 +++++++++++++++++++-
->>  2 files changed, 51 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/kunit/test.h b/include/kunit/test.h
->> index a423fffefea0..16bf9f334e2c 100644
->> --- a/include/kunit/test.h
->> +++ b/include/kunit/test.h
->> @@ -142,6 +142,12 @@ struct kunit_case {
->>         void (*run_case)(struct kunit *test);
->>         const char *name;
->>
->> +       /*
->> +        * Pointer to test parameter generator function.
->> +        * Used only for parameterized tests.
-> 
-> What I meant was to give a description of the protocol, so that if
-> somebody wanted, they could (without reading the implementation)
-> implement their own custom generator without the helper macro.
-> 
-> E.g. something like: "The generator function is used to lazily
-> generate a series of arbitrarily typed values that fit into a void*.
-> The argument @prev is the previously returned value, which should be
-> used to derive the next value; @prev is set to NULL on the initial
-> generator call. When no more values are available, the generator must
-> return NULL."
->
 
-Oh okay. I am not sure if this is the best place to add documentation for this.
- 
->> +        */
->> +       void* (*generate_params)(void *prev);
->> +
->>         /* private: internal use only. */
->>         bool success;
->>         char *log;
->> @@ -162,6 +168,9 @@ static inline char *kunit_status_to_string(bool status)
->>   * &struct kunit_case for an example on how to use it.
->>   */
->>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
->> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
->> +               { .run_case = test_name, .name = #test_name,    \
->> +                 .generate_params = gen_params }
->>
->>  /**
->>   * struct kunit_suite - describes a related collection of &struct kunit_case
->> @@ -208,6 +217,15 @@ struct kunit {
->>         const char *name; /* Read only after initialization! */
->>         char *log; /* Points at case log after initialization */
->>         struct kunit_try_catch try_catch;
->> +       /* param_values points to test case parameters in parameterized tests */
->> +       void *param_values;
->> +       /*
->> +        * current_param stores the index of the parameter in
->> +        * the array of parameters in parameterized tests.
->> +        * current_param + 1 is printed to indicate the parameter
->> +        * that causes the test to fail in case of test failure.
->> +        */
->> +       int current_param;
->>         /*
->>          * success starts as true, and may only be set to false during a
->>          * test case; thus, it is safe to update this across multiple
->> @@ -1742,4 +1760,18 @@ do {                                                                            \
->>                                                 fmt,                           \
->>                                                 ##__VA_ARGS__)
->>
->> +/**
->> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
->> + *                          required in parameterized tests.
-> 
-> This is only for arrays, which is why I suggested KUNIT_ARRAY_PARAM()
-> as the name.
-> 
-> A generator can very well be implemented without an array, so this
-> macro name is confusing. In future somebody might want to provide a
-> macro that takes a start + end value (and maybe a step value) to
-> generate a series of values. That generator could be named
-> KUNIT_RANGE_PARAM(name, start, end, step) and gives us a generator
-> that is also named name##_gen_params. (If you want to try implementing
-> that macro, I'd suggest doing it as a separate patch.)
-> 
-> And I don't think we need to put "GENERATOR" into the name of these
-> macros, because the generators are now the fundamental method with
-> which to get parameterized tests. We don't need to state the obvious,
-> in favor of some brevity.
->
 
-Okay, makes sense. I will change it to KUNIT_ARRAY_PARAM() for the next version.
- 
->> + * @name:  prefix of the name for the test parameter generator function.
->> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
->> + * @array: a user-supplied pointer to an array of test parameters.
->> + */
->> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
->> +       static void *name##_gen_params(void *prev)                                              \
->> +       {                                                                                       \
->> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
->> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
->> +       }
->> +
->>  #endif /* _KUNIT_TEST_H */
-> 
-> Thanks,
-> -- Marco
-> 
+> -----Original Message-----
+> From: Doug Anderson <dianders@chromium.org>
+> Sent: Tuesday, October 27, 2020 4:21 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: Abhishek Kumar <kuabhs@chromium.org>; Kalle Valo
+> <kvalo@codeaurora.org>; ath10k <ath10k@lists.infradead.org>; LKML
+> <linux-kernel@vger.kernel.org>; linux-wireless <linux-
+> wireless@vger.kernel.org>; Brian Norris <briannorris@chromium.org>
+> Subject: Re: [PATCH] ath10k: add option for chip-id based BDF =
+selection
+>=20
+> Hi,
+>=20
+> On Sat, Oct 24, 2020 at 9:40 AM Rakesh Pillai <pillair@codeaurora.org> =
+wrote:
+> >
+> > >         if (bd_ie_type =3D=3D ATH10K_BD_IE_BOARD) {
+> > > +               /* With variant and chip id */
+> > >                 ret =3D ath10k_core_create_board_name(ar, =
+boardname,
+> > > -                                                   =
+sizeof(boardname), true);
+> > > +                                               sizeof(boardname), =
+true, true);
+> >
+> > Instead of adding a lot of code to generate a second fallback name, =
+its
+> better to just modify the condition inside the function
+> =E2=80=9Cath10k_core_create_board_name=E2=80=9D to allow the =
+generation of BDF tag using
+> chip id, even =E2=80=9Cif ar->id.bdf_ext[0] =3D=3D '\0 =E2=80=9C.
+> >
+> > This will make sure that the variant string is NULL, and just =
+board-id and
+> chip-id is used. This will help avoid most of the code changes.
+> > The code would look as shown below
+> >
+> > @@ -1493,7 +1493,7 @@ static int =
+ath10k_core_create_board_name(struct
+> ath10k *ar, char *name,
+> >         }
+> >
+> >         if (ar->id.qmi_ids_valid) {
+> > -               if (with_variant && ar->id.bdf_ext[0] !=3D '\0')
+> > +               if (with_variant)
+>=20
+> Wouldn't the above just be "if (with_chip_id)" instead?  ...but yeah,
+> that would be a cleaner way to do this.  Abhishek: do you want to post
+> a v2?
 
-Thanks!
+
+The parameter name passed to this function is "with_variant", since =
+other non-qmi targets (eg QCA6174) use this as a flag to just add the =
+variant field.
+This can be renamed to something meaningful for both qmi and non-qmi =
+targets.
+
+>=20
+> -Doug
+
