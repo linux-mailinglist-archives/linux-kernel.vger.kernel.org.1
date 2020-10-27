@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32200299E27
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E470E299E3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439400AbgJ0AMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:12:47 -0400
-Received: from ozlabs.org ([203.11.71.1]:35651 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439323AbgJ0AMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:12:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKsb753RSz9sVT;
-        Tue, 27 Oct 2020 11:12:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603757540;
-        bh=2uQWtpk1d3w4NLAVkJ1dfEy1vrn1+0wRhtKeMeY3fVE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gTchjeLcs/0nvT6PN6T4727Ea8NvoZIt/lxD/4WNkLxSCgf9SY2d4yNBcJqajPwxp
-         ZkjkjdzTitSokqIyWeU2PqxHG9PrAar2D1LGUqYArmVqJgDdbWtc9KZd14HxPXuRti
-         K9bVc71hU9bUK/rkhEtL0iDzu9/LgK1TG+4dXOG9k6TSk1rgjJ1yTALjtIOfgQ6mu9
-         if4fUQNy+TtiIUqyfb+WNICaFWEI+8IjHXw9eXOK9n+xxEsiaox1YN6gL2e+kUkGUW
-         ltulcfn3UxEIFIEGOsaDky/mcqCLebMDW8pf8cACT7xqTwy3lE7H7mcDa8Dt2ZLjHU
-         /QudTY0srN2Ug==
-Date:   Tue, 27 Oct 2020 11:12:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: linux-next: manual merge of the v4l-dvb-next tree with the
- kunit-fixes tree
-Message-ID: <20201027111218.7c34f762@canb.auug.org.au>
+        id S2408047AbgJ0AN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:13:26 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:45025 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2439449AbgJ0ANX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:13:23 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id F118AD19;
+        Mon, 26 Oct 2020 20:13:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 26 Oct 2020 20:13:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=Y
+        dzpjo4+CjMidbb3ZaFBGf7udcVDCw4IXMh46gqxR0E=; b=FbMHnddjGE9NxsVMV
+        D6j+5cjsIREXDwCMjL8VYg22hgNlezpkWkaUoeaWEK6XZxRIJc6vQRqGrfBDVIkv
+        IzN8WuAzalljvB9CHvmbLc49S3GYwFMkePK0yA+uHbzSe1TnySOidI034cJ3mccm
+        azgi6t4hfju2tA8MoCGCzkQOfuYZq8F+2owQ/0N15vyBwb4asUV2ZChXWnLwIFI9
+        /oVLoWYQ+aYkkkgAw0RhHsygFZYdC6aF2aKrWlXeBuCsVvSqTgcP1/MVZaoct98u
+        rVUl2skJ5SLMBdMdACcXFWcQFHyrolg6BGGCpdntR/lZNULQCkwLnBJ/FmCfno2K
+        5WPaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=Ydzpjo4+CjMidbb3ZaFBGf7udcVDCw4IXMh46gqxR
+        0E=; b=gnePpegTnRvg/vl+tOST0PmNckjjwMVtcCcz89ewjDLqZc9Xd9hZDNPil
+        rtatCMW/wk/erN/wDVabxs9UkuEF5zyheEN8mKiKRidigp9wKqBvt2adbIOAAi5K
+        5G/X4oE1iUPGiEpz/2AnTvpvy7NMC00ogUFznc+PqzMHH3aWECpoSQ0TZV4LKgeB
+        mHGGB1B+ShOfwjQcHZoWAjr1kHSGq21VHyxHAvSDJdE1zN+shTwmpeakzyKpfoEW
+        6W00Ov3ujbhDMt8XkD9v7HFXp4FQOM7Mg7ab6bAbyp+fj3OSvZ550CVVIbT4taW1
+        O28x9ppVo19yMRxd3trwHtKFNONBQ==
+X-ME-Sender: <xms:IGaXX6XA0QwMN6QIhFqjPY7odFX6DF0XF5WGyfKn1R9Sb-OqsPtydw>
+    <xme:IGaXX2lgdd43B-0K9TYQTElm0ptBkA9bIWtbtGGAdBl-dq_zE4BZhKnlnfhrf0JNP
+    h_Ta_7B1tytbP3SkmM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeekgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeeggeegjeejleehvdfhteevffeuheeiiefftedvteet
+    tdeuieefgeehveekteeufeenucffohhmrghinhepshhouhhrtggvfhhorhhgvgdrnhgvth
+    enucfkphepudegrdefrdeigedrvddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hp
+X-ME-Proxy: <xmx:IGaXX-a6xBJJrFeWEdUKmJam_eBkUfBl6BeCHEKvT4zSaiDxlBrbEw>
+    <xmx:IGaXXxWkmcJG8uRAENx7eRJseWQ76mCDIkcI0-DM6-ayzO5CoMVX8A>
+    <xmx:IGaXX0l_dZoagJXHs963sSE_Nqld1p_lRBXLdgA2HCodGzgHy5rUbw>
+    <xmx:IWaXX1AV1XnJFFES3lT3AbCkEbuu26wOx8NnLN_a4S6XgMeDyHSmAw>
+Received: from workstation (ae064207.dynamic.ppp.asahi-net.or.jp [14.3.64.207])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BDE41328005A;
+        Mon, 26 Oct 2020 20:13:18 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 09:13:16 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        oscar.carter@gmail.com
+Subject: Re: [PATCH] firewire: fix function type cast warning
+Message-ID: <20201027001316.GA27589@workstation>
+Mail-Followup-To: Arnd Bergmann <arnd@kernel.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        oscar.carter@gmail.com
+References: <20201026215138.3893732-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.zF+VO=Br7nGQJf4Vft05Rw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026215138.3893732-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.zF+VO=Br7nGQJf4Vft05Rw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Arnd,
 
-Hi all,
+On Mon, Oct 26, 2020 at 10:51:27PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc -Wextra complains about a suspicious cast:
+> 
+> rivers/firewire/core-cdev.c:985:8: warning: cast between incompatible function types from ‘void (*)(struct fw_iso_context *, dma_addr_t,  void *)’ {aka ‘void (*)(struct fw_iso_context *, long long unsigned int,  void *)’} to ‘void (*)(struct fw_iso_context *, u32,  size_t,  void *, void *)’ {aka ‘void (*)(struct fw_iso_context *, unsigned int,  long unsigned int,  void *, void *)’} [-Wcast-function-type]
+> 
+> The behavior is correct in the end, but this is more clearly
+> expressed using a transparent union.
+> 
+> Fixes: 872e330e3880 ("firewire: add isochronous multichannel reception")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/firewire/core-cdev.c |  6 +++---
+>  drivers/firewire/core-iso.c  |  2 +-
+>  include/linux/firewire.h     | 17 ++++++++---------
+>  3 files changed, 12 insertions(+), 13 deletions(-)
 
-Today's linux-next merge of the v4l-dvb-next tree got a conflict in:
+Oscar Carter has posted a patch to fix it.
+https://sourceforge.net/p/linux1394/mailman/message/37024966/
 
-  include/kunit/test.h
+I don't know exactly but maintainers seems to overlook it...
 
-between commit:
 
-  7f32b10c6b46 ("kunit: test: fix remaining kernel-doc warnings")
+Thanks
 
-from the kunit-fixes tree and commit:
-
-  21f4ea01b15d ("kunit: test: fix remaining kernel-doc warnings")
-
-from the v4l-dvb-next tree.
-
-I fixed it up (I used the former one since it did not have an extra space
-before a tab) and can carry the fix as necessary. This is now fixed as
-far as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/.zF+VO=Br7nGQJf4Vft05Rw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XZeIACgkQAVBC80lX
-0Gz9Zgf9H6J0UeExGeY/6P6g9mpQwvYrYfex/y58UiwWotCF0DjMmWTM4G2q3peo
-LW83k4nwWb2XQRFWzPbOcVFzTYMRpbgBNfaFQkbEFeMLsPInKBruMxM9oUK3ZLPm
-u9Gj2lzy8hNnvB/efUQXG5iwR8KZuE3vg1ZcN0JEPh/d7re09Cl+/TUnBORyxwtL
-uAnG/S6dt2NsyKbwo/5kVubF2xua5byqmHKAuTyZICj4YJwlDM8MMlPU0S304nKO
-UMSCGsaidqkusFRsSrVup3ymAQacgts0JnjOr3rq3tJp3slycV/kF6Y+ax53Bk7g
-83DaVqg6Nr/AwJ3/E82ExEXs6RofTA==
-=BhFz
------END PGP SIGNATURE-----
-
---Sig_/.zF+VO=Br7nGQJf4Vft05Rw--
+Takashi Sakamoto
