@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D6629B31D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196EC29B2B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762763AbgJ0OoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:44:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42480 "EHLO mail.kernel.org"
+        id S1762876AbgJ0Ooh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762432AbgJ0Oms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:48 -0400
+        id S1762518AbgJ0OnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:43:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 307AB206E5;
-        Tue, 27 Oct 2020 14:42:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 109D5206B2;
+        Tue, 27 Oct 2020 14:43:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809767;
-        bh=swjl4p7RllGljrdM008F8gqHzyP1dgi3X4kHCB5vjAU=;
+        s=default; t=1603809790;
+        bh=uZxgvXsTuZEVeZJFJRaqPTQhvh18DilCfGbVejeewDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vk7vPMvldq2CknXOPaKohSotsXl63fdGBmUwSrwz6nvrFja/QpccNDqLmapua47hI
-         jHlms0HNGkL82YawF+56JDnJMOs8TatSOkxwn82D7nGqFIC1uSQfQLR010qVKnHFNx
-         FBJOx/OgQGEcJKP8ABhWDi3lAT97MSq57CN+ZSZc=
+        b=nteua5pIj2NeEYUCcTtqFZoYPeNVcawJu1Jeb6KJe1d3GwMYpE75XEmcOKobHihYO
+         h8hhFGWNqtqgtGSFv4YKdXjqdbYZeuwe8xt1ITMUlxOecgWzoIW6mv1uC2fDOcKoYA
+         BLZ2jy93gHYlaj3auXHRA7jBqb82DIyos633d0z4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 311/408] ARM: dts: owl-s500: Fix incorrect PPI interrupt specifiers
-Date:   Tue, 27 Oct 2020 14:54:09 +0100
-Message-Id: <20201027135509.464879722@linuxfoundation.org>
+Subject: [PATCH 5.4 313/408] ARM: OMAP2+: Restore MPU power domain if cpu_cluster_pm_enter() fails
+Date:   Tue, 27 Oct 2020 14:54:11 +0100
+Message-Id: <20201027135509.551134946@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,50 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 55f6c9931f7c32f19cf221211f099dfd8dab3af9 ]
+[ Upstream commit 8f04aea048d56f3e39a7e543939450246542a6fc ]
 
-The PPI interrupts for cortex-a9 were incorrectly specified, fix them.
+If cpu_cluster_pm_enter() fails, we need to set MPU power domain back
+to enabled to prevent the next WFI from potentially triggering an
+undesired MPU power domain state change.
 
-Fixes: fdfe7f4f9d85 ("ARM: dts: Add Actions Semi S500 and LeMaker Guitar")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Peter Korsgaard <peter@korsgaard.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+We already do this for omap_enter_idle_smp() but are missing it for
+omap_enter_idle_coupled().
+
+Fixes: 55be2f50336f ("ARM: OMAP2+: Handle errors for cpu_pm")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/mach-omap2/cpuidle44xx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index 5ceb6cc4451d2..1dbe4e8b38ac7 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -84,21 +84,21 @@ scu: scu@b0020000 {
- 		global_timer: timer@b0020200 {
- 			compatible = "arm,cortex-a9-global-timer";
- 			reg = <0xb0020200 0x100>;
--			interrupts = <GIC_PPI 0 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
- 		twd_timer: timer@b0020600 {
- 			compatible = "arm,cortex-a9-twd-timer";
- 			reg = <0xb0020600 0x20>;
--			interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
- 		twd_wdt: wdt@b0020620 {
- 			compatible = "arm,cortex-a9-twd-wdt";
- 			reg = <0xb0020620 0xe0>;
--			interrupts = <GIC_PPI 3 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
+diff --git a/arch/arm/mach-omap2/cpuidle44xx.c b/arch/arm/mach-omap2/cpuidle44xx.c
+index 6f5f89711f256..a92d277f81a08 100644
+--- a/arch/arm/mach-omap2/cpuidle44xx.c
++++ b/arch/arm/mach-omap2/cpuidle44xx.c
+@@ -174,8 +174,10 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ 		 */
+ 		if (mpuss_can_lose_context) {
+ 			error = cpu_cluster_pm_enter();
+-			if (error)
++			if (error) {
++				omap_set_pwrdm_state(mpu_pd, PWRDM_POWER_ON);
+ 				goto cpu_cluster_pm_out;
++			}
+ 		}
+ 	}
  
 -- 
 2.25.1
