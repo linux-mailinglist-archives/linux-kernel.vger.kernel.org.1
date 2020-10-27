@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DB029B530
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603BD29B532
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793932AbgJ0PJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
+        id S1793942AbgJ0PJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790298AbgJ0PEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:04:21 -0400
+        id S1790310AbgJ0PE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A25D2071A;
-        Tue, 27 Oct 2020 15:04:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E39CF2071A;
+        Tue, 27 Oct 2020 15:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811061;
-        bh=+PSnB/SCE1pbDMGw8ohIdcK8Qg9MsK6HofmiBQw9XlQ=;
+        s=default; t=1603811066;
+        bh=xZgfhOUdCgITy5fRdjWo8BUTSh/b2mnlmcYlyA3ZZ5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1sWsGlXkEuRep1VVqTLQLBOTa4lf/wamqb8eLhpENVnGjLrI0s8zslmrfENIztcZY
-         Y1h0/pRurs5zg9pLj2X7+oqsczu6sC96DqiMmpS2k4dLeI8nRYkcYNJyhJoG3VaKkc
-         NIfPwkuFrjCz98lRoTv26QdGMUaZIY5WgB7aUKZ8=
+        b=KQ/U1wkG/etm0g6zPfz+fH4La8xe1uZSTSJ2QtoQkMIIC+owSdh8y4ArUXtUj95Zd
+         qPUT+hXwSZwTuJoGNaDOWaBJogvvzbagfFboew1aK/IlIiMUQMbFpaRVEDQV4Nl6nn
+         Eur8MJ+VX8hBDQigWq8t2RaTEaiio+keo99bnpxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>,
         Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 360/633] powerpc/watchpoint: Fix quadword instruction handling on p10 predecessors
-Date:   Tue, 27 Oct 2020 14:51:43 +0100
-Message-Id: <20201027135539.579138265@linuxfoundation.org>
+Subject: [PATCH 5.8 362/633] powerpc/watchpoint: Add hw_len wherever missing
+Date:   Tue, 27 Oct 2020 14:51:45 +0100
+Message-Id: <20201027135539.677215255@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -47,62 +46,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 
-[ Upstream commit 4759c11ed20454b7b36db4ec15f7d5aa1519af4a ]
+[ Upstream commit 58da5984d2ea6d95f3f9d9e8dd9f7e1b0dddfb3c ]
 
-On p10 predecessors, watchpoint with quadword access is compared at
-quadword length. If the watch range is doubleword or less than that
-in a first half of quadword aligned 16 bytes, and if there is any
-unaligned quadword access which will access only the 2nd half, the
-handler should consider it as extraneous and emulate/single-step it
-before continuing.
+There are couple of places where we set len but not hw_len. For
+ptrace/perf watchpoints, when CONFIG_HAVE_HW_BREAKPOINT=Y, hw_len
+will be calculated and set internally while parsing watchpoint.
+But when CONFIG_HAVE_HW_BREAKPOINT=N, we need to manually set
+'hw_len'. Similarly for xmon as well, hw_len needs to be set
+directly.
 
-Fixes: 74c6881019b7 ("powerpc/watchpoint: Prepare handler to handle more than one watchpoint")
-Reported-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
+Fixes: b57aeab811db ("powerpc/watchpoint: Fix length calculation for unaligned target")
 Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200902042945.129369-2-ravi.bangoria@linux.ibm.com
+Link: https://lore.kernel.org/r/20200902042945.129369-7-ravi.bangoria@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/hw_breakpoint.h |  1 +
- arch/powerpc/kernel/hw_breakpoint.c      | 12 ++++++++++--
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/ptrace/ptrace-noadv.c | 1 +
+ arch/powerpc/xmon/xmon.c                  | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
-index cb424799da0dc..5a00da670a407 100644
---- a/arch/powerpc/include/asm/hw_breakpoint.h
-+++ b/arch/powerpc/include/asm/hw_breakpoint.h
-@@ -40,6 +40,7 @@ struct arch_hw_breakpoint {
- #else
- #define HW_BREAKPOINT_SIZE  0x8
- #endif
-+#define HW_BREAKPOINT_SIZE_QUADWORD	0x10
- 
- #define DABR_MAX_LEN	8
- #define DAWR_MAX_LEN	512
-diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
-index c55e67bab2710..f39e86d751144 100644
---- a/arch/powerpc/kernel/hw_breakpoint.c
-+++ b/arch/powerpc/kernel/hw_breakpoint.c
-@@ -519,9 +519,17 @@ static bool ea_hw_range_overlaps(unsigned long ea, int size,
- 				 struct arch_hw_breakpoint *info)
- {
- 	unsigned long hw_start_addr, hw_end_addr;
-+	unsigned long align_size = HW_BREAKPOINT_SIZE;
- 
--	hw_start_addr = ALIGN_DOWN(info->address, HW_BREAKPOINT_SIZE);
--	hw_end_addr = ALIGN(info->address + info->len, HW_BREAKPOINT_SIZE);
-+	/*
-+	 * On p10 predecessors, quadword is handle differently then
-+	 * other instructions.
-+	 */
-+	if (!cpu_has_feature(CPU_FTR_ARCH_31) && size == 16)
-+		align_size = HW_BREAKPOINT_SIZE_QUADWORD;
-+
-+	hw_start_addr = ALIGN_DOWN(info->address, align_size);
-+	hw_end_addr = ALIGN(info->address + info->len, align_size);
- 
- 	return ((ea < hw_end_addr) && (ea + size > hw_start_addr));
- }
+diff --git a/arch/powerpc/kernel/ptrace/ptrace-noadv.c b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
+index 697c7e4b5877f..8bd8d8de5c40b 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace-noadv.c
++++ b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
+@@ -219,6 +219,7 @@ long ppc_set_hwdebug(struct task_struct *child, struct ppc_hw_breakpoint *bp_inf
+ 	brk.address = ALIGN_DOWN(bp_info->addr, HW_BREAKPOINT_SIZE);
+ 	brk.type = HW_BRK_TYPE_TRANSLATE;
+ 	brk.len = DABR_MAX_LEN;
++	brk.hw_len = DABR_MAX_LEN;
+ 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_READ)
+ 		brk.type |= HW_BRK_TYPE_READ;
+ 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_WRITE)
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 7efe4bc3ccf63..ac5862cee142a 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -962,6 +962,7 @@ static void insert_cpu_bpts(void)
+ 			brk.address = dabr[i].address;
+ 			brk.type = (dabr[i].enabled & HW_BRK_TYPE_DABR) | HW_BRK_TYPE_PRIV_ALL;
+ 			brk.len = 8;
++			brk.hw_len = 8;
+ 			__set_breakpoint(i, &brk);
+ 		}
+ 	}
 -- 
 2.25.1
 
