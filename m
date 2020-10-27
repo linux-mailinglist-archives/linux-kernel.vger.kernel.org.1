@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA1529B5C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9FD29B439
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795920AbgJ0PP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
+        id S2438818AbgJ0O7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794636AbgJ0PMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:12:46 -0400
+        id S1762775AbgJ0Oo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:44:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77B6F21D41;
-        Tue, 27 Oct 2020 15:12:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 196C2206B2;
+        Tue, 27 Oct 2020 14:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811566;
-        bh=pEcuukP1EntrnDVa20u60O7w1UUKqI6OwYX4e7li4o8=;
+        s=default; t=1603809864;
+        bh=DpHT2fIvQDFMTl3zA2tlrlnamB5l7Vg/t12RcV/70NI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vw09uXR6LuuOKVTaWb1PDrSMdnV6hyN/7ctWN3biWlj8mhF+jECLm7itIkXN+ZwrM
-         nD/aw6G09QQ1WPo5/yEPF3Flo2gQ5dX+K3B7z+BThA8unFcoRmHrrxM3hxFMEFZ6B6
-         VVmFfDVqv9i+1QNDl7jFm0MGHSJPmSh5uCqqzguI=
+        b=LMyoCofBXQBuItLXuSJML6HZjGZ76cvw1/mpcLw/MDcC7F2a1ijN55Ju7l60CKf/G
+         SLl8lsab/t0qYNP1zIGRNfUes96aSiT1cBq6tVPx92HusCZVfLBMlajGoQANnHeByF
+         93CIwRuX0MyvAmSCpIUA65FX7smj1UjjnTD7FpKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Vikash Garodia <vgarodia@codeaurora.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 538/633] media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync
-Date:   Tue, 27 Oct 2020 14:54:41 +0100
-Message-Id: <20201027135548.029375148@linuxfoundation.org>
+Subject: [PATCH 5.4 345/408] media: venus: fixes for list corruption
+Date:   Tue, 27 Oct 2020 14:54:43 +0100
+Message-Id: <20201027135511.029778204@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +45,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Vikash Garodia <vgarodia@codeaurora.org>
 
-[ Upstream commit c47f7c779ef0458a58583f00c9ed71b7f5a4d0a2 ]
+[ Upstream commit e1c69c4eef61ffe295b747992c6fd849e6cd747d ]
 
-On calling pm_runtime_get_sync() the reference count of the device
-is incremented. In case of failure, decrement the
-reference count before returning the error.
+There are few list handling issues while adding and deleting
+node in the registered buf list in the driver.
+1. list addition - buffer added into the list during buf_init
+while not deleted during cleanup.
+2. list deletion - In capture streamoff, the list was reinitialized.
+As a result, if any node was present in the list, it would
+lead to issue while cleaning up that node during buf_cleanup.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Corresponding call traces below:
+[  165.751014] Call trace:
+[  165.753541]  __list_add_valid+0x58/0x88
+[  165.757532]  venus_helper_vb2_buf_init+0x74/0xa8 [venus_core]
+[  165.763450]  vdec_buf_init+0x34/0xb4 [venus_dec]
+[  165.768271]  __buf_prepare+0x598/0x8a0 [videobuf2_common]
+[  165.773820]  vb2_core_qbuf+0xb4/0x334 [videobuf2_common]
+[  165.779298]  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
+[  165.784053]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
+[  165.789067]  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
+[  165.794624]  v4l_qbuf+0x48/0x58
+
+[ 1797.556001] Call trace:
+[ 1797.558516]  __list_del_entry_valid+0x88/0x9c
+[ 1797.562989]  vdec_buf_cleanup+0x54/0x228 [venus_dec]
+[ 1797.568088]  __buf_prepare+0x270/0x8a0 [videobuf2_common]
+[ 1797.573625]  vb2_core_qbuf+0xb4/0x338 [videobuf2_common]
+[ 1797.579082]  vb2_qbuf+0x78/0xb8 [videobuf2_v4l2]
+[ 1797.583830]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
+[ 1797.588843]  v4l2_m2m_ioctl_qbuf+0x2c/0x38 [v4l2_mem2mem]
+[ 1797.594389]  v4l_qbuf+0x48/0x58
+
+Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
+Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/media-dev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/platform/qcom/venus/vdec.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-index 2f90607c3797d..a07d796f63df0 100644
---- a/drivers/media/platform/exynos4-is/media-dev.c
-+++ b/drivers/media/platform/exynos4-is/media-dev.c
-@@ -484,8 +484,10 @@ static int fimc_md_register_sensor_entities(struct fimc_md *fmd)
- 		return -ENXIO;
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 05b80a66e80ed..658825b4c4e8d 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -993,8 +993,6 @@ static int vdec_stop_capture(struct venus_inst *inst)
+ 		break;
+ 	}
  
- 	ret = pm_runtime_get_sync(fmd->pmf);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(fmd->pmf);
- 		return ret;
-+	}
+-	INIT_LIST_HEAD(&inst->registeredbufs);
+-
+ 	return ret;
+ }
  
- 	fmd->num_sensors = 0;
+@@ -1091,6 +1089,14 @@ static int vdec_buf_init(struct vb2_buffer *vb)
+ static void vdec_buf_cleanup(struct vb2_buffer *vb)
+ {
+ 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
++	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
++	struct venus_buffer *buf = to_venus_buffer(vbuf);
++
++	mutex_lock(&inst->lock);
++	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
++		if (!list_empty(&inst->registeredbufs))
++			list_del_init(&buf->reg_list);
++	mutex_unlock(&inst->lock);
  
+ 	inst->buf_count--;
+ 	if (!inst->buf_count)
 -- 
 2.25.1
 
