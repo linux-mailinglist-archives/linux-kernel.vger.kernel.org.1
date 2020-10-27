@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418BB29C403
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FDA29C42C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895590AbgJ0OXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:23:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48186 "EHLO mail.kernel.org"
+        id S1822870AbgJ0Rxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758745AbgJ0OXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:23:21 -0400
+        id S2509909AbgJ0OXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:23:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC6512072D;
-        Tue, 27 Oct 2020 14:23:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCC5820790;
+        Tue, 27 Oct 2020 14:23:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808600;
-        bh=QAW/jlNSRCVvcA1WLXud2dlUkPshFx36zNfbC/i2nLw=;
+        s=default; t=1603808603;
+        bh=2RU+PsPd0o+xNPcfjaO05Gfg4PkwgqFkzVMBW53GFgk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h172PI0H2+G8W6VwMOeXeH9a3UFWiq33mn3mmFYB5r+fuSUpZg5fz2rnIDcgrn/JS
-         QIWCaUH60OsgoOwYoWCxFM2qYU+hBrD+YKP3T9rA6lINCOtFmxBhKMqNVp987cWc8s
-         0YFhw7OtkV4opWVkL378J/nbFq6ZvX/xk4b1Bb/s=
+        b=oKf0K80oaT8FGa8MV3qxatoAnQZEm0sOnYe/fMOfhXfcMm/6Bts/GhiMNqYdmSRrf
+         li0Os9U+vURHLgiUCIsnsH7BkyLOtIN9nUoBDEJW42k+ymrvnX7x6iwEt7B59yVSQS
+         wK0SSAft9vF2tFPJUbmrpFAZ09uar+XD453hBgM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 154/264] RDMA/hns: Fix missing sq_sig_type when querying QP
-Date:   Tue, 27 Oct 2020 14:53:32 +0100
-Message-Id: <20201027135437.910438843@linuxfoundation.org>
+Subject: [PATCH 4.19 155/264] kdb: Fix pager search for multi-line strings
+Date:   Tue, 27 Oct 2020 14:53:33 +0100
+Message-Id: <20201027135437.960552530@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,34 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Weihang Li <liweihang@huawei.com>
+From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit 05df49279f8926178ecb3ce88e61b63104cd6293 ]
+[ Upstream commit d081a6e353168f15e63eb9e9334757f20343319f ]
 
-The sq_sig_type field should be filled when querying QP, or the users may
-get a wrong value.
+Currently using forward search doesn't handle multi-line strings correctly.
+The search routine replaces line breaks with \0 during the search and, for
+regular searches ("help | grep Common\n"), there is code after the line
+has been discarded or printed to replace the break character.
 
-Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
-Link: https://lore.kernel.org/r/1600509802-44382-9-git-send-email-liweihang@huawei.com
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+However during a pager search ("help\n" followed by "/Common\n") when the
+string is matched we will immediately return to normal output and the code
+that should restore the \n becomes unreachable. Fix this by restoring the
+replaced character when we disable the search mode and update the comment
+accordingly.
+
+Fixes: fb6daa7520f9d ("kdb: Provide forward search at more prompt")
+Link: https://lore.kernel.org/r/20200909141708.338273-1-daniel.thompson@linaro.org
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/debug/kdb/kdb_io.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 417de7ac0d5e2..2a203e08d4c1a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -3821,6 +3821,7 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 	}
- 
- 	qp_init_attr->cap = qp_attr->cap;
-+	qp_init_attr->sq_sig_type = hr_qp->sq_signal_bits;
- 
- out:
- 	mutex_unlock(&hr_qp->mutex);
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index 6a4b41484afe6..b45576ca3b0da 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -679,12 +679,16 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
+ 			size_avail = sizeof(kdb_buffer) - len;
+ 			goto kdb_print_out;
+ 		}
+-		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH)
++		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH) {
+ 			/*
+ 			 * This was a interactive search (using '/' at more
+-			 * prompt) and it has completed. Clear the flag.
++			 * prompt) and it has completed. Replace the \0 with
++			 * its original value to ensure multi-line strings
++			 * are handled properly, and return to normal mode.
+ 			 */
++			*cphold = replaced_byte;
+ 			kdb_grepping_flag = 0;
++		}
+ 		/*
+ 		 * at this point the string is a full line and
+ 		 * should be printed, up to the null.
 -- 
 2.25.1
 
