@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C1629C944
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6C729C945
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504043AbgJ0Tv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:51:59 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:36134 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503972AbgJ0Tv7 (ORCPT
+        id S2504120AbgJ0TwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:52:04 -0400
+Received: from smtprelay0135.hostedemail.com ([216.40.44.135]:60186 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2503972AbgJ0TwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:51:59 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 1230E2006D;
-        Tue, 27 Oct 2020 20:51:54 +0100 (CET)
-Date:   Tue, 27 Oct 2020 20:51:52 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        robdclark@chromium.org, Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] drm: panel: simple: Allow timing constraints, not
- fixed delays
-Message-ID: <20201027195152.GA457661@ravnborg.org>
-References: <20201027094553.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
- <20201027171459.GA2097755@ulmo>
- <20201027192318.GR401619@phenom.ffwll.local>
+        Tue, 27 Oct 2020 15:52:02 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id A213063D;
+        Tue, 27 Oct 2020 19:52:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2911:3138:3139:3140:3141:3142:3353:3742:3865:3866:3867:3868:3870:3871:3874:4250:4321:4425:5007:6117:7903:9010:10004:10400:10848:11232:11658:11914:12297:12663:12740:12760:12895:13069:13146:13161:13229:13230:13311:13357:13439:14096:14097:14659:14721:21080:21433:21627:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: soap06_23053322727e
+X-Filterd-Recvd-Size: 2922
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 27 Oct 2020 19:51:58 +0000 (UTC)
+Message-ID: <a4c58c21f0361f844588f5479f6fee33dc1a1dae.camel@perches.com>
+Subject: Re: Subject: [RFC] clang tooling cleanups
+From:   Joe Perches <joe@perches.com>
+To:     Tom Rix <trix@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org, Julia.Lawall@lip6.fr,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Huckleberry <nhuck15@gmail.com>
+Date:   Tue, 27 Oct 2020 12:51:57 -0700
+In-Reply-To: <8abd1e5a-511a-e4f6-6f2c-a045d33fa2aa@redhat.com>
+References: <20201027164255.1573301-1-trix@redhat.com>
+         <CAKwvOd=83v0Sv-NhQ5xgqdNSRm2b=pOJDziX8axZ9t2YyYwz-A@mail.gmail.com>
+         <8abd1e5a-511a-e4f6-6f2c-a045d33fa2aa@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027192318.GR401619@phenom.ffwll.local>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=vq_p0UsYEco_LHjtCy4A:9
-        a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 08:23:18PM +0100, Daniel Vetter wrote:
-> On Tue, Oct 27, 2020 at 06:14:59PM +0100, Thierry Reding wrote:
-> > On Tue, Oct 27, 2020 at 09:45:54AM -0700, Douglas Anderson wrote:
-> > > The simple panel code currently allows panels to define fixed delays
-> > > at certain stages of initialization.  These work OK, but they don't
-> > > really map all that clearly to the requirements presented in many
-> > > panel datasheets.  Instead of defining a fixed delay, those datasheets
-> > > provide a timing diagram and specify a minimum amount of time that
-> > > needs to pass from event A to event B.
-> > > 
-> > > Because of the way things are currently defined, most panels end up
-> > > over-delaying.  One prime example here is that a number of panels I've
-> > > looked at define the amount of time that must pass between turning a
-> > > panel off and turning it back on again.  Since there is no way to
-> > > specify this, many developers have listed this as the "unprepare"
-> > > delay.  However, if nobody ever tried to turn the panel on again in
-> > > the next 500 ms (or whatever the delay was) then this delay was
-> > > pointless.  It's better to do the delay only in the case that someone
-> > > tried to turn the panel on too quickly.
-> > > 
-> > > Let's support specifying delays as constraints.  We'll start with the
-> > > one above and also a second one: the minimum time between prepare
-> > > being done and doing the enable.  On the panel I'm looking at, there's
-> > > an 80 ms minimum time between HPD being asserted by the panel and
-> > > setting the backlight enable GPIO.  By specifying as a constraint we
-> > > can enforce this without over-delaying.  Specifically the link
-> > > training is allowed to happen in parallel with this delay so adding a
-> > > fixed 80 ms delay isn't ideal.
-> > > 
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > > 
-> > >  drivers/gpu/drm/panel/panel-simple.c | 51 ++++++++++++++++++++++++----
-> > >  1 file changed, 44 insertions(+), 7 deletions(-)
-> > 
-> > This has always been bugging me a bit about the current setup, so I very
-> > much like this idea.
-> > 
-> > > 
-> > > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> > > index 2be358fb46f7..cbbe71a2a940 100644
-> > > --- a/drivers/gpu/drm/panel/panel-simple.c
-> > > +++ b/drivers/gpu/drm/panel/panel-simple.c
-> > > @@ -92,6 +92,19 @@ struct panel_desc {
-> > >  		unsigned int unprepare;
-> > >  	} delay;
-> > >  
-> > > +	/**
-> > > +	 * @prepare_to_enable_ms: If this many milliseconds hasn't passed after
-> > > +	 *                        prepare finished, add a delay to the start
-> > > +	 *                        of enable.
-> > > +	 * @unprepare_to_prepare_ms: If this many milliseconds hasn't passed
-> > > +	 *                           unprepare finished, add a delay to the
-> > > +	 *                           start of prepare.
-> > 
-> > I find this very difficult to understand and it's also not clear from
-> > this what exactly the delay is. Perhaps this can be somewhat clarified
-> > Something like the below perhaps?
-> > 
-> > 	@prepare_to_enable_ms: The minimum time, in milliseconds, that
-> > 	    needs to have passed between when prepare finished and enable
-> > 	    may begin. If at enable time less time has passed since
-> > 	    prepare finished, the driver waits for the remaining time.
-> 
-> Also maybe split the kerneldoc into the sub-structure (this should work I
-> think), so that you can go really wild on formatting :-)
-I have a patch somewhere where I inlined all the comments and polished
-them a bit. Will try to dig it up in the weekend.
-It was motivated by a small W=1 detour.
+(Adding Stephen Rothwell)
 
-	Sam
+On Tue, 2020-10-27 at 12:33 -0700, Tom Rix wrote:
+> On 10/27/20 11:42 AM, Nick Desaulniers wrote:
+> > (cutting down the CC list to something more intimate)
+
+[]
+
+> I am interested in treewide fixes.
+
+As am I, but here the definition of fixes is undefined though.
+Whitespace / style changes and other bits that don't change generated
+object code aren't considered fixes by many maintainers.
+
+> Cleaning them up (maybe me not doing all the patches) and keeping them clean.
+> 
+> The clang -Wextra-semi-stmt -fixit will fix all 10,000 problems
+
+I rather doubt there are 10K extra semicolons in the kernel source tree.
+Is there a proposed diff/patch posted somewhere?
+
+> This clang tidy fixer will fix only the 100 problems that are 'switch() {};'
+> 
+> When doing a treewide cleanup, batching a bunch of fixes that are the same problem and fix 
+> is much easier on everyone to review and more likely to be accepted.
+
+That depends on the definition of batching.
+
+If individual patches are sent to multiple maintainers, the
+acceptance / apply rate seems always < 50% and some are rejected
+outright by various maintainers as "unnecessary churn".
+
+Single treewide patches are generally not applied unless by Linus.
+The trivial tree isn't widely used for this.
+
+Perhaps a 'scripted' git tree could be established that is integrated
+into -next that would allow these automated patches to be better
+vetted and increase the acceptance rate of these automated patches.
+
+> Long term, a c/i system would keep the tree clean by running the switch-semi checker/fixer. 
+> And we can all move onto the next problem.
+
+Good idea...
+I hope a scripted patches mechanism will be established.
+
+
