@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D17729B4CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E9F29B44D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788509AbgJ0PAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57014 "EHLO mail.kernel.org"
+        id S1788553AbgJ0PA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781929AbgJ0O4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:56:23 -0400
+        id S1781964AbgJ0O41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:56:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FB2222264;
-        Tue, 27 Oct 2020 14:56:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8D1A22281;
+        Tue, 27 Oct 2020 14:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810583;
-        bh=+cwNwv6qjsb5YJODqEPijhAolfDeP6rDsLXPpxdyTWo=;
+        s=default; t=1603810586;
+        bh=TM6rdoP0IptLbKUARf7en7FhUxRfd6eGQNCDCGAePBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xto5aOCY94+dlsONRIPPxqsBIu6QsYZXMa5iU+4T7vOWWh2ErJTxeicf7Sfrr6Y5k
-         bdNabqsSURhJYtfnCaelslJzIY5tLZ9kDML21bJmsHp0KFzcbsAZqkT5FIiFvtWqZ2
-         t6hOBKHvyssF0GLZ2LAgycpy1dmHkHaPsrl/XnY0=
+        b=wXA/qkU8JCMoD1pZ1hbfIqusmGYBNhtBztMAbe1nfFTy0YI50IY+5O3V1rGrVo5go
+         UU0gmpyBCbTH2VW3BGw0LhzySn7Jagf6OsNYHfWhFzxf2uOIrr4wzlpBrKb2HWo4mw
+         /v2hmRRhwtpEtdEtsmCnGyt8MKEeJ+Fei/e+Zwbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anatoly Pugachev <matorola@gmail.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Jiri Kosina <jkosina@suse.cz>,
+        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 191/633] selftests: vm: add fragment CONFIG_GUP_BENCHMARK
-Date:   Tue, 27 Oct 2020 14:48:54 +0100
-Message-Id: <20201027135531.642593390@linuxfoundation.org>
+Subject: [PATCH 5.8 192/633] scsi: ufs: Make ufshcd_print_trs() consider UFSHCD_QUIRK_PRDT_BYTE_GRAN
+Date:   Tue, 27 Oct 2020 14:48:55 +0100
+Message-Id: <20201027135531.690092350@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,43 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anatoly Pugachev <matorola@gmail.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit cae1d5a2c5a491141faa747e9944ba40ab4ab786 ]
+[ Upstream commit cc770ce34aeeff21991f162f0db1a758ea672727 ]
 
-When running gup_benchmark test the following output states that
-the config options is missing.
+Fix ufshcd_print_trs() to consider UFSHCD_QUIRK_PRDT_BYTE_GRAN when using
+utp_transfer_req_desc::prd_table_length, so that it doesn't treat the
+number of bytes as the number of entries.
 
-$ sudo ./gup_benchmark
-open: No such file or directory
+Originally from Kiwoong Kim
+(https://lkml.kernel.org/r/20200218233115.8185-1-kwmad.kim@samsung.com).
 
-$ sudo strace -e trace=file ./gup_benchmark 2>&1 | tail -3
-openat(AT_FDCWD, "/sys/kernel/debug/gup_benchmark", O_RDWR) = -1 ENOENT
-(No such file or directory)
-open: No such file or directory
-+++ exited with 1 +++
-
-Fix it by adding config option fragment.
-
-Fixes: 64c349f4ae78 ("mm: add infrastructure for get_user_pages_fast() benchmarking")
-Signed-off-by: Anatoly Pugachev <matorola@gmail.com>
-CC: Jiri Kosina <trivial@kernel.org>
-CC: Shuah Khan <shuah@kernel.org>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Link: https://lore.kernel.org/r/20200826021040.152148-1-ebiggers@kernel.org
+Fixes: 26f968d7de82 ("scsi: ufs: Introduce UFSHCD_QUIRK_PRDT_BYTE_GRAN quirk")
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/vm/config | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/ufs/ufshcd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/vm/config b/tools/testing/selftests/vm/config
-index 3ba674b64fa9f..69dd0d1aa30b2 100644
---- a/tools/testing/selftests/vm/config
-+++ b/tools/testing/selftests/vm/config
-@@ -3,3 +3,4 @@ CONFIG_USERFAULTFD=y
- CONFIG_TEST_VMALLOC=m
- CONFIG_DEVICE_PRIVATE=y
- CONFIG_TEST_HMM=m
-+CONFIG_GUP_BENCHMARK=y
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 8bc8e4e62c045..e5f75b2e07e2c 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -484,6 +484,9 @@ void ufshcd_print_trs(struct ufs_hba *hba, unsigned long bitmap, bool pr_prdt)
+ 
+ 		prdt_length = le16_to_cpu(
+ 			lrbp->utr_descriptor_ptr->prd_table_length);
++		if (hba->quirks & UFSHCD_QUIRK_PRDT_BYTE_GRAN)
++			prdt_length /= sizeof(struct ufshcd_sg_entry);
++
+ 		dev_err(hba->dev,
+ 			"UPIU[%d] - PRDT - %d entries  phys@0x%llx\n",
+ 			tag, prdt_length,
 -- 
 2.25.1
 
