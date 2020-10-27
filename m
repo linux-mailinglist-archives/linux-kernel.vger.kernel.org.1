@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C45C29B09E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D655529B0B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901261AbgJ0OVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:21:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43876 "EHLO mail.kernel.org"
+        id S2901343AbgJ0OWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757688AbgJ0OTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:19:54 -0400
+        id S1757412AbgJ0OV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:21:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C303C206D4;
-        Tue, 27 Oct 2020 14:19:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75205206F7;
+        Tue, 27 Oct 2020 14:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808393;
-        bh=lBkSbt/5r2Hk71TiUK3/rd4T0f4CaLTH6Zoq8zJyLps=;
+        s=default; t=1603808487;
+        bh=FN5dYjy+owldN5tlXjOVb1OYFx0gVwjUZM6Wq1r+HFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rLVk7T3K2/LOprmNEHeZeJWAPzK8z7omZlNdY9tH+Kt+YLG2tFF9E5UrGE6i7Mskz
-         fo41h8k1etrs9kOEbURkjIzrbIuGm0u+8iFdwbXN/QxCwWAV3MYO1d9/qKKfZRBm0I
-         RnKjkkdp9kH0xyItniAx1o+an2RSZxDXgFNLnbX0=
+        b=kgoxcfs01yGqMSeZQMBJepNZZ/VPZsAap7rySYb/JkXHZysaMAodbzKZmS/y27kGr
+         ObQsqCLYZe4DxLktfA0Jy39dLMdAMkqIFyhUjqqavguSdZfqG6cUY3a4ufzcpwaM4j
+         ZcZ27CGt6g5t12J3uA6MV0qh+a1kS37PEoyxCAZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Praveen Madhavan <praveenm@chelsio.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 073/264] ASoC: qcom: lpass-cpu: fix concurrency issue
-Date:   Tue, 27 Oct 2020 14:52:11 +0100
-Message-Id: <20201027135434.129164279@linuxfoundation.org>
+Subject: [PATCH 4.19 080/264] scsi: csiostor: Fix wrong return value in csio_hw_prep_fw()
+Date:   Tue, 27 Oct 2020 14:52:18 +0100
+Message-Id: <20201027135434.459755470@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -44,60 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rohit kumar <rohitkr@codeaurora.org>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 753a6e17942f6f425ca622e1610625998312ad89 ]
+[ Upstream commit 44f4daf8678ae5f08c93bbe70792f90cd88e4649 ]
 
-i2sctl register value is set to 0 during hw_free(). This
-impacts any ongoing concurrent session on the same i2s
-port. As trigger() stop already resets enable bit to 0,
-there is no need of explicit hw_free. Removing it to
-fix the issue.
+On an error exit path, a negative error code should be returned instead of
+a positive return value.
 
-Fixes: 80beab8e1d86 ("ASoC: qcom: Add LPASS CPU DAI driver")
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/1597402388-14112-7-git-send-email-rohitkr@codeaurora.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200802111531.5065-1-tianjia.zhang@linux.alibaba.com
+Fixes: f40e74ffa3de ("csiostor:firmware upgrade fix")
+Cc: Praveen Madhavan <praveenm@chelsio.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ drivers/scsi/csiostor/csio_hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 292b103abada9..475579a9830a3 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -182,21 +182,6 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/drivers/scsi/csiostor/csio_hw.c b/drivers/scsi/csiostor/csio_hw.c
+index e519238864758..1b6f9351b43f9 100644
+--- a/drivers/scsi/csiostor/csio_hw.c
++++ b/drivers/scsi/csiostor/csio_hw.c
+@@ -2384,7 +2384,7 @@ static int csio_hw_prep_fw(struct csio_hw *hw, struct fw_info *fw_info,
+ 			FW_HDR_FW_VER_MICRO_G(c), FW_HDR_FW_VER_BUILD_G(c),
+ 			FW_HDR_FW_VER_MAJOR_G(k), FW_HDR_FW_VER_MINOR_G(k),
+ 			FW_HDR_FW_VER_MICRO_G(k), FW_HDR_FW_VER_BUILD_G(k));
+-		ret = EINVAL;
++		ret = -EINVAL;
+ 		goto bye;
+ 	}
  
--static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
--	int ret;
--
--	ret = regmap_write(drvdata->lpaif_map,
--			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
--			   0);
--	if (ret)
--		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
--
--	return ret;
--}
--
- static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -277,7 +262,6 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
- 	.startup	= lpass_cpu_daiops_startup,
- 	.shutdown	= lpass_cpu_daiops_shutdown,
- 	.hw_params	= lpass_cpu_daiops_hw_params,
--	.hw_free	= lpass_cpu_daiops_hw_free,
- 	.prepare	= lpass_cpu_daiops_prepare,
- 	.trigger	= lpass_cpu_daiops_trigger,
- };
 -- 
 2.25.1
 
