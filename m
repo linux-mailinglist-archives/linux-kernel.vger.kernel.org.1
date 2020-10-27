@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602AC29B319
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB6929B2A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762661AbgJ0On4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41156 "EHLO mail.kernel.org"
+        id S368488AbgJ0On6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:43:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761466AbgJ0Oln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:41:43 -0400
+        id S1762318AbgJ0OmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31CBC20773;
-        Tue, 27 Oct 2020 14:41:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1240C206B2;
+        Tue, 27 Oct 2020 14:42:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809702;
-        bh=WHyRwHSBwr0NvurNUhz0xnWf/zho8+AR72sUml7fYeU=;
+        s=default; t=1603809722;
+        bh=OKAIbu6QMwSa3X0tAJb2vIAb7E8W8uEIv2BcFZV3nyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1PdCnk0QgUEs91whGygmkdsQwexzTX1wOVzL+TJNYU4+cuyuV4AucpFURbO/jxrke
-         eyBMJ1TT10kjJkASMzGMNU/rgbUieEsrJ+R6Ik7IpbLllEpqzkYEUJiAbfW16MwEjA
-         Rq9nmK7x9stuiBLGV/1f0ep37x+fzgdYqoFD3hlE=
+        b=XpM+neHQsESxY9lpJSOCp9jrFOq+9Xk9uzAEXmnS/TxCyxICT7+DItUraRUmEPQoz
+         J70Y9POCNs9iZuD8/fy43kknTaJHDS4pwaG+0+6t8FNLkti4xGUm8ywvQdEBl/6ZlG
+         klkRF3O2I4jOCXZ26hXZdYJiGN0n/3HzatyOz2CE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hoo <robert.hu@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 290/408] KVM: x86: emulating RDPID failure shall return #UD rather than #GP
-Date:   Tue, 27 Oct 2020 14:53:48 +0100
-Message-Id: <20201027135508.498053278@linuxfoundation.org>
+Subject: [PATCH 5.4 297/408] ARM: at91: pm: of_node_put() after its usage
+Date:   Tue, 27 Oct 2020 14:53:55 +0100
+Message-Id: <20201027135508.814459785@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,37 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hoo <robert.hu@linux.intel.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit a9e2e0ae686094571378c72d8146b5a1a92d0652 ]
+[ Upstream commit e222f943519564978e082c152b4140a47e93392c ]
 
-Per Intel's SDM, RDPID takes a #UD if it is unsupported, which is more or
-less what KVM is emulating when MSR_TSC_AUX is not available.  In fact,
-there are no scenarios in which RDPID is supposed to #GP.
+Put node after it has been used.
 
-Fixes: fb6d4d340e ("KVM: x86: emulate RDPID")
-Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
-Message-Id: <1598581422-76264-1-git-send-email-robert.hu@linux.intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 13f16017d3e3f ("ARM: at91: pm: Tie the USB clock mask to the pmc")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1596616610-15460-4-git-send-email-claudiu.beznea@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/emulate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-at91/pm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index cc7823e7ef96c..484c32b7f79ff 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3617,7 +3617,7 @@ static int em_rdpid(struct x86_emulate_ctxt *ctxt)
- 	u64 tsc_aux = 0;
+diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
+index 6bc3000deb86e..676cc2a318f41 100644
+--- a/arch/arm/mach-at91/pm.c
++++ b/arch/arm/mach-at91/pm.c
+@@ -777,6 +777,7 @@ static void __init at91_pm_init(void (*pm_idle)(void))
  
- 	if (ctxt->ops->get_msr(ctxt, MSR_TSC_AUX, &tsc_aux))
--		return emulate_gp(ctxt, 0);
-+		return emulate_ud(ctxt);
- 	ctxt->dst.val = tsc_aux;
- 	return X86EMUL_CONTINUE;
- }
+ 	pmc_np = of_find_matching_node_and_match(NULL, atmel_pmc_ids, &of_id);
+ 	soc_pm.data.pmc = of_iomap(pmc_np, 0);
++	of_node_put(pmc_np);
+ 	if (!soc_pm.data.pmc) {
+ 		pr_err("AT91: PM not supported, PMC not found\n");
+ 		return;
 -- 
 2.25.1
 
