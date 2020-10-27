@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDAD29BDC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5D829BCF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1812952AbgJ0Qqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:46:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
+        id S1811354AbgJ0QjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801540AbgJ0Pmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:42:40 -0400
+        id S1800070AbgJ0Pn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:43:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF8F920719;
-        Tue, 27 Oct 2020 15:42:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8614F223C6;
+        Tue, 27 Oct 2020 15:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813360;
-        bh=v1Pe6TGA41rqrWEGk0mxExTJ9wzL4G7FVqnXQgmaDzg=;
+        s=default; t=1603813408;
+        bh=Asuh+hb53rwTnbZPcPt99FIkVPQj67qW8hS3Y9QspU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lvFEe2k2YBYRh1FRn5La1dY6IN5ZkLd9rIr/sg5CIIZa5xuM4cB0Cuhs2qp3Ypw+b
-         zLN4j1kIbPFq9gGEOtzVXkq/yq6/kZ1VzIKWqOD17x5Er3M3aRzSxPsHcMH7JqnTM8
-         SSudU8qFP/qW1+5wA6LnPLJGtEI8vcfx/qbUS6zM=
+        b=jUY+as+mBK5VwYm0cIx7OpIBSm4MVnMHyxILfbiBsJnuUZZbZjs+Z/veWI2DtKvaX
+         nEnFJgXytrFlnqEUZFh1LTUAp0/g8fTwJMt6J/PABu7fusvutMip9wLcqe9KVKAwj5
+         LmM329UhiO3RB3VfydY66kRhpSi2NpG4gPl1Gtzo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org, Tobias Jordan <kernel@cdqe.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        Huang Ying <ying.huang@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 508/757] mm/huge_memory: fix split assumption of page size
-Date:   Tue, 27 Oct 2020 14:52:38 +0100
-Message-Id: <20201027135514.293517457@linuxfoundation.org>
+Subject: [PATCH 5.9 510/757] lib/crc32.c: fix trivial typo in preprocessor condition
+Date:   Tue, 27 Oct 2020 14:52:40 +0100
+Message-Id: <20201027135514.395769678@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -48,93 +47,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kirill A. Shutemov <kirill@shutemov.name>
+From: Tobias Jordan <kernel@cdqe.de>
 
-[ Upstream commit 8cce54756806e5777069c46011c5f54f9feac717 ]
+[ Upstream commit 904542dc56524f921a6bab0639ff6249c01e775f ]
 
-File THPs may now be of arbitrary size, and we can't rely on that size
-after doing the split so remember the number of pages before we start the
-split.
+Whether crc32_be needs a lookup table is chosen based on CRC_LE_BITS.
+Obviously, the _be function should be governed by the _BE_ define.
 
-Signed-off-by: Kirill A. Shutemov <kirill@shutemov.name>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+This probably never pops up as it's hard to come up with a configuration
+where CRC_BE_BITS isn't the same as CRC_LE_BITS and as nobody is using
+bitwise CRC anyway.
+
+Fixes: 46c5801eaf86 ("crc32: bolt on crc32c")
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: SeongJae Park <sjpark@amazon.de>
-Cc: Huang Ying <ying.huang@intel.com>
-Link: https://lkml.kernel.org/r/20200908195539.25896-6-willy@infradead.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lkml.kernel.org/r/20200923182122.GA3338@agrajag.zerfleddert.de
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/huge_memory.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ lib/crc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index dbac774103769..d37e205d3eae7 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2335,13 +2335,13 @@ static void unmap_page(struct page *page)
- 	VM_BUG_ON_PAGE(!unmap_success, page);
+diff --git a/lib/crc32.c b/lib/crc32.c
+index 35a03d03f9738..2a68dfd3b96c8 100644
+--- a/lib/crc32.c
++++ b/lib/crc32.c
+@@ -331,7 +331,7 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
+ 	return crc;
  }
  
--static void remap_page(struct page *page)
-+static void remap_page(struct page *page, unsigned int nr)
+-#if CRC_LE_BITS == 1
++#if CRC_BE_BITS == 1
+ u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
  {
- 	int i;
- 	if (PageTransHuge(page)) {
- 		remove_migration_ptes(page, page, true);
- 	} else {
--		for (i = 0; i < HPAGE_PMD_NR; i++)
-+		for (i = 0; i < nr; i++)
- 			remove_migration_ptes(page + i, page + i, true);
- 	}
- }
-@@ -2416,6 +2416,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 	struct lruvec *lruvec;
- 	struct address_space *swap_cache = NULL;
- 	unsigned long offset = 0;
-+	unsigned int nr = thp_nr_pages(head);
- 	int i;
- 
- 	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-@@ -2431,7 +2432,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
--	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
-+	for (i = nr - 1; i >= 1; i--) {
- 		__split_huge_page_tail(head, i, lruvec, list);
- 		/* Some pages can be beyond i_size: drop them from page cache */
- 		if (head[i].index >= end) {
-@@ -2451,7 +2452,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 
- 	ClearPageCompound(head);
- 
--	split_page_owner(head, HPAGE_PMD_NR);
-+	split_page_owner(head, nr);
- 
- 	/* See comment in __split_huge_page_tail() */
- 	if (PageAnon(head)) {
-@@ -2470,9 +2471,9 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 
- 	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
- 
--	remap_page(head);
-+	remap_page(head, nr);
- 
--	for (i = 0; i < HPAGE_PMD_NR; i++) {
-+	for (i = 0; i < nr; i++) {
- 		struct page *subpage = head + i;
- 		if (subpage == page)
- 			continue;
-@@ -2725,7 +2726,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- fail:		if (mapping)
- 			xa_unlock(&mapping->i_pages);
- 		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
--		remap_page(head);
-+		remap_page(head, thp_nr_pages(head));
- 		ret = -EBUSY;
- 	}
- 
+ 	return crc32_be_generic(crc, p, len, NULL, CRC32_POLY_BE);
 -- 
 2.25.1
 
