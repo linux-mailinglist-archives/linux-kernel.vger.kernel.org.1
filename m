@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7190E29BA81
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 871A529B7A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806069AbgJ0QFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
+        id S1795371AbgJ0PPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802165AbgJ0Ppu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:45:50 -0400
+        id S1794268AbgJ0PKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:10:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87C1A21D42;
-        Tue, 27 Oct 2020 15:45:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E76D206F4;
+        Tue, 27 Oct 2020 15:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813550;
-        bh=EMkcT2i5uOjrTgGJ4EVBaMOozDKG5DGNbRy6bs4IlK4=;
+        s=default; t=1603811453;
+        bh=SALvipUyi/DTcpnTAlrDJ4xTwDPWeOVyPH4/y45TCuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OwgGta7lCWrq17RpdJySFcyni+r/bMjdbJlp4+7fO9How4UtNDoFHh479XZbCZmPH
-         x1iq4C+FhhnFm6vFWCcry/1BjHd/dit2wOdzhawxsdg+X9rbvcT0eq9pZ0jy+0MTTQ
-         RIubVHjbJCtUCGmjwl7JDXX8ILaIFmn06ddun5y4=
+        b=JCHqNKR6+2DRsVptbTRSJppAs7we16lteRGYHYtw3xLIqJOQPTJXGv+NyLEsSLhWe
+         sU2iUCUERLwOcK+vxe7CRNSsOYEUoZVlx4p0he9Ctn/RZH359MfC408ly02sEywDmM
+         MxOBMNttvKhAopjX2n6uTyWeIynJe5IzhRc6VqFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 590/757] memory: omap-gpmc: Fix a couple off by ones
-Date:   Tue, 27 Oct 2020 14:54:00 +0100
-Message-Id: <20201027135518.215764206@linuxfoundation.org>
+Subject: [PATCH 5.8 498/633] soc: qcom: apr: Fixup the error displayed on lookup failure
+Date:   Tue, 27 Oct 2020 14:54:01 +0100
+Message-Id: <20201027135546.088523548@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sibi Sankar <sibis@codeaurora.org>
 
-[ Upstream commit 4c54228ac8fd55044195825873c50a524131fa53 ]
+[ Upstream commit ba34f977c333f96c8acd37ec30e232220399f5a5 ]
 
-These comparisons should be >= instead of > to prevent reading one
-element beyond the end of the gpmc_cs[] array.
+APR client incorrectly prints out "ret" variable on pdr_add_lookup failure,
+it should be printing the error value returned by the lookup instead.
 
-Fixes: cdd6928c589a ("ARM: OMAP2+: Add device-tree support for NOR flash")
-Fixes: f37e4580c409 ("ARM: OMAP2: Dynamic allocator for GPMC memory space")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Roger Quadros <rogerq@ti.com>
-Link: https://lore.kernel.org/r/20200825104707.GB278587@mwanda
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: 8347356626028 ("soc: qcom: apr: Add avs/audio tracking functionality")
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Link: https://lore.kernel.org/r/20200915154232.27523-1-sibis@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/omap-gpmc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soc/qcom/apr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index ca0097664b125..1e6d6e9434c8b 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -943,7 +943,7 @@ static int gpmc_cs_remap(int cs, u32 base)
- 	int ret;
- 	u32 old_base, size;
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index 1f35b097c6356..7abfc8c4fdc72 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -328,7 +328,7 @@ static int of_apr_add_pd_lookups(struct device *dev)
  
--	if (cs > gpmc_cs_num) {
-+	if (cs >= gpmc_cs_num) {
- 		pr_err("%s: requested chip-select is disabled\n", __func__);
- 		return -ENODEV;
- 	}
-@@ -978,7 +978,7 @@ int gpmc_cs_request(int cs, unsigned long size, unsigned long *base)
- 	struct resource *res = &gpmc->mem;
- 	int r = -1;
- 
--	if (cs > gpmc_cs_num) {
-+	if (cs >= gpmc_cs_num) {
- 		pr_err("%s: requested chip-select is disabled\n", __func__);
- 		return -ENODEV;
+ 		pds = pdr_add_lookup(apr->pdr, service_name, service_path);
+ 		if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
+-			dev_err(dev, "pdr add lookup failed: %d\n", ret);
++			dev_err(dev, "pdr add lookup failed: %ld\n", PTR_ERR(pds));
+ 			return PTR_ERR(pds);
+ 		}
  	}
 -- 
 2.25.1
