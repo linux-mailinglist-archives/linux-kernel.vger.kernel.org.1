@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E05B29B538
+	by mail.lfdr.de (Postfix) with ESMTP id AB70929B539
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794008AbgJ0PJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39464 "EHLO mail.kernel.org"
+        id S1794017AbgJ0PJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790937AbgJ0PEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:04:50 -0400
+        id S1790944AbgJ0PEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 436572071A;
-        Tue, 27 Oct 2020 15:04:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EF92206E5;
+        Tue, 27 Oct 2020 15:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811089;
-        bh=D6CmrTf6q2KupTEsc6y18uYP+IEiFGZ/b2GEyFpSSHE=;
+        s=default; t=1603811092;
+        bh=5wfmlOIqJHNnDmiU31IwiV6Wt0RSsM/VminhRtvnA9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WETBNtolt9vVXO72xOmRBehIJcK7KKL8POAp7fX7N0AlTcETwQnr5JhsfH25YxaoE
-         tvp9XRDgrMguIGQdXCpAgChfMScxYXrs+7/Lm3qhmEM1ixSW5lPbZCpnBZUk5PLQjp
-         +3lHL3ZYilEHulf2ncN+aaWbhX+VqCLnxX1p8Alo=
+        b=RfVqtbnmsaIA7IAHav4jsz6eH+JIrLG4EeWLraPiJeAemNUi/GODJ734P+bLA04CY
+         ausAe9ir4dSpaxE9AZZRaZF2i4VudfEKD3i/a2qz07ynbJsCiZzf6V6rDj421tO5Or
+         TMpVxsh/vr/Yx43neb1sC10sQLJBDWq0U2biLcB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 369/633] powerpc/kasan: Fix CONFIG_KASAN_VMALLOC for 8xx
-Date:   Tue, 27 Oct 2020 14:51:52 +0100
-Message-Id: <20201027135540.011627138@linuxfoundation.org>
+Subject: [PATCH 5.8 370/633] powerpc/64s/radix: Fix mm_cpumask trimming race vs kthread_use_mm
+Date:   Tue, 27 Oct 2020 14:51:53 +0100
+Message-Id: <20201027135540.059566103@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,79 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 4c42dc5c69a8f24c467a6c997909d2f1d4efdc7f ]
+[ Upstream commit a665eec0a22e11cdde708c1c256a465ebe768047 ]
 
-Before the commit identified below, pages tables allocation was
-performed after the allocation of final shadow area for linear memory.
-But that commit switched the order, leading to page tables being
-already allocated at the time 8xx kasan_init_shadow_8M() is called.
-Due to this, kasan_init_shadow_8M() doesn't map the needed
-shadow entries because there are already page tables.
+Commit 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of
+single-threaded mm_cpumask") added a mechanism to trim the mm_cpumask of
+a process under certain conditions. One of the assumptions is that
+mm_users would not be incremented via a reference outside the process
+context with mmget_not_zero() then go on to kthread_use_mm() via that
+reference.
 
-kasan_init_shadow_8M() installs huge PMD entries instead of page
-tables. We could at that time free the page tables, but there is no
-point in creating page tables that get freed before being used.
+That invariant was broken by io_uring code (see previous sparc64 fix),
+but I'll point Fixes: to the original powerpc commit because we are
+changing that assumption going forward, so this will make backports
+match up.
 
-Only book3s/32 hash needs early allocation of page tables. For other
-variants, we can keep the initial order and create remaining page
-tables after the allocation of final shadow memory for linear mem.
+Fix this by no longer relying on that assumption, but by having each CPU
+check the mm is not being used, and clearing their own bit from the mask
+only if it hasn't been switched-to by the time the IPI is processed.
 
-Move back the allocation of shadow page tables for
-CONFIG_KASAN_VMALLOC into kasan_init() after the loop which creates
-final shadow memory for linear mem.
+This relies on commit 38cf307c1f20 ("mm: fix kthread_use_mm() vs TLB
+invalidate") and ARCH_WANT_IRQS_OFF_ACTIVATE_MM to disable irqs over mm
+switch sequences.
 
-Fixes: 41ea93cf7ba4 ("powerpc/kasan: Fix shadow pages allocation failure")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of single-threaded mm_cpumask")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
+Depends-on: 38cf307c1f20 ("mm: fix kthread_use_mm() vs TLB invalidate")
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/8ae4554357da4882612644a74387ae05525b2aaa.1599800716.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/20200914045219.3736466-5-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/kasan/kasan_init_32.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/tlb.h       | 13 -------------
+ arch/powerpc/mm/book3s64/radix_tlb.c | 23 ++++++++++++++++-------
+ 2 files changed, 16 insertions(+), 20 deletions(-)
 
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
-index 019b0c0bbbf31..ca91d04d0a7ae 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -121,8 +121,7 @@ void __init kasan_mmu_init(void)
+diff --git a/arch/powerpc/include/asm/tlb.h b/arch/powerpc/include/asm/tlb.h
+index 862985cf51804..cf87bbdcfdcb2 100644
+--- a/arch/powerpc/include/asm/tlb.h
++++ b/arch/powerpc/include/asm/tlb.h
+@@ -67,19 +67,6 @@ static inline int mm_is_thread_local(struct mm_struct *mm)
+ 		return false;
+ 	return cpumask_test_cpu(smp_processor_id(), mm_cpumask(mm));
+ }
+-static inline void mm_reset_thread_local(struct mm_struct *mm)
+-{
+-	WARN_ON(atomic_read(&mm->context.copros) > 0);
+-	/*
+-	 * It's possible for mm_access to take a reference on mm_users to
+-	 * access the remote mm from another thread, but it's not allowed
+-	 * to set mm_cpumask, so mm_users may be > 1 here.
+-	 */
+-	WARN_ON(current->mm != mm);
+-	atomic_set(&mm->context.active_cpus, 1);
+-	cpumask_clear(mm_cpumask(mm));
+-	cpumask_set_cpu(smp_processor_id(), mm_cpumask(mm));
+-}
+ #else /* CONFIG_PPC_BOOK3S_64 */
+ static inline int mm_is_thread_local(struct mm_struct *mm)
  {
- 	int ret;
+diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+index b5cc9b23cf024..277a07772e7d6 100644
+--- a/arch/powerpc/mm/book3s64/radix_tlb.c
++++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+@@ -644,19 +644,29 @@ static void do_exit_flush_lazy_tlb(void *arg)
+ 	struct mm_struct *mm = arg;
+ 	unsigned long pid = mm->context.id;
  
--	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE) ||
--	    IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-+	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE)) {
- 		ret = kasan_init_shadow_page_tables(KASAN_SHADOW_START, KASAN_SHADOW_END);
++	/*
++	 * A kthread could have done a mmget_not_zero() after the flushing CPU
++	 * checked mm_is_singlethreaded, and be in the process of
++	 * kthread_use_mm when interrupted here. In that case, current->mm will
++	 * be set to mm, because kthread_use_mm() setting ->mm and switching to
++	 * the mm is done with interrupts off.
++	 */
+ 	if (current->mm == mm)
+-		return; /* Local CPU */
++		goto out_flush;
  
- 		if (ret)
-@@ -133,11 +132,11 @@ void __init kasan_mmu_init(void)
- void __init kasan_init(void)
- {
- 	struct memblock_region *reg;
-+	int ret;
- 
- 	for_each_memblock(memory, reg) {
- 		phys_addr_t base = reg->base;
- 		phys_addr_t top = min(base + reg->size, total_lowmem);
--		int ret;
- 
- 		if (base >= top)
- 			continue;
-@@ -147,6 +146,13 @@ void __init kasan_init(void)
- 			panic("kasan: kasan_init_region() failed");
+ 	if (current->active_mm == mm) {
+-		/*
+-		 * Must be a kernel thread because sender is single-threaded.
+-		 */
+-		BUG_ON(current->mm);
++		WARN_ON_ONCE(current->mm != NULL);
++		/* Is a kernel thread and is using mm as the lazy tlb */
+ 		mmgrab(&init_mm);
+-		switch_mm(mm, &init_mm, current);
+ 		current->active_mm = &init_mm;
++		switch_mm_irqs_off(mm, &init_mm, current);
+ 		mmdrop(mm);
  	}
- 
-+	if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-+		ret = kasan_init_shadow_page_tables(KASAN_SHADOW_START, KASAN_SHADOW_END);
 +
-+		if (ret)
-+			panic("kasan: kasan_init_shadow_page_tables() failed");
-+	}
++	atomic_dec(&mm->context.active_cpus);
++	cpumask_clear_cpu(smp_processor_id(), mm_cpumask(mm));
 +
- 	kasan_remap_early_shadow_ro();
++out_flush:
+ 	_tlbiel_pid(pid, RIC_FLUSH_ALL);
+ }
  
- 	clear_page(kasan_early_shadow_page);
+@@ -671,7 +681,6 @@ static void exit_flush_lazy_tlbs(struct mm_struct *mm)
+ 	 */
+ 	smp_call_function_many(mm_cpumask(mm), do_exit_flush_lazy_tlb,
+ 				(void *)mm, 1);
+-	mm_reset_thread_local(mm);
+ }
+ 
+ void radix__flush_tlb_mm(struct mm_struct *mm)
 -- 
 2.25.1
 
