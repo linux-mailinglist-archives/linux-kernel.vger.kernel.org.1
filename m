@@ -2,125 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEEE29A391
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068A629A397
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442390AbgJ0EOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 00:14:21 -0400
-Received: from ozlabs.org ([203.11.71.1]:38317 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409144AbgJ0EOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 00:14:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKyyK6cPvz9sSf;
-        Tue, 27 Oct 2020 15:14:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603772058;
-        bh=rsrwykZOm6mK2oNlLyZNUlllqMRFmVln36Mi00ayYEU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DT5410Jt+hmUPVWQ3hjE2gnzniPLfY09LbthC9VJjjLZS1BJPGMOPLLf323rmdzEN
-         sWHmqL+829EgsKsYe/2LGsWc/46L9ePj+bADrkcaz25HpAO/fQQHeHSn1yz3ZcUoqf
-         ts1wnBZeHlDgrwlj7FHXXhCDKgpob6UV2MmeCXJdWlqxjh7C8GyJXUR6hczh+my+F8
-         PSUm69QB4B6yrb34HuqBrTD+lBjvtZ+dIaInxmoXqLeXwkED6dYk6AHgZxkdsaopG+
-         Od25on3dwCreiLMTaVsoEATUG5327G6p4s+i0lj2kmE7OQq0JouryZdu88qzoW4LNU
-         940jFgCHsLUXg==
-Date:   Tue, 27 Oct 2020 15:14:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@ZenIV.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vfs tree
-Message-ID: <20201027151414.2018d5fd@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QoF3YFnjo6+B0lit25a/DUH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S2505376AbgJ0EPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 00:15:43 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:14514 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442776AbgJ0EPl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 00:15:41 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201027041538epoutp02e438203bd262a2e2bb9591fc43ad1d3a~BvkM0Z0mM2845428454epoutp02S
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:15:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201027041538epoutp02e438203bd262a2e2bb9591fc43ad1d3a~BvkM0Z0mM2845428454epoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603772138;
+        bh=QmsAGZ914pVlhHj0JHteeAL0P0zGoJ524XNBMQDKb8Y=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=MUoZsjxhxWwzlGSTuqbrbHxZspX8fATWzvDdidscqKYhCifl4DBp1EeBtZ7WI15mb
+         nwK+xAQIOH7wfahUTnxXc2D7qKLjwTKYEDynVM/fHddXeMQOGemQEKdvY2HccoKu3U
+         6EM0b7PMGqtCnq4ijY3RCQ90mcWdLRIU5+jv5tw4=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201027041537epcas1p30f7ea22517894f410c44df158889104d~BvkMZDT7r2989729897epcas1p3M;
+        Tue, 27 Oct 2020 04:15:37 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.156]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4CKyzq3K73zMqYkl; Tue, 27 Oct
+        2020 04:15:35 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        49.FE.09918.7EE979F5; Tue, 27 Oct 2020 13:15:35 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201027041534epcas1p22f6b232a4d6be92dcc807f28baedab44~BvkJwmHd61218612186epcas1p2r;
+        Tue, 27 Oct 2020 04:15:34 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201027041534epsmtrp19af9fc5465560dd1a1a189dd624fbd57~BvkJvs7WX0073800738epsmtrp1X;
+        Tue, 27 Oct 2020 04:15:34 +0000 (GMT)
+X-AuditID: b6c32a36-713ff700000026be-34-5f979ee7ca32
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EC.69.08745.6EE979F5; Tue, 27 Oct 2020 13:15:34 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.111.64]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201027041534epsmtip143f2b95ee50675314e32c1f7f2d92141~BvkJeuwhv2895528955epsmtip1f;
+        Tue, 27 Oct 2020 04:15:34 +0000 (GMT)
+From:   Hoegeun Kwon <hoegeun.kwon@samsung.com>
+To:     maxime@cerno.tech, eric@anholt.net, airlied@linux.ie,
+        daniel@ffwll.ch, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        dave.stevenson@raspberrypi.com, sungguk.na@samsung.com,
+        hoegeun.kwon@samsung.com
+Subject: [PATCH 0/1] drm/vc4: drv: Add error handding for bind
+Date:   Tue, 27 Oct 2020 13:14:41 +0900
+Message-Id: <20201027041442.30352-1-hoegeun.kwon@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmge7zedPjDRbeE7boPXeSyWJt71EW
+        i//bJjJbvJ27mMVi/pFzrBZXvr5nszjQeJnR4v3yLjaLTY+vsVpc3jWHzWLi7Q3sFjN+/GO0
+        aN17hN1ix7yDjA58Hk3vj7F5zLp/ls3jzrnzbB57vy1g8di0qpPNY/u3B6we97uPM3lsXlLv
+        0Xr0F4tH35ZVjB6fN8kFcEdl22SkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl
+        5qbaKrn4BOi6ZeYAvaGkUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKbAs0CtOzC0u
+        zUvXS87PtTI0MDAyBSpMyM74P/UeW8EmnoobN9+wNjAu5epi5OSQEDCRmPLtETuILSSwg1Fi
+        4muBLkYuIPsTo8TyFzeZIJzPjBLH97xjh+noeHKcDSKxi1FixpH37HBVTw/MYAGpYhPQlfja
+        c50JxBYRiJe41tvGClLELLCKSeLcjiVgRcICdhKdbw4A2RwcLAKqEu+fu4CEeQVsJTafXssG
+        sU1eYvWGA8wgvRICUzkknk34wAyRcJF42X8WqkhY4tXxLVDnSQHF26DsYokrM1+xQDQ3MEr0
+        T5wNlTCW2L90MhPIYmYBTYn1u/QhwooSO3/PZQSxmQX4JN597WEFKZEQ4JXoaBOCKFGTeNZw
+        gBXClpE41bucCcL2kFgy/RYrJBxjJW7cn8k6gVF2FsKCBYyMqxjFUguKc9NTiw0LjJBjaRMj
+        OGlqme1gnPT2g94hRiYOxkOMEhzMSiK8c2SmxgvxpiRWVqUW5ccXleakFh9iNAWG10RmKdHk
+        fGDaziuJNzQ1MjY2tjAxNDM1NFQS5/2j3REvJJCeWJKanZpakFoE08fEwSnVwOT9qM/ibln/
+        y7uXltu5TZ3SyRXjLvLehkVI+cvaHFe5y53zps1Wu+W/mud51147papelXXzzB7ZfVs7Kza7
+        rO/1j7qnlbpP/d4x2z34vemZyqWb23nnRVv32E3eK7qwdeFbWRlOr8svnP6JmnNLb7B+yZIQ
+        Njlrxu7fjVPTpAxFpTYFLU/eLqnJG3tGZuuaU5f3WNjJdO1v1rPv0b077dQ6xU9VTUFby+2d
+        dH6qekVd4/+pnfPRx0vIZmHNZzuTc34M/2MKHJYzRa/aMPFlzi4JadZ3E6cekDqdt/ixmHSW
+        VI7nfMGFJU+yc7mreialyEx+y127L3FPS+CU+IkKL8JD2NmmJT0TYer0UQwOU2Ipzkg01GIu
+        Kk4EAAH6wbQjBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHLMWRmVeSWpSXmKPExsWy7bCSnO6zedPjDU4/1rXoPXeSyWJt71EW
+        i//bJjJbvJ27mMVi/pFzrBZXvr5nszjQeJnR4v3yLjaLTY+vsVpc3jWHzWLi7Q3sFjN+/GO0
+        aN17hN1ix7yDjA58Hk3vj7F5zLp/ls3jzrnzbB57vy1g8di0qpPNY/u3B6we97uPM3lsXlLv
+        0Xr0F4tH35ZVjB6fN8kFcEdx2aSk5mSWpRbp2yVwZfyfeo+tYBNPxY2bb1gbGJdydTFyckgI
+        mEh0PDnO1sXIxSEksINRYs2sfUwQCRmJVf1bWLsYOYBsYYnDh4shaj4ySjycsIcZpIZNQFfi
+        a891sHoRgVSJtvdHWECKmAU2MUn0nexhBEkIC9hJdL45wAIyiEVAVeL9cxeQMK+ArcTm02vZ
+        IHbJS6zecIB5AiPPAkaGVYySqQXFuem5xYYFRnmp5XrFibnFpXnpesn5uZsYwUGspbWDcc+q
+        D3qHGJk4GA8xSnAwK4nwzpGZGi/Em5JYWZValB9fVJqTWnyIUZqDRUmc9+ushXFCAumJJanZ
+        qakFqUUwWSYOTqkGpoiuhujHNQGfM49liP9dxeDgzzmZV3rDXbM53Mqr9j6KnRtc/l7sOcOt
+        vbmr/zs8Slhq/nHd92lTFq9ev1XSuaQq8kf4tmdFK/8bHxG1P7p9y9Oa2YsNtih2nW/L2j1v
+        pVh16vSGA5f+Wzl/yZdffvuht0nR9+XNc71Weh5waPnrMfea7Up2Rpkwrz/tPmUP5Y6tOa3y
+        dwHHuoX7rtert/QrFW8XEVtzs2TxPu3HT2ex6MjPe+Ps2Fp7o6ed5bMq871PZmqOT/da6937
+        wjFrSwkrz4S/W8+uu84QdvPa0rmtm1OFpuz3EPjCUXrhUYDFX/FF0294rOp88/SWrnXFY7Uu
+        o0fz5gm7HBZ+sC9TiGuuEktxRqKhFnNRcSIAkUSQbtECAAA=
+X-CMS-MailID: 20201027041534epcas1p22f6b232a4d6be92dcc807f28baedab44
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201027041534epcas1p22f6b232a4d6be92dcc807f28baedab44
+References: <CGME20201027041534epcas1p22f6b232a4d6be92dcc807f28baedab44@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QoF3YFnjo6+B0lit25a/DUH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello all,
 
-Hi all,
+There is a problem that if vc4_drm bind fails, a memory leak occurs on
+the drm_property_create side as shown below. Add error handding for
+drm_mode_config.
 
-After merging the vfs tree, today's linux-next build (sparc_defconfig)
-failed like this:
+unreferenced object 0xffffff80f5a7a6c8 (size 576):
+  comm "swapper/0", pid 1, jiffies 4294892559 (age 181.448s)
+  hex dump (first 32 bytes):
+    00 00 1e 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    f8 f1 0e f5 80 ff ff ff e0 a6 a7 f5 80 ff ff ff  ................
+  backtrace:
+    [<00000000fd3656dc>] kmem_cache_alloc+0x1a4/0x328
+    [<000000009dfa1aab>] radix_tree_node_alloc.constprop.19+0x50/0x108
+    [<00000000a9f1657b>] idr_get_free+0x21c/0x2b8
+    [<0000000099f2eea6>] idr_alloc_u32+0x68/0xf0
+    [<00000000525beb52>] idr_alloc+0x44/0x80
+    [<00000000dbfbaa4b>] __drm_mode_object_add+0x64/0xc0
+    [<000000002c24dfc8>] drm_mode_object_add+0x3c/0x50
+    [<00000000f45b491f>] drm_property_create+0xf0/0x1a0
+    [<000000002e1a296b>] drm_connector_create_standard_properties+0x30/0x130
+    [<000000007c53e4bd>] drm_mode_config_init+0x138/0x498
+    [<00000000cc1b0767>] vc4_drm_bind+0x168/0x1f8
+    [<0000000041d69f98>] try_to_bring_up_master+0x180/0x1e8
+    [<00000000d1e1caae>] component_master_add_with_match+0xbc/0x108
+    [<0000000085cea46d>] vc4_platform_drm_probe+0xd8/0x108
+    [<00000000eacabf20>] platform_drv_probe+0x58/0xa8
+    [<000000003822d094>] really_probe+0x10c/0x350
 
-arch/sparc/lib/memset.S: Assembler messages:
-arch/sparc/lib/memset.S:149: Error: Unknown opcode: `ext(12b, 13b,21f)'
+Best regards,
+Hoegeun
 
-Caused by commit
+Hoegeun Kwon (1):
+  drm/vc4: drv: Add error handding for bind
 
-  0e0bbae08a6e ("sparc32: switch __bzero() away from range exception table =
-entries")
+ drivers/gpu/drm/vc4/vc4_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-merging badly with commit
+-- 
+2.17.1
 
-  7780918b3648 ("sparc32: fix a user-triggerable oops in clear_user()")
-
-from the sparc tree.
-
-The sparc tree commit above appears as commit
-
-  80537bbf19d6 ("sparc32: fix a user-triggerable oops in clear_user()")
-
-in the vfs tree as well.  The patch adds one line which is later removed
-by commit
-
-  0e0bbae08a6e ("sparc32: switch __bzero() away from range exception table =
-entries")
-
-in the vfs tree, but the git merge puts the line back again :-(
-
-I have added the following fix to the vfs tree merge
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 27 Oct 2020 15:05:28 +1100
-Subject: [PATCH] fix up for merge of arch/sparc/lib/memset.S
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/sparc/lib/memset.S | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/sparc/lib/memset.S b/arch/sparc/lib/memset.S
-index 522f45a952a0..eaff68213fdf 100644
---- a/arch/sparc/lib/memset.S
-+++ b/arch/sparc/lib/memset.S
-@@ -146,7 +146,6 @@ __bzero:
- 	ZERO_LAST_BLOCKS(%o0, 0x48, %g2)
- 	ZERO_LAST_BLOCKS(%o0, 0x08, %g2)
- 13:
--	EXT(12b, 13b, 21f)
- 	be	8f
- 	 andcc	%o1, 4, %g0
-=20
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/QoF3YFnjo6+B0lit25a/DUH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XnpYACgkQAVBC80lX
-0GwlDggAoQj7uYZQaJ/tHfcYI1weowF4kSPPbGOEEWNwYTuJGeF7mkdZaor+Gaza
-h7ns0yQVFEAElx0QV488clX/qDRmIfdVPkSkiS4Y1HQaPGBvyZ9hB+DUIAH1bFrZ
-TZjc1gg+2/b+I+27MkaeJPBn3TKxDJSIEs5cDRMfVxAM2Ljeb25cF3FWn0LZGhe+
-8QZ4Y3q4BJv95YFVwVDZQoadHTG6Pp+UAcQD2egwRFQHEesn4LAwFYv1LqSuxIv9
-MkMiN/fz7S+abtCCR/lN8IbSDmog97tnjZBxLBuSbF+Jj/lcweuC6kSn0/wp13Rz
-1/WQDiH3cOPr7KPZpT+IqBwV7gJReA==
-=oYP/
------END PGP SIGNATURE-----
-
---Sig_/QoF3YFnjo6+B0lit25a/DUH--
