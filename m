@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C396929C2C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65DF29C387
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902316AbgJ0Ocl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54942 "EHLO mail.kernel.org"
+        id S1822143AbgJ0RrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:47:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759262AbgJ0O2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:28:33 -0400
+        id S1759110AbgJ0O1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:27:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BDA822202;
-        Tue, 27 Oct 2020 14:28:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0769320780;
+        Tue, 27 Oct 2020 14:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808912;
-        bh=mBwhyAm3AFLkaNxNGnZpo85P/yX8iT4wvwug9JXCGAU=;
+        s=default; t=1603808867;
+        bh=0gt/BdUnjet6wwgBcbHhkuBhangU35v/BOtsUmknBv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QRxxGXoS06kpuEGw9xw/adKAAuWQngw42OzDsFdhnT25celf/cP46xY4ceEcrx9kZ
-         eUgCEdJPYArR3UYOoSwGF1ELn1VN8lx3EJc/tedfkVq6KlgGLmtmqj8qmMcwsprjiT
-         dgTkgw6oaLUbs0fxPbiyZeBh2DwyF7Q11DNrSJTM=
+        b=0hfOhmn7XEFBzgKsbiL+r64t3MTR6ER8ExKVvV7cqm51sqhK0p2z1007DvRAqo10g
+         wcr7FdKYZ5QsNU4Q4Loy2SsueDj2Aj8knKxF20DdZDyv0P11Ir8qPWngIZPjtfKIBx
+         xdV5xOH3POE85TUsub3R6MKxggtNZuxJQujZWUcI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Yufen <wangyufen@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 251/264] tty: ipwireless: fix error handling
-Date:   Tue, 27 Oct 2020 14:55:09 +0100
-Message-Id: <20201027135442.436513425@linuxfoundation.org>
+Subject: [PATCH 4.19 255/264] brcm80211: fix possible memleak in brcmf_proto_msgbuf_attach
+Date:   Tue, 27 Oct 2020 14:55:13 +0100
+Message-Id: <20201027135442.624187399@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,58 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Wang Yufen <wangyufen@huawei.com>
 
-[ Upstream commit db332356222d9429731ab9395c89cca403828460 ]
+[ Upstream commit 6c151410d5b57e6bb0d91a735ac511459539a7bf ]
 
-ipwireless_send_packet() can only return 0 on success and -ENOMEM on
-error, the caller should check non zero for error condition
+When brcmf_proto_msgbuf_attach fail and msgbuf->txflow_wq != NULL,
+we should destroy the workqueue.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Acked-by: David Sterba <dsterba@suse.com>
-Link: https://lore.kernel.org/r/20200821161942.36589-1-ztong0001@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1595237765-66238-1-git-send-email-wangyufen@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/ipwireless/network.c | 4 ++--
- drivers/tty/ipwireless/tty.c     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/tty/ipwireless/network.c b/drivers/tty/ipwireless/network.c
-index cf20616340a1a..fe569f6294a24 100644
---- a/drivers/tty/ipwireless/network.c
-+++ b/drivers/tty/ipwireless/network.c
-@@ -117,7 +117,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       skb->len,
- 					       notify_packet_sent,
- 					       network);
--			if (ret == -1) {
-+			if (ret < 0) {
- 				skb_pull(skb, 2);
- 				return 0;
- 			}
-@@ -134,7 +134,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       notify_packet_sent,
- 					       network);
- 			kfree(buf);
--			if (ret == -1)
-+			if (ret < 0)
- 				return 0;
- 		}
- 		kfree_skb(skb);
-diff --git a/drivers/tty/ipwireless/tty.c b/drivers/tty/ipwireless/tty.c
-index 1ef751c27ac6d..cb04971843306 100644
---- a/drivers/tty/ipwireless/tty.c
-+++ b/drivers/tty/ipwireless/tty.c
-@@ -218,7 +218,7 @@ static int ipw_write(struct tty_struct *linux_tty,
- 	ret = ipwireless_send_packet(tty->hardware, IPW_CHANNEL_RAS,
- 			       buf, count,
- 			       ipw_write_packet_sent_callback, tty);
--	if (ret == -1) {
-+	if (ret < 0) {
- 		mutex_unlock(&tty->ipw_tty_mutex);
- 		return 0;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+index ee922b0525610..768a99c15c08b 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+@@ -1563,6 +1563,8 @@ int brcmf_proto_msgbuf_attach(struct brcmf_pub *drvr)
+ 					  BRCMF_TX_IOCTL_MAX_MSG_SIZE,
+ 					  msgbuf->ioctbuf,
+ 					  msgbuf->ioctbuf_handle);
++		if (msgbuf->txflow_wq)
++			destroy_workqueue(msgbuf->txflow_wq);
+ 		kfree(msgbuf);
  	}
+ 	return -ENOMEM;
 -- 
 2.25.1
 
