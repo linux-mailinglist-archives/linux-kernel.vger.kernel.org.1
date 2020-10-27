@@ -2,322 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16C329A6E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976CA29A6EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509330AbgJ0IsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:48:18 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:37661 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509321AbgJ0IsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:48:17 -0400
-Received: by mail-pj1-f67.google.com with SMTP id lt2so400663pjb.2;
-        Tue, 27 Oct 2020 01:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0Q0JEJhglCVtWUnNAN4lkbbkMeDcQNxkk529TN6uDLs=;
-        b=PetRbD8cz25PvrGChqG3EUc/bivxihJ8ceuFOJaVH4EH+vmwH7aPyr+gGX4H4kNj7p
-         /3x5mFecGKsMx7YyfOG16wOVD2noi93NwXy78w+YdItkaV59xARTn6+CdB/0qUXb+Jjp
-         6O06IH26Plf3jp3k+nwDTGhT1cT2t+cNXGp3bOx7rx4QzLItVnvcjmsmGx4E/LSF102p
-         CAcO4c3nkJkU2AgnMdwVOzLW7shdmi46Lh+aEHyLOaNIuW7z6+9J0lPr2EHd5Y1wUUZt
-         pQfjO8bTXnlsE+c9esDAHytukbakBeDmSPBgEZwjhTThSScLryC0wk8oH2+cnX/L5sG1
-         nBMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0Q0JEJhglCVtWUnNAN4lkbbkMeDcQNxkk529TN6uDLs=;
-        b=kvcf6yUP0HJxfSUf/2PadfT+Ctmdu7Q7cFiqkH4Qy9fNMr67/XmYZhzabQ0SdJga1C
-         YdRP45GAVMSq4ZD9ZiZ38VQ7RxIHxOdzFwrO03tYKQxoFdA/WMpdgqLkbfb7UJGlEMTc
-         e4fP/NEMYg1FfjBXobWphRL6dpffxJvq4xw+5giSSXNTbM44XEswFmOmvOJ1pgZV2+c2
-         xBAKeKFLcT8tIxz2VHM+LhyL1UdCc3U3y1JW7Qr6EbGrcpwzxPSSgzOQ92u8bL8l8dSV
-         gkN3TAgLzBHaE7SLLKCgJBhqzX41T0/t2ljECF5/TL0k+zuayQ363dk/+Zbn8c2vtv3T
-         EV9A==
-X-Gm-Message-State: AOAM531gQ7yc/W2ZVG429DEFM++ODeKhf5Go6sOBWNtEk4TlbyWeCM7R
-        NnM/iysXytgIw7YlcT4Rw6w=
-X-Google-Smtp-Source: ABdhPJyuh8PFTGYQO5h/4A+7PRKkftZFYY8KBRehDheCyt8FJG933zCJdw/ZoGQY0AKI2cDUiWlp1A==
-X-Received: by 2002:a17:902:b7c9:b029:d5:f570:d573 with SMTP id v9-20020a170902b7c9b02900d5f570d573mr1264452plz.15.1603788496267;
-        Tue, 27 Oct 2020 01:48:16 -0700 (PDT)
-Received: from ruantu-3.localdomain ([103.230.142.242])
-        by smtp.gmail.com with ESMTPSA id n7sm1291988pgk.70.2020.10.27.01.48.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 01:48:15 -0700 (PDT)
-From:   Yu-Tung Chang <mtwget@gmail.com>
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yu-Tung Chang <mtwget@gmail.com>
-Subject: [PATCH 1/1] ARM: dts: sun8i: h3: Add initial NanoPi R1 support
-Date:   Tue, 27 Oct 2020 16:48:03 +0800
-Message-Id: <20201027084803.17368-2-mtwget@gmail.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201027084803.17368-1-mtwget@gmail.com>
-References: <20201027084803.17368-1-mtwget@gmail.com>
+        id S2509346AbgJ0ItV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:49:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2509336AbgJ0ItR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:49:17 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 817B6207DE;
+        Tue, 27 Oct 2020 08:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603788557;
+        bh=vqvHVfwUem4JOBq/WXsfNE79L5Iz5nEhnMlkJj2ElFU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cob/039dcWnn8OjH5If0m1K0e5hz+wi7uaTqafHhMC0w6AKDJ7mof/L9QVAWjAi5m
+         AzwVpAcX/G3bIeFGz/QZ6LDXFrWjC3A32wjsC/UaCx/T35y4jeNZtg1G5OqKcQamFp
+         mFhuBk5Uhn3ItuoN/wmMtQFg0IPWtBPQaAK5nUZY=
+Date:   Tue, 27 Oct 2020 10:49:02 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
+ in the direct map
+Message-ID: <20201027084902.GH1154158@kernel.org>
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <20201025101555.3057-3-rppt@kernel.org>
+ <f20900a403bea9eb3f0814128e5ea46f6580f5a5.camel@intel.com>
+ <20201026091554.GB1154158@kernel.org>
+ <a28d8248057e7dc01716764da9edfd666722ff62.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a28d8248057e7dc01716764da9edfd666722ff62.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NanoPi R1 is a complete open source board developed
-by FriendlyElec for makers, hobbyists, fans and etc.
+On Mon, Oct 26, 2020 at 06:57:32PM +0000, Edgecombe, Rick P wrote:
+> On Mon, 2020-10-26 at 11:15 +0200, Mike Rapoport wrote:
+> > On Mon, Oct 26, 2020 at 12:38:32AM +0000, Edgecombe, Rick P wrote:
+> > > On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page
+> > > > may
+> > > > be
+> > > > not present in the direct map and has to be explicitly mapped
+> > > > before
+> > > > it
+> > > > could be copied.
+> > > > 
+> > > > On arm64 it is possible that a page would be removed from the
+> > > > direct
+> > > > map
+> > > > using set_direct_map_invalid_noflush() but __kernel_map_pages()
+> > > > will
+> > > > refuse
+> > > > to map this page back if DEBUG_PAGEALLOC is disabled.
+> > > 
+> > > It looks to me that arm64 __kernel_map_pages() will still attempt
+> > > to
+> > > map it if rodata_full is true, how does this happen?
+> > 
+> > Unless I misread the code, arm64 requires both rodata_full and
+> > debug_pagealloc_enabled() to be true for __kernel_map_pages() to do
+> > anything.
+> > But rodata_full condition applies to set_direct_map_*_noflush() as
+> > well,
+> > so with !rodata_full the linear map won't be ever changed.
+> 
+> Hmm, looks to me that __kernel_map_pages() will only skip it if both
+> debug pagealloc and rodata_full are false.
+> 
+> But now I'm wondering if maybe we could simplify things by just moving
+> the hibernate unmapped page logic off of the direct map. On x86,
+> text_poke() used to use this reserved fixmap pte thing that it could
+> rely on to remap memory with. If hibernate had some separate pte for
+> remapping like that, then we could not have any direct map restrictions
+> caused by it/kernel_map_pages(), and it wouldn't have to worry about
+> relying on anything else.
 
-NanoPi R1 key features
-- Allwinner H3, Quad-core Cortex-A7@1.2GHz
-- 512MB/1GB DDR3 RAM
-- 8GB eMMC
-- microSD slot
-- 10/100/1000M Ethernet x 1
-- 10/100 Ethernet x 1
-- Wifi 802.11b/g/n
-- Bluetooth 4.0
-- Serial Debug Port
-- 5V 2A DC power-supply
+Well, there is map_kernel_range() that can be used by hibernation as
+there is no requirement for particular virtual address, but that would
+be quite costly if done for every page.
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
----
- .../devicetree/bindings/arm/sunxi.yaml        |   5 +
- arch/arm/boot/dts/Makefile                    |   1 +
- arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts      | 199 ++++++++++++++++++
- 3 files changed, 205 insertions(+)
- create mode 100644 arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts
+Maybe we can do somthing like
 
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-index 0f23133672a3..54a1aaee7e22 100644
---- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -251,6 +251,11 @@ properties:
-           - const: friendlyarm,nanopi-neo-plus2
-           - const: allwinner,sun50i-h5
- 
-+      - description: FriendlyARM NanoPi R1
-+        items:
-+          - const: friendlyarm,nanopi-r1
-+          - const: allwinner,sun8i-h3
-+
-       - description: FriendlyARM ZeroPi
-         items:
-           - const: friendlyarm,zeropi
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4f0adfead547..aabaf67f86ed 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1192,6 +1192,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
- 	sun8i-h3-nanopi-m1-plus.dtb \
- 	sun8i-h3-nanopi-neo.dtb \
- 	sun8i-h3-nanopi-neo-air.dtb \
-+	sun8i-h3-nanopi-r1.dtb \
- 	sun8i-h3-orangepi-2.dtb \
- 	sun8i-h3-orangepi-lite.dtb \
- 	sun8i-h3-orangepi-one.dtb \
-diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts b/arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts
-new file mode 100644
-index 000000000000..d4b90892a4d8
---- /dev/null
-+++ b/arch/arm/boot/dts/sun8i-h3-nanopi-r1.dts
-@@ -0,0 +1,199 @@
-+/*
-+ * Copyright (C) 2019 Igor Pecovnik <igor@armbian.com>
-+ * Copyright (C) 2020 Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
-+ * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
-+ *
-+ * This file is dual-licensed: you can use it either under the terms
-+ * of the GPL or the X11 license, at your option. Note that this dual
-+ * licensing only applies to this file, and not this project as a
-+ * whole.
-+ *
-+ *  a) This file is free software; you can redistribute it and/or
-+ *     modify it under the terms of the GNU General Public License as
-+ *     published by the Free Software Foundation; either version 2 of the
-+ *     License, or (at your option) any later version.
-+ *
-+ *     This file is distributed in the hope that it will be useful,
-+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *     GNU General Public License for more details.
-+ *
-+ * Or, alternatively,
-+ *
-+ *  b) Permission is hereby granted, free of charge, to any person
-+ *     obtaining a copy of this software and associated documentation
-+ *     files (the "Software"), to deal in the Software without
-+ *     restriction, including without limitation the rights to use,
-+ *     copy, modify, merge, publish, distribute, sublicense, and/or
-+ *     sell copies of the Software, and to permit persons to whom the
-+ *     Software is furnished to do so, subject to the following
-+ *     conditions:
-+ *
-+ *     The above copyright notice and this permission notice shall be
-+ *     included in all copies or substantial portions of the Software.
-+ *
-+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-+ *     OTHER DEALINGS IN THE SOFTWARE.
-+ */
-+
-+#include "sun8i-h3-nanopi.dtsi"
-+
-+/ {
-+	model = "FriendlyARM NanoPi R1";
-+	compatible = "friendlyarm,nanopi-r1", "allwinner,sun8i-h3";
-+
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-+	};
-+
-+	reg_vdd_cpux: gpio-regulator {
-+		compatible = "regulator-gpio";
-+		regulator-name = "vdd-cpux";
-+		regulator-type = "voltage";
-+		regulator-boot-on;
-+		regulator-always-on;
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1300000>;
-+		regulator-ramp-delay = <50>;
-+		gpios = <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
-+		gpios-states = <0x1>;
-+		states = <1100000 0x0
-+			  1300000 0x1>;
-+	};
-+
-+	wifi_pwrseq: wifi_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
-+		clocks = <&rtc 1>;
-+		clock-names = "ext_clock";
-+	};
-+
-+	leds {
-+
-+		wan {
-+			label = "nanopi:green:wan";
-+			gpios = <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
-+		};
-+
-+		lan {
-+			label = "nanopi:green:lan";
-+			gpios = <&pio 0 9 GPIO_ACTIVE_HIGH>; /* PA9 */
-+		};
-+	};
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&reg_vdd_cpux>;
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&ehci2 {
-+	status = "okay";
-+};
-+
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii-id";
-+	status = "okay";
-+};
-+
-+&external_mdio {
-+	ext_rgmii_phy: ethernet-phy@7 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <7>;
-+	};
-+};
-+
-+&mmc1 {
-+	vmmc-supply = <&reg_vcc3v3>;
-+	vqmmc-supply = <&reg_vcc3v3>;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	bus-width = <4>;
-+	non-removable;
-+	status = "okay";
-+
-+	sdio_wifi: sdio_wifi@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+		interrupt-parent = <&pio>;
-+		interrupts = <6 10 IRQ_TYPE_LEVEL_LOW>; /* PG10 / EINT10 */
-+		interrupt-names = "host-wake";
-+	};
-+};
-+
-+&mmc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc2_8bit_pins>;
-+	vmmc-supply = <&reg_vcc3v3>;
-+	vqmmc-supply = <&reg_vcc3v3>;
-+	bus-width = <8>;
-+	non-removable;
-+	status = "okay";
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&ohci2 {
-+	status = "okay";
-+};
-+
-+&reg_usb0_vbus {
-+	gpio = <&r_pio 0 2 GPIO_ACTIVE_HIGH>; /* PL2 */
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart1_pins>;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart3_pins>, <&uart3_rts_cts_pins>;
-+	uart-has-rtscts;
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		clocks = <&rtc 1>;
-+		clock-names = "lpo";
-+		vbat-supply = <&reg_vcc3v3>;
-+		vddio-supply = <&reg_vcc3v3>;
-+		device-wakeup-gpios = <&pio 0 8 GPIO_ACTIVE_HIGH>; /* PA8 */
-+		host-wakeup-gpios = <&pio 0 7 GPIO_ACTIVE_HIGH>; /* PA7 */
-+		shutdown-gpios = <&pio 6 13 GPIO_ACTIVE_HIGH>; /* PG13 */
-+	};
-+};
-+
-+&usb_otg {
-+	status = "okay";
-+	dr_mode = "peripheral";
-+};
-+
-+&usbphy {
-+	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
-+	usb0_vbus-supply = <&reg_usb0_vbus>;
-+	status = "okay";
-+};
-+
+	if (kernel_page_present(s_page)) {
+		do_copy_page(dst, page_address(s_page));
+	} else {
+		map_kernel_range_noflush(page_address(page), PAGE_SIZE,
+					 PROT_READ, &page);
+		do_copy_page(dst, page_address(s_page));
+		unmap_kernel_range_noflush(page_address(page), PAGE_SIZE);
+	}
+
+But it seems that a prerequisite for changing the way a page is mapped
+in safe_copy_page() would be to teach hibernation that a mapping here
+may fail.
+
 -- 
-2.29.0
-
+Sincerely yours,
+Mike.
