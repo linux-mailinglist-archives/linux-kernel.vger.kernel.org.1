@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1351129C99F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACE29C9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830848AbgJ0UFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:05:07 -0400
-Received: from casper.infradead.org ([90.155.50.34]:54842 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460397AbgJ0UFC (ORCPT
+        id S1830888AbgJ0UHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:07:12 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48924 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502330AbgJ0UHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:05:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tzWPcYHuy72jM3lfq5yTC7lqPQiYT06h+bTUgYiDIAw=; b=tttj6ypZroxZq2rn47tx6H2Ebs
-        4qeGp1M+Hsc4l1FsGZoew0kbQxvTbhzd2T1KvBFDF7+YMACwxFE+YPi49yhvGwsWVw6AWiU6dcNbZ
-        gqYAWUuXbwdj05Bb9qDtJhUrjIQvIcoqw2jkNJOqoReBNdhVdfRZXolbazzyWLGzwUWCwQzWlgaSy
-        jwcFJzCx9W76rL/ScWDuK3oVgf6sZV9wcX4bBtPuTEHHO8BzFE13kpdxkbG4tkXCFQqp3JbFIVy3R
-        a9HplTuCmGfp56hPF0E07u1L2lNS79kQXse5pDi1hKudx6CrAfTbZpIsdHTXiKoWbM8Ft4ER6T4jO
-        1ft9z6eQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXVDG-0000Ep-Tq; Tue, 27 Oct 2020 20:04:59 +0000
-Date:   Tue, 27 Oct 2020 20:04:58 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v3 04/12] mm/filemap: Add mapping_seek_hole_data
-Message-ID: <20201027200458.GX20115@casper.infradead.org>
-References: <20201026041408.25230-1-willy@infradead.org>
- <20201026041408.25230-5-willy@infradead.org>
- <20201027185809.GB15201@infradead.org>
+        Tue, 27 Oct 2020 16:07:11 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603829229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uLHasLeFZXHLGuB6wXRMCNndBw4TlZvcsyKqECXZETI=;
+        b=xfsxAyU2PhzwTPwDpkO3DO2lsAZ8qOZjpv2wF+3QyeDsEWD1dLi4qDZw1jxHim3rD6xpjm
+        80W0nwscc10SCZNET0z39+i+FMh9UTLyi7XCjEObzKt+qe36qNwGTDVDr8eNAmQSrXm6Ca
+        GX0TfSxkbzIZ86XnFm00vm0QgpOMXtBRxAUNnI5UDGmqPtIbBgV/IjRPOPdMlsY62PjXQQ
+        RHL6Piz12tlOwuCW9O3y1+Sm31+t/BLZQbDOLuq5sfN1QpUfPYSs3SqoKbRgrNYlsTlk5u
+        +X3tcMtAOo5KcxnjuiSVpmJMhSkFFFJoR7uX29wWc6iCubSF8BwycjJEjebvLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603829229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uLHasLeFZXHLGuB6wXRMCNndBw4TlZvcsyKqECXZETI=;
+        b=YNY8I2npi4rufzOpUNo9hn0uEGG0KJ3maGc5wBsl4uPgSUcUgEZF3JkvSIB4PI5Jp2JL25
+        gsxwNNQdfm5QQxCw==
+To:     tip-bot2 for Kairui Song <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org
+Cc:     Kairui Song <kasong@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [tip: x86/urgent] x86/kexec: Use up-to-dated screen_info copy to fill boot params
+In-Reply-To: <160269020077.7002.6607120194042289745.tip-bot2@tip-bot2>
+References: <20201014092429.1415040-2-kasong@redhat.com> <160269020077.7002.6607120194042289745.tip-bot2@tip-bot2>
+Date:   Tue, 27 Oct 2020 21:07:06 +0100
+Message-ID: <877drb1lhx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027185809.GB15201@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 06:58:09PM +0000, Christoph Hellwig wrote:
-> > +/**
-> > + * mapping_seek_hole_data - Seek for SEEK_DATA / SEEK_HOLE in the page cache.
-> > + * @mapping: Address space to search.
-> > + * @start: First byte to consider.
-> > + * @end: Limit of search (exclusive).
-> > + * @whence: Either SEEK_HOLE or SEEK_DATA.
-> > + *
-> > + * If the page cache knows which blocks contain holes and which blocks
-> > + * contain data, your filesystem can use this function to implement
-> > + * SEEK_HOLE and SEEK_DATA.  This is useful for filesystems which are
-> > + * entirely memory-based such as tmpfs, and filesystems which support
-> > + * unwritten extents.
-> > + *
-> > + * Return: The requested offset on successs, or -ENXIO if @whence specifies
-> > + * SEEK_DATA and there is no data after @start.  There is an implicit hole
-> > + * after @end - 1, so SEEK_HOLE returns @end if all the bytes between @start
-> > + * and @end contain data.
-> > + */
-> 
-> This seems to just lift the tmpfs one to common code.  If it really
-> is supposed to be generic it should be able to replace
-> page_cache_seek_hole_data as well.  So I don't think moving this without
-> removing the other common one is an all that good idea.
+On Wed, Oct 14 2020 at 15:43, tip-bot wrote:
+> The following commit has been merged into the x86/urgent branch of tip:
+> x86/kexec: Use up-to-dated screen_info copy to fill boot params
+>
+> kexec_file_load() currently reuses the old boot_params.screen_info,
+> but if drivers have change the hardware state, boot_param.screen_info
+> could contain invalid info.
+>
+> For example, the video type might be no longer VGA, or the frame buffer
+> address might be changed. If the kexec kernel keeps using the old screen_info,
+> kexec'ed kernel may attempt to write to an invalid framebuffer
+> memory region.
+>
+> There are two screen_info instances globally available, boot_params.screen_info
+> and screen_info. Later one is a copy, and is updated by drivers.
+>  
+>  	/* Copying screen_info will do? */
+> -	memcpy(&params->screen_info, &boot_params.screen_info,
+> -				sizeof(struct screen_info));
+> +	memcpy(&params->screen_info, &screen_info, sizeof(struct screen_info));
 
-I have that patch here:
+Well, that's better than what we had before, but how is this correct
+vs. the following sequence:
 
-http://git.infradead.org/users/willy/pagecache.git/commitdiff/a4e435b5ed14a0b898da6e5a66fe232f467b8ba1
+    kexec_load()
+    change_screen()
+    kexec()
 
-I was going to let this patch go upstream through Andrew's tree, then
-submit that one through Darrick's tree.  But I can add that patch to
-the next submission of this series if you'd rather.
+Hmm?
+
+Thanks,
+
+        tglx
