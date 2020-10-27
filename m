@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFC129B673
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA88029B68C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796723AbgJ0PTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52612 "EHLO mail.kernel.org"
+        id S1797039AbgJ0PVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796133AbgJ0PPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:15:53 -0400
+        id S1796144AbgJ0PP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:15:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59F4120657;
-        Tue, 27 Oct 2020 15:15:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2103220657;
+        Tue, 27 Oct 2020 15:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811752;
-        bh=XNBNPHCWavZrEu5SlajFZldWJA/rSGH/UWI9X1BQniU=;
+        s=default; t=1603811755;
+        bh=gso6STyjOqktB9BpQ65BQqrnebgWWcHpYowKIcR6/BY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AgnLo63oxkqHHlfd2bbyPKJWuA2yDEbvQHQQLaUA+99CKxlPARap8B1oOYyFQpuv3
-         pXxIAEA5EX4PUPRxQspEU/A80zfR60V4T0l3sKmQgItCTE7fuIenXWmvPQaoySRhkj
-         gWpS26oxhh5JncEmFfk+ieMeVGKSXq3u0RyKgqKs=
+        b=YtK3Sd+O3JL9iI2/T4bZwahyqAdwOHR9O+4t3BvTIiKB5+rO/35UjIYQq+xpYl0qe
+         Zeek3AbjVrm44JVZteINdI6tUj77bQ6lpm9guslkC0e4XckZiQIAAHkdLKCwmz8Ypg
+         UYjMdTMLY1bDFVoKczH4OZEuYvQafCCmJ1naFjvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 604/633] scsi: qedi: Fix list_del corruption while removing active I/O
-Date:   Tue, 27 Oct 2020 14:55:47 +0100
-Message-Id: <20201027135551.148241734@linuxfoundation.org>
+Subject: [PATCH 5.8 605/633] fbmem: add margin check to fb_check_caps()
+Date:   Tue, 27 Oct 2020 14:55:48 +0100
+Message-Id: <20201027135551.195819272@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,69 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nilesh Javali <njavali@marvell.com>
+From: George Kennedy <george.kennedy@oracle.com>
 
-[ Upstream commit 28b35d17f9f8573d4646dd8df08917a4076a6b63 ]
+[ Upstream commit a49145acfb975d921464b84fe00279f99827d816 ]
 
-While aborting the I/O, the firmware cleanup task timed out and driver
-deleted the I/O from active command list. Some time later the firmware
-sent the cleanup task response and driver again deleted the I/O from
-active command list causing firmware to send completion for non-existent
-I/O and list_del corruption of active command list.
+A fb_ioctl() FBIOPUT_VSCREENINFO call with invalid xres setting
+or yres setting in struct fb_var_screeninfo will result in a
+KASAN: vmalloc-out-of-bounds failure in bitfill_aligned() as
+the margins are being cleared. The margins are cleared in
+chunks and if the xres setting or yres setting is a value of
+zero upto the chunk size, the failure will occur.
 
-Add fix to check if I/O is present before deleting it from the active
-command list to ensure firmware sends valid I/O completion and protect
-against list_del corruption.
+Add a margin check to validate xres and yres settings.
 
-Link: https://lore.kernel.org/r/20200908095657.26821-4-mrangankar@marvell.com
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+Reported-by: syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Dhaval Giani <dhaval.giani@oracle.com>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1594149963-13801-1-git-send-email-george.kennedy@oracle.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_fw.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/video/fbdev/core/fbmem.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
-index 32586800620bd..90aa64604ad78 100644
---- a/drivers/scsi/qedi/qedi_fw.c
-+++ b/drivers/scsi/qedi/qedi_fw.c
-@@ -825,8 +825,11 @@ static void qedi_process_cmd_cleanup_resp(struct qedi_ctx *qedi,
- 			qedi_clear_task_idx(qedi_conn->qedi, rtid);
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index da7c88ffaa6a8..1136b569ccb7c 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -1006,6 +1006,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+ 		return 0;
+ 	}
  
- 			spin_lock(&qedi_conn->list_lock);
--			list_del_init(&dbg_cmd->io_cmd);
--			qedi_conn->active_cmd_count--;
-+			if (likely(dbg_cmd->io_cmd_in_list)) {
-+				dbg_cmd->io_cmd_in_list = false;
-+				list_del_init(&dbg_cmd->io_cmd);
-+				qedi_conn->active_cmd_count--;
-+			}
- 			spin_unlock(&qedi_conn->list_lock);
- 			qedi_cmd->state = CLEANUP_RECV;
- 			wake_up_interruptible(&qedi_conn->wait_queue);
-@@ -1244,6 +1247,7 @@ int qedi_cleanup_all_io(struct qedi_ctx *qedi, struct qedi_conn *qedi_conn,
- 		qedi_conn->cmd_cleanup_req++;
- 		qedi_iscsi_cleanup_task(ctask, true);
++	/* bitfill_aligned() assumes that it's at least 8x8 */
++	if (var->xres < 8 || var->yres < 8)
++		return -EINVAL;
++
+ 	ret = info->fbops->fb_check_var(var, info);
  
-+		cmd->io_cmd_in_list = false;
- 		list_del_init(&cmd->io_cmd);
- 		qedi_conn->active_cmd_count--;
- 		QEDI_WARN(&qedi->dbg_ctx,
-@@ -1455,8 +1459,11 @@ static void qedi_tmf_work(struct work_struct *work)
- 	spin_unlock_bh(&qedi_conn->tmf_work_lock);
- 
- 	spin_lock(&qedi_conn->list_lock);
--	list_del_init(&cmd->io_cmd);
--	qedi_conn->active_cmd_count--;
-+	if (likely(cmd->io_cmd_in_list)) {
-+		cmd->io_cmd_in_list = false;
-+		list_del_init(&cmd->io_cmd);
-+		qedi_conn->active_cmd_count--;
-+	}
- 	spin_unlock(&qedi_conn->list_lock);
- 
- 	clear_bit(QEDI_CONN_FW_CLEANUP, &qedi_conn->flags);
+ 	if (ret)
 -- 
 2.25.1
 
