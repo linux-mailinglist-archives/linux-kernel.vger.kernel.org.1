@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F6529B197
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DB629B1A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897395AbgJ0Obi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
+        id S1760087AbgJ0OcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:32:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759287AbgJ0O2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:28:49 -0400
+        id S1759313AbgJ0O3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:29:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30CE120754;
-        Tue, 27 Oct 2020 14:28:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23CA820780;
+        Tue, 27 Oct 2020 14:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808928;
-        bh=f3oZ6lt1048Bbse2Sgh8W9XGTvPRDZB4uRcJs7R8j4g=;
+        s=default; t=1603808944;
+        bh=G7bVG5paWlmju2PkmCPdYFjqKq5uqJ9Q/dZLNw6Wznc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DE0e83iJog+EhGbKeL0tTiN0XXV8Adhjw7aziZiCPbKzZs6OawUi4B4mezEn5RcOe
-         9U3LfAnQza3BXN7u5SoRJJfLILvffNqEG9jvKMMHNUJUKdnsY/axD/sNm8VHSg0QKV
-         vOvOjiaDXQ2IR+uGoVefPVTkd3eqnZCUMcRH+ATo=
+        b=woM79kPkyVpR9QUePKloAfownMe+C3DsVl+DPZLQap2zlrJd4gA9IVhPvQbw2X2wn
+         sx1QjYYtQFTak28Cvr/fwQFaF84D6qfmM6uv8F40woeC+Wz5VirGIKU6X3m9K/zaji
+         eWFuM2/5i0GwVIcyriUKWbOAtlmDj2ht9w7n/Efc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Wilder <dwilder@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Cristobal Forno <cris.forno@ibm.com>,
-        Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>,
-        Willem de Bruijn <willemb@google.com>,
+        stable@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 002/408] ibmveth: Identify ingress large send packets.
-Date:   Tue, 27 Oct 2020 14:49:00 +0100
-Message-Id: <20201027135455.154994986@linuxfoundation.org>
+Subject: [PATCH 5.4 008/408] net/smc: fix valid DMBE buffer sizes
+Date:   Tue, 27 Oct 2020 14:49:06 +0100
+Message-Id: <20201027135455.435579536@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -46,57 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Wilder <dwilder@us.ibm.com>
+From: Karsten Graul <kgraul@linux.ibm.com>
 
-[ Upstream commit 413f142cc05cb03f2d1ea83388e40c1ddc0d74e9 ]
+[ Upstream commit ef12ad45880b696eb993d86c481ca891836ab593 ]
 
-Ingress large send packets are identified by either:
-The IBMVETH_RXQ_LRG_PKT flag in the receive buffer
-or with a -1 placed in the ip header checksum.
-The method used depends on firmware version. Frame
-geometry and sufficient header validation is performed by the
-hypervisor eliminating the need for further header checks here.
+The SMCD_DMBE_SIZES should include all valid DMBE buffer sizes, so the
+correct value is 6 which means 1MB. With 7 the registration of an ISM
+buffer would always fail because of the invalid size requested.
+Fix that and set the value to 6.
 
-Fixes: 7b5967389f5a ("ibmveth: set correct gso_size and gso_type")
-Signed-off-by: David Wilder <dwilder@us.ibm.com>
-Reviewed-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Reviewed-by: Cristobal Forno <cris.forno@ibm.com>
-Reviewed-by: Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
+Fixes: c6ba7c9ba43d ("net/smc: add base infrastructure for SMC-D and ISM")
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmveth.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ net/smc/smc_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/ibm/ibmveth.c
-+++ b/drivers/net/ethernet/ibm/ibmveth.c
-@@ -1317,6 +1317,7 @@ static int ibmveth_poll(struct napi_stru
- 			int offset = ibmveth_rxq_frame_offset(adapter);
- 			int csum_good = ibmveth_rxq_csum_good(adapter);
- 			int lrg_pkt = ibmveth_rxq_large_packet(adapter);
-+			__sum16 iph_check = 0;
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -795,7 +795,7 @@ static struct smc_buf_desc *smcr_new_buf
+ 	return buf_desc;
+ }
  
- 			skb = ibmveth_rxq_get_buffer(adapter);
+-#define SMCD_DMBE_SIZES		7 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
++#define SMCD_DMBE_SIZES		6 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
  
-@@ -1353,7 +1354,17 @@ static int ibmveth_poll(struct napi_stru
- 			skb_put(skb, length);
- 			skb->protocol = eth_type_trans(skb, netdev);
- 
--			if (length > netdev->mtu + ETH_HLEN) {
-+			/* PHYP without PLSO support places a -1 in the ip
-+			 * checksum for large send frames.
-+			 */
-+			if (skb->protocol == cpu_to_be16(ETH_P_IP)) {
-+				struct iphdr *iph = (struct iphdr *)skb->data;
-+
-+				iph_check = iph->check;
-+			}
-+
-+			if ((length > netdev->mtu + ETH_HLEN) ||
-+			    lrg_pkt || iph_check == 0xffff) {
- 				ibmveth_rx_mss_helper(skb, mss, lrg_pkt);
- 				adapter->rx_large_packets++;
- 			}
+ static struct smc_buf_desc *smcd_new_buf_create(struct smc_link_group *lgr,
+ 						bool is_dmb, int bufsize)
 
 
