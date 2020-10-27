@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95BE29A8D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9574629A8D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896830AbgJ0KBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
+        id S2896880AbgJ0KCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:02:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896036AbgJ0Jvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2896039AbgJ0Jvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 05:51:43 -0400
 Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 606902242E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E72722450;
         Tue, 27 Oct 2020 09:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603792301;
-        bh=zhqkufZ7f7yOmStqpe6IwS4Q7Pbm2bPb4tI8f5PD8is=;
+        bh=6jY6pADWd4LdcEnG1rOTq/8tMFI7N/XzmAw3LP7tTK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nXetCSIdncDil++yqRz+Z7pblFepFeAUxK3hbbZUoMzKo056B4kZX12WTq6gbmpny
-         TwpHRShS+9xERahBj2DOQVwYPRa74koiC6xGggaATzBfmhp4Eh9HdDXADRm5hQQVZR
-         QjV07iLWiodY5vPxv7AT8Eo1KlZNSJqx+DRG+D50=
+        b=ZfD8/SnCaavrLFmSfAH4i3LD5o2sbMO+c4y4c0mnRVzRuBJtHXYvy5pj8QeT53Ej1
+         Idsf2GXv+nb/l+aes27qgYt3vjX1aOIEQB+/5ITdvk/9x/z12qJx3sVx7d1t0xfLyX
+         EGj29dK67SDHnVRh7B+zLRXtAwUm7FPn1Ix6M2WE=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kXLdj-003FF2-Ck; Tue, 27 Oct 2020 10:51:39 +0100
+        id 1kXLdj-003FF6-EK; Tue, 27 Oct 2020 10:51:39 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v3 14/32] net: phy: remove kernel-doc duplication
-Date:   Tue, 27 Oct 2020 10:51:18 +0100
-Message-Id: <75e9a357f9a716833d2094b04898754876365e68.1603791716.git.mchehab+huawei@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 15/32] crypto: sun8x-ce*: update entries to its documentation
+Date:   Tue, 27 Oct 2020 10:51:19 +0100
+Message-Id: <e3122e9575769bcf74bc2bdef08755209cb51971.1603791716.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
 References: <cover.1603791716.git.mchehab+huawei@kernel.org>
@@ -47,108 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx 3 now checks for duplicated function declarations:
-
-	.../Documentation/networking/kapi:143: ../include/linux/phy.h:163: WARNING: Duplicate C declaration, also defined in 'networking/kapi'.
-	Declaration is 'unsigned int phy_supported_speeds (struct phy_device *phy, unsigned int *speeds, unsigned int size)'.
-	.../Documentation/networking/kapi:143: ../include/linux/phy.h:1034: WARNING: Duplicate C declaration, also defined in 'networking/kapi'.
-	Declaration is 'int phy_read_mmd (struct phy_device *phydev, int devad, u32 regnum)'.
-	.../Documentation/networking/kapi:143: ../include/linux/phy.h:1076: WARNING: Duplicate C declaration, also defined in 'networking/kapi'.
-	Declaration is 'int __phy_read_mmd (struct phy_device *phydev, int devad, u32 regnum)'.
-	.../Documentation/networking/kapi:143: ../include/linux/phy.h:1088: WARNING: Duplicate C declaration, also defined in 'networking/kapi'.
-	Declaration is 'int phy_write_mmd (struct phy_device *phydev, int devad, u32 regnum, u16 val)'.
-	.../Documentation/networking/kapi:143: ../include/linux/phy.h:1100: WARNING: Duplicate C declaration, also defined in 'networking/kapi'.
-	Declaration is 'int __phy_write_mmd (struct phy_device *phydev, int devad, u32 regnum, u16 val)'.
-
-It turns that both the C and the H files have the same
-kernel-doc markup for the same functions. Let's drop the
-at the header file, keeping the one closer to the code.
+The README file was converted to ReST format. Update the
+references for it accordingly.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- include/linux/phy.h | 40 +++++-----------------------------------
- 1 file changed, 5 insertions(+), 35 deletions(-)
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 2 +-
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 2 +-
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index eb3cb1a98b45..56563e5e0dc7 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -147,16 +147,8 @@ typedef enum {
- 	PHY_INTERFACE_MODE_MAX,
- } phy_interface_t;
- 
--/**
-+/*
-  * phy_supported_speeds - return all speeds currently supported by a PHY device
-- * @phy: The PHY device to return supported speeds of.
-- * @speeds: buffer to store supported speeds in.
-- * @size: size of speeds buffer.
-- *
-- * Description: Returns the number of supported speeds, and fills
-- * the speeds buffer with the supported speeds. If speeds buffer is
-- * too small to contain all currently supported speeds, will return as
-- * many speeds as can fit.
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+index fa2f1b4fad7b..a94bf28f858a 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+@@ -7,7 +7,7 @@
+  *
+  * This file add support for MD5 and SHA1/SHA224/SHA256/SHA384/SHA512.
+  *
+- * You could find the datasheet in Documentation/arm/sunxi/README
++ * You could find the datasheet in Documentation/arm/sunxi.rst
   */
- unsigned int phy_supported_speeds(struct phy_device *phy,
- 				      unsigned int *speeds,
-@@ -1022,14 +1014,9 @@ static inline int __phy_modify_changed(struct phy_device *phydev, u32 regnum,
- 					regnum, mask, set);
- }
- 
--/**
-+/*
-  * phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
-- * @phydev: The phy_device struct
-- * @devad: The MMD to read from
-- * @regnum: The register on the MMD to read
-- *
-- * Same rules as for phy_read();
+ #include <linux/dma-mapping.h>
+ #include <linux/pm_runtime.h>
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+index 78503006949c..cfde9ee4356b 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+@@ -7,7 +7,7 @@
+  *
+  * This file handle the PRNG
+  *
+- * You could find a link for the datasheet in Documentation/arm/sunxi/README
++ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
   */
- int phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum);
- 
-@@ -1064,38 +1051,21 @@ int phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum);
- 	__ret; \
- })
- 
--/**
-+/*
-  * __phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
-- * @phydev: The phy_device struct
-- * @devad: The MMD to read from
-- * @regnum: The register on the MMD to read
-- *
-- * Same rules as for __phy_read();
+ #include "sun8i-ce.h"
+ #include <linux/dma-mapping.h>
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+index 654328160d19..5b7af4498bd5 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-trng.c
+@@ -7,7 +7,7 @@
+  *
+  * This file handle the TRNG
+  *
+- * You could find a link for the datasheet in Documentation/arm/sunxi/README
++ * You could find a link for the datasheet in Documentation/arm/sunxi.rst
   */
- int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum);
- 
--/**
-+/*
-  * phy_write_mmd - Convenience function for writing a register
-  * on an MMD on a given PHY.
-- * @phydev: The phy_device struct
-- * @devad: The MMD to write to
-- * @regnum: The register on the MMD to read
-- * @val: value to write to @regnum
-- *
-- * Same rules as for phy_write();
-  */
- int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val);
- 
--/**
-+/*
-  * __phy_write_mmd - Convenience function for writing a register
-  * on an MMD on a given PHY.
-- * @phydev: The phy_device struct
-- * @devad: The MMD to write to
-- * @regnum: The register on the MMD to read
-- * @val: value to write to @regnum
-- *
-- * Same rules as for __phy_write();
-  */
- int __phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val);
- 
+ #include "sun8i-ce.h"
+ #include <linux/dma-mapping.h>
 -- 
 2.26.2
 
