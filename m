@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D9729AEC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0787029B158
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754047AbgJ0ODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52022 "EHLO mail.kernel.org"
+        id S2901930AbgJ0O3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:29:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754027AbgJ0ODs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:48 -0400
+        id S2901903AbgJ0O3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:29:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 906F32222C;
-        Tue, 27 Oct 2020 14:03:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CFE220754;
+        Tue, 27 Oct 2020 14:29:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807428;
-        bh=Fh3CurmhpDkxBXxMF8kBsENV/noZeSJClYThqjOkMQc=;
+        s=default; t=1603808942;
+        bh=TEWIBudczpCOBl0G5gMPuALnOdzy8Cg4biZJQ5yDtuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G/2IMW5OucqYRKmcb3IbAlZejEWFHVp8PHoFYmDmErMLpsj2TNfSV3UbWhnMzReoF
-         a5RoztjF2rI0U0EQWttMmfreU0zK5dgF/AMxTArZ4CYK9Fh3GIcXZupLvhtDL56YP5
-         OcElLR+ZEg2vUq4nWEOhd/d//DvVSXW08PtJpimw=
+        b=coLFoKrL0AapRkUHCu0QigyeDKyDxesiVunaTq4nIqHaCjLCLtPvqqfCamYw3OnoA
+         +NVuRbfggAfnfdsNZIgppqV1WUyQz0v0I58ZkGfWgTDKjN+/41EwYHkwuEOBS9Mp79
+         lZfzcOiLxGwCT8jm82exaSEJQMfwR9gmtNL/axeI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 050/139] usb: gadget: f_ncm: fix ncm_bitrate for SuperSpeed and above.
-Date:   Tue, 27 Oct 2020 14:49:04 +0100
-Message-Id: <20201027134904.507540923@linuxfoundation.org>
+        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Vasily Averin <vvs@virtuozzo.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 007/408] net: fix pos incrementment in ipv6_route_seq_next
+Date:   Tue, 27 Oct 2020 14:49:05 +0100
+Message-Id: <20201027135455.387710428@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Colitti <lorenzo@google.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 986499b1569af980a819817f17238015b27793f6 ]
+[ Upstream commit 6617dfd440149e42ce4d2be615eb31a4755f4d30 ]
 
-Currently, SuperSpeed NCM gadgets report a speed of 851 Mbps
-in USB_CDC_NOTIFY_SPEED_CHANGE. But the calculation appears to
-assume 16 packets per microframe, and USB 3 and above no longer
-use microframes.
+Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
+tried to fix the issue where seq_file pos is not increased
+if a NULL element is returned with seq_ops->next(). See bug
+  https://bugzilla.kernel.org/show_bug.cgi?id=206283
+The commit effectively does:
+  - increase pos for all seq_ops->start()
+  - increase pos for all seq_ops->next()
 
-Maximum speed is actually much higher. On a direct connection,
-theoretical throughput is at most 3.86 Gbps for gen1x1 and
-9.36 Gbps for gen2x1, and I have seen gadget->host iperf
-throughput of >2 Gbps for gen1x1 and >4 Gbps for gen2x1.
+For ipv6_route, increasing pos for all seq_ops->next() is correct.
+But increasing pos for seq_ops->start() is not correct
+since pos is used to determine how many items to skip during
+seq_ops->start():
+  iter->skip = *pos;
+seq_ops->start() just fetches the *current* pos item.
+The item can be skipped only after seq_ops->show() which essentially
+is the beginning of seq_ops->next().
 
-Unfortunately the ConnectionSpeedChange defined in the CDC spec
-only uses 32-bit values, so we can't report accurate numbers for
-10Gbps and above. So, report 3.75Gbps for SuperSpeed (which is
-roughly maximum theoretical performance) and 4.25Gbps for
-SuperSpeed Plus (which is close to the maximum that we can report
-in a 32-bit unsigned integer).
+For example, I have 7 ipv6 route entries,
+  root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=4096
+  00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
+  fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+  00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+  ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000004 00000000 00000001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+  0+1 records in
+  0+1 records out
+  1050 bytes (1.0 kB, 1.0 KiB) copied, 0.00707908 s, 148 kB/s
+  root@arch-fb-vm1:~/net-next
 
-This results in:
+In the above, I specify buffer size 4096, so all records can be returned
+to user space with a single trip to the kernel.
 
-[50879.191272] cdc_ncm 2-2:1.0 enx228b127e050c: renamed from usb0
-[50879.234778] cdc_ncm 2-2:1.0 enx228b127e050c: 3750 mbit/s downlink 3750 mbit/s uplink
+If I use buffer size 128, since each record size is 149, internally
+kernel seq_read() will read 149 into its internal buffer and return the data
+to user space in two read() syscalls. Then user read() syscall will trigger
+next seq_ops->start(). Since the current implementation increased pos even
+for seq_ops->start(), it will skip record #2, #4 and #6, assuming the first
+record is #1.
 
-on SuperSpeed and:
+  root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=128
+  00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+4+1 records in
+4+1 records out
+600 bytes copied, 0.00127758 s, 470 kB/s
 
-[50798.434527] cdc_ncm 8-2:1.0 enx228b127e050c: renamed from usb0
-[50798.524278] cdc_ncm 8-2:1.0 enx228b127e050c: 4250 mbit/s downlink 4250 mbit/s uplink
+To fix the problem, create a fake pos pointer so seq_ops->start()
+won't actually increase seq_file pos. With this fix, the
+above `dd` command with `bs=128` will show correct result.
 
-on SuperSpeed Plus.
-
-Fixes: 1650113888fe ("usb: gadget: f_ncm: add SuperSpeed descriptors for CDC NCM")
-Reviewed-by: Maciej Żenczykowski <maze@google.com>
-Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4fc427e05158 ("ipv6_route_seq_next should increase position index")
+Cc: Alexei Starovoitov <ast@kernel.org>
+Suggested-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/f_ncm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/ipv6/ip6_fib.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
-index 0061bf130598e..ba8fa97a62cfd 100644
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -91,8 +91,10 @@ static inline struct f_ncm *func_to_ncm(struct usb_function *f)
- /* peak (theoretical) bulk transfer rate in bits-per-second */
- static inline unsigned ncm_bitrate(struct usb_gadget *g)
- {
--	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
--		return 13 * 1024 * 8 * 1000 * 8;
-+	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
-+		return 4250000000U;
-+	else if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
-+		return 3750000000U;
- 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
- 		return 13 * 512 * 8 * 1000 * 8;
- 	else
--- 
-2.25.1
-
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -2519,8 +2519,10 @@ static void *ipv6_route_seq_start(struct
+ 	iter->skip = *pos;
+ 
+ 	if (iter->tbl) {
++		loff_t p = 0;
++
+ 		ipv6_route_seq_setup_walk(iter, net);
+-		return ipv6_route_seq_next(seq, NULL, pos);
++		return ipv6_route_seq_next(seq, NULL, &p);
+ 	} else {
+ 		return NULL;
+ 	}
 
 
