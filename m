@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B832829C06A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D9929C1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782692AbgJ0O5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:57:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50430 "EHLO mail.kernel.org"
+        id S1790712AbgJ0R1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:27:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773016AbgJ0Ouy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:54 -0400
+        id S1775460AbgJ0Owu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:52:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D825020709;
-        Tue, 27 Oct 2020 14:50:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2366A207DE;
+        Tue, 27 Oct 2020 14:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810253;
-        bh=o3A/QP+JhTRVXqTuhUe+dQVjo8H50XxqktlF/fWyxw0=;
+        s=default; t=1603810369;
+        bh=G6sjFPSpnFl9sVmbWuuppn0Mwm534ZnHpRzoh1YpcxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aIcIiqiAxXHOlClKYrJ/bPeonxNWVU4crWMj3ZQnTLKD5c7TFaoyljWaGWTxC7/lv
-         c8Ao7fKaRevjv8cfMzDMftXggIGacmyeMFk6Q8TOPgtEkEc7A3ZszTZhs0aOYNBRD/
-         2sfB0sOQDkVwjft6zVZ37SFWpqU1kGXcIPrMDXTc=
+        b=2Z/l2HSeOjOjJShaSnsoCyP1Y1qew6iEc5azaiP8hmZAw2iM+JX4PHVy2+imzmN4t
+         Z+cu8pcbnIgq3OWZwLe6zyhvqC/mwF/yaxBE7FuctAzmbBi7VY9NUTEIleHvzK6F8R
+         qeS1YGrmD+GePWVRB8xBJUJFGC5ebcMVL0iiy8fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
+        stable@vger.kernel.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.8 073/633] KVM: x86: Intercept LA57 to inject #GP fault when its reserved
-Date:   Tue, 27 Oct 2020 14:46:56 +0100
-Message-Id: <20201027135526.118006788@linuxfoundation.org>
+Subject: [PATCH 5.8 074/633] KVM: SVM: Initialize prev_ga_tag before use
+Date:   Tue, 27 Oct 2020 14:46:57 +0100
+Message-Id: <20201027135526.165745210@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,51 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit 6e1d849fa3296526e64b75fa227b6377cd0fd3da upstream.
+commit f6426ab9c957e97418ac5b0466538792767b1738 upstream.
 
-Unconditionally intercept changes to CR4.LA57 so that KVM correctly
-injects a #GP fault if the guest attempts to set CR4.LA57 when it's
-supported in hardware but not exposed to the guest.
+The function amd_ir_set_vcpu_affinity makes use of the parameter struct
+amd_iommu_pi_data.prev_ga_tag to determine if it should delete struct
+amd_iommu_pi_data from a list when not running in AVIC mode.
 
-Long term, KVM needs to properly handle CR4 bits that can be under guest
-control but also may be reserved from the guest's perspective.  But, KVM
-currently sets the CR4 guest/host mask only during vCPU creation, and
-reworking flows to change that will take a bit of elbow grease.
+However, prev_ga_tag is initialized only when AVIC is enabled. The non-zero
+uninitialized value can cause unintended code path, which ends up making
+use of the struct vcpu_svm.ir_list and ir_list_lock without being
+initialized (since they are intended only for the AVIC case).
 
-Even if/when generic support for intercepting reserved bits exists, it's
-probably not worth letting the guest set CR4.LA57 directly.  LA57 can't
-be toggled while long mode is enabled, thus it's all but guaranteed to
-be set once (maybe twice, e.g. by BIOS and kernel) during boot and never
-touched again.  On the flip side, letting the guest own CR4.LA57 may
-incur extra VMREADs.  In other words, this temporary "hack" is probably
-also the right long term fix.
+This triggers NULL pointer dereference bug in the function vm_ir_list_del
+with the following call trace:
 
-Fixes: fd8cb433734e ("KVM: MMU: Expose the LA57 feature to VM.")
+    svm_update_pi_irte+0x3c2/0x550 [kvm_amd]
+    ? proc_create_single_data+0x41/0x50
+    kvm_arch_irq_bypass_add_producer+0x40/0x60 [kvm]
+    __connect+0x5f/0xb0 [irqbypass]
+    irq_bypass_register_producer+0xf8/0x120 [irqbypass]
+    vfio_msi_set_vector_signal+0x1de/0x2d0 [vfio_pci]
+    vfio_msi_set_block+0x77/0xe0 [vfio_pci]
+    vfio_pci_set_msi_trigger+0x25c/0x2f0 [vfio_pci]
+    vfio_pci_set_irqs_ioctl+0x88/0xb0 [vfio_pci]
+    vfio_pci_ioctl+0x2ea/0xed0 [vfio_pci]
+    ? alloc_file_pseudo+0xa5/0x100
+    vfio_device_fops_unl_ioctl+0x26/0x30 [vfio]
+    ? vfio_device_fops_unl_ioctl+0x26/0x30 [vfio]
+    __x64_sys_ioctl+0x96/0xd0
+    do_syscall_64+0x37/0x80
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Therefore, initialize prev_ga_tag to zero before use. This should be safe
+because ga_tag value 0 is invalid (see function avic_vm_init).
+
+Fixes: dfa20099e26e ("KVM: SVM: Refactor AVIC vcpu initialization into avic_init_vcpu()")
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Message-Id: <20201003232707.4662-1-suravee.suthikulpanit@amd.com>
 Cc: stable@vger.kernel.org
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-[sean: rewrote changelog]
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200930041659.28181-2-sean.j.christopherson@intel.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/kvm_cache_regs.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/svm/avic.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kvm/kvm_cache_regs.h
-+++ b/arch/x86/kvm/kvm_cache_regs.h
-@@ -7,7 +7,7 @@
- #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
- #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
- 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
--	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE | X86_CR4_TSD)
-+	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD)
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -868,6 +868,7 @@ int svm_update_pi_irte(struct kvm *kvm,
+ 			 * - Tell IOMMU to use legacy mode for this interrupt.
+ 			 * - Retrieve ga_tag of prior interrupt remapping data.
+ 			 */
++			pi.prev_ga_tag = 0;
+ 			pi.is_guest_mode = false;
+ 			ret = irq_set_vcpu_affinity(host_irq, &pi);
  
- #define BUILD_KVM_GPR_ACCESSORS(lname, uname)				      \
- static __always_inline unsigned long kvm_##lname##_read(struct kvm_vcpu *vcpu)\
 
 
