@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CAE29BE2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2179D29BE3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368649AbgJ0PJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38446 "EHLO mail.kernel.org"
+        id S1794311AbgJ0PLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:11:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790185AbgJ0PDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:03:55 -0400
+        id S1789688AbgJ0PCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:02:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D00F62071A;
-        Tue, 27 Oct 2020 15:03:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27C6B206E5;
+        Tue, 27 Oct 2020 15:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811035;
-        bh=CnuDrxPWHvpFwI9d1fFu8KYzjuRuA16BXF6FrlcRPRs=;
+        s=default; t=1603810950;
+        bh=WI8PK+tbYowSec5EZ4U/XYvmK+O9IRshW4thhwPSRFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MyiyqEZr+i3qQr5rCK2vP+pp3HQlo6Dx88pB1lWTs3nwG9pQn7gfzwzqQp71q35Vk
-         pe2lSpzei2PjWT8s4e80sNlN5gAmJWo7s/7EFvbA2+WdmsY9tXedLq9r9qK1rMsuNW
-         M0FY6+4okZRFGxIrg3vewP3NUBnSW/kT9VXquXqI=
+        b=sGG2uaCh3ROenjliej2e5pR+BuXUmHS7Pc/rPaqI/15fjUXSRGKsTXBcgyMQxgnqG
+         39DG31huSvBybXOOehjKCIOyIEW21KW+12sBBfvcGyfrt83JPiWLgzlza/TDBvooPm
+         cTtw4leCDe+9Xs/LRf93AX1xrrnOTUet9cnbft94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 319/633] fs: fix NULL dereference due to data race in prepend_path()
-Date:   Tue, 27 Oct 2020 14:51:02 +0100
-Message-Id: <20201027135537.640465567@linuxfoundation.org>
+Subject: [PATCH 5.8 321/633] tracing: Handle synthetic event array field type checking correctly
+Date:   Tue, 27 Oct 2020 14:51:04 +0100
+Message-Id: <20201027135537.734924066@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,66 +44,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Tom Zanussi <zanussi@kernel.org>
 
-[ Upstream commit 09cad07547445bf3a41683e4d3abcd154c123ef5 ]
+[ Upstream commit 10819e25799aae564005b6049a45e9808797b3bb ]
 
-Fix data race in prepend_path() with re-reading mnt->mnt_ns twice
-without holding the lock.
+Since synthetic event array types are derived from the field name,
+there may be a semicolon at the end of the type which should be
+stripped off.
 
-is_mounted() does check for NULL, but is_anon_ns(mnt->mnt_ns) might
-re-read the pointer again which could be NULL already, if in between
-reads one of kern_unmount()/kern_unmount_array()/umount_tree() sets
-mnt->mnt_ns to NULL.
+If there are more characters following that, normal type string
+checking will result in an invalid type.
 
-This is seen in production with the following stack trace:
+Without this patch, you can end up with an invalid field type string
+that gets displayed in both the synthetic event description and the
+event format:
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000048
-  ...
-  RIP: 0010:prepend_path.isra.4+0x1ce/0x2e0
-  Call Trace:
-    d_path+0xe6/0x150
-    proc_pid_readlink+0x8f/0x100
-    vfs_readlink+0xf8/0x110
-    do_readlinkat+0xfd/0x120
-    __x64_sys_readlinkat+0x1a/0x20
-    do_syscall_64+0x42/0x110
-    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Before:
 
-Fixes: f2683bd8d5bd ("[PATCH] fix d_absolute_path() interplay with fsmount()")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+  # echo 'myevent char str[16]; int v' >> synthetic_events
+  # cat synthetic_events
+    myevent	char[16]; str; int v
+
+  name: myevent
+  ID: 1936
+  format:
+  	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+  	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+  	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+  	field:int common_pid;	offset:4;	size:4;	signed:1;
+
+  	field:char str[16];;	offset:8;	size:16;	signed:1;
+  	field:int v;	offset:40;	size:4;	signed:1;
+
+  print fmt: "str=%s, v=%d", REC->str, REC->v
+
+After:
+
+  # echo 'myevent char str[16]; int v' >> synthetic_events
+  # cat synthetic_events
+    myevent	char[16] str; int v
+
+  # cat events/synthetic/myevent/format
+  name: myevent
+  ID: 1936
+  format:
+	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+	field:int common_pid;	offset:4;	size:4;	signed:1;
+
+	field:char str[16];	offset:8;	size:16;	signed:1;
+	field:int v;	offset:40;	size:4;	signed:1;
+
+  print fmt: "str=%s, v=%d", REC->str, REC->v
+
+Link: https://lkml.kernel.org/r/6587663b56c2d45ab9d8c8472a2110713cdec97d.1602598160.git.zanussi@kernel.org
+
+[ <rostedt@goodmis.org>: wrote parse_synth_field() snippet. ]
+Fixes: 4b147936fa50 (tracing: Add support for 'synthetic' events)
+Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/d_path.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_synth.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/fs/d_path.c b/fs/d_path.c
-index 0f1fc1743302f..a69e2cd36e6e3 100644
---- a/fs/d_path.c
-+++ b/fs/d_path.c
-@@ -102,6 +102,8 @@ static int prepend_path(const struct path *path,
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 46a96686e93c6..c8892156db341 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -132,7 +132,7 @@ static int synth_field_string_size(char *type)
+ 	start += sizeof("char[") - 1;
  
- 		if (dentry == vfsmnt->mnt_root || IS_ROOT(dentry)) {
- 			struct mount *parent = READ_ONCE(mnt->mnt_parent);
-+			struct mnt_namespace *mnt_ns;
+ 	end = strchr(type, ']');
+-	if (!end || end < start)
++	if (!end || end < start || type + strlen(type) > end + 1)
+ 		return -EINVAL;
+ 
+ 	len = end - start;
+@@ -502,8 +502,14 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+ 	if (field_type[0] == ';')
+ 		field_type++;
+ 	len = strlen(field_type) + 1;
+-	if (array)
+-		len += strlen(array);
 +
- 			/* Escaped? */
- 			if (dentry != vfsmnt->mnt_root) {
- 				bptr = *buffer;
-@@ -116,7 +118,9 @@ static int prepend_path(const struct path *path,
- 				vfsmnt = &mnt->mnt;
- 				continue;
- 			}
--			if (is_mounted(vfsmnt) && !is_anon_ns(mnt->mnt_ns))
-+			mnt_ns = READ_ONCE(mnt->mnt_ns);
-+			/* open-coded is_mounted() to use local mnt_ns */
-+			if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
- 				error = 1;	// absolute root
- 			else
- 				error = 2;	// detached or not attached yet
++        if (array) {
++                int l = strlen(array);
++
++                if (l && array[l - 1] == ';')
++                        l--;
++                len += l;
++        }
+ 	if (prefix)
+ 		len += strlen(prefix);
+ 
 -- 
 2.25.1
 
