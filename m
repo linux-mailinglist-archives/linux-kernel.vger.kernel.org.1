@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280EA29B83E
+	by mail.lfdr.de (Postfix) with ESMTP id 9710329B83F
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799926AbgJ0PeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43428 "EHLO mail.kernel.org"
+        id S1799935AbgJ0PeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368759AbgJ0P1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:27:35 -0400
+        id S368765AbgJ0P1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:27:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CF112064B;
-        Tue, 27 Oct 2020 15:27:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AEE3206E9;
+        Tue, 27 Oct 2020 15:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812454;
-        bh=obqj9xDssofiCrEHrdg6hdZt9cOs/nPuUWR9BmhW1YQ=;
+        s=default; t=1603812457;
+        bh=U2L4TI+ODW1DfSENXpsKzJMS8rsBSGdviXkUOtLUq+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ibWx1JSlofwS/uNtLfGvDxLzH9LqT9JqDBWKcvTeW3k/Vjkdqna3QqEaNq+SAgVRr
-         jWKz1NHrpfGgMdLR3fh9A+ZJn4Bv8bg5OGXkxa6gNEOWBj/4itqlZZ2eMRy0LmuRY+
-         LWr03AzAjimCD/EfCv89VamxzHBucBaRIeY3t6Nc=
+        b=1YMKsu78p7qOI598IVACG3atJeS4QZxVDsbcNF/LHVXb1Rv00Aeer53mwaeJrc4gf
+         tSoWIOO9boSkUXBC+a8FTti04QedJ+OGiYAaPImECUnfkdeRy1EMWEbNi4utSEmX/6
+         mcFu7g/hycQ67BlhDSg7l7TAE+7EkxbU6u9W5nYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
+        stable@vger.kernel.org, Alex Dewar <alex.dewar90@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 216/757] staging: emxx_udc: Fix passing of NULL to dma_alloc_coherent()
-Date:   Tue, 27 Oct 2020 14:47:46 +0100
-Message-Id: <20201027135500.746021221@linuxfoundation.org>
+Subject: [PATCH 5.9 217/757] VMCI: check return value of get_user_pages_fast() for errors
+Date:   Tue, 27 Oct 2020 14:47:47 +0100
+Message-Id: <20201027135500.794230646@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,47 +44,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alex Dewar <alex.dewar90@gmail.com>
 
-[ Upstream commit cc34073c6248e9cec801bf690d1455f264d12357 ]
+[ Upstream commit 90ca6333fd65f318c47bff425e1ea36c0a5539f6 ]
 
-In nbu2ss_eq_queue() memory is allocated with dma_alloc_coherent(),
-though, strangely, NULL is passed as the struct device* argument. Pass
-the UDC's device instead. Fix up the corresponding call to
-dma_free_coherent() in the same way.
+In a couple of places in qp_host_get_user_memory(),
+get_user_pages_fast() is called without properly checking for errors. If
+e.g. -EFAULT is returned, this negative value will then be passed on to
+qp_release_pages(), which expects a u64 as input.
 
-Build-tested on x86 only.
+Fix this by only calling qp_release_pages() when we have a positive
+number returned.
 
-Fixes: 33aa8d45a4fe ("staging: emxx_udc: Add Emma Mobile USB Gadget driver")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
 Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-Link: https://lore.kernel.org/r/20200825091928.55794-1-alex.dewar90@gmail.com
+Link: https://lore.kernel.org/r/20200825164522.412392-1-alex.dewar90@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/emxx_udc/emxx_udc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index 03929b9d3a8bc..d0725bc8b48a4 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -2593,7 +2593,7 @@ static int nbu2ss_ep_queue(struct usb_ep *_ep,
- 
- 	if (req->unaligned) {
- 		if (!ep->virt_buf)
--			ep->virt_buf = dma_alloc_coherent(NULL, PAGE_SIZE,
-+			ep->virt_buf = dma_alloc_coherent(udc->dev, PAGE_SIZE,
- 							  &ep->phys_buf,
- 							  GFP_ATOMIC | GFP_DMA);
- 		if (ep->epnum > 0)  {
-@@ -3148,7 +3148,7 @@ static int nbu2ss_drv_remove(struct platform_device *pdev)
- 	for (i = 0; i < NUM_ENDPOINTS; i++) {
- 		ep = &udc->ep[i];
- 		if (ep->virt_buf)
--			dma_free_coherent(NULL, PAGE_SIZE, (void *)ep->virt_buf,
-+			dma_free_coherent(udc->dev, PAGE_SIZE, (void *)ep->virt_buf,
- 					  ep->phys_buf);
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index 8531ae7811956..c49065887e8f5 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -657,8 +657,9 @@ static int qp_host_get_user_memory(u64 produce_uva,
+ 	if (retval < (int)produce_q->kernel_if->num_pages) {
+ 		pr_debug("get_user_pages_fast(produce) failed (retval=%d)",
+ 			retval);
+-		qp_release_pages(produce_q->kernel_if->u.h.header_page,
+-				 retval, false);
++		if (retval > 0)
++			qp_release_pages(produce_q->kernel_if->u.h.header_page,
++					retval, false);
+ 		err = VMCI_ERROR_NO_MEM;
+ 		goto out;
  	}
- 
+@@ -670,8 +671,9 @@ static int qp_host_get_user_memory(u64 produce_uva,
+ 	if (retval < (int)consume_q->kernel_if->num_pages) {
+ 		pr_debug("get_user_pages_fast(consume) failed (retval=%d)",
+ 			retval);
+-		qp_release_pages(consume_q->kernel_if->u.h.header_page,
+-				 retval, false);
++		if (retval > 0)
++			qp_release_pages(consume_q->kernel_if->u.h.header_page,
++					retval, false);
+ 		qp_release_pages(produce_q->kernel_if->u.h.header_page,
+ 				 produce_q->kernel_if->num_pages, false);
+ 		err = VMCI_ERROR_NO_MEM;
 -- 
 2.25.1
 
