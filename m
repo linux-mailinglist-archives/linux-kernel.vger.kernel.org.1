@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C5F29A98A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CF329A992
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437939AbgJ0KZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:25:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:37574 "EHLO foss.arm.com"
+        id S2898074AbgJ0K0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:26:11 -0400
+Received: from mail.monom.org ([188.138.9.77]:54444 "EHLO mail.monom.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898032AbgJ0KZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:25:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FA5D30E;
-        Tue, 27 Oct 2020 03:25:45 -0700 (PDT)
-Received: from [10.57.11.195] (unknown [10.57.11.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35BF43F66E;
-        Tue, 27 Oct 2020 03:25:41 -0700 (PDT)
-Subject: Re: [PATCH 1/6] kselftest/arm64: Fix check_buffer_fill test
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Gabor Kertesz <gabor.kertesz@arm.com>
-References: <20201026121248.2340-1-vincenzo.frascino@arm.com>
- <20201026121248.2340-2-vincenzo.frascino@arm.com>
-From:   Amit Kachhap <amit.kachhap@arm.com>
-Message-ID: <b04b862b-39c7-7cd6-7760-2b3a2b78e69e@arm.com>
-Date:   Tue, 27 Oct 2020 15:55:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2898032AbgJ0K0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:26:04 -0400
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id CE53550046C;
+        Tue, 27 Oct 2020 11:25:47 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id 8B7F9500299;
+        Tue, 27 Oct 2020 11:25:47 +0100 (CET)
+Date:   Tue, 27 Oct 2020 11:25:47 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.9.1-rt19
+Message-ID: <20201027102547.y6wop7j2ovzg2tyx@beryllium.lan>
+References: <20201024091838.gzhn2dlx2j7xnixg@linutronix.de>
+ <20201027093616.5vn6xinmthxulhvx@beryllium.lan>
+ <20201027100049.xtkmjqdwkn7zec2f@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201026121248.2340-2-vincenzo.frascino@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027100049.xtkmjqdwkn7zec2f@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 11:00:49AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-10-27 10:36:16 [+0100], Daniel Wagner wrote:
+> > On Sat, Oct 24, 2020 at 11:18:38AM +0200, Sebastian Andrzej Siewior wrote:
+> > > I'm pleased to announce the v5.9.1-rt19 patch set. 
+> > 
+> > FWIW, all tests pass in my lab (by avoiding doing the same stupid
+> > mistake as last time...)
+> 
+> glad to hear.
 
-
-On 10/26/20 5:42 PM, Vincenzo Frascino wrote:
-> The check_buffer_fill test reports the error below because the test
-> plan is not declared correctly:
-> 
->    # Planned tests != run tests (0 != 20)
-> 
-> Fix the test adding the correct test plan declaration.
-
-This change is required and got missed earlier.
-Acked by: Amit Daniel Kachhap <amit.kachhap@arm.com>
-
-> 
-> Fixes: e9b60476bea0 ("kselftest/arm64: Add utilities and a test to validate mte memory")
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Gabor Kertesz <gabor.kertesz@arm.com>
-> Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->   tools/testing/selftests/arm64/mte/check_buffer_fill.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/arm64/mte/check_buffer_fill.c b/tools/testing/selftests/arm64/mte/check_buffer_fill.c
-> index 242635d79035..c9fa141ebdcc 100644
-> --- a/tools/testing/selftests/arm64/mte/check_buffer_fill.c
-> +++ b/tools/testing/selftests/arm64/mte/check_buffer_fill.c
-> @@ -417,6 +417,9 @@ int main(int argc, char *argv[])
->   	/* Register SIGSEGV handler */
->   	mte_register_signal(SIGSEGV, mte_default_handler);
->   
-> +	/* Set test plan */
-> +	ksft_set_plan(20);
-> +
->   	/* Buffer by byte tests */
->   	evaluate_test(check_buffer_by_byte(USE_MMAP, MTE_SYNC_ERR),
->   	"Check buffer correctness by byte with sync err mode and mmap memory\n");
-> 
+Well, one thing I need to figure out is how to get pi_stress working
+correctly on my machines (that is for all -rt trees, so it's nothing
+new). It consistently triggers RCU stall warnings with hackbench as
+workload. Clark told me the test only works if there are enough CPUs to
+run on. Need to look into it.
