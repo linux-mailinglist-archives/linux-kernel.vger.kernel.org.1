@@ -2,82 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753C629B5CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 143A129B608
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795957AbgJ0PPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:34 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:46295 "EHLO gecko.sbs.de"
+        id S1796538AbgJ0PTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:19:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508584AbgJ0PMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:12:55 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 09RFCk7M000972
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 16:12:46 +0100
-Received: from [139.25.68.37] ([139.25.68.37])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 09RFCkiQ015696;
-        Tue, 27 Oct 2020 16:12:46 +0100
-Subject: Re: [PATCH 0/7] gpio: exar: refactor the driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20201026141839.28536-1-brgl@bgdev.pl>
- <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <1fd4d69b-4d64-05e5-45a3-b2182fb2d207@siemens.com>
-Date:   Tue, 27 Oct 2020 16:12:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1795066AbgJ0PPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:15:01 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D95521D41;
+        Tue, 27 Oct 2020 15:14:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603811701;
+        bh=KcMcjP39WQb3PP6WZMwWmoTo3qIlZlixFqdmI1nRxjo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lca6q57+3Tztb3zk1GZBAc7Igp4rDQBasPqGFInsMjLICkIsIDCfSUCR6LBML2n/Z
+         m4j2cI6BoAL7HTxqr4vWM9XFxnGqcE7h48sykhRnlPDDdnmoEXRjrFo4RnCA8ebB//
+         9/utw8+gxqTjkFlwU7jiwvGPU+y+WSP+X9hgG/JU=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+        palmerdabbelt@google.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] asm-generic: mark __{get,put}_user_fn as __always_inline
+Date:   Tue, 27 Oct 2020 16:14:53 +0100
+Message-Id: <160381164874.4082358.6150613146628051056.b4-ty@arndb.de>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201027085017.3705228-1-hch@lst.de>
+References: <20201027085017.3705228-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.10.20 15:46, Andy Shevchenko wrote:
-> On Mon, Oct 26, 2020 at 4:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>
->> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>
->> I just wanted to convert the driver to using simpler IDA API but ended up
->> quickly converting it to using regmap. Unfortunately I don't have the HW
->> to test it so marking the patches that introduce functional change as RFT
->> and Cc'ing the original author.
-> 
-> +Cc: Jan, AFAIR their devices are using Exar UART.
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks for CC'ing. I cannot promise testing this soon, but I will try my
-best.
+On Tue, 27 Oct 2020 09:50:17 +0100, Christoph Hellwig wrote:
+> Without the explicit __always_inline, some RISC-V configs place the
+> functions out of line, triggering the BUILD_BUG_ON checks in the
+> function.
 
-Jan
+Applied to asm-generic-fixes, thanks!
 
->> Bartosz Golaszewski (7):
->>   gpio: exar: add a newline after the copyright notice
->>   gpio: exar: include idr.h
->>   gpio: exar: switch to a simpler IDA interface
->>   gpio: exar: use a helper variable for &pdev->dev
->>   gpio: exar: unduplicate address and offset computation
->>   gpio: exar: switch to using regmap
->>   gpio: exar: use devm action for freeing the IDA and drop remove()
->>
->>  drivers/gpio/Kconfig     |   1 +
->>  drivers/gpio/gpio-exar.c | 155 +++++++++++++++++++--------------------
->>  2 files changed, 77 insertions(+), 79 deletions(-)
->>
->> --
->> 2.29.1
->>
-> 
+[1/1] asm-generic: mark __{get,put}_user_fn as __always_inline
+      commit: 0bcd0a2be8c9ef39d84d167ff85359a49f7be175
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+       Arnd
