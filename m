@@ -2,156 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5024529B9E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD9A29B851
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1803503AbgJ0PxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:53:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49096 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760131AbgJ0P3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:29:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A00FADD9;
-        Tue, 27 Oct 2020 15:29:05 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 16:29:02 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com
-Subject: Re: [RFC][PATCH 5/9] mm/migrate: demote pages during reclaim
-Message-ID: <20201027152858.GA11135@linux>
-References: <20201007161736.ACC6E387@viggo.jf.intel.com>
- <20201007161745.26B1D789@viggo.jf.intel.com>
+        id S1800019AbgJ0Pei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:34:38 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:55462 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1798627AbgJ0P3U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:29:20 -0400
+Received: by mail-pj1-f67.google.com with SMTP id c17so955645pjo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hd4Zwt5PXEpm6eViTnwTXykQMYZvM5v1ZFeuSjbWmlo=;
+        b=r3Ksl1qIwMG+hbonTokXizEkSvoUg0aAsvKshEMkVICu/XgCyttqAioj27YhGWH9Lx
+         7SJ1VFw0ymqQk2R+KxJe9t0a6/XJJxDjdZN5ZlQaKSwGg4oS8T2ZZ8D9/Vn9K/uLlYgV
+         mZzkKXhA8jWQ+d6g05vQ489N1yHLc/QzwX8gTeYY1Ewk/mcKoLbTccPADbFLmS8Ul5nu
+         k1wmtF0mUwYq2WsCmB3DPMpvVMycXICs2hPXCnItZ9OcY277GEsbxPXCXiFdXENDqIA7
+         VMx1xAXRNb427y94rlojosfbVHwiOuWF/qPef8pjsJfknUW0e3+fpCxfa6evQQzrSez1
+         9SQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hd4Zwt5PXEpm6eViTnwTXykQMYZvM5v1ZFeuSjbWmlo=;
+        b=Rt7wNt6xi/m1HckEFmgzarN8mPNMyySioMF3Cz8L30KyYv5bwN4lJchfm0t/beBQU4
+         R+f3F7UwQvJXBq/FbF9B232FE7Z/e5ARk83ECdL3l+g5OcmGcwfWkHMTFnKsIDXFOB9Z
+         Gt37JhVY17rykTN1BTT8evo6yyttFjOo5yIHQ3yMBIofFYI3j248LazFqJBHZQxMPihL
+         WKzVCLKYo6l0WzMIDtjDNcaZ9eA3RdkEdNgZc3AYg/7XnUmMmVcl3+LSlWZedU7PcDIm
+         7qqH+wdqaO+6/y0m3GmjVU6AVAqEld5uQzuUJjH8FPewYNUYelwle02kX3cxKFzb+WZn
+         m5Jw==
+X-Gm-Message-State: AOAM530o3bH5V9DmeKXFzRBnm2uU2DYKFuGcnPNFQu2KB9TKg/FOtxun
+        FPMTyQyWXsRJZAV5wfs2tT7cFQ==
+X-Google-Smtp-Source: ABdhPJzwuUI1cCRF/gQN5sAx2r+SnZ9ayE8CJn/C6zLLTe8t3eJuCNynosZc6XYwADNYjMcZG4zWUg==
+X-Received: by 2002:a17:902:860b:b029:d3:c430:7eb9 with SMTP id f11-20020a170902860bb02900d3c4307eb9mr3034654plo.9.1603812559103;
+        Tue, 27 Oct 2020 08:29:19 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id mp13sm2400614pjb.36.2020.10.27.08.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 08:29:17 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 09:29:15 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     balbi@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] hwtracing: coresight: add missing MODULE_LICENSE()
+Message-ID: <20201027152915.GA955990@xps15>
+References: <20201027085157.1964906-1-balbi@kernel.org>
+ <20201027085157.1964906-2-balbi@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007161745.26B1D789@viggo.jf.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201027085157.1964906-2-balbi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 09:17:45AM -0700, Dave Hansen wrote:
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
+Hi Felipe,
 
-I am still going through all the details, but just my thoughts on things
-that caught my eye:
+On Tue, Oct 27, 2020 at 10:51:56AM +0200, balbi@kernel.org wrote:
+> From: Felipe Balbi <balbi@kernel.org>
+> 
+> Fix the following build warning:
+> 
+> WARNING: modpost: missing MODULE_LICENSE() in drivers/hwtracing/coresight/coresight.o
+> 
 
-> --- a/include/linux/migrate.h~demote-with-migrate_pages	2020-10-07 09:15:31.028642442 -0700
-> +++ b/include/linux/migrate.h	2020-10-07 09:15:31.034642442 -0700
-> @@ -27,6 +27,7 @@ enum migrate_reason {
->  	MR_MEMPOLICY_MBIND,
->  	MR_NUMA_MISPLACED,
->  	MR_CONTIG_RANGE,
-> +	MR_DEMOTION,
->  	MR_TYPES
+Arnd already sent a patch about this[1] yesterday.
 
-I think you also need to add it under include/trace/events/migrate.h, so
-mm_migrate_pages event can know about it.
+Thanks,
+Mathieu
 
-> +bool migrate_demote_page_ok(struct page *page, struct scan_control *sc)
+[1]. https://lists.linaro.org/pipermail/coresight/2020-October/005041.html
 
-Make it static?
-Also, scan_control seems to be unused here.
-
-> +{
-> +	int next_nid = next_demotion_node(page_to_nid(page));
-> +
-> +	VM_BUG_ON_PAGE(!PageLocked(page), page);
-
-Right after the call to migrate_demote_page_ok, we call unlock_page
-which already has this check in place.
-I know that this is only to be on the safe side and we do not loss anything,
-but just my thoughts.
-
-> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
-> +{
-> +	/*
-> +	 * Try to fail quickly if memory on the target node is not
-> +	 * available.  Leaving out __GFP_IO and __GFP_FS helps with
-> +	 * this.  If the desintation node is full, we want kswapd to
-> +	 * run there so that its pages will get reclaimed and future
-> +	 * migration attempts may succeed.
-> +	 */
-> +	gfp_t flags = (__GFP_HIGHMEM | __GFP_MOVABLE | __GFP_NORETRY |
-> +		       __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE |
-> +		       __GFP_KSWAPD_RECLAIM);
-
-I think it would be nicer to have this as a real GFP_ thingy defined.
-e.g: GFP_DEMOTION
-
-> +	/* HugeTLB pages should not be on the LRU */
-> +	WARN_ON_ONCE(PageHuge(page));
-
-I am not sure about this one.
-This could only happen if the page, which now it is in another list, ends up in
-the buddy system. That is quite unlikely bth.
-And nevertheless, this is only a warning, which means that if this scenario gets
-to happen, we will be allocating a single page to satisfy a higher-order page, and
-I am not sure about the situation we will end up with.
-
-> +
-> +	if (PageTransHuge(page)) {
-> +		struct page *thp;
-> +
-> +		flags |= __GFP_COMP;
-> +
-> +		thp = alloc_pages_node(node, flags, HPAGE_PMD_ORDER);
-> +		if (!thp)
-> +			return NULL;
-> +		prep_transhuge_page(thp);
-> +		return thp;
-> +	}
-> +
-> +	return __alloc_pages_node(node, flags, 0);
-
-Would make sense to transform this in some sort of new_demotion_page,
-which actually calls alloc_migration_target with the right stuff in place?
-And then pass a struct migration_target_control so alloc_migration_target
-does the right thing.
-alloc_migration_target also takes care of calling prep_transhuge_page
-when needed.
-e.g:
-
-static struct page *new_demotion_node(struct page *page, unsigned long private)
-{
-        struct migration_target_control mtc = {
-                .nid = private,
-                .gfp_mask = GFP_DEMOTION,
-        };
-
-        if (PageTransHuge(page))
-                mtc.gfp_mask |= __GFP_COMP;
-
-        return alloc_migration_target(page, (unsigned long)&mtc);
-}
-
-The only thing I see is that alloc_migration_target seems to "override"
-the gfp_mask and does ORs GFP_TRANSHUGE for THP pages, which includes
-__GFP_DIRECT_RECLAIM (not appreciated in this case).
-But maybe this can be worked around by checking if gfp_mask == GFP_DEMOTION,
-and if so, just keep the mask as it is.
-
-> +
-> +	if (list_empty(demote_pages))
-> +		return 0;
-> +
-> +	/* Demotion ignores all cpuset and mempolicy settings */
-> +	err = migrate_pages(demote_pages, alloc_demote_page, NULL,
-> +			    target_nid, MIGRATE_ASYNC, MR_DEMOTION,
-> +			    &nr_succeeded);
-
-As I said, instead of alloc_demote_page, use a new_demote_page and make
-alloc_migration_target handle the allocations and prep thp pages.
-
-
--- 
-Oscar Salvador
-SUSE L3
+> Signed-off-by: Felipe Balbi <balbi@kernel.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-core.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 6994c1309b2b..7936fca8436c 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -1692,3 +1692,4 @@ module_exit(coresight_exit);
+>  MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
+>  MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
+>  MODULE_DESCRIPTION("Arm CoreSight tracer driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.29.1
+> 
