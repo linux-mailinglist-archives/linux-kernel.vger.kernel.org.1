@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FBF29C4C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE1029C4D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823105AbgJ0R5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
+        id S1823243AbgJ0R62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901257AbgJ0OVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:21:38 -0400
+        id S2901160AbgJ0OU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:20:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A505B207BB;
-        Tue, 27 Oct 2020 14:21:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28C7A206D4;
+        Tue, 27 Oct 2020 14:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808498;
-        bh=rgdNoPXH0MgyqCpHb448ISXAibV6nWgfvxdK8vyYOq0=;
+        s=default; t=1603808427;
+        bh=bJZdKq6YqqaeB1HAqk8+hx72cO+PQ9Th08Kt+B8jlGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=veiYOZmGgVMZF8Ekil86Ktrg39KdIBhvROH7lBmNHC1Rs2/pGvW+9Ap05QtxzOB9P
-         Wm495P+Qo3Sij4WMQbvZfD703rW/desMUr/qP8qv79X1h2kKY56ouPqIYnEaEyDlOx
-         Ehc12NScG9kJLXGmagGD6RmzbNllVrz9Hq3srHac=
+        b=zjDZyUc/AjZxZDiJg3KabEAwphcxK5qq4OMeVBhU+2oO1F5t6oB5R6qbxMwqTOgy0
+         TTFIWOjDFCeXtWw8Fk3Q1bkI+9vLegUNtaPwB/fP9ZqaMpZ9/3WsWYa8Pg3kHo5NTn
+         H9Ggcn9kbotW3/4kzEnPSh9IxAc9zFxZbwNQRETA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        stable@vger.kernel.org, Souptick Joarder <jrdr.linux@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 084/264] tty: hvcs: Dont NULL tty->driver_data until hvcs_cleanup()
-Date:   Tue, 27 Oct 2020 14:52:22 +0100
-Message-Id: <20201027135434.645078268@linuxfoundation.org>
+Subject: [PATCH 4.19 088/264] drivers/virt/fsl_hypervisor: Fix error handling path
+Date:   Tue, 27 Oct 2020 14:52:26 +0100
+Message-Id: <20201027135434.837189694@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -42,64 +44,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit 63ffcbdad738e3d1c857027789a2273df3337624 ]
+[ Upstream commit 7f360bec37857bfd5a48cef21d86f58a09a3df63 ]
 
-The code currently NULLs tty->driver_data in hvcs_close() with the
-intent of informing the next call to hvcs_open() that device needs to be
-reconfigured. However, when hvcs_cleanup() is called we copy hvcsd from
-tty->driver_data which was previoulsy NULLed by hvcs_close() and our
-call to tty_port_put(&hvcsd->port) doesn't actually do anything since
-&hvcsd->port ends up translating to NULL by chance. This has the side
-effect that when hvcs_remove() is called we have one too many port
-references preventing hvcs_destuct_port() from ever being called. This
-also prevents us from reusing the /dev/hvcsX node in a future
-hvcs_probe() and we can eventually run out of /dev/hvcsX devices.
+First, when memory allocation for sg_list_unaligned failed, there
+is a bug of calling put_pages() as we haven't pinned any pages.
 
-Fix this by waiting to NULL tty->driver_data in hvcs_cleanup().
+Second, if get_user_pages_fast() failed we should unpin num_pinned
+pages.
 
-Fixes: 27bf7c43a19c ("TTY: hvcs, add tty install")
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-Link: https://lore.kernel.org/r/20200820234643.70412-1-tyreld@linux.ibm.com
+This will address both.
+
+As part of these changes, minor update in documentation.
+
+Fixes: 6db7199407ca ("drivers/virt: introduce Freescale hypervisor management driver")
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Link: https://lore.kernel.org/r/1598995271-6755-1-git-send-email-jrdr.linux@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/hvc/hvcs.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/virt/fsl_hypervisor.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
-index cb4db1b3ca3c0..7853c6375325d 100644
---- a/drivers/tty/hvc/hvcs.c
-+++ b/drivers/tty/hvc/hvcs.c
-@@ -1218,13 +1218,6 @@ static void hvcs_close(struct tty_struct *tty, struct file *filp)
+diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+index 1bbd910d4ddb8..2a7f7f47fe893 100644
+--- a/drivers/virt/fsl_hypervisor.c
++++ b/drivers/virt/fsl_hypervisor.c
+@@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
  
- 		tty_wait_until_sent(tty, HVCS_CLOSE_WAIT);
+ 	unsigned int i;
+ 	long ret = 0;
+-	int num_pinned; /* return value from get_user_pages() */
++	int num_pinned = 0; /* return value from get_user_pages_fast() */
+ 	phys_addr_t remote_paddr; /* The next address in the remote buffer */
+ 	uint32_t count; /* The number of bytes left to copy */
  
--		/*
--		 * This line is important because it tells hvcs_open that this
--		 * device needs to be re-configured the next time hvcs_open is
--		 * called.
--		 */
--		tty->driver_data = NULL;
--
- 		free_irq(irq, hvcsd);
- 		return;
- 	} else if (hvcsd->port.count < 0) {
-@@ -1239,6 +1232,13 @@ static void hvcs_cleanup(struct tty_struct * tty)
- {
- 	struct hvcs_struct *hvcsd = tty->driver_data;
+@@ -174,7 +174,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 		return -EINVAL;
  
-+	/*
-+	 * This line is important because it tells hvcs_open that this
-+	 * device needs to be re-configured the next time hvcs_open is
-+	 * called.
-+	 */
-+	tty->driver_data = NULL;
-+
- 	tty_port_put(&hvcsd->port);
- }
+ 	/*
+-	 * The array of pages returned by get_user_pages() covers only
++	 * The array of pages returned by get_user_pages_fast() covers only
+ 	 * page-aligned memory.  Since the user buffer is probably not
+ 	 * page-aligned, we need to handle the discrepancy.
+ 	 *
+@@ -224,7 +224,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
  
+ 	/*
+ 	 * 'pages' is an array of struct page pointers that's initialized by
+-	 * get_user_pages().
++	 * get_user_pages_fast().
+ 	 */
+ 	pages = kcalloc(num_pages, sizeof(struct page *), GFP_KERNEL);
+ 	if (!pages) {
+@@ -241,7 +241,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 	if (!sg_list_unaligned) {
+ 		pr_debug("fsl-hv: could not allocate S/G list\n");
+ 		ret = -ENOMEM;
+-		goto exit;
++		goto free_pages;
+ 	}
+ 	sg_list = PTR_ALIGN(sg_list_unaligned, sizeof(struct fh_sg_list));
+ 
+@@ -250,7 +250,6 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 		num_pages, param.source != -1, pages);
+ 
+ 	if (num_pinned != num_pages) {
+-		/* get_user_pages() failed */
+ 		pr_debug("fsl-hv: could not lock source buffer\n");
+ 		ret = (num_pinned < 0) ? num_pinned : -EFAULT;
+ 		goto exit;
+@@ -292,13 +291,13 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 		virt_to_phys(sg_list), num_pages);
+ 
+ exit:
+-	if (pages) {
+-		for (i = 0; i < num_pages; i++)
+-			if (pages[i])
+-				put_page(pages[i]);
++	if (pages && (num_pinned > 0)) {
++		for (i = 0; i < num_pinned; i++)
++			put_page(pages[i]);
+ 	}
+ 
+ 	kfree(sg_list_unaligned);
++free_pages:
+ 	kfree(pages);
+ 
+ 	if (!ret)
 -- 
 2.25.1
 
