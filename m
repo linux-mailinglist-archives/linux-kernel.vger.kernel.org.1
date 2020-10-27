@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8F729C231
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E76B429C24F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820104AbgJ0Rcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40586 "EHLO mail.kernel.org"
+        id S1820097AbgJ0Rcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:32:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762157AbgJ0OlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1762156AbgJ0OlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 10:41:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A69422264;
-        Tue, 27 Oct 2020 14:41:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6962822265;
+        Tue, 27 Oct 2020 14:41:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809671;
-        bh=HsMses8PpoHYK+jDdQveb7EZ8eGzvNjnqamAlKSyMTw=;
+        s=default; t=1603809674;
+        bh=JTuT4yKUCAiLFq6/KUrdr0dtjcioYZ70llywaHk5ttY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l15Yo282z9RbrmmrDehgAPY51bRl+DHSGdcLGY8Oyjbb40OcXDj46WG0qxpk+Hrxf
-         qLB+GJgrFEC2x2OmWIZAIMi1u6kP0yPg4H8/sbVKUwng8eQG8NjxdSJPI+UkN6y7Ox
-         xIxT1FP75R2ya1SIN3EsC31TJ3xcN9oVzoiMNsDw=
+        b=q6txOo69i/c3ksEvF8tdJmGu0rcF8+lGt9fE0uFjOJfWrIE1lKtkvdzW1lm+qsWoR
+         tjO9s8b9h0kaRu/SbM9JfkdJ2d5nB/gMf59wI8eY/ogAGEbUSRUUkCOtDNx+XIcJiu
+         a1yBWDlpVf02jFgS2mEy6fGF3ClGV8H/yjkSVyt0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kiszka <jan.kiszka@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Dan Aloni <dan@kernelim.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 277/408] watchdog: sp5100: Fix definition of EFCH_PM_DECODEEN3
-Date:   Tue, 27 Oct 2020 14:53:35 +0100
-Message-Id: <20201027135507.891293700@linuxfoundation.org>
+Subject: [PATCH 5.4 278/408] svcrdma: fix bounce buffers for unaligned offsets and multiple pages
+Date:   Tue, 27 Oct 2020 14:53:36 +0100
+Message-Id: <20201027135507.936388066@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,36 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Dan Aloni <dan@kernelim.com>
 
-[ Upstream commit 08c619b4923056b5dd2d5045757468c76ad0e3fe ]
+[ Upstream commit c327a310ec4d6ecbea13185ed56c11def441d9ab ]
 
-EFCH_PM_DECODEEN3 is supposed to access DECODEEN register bits 24..31,
-in other words the register at byte offset 3.
+This was discovered using O_DIRECT at the client side, with small
+unaligned file offsets or IOs that span multiple file pages.
 
-Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Fixes: 887d2ec51e34b ("watchdog: sp5100_tco: Add support for recent FCH versions")
-Tested-by: Jan Kiszka <jan.kiszka@siemens.com>
-Link: https://lore.kernel.org/r/20200910163109.235136-1-linux@roeck-us.net
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: e248aa7be86 ("svcrdma: Remove max_sge check at connect time")
+Signed-off-by: Dan Aloni <dan@kernelim.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sp5100_tco.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/watchdog/sp5100_tco.h b/drivers/watchdog/sp5100_tco.h
-index 87eaf357ae01f..adf015aa4126f 100644
---- a/drivers/watchdog/sp5100_tco.h
-+++ b/drivers/watchdog/sp5100_tco.h
-@@ -70,7 +70,7 @@
- #define EFCH_PM_DECODEEN_WDT_TMREN	BIT(7)
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+index 217106c66a13c..25e8922c10b28 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+@@ -609,10 +609,11 @@ static int svc_rdma_pull_up_reply_msg(struct svcxprt_rdma *rdma,
+ 		while (remaining) {
+ 			len = min_t(u32, PAGE_SIZE - pageoff, remaining);
  
- 
--#define EFCH_PM_DECODEEN3		0x00
-+#define EFCH_PM_DECODEEN3		0x03
- #define EFCH_PM_DECODEEN_SECOND_RES	GENMASK(1, 0)
- #define EFCH_PM_WATCHDOG_DISABLE	((u8)GENMASK(3, 2))
+-			memcpy(dst, page_address(*ppages), len);
++			memcpy(dst, page_address(*ppages) + pageoff, len);
+ 			remaining -= len;
+ 			dst += len;
+ 			pageoff = 0;
++			ppages++;
+ 		}
+ 	}
  
 -- 
 2.25.1
