@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AEF29A7EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB5029A7EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409041AbgJ0JdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:33:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42752 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732268AbgJ0JdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:33:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F2CC5AD6B;
-        Tue, 27 Oct 2020 09:33:01 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6742D1E10F5; Tue, 27 Oct 2020 10:33:01 +0100 (CET)
-Date:   Tue, 27 Oct 2020 10:33:01 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
-Message-ID: <20201027093301.GA16090@quack2.suse.cz>
-References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
- <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
+        id S2895629AbgJ0Jdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:33:36 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:40177 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409223AbgJ0Jdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:33:35 -0400
+Received: by mail-pj1-f67.google.com with SMTP id l2so449834pjt.5;
+        Tue, 27 Oct 2020 02:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KkZwWmEjwnHpFL1m8Vlri/WHg1rK6VrvoHhQzru19fk=;
+        b=F63punD+sBQMMAWuFo7w5++PvO3lG9p1IGHfYkS9RxNL75WFDH8vSt4MxpA9cCjla8
+         yg4l5U9NQyriHJ12H+oL2uSOurxy4l4dJhfWrclWNLoyANZz3eNAA7HXoMGNjSZ3kXsQ
+         iYSHmMfaDauN9y62UlTv7VeBK5o68x2Y9/n5egTdHlm8kDrL87ps3SmRMoLU4MRBTuIy
+         GxlvH+f7sdYypflcdVv35n3/TLok6xum7t4+zgqQsyhuxx84O/OvHdKp3mVg/t3eQ5ye
+         ec3GGT8xw7BMamtZePIGarvTagbDGauXimf+cQK91Z6nHeCFaXTT1piH/8kJovLHPWbO
+         0wcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KkZwWmEjwnHpFL1m8Vlri/WHg1rK6VrvoHhQzru19fk=;
+        b=JzUqg1Z4yIaRqIYXfJQCU+1Y0wK0iLXMAmp4Vl4fGNSMN4iCN3rIwyt7dYRDLtMnon
+         E55KB7Z1fbYoOdYFcDU8Fiyo8e05PUXf6Qp0ylqtWR/e8acnt2NQknFd7VKi+qdJf9As
+         Gnqy+0WPN1M53PEiCkCO1JaJs2ANdxA3sud7YJGaxiRIGkvjyGtMbnzqvMR1bptGG7Yl
+         TjLn5WtfEjoAP8iFIF62fSlj/11lFUjs52Ct1MNS22z1bZwuhru5ix3E7OHSBB8dEI8j
+         YmMYLYDRPxK9dQEtmxvCA18whSRKJixJvS3xJKz8Lb2lOyNpzN4aKvy2oyOI9pc33Grv
+         Kv1w==
+X-Gm-Message-State: AOAM533LmdAoq0I6e4TSkIIhosDMNe12knS5pV1VA1nOBQqbMgzNxkGE
+        cjSuyFUu/6t4g+Z3h9iZhxmrGouWfwMen2XFzI0=
+X-Google-Smtp-Source: ABdhPJz3bXjuvtcCTEmhQwwCWxLGdJKGh3B5VbvWy8djXjLd1KBydfkoT1N4IxO+HZUx4ocGS26ynCYRPjiN3uE6bFg=
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr1259988pjb.228.1603791213713;
+ Tue, 27 Oct 2020 02:33:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201026133609.24262-1-brgl@bgdev.pl> <20201026133609.24262-3-brgl@bgdev.pl>
+In-Reply-To: <20201026133609.24262-3-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Oct 2020 11:33:17 +0200
+Message-ID: <CAHp75VfeBXszvhrz_YgtX6=HY=TJJXhWdTSTC1=S4UV2cOkJvA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] iio: adc: xilinx: use devm_krealloc() instead of
+ kfree() + kcalloc()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 23-10-20 21:44:17, John Hubbard wrote:
-> On 10/23/20 5:19 PM, Jason Gunthorpe wrote:
-> > +	start += (unsigned long)nr_pinned << PAGE_SHIFT;
-> > +	pages += nr_pinned;
-> > +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
-> > +				      pages);
-> > +	if (ret < 0) {
-> >   		/* Have to be a bit careful with return values */
-> 
-> ...and can we move that comment up one level, so that it reads:
-> 
-> 	/* Have to be a bit careful with return values */
-> 	if (ret < 0) {
-> 		if (nr_pinned)
-> 			return nr_pinned;
-> 		return ret;
-> 	}
-> 	return ret + nr_pinned;
-> 
-> Thinking about this longer term, it would be nice if the whole gup/pup API
-> set just stopped pretending that anyone cares about partial success, because
-> they *don't*. If we had return values of "0 or -ERRNO" throughout, and an
-> additional set of API wrappers that did some sort of limited retry just like
-> some of the callers do, that would be a happier story.
+On Mon, Oct 26, 2020 at 4:03 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> We now have devm_krealloc() in the kernel Use it indstead of calling
+> kfree() and kcalloc() separately.
 
-Actually there are callers that care about partial success. See e.g.
-iov_iter_get_pages() usage in fs/direct_io.c:dio_refill_pages() or
-bio_iov_iter_get_pages(). These places handle partial success just fine and
-not allowing partial success from GUP could regress things...
+Which is completely lawful when size > previous_size (I mean, the
+additional patch you sent previously seems not related to this).
 
-								Honza
+> -       kfree(xadc->data);
+> -       xadc->data = kcalloc(n, sizeof(*xadc->data), GFP_KERNEL);
+> +       xadc->data = devm_krealloc(indio_dev->dev.parent, xadc->data,
+> +                                  n * sizeof(*xadc->data),
+
+I think you need to use something from overflow.h instead of explicit
+multiplication here.
+
+> +                                  GFP_KERNEL | __GFP_ZERO);
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
