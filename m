@@ -2,159 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734FA29C301
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CC829C2F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1821298AbgJ0RmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:42:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35804 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1821208AbgJ0RlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:41:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CB7E4AAF1;
-        Tue, 27 Oct 2020 17:41:16 +0000 (UTC)
-Subject: Re: [PATCH 3/3] mm, page_alloc: reduce static keys in prep_new_page()
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Laura Abbott <labbott@kernel.org>
-References: <20201026173358.14704-1-vbabka@suse.cz>
- <20201026173358.14704-4-vbabka@suse.cz>
- <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com>
- <1fc7ec3a-367c-eb9f-1cb4-b9e015fea87c@suse.cz>
- <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
-Message-ID: <38de5bb0-5559-d069-0ce0-daec66ef2746@suse.cz>
-Date:   Tue, 27 Oct 2020 18:41:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1821297AbgJ0Rl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:41:59 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:44956 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1821284AbgJ0Rl4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:41:56 -0400
+Received: by mail-pg1-f194.google.com with SMTP id o3so1193736pgr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:41:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=0CO1zeTWUysqgAKdJuZ6Y9RdJac7Bbof6WX21/2NFNE=;
+        b=0Z28RaPwcWIO4K9FcoLxNq6dbeEZ5R2dF6DT4oTBLzSLuDuUjwpWvrpk6KSDigymXJ
+         vRuqQ5FfcFXEsgSjgqtyk95NbR3R4ZM8MD0tGw/jTH6O+v2xX0xk28xtvrnUSkw+lQZe
+         mgK9uE0zqyvaIDxvNv1HLkskdEsLCxYGOuf3v49thzCD6ZGH4uDzWIq92788X7CucRND
+         bpUkL7byN19+6jxUAREvKcGzGcOHKLn4x9E7MHLv/1AqhYOe/LNTGAY8hO+o9MZhdHxs
+         oGD8WMlw978m5WhD0Ew/X6Rdr+/AdvFzG8Q+8bGZkyv1toQQrYRwq7PWHxhLb5TaezTO
+         G5Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=0CO1zeTWUysqgAKdJuZ6Y9RdJac7Bbof6WX21/2NFNE=;
+        b=ftuTfhiKUNshAMY4M1afntcX21+lvbSTn2m1IfQQbmS5CVrXGckxj0M4440itiBDOT
+         eQ1dOzV3netLkwPpvF3NNGdJNiqV0P0bOtQVHgD52N1Dp5LJ0Aask01egPde3T/SlYB3
+         Ctm9cQTTP5bY2gpAolajBsxwCQJ0y0b9VXpT94VTLlcc/mmVTmYlrRQrQlxAuIcIQAuh
+         JRElSJ5HJbZQw45+b557FR44nLrPKWfVkX8cCpIvrnF/wgQ211MHwOI36tHIKSCh+9nv
+         j1iU1EsryBOkt4y0KhLQbB5VHzd3+ZCXJq1GX8cp93H2w7XpMFEHdpwcPMZ22t2qbvsY
+         g1yw==
+X-Gm-Message-State: AOAM530MDhk3WnhCnbw7R07J8JKqOHuwUoHvxIFmSn4PQsY1s50nnurt
+        N9INj7j6rzuG3yQv6GA9G6tU+Q==
+X-Google-Smtp-Source: ABdhPJxiufQxV0ZKD/20TC+CmwbDIPysEcCylvSAWjyRbhrQaQo4Augl/p4OlYdKIHrBuFrzuthMhw==
+X-Received: by 2002:aa7:96b9:0:b029:155:6332:e1c7 with SMTP id g25-20020aa796b90000b02901556332e1c7mr3275225pfk.35.1603820515592;
+        Tue, 27 Oct 2020 10:41:55 -0700 (PDT)
+Received: from debian ([122.164.48.88])
+        by smtp.gmail.com with ESMTPSA id b67sm2710808pfa.151.2020.10.27.10.41.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 10:41:55 -0700 (PDT)
+Message-ID: <36462d17b9db3698015b5d28474f9ee5218a9cdd.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.9 000/757] 5.9.2-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Date:   Tue, 27 Oct 2020 23:11:50 +0530
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-In-Reply-To: <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 2:32 PM, Vlastimil Babka wrote:
-> So my conclusion:
-> - We can remove PAGE_POISONING_NO_SANITY because it only makes sense with
-> PAGE_POISONING_ZERO, and we can use init_on_free instead
+On Tue, 2020-10-27 at 14:44 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.2 release.
+> There are 757 patches in this series, all will be posted as a
+> response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
+> 
+> Responses should be made by Thu, 29 Oct 2020 13:52:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> 
 
-Note for this we first have to make sanity checking compatible with
-hibernation, but that should be easy as the zeroing variants already
-paved the way. The patch below will be added to the next version of
-the series:
+hello,
 
- From 44474ee27c4f5248061ea2e5bbc2aeefc91bcdfc Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Tue, 27 Oct 2020 18:25:17 +0100
-Subject: [PATCH] kernel/power: allow hibernation with page_poison sanity
-  checking
+Compiled and booted  5.9.2-rc1+.
+Looks like no typical regression or regressions.
 
-Page poisoning used to be incompatible with hibernation, as the state of
-poisoned pages was lost after resume, thus enabling CONFIG_HIBERNATION forces
-CONFIG_PAGE_POISONING_NO_SANITY. For the same reason, the poisoning with zeroes
-variant CONFIG_PAGE_POISONING_ZERO used to disable hibernation. The latter
-restriction was removed by commit 1ad1410f632d ("PM / Hibernate: allow
-hibernation with PAGE_POISONING_ZERO") and similarly for init_on_free by commit
-18451f9f9e58 ("PM: hibernate: fix crashes with init_on_free=1") by making sure
-free pages are cleared after resume.
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
 
-We can use the same mechanism to instead poison free pages with PAGE_POISON
-after resume. This covers both zero and 0xAA patterns. Thus we can remove the
-Kconfig restriction that disables page poison sanity checking when hibernation
-is enabled.
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
-  kernel/power/hibernate.c |  2 +-
-  kernel/power/power.h     |  2 +-
-  kernel/power/snapshot.c  | 14 ++++++++++----
-  mm/Kconfig.debug         |  1 -
-  4 files changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 2fc7d509a34f..da0b41914177 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -326,7 +326,7 @@ static int create_image(int platform_mode)
-
-  	if (!in_suspend) {
-  		events_check_enabled = false;
--		clear_free_pages();
-+		clear_or_poison_free_pages();
-  	}
-
-  	platform_leave(platform_mode);
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index 24f12d534515..778bf431ec02 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -106,7 +106,7 @@ extern int create_basic_memory_bitmaps(void);
-  extern void free_basic_memory_bitmaps(void);
-  extern int hibernate_preallocate_memory(void);
-
--extern void clear_free_pages(void);
-+extern void clear_or_poison_free_pages(void);
-
-  /**
-   *	Auxiliary structure used for reading the snapshot image data and
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index 46b1804c1ddf..6b1c84afa891 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -1144,7 +1144,7 @@ void free_basic_memory_bitmaps(void)
-  	pr_debug("Basic memory bitmaps freed\n");
-  }
-
--void clear_free_pages(void)
-+void clear_or_poison_free_pages(void)
-  {
-  	struct memory_bitmap *bm = free_pages_map;
-  	unsigned long pfn;
-@@ -1152,12 +1152,18 @@ void clear_free_pages(void)
-  	if (WARN_ON(!(free_pages_map)))
-  		return;
-
--	if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
-+	if (page_poisoning_enabled() || want_init_on_free()) {
-  		memory_bm_position_reset(bm);
-  		pfn = memory_bm_next_pfn(bm);
-  		while (pfn != BM_END_OF_MAP) {
--			if (pfn_valid(pfn))
--				clear_highpage(pfn_to_page(pfn));
-+			if (pfn_valid(pfn)) {
-+				struct page *page = pfn_to_page(pfn);
-+				if (page_poisoning_enabled_static())
-+					kernel_poison_pages(page, 1);
-+				else if (want_init_on_free())
-+					clear_highpage(page);
-+
-+			}
-
-  			pfn = memory_bm_next_pfn(bm);
-  		}
-diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
-index 864f129f1937..c57786ad5be9 100644
---- a/mm/Kconfig.debug
-+++ b/mm/Kconfig.debug
-@@ -64,7 +64,6 @@ config PAGE_OWNER
-
-  config PAGE_POISONING
-  	bool "Poison pages after freeing"
--	select PAGE_POISONING_NO_SANITY if HIBERNATION
-  	help
-  	  Fill the pages with poison patterns after free_pages() and verify
-  	  the patterns before alloc_pages. The filling of the memory helps
 -- 
-2.29.0
-
+software engineer
+rajagiri school of engineering and technology  -  autonomous
 
