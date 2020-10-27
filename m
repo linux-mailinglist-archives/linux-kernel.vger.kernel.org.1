@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940B629C5E3
+	by mail.lfdr.de (Postfix) with ESMTP id 2265A29C5E2
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756807AbgJ0OOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1756832AbgJ0OOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 10:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59702 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756079AbgJ0OK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:10:58 -0400
+        id S1756089AbgJ0OK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28DCD218AC;
-        Tue, 27 Oct 2020 14:10:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02C4E22202;
+        Tue, 27 Oct 2020 14:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807856;
-        bh=6yWvqPaJLb9QPFtogwD7zaqC1fkBe7AHoGK/8fkvsm4=;
+        s=default; t=1603807859;
+        bh=WId7CC7UAsFQd6UFXl7R7iT2RWemnXX3GytAhRUz8Ko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1PbURS8Bd5fyA+nUZO7U2bYV+WPOCY0+mbRWAsgsow8Q8vMXbwXkmc76P7OACatuN
-         DsliqpkNBhyL9S9SEqn6WihiIBf6H84U04XLR0nVBIrIcLdQPkW97aKo8ii8tnZcVh
-         /k9Ce11KsZrvIClAONP0xa/UbJMnYx6r5nKzWtW8=
+        b=W3SJKNS1TJCFqbu3KZSfWmTrN5OKEPU+lUJxBhDfAydLc2CacuUgPMjUfAeHnsdJV
+         B4fIQSwbJ/LR6EcJtRsxtbl+jNZKm4KlxmSJMKRL7gAHTERBSMt/04L8KguBsxRPuz
+         5eX3EGN4j0H7ilzpegpRT5MLFyoj8y2qSjBXd9Ao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Preston <thomas.preston@codethink.co.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 065/191] pinctrl: mcp23s08: Fix mcp23x17 precious range
-Date:   Tue, 27 Oct 2020 14:48:40 +0100
-Message-Id: <20201027134912.864499853@linuxfoundation.org>
+Subject: [PATCH 4.14 066/191] ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
+Date:   Tue, 27 Oct 2020 14:48:41 +0100
+Message-Id: <20201027134912.915613145@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -45,40 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Preston <thomas.preston@codethink.co.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit b9b7fb29433b906635231d0a111224efa009198c ]
+[ Upstream commit 6a950755cec1a90ddaaff3e4acb5333617441c32 ]
 
-On page 23 of the datasheet [0] it says "The register remains unchanged
-until the interrupt is cleared via a read of INTCAP or GPIO." Include
-INTCAPA and INTCAPB registers in precious range, so that they aren't
-accidentally cleared when we read via debugfs.
+The "tsid" is a user controlled u8 which comes from debugfs.  Values
+more than 15 are invalid because "active_tsids" is a 16 bit variable.
+If the value of "tsid" is more than 31 then that leads to a shift
+wrapping bug.
 
-[0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
-
-Fixes: 8f38910ba4f6 ("pinctrl: mcp23s08: switch to regmap caching")
-Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20200828213226.1734264-3-thomas.preston@codethink.co.uk
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 8fffd9e5ec9e ("ath6kl: Implement support for QOS-enable and QOS-disable from userspace")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200918142732.GA909725@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath6kl/wmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index 12e7f7c54ffaa..5971338c87572 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -141,7 +141,7 @@ static const struct regmap_access_table mcp23x17_volatile_table = {
- };
+diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
+index d79c2bccf5822..f80f1757b58fc 100644
+--- a/drivers/net/wireless/ath/ath6kl/wmi.c
++++ b/drivers/net/wireless/ath/ath6kl/wmi.c
+@@ -2648,6 +2648,11 @@ int ath6kl_wmi_delete_pstream_cmd(struct wmi *wmi, u8 if_idx, u8 traffic_class,
+ 		return -EINVAL;
+ 	}
  
- static const struct regmap_range mcp23x17_precious_range = {
--	.range_min = MCP_GPIO << 1,
-+	.range_min = MCP_INTCAP << 1,
- 	.range_max = MCP_GPIO << 1,
- };
- 
++	if (tsid >= 16) {
++		ath6kl_err("invalid tsid: %d\n", tsid);
++		return -EINVAL;
++	}
++
+ 	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd));
+ 	if (!skb)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
