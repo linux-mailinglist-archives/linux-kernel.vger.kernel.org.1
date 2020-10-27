@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C0C29BD1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0888C29BECD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811530AbgJ0Qjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:39:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42018 "EHLO mail.kernel.org"
+        id S1814640AbgJ0Q6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:58:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801941AbgJ0PpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:45:10 -0400
+        id S1794139AbgJ0PKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:10:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85BF9223B0;
-        Tue, 27 Oct 2020 15:45:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAF4620657;
+        Tue, 27 Oct 2020 15:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813509;
-        bh=YccVSx6ZuaiM4zc5OSZp35HbuBOuCVZ448jsDKpaK3w=;
+        s=default; t=1603811408;
+        bh=In6ODsqjDUsLruB/vRc+eDv8J/cXj5mUeu0tSPrUbnU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dZ8lh61oe1tRyXxOChWmcDl9sVIXN8HO3FnYHE8Zya+krMBR3cI+oRZ+RttehUACB
-         vxtIe/BAFMQoprGz7Qryqi06Zz3v7nSkI3Uqa8+qwnvXHpHKBudrHsSc8ah+1SLeAo
-         jX2wV1NoFsNHPP5yD5y9aU0NXScWvB38e91gk2y4=
+        b=GaziSQlLJ7P3O+MZDJ485fcM4B52xfqjxkuLiueJaoXjmipkHZGCySKlR0YY6hjdn
+         /yOgXN1tsEMWB4QC0g6kg2cDLmRcUj/L7Hz+vmTtsrf42Kp5jftzj7dzVK7+ykKQRg
+         cknG9hzOQVgTOphXKqtGn51H4Xe7MyGMMjq9CZWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 544/757] kbuild: deb-pkg: do not build linux-headers package if CONFIG_MODULES=n
-Date:   Tue, 27 Oct 2020 14:53:14 +0100
-Message-Id: <20201027135516.015553377@linuxfoundation.org>
+Subject: [PATCH 5.8 452/633] kbuild: deb-pkg: do not build linux-headers package if CONFIG_MODULES=n
+Date:   Tue, 27 Oct 2020 14:53:15 +0100
+Message-Id: <20201027135543.921506910@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -83,7 +83,7 @@ index 6df3c9f8b2da6..8277144298a00 100755
  	deploy_libc_headers debian/linux-libc-dev
  	create_package linux-libc-dev debian/linux-libc-dev
 diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 48fbd3d0284a8..ccd46aad1dff6 100755
+index df1adbfb8ead0..9342517778bf3 100755
 --- a/scripts/package/mkdebian
 +++ b/scripts/package/mkdebian
 @@ -183,13 +183,6 @@ Description: Linux kernel, version $version
