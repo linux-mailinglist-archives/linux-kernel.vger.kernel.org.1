@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CAC29BFDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD42929BFE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1816642AbgJ0RIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:08:15 -0400
-Received: from mx0b-00000d04.pphosted.com ([148.163.153.235]:41078 "EHLO
-        mx0b-00000d04.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1816628AbgJ0RIM (ORCPT
+        id S1816661AbgJ0RIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:08:21 -0400
+Received: from smtprelay0063.hostedemail.com ([216.40.44.63]:47840 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1816629AbgJ0RIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:08:12 -0400
-Received: from pps.filterd (m0102891.ppops.net [127.0.0.1])
-        by mx0a-00000d04.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RH1PIs014961;
-        Tue, 27 Oct 2020 10:07:41 -0700
-Received: from mx0a-00000d03.pphosted.com (mx0a-00000d03.pphosted.com [148.163.149.244])
-        by mx0a-00000d04.pphosted.com with ESMTP id 34ch7kdhwa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 10:07:41 -0700
-Received: from pps.filterd (m0214090.ppops.net [127.0.0.1])
-        by mx0a-00000d03.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RH3GQw001280;
-        Tue, 27 Oct 2020 10:07:40 -0700
-Received: from mx0a-00000d06.pphosted.com (mx0a-00000d06.pphosted.com [148.163.135.119])
-        by mx0a-00000d03.pphosted.com with ESMTP id 34ck9kpa9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 10:07:39 -0700
-Received: from pps.filterd (m0167935.ppops.net [127.0.0.1])
-        by mx0a-00000d06.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RH2TM9002487;
-        Tue, 27 Oct 2020 10:07:39 -0700
-Received: from smtp.stanford.edu (smtp4.stanford.edu [171.67.219.72])
-        by mx0a-00000d06.pphosted.com with ESMTP id 34cgmhumhe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 10:07:39 -0700
-Received: from cm-mail.stanford.edu (cm-mail.stanford.edu [171.64.197.135])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.stanford.edu (Postfix) with ESMTPS id 13CD91C1261;
-        Tue, 27 Oct 2020 10:07:39 -0700 (PDT)
-Received: from unknown54e1adf9a8e5.attlocal.net (c-67-161-27-134.hsd1.ca.comcast.net [67.161.27.134])
-        (authenticated bits=0)
-        by cm-mail.stanford.edu (8.14.4/8.14.4) with ESMTP id 09RH7Z06028059
-        (version=TLSv1/SSLv3 cipher=AES128-GCM-SHA256 bits=128 verify=NO);
-        Tue, 27 Oct 2020 10:07:38 -0700
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.9.1-rt18
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
- <20201021131449.qlwjiq2l6embaii3@linutronix.de>
- <54d33ca5-107e-e269-8c47-a1ae0dc60b0e@ccrma.stanford.edu>
- <20201027082247.rs2h7l3wdzxc5f7i@linutronix.de>
-From:   Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Message-ID: <bef33500-43b1-5895-2511-e39d8f1da1d0@ccrma.stanford.edu>
-Date:   Tue, 27 Oct 2020 10:07:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 27 Oct 2020 13:08:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 45489182CED2A;
+        Tue, 27 Oct 2020 17:08:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6742:6743:7576:7903:8603:10004:10400:10848:11026:11232:11473:11658:11783:11914:12043:12296:12297:12438:12555:12679:12740:12895:12986:13161:13229:13439:13894:14096:14097:14181:14659:14721:21080:21451:21627:21990:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: rake71_590ddfb2727d
+X-Filterd-Recvd-Size: 4916
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 27 Oct 2020 17:08:04 +0000 (UTC)
+Message-ID: <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
+Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
+From:   Joe Perches <joe@perches.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-drm <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>, linux-mm@kvack.org,
+        Linux-ALSA <alsa-devel@alsa-project.org>
+Date:   Tue, 27 Oct 2020 10:08:02 -0700
+In-Reply-To: <CAMpxmJU0C84DjPmqmWvPgv0zwgGLhkpKLRDuKkZHAa=wi+LvBA@mail.gmail.com>
+References: <20201027121725.24660-1-brgl@bgdev.pl>
+         <20201027121725.24660-4-brgl@bgdev.pl>
+         <20201027112607-mutt-send-email-mst@kernel.org>
+         <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
+         <CAMpxmJU0C84DjPmqmWvPgv0zwgGLhkpKLRDuKkZHAa=wi+LvBA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201027082247.rs2h7l3wdzxc5f7i@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on cm-mail.stanford.edu
-x-proofpoint-stanford-dir: outbound
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-27_10:2020-10-26,2020-10-27 signatures=0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-27_10:2020-10-26,2020-10-27 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 malwarescore=0 mlxscore=0
- bulkscore=0 mlxlogscore=999 spamscore=0 adultscore=100 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270102
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 1:22 AM, Sebastian Andrzej Siewior wrote:
-> On 2020-10-26 23:53:20 [-0700], Fernando Lopez-Lezcano wrote:
->> Maybe I'm doing something wrong but I get a compilation error (see below)
->> when trying to do a debug build (building rpm packages for Fedora). 5.9.1 +
->> rt19...
->>
->> Builds fine otherwise...
+On Tue, 2020-10-27 at 17:58 +0100, Bartosz Golaszewski wrote:
+> On Tue, Oct 27, 2020 at 5:50 PM Joe Perches <joe@perches.com> wrote:
+> > 
+> > On Tue, 2020-10-27 at 11:28 -0400, Michael S. Tsirkin wrote:
+> > > On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > 
+> > > > Use the helper that checks for overflows internally instead of manually
+> > > > calculating the size of the new array.
+> > > > 
+> > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > 
+> > > No problem with the patch, it does introduce some symmetry in the code.
+> > 
+> > Perhaps more symmetry by using kmemdup
+> > ---
+> >  drivers/vhost/vringh.c | 23 ++++++++++-------------
+> >  1 file changed, 10 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> > index 8bd8b403f087..99222a3651cd 100644
+> > --- a/drivers/vhost/vringh.c
+> > +++ b/drivers/vhost/vringh.c
+> > @@ -191,26 +191,23 @@ static int move_to_indirect(const struct vringh *vrh,
+> >  static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
+> >  {
+> >         struct kvec *new;
+> > -       unsigned int flag, new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
+> > +       size_t new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
+> > +       size_t size;
+> > 
+> >         if (new_num < 8)
+> >                 new_num = 8;
+> > 
+> > -       flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
+> > -       if (flag)
+> > -               new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
+> > -       else {
+> > -               new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
+> > -               if (new) {
+> > -                       memcpy(new, iov->iov,
+> > -                              iov->max_num * sizeof(struct iovec));
+> > -                       flag = VRINGH_IOV_ALLOCATED;
+> > -               }
+> > -       }
+> > +       if (unlikely(check_mul_overflow(new_num, sizeof(struct iovec), &size)))
+> > +               return -ENOMEM;
+> > +
 > 
-> If you could remove CONFIG_TEST_LOCKUP then it should work. I will think
-> of something.
+> The whole point of using helpers such as kmalloc_array() is not doing
+> these checks manually.
 
-Thanks much, I should have figured this out for myself :-( Just toooo 
-busy. The compilation process went ahead (not finished yet), let me know 
-if there is a proper patch. No hurry...
+Tradeoffs for in readability for overflow and not mistyping or doing
+the multiplication of iov->max_num * sizeof(struct iovec) twice.
 
-Thanks!
--- Fernando
+Just fyi:
+
+the realloc doesn't do a multiplication overflow test as written so the
+suggestion is slightly more resistant to defect.
+
+   
 
