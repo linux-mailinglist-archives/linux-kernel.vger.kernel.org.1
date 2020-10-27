@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7037829C90B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F077929C90E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830124AbgJ0Te0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 15:34:26 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:39449 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504048AbgJ0TeX (ORCPT
+        id S2504185AbgJ0Tgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:36:45 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48203 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2504087AbgJ0Tgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:34:23 -0400
-Received: by mail-ej1-f68.google.com with SMTP id bn26so3903666ejb.6;
-        Tue, 27 Oct 2020 12:34:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nHvaL4wmpHKYi5m3WZBTUj9Yr645AuMpS/Lwjl+uNoA=;
-        b=Z8496DmppCAr4Yo5LIfJT/Vy0N1RbQYfNm8zh9+tEay4I32IFICZBcBfkPajRlp80L
-         z3AOMg03b4SLuUVml97mEKrZNNePC7in84d05dq/djr9frMVaD7U1ESwKGsjL4EDpRcT
-         1hBl0iYHv3iQHpg9DBm52jtnFuYhNyOEbKLkb5GEy9AOPfqC2wkgVO/BhXWhV58wjlvB
-         Fj1xorF5VPzlrZ9En9ZUAoITyPKnpKrS5ZFvcbKhgfyyXwg+08i6+bAtMaiTRpYjVvFE
-         jhf5GceHUDMEWRxcl+Q4yLwqt+cZ2YRkHrSsBr8FBbzcnlCuuXA5rQLLkKPm1nwjEg1E
-         hGLQ==
-X-Gm-Message-State: AOAM530tEIzzlEfNWIS2YdprBhJT4D+xVS8dbscNeE3qlzY5JfDuiICb
-        t3hXpnswX5yCwJWUGwTrgOkUEO6E6r36FS4X
-X-Google-Smtp-Source: ABdhPJzSfsy7j2DNep0zqEKUKGZS6bAlWA30JvZmU2UWtQoUwNW/pB7XvrPTG1y6Gt14VNHQQIvGHQ==
-X-Received: by 2002:a17:906:b204:: with SMTP id p4mr4185530ejz.214.1603827260969;
-        Tue, 27 Oct 2020 12:34:20 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id r24sm1487476eds.67.2020.10.27.12.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 12:34:19 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 20:34:17 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 05/52] dt-bindings: memory: tegra20: mc: Document new
- interconnect property
-Message-ID: <20201027193417.GB140636@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-6-digetx@gmail.com>
- <20201027085548.GE4244@kozik-lap>
- <abf1df6c-3e45-209c-244e-356d88b454aa@gmail.com>
+        Tue, 27 Oct 2020 15:36:44 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09RJaXEt029645
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Oct 2020 15:36:34 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id CB01F420107; Tue, 27 Oct 2020 15:36:33 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 15:36:33 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Edward Shishkin <edward.shishkin@gmail.com>
+Cc:     David Niklas <Hgntkwis@vfemail.net>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: PROBLEM: Reiser4 hard lockup
+Message-ID: <20201027193633.GE5691@mit.edu>
+References: <20201025090422.D80F56FB40E1@huitzilopochtli.metztli-it.com>
+ <20201025210758.034aa947@Phenom-II-x6.niklas.com>
+ <2e2f8dc4-a48e-f09c-3f41-5dfa7f9a6387@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <abf1df6c-3e45-209c-244e-356d88b454aa@gmail.com>
+In-Reply-To: <2e2f8dc4-a48e-f09c-3f41-5dfa7f9a6387@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:17:48PM +0300, Dmitry Osipenko wrote:
-> 27.10.2020 11:55, Krzysztof Kozlowski пишет:
-> > On Mon, Oct 26, 2020 at 01:16:48AM +0300, Dmitry Osipenko wrote:
-> >> Memory controller is interconnected with memory clients and with the
-> >> External Memory Controller. Document new interconnect property which
-> >> turns memory controller into interconnect provider.
-> >>
-> >> Acked-by: Rob Herring <robh@kernel.org>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  .../bindings/memory-controllers/nvidia,tegra20-mc.txt          | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
-> >> index e55328237df4..739b7c6f2e26 100644
-> >> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
-> >> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-mc.txt
-> >> @@ -16,6 +16,8 @@ Required properties:
-> >>    IOMMU specifier needed to encode an address. GART supports only a single
-> >>    address space that is shared by all devices, therefore no additional
-> >>    information needed for the address encoding.
-> >> +- #interconnect-cells : Should be 1. This cell represents memory client.
-> >> +  The assignments may be found in header file <dt-bindings/memory/tegra20-mc.h>.
+On Tue, Oct 27, 2020 at 01:53:31AM +0100, Edward Shishkin wrote:
+> > > reiser4progs 1.1.x Software Framework Release Number (SFRN) 4.0.1 file
+> > > system utilities should not be used to check/fix media formatted 'a
+> > > priori' in SFRN 4.0.2 and vice-versa.
 > > 
-> > This is a list of required properties so you break the ABI. All existing
-> > DTBs will be affected.
+> > Honestly, this is the first time I've heard about a Linux FS having
+> > versioning other than a major one
 > 
-> This is optional property for the older DTBs, but for newer DTs it's
-> mandatory.
-
-We do not consider here "older" or "newer" DTBs, but existing ones in
-the world using this binding.
-
-If it was optional so far, it cannot be made mandatory without changing
-the ABI. Which is an ABI break.
-
-> IIUC, it should be defined as a required property in the
-> binding.
+> This is because, unlike other Linux file systems, reiser4 is a
+> framework.
 > 
-> Please see tegra_mc_interconnect_setup() in "memory: tegra-mc: Add
-> interconnect framework", which check presence of the ICC DT property.
+> In vanilla kernel having a filesystem-as-framework is discouraged for
+> ideological reasons. As they explained: "nobody's interested in
+> plugins". A huge monolithic mess without any internal structure -
+> welcome :)
 
-The implementation indeed does not enforce it (except adding error msg,
-about which I commented). Therefore it should be an optional property.
+I wouldn't call it an ideological problem, but more about wanting to
+assure interoperability issues and wanting to reduce confusion on the
+part of users, especially if images get moved between systems.  There
+is also plenty of way of introducing internal structure and code
+cleanliness without going completely undisciplined with respect to
+on-disk format extensions.  :-)
 
-Best regards,
-Krzysztof
+Finally, I'll note that ext 2/3/4 does have a rather fine-grained set
+of feature flags, with specific rules about what the kernel --- and
+e2fsck --- should do if it finds a feature bit it doesn't understand
+in the incompat, ro_compat, and compat feature flags set.  This is
+especially helpful since we have multiple implementations of ext 2/3/4
+out there (in FreeBSD, the GRUB bootloader, GNU HURD, Fuchsia, etc.)
+and so using feature bits allow for safe and reliable interoperability
+with the user being warned if they can safely only mount the file
+system read-only, or not at all, if the file system has some new
+feature that their current OS version does not support.  We can also
+give appropriate warnings if they are using an insufficiently recent
+version of the userspace tools.
 
+Cheers,
+
+					- Ted
