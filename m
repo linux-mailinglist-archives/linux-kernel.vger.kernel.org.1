@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E6929AE01
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D63929AE0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752863AbgJ0NyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:54:16 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:13595 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409294AbgJ0NyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:54:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1841; q=dns/txt; s=axis-central1;
-  t=1603806855; x=1635342855;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=uAN2e5G3WcdT+cTOp4JBtFE0vznyZLRyeShhV3oIqGM=;
-  b=WMOkygJmoeoU1f4qsJ/LdcbypQR+Y0FFFsAcZgZ9d064tB7vsbvfBrdZ
-   /1sRd3wrPnx5LPR0dDktQ8OE8uFpiIJcR0vQrlVKOkRs3rXXw5j5jSXpy
-   cfMCO0nFcqaKH8aRpul00YosFBk0uvijxzhWncd7hJ2YIsqPxWwkuV0E2
-   LgIqZUjCfEwVgHE46WFc2laef1kuv0FJW0wqSyOfgbXFP1Rha092IBJ+h
-   YcLUAudTw6gu57nx54iPOAsWgYgru5JvHpSYTjdhrmsQXhQQdz8+fcYB+
-   VWvsH6A82hs1Am3GeaBpk2tJy/kSwY1qf3N9y/GVQz+ZRYEC3EdstSUyF
-   A==;
-IronPort-SDR: DP5SbzFMLwpxHViDs5672DnOGm8eyiW076asrV0u1HrOdGhEEEMRbgkt7x9oRSHvcFdy304U5Z
- OjR4Py+c/8JVxKZnB3mOD3c9dWpUSTESWXPiyCboT+fBme8oJTHv9XP0gLI+kW/BkugQJe+uAe
- ChElU+jL2wPfu5DrO0IdiEkTxk+uztJoJkh9k8yNHkQIHLRpjHU/Ba5Z6g74COAGk40nToM8WN
- etWljz/RjGR4hA/VMwFYQVR0qVvKsvQI7S10e7UzfipJQi/xkGPGCEU1q2PUA4rykCDzsGxDQo
- pS0=
-X-IronPort-AV: E=Sophos;i="5.77,424,1596492000"; 
-   d="scan'208";a="13956774"
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] gpio: mockup: Allow probing from device tree
-Date:   Tue, 27 Oct 2020 14:53:25 +0100
-Message-ID: <20201027135325.22235-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
+        id S368003AbgJ0Nzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:55:35 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:39130 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438386AbgJ0Nzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:55:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=zDE5jb9uxhVI9C4jlM6oDJI3APbjGF+q9+SWA/XVKeI=; b=2KemxEIJQODswF6tNzklkYfkjJ
+        QQsUcrSXbVfL0tK+ihfcobzBVTVFg606C1qriUbY54A5Q5dcls5dJITJEyA944Ri74Bpwe4vdnFnH
+        uImLAucbMEk9s5iV3n0WWOYFGZGDdevASSJOT7J+a70EK1RrlNjFfRLHwPfdRCvFwV6PCymq1cYze
+        nCLYaH3laExlXMK7uO/adSWD8Zc9hJz6LKkSn545yYoGZR9hTCzzlM+3w7pULZs6/4Bu0GwggmBE+
+        eVY2cqNAukipGfhJl04U/JvR2waVkO5t1pGdhVEOnCTywhcT8GLQf3xVnbbsyE4EAfLD+/LDv41ul
+        rD4wBrgQ==;
+Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXPRe-00005c-KS; Tue, 27 Oct 2020 13:55:26 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1kXPRd-002iLY-JP; Tue, 27 Oct 2020 13:55:25 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     bonzini@redhat.com
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH 0/3] Allow in-kernel consumers to drain events from eventfd
+Date:   Tue, 27 Oct 2020 13:55:20 +0000
+Message-Id: <20201027135523.646811-1-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <1faa5405-3640-f4ad-5cd9-89a9e5e834e9@redhat.com>
+References: <1faa5405-3640-f4ad-5cd9-89a9e5e834e9@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the mockup driver to be probed via the device tree without any
-module parameters, allowing it to be used to configure and test higher
-level drivers like the leds-gpio driver and corresponding userspace
-before actual hardware is available.
+Paolo pointed out that the KVM eventfd doesn't drain the events from the
+irqfd as it handles them, and just lets them accumulate. This is also
+true for the VFIO virqfd used for handling acks for level-triggered IRQs.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
-v2: Remove most of the added code, since the latest driver doesn't need it.
-    Drop DT binding document, since Rob Herring was OK with not documenting
-    this:
-    https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
+Export eventfd_ctx_do_read() and make the wakeup functions call it as they
+handle their respective events.
 
- drivers/gpio/gpio-mockup.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+David Woodhouse (3):
+      eventfd: Export eventfd_ctx_do_read()
+      vfio/virqfd: Drain events from eventfd in virqfd_wakeup()
+      kvm/eventfd: Drain events from eventfd in irqfd_wakeup()
 
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index 67ed4f238d43..c93892a6936a 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -13,6 +13,7 @@
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/of.h>
- #include <linux/irq_sim.h>
- #include <linux/irqdomain.h>
- #include <linux/module.h>
-@@ -460,9 +461,18 @@ static int gpio_mockup_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id gpio_mockup_of_match[] = {
-+	{ .compatible = "gpio-mockup", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
-+#endif
-+
- static struct platform_driver gpio_mockup_driver = {
- 	.driver = {
- 		.name = "gpio-mockup",
-+		.of_match_table = of_match_ptr(gpio_mockup_of_match),
- 	},
- 	.probe = gpio_mockup_probe,
- };
-@@ -556,8 +566,7 @@ static int __init gpio_mockup_init(void)
- {
- 	int i, num_chips, err;
- 
--	if ((gpio_mockup_num_ranges < 2) ||
--	    (gpio_mockup_num_ranges % 2) ||
-+	if ((gpio_mockup_num_ranges % 2) ||
- 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
- 		return -EINVAL;
- 
--- 
-2.28.0
+ drivers/vfio/virqfd.c   | 3 +++
+ fs/eventfd.c            | 5 ++++-
+ include/linux/eventfd.h | 6 ++++++
+ virt/kvm/eventfd.c      | 3 +++
+ 4 files changed, 16 insertions(+), 1 deletion(-)
+
 
