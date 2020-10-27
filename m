@@ -2,115 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C712329AB40
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A6229AB42
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1749392AbgJ0LyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:54:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20502 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S367978AbgJ0LyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:54:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603799650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wcz7Jh3j3aQGwV+LI07wyYiNRQxa8Qovi53GHA6Gqy0=;
-        b=El20sh9sVXbfKdy3sN8v4lpETtvxPlUspp3PwpDwoEnvbcTTmkAyGMKCmobUJ1k1F6yyN9
-        OjOq/10wKOtP98v6zsIYdYIx9Mvjup3ZWEaXvT2l9paJag2HPy9njGvuziSpWD/2UPcqp/
-        c4Sen2NQzanoZOP5ByU3uDnanO+BuwQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-jMDKppbaOtiquwpprNiSSw-1; Tue, 27 Oct 2020 07:54:08 -0400
-X-MC-Unique: jMDKppbaOtiquwpprNiSSw-1
-Received: by mail-ed1-f71.google.com with SMTP id t4so576835edv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:54:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wcz7Jh3j3aQGwV+LI07wyYiNRQxa8Qovi53GHA6Gqy0=;
-        b=OGG8hH3oze6kuxoEfhIKbiJLDW0jW1SWrJRJ0OIhhLKHEvBBsfndd4pfbKqTWutptp
-         75OJEs5VxX2Du3uv8XYPovkF28IuE7oxcNM+yTIEUy+sx67hG1ybtqrlY29fUNlNXJ/G
-         ES7q9UsrnU6kpfKnfEQ07NmkPJiIaZzDK6NS1TtyNz9ufd81y/L0YKMo8+adbCAvCtmI
-         5xZN6eDNoi6H52By4QFmw7pTGuA/tQ3ST3t8XTsvfYXwLrwWzjsliskyIkN7oH1vxyNR
-         IiVaGsjZj5plCjZNl20aXalLn++N9wTKQVjMFAl3R1a774BRZblHIoAgCVYnsh+tQSNd
-         FhyA==
-X-Gm-Message-State: AOAM5305sm/yfjNXvbaAuduDutv1CmLdgWLF0Atqgf7VCyK+h8GtI37D
-        hMKMp0iwuqWH1lzDmRO/oXJ3clg1py8h/2iLzS0iBVAvG8Fm/2XxAPz5oaPMWJ0Mi9OwqDE4Axg
-        wce6pZuKe796klH3S9ZnFkb3b
-X-Received: by 2002:a17:906:3e48:: with SMTP id t8mr2007252eji.104.1603799647131;
-        Tue, 27 Oct 2020 04:54:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxD6dQuaGLcdO4jOMamhPnr6gep/CM2TLxXgKYxUPWXuFnpPAvU7Fy+O7IlgITHOocrLrwUSQ==
-X-Received: by 2002:a17:906:3e48:: with SMTP id t8mr2007237eji.104.1603799646898;
-        Tue, 27 Oct 2020 04:54:06 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id h15sm890976ejf.50.2020.10.27.04.54.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 04:54:06 -0700 (PDT)
-Subject: Re: [PATCH v4 0/5] platform/surface: Create a platform subdirectory
- for Microsoft Surface devices
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org
-References: <20201009141128.683254-1-luzmaximilian@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <63c4454f-a8a9-badd-421c-ea6b018bf01c@redhat.com>
-Date:   Tue, 27 Oct 2020 12:54:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1750220AbgJ0Lyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:54:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:39148 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404720AbgJ0Lyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:54:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63217139F;
+        Tue, 27 Oct 2020 04:54:31 -0700 (PDT)
+Received: from [10.57.50.191] (unknown [10.57.50.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38C533F66E;
+        Tue, 27 Oct 2020 04:54:30 -0700 (PDT)
+Subject: Re: [PATCH v4] driver/perf: Add PMU driver for the ARM DMC-620 memory
+ controller
+To:     Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
+Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
+        patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1603235425-29442-1-git-send-email-tuanphan@os.amperecomputing.com>
+ <5c24da3f-4fa3-79ad-0c0d-9b4828ebf684@arm.com>
+ <1EC85DEF-8E0C-42B9-9B01-DA897147B1F7@amperemail.onmicrosoft.com>
+ <c4b8a58e-ca55-21ec-5a0d-50ab995a1d68@arm.com>
+ <6BC59870-087B-40AB-ABAB-06BFD013EA22@amperemail.onmicrosoft.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7d105b5a-1960-f8d0-4a71-f7fa006c209b@arm.com>
+Date:   Tue, 27 Oct 2020 11:54:28 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201009141128.683254-1-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <6BC59870-087B-40AB-ABAB-06BFD013EA22@amperemail.onmicrosoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/9/20 4:11 PM, Maximilian Luz wrote:
-> As has come up in the discussion around
+On 2020-10-23 19:23, Tuan Phan wrote:
 > 
->   [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
 > 
-> it may make sense to add a Microsoft Surface specific platform
-> subdirectory. Andy has suggested drivers/platform/surface for that.
-> This series follows said suggestion and creates that subdirectory, as
-> well as moves Microsoft Surface related drivers over to it and updates
-> their MAINTAINERS entries (if available) accordingly.
+>> On Oct 23, 2020, at 6:43 AM, Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2020-10-22 22:46, Tuan Phan wrote:
+>> [...]
+>>>>> +#define _ATTR_CFG_GET_FLD(attr, cfg, lo, hi)			\
+>>>>> +	((((attr)->cfg) >> lo) & GENMASK(hi - lo, 0))
+>>>>
+>>>> As per the buildbot report, GENMASK_ULL() would be appropriate when the other side is a u64 (although either way this does look a lot like reinventing FIELD_GET()...)
+>>> I will add (COMPILE_TEST && 64BIT) to Kconfig so it should fix the buildbot report.
+>>
+>> Huh? The left-hand side of the "&" expression will always be a u64 here, which is unsigned long long. Regardless of whether an unsigned long on the right-hand side happens to be the same size, you have a semantic type mismatch, which is trivial to put right. I can't comprehend why introducing a fake build dependency to hide this would seem like a better idea than making a tiny change to make the code 100% correct and robust with zero practical impact :/
+>>
+>> Sure, you only copied this from the SPE driver; that doesn't mean it was ever correct, simply that the mismatch was hidden since that driver *is* tightly coupled to one particular CPU ISA.
 > 
-> This series does not modify any existing driver code, symbols, or help
-> text.
+> Got it. Actually after seeing your CMN driver which has (COMPILE_TEST && 64BIT), I thought the driver should be only tested under 64BIT platform. Any reason why CMN need 64BIT with COMPILE_TEST?
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+The CMN driver relies heavily on 64-bit I/O accessors (readq() etc.) 
+which by default aren't defined on 32-bit architectures. Thus even 
+though its type usage should be clean now (it definitely wasn't back 
+when that was first added!) it would still require *functional* changes 
+to even pretend to have 32-bit support.
 
-Note it will show up there once I've pushed my local branch there,
-which might take a while.
+Robin.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
+>> [...]
+>>>>> +static irqreturn_t dmc620_pmu_handle_irq(int irq_num, void *data)
+>>>>> +{
+>>>>> +	struct dmc620_pmu_irq *irq = data;
+>>>>> +	struct dmc620_pmu *dmc620_pmu;
+>>>>> +	irqreturn_t ret = IRQ_NONE;
+>>>>> +
+>>>>> +	rcu_read_lock();
+>>>>> +	list_for_each_entry_rcu(dmc620_pmu, &irq->pmus_node, pmus_node) {
+>>>>> +		unsigned long status;
+>>>>> +		struct perf_event *event;
+>>>>> +		unsigned int idx;
+>>>>> +
+>>>>> +		/*
+>>>>> +		 * HW doesn't provide a control to atomically disable all counters.
+>>>>> +		 * To prevent race condition, disable all events before continuing
+>>>>> +		 */
+>>>>
+>>>> I'm still doubtful that this doesn't introduce more inaccuracy overall than whatever it's trying to avoid... :/
+>>> It think it does. By disabling all counters, you make sure overflow status not change at the same time you are clearing
+>>> it(by writing zero) after reading all counters.
+>>
+>> Urgh, *now* I get what the race is - we don't have a proper write-1-to-clear interrupt status register, so however much care we take in writing back to the overflow register there's always *some* risk of wiping out a new event when writing back, unless we ensure that no new overflows can occur *before* reading the status. What a horrible piece of hardware design... :(
+>>
+>> Perhaps it's worth expanding the comment a little more, since apparently it's not super-obvious.
+> 
+> I will expand the common more to explain the race condition.
+>>
+>> [...]
+>>>>> +	/*
+>>>>> +	 * We must NOT create groups containing mixed PMUs, although software
+>>>>> +	 * events are acceptable.
+>>>>> +	 */
+>>>>> +	if (event->group_leader->pmu != event->pmu &&
+>>>>> +			!is_software_event(event->group_leader))
+>>>>> +		return -EINVAL;
+>>>>> +
+>>>>> +	for_each_sibling_event(sibling, event->group_leader) {
+>>>>> +		if (sibling->pmu != event->pmu &&
+>>>>> +				!is_software_event(sibling))
+>>>>> +			return -EINVAL;
+>>>>> +	}
+>>>>
+>>>> As before, if you can't start, stop, or read multiple counters atomically, you can't really support groups of events for this PMU either. It's impossible to measure accurate ratios with a variable amount of skew between individual counters.
+>>> Can you elaborate more? The only issue I know is we can’t stop all counters of same PMU atomically in IRQ handler to prevent race condition.  But it can be fixed by manually disable each counter. Other than that, every counters are working independently.
+>>
+>> The point of groups is to be able to count two or more events for the exact same time period, in order to measure ratios between them accurately. ->add, ->del, ->read, etc. are still called one at a time for each event in the group, but those calls are made as part of a transaction, which for most drivers is achieved by perf core calling ->pmu_disable and ->pmu_enable around the other calls. Since this driver doesn't have enable/disable functionality, the individual events will count for different lengths of time depending on what order those calls are made in (which is not necessarily constant), and how long each one takes. Thus you'll end up with an indeterminate amount of error between what each count represents, and the group is not really any more accurate than if the events were simply scheduled independently, which is not how it's supposed to work.
+>>
+>> Come to think of it, you're also not validating that groups are even schedulable - try something like:
+>>
+>>   perf stat -e '{arm_dmc620_10008c000/clk_cycle_count/,arm_dmc620_10008c000/clk_request/,arm_dmc620_10008c000/clk_upload_stall/}' sleep 5
+>>
+>> and observe perf core being very confused and unhappy when ->add starts failing for a group that ->event_init said was OK, since 3 events won't actually fit into the 2 available counters.
+>>
+>> As I said before, I think you probably would be able to make groups work with some careful hooking up of snapshot functionality to ->start_txn and ->commit_txn, but to start with it'll be an awful lot simpler to just be honest and reject them.
+> 
+> Got it. Thanks for educating me. I will allow only one HW event then.
+>>
+>> [...]
+>>>>> +	name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+>>>>> +				  "%s_%llx", DMC620_PMUNAME,
+>>>>> +				  (res->start) >> DMC620_PA_SHIFT);
+>>>>
+>>>> res->start doesn't need parentheses, however I guess it might need casting to u64 to solve the build warning (I'm not sure there's any nicer way, unfortunately).
+>>> I will remove those parentheses, we don’t need u64 as build warning only applies when it runs compiling test with 32bit.
+>>
+>> As above, deliberately hacking the build for the sake of not fixing clearly dodgy code is crazy. The only correct format specifier for an expression of type phys_addr_t/resource_size_t is "%pa"; if you want to use a different format then explicitly converting the argument to a type appropriate for that format (either via a simple cast or an intermediate variable) is indisputably correct, regardless of whether you might happen to get away with an implicit conversion sometimes.
+>>
+>> The whole point of maximising COMPILE_TEST coverage is to improve code quality in order to avoid this exact situation, wherein someone copies a pattern from an existing driver only to discover that it's not actually as robust as it should be.
+> 
+> Got it. Will fix it
+> 
+> Thanks,
+> Tuan.
+> 
+>>
+>> Robin.
+> 
