@@ -2,137 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A27729B4A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BB929B52C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790494AbgJ0PEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:04:44 -0400
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.116]:43674 "EHLO
-        mail1.bemta24.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1789270AbgJ0PBx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:01:53 -0400
-Received: from [100.112.135.1] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-5.bemta.az-b.us-west-2.aws.symcld.net id 70/E8-42875-956389F5; Tue, 27 Oct 2020 15:01:45 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFKsWRWlGSWpSXmKPExsWS8eIhr66p2Yx
-  4g9uzFS32X5ew6FpoYLHw/ilWi6/fbrNbvDk+ncli+b5+RovLu+awWXzuPcJo0dTZBGR1TGax
-  WL3nBbMDt8ekmTOYPXbOusvu8WvbGhaPzSu0POadDPR4v+8qm8fnTXIB7FGsmXlJ+RUJrBkLN
-  mxlKTjCU9H/p421gfEvZxcjF4eQwH9GiZZvt1kgnBeMEnNvN7J3MbJzCAuUSBxM6mLk5BAR8J
-  Y4vnUFWAkzSH3vlilsIAkhgS4mif2b6kFsNgFtiS1bfoHFeQVsJZ4deswCYrMIqEqsO/KVGcQ
-  WFQiX6LixgwmiRlDi5MwnYDWcAnYSb7edZwexmQUsJGbOP88IYYtL3HoynwnClpdo3jobbI6E
-  gILEncM32CHsBIllL+8wT2AUnIVk7Cwko2YhGTULyagFjCyrGC2SijLTM0pyEzNzdA0NDHQND
-  Y10DY1NdA3NTPQSq3ST9EqLdctTi0t0jfQSy4v1iitzk3NS9PJSSzYxAqMwpaBtyQ7GXW8+6B
-  1ilORgUhLlXb9rerwQX1J+SmVGYnFGfFFpTmrxIUYZDg4lCd4DJjPihQSLUtNTK9Iyc4AJASY
-  twcGjJMK7DyTNW1yQmFucmQ6ROsWoKCXOq2UKlBAASWSU5sG1wZLQJUZZKWFeRgYGBiGegtSi
-  3MwSVPlXjOIcjErCvJUg43ky80rgpr8CWswEtLitYgrI4pJEhJRUA1O+14vVawqXPjhWk7JlX
-  eYOfbeUMnNe2RU+/gwHpx+tyl20/+IPMyvtlDifV2E2oQ351R/Xr8z58nzP2+ybj8w6f9zVnL
-  PQqDXq33pfkRM7XmQbn1P/9euZ7wfPrN9Xbgdc2mj95EDQ1CtZiqwrdf3s9941VV3SYbrB4VN
-  bzPkw+V0/viZEs99OfFJRJf58ldp67/wFc2MfO/tr/8la59V67+zXDanmLH/ez1Qp6clxvSZx
-  V+Hp0q1Xsv4cPmr6NdW4NG3yv2tBQTkHXU7wp/tZNHgpiN41fbl/z6ngaZt/TuDdqJx52Lydd
-  19nYHyQRpm4Bdffuxczb2a/ezPv7a9lXk+572yO3ukb/PEIb4mtEktxRqKhFnNRcSIABCslsr
-  0DAAA=
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-26.tower-355.messagelabs.com!1603810868!1936!1
-X-Originating-IP: [104.232.225.13]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.60.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 22287 invoked from network); 27 Oct 2020 15:01:09 -0000
-Received: from unknown (HELO lenovo.com) (104.232.225.13)
-  by server-26.tower-355.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 27 Oct 2020 15:01:09 -0000
-Received: from reswpmail04.lenovo.com (unknown [10.62.32.23])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by Forcepoint Email with ESMTPS id 165E9F4B40D3F6AD8445;
-        Tue, 27 Oct 2020 11:01:08 -0400 (EDT)
-Received: from localhost.localdomain (10.46.59.124) by reswpmail04.lenovo.com
- (10.62.32.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Tue, 27 Oct
- 2020 08:01:06 -0700
-Subject: Re: [External] Re: [PATCH] [RFC] Documentation: Add documentation for
- new platform_profile sysfs attribute
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Elia Devito <eliadevito@gmail.com>
-CC:     <dvhart@infradead.org>, <mgross@linux.intel.com>,
-        <mario.limonciello@dell.com>, <hadess@hadess.net>,
-        <bberg@redhat.com>, <linux-pm@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <markpearson@lenovo.com>
- <ef9b93a0-636f-9b96-9d5b-fee1e5738af7@lenovo.com>
- <1fbaf1fa-47c6-afe7-ca9e-41b3ad6a4556@redhat.com> <12633630.uLZWGnKmhe@pce>
- <1bddcede-5e12-6089-8920-26dd5f534b44@lenovo.com>
- <255af791-e456-7299-d355-fe4f3cea7d63@redhat.com>
-From:   Mark Pearson <markpearson@lenovo.com>
-Message-ID: <c40d0916-a61b-3376-fedd-de815f501827@lenovo.com>
-Date:   Tue, 27 Oct 2020 11:01:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1793894AbgJ0PIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:08:55 -0400
+Received: from mga07.intel.com ([134.134.136.100]:27714 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1790259AbgJ0PEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:13 -0400
+IronPort-SDR: E4/NksDXrjBQw76qzKBK7YfZW4TLrsxaNKKGgUW7bu1fOcZm0dS/nhNZmj5jBtuTrayWJ0n41v
+ XnkJbCKynrew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="232281254"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="232281254"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 08:04:12 -0700
+IronPort-SDR: P2ec2vjUwC4CMl2lYL7H6iVrSLfoNXSg6hEhNZTMbM/ON2QCTjnmVL4QQWN9xj4ig7vZ2bfymb
+ 1r+q/JgVMOLA==
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="535826454"
+Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.194]) ([10.249.227.194])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 08:04:09 -0700
+Subject: Re: [PATCH v2 06/15] perf session: load data directory into tool
+ process memory
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <d28243e3-3178-d7cd-7b96-7ed63fd83493@linux.intel.com>
+ <20201024154349.GC2589351@krava>
+ <43d5e54f-b56e-729f-d08e-2c6b6799c797@linux.intel.com>
+ <20201027122154.GF2900849@krava>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <0c0a7699-1f23-8d70-71cf-f1a6899e41de@linux.intel.com>
+Date:   Tue, 27 Oct 2020 18:04:07 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <255af791-e456-7299-d355-fe4f3cea7d63@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201027122154.GF2900849@krava>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.46.59.124]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail04.lenovo.com (10.62.32.23)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 27/10/2020 09:41, Hans de Goede wrote:
-> Hi Mark,
-> 
-> On 10/27/20 1:28 PM, Mark Pearson wrote:
->> Hi Elia
+On 27.10.2020 15:21, Jiri Olsa wrote:
+> On Tue, Oct 27, 2020 at 10:37:58AM +0300, Alexey Budankov wrote:
 >>
->> On 27/10/2020 05:19, Elia Devito wrote:
->>> Hi to all,
+>> On 24.10.2020 18:43, Jiri Olsa wrote:
+>>> On Wed, Oct 21, 2020 at 07:01:19PM +0300, Alexey Budankov wrote:
+>>>>
+>>>> Read trace files located in data directory into tool process memory.
+>>>> Basic analysis support of data directories is provided for report
+>>>> mode. Raw dump (-D) and aggregated reports are available for data
+>>>> directories, still with no memory consumption optimizations. However
+>>>> data directories collected with --compression-level option enabled
+>>>> can be analyzed with little less memory because trace files are
+>>>> unmaped from tool process memory after loading collected data.
+>>>> The implementation is based on the prototype [1], [2].
+>>>>
+>>>> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+>>>> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+>>>>
+>>>> Suggested-by: Jiri Olsa <jolsa@kernel.org>
 >>>
->>> In data martedì 27 ottobre 2020 08:54:44 CET, Hans de Goede ha scritto:
-<snip>
+>>> very loosely ;-) so there was a reason for all that reader refactoring,
+>>> so we could have __perf_session__process_dir_events function:
 >>>
->>> This look good,
->>> only thing is that hp-wmi driver need a cool profile (Emphasises the computer
->>> cool to touch), if you can add it would be perfect.
+>>>   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=perf/record_threads&id=308aa7cff1fed335401cfc02c7bac1a4644af68e
+>>
+>> Nonetheless. All that are necessary parts to make threaded data streaming
+>> and analysis eventually merged into the mainline as joint Perf developers
+>> community effort.
+>>
 >>>
->>> Regards
->>> Elia
+>>> when reporting the threaded record data on really big servers,
+>>> you will run out of memory, so you need to read and flush all
+>>> the files together by smaller pieces
+>>
+>> Yes, handling all that _big_ data after collection to make it
+>> helpful for analysis of performance issues is the other part
+>> of this story so that possible OOM should be somehow avoided.
+>>
 >>>
->>>
->>>
->> Is low-power is different to cool? I figured low-power was going to be cool so combined them.
->> I could call it low-power-cool if that helps? It seems a little clunky but not too bad. I'm sure the user space folks can put sunglasses on it or something ;)
+>>> IMO we need to have this change before we allow threaded record
+>>
+>> There are use cases of perf tool as a data provider, btw VTune is not
+>> the only one of them, and for those use cases threaded trace streaming
+>> lets its users get to their data that the users just were loosing before.
+>> This is huge difference and whole new level of support for such users.
+>> Post-process scripting around perf (e.g. Python based) will benefit
+>> from threaded trace streaming. Pipe mode can be extended to stream into
+>> open and passed fds using threads (e.g. perf record -o -fd:13,14,15,16).
+>> VTune-like tools can get performance data, load it into a (relational)
+>> DB files and provide analysis. And all that uses perf tool at its core.
+>>
+>> I agree perf report OOM issue can exist on really-big servers but data 
+>> directories support for report mode for not-so-big servers and desktops
+>> is already enabled with this smaller change. Also really-big-servers
+>> come with really-big amount of memory and collection could possibly be
+>> limited to only interesting phases of execution so the issue could likely
+>> be avoided. At the same time threaded trace streaming could clarify on
+>> real use cases that are blocked by perf report OOM issue and that would
+>> clarify on exact required solution. So perf report OOM issue shouldn't
+>> be the showstopper for upstream of threaded trace streaming.
 > 
-> IIRC we already had this discussion, cool means cool-to-touch, so could be done by
-> e.g. extra aggressive ramping up of the fans, so this is not necessarily the same
-> as low-power.
+> so the short answer is no, right? ;-) 
 > 
-> Yes this is all somewhat confusing. Luckily (for us kernel folks) we have already
-> sorta decided to just use the profile-names from the vendors more or less as is and
-> leave figuring this out further to userspace.
-> 
-> The reason to use the enum + try to have a fixed list of choices is to try and
-> limit the proliferation of profile-names to keep things somewhat manageable.
-> 
-> But as I discussed previously with Elia (*) we really need all 3 of low-power
-> cool and quiet.
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> *) I was coming at this discussion from the same angle you (Mark) are
-> 
-OK, I can add a cool option.
+> I understand all the excuses, but from my point of view we are
+> adding another pain point (and there's already few ;-) ) that
 
-I'll get that out later today (unless Elia corrects me :))
+BTW what are those a few pain points that are 'unfriendly' in perf?
+Possibly users could be warned about the points in advance to avoid
+confusion and disappointment by the fact.
 
-Thanks all
-Mark
+Alexei
+
+> will make perf (even more) not user friendly
+> 
+> if we allow really friendly way to create huge data, we should
+> do our best to be able to process it as best as we can
+> 
+> jirka
+> 
