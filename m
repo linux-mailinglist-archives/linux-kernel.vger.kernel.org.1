@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802F729B035
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA5529AEE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394649AbgJ0ORC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:17:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34586 "EHLO mail.kernel.org"
+        id S1753188AbgJ0OFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507323AbgJ0ONO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:13:14 -0400
+        id S1754362AbgJ0OFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:05:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B97962072D;
-        Tue, 27 Oct 2020 14:13:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A3D522264;
+        Tue, 27 Oct 2020 14:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807994;
-        bh=5+ZEnv38tX0bSTtZFBcShu/N2igvDJs0/DWtyflHcmg=;
+        s=default; t=1603807511;
+        bh=0jkClK8mVRrdFdEr2nOJ0GaA3EDBxXgPqMe58Z54eY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LRaCi/CGVorR69MnI8GHFnyXwzzvHb+yWXe1zQHHO/G57s1mty8K31DfZMUfSg9lj
-         G/SO7FiLq3M6ciajO8xIRPQzJa8Bl1Ng37ggqdU7/wdrYoIFl2qNTd0wtpeYQn3rwY
-         QpkDWDrds0q+sK27CAi6bhDt0ktPihd6Eu9q2bz0=
+        b=c5dHFTLwtjvSvw0DmZBMzEAUEK7JwZH3AfFLlhMIfWQqahZKVV4bX4/8STb0ZekJH
+         uRg1RBKzPgh7p6RpBo8Q2Wvsmgvnv2XdiCY7PhXGwMdt24Y3mKeC7P8dz+dQv5t2xc
+         WvLfWwoTMycysni8qGA6Lcs9/4yT0kUNXDhVwe4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoyang Xu <xuxiaoyang2@huawei.com>,
+        stable@vger.kernel.org, guomin chen <guomin_chen@sina.com>,
         Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 118/191] vfio iommu type1: Fix memory leak in vfio_iommu_type1_pin_pages
-Date:   Tue, 27 Oct 2020 14:49:33 +0100
-Message-Id: <20201027134915.373064109@linuxfoundation.org>
+Subject: [PATCH 4.9 080/139] vfio/pci: Clear token on bypass registration failure
+Date:   Tue, 27 Oct 2020 14:49:34 +0100
+Message-Id: <20201027134905.927592778@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoyang Xu <xuxiaoyang2@huawei.com>
+From: Alex Williamson <alex.williamson@redhat.com>
 
-[ Upstream commit 2e6cfd496f5b57034cf2aec738799571b5a52124 ]
+[ Upstream commit 852b1beecb6ff9326f7ca4bc0fe69ae860ebdb9e ]
 
-pfn is not added to pfn_list when vfio_add_to_pfn_list fails.
-vfio_unpin_page_external will exit directly without calling
-vfio_iova_put_vfio_pfn.  This will lead to a memory leak.
+The eventfd context is used as our irqbypass token, therefore if an
+eventfd is re-used, our token is the same.  The irqbypass code will
+return an -EBUSY in this case, but we'll still attempt to unregister
+the producer, where if that duplicate token still exists, results in
+removing the wrong object.  Clear the token of failed producers so
+that they harmlessly fall out when unregistered.
 
-Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
-Signed-off-by: Xiaoyang Xu <xuxiaoyang2@huawei.com>
-[aw: simplified logic, add Fixes]
+Fixes: 6d7425f109d2 ("vfio: Register/unregister irq_bypass_producer")
+Reported-by: guomin chen <guomin_chen@sina.com>
+Tested-by: guomin chen <guomin_chen@sina.com>
 Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/vfio_iommu_type1.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/vfio/pci/vfio_pci_intrs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 9c8ed9d7f9aa5..bfbe5236239bd 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -629,7 +629,8 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index bdfdd506bc588..c989f777bf771 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -355,11 +355,13 @@ static int vfio_msi_set_vector_signal(struct vfio_pci_device *vdev,
+ 	vdev->ctx[vector].producer.token = trigger;
+ 	vdev->ctx[vector].producer.irq = irq;
+ 	ret = irq_bypass_register_producer(&vdev->ctx[vector].producer);
+-	if (unlikely(ret))
++	if (unlikely(ret)) {
+ 		dev_info(&pdev->dev,
+ 		"irq bypass producer (token %p) registration fails: %d\n",
+ 		vdev->ctx[vector].producer.token, ret);
  
- 		ret = vfio_add_to_pfn_list(dma, iova, phys_pfn[i]);
- 		if (ret) {
--			vfio_unpin_page_external(dma, iova, do_accounting);
-+			if (put_pfn(phys_pfn[i], dma->prot) && do_accounting)
-+				vfio_lock_acct(dma, -1, true);
- 			goto pin_unwind;
- 		}
- 	}
++		vdev->ctx[vector].producer.token = NULL;
++	}
+ 	vdev->ctx[vector].trigger = trigger;
+ 
+ 	return 0;
 -- 
 2.25.1
 
