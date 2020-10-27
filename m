@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50B329B44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E3C29B459
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788819AbgJ0PAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58116 "EHLO mail.kernel.org"
+        id S1774898AbgJ0PBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1782522AbgJ0O5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:57:13 -0400
+        id S1782878AbgJ0O5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:57:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0164022281;
-        Tue, 27 Oct 2020 14:57:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9F94204FD;
+        Tue, 27 Oct 2020 14:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810632;
-        bh=/zPaqvUVD/LRMjcJKOs4UB/ea7JZtjeS02/Y1rx2+C0=;
+        s=default; t=1603810657;
+        bh=NEdFkFp1HTWa8b0HGnfZPUuQLWzTa0Fb2pVQZ0f0wFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=arEyCl9azBzO2RY5e8FAO5/d7rt+Obf3YmST0O6+Q0BsXLQK5rLNhsIwZhWtgnUVn
-         0YM/YRbDoVPREn+KmkdjAEnA2R5j8VfxPzmLO2se2i6/Tn0SQTQ4glTPNzeLKKScWW
-         pYTUcOyrWAn9s2ZqS8PpeK7UGJKu99UScdb6qcgI=
+        b=dhZ+X/OIUEMGplnCRwYvG5uxHQOcgLjvyY7R4W50CIDwliJDBQBHwy/RLOHXpqfoQ
+         eti27DXGFDvhvejqMY92xJxKM/lavJ0v2NTHOPteGZUmf/onRaki0d7pE+ShsS7IGe
+         /wUePxq7Vqzkv0LYtO1Yqa0e5bmNOuhTUxcg1uF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 207/633] drm/msm: Avoid div-by-zero in dpu_crtc_atomic_check()
-Date:   Tue, 27 Oct 2020 14:49:10 +0100
-Message-Id: <20201027135532.394623150@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 210/633] iomap: Mark read blocks uptodate in write_begin
+Date:   Tue, 27 Oct 2020 14:49:13 +0100
+Message-Id: <20201027135532.532477028@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -48,81 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit 22f760941844dbcee6ee446e1896532f6dff01ef ]
+[ Upstream commit 14284fedf59f1647264f4603d64418cf1fcd3eb0 ]
 
-The cstate->num_mixers member is only set to a non-zero value once
-dpu_encoder_virt_mode_set() is called, but the atomic check function can
-be called by userspace before that. Let's avoid the div-by-zero here and
-inside _dpu_crtc_setup_lm_bounds() by skipping this part of the atomic
-check if dpu_encoder_virt_mode_set() hasn't been called yet. This fixes
-an UBSAN warning:
+When bringing (portions of) a page uptodate, we were marking blocks that
+were zeroed as being uptodate, but not blocks that were read from storage.
 
- UBSAN: Undefined behaviour in drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c:860:31
- division by zero
- CPU: 7 PID: 409 Comm: frecon Tainted: G S                5.4.31 #128
- Hardware name: Google Trogdor (rev0) (DT)
- Call trace:
-  dump_backtrace+0x0/0x14c
-  show_stack+0x20/0x2c
-  dump_stack+0xa0/0xd8
-  __ubsan_handle_divrem_overflow+0xec/0x110
-  dpu_crtc_atomic_check+0x97c/0x9d4
-  drm_atomic_helper_check_planes+0x160/0x1c8
-  drm_atomic_helper_check+0x54/0xbc
-  drm_atomic_check_only+0x6a8/0x880
-  drm_atomic_commit+0x20/0x5c
-  drm_atomic_helper_set_config+0x98/0xa0
-  drm_mode_setcrtc+0x308/0x5dc
-  drm_ioctl_kernel+0x9c/0x114
-  drm_ioctl+0x2ac/0x4b0
-  drm_compat_ioctl+0xe8/0x13c
-  __arm64_compat_sys_ioctl+0x184/0x324
-  el0_svc_common+0xa4/0x154
-  el0_svc_compat_handler+0x
+Like the previous commit, this problem was found with generic/127 and
+a kernel which failed readahead I/Os.  This bug causes writes to be
+silently lost when working with flaky storage.
 
-Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-Cc: Jordan Crouse <jcrouse@codeaurora.org>
-Cc: Sean Paul <seanpaul@chromium.org>
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 9dc55f1389f9 ("iomap: add support for sub-pagesize buffered I/O without buffer heads")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/iomap/buffered-io.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-index 1026e1e5bec10..4d81a0c73616f 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-@@ -881,7 +881,7 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
- 	struct drm_plane *plane;
- 	struct drm_display_mode *mode;
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index c95454784df48..897ab9a26a74c 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -574,7 +574,6 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+ 	loff_t block_start = pos & ~(block_size - 1);
+ 	loff_t block_end = (pos + len + block_size - 1) & ~(block_size - 1);
+ 	unsigned from = offset_in_page(pos), to = from + len, poff, plen;
+-	int status;
  
--	int cnt = 0, rc = 0, mixer_width, i, z_pos;
-+	int cnt = 0, rc = 0, mixer_width = 0, i, z_pos;
+ 	if (PageUptodate(page))
+ 		return 0;
+@@ -595,14 +594,13 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+ 			if (WARN_ON_ONCE(flags & IOMAP_WRITE_F_UNSHARE))
+ 				return -EIO;
+ 			zero_user_segments(page, poff, from, to, poff + plen);
+-			iomap_set_range_uptodate(page, poff, plen);
+-			continue;
++		} else {
++			int status = iomap_read_page_sync(block_start, page,
++					poff, plen, srcmap);
++			if (status)
++				return status;
+ 		}
+-
+-		status = iomap_read_page_sync(block_start, page, poff, plen,
+-				srcmap);
+-		if (status)
+-			return status;
++		iomap_set_range_uptodate(page, poff, plen);
+ 	} while ((block_start += plen) < block_end);
  
- 	struct dpu_multirect_plane_states multirect_plane[DPU_STAGE_MAX * 2];
- 	int multirect_count = 0;
-@@ -914,9 +914,11 @@ static int dpu_crtc_atomic_check(struct drm_crtc *crtc,
- 
- 	memset(pipe_staged, 0, sizeof(pipe_staged));
- 
--	mixer_width = mode->hdisplay / cstate->num_mixers;
-+	if (cstate->num_mixers) {
-+		mixer_width = mode->hdisplay / cstate->num_mixers;
- 
--	_dpu_crtc_setup_lm_bounds(crtc, state);
-+		_dpu_crtc_setup_lm_bounds(crtc, state);
-+	}
- 
- 	crtc_rect.x2 = mode->hdisplay;
- 	crtc_rect.y2 = mode->vdisplay;
+ 	return 0;
 -- 
 2.25.1
 
