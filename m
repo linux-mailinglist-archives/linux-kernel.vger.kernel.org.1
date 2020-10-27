@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D672629C46A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A320B29C274
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757784AbgJ0OT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41396 "EHLO mail.kernel.org"
+        id S1820564AbgJ0RgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:36:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901017AbgJ0OSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:07 -0400
+        id S1760863AbgJ0Ogt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:36:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EB6E206F7;
-        Tue, 27 Oct 2020 14:18:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E1DE207BB;
+        Tue, 27 Oct 2020 14:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808286;
-        bh=gu14B/3XyOqUww19uJ6tUihj6C0vESM6NGFqZSz5VoI=;
+        s=default; t=1603809408;
+        bh=cq/XuqQTrvdr9EMhVUhZzusgJN+WzsKAYXLB+TUeYEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ioWVMA4HzzyHX0GrvgdbEQaUT5sNeVFwmdGonar7bmAdJV6CS1bvkDZk3Il8dHTZF
-         s0WGQLB+6CXjqHYB6cbbMY19Yk5UAT8yvQuSA5zG7X71N3tUsXeJ/9Nwd1qPyP3M7E
-         9Pn1juhVMjj/nQ7wkztsAPjFF/1L5Ksv+BUamtJk=
+        b=v/yf0k7fOvv6p3IQynArNt2l7XTYe+W2bAg1/MVxaoZx88yBGssQRsqBnIwSi0BPH
+         JyrPTCdd10FJaSvrFOx6ZrTIqct4JQExWWFt90S5dpnJuzQRhi9LhNsRLjEw/eNhZR
+         p7/kxWn0t7SiWrwbuM1lnfhoMmkWSLF8dx/0g42c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Borislav Petkov <bp@suse.de>, Tero Kristo <t-kristo@ti.com>,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 034/264] EDAC/ti: Fix handling of platform_get_irq() error
+Subject: [PATCH 5.4 154/408] net: dsa: rtl8366: Skip PVID setting if not requested
 Date:   Tue, 27 Oct 2020 14:51:32 +0100
-Message-Id: <20201027135432.261879287@linuxfoundation.org>
+Message-Id: <20201027135502.228474575@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 66077adb70a2a9e92540155b2ace33ec98299c90 ]
+[ Upstream commit 3dfe8dde093a07e82fa472c0f8c29a7f6a2006a5 ]
 
-platform_get_irq() returns a negative error number on error. In such a
-case, comparison to 0 would pass the check therefore check the return
-value properly, whether it is negative.
+We go to lengths to determine whether the PVID should be set
+for this port or not, and then fail to take it into account.
+Fix this oversight.
 
- [ bp: Massage commit message. ]
-
-Fixes: 86a18ee21e5e ("EDAC, ti: Add support for TI keystone and DRA7xx EDAC")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tero Kristo <t-kristo@ti.com>
-Link: https://lkml.kernel.org/r/20200827070743.26628-2-krzk@kernel.org
+Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/ti_edac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/dsa/rtl8366.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/edac/ti_edac.c b/drivers/edac/ti_edac.c
-index 6ac26d1b929f0..3247689467435 100644
---- a/drivers/edac/ti_edac.c
-+++ b/drivers/edac/ti_edac.c
-@@ -278,7 +278,8 @@ static int ti_edac_probe(struct platform_device *pdev)
+diff --git a/drivers/net/dsa/rtl8366.c b/drivers/net/dsa/rtl8366.c
+index b941d45edd641..49c626a336803 100644
+--- a/drivers/net/dsa/rtl8366.c
++++ b/drivers/net/dsa/rtl8366.c
+@@ -436,6 +436,9 @@ void rtl8366_vlan_add(struct dsa_switch *ds, int port,
+ 				"failed to set up VLAN %04x",
+ 				vid);
  
- 	/* add EMIF ECC error handler */
- 	error_irq = platform_get_irq(pdev, 0);
--	if (!error_irq) {
-+	if (error_irq < 0) {
-+		ret = error_irq;
- 		edac_printk(KERN_ERR, EDAC_MOD_NAME,
- 			    "EMIF irq number not defined.\n");
- 		goto err;
++		if (!pvid)
++			continue;
++
+ 		ret = rtl8366_set_pvid(smi, port, vid);
+ 		if (ret)
+ 			dev_err(smi->dev,
 -- 
 2.25.1
 
