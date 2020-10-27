@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D10429A6DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172FA29A6DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509284AbgJ0Irg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:47:36 -0400
-Received: from mail-vk1-f193.google.com ([209.85.221.193]:35319 "EHLO
-        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444587AbgJ0Irg (ORCPT
+        id S2509295AbgJ0Irl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:47:41 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:41737 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2444587AbgJ0Irj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:47:36 -0400
-Received: by mail-vk1-f193.google.com with SMTP id a8so178698vkm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:47:34 -0700 (PDT)
+        Tue, 27 Oct 2020 04:47:39 -0400
+Received: by mail-wr1-f67.google.com with SMTP id s9so890452wro.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:47:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
-        b=GW1yTCAzKbWmmDP5TMTt3VjlCUE1eO2luUYbisIyY3F5ls2yQ/xVnUe2YvUiJpEeU/
-         RJ0dG4hYN3fk9+DpXcS6BRbHSqd1ax1Jf7yoWS+CBFww7RyLWfPlryd/NZ/Lt7TNuFag
-         MQkozWK7dnk2Zq5n219ik/SpZs1ZddTK4/+WKb2elUZ5o0rL8K8Foyw7C0x2eGWiHyUv
-         c3DSan4HNOzzZCrHff5L8doPEKEpKCc8zkuhNYkj/n28Jtm1NYHZqeXv56U8tP8epJ12
-         nU7ljsrYxEwwAX4UiKjvcm7rHYUiW1mSH8QUFUJSZp7MehggyOQfGzRuueoHeYY2LsgM
-         Y8Hw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BwW+REPlxIwDJltL1navo4FmuG7WENsYC7PlrzbSxJs=;
+        b=eG8/V8c4DVEAApf+O6xuEHJuWqrBl7sD1H6CeCVvGqST338OffYoR9+YT8k67V833I
+         v/mhib1IagL7stWz8z8tRZqh1xmoM9t9ZI+dtWJVg6YFNwOilaqzUHszv0ExQq+gKLj+
+         9N8VIA90R9egKfcC852pvEP9ufftvZEJbbCWN6rygVpjiqPEFB9GNXm5TZI/zXG4SFFS
+         4bnQy71Gm/XjvOGoFKumvWIaDA67gU6QZETAjHlxnSmPgvFsgwKBOZlRnRxmmKIEh/AW
+         lYcyxpKeQq67bQtQynNWWuqDbDug2weONj2sZfwdl/D9b9UJ1i5q6guurrnIBPhxvL+b
+         +ZhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
-        b=RAZCjthqrG9StltkqeV6pYs9BJ/+A1yBfLf4fSuPk1GFY8XkA4FizZVpR9G4m/C2sh
-         CcPveiX7uhd5C86fMfyqeHSAKjsQIJkQ6SEmgwOEIOQgjCv9Qe8XoS6Cs/ewgvWMUhSk
-         TclPX1qzbUQYB1MCNoIULcK968rVTJMym74YOqtk3iFtCn8rtsig/Gtl8jiaby2OZIoT
-         i7I6P7yo++Ng0jhppxSFLq2Ti1BDEyXd8k54yFDAipf5d1zeXkbDy7DEAgDIKHIMggXO
-         m4dFt2ZUX/6EngOSrCR0+pH0nA15wBDJYEo0C6JSwG9L6uSgxFU0WoBkZOr9HNBvRxfo
-         DzPg==
-X-Gm-Message-State: AOAM531ns8T5b6cTT31ZEvQ9Q8bivsPgTkpZUAJ9XFKLGNZCjOKZHo+F
-        3eifHbJYdkE3vGMhSX3RHyFjaPhf9olkdzmZC04=
-X-Google-Smtp-Source: ABdhPJxTHTCJWotAUTCyvAuDNrOfK8u2/eLfKf42DljLCoQUEcmKw6eNHBi57I5i95va7kHq9J8unFje4RdYyhrTvZ8=
-X-Received: by 2002:a1f:5c87:: with SMTP id q129mr586949vkb.13.1603788454120;
- Tue, 27 Oct 2020 01:47:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BwW+REPlxIwDJltL1navo4FmuG7WENsYC7PlrzbSxJs=;
+        b=jFZn1l8BgTsf7RFPmDGcPDIWxzkSSeRslMrBYUj+9cTnukVNvnd/wqpiC+QkA6JHHj
+         eaK0FbC0pSp60j7wMmWAbbklCnaqnv6oweQZ8b1KMJDj0YN8b8yyZpnkhpXNk6r8UjLJ
+         ONCxldTBQidk59MotjsFYEy+PTFgek21Sl8Cmp9rT+Z3Hhz9sEcG5X9hVRjXGyrlWKDq
+         X4CGHSPIOfpp4aBzVsVBbvQoVru2I7Xir2GpyWzBytt+S0IXkaP86TSvnO5lqz/nmpNX
+         LotEK/DLNlJbGljXpM4/rDWeNSc1IdqLqy5cmbyscpTPqBI13p62Z2fIbbg80j77SZLM
+         92Bg==
+X-Gm-Message-State: AOAM5316cQ+PgFiYBa+Lw0uWDr9oLvd0TRrdBjMsHYGxqzkxTSfHMyBj
+        6jpa05vtugxVhGtPSiXiHfHT6w==
+X-Google-Smtp-Source: ABdhPJwSIGoGMoYqh7BO/6yTHOnstNyNB842j06yL1OCf7s5uOAGBDuuLE5nNs6cULv8A6+iw+NiNA==
+X-Received: by 2002:adf:f3d2:: with SMTP id g18mr1440994wrp.367.1603788456978;
+        Tue, 27 Oct 2020 01:47:36 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451? ([2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451])
+        by smtp.googlemail.com with ESMTPSA id m4sm1187778wrr.47.2020.10.27.01.47.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 01:47:36 -0700 (PDT)
+Subject: Re: [Resend][PATCH] drivers/thermal: optimize the for circle to run a
+ bit fast
+To:     Bernard <bernard@vivo.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>, Amit Kucheria <amitk@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+References: <ALoAaQDvDY5SjUaRtOCYw4ro.3.1603761577319.Hmail.bernard@vivo.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <bb585318-cdf8-e220-30bb-427239da0a5a@linaro.org>
+Date:   Tue, 27 Oct 2020 09:47:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Reply-To: oliviaeorge@hotmail.com
-Sender: olusimton@gmail.com
-Received: by 2002:a67:ec4b:0:0:0:0:0 with HTTP; Tue, 27 Oct 2020 01:47:33
- -0700 (PDT)
-From:   George Olivia <oliviaeorge@gmail.com>
-Date:   Tue, 27 Oct 2020 02:47:33 -0600
-X-Google-Sender-Auth: nl1ukhgpSNhnZU_jYafCnWNDaHo
-Message-ID: <CAAkOt0dpAx60SKtpTJX0BSLZ7SSLUzOLYmiRz7GpdTCG3E7kYw@mail.gmail.com>
-Subject: I need your prompt response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ALoAaQDvDY5SjUaRtOCYw4ro.3.1603761577319.Hmail.bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With due respect, I am Mrs. George Olivia; I have decided to donate
-what I have to you / Motherless babies/Less privileged/Widows' because
-I am dying and diagnosed for cancer for about 2 years ago. I have been
-touched by God Almighty to donate from what I have inherited from my
-late husband to you for good work of God Almighty. I have asked
-Almighty God to forgive me and believe he has, because he is a
-Merciful God I will be going in for an operation surgery soon.
+On 27/10/2020 02:19, Bernard wrote:
+> 
+> From: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Date: 2020-10-27 02:35:18
+> To:  Bernard <bernard@vivo.com>,Zhang Rui <rui.zhang@intel.com>,Amit Kucheria <amitk@kernel.org>,linux-pm@vger.kernel.org,linux-kernel@vger.kernel.org
+> Cc:  opensource.kernel@vivo.com
+> Subject: Re: [Resend][PATCH] drivers/thermal: optimize the for circle to run a bit fast>On 26/10/2020 02:49, Bernard wrote:
+>>> Function thermal_zone_device_register, in the for circle, if the
+>>> first if branch set the count bit in tz->trips_disabled, there is
+>>> no need to set in the other if branch again.
+>>> This change is to make the code run a bit fast and readable.
+>>>
+>>> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+>>> ---
+>>>  drivers/thermal/thermal_core.c | 8 ++++++--
+>>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>>> index c6d74bc1c90b..03577794eea3 100644
+>>> --- a/drivers/thermal/thermal_core.c
+>>> +++ b/drivers/thermal/thermal_core.c
+>>> @@ -1446,10 +1446,14 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+>>>  		goto release_device;
+>>>  
+>>>  	for (count = 0; count < trips; count++) {
+>>> -		if (tz->ops->get_trip_type(tz, count, &trip_type))
+>>> +		if (tz->ops->get_trip_type(tz, count, &trip_type)) {
+>>>  			set_bit(count, &tz->trips_disabled);
+>>> -		if (tz->ops->get_trip_temp(tz, count, &trip_temp))
+>>> +			continue;
+>>> +		}
+>>> +		if (tz->ops->get_trip_temp(tz, count, &trip_temp)) {
+>>>  			set_bit(count, &tz->trips_disabled);
+>>> +			continue;
+>>> +		}
+>>>  		/* Check for bogus trip points */
+>>>  		if (trip_temp == 0)
+>>>  			set_bit(count, &tz->trips_disabled);
+>>
+>>
+>> What about ?
+>> 	if (tz->ops->get_trip_type(tz, count, &trip_type) ||
+>> 		tz->ops->get_trip_temp(tz, count, &trip_temp) ||
+>> 		!trip_temp)
+>> 		set_bit(count, &tz->trips_disabled);
+>>
+> 
+> Hi
+> 
+>   Sure, I will resubmit this patch, thanks!
 
-I decided to will/donate the sum of ($ 8.1 million DOLLARS) to you for
-the good work of God Almighty, and also to help the motherless and
-less privilege and also forth assistance of the widows. At the moment
-I cannot take any telephone calls right now due to the fact that my
-relatives (that have squandered the funds gave them for this purpose
-before) are around me and my health status also. I have adjusted my
-will and my lawyer is aware.
+Please, take the opportunity to fix the author name to be the same as
+the signed-off-by.
 
-I wish you all the best and May the good Lord bless you abundantly,
-and please use the funds judiciously and always extend the good work
-to others. As soon as you get back to me, I shall give you info on
-what I need from you, then you will contact the bank and tell them I
-have willed those properties to you by quoting my personal file
-routing and account information. And I have also notified the bank
-that I am willing that properties to you for a good, effective and
-prudent work. I know I don't know you but I have been directed to do
-this by God Almighty.
+Thanks
 
-I Have all my Hospital document which i can send to you as prove to
-what am tell you and my seriousness to this. If you are interested in
-carrying out this task, get back to me for more details on this noble
-project of mine.
+  -- Daniel
 
-Yours Faithfully,
-Mrs. George Olivia
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
