@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B2629C654
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF4F29C56A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826084AbgJ0SQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:16:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33306 "EHLO mail.kernel.org"
+        id S1757096AbgJ0OQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:16:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756248AbgJ0OMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:12:12 -0400
+        id S1756269AbgJ0OMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:12:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 482EF218AC;
-        Tue, 27 Oct 2020 14:12:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2684218AC;
+        Tue, 27 Oct 2020 14:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807932;
-        bh=0PwGEYpf2+rOl5fs0/EGikixkqMcM8/NDGnXfSv46Kk=;
+        s=default; t=1603807937;
+        bh=1uoyyZBa7a9RsIJ2llUpY36WmAMbNoNaAGHNDn5lHhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xx3uPvUFZuhRbS5bfmg81Q8F++bl7IJPcW9CrS6SO+ZnLQpG1tVkpevf6yL+i311Y
-         0u1JC/c7rSftjvkTOagvYQSxluzw7oWkjxeSGv86Ydbnvr3+1wL1mm134CRNfUIE9m
-         YcLmk4cRvax9tIDpHtVasfvziVVR0Ya9VlDsYInU=
+        b=wB9ye4noe3i9i9fy/wAllN/zvafzP60aD7Rbe2DR7trMEnyliasTyJkck/pgtUmyW
+         x58RR09qPMRl+eEYqiXj+mRct/TtFBRxUfLsqNvsAw7QVvK7H7E4FZElPS2D8Pnp9/
+         8GIom2cQkubJdtIQSwx9pU0dsXYwSIlcN6bzEpsE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 094/191] RDMA/qedr: Fix use of uninitialized field
-Date:   Tue, 27 Oct 2020 14:49:09 +0100
-Message-Id: <20201027134914.216231814@linuxfoundation.org>
+Subject: [PATCH 4.14 096/191] powerpc/tau: Remove duplicated set_thresholds() call
+Date:   Tue, 27 Oct 2020 14:49:11 +0100
+Message-Id: <20201027134914.313153176@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -44,35 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit a379ad54e55a12618cae7f6333fd1b3071de9606 ]
+[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
 
-dev->attr.page_size_caps was used uninitialized when setting device
-attributes
+The commentary at the call site seems to disagree with the code. The
+conditional prevents calling set_thresholds() via the exception handler,
+which appears to crash. Perhaps that's because it immediately triggers
+another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
+is redundant because tau_timeout() does so.
 
-Fixes: ec72fce401c6 ("qedr: Add support for RoCE HW init")
-Link: https://lore.kernel.org/r/20200902165741.8355-4-michal.kalderon@marvell.com
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/tau_6xx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-index 3e48ed64760b7..8c9e23d1f434e 100644
---- a/drivers/infiniband/hw/qedr/main.c
-+++ b/drivers/infiniband/hw/qedr/main.c
-@@ -548,7 +548,7 @@ static int qedr_set_device_attr(struct qedr_dev *dev)
- 	qed_attr = dev->ops->rdma_query_device(dev->rdma_ctx);
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index 64a27b20cf55e..9e8b709a2aae4 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -108,11 +108,6 @@ void TAUupdate(int cpu)
+ #ifdef DEBUG
+ 	printk("grew = %d\n", tau[cpu].grew);
+ #endif
+-
+-#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
+-	set_thresholds(cpu);
+-#endif
+-
+ }
  
- 	/* Part 2 - check capabilities */
--	page_size = ~dev->attr.page_size_caps + 1;
-+	page_size = ~qed_attr->page_size_caps + 1;
- 	if (page_size > PAGE_SIZE) {
- 		DP_ERR(dev,
- 		       "Kernel PAGE_SIZE is %ld which is smaller than minimum page size (%d) required by qedr\n",
+ #ifdef CONFIG_TAU_INT
 -- 
 2.25.1
 
