@@ -2,658 +2,854 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6623429AE30
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70A229AFCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752956AbgJ0N5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:57:52 -0400
-Received: from mail.efficios.com ([167.114.26.124]:50670 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752926AbgJ0N5p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 635AE2C2690;
-        Tue, 27 Oct 2020 09:57:42 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id eDaiIT2lTZWQ; Tue, 27 Oct 2020 09:57:41 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B88C92C268D;
-        Tue, 27 Oct 2020 09:57:41 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B88C92C268D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603807061;
-        bh=dn77Djd8sf1HxHN4odngIadpn0rpb7OxAXVukoxK5Rs=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=s9sV7s9WTJ0S5aXWAaHciEcvuk34IanTnxQTaYitIEn+CgjZsuPNii5LpOLVei5gE
-         o38aVyxCFB8BHXEXdP1jyki+6dzzA2lnJIW+lhDzmh+OOk0ZNBzCCFHexAJ5eC5qUb
-         OzHAowazcG0G363dEGP53CDDhaG4Co8Nfb6ZY1X4OHcLVVchIVNwaU7XGFvM706+Q7
-         HvC3tZ5D5zovZoXmRbCxSaRPgbHqgCW6Wv+aMm2n2t/bs/pcENKoqW9mnQP454aJ6C
-         w+k8+3gA+LGdG/ldgwApa64xQhw4AfTGufHtpk2AgP5KYWhJXBRZxJg7ZjNXr8w2fa
-         O82oQRZpqFvzA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id b0TPTQe6cAif; Tue, 27 Oct 2020 09:57:41 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 935182C2532;
-        Tue, 27 Oct 2020 09:57:41 -0400 (EDT)
-Date:   Tue, 27 Oct 2020 09:57:41 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <993741332.38579.1603807061504.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201026164459.1d514d0a@gandalf.local.home>
-References: <20201023195352.26269-1-mjeanson@efficios.com> <20201023195352.26269-7-mjeanson@efficios.com> <20201023211359.GC3563800@google.com> <20201026082010.GC2628@hirez.programming.kicks-ass.net> <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com> <20201026164459.1d514d0a@gandalf.local.home>
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
+        id S1756336AbgJ0OMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:12:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2900873AbgJ0OJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:09:49 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D87552072D;
+        Tue, 27 Oct 2020 14:09:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603807786;
+        bh=Vac5kZeXBGetJ55w5SQFQcQpy9TGqb2402rKzIuGkSY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1Psxo7+CNww8LKjlxJyCsqNH4zLfx0b4NgEcJVkGMnfo7NrseJIji+/gcB6JA82XK
+         pe34qBEuynuyNEQeIvF5Srg/1WpIrQUKPFHmQJ0nFXmZWcvJcSDJ9A43P5U0Ln/+No
+         Z5G6Cj/IwHrE4MdpkD55nfrhvCCl5+rvFFbv5P/k=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.14 000/191] 4.14.203-rc1 review
+Date:   Tue, 27 Oct 2020 14:47:35 +0100
+Message-Id: <20201027134909.701581493@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-        boundary="----=_Part_38577_64406330.1603807061503"
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3968)
-Thread-Topic: tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
-Thread-Index: hA6NcqXvXTFG6vKWeFxLIK22cqq+9g==
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.203-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.203-rc1
+X-KernelTest-Deadline: 2020-10-29T13:49+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------=_Part_38577_64406330.1603807061503
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+This is the start of the stable review cycle for the 4.14.203 release.
+There are 191 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
------ On Oct 26, 2020, at 4:44 PM, rostedt rostedt@goodmis.org wrote:
+Responses should be made by Thu, 29 Oct 2020 13:48:36 +0000.
+Anything received after that time might be too late.
 
-> On Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
->> API and fixing all callers to ensure they trace from a context where RCU is
->> watching would simplify instrumentation of the Linux kernel, thus making it
->> harder
->> for subtle bugs to hide and be unearthed only when tracing is enabled. This is
-> 
-> Note, the lockdep RCU checking of a tracepoint is outside of it being
-> enabled or disable. So if a non rcuidle() tracepoint is in a location that
-> RCU is not watching, it will complain loudly, even if you don't enable that
-> tracepoint.
-> 
->> AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
->> think it is a good thing.
->> 
->> So if we consider this our target, and that the current state of things is that
->> we need to have RCU watching around callback invocation, then removing the
->> dependency on SRCU seems like an overall simplification which does not regress
->> feature-wise nor speed-wise compared with what we have upstream today. The next
->> steps would then be to audit all rcuidle tracepoints and make sure the context
->> where they are placed has RCU watching already, so we can remove the tracepoint
-> 
-> Just remove the _rcuidle() from them, and lockdep will complain if they are
-> being called without RCU watching.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.203-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-That's the easy part. The patch removing rcuidle is attached to this email,
-and here are the splats I get just when booting the machine (see below). The
-part which takes more time is fixing those splats and figuring out how to
-restructure the code. For instance, what should we do about the rcuidle
-tracepoint within printk() ?
+thanks,
 
-Also, how do we test rcuidle tracepoints triggered only when printk is called
-from printk warnings ? We'd also need to test on arm32 boards, because some arm
-architecture code uses rcuidle tracepoints as well.
+greg k-h
 
-As this is beyond the scope of this patch set, I can either drop this patch
-entirely (it's not required for sleepable tracepoints), or keep it as an
-intermediate cleanup step. Removing rcuidle tracepoints entirely is beyond
-the effort Michael and I can undertake now.
+-------------
+Pseudo-Shortlog of commits:
 
-=============================
-WARNING: suspicious RCU usage
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.203-rc1
 
-5.9.1+ #72 Not tainted
------------------------------
-=============================
-./include/trace/events/preemptirq.h:42 suspicious rcu_dereference_check() usage!
-WARNING: suspicious RCU usage
+Lorenzo Colitti <lorenzo@google.com>
+    usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
 
-other info that might help us debug this:
+Christian Eggers <ceggers@arri.de>
+    eeprom: at25: set minimum read/write access stride to 1
+
+Oliver Neukum <oneukum@suse.com>
+    USB: cdc-wdm: Make wdm_flush() interruptible and add wdm_fsync().
+
+Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+    usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
+
+Peng Fan <peng.fan@nxp.com>
+    tty: serial: fsl_lpuart: fix lpuart32_poll_get_char
+
+Valentin Vidic <vvidic@valentin-vidic.from.hr>
+    net: korina: cast KSEG0 address to pointer in kfree
+
+Zekun Shen <bruceshenzk@gmail.com>
+    ath10k: check idx validity in __ath10k_htt_rx_ring_fill_n()
+
+Can Guo <cang@codeaurora.org>
+    scsi: ufs: ufs-qcom: Fix race conditions caused by ufs_qcom_testbus_config()
+
+Eli Billauer <eli.billauer@gmail.com>
+    usb: core: Solve race condition in anchor cleanup functions
+
+Wang Yufen <wangyufen@huawei.com>
+    brcm80211: fix possible memleak in brcmf_proto_msgbuf_attach
+
+Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+    mwifiex: don't call del_timer_sync() on uninitialized timer
+
+Jan Kara <jack@suse.cz>
+    reiserfs: Fix memory leak in reiserfs_parse_options()
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    ipvs: Fix uninit-value in do_ip_vs_set_ctl()
+
+Tong Zhang <ztong0001@gmail.com>
+    tty: ipwireless: fix error handling
+
+Nilesh Javali <njavali@marvell.com>
+    scsi: qedi: Fix list_del corruption while removing active I/O
+
+Nilesh Javali <njavali@marvell.com>
+    scsi: qedi: Protect active command list to avoid list corruption
+
+Doug Horn <doughorn@google.com>
+    Fix use after free in get_capset_info callback.
+
+Chris Chiu <chiu@endlessm.com>
+    rtl8xxxu: prevent potential memory leak
+
+Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+    brcmsmac: fix memory leak in wlc_phy_attach_lcnphy
+
+Jing Xiangfeng <jingxiangfeng@huawei.com>
+    scsi: ibmvfc: Fix error return in ibmvfc_probe()
+
+Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+    Bluetooth: Only mark socket zapped after unlocking
+
+Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+    usb: ohci: Default to per-port over-current protection
+
+Darrick J. Wong <darrick.wong@oracle.com>
+    xfs: make sure the rt allocator doesn't run off the end
+
+Eric Biggers <ebiggers@google.com>
+    reiserfs: only call unlock_new_inode() if I_NEW
+
+Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+    misc: rtsx: Fix memory leak in rtsx_pci_probe
+
+Brooke Basile <brookebasile@gmail.com>
+    ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()
+
+Joakim Zhang <qiangqing.zhang@nxp.com>
+    can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
+
+Johan Hovold <johan@kernel.org>
+    USB: cdc-acm: handle broken union descriptors
+
+Jan Kara <jack@suse.cz>
+    udf: Avoid accessing uninitialized data on failed inode read
+
+Jan Kara <jack@suse.cz>
+    udf: Limit sparing table size
+
+Zqiang <qiang.zhang@windriver.com>
+    usb: gadget: function: printer: fix use-after-free in __lock_acquire
+
+Sherry Sun <sherry.sun@nxp.com>
+    misc: vop: add round_up(x,4) for vring_size to avoid kernel panic
+
+Sherry Sun <sherry.sun@nxp.com>
+    mic: vop: copy data to kernel space then write to io memory
+
+Roman Bolshakov <r.bolshakov@yadro.com>
+    scsi: target: core: Add CONTROL field for trace events
+
+Jing Xiangfeng <jingxiangfeng@huawei.com>
+    scsi: mvumi: Fix error return in mvumi_io_attach()
+
+Christoph Hellwig <hch@lst.de>
+    PM: hibernate: remove the bogus call to get_gendisk() in software_resume()
+
+Thomas Pedersen <thomas@adapt-ip.com>
+    mac80211: handle lack of sband->bitrates in rates
+
+Rustam Kovhaev <rkovhaev@gmail.com>
+    ntfs: add check for mft record size in superblock
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: venus: core: Fix runtime PM imbalance in venus_probe
+
+Alexander Aring <aahringo@redhat.com>
+    fs: dlm: fix configfs memory leak
+
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    media: saa7134: avoid a shift overflow
+
+Pali Rohár <pali@kernel.org>
+    mmc: sdio: Check for CISTPL_VERS_1 buffer size
+
+Adam Goode <agoode@google.com>
+    media: uvcvideo: Ensure all probed info is returned to v4l2
+
+Xiaolong Huang <butterflyhuangxx@gmail.com>
+    media: media/pci: prevent memory leak in bttv_probe
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: bdisp: Fix runtime PM imbalance on error
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: platform: sti: hva: Fix runtime PM imbalance on error
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: platform: s3c-camif: Fix runtime PM imbalance on error
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: vsp1: Fix runtime PM imbalance on error
+
+Qiushi Wu <wu000273@umn.edu>
+    media: exynos4-is: Fix a reference count leak
+
+Qiushi Wu <wu000273@umn.edu>
+    media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync
+
+Qiushi Wu <wu000273@umn.edu>
+    media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync
+
+Qiushi Wu <wu000273@umn.edu>
+    media: sti: Fix reference count leaks
+
+Aditya Pakki <pakki001@umn.edu>
+    media: st-delta: Fix reference count leak in delta_run_work
+
+Oliver Neukum <oneukum@suse.com>
+    media: ati_remote: sanity check for both endpoints
+
+Pavel Machek <pavel@ucw.cz>
+    media: firewire: fix memory leak
+
+Pavel Machek <pavel@denx.de>
+    crypto: ccp - fix error handling
+
+Hans de Goede <hdegoede@redhat.com>
+    i2c: core: Restore acpi_walk_dep_device_list() getting called after registering the ACPI i2c devs
+
+Al Grant <al.grant@foss.arm.com>
+    perf: correct SNOOPX field offset
+
+Kaige Li <likaige@loongson.cn>
+    NTB: hw: amd: fix an issue about leak system resources
+
+zhenwei pi <pizhenwei@bytedance.com>
+    nvmet: fix uninitialized work for zero kato
+
+Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+    powerpc/powernv/dump: Fix race while processing OPAL dump
+
+Michal Simek <michal.simek@xilinx.com>
+    arm64: dts: zynqmp: Remove additional compatible string for i2c IPs
+
+Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+    ARM: dts: owl-s500: Fix incorrect PPI interrupt specifiers
+
+Stephan Gerhold <stephan@gerhold.net>
+    arm64: dts: qcom: msm8916: Fix MDP/DSI interrupts
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    memory: fsl-corenet-cf: Fix handling of platform_get_irq() error
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    memory: omap-gpmc: Fix a couple off by ones
+
+Robert Hoo <robert.hu@linux.intel.com>
+    KVM: x86: emulating RDPID failure shall return #UD rather than #GP
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    Input: sun4i-ps2 - fix handling of platform_get_irq() error
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    Input: twl4030_keypad - fix handling of platform_get_irq() error
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    Input: omap4-keypad - fix handling of platform_get_irq() error
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    Input: ep93xx_keypad - fix handling of platform_get_irq() error
+
+YueHaibing <yuehaibing@huawei.com>
+    Input: stmfts - fix a & vs && typo
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    Input: imx6ul_tsc - clean up some errors in imx6ul_tsc_resume()
+
+Xiaoyang Xu <xuxiaoyang2@huawei.com>
+    vfio iommu type1: Fix memory leak in vfio_iommu_type1_pin_pages
+
+Alex Williamson <alex.williamson@redhat.com>
+    vfio/pci: Clear token on bypass registration failure
+
+Darrick J. Wong <darrick.wong@oracle.com>
+    ext4: limit entries returned when counting fsmap records
+
+Navid Emamdoost <navid.emamdoost@gmail.com>
+    clk: bcm2835: add missing release if devm_clk_hw_register fails
+
+Claudiu Beznea <claudiu.beznea@microchip.com>
+    clk: at91: clk-main: update key before writing AT91_CKGR_MOR
+
+Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+    PCI: iproc: Set affinity mask on MSI interrupts
+
+Dirk Behme <dirk.behme@de.bosch.com>
+    i2c: rcar: Auto select RESET_CONTROLLER
+
+Jassi Brar <jaswinder.singh@linaro.org>
+    mailbox: avoid timer start from callback
+
+Jing Xiangfeng <jingxiangfeng@huawei.com>
+    rapidio: fix the missed put_device() for rio_mport_add_riodev
+
+Souptick Joarder <jrdr.linux@gmail.com>
+    rapidio: fix error handling path
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    ramfs: fix nommu mmap with gaps in the page cache
+
+Tobias Jordan <kernel@cdqe.de>
+    lib/crc32.c: fix trivial typo in preprocessor condition
+
+Jamie Iles <jamie@nuviainc.com>
+    f2fs: wait for sysfs kobject removal before freeing f2fs_sb_info
+
+Colin Ian King <colin.king@canonical.com>
+    IB/rdmavt: Fix sizeof mismatch
+
+Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+    cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
+
+Kajol Jain <kjain@linux.ibm.com>
+    powerpc/perf/hv-gpci: Fix starting index value
+
+Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+    powerpc/perf: Exclude pmc5/6 from the irrelevant PMU group constraints
+
+Leon Romanovsky <leonro@nvidia.com>
+    overflow: Include header file with SIZE_MAX declaration
+
+Daniel Thompson <daniel.thompson@linaro.org>
+    kdb: Fix pager search for multi-line strings
+
+Lijun Ou <oulijun@huawei.com>
+    RDMA/hns: Set the unsupported wr opcode
+
+Adrian Hunter <adrian.hunter@intel.com>
+    perf intel-pt: Fix "context_switch event has no tid" error
+
+Finn Thain <fthain@telegraphics.com.au>
+    powerpc/tau: Disable TAU between measurements
+
+Finn Thain <fthain@telegraphics.com.au>
+    powerpc/tau: Remove duplicated set_thresholds() call
+
+Finn Thain <fthain@telegraphics.com.au>
+    powerpc/tau: Use appropriate temperature sample interval
+
+Michal Kalderon <michal.kalderon@marvell.com>
+    RDMA/qedr: Fix use of uninitialized field
+
+Darrick J. Wong <darrick.wong@oracle.com>
+    xfs: limit entries returned when counting fsmap records
+
+Necip Fazil Yildiran <fazilyildiran@gmail.com>
+    arc: plat-hsdk: fix kconfig dependency warning when !RESET_CONTROLLER
+
+Guillaume Tucker <guillaume.tucker@collabora.com>
+    ARM: 9007/1: l2c: fix prefetch bits init in L2X0_AUX_CTRL using DT values
+
+Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+    mtd: mtdoops: Don't write panic data twice
+
+Arnd Bergmann <arnd@arndb.de>
+    mtd: lpddr: fix excessive stack usage with clang
+
+Nicholas Mc Guire <hofrat@osadl.org>
+    powerpc/icp-hv: Fix missing of_node_put() in success path
+
+Nicholas Mc Guire <hofrat@osadl.org>
+    powerpc/pseries: Fix missing of_node_put() in rng_init()
+
+Håkon Bugge <haakon.bugge@oracle.com>
+    IB/mlx4: Adjust delayed work when a dup is observed
+
+Håkon Bugge <haakon.bugge@oracle.com>
+    IB/mlx4: Fix starvation in paravirt mux/demux
+
+Suren Baghdasaryan <surenb@google.com>
+    mm, oom_adj: don't loop through tasks in __set_oom_adj when not necessary
+
+Ralph Campbell <rcampbell@nvidia.com>
+    mm/memcg: fix device private memcg accounting
+
+Valentin Vidic <vvidic@valentin-vidic.from.hr>
+    net: korina: fix kfree of rx/tx descriptor array
+
+Tom Rix <trix@redhat.com>
+    mwifiex: fix double free
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()
+
+Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+    usb: dwc2: Fix INTR OUT transfers in DDMA mode.
+
+Johannes Berg <johannes.berg@intel.com>
+    nl80211: fix non-split wiphy information
+
+Lorenzo Colitti <lorenzo@google.com>
+    usb: gadget: u_ether: enable qmult on SuperSpeed Plus as well
+
+Lorenzo Colitti <lorenzo@google.com>
+    usb: gadget: f_ncm: fix ncm_bitrate for SuperSpeed and above.
+
+Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+    iwlwifi: mvm: split a print to avoid a WARNING in ROC
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    mfd: sm501: Fix leaks in probe()
+
+Thomas Gleixner <tglx@linutronix.de>
+    net: enic: Cure the enic api locking trainwreck
+
+Colin Ian King <colin.king@canonical.com>
+    qtnfmac: fix resource leaks on unsupported iftype error return path
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    HID: hid-input: fix stylus battery reporting
+
+Eric Dumazet <edumazet@google.com>
+    quota: clear padding in v2r1_mem2diskdqb()
+
+Nathan Chancellor <natechancellor@gmail.com>
+    usb: dwc2: Fix parameter type in function pointer prototype
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: oss: Avoid mutex lock for a long-time ioctl
+
+Souptick Joarder <jrdr.linux@gmail.com>
+    misc: mic: scif: Fix error handling path
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
+
+Thomas Preston <thomas.preston@codethink.co.uk>
+    pinctrl: mcp23s08: Fix mcp23x17 precious range
+
+Thomas Preston <thomas.preston@codethink.co.uk>
+    pinctrl: mcp23s08: Fix mcp23x17_regmap initialiser
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    HID: roccat: add bounds checking in kone_sysfs_write_settings()
+
+Tom Rix <trix@redhat.com>
+    video: fbdev: sis: fix null ptr dereference
+
+Colin Ian King <colin.king@canonical.com>
+    video: fbdev: vga16fb: fix setting of pixclock because a pass-by-value error
+
+Souptick Joarder <jrdr.linux@gmail.com>
+    drivers/virt/fsl_hypervisor: Fix error handling path
+
+Hans de Goede <hdegoede@redhat.com>
+    pwm: lpss: Add range limit check for the base_unit register value
+
+Hans de Goede <hdegoede@redhat.com>
+    pwm: lpss: Fix off by one error in base_unit math in pwm_lpss_prepare()
+
+Artem Savkov <asavkov@redhat.com>
+    pty: do tty_flip_buffer_push without port->lock in pty_write
+
+Tyrel Datwyler <tyreld@linux.ibm.com>
+    tty: hvcs: Don't NULL tty->driver_data until hvcs_cleanup()
+
+Tong Zhang <ztong0001@gmail.com>
+    tty: serial: earlycon dependency
+
+Alex Dewar <alex.dewar90@gmail.com>
+    VMCI: check return value of get_user_pages_fast() for errors
+
+dinghao.liu@zju.edu.cn <dinghao.liu@zju.edu.cn>
+    backlight: sky81452-backlight: Fix refcount imbalance on error
+
+Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+    scsi: csiostor: Fix wrong return value in csio_hw_prep_fw()
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    scsi: qla4xxx: Fix an error handling path in 'qla4xxx_get_host_stats()'
+
+Tom Rix <trix@redhat.com>
+    drm/gma500: fix error check
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    mwifiex: Do not use GFP_KERNEL in atomic context
+
+Tom Rix <trix@redhat.com>
+    brcmfmac: check ndev pointer
+
+Rohit kumar <rohitkr@codeaurora.org>
+    ASoC: qcom: lpass-cpu: fix concurrency issue
+
+Rohit kumar <rohitkr@codeaurora.org>
+    ASoC: qcom: lpass-platform: fix memory leak
+
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+    wcn36xx: Fix reported 802.11n rx_highest rate wcn3660/wcn3680
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    ath9k: Fix potential out of bounds in ath9k_htc_txcompletion_cb()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    ath6kl: prevent potential array overflow in ath6kl_add_new_sta()
+
+Samuel Holland <samuel@sholland.org>
+    Bluetooth: hci_uart: Cancel init work before unregistering
+
+Venkateswara Naralasetty <vnaralas@codeaurora.org>
+    ath10k: provide survey info as accumulated data
+
+Michał Mirosław <mirq-linux@rere.qmqm.pl>
+    regulator: resolve supply after creating regulator
+
+Qiushi Wu <wu000273@umn.edu>
+    media: ti-vpe: Fix a missing check and reference count leak
+
+Qiushi Wu <wu000273@umn.edu>
+    media: s5p-mfc: Fix a reference count leak
+
+Qiushi Wu <wu000273@umn.edu>
+    media: platform: fcp: Fix a reference count leak.
+
+Tom Rix <trix@redhat.com>
+    media: tc358743: initialize variable
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: mx2_emmaprp: Fix memleak in emmaprp_probe
+
+Xiaoliang Pang <dawning.pang@gmail.com>
+    cypto: mediatek - fix leaks in mtk_desc_ring_alloc
+
+Tero Kristo <t-kristo@ti.com>
+    crypto: omap-sham - fix digcnt register handling with export/import
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    media: omap3isp: Fix memleak in isp_probe
+
+Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+    media: uvcvideo: Set media controller entity functions
+
+Tom Rix <trix@redhat.com>
+    media: m5mols: Check function pointer in m5mols_sensor_power
+
+Sylwester Nawrocki <s.nawrocki@samsung.com>
+    media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+
+Tom Rix <trix@redhat.com>
+    media: tuner-simple: fix regression in simple_set_radio_freq
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    crypto: ixp4xx - Fix the size used in a 'dma_free_coherent()' call
+
+Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+    crypto: mediatek - Fix wrong return value in mtk_desc_ring_alloc()
+
+Herbert Xu <herbert@gondor.apana.org.au>
+    crypto: algif_skcipher - EBUSY on aio should be an error
+
+Mark Salter <msalter@redhat.com>
+    drivers/perf: xgene_pmu: Fix uninitialized resource struct
+
+Arvind Sankar <nivedita@alum.mit.edu>
+    x86/fpu: Allow multiple bits in clearcpuid= parameter
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    EDAC/i5100: Fix error handling order in i5100_init_one()
+
+Herbert Xu <herbert@gondor.apana.org.au>
+    crypto: algif_aead - Do not set MAY_BACKLOG on the async path
+
+Roberto Sassu <roberto.sassu@huawei.com>
+    ima: Don't ignore errors from crypto_shash_update()
+
+Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+    KVM: SVM: Initialize prev_ga_tag before use
+
+Sean Christopherson <sean.j.christopherson@intel.com>
+    KVM: x86/mmu: Commit zap of remaining invalid pages when recovering lpages
+
+Shyam Prasad N <sprasad@microsoft.com>
+    cifs: Return the error from crypt_message when enc/dec key not found.
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    cifs: remove bogus debug code
+
+Eric Dumazet <edumazet@google.com>
+    icmp: randomize the global rate limiter
+
+Neal Cardwell <ncardwell@google.com>
+    tcp: fix to update snd_wl1 in bulk receiver fast path
+
+Defang Bo <bodefang@126.com>
+    nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME attribute in nfc_genl_fw_download()
+
+Xie He <xie.he.0141@gmail.com>
+    net: hdlc_raw_eth: Clear the IFF_TX_SKB_SHARING flag after calling ether_setup
+
+Xie He <xie.he.0141@gmail.com>
+    net: hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    ALSA: bebob: potential info leak in hwdep_read()
+
+Todd Kjos <tkjos@google.com>
+    binder: fix UAF when releasing todo list
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    r8169: fix data corruption issue on RTL8402
+
+Maciej Żenczykowski <maze@google.com>
+    net/ipv4: always honour route mtu during forwarding
+
+Cong Wang <xiyou.wangcong@gmail.com>
+    tipc: fix the skb_unshare() in tipc_buf_append()
+
+Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+    net: usb: qmi_wwan: add Cellient MPL200 card
+
+Jonathan Lemon <bsd@fb.com>
+    mlx4: handle non-napi callers to napi_poll
+
+David Ahern <dsahern@kernel.org>
+    ipv4: Restore flowi4_oif update before call to xfrm_lookup_route
+
+David Wilder <dwilder@us.ibm.com>
+    ibmveth: Identify ingress large send packets.
+
+David Wilder <dwilder@us.ibm.com>
+    ibmveth: Switch order of ibmveth_helper calls.
 
 
-rcu_scheduler_active = 1, debug_locks = 1
-5.9.1+ #72 Not tainted
-RCU used illegally from extended quiescent state!
-no locks held by swapper/0/0.
------------------------------
-./include/trace/events/preemptirq.h:38 suspicious rcu_dereference_check() usage!
+-------------
 
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.1+ #72
+Diffstat:
 
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
-RCU used illegally from extended quiescent state!
-no locks held by swapper/1/0.
- dump_stack+0x8d/0xbb
-
-stack backtrace:
- ? default_idle+0xa/0x20
- trace_hardirqs_on+0xed/0xf0
- default_idle+0xa/0x20
- default_idle_call+0x4f/0x1e0
- do_idle+0x1ef/0x2c0
- cpu_startup_entry+0x19/0x20
- start_kernel+0x578/0x59d
- secondary_startup_64+0xa4/0xb0
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.1+ #72
-
-=============================
-WARNING: suspicious RCU usage
-5.9.1+ #72 Not tainted
------------------------------
-./include/trace/events/lock.h:37 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-RCU used illegally from extended quiescent state!
-no locks held by swapper/0/0.
-
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.1+ #72
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- dump_stack+0x8d/0xbb
- lock_acquire+0x346/0x3b0
- ? __lock_acquire+0x2e7/0x1da0
- _raw_spin_lock+0x2c/0x40
- ? vprintk_emit+0x9f/0x410
- vprintk_emit+0x9f/0x410
- printk+0x52/0x6e
- lockdep_rcu_suspicious+0x1b/0xe0
- ? default_idle+0xa/0x20
- trace_hardirqs_on+0xed/0xf0
- default_idle+0xa/0x20
- default_idle_call+0x4f/0x1e0
- do_idle+0x1ef/0x2c0
- cpu_startup_entry+0x19/0x20
- start_kernel+0x578/0x59d
- secondary_startup_64+0xa4/0xb0
-
-=============================
-WARNING: suspicious RCU usage
-5.9.1+ #72 Not tainted
------------------------------
-./include/trace/events/lock.h:63 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-RCU used illegally from extended quiescent state!
-1 lock held by swapper/0/0:
- #0: ffffffff97a80158 (logbuf_lock){-...}-{2:2}, at: vprintk_emit+0x9f/0x410
-
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.1+ #72
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- dump_stack+0x8d/0xbb
- lock_release+0x25a/0x280
- _raw_spin_unlock+0x17/0x30
- vprintk_emit+0xdf/0x410
- printk+0x52/0x6e
- lockdep_rcu_suspicious+0x1b/0xe0
- ? default_idle+0xa/0x20
- trace_hardirqs_on+0xed/0xf0
- default_idle+0xa/0x20
- default_idle_call+0x4f/0x1e0
- do_idle+0x1ef/0x2c0
- cpu_startup_entry+0x19/0x20
- start_kernel+0x578/0x59d
- secondary_startup_64+0xa4/0xb0
-
-=============================
-WARNING: suspicious RCU usage
-5.9.1+ #72 Not tainted
------------------------------
-./include/trace/events/printk.h:33 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-RCU used illegally from extended quiescent state!
-2 locks held by swapper/0/0:
- #0: ffffffff97a801a0 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x126/0x410
- #1: ffffffff97a7fec0 (console_owner){....}-{0:0}, at: console_unlock+0x190/0x5d0
-
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.1+ #72
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- dump_stack+0x8d/0xbb
- console_unlock+0x5ad/0x5d0
- vprintk_emit+0x133/0x410
- printk+0x52/0x6e
- lockdep_rcu_suspicious+0x1b/0xe0
- ? default_idle+0xa/0x20
- trace_hardirqs_on+0xed/0xf0
- default_idle+0xa/0x20
- default_idle_call+0x4f/0x1e0
- do_idle+0x1ef/0x2c0
- cpu_startup_entry+0x19/0x20
- start_kernel+0x578/0x59d
- secondary_startup_64+0xa4/0xb0
-
-=============================
-WARNING: suspicious RCU usage
-5.9.1+ #72 Not tainted
------------------------------
-./include/linux/rcupdate.h:636 rcu_read_lock() used illegally while idle!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-RCU used illegally from extended quiescent state!
-4 locks held by swapper/0/0:
- #0: ffffffff97a801a0 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x126/0x410
- #1: ffffffff97a7fec0 (console_owner){....}-{0:0}, at: console_unlock+0x190/0x5d0
- #2: ffffffff97b7d598 (printing_lock){....}-{2:2}, at: vt_console_print+0x7d/0x3e0
- #3: ffffffff97a82d80 (rcu_read_lock){....}-{1:2}, at: __atomic_notifier_call_chain+0x5/0x110
-
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.1+ #72
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- dump_stack+0x8d/0xbb
- __atomic_notifier_call_chain+0xd7/0x110
- vt_console_print+0x19e/0x3e0
- console_unlock+0x417/0x5d0
- vprintk_emit+0x133/0x410
- printk+0x52/0x6e
- lockdep_rcu_suspicious+0x1b/0xe0
- ? default_idle+0xa/0x20
- trace_hardirqs_on+0xed/0xf0
- default_idle+0xa/0x20
- default_idle_call+0x4f/0x1e0
- do_idle+0x1ef/0x2c0
- cpu_startup_entry+0x19/0x20
- start_kernel+0x578/0x59d
- secondary_startup_64+0xa4/0xb0
-
-=============================
-WARNING: suspicious RCU usage
-5.9.1+ #72 Not tainted
------------------------------
-./include/linux/rcupdate.h:685 rcu_read_unlock() used illegally while idle!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-RCU used illegally from extended quiescent state!
-4 locks held by swapper/0/0:
- #0: ffffffff97a801a0 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x126/0x410
- #1: ffffffff97a7fec0 (console_owner){....}-{0:0}, at: console_unlock+0x190/0x5d0
- #2: ffffffff97b7d598 (printing_lock){....}-{2:2}, at: vt_console_print+0x7d/0x3e0
- #3: ffffffff97a82d80 (rcu_read_lock){....}-{1:2}, at: __atomic_notifier_call_chain+0x5/0x110
-
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.1+ #72
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- dump_stack+0x8d/0xbb
- __atomic_notifier_call_chain+0x101/0x110
- vt_console_print+0x19e/0x3e0
- console_unlock+0x417/0x5d0
- vprintk_emit+0x133/0x410
- printk+0x52/0x6e
- lockdep_rcu_suspicious+0x1b/0xe0
- ? default_idle+0xa/0x20
- trace_hardirqs_on+0xed/0xf0
- default_idle+0xa/0x20
- default_idle_call+0x4f/0x1e0
- do_idle+0x1ef/0x2c0
- cpu_startup_entry+0x19/0x20
- start_kernel+0x578/0x59d
- secondary_startup_64+0xa4/0xb0
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Call Trace:
- dump_stack+0x8d/0xbb
- ? rcu_idle_exit+0x32/0x40
- trace_hardirqs_off+0xe3/0xf0
- rcu_idle_exit+0x32/0x40
- default_idle_call+0x54/0x1e0
- do_idle+0x1ef/0x2c0
- ? lockdep_hardirqs_on_prepare+0xec/0x180
- cpu_startup_entry+0x19/0x20
- start_secondary+0x11c/0x160
- secondary_startup_64+0xa4/0xb0
-
-Thanks,
-
-Mathieu
+ Documentation/admin-guide/kernel-parameters.txt    |   2 +-
+ Documentation/networking/ip-sysctl.txt             |   4 +-
+ Makefile                                           |   4 +-
+ arch/arc/plat-hsdk/Kconfig                         |   1 +
+ arch/arm/boot/dts/owl-s500.dtsi                    |   6 +-
+ arch/arm/mm/cache-l2x0.c                           |  16 ++-
+ arch/arm64/boot/dts/qcom/msm8916.dtsi              |   4 +-
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi             |   4 +-
+ arch/powerpc/include/asm/reg.h                     |   2 +-
+ arch/powerpc/kernel/tau_6xx.c                      |  82 ++++++----------
+ arch/powerpc/perf/hv-gpci-requests.h               |   6 +-
+ arch/powerpc/perf/isa207-common.c                  |  10 ++
+ arch/powerpc/platforms/Kconfig                     |   9 +-
+ arch/powerpc/platforms/powernv/opal-dump.c         |  41 +++++---
+ arch/powerpc/platforms/pseries/rng.c               |   1 +
+ arch/powerpc/sysdev/xics/icp-hv.c                  |   1 +
+ arch/x86/kernel/fpu/init.c                         |  30 ++++--
+ arch/x86/kvm/emulate.c                             |   2 +-
+ arch/x86/kvm/mmu.c                                 |   1 +
+ arch/x86/kvm/svm.c                                 |   1 +
+ crypto/algif_aead.c                                |   7 +-
+ crypto/algif_skcipher.c                            |   2 +-
+ drivers/android/binder.c                           |  35 ++-----
+ drivers/bluetooth/hci_ldisc.c                      |   1 +
+ drivers/bluetooth/hci_serdev.c                     |   2 +
+ drivers/clk/at91/clk-main.c                        |  11 ++-
+ drivers/clk/bcm/clk-bcm2835.c                      |   4 +-
+ drivers/cpufreq/powernv-cpufreq.c                  |   9 +-
+ drivers/crypto/ccp/ccp-ops.c                       |   2 +-
+ drivers/crypto/ixp4xx_crypto.c                     |   2 +-
+ drivers/crypto/mediatek/mtk-platform.c             |   8 +-
+ drivers/crypto/omap-sham.c                         |   3 +
+ drivers/edac/i5100_edac.c                          |  11 +--
+ drivers/gpu/drm/gma500/cdv_intel_dp.c              |   2 +-
+ drivers/gpu/drm/virtio/virtgpu_kms.c               |   2 +
+ drivers/gpu/drm/virtio/virtgpu_vq.c                |  10 +-
+ drivers/hid/hid-input.c                            |   4 +-
+ drivers/hid/hid-roccat-kone.c                      |  23 +++--
+ drivers/i2c/busses/Kconfig                         |   1 +
+ drivers/i2c/i2c-core-acpi.c                        |  11 ++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c         |   1 -
+ drivers/infiniband/hw/mlx4/cm.c                    |   3 +
+ drivers/infiniband/hw/mlx4/mad.c                   |  34 ++++++-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h               |   2 +
+ drivers/infiniband/hw/qedr/main.c                  |   2 +-
+ drivers/infiniband/sw/rdmavt/vt.c                  |   4 +-
+ drivers/input/keyboard/ep93xx_keypad.c             |   4 +-
+ drivers/input/keyboard/omap4-keypad.c              |   6 +-
+ drivers/input/keyboard/twl4030_keypad.c            |   8 +-
+ drivers/input/serio/sun4i-ps2.c                    |   9 +-
+ drivers/input/touchscreen/imx6ul_tsc.c             |  27 +++---
+ drivers/input/touchscreen/stmfts.c                 |   2 +-
+ drivers/mailbox/mailbox.c                          |  12 ++-
+ drivers/media/firewire/firedtv-fw.c                |   6 +-
+ drivers/media/i2c/m5mols/m5mols_core.c             |   3 +-
+ drivers/media/i2c/tc358743.c                       |   2 +-
+ drivers/media/pci/bt8xx/bttv-driver.c              |  13 ++-
+ drivers/media/pci/saa7134/saa7134-tvaudio.c        |   3 +-
+ drivers/media/platform/exynos4-is/fimc-isp.c       |   4 +-
+ drivers/media/platform/exynos4-is/fimc-lite.c      |   2 +-
+ drivers/media/platform/exynos4-is/media-dev.c      |   8 +-
+ drivers/media/platform/exynos4-is/mipi-csis.c      |   4 +-
+ drivers/media/platform/mx2_emmaprp.c               |   7 +-
+ drivers/media/platform/omap3isp/isp.c              |   6 +-
+ drivers/media/platform/qcom/venus/core.c           |   5 +-
+ drivers/media/platform/rcar-fcp.c                  |   4 +-
+ drivers/media/platform/s3c-camif/camif-core.c      |   5 +-
+ drivers/media/platform/s5p-mfc/s5p_mfc_pm.c        |   4 +-
+ drivers/media/platform/sti/bdisp/bdisp-v4l2.c      |   3 +-
+ drivers/media/platform/sti/delta/delta-v4l2.c      |   4 +-
+ drivers/media/platform/sti/hva/hva-hw.c            |   4 +-
+ drivers/media/platform/ti-vpe/vpe.c                |   2 +
+ drivers/media/platform/vsp1/vsp1_drv.c             |  11 ++-
+ drivers/media/rc/ati_remote.c                      |   4 +
+ drivers/media/tuners/tuner-simple.c                |   5 +-
+ drivers/media/usb/uvc/uvc_entity.c                 |  35 +++++++
+ drivers/media/usb/uvc/uvc_v4l2.c                   |  30 ++++++
+ drivers/memory/fsl-corenet-cf.c                    |   6 +-
+ drivers/memory/omap-gpmc.c                         |   4 +-
+ drivers/mfd/rtsx_pcr.c                             |   4 +-
+ drivers/mfd/sm501.c                                |   8 +-
+ drivers/misc/eeprom/at25.c                         |   2 +-
+ drivers/misc/mic/scif/scif_rma.c                   |   4 +-
+ drivers/misc/mic/vop/vop_main.c                    |   2 +-
+ drivers/misc/mic/vop/vop_vringh.c                  |  24 +++--
+ drivers/misc/vmw_vmci/vmci_queue_pair.c            |  10 +-
+ drivers/mmc/core/sdio_cis.c                        |   3 +
+ drivers/mtd/lpddr/lpddr2_nvm.c                     |  35 ++++---
+ drivers/mtd/mtdoops.c                              |  11 ++-
+ drivers/net/can/flexcan.c                          |  34 +++++--
+ drivers/net/ethernet/cisco/enic/enic.h             |   1 +
+ drivers/net/ethernet/cisco/enic/enic_api.c         |   6 ++
+ drivers/net/ethernet/cisco/enic/enic_main.c        |  27 ++++--
+ drivers/net/ethernet/ibm/ibmveth.c                 |  19 +++-
+ drivers/net/ethernet/korina.c                      |   3 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c         |   3 +
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c         |   2 +-
+ drivers/net/ethernet/realtek/r8169.c               | 108 +++++++++++----------
+ drivers/net/usb/qmi_wwan.c                         |   1 +
+ drivers/net/wan/hdlc.c                             |  10 +-
+ drivers/net/wan/hdlc_raw_eth.c                     |   1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c           |   8 ++
+ drivers/net/wireless/ath/ath10k/mac.c              |   2 +-
+ drivers/net/wireless/ath/ath6kl/main.c             |   3 +
+ drivers/net/wireless/ath/ath6kl/wmi.c              |   5 +
+ drivers/net/wireless/ath/ath9k/hif_usb.c           |  19 ++++
+ drivers/net/wireless/ath/ath9k/htc_hst.c           |   2 +
+ drivers/net/wireless/ath/wcn36xx/main.c            |   2 +-
+ .../wireless/broadcom/brcm80211/brcmfmac/core.c    |   2 +-
+ .../wireless/broadcom/brcm80211/brcmfmac/msgbuf.c  |   2 +
+ .../broadcom/brcm80211/brcmsmac/phy/phy_lcn.c      |   4 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c  |   9 +-
+ drivers/net/wireless/marvell/mwifiex/scan.c        |   2 +-
+ drivers/net/wireless/marvell/mwifiex/sdio.c        |   2 +
+ drivers/net/wireless/marvell/mwifiex/usb.c         |   3 +-
+ drivers/net/wireless/quantenna/qtnfmac/commands.c  |   2 +
+ .../net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c  |  10 +-
+ drivers/ntb/hw/amd/ntb_hw_amd.c                    |   1 +
+ drivers/nvme/target/core.c                         |   3 +-
+ drivers/pci/host/pcie-iproc-msi.c                  |  13 ++-
+ drivers/perf/xgene_pmu.c                           |  32 +++---
+ drivers/pinctrl/pinctrl-mcp23s08.c                 |  24 ++---
+ drivers/pwm/pwm-lpss.c                             |   7 +-
+ drivers/rapidio/devices/rio_mport_cdev.c           |  18 ++--
+ drivers/regulator/core.c                           |  21 ++--
+ drivers/scsi/be2iscsi/be_main.c                    |   4 +-
+ drivers/scsi/csiostor/csio_hw.c                    |   2 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c                     |   1 +
+ drivers/scsi/mvumi.c                               |   1 +
+ drivers/scsi/qedi/qedi_fw.c                        |  23 ++++-
+ drivers/scsi/qedi/qedi_iscsi.c                     |   2 +
+ drivers/scsi/qla4xxx/ql4_os.c                      |   2 +-
+ drivers/scsi/ufs/ufs-qcom.c                        |   5 -
+ drivers/tty/hvc/hvcs.c                             |  14 +--
+ drivers/tty/ipwireless/network.c                   |   4 +-
+ drivers/tty/ipwireless/tty.c                       |   2 +-
+ drivers/tty/pty.c                                  |   2 +-
+ drivers/tty/serial/Kconfig                         |   1 +
+ drivers/tty/serial/fsl_lpuart.c                    |   2 +-
+ drivers/usb/class/cdc-acm.c                        |  23 +++++
+ drivers/usb/class/cdc-wdm.c                        |  72 ++++++++++----
+ drivers/usb/core/urb.c                             |  89 ++++++++++-------
+ drivers/usb/dwc2/gadget.c                          |  40 ++++++--
+ drivers/usb/dwc2/params.c                          |   2 +-
+ drivers/usb/gadget/function/f_ncm.c                |   8 +-
+ drivers/usb/gadget/function/f_printer.c            |  16 ++-
+ drivers/usb/gadget/function/u_ether.c              |   2 +-
+ drivers/usb/host/ohci-hcd.c                        |  16 +--
+ drivers/vfio/pci/vfio_pci_intrs.c                  |   4 +-
+ drivers/vfio/vfio_iommu_type1.c                    |   3 +-
+ drivers/video/backlight/sky81452-backlight.c       |   1 +
+ drivers/video/fbdev/sis/init.c                     |  11 +--
+ drivers/video/fbdev/vga16fb.c                      |  14 +--
+ drivers/virt/fsl_hypervisor.c                      |  17 ++--
+ fs/cifs/asn1.c                                     |  16 +--
+ fs/cifs/smb2ops.c                                  |   2 +-
+ fs/dlm/config.c                                    |   3 +
+ fs/ext4/fsmap.c                                    |   3 +
+ fs/f2fs/sysfs.c                                    |   1 +
+ fs/ntfs/inode.c                                    |   6 ++
+ fs/proc/base.c                                     |   3 +-
+ fs/quota/quota_v2.c                                |   1 +
+ fs/ramfs/file-nommu.c                              |   2 +-
+ fs/reiserfs/inode.c                                |   3 +-
+ fs/reiserfs/super.c                                |   8 +-
+ fs/udf/inode.c                                     |  25 ++---
+ fs/udf/super.c                                     |   6 ++
+ fs/xfs/xfs_fsmap.c                                 |   3 +
+ fs/xfs/xfs_rtalloc.c                               |  11 +++
+ include/linux/oom.h                                |   1 +
+ include/linux/overflow.h                           |   1 +
+ include/linux/sched/coredump.h                     |   1 +
+ include/net/ip.h                                   |   6 ++
+ include/scsi/scsi_common.h                         |   7 ++
+ include/trace/events/target.h                      |  12 +--
+ include/uapi/linux/perf_event.h                    |   2 +-
+ kernel/debug/kdb/kdb_io.c                          |   8 +-
+ kernel/fork.c                                      |  21 ++++
+ kernel/power/hibernate.c                           |  11 ---
+ lib/crc32.c                                        |   2 +-
+ mm/memcontrol.c                                    |   5 +-
+ mm/oom_kill.c                                      |   2 +
+ net/bluetooth/l2cap_sock.c                         |   7 +-
+ net/ipv4/icmp.c                                    |   7 +-
+ net/ipv4/route.c                                   |   4 +-
+ net/ipv4/tcp_input.c                               |   2 +
+ net/mac80211/cfg.c                                 |   3 +-
+ net/mac80211/sta_info.c                            |   4 +
+ net/netfilter/ipvs/ip_vs_ctl.c                     |   7 +-
+ net/nfc/netlink.c                                  |   2 +-
+ net/tipc/msg.c                                     |   3 +-
+ net/wireless/nl80211.c                             |   5 +-
+ samples/mic/mpssd/mpssd.c                          |   4 +-
+ security/integrity/ima/ima_crypto.c                |   2 +
+ sound/core/seq/oss/seq_oss.c                       |   7 +-
+ sound/firewire/bebob/bebob_hwdep.c                 |   3 +-
+ sound/soc/qcom/lpass-cpu.c                         |  16 ---
+ sound/soc/qcom/lpass-platform.c                    |   3 +-
+ tools/perf/util/intel-pt.c                         |   8 +-
+ 199 files changed, 1205 insertions(+), 626 deletions(-)
 
 
-> 
-> -- Steve
-> 
-> 
->> rcuidle API. That would effectively remove the calls to
->> rcu_irq_{enter,exit}_irqson
->> from the tracepoint code.
->> 
->> This is however beyond the scope of the proposed patch set.
->> 
->> Thanks,
->> 
->> Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
-
-------=_Part_38577_64406330.1603807061503
-Content-Type: application/mbox;
- name=0001-wip-remove-rcuidle-tracepoint-API.patch
-Content-Disposition: attachment;
- filename=0001-wip-remove-rcuidle-tracepoint-API.patch
-Content-Transfer-Encoding: base64
-
-RnJvbSA3YTE2MDI5ZWI1NjkyMWE0MmU0YzE2MzIzZTBkZWUxMjhkNzI0YzFlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXRoaWV1IERlc25veWVycyA8bWF0aGlldS5kZXNub3llcnNA
-ZWZmaWNpb3MuY29tPgpEYXRlOiBUdWUsIDI3IE9jdCAyMDIwIDA5OjI4OjQ2IC0wNDAwClN1Ympl
-Y3Q6IFtXSVAgUEFUQ0ggMS8xXSB3aXA6IHJlbW92ZSByY3VpZGxlIHRyYWNlcG9pbnQgQVBJCgot
-LS0KIGFyY2gvYXJtL2tlcm5lbC9zbXAuYyAgICAgICAgICAgICB8ICA2ICsrKy0tLQogYXJjaC9h
-cm0vbWFjaC1vbWFwMi9wb3dlcmRvbWFpbi5jIHwgMTAgKysrKystLS0tLQogYXJjaC9hcm02NC9r
-ZXJuZWwvc21wLmMgICAgICAgICAgIHwgIDQgKystLQogZHJpdmVycy9iYXNlL3Bvd2VyL3J1bnRp
-bWUuYyAgICAgIHwgMjQgKysrKysrKysrKysrLS0tLS0tLS0tLS0tCiBkcml2ZXJzL2Nsay9jbGsu
-YyAgICAgICAgICAgICAgICAgfCAgOCArKysrLS0tLQogZHJpdmVycy9zb2MvcWNvbS9ycG1oLXJz
-Yy5jICAgICAgIHwgIDIgKy0KIGluY2x1ZGUvbGludXgvdHJhY2Vwb2ludC5oICAgICAgICB8IDI2
-ICsrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiBpbmNsdWRlL3RyYWNlL2V2ZW50cy9wcmVlbXB0
-aXJxLmggfCAgOCAtLS0tLS0tLQoga2VybmVsL3ByaW50ay9wcmludGsuYyAgICAgICAgICAgIHwg
-IDIgKy0KIGtlcm5lbC90cmFjZS90cmFjZV9wcmVlbXB0aXJxLmMgICB8IDE4ICsrKysrKy0tLS0t
-LS0tLS0tLQogc2NyaXB0cy90YWdzLnNoICAgICAgICAgICAgICAgICAgIHwgIDIgLS0KIDExIGZp
-bGVzIGNoYW5nZWQsIDM2IGluc2VydGlvbnMoKyksIDc0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
-dCBhL2FyY2gvYXJtL2tlcm5lbC9zbXAuYyBiL2FyY2gvYXJtL2tlcm5lbC9zbXAuYwppbmRleCA1
-ZDlkYTYxZWZmNjIuLjQ5OTdhOTY1YTM4YSAxMDA2NDQKLS0tIGEvYXJjaC9hcm0va2VybmVsL3Nt
-cC5jCisrKyBiL2FyY2gvYXJtL2tlcm5lbC9zbXAuYwpAQCAtNTIxLDcgKzUyMSw3IEBAIHN0YXRp
-YyBjb25zdCBjaGFyICppcGlfdHlwZXNbTlJfSVBJXSBfX3RyYWNlcG9pbnRfc3RyaW5nID0gewog
-CiBzdGF0aWMgdm9pZCBzbXBfY3Jvc3NfY2FsbChjb25zdCBzdHJ1Y3QgY3B1bWFzayAqdGFyZ2V0
-LCB1bnNpZ25lZCBpbnQgaXBpbnIpCiB7Ci0JdHJhY2VfaXBpX3JhaXNlX3JjdWlkbGUodGFyZ2V0
-LCBpcGlfdHlwZXNbaXBpbnJdKTsKKwl0cmFjZV9pcGlfcmFpc2UodGFyZ2V0LCBpcGlfdHlwZXNb
-aXBpbnJdKTsKIAlfX3NtcF9jcm9zc19jYWxsKHRhcmdldCwgaXBpbnIpOwogfQogCkBAIC02MzMs
-NyArNjMzLDcgQEAgdm9pZCBoYW5kbGVfSVBJKGludCBpcGluciwgc3RydWN0IHB0X3JlZ3MgKnJl
-Z3MpCiAJc3RydWN0IHB0X3JlZ3MgKm9sZF9yZWdzID0gc2V0X2lycV9yZWdzKHJlZ3MpOwogCiAJ
-aWYgKCh1bnNpZ25lZClpcGluciA8IE5SX0lQSSkgewotCQl0cmFjZV9pcGlfZW50cnlfcmN1aWRs
-ZShpcGlfdHlwZXNbaXBpbnJdKTsKKwkJdHJhY2VfaXBpX2VudHJ5KGlwaV90eXBlc1tpcGlucl0p
-OwogCQlfX2luY19pcnFfc3RhdChjcHUsIGlwaV9pcnFzW2lwaW5yXSk7CiAJfQogCkBAIC02OTQs
-NyArNjk0LDcgQEAgdm9pZCBoYW5kbGVfSVBJKGludCBpcGluciwgc3RydWN0IHB0X3JlZ3MgKnJl
-Z3MpCiAJfQogCiAJaWYgKCh1bnNpZ25lZClpcGluciA8IE5SX0lQSSkKLQkJdHJhY2VfaXBpX2V4
-aXRfcmN1aWRsZShpcGlfdHlwZXNbaXBpbnJdKTsKKwkJdHJhY2VfaXBpX2V4aXQoaXBpX3R5cGVz
-W2lwaW5yXSk7CiAJc2V0X2lycV9yZWdzKG9sZF9yZWdzKTsKIH0KIApkaWZmIC0tZ2l0IGEvYXJj
-aC9hcm0vbWFjaC1vbWFwMi9wb3dlcmRvbWFpbi5jIGIvYXJjaC9hcm0vbWFjaC1vbWFwMi9wb3dl
-cmRvbWFpbi5jCmluZGV4IDFjYmFjNzYxMzZkNC4uNDA5M2VmYWZiMTY4IDEwMDY0NAotLS0gYS9h
-cmNoL2FybS9tYWNoLW9tYXAyL3Bvd2VyZG9tYWluLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1vbWFw
-Mi9wb3dlcmRvbWFpbi5jCkBAIC0xODcsOSArMTg3LDkgQEAgc3RhdGljIGludCBfcHdyZG1fc3Rh
-dGVfc3dpdGNoKHN0cnVjdCBwb3dlcmRvbWFpbiAqcHdyZG0sIGludCBmbGFnKQogCQkJdHJhY2Vf
-c3RhdGUgPSAoUFdSRE1fVFJBQ0VfU1RBVEVTX0ZMQUcgfAogCQkJCSAgICAgICAoKG5leHQgJiBP
-TUFQX1BPV0VSU1RBVEVfTUFTSykgPDwgOCkgfAogCQkJCSAgICAgICAoKHByZXYgJiBPTUFQX1BP
-V0VSU1RBVEVfTUFTSykgPDwgMCkpOwotCQkJdHJhY2VfcG93ZXJfZG9tYWluX3RhcmdldF9yY3Vp
-ZGxlKHB3cmRtLT5uYW1lLAotCQkJCQkJCSAgdHJhY2Vfc3RhdGUsCi0JCQkJCQkJICByYXdfc21w
-X3Byb2Nlc3Nvcl9pZCgpKTsKKwkJCXRyYWNlX3Bvd2VyX2RvbWFpbl90YXJnZXQocHdyZG0tPm5h
-bWUsCisJCQkJCQkgIHRyYWNlX3N0YXRlLAorCQkJCQkJICByYXdfc21wX3Byb2Nlc3Nvcl9pZCgp
-KTsKIAkJfQogCQlicmVhazsKIAlkZWZhdWx0OgpAQCAtNTQxLDggKzU0MSw4IEBAIGludCBwd3Jk
-bV9zZXRfbmV4dF9wd3JzdChzdHJ1Y3QgcG93ZXJkb21haW4gKnB3cmRtLCB1OCBwd3JzdCkKIAog
-CWlmIChhcmNoX3B3cmRtICYmIGFyY2hfcHdyZG0tPnB3cmRtX3NldF9uZXh0X3B3cnN0KSB7CiAJ
-CS8qIFRyYWNlIHRoZSBwd3JkbSBkZXNpcmVkIHRhcmdldCBzdGF0ZSAqLwotCQl0cmFjZV9wb3dl
-cl9kb21haW5fdGFyZ2V0X3JjdWlkbGUocHdyZG0tPm5hbWUsIHB3cnN0LAotCQkJCQkJICByYXdf
-c21wX3Byb2Nlc3Nvcl9pZCgpKTsKKwkJdHJhY2VfcG93ZXJfZG9tYWluX3RhcmdldChwd3JkbS0+
-bmFtZSwgcHdyc3QsCisJCQkJCSAgcmF3X3NtcF9wcm9jZXNzb3JfaWQoKSk7CiAJCS8qIFByb2dy
-YW0gdGhlIHB3cmRtIGRlc2lyZWQgdGFyZ2V0IHN0YXRlICovCiAJCXJldCA9IGFyY2hfcHdyZG0t
-PnB3cmRtX3NldF9uZXh0X3B3cnN0KHB3cmRtLCBwd3JzdCk7CiAJfQpkaWZmIC0tZ2l0IGEvYXJj
-aC9hcm02NC9rZXJuZWwvc21wLmMgYi9hcmNoL2FybTY0L2tlcm5lbC9zbXAuYwppbmRleCAzNTVl
-ZTllZWQ0ZGQuLmRkMDQxNWZkOWZhOCAxMDA2NDQKLS0tIGEvYXJjaC9hcm02NC9rZXJuZWwvc21w
-LmMKKysrIGIvYXJjaC9hcm02NC9rZXJuZWwvc21wLmMKQEAgLTg5Niw3ICs4OTYsNyBAQCB2b2lk
-IGhhbmRsZV9JUEkoaW50IGlwaW5yLCBzdHJ1Y3QgcHRfcmVncyAqcmVncykKIAlzdHJ1Y3QgcHRf
-cmVncyAqb2xkX3JlZ3MgPSBzZXRfaXJxX3JlZ3MocmVncyk7CiAKIAlpZiAoKHVuc2lnbmVkKWlw
-aW5yIDwgTlJfSVBJKSB7Ci0JCXRyYWNlX2lwaV9lbnRyeV9yY3VpZGxlKGlwaV90eXBlc1tpcGlu
-cl0pOworCQl0cmFjZV9pcGlfZW50cnkoaXBpX3R5cGVzW2lwaW5yXSk7CiAJCV9faW5jX2lycV9z
-dGF0KGNwdSwgaXBpX2lycXNbaXBpbnJdKTsKIAl9CiAKQEAgLTk1Niw3ICs5NTYsNyBAQCB2b2lk
-IGhhbmRsZV9JUEkoaW50IGlwaW5yLCBzdHJ1Y3QgcHRfcmVncyAqcmVncykKIAl9CiAKIAlpZiAo
-KHVuc2lnbmVkKWlwaW5yIDwgTlJfSVBJKQotCQl0cmFjZV9pcGlfZXhpdF9yY3VpZGxlKGlwaV90
-eXBlc1tpcGlucl0pOworCQl0cmFjZV9pcGlfZXhpdChpcGlfdHlwZXNbaXBpbnJdKTsKIAlzZXRf
-aXJxX3JlZ3Mob2xkX3JlZ3MpOwogfQogCmRpZmYgLS1naXQgYS9kcml2ZXJzL2Jhc2UvcG93ZXIv
-cnVudGltZS5jIGIvZHJpdmVycy9iYXNlL3Bvd2VyL3J1bnRpbWUuYwppbmRleCA4MTQzMjEwYTVj
-NTQuLjQxOGIzZTM3MzIzMSAxMDA2NDQKLS0tIGEvZHJpdmVycy9iYXNlL3Bvd2VyL3J1bnRpbWUu
-YworKysgYi9kcml2ZXJzL2Jhc2UvcG93ZXIvcnVudGltZS5jCkBAIC00MDEsNyArNDAxLDcgQEAg
-c3RhdGljIGludCBycG1faWRsZShzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBycG1mbGFncykKIAlp
-bnQgKCpjYWxsYmFjaykoc3RydWN0IGRldmljZSAqKTsKIAlpbnQgcmV0dmFsOwogCi0JdHJhY2Vf
-cnBtX2lkbGVfcmN1aWRsZShkZXYsIHJwbWZsYWdzKTsKKwl0cmFjZV9ycG1faWRsZShkZXYsIHJw
-bWZsYWdzKTsKIAlyZXR2YWwgPSBycG1fY2hlY2tfc3VzcGVuZF9hbGxvd2VkKGRldik7CiAJaWYg
-KHJldHZhbCA8IDApCiAJCTsJLyogQ29uZGl0aW9ucyBhcmUgd3JvbmcuICovCkBAIC00MzcsNyAr
-NDM3LDcgQEAgc3RhdGljIGludCBycG1faWRsZShzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBycG1m
-bGFncykKIAkJCWRldi0+cG93ZXIucmVxdWVzdF9wZW5kaW5nID0gdHJ1ZTsKIAkJCXF1ZXVlX3dv
-cmsocG1fd3EsICZkZXYtPnBvd2VyLndvcmspOwogCQl9Ci0JCXRyYWNlX3JwbV9yZXR1cm5faW50
-X3JjdWlkbGUoZGV2LCBfVEhJU19JUF8sIDApOworCQl0cmFjZV9ycG1fcmV0dXJuX2ludChkZXYs
-IF9USElTX0lQXywgMCk7CiAJCXJldHVybiAwOwogCX0KIApAQCAtNDUyLDcgKzQ1Miw3IEBAIHN0
-YXRpYyBpbnQgcnBtX2lkbGUoc3RydWN0IGRldmljZSAqZGV2LCBpbnQgcnBtZmxhZ3MpCiAJd2Fr
-ZV91cF9hbGwoJmRldi0+cG93ZXIud2FpdF9xdWV1ZSk7CiAKICBvdXQ6Ci0JdHJhY2VfcnBtX3Jl
-dHVybl9pbnRfcmN1aWRsZShkZXYsIF9USElTX0lQXywgcmV0dmFsKTsKKwl0cmFjZV9ycG1fcmV0
-dXJuX2ludChkZXYsIF9USElTX0lQXywgcmV0dmFsKTsKIAlyZXR1cm4gcmV0dmFsID8gcmV0dmFs
-IDogcnBtX3N1c3BlbmQoZGV2LCBycG1mbGFncyB8IFJQTV9BVVRPKTsKIH0KIApAQCAtNTE5LDcg
-KzUxOSw3IEBAIHN0YXRpYyBpbnQgcnBtX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQg
-cnBtZmxhZ3MpCiAJc3RydWN0IGRldmljZSAqcGFyZW50ID0gTlVMTDsKIAlpbnQgcmV0dmFsOwog
-Ci0JdHJhY2VfcnBtX3N1c3BlbmRfcmN1aWRsZShkZXYsIHJwbWZsYWdzKTsKKwl0cmFjZV9ycG1f
-c3VzcGVuZChkZXYsIHJwbWZsYWdzKTsKIAogIHJlcGVhdDoKIAlyZXR2YWwgPSBycG1fY2hlY2tf
-c3VzcGVuZF9hbGxvd2VkKGRldik7CkBAIC02NTcsNyArNjU3LDcgQEAgc3RhdGljIGludCBycG1f
-c3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBycG1mbGFncykKIAl9CiAKICBvdXQ6Ci0J
-dHJhY2VfcnBtX3JldHVybl9pbnRfcmN1aWRsZShkZXYsIF9USElTX0lQXywgcmV0dmFsKTsKKwl0
-cmFjZV9ycG1fcmV0dXJuX2ludChkZXYsIF9USElTX0lQXywgcmV0dmFsKTsKIAogCXJldHVybiBy
-ZXR2YWw7CiAKQEAgLTcwOSw3ICs3MDksNyBAQCBzdGF0aWMgaW50IHJwbV9yZXN1bWUoc3RydWN0
-IGRldmljZSAqZGV2LCBpbnQgcnBtZmxhZ3MpCiAJc3RydWN0IGRldmljZSAqcGFyZW50ID0gTlVM
-TDsKIAlpbnQgcmV0dmFsID0gMDsKIAotCXRyYWNlX3JwbV9yZXN1bWVfcmN1aWRsZShkZXYsIHJw
-bWZsYWdzKTsKKwl0cmFjZV9ycG1fcmVzdW1lKGRldiwgcnBtZmxhZ3MpOwogCiAgcmVwZWF0Ogog
-CWlmIChkZXYtPnBvd2VyLnJ1bnRpbWVfZXJyb3IpCkBAIC04NzIsNyArODcyLDcgQEAgc3RhdGlj
-IGludCBycG1fcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldiwgaW50IHJwbWZsYWdzKQogCQlzcGlu
-X2xvY2tfaXJxKCZkZXYtPnBvd2VyLmxvY2spOwogCX0KIAotCXRyYWNlX3JwbV9yZXR1cm5faW50
-X3JjdWlkbGUoZGV2LCBfVEhJU19JUF8sIHJldHZhbCk7CisJdHJhY2VfcnBtX3JldHVybl9pbnQo
-ZGV2LCBfVEhJU19JUF8sIHJldHZhbCk7CiAKIAlyZXR1cm4gcmV0dmFsOwogfQpAQCAtMTAwNSw3
-ICsxMDA1LDcgQEAgaW50IF9fcG1fcnVudGltZV9pZGxlKHN0cnVjdCBkZXZpY2UgKmRldiwgaW50
-IHJwbWZsYWdzKQogCiAJaWYgKHJwbWZsYWdzICYgUlBNX0dFVF9QVVQpIHsKIAkJaWYgKCFhdG9t
-aWNfZGVjX2FuZF90ZXN0KCZkZXYtPnBvd2VyLnVzYWdlX2NvdW50KSkgewotCQkJdHJhY2VfcnBt
-X3VzYWdlX3JjdWlkbGUoZGV2LCBycG1mbGFncyk7CisJCQl0cmFjZV9ycG1fdXNhZ2UoZGV2LCBy
-cG1mbGFncyk7CiAJCQlyZXR1cm4gMDsKIAkJfQogCX0KQEAgLTEwMzksNyArMTAzOSw3IEBAIGlu
-dCBfX3BtX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBycG1mbGFncykK
-IAogCWlmIChycG1mbGFncyAmIFJQTV9HRVRfUFVUKSB7CiAJCWlmICghYXRvbWljX2RlY19hbmRf
-dGVzdCgmZGV2LT5wb3dlci51c2FnZV9jb3VudCkpIHsKLQkJCXRyYWNlX3JwbV91c2FnZV9yY3Vp
-ZGxlKGRldiwgcnBtZmxhZ3MpOworCQkJdHJhY2VfcnBtX3VzYWdlKGRldiwgcnBtZmxhZ3MpOwog
-CQkJcmV0dXJuIDA7CiAJCX0KIAl9CkBAIC0xMTIyLDcgKzExMjIsNyBAQCBpbnQgcG1fcnVudGlt
-ZV9nZXRfaWZfYWN0aXZlKHN0cnVjdCBkZXZpY2UgKmRldiwgYm9vbCBpZ25fdXNhZ2VfY291bnQp
-CiAJfSBlbHNlIHsKIAkJcmV0dmFsID0gYXRvbWljX2luY19ub3RfemVybygmZGV2LT5wb3dlci51
-c2FnZV9jb3VudCk7CiAJfQotCXRyYWNlX3JwbV91c2FnZV9yY3VpZGxlKGRldiwgMCk7CisJdHJh
-Y2VfcnBtX3VzYWdlKGRldiwgMCk7CiAJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2LT5wb3dl
-ci5sb2NrLCBmbGFncyk7CiAKIAlyZXR1cm4gcmV0dmFsOwpAQCAtMTQ1OCw3ICsxNDU4LDcgQEAg
-dm9pZCBwbV9ydW50aW1lX2FsbG93KHN0cnVjdCBkZXZpY2UgKmRldikKIAlpZiAoYXRvbWljX2Rl
-Y19hbmRfdGVzdCgmZGV2LT5wb3dlci51c2FnZV9jb3VudCkpCiAJCXJwbV9pZGxlKGRldiwgUlBN
-X0FVVE8gfCBSUE1fQVNZTkMpOwogCWVsc2UKLQkJdHJhY2VfcnBtX3VzYWdlX3JjdWlkbGUoZGV2
-LCBSUE1fQVVUTyB8IFJQTV9BU1lOQyk7CisJCXRyYWNlX3JwbV91c2FnZShkZXYsIFJQTV9BVVRP
-IHwgUlBNX0FTWU5DKTsKIAogIG91dDoKIAlzcGluX3VubG9ja19pcnEoJmRldi0+cG93ZXIubG9j
-ayk7CkBAIC0xNTI3LDcgKzE1MjcsNyBAQCBzdGF0aWMgdm9pZCB1cGRhdGVfYXV0b3N1c3BlbmQo
-c3RydWN0IGRldmljZSAqZGV2LCBpbnQgb2xkX2RlbGF5LCBpbnQgb2xkX3VzZSkKIAkJCWF0b21p
-Y19pbmMoJmRldi0+cG93ZXIudXNhZ2VfY291bnQpOwogCQkJcnBtX3Jlc3VtZShkZXYsIDApOwog
-CQl9IGVsc2UgewotCQkJdHJhY2VfcnBtX3VzYWdlX3JjdWlkbGUoZGV2LCAwKTsKKwkJCXRyYWNl
-X3JwbV91c2FnZShkZXYsIDApOwogCQl9CiAJfQogCmRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9j
-bGsuYyBiL2RyaXZlcnMvY2xrL2Nsay5jCmluZGV4IDBhOTI2MWEwOTliZC4uMWMwOTk2MzIzMTcx
-IDEwMDY0NAotLS0gYS9kcml2ZXJzL2Nsay9jbGsuYworKysgYi9kcml2ZXJzL2Nsay9jbGsuYwpA
-QCAtOTU5LDEyICs5NTksMTIgQEAgc3RhdGljIHZvaWQgY2xrX2NvcmVfZGlzYWJsZShzdHJ1Y3Qg
-Y2xrX2NvcmUgKmNvcmUpCiAJaWYgKC0tY29yZS0+ZW5hYmxlX2NvdW50ID4gMCkKIAkJcmV0dXJu
-OwogCi0JdHJhY2VfY2xrX2Rpc2FibGVfcmN1aWRsZShjb3JlKTsKKwl0cmFjZV9jbGtfZGlzYWJs
-ZShjb3JlKTsKIAogCWlmIChjb3JlLT5vcHMtPmRpc2FibGUpCiAJCWNvcmUtPm9wcy0+ZGlzYWJs
-ZShjb3JlLT5odyk7CiAKLQl0cmFjZV9jbGtfZGlzYWJsZV9jb21wbGV0ZV9yY3VpZGxlKGNvcmUp
-OworCXRyYWNlX2Nsa19kaXNhYmxlX2NvbXBsZXRlKGNvcmUpOwogCiAJY2xrX2NvcmVfZGlzYWJs
-ZShjb3JlLT5wYXJlbnQpOwogfQpAQCAtMTAxOCwxMiArMTAxOCwxMiBAQCBzdGF0aWMgaW50IGNs
-a19jb3JlX2VuYWJsZShzdHJ1Y3QgY2xrX2NvcmUgKmNvcmUpCiAJCWlmIChyZXQpCiAJCQlyZXR1
-cm4gcmV0OwogCi0JCXRyYWNlX2Nsa19lbmFibGVfcmN1aWRsZShjb3JlKTsKKwkJdHJhY2VfY2xr
-X2VuYWJsZShjb3JlKTsKIAogCQlpZiAoY29yZS0+b3BzLT5lbmFibGUpCiAJCQlyZXQgPSBjb3Jl
-LT5vcHMtPmVuYWJsZShjb3JlLT5odyk7CiAKLQkJdHJhY2VfY2xrX2VuYWJsZV9jb21wbGV0ZV9y
-Y3VpZGxlKGNvcmUpOworCQl0cmFjZV9jbGtfZW5hYmxlX2NvbXBsZXRlKGNvcmUpOwogCiAJCWlm
-IChyZXQpIHsKIAkJCWNsa19jb3JlX2Rpc2FibGUoY29yZS0+cGFyZW50KTsKZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvc29jL3Fjb20vcnBtaC1yc2MuYyBiL2RyaXZlcnMvc29jL3Fjb20vcnBtaC1yc2Mu
-YwppbmRleCBhZTY2NzU3ODI1ODEuLmZhYmUzOTBkY2UxOSAxMDA2NDQKLS0tIGEvZHJpdmVycy9z
-b2MvcWNvbS9ycG1oLXJzYy5jCisrKyBiL2RyaXZlcnMvc29jL3Fjb20vcnBtaC1yc2MuYwpAQCAt
-NDk1LDcgKzQ5NSw3IEBAIHN0YXRpYyB2b2lkIF9fdGNzX2J1ZmZlcl93cml0ZShzdHJ1Y3QgcnNj
-X2RydiAqZHJ2LCBpbnQgdGNzX2lkLCBpbnQgY21kX2lkLAogCQl3cml0ZV90Y3NfY21kKGRydiwg
-UlNDX0RSVl9DTURfTVNHSUQsIHRjc19pZCwgaiwgbXNnaWQpOwogCQl3cml0ZV90Y3NfY21kKGRy
-diwgUlNDX0RSVl9DTURfQUREUiwgdGNzX2lkLCBqLCBjbWQtPmFkZHIpOwogCQl3cml0ZV90Y3Nf
-Y21kKGRydiwgUlNDX0RSVl9DTURfREFUQSwgdGNzX2lkLCBqLCBjbWQtPmRhdGEpOwotCQl0cmFj
-ZV9ycG1oX3NlbmRfbXNnX3JjdWlkbGUoZHJ2LCB0Y3NfaWQsIGosIG1zZ2lkLCBjbWQpOworCQl0
-cmFjZV9ycG1oX3NlbmRfbXNnKGRydiwgdGNzX2lkLCBqLCBtc2dpZCwgY21kKTsKIAl9CiAKIAl3
-cml0ZV90Y3NfcmVnKGRydiwgUlNDX0RSVl9DTURfV0FJVF9GT1JfQ01QTCwgdGNzX2lkLCBjbWRf
-Y29tcGxldGUpOwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC90cmFjZXBvaW50LmggYi9pbmNs
-dWRlL2xpbnV4L3RyYWNlcG9pbnQuaAppbmRleCAxNDE0YjExZjg2NGIuLmVlNTEzZTY5Njc5OSAx
-MDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC90cmFjZXBvaW50LmgKKysrIGIvaW5jbHVkZS9saW51
-eC90cmFjZXBvaW50LmgKQEAgLTE2MCw3ICsxNjAsNyBAQCBzdGF0aWMgaW5saW5lIHN0cnVjdCB0
-cmFjZXBvaW50ICp0cmFjZXBvaW50X3B0cl9kZXJlZih0cmFjZXBvaW50X3B0cl90ICpwKQogICog
-aGFzIGEgInZvaWQiIHByb3RvdHlwZSwgdGhlbiBpdCBpcyBpbnZhbGlkIHRvIGRlY2xhcmUgYSBm
-dW5jdGlvbgogICogYXMgIih2b2lkICosIHZvaWQpIi4KICAqLwotI2RlZmluZSBfX0RPX1RSQUNF
-KHRwLCBwcm90bywgYXJncywgY29uZCwgcmN1aWRsZSwgdHBfZmxhZ3MpCQlcCisjZGVmaW5lIF9f
-RE9fVFJBQ0UodHAsIHByb3RvLCBhcmdzLCBjb25kLCB0cF9mbGFncykJCQlcCiAJZG8gewkJCQkJ
-CQkJXAogCQlzdHJ1Y3QgdHJhY2Vwb2ludF9mdW5jICppdF9mdW5jX3B0cjsJCQlcCiAJCXZvaWQg
-Kml0X2Z1bmM7CQkJCQkJXApAQCAtMTcyLDggKzE3Miw2IEBAIHN0YXRpYyBpbmxpbmUgc3RydWN0
-IHRyYWNlcG9pbnQgKnRyYWNlcG9pbnRfcHRyX2RlcmVmKHRyYWNlcG9pbnRfcHRyX3QgKnApCiAJ
-CQlyZXR1cm47CQkJCQkJXAogCQkJCQkJCQkJXAogCQltaWdodF9zbGVlcF9pZihtYXlzbGVlcCk7
-CQkJCVwKLQkJaWYgKHJjdWlkbGUpCQkJCQkJXAotCQkJcmN1X2lycV9lbnRlcl9pcnFzb24oKTsJ
-CQkJXAogCQlpZiAobWF5c2xlZXApCQkJCQkJXAogCQkJcmN1X3JlYWRfbG9ja190cmFjZSgpOwkJ
-CQlcCiAJCWVsc2UJCQkJCQkJXApAQCAtMTkzLDI0ICsxOTEsOCBAQCBzdGF0aWMgaW5saW5lIHN0
-cnVjdCB0cmFjZXBvaW50ICp0cmFjZXBvaW50X3B0cl9kZXJlZih0cmFjZXBvaW50X3B0cl90ICpw
-KQogCQkJcmN1X3JlYWRfdW5sb2NrX3RyYWNlKCk7CQkJXAogCQllbHNlCQkJCQkJCVwKIAkJCXBy
-ZWVtcHRfZW5hYmxlX25vdHJhY2UoKTsJCQlcCi0JCWlmIChyY3VpZGxlKQkJCQkJCVwKLQkJCXJj
-dV9pcnFfZXhpdF9pcnFzb24oKTsJCQkJXAogCX0gd2hpbGUgKDApCiAKLSNpZm5kZWYgTU9EVUxF
-Ci0jZGVmaW5lIF9fREVDTEFSRV9UUkFDRV9SQ1UobmFtZSwgcHJvdG8sIGFyZ3MsIGNvbmQsIGRh
-dGFfcHJvdG8sIGRhdGFfYXJncywgdHBfZmxhZ3MpIFwKLQlzdGF0aWMgaW5saW5lIHZvaWQgdHJh
-Y2VfIyNuYW1lIyNfcmN1aWRsZShwcm90bykJCVwKLQl7CQkJCQkJCQlcCi0JCWlmIChzdGF0aWNf
-a2V5X2ZhbHNlKCZfX3RyYWNlcG9pbnRfIyNuYW1lLmtleSkpCQlcCi0JCQlfX0RPX1RSQUNFKCZf
-X3RyYWNlcG9pbnRfIyNuYW1lLAkJXAotCQkJCVRQX1BST1RPKGRhdGFfcHJvdG8pLAkJCVwKLQkJ
-CQlUUF9BUkdTKGRhdGFfYXJncyksCQkJXAotCQkJCVRQX0NPTkRJVElPTihjb25kKSwgMSwgdHBf
-ZmxhZ3MpOwlcCi0JfQotI2Vsc2UKLSNkZWZpbmUgX19ERUNMQVJFX1RSQUNFX1JDVShuYW1lLCBw
-cm90bywgYXJncywgY29uZCwgZGF0YV9wcm90bywgZGF0YV9hcmdzLCB0cF9mbGFncykKLSNlbmRp
-ZgotCiAvKgogICogTWFrZSBzdXJlIHRoZSBhbGlnbm1lbnQgb2YgdGhlIHN0cnVjdHVyZSBpbiB0
-aGUgX190cmFjZXBvaW50cyBzZWN0aW9uIHdpbGwKICAqIG5vdCBhZGQgdW53YW50ZWQgcGFkZGlu
-ZyBiZXR3ZWVuIHRoZSBiZWdpbm5pbmcgb2YgdGhlIHNlY3Rpb24gYW5kIHRoZQpAQCAtMjMxLDE1
-ICsyMTMsMTMgQEAgc3RhdGljIGlubGluZSBzdHJ1Y3QgdHJhY2Vwb2ludCAqdHJhY2Vwb2ludF9w
-dHJfZGVyZWYodHJhY2Vwb2ludF9wdHJfdCAqcCkKIAkJCV9fRE9fVFJBQ0UoJl9fdHJhY2Vwb2lu
-dF8jI25hbWUsCQlcCiAJCQkJVFBfUFJPVE8oZGF0YV9wcm90byksCQkJXAogCQkJCVRQX0FSR1Mo
-ZGF0YV9hcmdzKSwJCQlcCi0JCQkJVFBfQ09ORElUSU9OKGNvbmQpLCAwLCB0cF9mbGFncyk7CVwK
-KwkJCQlUUF9DT05ESVRJT04oY29uZCksIHRwX2ZsYWdzKTsJCVwKIAkJaWYgKElTX0VOQUJMRUQo
-Q09ORklHX0xPQ0tERVApICYmIChjb25kKSkgewkJXAogCQkJcmN1X3JlYWRfbG9ja19zY2hlZF9u
-b3RyYWNlKCk7CQkJXAogCQkJcmN1X2RlcmVmZXJlbmNlX3NjaGVkKF9fdHJhY2Vwb2ludF8jI25h
-bWUuZnVuY3MpO1wKIAkJCXJjdV9yZWFkX3VubG9ja19zY2hlZF9ub3RyYWNlKCk7CQlcCiAJCX0J
-CQkJCQkJXAogCX0JCQkJCQkJCVwKLQlfX0RFQ0xBUkVfVFJBQ0VfUkNVKG5hbWUsIFBBUkFNUyhw
-cm90byksIFBBUkFNUyhhcmdzKSwJCVwKLQkJUEFSQU1TKGNvbmQpLCBQQVJBTVMoZGF0YV9wcm90
-byksIFBBUkFNUyhkYXRhX2FyZ3MpLCB0cF9mbGFncykJXAogCXN0YXRpYyBpbmxpbmUgaW50CQkJ
-CQkJXAogCXJlZ2lzdGVyX3RyYWNlXyMjbmFtZSh2b2lkICgqcHJvYmUpKGRhdGFfcHJvdG8pLCB2
-b2lkICpkYXRhKQlcCiAJewkJCQkJCQkJXApAQCAtMzEwLDggKzI5MCw2IEBAIHN0YXRpYyBpbmxp
-bmUgc3RydWN0IHRyYWNlcG9pbnQgKnRyYWNlcG9pbnRfcHRyX2RlcmVmKHRyYWNlcG9pbnRfcHRy
-X3QgKnApCiAjZGVmaW5lIF9fREVDTEFSRV9UUkFDRShuYW1lLCBwcm90bywgYXJncywgY29uZCwg
-ZGF0YV9wcm90bywgZGF0YV9hcmdzLCB0cF9mbGFncykgXAogCXN0YXRpYyBpbmxpbmUgdm9pZCB0
-cmFjZV8jI25hbWUocHJvdG8pCQkJCVwKIAl7IH0JCQkJCQkJCVwKLQlzdGF0aWMgaW5saW5lIHZv
-aWQgdHJhY2VfIyNuYW1lIyNfcmN1aWRsZShwcm90bykJCVwKLQl7IH0JCQkJCQkJCVwKIAlzdGF0
-aWMgaW5saW5lIGludAkJCQkJCVwKIAlyZWdpc3Rlcl90cmFjZV8jI25hbWUodm9pZCAoKnByb2Jl
-KShkYXRhX3Byb3RvKSwJCVwKIAkJCSAgICAgIHZvaWQgKmRhdGEpCQkJCVwKZGlmZiAtLWdpdCBh
-L2luY2x1ZGUvdHJhY2UvZXZlbnRzL3ByZWVtcHRpcnEuaCBiL2luY2x1ZGUvdHJhY2UvZXZlbnRz
-L3ByZWVtcHRpcnEuaAppbmRleCAzZjI0OWUxNTBjMGMuLmY5OTU2MmQyYjQ5NiAxMDA2NDQKLS0t
-IGEvaW5jbHVkZS90cmFjZS9ldmVudHMvcHJlZW1wdGlycS5oCisrKyBiL2luY2x1ZGUvdHJhY2Uv
-ZXZlbnRzL3ByZWVtcHRpcnEuaApAQCAtNDMsOCArNDMsNiBAQCBERUZJTkVfRVZFTlQocHJlZW1w
-dGlycV90ZW1wbGF0ZSwgaXJxX2VuYWJsZSwKICNlbHNlCiAjZGVmaW5lIHRyYWNlX2lycV9lbmFi
-bGUoLi4uKQogI2RlZmluZSB0cmFjZV9pcnFfZGlzYWJsZSguLi4pCi0jZGVmaW5lIHRyYWNlX2ly
-cV9lbmFibGVfcmN1aWRsZSguLi4pCi0jZGVmaW5lIHRyYWNlX2lycV9kaXNhYmxlX3JjdWlkbGUo
-Li4uKQogI2VuZGlmCiAKICNpZmRlZiBDT05GSUdfVFJBQ0VfUFJFRU1QVF9UT0dHTEUKQEAgLTU4
-LDggKzU2LDYgQEAgREVGSU5FX0VWRU5UKHByZWVtcHRpcnFfdGVtcGxhdGUsIHByZWVtcHRfZW5h
-YmxlLAogI2Vsc2UKICNkZWZpbmUgdHJhY2VfcHJlZW1wdF9lbmFibGUoLi4uKQogI2RlZmluZSB0
-cmFjZV9wcmVlbXB0X2Rpc2FibGUoLi4uKQotI2RlZmluZSB0cmFjZV9wcmVlbXB0X2VuYWJsZV9y
-Y3VpZGxlKC4uLikKLSNkZWZpbmUgdHJhY2VfcHJlZW1wdF9kaXNhYmxlX3JjdWlkbGUoLi4uKQog
-I2VuZGlmCiAKICNlbmRpZiAvKiBfVFJBQ0VfUFJFRU1QVElSUV9IICovCkBAIC02OSwxMCArNjUs
-NiBAQCBERUZJTkVfRVZFTlQocHJlZW1wdGlycV90ZW1wbGF0ZSwgcHJlZW1wdF9lbmFibGUsCiAj
-ZWxzZSAvKiAhQ09ORklHX1BSRUVNUFRJUlFfVFJBQ0VQT0lOVFMgKi8KICNkZWZpbmUgdHJhY2Vf
-aXJxX2VuYWJsZSguLi4pCiAjZGVmaW5lIHRyYWNlX2lycV9kaXNhYmxlKC4uLikKLSNkZWZpbmUg
-dHJhY2VfaXJxX2VuYWJsZV9yY3VpZGxlKC4uLikKLSNkZWZpbmUgdHJhY2VfaXJxX2Rpc2FibGVf
-cmN1aWRsZSguLi4pCiAjZGVmaW5lIHRyYWNlX3ByZWVtcHRfZW5hYmxlKC4uLikKICNkZWZpbmUg
-dHJhY2VfcHJlZW1wdF9kaXNhYmxlKC4uLikKLSNkZWZpbmUgdHJhY2VfcHJlZW1wdF9lbmFibGVf
-cmN1aWRsZSguLi4pCi0jZGVmaW5lIHRyYWNlX3ByZWVtcHRfZGlzYWJsZV9yY3VpZGxlKC4uLikK
-ICNlbmRpZgpkaWZmIC0tZ2l0IGEva2VybmVsL3ByaW50ay9wcmludGsuYyBiL2tlcm5lbC9wcmlu
-dGsvcHJpbnRrLmMKaW5kZXggOWI3NWY2YmZjMzMzLi5lYzY0MWE3N2FkNTIgMTAwNjQ0Ci0tLSBh
-L2tlcm5lbC9wcmludGsvcHJpbnRrLmMKKysrIGIva2VybmVsL3ByaW50ay9wcmludGsuYwpAQCAt
-MTgwNiw3ICsxODA2LDcgQEAgc3RhdGljIHZvaWQgY2FsbF9jb25zb2xlX2RyaXZlcnMoY29uc3Qg
-Y2hhciAqZXh0X3RleHQsIHNpemVfdCBleHRfbGVuLAogewogCXN0cnVjdCBjb25zb2xlICpjb247
-CiAKLQl0cmFjZV9jb25zb2xlX3JjdWlkbGUodGV4dCwgbGVuKTsKKwl0cmFjZV9jb25zb2xlKHRl
-eHQsIGxlbik7CiAKIAlmb3JfZWFjaF9jb25zb2xlKGNvbikgewogCQlpZiAoZXhjbHVzaXZlX2Nv
-bnNvbGUgJiYgY29uICE9IGV4Y2x1c2l2ZV9jb25zb2xlKQpkaWZmIC0tZ2l0IGEva2VybmVsL3Ry
-YWNlL3RyYWNlX3ByZWVtcHRpcnEuYyBiL2tlcm5lbC90cmFjZS90cmFjZV9wcmVlbXB0aXJxLmMK
-aW5kZXggZjQ5MzgwNDBjMjI4Li5iODliZDEzM2M4ZmMgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90cmFj
-ZS90cmFjZV9wcmVlbXB0aXJxLmMKKysrIGIva2VybmVsL3RyYWNlL3RyYWNlX3ByZWVtcHRpcnEu
-YwpAQCAtNDAsOCArNDAsNyBAQCBOT0tQUk9CRV9TWU1CT0wodHJhY2VfaGFyZGlycXNfb25fcHJl
-cGFyZSk7CiB2b2lkIHRyYWNlX2hhcmRpcnFzX29uKHZvaWQpCiB7CiAJaWYgKHRoaXNfY3B1X3Jl
-YWQodHJhY2luZ19pcnFfY3B1KSkgewotCQlpZiAoIWluX25taSgpKQotCQkJdHJhY2VfaXJxX2Vu
-YWJsZV9yY3VpZGxlKENBTExFUl9BRERSMCwgQ0FMTEVSX0FERFIxKTsKKwkJdHJhY2VfaXJxX2Vu
-YWJsZShDQUxMRVJfQUREUjAsIENBTExFUl9BRERSMSk7CiAJCXRyYWNlcl9oYXJkaXJxc19vbihD
-QUxMRVJfQUREUjAsIENBTExFUl9BRERSMSk7CiAJCXRoaXNfY3B1X3dyaXRlKHRyYWNpbmdfaXJx
-X2NwdSwgMCk7CiAJfQpAQCAtNzgsOCArNzcsNyBAQCB2b2lkIHRyYWNlX2hhcmRpcnFzX29mZih2
-b2lkKQogCWlmICghdGhpc19jcHVfcmVhZCh0cmFjaW5nX2lycV9jcHUpKSB7CiAJCXRoaXNfY3B1
-X3dyaXRlKHRyYWNpbmdfaXJxX2NwdSwgMSk7CiAJCXRyYWNlcl9oYXJkaXJxc19vZmYoQ0FMTEVS
-X0FERFIwLCBDQUxMRVJfQUREUjEpOwotCQlpZiAoIWluX25taSgpKQotCQkJdHJhY2VfaXJxX2Rp
-c2FibGVfcmN1aWRsZShDQUxMRVJfQUREUjAsIENBTExFUl9BRERSMSk7CisJCXRyYWNlX2lycV9k
-aXNhYmxlKENBTExFUl9BRERSMCwgQ0FMTEVSX0FERFIxKTsKIAl9CiB9CiBFWFBPUlRfU1lNQk9M
-KHRyYWNlX2hhcmRpcnFzX29mZik7CkBAIC04OCw4ICs4Niw3IEBAIE5PS1BST0JFX1NZTUJPTCh0
-cmFjZV9oYXJkaXJxc19vZmYpOwogX192aXNpYmxlIHZvaWQgdHJhY2VfaGFyZGlycXNfb25fY2Fs
-bGVyKHVuc2lnbmVkIGxvbmcgY2FsbGVyX2FkZHIpCiB7CiAJaWYgKHRoaXNfY3B1X3JlYWQodHJh
-Y2luZ19pcnFfY3B1KSkgewotCQlpZiAoIWluX25taSgpKQotCQkJdHJhY2VfaXJxX2VuYWJsZV9y
-Y3VpZGxlKENBTExFUl9BRERSMCwgY2FsbGVyX2FkZHIpOworCQl0cmFjZV9pcnFfZW5hYmxlKENB
-TExFUl9BRERSMCwgY2FsbGVyX2FkZHIpOwogCQl0cmFjZXJfaGFyZGlycXNfb24oQ0FMTEVSX0FE
-RFIwLCBjYWxsZXJfYWRkcik7CiAJCXRoaXNfY3B1X3dyaXRlKHRyYWNpbmdfaXJxX2NwdSwgMCk7
-CiAJfQpAQCAtMTA3LDggKzEwNCw3IEBAIF9fdmlzaWJsZSB2b2lkIHRyYWNlX2hhcmRpcnFzX29m
-Zl9jYWxsZXIodW5zaWduZWQgbG9uZyBjYWxsZXJfYWRkcikKIAlpZiAoIXRoaXNfY3B1X3JlYWQo
-dHJhY2luZ19pcnFfY3B1KSkgewogCQl0aGlzX2NwdV93cml0ZSh0cmFjaW5nX2lycV9jcHUsIDEp
-OwogCQl0cmFjZXJfaGFyZGlycXNfb2ZmKENBTExFUl9BRERSMCwgY2FsbGVyX2FkZHIpOwotCQlp
-ZiAoIWluX25taSgpKQotCQkJdHJhY2VfaXJxX2Rpc2FibGVfcmN1aWRsZShDQUxMRVJfQUREUjAs
-IGNhbGxlcl9hZGRyKTsKKwkJdHJhY2VfaXJxX2Rpc2FibGUoQ0FMTEVSX0FERFIwLCBjYWxsZXJf
-YWRkcik7CiAJfQogfQogRVhQT1JUX1NZTUJPTCh0cmFjZV9oYXJkaXJxc19vZmZfY2FsbGVyKTsK
-QEAgLTExOSwxNSArMTE1LDEzIEBAIE5PS1BST0JFX1NZTUJPTCh0cmFjZV9oYXJkaXJxc19vZmZf
-Y2FsbGVyKTsKIAogdm9pZCB0cmFjZV9wcmVlbXB0X29uKHVuc2lnbmVkIGxvbmcgYTAsIHVuc2ln
-bmVkIGxvbmcgYTEpCiB7Ci0JaWYgKCFpbl9ubWkoKSkKLQkJdHJhY2VfcHJlZW1wdF9lbmFibGVf
-cmN1aWRsZShhMCwgYTEpOworCXRyYWNlX3ByZWVtcHRfZW5hYmxlKGEwLCBhMSk7CiAJdHJhY2Vy
-X3ByZWVtcHRfb24oYTAsIGExKTsKIH0KIAogdm9pZCB0cmFjZV9wcmVlbXB0X29mZih1bnNpZ25l
-ZCBsb25nIGEwLCB1bnNpZ25lZCBsb25nIGExKQogewotCWlmICghaW5fbm1pKCkpCi0JCXRyYWNl
-X3ByZWVtcHRfZGlzYWJsZV9yY3VpZGxlKGEwLCBhMSk7CisJdHJhY2VfcHJlZW1wdF9kaXNhYmxl
-KGEwLCBhMSk7CiAJdHJhY2VyX3ByZWVtcHRfb2ZmKGEwLCBhMSk7CiB9CiAjZW5kaWYKZGlmZiAt
-LWdpdCBhL3NjcmlwdHMvdGFncy5zaCBiL3NjcmlwdHMvdGFncy5zaAppbmRleCA4NTBmNGNjYjZh
-ZmMuLjMwNTdmYmU5ZWJhMCAxMDA3NTUKLS0tIGEvc2NyaXB0cy90YWdzLnNoCisrKyBiL3Njcmlw
-dHMvdGFncy5zaApAQCAtMTQ3LDkgKzE0Nyw3IEBAIHJlZ2V4X2M9KAogCScvXkJQRl9DQUxMX1sw
-LTldKFwoW1s6YWxudW06XV9dKlwpLiovXDEvJwogCScvXkNPTVBBVF9TWVNDQUxMX0RFRklORVsw
-LTldKFwoW1s6YWxudW06XV9dKlwpLiovY29tcGF0X3N5c19cMS8nCiAJJy9eVFJBQ0VfRVZFTlQo
-XChbWzphbG51bTpdX10qXCkuKi90cmFjZV9cMS8nCi0JJy9eVFJBQ0VfRVZFTlQoXChbWzphbG51
-bTpdX10qXCkuKi90cmFjZV9cMV9yY3VpZGxlLycKIAknL15ERUZJTkVfRVZFTlQoW14sKV0qLCAq
-XChbWzphbG51bTpdX10qXCkuKi90cmFjZV9cMS8nCi0JJy9eREVGSU5FX0VWRU5UKFteLCldKiwg
-KlwoW1s6YWxudW06XV9dKlwpLiovdHJhY2VfXDFfcmN1aWRsZS8nCiAJJy9eREVGSU5FX0lOU05f
-Q0FDSEVfT1BTKFwoW1s6YWxudW06XV9dKlwpLiovZ2V0X1wxX3Nsb3QvJwogCScvXkRFRklORV9J
-TlNOX0NBQ0hFX09QUyhcKFtbOmFsbnVtOl1fXSpcKS4qL2ZyZWVfXDFfc2xvdC8nCiAJJy9eUEFH
-RUZMQUcoXChbWzphbG51bTpdX10qXCkuKi9QYWdlXDEvJwotLSAKMi4xNy4xCgo=
-------=_Part_38577_64406330.1603807061503--
