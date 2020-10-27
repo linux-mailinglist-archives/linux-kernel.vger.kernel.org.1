@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A8429B750
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF2329B74C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799463AbgJ0Pbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S1799424AbgJ0PbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797151AbgJ0PVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:21:52 -0400
+        id S1797162AbgJ0PVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:21:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BABB21527;
-        Tue, 27 Oct 2020 15:21:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D7C820728;
+        Tue, 27 Oct 2020 15:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812112;
-        bh=U3vO92lsyXzc2mm4IVenesA7XJKdMDlQWyd4Ek9E9qE=;
+        s=default; t=1603812114;
+        bh=ozyLgpXHqosmv35bnuQ3dUi+EEKOVW8d1oUoxx9+eOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q/0pvupA7nPNnFgxtl82kFc8gY6Gr0XPQowEN6kuNpYXoxhq9NEQO2wkmd4ph31Qb
-         969Vy3d507FNaaa2eY7lMrAm1WSTX7NaHDBk9YFKgK+vR7OUiRXF2Y1dju9r82Wu8g
-         VH5pACiitmhVOwUXyE+OdhUbfZ4laXg9wR/PAnF0=
+        b=wsolK2ihHDkm394GLg82y+CU+yqhzsKotk8JkyU1TcFSVGXDSvGe0/OqX2oVkY2cm
+         Ug8gZK2bEU0cE1lHVPcrjDmMzgRDRwCJO2AnTZzaDApte9uUWhGV4XuGtpJmo0jbYi
+         TX1PPYldKF4z2sJ+5fe1UMDtjwjth0j3+F+VwA6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Marc Zyngier <maz@kernel.org>,
         Lokesh Vutla <lokeshvutla@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 096/757] irqchip/ti-sci-inta: Fix unsigned comparison to zero
-Date:   Tue, 27 Oct 2020 14:45:46 +0100
-Message-Id: <20201027135455.052013671@linuxfoundation.org>
+Subject: [PATCH 5.9 097/757] irqchip/ti-sci-intr: Fix unsigned comparison to zero
+Date:   Tue, 27 Oct 2020 14:45:47 +0100
+Message-Id: <20201027135455.100196817@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,36 +46,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 4c9b1bfaa5039fee650f4de514a8e70ae976fc2f ]
+[ Upstream commit 8ddf1905a904ca86d71ca1c435e4b0b2a0b70df8 ]
 
-ti_sci_inta_xlate_irq() return -ENOENT on fail, p_hwirq
+ti_sci_intr_xlate_irq() return -ENOENT on fail, p_hwirq
 should be int type.
 
-Fixes: 5c4b585d2910 ("irqchip/ti-sci-inta: Add support for INTA directly connecting to GIC")
+Fixes: a5b659bd4bc7 ("irqchip/ti-sci-intr: Add support for INTR being a parent to INTR")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 Acked-by: Lokesh Vutla <lokeshvutla@ti.com>
-Link: https://lore.kernel.org/r/20200826035430.21060-1-yuehaibing@huawei.com
+Link: https://lore.kernel.org/r/20200826035321.18620-1-yuehaibing@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-ti-sci-inta.c | 4 ++--
+ drivers/irqchip/irq-ti-sci-intr.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
-index d4e97605456bb..05bf94b87b938 100644
---- a/drivers/irqchip/irq-ti-sci-inta.c
-+++ b/drivers/irqchip/irq-ti-sci-inta.c
-@@ -175,8 +175,8 @@ static struct ti_sci_inta_vint_desc *ti_sci_inta_alloc_parent_irq(struct irq_dom
- 	struct irq_fwspec parent_fwspec;
+diff --git a/drivers/irqchip/irq-ti-sci-intr.c b/drivers/irqchip/irq-ti-sci-intr.c
+index cbc1758228d9e..85a72b56177cf 100644
+--- a/drivers/irqchip/irq-ti-sci-intr.c
++++ b/drivers/irqchip/irq-ti-sci-intr.c
+@@ -137,8 +137,8 @@ static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
+ 	struct ti_sci_intr_irq_domain *intr = domain->host_data;
  	struct device_node *parent_node;
- 	unsigned int parent_virq;
--	u16 vint_id, p_hwirq;
--	int ret;
-+	int p_hwirq, ret;
-+	u16 vint_id;
+ 	struct irq_fwspec fwspec;
+-	u16 out_irq, p_hwirq;
+-	int err = 0;
++	int p_hwirq, err = 0;
++	u16 out_irq;
  
- 	vint_id = ti_sci_get_free_resource(inta->vint);
- 	if (vint_id == TI_SCI_RESOURCE_NULL)
+ 	out_irq = ti_sci_get_free_resource(intr->out_irqs);
+ 	if (out_irq == TI_SCI_RESOURCE_NULL)
 -- 
 2.25.1
 
