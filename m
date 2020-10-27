@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8054D29BB26
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8B529BA30
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801060AbgJ0P5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55798 "EHLO mail.kernel.org"
+        id S1799362AbgJ0P5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:57:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758183AbgJ0PS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:18:27 -0400
+        id S1796483AbgJ0PS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:18:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D39020728;
-        Tue, 27 Oct 2020 15:18:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ABE920657;
+        Tue, 27 Oct 2020 15:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811906;
-        bh=bTbXeaSUUJjjNZ3irmxSRiAwKGJsYIbIChZWk9p/miQ=;
+        s=default; t=1603811937;
+        bh=lMBRtfN+x0fEfJw097aAfZfK9fpuRHja5PaQFINeo9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NcqXUV99ga0/QLvuFXoxqu+U2trjn4rtfymYFoLyMIi/g2kT0p8aQc0JE7JdwQ0x6
-         iKzLoLw5zwmSubS+v/Qy9GiX6qmnfyg4QzxNFkgDNtG6EegaxHB6ErYvi4P8LeFFcU
-         tV4+YdYVO5BzKGMKVTVEOLWHHPp2nWjULuc6aXyE=
+        b=AvRi4nKuXwXxzP1HXZ+bqSAYjGnmSXqBAaN97xahmcsRqxUpjcno7Zj2sOhnIxB6q
+         bjxhv59jjXRWV+uU71tOh2Tb+veQgZoroUSjBT17B9Yd44Tz6LRrfwIfsFNbuqBUkQ
+         x6yBezKhowxOiFCBCKBhvvKT99WrnzI1FnrnmH2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 007/757] mptcp: subflows garbage collection
-Date:   Tue, 27 Oct 2020 14:44:17 +0100
-Message-Id: <20201027135450.868591758@linuxfoundation.org>
+Subject: [PATCH 5.9 008/757] net: dsa: microchip: fix race condition
+Date:   Tue, 27 Oct 2020 14:44:18 +0100
+Message-Id: <20201027135450.919986318@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,89 +44,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Christian Eggers <ceggers@arri.de>
 
-[ Upstream commit 0e4f35d7880157ceccf0a58377d778b02762af82 ]
+[ Upstream commit 8098bd69bc4e925070313b1b95d03510f4f24738 ]
 
-The msk can close MP_JOIN subflows if the initial handshake
-fails. Currently such subflows are kept alive in the
-conn_list until the msk itself is closed.
+Between queuing the delayed work and finishing the setup of the dsa
+ports, the process may sleep in request_module() (via
+phy_device_create()) and the queued work may be executed prior to the
+switch net devices being registered. In ksz_mib_read_work(), a NULL
+dereference will happen within netof_carrier_ok(dp->slave).
 
-Beyond the wasted memory, we could end-up sending the
-DATA_FIN and the DATA_FIN ack on such socket, even after a
-reset.
+Not queuing the delayed work in ksz_init_mib_timer() makes things even
+worse because the work will now be queued for immediate execution
+(instead of 2000 ms) in ksz_mac_link_down() via
+dsa_port_link_register_of().
 
-Fixes: 43b54c6ee382 ("mptcp: Use full MPTCP-level disconnect state machine")
-Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Call tree:
+ksz9477_i2c_probe()
+\--ksz9477_switch_register()
+   \--ksz_switch_register()
+      +--dsa_register_switch()
+      |  \--dsa_switch_probe()
+      |     \--dsa_tree_setup()
+      |        \--dsa_tree_setup_switches()
+      |           +--dsa_switch_setup()
+      |           |  +--ksz9477_setup()
+      |           |  |  \--ksz_init_mib_timer()
+      |           |  |     |--/* Start the timer 2 seconds later. */
+      |           |  |     \--schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
+      |           |  \--__mdiobus_register()
+      |           |     \--mdiobus_scan()
+      |           |        \--get_phy_device()
+      |           |           +--get_phy_id()
+      |           |           \--phy_device_create()
+      |           |              |--/* sleeping, ksz_mib_read_work() can be called meanwhile */
+      |           |              \--request_module()
+      |           |
+      |           \--dsa_port_setup()
+      |              +--/* Called for non-CPU ports */
+      |              +--dsa_slave_create()
+      |              |  +--/* Too late, ksz_mib_read_work() may be called beforehand */
+      |              |  \--port->slave = ...
+      |             ...
+      |              +--Called for CPU port */
+      |              \--dsa_port_link_register_of()
+      |                 \--ksz_mac_link_down()
+      |                    +--/* mib_read must be initialized here */
+      |                    +--/* work is already scheduled, so it will be executed after 2000 ms */
+      |                    \--schedule_delayed_work(&dev->mib_read, 0);
+      \-- /* here port->slave is setup properly, scheduling the delayed work should be safe */
+
+Solution:
+1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
+2. Only queue delayed work in ksz_mac_link_down() if init is completed.
+3. Queue work once in ksz_switch_register(), after dsa_register_switch()
+has completed.
+
+Fixes: 7c6ff470aa86 ("net: dsa: microchip: add MIB counter reading support")
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mptcp/protocol.c |   17 +++++++++++++++++
- net/mptcp/protocol.h |    1 +
- net/mptcp/subflow.c  |    6 ++++++
- 3 files changed, 24 insertions(+)
+ drivers/net/dsa/microchip/ksz_common.c |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -1383,6 +1383,20 @@ static void pm_work(struct mptcp_sock *m
- 	spin_unlock_bh(&msk->pm.lock);
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -103,14 +103,8 @@ void ksz_init_mib_timer(struct ksz_devic
+ 
+ 	INIT_DELAYED_WORK(&dev->mib_read, ksz_mib_read_work);
+ 
+-	/* Read MIB counters every 30 seconds to avoid overflow. */
+-	dev->mib_read_interval = msecs_to_jiffies(30000);
+-
+ 	for (i = 0; i < dev->mib_port_cnt; i++)
+ 		dev->dev_ops->port_init_cnt(dev, i);
+-
+-	/* Start the timer 2 seconds later. */
+-	schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
  }
+ EXPORT_SYMBOL_GPL(ksz_init_mib_timer);
  
-+static void __mptcp_close_subflow(struct mptcp_sock *msk)
-+{
-+	struct mptcp_subflow_context *subflow, *tmp;
-+
-+	list_for_each_entry_safe(subflow, tmp, &msk->conn_list, node) {
-+		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
-+
-+		if (inet_sk_state_load(ssk) != TCP_CLOSE)
-+			continue;
-+
-+		__mptcp_close_ssk((struct sock *)msk, ssk, subflow, 0);
-+	}
-+}
-+
- static void mptcp_worker(struct work_struct *work)
- {
- 	struct mptcp_sock *msk = container_of(work, struct mptcp_sock, work);
-@@ -1400,6 +1414,9 @@ static void mptcp_worker(struct work_str
- 	mptcp_clean_una(sk);
- 	mptcp_check_data_fin_ack(sk);
- 	__mptcp_flush_join_list(msk);
-+	if (test_and_clear_bit(MPTCP_WORK_CLOSE_SUBFLOW, &msk->flags))
-+		__mptcp_close_subflow(msk);
-+
- 	__mptcp_move_skbs(msk);
+@@ -143,7 +137,9 @@ void ksz_mac_link_down(struct dsa_switch
  
- 	if (msk->pm.status)
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -90,6 +90,7 @@
- #define MPTCP_WORK_RTX		2
- #define MPTCP_WORK_EOF		3
- #define MPTCP_FALLBACK_DONE	4
-+#define MPTCP_WORK_CLOSE_SUBFLOW 5
- 
- struct mptcp_options_received {
- 	u64	sndr_key;
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -272,9 +272,15 @@ static bool subflow_thmac_valid(struct m
- 
- void mptcp_subflow_reset(struct sock *ssk)
- {
-+	struct mptcp_subflow_context *subflow = mptcp_subflow_ctx(ssk);
-+	struct sock *sk = subflow->conn;
-+
- 	tcp_set_state(ssk, TCP_CLOSE);
- 	tcp_send_active_reset(ssk, GFP_ATOMIC);
- 	tcp_done(ssk);
-+	if (!test_and_set_bit(MPTCP_WORK_CLOSE_SUBFLOW, &mptcp_sk(sk)->flags) &&
-+	    schedule_work(&mptcp_sk(sk)->work))
-+		sock_hold(sk);
+ 	/* Read all MIB counters when the link is going down. */
+ 	p->read = true;
+-	schedule_delayed_work(&dev->mib_read, 0);
++	/* timer started */
++	if (dev->mib_read_interval)
++		schedule_delayed_work(&dev->mib_read, 0);
  }
+ EXPORT_SYMBOL_GPL(ksz_mac_link_down);
  
- static void subflow_finish_connect(struct sock *sk, const struct sk_buff *skb)
+@@ -450,6 +446,12 @@ int ksz_switch_register(struct ksz_devic
+ 		return ret;
+ 	}
+ 
++	/* Read MIB counters every 30 seconds to avoid overflow. */
++	dev->mib_read_interval = msecs_to_jiffies(30000);
++
++	/* Start the MIB timer. */
++	schedule_delayed_work(&dev->mib_read, 0);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(ksz_switch_register);
 
 
