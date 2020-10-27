@@ -2,181 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D6429BB82
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1F929BB85
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807765AbgJ0QOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:14:41 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:20982 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1807758AbgJ0QOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:14:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603815278; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=DpMi3wZzYzZFIDmbhPw67VwM72fcMWlU80A+xtAhYJ4=; b=Ku4TKv0Cmu5U5mOI1zXq/nVs4Hi3AgSBWzfI/T5fJSfW/U+oSDJDICtnfaJv1+tum9lRjMwS
- gQawjuEzQwkCMvz3AVwSXT0uYV8oWqOlxbxEjsxOo02pBdMVM7KKs8ru2LzVhUUljevKccch
- j2YJiy1Uqk13QDHgs/U+3DTfugY=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f98476d807e82a1532a962b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 16:14:37
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7E35AC38545; Tue, 27 Oct 2020 16:14:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 876CDC3852B;
-        Tue, 27 Oct 2020 16:14:34 +0000 (UTC)
+        id S1754723AbgJ0QQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:16:37 -0400
+Received: from mail-ej1-f42.google.com ([209.85.218.42]:35067 "EHLO
+        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1807781AbgJ0QO5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:14:57 -0400
+Received: by mail-ej1-f42.google.com with SMTP id p5so3071277ejj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xTfr4BhZoASi4sNuvBGDS4PrD9yz2mHwzFOcyGNrbuE=;
+        b=CG6KmF8iWDTGQPhNlTROZ67H7mOeNO9xa2NDY20tknx8+WkX3f40qB/TVD4dHr+N/e
+         Ly4lmr/7Ae7D56Y2xJFHrYG7iDZOI1kYAfUV+v3OuImVgmwIqQCFBNNDBlEMDK5MJIIi
+         kIz1/bnZuCukWcs/wXSvjMbm+1+GsFn7Upc6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xTfr4BhZoASi4sNuvBGDS4PrD9yz2mHwzFOcyGNrbuE=;
+        b=cka4KTK6GGmqavkG1ReTm8x7+a4t3rMHcO6n9fZ1aA6EOdg/uS24WNRD8GQdUdxNkg
+         Uvl+H/IMA0RM6zO6oLQUDJ62w19J5cTpa8kcPdBv9rWiTd9TwNrpqJI1OfzUi+UcSk9f
+         QPAUbl/CsHYf2L9v4evWNXorFmKaxzlvp2UbjXjK91DUSR1p7Q3QVsKJYmRnBDzcn3K/
+         K6R4o9AixHywiwfaSXFZCzFr4HMdzYWfDcJFyee8YahoROvsMCByRViwUDSChj7Z4kvH
+         f5FGg1xJjlnNaZIOvxYAYj0l8K7aHgR8pJtzfYEBr7xvRGia6v4tHFsbpES/DXtFOKSs
+         anGw==
+X-Gm-Message-State: AOAM5339fNZAfyr2giB7mDH0pqCOtpG7yMs7aAS42eJFqsvTIi+T9crF
+        g2IOzXU4LOLXVQQl69l91cDsYOq+xhKWV8S9zSgKMw==
+X-Google-Smtp-Source: ABdhPJy1n+rUcW/DZIrMzAV4nH1DTEy7MZBCwEnBb5Oro1VrPGV3aFVbV7o8DWIx2T9BNdEbsTohlemZm+AOmrgj7eg=
+X-Received: by 2002:a17:906:3541:: with SMTP id s1mr3246257eja.413.1603815294129;
+ Tue, 27 Oct 2020 09:14:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Oct 2020 21:44:34 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        freedreno@lists.freedesktop.org,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sean Paul <sean@poorly.run>
-Subject: Re: [PATCH] drm/msm/a6xx: Add support for using system cache on
- MMU500 based targets
-Message-ID: <6775698bb9ddd14f5ac9325aa093d884@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
+ <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
+ <CAJ-EccPLAD5TGg=KQ-m54ymrVdd++Dg7A_UR+v535iOVRsDe4w@mail.gmail.com>
+ <CAHk-=wi_BD0OVHgj09kKgiuwyrth3ora_ZgLznW_q-+z-BR=3w@mail.gmail.com>
+ <CAJ-EccMu_AGfOYASyteGosdOc1SMHeVTLax5aoZSQf7_n0Xq2Q@mail.gmail.com> <CAHk-=whAYrg_N9ZZ38C5YqPQT4eyCj8JoJ4oax479DpOkdH07w@mail.gmail.com>
+In-Reply-To: <CAHk-=whAYrg_N9ZZ38C5YqPQT4eyCj8JoJ4oax479DpOkdH07w@mail.gmail.com>
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Tue, 27 Oct 2020 09:14:41 -0700
+Message-ID: <CAJ-EccMyjD+DudaanLwQErKRwkA_h12ZMDL-5R3JMADaYK4+rg@mail.gmail.com>
+Subject: Re: [GIT PULL] SafeSetID changes for v5.10
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 21:10, Robin Murphy wrote:
-> On 2020-10-26 18:54, Jordan Crouse wrote:
->> This is an extension to the series [1] to enable the System Cache 
->> (LLC) for
->> Adreno a6xx targets.
->> 
->> GPU targets with an MMU-500 attached have a slightly different process 
->> for
->> enabling system cache. Use the compatible string on the IOMMU phandle
->> to see if an MMU-500 is attached and modify the programming sequence
->> accordingly.
->> 
->> [1] https://patchwork.freedesktop.org/series/83037/
->> 
->> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
->> ---
->> 
->>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 46 
->> +++++++++++++++++++++------
->>   drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
->>   2 files changed, 37 insertions(+), 10 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c 
->> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> index 95c98c642876..b7737732fbb6 100644
->> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> @@ -1042,6 +1042,8 @@ static void a6xx_llc_deactivate(struct a6xx_gpu 
->> *a6xx_gpu)
->>     static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
->>   {
->> +	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
->> +	struct msm_gpu *gpu = &adreno_gpu->base;
->>   	u32 cntl1_regval = 0;
->>     	if (IS_ERR(a6xx_gpu->llc_mmio))
->> @@ -1055,11 +1057,17 @@ static void a6xx_llc_activate(struct a6xx_gpu 
->> *a6xx_gpu)
->>   			       (gpu_scid << 15) | (gpu_scid << 20);
->>   	}
->>   +	/*
->> +	 * For targets with a MMU500, activate the slice but don't program 
->> the
->> +	 * register.  The XBL will take care of that.
->> +	 */
->>   	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
->> -		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
->> +		if (!a6xx_gpu->have_mmu500) {
->> +			u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
->>   -		gpuhtw_scid &= 0x1f;
->> -		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
->> +			gpuhtw_scid &= 0x1f;
->> +			cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
->> +		}
->>   	}
->>     	if (cntl1_regval) {
->> @@ -1067,13 +1075,20 @@ static void a6xx_llc_activate(struct a6xx_gpu 
->> *a6xx_gpu)
->>   		 * Program the slice IDs for the various GPU blocks and GPU MMU
->>   		 * pagetables
->>   		 */
->> -		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, 
->> cntl1_regval);
->> -
->> -		/*
->> -		 * Program cacheability overrides to not allocate cache lines on
->> -		 * a write miss
->> -		 */
->> -		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 
->> 0x03);
->> +		if (a6xx_gpu->have_mmu500)
->> +			gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0),
->> +				cntl1_regval);
->> +		else {
->> +			a6xx_llc_write(a6xx_gpu,
->> +				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
->> +
->> +			/*
->> +			 * Program cacheability overrides to not allocate cache
->> +			 * lines on a write miss
->> +			 */
->> +			a6xx_llc_rmw(a6xx_gpu,
->> +				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
->> +		}
->>   	}
->>   }
->>   @@ -1086,10 +1101,21 @@ static void a6xx_llc_slices_destroy(struct 
->> a6xx_gpu *a6xx_gpu)
->>   static void a6xx_llc_slices_init(struct platform_device *pdev,
->>   		struct a6xx_gpu *a6xx_gpu)
->>   {
->> +	struct device_node *phandle;
->> +
->>   	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
->>   	if (IS_ERR(a6xx_gpu->llc_mmio))
->>   		return;
->>   +	/*
->> +	 * There is a different programming path for targets with an mmu500
->> +	 * attached, so detect if that is the case
->> +	 */
->> +	phandle = of_parse_phandle(pdev->dev.of_node, "iommus", 0);
->> +	a6xx_gpu->have_mmu500 = (phandle &&
->> +		of_device_is_compatible(phandle, "arm,mmu500"));
-> 
-> Note that this should never match, since the compatible string defined
-> by the binding is "arm,mmu-500" ;)
-> 
+On Sun, Oct 25, 2020 at 10:54 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Oct 23, 2020 at 12:15 PM Micah Morton <mortonm@chromium.org> wrote:
+> >
+> > Ok so before the rebase ("reparent"), the commits were based on top of
+> > some commit that was months old at this point (can't quite remember
+> > now, I think one of the -rc's for v5.8).
+>
+> Nobody cares if the old parent is old. In fact, that's usually a good
+> sign that the code has had testing and is changing things that aren't
+> in flux for other reasons.
 
-Hawk eye ;) I will fix it in the next version when I squash
-this with my series.
+Ok thanks for the explanation, I think this was the most important
+piece I was missing, but makes sense now.
 
-Thanks,
-Sai
+>
+> It's often a good idea to make a test-merge and verify that things are
+> ok, but that's for your _personal_ verification, and shouldn't be
+> something that anybody else sees.
+>
+> And even with a test-merge, it doesn't matter if there is some simple
+> conflict - we have those all the time, and conflicts aren't bad. In
+> fact, they allow me to see "ok, things have changed here in parallel",
+> and I'll be aware of it.
+>
+> The main reason to rebase is if things have changed _so_ much that you
+> really need to re-do things, or if there is some major bug in _your_
+> branch that simply needs to be fixed.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Yeah sounds good, I'll just get in the habit of doing a test merge and
+note in the pull request whether there are any conflicts or not.
+
+>
+> >    So I had basically considered it
+> > a no-op rebase. I probably should have explained this in the pull
+> > request.
+>
+> If it's a no-op rebase, thern DON'T DO IT. Really. It just means that
+> now you have lost all the testing.
+>
+> Thinking that it's a no-op doesn't really help. No bugs are
+> _intentional_, I would seriously hope. Lack of testing is lack of
+> testing, regardless of whether you think it would not matter.
+>
+> It also destroys the real history of the code, which is sad.
+>
+> Now, sometimes you may _want_ to destroy the real history of the code
+> (as in "Oh, this history is too ugly to survive, and makes bisection
+> impossible because some of the intermediate state was seriously
+> buggy"). That is then one of those few valid reasons to rebase (see
+> the "major bug in your branch" case above).
+>
+> But 99% of the time, rebasing is bad. If it was in linux-next and
+> there were no horrible problems with it, and it got tested there, then
+> just leave it alone and don't destroy the testing it did get.
+>
+> Anyway, I've pulled this now, but honestly, don't do this again. Stop
+> rebasing without a big and immediate reason, and stop destroying
+> whatever testing it got in linux-next.
+
+Got it.
+
+>
+> And if you _do_ rebase, and you _do_ have a real and very serious
+> reason, then mention that reason and explain it. But no "the rebase
+> didn't make any difference" isn't a reason. Quite the reverse.
+>
+>                Linus
+>
+>                    Linus
