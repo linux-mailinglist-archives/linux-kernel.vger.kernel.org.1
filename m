@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C3229B829
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A8329B827
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799707AbgJ0Pc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:32:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60456 "EHLO mail.kernel.org"
+        id S1799689AbgJ0Pcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:32:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1795931AbgJ0PTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:19:55 -0400
+        id S1796837AbgJ0PUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:20:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FBD520728;
-        Tue, 27 Oct 2020 15:19:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A61420657;
+        Tue, 27 Oct 2020 15:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811994;
-        bh=i0EIW0YgUxIOstdq/fu9DhJMZ/7qBkSR9SyVeIqPUnY=;
+        s=default; t=1603812009;
+        bh=4fN70qPh73IdxfvPoMCro+1wxHu/zqje1ATOEuUx6hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sCYPt2nzzAdQ535UXcppueGqDXl8e5zG3pqDmH9wyqyjwo2wucGT5e1T1owo3XOv6
-         GwMnpDx+gvc48eZScoJiriXM/6BdjL7ie9sl3lITFs/ejrk1jm6prOGQDYYHCFQ9W0
-         iZhSFSNTfsmClI0dEvViQzOK0yMeTOB5UsN0KpUU=
+        b=f4ylf1t/G5jES3GAEjg1DU+J9IoNYeT8uQB7YxWYDItBs28OE09V84pBshqFTXKK4
+         hFJ4aYKKtWXFd7b1xOsBmkto4EIn8ALtyjq2xfOWJuixP84zYc2bJPPUuMnrmi16pF
+         7nct8+nti7GBMjyV9glAYQMIGwaizAxem987tU5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 056/757] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead of selecting it
-Date:   Tue, 27 Oct 2020 14:45:06 +0100
-Message-Id: <20201027135453.178961495@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 5.9 060/757] ALSA: hda - Fix the return value if cb func is already registered
+Date:   Tue, 27 Oct 2020 14:45:10 +0100
+Message-Id: <20201027135453.377763542@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,42 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit b142083b585c2c03af24cca4d274f797796a4064 ]
+commit 033e4040d453f1f7111e5957a54f3019eb089cc6 upstream.
 
-MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
-user may not want to enable.  Fix this by making the test depend on
-MPTCP instead.
+If the cb function is already registered, should return the pointer
+of the structure hda_jack_callback which contains this cb func, but
+instead it returns the NULL.
 
-Fixes: a00a582203dbc43e ("mptcp: move crypto test to KUNIT")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Link: https://lore.kernel.org/r/20201019113240.11516-1-geert@linux-m68k.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Now fix it by replacing func_is_already_in_callback_list() with
+find_callback_from_list().
+
+Fixes: f4794c6064a8 ("ALSA: hda - Don't register a cb func if it is registered already")
+Reported-and-suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20201022030221.22393-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/mptcp/Kconfig |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/net/mptcp/Kconfig
-+++ b/net/mptcp/Kconfig
-@@ -22,11 +22,8 @@ config MPTCP_IPV6
- 	select IPV6
- 	default y
+---
+ sound/pci/hda/hda_jack.c |   18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -275,16 +275,21 @@ int snd_hda_jack_detect_state_mst(struct
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_detect_state_mst);
  
--endif
--
- config MPTCP_KUNIT_TESTS
- 	tristate "This builds the MPTCP KUnit tests" if !KUNIT_ALL_TESTS
--	select MPTCP
- 	depends on KUNIT
- 	default KUNIT_ALL_TESTS
- 	help
-@@ -39,3 +36,4 @@ config MPTCP_KUNIT_TESTS
+-static bool func_is_already_in_callback_list(struct hda_jack_tbl *jack,
+-					     hda_jack_callback_fn func)
++static struct hda_jack_callback *
++find_callback_from_list(struct hda_jack_tbl *jack,
++			hda_jack_callback_fn func)
+ {
+ 	struct hda_jack_callback *cb;
  
- 	  If unsure, say N.
++	if (!func)
++		return NULL;
++
+ 	for (cb = jack->callback; cb; cb = cb->next) {
+ 		if (cb->func == func)
+-			return true;
++			return cb;
+ 	}
+-	return false;
++
++	return NULL;
+ }
  
-+endif
+ /**
+@@ -309,7 +314,10 @@ snd_hda_jack_detect_enable_callback_mst(
+ 	jack = snd_hda_jack_tbl_new(codec, nid, dev_id);
+ 	if (!jack)
+ 		return ERR_PTR(-ENOMEM);
+-	if (func && !func_is_already_in_callback_list(jack, func)) {
++
++	callback = find_callback_from_list(jack, func);
++
++	if (func && !callback) {
+ 		callback = kzalloc(sizeof(*callback), GFP_KERNEL);
+ 		if (!callback)
+ 			return ERR_PTR(-ENOMEM);
 
 
