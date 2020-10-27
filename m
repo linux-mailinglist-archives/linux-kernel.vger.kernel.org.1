@@ -2,134 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7951629C22C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3640329C23B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820042AbgJ0RcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:32:21 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48920 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1819552AbgJ0Raa (ORCPT
+        id S1820177AbgJ0Rd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:33:29 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:44054 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1819932AbgJ0RbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:30:30 -0400
-Received: from [192.168.86.21] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EF0D620B4905;
-        Tue, 27 Oct 2020 10:30:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF0D620B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1603819829;
-        bh=kaVk3QXkAqH4EzFU6UPEbSCWTIeXicsOu6YZLtOukDY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UdECIVnjzFOphs0SutlHP0BOxuHYrjur3X5CnjWGPC3oxMamfcFIwkj1ZQweyrywQ
-         jXvBHD1UMnzCvinMoI7WeFxJQJpXqQGUeSPgH9ZBUnvOnJ6GpvCuiuSaY/Hrgpazs1
-         xzcZy2vebL4N+Ix7IaJU1+VRguBJICESG1e1sAWg=
-Subject: Re: [PATCH v4 0/6] IMA: Infrastructure for measurement of critical
- kernel data
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
- <2c7da61fbeb17c577253b117829b3bd544d8cf44.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <d3bfb2ec-357a-411d-956c-0e305245f6ec@linux.microsoft.com>
-Date:   Tue, 27 Oct 2020 10:30:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 13:31:21 -0400
+Received: by mail-yb1-f194.google.com with SMTP id h6so1914091ybi.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=roUOEIZ14Sav6aUOKIQPgQku8t+cyAqv92YI7rNzChY=;
+        b=gpO+U8OCkFbyPIOY244ysr/oB5D1L71A2FWw2D/0ce304geRy5KM1/8WD/fvsg5cx6
+         L0P+0aWdKDSXZaAm8LLVOzCDAFno4gQP/YfPkzQt1VwQj0cun6G3eW5ZAjsaYUKPElnj
+         oqH6kCi744gJK8FUey3Ebj2yL3jfqQ0RclZMLYSmjGh8CBQSH6se5sQcZ/wY6nojKJk5
+         EuZcZ0zgLNS8rq1ogY4tWEIe7Dw86I2UZoefqSyi2NqBRchgcPVfXdriSgdSGQ+g371S
+         +CWXQbw/PApSMPn6enuJPCKxUpZqIZFQbwQVev5H9+0jdLuZ61smiQoeAPwDlTmkZ/yx
+         Qu0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=roUOEIZ14Sav6aUOKIQPgQku8t+cyAqv92YI7rNzChY=;
+        b=V3HJLb2ors/5x7REOUCgZN27e5xliVdCyx7mosv8ucmtHZII2F/Xt5kzlqNBbk35LD
+         U+7SyjINeNxzDfb92jkqGg0YsVG54NJjggsttOX9EbmFR5b0hr5vpHFP1UaivKV8AnM+
+         8p36W2rdsr2BusvKibqQYFsxZOa6CbppF8cj8qxgEDbkE0iD7ICuiT0Nq9ocAnE1htaA
+         ixWhYgJcFdsH/OAS/ElGNt4LFcB1m4uXvzKlFbl+KYRPEL2aY8cLDDF2OXc+eiNkrtQz
+         jVpvnao1xRMv79WWPjvSo/OGyn5KsqNlFQvNgl/0oFNHoJCZdBkJojvtho8hMQzLIded
+         e+OQ==
+X-Gm-Message-State: AOAM530pLSB0JhU3sfFokX9OKnAPdf5zMVSRGYgKeSjfx+skJ2c/7EbR
+        1PkfLiaog6PP5X8IEBYaVdXCMdxp0aOAIkTFnt7mJw==
+X-Google-Smtp-Source: ABdhPJxTFCnLihotEEdPcj8FEA/A4XcCFIg/UmM2jGljYJ4wSN+nBXrHXzTB6nRGSYXgXYh9vRz3B9PByWq0i5qm/ig=
+X-Received: by 2002:a25:3:: with SMTP id 3mr4903331yba.412.1603819880190; Tue,
+ 27 Oct 2020 10:31:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2c7da61fbeb17c577253b117829b3bd544d8cf44.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200901224842.1787825-1-saravanak@google.com> <CAMuHMdUcxX1Zvb7X+uxLa1u0WkOtS8hAZ000+Ta+7SCdkeJO8g@mail.gmail.com>
+In-Reply-To: <CAMuHMdUcxX1Zvb7X+uxLa1u0WkOtS8hAZ000+Ta+7SCdkeJO8g@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 27 Oct 2020 10:30:44 -0700
+Message-ID: <CAGETcx9MVi53Fp3sGXap8iyfHO5VMVpwe9BV7B7SLwmkxR4WOQ@mail.gmail.com>
+Subject: Re: [PATCH v1] scripts/dev-needs: Add script to list device dependencies
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
-Thanks a lot for your continual engagement and
-providing us valuable feedback on this work.
+On Tue, Oct 27, 2020 at 3:12 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Wed, Sep 2, 2020 at 12:51 AM Saravana Kannan <saravanak@google.com> wrote:
+> > This script can be useful for:
+> > - Figuring out the list of modules you need to pack in initrd
+> > - Figuring out the list of drivers you need to modularize for a device
+> >   to be fully functional without building in any dependencies.
+> > - Figuring out which drivers to enable first, when porting drivers
+> >   between kernels (say, to upstream).
+> > - Plotting graphs of system dependencies, etc.
+> >
+> > Usage: dev-needs.sh [-c|-d|-m|-f] [filter options] <list of devices>
+> >
+> > This script needs to be run on the target device once it has booted to a
+> > shell.
+> >
+> > The script takes as input a list of one or more device directories under
+> > /sys/devices and then lists the probe dependency chain (suppliers and
+> > parents) of these devices. It does a breadth first search of the dependency
+> > chain, so the last entry in the output is close to the root of the
+> > dependency chain.
+>
+> Thanks for your patch!
+>
+> > --- /dev/null
+> > +++ b/scripts/dev-needs.sh
+> > @@ -0,0 +1,315 @@
+> > +#! /bin/sh
+>
+> On Debian, where /bin/sh -> dash:
+>
+>     dev-needs.sh: 6: dev-needs.sh: Syntax error: "(" unexpected
 
-On 2020-10-24 8:35 p.m., Mimi Zohar wrote:
-> Hi Tushar,
-> 
-> On Wed, 2020-09-23 at 12:20 -0700, Tushar Sugandhi wrote:
->> There are several kernel components that contain critical data which if
->> accidentally or maliciously altered, can compromise the security of the
->> kernel. Example of such components would include LSMs like SELinux, or
->> AppArmor; or device-mapper targets like dm-crypt, dm-verity etc.
-> 
-> ^"the integrity of the system."
-> 
-Ok. I will revisit this cover letter again, when we post the next
-version of the series. We also need to update the cover letter to
-include the description for new patches to be added in this series, as
-per your suggestion below. {built-in policy patch (by Lakshmi) and an
-example measurement patch (SeLinux by Lakshmi)}
+dash doesn't like () after the function name maybe? If so, we could
+drop it. I think it'll still work with toybox and bash.
 
-> This cover letter needs to be re-written from a higher perspective,
-> explaining what is meant by "critical data" (e.g. kernel subsystem
-> specific information only stored in kernel memory).
-> 
->>
->> Many of these components do not use the capabilities provided by kernel
->> integrity subsystem (IMA), and thus they don't use the benefits of
->> extended TPM PCR quotes and ultimately the benefits of remote attestation.
-> 
-> True, up until recently IMA only measured files, nothing else.  Why is
-> this paragraph needed?  What new information is provided?
-> 
-Here, I was attempting to describe the problem (what needs to be
-solved), before proposing a solution below. But maybe it is not adding
-value. I will get rid of the above paragraph in the next iteration.
+>
+> When using bash, I get:
+>
+> # ./dev-needs.sh /sys/devices/platform/soc/feb00000.display
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+>
+> # ./dev-needs.sh -c /sys/devices/platform/soc/feb00000.display
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
+> ./dev-needs.sh: line 255: detail: command not found
 
->> This series bridges this gap, so that potential kernel components that
->> contain data critical to the security of the kernel could take advantage
->> of IMA's measuring and quoting abilities - thus ultimately enabling
->> remote attestation for their specific data.
-> 
-> Perhaps, something more along the lines, "This patch set defines a new
-> IMA hook named ... to measure critical data."
-> 
-Will do.
->>
->> System administrators may want to pick and choose which kernel
->> components they would want to enable for measurements, quoting, and
->> remote attestation. To enable that, a new IMA policy is introduced.
-> 
-> Reverse the order of this paragraph and the following one, describing
-> the new feature and only afterwards explaining how it may be
-> constrained.
-> 
-Makes total sense. Will do.
->>
->> And lastly, the functionality is exposed through a function
->> ima_measure_critical_data(). The functionality is generic enough to
->> measure the data of any kernel component at run-time. To ensure that
->> only data from supported sources are measured, the kernel component
->> needs to be added to a compile-time list of supported sources (an
->> "allowed list of components"). IMA validates the source passed to
->> ima_measure_critical_data() against this allowed list at run-time.
-> 
-> This patch set must include at least one example of measuring critical
-> data, before it can be upstreamed.  Tushar, please coordinate with
-> Lakshmi and Raphael.
-> 
-Yes. I am coordinating with Lakshmi/Raphael on including one of the
-examples. (SeLinux as per your feedback)
+This is odd. bash definitely works with this script on my Debian x86 machine.
 
-BTW, we also have one more data source (dm-crypt) currently in review,
-that uses critical data measurement infrastructure to measure its kernel
-in-memory data.
-https://patchwork.kernel.org/patch/11844817/
+This error happens when the "detail" alias is not "seen" by the shell
+when it interprets detail_chosen function. Sigh, every shell seems to
+want a different order. Can you try to debug it on your end?
 
-Thanks again for all the help and support with the patches.
+This is the version I have:
+GNU bash, version 5.1.0(1)-rc1
 
-~Tushar
+> Which shell should I use?
 
-> thanks,
-> 
-> Mimi
-> 
+I've tested with toybox and bash.
+
+-Saravana
