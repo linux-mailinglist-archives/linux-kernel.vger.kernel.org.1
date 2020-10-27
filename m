@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B22E29C9BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E06A729C9BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830905AbgJ0UH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:07:28 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33974 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504510AbgJ0UH1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:07:27 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 07C0980307C2;
-        Tue, 27 Oct 2020 20:07:21 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id j-zjieWO8i_k; Tue, 27 Oct 2020 23:07:20 +0300 (MSK)
-Date:   Tue, 27 Oct 2020 23:07:19 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Felipe Balbi <balbi@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        David Cohen <david.a.cohen@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] usb: dwc3: ulpi: Fix UPLI registers read/write ops
-Message-ID: <20201027200719.yvhgbxeuurkdadcf@mobilestation>
-References: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
- <87mu08c9qt.fsf@kernel.org>
+        id S1830916AbgJ0UIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:08:13 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55130 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504820AbgJ0UIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:08:12 -0400
+Received: from zn.tnic (p200300ec2f0dae0027de8a0d2c2515c8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:27de:8a0d:2c25:15c8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AF33A1EC03C1;
+        Tue, 27 Oct 2020 21:08:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603829290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=+i5e7y4zrzzXLxL+wnxdCVox1HHvWMsATZ7U/XZnHdA=;
+        b=Mkla+x/UCwglP/js+4HkoEspPrCtO4l/TZWsSuX3Ywdn1ccMJyrMVZD9U4N4c5p112N5oK
+        0DqMjlh8YVSHF9d00O3KRmNHWudyp2quh2erQ4sSFPwOqG98JzKPdwFSYtVo3IhR9UH7+v
+        SEk+jvSTfKBhoPhdiBnyMXqGeqvTIoE=
+Date:   Tue, 27 Oct 2020 21:08:03 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
+Message-ID: <20201027200803.GL15580@zn.tnic>
+References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87mu08c9qt.fsf@kernel.org>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20201005151539.2214095-1-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:13:14AM +0200, Felipe Balbi wrote:
-> Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
+On Mon, Oct 05, 2020 at 11:15:39AM -0400, Arvind Sankar wrote:
+> Commit b4e0409a36f4 ("x86: check vmlinux limits, 64-bit") added a check
+> that the size of the 64-bit kernel is less than KERNEL_IMAGE_SIZE.
 > 
-> > Our Baikal-T1 SoC is equipped with DWC USB3 IP core as a USB2.0 bus
-> > controller. In general the DWC USB3 driver is working well for it except
-> > the ULPI-bus part. We've found out that the DWC USB3 ULPI-bus driver detected
-> > PHY with VID:PID tuple as 0x0000:0x0000, which of course wasn't true since
-> > it was supposed to be 0x0424:0x0006. After a short digging inside the
-> > ulpi.c code and studying the DWC USB3 documentation, it has been
-> > discovered that the ULPI bus IO ops didn't work quite correct. The
-> > busy-loop had stopped waiting before the actual operation was finished. We
-> > found out that the problem was caused by several bugs hidden in the DWC
-> > USB3 ULPI-bus IO implementation.
-> >
-> > First of all in accordance with the DWC USB3 databook [1] the ULPI IO
-> > busy-loop is supposed to use the GUSB2PHYACCn.VStsDone flag as an
-> > indication of the PHY vendor control access completion. Instead it polled
-> > the GUSB2PHYACCn.VStsBsy flag, which as we discovered can be cleared a
-> > bit before the VStsDone flag.
-> >
-> > Secondly having the simple counter-based loop in the modern kernel is
-> > really a weak design of the busy-looping pattern especially seeing the
-> > ULPI operations delay can be easily estimated [2], since the bus clock is
-> > fixed to 60MHz.
-> >
-> > Finally the root cause of the denoted in the prologue problem was due to
-> > the Suspend PHY DWC USB3 feature perception. The commit e0082698b689
-> > ("usb: dwc3: ulpi: conditionally resume ULPI PHY") introduced the Suspend
-> > USB2.0 HS/FS/LS PHY regression as the Low-power consumption mode would be
-> > disable after a first attempt to read/write from the ULPI PHY control
-> > registers, and still didn't fix the problem it was originally intended for
-> > since the very first attempt of the ULPI PHY control registers IO would
-> > need much more time than the busy-loop provided. So instead of disabling
-> > the Suspend USB2.0 HS/FS/LS PHY feature we suggest to just extend the
-> > busy-loop delay in case if the GUSB2PHYCFGn.SusPHY flag set to 1. By doing
-> > so we'll eliminate the regression and the fix the false busy-loop timeout
-> > problem.
-> >
-> > [1] Synopsys DesignWare Cores SuperSpeed USB 3.0 xHCI Host Controller
-> >     Databook, 2.70a, December 2013, p.388
-> >
-> > [1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
-> >     October 20, 2004, pp. 30 - 36.
-> >
-> > Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
-> > Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-> > Cc: linux-usb@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
+> The check uses (_end - _text), but this is not enough. The initial PMD
+> used in startup_64() (level2_kernel_pgt) can only map upto
+> KERNEL_IMAGE_SIZE from __START_KERNEL_map, not from _text.
 > 
-
-> these should go in the relevant commits instead.
-
-Could you elaborate what do you mean by "these"? If you meant the "Fixes" tag,
-then it's already there except the very first patch. Which I think could be also
-tagged with one.
-
+> The correct check is the same as for 32-bit, since LOAD_OFFSET is
+> defined appropriately for the two architectures. Just check
+> (_end - LOAD_OFFSET) against KERNEL_IMAGE_SIZE unconditionally.
 > 
-> > Serge Semin (3):
-> >   usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
-> >   usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
-> >   usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  arch/x86/kernel/vmlinux.lds.S | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
 > 
+> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+> index bf9e0adb5b7e..b38832821b98 100644
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -454,13 +454,12 @@ SECTIONS
+>  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
+>  }
+>  
+> -#ifdef CONFIG_X86_32
+>  /*
+>   * The ASSERT() sink to . is intentional, for binutils 2.14 compatibility:
+>   */
+>  . = ASSERT((_end - LOAD_OFFSET <= KERNEL_IMAGE_SIZE),
+>  	   "kernel image bigger than KERNEL_IMAGE_SIZE");
+> -#else
+> +#ifdef CONFIG_X86_64
+>  /*
+>   * Per-cpu symbols which need to be offset from __per_cpu_load
+>   * for the boot processor.
+> @@ -470,18 +469,12 @@ INIT_PER_CPU(gdt_page);
+>  INIT_PER_CPU(fixed_percpu_data);
+>  INIT_PER_CPU(irq_stack_backing_store);
+>  
+> -/*
+> - * Build-time check on the image size:
+> - */
+> -. = ASSERT((_end - _text <= KERNEL_IMAGE_SIZE),
+> -	   "kernel image bigger than KERNEL_IMAGE_SIZE");
 
-> make sure fixes don't depend on other rework otherwise they can't be
-> taken during the -rc cycle.
+So we have this:
 
-Logically they don't, but still the later patches won't apply cleanly without
-the former ones. So I can add the "Fixes" tag to the very first patch (it would
-be correct since basically it's also a fix) so all of them would be ported to
-the -rc and stable kernels. Is that ok?
+SECTIONS
+{       
+#ifdef CONFIG_X86_32
+        . = LOAD_OFFSET + LOAD_PHYSICAL_ADDR;
+        phys_startup_32 = ABSOLUTE(startup_32 - LOAD_OFFSET);
+#else     
+        . = __START_KERNEL;
+	^^^^^^^^^^
 
--Sergey
+which sets the location counter to
 
-> 
-> -- 
-> balbi
+#define __START_KERNEL          (__START_KERNEL_map + __PHYSICAL_START)
 
+which is 	0xffffffff80000000 + ALIGN(CONFIG_PHYSICAL_START, CONFIG_PHYSICAL_ALIGN)
 
+and that second term after the '+' has effect only when
+CONFIG_RELOCATABLE=n and that's not really used on modern kernel configs
+as RELOCATABLE is selected by EFI_STUB and RANDOMIZE_BASE depends on at
+and and ...
+
+So IOW, in a usual .config we have:
+
+__START_KERNEL_map at 0xffffffff80000000
+_text		   at 0xffffffff81000000
+
+So practically and for the majority of configs, the kernel image really
+does start at _text and not at __START_KERNEL_map and we map 16Mb which
+is 4 PMDs of unused pages. So basically you're correcting that here -
+that the number tested against KERNEL_IMAGE_SIZE is 16Mb more.
+
+Yes, no?
+
+Or am I missing some more important aspect and this is more than just a
+small correctness fixlet?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
