@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0952B29B323
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842CE29B2B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1763104AbgJ0Oon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43402 "EHLO mail.kernel.org"
+        id S1763600AbgJ0Ooq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:44:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762205AbgJ0Ong (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:43:36 -0400
+        id S1762632AbgJ0Onp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:43:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71F9F20773;
-        Tue, 27 Oct 2020 14:43:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36961206B2;
+        Tue, 27 Oct 2020 14:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809816;
-        bh=lnUQmhdxI1R7NBgmIqelYj+WNGdFerjAL0lYGwFQWbo=;
+        s=default; t=1603809824;
+        bh=+n1S3A+tYy55zl/N+PuWYLmn/WLTr5AUGrt5WVfD6Nk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o+Kcop5uPv/3NnQffcLzng7EXY+WXTqZcIl6eQy6+u82wxZdVKtb4R2XAmXxyFGgX
-         oZk5xpUlADEERQfDte8gAxBchlHS1bASQEsaS9ry9EcfDRBn88wNA/uMZGM6WLVY0g
-         nG1SQ1Tv9FskwbtCLmL2UEkO19xQNxUwlrdqA1kI=
+        b=q/B4b2V5ja/0XaAkwDMSiuCLzP5kCScYWwndDbi5RWZVXXLd5/5ETb6C060TPqRDf
+         pRniQrG4TyRCIFiIo2XucRkrelb2PJj/iHamJuUw0pJi7rwVIrndbywNPp2r+wlrg+
+         VR+d9dYaIsW5XjO4DXhsbVnNbBZnG1eAui4QyBYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+998261c2ae5932458f6c@syzkaller.appspotmail.com,
-        Oliver Neukum <oneukum@suse.com>, Sean Young <sean@mess.org>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 330/408] media: ati_remote: sanity check for both endpoints
-Date:   Tue, 27 Oct 2020 14:54:28 +0100
-Message-Id: <20201027135510.344490597@linuxfoundation.org>
+Subject: [PATCH 5.4 332/408] media: sti: Fix reference count leaks
+Date:   Tue, 27 Oct 2020 14:54:30 +0100
+Message-Id: <20201027135510.440813609@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,38 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit a8be80053ea74bd9c3f9a3810e93b802236d6498 ]
+[ Upstream commit 6f4432bae9f2d12fc1815b5e26cc07e69bcad0df ]
 
-If you do sanity checks, you should do them for both endpoints.
-Hence introduce checking for endpoint type for the output
-endpoint, too.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code, causing incorrect ref count if
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-Reported-by: syzbot+998261c2ae5932458f6c@syzkaller.appspotmail.com
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/ati_remote.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/platform/sti/hva/hva-hw.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/rc/ati_remote.c b/drivers/media/rc/ati_remote.c
-index 9cdef17b4793f..c12dda73cdd53 100644
---- a/drivers/media/rc/ati_remote.c
-+++ b/drivers/media/rc/ati_remote.c
-@@ -835,6 +835,10 @@ static int ati_remote_probe(struct usb_interface *interface,
- 		err("%s: endpoint_in message size==0? \n", __func__);
- 		return -ENODEV;
- 	}
-+	if (!usb_endpoint_is_int_out(endpoint_out)) {
-+		err("%s: Unexpected endpoint_out\n", __func__);
-+		return -ENODEV;
-+	}
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index 401aaafa17109..bb13348be0832 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -272,6 +272,7 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
  
- 	ati_remote = kzalloc(sizeof (struct ati_remote), GFP_KERNEL);
- 	rc_dev = rc_allocate_device(RC_DRIVER_SCANCODE);
+ 	if (pm_runtime_get_sync(dev) < 0) {
+ 		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
++		pm_runtime_put_noidle(dev);
+ 		mutex_unlock(&hva->protect_mutex);
+ 		return -EFAULT;
+ 	}
+@@ -553,6 +554,7 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
+ 
+ 	if (pm_runtime_get_sync(dev) < 0) {
+ 		seq_puts(s, "Cannot wake up IP\n");
++		pm_runtime_put_noidle(dev);
+ 		mutex_unlock(&hva->protect_mutex);
+ 		return;
+ 	}
 -- 
 2.25.1
 
