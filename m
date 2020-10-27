@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7390229C27A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFE529C278
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820603AbgJ0Rgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35106 "EHLO mail.kernel.org"
+        id S1820592AbgJ0RgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:36:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760751AbgJ0OgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:36:16 -0400
+        id S1760782AbgJ0Og1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:36:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4A3222202;
-        Tue, 27 Oct 2020 14:36:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EAD32222C;
+        Tue, 27 Oct 2020 14:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809375;
-        bh=lpOGQ10X7hAeMbLI1BwsoVxveb/z8ud/NuNpMRcRJBg=;
+        s=default; t=1603809386;
+        bh=CopuDhuL86Nrupnmspe8rSwxbQZd0/MCegIrIsAZbNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0MMSZXm3yLf1B56ZA8BopE0UvyTTq6GG3oU5pqX7gNasxNyiv3iqAb4T+RSg+2nPw
-         FjykFnZaYwxdQfdXvWhhxQv/1xruyGqJKSt6cy7W0Ph0FpSzcchGmIo5HP85/DHA3j
-         zIPmTxlAs76ow841qQ9iMSIBTVRXhLvucAKiPpcE=
+        b=mAPS9Wlm7R7IcvdZt/QyZ0vuHxaq9LltoswL7+qzWW1PaBViLAcDi9I2WRUu0hJZN
+         HPEV/IOmzWIr9rBxmnXWbqD1UAF9lXxDxftAKLDGJU+vlwufvCkxM5oFeDT3QgapxB
+         4tGq9wiBfcoZKpJnWEO23MgEp47sTUs2wmIAvEkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 173/408] ibmvnic: set up 200GBPS speed
-Date:   Tue, 27 Oct 2020 14:51:51 +0100
-Message-Id: <20201027135503.124342856@linuxfoundation.org>
+Subject: [PATCH 5.4 176/408] net: enic: Cure the enic api locking trainwreck
+Date:   Tue, 27 Oct 2020 14:51:54 +0100
+Message-Id: <20201027135503.260247044@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,58 +43,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit b9cd795b0e4860f482bf3741d12e1c8f3ec1cfc9 ]
+[ Upstream commit a53b59ece86c86d16d12ccdaa1ad0c78250a9d96 ]
 
-Set up the speed according to crq->query_phys_parms.rsp.speed.
-Fix IBMVNIC_10GBPS typo.
+enic_dev_wait() has a BUG_ON(in_interrupt()).
 
-Fixes: f8d6ae0d27ec ("ibmvnic: Report actual backing device speed and duplex values")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Chasing the callers of enic_dev_wait() revealed the gems of enic_reset()
+and enic_tx_hang_reset() which are both invoked through work queues in
+order to be able to call rtnl_lock(). So far so good.
+
+After locking rtnl both functions acquire enic::enic_api_lock which
+serializes against the (ab)use from infiniband. This is where the
+trainwreck starts.
+
+enic::enic_api_lock is a spin_lock() which implicitly disables preemption,
+but both functions invoke a ton of functions under that lock which can
+sleep. The BUG_ON(in_interrupt()) does not trigger in that case because it
+can't detect the preempt disabled condition.
+
+This clearly has never been tested with any of the mandatory debug options
+for 7+ years, which would have caught that for sure.
+
+Cure it by adding a enic_api_busy member to struct enic, which is modified
+and evaluated with enic::enic_api_lock held.
+
+If enic_api_devcmd_proxy_by_index() observes enic::enic_api_busy as true,
+it drops enic::enic_api_lock and busy waits for enic::enic_api_busy to
+become false.
+
+It would be smarter to wait for a completion of that busy period, but
+enic_api_devcmd_proxy_by_index() is called with other spin locks held which
+obviously can't sleep.
+
+Remove the BUG_ON(in_interrupt()) check as well because it's incomplete and
+with proper debugging enabled the problem would have been caught from the
+debug checks in schedule_timeout().
+
+Fixes: 0b038566c0ea ("drivers/net: enic: Add an interface for USNIC to interact with firmware")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 5 ++++-
- drivers/net/ethernet/ibm/ibmvnic.h | 2 +-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/cisco/enic/enic.h      |  1 +
+ drivers/net/ethernet/cisco/enic/enic_api.c  |  6 +++++
+ drivers/net/ethernet/cisco/enic/enic_main.c | 27 ++++++++++++++++-----
+ 3 files changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 59d437df6cab4..48105a2eebe4d 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -4477,7 +4477,7 @@ static int handle_query_phys_parms_rsp(union ibmvnic_crq *crq,
- 	case IBMVNIC_1GBPS:
- 		adapter->speed = SPEED_1000;
- 		break;
--	case IBMVNIC_10GBP:
-+	case IBMVNIC_10GBPS:
- 		adapter->speed = SPEED_10000;
- 		break;
- 	case IBMVNIC_25GBPS:
-@@ -4492,6 +4492,9 @@ static int handle_query_phys_parms_rsp(union ibmvnic_crq *crq,
- 	case IBMVNIC_100GBPS:
- 		adapter->speed = SPEED_100000;
- 		break;
-+	case IBMVNIC_200GBPS:
-+		adapter->speed = SPEED_200000;
-+		break;
- 	default:
- 		if (netif_carrier_ok(netdev))
- 			netdev_warn(netdev, "Unknown speed 0x%08x\n", rspeed);
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.h b/drivers/net/ethernet/ibm/ibmvnic.h
-index ebc39248b334a..0da20f19bb17c 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.h
-+++ b/drivers/net/ethernet/ibm/ibmvnic.h
-@@ -373,7 +373,7 @@ struct ibmvnic_phys_parms {
- #define IBMVNIC_10MBPS		0x40000000
- #define IBMVNIC_100MBPS		0x20000000
- #define IBMVNIC_1GBPS		0x10000000
--#define IBMVNIC_10GBP		0x08000000
-+#define IBMVNIC_10GBPS		0x08000000
- #define IBMVNIC_40GBPS		0x04000000
- #define IBMVNIC_100GBPS		0x02000000
- #define IBMVNIC_25GBPS		0x01000000
+diff --git a/drivers/net/ethernet/cisco/enic/enic.h b/drivers/net/ethernet/cisco/enic/enic.h
+index 0dd64acd2a3fb..08cac1bfacafb 100644
+--- a/drivers/net/ethernet/cisco/enic/enic.h
++++ b/drivers/net/ethernet/cisco/enic/enic.h
+@@ -171,6 +171,7 @@ struct enic {
+ 	u16 num_vfs;
+ #endif
+ 	spinlock_t enic_api_lock;
++	bool enic_api_busy;
+ 	struct enic_port_profile *pp;
+ 
+ 	/* work queue cache line section */
+diff --git a/drivers/net/ethernet/cisco/enic/enic_api.c b/drivers/net/ethernet/cisco/enic/enic_api.c
+index b161f24522b87..b028ea2dec2b9 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_api.c
++++ b/drivers/net/ethernet/cisco/enic/enic_api.c
+@@ -34,6 +34,12 @@ int enic_api_devcmd_proxy_by_index(struct net_device *netdev, int vf,
+ 	struct vnic_dev *vdev = enic->vdev;
+ 
+ 	spin_lock(&enic->enic_api_lock);
++	while (enic->enic_api_busy) {
++		spin_unlock(&enic->enic_api_lock);
++		cpu_relax();
++		spin_lock(&enic->enic_api_lock);
++	}
++
+ 	spin_lock_bh(&enic->devcmd_lock);
+ 
+ 	vnic_dev_cmd_proxy_by_index_start(vdev, vf);
+diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
+index 6e2ab10ad2e6f..8314102002b0f 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_main.c
++++ b/drivers/net/ethernet/cisco/enic/enic_main.c
+@@ -2142,8 +2142,6 @@ static int enic_dev_wait(struct vnic_dev *vdev,
+ 	int done;
+ 	int err;
+ 
+-	BUG_ON(in_interrupt());
+-
+ 	err = start(vdev, arg);
+ 	if (err)
+ 		return err;
+@@ -2331,6 +2329,13 @@ static int enic_set_rss_nic_cfg(struct enic *enic)
+ 		rss_hash_bits, rss_base_cpu, rss_enable);
+ }
+ 
++static void enic_set_api_busy(struct enic *enic, bool busy)
++{
++	spin_lock(&enic->enic_api_lock);
++	enic->enic_api_busy = busy;
++	spin_unlock(&enic->enic_api_lock);
++}
++
+ static void enic_reset(struct work_struct *work)
+ {
+ 	struct enic *enic = container_of(work, struct enic, reset);
+@@ -2340,7 +2345,9 @@ static void enic_reset(struct work_struct *work)
+ 
+ 	rtnl_lock();
+ 
+-	spin_lock(&enic->enic_api_lock);
++	/* Stop any activity from infiniband */
++	enic_set_api_busy(enic, true);
++
+ 	enic_stop(enic->netdev);
+ 	enic_dev_soft_reset(enic);
+ 	enic_reset_addr_lists(enic);
+@@ -2348,7 +2355,10 @@ static void enic_reset(struct work_struct *work)
+ 	enic_set_rss_nic_cfg(enic);
+ 	enic_dev_set_ig_vlan_rewrite_mode(enic);
+ 	enic_open(enic->netdev);
+-	spin_unlock(&enic->enic_api_lock);
++
++	/* Allow infiniband to fiddle with the device again */
++	enic_set_api_busy(enic, false);
++
+ 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
+ 
+ 	rtnl_unlock();
+@@ -2360,7 +2370,9 @@ static void enic_tx_hang_reset(struct work_struct *work)
+ 
+ 	rtnl_lock();
+ 
+-	spin_lock(&enic->enic_api_lock);
++	/* Stop any activity from infiniband */
++	enic_set_api_busy(enic, true);
++
+ 	enic_dev_hang_notify(enic);
+ 	enic_stop(enic->netdev);
+ 	enic_dev_hang_reset(enic);
+@@ -2369,7 +2381,10 @@ static void enic_tx_hang_reset(struct work_struct *work)
+ 	enic_set_rss_nic_cfg(enic);
+ 	enic_dev_set_ig_vlan_rewrite_mode(enic);
+ 	enic_open(enic->netdev);
+-	spin_unlock(&enic->enic_api_lock);
++
++	/* Allow infiniband to fiddle with the device again */
++	enic_set_api_busy(enic, false);
++
+ 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
+ 
+ 	rtnl_unlock();
 -- 
 2.25.1
 
