@@ -2,195 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6051929C510
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20E529C6C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824150AbgJ0SDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:03:36 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33063 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757394AbgJ0OTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:19:14 -0400
-Received: by mail-qt1-f195.google.com with SMTP id j62so1075858qtd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bxh1Do9gB2L1qAcESsHXkjxOIjeM0Npe6oBM5FfnnCY=;
-        b=bsIQ5abhxIx4Kuz1KfVERGK1ug+bmNb8gWArGIWJRq4uLEOGl8+9v8dKOJO+LXEpbi
-         nnpSu/+OiU5GZqcVoUkt4PVykOBtgfvYoS4lounvL/Dtz2FHPnHA3gYZAZDketrQcyjR
-         F8j9bWg7MZJ1RhEGhuw6A+LRKyYIoI0XBjSn0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bxh1Do9gB2L1qAcESsHXkjxOIjeM0Npe6oBM5FfnnCY=;
-        b=eX819eD2P1FfOctvOyP+x+Rr7KO9SIF6/bLHLJQGcXIpwHCkvwEhXoS4kbop+gvD8d
-         +v3IBNc+ao9mR6ZCO6KXYyUVEZ0Y7X7soW55ztERXd6+/O8+MiJ65YzDnrJuUkxaULnS
-         QQVa7g2GeQdV0ZpIKxXHgJX6H2AJe+1Vd8rqfZKWnMupXnracffD1cxMlJaFzOnswcUz
-         Crw1WEfZ1BebIgxBdswik/sgtwM8tgR7QWx6oPWiot64oQoDs2KOOCRS+EkZgdQFaZR0
-         tM3jtez3n6E7db7HmZfI9yafSwbR2+UTznqZ5Y6ac8gwQiALXTDKZl2dKbVbs/WoDfJe
-         4tpA==
-X-Gm-Message-State: AOAM5323plPaje5AUNNtP5yYWhY1gssueN5weXITNti/e41ZAWQYwBtu
-        An6nHf+8RrZmGhqO4O+YMR+GsQ==
-X-Google-Smtp-Source: ABdhPJya1MYpLPelnzTrpfjK5t/oGZBp8gdcvGnyABV2WaYubYYFygCM3HswoL6/iwzEyRm4xj67ag==
-X-Received: by 2002:ac8:6f53:: with SMTP id n19mr2321027qtv.282.1603808352539;
-        Tue, 27 Oct 2020 07:19:12 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id q16sm871284qtw.9.2020.10.27.07.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 07:19:11 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 10:19:11 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Ning, Hongyu" <hongyu.ning@linux.intel.com>
-Subject: Re: [PATCH v8 -tip 02/26] sched: Introduce sched_class::pick_task()
-Message-ID: <20201027141911.GC771372@google.com>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-3-joel@joelfernandes.org>
- <8ea1aa61-4a1c-2687-9f15-1062d37606c7@linux.intel.com>
- <CAEXW_YT-pKJiA-APEtJv9QuyoYB0wNrH3EbAyc=3dwMfav+F6Q@mail.gmail.com>
- <a2b66294-6a66-b5c1-7706-29bc92f416f5@linux.intel.com>
- <20201023214702.GA3603399@google.com>
- <d9a70e58-f424-3957-9957-b89071480005@linux.intel.com>
- <4241e5ac-ecdf-8634-fa0d-dd6759e477e1@linux.microsoft.com>
- <8230ada7-839f-2335-9a55-b09f6a813e91@linux.microsoft.com>
- <20201026090131.GE2628@hirez.programming.kicks-ass.net>
+        id S1827250AbgJ0SWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:22:33 -0400
+Received: from mailhost.m5p.com ([74.104.188.4]:29455 "EHLO mailhost.m5p.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1826543AbgJ0SUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 14:20:22 -0400
+X-Greylist: delayed 1721 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Oct 2020 14:20:22 EDT
+Received: from m5p.com (mailhost.m5p.com [IPv6:2001:470:1f07:15ff:0:0:0:f7])
+        by mailhost.m5p.com (8.15.2/8.15.2) with ESMTPS id 09RHpF0L032137
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Tue, 27 Oct 2020 13:51:20 -0400 (EDT)
+        (envelope-from ehem@m5p.com)
+Received: (from ehem@localhost)
+        by m5p.com (8.15.2/8.15.2/Submit) id 09RHpEQr032136;
+        Tue, 27 Oct 2020 10:51:14 -0700 (PDT)
+        (envelope-from ehem)
+Date:   Tue, 27 Oct 2020 10:51:14 -0700
+From:   Elliott Mitchell <ehem+undef@m5p.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, konrad.wilk@oracle.com, hch@lst.de
+Subject: Re: [PATCH] fix swiotlb panic on Xen
+Message-ID: <20201027175114.GA32110@mattapan.m5p.com>
+References: <alpine.DEB.2.21.2010261653320.12247@sstabellini-ThinkPad-T480s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201026090131.GE2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <alpine.DEB.2.21.2010261653320.12247@sstabellini-ThinkPad-T480s>
+X-Spam-Status: No, score=0.0 required=10.0 tests=KHOP_HELO_FCRDNS
+        autolearn=unavailable autolearn_force=no version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mattapan.m5p.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:01:31AM +0100, Peter Zijlstra wrote:
-> On Sat, Oct 24, 2020 at 08:27:16AM -0400, Vineeth Pillai wrote:
-> > 
-> > 
-> > On 10/24/20 7:10 AM, Vineeth Pillai wrote:
-> > > 
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 93a3b874077d..4cae5ac48b60 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -4428,12 +4428,14 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct
-> > > sched_entity *curr)
-> > >                         se = second;
-> > >         }
-> > > 
-> > > -       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) <
-> > > 1) {
-> > > +       if (left && cfs_rq->next &&
-> > > +                       wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-> > >                 /*
-> > >                  * Someone really wants this to run. If it's not unfair,
-> > > run it.
-> > >                  */
-> > >                 se = cfs_rq->next;
-> > > -       } else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last,
-> > > left) < 1) {
-> > > +       } else if (left && cfs_rq->last &&
-> > > +                       wakeup_preempt_entity(cfs_rq->last, left) < 1) {
-> > >                 /*
-> > >                  * Prefer last buddy, try to return the CPU to a
-> > > preempted task.
-> > > 
-> > > 
-> > > There reason for left being NULL needs to be investigated. This was
-> > > there from v1 and we did not yet get to it. I shall try to debug later
-> > > this week.
-> > 
-> > Thinking more about it and looking at the crash, I think that
-> > 'left == NULL' can happen in pick_next_entity for core scheduling.
-> > If a cfs_rq has only one task that is running, then it will be
-> > dequeued and 'left = __pick_first_entity()' will be NULL as the
-> > cfs_rq will be empty. This would not happen outside of coresched
-> > because we never call pick_tack() before put_prev_task() which
-> > will enqueue the task back.
-> > 
-> > With core scheduling, a cpu can call pick_task() for its sibling while
-> > the sibling is still running the active task and put_prev_task has yet
-> > not been called. This can result in 'left == NULL'.
+On Mon, Oct 26, 2020 at 05:02:14PM -0700, Stefano Stabellini wrote:
+> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
 > 
-> Quite correct. Hurmph.. the reason we do this is because... we do the
-> update_curr() the wrong way around. And I can't seem to remember why we
-> do that (it was in my original patches).
+> kernel/dma/swiotlb.c:swiotlb_init gets called first and tries to
+> allocate a buffer for the swiotlb. It does so by calling
 > 
-> Something like so seems the obvious thing to do, but I can't seem to
-> remember why we're not doing it :-(
-
-The code below is just a refactor and not a functional change though, right?
-
-i.e. pick_next_entity() is already returning se = curr, if se == NULL.
-
-But the advantage of your refactor is it doesn't crash the kernel.
-
-So your change appears safe to me unless I missed something.
-
-thanks,
-
- - Joel
-
-
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6950,15 +6950,10 @@ static struct task_struct *pick_task_fai
->  	do {
->  		struct sched_entity *curr = cfs_rq->curr;
+>   memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
+> 
+> If the allocation must fail, no_iotlb_memory is set.
+> 
+> 
+> Later during initialization swiotlb-xen comes in
+> (drivers/xen/swiotlb-xen.c:xen_swiotlb_init) and given that io_tlb_start
+> is != 0, it thinks the memory is ready to use when actually it is not.
+> 
+> When the swiotlb is actually needed, swiotlb_tbl_map_single gets called
+> and since no_iotlb_memory is set the kernel panics.
+> 
+> Instead, if swiotlb-xen.c:xen_swiotlb_init knew the swiotlb hadn't been
+> initialized, it would do the initialization itself, which might still
+> succeed.
+> 
+> 
+> Fix the panic by setting io_tlb_start to 0 on swiotlb initialization
+> failure, and also by setting no_iotlb_memory to false on swiotlb
+> initialization success.
+> 
+> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> 
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index c19379fabd20..9924214df60a 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -231,6 +231,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>  		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
+>  	}
+>  	io_tlb_index = 0;
+> +	no_iotlb_memory = false;
 >  
-> -		se = pick_next_entity(cfs_rq, NULL);
-> +		if (curr && curr->on_rq)
-> +			update_curr(cfs_rq);
+>  	if (verbose)
+>  		swiotlb_print_info();
+> @@ -262,9 +263,11 @@ swiotlb_init(int verbose)
+>  	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
+>  		return;
 >  
-> -		if (curr) {
-> -			if (se && curr->on_rq)
-> -				update_curr(cfs_rq);
-> -
-> -			if (!se || entity_before(curr, se))
-> -				se = curr;
-> -		}
-> +		se = pick_next_entity(cfs_rq, curr);
+> -	if (io_tlb_start)
+> +	if (io_tlb_start) {
+>  		memblock_free_early(io_tlb_start,
+>  				    PAGE_ALIGN(io_tlb_nslabs << IO_TLB_SHIFT));
+> +		io_tlb_start = 0;
+> +	}
+>  	pr_warn("Cannot allocate buffer");
+>  	no_iotlb_memory = true;
+>  }
+> @@ -362,6 +365,7 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>  		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
+>  	}
+>  	io_tlb_index = 0;
+> +	no_iotlb_memory = false;
 >  
->  		cfs_rq = group_cfs_rq(se);
->  	} while (cfs_rq);
+>  	swiotlb_print_info();
+>  
+
+As the person who first found this and then confirmed this fixes a bug:
+
+Tested-by: Elliott Mitchell <ehem+xen@m5p.com>
+
+
+-- 
+(\___(\___(\______          --=> 8-) EHM <=--          ______/)___/)___/)
+ \BS (    |         ehem+sigmsg@m5p.com  PGP 87145445         |    )   /
+  \_CS\   |  _____  -O #include <stddisclaimer.h> O-   _____  |   /  _/
+8A19\___\_|_/58D2 7E3D DDF4 7BA6 <-PGP-> 41D1 B375 37D0 8714\_|_/___/5445
+
+
