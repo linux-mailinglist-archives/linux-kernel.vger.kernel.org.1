@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32AB29CB1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B5D29CB23
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373752AbgJ0VWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:22:07 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44953 "EHLO ozlabs.org"
+        id S373779AbgJ0VXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:23:52 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56181 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442341AbgJ0VWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:22:07 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLPmF03cTz9sRk;
-        Wed, 28 Oct 2020 08:22:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603833725;
-        bh=pqd82jAjDY41bsYyotx+WCKI/i5ce4Hh3wPTjPIpzIw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XhFkp2NKjgeVx7FPa7eACNXxyS2D9yoDlQcsT4QGUWEI1i2E25FNatPB0KUhnl3Tx
-         qIAPugTU2uBHN85aChymsj4uuOAqjB8kae3Qa7NSkI/sZzaKjjNo5JZQmuXKZNyti8
-         cwbGZhZJRhbHffl/e3QV55h2PwG3YzmuQfHbgopg8ABUHY5ziIsZQW/vnih8U2TkPG
-         ZYi5OhSXJU4pAZgjMD0Envjzo/LNZ+K28eRyv+LmNSGdxd1IuCLG8oBsdlnG4JoZoZ
-         7b5gbcN7g5dRzlr+hriOsZmOEo88gg31KmtINoVFvskMu/V6iCMiDMHh/KbUV3+D/O
-         t1g1fJLCC6c0A==
-Date:   Wed, 28 Oct 2020 08:22:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the amdgpu tree
-Message-ID: <20201028082204.364242de@canb.auug.org.au>
+        id S373764AbgJ0VXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:23:51 -0400
+IronPort-SDR: mm42A7NBYWv2Xzhp4YMkm6L1GrrN+XED0/Q9qnxPDgGBpitaE3zVLjjxAwnSEo/fSn7hRcGuvt
+ yPKBc+RsiFIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="155133697"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="155133697"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 14:23:50 -0700
+IronPort-SDR: wAVat0Mh0B7MCeJOzTOZ1b2tBkCUoIzYgffFSRKrmNkkPqBwRMplUWMpcW6Ax+thT4qbW2FPTC
+ FQC6YwdZ96lQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="524886372"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Oct 2020 14:23:50 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/11] KVM: VMX: Clean up Hyper-V PV TLB flush
+Date:   Tue, 27 Oct 2020 14:23:35 -0700
+Message-Id: <20201027212346.23409-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3ZpcyTADX4FYbKIoTnYeI8F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3ZpcyTADX4FYbKIoTnYeI8F
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Clean up KVM's PV TLB flushing when running with EPT on Hyper-V, i.e. as
+a nested VMM.  No real goal in mind other than the sole patch in v1, which
+is a minor change to avoid a future mixup when TDX also wants to define
+.remote_flush_tlb.  Everything else is opportunistic clean up.
 
-Hi all,
+Patch 1 legitimately tested on VMX (no SVM), everything else effectively
+build tested only.
 
-In commit
+v3:
+  - Add a patch to pass the root_hpa instead of pgd to vmx_load_mmu_pgd()
+    and retrieve the active PCID only when necessary.  [Vitaly]
+  - Selectively collects reviews (skipped a few due to changes). [Vitaly]
+  - Explicitly invalidate hv_tlb_eptp instead of leaving it valid when
+    the mismatch tracker "knows" it's invalid. [Vitaly]
+  - Change the last patch to use "hv_root_ept" instead of "hv_tlb_pgd"
+    to better reflect what is actually being tracked.
 
-  8f76b1bbe713 ("drm/amdgpu/pm: fix the fan speed in fan1_input in manual m=
-ode for navi1x")
+v2: Rewrite everything.
+ 
+Sean Christopherson (11):
+  KVM: x86: Get active PCID only when writing a CR3 value
+  KVM: VMX: Track common EPTP for Hyper-V's paravirt TLB flush
+  KVM: VMX: Stash kvm_vmx in a local variable for Hyper-V paravirt TLB
+    flush
+  KVM: VMX: Fold Hyper-V EPTP checking into it's only caller
+  KVM: VMX: Do Hyper-V TLB flush iff vCPU's EPTP hasn't been flushed
+  KVM: VMX: Invalidate hv_tlb_eptp to denote an EPTP mismatch
+  KVM: VMX: Don't invalidate hv_tlb_eptp if the new EPTP matches
+  KVM: VMX: Explicitly check for hv_remote_flush_tlb when loading pgd
+  KVM: VMX: Define Hyper-V paravirt TLB flush fields iff Hyper-V is
+    enabled
+  KVM: VMX: Skip additional Hyper-V TLB EPTP flushes if one fails
+  KVM: VMX: Track root HPA instead of EPTP for paravirt Hyper-V TLB
+    flush
 
-Fixes tag
+ arch/x86/include/asm/kvm_host.h |   4 +-
+ arch/x86/kvm/mmu.h              |   2 +-
+ arch/x86/kvm/svm/svm.c          |   4 +-
+ arch/x86/kvm/vmx/vmx.c          | 134 ++++++++++++++++++--------------
+ arch/x86/kvm/vmx/vmx.h          |  19 ++---
+ 5 files changed, 87 insertions(+), 76 deletions(-)
 
-  Fixes: 3033e9f1c2de ("drm/amdgpu/swsmu: handle manual fan readback on SMU=
-11")
+-- 
+2.28.0
 
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: f6eb433954bf ("drm/amdgpu/swsmu: handle manual fan readback on SMU11=
-")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/3ZpcyTADX4FYbKIoTnYeI8F
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Yj3wACgkQAVBC80lX
-0GzxaQf+KbCHPTb5o9vVAkoN6hPnRWKlopbyJfkbqPIC1awwHaj9ts6CdbLtGwm2
-xl103K2vGOryjpu1z0xK1eN/xkR5QdlXGaJrAeXowubq7p/0AtglxCvd0TAF8lde
-tuaOF0tWo0Tok8tVgUeRxSpBaH2C1KJz4SKj1PuoliP/4+73MCu4QKZ6oTZXPEEv
-VeeX8dtXktWV39iYcMAxLitzocZr/AKOUiXea3MfcLTitQKpCl7hDRsa11+x1cmU
-uPTTXh6OJzKq/EmrqokmNqV3PfHEhfopVcGOPs3LhjQQK2WVimz73WLK9aa95P/t
-O3ndScECh6nrofqiLJfuPUfEOvDT/w==
-=CbHP
------END PGP SIGNATURE-----
-
---Sig_/3ZpcyTADX4FYbKIoTnYeI8F--
