@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C2629A4E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5106729A4E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409130AbgJ0GxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:53:11 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:42475 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729999AbgJ0GxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:53:11 -0400
-Received: by mail-yb1-f194.google.com with SMTP id a12so339695ybg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:53:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jjdl2dhuJDpqYsWLtlxuvUmg+zpTbJsyzx07rWA+3Bc=;
-        b=YGak6vUjSqyon7HWw3AXm4yi4I+zfP8DvCyJBwe75PHcDCOAkJCopDi7Qkzicv3++3
-         bhZeOruwmqj633uMGT9Fkoz80nrswtvPrNDAvux0JVFO2jnRcAuj5Z7XNbilg3XujWIo
-         batKSd11/ypHVD8GWSGZhQYHR7Wavf75sVSpYOXYnwSdf1vhDR7oFfPjt+P9E3PM+FAx
-         u9Kd4PZgrYM3ahytNjIF1wKkzRKyIGhaFDPGvE3/Wo1ESATJy/GjEyP5wC+HfAF5LgnT
-         ZpNyFFQWCOLyU5NeAZEtULbZ6CPUPhjCp/d8UZc4tQ4YZnfyqgzf10vsX7X8E7qcLFWL
-         CO4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jjdl2dhuJDpqYsWLtlxuvUmg+zpTbJsyzx07rWA+3Bc=;
-        b=FDZAVuSuHEz6YnmfBAvuxQ6Ussn90SdyO1HQPCnFswMe5kWIstKT7MML0N843HYcW4
-         60JfUvM4NlrQlrpPMTWgPsmR9d9Ts7GPkwRKKOmg51Rlf/JiSOE8iPY7OCA7rf2Kp7qs
-         OaqJyGVwCMMOXlpDMmRoIhlY2jI0a+hRjnmEseSdsX2f1GbLbWGsTbzqbiYOPB5yCOfV
-         GcadrQkFKVq2y60VVYhb93u04Bfju0Blev6mJYONs2wFgB8Tb0QNBEkq0hxTygP1saAo
-         HuwsrBARnyvOIHDDxA4S4cNkQCumWhzLAbeIkqMVuDzf+/ZhM24vo61d+KTjjMAgJgHx
-         SbCw==
-X-Gm-Message-State: AOAM530oRlxgkw378SFttkQrNOw58RcP9PU5ZZ31F63IZVHS82kqF0Gh
-        9ZHsxXuKERiMJi3EP/OEAbGhwnWaX6FRRbZraNFoHQ==
-X-Google-Smtp-Source: ABdhPJxG5Y81UbMg7yEAt0cjolVbinIPl2JL51jHpZOjbo4cTYsOAAhcLTlsA0vigb1dxR69f3JTQzU4O+5S2/bIvPE=
-X-Received: by 2002:a25:774f:: with SMTP id s76mr1026683ybc.235.1603781589825;
- Mon, 26 Oct 2020 23:53:09 -0700 (PDT)
+        id S2437063AbgJ0GyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:54:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36746 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2410058AbgJ0GyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 02:54:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 24F2CAEFE;
+        Tue, 27 Oct 2020 06:54:22 +0000 (UTC)
+Subject: Re: [PATCH] matroxfb: avoid -Warray-bounds warning
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201026194010.3817166-1-arnd@kernel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <745539ce-52ff-f56f-0f02-41894f366503@suse.de>
+Date:   Tue, 27 Oct 2020 07:54:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201026130450.6947-1-gilad@benyossef.com> <20201026130450.6947-2-gilad@benyossef.com>
- <20201026182448.GH858@sol.localdomain> <20201026182628.GI858@sol.localdomain>
-In-Reply-To: <20201026182628.GI858@sol.localdomain>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Tue, 27 Oct 2020 08:53:04 +0200
-Message-ID: <CAOtvUMe=KnRahskJtEh1pgyBfGoeZw0Vsq00Hvh+A_enVFVwZQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] crypto: add eboiv as a crypto API template
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-raid@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201026194010.3817166-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 8:26 PM Eric Biggers <ebiggers@kernel.org> wrote:
+Hi
 
->
-> Here's the version of eboiv_create() I recommend (untested):
->
-> static int eboiv_create(struct crypto_template *tmpl, struct rtattr **tb)
-> {
->         struct skcipher_instance *inst;
->         struct eboiv_instance_ctx *ictx;
->         struct skcipher_alg *alg;
->         u32 mask;
->         int err;
-...
+Am 26.10.20 um 20:39 schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The open-coded list_for_each_entry() causes a harmless warning:
+> 
+> drivers/video/fbdev/matrox/matroxfb_base.c: In function 'matroxfb_register_driver':
+> include/linux/kernel.h:856:3: warning: array subscript -98 is outside array bounds of 'struct list_head[1]' [-Warray-bounds]
+> 
+> Use the normal list_for_each_entry instead.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Thank you very much for the review and assistance. I will send out a
-revised version.
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-Thanks,
-Gilad
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
+I'll add the patch to drm-misc-next. Thanks!
 
-values of =CE=B2 will give rise to dom!
+Best regards
+Thomas
+
+> ---
+>  drivers/video/fbdev/matrox/matroxfb_base.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/matrox/matroxfb_base.c b/drivers/video/fbdev/matrox/matroxfb_base.c
+> index 570439b32655..a3853421b263 100644
+> --- a/drivers/video/fbdev/matrox/matroxfb_base.c
+> +++ b/drivers/video/fbdev/matrox/matroxfb_base.c
+> @@ -1970,9 +1970,7 @@ int matroxfb_register_driver(struct matroxfb_driver* drv) {
+>  	struct matrox_fb_info* minfo;
+>  
+>  	list_add(&drv->node, &matroxfb_driver_list);
+> -	for (minfo = matroxfb_l(matroxfb_list.next);
+> -	     minfo != matroxfb_l(&matroxfb_list);
+> -	     minfo = matroxfb_l(minfo->next_fb.next)) {
+> +	list_for_each_entry(minfo, &matroxfb_list, next_fb) {
+>  		void* p;
+>  
+>  		if (minfo->drivers_count == MATROXFB_MAX_FB_DRIVERS)
+> @@ -1990,9 +1988,7 @@ void matroxfb_unregister_driver(struct matroxfb_driver* drv) {
+>  	struct matrox_fb_info* minfo;
+>  
+>  	list_del(&drv->node);
+> -	for (minfo = matroxfb_l(matroxfb_list.next);
+> -	     minfo != matroxfb_l(&matroxfb_list);
+> -	     minfo = matroxfb_l(minfo->next_fb.next)) {
+> +	list_for_each_entry(minfo, &matroxfb_list, next_fb) {
+>  		int i;
+>  
+>  		for (i = 0; i < minfo->drivers_count; ) {
+> 
+
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
