@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E028829C2CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B5429C343
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760149AbgJ0Odg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58174 "EHLO mail.kernel.org"
+        id S1821493AbgJ0RoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:44:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902201AbgJ0Ob1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:31:27 -0400
+        id S2902234AbgJ0Obh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:31:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB1B020754;
-        Tue, 27 Oct 2020 14:31:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1FC9206DC;
+        Tue, 27 Oct 2020 14:31:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809086;
-        bh=solqgdnKKWFCskQ2IjV7aCH2XMHqzw0ApGOuephiAfQ=;
+        s=default; t=1603809097;
+        bh=biHJM8C+ItQFetRuYpsBSWjkyDAu9VvbvfyiUyE33Jc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f2T5BLKy94p/YaO4AZ5ZGAXwYPvBNk0BZTisAlNNkQyVMT8terUPwgvjakOguaG0P
-         oU7CjiMC1VYCfY1Ignuj7NY1xVvDFaaAgeNILuxVM2RGjRwNLnVIbRN5SkiQ6zRyog
-         D65xYuLIVEPL0MUtBqSDFUXxPfKrwWuMOBpD2cOY=
+        b=2Ew+h4vayJYXzbgd8ZNqtlKbd9aSK75YpbOvNr+49eNsFFFLicESuwHnOxBt7Uedb
+         f9JbIl4F1DWUgg6VYShRZ/XgxpKORvXPPL71lvloZPhRNLbIpuYcaXCSsArJW2EQO3
+         n1PGpAr2Fv9gY2a/cmjIrOBSPufe/eLDQ9DHWJZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/408] crypto: picoxcell - Fix potential race condition bug
-Date:   Tue, 27 Oct 2020 14:50:08 +0100
-Message-Id: <20201027135458.308277102@linuxfoundation.org>
+Subject: [PATCH 5.4 074/408] media: m5mols: Check function pointer in m5mols_sensor_power
+Date:   Tue, 27 Oct 2020 14:50:12 +0100
+Message-Id: <20201027135458.492474640@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,53 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 64f4a62e3b17f1e473f971127c2924cae42afc82 ]
+[ Upstream commit 52438c4463ac904d14bf3496765e67750766f3a6 ]
 
-engine->stat_irq_thresh was initialized after device_create_file() in
-the probe function, the initialization may race with call to
-spacc_stat_irq_thresh_store() which updates engine->stat_irq_thresh,
-therefore initialize it before creating the file in probe function.
+clang static analysis reports this error
 
-Found by Linux Driver Verification project (linuxtesting.org).
+m5mols_core.c:767:4: warning: Called function pointer
+  is null (null dereference) [core.CallAndMessage]
+    info->set_power(&client->dev, 0);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: ce92136843cb ("crypto: picoxcell - add support for the...")
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Acked-by: Jamie Iles <jamie@jamieiles.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+In other places, the set_power ptr is checked.
+So add a check.
+
+Fixes: bc125106f8af ("[media] Add support for M-5MOLS 8 Mega Pixel camera ISP")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/picoxcell_crypto.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/media/i2c/m5mols/m5mols_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
-index 2680e1525db58..13ecbb0e58528 100644
---- a/drivers/crypto/picoxcell_crypto.c
-+++ b/drivers/crypto/picoxcell_crypto.c
-@@ -1697,11 +1697,6 @@ static int spacc_probe(struct platform_device *pdev)
- 		goto err_clk_put;
- 	}
+diff --git a/drivers/media/i2c/m5mols/m5mols_core.c b/drivers/media/i2c/m5mols/m5mols_core.c
+index de295114ca482..21666d705e372 100644
+--- a/drivers/media/i2c/m5mols/m5mols_core.c
++++ b/drivers/media/i2c/m5mols/m5mols_core.c
+@@ -764,7 +764,8 @@ static int m5mols_sensor_power(struct m5mols_info *info, bool enable)
  
--	ret = device_create_file(&pdev->dev, &dev_attr_stat_irq_thresh);
--	if (ret)
--		goto err_clk_disable;
--
--
- 	/*
- 	 * Use an IRQ threshold of 50% as a default. This seems to be a
- 	 * reasonable trade off of latency against throughput but can be
-@@ -1709,6 +1704,10 @@ static int spacc_probe(struct platform_device *pdev)
- 	 */
- 	engine->stat_irq_thresh = (engine->fifo_sz / 2);
+ 		ret = regulator_bulk_enable(ARRAY_SIZE(supplies), supplies);
+ 		if (ret) {
+-			info->set_power(&client->dev, 0);
++			if (info->set_power)
++				info->set_power(&client->dev, 0);
+ 			return ret;
+ 		}
  
-+	ret = device_create_file(&pdev->dev, &dev_attr_stat_irq_thresh);
-+	if (ret)
-+		goto err_clk_disable;
-+
- 	/*
- 	 * Configure the interrupts. We only use the STAT_CNT interrupt as we
- 	 * only submit a new packet for processing when we complete another in
 -- 
 2.25.1
 
