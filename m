@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD6229B4E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D4B29B559
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793565AbgJ0PHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:07:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
+        id S1794320AbgJ0PLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789372AbgJ0PCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:02:03 -0400
+        id S1789664AbgJ0PC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:02:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5367022284;
-        Tue, 27 Oct 2020 15:01:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 817AD2071A;
+        Tue, 27 Oct 2020 15:02:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810920;
-        bh=C7nuvz4TG+LNYVNN2IN49Nn4dau9vcjWBJL1Ux15x9Q=;
+        s=default; t=1603810945;
+        bh=77ptOLX3KQeh/RP+VjXPKJB9yWx9VC9Ttjn6ShYvepg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmCgKomSHZeBS8+fxYSejpnteoQwFIv9IYr4zJHso15PQeY0x9RiWFUpxsjq1J/0D
-         6bYNu4F/rArKTdo4mQ/sRV0AreDG7D1L72hnoh/l06vCHO0hnw/40QykKhBlPsH9+0
-         jYC+8hdp/qGERqFuC9VyF7/e6ww4zknQQxvbhCE4=
+        b=Keslt69NZXPwCysv3PzEux7iir4oOjTCt421YAR3NxZ7dW6soCxyI69Jx+ekSzx0R
+         sFUCS53hRZtFg7f/MfbGT71gSIQAvGi6Hn+78fEX5SqD1t9m8qt2BQ+l6XMmG/36Ob
+         gtdc51l85W16Me9xAKVvqKVCy/gyvB5ilxF9jnsQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 308/633] tracing: Fix parse_synth_field() error handling
-Date:   Tue, 27 Oct 2020 14:50:51 +0100
-Message-Id: <20201027135537.125990296@linuxfoundation.org>
+Subject: [PATCH 5.8 311/633] drm/panfrost: increase readl_relaxed_poll_timeout values
+Date:   Tue, 27 Oct 2020 14:50:54 +0100
+Message-Id: <20201027135537.266820407@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,59 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+From: Christian Hewitt <christianshewitt@gmail.com>
 
-[ Upstream commit 8fbeb52a598c7ab5aa603d6bb083b8a8d16d607a ]
+[ Upstream commit c2df75ad2a9f205820e4bc0db936d3d9af3da1ae ]
 
-synth_field_size() returns either a positive size or an error (zero or
-a negative value). However, the existing code assumes the only error
-value is 0. It doesn't handle negative error codes, as it assigns
-directly to field->size (a size_t; unsigned), thereby interpreting the
-error code as a valid size instead.
+Amlogic SoC devices report the following errors frequently causing excessive
+dmesg log spam and early log rotataion, although the errors appear to be
+harmless as everything works fine:
 
-Do the test before assignment to field->size.
+[    7.202702] panfrost ffe40000.gpu: error powering up gpu L2
+[    7.203760] panfrost ffe40000.gpu: error powering up gpu shader
 
-[ axelrasmussen@google.com: changelog addition, first paragraph above ]
+ARM staff have advised increasing the timeout values to eliminate the errors
+in most normal scenarios, and testing with several different G31/G52 devices
+shows 20000 to be a reliable value.
 
-Link: https://lkml.kernel.org/r/9b6946d9776b2eeb43227678158196de1c3c6e1d.1601848695.git.zanussi@kernel.org
-
-Fixes: 4b147936fa50 (tracing: Add support for 'synthetic' events)
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Axel Rasmussen <axelrasmussen@google.com>
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+Suggested-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201008141738.13560-1-christianshewitt@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_events_synth.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index c6cca0d1d5840..46a96686e93c6 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -465,6 +465,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 	struct synth_field *field;
- 	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
- 	int len, ret = 0;
-+	ssize_t size;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 689b92893e0e1..dfe4c9151eaf2 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -309,13 +309,13 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 	/* Just turn on everything for now */
+ 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
+-		val, val == pfdev->features.l2_present, 100, 1000);
++		val, val == pfdev->features.l2_present, 100, 20000);
+ 	if (ret)
+ 		dev_err(pfdev->dev, "error powering up gpu L2");
  
- 	if (field_type[0] == ';')
- 		field_type++;
-@@ -520,11 +521,12 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 			field->type[len - 1] = '\0';
- 	}
+ 	gpu_write(pfdev, SHADER_PWRON_LO, pfdev->features.shader_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_READY_LO,
+-		val, val == pfdev->features.shader_present, 100, 1000);
++		val, val == pfdev->features.shader_present, 100, 20000);
+ 	if (ret)
+ 		dev_err(pfdev->dev, "error powering up gpu shader");
  
--	field->size = synth_field_size(field->type);
--	if (!field->size) {
-+	size = synth_field_size(field->type);
-+	if (size <= 0) {
- 		ret = -EINVAL;
- 		goto free;
- 	}
-+	field->size = size;
- 
- 	if (synth_field_is_string(field->type))
- 		field->is_string = true;
 -- 
 2.25.1
 
