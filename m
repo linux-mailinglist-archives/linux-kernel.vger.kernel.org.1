@@ -2,214 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F5D29BBC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0745A29BE40
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1809714AbgJ0Q1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:27:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53246 "EHLO mail.kernel.org"
+        id S1794330AbgJ0PLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:11:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:43114 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802834AbgJ0Pvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:51:44 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FCCB2065C;
-        Tue, 27 Oct 2020 15:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813903;
-        bh=rvqf+6pKT2gzTdaBVe5RNP0ouNMiELv4AHgvr8iGzPs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j7fGjDvqL08y5thWxgoFFA2hlUf/xwBPL9Z288472MeLr/maoA+5B9h8/y/Gviou6
-         d07eKO+ZTWHPQs7jN2/fF+shx0KnHoVHd71lFVcAkWNKW2rk4BopRzIprWuBCO2TC1
-         bgdufRWCVcJI/+qLOAvyBBZaGKL2vGIMI8kJhzF4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        Jia Yang <jiayang5@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 708/757] drm: fix double free for gbo in drm_gem_vram_init and drm_gem_vram_create
-Date:   Tue, 27 Oct 2020 14:55:58 +0100
-Message-Id: <20201027135523.709319109@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1789486AbgJ0PCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:02:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F57B13D5;
+        Tue, 27 Oct 2020 08:02:21 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CAA7A3F719;
+        Tue, 27 Oct 2020 08:02:19 -0700 (PDT)
+Subject: Re: [PATCH v4 10/21] perf arm_spe: Fixup top byte for data virtual
+ address
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+References: <20201027030917.15404-1-leo.yan@linaro.org>
+ <20201027030917.15404-11-leo.yan@linaro.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <dfb599fd-b253-ba94-59c0-a76e5043fbb7@arm.com>
+Date:   Tue, 27 Oct 2020 15:01:26 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201027030917.15404-11-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia Yang <jiayang5@huawei.com>
+On 27/10/2020 03:09, Leo Yan wrote:
+> To establish a valid address from the address packet payload and finally
+> the address value can be used for parsing data symbol in DSO, current
+> code uses 0xff to replace the tag in the top byte of data virtual
+> address.
+> 
+> So far the code only fixups top byte for the memory layouts with 4KB
+> pages, it misses to support memory layouts with 64KB pages.
+> 
+> This patch adds the conditions for checking bits [55:48] are 0xf0 or
+> 0xfd, if detects the patterns it will fill 0xff into the top byte of the
+> address, also adds comment to explain the fixing up.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  .../util/arm-spe-decoder/arm-spe-decoder.c    | 24 ++++++++++++++++---
+>  1 file changed, 21 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> index 776b3e6628bb..e135ac01d94a 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> @@ -24,7 +24,7 @@
+>  
+>  static u64 arm_spe_calc_ip(int index, u64 payload)
+>  {
+> -	u64 ns, el;
+> +	u64 ns, el, val;
+>  
+>  	/* Instruction virtual address or Branch target address */
+>  	if (index == SPE_ADDR_PKT_HDR_INDEX_INS ||
+> @@ -45,8 +45,26 @@ static u64 arm_spe_calc_ip(int index, u64 payload)
+>  		/* Clean tags */
+>  		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
+>  
+> -		/* Fill highest byte if bits [48..55] is 0xff */
+> -		if (SPE_ADDR_PKT_ADDR_GET_BYTE_6(payload) == 0xffULL)
+> +		/*
+> +		 * Armv8 ARM (ARM DDI 0487F.c), chapter "D10.2.1 Address packet"
+> +		 * defines the data virtual address payload format, the top byte
+> +		 * (bits [63:56]) is assigned as top-byte tag; so we only can
+> +		 * retrieve address value from bits [55:0].
+> +		 *
+> +		 * According to Documentation/arm64/memory.rst, if detects the
+> +		 * specific pattern in bits [55:48] of payload which falls in
+> +		 * the kernel space, should fixup the top byte and this allows
+> +		 * perf tool to parse DSO symbol for data address correctly.
+> +		 *
+> +		 * For this reason, if detects the bits [55:48] is one of
+> +		 * following values, will fill 0xff into the top byte:
+> +		 *
+> +		 *   - 0xff (for most kernel memory regions);
+> +		 *   - 0xf0 (for kernel logical memory map with 64KB pages);
+> +		 *   - 0xfd (for kasan shadow region with 64KB pages).
+> +		 */
+> +		val = SPE_ADDR_PKT_ADDR_GET_BYTE_6(payload);
+> +		if (val == 0xffULL || val == 0xf0ULL || val == 0xfdULL)
 
-[ Upstream commit da62cb7230f0871c30dc9789071f63229158d261 ]
+But those values are just the beginning of the region used by the
+kernel, aren't they? So the kernel logical map goes from 0xfff000.. to
+0xfff7fff..., for instance.
 
-I got a use-after-free report when doing some fuzz test:
+But actually I wonder why were are so selective here? Wouldn't it just
+suffice to look at bits [55:52] to be either 0 or F?
 
-If ttm_bo_init() fails, the "gbo" and "gbo->bo.base" will be
-freed by ttm_buffer_object_destroy() in ttm_bo_init(). But
-then drm_gem_vram_create() and drm_gem_vram_init() will free
-"gbo" and "gbo->bo.base" again.
+Cheers,
+Andre
 
-BUG: KMSAN: use-after-free in drm_vma_offset_remove+0xb3/0x150
-CPU: 0 PID: 24282 Comm: syz-executor.1 Tainted: G    B   W         5.7.0-rc4-msan #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
-Call Trace:
- __dump_stack
- dump_stack+0x1c9/0x220
- kmsan_report+0xf7/0x1e0
- __msan_warning+0x58/0xa0
- drm_vma_offset_remove+0xb3/0x150
- drm_gem_free_mmap_offset
- drm_gem_object_release+0x159/0x180
- drm_gem_vram_init
- drm_gem_vram_create+0x7c5/0x990
- drm_gem_vram_fill_create_dumb
- drm_gem_vram_driver_dumb_create+0x238/0x590
- drm_mode_create_dumb
- drm_mode_create_dumb_ioctl+0x41d/0x450
- drm_ioctl_kernel+0x5a4/0x710
- drm_ioctl+0xc6f/0x1240
- vfs_ioctl
- ksys_ioctl
- __do_sys_ioctl
- __se_sys_ioctl+0x2e9/0x410
- __x64_sys_ioctl+0x4a/0x70
- do_syscall_64+0xb8/0x160
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4689b9
-Code: fd e0 fa ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 cb e0 fa ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f368fa4dc98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000076bf00 RCX: 00000000004689b9
-RDX: 0000000020000240 RSI: 00000000c02064b2 RDI: 0000000000000003
-RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00000000004d17e0 R14: 00007f368fa4e6d4 R15: 000000000076bf0c
-
-Uninit was created at:
- kmsan_save_stack_with_flags
- kmsan_internal_poison_shadow+0x66/0xd0
- kmsan_slab_free+0x6e/0xb0
- slab_free_freelist_hook
- slab_free
- kfree+0x571/0x30a0
- drm_gem_vram_destroy
- ttm_buffer_object_destroy+0xc8/0x130
- ttm_bo_release
- kref_put
- ttm_bo_put+0x117d/0x23e0
- ttm_bo_init_reserved+0x11c0/0x11d0
- ttm_bo_init+0x289/0x3f0
- drm_gem_vram_init
- drm_gem_vram_create+0x775/0x990
- drm_gem_vram_fill_create_dumb
- drm_gem_vram_driver_dumb_create+0x238/0x590
- drm_mode_create_dumb
- drm_mode_create_dumb_ioctl+0x41d/0x450
- drm_ioctl_kernel+0x5a4/0x710
- drm_ioctl+0xc6f/0x1240
- vfs_ioctl
- ksys_ioctl
- __do_sys_ioctl
- __se_sys_ioctl+0x2e9/0x410
- __x64_sys_ioctl+0x4a/0x70
- do_syscall_64+0xb8/0x160
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-If ttm_bo_init() fails, the "gbo" will be freed by
-ttm_buffer_object_destroy() in ttm_bo_init(). But then
-drm_gem_vram_create() and drm_gem_vram_init() will free
-"gbo" again.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Jia Yang <jiayang5@huawei.com>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200714083238.28479-2-tzimmermann@suse.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/drm_gem_vram_helper.c | 28 +++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_gem_vram_helper.c b/drivers/gpu/drm/drm_gem_vram_helper.c
-index 3296ed3df3580..8b65ca164bf4b 100644
---- a/drivers/gpu/drm/drm_gem_vram_helper.c
-+++ b/drivers/gpu/drm/drm_gem_vram_helper.c
-@@ -167,6 +167,10 @@ static void drm_gem_vram_placement(struct drm_gem_vram_object *gbo,
- 	}
- }
- 
-+/*
-+ * Note that on error, drm_gem_vram_init will free the buffer object.
-+ */
-+
- static int drm_gem_vram_init(struct drm_device *dev,
- 			     struct drm_gem_vram_object *gbo,
- 			     size_t size, unsigned long pg_align)
-@@ -176,15 +180,19 @@ static int drm_gem_vram_init(struct drm_device *dev,
- 	int ret;
- 	size_t acc_size;
- 
--	if (WARN_ONCE(!vmm, "VRAM MM not initialized"))
-+	if (WARN_ONCE(!vmm, "VRAM MM not initialized")) {
-+		kfree(gbo);
- 		return -EINVAL;
-+	}
- 	bdev = &vmm->bdev;
- 
- 	gbo->bo.base.funcs = &drm_gem_vram_object_funcs;
- 
- 	ret = drm_gem_object_init(dev, &gbo->bo.base, size);
--	if (ret)
-+	if (ret) {
-+		kfree(gbo);
- 		return ret;
-+	}
- 
- 	acc_size = ttm_bo_dma_acc_size(bdev, size, sizeof(*gbo));
- 
-@@ -195,13 +203,13 @@ static int drm_gem_vram_init(struct drm_device *dev,
- 			  &gbo->placement, pg_align, false, acc_size,
- 			  NULL, NULL, ttm_buffer_object_destroy);
- 	if (ret)
--		goto err_drm_gem_object_release;
-+		/*
-+		 * A failing ttm_bo_init will call ttm_buffer_object_destroy
-+		 * to release gbo->bo.base and kfree gbo.
-+		 */
-+		return ret;
- 
- 	return 0;
--
--err_drm_gem_object_release:
--	drm_gem_object_release(&gbo->bo.base);
--	return ret;
- }
- 
- /**
-@@ -235,13 +243,9 @@ struct drm_gem_vram_object *drm_gem_vram_create(struct drm_device *dev,
- 
- 	ret = drm_gem_vram_init(dev, gbo, size, pg_align);
- 	if (ret < 0)
--		goto err_kfree;
-+		return ERR_PTR(ret);
- 
- 	return gbo;
--
--err_kfree:
--	kfree(gbo);
--	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL(drm_gem_vram_create);
- 
--- 
-2.25.1
-
-
+>  			payload |= 0xffULL << SPE_ADDR_PKT_ADDR_BYTE7_SHIFT;
+>  
+>  	/* Data access physical address */
+> 
 
