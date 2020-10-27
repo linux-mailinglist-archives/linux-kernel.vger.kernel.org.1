@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08CF29A599
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA8A29A59F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507833AbgJ0HiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 03:38:06 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3793 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507783AbgJ0HiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 03:38:05 -0400
-IronPort-SDR: OrrsN2+FjGfDBJzTb24wlfT1WcIozrNM6Skpx+Zzk1CjiitTrl8YWAprSU5tFcErYWS8kosblA
- ysI2s9YQOSLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="164540536"
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="164540536"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 00:38:04 -0700
-IronPort-SDR: wV24L3W+rwewY2jIkmPU97Fy0d+ZJZqeu0sxvDT3zILEZrEpAUPRvnYbxUFgZtl+I0FH8zsBo6
- bIoFdR+apNhg==
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="535686674"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.7]) ([10.249.227.7])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 00:38:01 -0700
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [PATCH v2 06/15] perf session: load data directory into tool
- process memory
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
- <d28243e3-3178-d7cd-7b96-7ed63fd83493@linux.intel.com>
- <20201024154349.GC2589351@krava>
-Organization: Intel Corp.
-Message-ID: <43d5e54f-b56e-729f-d08e-2c6b6799c797@linux.intel.com>
-Date:   Tue, 27 Oct 2020 10:37:58 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2507896AbgJ0Hk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 03:40:26 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40053 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507889AbgJ0HkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 03:40:25 -0400
+Received: by mail-wm1-f68.google.com with SMTP id k18so379665wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 00:40:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Sj5y+fdLPNbWrqn2selN8cFPdmtn8S/J2GevEupVS90=;
+        b=NMw8moDjxdU7U+EbrdBHUJasZ07w0Ucj/3rE+Z9tRDz9Ss028I/jt4e7lOTi9sL13Z
+         w5d1FWkxXoXU8E5t0LvDJmrsSsT5AJ8rfXXH2/7DORwQ9nfS7rRlZUh47NKrG9wFeZ24
+         anBQ40cUY2Q8nFpaMOldZoY/N5zyn/uEJa7mA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sj5y+fdLPNbWrqn2selN8cFPdmtn8S/J2GevEupVS90=;
+        b=cqN6nCh6nUZeCFXuT5JMNclHCLPrUtB3BAjRNu/santpURt1By2+kG7zVof9w0arEO
+         x95msRYLRAenkFYHBwENCtY7VSP80QQ/yWvAqXgnj43YobNQCTpNpwYLu271evIxxCWU
+         +/XdkJMcjS/CmctsXHYS5TJAI8bSRMZtP7bwVE0bLH0gdwyDrYW6hVEF1L5FTrctPm/C
+         nQMo89oAHErtbizRrpUv1SnQFbqOSl8z1CECPm5MIjGOvqfHTsjYVqNgIAXlQOutWi5v
+         sB+beEOuwjOqgia3N5Hcj9ZHbP70QB+KxNZlf07BzFergZoU5An2ZI22P+5QQwXlNR8e
+         Im/A==
+X-Gm-Message-State: AOAM530Ow198VEzjiZILHiG4gGJMPvgBeRkhFE+0+YFMyLr+XbUkQO1R
+        uZckS4UK3NjXA2LZDg04Hj7+1w==
+X-Google-Smtp-Source: ABdhPJzGwgSChZpZB3GukMqvYH2BEBLfYsue1QKbgg4C6aFtH3zYguOWXKuCCpMIE8clZTpkIs8Fzg==
+X-Received: by 2002:a1c:4006:: with SMTP id n6mr1168827wma.46.1603784423614;
+        Tue, 27 Oct 2020 00:40:23 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id q5sm935168wrs.54.2020.10.27.00.40.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 00:40:23 -0700 (PDT)
+Subject: Re: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
+ interrupt
+To:     Biwen Li <biwen.li@oss.nxp.com>, shawnguo@kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, leoyang.li@nxp.com,
+        zhiqiang.hou@nxp.com, tglx@linutronix.de, jason@lakedaemon.net,
+        maz@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
+References: <20201027044619.41879-1-biwen.li@oss.nxp.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <5b1f2911-98b3-511f-404b-7d0fa44cc0c2@rasmusvillemoes.dk>
+Date:   Tue, 27 Oct 2020 08:40:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201024154349.GC2589351@krava>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201027044619.41879-1-biwen.li@oss.nxp.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 24.10.2020 18:43, Jiri Olsa wrote:
-> On Wed, Oct 21, 2020 at 07:01:19PM +0300, Alexey Budankov wrote:
->>
->> Read trace files located in data directory into tool process memory.
->> Basic analysis support of data directories is provided for report
->> mode. Raw dump (-D) and aggregated reports are available for data
->> directories, still with no memory consumption optimizations. However
->> data directories collected with --compression-level option enabled
->> can be analyzed with little less memory because trace files are
->> unmaped from tool process memory after loading collected data.
->> The implementation is based on the prototype [1], [2].
->>
->> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
->> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
->>
->> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+On 27/10/2020 05.46, Biwen Li wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 > 
-> very loosely ;-) so there was a reason for all that reader refactoring,
-> so we could have __perf_session__process_dir_events function:
+> Add an new IRQ chip declaration for LS1043A and LS1088A
+> - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A. SCFG_INTPCR[31:0]
+>   of these SoCs is stored/read as SCFG_INTPCR[0:31] defaultly(bit
+>   reverse)
+
+s/defaultly/by default/ I suppose. But what does that mean? Is it still
+configurable, just now through some undocumented register? If that
+register still exists, does it now have a reset value of all-ones as
+opposed to the ls1021 case? If it's not configurable, then describing
+the situation as "by default" is confusing and wrong, it should just say
+"On LS1043A, LS1046A, SCFG_INTPCR is stored/read bit-reversed."
+
+
+> - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
 > 
->   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=perf/record_threads&id=308aa7cff1fed335401cfc02c7bac1a4644af68e
-
-Nonetheless. All that are necessary parts to make threaded data streaming
-and analysis eventually merged into the mainline as joint Perf developers
-community effort.
-
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> ---
+> Change in v2:
+> 	- add despcription of bit reverse
+> 	- update copyright
 > 
-> when reporting the threaded record data on really big servers,
-> you will run out of memory, so you need to read and flush all
-> the files together by smaller pieces
-
-Yes, handling all that _big_ data after collection to make it
-helpful for analysis of performance issues is the other part
-of this story so that possible OOM should be somehow avoided.
-
+>  drivers/irqchip/irq-ls-extirq.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> IMO we need to have this change before we allow threaded record
+> diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+> index 4d1179fed77c..9587bc2607fc 100644
+> --- a/drivers/irqchip/irq-ls-extirq.c
+> +++ b/drivers/irqchip/irq-ls-extirq.c
+> @@ -1,5 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -
+> +/*
+> + * Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-There are use cases of perf tool as a data provider, btw VTune is not
-the only one of them, and for those use cases threaded trace streaming
-lets its users get to their data that the users just were loosing before.
-This is huge difference and whole new level of support for such users.
-Post-process scripting around perf (e.g. Python based) will benefit
-from threaded trace streaming. Pipe mode can be extended to stream into
-open and passed fds using threads (e.g. perf record -o -fd:13,14,15,16).
-VTune-like tools can get performance data, load it into a (relational)
-DB files and provide analysis. And all that uses perf tool at its core.
+If I wanted my name splattered all over the files I touch or add, I'd
+add it myself, TYVM. The git history is plenty fine for recording
+authorship as far as I'm concerned, and I absolutely abhor having to
+skip over any kind of legalese boilerplate when opening a file.
 
-I agree perf report OOM issue can exist on really-big servers but data 
-directories support for report mode for not-so-big servers and desktops
-is already enabled with this smaller change. Also really-big-servers
-come with really-big amount of memory and collection could possibly be
-limited to only interesting phases of execution so the issue could likely
-be avoided. At the same time threaded trace streaming could clarify on
-real use cases that are blocked by perf report OOM issue and that would
-clarify on exact required solution. So perf report OOM issue shouldn't
-be the showstopper for upstream of threaded trace streaming.
-
-Alexei
-
+Rasmus
