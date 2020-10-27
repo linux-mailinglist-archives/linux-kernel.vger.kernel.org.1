@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FCD29A486
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 961B729A47F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506366AbgJ0GP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54264 "EHLO mail.kernel.org"
+        id S2506356AbgJ0GPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:15:51 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:17980 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506325AbgJ0GOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:14:43 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S2506336AbgJ0GPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 02:15:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603779346; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=trsiEXZJk2vC/ZEaP8BBvrYNABoGfpAwdcCpaKv/QVI=; b=mR1kJnnXxmrM+KSdj+iGNCNgv0Qs7faKLGscWUdMh9pHDVu7OcB8NL3I87o6sUwHKQwO/UiR
+ MuENhGOo7CRvffUbjTH5R3j3qcPVXX/umoD8rO/J8KTez3WI78uOYq/C6UrtWQ6dC6p48q+X
+ RSHKu4/zG6u9iiSrcjwWZ/rp5wY=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f97bb0d3ecd8ffc943b6b19 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 06:15:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 810EAC43387; Tue, 27 Oct 2020 06:15:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24B6D207C3;
-        Tue, 27 Oct 2020 06:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603779282;
-        bh=XC6lIUJAS7He2j6C5xHkSyH+j5s9PGRJjwy1abKG4QQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pFQh9AFzoK3oLzRuL3gGxYVWbJkUhUOc5XrjgGXy5vZ0eBvp078SO0YsT1JSOSX2P
-         /DLUc8ner4GROw3STlQ9Wa4+oElHG4Iq16hSXU8dppi6pbh/WzIqbfJ/n2GbT4LJsJ
-         Hbe7KHDgUcnHRmaDg7RIIzaPgE1E6ljlEIIQatZU=
-Date:   Tue, 27 Oct 2020 07:14:38 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Hui Su <sh_def@163.com>, rafael@kernel.org,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm/hugetable.c: align some prints
-Message-ID: <20201027061438.GA206502@kroah.com>
-References: <20201009162359.GA19686@rlk>
- <cf3e63c8-836c-1112-c7da-ae375ac43b65@oracle.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A859C433F0;
+        Tue, 27 Oct 2020 06:15:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5A859C433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Raja Mani <rmani@qca.qualcomm.com>,
+        Suraj Sumangala <surajs@qca.qualcomm.com>,
+        Jouni Malinen <jouni@qca.qualcomm.com>,
+        Vasanthakumar Thiagarajan <vthiagar@qca.qualcomm.com>,
+        Vivek Natarajan <nataraja@qca.qualcomm.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 09/11] ath6kl: fix enum-conversion warning
+References: <20201026213040.3889546-1-arnd@kernel.org>
+        <20201026213040.3889546-9-arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 08:15:33 +0200
+In-Reply-To: <20201026213040.3889546-9-arnd@kernel.org> (Arnd Bergmann's
+        message of "Mon, 26 Oct 2020 22:29:56 +0100")
+Message-ID: <873620p52y.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf3e63c8-836c-1112-c7da-ae375ac43b65@oracle.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:23:43PM -0700, Mike Kravetz wrote:
-> On 10/9/20 9:23 AM, Hui Su wrote:
-> > in old code, it shows like:
-> > Node 0 ShmemHugePages:        0 kB
-> > Node 0 ShmemPmdMapped:        0 kB
-> > Node 0 FileHugePages:        0 kB
-> > Node 0 FilePmdMapped:        0 kB
-> > Node 0 HugePages_Total:     0
-> > Node 0 HugePages_Free:      0
-> > Node 0 HugePages_Surp:      0
-> > 
-> > which is not align. So we align it.
-> > 
-> > Signed-off-by: Hui Su <sh_def@163.com>
-> 
-> Apologies for the late reply.
-> 
-> I assume you you just want to make the output look better.  Correct?
-> 
-> To be honest, I am not sure about the policy for changing the output
-> of sysfs files.  My preference would be to not change the output.  Why?
-> When the output is changed there is always the possibility that someone
-> may have written code that depends on the current format.  It looks like
-> the output has been misaligned since the day the code was first written.
-> 
-> This code was recently changed to use sysfs_emit_at() instead of
-> sprintf().  At that time Greg noted that this also violates the sysfs
-> rule of one value per file.  So, it appears there may be a bigger issue
-> than alignment.
-> 
-> Greg,
-> Is it OK to break up these sysfs files to be one value per file if they
-> contained multiple values from day 1 of their existence?  I would prefer
-> not to touch them in case some is depending on current format.
+Arnd Bergmann <arnd@kernel.org> writes:
 
-You should create multiple files, with a different name, and then remove
-this file.  Any tool that uses sysfs should be able to handle a file
-going away, don't change the format of the data in the file, otherwise
-there's no way for anyone to know what is happening.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc -Wextra points out a type mismatch
+>
+> drivers/net/wireless/ath/ath6kl/wmi.c: In function 'ath6kl_wmi_cmd_send':
+> drivers/net/wireless/ath/ath6kl/wmi.c:1825:19: warning: implicit conversion from 'enum <anonymous>' to 'enum wmi_data_hdr_data_type' [-Wenum-conversion]
+>  1825 |            false, false, 0, NULL, if_idx);
+>       |                   ^~~~~
+>
+> As far as I can tell, the numeric value is current here,
+> so just use the correct enum literal instead of 'false'.
+>
+> Fixes: bdcd81707973 ("Add ath6kl cleaned up driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-thanks,
+Looks good to me. I'll take this to my ath.git tree.
 
-greg k-h
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
