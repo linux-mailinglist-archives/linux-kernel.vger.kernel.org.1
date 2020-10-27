@@ -2,122 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCED29BB99
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4BB29BAC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808759AbgJ0QVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:21:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33198 "EHLO mx2.suse.de"
+        id S1807584AbgJ0QL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:11:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:22727 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1804983AbgJ0QAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:00:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83C70ABE3;
-        Tue, 27 Oct 2020 16:00:12 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 331EA1E10F5; Tue, 27 Oct 2020 17:00:12 +0100 (CET)
-Date:   Tue, 27 Oct 2020 17:00:12 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca BRUNO <lucab@redhat.com>
-Subject: Re: [PATCH] inotify: Increase default inotify.max_user_watches limit
- to 1048576
-Message-ID: <20201027160012.GE16090@quack2.suse.cz>
-References: <20201026204418.23197-1-longman@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026204418.23197-1-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1805887AbgJ0QBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:01:35 -0400
+IronPort-SDR: ufsJaWqc66VharEd0p/bu/PVRIcnV7nOHyltMy3NlSxf9j0owUigIGqTLeIoIdL1eF8KSdlUrS
+ dw2Seqv8tqNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="252806780"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="252806780"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 09:00:58 -0700
+IronPort-SDR: dmNILdZvjoYjtKPwhf5zdYFOxZpLY4g8qRILh0zRgfXXhcbVVdFmzt1ZR6reneyVvk46UP8rgt
+ G4qAYiNZdltQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="334436690"
+Received: from climb.png.intel.com ([10.221.118.165])
+  by orsmga002.jf.intel.com with ESMTP; 27 Oct 2020 09:00:51 -0700
+From:   Voon Weifeng <weifeng.voon@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jose Abreu <joabreu@synopsys.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Seow Chen Yong <chen.yong.seow@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [RESEND v3 net-next] net: stmmac: Enable EEE HW LPI timer with auto SW/HW switching
+Date:   Wed, 28 Oct 2020 00:00:51 +0800
+Message-Id: <20201027160051.22898-1-weifeng.voon@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 26-10-20 16:44:18, Waiman Long wrote:
-> The default value of inotify.max_user_watches sysctl parameter was set
-> to 8192 since the introduction of the inotify feature in 2005 by
-> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
-> small for many modern usage. As a result, users have to explicitly set
-> it to a larger value to make it work.
-> 
-> After some searching around the web, these are the
-> inotify.max_user_watches values used by some projects:
->  - vscode:  524288
->  - dropbox support: 100000
->  - users on stackexchange: 12228
->  - lsyncd user: 2000000
->  - code42 support: 1048576
->  - monodevelop: 16384
->  - tectonic: 524288
->  - openshift origin: 65536
-> 
-> Each watch point adds an inotify_inode_mark structure to an inode to be
-> watched. Modeled after the epoll.max_user_watches behavior to adjust the
-> default value according to the amount of addressable memory available,
-> make inotify.max_user_watches behave in a similar way to make it use
-> no more than 1% of addressable memory within the range [8192, 1048576].
-> 
-> For 64-bit archs, inotify_inode_mark should have a size of 80 bytes. That
-> means a system with 8GB or more memory will have the maximum value of
-> 1048576 for inotify.max_user_watches. This default should be big enough
-> for most of the use cases.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+From: "Vineetha G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>
 
-So I agree that 8192 watches seem to be a bit low today but what you
-propose seems to be way too much to me. OTOH I agree that having to tune
-this manually kind of sucks so I'm for auto-tuning of the default. If the
-computation takes into account the fact that a watch pins an inode as Amir
-properly notes (that's the main reason why the number of watches is
-limited), I think limiting to 1% of pinned memory should be bearable. The
-amount of space pinned by an inode is impossible to estimate exactly
-(differs for different filesystems) but about 1k for one inode is a sound
-estimate IMO.
+This patch enables the HW LPI Timer which controls the automatic entry
+and exit of the LPI state.
+The EEE LPI timer value is configured through ethtool. The driver will
+auto select the LPI HW timer if the value in the HW timer supported range.
+Else, the driver will fallback to SW timer.
 
-								Honza
+Signed-off-by: Vineetha G. Jaya Kumaran <vineetha.g.jaya.kumaran@intel.com>
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+---
+v3 changelog:
+-Changed stmmac_lpi_entry_timer_config() to static function
 
-> ---
->  fs/notify/inotify/inotify_user.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-> index 186722ba3894..2da8b7a84b12 100644
-> --- a/fs/notify/inotify/inotify_user.c
-> +++ b/fs/notify/inotify/inotify_user.c
-> @@ -801,6 +801,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
->   */
->  static int __init inotify_user_setup(void)
->  {
-> +	unsigned int watches_max;
-> +	struct sysinfo si;
-> +
-> +	si_meminfo(&si);
-> +	/*
-> +	 * Allow up to 1% of addressible memory to be allocated for inotify
-> +	 * watches (per user) limited to the range [8192, 1048576].
-> +	 */
-> +	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
-> +			sizeof(struct inotify_inode_mark);
-> +	watches_max = min(1048576U, max(watches_max, 8192U));
-> +
->  	BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
->  	BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
->  	BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
-> @@ -827,7 +839,7 @@ static int __init inotify_user_setup(void)
->  
->  	inotify_max_queued_events = 16384;
->  	init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
-> -	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
-> +	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
->  
->  	return 0;
->  }
-> -- 
-> 2.18.1
-> 
+v2 changelog:
+-removed #define for LPI_ET_ENABLE and LPI_ET_DISABLE and directly use
+ literals
+-removed not required function header in stmmac.h
+-renamed stmmac_lpi_entry_timer_enable() to stmmac_lpi_entry_timer_config()
+-Moved stmmac_lpi_entry_timer_enable() up in the file before
+ stmmac_disable_eee_mode()
+
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac4.h  |  2 ++
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 24 ++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |  3 ++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 31 +++++++++++++++++--
+ 6 files changed, 59 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index df7de50497a0..6f271c46368d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -402,6 +402,7 @@ struct dma_features {
+ /* Default LPI timers */
+ #define STMMAC_DEFAULT_LIT_LS	0x3E8
+ #define STMMAC_DEFAULT_TWT_LS	0x1E
++#define STMMAC_ET_MAX		0xFFFFF
+ 
+ #define STMMAC_CHAIN_MODE	0x1
+ #define STMMAC_RING_MODE	0x2
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4.h b/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
+index 592b043f9676..82df91c130f7 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
+@@ -176,9 +176,11 @@ enum power_event {
+  */
+ #define GMAC4_LPI_CTRL_STATUS	0xd0
+ #define GMAC4_LPI_TIMER_CTRL	0xd4
++#define GMAC4_LPI_ENTRY_TIMER	0xd8
+ 
+ /* LPI control and status defines */
+ #define GMAC4_LPI_CTRL_STATUS_LPITCSE	BIT(21)	/* LPI Tx Clock Stop Enable */
++#define GMAC4_LPI_CTRL_STATUS_LPIATE	BIT(20) /* LPI Timer Enable */
+ #define GMAC4_LPI_CTRL_STATUS_LPITXA	BIT(19)	/* Enable LPI TX Automate */
+ #define GMAC4_LPI_CTRL_STATUS_PLS	BIT(17) /* PHY Link Status */
+ #define GMAC4_LPI_CTRL_STATUS_LPIEN	BIT(16)	/* LPI Enable */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index 002791b77356..3ed4f4cda7f9 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -379,6 +379,27 @@ static void dwmac4_set_eee_pls(struct mac_device_info *hw, int link)
+ 	writel(value, ioaddr + GMAC4_LPI_CTRL_STATUS);
+ }
+ 
++static void dwmac4_set_eee_lpi_entry_timer(struct mac_device_info *hw, int et)
++{
++	void __iomem *ioaddr = hw->pcsr;
++	int value = et & STMMAC_ET_MAX;
++	int regval;
++
++	/* Program LPI entry timer value into register */
++	writel(value, ioaddr + GMAC4_LPI_ENTRY_TIMER);
++
++	/* Enable/disable LPI entry timer */
++	regval = readl(ioaddr + GMAC4_LPI_CTRL_STATUS);
++	regval |= GMAC4_LPI_CTRL_STATUS_LPIEN | GMAC4_LPI_CTRL_STATUS_LPITXA;
++
++	if (et)
++		regval |= GMAC4_LPI_CTRL_STATUS_LPIATE;
++	else
++		regval &= ~GMAC4_LPI_CTRL_STATUS_LPIATE;
++
++	writel(regval, ioaddr + GMAC4_LPI_CTRL_STATUS);
++}
++
+ static void dwmac4_set_eee_timer(struct mac_device_info *hw, int ls, int tw)
+ {
+ 	void __iomem *ioaddr = hw->pcsr;
+@@ -1164,6 +1185,7 @@ const struct stmmac_ops dwmac4_ops = {
+ 	.get_umac_addr = dwmac4_get_umac_addr,
+ 	.set_eee_mode = dwmac4_set_eee_mode,
+ 	.reset_eee_mode = dwmac4_reset_eee_mode,
++	.set_eee_lpi_entry_timer = dwmac4_set_eee_lpi_entry_timer,
+ 	.set_eee_timer = dwmac4_set_eee_timer,
+ 	.set_eee_pls = dwmac4_set_eee_pls,
+ 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
+@@ -1206,6 +1228,7 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.get_umac_addr = dwmac4_get_umac_addr,
+ 	.set_eee_mode = dwmac4_set_eee_mode,
+ 	.reset_eee_mode = dwmac4_reset_eee_mode,
++	.set_eee_lpi_entry_timer = dwmac4_set_eee_lpi_entry_timer,
+ 	.set_eee_timer = dwmac4_set_eee_timer,
+ 	.set_eee_pls = dwmac4_set_eee_pls,
+ 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
+@@ -1249,6 +1272,7 @@ const struct stmmac_ops dwmac510_ops = {
+ 	.get_umac_addr = dwmac4_get_umac_addr,
+ 	.set_eee_mode = dwmac4_set_eee_mode,
+ 	.reset_eee_mode = dwmac4_reset_eee_mode,
++	.set_eee_lpi_entry_timer = dwmac4_set_eee_lpi_entry_timer,
+ 	.set_eee_timer = dwmac4_set_eee_timer,
+ 	.set_eee_pls = dwmac4_set_eee_pls,
+ 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index e2dca9b6e992..b40b2e0667bb 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -337,6 +337,7 @@ struct stmmac_ops {
+ 	void (*set_eee_mode)(struct mac_device_info *hw,
+ 			     bool en_tx_lpi_clockgating);
+ 	void (*reset_eee_mode)(struct mac_device_info *hw);
++	void (*set_eee_lpi_entry_timer)(struct mac_device_info *hw, int et);
+ 	void (*set_eee_timer)(struct mac_device_info *hw, int ls, int tw);
+ 	void (*set_eee_pls)(struct mac_device_info *hw, int link);
+ 	void (*debug)(void __iomem *ioaddr, struct stmmac_extra_stats *x,
+@@ -439,6 +440,8 @@ struct stmmac_ops {
+ 	stmmac_do_void_callback(__priv, mac, set_eee_mode, __args)
+ #define stmmac_reset_eee_mode(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, mac, reset_eee_mode, __args)
++#define stmmac_set_eee_lpi_timer(__priv, __args...) \
++	stmmac_do_void_callback(__priv, mac, set_eee_lpi_entry_timer, __args)
+ #define stmmac_set_eee_timer(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, mac, set_eee_timer, __args)
+ #define stmmac_set_eee_pls(__priv, __args...) \
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+index 727e68dfaf1c..c88ee8ea4245 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+@@ -207,6 +207,7 @@ struct stmmac_priv {
+ 	int tx_lpi_timer;
+ 	int tx_lpi_enabled;
+ 	int eee_tw_timer;
++	bool eee_sw_timer_en;
+ 	unsigned int mode;
+ 	unsigned int chain_mode;
+ 	int extend_desc;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 220626a8d499..f2e320480c8c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -294,6 +294,16 @@ static inline u32 stmmac_rx_dirty(struct stmmac_priv *priv, u32 queue)
+ 	return dirty;
+ }
+ 
++static void stmmac_lpi_entry_timer_config(struct stmmac_priv *priv, bool en)
++{
++	int tx_lpi_timer;
++
++	/* Clear/set the SW EEE timer flag based on LPI ET enablement */
++	priv->eee_sw_timer_en = en ? 0 : 1;
++	tx_lpi_timer  = en ? priv->tx_lpi_timer : 0;
++	stmmac_set_eee_lpi_timer(priv, priv->hw, tx_lpi_timer);
++}
++
+ /**
+  * stmmac_enable_eee_mode - check and enter in LPI mode
+  * @priv: driver private structure
+@@ -327,6 +337,11 @@ static void stmmac_enable_eee_mode(struct stmmac_priv *priv)
+  */
+ void stmmac_disable_eee_mode(struct stmmac_priv *priv)
+ {
++	if (!priv->eee_sw_timer_en) {
++		stmmac_lpi_entry_timer_config(priv, 0);
++		return;
++	}
++
+ 	stmmac_reset_eee_mode(priv, priv->hw);
+ 	del_timer_sync(&priv->eee_ctrl_timer);
+ 	priv->tx_path_in_lpi_mode = false;
+@@ -376,6 +391,7 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
+ 	if (!priv->eee_active) {
+ 		if (priv->eee_enabled) {
+ 			netdev_dbg(priv->dev, "disable EEE\n");
++			stmmac_lpi_entry_timer_config(priv, 0);
+ 			del_timer_sync(&priv->eee_ctrl_timer);
+ 			stmmac_set_eee_timer(priv, priv->hw, 0, eee_tw_timer);
+ 		}
+@@ -389,7 +405,15 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
+ 				     eee_tw_timer);
+ 	}
+ 
+-	mod_timer(&priv->eee_ctrl_timer, STMMAC_LPI_T(priv->tx_lpi_timer));
++	if (priv->plat->has_gmac4 && priv->tx_lpi_timer <= STMMAC_ET_MAX) {
++		del_timer_sync(&priv->eee_ctrl_timer);
++		priv->tx_path_in_lpi_mode = false;
++		stmmac_lpi_entry_timer_config(priv, 1);
++	} else {
++		stmmac_lpi_entry_timer_config(priv, 0);
++		mod_timer(&priv->eee_ctrl_timer,
++			  STMMAC_LPI_T(priv->tx_lpi_timer));
++	}
+ 
+ 	mutex_unlock(&priv->lock);
+ 	netdev_dbg(priv->dev, "Energy-Efficient Ethernet initialized\n");
+@@ -2044,7 +2068,8 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
+ 		netif_tx_wake_queue(netdev_get_tx_queue(priv->dev, queue));
+ 	}
+ 
+-	if ((priv->eee_enabled) && (!priv->tx_path_in_lpi_mode)) {
++	if (priv->eee_enabled && !priv->tx_path_in_lpi_mode &&
++	    priv->eee_sw_timer_en) {
+ 		stmmac_enable_eee_mode(priv);
+ 		mod_timer(&priv->eee_ctrl_timer, STMMAC_LPI_T(priv->tx_lpi_timer));
+ 	}
+@@ -3306,7 +3331,7 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	tx_q = &priv->tx_queue[queue];
+ 	first_tx = tx_q->cur_tx;
+ 
+-	if (priv->tx_path_in_lpi_mode)
++	if (priv->tx_path_in_lpi_mode && priv->eee_sw_timer_en)
+ 		stmmac_disable_eee_mode(priv);
+ 
+ 	/* Manage oversized TCP frames for GMAC4 device */
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
