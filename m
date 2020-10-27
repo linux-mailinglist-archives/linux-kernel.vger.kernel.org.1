@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A74629A6CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37E129A6D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444611AbgJ0IoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:44:24 -0400
-Received: from casper.infradead.org ([90.155.50.34]:34702 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443713AbgJ0IoX (ORCPT
+        id S2509241AbgJ0Ipi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:45:38 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:37083 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443689AbgJ0Ipf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:44:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jmNJLBRCFdFXQCPDsbgJxCeg7OTT63Ved9ZS239LUkg=; b=uwVkm9dZG6qemWi1SUFtrghO8y
-        U61seC3CjXBZ7FVApPCnMiEXJCSFrO9lQKMTHYIfUr9Y15LQGLCcbwOtZCWWC+SkmG8RD3nregZlH
-        kiitudLOmiKoSMDkcfFvPQb6jgNt7RT75k+oQZNyu0kdR4f2Y5/Vde5PI0ld2a3pmmW/WyqruPh2z
-        T8hXR7Pv6ajnvlYC45xSGFziuYv/skTWwThqP5D7d4RiekvuZst5EbXOyMB9/C6jF5mLzW6eym5ay
-        +pvcFFcjgZ3QmJBlfJk+JydPksRC3QWLCdZGY6t3YUAhA1biP76jRuDxsqf5e10JjDNtZKhKTEWJw
-        sXCX+sHg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXKaD-0002zC-6S; Tue, 27 Oct 2020 08:43:57 +0000
-Date:   Tue, 27 Oct 2020 08:43:57 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, kvm@vger.kernel.org,
-        Radim Kr??m???? <rkrcmar@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Rik van Riel <riel@redhat.com>,
-        Larry Woodman <lwoodman@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Toshimitsu Kani <toshi.kani@hpe.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: AMD SME encrpytion and PCI BAR pages to user space
-Message-ID: <20201027084357.GA10053@infradead.org>
-References: <20201019152556.GA560082@nvidia.com>
- <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
- <20201021115933.GS6219@nvidia.com>
- <f9c50e3a-c5de-8c85-4d6c-0e8a90729420@amd.com>
- <20201021160322.GT6219@nvidia.com>
+        Tue, 27 Oct 2020 04:45:35 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 09R8fHjq035672;
+        Tue, 27 Oct 2020 16:41:17 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Oct
+ 2020 16:44:23 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <andrew@aj.id.au>, <linus.walleij@linaro.org>, <joel@jms.id.au>,
+        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
+        <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [PATCH] pinctrl: aspeed: Fix GPI only function problem.
+Date:   Tue, 27 Oct 2020 16:44:17 +0800
+Message-ID: <20201027084417.10137-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021160322.GT6219@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Originating-IP: [192.168.10.9]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 09R8fHjq035672
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 01:03:22PM -0300, Jason Gunthorpe wrote:
-> Oh, interesting.. Yes the issue is no userspace DMA stuff uses the DMA
-> API correctly (because it is in userspace)
-> 
-> So SWIOTLB tricks don't work, I wish the dma_map could fail for these
-> situations
+Some gpio pin at aspeed soc is input only and the prefix name of these
+pin is "GPI" only. This patch fine-tune the condition of GPIO check from
+"GPIO" to "GPI".
 
-Userspace DMA by definition also does not use dma_map..
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+---
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+index 53f3f8aec695..a2f5ede3f897 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+@@ -292,7 +292,7 @@ static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
+ 	 *
+ 	 * expr->signal might look like "GPIOT3" in the GPIO case.
+ 	 */
+-	return strncmp(expr->signal, "GPIO", 4) == 0;
++	return strncmp(expr->signal, "GPI", 3) == 0;
+ }
+ 
+ static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+-- 
+2.17.1
+
