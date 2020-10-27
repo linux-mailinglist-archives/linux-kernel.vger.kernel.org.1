@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABD729A87F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAEF29A81D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896519AbgJ0J43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:56:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29616 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2896506AbgJ0J42 (ORCPT
+        id S2895803AbgJ0JoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:44:25 -0400
+Received: from casper.infradead.org ([90.155.50.34]:35904 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895793AbgJ0JoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:56:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603792587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JVIROt4xscPTv2bl+9dBZkGi/KmAAnHZ43ndwfcAS4s=;
-        b=bB+jRXhLlnKQCuJbpeOwsBh7oh+8kwGSocAoOAouv7s/xncBsWSuDeg7MNl8euVHHqFMRh
-        fUeHc8Jc2hNRpxJp6LIdOPdzTe20C8wxhRg4DFd7qt7qNoqNvqXiHIDWwBBfTfiREdxWae
-        4Owm2sYh7m97ZKtNum85/toKt2lax90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-HcgxRTMQP4aCMXK2g1pL6A-1; Tue, 27 Oct 2020 05:56:23 -0400
-X-MC-Unique: HcgxRTMQP4aCMXK2g1pL6A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 883E2100CCFD;
-        Tue, 27 Oct 2020 09:56:20 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B3EC7367E;
-        Tue, 27 Oct 2020 09:55:56 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 00636417F242; Mon, 26 Oct 2020 16:11:07 -0300 (-03)
-Date:   Mon, 26 Oct 2020 16:11:07 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
-        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
-        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20201026191107.GA407524@fuller.cnet>
-References: <20201020073055.GY2611@hirez.programming.kicks-ass.net>
- <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
- <20201020134128.GT2628@hirez.programming.kicks-ass.net>
- <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
- <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
- <20201023085826.GP2611@hirez.programming.kicks-ass.net>
- <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
- <87ft6464jf.fsf@nanos.tec.linutronix.de>
- <20201026173012.GA377978@fuller.cnet>
- <875z6w4xt4.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875z6w4xt4.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Tue, 27 Oct 2020 05:44:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=pus4Itp4UoghEjF3f335YQWvx2sMVGqfb8omYZntFyU=; b=WfCzPus7cGTdP7efUNJENd3yHQ
+        tOT2qc4mSYXs5BtrA/Hjp/FyEzPG9wxp/XVrKk6SYmR8X9AwBtA+pRU/cTtopJZhixsrMcFrK25rt
+        ZCWPdCRzFXlNBDYU8Tnb70JaQSCjfzSGpZQKLQgNoGYjMMltjJy8PX2Tl9XxPsAy6znprm1nLjIqc
+        k6KzjDG489Pd+3XcBCGEAxnu9AsH/P+m1i+emfcNQYBXOP13vFTA3J8VZ1EkQkLV+xH2uhLKzz8xt
+        blW/UNDdCAbeE7LykfUBLEsOjhuipDvtcIdgxDhM0DkWmYq/7PKe23uwYQKYE3gAuLOqNoVDXmsct
+        6pznYT2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXLWE-0006hv-Hr; Tue, 27 Oct 2020 09:43:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47BD3305815;
+        Tue, 27 Oct 2020 10:43:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 279242B7AC14D; Tue, 27 Oct 2020 10:43:53 +0100 (CET)
+Message-ID: <20201027091504.712183781@infradead.org>
+User-Agent: quilt/0.66
+Date:   Tue, 27 Oct 2020 10:15:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, luto@kernel.org, me@kylehuey.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, rocallahan@gmail.com,
+        alexandre.chartre@oracle.com, paulmck@kernel.org,
+        frederic@kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, mhiramat@kernel.org,
+        pmladek@suse.com, joel@joelfernandes.org, rostedt@goodmis.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, brgerst@gmail.com,
+        jpoimboe@redhat.com, daniel.thompson@linaro.org,
+        julliard@winehq.org, pgofman@codeweavers.com, peterz@infradead.org
+Subject: [PATCH 0/3] x86/debug: Fixes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 08:00:39PM +0100, Thomas Gleixner wrote:
-> On Mon, Oct 26 2020 at 14:30, Marcelo Tosatti wrote:
-> > On Fri, Oct 23, 2020 at 11:00:52PM +0200, Thomas Gleixner wrote:
-> >> So without information from the driver which tells what the best number
-> >> of interrupts is with a reduced number of CPUs, this cutoff will cause
-> >> more problems than it solves. Regressions guaranteed.
-> >
-> > One might want to move from one interrupt per isolated app core
-> > to zero, or vice versa. It seems that "best number of interrupts 
-> > is with reduced number of CPUs" information, is therefore in userspace, 
-> > not in driver...
-> 
-> How does userspace know about the driver internals? Number of management
-> interrupts, optimal number of interrupts per queue?
-> 
-> >> Managed interrupts base their interrupt allocation and spreading on
-> >> information which is handed in by the individual driver and not on crude
-> >> assumptions. They are not imposing restrictions on the use case.
-> >> 
-> >> It's perfectly fine for isolated work to save a data set to disk after
-> >> computation has finished and that just works with the per-cpu I/O queue
-> >> which is otherwise completely silent. 
-> >
-> > Userspace could only change the mask of interrupts which are not 
-> > triggered by requests from the local CPU (admin, error, mgmt, etc),
-> > to avoid the vector exhaustion problem.
-> >
-> > However, there is no explicit way for userspace to know that, as far as
-> > i know.
-> >
-> >  130:      34845          0          0          0          0          0          0          0  IR-PCI-MSI 33554433-edge      nvme0q1
-> >  131:          0      27062          0          0          0          0          0          0  IR-PCI-MSI 33554434-edge      nvme0q2
-> >  132:          0          0      24393          0          0          0          0          0  IR-PCI-MSI 33554435-edge      nvme0q3
-> >  133:          0          0          0      24313          0          0          0          0  IR-PCI-MSI 33554436-edge      nvme0q4
-> >  134:          0          0          0          0      20608          0          0          0  IR-PCI-MSI 33554437-edge      nvme0q5
-> >  135:          0          0          0          0          0      22163          0          0  IR-PCI-MSI 33554438-edge      nvme0q6
-> >  136:          0          0          0          0          0          0      23020          0  IR-PCI-MSI 33554439-edge      nvme0q7
-> >  137:          0          0          0          0          0          0          0      24285  IR-PCI-MSI 33554440-edge      nvme0q8
-> >
-> > Can that be retrieved from PCI-MSI information, or drivers
-> > have to inform this?
-> 
-> The driver should use a different name for the admin queues.
+Hi,
 
-Works for me.
+Triggered by the x86/entry rework, the resulting #DB cleanup (obviously :/)
+broke something. Kyle reported that ptrace_get_debugreg(6) no longer contained
+DR_STEP after PTRACE_SINGLESTEP which broke RR.
 
-Sounds more like a heuristic which can break, so documenting this 
-as an "interface" seems appropriate.
+While looking at this, I realized that a kernel #DB should not consume a
+userspace BTF, and equally a kernel #DB should not clobber the (userspace)
+ptrace DR6 state. Both these have been busted since forever afaict.
+
+I've added a few Wine folks to Cc, with the hope that they can test Wine
+on 5.10-rc and make sure it all still works as expected. There have been
+significant changes. Although hopefully it all works again after these
+patches.
 
