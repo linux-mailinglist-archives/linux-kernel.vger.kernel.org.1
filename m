@@ -2,89 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4D929B1AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C26029B1C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902364AbgJ0Ocx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:32:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47278 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759197AbgJ0O2S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:28:18 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603808897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WHVWY8Pt2cBEbxM1Jxi63g2Hj3JS0/EEW2zyuVGEPSs=;
-        b=2GQa6Ul8aOkAo3AXsA0aVITxroDZkL4AtCNdgNI3SDHsv3F+SU+7ED8PqGdbAeRfy0O4TB
-        icKZgLCvuhTR1kJhp3uq+KN+rs4RZzZQK7odWgDfiXaSUfApcsaWUkjSb7TZbo1M0cF8Ys
-        Ilcw/2OVZ4JEar/I/4TgEHp0ss+xXlb5kZcx2dZtVHI3WmN9kpwf10tXqdk4+lTtprnWUL
-        rIX41oWtJ5VehAeaG/J+tjCqxsEdrZIip7AsZUAUd8upg+lfYoD61K8xt1A4hEOq0c51ET
-        IqQ2a0jkuDj9QRkf8VK5YQABRVEB4rlGLAk8h9l8jbR5vJXlX+tBNT9AgUzSLw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603808897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WHVWY8Pt2cBEbxM1Jxi63g2Hj3JS0/EEW2zyuVGEPSs=;
-        b=iI4zzfmXqaQk8wTIlKzcoy2w3B7FkOtnUj2WNnQBCUCsHicUw1/TWMW/wUuiUSu0omFieQ
-        T9rGsHQGnc8YCiBQ==
-To:     Jacob Keller <jacob.e.keller@intel.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <586e249a-1078-9fe9-22d4-b3c1ec0a3a5e@intel.com>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net> <20201019140005.GB17287@fuller.cnet> <20201020073055.GY2611@hirez.programming.kicks-ass.net> <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com> <20201020134128.GT2628@hirez.programming.kicks-ass.net> <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com> <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com> <20201023085826.GP2611@hirez.programming.kicks-ass.net> <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com> <87ft6464jf.fsf@nanos.tec.linutronix.de> <20201026173012.GA377978@fuller.cnet> <875z6w4xt4.fsf@nanos.tec.linutronix.de> <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com> <87v9ew3fzd.fsf@nanos.tec.linutronix.de> <85b5f53e-5be2-beea-269a-f70029bea298@intel.com> <87lffs3bd6.fsf@nanos.tec.linutronix.de> <959997ee-f393-bab0-45c0-4144c37b9185@redhat.com> <875z6w38n4.fsf@nanos.tec.linutronix.de> <586e249a-1078-9fe9-22d4-b3c1ec0a3a5e@intel.com>
-Date:   Tue, 27 Oct 2020 15:28:16 +0100
-Message-ID: <87mu07216n.fsf@nanos.tec.linutronix.de>
+        id S2898276AbgJ0Od7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:33:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:41964 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897650AbgJ0OcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:32:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23C8013D5;
+        Tue, 27 Oct 2020 07:31:59 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 775DC3F719;
+        Tue, 27 Oct 2020 07:31:57 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 14:31:54 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andre Przywara <Andre.Przywara@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <James.Clark@arm.com>, Al Grant <Al.Grant@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 06/21] perf arm-spe: Refactor printing string to buffer
+Message-ID: <20201027143153.GF27285@arm.com>
+References: <20201027030917.15404-1-leo.yan@linaro.org>
+ <20201027030917.15404-7-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027030917.15404-7-leo.yan@linaro.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26 2020 at 16:08, Jacob Keller wrote:
-> On 10/26/2020 3:49 PM, Thomas Gleixner wrote:
->> On Mon, Oct 26 2020 at 18:22, Nitesh Narayan Lal wrote:
->>> I don't think there is currently a way to control the enablement/disablement of
->>> interrupts from the userspace.
->> 
->> You cannot just disable the interrupt. You need to make sure that the
->> associated queue is shutdown or quiesced _before_ the interrupt is shut
->> down.
->
-> Could this be handled with a callback to the driver/hw? I know Intel HW
-> should support this type of quiesce/shutdown.
+On Tue, Oct 27, 2020 at 03:09:02AM +0000, Leo Yan wrote:
+> When outputs strings to the decoding buffer with function snprintf(),
+> SPE decoder needs to detects if any error returns from snprintf() and if
+> so needs to directly bail out.  If snprintf() returns success, it needs
+> to update buffer pointer and reduce the buffer length so can continue to
+> output the next string into the consequent memory space.
+> 
+> This complex logics are spreading in the function arm_spe_pkt_desc() so
+> there has many duplicate codes for handling error detecting, increment
+> buffer pointer and decrement buffer size.
+> 
+> To avoid the duplicate code, this patch introduces a new helper function
+> arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
+> the caller arm_spe_pkt_desc() will call it and simply check the returns
+> value.
+> 
+> This patch also moves the variable 'blen' as the function's local
+> variable, this allows to remove the unnecessary braces and improve the
+> readability.
+> 
+> Suggested-by: Dave Martin <Dave.Martin@arm.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 247 ++++++++++--------
+>  1 file changed, 135 insertions(+), 112 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 04fd7fd7c15f..b400636e6da2 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -9,6 +9,7 @@
+>  #include <endian.h>
+>  #include <byteswap.h>
+>  #include <linux/bitops.h>
+> +#include <stdarg.h>
+>  
+>  #include "arm-spe-pkt-decoder.h"
+>  
+> @@ -258,192 +259,214 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
+>  	return ret;
+>  }
+>  
+> +static int arm_spe_pkt_snprintf(char **buf_p, size_t *blen,
+> +				const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +	int ret;
+> +
+> +	va_start(ap, fmt);
+> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
+> +	va_end(ap);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*buf_p += ret;
+> +	*blen -= ret;
+> +	return ret;
+> +}
+> +
 
-We can't have a callback from the interrupt shutdown code as you have to
-wait for the queue to drain packets in flight. Something like this
+This approach seems OK, though I wonder whether all the
+"if (ret < 0) return;" logic is really needed.
 
-     mark queue as going down (no more tx queueing)
-     tell hardware not to route RX packets to it
-     consume pending RX
-     wait for already queued TX packets to be sent
+In case of failure, it probably doesn't matter what ends up in buf.
+If not, we could just implement a cumulative error:
 
-Look what the block people did. They have a common multi-instance
-hotplug state and they register each context (queue) as an instance. The
-hotplug core invokes the corresponding callbacks when bringing a CPU up
-or when shutting it down.
+static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
+{
 
-Thanks,
+	/* ... */
 
-        tglx
+	if (ret < 0) {
+		if (err && !*err)
+			*err = ret;
+	} else {
+		*buf_p += ret;
+		*blen -= ret;
+	}
+
+	return err ? *err : ret;
+}
+
+and just return the final value of err.
 
 
+
+>  int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  		     size_t buf_len)
+>  {
+>  	int ret, ns, el, idx = packet->index;
+>  	unsigned long long payload = packet->payload;
+>  	const char *name = arm_spe_pkt_name(packet->type);
+> +	size_t blen = buf_len;
+>  
+>  	switch (packet->type) {
+>  	case ARM_SPE_BAD:
+>  	case ARM_SPE_PAD:
+>  	case ARM_SPE_END:
+> -		return snprintf(buf, buf_len, "%s", name);
+> -	case ARM_SPE_EVENTS: {
+> -		size_t blen = buf_len;
+> -
+> -		ret = 0;
+> -		ret = snprintf(buf, buf_len, "EV");
+> -		buf += ret;
+> -		blen -= ret;
+> +		return arm_spe_pkt_snprintf(&buf, &blen, "%s", name);
+> +	case ARM_SPE_EVENTS:
+> +		ret = arm_spe_pkt_snprintf(&buf, &blen, "EV");
+> +		if (ret < 0)
+> +			return ret;
+> +
+
+...
+
+Then this becomes
+
+	case ARM_SPE_END:
+		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s", name);
+	case ARM_SPE_EVENTS:
+		arm_spe_pkt_snprintf(&ret, &buf, &blen, "%s", name);
+
+		if (payload & 0x1)
+			arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCEPTION-GEN");
+		if (payload & 0x2)
+			arm_spe_pkt_snprintf(&err, &buf, &blen, " RETIRED");
+
+	/* ... */
+
+
+This might be over-engineering, but it does help to condense the code.
+
+[...]
+
+Cheers
+---Dave
