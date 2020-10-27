@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE8129C89F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CBF29C89D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829663AbgJ0TTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:19:52 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39141 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1829603AbgJ0TST (ORCPT
+        id S1829648AbgJ0TTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:19:40 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:45201 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1823202AbgJ0TSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:18:19 -0400
-Received: by mail-wr1-f67.google.com with SMTP id y12so3168039wrp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:18:17 -0700 (PDT)
+        Tue, 27 Oct 2020 15:18:40 -0400
+Received: by mail-lf1-f66.google.com with SMTP id r127so3740189lff.12;
+        Tue, 27 Oct 2020 12:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UcIHLAfMrGIWb94gFQbYez2rtiLYhxYGzbhepgOEqhg=;
-        b=jZmcXQX1A2S40vjJo/nTH0aljwKjJuAPXb+B36lbyLEdT9egc+lxtWdJnMB+OCR1q/
-         z8JXGeDZMMgDs7eEoLuZcbtLb4W4PRiKB7xEFyfMBTPNVjvHVRgf0wKWDBhLE7BeF3Ee
-         HdUsFRjxEA01mA8iefIMZVO+toudXuG7t7vSE=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rRmJEoczOaPt5oIq8pBYfrOwwnQx9zBhEX8LjsvLjPU=;
+        b=eaFIazKFNB5vyc1tXwMSYIlIFQxt6JNrRMyBSHpb7iU0RRmO77n4dc1iUE32UC4l5Y
+         ZGr96oD5UyzDGZUvJDqXU/yGz+us6hS0pomjhWv9z6Wf7KslMSImDcTLqNZhThgDPkuV
+         9zTHIVk9mkeHWhow/fn6FJE58nRSHHmZxFMDLLUnTnAzK4BRE1NrtwyF60Ms7YuBR/01
+         lsR2ZiwIrnPgwpUvIqx8l+VnyS3qKhIB71QRirpTh1Q3pe8XUZhexHWEWRFYcHxtflHm
+         Es08TcFSdBLKRYTUkSAetPSJtGJk1dhCDazar1+WDc8X+FMV3dzmzEq5iAKiJ/U2Rd0I
+         G3gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=UcIHLAfMrGIWb94gFQbYez2rtiLYhxYGzbhepgOEqhg=;
-        b=rLkZDmwVvam+6GzzCq9ZFU9lMzFUdexkPtCbKKQZwE8laNW90GerGTmPupvupn5j58
-         B6NlK7aH9gO6tfibgyliWvRPmLizc2OfcY0xm3MSiTJXL7xv5ld3zOT+eWn5RArGER9y
-         EbuRk+joXPq5fFunAkTpsm67ms/rTPS2jsfwuiQLr/4Jwx4bzCtnijHQQ0o4c4ngQdPO
-         IyPSta7rLxsCxL1x5KkyS4+E9NohKHTfJ656lP6XentEVoHt60lepxIoyubdjA6E62rZ
-         GlUTMhA/8Bny/e9NG6ndkgH+N8mY1FP79StFP7wo4UkrxZ1cvqmKAGeKWWWhDha6DicO
-         WObA==
-X-Gm-Message-State: AOAM530TgJWSVyBe48z1NMRHp8WOvlBSCGKUqF0A6Sv8+FH3KUN2pH2j
-        +lYBJl2muZM4hG4te7WnJnz4Tg==
-X-Google-Smtp-Source: ABdhPJwcdYcb/+YbSAqoFdbmEhcuESXU1vQTf/whNx4Mk55hbq+3g75bW6OZn0DeRMXMMRK+am3X9g==
-X-Received: by 2002:adf:dd50:: with SMTP id u16mr4781710wrm.419.1603826296987;
-        Tue, 27 Oct 2020 12:18:16 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b7sm3280521wrp.16.2020.10.27.12.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 12:18:16 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 20:18:14 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] parisc/sticore: Avoid hard-coding built-in font
- charcount
-Message-ID: <20201027191814.GP401619@phenom.ffwll.local>
-Mail-Followup-To: Peilin Ye <yepeilin.cs@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1603788511.git.yepeilin.cs@gmail.com>
- <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
- <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
- <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
- <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
- <c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rRmJEoczOaPt5oIq8pBYfrOwwnQx9zBhEX8LjsvLjPU=;
+        b=F2mjxDwZ4d87UTiEdzpCvLvDYXi4kjHKaXWAtY0x/qOpOP1yc6UbJTJMh7bW4eYPjr
+         lQOiuIPtCDmwsyJntMjOb+AA+Y8mEJ21wOI89vrZ0E8u9+X+WF/I5tpZu3cRxfLSJxsv
+         gjfqQ/gFLz37QtodkR7asFxX56WODETNVM9E/oE/QGy1qjCzFcVD+wVVGHUk7PMKVYtp
+         P3b03vP7SVJb332qJpcslYxm/ikAXsDtvsi9KN3tA3cIQ3To1pJhYSIynV2DRJ4QOn3U
+         ZF0Tp+KbaQT0d+ZDXSvQflul4eTFyzQw6dV1iYK7MoDogvMaHQzeF4QIUb2gZF9m3CRc
+         r0Ww==
+X-Gm-Message-State: AOAM5330g+t2pdV5dCIsKulFYIdS8FdXrc14F0E2gN6ZvMTkNnEzZ11I
+        lCmmMbYaRvKPltUXKSP9jyHsf2dUj3c=
+X-Google-Smtp-Source: ABdhPJwIxxkDDHFxByTXYZCyDddCnWVGWPKWYwM/m33Y+OUz7VXxGlN+z1qlQDVq2IYrih/LUJUV3A==
+X-Received: by 2002:a19:3f57:: with SMTP id m84mr1532664lfa.17.1603826317134;
+        Tue, 27 Oct 2020 12:18:37 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id x19sm265377lff.189.2020.10.27.12.18.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 12:18:36 -0700 (PDT)
+Subject: Re: [PATCH v6 09/52] dt-bindings: memory: tegra30: mc: Document new
+ interconnect property
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-10-digetx@gmail.com> <20201027090550.GI4244@kozik-lap>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7770b89e-f30b-3bfd-1e21-8ebbe905efcd@gmail.com>
+Date:   Tue, 27 Oct 2020 22:18:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20201027090550.GI4244@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:41:02PM -0400, Peilin Ye wrote:
-> sti_select_fbfont() and sti_cook_fonts() are hard-coding the number of
-> characters of our built-in fonts as 256. Recently, we included that
-> information in our kernel font descriptor `struct font_desc`, so use
-> `fbfont->charcount` instead of hard-coded values.
+27.10.2020 12:05, Krzysztof Kozlowski пишет:
+> On Mon, Oct 26, 2020 at 01:16:52AM +0300, Dmitry Osipenko wrote:
+>> Memory controller is interconnected with memory clients and with the
+>> External Memory Controller. Document new interconnect property which
+>> turns memory controller into interconnect provider.
+>>
+>> Acked-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../bindings/memory-controllers/nvidia,tegra30-mc.yaml       | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
+>> index 84fd57bcf0dc..5436e6d420bc 100644
+>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
+>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
+>> @@ -57,6 +57,9 @@ properties:
+>>    "#iommu-cells":
+>>      const: 1
+>>  
+>> +  "#interconnect-cells":
+>> +    const: 1
+>> +
+>>  patternProperties:
+>>    "^emc-timings-[0-9]+$":
+>>      type: object
+>> @@ -120,6 +123,7 @@ required:
+>>    - clock-names
+>>    - "#reset-cells"
+>>    - "#iommu-cells"
+>> +  - "#interconnect-cells"
 > 
-> This patch depends on patch "Fonts: Add charcount field to font_desc".
+> Rob,
 > 
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> You were fine with adding a new required property which breaks all
+> existing DTBs?
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+This is a required property for the new bindings and optional for the
+older. Does it really need to be made optional in the binding?
 
-> ---
-> $ # Build-tested (Ubuntu 20.04)
-> $ sudo apt-get install binutils-hppa64-linux-gnu gcc-7-hppa64-linux-gnu
-> $ cp arch/parisc/configs/generic-64bit_defconfig .config
-> $ make -j`nproc` ARCH=parisc CROSS_COMPILE=hppa64-linux-gnu- all
-> 
->  drivers/video/console/sticore.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
-> index d1bb5915082b..f869b723494f 100644
-> --- a/drivers/video/console/sticore.c
-> +++ b/drivers/video/console/sticore.c
-> @@ -506,7 +506,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
->  			fbfont->width, fbfont->height, fbfont->name);
->  			
->  	bpc = ((fbfont->width+7)/8) * fbfont->height; 
-> -	size = bpc * 256;
-> +	size = bpc * fbfont->charcount;
->  	size += sizeof(struct sti_rom_font);
->  
->  	nf = kzalloc(size, STI_LOWMEM);
-> @@ -514,7 +514,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
->  		return NULL;
->  
->  	nf->first_char = 0;
-> -	nf->last_char = 255;
-> +	nf->last_char = fbfont->charcount - 1;
->  	nf->width = fbfont->width;
->  	nf->height = fbfont->height;
->  	nf->font_type = STI_FONT_HPROMAN8;
-> @@ -525,7 +525,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
->  
->  	dest = nf;
->  	dest += sizeof(struct sti_rom_font);
-> -	memcpy(dest, fbfont->data, bpc*256);
-> +	memcpy(dest, fbfont->data, bpc * fbfont->charcount);
->  
->  	cooked_font = kzalloc(sizeof(*cooked_font), GFP_KERNEL);
->  	if (!cooked_font) {
-> @@ -660,7 +660,7 @@ static int sti_cook_fonts(struct sti_cooked_rom *cooked_rom,
->  void sti_font_convert_bytemode(struct sti_struct *sti, struct sti_cooked_font *f)
->  {
->  	unsigned char *n, *p, *q;
-> -	int size = f->raw->bytes_per_char * 256 + sizeof(struct sti_rom_font);
-> +	int size = f->raw->bytes_per_char * (f->raw->last_char + 1) + sizeof(struct sti_rom_font);
->  	struct sti_rom_font *old_font;
->  
->  	if (sti->wordmode)
-> -- 
-> 2.25.1
-> 
+> Were these bindings marked as unstable? The patchset does not even
+> say/scream that it breaks the ABI, so this might be quite a surprise for
+> someone...
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Please see tegra_mc_interconnect_setup() in "memory: tegra-mc: Add
+interconnect framework" patch, which check presence of the new ICC DT
+property.
