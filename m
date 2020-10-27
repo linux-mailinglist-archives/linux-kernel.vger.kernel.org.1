@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295B829B446
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF49C29B445
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787363AbgJ0PAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42564 "EHLO mail.kernel.org"
+        id S1787342AbgJ0PAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2899198AbgJ0Omv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:51 -0400
+        id S367976AbgJ0Om7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30C96206B2;
-        Tue, 27 Oct 2020 14:42:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 927C121D7B;
+        Tue, 27 Oct 2020 14:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809770;
-        bh=jCxIbtF31hd+7Wpl7D8uJl4yGO/ELNVRZ+JuCPOOouw=;
+        s=default; t=1603809779;
+        bh=t2Od6mWeBioSTjcrzJNg+IRK4kWLCIklU0gs417aVLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B6d+z+GeIE7VLOPULxRcuV2pc6Wrx/WPzNqTqnu51q3Ig0YlCyQMFyTvhN8xC7VyI
-         VXg3Pb76Y6hZKbofaI3HZfF4/5DhO76gR5aA1rqwZN8n418+rgYw9dVYo6nWAVT4mE
-         fkGV/6kkaYA/eGm3AaiFfCjBrOCY9xFkgNXp8QC4=
+        b=lpd9Hr2AWcBJnJKs1j0N/KhLRTZNHbNs0tNodlzoO+8mVS7DnFZj5O7hNTGNpfSWH
+         OkA8VjfhP7Im89BbfzIVIR/hWxehDHpDgoLGOR13u7e92HXWlsvxXLhQjE9Ji+iGfx
+         ySPnuh2f3E6+9amV4ZmWUtl8OB+e1DO8jIaR4SSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 283/408] SUNRPC: fix copying of multiple pages in gss_read_proxy_verf()
-Date:   Tue, 27 Oct 2020 14:53:41 +0100
-Message-Id: <20201027135508.179385530@linuxfoundation.org>
+Subject: [PATCH 5.4 286/408] Input: ep93xx_keypad - fix handling of platform_get_irq() error
+Date:   Tue, 27 Oct 2020 14:53:44 +0100
+Message-Id: <20201027135508.307050253@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,82 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit d48c8124749c9a5081fe68680f83605e272c984b ]
+[ Upstream commit 7d50f6656dacf085a00beeedbc48b19a37d17881 ]
 
-When the passed token is longer than 4032 bytes, the remaining part
-of the token must be copied from the rqstp->rq_arg.pages. But the
-copy must make sure it happens in a consecutive way.
+platform_get_irq() returns -ERRNO on error.  In such case comparison
+to 0 would pass the check.
 
-With the existing code, the first memcpy copies 'length' bytes from
-argv->iobase, but since the header is in front, this never fills the
-whole first page of in_token->pages.
-
-The mecpy in the loop copies the following bytes, but starts writing at
-the next page of in_token->pages.  This leaves the last bytes of page 0
-unwritten.
-
-Symptoms were that users with many groups were not able to access NFS
-exports, when using Active Directory as the KDC.
-
-Signed-off-by: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
-Fixes: 5866efa8cbfb "SUNRPC: Fix svcauth_gss_proxy_init()"
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: 60214f058f44 ("Input: ep93xx_keypad - update driver to new core support")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20200828145744.3636-1-krzk@kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/auth_gss/svcauth_gss.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-index 3645cd241d3ea..cf4d6d7e72822 100644
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -1095,9 +1095,9 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
- 			       struct gssp_in_token *in_token)
- {
- 	struct kvec *argv = &rqstp->rq_arg.head[0];
--	unsigned int page_base, length;
--	int pages, i, res;
--	size_t inlen;
-+	unsigned int length, pgto_offs, pgfrom_offs;
-+	int pages, i, res, pgto, pgfrom;
-+	size_t inlen, to_offs, from_offs;
- 
- 	res = gss_read_common_verf(gc, argv, authp, in_handle);
- 	if (res)
-@@ -1125,17 +1125,24 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
- 	memcpy(page_address(in_token->pages[0]), argv->iov_base, length);
- 	inlen -= length;
- 
--	i = 1;
--	page_base = rqstp->rq_arg.page_base;
-+	to_offs = length;
-+	from_offs = rqstp->rq_arg.page_base;
- 	while (inlen) {
--		length = min_t(unsigned int, inlen, PAGE_SIZE);
--		memcpy(page_address(in_token->pages[i]),
--		       page_address(rqstp->rq_arg.pages[i]) + page_base,
-+		pgto = to_offs >> PAGE_SHIFT;
-+		pgfrom = from_offs >> PAGE_SHIFT;
-+		pgto_offs = to_offs & ~PAGE_MASK;
-+		pgfrom_offs = from_offs & ~PAGE_MASK;
-+
-+		length = min_t(unsigned int, inlen,
-+			 min_t(unsigned int, PAGE_SIZE - pgto_offs,
-+			       PAGE_SIZE - pgfrom_offs));
-+		memcpy(page_address(in_token->pages[pgto]) + pgto_offs,
-+		       page_address(rqstp->rq_arg.pages[pgfrom]) + pgfrom_offs,
- 		       length);
- 
-+		to_offs += length;
-+		from_offs += length;
- 		inlen -= length;
--		page_base = 0;
--		i++;
+diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
+index 7c70492d9d6b5..f831f01501d58 100644
+--- a/drivers/input/keyboard/ep93xx_keypad.c
++++ b/drivers/input/keyboard/ep93xx_keypad.c
+@@ -250,8 +250,8 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
  	}
- 	return 0;
- }
+ 
+ 	keypad->irq = platform_get_irq(pdev, 0);
+-	if (!keypad->irq) {
+-		err = -ENXIO;
++	if (keypad->irq < 0) {
++		err = keypad->irq;
+ 		goto failed_free;
+ 	}
+ 
 -- 
 2.25.1
 
