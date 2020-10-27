@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2059329B52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DB029B530
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793908AbgJ0PJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38836 "EHLO mail.kernel.org"
+        id S1793932AbgJ0PJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790267AbgJ0PEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:04:15 -0400
+        id S1790298AbgJ0PEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEAB920747;
-        Tue, 27 Oct 2020 15:04:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A25D2071A;
+        Tue, 27 Oct 2020 15:04:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811055;
-        bh=ipp8Q2SO3LsluUuS9Pv4/C64DlSzodBh+MFDyHqTaY8=;
+        s=default; t=1603811061;
+        bh=+PSnB/SCE1pbDMGw8ohIdcK8Qg9MsK6HofmiBQw9XlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqNF2qYn9S9biY/EwDlNpR3HZFUCN99XuSE6N7ih7Aoc2VaOstoIMjBqyFI0ENPJ6
-         fkWYnEpRxJPHzPXB4zlnEnHhh1oNBFyFWfcfJ1jKAFjQ7j6fn1t2+4yCDkGtgKroGU
-         eC+MbSK3BTGjmB0paazTYgLRHkdBy3ThaXL1UDSM=
+        b=1sWsGlXkEuRep1VVqTLQLBOTa4lf/wamqb8eLhpENVnGjLrI0s8zslmrfENIztcZY
+         Y1h0/pRurs5zg9pLj2X7+oqsczu6sC96DqiMmpS2k4dLeI8nRYkcYNJyhJoG3VaKkc
+         NIfPwkuFrjCz98lRoTv26QdGMUaZIY5WgB7aUKZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 358/633] RDMA/qedr: Fix inline size returned for iWARP
-Date:   Tue, 27 Oct 2020 14:51:41 +0100
-Message-Id: <20201027135539.483566764@linuxfoundation.org>
+Subject: [PATCH 5.8 360/633] powerpc/watchpoint: Fix quadword instruction handling on p10 predecessors
+Date:   Tue, 27 Oct 2020 14:51:43 +0100
+Message-Id: <20201027135539.579138265@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,38 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 
-[ Upstream commit fbf58026b2256e9cd5f241a4801d79d3b2b7b89d ]
+[ Upstream commit 4759c11ed20454b7b36db4ec15f7d5aa1519af4a ]
 
-commit 59e8970b3798 ("RDMA/qedr: Return max inline data in QP query
-result") changed query_qp max_inline size to return the max roce inline
-size.  When iwarp was introduced, this should have been modified to return
-the max inline size based on protocol.  This size is cached in the device
-attributes
+On p10 predecessors, watchpoint with quadword access is compared at
+quadword length. If the watch range is doubleword or less than that
+in a first half of quadword aligned 16 bytes, and if there is any
+unaligned quadword access which will access only the 2nd half, the
+handler should consider it as extraneous and emulate/single-step it
+before continuing.
 
-Fixes: 69ad0e7fe845 ("RDMA/qedr: Add support for iWARP in user space")
-Link: https://lore.kernel.org/r/20200902165741.8355-8-michal.kalderon@marvell.com
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 74c6881019b7 ("powerpc/watchpoint: Prepare handler to handle more than one watchpoint")
+Reported-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200902042945.129369-2-ravi.bangoria@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/hw_breakpoint.h |  1 +
+ arch/powerpc/kernel/hw_breakpoint.c      | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 7de96ac4ce543..820e351277d1b 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -2637,7 +2637,7 @@ int qedr_query_qp(struct ib_qp *ibqp,
- 	qp_attr->cap.max_recv_wr = qp->rq.max_wr;
- 	qp_attr->cap.max_send_sge = qp->sq.max_sges;
- 	qp_attr->cap.max_recv_sge = qp->rq.max_sges;
--	qp_attr->cap.max_inline_data = ROCE_REQ_MAX_INLINE_DATA_SIZE;
-+	qp_attr->cap.max_inline_data = dev->attr.max_inline;
- 	qp_init_attr->cap = qp_attr->cap;
+diff --git a/arch/powerpc/include/asm/hw_breakpoint.h b/arch/powerpc/include/asm/hw_breakpoint.h
+index cb424799da0dc..5a00da670a407 100644
+--- a/arch/powerpc/include/asm/hw_breakpoint.h
++++ b/arch/powerpc/include/asm/hw_breakpoint.h
+@@ -40,6 +40,7 @@ struct arch_hw_breakpoint {
+ #else
+ #define HW_BREAKPOINT_SIZE  0x8
+ #endif
++#define HW_BREAKPOINT_SIZE_QUADWORD	0x10
  
- 	qp_attr->ah_attr.type = RDMA_AH_ATTR_TYPE_ROCE;
+ #define DABR_MAX_LEN	8
+ #define DAWR_MAX_LEN	512
+diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
+index c55e67bab2710..f39e86d751144 100644
+--- a/arch/powerpc/kernel/hw_breakpoint.c
++++ b/arch/powerpc/kernel/hw_breakpoint.c
+@@ -519,9 +519,17 @@ static bool ea_hw_range_overlaps(unsigned long ea, int size,
+ 				 struct arch_hw_breakpoint *info)
+ {
+ 	unsigned long hw_start_addr, hw_end_addr;
++	unsigned long align_size = HW_BREAKPOINT_SIZE;
+ 
+-	hw_start_addr = ALIGN_DOWN(info->address, HW_BREAKPOINT_SIZE);
+-	hw_end_addr = ALIGN(info->address + info->len, HW_BREAKPOINT_SIZE);
++	/*
++	 * On p10 predecessors, quadword is handle differently then
++	 * other instructions.
++	 */
++	if (!cpu_has_feature(CPU_FTR_ARCH_31) && size == 16)
++		align_size = HW_BREAKPOINT_SIZE_QUADWORD;
++
++	hw_start_addr = ALIGN_DOWN(info->address, align_size);
++	hw_end_addr = ALIGN(info->address + info->len, align_size);
+ 
+ 	return ((ea < hw_end_addr) && (ea + size > hw_start_addr));
+ }
 -- 
 2.25.1
 
