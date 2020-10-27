@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52CF29B460
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D382429B462
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788946AbgJ0PBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59168 "EHLO mail.kernel.org"
+        id S1788975AbgJ0PB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1783233AbgJ0O6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:58:01 -0400
+        id S1783304AbgJ0O6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:58:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66C2020780;
-        Tue, 27 Oct 2020 14:57:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51E89206F4;
+        Tue, 27 Oct 2020 14:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810680;
-        bh=DCgQ9rO8eT5AKp6LgqlnZWOe584uEltQyBx8h0ap0CA=;
+        s=default; t=1603810682;
+        bh=ta7CI5Unjs+h0/N1vOjema7h4yq/c9AOY367xUX7QcY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RfeGH9knrC68sVqnyf2zK2s9wpNm8/xbxKbERcIr8JUSnJzPMC5U5kB1EJYKzwAaF
-         AGIcKBnEExq1wenkzIm14XC9npsdqDNMqih7sYOZ7oXiROtIu9g/zJL5NfKTJ4lSik
-         bssZ1elN0FuYWqLK9w4sbU8l+A7rcUmS4fmTuG7k=
+        b=Mt/+qHIg9/pw0HIPpTCqQCMg18+V8bY7Hmss32Rde/HJbvSGZ/XZP06PaOX8pa9/0
+         irN0A/9HrgyPi7IlajziJTn8LVyf5KG0gHV/nAvCrinCokamr8glGBYlBhos4xONsH
+         /DVxju3tJo5ySRUj2nUaWygwgv0/gaGyCLbMU/AQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Jaska Uimonen <jaska.uimonen@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        stable@vger.kernel.org, Camel Guo <camelg@axis.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 226/633] ASoC: topology: disable size checks for bytes_ext controls if needed
-Date:   Tue, 27 Oct 2020 14:49:29 +0100
-Message-Id: <20201027135533.284609954@linuxfoundation.org>
+Subject: [PATCH 5.8 227/633] ASoC: tlv320adcx140: Fix digital gain range
+Date:   Tue, 27 Oct 2020 14:49:30 +0100
+Message-Id: <20201027135533.327530118@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -48,68 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Camel Guo <camelg@axis.com>
 
-[ Upstream commit 6788fc1a66a0c1d1cec7a0f84f94b517eae8611c ]
+[ Upstream commit 73154aca4a03a2ab4833fd36683feb884af06d4b ]
 
-When CONFIG_SND_CTL_VALIDATION is set, accesses to extended bytes
-control generate spurious error messages when the size exceeds 512
-bytes, such as
+According to its datasheet, the digital gain should be -100 dB when
+CHx_DVOL is 1 and 27 dB when CHx_DVOL is 255. But with the current
+dig_vol_tlv, "Digital CHx Out Volume" shows 27.5 dB if CHx_DVOL is 255
+and -95.5 dB if CHx_DVOL is 1. This commit fixes this bug.
 
-[ 11.224223] sof_sdw sof_sdw: control 2:0:0:EQIIR5.0 eqiir_coef_5:0:
-invalid count 1024
-
-In addition the error check returns -EINVAL which has the nasty side
-effect of preventing applications accessing controls from working,
-e.g.
-
-root@plb:~# alsamixer
-cannot load mixer controls: Invalid argument
-
-It's agreed that the control interface has been abused since 2014, but
-forcing a check should not prevent existing solutions from working.
-
-This patch skips the checks conditionally if CONFIG_SND_CTL_VALIDATION
-is set and the byte array provided by topology is > 512. This
-preserves the checks for all other cases.
-
-Fixes: 1a3232d2f61d2 ('ASoC: topology: Add support for TLV bytes controls')
-BugLink: https://github.com/thesofproject/linux/issues/2430
-Reported-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200917103912.2565907-1-kai.vehmanen@linux.intel.com
+Fixes: 689c7655b50c ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
+Signed-off-by: Camel Guo <camelg@axis.com>
+Link: https://lore.kernel.org/r/20200908090417.16695-1-camel.guo@axis.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-topology.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/codecs/tlv320adcx140.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 6eaa00c210117..a5460155b3f64 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -592,6 +592,17 @@ static int soc_tplg_kcontrol_bind_io(struct snd_soc_tplg_ctl_hdr *hdr,
- 		k->info = snd_soc_bytes_info_ext;
- 		k->tlv.c = snd_soc_bytes_tlv_callback;
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 03fb50175d876..a6273ccb84013 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -154,7 +154,7 @@ static const struct regmap_config adcx140_i2c_regmap = {
+ };
  
-+		/*
-+		 * When a topology-based implementation abuses the
-+		 * control interface and uses bytes_ext controls of
-+		 * more than 512 bytes, we need to disable the size
-+		 * checks, otherwise accesses to such controls will
-+		 * return an -EINVAL error and prevent the card from
-+		 * being configured.
-+		 */
-+		if (IS_ENABLED(CONFIG_SND_CTL_VALIDATION) && sbe->max > 512)
-+			k->access |= SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK;
-+
- 		ext_ops = tplg->bytes_ext_ops;
- 		num_ops = tplg->bytes_ext_ops_count;
- 		for (i = 0; i < num_ops; i++) {
+ /* Digital Volume control. From -100 to 27 dB in 0.5 dB steps */
+-static DECLARE_TLV_DB_SCALE(dig_vol_tlv, -10000, 50, 0);
++static DECLARE_TLV_DB_SCALE(dig_vol_tlv, -10050, 50, 0);
+ 
+ /* ADC gain. From 0 to 42 dB in 1 dB steps */
+ static DECLARE_TLV_DB_SCALE(adc_tlv, 0, 100, 0);
 -- 
 2.25.1
 
