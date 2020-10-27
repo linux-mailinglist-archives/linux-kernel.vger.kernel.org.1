@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF3F29C434
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E4A29C1F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1822909AbgJ0Rx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47574 "EHLO mail.kernel.org"
+        id S1762396AbgJ0Ome (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:42:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901370AbgJ0OWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:22:54 -0400
+        id S1761969AbgJ0Ok0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:40:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91E492072D;
-        Tue, 27 Oct 2020 14:22:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F401E20773;
+        Tue, 27 Oct 2020 14:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808574;
-        bh=ShjR72d+1wnr6v0rxTwHUziTu2XmR+9QAe3c8vz63tM=;
+        s=default; t=1603809625;
+        bh=ekaUfaLgUd14251slWgKtcDgNOCVS+EsHLnmkbH1ybw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DgIm3Hg7+pSPclJC1KQyz+d5UfV7l4KAlHpPln1aaRNKvdWw0lWNOqcNrdkWKCepW
-         FhrkVWywQmNow32XcOYH/9cb/wKnKkKPq+BgOlOIBh38TCTh2PnMZ5VxXHIrkiZjom
-         A1Hv4uYr/cZzf243JkRaFGzNaPOU1yXdJUE7TlBc=
+        b=1BwDw37Ui51l9aHSBVQpuerVNRTYcCYj6l/0BWXlGUht7Zmtsp+8O4f72p2J8jBk7
+         qMSaxzXMaOl9PPZ+ijxeNipYpB0rqJUBtLSQIn3mtGTcTekSPvplD6mB934zNS/7Rg
+         LiuCGke1oIZwuqeNk/3rRGwGyonw3RTMW+DwqpIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 142/264] RDMA/qedr: Fix use of uninitialized field
-Date:   Tue, 27 Oct 2020 14:53:20 +0100
-Message-Id: <20201027135437.359734419@linuxfoundation.org>
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ray Jui <ray.jui@broadcom.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 263/408] PCI: iproc: Set affinity mask on MSI interrupts
+Date:   Tue, 27 Oct 2020 14:53:21 +0100
+Message-Id: <20201027135507.250558407@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-[ Upstream commit a379ad54e55a12618cae7f6333fd1b3071de9606 ]
+[ Upstream commit eb7eacaa5b9e4f665bd08d416c8f88e63d2f123c ]
 
-dev->attr.page_size_caps was used uninitialized when setting device
-attributes
+The core interrupt code expects the irq_set_affinity call to update the
+effective affinity for the interrupt. This was not being done, so update
+iproc_msi_irq_set_affinity() to do so.
 
-Fixes: ec72fce401c6 ("qedr: Add support for RoCE HW init")
-Link: https://lore.kernel.org/r/20200902165741.8355-4-michal.kalderon@marvell.com
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/r/20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz
+Fixes: 3bc2b2348835 ("PCI: iproc: Add iProc PCIe MSI support")
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Ray Jui <ray.jui@broadcom.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/pcie-iproc-msi.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/main.c b/drivers/infiniband/hw/qedr/main.c
-index d1680d3b58250..2a82661620fe7 100644
---- a/drivers/infiniband/hw/qedr/main.c
-+++ b/drivers/infiniband/hw/qedr/main.c
-@@ -604,7 +604,7 @@ static int qedr_set_device_attr(struct qedr_dev *dev)
- 	qed_attr = dev->ops->rdma_query_device(dev->rdma_ctx);
+diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+index 0a3f61be5625b..a1298f6784ac9 100644
+--- a/drivers/pci/controller/pcie-iproc-msi.c
++++ b/drivers/pci/controller/pcie-iproc-msi.c
+@@ -209,15 +209,20 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
+ 	struct iproc_msi *msi = irq_data_get_irq_chip_data(data);
+ 	int target_cpu = cpumask_first(mask);
+ 	int curr_cpu;
++	int ret;
  
- 	/* Part 2 - check capabilities */
--	page_size = ~dev->attr.page_size_caps + 1;
-+	page_size = ~qed_attr->page_size_caps + 1;
- 	if (page_size > PAGE_SIZE) {
- 		DP_ERR(dev,
- 		       "Kernel PAGE_SIZE is %ld which is smaller than minimum page size (%d) required by qedr\n",
+ 	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
+ 	if (curr_cpu == target_cpu)
+-		return IRQ_SET_MASK_OK_DONE;
++		ret = IRQ_SET_MASK_OK_DONE;
++	else {
++		/* steer MSI to the target CPU */
++		data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
++		ret = IRQ_SET_MASK_OK;
++	}
+ 
+-	/* steer MSI to the target CPU */
+-	data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
++	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
+ 
+-	return IRQ_SET_MASK_OK;
++	return ret;
+ }
+ 
+ static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,
 -- 
 2.25.1
 
