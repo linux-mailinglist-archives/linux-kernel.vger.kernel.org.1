@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B2829C428
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A35729C5B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1822855AbgJ0RxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:53:11 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:45998 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1822841AbgJ0RxG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:53:06 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RHiaC8183065;
-        Tue, 27 Oct 2020 17:53:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=c4gAxZC/xvFviGGMjForU/y7XYcv/Kx/wPYkvbb97vg=;
- b=iSiG0v67leeoBndABoCYaMCfiyn7FrEMa1/MFrl7qI82SlxcfiFIp4LjpLv2RzHJ9Ip1
- ASgTvnnByHr4rPar/+ZTvdFf492Kqy6BWsS7eJDfrKiS3JSVRwLmn8vNak7sZxJyR818
- ksrZ16RY/0PflPaqXfywLcwWL3wqSFnRoGbhRb1SPRlvSM6UKMIuW8q0EHbRwT92NXO7
- Q58QDZC9pcuSQsnZQ6VJHTUulUjkll1XD2if5cNCFy7v/jvydAbWEiOKjofmdaTPb5S0
- Z0lN+6HyqESpApnOt8mVbG0olbQrFVd2BNJL5BtdDRu106KuQHYEp98e9iyTclI3JlHA ww== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34dgm414cv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 17:53:01 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RHo3Pw123771;
-        Tue, 27 Oct 2020 17:53:00 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34cx5xe9wf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 17:53:00 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09RHqwvb009169;
-        Tue, 27 Oct 2020 17:52:58 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Oct 2020 10:52:58 -0700
-Date:   Tue, 27 Oct 2020 20:52:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [kbuild] drivers/gpu/drm/aspeed/aspeed_gfx_drv.c:80:9: warning:
- Identical condition 'ret', second condition is always false
-Message-ID: <20201027175252.GN18329@kadam>
+        id S1756204AbgJ0OMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1755304AbgJ0OJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:09:18 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B1D722202;
+        Tue, 27 Oct 2020 14:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603807758;
+        bh=PtGfbtTFMFgjFc/XBeHgpda1ZtNlEE8DfzdWgAD87tU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gvJlKbzWwOnBMRjqy2Zz1CX7q1C/+oRn6ljed9UmRzF4M2EvJMv32n6+F0iqg7PA0
+         wrpPTcM8I2m8AZxWREmVUk4Eadh+c0Q3ylwI6aOqeI4OdRhwUcmu7i+ZZSN9MHj0ne
+         fPGOyrNte7x1bsk+LZ/zGf0c4LbvYTOCsgXNjy7M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 003/191] ipv4: Restore flowi4_oif update before call to xfrm_lookup_route
+Date:   Tue, 27 Oct 2020 14:47:38 +0100
+Message-Id: <20201027134909.880485611@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: 7ONRF2QZVTLYASOIX6NNPZF7NC3QGTC4
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270107
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270106
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-head:   4525c8781ec0701ce824e8bd379ae1b129e26568
-commit: c2c25c1cf96927a0b6ddb6aaa063f1fdcc90d749 drm/aspeed: Use managed drmm_mode_config_cleanup
-compiler: nds32le-linux-gcc (GCC) 9.3.0
+From: David Ahern <dsahern@kernel.org>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+[ Upstream commit 874fb9e2ca949b443cc419a4f2227cafd4381d39 ]
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+Tobias reported regressions in IPsec tests following the patch
+referenced by the Fixes tag below. The root cause is dropping the
+reset of the flowi4_oif after the fib_lookup. Apparently it is
+needed for xfrm cases, so restore the oif update to ip_route_output_flow
+right before the call to xfrm_lookup_route.
 
->> drivers/gpu/drm/aspeed/aspeed_gfx_drv.c:80:9: warning: Identical condition 'ret', second condition is always false [identicalConditionAfterEarlyExit]
-    return ret;
-           ^
-   drivers/gpu/drm/aspeed/aspeed_gfx_drv.c:71:6: note: first condition
-    if (ret)
-        ^
-   drivers/gpu/drm/aspeed/aspeed_gfx_drv.c:80:9: note: second condition
-    return ret;
-           ^
-
-vim +/ret +80 drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-
-c2c25c1cf96927a Daniel Vetter 2020-09-04  66  static int aspeed_gfx_setup_mode_config(struct drm_device *drm)
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  67  {
-c2c25c1cf96927a Daniel Vetter 2020-09-04  68  	int ret;
-c2c25c1cf96927a Daniel Vetter 2020-09-04  69  
-c2c25c1cf96927a Daniel Vetter 2020-09-04  70  	ret = drmm_mode_config_init(drm);
-c2c25c1cf96927a Daniel Vetter 2020-09-04  71  	if (ret)
-c2c25c1cf96927a Daniel Vetter 2020-09-04  72  		return ret;
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  73  
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  74  	drm->mode_config.min_width = 0;
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  75  	drm->mode_config.min_height = 0;
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  76  	drm->mode_config.max_width = 800;
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  77  	drm->mode_config.max_height = 600;
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  78  	drm->mode_config.funcs = &aspeed_gfx_mode_config_funcs;
-c2c25c1cf96927a Daniel Vetter 2020-09-04  79  
-c2c25c1cf96927a Daniel Vetter 2020-09-04 @80  	return ret;
-
-This should just be "return 0;"
-
-4f2a8f5898ecd80 Joel Stanley  2019-04-03  81  }
-
+Fixes: 2fbc6e89b2f1 ("ipv4: Update exception handling for multipath routes via same device")
+Reported-by: Tobias Brunner <tobias@strongswan.org>
+Signed-off-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+ net/ipv4/route.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -2603,10 +2603,12 @@ struct rtable *ip_route_output_flow(stru
+ 	if (IS_ERR(rt))
+ 		return rt;
+ 
+-	if (flp4->flowi4_proto)
++	if (flp4->flowi4_proto) {
++		flp4->flowi4_oif = rt->dst.dev->ifindex;
+ 		rt = (struct rtable *)xfrm_lookup_route(net, &rt->dst,
+ 							flowi4_to_flowi(flp4),
+ 							sk, 0);
++	}
+ 
+ 	return rt;
+ }
+
+
