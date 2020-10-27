@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B9929C86B
+	by mail.lfdr.de (Postfix) with ESMTP id BD90C29C86C
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829447AbgJ0TLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:11:01 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:2072 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S371906AbgJ0TKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S371926AbgJ0TLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:11:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S371907AbgJ0TKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 15:10:51 -0400
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 27 Oct 2020 12:10:48 -0700
-X-QCInternal: smtphost
-Received: from asutoshd-linux1.qualcomm.com ([10.46.160.39])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 27 Oct 2020 12:10:47 -0700
-Received: by asutoshd-linux1.qualcomm.com (Postfix, from userid 92687)
-        id D39F820F58; Tue, 27 Oct 2020 12:10:47 -0700 (PDT)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] ufs: qcom: Enable aggressive power collapse for ufs hba
-Date:   Tue, 27 Oct 2020 12:10:37 -0700
-Message-Id: <1306284ab2215425ca0a3d9c802574cbd6d35ea7.1603825776.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <52198e70bff750632740d78678a815256d697e43.1603825776.git.asutoshd@codeaurora.org>
-References: <52198e70bff750632740d78678a815256d697e43.1603825776.git.asutoshd@codeaurora.org>
-In-Reply-To: <52198e70bff750632740d78678a815256d697e43.1603825776.git.asutoshd@codeaurora.org>
-References: <52198e70bff750632740d78678a815256d697e43.1603825776.git.asutoshd@codeaurora.org>
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32F6020756;
+        Tue, 27 Oct 2020 19:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603825849;
+        bh=0LhJAkuDJj/WQXvv2wdSS/1W6NuneKemHgAE29jp9BU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=1hpemIWHwCC0M2PrsvzXwI7hbqSd7DBSEJZd7OEVjp61IMLwx/2m4San5jsKZnOhg
+         dicsjWY4o8r8rIhgSrJ7FeQYeIOySEbyM+TL1p8NhRA9xuI4Zij8mbxoX5L4XYTNuy
+         YnGuoNpJ+q7yeyPu8c7s85C9+dGABlK8yjN8E+vU=
+Date:   Tue, 27 Oct 2020 20:10:46 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>
+cc:     dmitry.torokhov@gmail.com, vojtech@suse.cz,
+        linux-input@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: Proper support for Saitek X36F joystick
+In-Reply-To: <20201027124235.GA27148@duo.ucw.cz>
+Message-ID: <nycvar.YFH.7.76.2010272006490.18859@cbobk.fhfr.pm>
+References: <20201027124235.GA27148@duo.ucw.cz>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enabling this capability to let hba power-collapse
-more often to save power.
+On Tue, 27 Oct 2020, Pavel Machek wrote:
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
+> Hi!
+> 
+> This is from 4.19, but I doubt this changed recently.
+> 
+> Saitek X36F+X35T combination is detected like this... in short one
+> hat, no switches, and lot of buttons.
+> 
+> In reality, combination has 4 four-way switches (hats?), 2 slider
+> switches (three positions) and lot less buttons. Sliders and 3 of 4
+> hats are detected as groups of buttons. Last hat is strange, I can't
+> see anything that corresponds to it on evtest, and as long as it is
+> pushed in any direction, all the other events stop. (It is also one
+> I'd like to use).
+> 
+> What needs to be done to get more useful mapping for userspace?
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index f9d6ef3..9a19c6d 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -863,6 +863,7 @@ static void ufs_qcom_set_caps(struct ufs_hba *hba)
- 	hba->caps |= UFSHCD_CAP_AUTO_BKOPS_SUSPEND;
- 	hba->caps |= UFSHCD_CAP_WB_EN;
- 	hba->caps |= UFSHCD_CAP_CRYPTO;
-+	hba->caps |= UFSHCD_CAP_AGGR_POWER_COLLAPSE;
- 
- 	if (host->hw_ver.major >= 0x2) {
- 		host->caps = UFS_QCOM_CAP_QUNIPRO |
+It wouldn't be the first device produced by Saitek that has completely 
+bogus report descriptor.
+
+The most straightforward way would be to let hid-saitek module claim the 
+device, and fix the report descriptor (saitek_report_fixup()) before it's 
+passed to hid parser so that it actually describes the events produced.
+
+You can either patch individual bytes (that's what saitek_report_fixup() 
+is currently doing for another device), or replace the whole descriptor 
+completely (see e.g. hid-kye for inspiration how this is done).
+
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Jiri Kosina
+SUSE Labs
 
