@@ -2,132 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED4229AC9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E8E29ACA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900414AbgJ0NBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:01:16 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:44992 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900405AbgJ0NBQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:01:16 -0400
-Received: by mail-ej1-f67.google.com with SMTP id d6so2053081ejb.11;
-        Tue, 27 Oct 2020 06:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gijXyxUYg/sm9vcPsGH6rXQSXPD6lE8QK5IFGNpnRWg=;
-        b=eHsHaWhSlzA5RNFo9ar6nqT67tKUnFKILsEFikxKkCKwNxN94ctjT034lltQXn7+7+
-         npEnhpWg2vcyQTDSmovUgwjlwI5aQriLHUPa5YEs72aVkDhlGqHrABxGwzxy4haP6kyI
-         h2oK5NCVGbtj15JGWjLhkkAoLMNBTmynaKNQI9jkKuUq3yfANd06jIe+XN/Jt2ltOOAu
-         HTlOwl2TD+wy9abJYilLu2r3cOVR+2Uwws8GPEhrXXPRQ5lRy5BzbfiVbzPvW15VWXWJ
-         pg15SO5TuUDSbcSCaGbarYG5dFurFV3o3c+hHO03By3oEIQi48QkTGLYV24LyRuNZY5t
-         FR7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gijXyxUYg/sm9vcPsGH6rXQSXPD6lE8QK5IFGNpnRWg=;
-        b=sehqlAF05hqHzRHo3fedgamrwQEeiR1knhLWa4PNmT+9Faf4IhQT6iqrzRxWaqaRzA
-         ddB7fKTJ0npZKlNxZ6j6bQgKVmn01h7DJp5qEsoOhg4fB9NmUefCExw/+bl7lr29zlDc
-         LeK95QHUxMTq5S6DNernYflvxOhDCA6M32LqXEpTQ8brXeM+pPQh8J09nB5h2mNpi9kK
-         FrBh7vNOl5XfDlihIPVKn1xe8q59k1l+ACAlSHIWUbl29LA8PlDAGiD1OOlgMymLY9hs
-         PMJ3EqebvPmW07WeJhWUe5GFM9UfrG6+bvHX3iRmQZbvc4fJh3oPy7Nkcag6XIA3re9E
-         EVQQ==
-X-Gm-Message-State: AOAM530GPT2zKyklI1TiPcpxRfS+uAlnOvIEI6ARdN03Qg41QIQf5Y87
-        2JGpToLDfCEPKHUH+DeHo9g=
-X-Google-Smtp-Source: ABdhPJwp9iGCj0RTXGYDhvmDcSCN2SgHIvLdqu8zXYSMhpZxCkGl3H1UWmcWtsN6ciGICmaYnrCCEA==
-X-Received: by 2002:a17:907:11d0:: with SMTP id va16mr2211187ejb.22.1603803674151;
-        Tue, 27 Oct 2020 06:01:14 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id r24sm914865eds.67.2020.10.27.06.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:01:12 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 14:01:11 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] memory: tegra: Complete tegra210_swgroups
-Message-ID: <20201027130111.GB1822510@ulmo>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-6-nicoleotsuka@gmail.com>
+        id S1751638AbgJ0NCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:02:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:40922 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440804AbgJ0NCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:02:33 -0400
+IronPort-SDR: etGgZYkFCOYcT0UEtb826S4RqTbMVB1B6djlOp4UCL9mXKG0nG1+nt6402142vVGxertHxVGJ4
+ XkhwdmXcsWcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="147357249"
+X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
+   d="scan'208";a="147357249"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 06:02:08 -0700
+IronPort-SDR: kHdz/ktvsii3t9245pqWNz7zKyJpzsg81WqSKMK6y085wpfSOdb1fFalG019Jm3Lx1XULnkx3f
+ WH5D0+kPxr5w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
+   d="scan'208";a="468289779"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga004.jf.intel.com with ESMTP; 27 Oct 2020 06:02:05 -0700
+Subject: Re: [PATCH v2] mmc: sdhci-acpi: AMDI0040: Allow changing HS200/HS400
+ driver strength
+To:     Victor Ding <victording@google.com>, linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Raul E Rangel <rrangel@chromium.org>,
+        linux-mmc@vger.kernel.org
+References: <20201027084612.528301-1-victording@google.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <468bfe68-6595-0792-0ccc-3971aeca5478@intel.com>
+Date:   Tue, 27 Oct 2020 15:01:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="St7VIuEGZ6dlpu13"
-Content-Disposition: inline
-In-Reply-To: <20201008003746.25659-6-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201027084612.528301-1-victording@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/10/20 10:46 am, Victor Ding wrote:
+> From: Raul E Rangel <rrangel@chromium.org>
+> 
+> This change will allow platform designers better control over signal
+> integrity by allowing them to tune the HS200 and HS400 driver strengths.
+> 
+> The driver strength was previously hard coded to A to solve boot
+> problems with certain platforms. This driver strength does not
+> universally apply to all platforms so we need a knob to adjust it.
+> 
+> All older platforms currently have the SDR104 preset hard coded to A in
+> the firmware. This means that switching from the hard coded value in
+> the kernel to reading the SDR104 preset is a no-op for these platforms.
+> Newer platforms will have properly set presets. So this change will
+> support both new and old platforms.
+> 
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+> Signed-off-by: Victor Ding <victording@google.com>
 
---St7VIuEGZ6dlpu13
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Apart from unnecessary blank line after "return preset_driver_strength;"
 
-On Wed, Oct 07, 2020 at 05:37:46PM -0700, Nicolin Chen wrote:
-> According to Tegra X1 TRM, there are missing swgroups in the
-> tegra210_swgroups list. So this patch adds them to the list.
->=20
-> Note that the TEGRA_SWGROUP_GPU (in list) should be actually
-> TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
-> is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
-> this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
-> TEGRA_SWGROUP_GPU (in list) as it is.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> 
 > ---
->  drivers/memory/tegra/tegra210.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->=20
-> diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra=
-210.c
-> index b400802c9f14..b3bbc5a05ba1 100644
-> --- a/drivers/memory/tegra/tegra210.c
-> +++ b/drivers/memory/tegra/tegra210.c
-> @@ -1028,6 +1028,8 @@ static const struct tegra_smmu_swgroup tegra210_swg=
-roups[] =3D {
->  	{ .name =3D "hda",       .swgroup =3D TEGRA_SWGROUP_HDA,       .reg =3D=
- 0x254 },
->  	{ .name =3D "isp2",      .swgroup =3D TEGRA_SWGROUP_ISP2,      .reg =3D=
- 0x258 },
->  	{ .name =3D "nvenc",     .swgroup =3D TEGRA_SWGROUP_NVENC,     .reg =3D=
- 0x264 },
-> +	{ .name =3D "nv",        .swgroup =3D TEGRA_SWGROUP_NV,        .reg =3D=
- 0x268 },
-> +	{ .name =3D "nv2",       .swgroup =3D TEGRA_SWGROUP_NV2,       .reg =3D=
- 0x26c },
+> 
+> Changes in v2:
+> By Victor Ding <victording@google.com>
+>  - Rebased the patch by using FIELD_GET for preset value bit masks.
+>  - (No functional changes).
+> 
+> The original patch was developed by Raul E Rangel.
+> https://patchwork.kernel.org/project/linux-mmc/patch/20200928154718.2.Ic6b6031366f090393d00a53fd69e1ada31ceb29e@changeid/
+> 
+>  drivers/mmc/host/sdhci-acpi.c | 39 ++++++++++++++++++++++++++++++++---
+>  1 file changed, 36 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+> index 54205e3be9e8..225cb34cf1b9 100644
+> --- a/drivers/mmc/host/sdhci-acpi.c
+> +++ b/drivers/mmc/host/sdhci-acpi.c
+> @@ -5,6 +5,7 @@
+>   * Copyright (c) 2012, Intel Corporation.
+>   */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/init.h>
+>  #include <linux/export.h>
+>  #include <linux/module.h>
+> @@ -545,10 +546,42 @@ struct amd_sdhci_host {
+>  
+>  static int amd_select_drive_strength(struct mmc_card *card,
+>  				     unsigned int max_dtr, int host_drv,
+> -				     int card_drv, int *drv_type)
+> +				     int card_drv, int *host_driver_strength)
+>  {
+> -	*drv_type = MMC_SET_DRIVER_TYPE_A;
+> -	return MMC_SET_DRIVER_TYPE_A;
+> +	struct sdhci_host *host = mmc_priv(card->host);
+> +	u16 preset, preset_driver_strength;
+> +
+> +	/*
+> +	 * This method is only called by mmc_select_hs200 so we only need to
+> +	 * read from the HS200 (SDR104) preset register.
+> +	 *
+> +	 * Firmware that has "invalid/default" presets return a driver strength
+> +	 * of A. This matches the previously hard coded value.
+> +	 */
+> +	preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR104);
+> +	preset_driver_strength = FIELD_GET(SDHCI_PRESET_DRV_MASK, preset);
+> +
+> +	/*
+> +	 * We want the controller driver strength to match the card's driver
+> +	 * strength so they have similar rise/fall times.
+> +	 *
+> +	 * The controller driver strength set by this method is sticky for all
+> +	 * timings after this method is called. This unfortunately means that
+> +	 * while HS400 tuning is in progress we end up with mismatched driver
+> +	 * strengths between the controller and the card. HS400 tuning requires
+> +	 * switching from HS400->DDR52->HS->HS200->HS400. So the driver mismatch
+> +	 * happens while in DDR52 and HS modes. This has not been observed to
+> +	 * cause problems. Enabling presets would fix this issue.
+> +	 */
+> +	*host_driver_strength = preset_driver_strength;
+> +
+> +	/*
+> +	 * The resulting card driver strength is only set when switching the
+> +	 * card's timing to HS200 or HS400. The card will use the default driver
+> +	 * strength (B) for any other mode.
+> +	 */
+> +	return preset_driver_strength;
+> +
 
-Oddly enough I can see these in the TRM, but they are not in the
-internal reference manuals that are supposed to be the canonical
-reference for the TRM. Perhaps the TRM is out of date?
+Unnecessary blank line.
 
-Thierry
+>  }
+>  
+>  static void sdhci_acpi_amd_hs400_dll(struct sdhci_host *host, bool enable)
+> 
 
---St7VIuEGZ6dlpu13
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YGhcACgkQ3SOs138+
-s6Gs7w/+NnyjKzJTeMqiNTu+JrNR0LUAPyE84D55SoweRFJRqj5qd4QYRmPNxACG
-8ARl63jbR9zR94HplRkUpxvxYd2z+Z9udpg5ADm2TVoj6rSxBksxeNa9XAYZ/S+F
-A5/EUTWbkhqppMyH3TGQn5/l/Gyx6h79dtmmz0BK5dB8KhfQypX6L5TCzuNscS80
-JRJbrtFkiWdR3Z9SnpnPmJD6+1mnJIHnK/3wbVp7TOOUp7VSo/fABJazXr+VXHzB
-8wGxk1h8o220pKAc2WNBmlHdnJUs4FukjRQZ6Skalt1ZRXpe6wIzjG9L0+n6jESP
-hxaPIQ9JdPghTGkusF17CIECe6Ex0H1igvfxK59IXzrTI2tjrkWjIofVyLQ9v0ZH
-45l0/plCrvxoNUtwXRKAxQP+YPQCbQ7MRetuQ2E3WJQBnmZ03M3E9c93ArABtilH
-YMF91N11uOtqLS3wf0+A28/z7saIK8AxYVD/33ep742I4MKtkqj0FS06N33I8y26
-rjPpkdIWhDW0WjVAYuHYX1RgT1VTVPAQdwanpV1GJuX0qk0CM+D7CONUBT+282CA
-wOKjHKi3XcCyLZYw6igetXNJo3JiAjtaoSCDAQVTgyR/9FN+1kwRDBukNLRHxNcx
-IA5jt6ru/tVg6Dne2DQ8sYp8L+2bBNr2vOh93iS7mAc2TTNXxAs=
-=ypbK
------END PGP SIGNATURE-----
-
---St7VIuEGZ6dlpu13--
