@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B4329CBA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A8129CBB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374693AbgJ0V62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:58:28 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48432 "EHLO vps0.lunn.ch"
+        id S374730AbgJ0WEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 18:04:55 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56183 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897378AbgJ0V61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:58:27 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kXWym-003sRd-1O; Tue, 27 Oct 2020 22:58:08 +0100
-Date:   Tue, 27 Oct 2020 22:58:08 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] net: dsa: mv88e6xxx: Support serdes ports on
- MV88E6123/6131
-Message-ID: <20201027215808.GF904240@lunn.ch>
-References: <20201022012516.18720-1-chris.packham@alliedtelesis.co.nz>
- <20201022012516.18720-5-chris.packham@alliedtelesis.co.nz>
- <20201023224216.GE745568@lunn.ch>
- <1b1d4c27-570b-8a2f-698b-d82b2ca8215d@alliedtelesis.co.nz>
+        id S373764AbgJ0VXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:23:53 -0400
+IronPort-SDR: qlJE5TLc89lcrV2zCklCPu9OFDfQ0gKazQlVOG9QOzkJ3TFtVsl2TnrIRohWyGZAXs+nIrsp2Q
+ egF7MxNKr6NA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="155133701"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="155133701"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 14:23:50 -0700
+IronPort-SDR: 4JNPBWdgSdsf8ADQJ6GylQiZmOh5AeqfcZ/GD2hdtne5kLROeee31lwRVblU0yYgTzxuhEugf2
+ WXNYeknAejmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="524886383"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Oct 2020 14:23:50 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 03/11] KVM: VMX: Stash kvm_vmx in a local variable for Hyper-V paravirt TLB flush
+Date:   Tue, 27 Oct 2020 14:23:38 -0700
+Message-Id: <20201027212346.23409-4-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201027212346.23409-1-sean.j.christopherson@intel.com>
+References: <20201027212346.23409-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b1d4c27-570b-8a2f-698b-d82b2ca8215d@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 08:56:09PM +0000, Chris Packham wrote:
-> 
-> On 24/10/20 11:42 am, Andrew Lunn wrote:
-> >> +int mv88e6123_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)
-> >> +{
-> >> +	if (mv88e6xxx_serdes_get_lane(chip, port) == 0)
-> >> +		return 0;
-> >> +
-> >> +	return 26 * sizeof(u16);
-> >> +}
-> > Hi Chris
-> >
-> > Where did 26 come from?
+Capture kvm_vmx in a local variable instead of polluting
+hv_remote_flush_tlb_with_range() with to_kvm_vmx(kvm).
 
-> In the 88E6123 Serdes Register Description the highest register address 
-> was 26 so that's what I used.
+No functional change intended.
 
-> Technically there are 32 possible 
-> addresses in that space so I could go up to 32. Equally registers 9-14, 
-> 20, 22-23 are "reserved" so I could remove them from the total and have 
-> mv88e6123_serdes_get_regs() skip over them. I'm guessing skipping some 
-> (27-32) and not others is probably less than ideal.
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Hi Chris
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index ebc87df4da4d..a6442a861ffc 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -520,26 +520,27 @@ static inline int hv_remote_flush_eptp(u64 eptp, struct kvm_tlb_range *range)
+ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+ 		struct kvm_tlb_range *range)
+ {
++	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
+ 	struct kvm_vcpu *vcpu;
+ 	int ret = 0, i;
+ 
+-	spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
++	spin_lock(&kvm_vmx->ept_pointer_lock);
+ 
+-	if (to_kvm_vmx(kvm)->ept_pointers_match == EPT_POINTERS_CHECK)
++	if (kvm_vmx->ept_pointers_match == EPT_POINTERS_CHECK)
+ 		check_ept_pointer_match(kvm);
+ 
+-	if (to_kvm_vmx(kvm)->ept_pointers_match != EPT_POINTERS_MATCH) {
++	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
+ 		kvm_for_each_vcpu(i, vcpu, kvm) {
+ 			/* If ept_pointer is invalid pointer, bypass flush request. */
+ 			if (VALID_PAGE(to_vmx(vcpu)->ept_pointer))
+ 				ret |= hv_remote_flush_eptp(to_vmx(vcpu)->ept_pointer,
+ 							    range);
+ 		}
+-	} else if (VALID_PAGE(to_kvm_vmx(kvm)->hv_tlb_eptp)) {
+-		ret = hv_remote_flush_eptp(to_kvm_vmx(kvm)->hv_tlb_eptp, range);
++	} else if (VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
++		ret = hv_remote_flush_eptp(kvm_vmx->hv_tlb_eptp, range);
+ 	}
+ 
+-	spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
++	spin_unlock(&kvm_vmx->ept_pointer_lock);
+ 	return ret;
+ }
+ static int hv_remote_flush_tlb(struct kvm *kvm)
+-- 
+2.28.0
 
-I would dump all 32 and let userspace figure out if they mean
-anything. The current register dump for the 6390 SEDES is horrible,
-and i missed a register, and it is not easy to put in its correct
-place because of ABI reasons. If you can do KISS, all the better.
-
-      Andrew
