@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE3529C245
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3566D29C271
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820252AbgJ0ReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:34:07 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:35776 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1814638AbgJ0ReA (ORCPT
+        id S1819961AbgJ0Rfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:35:52 -0400
+Received: from casper.infradead.org ([90.155.50.34]:50424 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1820358AbgJ0RfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:34:00 -0400
-Received: by mail-io1-f68.google.com with SMTP id k6so2435967ior.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SaQbFGzEXNDGk1pZ4O1HsiR48TwG2ZRAen3YJtUpq54=;
-        b=A/3G8fUm4hjh/JNx8o769i7ImwXATsmSdZoFysVH+hTEn09YeG1uyFFpeCn9l4Y3QZ
-         E9FwO0tv0Hn7ECi9YFN/WkZ6wkFSzJUpllCTq9RKuTOpdWQkLbj70z4FBUO6sP2boo7r
-         8IN1fqW0KUXvWFCgKYXBfEJtgkn9dQxx5+xj8ji/algFHoUPZPEdrmi1EXpVhnXDt/x0
-         i95X0GuNUTNdXr98dPdGgoC48aS5kZLi7Ayuh25mscPYdb4TlVHHxrCwA0pTWDyJkCgD
-         Bmw1oWaq/eCJ111W8bYH78WPCqpwh6KjxtDfb3AzhPmx07qkK69vRuvWpq/Xvbi+wTwX
-         JrCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SaQbFGzEXNDGk1pZ4O1HsiR48TwG2ZRAen3YJtUpq54=;
-        b=T6sHM7ZO4YOFPxBGwJe9yQSTY9yyb0IKDk40KD7UYU5skYwNS9ajdc9ru7MGtF+LsT
-         sy1Oww9iW5cu+WwDr/ZKC/cAkJ/vwI7SSpg2U44hgafDORfjiMoHSEdZVNJtrtQvYiFX
-         f1bF43HBPIQAWwoErIEL3RaRWTmWpduVr3hJxSrUHBs5m+T2WHBE4POFMPWFx/oK2GNE
-         EV9jbixuaUWu87OhUWJ+MWeBys3+Wl+TuOpYuKZsO2jxlgTjTjk/chmC3cRpQ7AJZ/Nd
-         uPI5I8+NNOxYS8AS+vKc/uYD+Yu7cHAM9rqQZzC8yOGB2cM5RMwhv5XUvo12wNaZCbq2
-         pi6A==
-X-Gm-Message-State: AOAM533JIS2rY4B+aMnlBzjT7vAwEhOxmkfRmRgEun9ulQdNPAo9V3CY
-        sgVnGio2zaCCjczHaw8iGeXwEupPLcG7jux2Ki1VqA==
-X-Google-Smtp-Source: ABdhPJye65RQMw9dAti1BJvaSSspi0uCYaHX7hyM/GwNKLEo1SeOFQdV2ZoBchXt+qbnNBIhjttZed76F0Oty2xyKIw=
-X-Received: by 2002:a05:6602:2181:: with SMTP id b1mr3170150iob.172.1603820039871;
- Tue, 27 Oct 2020 10:33:59 -0700 (PDT)
+        Tue, 27 Oct 2020 13:35:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MPDUF57u1hELpOfEiLImNiVBP9JixgQ92DNJ5FJn8hY=; b=Nb5TdCtO246DlHFdgC4KJqhLkS
+        KYJRAE4xREeZYue9Zh4/uo1LR4kKoEmZpguVfoKSrpKQlrLpMaXt1jaabwnt2BoEXTZ5Wramsxbpz
+        WG6gpLX6fb+pLO/Nawk2gLlRFMklT6U4kOByALv98L/xT+cdtOgHKEkAFkcwy7xsqa4xx13Fq/I5I
+        A/DqoaU3GJ+n5qrGEnYFP2aixQ2hVbMTj0oINxQMyBSOkTmnv95M37QtercLyF4Skcrjn06+/HCLL
+        R0XLbIBwauTLc0TQghfBuXIkwz+Z4+JbFLykNL4+9f41r5U+Kes/9nATsxXikUItACLV280nuQfSE
+        gIAnf/Qw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXSri-0005UV-9I; Tue, 27 Oct 2020 17:34:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43832307BD0;
+        Tue, 27 Oct 2020 18:34:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 14B59203CF3A8; Tue, 27 Oct 2020 18:34:31 +0100 (CET)
+Date:   Tue, 27 Oct 2020 18:34:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] qspinlock: use signed temporaries for cmpxchg
+Message-ID: <20201027173431.GE2611@hirez.programming.kicks-ass.net>
+References: <20201026165807.3724647-1-arnd@kernel.org>
+ <022365e9-f7fe-5589-7867-d2ad2d33cfa3@redhat.com>
+ <20201027074726.GX2611@hirez.programming.kicks-ass.net>
+ <CAK8P3a2vUK5scbtcRTE98ZvwxMF3xMBT61JODV__RHMj+D0G2A@mail.gmail.com>
+ <20201027103236.GZ2611@hirez.programming.kicks-ass.net>
+ <CAK8P3a3GqsXcdA59V7XGd_yFr_68yCaftdc-wMM6bHG8NEE1+g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026125227.54520-1-a.nogikh@gmail.com> <20201026125227.54520-3-a.nogikh@gmail.com>
- <CAC5umyjZn+gtO=u8GhptVggzodbY-vnk9NNTOqyZyUW2up2ASQ@mail.gmail.com>
-In-Reply-To: <CAC5umyjZn+gtO=u8GhptVggzodbY-vnk9NNTOqyZyUW2up2ASQ@mail.gmail.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Tue, 27 Oct 2020 20:33:48 +0300
-Message-ID: <CANp29Y7sDaxrw+0wEVU0vo56AhKFRvbQSGeRc168gs6S8iK_-g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] docs: add fail_lsm_hooks info to fault-injection.rst
-To:     Akinobu Mita <akinobu.mita@gmail.com>
-Cc:     Aleksandr Nogikh <a.nogikh@gmail.com>, jmorris@namei.org,
-        serge@hallyn.com, Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>, keescook@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3GqsXcdA59V7XGd_yFr_68yCaftdc-wMM6bHG8NEE1+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 6:31 PM Akinobu Mita <akinobu.mita@gmail.com> wrote:
->
-[...]
-> In addition to this global one, what do you think about per-hook fault
-> injection,
-> i.e. /sys/kernel/debug/fail_lsm_hooks/<FUNC>/retval ?
+On Tue, Oct 27, 2020 at 05:22:48PM +0100, Arnd Bergmann wrote:
+> I have already sent patches to move -Wnested-externs and
+> -Wcast-align from W=2 to W=3, and I guess -Wpointer-sign
+> could be handled the same way to make the W=2 level useful
+> again.
 
-I was thinking about this, but decided to begin with a simple version
-that could definitely be useful in practice (for syzbot/syzkaller it is just
-necessary to have a fault injection capability that will be triggered via
-fail-nth). If per-hook fault injection can also be useful to someone, I
-can try to add it as well.
-
-> In this case, we need a fault_attr for each hook. (Maybe, we can use the same
-> technique that is used to define security_hook_heads).
-
-Yes, that technique should help to implement the feature in a very concise
-way. Thanks for the suggestion.
+Works for me ;-), thanks!
