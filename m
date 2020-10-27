@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F25B29B85B
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD8329B85C
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800131AbgJ0PfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47004 "EHLO mail.kernel.org"
+        id S1800140AbgJ0PfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799215AbgJ0PaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:30:20 -0400
+        id S1799223AbgJ0PaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:30:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 792D12225E;
-        Tue, 27 Oct 2020 15:30:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 366D122202;
+        Tue, 27 Oct 2020 15:30:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812620;
-        bh=XGoqeiOp5CY3KwwcWqdN7sQW7AozxAfgUcuaGb03Vpw=;
+        s=default; t=1603812622;
+        bh=8qGO8t7OcJ2zPQymSADukd3eQxCBn7lHLHzvatI8AdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qS2dBGtdTZcGE2Tca5kAm3FmRpCHH7wUxV4sEBweLP1qnNqL+/K3K1P4AWWOGtJUV
-         5mk7jgVzJHbVwPh+whyHIV13OcQN3PhjD6yqaytUtuNu/B1yj+Xy6i1NCbLJ4pcoug
-         U7pBVdzdEj91bRbzeAON5svpPwu6FscKUZrS0Ct4=
+        b=0ZeY6UsKC7eCwHv4wcSrSnSsUsuag1qaOn58/C/zmT0xX572WzZMPPlrZz4RWegQP
+         kJ9NtwKaGrAMh06JjnBLeVjJE1LGzB/71TRFQK+nfKrxj2vmLPgdjThYkJlTFAOVos
+         M6pKljfWP3EqSEnmUD6Hc98AhL29vGpJQFO+RG4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        stable@vger.kernel.org, Ruediger Oertel <ro@suse.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 271/757] coresight: etm4x: Fix etm4_count race by moving cpuhp callbacks to init
-Date:   Tue, 27 Oct 2020 14:48:41 +0100
-Message-Id: <20201027135503.290577839@linuxfoundation.org>
+Subject: [PATCH 5.9 272/757] coresight: fix offset by one error in counting ports
+Date:   Tue, 27 Oct 2020 14:48:42 +0100
+Message-Id: <20201027135503.331941759@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,175 +46,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+From: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-[ Upstream commit 2d1a8bfb61ec0177343e99ebd745e3e4ceb0d0d5 ]
+[ Upstream commit 9554c3551ed35d79b029e5e69383ae33117d9765 ]
 
-etm4_count keeps track of number of ETMv4 registered and on some systems,
-a race is observed on etm4_count variable which can lead to multiple calls
-to cpuhp_setup_state_nocalls_cpuslocked(). This function internally calls
-cpuhp_store_callbacks() which prevents multiple registrations of callbacks
-for a given state and due to this race, it returns -EBUSY leading to ETM
-probe failures like below.
+Since port-numbers start from 0, add 1 to port-number to get the port
+count.
 
- coresight-etm4x: probe of 7040000.etm failed with error -16
+Fix following crash when Coresight is enabled on ACPI based systems:
 
-This race can easily be triggered with async probe by setting probe type
-as PROBE_PREFER_ASYNCHRONOUS and with ETM power management property
-"arm,coresight-loses-context-with-cpu".
+[   61.061736] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+...
+[   61.135494] pc : acpi_coresight_parse_graph+0x1c4/0x37c
+[   61.140705] lr : acpi_coresight_parse_graph+0x160/0x37c
+[   61.145915] sp : ffff800012f4ba40
+[   61.145917] x29: ffff800012f4ba40 x28: ffff00becce62f98
+[   61.159896] x27: 0000000000000005 x26: ffff00becd8a7c88
+[   61.165195] x25: ffff00becd8a7d88 x24: ffff00becce62f80
+[   61.170492] x23: ffff800011ef99c0 x22: ffff009efb8bc010
+[   61.175790] x21: 0000000000000018 x20: 0000000000000005
+[   61.181087] x19: ffff00becce62e80 x18: 0000000000000020
+[   61.186385] x17: 0000000000000001 x16: 00000000000002a8
+[   61.191682] x15: ffff000838648550 x14: ffffffffffffffff
+[   61.196980] x13: 0000000000000000 x12: ffff00becce62d87
+[   61.202277] x11: 00000000ffffff76 x10: 000000000000002e
+[   61.207575] x9 : ffff8000107e1a68 x8 : ffff00becce63000
+[   61.212873] x7 : 0000000000000018 x6 : 000000000000003f
+[   61.218170] x5 : 0000000000000000 x4 : 0000000000000000
+[   61.223467] x3 : 0000000000000000 x2 : 0000000000000000
+[   61.228764] x1 : ffff00becce62f80 x0 : 0000000000000000
+[   61.234062] Call trace:
+[   61.236497]  acpi_coresight_parse_graph+0x1c4/0x37c
+[   61.241361]  coresight_get_platform_data+0xdc/0x130
+[   61.246225]  tmc_probe+0x138/0x2dc
+[   61.246227]  amba_probe+0xdc/0x220
+[   61.255779]  really_probe+0xe8/0x49c
+[   61.255781]  driver_probe_device+0xec/0x140
+[   61.255782]  device_driver_attach+0xc8/0xd0
+[   61.255785]  __driver_attach+0xac/0x180
+[   61.265857]  bus_for_each_dev+0x78/0xcc
+[   61.265859]  driver_attach+0x2c/0x40
+[   61.265861]  bus_add_driver+0x150/0x244
+[   61.265863]  driver_register+0x80/0x13c
+[   61.273591]  amba_driver_register+0x60/0x70
+[   61.273594]  tmc_driver_init+0x20/0x2c
+[   61.281582]  do_one_initcall+0x50/0x230
+[   61.281585]  do_initcalls+0x104/0x144
+[   61.291831]  kernel_init_freeable+0x168/0x1dc
+[   61.291834]  kernel_init+0x1c/0x120
+[   61.299215]  ret_from_fork+0x10/0x18
+[   61.299219] Code: b9400022 f9400660 9b277c42 8b020000 (f9400404)
+[   61.307381] ---[ end trace 63c6c3d7ec6a9b7c ]---
+[   61.315225] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-Prevent this race by moving cpuhp callbacks to etm driver init since the
-cpuhp callbacks doesn't have to depend on the etm4_count and can be once
-setup during driver init. Similarly we move cpu_pm notifier registration
-to driver init and completely remove etm4_count usage. Also now we can
-use non cpuslocked version of cpuhp callbacks with this movement.
-
-Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup in probe() function")
-Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug state machine")
-Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: d375b356e687 ("coresight: Fix support for sparsely populated ports")
+Reported-by: Ruediger Oertel <ro@suse.com>
+Tested-by: Jeremy Linton <jeremy.linton@arm.com>
 Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Reviewed-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200916191737.4001561-2-mathieu.poirier@linaro.org
+Link: https://lore.kernel.org/r/20200916191737.4001561-4-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-etm4x.c | 65 +++++++++----------
- 1 file changed, 31 insertions(+), 34 deletions(-)
+ drivers/hwtracing/coresight/coresight-platform.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index 96425e818fc20..45d169a2512cf 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -48,8 +48,6 @@ module_param(pm_save_enable, int, 0444);
- MODULE_PARM_DESC(pm_save_enable,
- 	"Save/restore state on power down: 1 = never, 2 = self-hosted");
+diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+index bfd44231d7ad5..227e234a24701 100644
+--- a/drivers/hwtracing/coresight/coresight-platform.c
++++ b/drivers/hwtracing/coresight/coresight-platform.c
+@@ -711,11 +711,11 @@ static int acpi_coresight_parse_graph(struct acpi_device *adev,
+ 			return dir;
  
--/* The number of ETMv4 currently registered */
--static int etm4_count;
- static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
- static void etm4_set_default_config(struct etmv4_config *config);
- static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
-@@ -1397,28 +1395,25 @@ static struct notifier_block etm4_cpu_pm_nb = {
- 	.notifier_call = etm4_cpu_pm_notify,
- };
- 
--/* Setup PM. Called with cpus locked. Deals with error conditions and counts */
--static int etm4_pm_setup_cpuslocked(void)
-+/* Setup PM. Deals with error conditions and counts */
-+static int __init etm4_pm_setup(void)
- {
- 	int ret;
- 
--	if (etm4_count++)
--		return 0;
--
- 	ret = cpu_pm_register_notifier(&etm4_cpu_pm_nb);
- 	if (ret)
--		goto reduce_count;
-+		return ret;
- 
--	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING,
--						   "arm/coresight4:starting",
--						   etm4_starting_cpu, etm4_dying_cpu);
-+	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING,
-+					"arm/coresight4:starting",
-+					etm4_starting_cpu, etm4_dying_cpu);
- 
- 	if (ret)
- 		goto unregister_notifier;
- 
--	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ONLINE_DYN,
--						   "arm/coresight4:online",
--						   etm4_online_cpu, NULL);
-+	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
-+					"arm/coresight4:online",
-+					etm4_online_cpu, NULL);
- 
- 	/* HP dyn state ID returned in ret on success */
- 	if (ret > 0) {
-@@ -1427,21 +1422,15 @@ static int etm4_pm_setup_cpuslocked(void)
+ 		if (dir == ACPI_CORESIGHT_LINK_MASTER) {
+-			if (ptr->outport > pdata->nr_outport)
+-				pdata->nr_outport = ptr->outport;
++			if (ptr->outport >= pdata->nr_outport)
++				pdata->nr_outport = ptr->outport + 1;
+ 			ptr++;
+ 		} else {
+-			WARN_ON(pdata->nr_inport == ptr->child_port);
++			WARN_ON(pdata->nr_inport == ptr->child_port + 1);
+ 			/*
+ 			 * We do not track input port connections for a device.
+ 			 * However we need the highest port number described,
+@@ -723,8 +723,8 @@ static int acpi_coresight_parse_graph(struct acpi_device *adev,
+ 			 * record for an output connection. Hence, do not move
+ 			 * the ptr for input connections
+ 			 */
+-			if (ptr->child_port > pdata->nr_inport)
+-				pdata->nr_inport = ptr->child_port;
++			if (ptr->child_port >= pdata->nr_inport)
++				pdata->nr_inport = ptr->child_port + 1;
+ 		}
  	}
  
- 	/* failed dyn state - remove others */
--	cpuhp_remove_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING);
-+	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
- 
- unregister_notifier:
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
--
--reduce_count:
--	--etm4_count;
- 	return ret;
- }
- 
--static void etm4_pm_clear(void)
-+static void __init etm4_pm_clear(void)
- {
--	if (--etm4_count != 0)
--		return;
--
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
- 	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
- 	if (hp_online) {
-@@ -1497,22 +1486,12 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 	if (!desc.name)
- 		return -ENOMEM;
- 
--	cpus_read_lock();
- 	etmdrvdata[drvdata->cpu] = drvdata;
- 
- 	if (smp_call_function_single(drvdata->cpu,
- 				etm4_init_arch_data,  drvdata, 1))
- 		dev_err(dev, "ETM arch init failed\n");
- 
--	ret = etm4_pm_setup_cpuslocked();
--	cpus_read_unlock();
--
--	/* etm4_pm_setup_cpuslocked() does its own cleanup - exit on error */
--	if (ret) {
--		etmdrvdata[drvdata->cpu] = NULL;
--		return ret;
--	}
--
- 	if (etm4_arch_supported(drvdata->arch) == false) {
- 		ret = -EINVAL;
- 		goto err_arch_supported;
-@@ -1559,7 +1538,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 
- err_arch_supported:
- 	etmdrvdata[drvdata->cpu] = NULL;
--	etm4_pm_clear();
- 	return ret;
- }
- 
-@@ -1597,4 +1575,23 @@ static struct amba_driver etm4x_driver = {
- 	.probe		= etm4_probe,
- 	.id_table	= etm4_ids,
- };
--builtin_amba_driver(etm4x_driver);
-+
-+static int __init etm4x_init(void)
-+{
-+	int ret;
-+
-+	ret = etm4_pm_setup();
-+
-+	/* etm4_pm_setup() does its own cleanup - exit on error */
-+	if (ret)
-+		return ret;
-+
-+	ret = amba_driver_register(&etm4x_driver);
-+	if (ret) {
-+		pr_err("Error registering etm4x driver\n");
-+		etm4_pm_clear();
-+	}
-+
-+	return ret;
-+}
-+device_initcall(etm4x_init);
 -- 
 2.25.1
 
