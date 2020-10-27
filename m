@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC35B29AE2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C986929AE18
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752948AbgJ0N5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:57:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44642 "EHLO mail.kernel.org"
+        id S368089AbgJ0N4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752912AbgJ0N5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:39 -0400
+        id S2409433AbgJ0N4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:56:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E4BA21655;
-        Tue, 27 Oct 2020 13:57:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25EB021D42;
+        Tue, 27 Oct 2020 13:56:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807058;
-        bh=6Ru14FfKMxajVakNntDal+Pwp6FhhFhEwqVPOngvRe8=;
+        s=default; t=1603807010;
+        bh=HetbI1naAvC+cEhHBmp/imWS6k7q8A6CMq+9QPveTDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c19rx7HFPCVmZEqMYCTumHV/QsG6usxxASCFI2FukpqXvI4Af4FVKLvPRFlPKaI1t
-         bAl2ijmHM2M8oB8Dv96AVpR16pn3CXnWBcxzcGwLRWkouTw8T9oYsMxNTJWP++XbFR
-         Y9Lw82+igPlLT8zrTUKcwNnLzT5AE1K/q8yq+VSM=
+        b=KocYeDDq1Mza2l18f5K3ERHt5jRBjhqVoncuXjXccp2NpF3wCsp5JDxyaupB4ZZt2
+         TxU2uJbFRZjuanf4YnioDIjGpYCnYDVb7Hjypw9TK5OWXWjg2GX6v+05KW3Hfc8BEP
+         5Ej/Vs6UITAbmJTd6LE0uEyiijCDuPY82UoikGj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 005/112] ALSA: bebob: potential info leak in hwdep_read()
-Date:   Tue, 27 Oct 2020 14:48:35 +0100
-Message-Id: <20201027134900.794715749@linuxfoundation.org>
+        stable@vger.kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.4 010/112] lib/strscpy: Shut up KASAN false-positives in strscpy()
+Date:   Tue, 27 Oct 2020 14:48:40 +0100
+Message-Id: <20201027134901.039218681@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -43,40 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Andrey Ryabinin <aryabinin@virtuozzo.com>
 
-commit b41c15f4e1c1f1657da15c482fa837c1b7384452 upstream.
+commit 1a3241ff10d038ecd096d03380327f2a0b5840a6 upstream.
 
-The "count" variable needs to be capped on every path so that we don't
-copy too much information to the user.
+strscpy() performs the word-at-a-time optimistic reads.  So it may may
+access the memory past the end of the object, which is perfectly fine
+since strscpy() doesn't use that (past-the-end) data and makes sure the
+optimistic read won't cross a page boundary.
 
-Fixes: 618eabeae711 ("ALSA: bebob: Add hwdep interface")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201007074928.GA2529578@mwanda
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Use new read_word_at_a_time() to shut up the KASAN.
+
+Note that this potentially could hide some bugs.  In example bellow,
+stscpy() will copy more than we should (1-3 extra uninitialized bytes):
+
+        char dst[8];
+        char *src;
+
+        src = kmalloc(5, GFP_KERNEL);
+        memset(src, 0xff, 5);
+        strscpy(dst, src, 8);
+
+Signed-off-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/firewire/bebob/bebob_hwdep.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/string.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/firewire/bebob/bebob_hwdep.c
-+++ b/sound/firewire/bebob/bebob_hwdep.c
-@@ -37,12 +37,11 @@ hwdep_read(struct snd_hwdep *hwdep, char
- 	}
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -202,7 +202,7 @@ ssize_t strscpy(char *dest, const char *
+ 	while (max >= sizeof(unsigned long)) {
+ 		unsigned long c, data;
  
- 	memset(&event, 0, sizeof(event));
-+	count = min_t(long, count, sizeof(event.lock_status));
- 	if (bebob->dev_lock_changed) {
- 		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
- 		event.lock_status.status = (bebob->dev_lock_count > 0);
- 		bebob->dev_lock_changed = false;
--
--		count = min_t(long, count, sizeof(event.lock_status));
- 	}
- 
- 	spin_unlock_irq(&bebob->lock);
+-		c = *(unsigned long *)(src+res);
++		c = read_word_at_a_time(src+res);
+ 		if (has_zero(c, &data, &constants)) {
+ 			data = prep_zero_mask(c, data, &constants);
+ 			data = create_zero_mask(data);
 
 
