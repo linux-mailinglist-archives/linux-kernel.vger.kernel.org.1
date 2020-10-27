@@ -2,142 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760EB29A837
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042F229A836
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896006AbgJ0JuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:50:00 -0400
-Received: from mout.gmx.net ([212.227.15.19]:38383 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895997AbgJ0Jt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:49:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603792146;
-        bh=md6P4mIqJNm4Z74SBvAdHygGTPRRylq7Nvq0KO6MK8Y=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=IgAFWVzvKwQlOWPFmIBfMhwu/xClwCCQwXxAFt3GlFoIc5KYjW6vpk7HrCPJZPQcA
-         WS99T9NRyjnzhhXXU4C/XIiBRw5+2RRJs//804YWUvjPXnXTXNtcSXOij4n/KUoyFm
-         8Jb6LpEn2oVg4WW2FkKBFtdmuvpXuw0fA0KSdbrM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.simpson.net ([185.146.51.69]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MK3Rs-1kpPv22hNW-00LSWT; Tue, 27
- Oct 2020 10:49:06 +0100
-Message-ID: <73f0a095b06ce8778411cc251d0edf6ffe46557c.camel@gmx.de>
-Subject: Re: kvm+nouveau induced lockdep  gripe
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Date:   Tue, 27 Oct 2020 10:49:04 +0100
-In-Reply-To: <20201027090019.3vteojm43ljqqe33@linutronix.de>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
-         <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
-         <20201023090108.5lunh4vqfpkllmap@linutronix.de>
-         <20201024022236.19608-1-hdanton@sina.com>
-         <20201024050000.8104-1-hdanton@sina.com>
-         <20201026173107.quylcy6fgjvrqat6@linutronix.de>
-         <431e81699f2310eabfe5af0a3de400ab99d9323b.camel@gmx.de>
-         <20201026195308.wsbk7xy57wuzfbao@linutronix.de>
-         <0dfae65db2f0d3ef603c1db34f37cee63f7f41f4.camel@gmx.de>
-         <20201027090019.3vteojm43ljqqe33@linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S2895977AbgJ0JtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:49:22 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:43600 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895968AbgJ0JtV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:49:21 -0400
+Received: by mail-yb1-f194.google.com with SMTP id d15so692605ybl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EoN33UgcFziWWiQ4PnBVNhZP5pXbQCgzUb9zsOxzaek=;
+        b=m3oiTCTdji6IvQxnLYvCHd8m57mQNKKf1qrsXcP2EKUZis+8+nzcNkX1bzdpt9/pnn
+         EsDh2YrPJ4+53nJ6bjkecTfDxu/7jcHJVGwMHjsSUBql7MasdHoFGjOJqRfya3MalFNT
+         Se2zF1NimiKx8R1NPMFAmsgLiDp1d/0rsm9H+YyDoTlgvk6LUcqCcUmTir5lAcgUrxAt
+         ylbtlPW0s6DyDiUYvIntKsQUtUAA6GswRsb0XPwwQw1QnM+SzFNkT1n+E4NIOrUVq3Ip
+         M6G2jE3WabJs078e/c5lGJJoJF24KLMQHxnzCkBNvMVP+TFfzW7Z4mKeEE5IrxoDn5Bq
+         nhPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EoN33UgcFziWWiQ4PnBVNhZP5pXbQCgzUb9zsOxzaek=;
+        b=jen5A+HkxkJ4zEdy6SqRHh0gUT1uqyRtdJb/tP+eHa92wQvfSOOw2hB/0pGpaNBF3H
+         mg1pedSpGHvRz19eXkHxYOHQzbjNdHbHBQIEdROft48V4lJY0Wf8n+6TtDpDKOPaR/Kc
+         UOQRSgktq9KXZx+uicdQmiLuDY/namr6o50YT+ZdRydcxDYHd7DR4qz3rBU14Zrx0x2p
+         yFNNVedTHT0XtfFg7nVQ7w1o7z9NhvDaLIpKwBO1qzQAWHOfKrQLHzUcfxsFgbR5tSi3
+         4mAfpPytzlVMAgSFmsiGwoQcrwrMamLrjUAxQC9ul7xaycwtehMQPoC405YyEkEp5kST
+         338A==
+X-Gm-Message-State: AOAM531aDHrP9cOzcqvNkhsvY+n4ZLD7y70FYgdDW2BzwIhOFML1nBYn
+        CSAgZJSw6F3zedLq8tV++AMgqRRSvU9oXPTUbe0=
+X-Google-Smtp-Source: ABdhPJz7IpNwgeFvWmWqXmQak5tvQ2tRy5W9xPtR2zzyv04QtOqgE4wuIY+OzY9pI+QnJ5d6dA8Fx2KMQIKYB2DAooM=
+X-Received: by 2002:a25:2389:: with SMTP id j131mr1833294ybj.25.1603792159885;
+ Tue, 27 Oct 2020 02:49:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QphFDyGFLVb07ZImYmAxiVppT+XiPpb9UaX/lJgNTkxbHrtfSMi
- enEPFBq4CpL0RJ6aCoT4I1PhGlP80T2J1nZCSM7xeVScae1V20N+gXxVgVID4UobzN75YKY
- qlhZLICW+VC0unc1RXfaywQsbCODsRUFpoye+7fZLX98Ym5D+1kyorBRR81AraCpk/rX9eO
- myJdGp0W/6fRpyFZsSGHQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:27DmJYfCjFQ=:KDv21O6CDGrEm5LiFRRfhz
- BQuWXGAje3IYxJZcAEFOFha0asFEUB9baTjHAmALrzU6Suy7wVxVPSK7vOmpa83IHLgqM84NB
- xJQgPTnBXo8kT0JQM1RHzzZ5U6S85I4qmXNsamHBU5fO1lYKjTYdnIgUvv/+BLBSUTlc9XYZn
- DTCPk/nrErsGskT3FVStmzlpGfLuIuJMlKo/uuAcIxofR/vg3GCnGk/5k456yAs1pYhk+BT1K
- lglEQLCK6wcp44axjc45FtrXfoKHSZ9qsnKL8PEYRQ5Zo1aonhnqhl+pT0E8MTSh12Vm+SNpE
- arsmmRtBnbdC0V1OO/XfAEL/psFiEsRo0GtwdSo/dujqk3DbFpzdijIi8Mp2YddwyqH1GRAxJ
- Z+IYcWp5IGLWq2gu7yPP5lJgc7lZbPa9NxshAoGRuERME5UEb5QtYjTaAbSBtzjecDoFndjbV
- pVfNevkAP236OOUBfrYWOW81xDfyM+Y3ty133X8rzNbe5SKINi0IGRDaICxwye3M5wPWZuEmJ
- 5UXiok33v7/7d7UDYMok0YKb2JnZu5zstU9cVhBa+vOGf0aOx0LtI572WXN8sFkGa00WxncGW
- s98BU1W/TJvzWpJcY0Zb+OWXWLvdq2MVGfeS3dQ9Nj4vY4SUfLPmTzpMfisbtnL5YJbME1ys5
- fSrnPol5IXlkumNJHgXZbpou5nPMN6m2ZQkm4CDsm8hougAppTZQlWPzoffCeQX1nGXVw6Tpe
- Y26+58tsDTUfPpZRjR03B2G2iSxsoS1MC2KtnybBdEoRuFuTCw4cV74hVSb0jEHvH01AarBqC
- boTh4yavW9wfFUubPbwO6LcMnVU88CtCdpQO1Lo75CDitt7MxqgVHxiqHCmZGMoM+yB3YTLRg
- Uzzh3I53T9Y2hBGpmQkA==
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net> <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+ <20201026125524.GP2594@hirez.programming.kicks-ass.net> <20201026152256.GB2651@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201026152256.GB2651@hirez.programming.kicks-ass.net>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Tue, 27 Oct 2020 12:49:10 +0300
+Message-ID: <CADxRZqxjw7wdfQw8DoD2DvQyhJKaW0C01wWYGMD-+L2au_jGBw@mail.gmail.com>
+Subject: Re: possible lockdep regression introduced by 4d004099a668 ("lockdep:
+ Fix lockdep recursion")
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>, Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-27 at 10:00 +0100, Sebastian Andrzej Siewior wrote:
-> On 2020-10-27 07:03:38 [+0100], Mike Galbraith wrote:
-> > On Mon, 2020-10-26 at 20:53 +0100, Sebastian Andrzej Siewior wrote:
+On Mon, Oct 26, 2020 at 6:23 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> On Mon, Oct 26, 2020 at 01:55:24PM +0100, Peter Zijlstra wrote:
+> > On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
+> > > > That smells like the same issue reported here:
+> > > >
+> > > >   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+> > > >
+> > > > Make sure you have commit:
+> > > >
+> > > >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+> > > >
+> > > > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
 > > >
-> > > Could you try this, please?
+> > > Yes, CONFIG_DEBUG_PREEMPT is enabled.
 > >
-> > Nogo, first call of sched_setscheduler() is via kthread_create().  I
-> > confirmed that nuking that (gratuitous user foot saving override) call
-> > on top of moving sched_set_fifo() does shut it up, but that won't fly.
+> > Bummer :/
+> >
+> > > I'll try with that commit and let you know, however it's gonna take a
+> > > few hours to build a kernel and run all fstests (on that test box it
+> > > takes over 3 hours) to confirm that fixes the issue.
+> >
+> > *ouch*, 3 hours is painful. How long to make it sick with the current
+> > kernel? quicker I would hope?
+> >
+> > > Thanks for the quick reply!
+> >
+> > Anyway, I don't think that commit can actually explain the issue :/
+> >
+> > The false positive on lockdep_assert_held() happens when the recursion
+> > count is !0, however we _should_ be having IRQs disabled when
+> > lockdep_recursion > 0, so that should never be observable.
+> >
+> > My hope was that DEBUG_PREEMPT would trigger on one of the
+> > __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
+> > then be a clear violation.
+> >
+> > And you're seeing this on x86, right?
+> >
+> > Let me puzzle moar..
 >
-> mkay. but this then, too.
+> So I might have an explanation for the Sparc64 fail, but that can't
+> explain x86 :/
+>
+> I initially thought raw_cpu_read() was OK, since if it is !0 we have
+> IRQs disabled and can't get migrated, so if we get migrated both CPUs
+> must have 0 and it doesn't matter which 0 we read.
+>
+> And while that is true; it isn't the whole store, on pretty much all
+> architectures (except x86) this can result in computing the address for
+> one CPU, getting migrated, the old CPU continuing execution with another
+> task (possibly setting recursion) and then the new CPU reading the value
+> of the old CPU, which is no longer 0.
+>
+> I already fixed a bunch of that in:
+>
+>   baffd723e44d ("lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"")
+>
+> but clearly this one got crossed.
+>
+> Still, that leaves me puzzled over you seeing this on x86 :/
+>
+> Anatoly, could you try linus+tip/locking/urgent and the below on your
+> Sparc, please?
 
-Yup, might even fly.
+Peter,
+let me test first. Thanks.
 
->  Let me try if I can figure out when this
-> broke.
->
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 3edaa380dc7b4..64d6afb127239 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -244,6 +244,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
->  static int kthread(void *_create)
->  {
->  	/* Copy data: it's on kthread's stack */
-> +	static const struct sched_param param =3D { .sched_priority =3D 0 };
->  	struct kthread_create_info *create =3D _create;
->  	int (*threadfn)(void *data) =3D create->threadfn;
->  	void *data =3D create->data;
-> @@ -273,6 +274,13 @@ static int kthread(void *_create)
->  	init_completion(&self->parked);
->  	current->vfork_done =3D &self->exited;
->
-> +	/*
-> +	 * root may have changed our (kthreadd's) priority or CPU mask.
-> +	 * The kernel thread should not inherit these properties.
-> +	 */
-> +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
-> +	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
-> +
->  	/* OK, tell user we're spawned, wait for stop or wakeup */
->  	__set_current_state(TASK_UNINTERRUPTIBLE);
->  	create->result =3D current;
-> @@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*t=
-hreadfn)(void *data),
->  	}
->  	task =3D create->result;
->  	if (!IS_ERR(task)) {
-> -		static const struct sched_param param =3D { .sched_priority =3D 0 };
->  		char name[TASK_COMM_LEN];
->
->  		/*
-> @@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*=
-threadfn)(void *data),
->  		 */
->  		vsnprintf(name, sizeof(name), namefmt, args);
->  		set_task_comm(task, name);
-> -		/*
-> -		 * root may have changed our (kthreadd's) priority or CPU mask.
-> -		 * The kernel thread should not inherit these properties.
-> -		 */
-> -		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
-> -		set_cpus_allowed_ptr(task,
-> -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
->  	}
->  	kfree(create);
->  	return task;
->
-> Sebastian
-
+PS: sorry for the delay, a weekend and got ill a bit ...
