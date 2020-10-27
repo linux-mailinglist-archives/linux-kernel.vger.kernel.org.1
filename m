@@ -2,132 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516CB29C8D4
+	by mail.lfdr.de (Postfix) with ESMTP id BE82129C8D5
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829920AbgJ0TZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:25:57 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39616 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409860AbgJ0TYT (ORCPT
+        id S1829926AbgJ0TZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:25:58 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35829 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S371994AbgJ0TZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:24:19 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m16so3098349ljo.6;
-        Tue, 27 Oct 2020 12:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=teL4BWb/Ty3//gGMcFWg0CBXJ+qn3TO36Ic9xGZcykU=;
-        b=LXDwnZLSSzHdk+0NS518g92nqSNo92zjKQB6eO3qPuniQf2f7O3xLfJ3OkwiXb0xzI
-         /TbIM/0Hp/SwGeByMcE5EXZJDL5EB8hG2tb/SY1WkahU0aJ52oMgfA1ObZZJ9dP8fB4D
-         8v0QS3qMbQ/j6FmS//hcjBm5bbYokHuj4kl7w++OtQrKa9C0z/5P6jt9gjYmT8uufARH
-         w30YEyWUOqP+1eMG4G1OZY2v/mJdwAToDE7z9OHzFd2OCY14YvP5peSAjskcluq8PDpo
-         m+k5opVMl0bfiDDCnVhVW5Vz4IoBc/RPnio/7abM1vXHZ0wmut3M/DyIQgV310/dspSm
-         xmuw==
+        Tue, 27 Oct 2020 15:25:40 -0400
+Received: by mail-ot1-f65.google.com with SMTP id n11so2177331ota.2;
+        Tue, 27 Oct 2020 12:25:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=teL4BWb/Ty3//gGMcFWg0CBXJ+qn3TO36Ic9xGZcykU=;
-        b=amtwM5xBevXJAbpuTxL5GAG5TxtCjQfilfJ/tBkycKtfyfEZw7K4D618CHZgC80SvP
-         uY4Dl1jMDAfRFZl7M4RV9Frjz28HoYSCck5Ohc8sOeYdLbnjGt62WwT+UCoLWNIF+N00
-         PshB96z5Hmm1eR64X3RkfaIW3WYRj13OlEKD7X98mkLvm4EfUHLPZ+uuugehWGEukbW8
-         eXukM31kr4Cei34J8ct3iHDw4sENrAerO8qDBgKblIKwDOEWUh+ghJY+7TSCzNkQh3K9
-         BPNhj68ecx45DUc+XdCSLNy2Aq3OqzpaBk2SH4ozi4BcbzB6oE1KWuuuPobQQy7FRNAC
-         H4ZA==
-X-Gm-Message-State: AOAM532zmk4xFXar6OfTphXBrD4tl14idDz58DrlRFFBktBZ4aMDSFHR
-        rnKsYqYFzuosYF8/baxe2KHubC5wEBc=
-X-Google-Smtp-Source: ABdhPJzv2GoyZYU0TkuY3fjjB785+SF5G9Tj2p+DBHVKtHtdt6RjSyJ489SMNygpON3ydMV1RVDEXg==
-X-Received: by 2002:a2e:3816:: with SMTP id f22mr1620510lja.214.1603826655898;
-        Tue, 27 Oct 2020 12:24:15 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id w139sm267282lff.163.2020.10.27.12.24.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:24:15 -0700 (PDT)
-Subject: Re: [PATCH v6 28/52] memory: tegra: Add and use
- devm_tegra_get_memory_controller()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-29-digetx@gmail.com> <20201027094210.GD10762@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a9effe32-3272-7df9-08e5-da293b1854a9@gmail.com>
-Date:   Tue, 27 Oct 2020 22:24:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DAXcDu1i1flhyWT9SP7kPy0qFQN/al6f7WHErrrSgPg=;
+        b=rcEDJP/LP0s6ReH2dyIErjyTHQEVDop33QaD877pbPDmYIngX4QeZLsdJ6NMjDi5dF
+         0z52TfweQj3Tt2GLdZiF5rI4+sKQl6uVcyZMRIRq1j5g3Tb6UtE+QJOh5V21cvoHw9q6
+         M39+WbHVIqmGP72pYglhIUeLqLOZBq3lL8RezCl4E+Hz1Qz27B/ExhpaCP6glX1dIW0z
+         f2wDHo8xVGC6O8wTVl8ArZiiZC+/c6jix5n3hAMAqoZNzGIR5EapEeu6UZQRfbFMPhiv
+         u8kxSBYh9Z6fXiHyixJVcb5ZvkzzVYaWKu4xLbfUUQiiS9zZMUWwMDB23+f1y5W6uiks
+         xhqg==
+X-Gm-Message-State: AOAM530Pa4xzAoiQNimF3wkxLy+pYBquYxffGW/j17Q2kmIi+1YNdHA6
+        ackNelP6QhTM/1K+FEeKWvZQ0hOli0ZiQlPsStQ=
+X-Google-Smtp-Source: ABdhPJxDecA7oJhI/l0ZaZdHgxYjcsQhAWqZZjjEeQpW1C/kYJFjHqOee8TQfeQ6nUaYzVFHLFetviirAiyCz5aX/yI=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr2427991oti.107.1603826738174;
+ Tue, 27 Oct 2020 12:25:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201027094210.GD10762@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200821194310.3089815-1-keescook@chromium.org>
+ <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
+ <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
+ <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
+ <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
+ <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com> <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
+In-Reply-To: <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Oct 2020 20:25:26 +0100
+Message-ID: <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com>
+Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 12:42, Krzysztof Kozlowski пишет:
-> On Mon, Oct 26, 2020 at 01:17:11AM +0300, Dmitry Osipenko wrote:
->> Multiple Tegra drivers need to retrieve Memory Controller and there is
->> duplication of the retrieval code among the drivers. This patch removes
->> the duplication and fixes put_device() which was missed in the duplicated
->> code.
->>
->> EMC drivers now use new common devm_tegra_get_memory_controller() helper
->> instead of opencoding the MC retrieval.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/memory/tegra/mc.c                | 48 ++++++++++++++++++++++++
->>  drivers/memory/tegra/tegra124-emc.c      | 18 ++-------
->>  drivers/memory/tegra/tegra210-emc-core.c | 39 +++++--------------
->>  drivers/memory/tegra/tegra30-emc.c       | 18 ++-------
->>  include/soc/tegra/mc.h                   | 10 +++++
->>  5 files changed, 74 insertions(+), 59 deletions(-)
->>
->> diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
->> index ec8403557ed4..12ea2c79205a 100644
->> --- a/drivers/memory/tegra/mc.c
->> +++ b/drivers/memory/tegra/mc.c
->> @@ -42,6 +42,54 @@ static const struct of_device_id tegra_mc_of_match[] = {
->>  };
->>  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
->>  
->> +static void tegra_mc_devm_action_put_device(void *data)
->> +{
->> +	struct tegra_mc *mc = data;
->> +
->> +	put_device(mc->dev);
->> +}
->> +
->> +/**
->> + * devm_tegra_get_memory_controller() - get Tegra Memory Controller handle
->> + * @dev: device pointer for the consumer device
->> + *
->> + * This function will search for the Memory Controller node in a device-tree
->> + * and retrieve the Memory Controller handle.
->> + *
->> + * Return: ERR_PTR() on error or a valid pointer to a struct tegra_mc.
->> + */
->> +struct tegra_mc *devm_tegra_get_memory_controller(struct device *dev)
-> 
-> Usually 'get' is a suffix (for example in clk, gpiod, iio, led), so:
-> devm_tegra_memory_controller_get()
+Hi Nick,
 
-Alright, I'll rename it in v7.
+CC Josh
+
+On Mon, Oct 26, 2020 at 6:49 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+> On Mon, Oct 26, 2020 at 10:44 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Mon, Oct 26, 2020 at 6:39 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > On Mon, 26 Oct 2020 at 17:01, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > On Fri, Aug 21, 2020 at 9:56 PM Kees Cook <keescook@chromium.org> wrote:
+> > > > > > > In preparation for warning on orphan sections, discard
+> > > > > > > unwanted non-zero-sized generated sections, and enforce other
+> > > > > > > expected-to-be-zero-sized sections (since discarding them might hide
+> > > > > > > problems with them suddenly gaining unexpected entries).
+> > > > > > >
+> > > > > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > > > >
+> > > > > > This is now commit be2881824ae9eb92 ("arm64/build: Assert for unwanted
+> > > > > > sections") in v5.10-rc1, and is causing the following error with
+> > > > > > renesas_defconfig[1]:
+> > > > > >
+> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
+> > > > > > `kernel/bpf/core.o' being placed in section `.eh_frame'
+> > > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+> > > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
+> > > > > >
+> > > > > > I cannot reproduce this with the standard arm64 defconfig.
+> > > > > >
+> > > > > > I bisected the error to the aforementioned commit, but understand this
+> > > > > > is not the real reason.  If I revert this commit, I still get:
+> > > > > >
+> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.got.plt' from
+> > > > > > `arch/arm64/kernel/head.o' being placed in section `.got.plt'
+> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.plt' from
+> > > > > > `arch/arm64/kernel/head.o' being placed in section `.plt'
+> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.data.rel.ro' from
+> > > > > > `arch/arm64/kernel/head.o' being placed in section `.data.rel.ro'
+> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
+> > > > > > `kernel/bpf/core.o' being placed in section `.eh_frame'
+> > > > > >
+> > > > > > I.e. including the ".eh_frame" warning. I have tried bisecting that
+> > > > > > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
+> > > > > > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
+> > > > > > placement"), which is another red herring.
+> > > > >
+> > > > > kernel/bpf/core.o is the only file containing an eh_frame section,
+> > > > > causing the warning.
+>
+> When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
+> missing from someone's KBUILD_CFLAGS.
+> But I don't see anything curious in kernel/bpf/Makefile, unless
+> cc-disable-warning is somehow broken.
+
+I tracked it down to kernel/bpf/core.c:___bpf_prog_run() being tagged
+with __no_fgcse aka __attribute__((optimize("-fno-gcse"))).
+
+Even if the function is trivially empty ("return 0;"), a ".eh_frame" section
+is generated.  Removing the __no_fgcse tag fixes that.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
