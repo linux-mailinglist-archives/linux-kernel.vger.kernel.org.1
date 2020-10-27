@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A35729C5B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD5329C5B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756204AbgJ0OMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:12:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58490 "EHLO mail.kernel.org"
+        id S1756260AbgJ0OMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:12:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755304AbgJ0OJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:09:18 -0400
+        id S2900868AbgJ0OJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:09:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B1D722202;
-        Tue, 27 Oct 2020 14:09:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58EEE22202;
+        Tue, 27 Oct 2020 14:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807758;
-        bh=PtGfbtTFMFgjFc/XBeHgpda1ZtNlEE8DfzdWgAD87tU=;
+        s=default; t=1603807781;
+        bh=EjlxQim+NHTPYeuTRFnTWyn/kiylGlxMEOyVJXRIgJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gvJlKbzWwOnBMRjqy2Zz1CX7q1C/+oRn6ljed9UmRzF4M2EvJMv32n6+F0iqg7PA0
-         wrpPTcM8I2m8AZxWREmVUk4Eadh+c0Q3ylwI6aOqeI4OdRhwUcmu7i+ZZSN9MHj0ne
-         fPGOyrNte7x1bsk+LZ/zGf0c4LbvYTOCsgXNjy7M=
+        b=huCi5u58krxuZerE40UCK+pu7/bK+IefrFI2ohbXVS4GP3CtxJUwUIWOaBRNNOEM3
+         lIvNxsNaa+ypicr0Cx4rj4BV9cZQPUq5ia88BqQ8UXXY4JUhtP3PWHpPtD0VBSVi1P
+         hILWVn5SzYDOTaiZSIf8/EHXpEz2j7mhHY5mcnGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Brunner <tobias@strongswan.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 003/191] ipv4: Restore flowi4_oif update before call to xfrm_lookup_route
-Date:   Tue, 27 Oct 2020 14:47:38 +0100
-Message-Id: <20201027134909.880485611@linuxfoundation.org>
+        stable@vger.kernel.org, Petr Tesarik <ptesarik@suse.cz>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 4.14 008/191] r8169: fix data corruption issue on RTL8402
+Date:   Tue, 27 Oct 2020 14:47:43 +0100
+Message-Id: <20201027134910.113349698@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -43,40 +42,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 874fb9e2ca949b443cc419a4f2227cafd4381d39 ]
+[ Upstream commit ef9da46ddef071e1bbb943afbbe9b38771855554 ]
 
-Tobias reported regressions in IPsec tests following the patch
-referenced by the Fixes tag below. The root cause is dropping the
-reset of the flowi4_oif after the fib_lookup. Apparently it is
-needed for xfrm cases, so restore the oif update to ip_route_output_flow
-right before the call to xfrm_lookup_route.
+Petr reported that after resume from suspend RTL8402 partially
+truncates incoming packets, and re-initializing register RxConfig
+before the actual chip re-initialization sequence is needed to avoid
+the issue.
 
-Fixes: 2fbc6e89b2f1 ("ipv4: Update exception handling for multipath routes via same device")
-Reported-by: Tobias Brunner <tobias@strongswan.org>
-Signed-off-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Petr Tesarik <ptesarik@suse.cz>
+Proposed-by: Petr Tesarik <ptesarik@suse.cz>
+Tested-by: Petr Tesarik <ptesarik@suse.cz>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/route.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169.c |  108 ++++++++++++++++++-----------------
+ 1 file changed, 56 insertions(+), 52 deletions(-)
 
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -2603,10 +2603,12 @@ struct rtable *ip_route_output_flow(stru
- 	if (IS_ERR(rt))
- 		return rt;
- 
--	if (flp4->flowi4_proto)
-+	if (flp4->flowi4_proto) {
-+		flp4->flowi4_oif = rt->dst.dev->ifindex;
- 		rt = (struct rtable *)xfrm_lookup_route(net, &rt->dst,
- 							flowi4_to_flowi(flp4),
- 							sk, 0);
-+	}
- 
- 	return rt;
+--- a/drivers/net/ethernet/realtek/r8169.c
++++ b/drivers/net/ethernet/realtek/r8169.c
+@@ -4501,6 +4501,58 @@ static void rtl_rar_set(struct rtl8169_p
+ 	rtl_unlock_work(tp);
  }
+ 
++static void rtl_init_rxcfg(struct rtl8169_private *tp)
++{
++	void __iomem *ioaddr = tp->mmio_addr;
++
++	switch (tp->mac_version) {
++	case RTL_GIGA_MAC_VER_01:
++	case RTL_GIGA_MAC_VER_02:
++	case RTL_GIGA_MAC_VER_03:
++	case RTL_GIGA_MAC_VER_04:
++	case RTL_GIGA_MAC_VER_05:
++	case RTL_GIGA_MAC_VER_06:
++	case RTL_GIGA_MAC_VER_10:
++	case RTL_GIGA_MAC_VER_11:
++	case RTL_GIGA_MAC_VER_12:
++	case RTL_GIGA_MAC_VER_13:
++	case RTL_GIGA_MAC_VER_14:
++	case RTL_GIGA_MAC_VER_15:
++	case RTL_GIGA_MAC_VER_16:
++	case RTL_GIGA_MAC_VER_17:
++		RTL_W32(RxConfig, RX_FIFO_THRESH | RX_DMA_BURST);
++		break;
++	case RTL_GIGA_MAC_VER_18:
++	case RTL_GIGA_MAC_VER_19:
++	case RTL_GIGA_MAC_VER_20:
++	case RTL_GIGA_MAC_VER_21:
++	case RTL_GIGA_MAC_VER_22:
++	case RTL_GIGA_MAC_VER_23:
++	case RTL_GIGA_MAC_VER_24:
++	case RTL_GIGA_MAC_VER_34:
++	case RTL_GIGA_MAC_VER_35:
++		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
++		break;
++	case RTL_GIGA_MAC_VER_40:
++	case RTL_GIGA_MAC_VER_41:
++	case RTL_GIGA_MAC_VER_42:
++	case RTL_GIGA_MAC_VER_43:
++	case RTL_GIGA_MAC_VER_44:
++	case RTL_GIGA_MAC_VER_45:
++	case RTL_GIGA_MAC_VER_46:
++	case RTL_GIGA_MAC_VER_47:
++	case RTL_GIGA_MAC_VER_48:
++	case RTL_GIGA_MAC_VER_49:
++	case RTL_GIGA_MAC_VER_50:
++	case RTL_GIGA_MAC_VER_51:
++		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
++		break;
++	default:
++		RTL_W32(RxConfig, RX128_INT_EN | RX_DMA_BURST);
++		break;
++	}
++}
++
+ static int rtl_set_mac_address(struct net_device *dev, void *p)
+ {
+ 	struct rtl8169_private *tp = netdev_priv(dev);
+@@ -4519,6 +4571,10 @@ static int rtl_set_mac_address(struct ne
+ 
+ 	pm_runtime_put_noidle(d);
+ 
++	/* Reportedly at least Asus X453MA truncates packets otherwise */
++	if (tp->mac_version == RTL_GIGA_MAC_VER_37)
++		rtl_init_rxcfg(tp);
++
+ 	return 0;
+ }
+ 
+@@ -4955,58 +5011,6 @@ static void rtl_init_pll_power_ops(struc
+ 		break;
+ 	}
+ }
+-
+-static void rtl_init_rxcfg(struct rtl8169_private *tp)
+-{
+-	void __iomem *ioaddr = tp->mmio_addr;
+-
+-	switch (tp->mac_version) {
+-	case RTL_GIGA_MAC_VER_01:
+-	case RTL_GIGA_MAC_VER_02:
+-	case RTL_GIGA_MAC_VER_03:
+-	case RTL_GIGA_MAC_VER_04:
+-	case RTL_GIGA_MAC_VER_05:
+-	case RTL_GIGA_MAC_VER_06:
+-	case RTL_GIGA_MAC_VER_10:
+-	case RTL_GIGA_MAC_VER_11:
+-	case RTL_GIGA_MAC_VER_12:
+-	case RTL_GIGA_MAC_VER_13:
+-	case RTL_GIGA_MAC_VER_14:
+-	case RTL_GIGA_MAC_VER_15:
+-	case RTL_GIGA_MAC_VER_16:
+-	case RTL_GIGA_MAC_VER_17:
+-		RTL_W32(RxConfig, RX_FIFO_THRESH | RX_DMA_BURST);
+-		break;
+-	case RTL_GIGA_MAC_VER_18:
+-	case RTL_GIGA_MAC_VER_19:
+-	case RTL_GIGA_MAC_VER_20:
+-	case RTL_GIGA_MAC_VER_21:
+-	case RTL_GIGA_MAC_VER_22:
+-	case RTL_GIGA_MAC_VER_23:
+-	case RTL_GIGA_MAC_VER_24:
+-	case RTL_GIGA_MAC_VER_34:
+-	case RTL_GIGA_MAC_VER_35:
+-		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
+-		break;
+-	case RTL_GIGA_MAC_VER_40:
+-	case RTL_GIGA_MAC_VER_41:
+-	case RTL_GIGA_MAC_VER_42:
+-	case RTL_GIGA_MAC_VER_43:
+-	case RTL_GIGA_MAC_VER_44:
+-	case RTL_GIGA_MAC_VER_45:
+-	case RTL_GIGA_MAC_VER_46:
+-	case RTL_GIGA_MAC_VER_47:
+-	case RTL_GIGA_MAC_VER_48:
+-	case RTL_GIGA_MAC_VER_49:
+-	case RTL_GIGA_MAC_VER_50:
+-	case RTL_GIGA_MAC_VER_51:
+-		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
+-		break;
+-	default:
+-		RTL_W32(RxConfig, RX128_INT_EN | RX_DMA_BURST);
+-		break;
+-	}
+-}
+ 
+ static void rtl8169_init_ring_indexes(struct rtl8169_private *tp)
+ {
 
 
