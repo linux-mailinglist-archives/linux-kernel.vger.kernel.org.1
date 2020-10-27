@@ -2,175 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5850E29BB8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1E829BBA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808725AbgJ0QUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:20:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1808714AbgJ0QUU (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:20:20 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E739C21556;
-        Tue, 27 Oct 2020 16:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603815620;
-        bh=9ubK2jU1YuQzm6hFAuu9SToBCJFIb5sgFqynAqoHh3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iMDTZxc5yZpyCOmxEonPRTO8fWjFPQe+ghh50hSS0rqd1/PdUKEcDPsmsbAdq9SP/
-         9lLMYmqH+NmAg9xVWCJtHmVqiH1qVSQ+btYb2KiHbY/h3K6WSo1Pwd1X5IQ0sD/6GT
-         WVfjAg8HsdCi9xkOzL8H/DJ8VD3HXDASfL0pWPYs=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 165B8403C2; Tue, 27 Oct 2020 13:20:18 -0300 (-03)
-Date:   Tue, 27 Oct 2020 13:20:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
-Subject: Re: [PATCH] perf vendor events: Fix DRAM_BW_Use 0 issue for CLX/SKX
-Message-ID: <20201027162018.GH2479604@kernel.org>
-References: <20201023005334.7869-1-yao.jin@linux.intel.com>
- <CAP-5=fWtQB2emBg804LgwqztXF-W-+-9Z-s48VOGD+dpBDX4hQ@mail.gmail.com>
+        id S1808826AbgJ0QXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:23:06 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:46299 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1808817AbgJ0QXC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:23:02 -0400
+Received: by mail-oi1-f193.google.com with SMTP id x1so1834384oic.13;
+        Tue, 27 Oct 2020 09:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=NEJ75eazugIxTiGgov7ny2tg8dhF8KBwSIY/K2VIUa4=;
+        b=O6BYLLD7y1Vk9bu2wUHfOKew52+BSy/G3UANd5GsnvOksCmPTZM6XzRMX6pG8XRLYY
+         F43lGUVn8quNwsf7xHNiHrHCXBlbn4gDBhQBNyjXtXuBDovLDwWG3LnA6zKrhdZiRqR/
+         bFS2hCjDrSymA9iNx23lwLR1cXN6T9nnGPkBKTn4puwxX6A4CExtUTZIij1EOB6YfkuN
+         cp6KanxdKWRhO284dAOozKVWujcZXcqiTXvBxlxvnfPeragd4ozfYxLXcVjJqTi8yr8G
+         6q5tItYqe9RYccPO44Qv5TL38MLk5YN/P+d/Xw/bsibXG5utHuQ5a+Yc6tQ4bGexCQpn
+         DHFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=NEJ75eazugIxTiGgov7ny2tg8dhF8KBwSIY/K2VIUa4=;
+        b=bgT1gnvT5IJyjqDWCnSZX4aQHt74YmEzk23Tnpq9ZInCzF+BhsSlmTwP3DP0D1Nau2
+         UaNw6PaL98UB6GBkM7STYGfmAO9LAYJ0O9/rrMFgW8tXMO9yXvkJz1BnSTh0grWqYC7F
+         NGOq6dFJjekT9QDtm9j5fPPZmLTJxPEmaAEoNfeMzHlB5wCGttYj9M1LyJ3HFvAw+XXL
+         /rXJuiIRw92VJxTr0LY88E3kHVMI2+3XJkz5BOa01v6E6ouVQ1jotlJpBfotjtO2rkJl
+         6eEBUdgG8fA/XdcuLAQhfzanGt8G064ibXV31Em3j5FX09pB09MNWI93i5DDN0pUJsBz
+         G10g==
+X-Gm-Message-State: AOAM533dq3lQ85l6jE4shy18BT6Ymh7VeRuYbar7+u59UuaNGSpESr1Z
+        HBha9Q1ruHrTFufcOCMJSl1sIQIESVf3m9P5Eso9qsmR
+X-Google-Smtp-Source: ABdhPJxf30OOcub3IUjG3SD5xn1r3e8t3j3owMe5pBN43+O9xqetjoMtHQUUeD/+aW6OVOclzmoCD0eA0meBVq01ZQ0=
+X-Received: by 2002:aca:bb41:: with SMTP id l62mr2000939oif.148.1603815779450;
+ Tue, 27 Oct 2020 09:22:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWtQB2emBg804LgwqztXF-W-+-9Z-s48VOGD+dpBDX4hQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
+ <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com> <87faeeeb-f2e0-7f1e-5692-78b43242f20b@gmail.com>
+ <bcfbf8ec-ca90-b736-1516-e096ef03222f@gmail.com> <1e587ddc-99a3-f05a-857d-9d221c0818b1@gmail.com>
+In-Reply-To: <1e587ddc-99a3-f05a-857d-9d221c0818b1@gmail.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Tue, 27 Oct 2020 17:22:48 +0100
+Message-ID: <CAKgNAkhuL9JRG_YhVG6Y-yjobDVAGjrUSdcQ4kV-4MABjZiwRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] system_data_types.7: Add 'off_t'
+To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
+Cc:     linux-man <linux-man@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 22, 2020 at 06:02:31PM -0700, Ian Rogers escreveu:
-> On Thu, Oct 22, 2020 at 5:54 PM Jin Yao <yao.jin@linux.intel.com> wrote:
-> >
-> > Ian reports an issue that the metric DRAM_BW_Use often remains 0.
-> >
-> > The metric expression for DRAM_BW_Use on CLX/SKX:
-> >
-> > "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time"
-> >
-> > The counts of uncore_imc/cas_count_read/ and uncore_imc/cas_count_write/
-> > are scaled up by 64, that is to turn a count of cache lines into bytes,
-> > the count is then divided by 1000000000 to give GB.
-> >
-> > However, the counts of uncore_imc/cas_count_read/ and
-> > uncore_imc/cas_count_write/ have been scaled yet.
-> >
-> > The scale values are from sysfs, such as
-> > /sys/devices/uncore_imc_0/events/cas_count_read.scale.
-> > It's 6.103515625e-5 (64 / 1024.0 / 1024.0).
-> >
-> > So if we use original metric expression, the result is not correct.
-> >
-> > But the difficulty is, for SKL client, the counts are not scaled.
-> >
-> > The metric expression for DRAM_BW_Use on SKL:
-> >
-> > "64 * ( arb@event\\=0x81\\,umask\\=0x1@ + arb@event\\=0x84\\,umask\\=0x1@ ) / 1000000 / duration_time / 1000"
-> >
-> > root@kbl-ppc:~# perf stat -M DRAM_BW_Use -a -- sleep 1
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >                190      arb/event=0x84,umask=0x1/ #     1.86 DRAM_BW_Use
-> >         29,093,178      arb/event=0x81,umask=0x1/
-> >      1,000,703,287 ns   duration_time
-> >
-> >        1.000703287 seconds time elapsed
-> >
-> > The result is expected.
-> >
-> > So the easy way is just change the metric expression for CLX/SKX.
-> > This patch changes the metric expression to:
-> >
-> > "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time"
-> >
-> > 1048576 = 1024 * 1024.
-> >
-> > Before (tested on CLX):
-> >
-> > root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -a -- sleep 1
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >             765.35 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
-> >               5.42 MiB  uncore_imc/cas_count_write/
-> >         1001515088 ns   duration_time
-> >
-> >        1.001515088 seconds time elapsed
-> >
-> > After:
-> >
-> > root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -a -- sleep 1
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >             767.95 MiB  uncore_imc/cas_count_read/ #     0.80 DRAM_BW_Use
-> 
-> Nit, using ScaleUnit would allow this to be 0.80GB/s.
-> 
-> >               5.02 MiB  uncore_imc/cas_count_write/
-> >         1001900010 ns   duration_time
-> >
-> >        1.001900010 seconds time elapsed
-> >
-> > Fixes: 038d3b53c284 ("perf vendor events intel: Update CascadelakeX events to v1.08")
-> > Fixes: b5ff7f2799a4 ("perf vendor events: Update SkylakeX events to v1.21")
-> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
+Hi Alex,
 
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Thanks,
-> Ian
-> 
-> > ---
-> >  tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json | 2 +-
-> >  tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json     | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
+On Tue, 27 Oct 2020 at 16:25, Alejandro Colomar <colomar.6.4.3@gmail.com> wrote:
+>
+>
+>
+> On 2020-10-27 14:47, Michael Kerrisk (man-pages) wrote:
+> > On 10/27/20 11:23 AM, Alejandro Colomar wrote:
+> >> Hi Michael,
+> >>
+> >> On 2020-10-07 08:53, Michael Kerrisk (man-pages) wrote:
+> >>> On 10/6/20 12:12 AM, Alejandro Colomar wrote:
+> >>>> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+> >>>
+> >>> Hi Alex,
+> >>>
+> >>> Thanks, patch applied. And I trimmed the "See also" a little.
+> >>> I'd hold off on documenting loff_t and off64_t for the
+> >>> moment. As you note in another mail, the *lseek* man page
+> >>> situation is a bit of a mess. I'm not yet sure what to do.
+> >>
+> >>
+> >> I saw a TODO in the page about loff_t.
+> >> Just wanted to ping you in case you forgot about it (I did).
 > >
-> > diff --git a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> > index de3193552277..00f4fcffa815 100644
-> > --- a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> > +++ b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> > @@ -329,7 +329,7 @@
-> >      },
-> >      {
-> >          "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
-> > -        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
-> > +        "MetricExpr": "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time",
-> >          "MetricGroup": "Memory_BW;SoC",
-> >          "MetricName": "DRAM_BW_Use"
-> >      },
-> > diff --git a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-> > index f31794d3b926..0dd8b13b5cfb 100644
-> > --- a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-> > +++ b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-> > @@ -323,7 +323,7 @@
-> >      },
-> >      {
-> >          "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
-> > -        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
-> > +        "MetricExpr": "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time",
-> >          "MetricGroup": "Memory_BW;SoC",
-> >          "MetricName": "DRAM_BW_Use"
-> >      },
-> > --
-> > 2.17.1
+> > I didn't forget it exactly. I just don't know that I have the
+> > inclination to do anything about the messy *llseek* pages.
 > >
+> > Thanks,
+> >
+> > Michael
+> >
+> >
+>
+>
+> Hi Michael,
+>
+> I've been reading them to add loff_t and off64_t to sys_data_types.
+> Now that I've read them (not too deep),
+> I think that lseek64(3) is good enough,
+> and maybe we should look for small details
+> missing there but present on the others,
+> and merge those to lseek64.3.
+> And then keep links in the other pages pointing to lseek64.3.
+>
+> Any thoughts?
 
--- 
+Those pages have a long history, and I confess to not understanding
+all of the details of the history. Looking more closely at the pages,
+I think they are good enough. Let's leave them alone. (I did apply one
+patch just now.)
 
-- Arnaldo
+Thinking about it further, I don't think it's necessary to document
+loff_t in system_data_types(7). No APIs in the current glibc headers
+even use loff_t, as far as I can see. I'm not sure that 'off64_t'
+really needs documenting there either.
+
+Thanks,
+
+Michael
+
+
+
+
+
+--
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
