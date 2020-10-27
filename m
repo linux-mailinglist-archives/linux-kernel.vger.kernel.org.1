@@ -2,129 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5391129A3EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 06:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 779E229A3EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 06:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505788AbgJ0FSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 01:18:03 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:24610 "EHLO m42-4.mailgun.net"
+        id S2505816AbgJ0FV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 01:21:56 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31801 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505776AbgJ0FSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 01:18:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603775882; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=g64XdioYWzF68Lt5U5nrTtR7/oWlvIneDTTlwIVAqXc=; b=e+8+i9D6Fg92B8eBkmSAtiqJ4ujSthF5Wbym6TXtTrr6XcE9tluPVgrYpIjuPIwVuJ9lL1Se
- v983N8S6Q1FRBHtmaPoUV6FYSv1wqrQdfLPShXkruOuofgq67HH/H7NdecIcb8FDMQOfTrWV
- y9D7d8LYpr8dEn769yRdhbRivNQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f97ad895c97867acefbaa03 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 05:18:01
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B4440C433CB; Tue, 27 Oct 2020 05:18:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [49.205.247.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23AE3C433C9;
-        Tue, 27 Oct 2020 05:17:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 23AE3C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Doug Anderson'" <dianders@chromium.org>
-Cc:     "'Abhishek Kumar'" <kuabhs@chromium.org>,
-        "'Kalle Valo'" <kvalo@codeaurora.org>,
-        "'ath10k'" <ath10k@lists.infradead.org>,
-        "'LKML'" <linux-kernel@vger.kernel.org>,
-        "'linux-wireless'" <linux-wireless@vger.kernel.org>,
-        "'Brian Norris'" <briannorris@chromium.org>
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid> <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com> <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com> <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org> <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
-Subject: RE: [PATCH] ath10k: add option for chip-id based BDF selection
-Date:   Tue, 27 Oct 2020 10:47:54 +0530
-Message-ID: <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
+        id S2505809AbgJ0FVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 01:21:55 -0400
+IronPort-SDR: iD4ZI7cAIRKFaVgbtz+pGhOmUbnGwTlr5WxvTgao+g6645SfGLrRRwQPqDgTS5bVmWhfCq2nzI
+ kvVpG/3UwhQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="168128776"
+X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
+   d="scan'208";a="168128776"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 22:21:52 -0700
+IronPort-SDR: r/ApMSVxm8oAdp65rx4/mj/sCa/lfl73inOc5RqQ0Rfp8pSEWhoqUPEw0wSkmvOne88bnBzH8O
+ EYZ+0a6z6OXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
+   d="scan'208";a="303636901"
+Received: from lkp-server01.sh.intel.com (HELO ef28dff175aa) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Oct 2020 22:21:43 -0700
+Received: from kbuild by ef28dff175aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kXHQU-000049-UC; Tue, 27 Oct 2020 05:21:42 +0000
+Date:   Tue, 27 Oct 2020 13:21:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 3adb776384f2042ef6bda876e91a7a7ac2872c5e
+Message-ID: <5f97ae44.g8uf0Dsyh8wwD1w+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFjEyTiGf73PRIYZgnn2adypkFjcAJI1HsxAfRirrsAqQquEAGWWD6uql40+ZA=
-Content-Language: en-us
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
+branch HEAD: 3adb776384f2042ef6bda876e91a7a7ac2872c5e  x86, libnvdimm/test: Remove COPY_MC_TEST
 
+elapsed time: 721m
 
-> -----Original Message-----
-> From: Doug Anderson <dianders@chromium.org>
-> Sent: Tuesday, October 27, 2020 4:21 AM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: Abhishek Kumar <kuabhs@chromium.org>; Kalle Valo
-> <kvalo@codeaurora.org>; ath10k <ath10k@lists.infradead.org>; LKML
-> <linux-kernel@vger.kernel.org>; linux-wireless <linux-
-> wireless@vger.kernel.org>; Brian Norris <briannorris@chromium.org>
-> Subject: Re: [PATCH] ath10k: add option for chip-id based BDF =
-selection
->=20
-> Hi,
->=20
-> On Sat, Oct 24, 2020 at 9:40 AM Rakesh Pillai <pillair@codeaurora.org> =
-wrote:
-> >
-> > >         if (bd_ie_type =3D=3D ATH10K_BD_IE_BOARD) {
-> > > +               /* With variant and chip id */
-> > >                 ret =3D ath10k_core_create_board_name(ar, =
-boardname,
-> > > -                                                   =
-sizeof(boardname), true);
-> > > +                                               sizeof(boardname), =
-true, true);
-> >
-> > Instead of adding a lot of code to generate a second fallback name, =
-its
-> better to just modify the condition inside the function
-> =E2=80=9Cath10k_core_create_board_name=E2=80=9D to allow the =
-generation of BDF tag using
-> chip id, even =E2=80=9Cif ar->id.bdf_ext[0] =3D=3D '\0 =E2=80=9C.
-> >
-> > This will make sure that the variant string is NULL, and just =
-board-id and
-> chip-id is used. This will help avoid most of the code changes.
-> > The code would look as shown below
-> >
-> > @@ -1493,7 +1493,7 @@ static int =
-ath10k_core_create_board_name(struct
-> ath10k *ar, char *name,
-> >         }
-> >
-> >         if (ar->id.qmi_ids_valid) {
-> > -               if (with_variant && ar->id.bdf_ext[0] !=3D '\0')
-> > +               if (with_variant)
->=20
-> Wouldn't the above just be "if (with_chip_id)" instead?  ...but yeah,
-> that would be a cleaner way to do this.  Abhishek: do you want to post
-> a v2?
+configs tested: 152
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-The parameter name passed to this function is "with_variant", since =
-other non-qmi targets (eg QCA6174) use this as a flag to just add the =
-variant field.
-This can be renamed to something meaningful for both qmi and non-qmi =
-targets.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                     davinci_all_defconfig
+powerpc                       maple_defconfig
+arm                           omap1_defconfig
+powerpc                       holly_defconfig
+m68k                        mvme147_defconfig
+powerpc                     mpc83xx_defconfig
+sh                             sh03_defconfig
+powerpc                     sequoia_defconfig
+ia64                             alldefconfig
+arm                           sunxi_defconfig
+powerpc                        icon_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                   motionpro_defconfig
+arm                       mainstone_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                   secureedge5410_defconfig
+mips                       rbtx49xx_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                          rsk7264_defconfig
+powerpc                     sbc8548_defconfig
+arm                          exynos_defconfig
+xtensa                         virt_defconfig
+mips                      bmips_stb_defconfig
+parisc                generic-32bit_defconfig
+arm                      integrator_defconfig
+arm                          simpad_defconfig
+powerpc                 linkstation_defconfig
+arm                         shannon_defconfig
+arm                         s3c6400_defconfig
+arm                         assabet_defconfig
+sh                            shmin_defconfig
+sh                             espt_defconfig
+arm                          iop32x_defconfig
+xtensa                              defconfig
+arm                        multi_v7_defconfig
+xtensa                  nommu_kc705_defconfig
+arc                          axs101_defconfig
+c6x                                 defconfig
+sh                               j2_defconfig
+mips                            gpr_defconfig
+sh                            migor_defconfig
+powerpc                      walnut_defconfig
+c6x                        evmc6472_defconfig
+mips                        nlm_xlp_defconfig
+arc                        nsimosci_defconfig
+sh                           se7780_defconfig
+x86_64                           allyesconfig
+arm                          moxart_defconfig
+sh                        edosk7760_defconfig
+arm                             rpc_defconfig
+sh                              ul2_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                      footbridge_defconfig
+arm                  colibri_pxa270_defconfig
+mips                malta_kvm_guest_defconfig
+sh                           se7750_defconfig
+powerpc                   bluestone_defconfig
+powerpc                   lite5200b_defconfig
+arm                         mv78xx0_defconfig
+mips                      fuloong2e_defconfig
+mips                           mtx1_defconfig
+m68k                            mac_defconfig
+sh                        dreamcast_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     redwood_defconfig
+arc                      axs103_smp_defconfig
+m68k                        mvme16x_defconfig
+powerpc                      acadia_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                         ps3_defconfig
+c6x                        evmc6678_defconfig
+powerpc                       ppc64_defconfig
+arm                       versatile_defconfig
+arc                     nsimosci_hs_defconfig
+arm                           stm32_defconfig
+powerpc                    gamecube_defconfig
+mips                      pistachio_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20201026
+i386                 randconfig-a003-20201026
+i386                 randconfig-a005-20201026
+i386                 randconfig-a001-20201026
+i386                 randconfig-a006-20201026
+i386                 randconfig-a004-20201026
+x86_64               randconfig-a011-20201026
+x86_64               randconfig-a013-20201026
+x86_64               randconfig-a016-20201026
+x86_64               randconfig-a015-20201026
+x86_64               randconfig-a012-20201026
+x86_64               randconfig-a014-20201026
+i386                 randconfig-a016-20201026
+i386                 randconfig-a015-20201026
+i386                 randconfig-a014-20201026
+i386                 randconfig-a012-20201026
+i386                 randconfig-a013-20201026
+i386                 randconfig-a011-20201026
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
->=20
-> -Doug
+clang tested configs:
+x86_64               randconfig-a001-20201026
+x86_64               randconfig-a003-20201026
+x86_64               randconfig-a002-20201026
+x86_64               randconfig-a006-20201026
+x86_64               randconfig-a004-20201026
+x86_64               randconfig-a005-20201026
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
