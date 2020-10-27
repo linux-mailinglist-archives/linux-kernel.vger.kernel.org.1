@@ -2,116 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2739B29A3DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 06:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB70929A3E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 06:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505749AbgJ0FKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 01:10:55 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36606 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505741AbgJ0FKz (ORCPT
+        id S2505762AbgJ0FOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 01:14:14 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:44466 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410224AbgJ0FOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 01:10:55 -0400
-Received: by mail-wr1-f67.google.com with SMTP id x7so410305wrl.3;
-        Mon, 26 Oct 2020 22:10:53 -0700 (PDT)
+        Tue, 27 Oct 2020 01:14:14 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 133so211076pfx.11;
+        Mon, 26 Oct 2020 22:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ngPKTvR1IpSlXKqEEPPICpOA1ws2tSXxni49kU0D+Mk=;
-        b=eZuYmrB1kcNwArGQsuuXGjT3KdyjReayS4/LwD2Mb+Pk7R8lq+9g3y8EqkiKMqGcZh
-         O0DloQFiv+i5+AJMlLkH8iXF4a5cWhXO+EYmoxAQgqUUVFQq+mjNEr1M8toatk+lEuji
-         Lv0kGbqMdoV+891IB9tdhnfn6XUwiD19EHeF20tx97uuzBMo0Dn8BywydaXvWLrufX9c
-         wPZ6BbWW9Leiq18xpchJx0DHNN20GtMoig6dQOvIpt16tPKmmxvh5rbHhNUgWXWvHdZM
-         v7U2s1GbUM0ZClb+sWJBmsYu0FB+kTj2ingvTUwdr3239WRpt77ef23ajwOhgQCQpPbH
-         gGRQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V6b7HwvvFZ2s1xYsjf24gbEkjeQ0R1jZb5gJGqmof84=;
+        b=QV32QpdFiFdGKP8KIf3ztwU5B2L+kQ1TISGCOSyRr7wqANt+4iKpSWIDz9FXOVJiNY
+         irLnmSzzDG34JYL9ztGPJT7Eu5o9dNRCr+tOE0KqM0LTMF2R1QqmDVmeEQnFLrO+ZweC
+         ha3pZVAxePVmy3GHH67EPgBWSFxuJKrHP+97wFhhBV6yhEdvo3FE2bbeikaYjl3tmVF/
+         mmwIaskRvfZYnHtO+qHXJ8WhB5NYnRpnt5wwgzEyqcPDWKsgDkrCg5fs4W8g/SDqlGi/
+         aYXSL0GyEmyycjfKZOBm5SKJM9vpR9Sx0ZffKH+Pn539f+rUzDYRAOo2ZEPjRTSC9CXn
+         DF7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ngPKTvR1IpSlXKqEEPPICpOA1ws2tSXxni49kU0D+Mk=;
-        b=aM0Jo7bs8SXmbOQqZ6eQYbHQmfKs1CGqi3uln9uFoNxZP+YaxkS7Y/bhujbTH6h88P
-         igy++Vi3v5+jml7ZLD5JCg7uVhOygPF4RLmyW3q1WCRBcAhQEYz53CJI36rCrTqk9ws9
-         A9lVni/fHv9Z0XB1jOedCGzicui8mPZLbO5/xnz0ErE94JFnScc750Xavkbgt7wwhRJn
-         3vKn0vGJOjAjvmkSlet3G0wTrP54wVAwg6rtmw7kPp8mAVorfXgQM0eqzfNr3QSbhK0c
-         clG81VrstjQusqF/7AQCTqxoRkaSoy+P++PXiVygLLfThragUzbRavOiE1CwET5ppk89
-         eorw==
-X-Gm-Message-State: AOAM530IBszTXNnpDacQL1RYBfAl1fageujDxx52Wx2enV9UU4d5vBfS
-        77GD9/jH8RxXIeOpX5swgaev3GvaJsa2+Bof2ks=
-X-Google-Smtp-Source: ABdhPJxT5qPAIbm1qgXtPVPheNjTZKKkLv40FWzMiN3kp3/undmUD9x/+kVvcAWGPzLq3EQYRUf/rQj857xhMZaqLNE=
-X-Received: by 2002:adf:a345:: with SMTP id d5mr562792wrb.55.1603775452893;
- Mon, 26 Oct 2020 22:10:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V6b7HwvvFZ2s1xYsjf24gbEkjeQ0R1jZb5gJGqmof84=;
+        b=JUv4B7shyAacOnifvW/OsjcrsKyX5p9SbdW70EyrweELHAa0iZB3XyHnpSR7sVjacm
+         nf1F8qZ/A1Xawnp0kKbt5Nk47TjmOXsPjzicxP+GO1bLvKBX8DiBExz98wy3TqaIet8u
+         8JizuSL/Y+fXnFKDU+3lAkn6ritJjSI+UBRWrVpesH5y7vqkhurxZEycqU8N4+AdVy4P
+         8A3AJIyMdOLO3YoOi8GgITTzMNH1Yta8vCNHRqjfhInp8tWcS64/S7HlFU4UbdRrYHRz
+         Aw3R+uSqo8Za/K4MSu0BJgsRpgKxYYI+9ih1XAFuufQ2mz6efxiP1aIOKoCIHlb/FutK
+         40Ag==
+X-Gm-Message-State: AOAM530Bgvgs4YydoSp2O5ekUTGqChbDOqXhFGy6U3Xlc1gGN68PWRRA
+        MR6sq0sWztnfsrhSEuRCKdY6oKNYET1yIsk6
+X-Google-Smtp-Source: ABdhPJwI7iAg84+0QDG22suSqnWNw8moOpZOVmTy5bWa+NEsj3D7XxDRHLUnPHTYynMmO4JLGk72yg==
+X-Received: by 2002:a63:af08:: with SMTP id w8mr411863pge.419.1603775651104;
+        Mon, 26 Oct 2020 22:14:11 -0700 (PDT)
+Received: from [192.168.86.81] ([106.51.240.100])
+        by smtp.gmail.com with ESMTPSA id 78sm512426pfz.211.2020.10.26.22.14.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 22:14:10 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+References: <20201026183523.82749-1-98.arpi@gmail.com>
+ <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <f25c881d-03f9-e246-d8d4-e985d9662d04@gmail.com>
+Date:   Tue, 27 Oct 2020 10:44:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201026132034.80464-1-sivanichkin@yandex-team.ru>
-In-Reply-To: <20201026132034.80464-1-sivanichkin@yandex-team.ru>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Tue, 27 Oct 2020 14:10:42 +0900
-Message-ID: <CAM9d7chkb_ramqnS_0LSbtY-gya3XAyHao2+bNjE=T3YJDTptg@mail.gmail.com>
-Subject: Re: [PATCH v2] perf trace: Segfault when trying to trace events by cgroup
-To:     Stanislav Ivanichkin <sivanichkin@yandex-team.ru>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 27/10/20 4:44 am, Marco Elver wrote:
+> On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>>
+>> Implementation of support for parameterized testing in KUnit.
+>> This approach requires the creation of a test case using the
+>> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+>> This generator function should return the next parameter given the
+>> previous parameter in parameterized tests. It also provides
+>> a macro to generate common-case generators.
+>>
+>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+>> Co-developed-by: Marco Elver <elver@google.com>
+>> Signed-off-by: Marco Elver <elver@google.com>
+>> ---
+>> Changes v2->v3:
+>> - Modifictaion of generator macro and method
+> 
+> Great to see it worked as expected!
+> 
+>> Changes v1->v2:
+>> - Use of a generator method to access test case parameters
+>>
+>>  include/kunit/test.h | 32 ++++++++++++++++++++++++++++++++
+>>  lib/kunit/test.c     | 20 +++++++++++++++++++-
+>>  2 files changed, 51 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/kunit/test.h b/include/kunit/test.h
+>> index a423fffefea0..16bf9f334e2c 100644
+>> --- a/include/kunit/test.h
+>> +++ b/include/kunit/test.h
+>> @@ -142,6 +142,12 @@ struct kunit_case {
+>>         void (*run_case)(struct kunit *test);
+>>         const char *name;
+>>
+>> +       /*
+>> +        * Pointer to test parameter generator function.
+>> +        * Used only for parameterized tests.
+> 
+> What I meant was to give a description of the protocol, so that if
+> somebody wanted, they could (without reading the implementation)
+> implement their own custom generator without the helper macro.
+> 
+> E.g. something like: "The generator function is used to lazily
+> generate a series of arbitrarily typed values that fit into a void*.
+> The argument @prev is the previously returned value, which should be
+> used to derive the next value; @prev is set to NULL on the initial
+> generator call. When no more values are available, the generator must
+> return NULL."
+>
 
-On Mon, Oct 26, 2020 at 10:21 PM Stanislav Ivanichkin
-<sivanichkin@yandex-team.ru> wrote:
+Oh okay. I am not sure if this is the best place to add documentation for this.
+ 
+>> +        */
+>> +       void* (*generate_params)(void *prev);
+>> +
+>>         /* private: internal use only. */
+>>         bool success;
+>>         char *log;
+>> @@ -162,6 +168,9 @@ static inline char *kunit_status_to_string(bool status)
+>>   * &struct kunit_case for an example on how to use it.
+>>   */
+>>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+>> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
+>> +               { .run_case = test_name, .name = #test_name,    \
+>> +                 .generate_params = gen_params }
+>>
+>>  /**
+>>   * struct kunit_suite - describes a related collection of &struct kunit_case
+>> @@ -208,6 +217,15 @@ struct kunit {
+>>         const char *name; /* Read only after initialization! */
+>>         char *log; /* Points at case log after initialization */
+>>         struct kunit_try_catch try_catch;
+>> +       /* param_values points to test case parameters in parameterized tests */
+>> +       void *param_values;
+>> +       /*
+>> +        * current_param stores the index of the parameter in
+>> +        * the array of parameters in parameterized tests.
+>> +        * current_param + 1 is printed to indicate the parameter
+>> +        * that causes the test to fail in case of test failure.
+>> +        */
+>> +       int current_param;
+>>         /*
+>>          * success starts as true, and may only be set to false during a
+>>          * test case; thus, it is safe to update this across multiple
+>> @@ -1742,4 +1760,18 @@ do {                                                                            \
+>>                                                 fmt,                           \
+>>                                                 ##__VA_ARGS__)
+>>
+>> +/**
+>> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
+>> + *                          required in parameterized tests.
+> 
+> This is only for arrays, which is why I suggested KUNIT_ARRAY_PARAM()
+> as the name.
+> 
+> A generator can very well be implemented without an array, so this
+> macro name is confusing. In future somebody might want to provide a
+> macro that takes a start + end value (and maybe a step value) to
+> generate a series of values. That generator could be named
+> KUNIT_RANGE_PARAM(name, start, end, step) and gives us a generator
+> that is also named name##_gen_params. (If you want to try implementing
+> that macro, I'd suggest doing it as a separate patch.)
+> 
+> And I don't think we need to put "GENERATOR" into the name of these
+> macros, because the generators are now the fundamental method with
+> which to get parameterized tests. We don't need to state the obvious,
+> in favor of some brevity.
 >
->   v2:
->     - struct declaration fixed (Namhyung Kim)
->
-> Fixes: 9ea42ba4411ac ("perf trace: Support setting cgroups as targets")
-> Signed-off-by: Stanislav Ivanichkin <sivanichkin@yandex-team.ru>
 
-Looks ok but you'd better add the commit description in v1.
+Okay, makes sense. I will change it to KUNIT_ARRAY_PARAM() for the next version.
+ 
+>> + * @name:  prefix of the name for the test parameter generator function.
+>> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
+>> + * @array: a user-supplied pointer to an array of test parameters.
+>> + */
+>> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
+>> +       static void *name##_gen_params(void *prev)                                              \
+>> +       {                                                                                       \
+>> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+>> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+>> +       }
+>> +
+>>  #endif /* _KUNIT_TEST_H */
+> 
+> Thanks,
+> -- Marco
+> 
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks
-Namhyung
-
-> ---
->  tools/perf/builtin-trace.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 44a75f234db1..de80534473af 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -4639,9 +4639,9 @@ static int trace__parse_events_option(const struct option *opt, const char *str,
->         err = 0;
->
->         if (lists[0]) {
-> -               struct option o = OPT_CALLBACK('e', "event", &trace->evlist, "event",
-> -                                              "event selector. use 'perf list' to list available events",
-> -                                              parse_events_option);
-> +               struct option o = {
-> +                       .value = &trace->evlist,
-> +               };
->                 err = parse_events_option(&o, lists[0], 0);
->         }
->  out:
-> @@ -4655,9 +4655,12 @@ static int trace__parse_cgroups(const struct option *opt, const char *str, int u
->  {
->         struct trace *trace = opt->value;
->
-> -       if (!list_empty(&trace->evlist->core.entries))
-> -               return parse_cgroups(opt, str, unset);
-> -
-> +       if (!list_empty(&trace->evlist->core.entries)) {
-> +               struct option o = {
-> +                       .value = &trace->evlist,
-> +               };
-> +               return parse_cgroups(&o, str, unset);
-> +       }
->         trace->cgroup = evlist__findnew_cgroup(trace->evlist, str);
->
->         return 0;
-> --
-> 2.17.1
->
+Thanks!
