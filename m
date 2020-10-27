@@ -2,186 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4617329A519
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE1829A518
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389088AbgJ0G7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:59:36 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:39851 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729477AbgJ0G7f (ORCPT
+        id S1732557AbgJ0G7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:59:34 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42218 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728363AbgJ0G7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:59:35 -0400
-Received: by mail-yb1-f194.google.com with SMTP id 67so360081ybt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:59:34 -0700 (PDT)
+        Tue, 27 Oct 2020 02:59:32 -0400
+Received: by mail-wr1-f67.google.com with SMTP id j7so576434wrt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:59:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/MJ+UTfnuNYWSl6F6YSIZ4D2DyAhRF8y858D6tasEvw=;
-        b=Ojl6JlAN3zbm1LbCOHvpxKHmr3L5vs2pku5A2tc4RvlhiU4fWtenEdLlujKmeaGUC7
-         aqlL3W3bCv/Dt56pp+AZ5AHOyb7JkxXmw6wbM1XwxiZgb/6/C2gsf5XhDEdQuyGMHu1u
-         vhfblhEok3wrb0k+5LrnzzO5GPKgypY8HiDrJaGyWfMz3TY5NFWjIWSp3eUOIS2NoSCI
-         TyVuaIjNkYUNTkRvu0tIoctrY2MqgImQWSBodF8ZPCITXRf2L+EUXZQ05EdgP43jUAUM
-         1KmSuO3DQjCsHBlYwfkzB2mWMxmkgeFELaBURyuXFadqBG0mtb3jPz+KAzp/EriNXiEE
-         Pnmg==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=4PeQAWWuYS/MWPTCKu5ob6YvoGvcUynBjWkXWMhZ0tk=;
+        b=NEcAMFs3LjVruiLrzO7+Swoi0lYGzf32SOfQAjvtnZiMLBvEytWuPeNFevkUZm5Hzp
+         12iy17q1gHPdwoh5Ygxl3H1991m0eRoYg1K5vVtt+62Fg/WVC5sruKV7dbt0G/0B5lDL
+         h4hRPgD5Ki8ohwCcTTF50WXlheWTUNOJnlO5zW2tyNyWJ1zDxcFcM3AXKVyRA6uRhCe9
+         2YeIy1GLI+Uktk7DzwmanN9CwEycEPp5Lz6PVuWpMT1y0e/h+qPJFeB1wfZRhDMfGDyg
+         Ot4tm964EQN+zYXAkmQrba1C4579UvgTuaEgk7hSZJWIwPpMXanCgKTBas1MS6mtAXWT
+         BiZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/MJ+UTfnuNYWSl6F6YSIZ4D2DyAhRF8y858D6tasEvw=;
-        b=NayJy2ls+YCyo2IZfY3T/ENOKeITz6m6bTEPcuxPpJ4cSy2qIsbZU3Kk/muYYXhHRX
-         aJlVZP5+A2cfG9WU74EkU+pEtfBtrDEXpapaLDySHWk3dx7BvYbr7KinvHLdnxUgNTmf
-         wPkRa7YxVwlyIuJbFZhKPTbpS25tTF9CPpGoc5NVnNEh8S8MqsWB/H4V3IMy+TjuLU+h
-         A9Ue5Jdmhs16yIVZrbghgi8PwxaneI9G+nJPF0J/RHUEqzhF1JxWsEFA+F4/M0dnHgoP
-         oPgZ3n2H2SvS7NmqYEp0wGH0FIbBn1/NSd7aZzxvq1RcLJabMGJxotckJMxLPfpc6yLS
-         Awng==
-X-Gm-Message-State: AOAM530VeAD55jl/wl6Dp4/nU4g8LVbfvZds/cFqUgNRKIZFAj6W9jJ3
-        j6cSVl2ROwBNYXXyXUB7SqYlNsy3L6pv+zQJ+FYDuQ==
-X-Google-Smtp-Source: ABdhPJz+9qYgc6z6pEq4anawMnwD8UgeJFA5p9U95SlGuQbt5EuEgoDjkIODeWkTxrO6zuIhQ9mwwY+zQLKSY3uumOg=
-X-Received: by 2002:a25:6609:: with SMTP id a9mr1102464ybc.375.1603781973236;
- Mon, 26 Oct 2020 23:59:33 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=4PeQAWWuYS/MWPTCKu5ob6YvoGvcUynBjWkXWMhZ0tk=;
+        b=rJW7d2rCxJTRr7ysQJq/BfoevuaKGYiPv3xa7OzH7aL1ZY3ha4bI6d3494xEpgyxya
+         gmfftdzUpH/wBfUcdJeOzE/Ft1JVNsfJG0kfxPRjztoaoXf+sJVF0qML3Nxkuaw+g/e9
+         x4YnG5AxvP2E5niibAgnFWca8HEsZZyySxsih23DWQerw6IwIdvbhZKgAjXCvYrQA/Ao
+         HdLq22zGEdj6q9nrnJefA5xKVLwvnfzIqrF3xz+JcP0JynKsmhMlAIt/xKxewyxUUwIb
+         oreDf80rx29pfrOj3UVNPncAU32yhTD/Eu3uI2+/3/sPa3+1aBaQ79jXgzDOEU6eCduw
+         d9rA==
+X-Gm-Message-State: AOAM533IQIjdS+rQkE+kDLa6xKrz0eb4P/gk8WzrwEpJ0/1UKHGojuU3
+        7I3zaMaOklXZAxlQQ/y5GvY=
+X-Google-Smtp-Source: ABdhPJzjHfJDiU3WRlDEBebIz0QIgO3wqfbs8a8otS0qP3GMNSZEpl6e14NsjjKMOOT7IX+xAQNgIg==
+X-Received: by 2002:adf:edcf:: with SMTP id v15mr884929wro.291.1603781969711;
+        Mon, 26 Oct 2020 23:59:29 -0700 (PDT)
+Received: from felia ([2001:16b8:2de9:3700:3160:107b:5425:634f])
+        by smtp.gmail.com with ESMTPSA id j5sm757252wrx.88.2020.10.26.23.59.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 23:59:29 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 27 Oct 2020 07:59:27 +0100 (CET)
+X-X-Sender: lukas@felia
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+cc:     John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [linux-safety] [PATCH] misc: hisi_hikey_usb: use
+ PTR_ERR_OR_ZERO
+In-Reply-To: <20201026180026.3350-1-sudipm.mukherjee@gmail.com>
+Message-ID: <alpine.DEB.2.21.2010270636470.7937@felia>
+References: <20201026180026.3350-1-sudipm.mukherjee@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201026130450.6947-1-gilad@benyossef.com> <20201026130450.6947-4-gilad@benyossef.com>
- <20201026175231.GG858@sol.localdomain> <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
- <20201026183936.GJ858@sol.localdomain> <fd5e46ce-a4bf-8025-05ea-e20d35485446@gmail.com>
-In-Reply-To: <fd5e46ce-a4bf-8025-05ea-e20d35485446@gmail.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Tue, 27 Oct 2020 08:59:27 +0200
-Message-ID: <CAOtvUMdatUOnffg90aEGanD0y1LtKc7EeKQ=E+N+W-wpo8Zo3A@mail.gmail.com>
-Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-raid@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 9:04 PM Milan Broz <gmazyland@gmail.com> wrote:
->
->
->
-> On 26/10/2020 19:39, Eric Biggers wrote:
-> > On Mon, Oct 26, 2020 at 07:29:57PM +0100, Milan Broz wrote:
-> >> On 26/10/2020 18:52, Eric Biggers wrote:
-> >>> On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
-> >>>> Replace the explicit EBOIV handling in the dm-crypt driver with call=
-s
-> >>>> into the crypto API, which now possesses the capability to perform
-> >>>> this processing within the crypto subsystem.
-> >>>>
-> >>>> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> >>>>
-> >>>> ---
-> >>>>  drivers/md/Kconfig    |  1 +
-> >>>>  drivers/md/dm-crypt.c | 61 ++++++++++++++--------------------------=
----
-> >>>>  2 files changed, 20 insertions(+), 42 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-> >>>> index 30ba3573626c..ca6e56a72281 100644
-> >>>> --- a/drivers/md/Kconfig
-> >>>> +++ b/drivers/md/Kconfig
-> >>>> @@ -273,6 +273,7 @@ config DM_CRYPT
-> >>>>    select CRYPTO
-> >>>>    select CRYPTO_CBC
-> >>>>    select CRYPTO_ESSIV
-> >>>> +  select CRYPTO_EBOIV
-> >>>>    help
-> >>>>      This device-mapper target allows you to create a device that
-> >>>>      transparently encrypts the data on it. You'll need to activate
-> >>>
-> >>> Can CRYPTO_EBOIV please not be selected by default?  If someone reall=
-y wants
-> >>> Bitlocker compatibility support, they can select this option themselv=
-es.
-> >>
-> >> Please no! Until this move of IV to crypto API, we can rely on
-> >> support in dm-crypt (if it is not supported, it is just a very old ker=
-nel).
-> >> (Actually, this was the first thing I checked in this patchset - if it=
- is
-> >> unconditionally enabled for compatibility once dmcrypt is selected.)
-> >>
-> >> People already use removable devices with BitLocker.
-> >> It was the whole point that it works out-of-the-box without enabling a=
-nything.
-> >>
-> >> If you insist on this to be optional, please better keep this IV insid=
-e dmcrypt.
-> >> (EBOIV has no other use than for disk encryption anyway.)
-> >>
-> >> Or maybe another option would be to introduce option under dm-crypt Kc=
-onfig that
-> >> defaults to enabled (like support for foreign/legacy disk encryption s=
-chemes) and that
-> >> selects these IVs/modes.
-> >> But requiring some random switch in crypto API will only confuse users=
-.
-> >
-> > CONFIG_DM_CRYPT can either select every weird combination of algorithms=
- anyone
-> > can ever be using, or it can select some defaults and require any other=
- needed
-> > algorithms to be explicitly selected.
-> >
-> > In reality, dm-crypt has never even selected any particular block ciphe=
-rs, even
-> > AES.  Nor has it ever selected XTS.  So it's actually always made users=
- (or
-> > kernel distributors) explicitly select algorithms.  Why the Bitlocker s=
-upport
-> > suddenly different?
-> >
-> > I'd think a lot of dm-crypt users don't want to bloat their kernels wit=
-h random
-> > legacy algorithms.
->
-> Yes, but IV is in reality not a cryptographic algorithm, it is kind-of a =
-configuration
-> "option" of sector encryption mode here.
->
-> We had all of disk-IV inside dmcrypt before - but once it is partially mo=
-ved into crypto API
-> (ESSIV, EBOIV for now), it becomes much more complicated for user to sele=
-ct what he needs.
->
-> I think we have no way to check that IV is available from userspace - it
-> will report the same error as if block cipher is not available, not helpi=
-ng user much
-> with the error.
->
-> But then I also think we should add abstract dm-crypt options here (Legac=
-y TrueCrypt modes,
-> Bitlocker modes) that will select these crypto API configuration switches=
-.
-> Otherwise it will be only a complicated matrix of crypto API options...
 
-hm... just thinking out loud, but maybe the right say to go is to not
-have a build dependency,
-but add some user assistance code in cryptosetup that parses
-/proc/crypto after failures to
-try and suggest the user with a way forward?
 
-e.g. if eboiv mapping initiation fails, scan /proc/crypto and either
-warn of a lack of AES
-or, assuming some instance of AES is found, warn of lack of EBOIV.
-It's a little messy
-and heuristic code for sure, but it lives in a user space utility.
+On Mon, 26 Oct 2020, Sudip Mukherjee wrote:
 
-Does that sound sane?
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
+> Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
+> we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
+> doing 'return 0'.
+> 
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-values of =CE=B2 will give rise to dom!
+A nice small local clean up.
+
+Here is my test report:
+
+Build requires HISI_HIKEY_USB in config:
+
+Symbol: HISI_HIKEY_USB [=n]
+Type: tristate
+Defined at drivers/misc/Kconfig:459
+Prompt: USB GPIO Hub on HiSilicon Hikey 960/970 Platform
+Depends on: (OF [=n] && GPIOLIB [=n] || COMPILE_TEST [=n]) && 
+USB_ROLE_SWITCH [=n]
+
+Build Preparation:
+
+make defconfig
+./scripts/config -e CONFIG_OF
+./scripts/config -e CONFIG_GPIOLIB
+./scripts/config -e CONFIG_USB_ROLE_SWITCH
+./scripts/config -e CONFIG_HISI_HIKEY_USB
+make olddefconfig
+
+Build on next-20201027:
+
+make
+md5sum ./drivers/misc/hisi_hikey_usb.o
+770db9ff0c1ca193eda2207a28deee4a  ./drivers/misc/hisi_hikey_usb.o
+objdump -d ./drivers/misc/hisi_hikey_usb.o > hisi_hikey_usb.next-20201027.objdump
+
+Build with patch on next-20201027:
+
+make clean && make
+md5sum ./drivers/misc/hisi_hikey_usb.o
+770db9ff0c1ca193eda2207a28deee4a  ./drivers/misc/hisi_hikey_usb.o
+
+objdump -d ./drivers/misc/hisi_hikey_usb.o > hisi_hikey_usb.cleanup-on-next-20201027.objdump
+
+Compare objdump:
+
+diff hisi_hikey_usb.next-20201027.objdump hisi_hikey_usb.cleanup-on-next-20201027.objdump
+
+Summary:
+
+'{md5sum,objdump -d} ./drivers/misc/hisi_hikey_usb.o' are identical before 
+and after patch.
+
+So, no functional change and no change in object code.
+
+Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+> ---
+>  drivers/misc/hisi_hikey_usb.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
+> index cc93569e601c..989d7d129469 100644
+> --- a/drivers/misc/hisi_hikey_usb.c
+> +++ b/drivers/misc/hisi_hikey_usb.c
+> @@ -168,10 +168,7 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
+>  
+>  	hisi_hikey_usb->reset = devm_gpiod_get(&pdev->dev, "hub_reset_en_gpio",
+>  					       GPIOD_OUT_HIGH);
+> -	if (IS_ERR(hisi_hikey_usb->reset))
+> -		return PTR_ERR(hisi_hikey_usb->reset);
+> -
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(hisi_hikey_usb->reset);
+>  }
+>  
+>  static int hisi_hikey_usb_probe(struct platform_device *pdev)
+> -- 
+> 2.11.0
+> 
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Links: You receive all messages sent to this group.
+> View/Reply Online (#121): https://lists.elisa.tech/g/linux-safety/message/121
+> Mute This Topic: https://lists.elisa.tech/mt/77821561/1714638
+> Group Owner: linux-safety+owner@lists.elisa.tech
+> Unsubscribe: https://lists.elisa.tech/g/linux-safety/unsub [lukas.bulwahn@gmail.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
+> 
