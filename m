@@ -2,159 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A9729C3E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0A929C393
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1822655AbgJ0RvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:51:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36330 "EHLO mx2.suse.de"
+        id S1822248AbgJ0Rsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:48:32 -0400
+Received: from mga18.intel.com ([134.134.136.126]:19011 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758826AbgJ0OY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603808664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dh400AmMWhdT5aKGDEMZPYxxGjnk2HQbvNEdt3V19ms=;
-        b=iGB/oWskOu+jKNyUXXx3Wuks/HUD4cWzEj/meRX/LCAdSKSZVyHw1V9uJrQw6wyNqjQcIX
-        AUe3fX4Wminh/LyFNalSpCEO528lsxt0h7tjeHY+mot7idqA1umaZ6OZJotXrI+JQFDhH1
-        AnLSY8+Ouv5napFtDrFg5x1JN53C6MA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 66F68AD18;
-        Tue, 27 Oct 2020 14:24:24 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 15:24:21 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/slub: fix panic in slab_alloc_node()
-Message-ID: <20201027142421.GW20500@dhcp22.suse.cz>
-References: <20201027140926.276-1-ldufour@linux.ibm.com>
+        id S2901794AbgJ0O0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:26:30 -0400
+IronPort-SDR: xROMfIoEN3JqlZOamORHsl4Q+/s2fTCvl5l81KLDb6l/QavCLZK7vHtyePY0TCRwkilxTGsftr
+ +pzKX9dfm76A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="155867380"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="155867380"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:26:28 -0700
+IronPort-SDR: 3VNI4NRSBDWHp8nQBfs/B/8vJs2jkonqlfs51gP36eNdtj4GgHKhavP7gY55qKOaYs5zeu0n6W
+ +n+P7cASaUiw==
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="535814770"
+Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.194]) ([10.249.227.194])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:26:25 -0700
+Subject: Re: [PATCH v2 00/15] Introduce threaded trace streaming for basic
+ perf record operation
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <20201024154309.GA2589351@krava>
+ <01bad2c4-4188-f5f5-452e-a0ea0672a187@linux.intel.com>
+ <20201027121013.GE2900849@krava>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <6c75bf86-5f41-49dc-bbeb-20502ecba62a@linux.intel.com>
+Date:   Tue, 27 Oct 2020 17:26:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027140926.276-1-ldufour@linux.ibm.com>
+In-Reply-To: <20201027121013.GE2900849@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc Vlastimil]
 
-On Tue 27-10-20 15:09:26, Laurent Dufour wrote:
-> While doing memory hot-unplug operation on a PowerPC VM running 1024 CPUs
-> with 11TB of ram, I hit the following panic:
+On 27.10.2020 15:10, Jiri Olsa wrote:
+> On Mon, Oct 26, 2020 at 08:59:01PM +0300, Alexey Budankov wrote:
+>>
+>> On 24.10.2020 18:43, Jiri Olsa wrote:
+>>> On Wed, Oct 21, 2020 at 06:52:43PM +0300, Alexey Budankov wrote:
+>>>>
+>>>> Changes in v2:
+>>>> - explicitly added credit tags to patches 6/15 and 15/15,
+>>>>   additionally to cites [1], [2]
+>>>> - updated description of 3/15 to explicitly mention the reason
+>>>>   to open data directories in read access mode (e.g. for perf report)
+>>>> - implemented fix for compilation error of 2/15
+>>>> - explicitly elaborated on found issues to be resolved for
+>>>>   threaded AUX trace capture
+>>>>
+>>>> v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
+>>>>
+>>>> Patch set provides threaded trace streaming for base perf record
+>>>> operation. Provided streaming mode (--threads) mitigates profiling
+>>>> data losses and resolves scalability issues of serial and asynchronous
+>>>> (--aio) trace streaming modes on multicore server systems. The patch
+>>>> set is based on the prototype [1], [2] and the most closely relates
+>>>> to mode 3) "mode that creates thread for every monitored memory map".
+>>>
+>>> so what I liked about the previous code was that you could
+>>> configure how the threads would be created
+>>>
+>>> default --threads options created thread for each cpu like
+>>> in your change:
+>>>
+>>>   $ perf record -v --threads ...
+>>>   ...
+>>>   thread 0 monitor: 0 allowed: 0
+>>>   thread 1 monitor: 1 allowed: 1
+>>>   thread 2 monitor: 2 allowed: 2
+>>>   thread 3 monitor: 3 allowed: 3
+>>>   thread 4 monitor: 4 allowed: 4
+>>>   thread 5 monitor: 5 allowed: 5
+>>>   thread 6 monitor: 6 allowed: 6
+>>>   thread 7 monitor: 7 allowed: 7
+>>
+>> Yes, it is configurable in the prototype. Even though this patch set
+>> doesn't implement that parameters for --thread option, just because
+>> VTune doesn't have use cases for that yet, it has still been designed
+>> and implemented with that possible extension in mind so it could then
+>> be easily added on top of it.
 > 
-> BUG: Kernel NULL pointer dereference on read at 0x00000007
-> Faulting instruction address: 0xc000000000456048
-> Oops: Kernel access of bad area, sig: 11 [#2]
-> LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-> Modules linked in: rpadlpar_io rpaphp
-> CPU: 160 PID: 1 Comm: systemd Tainted: G      D           5.9.0 #1
-> NIP:  c000000000456048 LR: c000000000455fd4 CTR: c00000000047b350
-> REGS: c00006028d1b77a0 TRAP: 0300   Tainted: G      D            (5.9.0)
-> MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 24004228  XER: 00000000
-> CFAR: c00000000000f1b0 DAR: 0000000000000007 DSISR: 40000000 IRQMASK: 0
-> GPR00: c000000000455fd4 c00006028d1b7a30 c000000001bec800 0000000000000000
-> GPR04: 0000000000000dc0 0000000000000000 00000000000374ef c00007c53df99320
-> GPR08: 000007c53c980000 0000000000000000 000007c53c980000 0000000000000000
-> GPR12: 0000000000004400 c00000001e8e4400 0000000000000000 0000000000000f6a
-> GPR16: 0000000000000000 c000000001c25930 c000000001d62528 00000000000000c1
-> GPR20: c000000001d62538 c00006be469e9000 0000000fffffffe0 c0000000003c0ff8
-> GPR24: 0000000000000018 0000000000000000 0000000000000dc0 0000000000000000
-> GPR28: c00007c513755700 c000000001c236a4 c00007bc4001f800 0000000000000001
-> NIP [c000000000456048] __kmalloc_node+0x108/0x790
-> LR [c000000000455fd4] __kmalloc_node+0x94/0x790
-> Call Trace:
-> [c00006028d1b7a30] [c00007c51af92000] 0xc00007c51af92000 (unreliable)
-> [c00006028d1b7aa0] [c0000000003c0ff8] kvmalloc_node+0x58/0x110
-> [c00006028d1b7ae0] [c00000000047b45c] mem_cgroup_css_online+0x10c/0x270
-> [c00006028d1b7b30] [c000000000241fd8] online_css+0x48/0xd0
-> [c00006028d1b7b60] [c00000000024af14] cgroup_apply_control_enable+0x2c4/0x470
-> [c00006028d1b7c40] [c00000000024e838] cgroup_mkdir+0x408/0x5f0
-> [c00006028d1b7cb0] [c0000000005a4ef0] kernfs_iop_mkdir+0x90/0x100
-> [c00006028d1b7cf0] [c0000000004b8168] vfs_mkdir+0x138/0x250
-> [c00006028d1b7d40] [c0000000004baf04] do_mkdirat+0x154/0x1c0
-> [c00006028d1b7dc0] [c000000000032b38] system_call_exception+0xf8/0x200
-> [c00006028d1b7e20] [c00000000000c740] system_call_common+0xf0/0x27c
-> Instruction dump:
-> e93e0000 e90d0030 39290008 7cc9402a e94d0030 e93e0000 7ce95214 7f89502a
-> 2fbc0000 419e0018 41920230 e9270010 <89290007> 7f994800 419e0220 7ee6bb78
-> 
-> This pointing to the following code:
-> 
-> mm/slub.c:2851
->         if (unlikely(!object || !node_match(page, node))) {
-> c000000000456038:       00 00 bc 2f     cmpdi   cr7,r28,0
-> c00000000045603c:       18 00 9e 41     beq     cr7,c000000000456054 <__kmalloc_node+0x114>
-> node_match():
-> mm/slub.c:2491
->         if (node != NUMA_NO_NODE && page_to_nid(page) != node)
-> c000000000456040:       30 02 92 41     beq     cr4,c000000000456270 <__kmalloc_node+0x330>
-> page_to_nid():
-> include/linux/mm.h:1294
-> c000000000456044:       10 00 27 e9     ld      r9,16(r7)
-> c000000000456048:       07 00 29 89     lbz     r9,7(r9)	<<<< r9 = NULL
-> node_match():
-> mm/slub.c:2491
-> c00000000045604c:       00 48 99 7f     cmpw    cr7,r25,r9
-> c000000000456050:       20 02 9e 41     beq     cr7,c000000000456270 <__kmalloc_node+0x330>
-> 
-> The panic occurred in slab_alloc_node() when checking for the page's node:
-> 	object = c->freelist;
-> 	page = c->page;
-> 	if (unlikely(!object || !node_match(page, node))) {
-> 		object = __slab_alloc(s, gfpflags, node, addr, c);
-> 		stat(s, ALLOC_SLOWPATH);
-> 
-> The issue is that object is not NULL while page is NULL which is odd but
-> may happen if the cache flush happened after loading object but before
-> loading page. Thus checking for the page pointer is required too.
+> I'm not sure about vtune extensions, but if we are going to
+> have --threads option I believe we should make it configurable
+> at least to the extend descibed below
 
-Could you be more specific? I am especially confused how the memory
-hotplug is involved here. What kind of flush are we talking about?
+vtune employs --threads mode only and there are no use cases
+observed so far beyond this mode. Do you have such use cases?
 
-> In commit 6159d0f5c03e ("mm/slub.c: page is always non-NULL in
-> node_match()") check on the page pointer has been removed assuming that
-> page is always valid when it is called. It happens that this is not true in
-> that particular case, so check for page before calling node_match() here.
-> 
-> Fixes: 6159d0f5c03e ("mm/slub.c: page is always non-NULL in node_match()")
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> Cc: Christoph Lameter <cl@linux.com>
-> Cc: Pekka Enberg <penberg@kernel.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: stable@vger.kernel.org
-> ---
->  mm/slub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 8f66de8a5ab3..7dc5c6aaf4b7 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2852,7 +2852,7 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
->  
->  	object = c->freelist;
->  	page = c->page;
-> -	if (unlikely(!object || !node_match(page, node))) {
-> +	if (unlikely(!object || !page || !node_match(page, node))) {
->  		object = __slab_alloc(s, gfpflags, node, addr, c);
->  	} else {
->  		void *next_object = get_freepointer_safe(s, object);
-> -- 
-> 2.29.1
-> 
+Alexei
 
--- 
-Michal Hocko
-SUSE Labs
+> 
+> jirka
+> 
+>>
+>>>
+>>>
+>>> then numa based:
+>>>
+>>>   $ perf record -v --threads=numa ...
+>>>   ...
+>>>   thread 0 monitor: 0-5,12-17 allowed: 0-5,12-17
+>>>   thread 1 monitor: 6-11,18-23 allowed: 6-11,18-23
+>>>
+>>>
+>>> socket based:
+>>>
+>>>   $ perf record -v --threads=socket ...
+>>>   ...
+>>>   thread 0 monitor: 0-7 allowed: 0-7
+>>>
+>>>
+>>> core based:
+>>>
+>>>   $ perf record -v --threads=core ...
+>>>   ...
+>>>   thread 0 monitor: 0,4 allowed: 0,4
+>>>   thread 1 monitor: 1,5 allowed: 1,5
+>>>   thread 2 monitor: 2,6 allowed: 2,6
+>>>   thread 3 monitor: 3,7 allowed: 3,7
+>>>
+>>>
+>>> and user configurable:
+>>>
+>>>   $ perf record -v  --threads=0-3/0:4-7/4 ...
+>>>   ...
+>>>   threads: 0. monitor 0-3, allowed 0
+>>>   threads: 1. monitor 4-7, allowed 4
+>>>
+>>>
+>>> so this way you could easily pin threads to cpu/core/socket/numa,
+>>> or to some other cpu of your choice, because this will be always
+>>> game of try and check where I'm not getting LOST events and not
+>>> creating 1000 threads
+>>>
+>>>  perf record: Add support for threads numa option value
+>>>  perf record: Add support for threads socket option value
+>>>  perf record: Add support for threads core option value
+>>>  perf record: Add support for threads user option value
+>>
+>> Makes sense.
+>>
+>> Alexei
+>>
+> 
