@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4400D29C0E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2880429C0EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368607AbgJ0Oy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50088 "EHLO mail.kernel.org"
+        id S1780819AbgJ0OzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772409AbgJ0OuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:17 -0400
+        id S1772437AbgJ0OuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:50:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C03820709;
-        Tue, 27 Oct 2020 14:50:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19310207DE;
+        Tue, 27 Oct 2020 14:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810215;
-        bh=27YXBEPib8thCXvnUB4KeK4jB8iPrPfLeDNa/tQu+lQ=;
+        s=default; t=1603810218;
+        bh=r0Kd9LdRGLX1hEVXAH6dDtEBZdTcwVQLImYqqGjor1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yph75QYXIyJMn670zQ3PjeQLjqCDzCgFfJo1u4uYuKJ9rOVCNnauQb9cyVstSmjRv
-         3sQKVpUEqFywYsAzxKUjWpL6oaJMJlDIRCIX4EsHyK2c8OJEbYnjGiXCk9nNos3nv/
-         vsZ65Np1TJFwb6OeERvIZoBvsPHP2Lc+6LmlAy+c=
+        b=HHqxUvsuX3DvPaSTnP0fxDIqDkwKbeHLRllAf3Xma5QkjYKg8udQyigw78IKqwahc
+         OMdYMOoK1EmeWiTD05aUEMcMmlkFW71p4slarXIZzgRqipO8N35dIDDuoe4IlR2slb
+         G+I3eWQOjwJzre3vwGSF1QabE3GvyoYtC8vcGLdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
-        Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.8 061/633] ALSA: hda/realtek: Enable audio jacks of ASUS D700SA with ALC887
-Date:   Tue, 27 Oct 2020 14:46:44 +0100
-Message-Id: <20201027135525.557962198@linuxfoundation.org>
+        stable@vger.kernel.org, Dominik Maier <dmaier@sect.tu-berlin.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.8 062/633] cifs: remove bogus debug code
+Date:   Tue, 27 Oct 2020 14:46:45 +0100
+Message-Id: <20201027135525.601645925@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,99 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian-Hong Pan <jhp@endlessos.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit ca184355db8e60290fa34bf61c13308e6f4f50d3 upstream.
+commit d367cb960ce88914898cbfa43645c2e43ede9465 upstream.
 
-The ASUS D700SA desktop's audio (1043:2390) with ALC887 cannot detect
-the headset microphone and another headphone jack until
-ALC887_FIXUP_ASUS_HMIC and ALC887_FIXUP_ASUS_AUDIO quirks are applied.
-The NID 0x15 maps as the headset microphone and NID 0x19 maps as another
-headphone jack. Also need the function like alc887_fixup_asus_jack to
-enable the audio jacks.
+The "end" pointer is either NULL or it points to the next byte to parse.
+If there isn't a next byte then dereferencing "end" is an off-by-one out
+of bounds error.  And, of course, if it's NULL that leads to an Oops.
+Printing "*end" doesn't seem very useful so let's delete this code.
 
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201007052224.22611-1-jhp@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Also for the last debug statement, I noticed that it should be printing
+"sequence_end" instead of "end" so fix that as well.
+
+Reported-by: Dominik Maier <dmaier@sect.tu-berlin.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |   42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ fs/cifs/asn1.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1922,6 +1922,8 @@ enum {
- 	ALC1220_FIXUP_CLEVO_P950,
- 	ALC1220_FIXUP_CLEVO_PB51ED,
- 	ALC1220_FIXUP_CLEVO_PB51ED_PINS,
-+	ALC887_FIXUP_ASUS_AUDIO,
-+	ALC887_FIXUP_ASUS_HMIC,
- };
+--- a/fs/cifs/asn1.c
++++ b/fs/cifs/asn1.c
+@@ -530,8 +530,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
+ 		   || (tag != ASN1_EOC)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
++			 cls, con, tag, end);
+ 		return 0;
+ 	}
  
- static void alc889_fixup_coef(struct hda_codec *codec,
-@@ -2134,6 +2136,31 @@ static void alc1220_fixup_clevo_pb51ed(s
- 	alc_fixup_headset_mode_no_hp_mic(codec, fix, action);
- }
+@@ -541,8 +541,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
+ 		   || (tag != ASN1_SEQ)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 1\n",
++			 cls, con, tag, end);
+ 		return 0;
+ 	}
  
-+static void alc887_asus_hp_automute_hook(struct hda_codec *codec,
-+					 struct hda_jack_callback *jack)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	unsigned int vref;
-+
-+	snd_hda_gen_hp_automute(codec, jack);
-+
-+	if (spec->gen.hp_jack_present)
-+		vref = AC_PINCTL_VREF_80;
-+	else
-+		vref = AC_PINCTL_VREF_HIZ;
-+	snd_hda_set_pin_ctl(codec, 0x19, PIN_HP | vref);
-+}
-+
-+static void alc887_fixup_asus_jack(struct hda_codec *codec,
-+				     const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	if (action != HDA_FIXUP_ACT_PROBE)
-+		return;
-+	snd_hda_set_pin_ctl_cache(codec, 0x1b, PIN_HP);
-+	spec->gen.hp_automute_hook = alc887_asus_hp_automute_hook;
-+}
-+
- static const struct hda_fixup alc882_fixups[] = {
- 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -2391,6 +2418,20 @@ static const struct hda_fixup alc882_fix
- 		.chained = true,
- 		.chain_id = ALC1220_FIXUP_CLEVO_PB51ED,
- 	},
-+	[ALC887_FIXUP_ASUS_AUDIO] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x15, 0x02a14150 }, /* use as headset mic, without its own jack detect */
-+			{ 0x19, 0x22219420 },
-+			{}
-+		},
-+	},
-+	[ALC887_FIXUP_ASUS_HMIC] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc887_fixup_asus_jack,
-+		.chained = true,
-+		.chain_id = ALC887_FIXUP_ASUS_AUDIO,
-+	},
- };
+@@ -552,8 +552,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
+ 		   || (tag != ASN1_EOC)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
++			 cls, con, tag, end);
+ 		return 0;
+ 	}
  
- static const struct snd_pci_quirk alc882_fixup_tbl[] = {
-@@ -2424,6 +2465,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1043, 0x13c2, "Asus A7M", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x1043, 0x1873, "ASUS W90V", ALC882_FIXUP_ASUS_W90V),
- 	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
-+	SND_PCI_QUIRK(0x1043, 0x2390, "Asus D700SA", ALC887_FIXUP_ASUS_HMIC),
- 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
- 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
- 	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
+@@ -564,8 +564,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
+ 		   || (tag != ASN1_SEQ)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d sequence_end = %p exit 1\n",
++			 cls, con, tag, sequence_end);
+ 		return 0;
+ 	}
+ 
 
 
