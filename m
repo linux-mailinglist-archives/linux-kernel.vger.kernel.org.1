@@ -2,176 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC42929AB49
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561D729AB46
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750354AbgJ0Lze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:55:34 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:53228 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750346AbgJ0Lzd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:55:33 -0400
-Received: by mail-pj1-f66.google.com with SMTP id o1so655280pjt.2;
-        Tue, 27 Oct 2020 04:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=HeJY28BQR39ubPE3upvvJihsd+e9UZsRU1A1Q1vQAqE=;
-        b=XQ5Yyk7eg7PeAalKutARz4YDUL3b+aZEi9S3fTfeEq6ymjlXCQw5bf7d0wkkpBqmSz
-         wLO+safY+a17yx21fzXVSDUmYz93UA7RV1pqYekvJu2ZZBZuXlxCC+TeQ3zNz/VJFdPs
-         tXafPgmipGZCwpWWqm1YVTqR6j1xtclaT5vDCQR/KbYmG593i1Odw3jMXCrP0ZN4BNzZ
-         HAldtsJnaNrD/Fd90HZX+GxA9aajvABcO/k6TVLAfHVAiNwZz75kCCuzAoxW2sxyGY+m
-         v7iXrGW8PO6wITfrDhlCkLgi1pL7xC0QcK5PozQqMXDD5H8IOLocntnJ3VryQhzxMWQr
-         RTEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HeJY28BQR39ubPE3upvvJihsd+e9UZsRU1A1Q1vQAqE=;
-        b=TYY7BWRC2uWjhOG4n1o8RGA1hfGjH62wqYBYCA/rROjlhOSkECXJ0dLiWV8pIYrX4a
-         lxPIwE6+aRhKzNKmmKiRr5Pi3WDGix0ugWEetpXuDBfJsqbOnrR79qdqAgUcUZndQ9T3
-         qaVRRsOmr4y26Aw4oG8OTQEO7vWmpS0LbUoXHx4bDdZBhFFIoCUBSWB9bm7jXkgnt+sI
-         cM2IvKy6HZw2UCuZbAv69C95n0ynV1PV+e1Ymosis7itOY3OtiMGKJWTcZNgTvVTBVvI
-         lE7E72Qm2I1YTBqT38RmqPFcTK4YARijj74RnnGidP2R47cJRFbpOLzAc4er+DfCuoBg
-         aRXA==
-X-Gm-Message-State: AOAM533R9fp6/y+YBjKUJYqZMrXv8QPIGA3/3ZHsZykU3q6qxzNKDG/5
-        qIg6QaqhhhQ6vKTNl5pEDWM=
-X-Google-Smtp-Source: ABdhPJxl5OtHcTzQDhtTMNxCcuwVAeUGerrHzZBfFoUfZ261kBXXX1sRcWR8t1gKZTRGjw+0YgK2qw==
-X-Received: by 2002:a17:90a:aa90:: with SMTP id l16mr1697874pjq.0.1603799732527;
-        Tue, 27 Oct 2020 04:55:32 -0700 (PDT)
-Received: from mi-OptiPlex-7060.mioffice.cn ([209.9.72.215])
-        by smtp.gmail.com with ESMTPSA id bx24sm1932897pjb.20.2020.10.27.04.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 04:55:31 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     viresh.kumar@linaro.org, rjw@rjwysocki.net, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguangqing <zhuguangqing@xiaomi.com>
-Subject: [PATCH] cpufreq: schedutil: set sg_policy->next_freq to the final cpufreq
-Date:   Tue, 27 Oct 2020 19:54:59 +0800
-Message-Id: <20201027115459.19318-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1750343AbgJ0Lz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:55:28 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:56386 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439111AbgJ0Lz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:55:28 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A730D200C98;
+        Tue, 27 Oct 2020 12:55:25 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9947F200C60;
+        Tue, 27 Oct 2020 12:55:25 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 84851202AE;
+        Tue, 27 Oct 2020 12:55:25 +0100 (CET)
+Date:   Tue, 27 Oct 2020 13:55:25 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Adam Ford <aford173@gmail.com>, Marek Vasut <marex@denx.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 0/3] clk: imx: Implement blk-ctl driver for i.MX8MN
+Message-ID: <20201027115525.gxt2oqavqulsqolo@fsr-ub1664-175>
+References: <20201024162016.1003041-1-aford173@gmail.com>
+ <20201024202335.y3npwtgragpp5wcz@fsr-ub1664-175>
+ <CAHCN7xJiygvLStO56v4xSnOEqR_5fbYQHn5juA8YeDiWh2awbg@mail.gmail.com>
+ <20201025120509.r5kl76wo5mdmapo5@fsr-ub1664-175>
+ <3dadade8-6e77-e27f-d5a6-307de17a4dd0@denx.de>
+ <CAHCN7xLC-gKquDNS3ToQCff=g610PscQE+T4zfO=_05GpLyK4w@mail.gmail.com>
+ <20201026145516.shmb55gaeh6u7oru@fsr-ub1664-175>
+ <c976125e45e2fe46afbee1735004668677383805.camel@pengutronix.de>
+ <20201027093110.jaslelqecwudn22k@fsr-ub1664-175>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027093110.jaslelqecwudn22k@fsr-ub1664-175>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuguangqing <zhuguangqing@xiaomi.com>
+On 20-10-27 11:31:10, Abel Vesa wrote:
+> On 20-10-26 16:37:51, Lucas Stach wrote:
+> > Am Montag, den 26.10.2020, 16:55 +0200 schrieb Abel Vesa:
+> > > On 20-10-25 11:05:32, Adam Ford wrote:
+> > > > On Sun, Oct 25, 2020 at 7:19 AM Marek Vasut <marex@denx.de> wrote:
+> > > > > On 10/25/20 1:05 PM, Abel Vesa wrote:
+> > > > > 
+> > > > > [...]
+> > > > > 
+> > > > > > > Together, both the GPC and the clk-blk driver should be able to pull
+> > > > > > > the multimedia block out of reset.  Currently, the GPC can handle the
+> > > > > > > USB OTG and the GPU, but the LCDIF and MIPI DSI appear to be gated by
+> > > > > > > the clock block
+> > > > > > > 
+> > > > > > > My original patch RFC didn't include the imx8mn node, because it
+> > > > > > > hangs, but the node I added looks like:
+> > > > > > > 
+> > > > > > > media_blk_ctl: clock-controller@32e28000 {
+> > > > > > >      compatible = "fsl,imx8mn-media-blk-ctl", "syscon";
+> > > > > > >      reg = <0x32e28000 0x1000>;
+> > > > > > >      #clock-cells = <1>;
+> > > > > > >      #reset-cells = <1>;
+> > > > > > > };
+> > > > > > > 
+> > > > > > > I was hoping you might have some feedback on the 8mn clk-blk driver
+> > > > > > > since you did the 8mp clk-blk drive and they appear to be very
+> > > > > > > similar.
+> > > > > > > 
+> > > > > > 
+> > > > > > I'll do you one better still. I'll apply the patch in my tree and give it
+> > > > > > a test tomorrow morning.
+> > > > 
+> > > > I do have some more updates on how to get the system to not hang, and
+> > > > to enumerate more clocks.
+> > > > Looking at Marek's work on enabling clocks in the 8MM, he added a
+> > > > power-domain in dispmix_blk_ctl pointing to the dispmix in the GPC.
+> > > > By forcing the GPC driver to write 0x1fff  to 32e28004, 0x7f to
+> > > > 32e28000 and 0x30000 to 32e28008, the i.MX8MM can bring the display
+> > > > clocks out of reset.
+> > > > 
+> > > 
+> > > Yeah, that makes sense. Basically, it was trying to disable unused clocks
+> > > (see clk_disable_unused) but in order to disable the clocks from the
+> > > media BLK_CTL (which I think should be renamed in display BLK_CTL) the
+> > > PD need to be on. Since you initially didn't give it any PD, it was trying
+> > > to blindly write/read the gate bit and therefore freeze.
+> > > 
+> > > > Unfortunately, the i.MX8MN needs to have 0x100 written to both
+> > > > 32e28000 and 32e28004, and the values written for the 8MM are not
+> > > > compatible.
+> > > > By forcing the GPC to write those values, I can get  lcdif_pixel_clk
+> > > > and the mipi_dsi_clkref  appearing on the Nano.
+> > > 
+> > > I'm trying to make a branch with all the patches for all i.MX8M so I
+> > > can keep track of it all. On this branch I've also applied the 
+> > > following patchset from Lucas Stach:
+> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.spinics.net%2Flists%2Farm-kernel%2Fmsg843007.html&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C5ff46189143747fce45908d87a5b4281%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637393879674506099%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=ELDCbfLvxrB6FLwnsA6VyGlU5V3qpA2ImfPAbZnWyzI%3D&amp;reserved=0
+> > > but I'm getting the folowing errors:
+> > > 
+> > > [   16.690885] imx-pgc imx-pgc-domain.3: failed to power up ADB400
+> > > [   16.716839] imx-pgc imx-pgc-domain.3: failed to power up ADB400
+> > > [   16.730500] imx-pgc imx-pgc-domain.3: failed to power up ADB400
+> > > 
+> > > Lucas, any thoughts?
+> > > 
+> > > Maybe it's something related to 8MN.
+> > 
+> > The ADB is apparently clocked by one of the BLK_CTL clocks, so the ADB
+> > handshake ack will only work when the BLK_CTL clocks are enabled. So I
+> > guess the GPC driver should enable those clocks and assert the resets
+> > at the right time in the power-up sequencing. Unfortunately this means
+> > we can't properly put the BLK_CTL driver in the power-domain without
+> > having a cyclic dependency in the DT. I'm still thinking about how to
+> > solve this properly.
+> > 
+> 
+> I remember we had something similar in our internal tree with the
+> bus_blk_clk on 8MP, which was added by the media BLK_CTL. What I did was to
+> just drop the registration of that clock entirely. My rationale was that if
+> the clock is part of the BLK_CTL but also needed by the BLK_CTL to work,
+> I can leave it alone (that is, enabled by default) since when the PD will be
+> powered off the clock will gated too. I guess another option would be to 
+> mark it as critical, that way, it will never be disabled (will be left alone
+> by the clk_disable_unused too) but at the same time will be visible in the
+> clock hierarchy.
+> 
 
-In the following code path, next_freq is clamped between policy->min
-and policy->max twice in functions cpufreq_driver_resolve_freq() and
-cpufreq_driver_fast_switch(). For there is no update_lock in the code
-path, policy->min and policy->max may be modified (one or more times),
-so sg_policy->next_freq updated in function sugov_update_next_freq()
-may be not the final cpufreq. Next time when we use
-"if (sg_policy->next_freq == next_freq)" to judge whether to update
-next_freq, we may get a wrong result.
+Do ignore evrything I said about the bus_blk_ctl, that did work on our tree since
+the whole PD power on/off "magic" is done in TF-A.
 
--> sugov_update_single()
-  -> get_next_freq()
-    -> cpufreq_driver_resolve_freq()
-  -> sugov_fast_switch()
-    -> sugov_update_next_freq()
-    -> cpufreq_driver_fast_switch()
+So the problem, as I understand it now, is the fact that the blk_ctl driver won't
+probe because it needs its PD, but the PD is not registered because the ADB400
+can't power up since it needs the bus_blk_ctl clock enabled, clock which is registered
+by the blk_ctl. 
 
-For example, at first sg_policy->next_freq is 1 GHz, but the final
-cpufreq is 1.2 GHz because policy->min is modified to 1.2 GHz when
-we reached cpufreq_driver_fast_switch(). Then next time, policy->min
-is changed before we reached cpufreq_driver_resolve_freq() and (assume)
-next_freq is 1 GHz, we find "if (sg_policy->next_freq == next_freq)" is
-satisfied so we don't change the cpufreq. Actually we should change
-the cpufreq to 1.0 GHz this time.
-
-Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
----
- drivers/cpufreq/cpufreq.c        |  6 +++---
- include/linux/cpufreq.h          |  2 +-
- kernel/sched/cpufreq_schedutil.c | 21 ++++++++++-----------
- 3 files changed, 14 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index f4b60663efe6..7e8e03c7506b 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -2057,13 +2057,13 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
-  * error condition, the hardware configuration must be preserved.
-  */
- unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
--					unsigned int target_freq)
-+					unsigned int *target_freq)
- {
- 	unsigned int freq;
- 	int cpu;
- 
--	target_freq = clamp_val(target_freq, policy->min, policy->max);
--	freq = cpufreq_driver->fast_switch(policy, target_freq);
-+	*target_freq = clamp_val(*target_freq, policy->min, policy->max);
-+	freq = cpufreq_driver->fast_switch(policy, *target_freq);
- 
- 	if (!freq)
- 		return 0;
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index fa37b1c66443..790df38d48de 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -569,7 +569,7 @@ struct cpufreq_governor {
- 
- /* Pass a target to the cpufreq driver */
- unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
--					unsigned int target_freq);
-+					unsigned int *target_freq);
- int cpufreq_driver_target(struct cpufreq_policy *policy,
- 				 unsigned int target_freq,
- 				 unsigned int relation);
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index e254745a82cb..38d2dc55dd95 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -99,31 +99,30 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
- 	return delta_ns >= sg_policy->freq_update_delay_ns;
- }
- 
--static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
-+static inline bool sugov_update_next_freq(struct sugov_policy *sg_policy,
- 				   unsigned int next_freq)
- {
--	if (sg_policy->next_freq == next_freq)
--		return false;
--
--	sg_policy->next_freq = next_freq;
--	sg_policy->last_freq_update_time = time;
--
--	return true;
-+	return sg_policy->next_freq == next_freq ? false : true;
- }
- 
- static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
- 			      unsigned int next_freq)
- {
--	if (sugov_update_next_freq(sg_policy, time, next_freq))
--		cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
-+	if (sugov_update_next_freq(sg_policy, next_freq)) {
-+		cpufreq_driver_fast_switch(sg_policy->policy, &next_freq);
-+		sg_policy->next_freq = next_freq;
-+		sg_policy->last_freq_update_time = time;
-+	}
- }
- 
- static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
- 				  unsigned int next_freq)
- {
--	if (!sugov_update_next_freq(sg_policy, time, next_freq))
-+	if (!sugov_update_next_freq(sg_policy, next_freq))
- 		return;
- 
-+	sg_policy->next_freq = next_freq;
-+	sg_policy->last_freq_update_time = time;
- 	if (!sg_policy->work_in_progress) {
- 		sg_policy->work_in_progress = true;
- 		irq_work_queue(&sg_policy->irq_work);
--- 
-2.17.1
-
+> > Regards,
+> > Lucas
+> > 
