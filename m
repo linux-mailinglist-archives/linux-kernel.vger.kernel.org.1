@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F3C29B0CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B036B29B0D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895046AbgJ0OX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48792 "EHLO mail.kernel.org"
+        id S2901505AbgJ0OYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901439AbgJ0OXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:23:48 -0400
+        id S2901475AbgJ0OXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:23:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A75F2072D;
-        Tue, 27 Oct 2020 14:23:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06E922072D;
+        Tue, 27 Oct 2020 14:23:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808627;
-        bh=yZCN1zWt+EOsOEH9do1Yu25eQJ98pM3OpKqQUBzaL2A=;
+        s=default; t=1603808632;
+        bh=vUZxzAMw/UNVfeTUcN1IB9QA1Y1AmWF42YRBERr1aYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kldFhf3s0XE48mO3+dD21VW0xmoIQgS0sECjExJiIs6cmftsmZr9b3WS50nreYb37
-         6awK0gG8d2EDcqTMKTl3jZVisrPEyhVNQOTtlij0lnk0JscMJzs2+xzVTaTHmjYhXo
-         91OteXAfjBcH1mynrjWGAHcDXt5h9a6OokmiQenw=
+        b=AokXbukdL3QkpqXSS56KIvG3hYTHJsTo/5TZktNHpYgCRH0YEkoVikobXmSbfFBeq
+         3D06Kmfs2K+VK36Y2eLtDjtPqn/0Vj1aU2FG5PJTz2UdNTo43nA7dEmqmS0ROayPat
+         svVmwgKPZDo/u5fcYP6boRHSBoJdbVq6VBMXGG4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 163/264] ramfs: fix nommu mmap with gaps in the page cache
-Date:   Tue, 27 Oct 2020 14:53:41 +0100
-Message-Id: <20201027135438.337776272@linuxfoundation.org>
+Subject: [PATCH 4.19 165/264] rapidio: fix the missed put_device() for rio_mport_add_riodev
+Date:   Tue, 27 Oct 2020 14:53:43 +0100
+Message-Id: <20201027135438.434924785@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -46,39 +51,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 50b7d85680086126d7bd91dae81d57d4cb1ab6b7 ]
+[ Upstream commit 85094c05eeb47d195a74a25366a2db066f1c9d47 ]
 
-ramfs needs to check that pages are both physically contiguous and
-contiguous in the file.  If the page cache happens to have, eg, page A for
-index 0 of the file, no page for index 1, and page A+1 for index 2, then
-an mmap of the first two pages of the file will succeed when it should
-fail.
+rio_mport_add_riodev() misses to call put_device() when the device already
+exists.  Add the missed function call to fix it.
 
-Fixes: 642fb4d1f1dd ("[PATCH] NOMMU: Provide shared-writable mmap support on ramfs")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: e8de370188d0 ("rapidio: add mport char device driver")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Howells <dhowells@redhat.com>
-Link: https://lkml.kernel.org/r/20200914122239.GO6583@casper.infradead.org
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Link: https://lkml.kernel.org/r/20200922072525.42330-1-jingxiangfeng@huawei.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ramfs/file-nommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rapidio/devices/rio_mport_cdev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ramfs/file-nommu.c b/fs/ramfs/file-nommu.c
-index 3ac1f23870837..5e1ebbe639ebf 100644
---- a/fs/ramfs/file-nommu.c
-+++ b/fs/ramfs/file-nommu.c
-@@ -228,7 +228,7 @@ static unsigned long ramfs_nommu_get_unmapped_area(struct file *file,
- 	if (!pages)
- 		goto out_free;
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index c3ca1cf0e1bb7..a136a7ae77140 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -1685,6 +1685,7 @@ static int rio_mport_add_riodev(struct mport_cdev_priv *priv,
+ 	struct rio_dev *rdev;
+ 	struct rio_switch *rswitch = NULL;
+ 	struct rio_mport *mport;
++	struct device *dev;
+ 	size_t size;
+ 	u32 rval;
+ 	u32 swpinfo = 0;
+@@ -1699,8 +1700,10 @@ static int rio_mport_add_riodev(struct mport_cdev_priv *priv,
+ 	rmcd_debug(RDEV, "name:%s ct:0x%x did:0x%x hc:0x%x", dev_info.name,
+ 		   dev_info.comptag, dev_info.destid, dev_info.hopcount);
  
--	nr = find_get_pages(inode->i_mapping, &pgoff, lpages, pages);
-+	nr = find_get_pages_contig(inode->i_mapping, pgoff, lpages, pages);
- 	if (nr != lpages)
- 		goto out_free_pages; /* leave if some pages were missing */
+-	if (bus_find_device_by_name(&rio_bus_type, NULL, dev_info.name)) {
++	dev = bus_find_device_by_name(&rio_bus_type, NULL, dev_info.name);
++	if (dev) {
+ 		rmcd_debug(RDEV, "device %s already exists", dev_info.name);
++		put_device(dev);
+ 		return -EEXIST;
+ 	}
  
 -- 
 2.25.1
