@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F7829A666
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3977D29A668
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894572AbgJ0ITd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:19:33 -0400
-Received: from correo.us.es ([193.147.175.20]:52722 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894552AbgJ0IT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:19:29 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id D752D303D0E
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:19:25 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C8288DA78D
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:19:25 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id BC95BDA7E1; Tue, 27 Oct 2020 09:19:25 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 7850ADA72F;
-        Tue, 27 Oct 2020 09:19:23 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 27 Oct 2020 09:19:23 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 4D30542EF42B;
-        Tue, 27 Oct 2020 09:19:23 +0100 (CET)
-Date:   Tue, 27 Oct 2020 09:19:22 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org
-Subject: Re: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN:
- slab-out-of-bounds Read in nft_flow_rule_create
-Message-ID: <20201027081922.GA5285@salvia>
-References: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
- <20201020115047.GA15628@salvia>
- <28C74722-8F35-4397-B567-FA5BCF525891@oracle.com>
- <3BE1A64B-7104-4220-BAD1-870338A33B15@oracle.com>
- <566D38F7-7C99-40F4-A948-03F2F0439BBB@oracle.com>
- <20201027062111.GD206502@kroah.com>
+        id S2894585AbgJ0ITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:19:43 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42265 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894575AbgJ0ITi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:19:38 -0400
+Received: by mail-io1-f68.google.com with SMTP id k21so566887ioa.9;
+        Tue, 27 Oct 2020 01:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5mX2s+th5lC6g4CEXYsNUnv6UwhXFGsRLGsXt/YxXUM=;
+        b=GgizP4IL7s9FBIvTOcdYkajGXihko3u85gfPZ+soYu9Zb9/qFmdmeyA0BZwVh1TDMa
+         WgS8ZYly+Gy6R0F3Ga1CDepVtgvrFan40LMDYWiVxtR4lgDYMYcXwzuCGvURpjTXvBhm
+         cPI0Wav4l696vT2klw4W/yBB/STrZBsF4Gvmulr4ggA17oQgva7B1h8giFx3znTSNkHK
+         gavZGpPLjYkEJiSaziVQTRyVif33fwLqNSAH7GFjmAl/85+rHHAPCWIeE5JhQNveReXn
+         HbOwjKIsXxj+60c3UqOd5H0OctWm0KH3lsklVEZtZn/x3hhzRIf1deQjabbuTuAXsc3e
+         rvpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5mX2s+th5lC6g4CEXYsNUnv6UwhXFGsRLGsXt/YxXUM=;
+        b=uBZa9VdO41eBAC+bzlhCpi3tx3BWk1OXlf1nX+5NVI00P0UCMAB5j4rAndv9eQPSqG
+         JtCo1H4MVF9UnLzbyivXgRvbbsXo+S5hVwwawxqXwxRoT1Z71p4P4jPo+8hORPTgXj4p
+         J5Zas7y0ocVf0w//YhdULwvQmfysIbCKitlzT6kxEDOMdZZ1CYGJ7A67Vsda/lOHV09B
+         qM5NxwlLZFEufEIV2SAMAQq62RBlfyvSVt9O1+UVVPPdBGznIeLx+CZWYaAa56s09Flj
+         hNi5Mq5dUCZg87fdZBsiab8tVwI/2HKZCDi7RNWzd8Z3baRQkYEEsTSaYVqDLCigg6Ua
+         wYoQ==
+X-Gm-Message-State: AOAM532S5BcV/iFOP/3C6KwTL2PVicRFLk7rtMUWVW3OcvwmhaaoKWgW
+        KAqw5kl2OLBpKxVE4ouMPTKJEjOfyIMTIHiu7Dg=
+X-Google-Smtp-Source: ABdhPJwOL+JEC/XqGLjWxbfrbJTGGpn1WKIl5PWGoYC1vJtB/IO4aZvin3hqcglfvTkFZyTpZJeQI3meMhrbONCMwNM=
+X-Received: by 2002:a05:6638:1351:: with SMTP id u17mr1200064jad.120.1603786776036;
+ Tue, 27 Oct 2020 01:19:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201027062111.GD206502@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+References: <20201026204418.23197-1-longman@redhat.com>
+In-Reply-To: <20201026204418.23197-1-longman@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 27 Oct 2020 10:19:25 +0200
+Message-ID: <CAOQ4uxiejMYqFXUSU8YSsvtAADwHWTGdhT80-51yFjJGSR3bTw@mail.gmail.com>
+Subject: Re: [PATCH] inotify: Increase default inotify.max_user_watches limit
+ to 1048576
+To:     Waiman Long <longman@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Luca BRUNO <lucab@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Mon, Oct 26, 2020 at 10:44 PM Waiman Long <longman@redhat.com> wrote:
+>
+> The default value of inotify.max_user_watches sysctl parameter was set
+> to 8192 since the introduction of the inotify feature in 2005 by
+> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+> small for many modern usage. As a result, users have to explicitly set
+> it to a larger value to make it work.
+>
+> After some searching around the web, these are the
+> inotify.max_user_watches values used by some projects:
+>  - vscode:  524288
+>  - dropbox support: 100000
+>  - users on stackexchange: 12228
+>  - lsyncd user: 2000000
+>  - code42 support: 1048576
+>  - monodevelop: 16384
+>  - tectonic: 524288
+>  - openshift origin: 65536
+>
+> Each watch point adds an inotify_inode_mark structure to an inode to be
+> watched. Modeled after the epoll.max_user_watches behavior to adjust the
+> default value according to the amount of addressable memory available,
+> make inotify.max_user_watches behave in a similar way to make it use
+> no more than 1% of addressable memory within the range [8192, 1048576].
+>
+> For 64-bit archs, inotify_inode_mark should have a size of 80 bytes. That
+> means a system with 8GB or more memory will have the maximum value of
+> 1048576 for inotify.max_user_watches. This default should be big enough
+> for most of the use cases.
+>
 
-On Tue, Oct 27, 2020 at 07:21:11AM +0100, Greg KH wrote:
-> On Sun, Oct 25, 2020 at 04:31:57PM -0700, Saeed Mirzamohammadi wrote:
-> > Adding stable.
-> 
-> What did that do?
+Alas, the memory usage contributed by inotify watches is dominated by the
+directory inodes that they pin to cache.
 
-Saeed is requesting that stable maintainers cherry-picks this patch:
+In effect, this change increases the ability of a given user to use:
 
-31cc578ae2de ("netfilter: nftables_offload: KASAN slab-out-of-bounds
-Read in nft_flow_rule_create")
+1048576(max_user_watches)*~1024(fs inode size) = ~1GB
 
-into stable 5.4 and 5.8.
+Surely, inotify watches are not the only way to pin inodes to cache, but
+other ways are also resource controlled, for example:
+<noproc hardlimit>*<nofile hardlimit>
 
-Thanks.
+I did not survey distros for hard limits of noproc and nofile.
+On my Ubuntu it's pretty high (63183*1048576). I suppose other distros
+may have a lower hard limit by default.
+
+But in any case, open files resource usage has high visibility (via procfs)
+and sysadmins and tools are aware of it.
+
+I am afraid this may not be the case with inotify watches. They are also visible
+via the inotify fdinfo procfs files, but less people and tools know about them.
+
+In the end, it's a policy decision, but if you want to claim that your change
+will not use more than 1% of addressable memory, it might be better to
+use 2*sizeof(struct inode) as a closer approximation of the resource usage.
+
+I believe this conservative estimation will result in a default that covers the
+needs of most of the common use cases. Also, in general, a system with
+a larger filesystem is likely to have more RAM for caching files anyway.
+
+An anecdote: I started developing the fanotify filesystem watch as replacement
+to inotify (merged in v5.9) for a system that needs to watch many millions of
+directories and pinning all inodes to cache was not an option.
+
+Thanks,
+Amir.
