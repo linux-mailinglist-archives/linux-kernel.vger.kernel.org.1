@@ -2,127 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A683A29BD24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520C429BD21
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811777AbgJ0QmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:42:01 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:51663 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1811767AbgJ0Qlz (ORCPT
+        id S1811764AbgJ0Qlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:41:46 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:33853 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1811757AbgJ0Qln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:41:55 -0400
-Received: by mail-pj1-f65.google.com with SMTP id a17so1075010pju.1;
-        Tue, 27 Oct 2020 09:41:55 -0700 (PDT)
+        Tue, 27 Oct 2020 12:41:43 -0400
+Received: by mail-ed1-f66.google.com with SMTP id x1so2144944eds.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:41:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ebBfe6g+xIwA0Tw7T7ptAhswGHI+h9atRQ+wtk5eLJM=;
-        b=vFw9A52vUPt+Z6azESaiWaj6f6RnK6WmgcZfmCdqg30ygptQfXqoaWHeScuoNsMUcL
-         LFBrxcc3UK6ZrcRlK5yMWQydC4uSY8bXOQANfqwRP1eXlykw3jV58ZyR58sIXBm+HRfy
-         vYQZ8hSojiimEwm6a2/Jpl+5twHC88GdAmxu3wHGuRHWue5fVcJY1DPUHhnpeRigSGZc
-         VrPVUTeS6NGaTlPe7onOvCg10lX1FXx8QdW4QCJZ8DwsAcTcxh7dq+42zHm6DOHOPN6X
-         Fkze0CaGWSHSGRhOa+UQSIkAV+OUv4T06N/Yptxodpi2pNzEzDFOn+8yW6ly7Lth7XwK
-         QnvQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FZmDD+YwecYMtLs7AF3FCkDHyOxts/Yev02gIWozl0c=;
+        b=eCyFghPGjK49KlpfZ0325tZmiqVZTeRLrVNqj5Gb9jpiNopib6XnZOPOome/iWhWbM
+         vKlwHpfBXdeSTVDpUdp+O183n3p0CgtI2cdh39gsRRU9iAPsxuPBndh8m4vhWZR8VNGb
+         4331kSpwQ9XrTqAG7MzhQBVfJlPNUQXGfkq5WEZtDAQbLmaJ7ZU4dwWJOENoMtlwCc0g
+         9WtCv0LA0HIFLgNoa8outBTKEprJCuoJpGKeXRd70p80Cd66rpRjmqIxHOVi++SlyMuY
+         ZEt459ogF4FwWypbDUrC4JtFAauisb2WRCT5O6g35gM+9huFq9khSCNBn/kWna7un2AA
+         2t8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ebBfe6g+xIwA0Tw7T7ptAhswGHI+h9atRQ+wtk5eLJM=;
-        b=Q8Kd+sN7HomaenbnTvvS5gUMFf3tlKOGVrAj40SqMC7e70n0cqQTfR2BUuiiHo0L69
-         lJ0U9/Ihse+Z4ivQZ4NPKRnkLPG8lj6d+cuZQkrPQzSsF+kQWujy1BBF3dWxJcn553o+
-         nKJQl9i0GhEC5et+Gc6aokZw2iJy/0EkkAjSu5vZFELyOur9yNnqTRRX8uO+HQ5PMXgQ
-         CDwZIFPmvdT9Gpn+V5QhL3fTvkTfZraqWNL64sJrA3+tpFdpFGZ6KWw0VxQUjo/au9Om
-         ILXf4yQ008zZG5ixEld+98QLLrkbRyh0FTH+5nEmhq61twoKkaU3GhB2r0n/BbStA3b+
-         NHXQ==
-X-Gm-Message-State: AOAM531wWCmECJyFETBJcDAeOI/1Rlj8kKPVmVXRdAWrhRvZcbCiY2FN
-        T1m7BAvWi5qL5Zerw0s4wQ==
-X-Google-Smtp-Source: ABdhPJxLkLvUsLuiUeeggrviMsdPesWsRrw2oB2fz/mRoiv9z7/Da38zY8teYsS2tEKx7sc/DwEgDg==
-X-Received: by 2002:a17:902:b488:b029:d4:dbdf:c6a5 with SMTP id y8-20020a170902b488b02900d4dbdfc6a5mr3312027plr.42.1603816915108;
-        Tue, 27 Oct 2020 09:41:55 -0700 (PDT)
-Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
-        by smtp.gmail.com with ESMTPSA id gx20sm2459230pjb.1.2020.10.27.09.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 09:41:54 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH 5/5] parisc/sticore: Avoid hard-coding built-in font charcount
-Date:   Tue, 27 Oct 2020 12:41:02 -0400
-Message-Id: <c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
-References: <cover.1603788511.git.yepeilin.cs@gmail.com> <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com> <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com> <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com> <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FZmDD+YwecYMtLs7AF3FCkDHyOxts/Yev02gIWozl0c=;
+        b=TBCxenKzlFZyG346oqBF6oOqC9Zvd/dVj6J9bLZX41gaAwqk3m7Jr13F8vWgn7UuPg
+         lKL8T1DlWmRiFNEOOsUN4D39dBikrr2MPLTGsLF4oHfGKYS5vkkWIumVq16LqjmYgG53
+         35DXv62uRUBc99F99jUeBTbHqIPcHryxoQ3q60ron8ybmghs2oT9VW5gl/86knW1kUi3
+         QLG50/GsSlwPtqNt6BuY1EKyhxqRN8H9ltcWkHVFQvKs47U81R1iPLSfOj7YG8Kjyv4r
+         i9I2VAokVk3lBPYyE+WFoQN4b82hy3aOftcmsYPq0ZhC7+1tXRqlidDcZaQ+myo8vU1A
+         NhWg==
+X-Gm-Message-State: AOAM531dj6HiBXYE5EF8uc6OWNlGMCOVAs6sDmzn9tony0G7TOdqP2Zo
+        baMRxwZTtRfto7UBcenssD9un9SbenhTkgDw4Iw=
+X-Google-Smtp-Source: ABdhPJxE+b5plorT12cDmUEPqZISsyoknTOw4zb/BvzQnJMV3xvzcD7OUAZXB5qvfm4jtx2lLCvNguR3PCR9x8fKfjo=
+X-Received: by 2002:aa7:cd42:: with SMTP id v2mr3103548edw.151.1603816901602;
+ Tue, 27 Oct 2020 09:41:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201007161736.ACC6E387@viggo.jf.intel.com> <20201007161747.FE7288F0@viggo.jf.intel.com>
+ <87v9f6hdik.fsf@yhuang-dev.intel.com>
+In-Reply-To: <87v9f6hdik.fsf@yhuang-dev.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 27 Oct 2020 09:41:27 -0700
+Message-ID: <CAHbLzkpFTVhBhrj715ixu_bYrbpOZwLn3Y3=+miKs9hCCiOW7g@mail.gmail.com>
+Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sti_select_fbfont() and sti_cook_fonts() are hard-coding the number of
-characters of our built-in fonts as 256. Recently, we included that
-information in our kernel font descriptor `struct font_desc`, so use
-`fbfont->charcount` instead of hard-coded values.
+On Mon, Oct 19, 2020 at 12:38 AM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Dave Hansen <dave.hansen@linux.intel.com> writes:
+>
+> > From: Yang Shi <yang.shi@linux.alibaba.com>
+> >
+> > Account the number of demoted pages into reclaim_state->nr_demoted.
+>
+> It appears that you don't add "nr_demoted" into struct reclaim_state.
+>
+> > Add pgdemote_kswapd and pgdemote_direct VM counters showed in
+> > /proc/vmstat.
+> >
+> > [ daveh:
+> >    - __count_vm_events() a bit, and made them look at the THP
+> >      size directly rather than getting data from migrate_pages()
+>
+> It appears that we get the data from migrate_pages() now.
+>
+> > ]
+> >
+> > Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+> > Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Huang Ying <ying.huang@intel.com>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > ---
+> >
+> >  b/include/linux/vm_event_item.h |    2 ++
+> >  b/mm/vmscan.c                   |    6 ++++++
+> >  b/mm/vmstat.c                   |    2 ++
+> >  3 files changed, 10 insertions(+)
+> >
+> > diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
+> > --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter       2020-10-07 09:15:32.171642439 -0700
+> > +++ b/include/linux/vm_event_item.h   2020-10-07 09:15:32.179642439 -0700
+> > @@ -33,6 +33,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
+> >               PGREUSE,
+> >               PGSTEAL_KSWAPD,
+> >               PGSTEAL_DIRECT,
+> > +             PGDEMOTE_KSWAPD,
+> > +             PGDEMOTE_DIRECT,
+> >               PGSCAN_KSWAPD,
+> >               PGSCAN_DIRECT,
+> >               PGSCAN_DIRECT_THROTTLE,
+> > diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
+> > --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter 2020-10-07 09:15:32.173642439 -0700
+> > +++ b/mm/vmscan.c     2020-10-07 09:15:32.180642439 -0700
+> > @@ -147,6 +147,7 @@ struct scan_control {
+> >               unsigned int immediate;
+> >               unsigned int file_taken;
+> >               unsigned int taken;
+> > +             unsigned int demoted;
+>
+> It appears that this newly added field isn't used in the patch.
 
-This patch depends on patch "Fonts: Add charcount field to font_desc".
+My original patch tracked nr_demoted in reclaim_stat as well, but it
+seems Dave dropped that part. If Dave thinks it is not necessary to
+keep tracking nr_demoted in reclaim_stat, then that field should be
+dropped.
 
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-$ # Build-tested (Ubuntu 20.04)
-$ sudo apt-get install binutils-hppa64-linux-gnu gcc-7-hppa64-linux-gnu
-$ cp arch/parisc/configs/generic-64bit_defconfig .config
-$ make -j`nproc` ARCH=parisc CROSS_COMPILE=hppa64-linux-gnu- all
-
- drivers/video/console/sticore.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
-index d1bb5915082b..f869b723494f 100644
---- a/drivers/video/console/sticore.c
-+++ b/drivers/video/console/sticore.c
-@@ -506,7 +506,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
- 			fbfont->width, fbfont->height, fbfont->name);
- 			
- 	bpc = ((fbfont->width+7)/8) * fbfont->height; 
--	size = bpc * 256;
-+	size = bpc * fbfont->charcount;
- 	size += sizeof(struct sti_rom_font);
- 
- 	nf = kzalloc(size, STI_LOWMEM);
-@@ -514,7 +514,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
- 		return NULL;
- 
- 	nf->first_char = 0;
--	nf->last_char = 255;
-+	nf->last_char = fbfont->charcount - 1;
- 	nf->width = fbfont->width;
- 	nf->height = fbfont->height;
- 	nf->font_type = STI_FONT_HPROMAN8;
-@@ -525,7 +525,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
- 
- 	dest = nf;
- 	dest += sizeof(struct sti_rom_font);
--	memcpy(dest, fbfont->data, bpc*256);
-+	memcpy(dest, fbfont->data, bpc * fbfont->charcount);
- 
- 	cooked_font = kzalloc(sizeof(*cooked_font), GFP_KERNEL);
- 	if (!cooked_font) {
-@@ -660,7 +660,7 @@ static int sti_cook_fonts(struct sti_cooked_rom *cooked_rom,
- void sti_font_convert_bytemode(struct sti_struct *sti, struct sti_cooked_font *f)
- {
- 	unsigned char *n, *p, *q;
--	int size = f->raw->bytes_per_char * 256 + sizeof(struct sti_rom_font);
-+	int size = f->raw->bytes_per_char * (f->raw->last_char + 1) + sizeof(struct sti_rom_font);
- 	struct sti_rom_font *old_font;
- 
- 	if (sti->wordmode)
--- 
-2.25.1
-
+>
+> >       } nr;
+> >
+> >       /* for recording the reclaimed slab by now */
+> > @@ -1134,6 +1135,11 @@ static unsigned int demote_page_list(str
+> >                           target_nid, MIGRATE_ASYNC, MR_DEMOTION,
+> >                           &nr_succeeded);
+> >
+> > +     if (current_is_kswapd())
+> > +             __count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
+> > +     else
+> > +             __count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
+> > +
+> >       return nr_succeeded;
+> >  }
+> >
+> > diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
+> > --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter 2020-10-07 09:15:32.175642439 -0700
+> > +++ b/mm/vmstat.c     2020-10-07 09:15:32.181642439 -0700
+> > @@ -1244,6 +1244,8 @@ const char * const vmstat_text[] = {
+> >       "pgreuse",
+> >       "pgsteal_kswapd",
+> >       "pgsteal_direct",
+> > +     "pgdemote_kswapd",
+> > +     "pgdemote_direct",
+> >       "pgscan_kswapd",
+> >       "pgscan_direct",
+> >       "pgscan_direct_throttle",
+> > _
+>
+> Best Regards,
+> Huang, Ying
+>
