@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17F129B5CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2C029B5CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796034AbgJ0PPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49704 "EHLO mail.kernel.org"
+        id S1796052AbgJ0PPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794683AbgJ0PND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:13:03 -0400
+        id S1794696AbgJ0PNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:13:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CAF020728;
-        Tue, 27 Oct 2020 15:13:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 259412224A;
+        Tue, 27 Oct 2020 15:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811582;
-        bh=GoSqQEARzAKSAKjWOHK/Ao1vS2GosYLx66ZPYAdDW4A=;
+        s=default; t=1603811585;
+        bh=flb3bwQ1gDVKXGaaMS3Pa/biqu4CqGQ82jZk66Pid8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a4sxqdSMx/qyjJLDeRDGkhVGAsTXgQS2N5z2C1sVyZRwvcWz6Tz4+Junz4XjCcjJw
-         MiOoCpENgu/I8qhmCCjkcynMd+CxdGNV2Bvp1aExKTx3LtiBvGYahdgkuEf82jiKmR
-         dyZ5SRTDAKXEmBX/BFn+9lmwvD0SVuTJElEEOdKs=
+        b=gLHdholigR+IFVYyAECWPazdBvysxvAjZXhovxpWAMjXCVl1968vzjLeer1sFbdwi
+         2TUcZNwmt70FY/hzDbQgaRur5iEPNk5d4UTsWqr2nPCZ9HFP8TKuDS7SvZh6H3KUDQ
+         sqiE2SLchEa3if+MaWUTMbGR/I/PVB+JVQ9455Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Fabien Dessenne <fabien.dessenne@st.com>,
+        stable@vger.kernel.org,
+        Xiaolong Huang <butterflyhuangxx@gmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 543/633] media: bdisp: Fix runtime PM imbalance on error
-Date:   Tue, 27 Oct 2020 14:54:46 +0100
-Message-Id: <20201027135548.268926306@linuxfoundation.org>
+Subject: [PATCH 5.8 544/633] media: media/pci: prevent memory leak in bttv_probe
+Date:   Tue, 27 Oct 2020 14:54:47 +0100
+Message-Id: <20201027135548.317006015@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,44 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Xiaolong Huang <butterflyhuangxx@gmail.com>
 
-[ Upstream commit dbd2f2dc025f9be8ae063e4f270099677238f620 ]
+[ Upstream commit 7b817585b730665126b45df5508dd69526448bc8 ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+In bttv_probe if some functions such as pci_enable_device,
+pci_set_dma_mask and request_mem_region fails the allocated
+ memory for btv should be released.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Fabien Dessenne <fabien.dessenne@st.com>
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sti/bdisp/bdisp-v4l2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/pci/bt8xx/bttv-driver.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-index af2d5eb782cee..e1d150584bdc2 100644
---- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-+++ b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-@@ -1371,7 +1371,7 @@ static int bdisp_probe(struct platform_device *pdev)
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
- 		dev_err(dev, "failed to set PM\n");
--		goto err_dbg;
-+		goto err_pm;
+diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
+index 9144f795fb933..b721720f9845a 100644
+--- a/drivers/media/pci/bt8xx/bttv-driver.c
++++ b/drivers/media/pci/bt8xx/bttv-driver.c
+@@ -4013,11 +4013,13 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 	btv->id  = dev->device;
+ 	if (pci_enable_device(dev)) {
+ 		pr_warn("%d: Can't enable device\n", btv->c.nr);
+-		return -EIO;
++		result = -EIO;
++		goto free_mem;
  	}
+ 	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
+ 		pr_warn("%d: No suitable DMA available\n", btv->c.nr);
+-		return -EIO;
++		result = -EIO;
++		goto free_mem;
+ 	}
+ 	if (!request_mem_region(pci_resource_start(dev,0),
+ 				pci_resource_len(dev,0),
+@@ -4025,7 +4027,8 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 		pr_warn("%d: can't request iomem (0x%llx)\n",
+ 			btv->c.nr,
+ 			(unsigned long long)pci_resource_start(dev, 0));
+-		return -EBUSY;
++		result = -EBUSY;
++		goto free_mem;
+ 	}
+ 	pci_set_master(dev);
+ 	pci_set_command(dev);
+@@ -4211,6 +4214,10 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 	release_mem_region(pci_resource_start(btv->c.pci,0),
+ 			   pci_resource_len(btv->c.pci,0));
+ 	pci_disable_device(btv->c.pci);
++
++free_mem:
++	bttvs[btv->c.nr] = NULL;
++	kfree(btv);
+ 	return result;
+ }
  
- 	/* Filters */
-@@ -1399,7 +1399,6 @@ static int bdisp_probe(struct platform_device *pdev)
- 	bdisp_hw_free_filters(bdisp->dev);
- err_pm:
- 	pm_runtime_put(dev);
--err_dbg:
- 	bdisp_debugfs_remove(bdisp);
- err_v4l2:
- 	v4l2_device_unregister(&bdisp->v4l2_dev);
 -- 
 2.25.1
 
