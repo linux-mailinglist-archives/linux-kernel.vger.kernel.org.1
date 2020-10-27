@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0519F29AC5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB8629AC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900208AbgJ0MmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:42:05 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:40156 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900100AbgJ0MlR (ORCPT
+        id S2900168AbgJ0Mlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:41:47 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:37784 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2900150AbgJ0MlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:41:17 -0400
-Received: by mail-lj1-f195.google.com with SMTP id 23so1568364ljv.7;
-        Tue, 27 Oct 2020 05:41:14 -0700 (PDT)
+        Tue, 27 Oct 2020 08:41:19 -0400
+Received: by mail-lf1-f68.google.com with SMTP id j30so2139440lfp.4;
+        Tue, 27 Oct 2020 05:41:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ZlE8y81IS7pCFhqYuFCDF3LrzBymS6x7k4Q6CBmO9rI=;
-        b=NFXCg+zsjIOZrdGi7v95xzt4Ur/C4WtTPpKDCrsAB6GFjx5WVo5AdeIIOva7txkQR6
-         fHzAlnHmAANNRG4r0W0YfYV1wmI+lrxlmvG5+TicNZBd3ytkUY7S3Wbvd5LT+Y8vukgT
-         EvH5LxV7hgp0lqmHDoTHD0fYfkcs8ljo+rB88cO2DtsnIOABgPwXJNRo3ysIJJ+sUw5o
-         W7/sYNzugo8LpyIzInVx2Bp8CZENRUM5hu4+mdLTdOtQCJOXjZMLbEXRx89YbUMFUaZV
-         mgHsN1PQOnY6RXpLYnjL1HmmTD9L3362ZEWRKk/xQXsY/HC0Wy+kqvRIvELyefdBnUTR
-         V7hA==
+        bh=p5MHF+GS//NLoxtDdJvGf+EKzs5shXRufRzejDPH6Ww=;
+        b=bQmlgGWaAj6ONZe7lIbtUhAeMgidNVhcGFgIP1nEGtudEb+k4VAK6dPj15Mf+gC3v5
+         XJZTewE9/lJ59NFEe4YZ2vk0WMq7fy9dWUqG8L8afW7P9zTWNGQldAsKEBrdfgSyoZJP
+         X4wBuEphxxj++zNFlcOFG3/UEyTbUpPiJiE+wBm6qlvpcjTVEAUD1ATN11kmjHfRvE9y
+         WG7QrQlvcgAwwwJMDUajTKtVGBX9LwVqWBNK8LQa5/chLj4kY6LxmvcvZJ4IPwtvpt8x
+         9xcf4FsogsSceGLFIRd72yr4hbDBGQIXBBM0traMyIzz13Dv+ruUjhyCz0SM1hn3He1r
+         SEcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ZlE8y81IS7pCFhqYuFCDF3LrzBymS6x7k4Q6CBmO9rI=;
-        b=TtRdMb7/m7ZOFc4O4gnUtoZciCoilKG2OPcEHJrSsT/Ak9JGtlfMjUwEO1wDO9Vtop
-         LwGRvblWNgLrsTYqBVKNi/aYJriDXwsqH/iApWx/JZn1ByuBy6xLsrM0A+NOeDSs7z8z
-         dK1BEddJA2WgPV2n5umZmdWTOaCNaZTS//6rsC+/xZNwK1DsNK5+KJJPaDj5OjTmACcP
-         RHVK4MpSxD9TLy9vZZdHUx7Rp/ZE9fI5jiwOkz7xE/aAfCGoQEDAvcNTrWWZD7KgPlNF
-         i/rAvz4ZMa1SqFmekGX4hALQ0wfEqne3xvHPP8VNwCISuzKq8NtWCGWCRJmrxS0+815U
-         64xw==
-X-Gm-Message-State: AOAM530LhkRX92CzJHxiIuWgZf1Wv8hzwApdvc5+tnr1TBl8Nbe0Y6Za
-        e/ZuP3zmRS6pzWL5BPOjwJRybCjPCrAr5bD3
-X-Google-Smtp-Source: ABdhPJyAQtoQD4/oapmYyvgaUmbHlXvjVu2e0fO1sRFFnXAVlKXjbkmEP0S2eZ18/uUL8NTylkQ8VQ==
-X-Received: by 2002:a2e:9dcd:: with SMTP id x13mr968561ljj.422.1603802473866;
-        Tue, 27 Oct 2020 05:41:13 -0700 (PDT)
+        bh=p5MHF+GS//NLoxtDdJvGf+EKzs5shXRufRzejDPH6Ww=;
+        b=QxNK5CrMn5CfR9whRav+P6kiDda3LRMGHivX46rYjVhwOpEstcY0ROd4KqJjP8cbNc
+         9i1myfDUbnh1LJFGZGesxazLjhDOPswAJlvABFyYwnvQfrweRh61lNNDnGyas4qgJ8XI
+         aZung7RD75xuOgZXRbTgswTGHAIQo1XHu20uEX4H4b6rSo/dw1oBhV532Gf5rUawPpzZ
+         am3oIJUqb8ZjFvPvJHlGh+r9Q0lbY6bemcXXtgVHZLrAnWxWiam7/tVVmLoyrtoY2pVj
+         5Hr/vwydSVlP34Ict2rhUJfpHfzhW4adjypBltDSHv61OWvAEDaIjnqG7/1VK6yOuqnt
+         rnqQ==
+X-Gm-Message-State: AOAM530sldTyD1AZYt3ZVMdNEBzDNFHGuO76grAi+cU+VBP6V92KJs/G
+        lq2WPscm94NjotnShL3nxQU7sMCdKoY5eoep
+X-Google-Smtp-Source: ABdhPJwL7ovGKGXskH6rRkXZBnc//Bv8sl5bhQwi8/HtQ1VqxOKNaST2YV/nEhhIHFbBLWbnBKQqWw==
+X-Received: by 2002:a05:6512:322d:: with SMTP id f13mr744638lfe.571.1603802476481;
+        Tue, 27 Oct 2020 05:41:16 -0700 (PDT)
 Received: from DESKTOP-GSFPEC9.localdomain (broadband-46-242-8-148.ip.moscow.rt.ru. [46.242.8.148])
-        by smtp.gmail.com with ESMTPSA id e15sm49132ljj.60.2020.10.27.05.41.13
+        by smtp.gmail.com with ESMTPSA id e15sm49132ljj.60.2020.10.27.05.41.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 05:41:13 -0700 (PDT)
+        Tue, 27 Oct 2020 05:41:15 -0700 (PDT)
 From:   Konstantin Aladyshev <aladyshev22@gmail.com>
 Cc:     supreeth.venkatesh@amd.com, aladyshev22@gmail.com,
         Rob Herring <robh+dt@kernel.org>,
@@ -51,9 +51,9 @@ Cc:     supreeth.venkatesh@amd.com, aladyshev22@gmail.com,
         Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] ARM: dts: aspeed: amd-ethanolx: Enable KCS channel 3
-Date:   Tue, 27 Oct 2020 15:37:21 +0300
-Message-Id: <20201027123722.2935-2-aladyshev22@gmail.com>
+Subject: [PATCH 3/3] ARM: dts: aspeed: amd-ethanolx: Enable devices for the iKVM functionality
+Date:   Tue, 27 Oct 2020 15:37:22 +0300
+Message-Id: <20201027123722.2935-3-aladyshev22@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201027123722.2935-1-aladyshev22@gmail.com>
 References: <20201027123722.2935-1-aladyshev22@gmail.com>
@@ -62,32 +62,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KCS interface on the LPC channel 3 in the controller
-is used for the in-band BMC<->BIOS IPMI communication.
-0xCA2 is a default host CPU LPC IO address for this
-interface.
+Enable the USB 2.0 Virtual Hub Controller and
+the Video Engine with it's reserved memory region for the implementation
+of the iKVM functionality in the BMC.
 
 Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
 ---
- arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-index 89ddc3847222..2a86bda8afd8 100644
+index 2a86bda8afd8..b93ed44eba0c 100644
 --- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
 +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-@@ -147,6 +147,11 @@
- 	aspeed,lpc-io-reg = <0x62>;
+@@ -13,6 +13,21 @@
+ 	memory@80000000 {
+ 		reg = <0x80000000 0x20000000>;
+ 	};
++
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		video_engine_memory: jpegbuffer {
++			size = <0x02000000>;	/* 32M */
++			alignment = <0x01000000>;
++			compatible = "shared-dma-pool";
++			reusable;
++		};
++	};
++
++
+ 	aliases {
+ 		serial0 = &uart1;
+ 		serial4 = &uart5;
+@@ -220,5 +235,12 @@
+ 	};
  };
  
-+&kcs3 {
++&video {
 +	status = "okay";
-+	aspeed,lpc-io-reg = <0xCA2>;
++	memory-region = <&video_engine_memory>;
 +};
-+
- &kcs4 {
- 	status = "okay";
- 	aspeed,lpc-io-reg = <0x97DE>;
+ 
++&vhub {
++	status = "okay";
++};
+ 
 -- 
 2.17.1
 
