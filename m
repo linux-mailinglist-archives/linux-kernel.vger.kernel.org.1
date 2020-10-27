@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3529829C457
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E7B29C28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758127AbgJ0OT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41924 "EHLO mail.kernel.org"
+        id S1820711AbgJ0RhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895008AbgJ0OSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:25 -0400
+        id S1760641AbgJ0Ofi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:35:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53249206D4;
-        Tue, 27 Oct 2020 14:18:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 737D5207BB;
+        Tue, 27 Oct 2020 14:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808304;
-        bh=NzSfj4q15xQf+EXIBi9Dgjx2PbhqrBptZGRZNgo4CpA=;
+        s=default; t=1603809338;
+        bh=UJOXzxwR7uIKKD7XUluyCH7FmzcC8xmpVxeanzm1l3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htDeMBqatzYLrcq8+tZ9sILBoe0cieUP+RmUqtDEjyYYAGgYk6fS4SfJlLB4ewBXP
-         Y9Y2kYmqH4A04Ob7g/RqZzKvB9qGqxX+x69NxdABWwgW54Sx3TfNNdMeZ9MMaIUWor
-         TpDqgfqZorgseAXwHT3+KZYyI0UjBnA2LNmOvRGc=
+        b=bEGMo7Nq/Zqn8rdMNUd69As+xIePVW7fiH30fWaINsdqlVWF1wf43fhxptLP4YERz
+         1WflhTevn00OyUN0o8vnRwK3xW4kSigNvp6dBD7gG8exUxjMh25jxBPiaLGXzZBo3i
+         YOySU4lK0+sU4Z62iJ+afIWZy8+v0/g3fFPXmCiM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 040/264] crypto: mediatek - Fix wrong return value in mtk_desc_ring_alloc()
-Date:   Tue, 27 Oct 2020 14:51:38 +0100
-Message-Id: <20201027135432.550470250@linuxfoundation.org>
+Subject: [PATCH 5.4 161/408] misc: mic: scif: Fix error handling path
+Date:   Tue, 27 Oct 2020 14:51:39 +0100
+Message-Id: <20201027135502.564549397@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit 8cbde6c6a6d2b1599ff90f932304aab7e32fce89 ]
+[ Upstream commit a81072a9c0ae734b7889929b0bc070fe3f353f0e ]
 
-In case of memory allocation failure, a negative error code should
-be returned.
+Inside __scif_pin_pages(), when map_flags != SCIF_MAP_KERNEL it
+will call pin_user_pages_fast() to map nr_pages. However,
+pin_user_pages_fast() might fail with a return value -ERRNO.
 
-Fixes: 785e5c616c849 ("crypto: mediatek - Add crypto driver support for some MediaTek chips")
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+The return value is stored in pinned_pages->nr_pages. which in
+turn is passed to unpin_user_pages(), which expects
+pinned_pages->nr_pages >=0, else disaster.
+
+Fix this by assigning pinned_pages->nr_pages to 0 if
+pin_user_pages_fast() returns -ERRNO.
+
+Fixes: ba612aa8b487 ("misc: mic: SCIF memory registration and unregistration")
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Link: https://lore.kernel.org/r/1600570295-29546-1-git-send-email-jrdr.linux@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
+ drivers/misc/mic/scif/scif_rma.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index ee0404e27a0f2..03b1436f87096 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -446,7 +446,7 @@ static void mtk_desc_dma_free(struct mtk_cryp *cryp)
- static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- {
- 	struct mtk_ring **ring = cryp->ring;
--	int i, err = ENOMEM;
-+	int i;
+diff --git a/drivers/misc/mic/scif/scif_rma.c b/drivers/misc/mic/scif/scif_rma.c
+index 01e27682ea303..a486c6c7f4077 100644
+--- a/drivers/misc/mic/scif/scif_rma.c
++++ b/drivers/misc/mic/scif/scif_rma.c
+@@ -1381,6 +1381,8 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 				(prot & SCIF_PROT_WRITE) ? FOLL_WRITE : 0,
+ 				pinned_pages->pages);
+ 		if (nr_pages != pinned_pages->nr_pages) {
++			if (pinned_pages->nr_pages < 0)
++				pinned_pages->nr_pages = 0;
+ 			if (try_upgrade) {
+ 				if (ulimit)
+ 					__scif_dec_pinned_vm_lock(mm, nr_pages);
+@@ -1400,7 +1402,6 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
  
- 	for (i = 0; i < MTK_RING_MAX; i++) {
- 		ring[i] = kzalloc(sizeof(**ring), GFP_KERNEL);
-@@ -480,7 +480,7 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
+ 	if (pinned_pages->nr_pages < nr_pages) {
+ 		err = -EFAULT;
+-		pinned_pages->nr_pages = nr_pages;
+ 		goto dec_pinned;
  	}
--	return err;
-+	return -ENOMEM;
- }
  
- static int mtk_crypto_probe(struct platform_device *pdev)
+@@ -1413,7 +1414,6 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 		__scif_dec_pinned_vm_lock(mm, nr_pages);
+ 	/* Something went wrong! Rollback */
+ error_unmap:
+-	pinned_pages->nr_pages = nr_pages;
+ 	scif_destroy_pinned_pages(pinned_pages);
+ 	*pages = NULL;
+ 	dev_dbg(scif_info.mdev.this_device,
 -- 
 2.25.1
 
