@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7606529B72B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5809D29B6B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799091AbgJ0P3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:29:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797576AbgJ0PYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1797578AbgJ0PYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 11:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1796875AbgJ0PWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:22:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D1312064B;
-        Tue, 27 Oct 2020 15:24:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94CB820728;
+        Tue, 27 Oct 2020 15:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812262;
-        bh=IThQl/2c2N9ZZJOytL6ykPfkR4ntlf2unL2zDi4d/9M=;
+        s=default; t=1603812164;
+        bh=Kga7vEfZO3kPRLsus9Py7qIoN3l60BwB1lXwXne9Ku8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zMkeGq54phivr1GuCg4QHPo2QfOgh6OGCAvk8iqTw1T6duZnChG1hfAqgFxSQX06F
-         hKKIOO5D6rTkgP/ax5uLKkZWzGCzYtcYEMIpFel5Caki1vo8SJ8bx+Y4WQcnZqKdal
-         FRt1Jn10c252EKUBprhNTy9C0BD4kIZeL6ybMBE0=
+        b=jiSkXMmxzT18/aWUcn2rg0J8LcbMfrshl2zWtmVFms9k90A3bIpyIiDchIfth7hBf
+         eEd3GcZK9gVKJ5upNeKfgpVjKnaS3eB/ZnXdevqThtmVCrvTtg0sbf/Y5RoIqxH8ps
+         loRscj8JC12HbKOD3YneAIS+xPtsoF79sJraM+Yo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org, Kyle Meyer <kyle.meyer@hpe.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Alexei Budankov <alexey.budankov@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 106/757] perf/x86/intel/uncore: Reduce the number of CBOX counters
-Date:   Tue, 27 Oct 2020 14:45:56 +0100
-Message-Id: <20201027135455.522871782@linuxfoundation.org>
+Subject: [PATCH 5.9 107/757] perf/x86/intel/uncore: Fix for iio mapping on Skylake Server
+Date:   Tue, 27 Oct 2020 14:45:57 +0100
+Message-Id: <20201027135455.571628328@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,45 +46,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-[ Upstream commit ee139385432e919f4d1f59b80edbc073cdae1391 ]
+[ Upstream commit f797f05d917ffef94249ee0aec4c14a5b50517b2 ]
 
-An oops is triggered by the fuzzy test.
+Introduced early attributes /sys/devices/uncore_iio_<pmu_idx>/die* are
+initialized by skx_iio_set_mapping(), however, for example, for multiple
+segment platforms skx_iio_get_topology() returns -EPERM before a list of
+attributes in skx_iio_mapping_group will have been initialized.
+As a result the list is being NULL. Thus the warning
+"sysfs: (bin_)attrs not set by subsystem for group: uncore_iio_*/" appears
+and uncore_iio pmus are not available in sysfs. Clear IIO attr_update
+to properly handle the cases when topology information cannot be
+retrieved.
 
-[  327.853081] unchecked MSR access error: RDMSR from 0x70c at rIP:
-0xffffffffc082c820 (uncore_msr_read_counter+0x10/0x50 [intel_uncore])
-[  327.853083] Call Trace:
-[  327.853085]  <IRQ>
-[  327.853089]  uncore_pmu_event_start+0x85/0x170 [intel_uncore]
-[  327.853093]  uncore_pmu_event_add+0x1a4/0x410 [intel_uncore]
-[  327.853097]  ? event_sched_in.isra.118+0xca/0x240
-
-There are 2 GP counters for each CBOX, but the current code claims 4
-counters. Accessing the invalid registers triggers the oops.
-
-Fixes: 6e394376ee89 ("perf/x86/intel/uncore: Add Intel Icelake uncore support")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Fixes: bb42b3d39781 ("perf/x86/intel/uncore: Expose an Uncore unit to IIO PMON mapping")
+Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
+Suggested-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200925134905.8839-3-kan.liang@linux.intel.com
+Reviewed-by: Alexei Budankov <alexey.budankov@linux.intel.com>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lkml.kernel.org/r/20200928102133.61041-1-alexander.antonov@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/intel/uncore_snbep.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index e2c683fe42645..4aa735694e030 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -325,7 +325,7 @@ static struct intel_uncore_ops icl_uncore_msr_ops = {
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 62e88ad919ffc..ccfa1d6b6aa0d 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -3749,7 +3749,9 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
  
- static struct intel_uncore_type icl_uncore_cbox = {
- 	.name		= "cbox",
--	.num_counters   = 4,
-+	.num_counters   = 2,
- 	.perf_ctr_bits	= 44,
- 	.perf_ctr	= ICL_UNC_CBO_0_PER_CTR0,
- 	.event_ctl	= SNB_UNC_CBO_0_PERFEVTSEL0,
+ 	ret = skx_iio_get_topology(type);
+ 	if (ret)
+-		return ret;
++		goto clear_attr_update;
++
++	ret = -ENOMEM;
+ 
+ 	/* One more for NULL. */
+ 	attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
+@@ -3781,8 +3783,9 @@ static int skx_iio_set_mapping(struct intel_uncore_type *type)
+ 	kfree(eas);
+ 	kfree(attrs);
+ 	kfree(type->topology);
++clear_attr_update:
+ 	type->attr_update = NULL;
+-	return -ENOMEM;
++	return ret;
+ }
+ 
+ static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
 -- 
 2.25.1
 
