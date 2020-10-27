@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B639A29CBE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3E629CBEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832276AbgJ0WTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 18:19:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49652 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1832259AbgJ0WTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:19:14 -0400
-Date:   Tue, 27 Oct 2020 22:19:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603837151;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DvySRBYXlT12Vi5G4QeTsoF9zVbsAwIORCuMUT2/f0E=;
-        b=FR+g/fbFN7DuhMrezQIUXwmqnqADggcDwRq2Mgj1yIIRuq6eBoag2O580NdDfcdbX1hfEV
-        9vIVyfMbM13hO925FJUKEHIMRSOUhXksWvlJSeMUIRZsdIQEn6vDS9Clo7xpsmi7kvtuYN
-        vBZxnlonGUGZuf7Xii4dNTp4w5ncfPmsKT09eBWhgSKQTfTnGL5bz14pbtesWj4e1JMsNp
-        dXfsavHShib3qSvIY0VSgCE4RJTRvk762n/8zKseypj3N7fS88/jy/iyKYYYbJWUu8qBF3
-        PpUSNw5//cOw20gY7dazPESWeQxVGGGUp3xi6ylNW6WphmyglRUcKOuKKMglVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603837151;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DvySRBYXlT12Vi5G4QeTsoF9zVbsAwIORCuMUT2/f0E=;
-        b=jJz9jSTwsTU70ytqXiVoMPsgibLJe4F13nN04E9YTgcNBwVzDZJaIRtrikMT43ymjmoQ6r
-        RXiRVdmGCIWwEiAw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/debug: Fix BTF handling
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kyle Huey <me@kylehuey.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201027093607.956147736@infradead.org>
-References: <20201027093607.956147736@infradead.org>
+        id S1832346AbgJ0WXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 18:23:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505747AbgJ0WXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 18:23:54 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48278221FB;
+        Tue, 27 Oct 2020 22:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603837433;
+        bh=Cc+90dgAQa5qCqT7yhr5+fNXcD/lqcWVm7Ov6RIsF+E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vp30La2lUQBdT+96S72S0Dz1GBdL4xWzRgVCDUUYiqM/K1v5/g9Nnn/y8+SrzYwQg
+         h75xpYI33IvDxYnn9rJtAMoYxl0HX+x4vO0D92tKl80Ffkjq93h0t7Dd8Cud+CGbTQ
+         66CRxjf9li3sgA29EGFpvFJiJpiA8eroc6IiQMh8=
+Received: by mail-ot1-f42.google.com with SMTP id n15so2568853otl.8;
+        Tue, 27 Oct 2020 15:23:53 -0700 (PDT)
+X-Gm-Message-State: AOAM53155J3qiMXis/tlwYxqv5IK0Ms8lOLFqVgF6GiTbVIYG4U6HHAH
+        4nT3qBkHtkGOXsKRxbeqFsrImCdUrYlRw0TLWww=
+X-Google-Smtp-Source: ABdhPJziJpHQvbpPWWIsVOva0M9OAmaLmP58/5ARQiTSJz3RHLSs0wa1cHQ4AJnrxEt8YQdaEuEp0Vm2ExMSe83AUT8=
+X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr2946472ots.90.1603837432594;
+ Tue, 27 Oct 2020 15:23:52 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <160383715065.397.13798611442467299455.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201027205723.12514-1-ardb@kernel.org> <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
+ <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com> <CAKwvOdnfkZXJdZkKO6qT53j6nH4HF=CcpUZcr7XOqdnQLSShmw@mail.gmail.com>
+In-Reply-To: <CAKwvOdnfkZXJdZkKO6qT53j6nH4HF=CcpUZcr7XOqdnQLSShmw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 27 Oct 2020 23:23:41 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGFWr5FSiO79VYEYhB2eCpDP5vyTJmdskxrKWnUz-GP-w@mail.gmail.com>
+Message-ID: <CAMj1kXGFWr5FSiO79VYEYhB2eCpDP5vyTJmdskxrKWnUz-GP-w@mail.gmail.com>
+Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
+ disable GCSE
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Tue, 27 Oct 2020 at 23:03, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Tue, Oct 27, 2020 at 2:50 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Tue, 27 Oct 2020 at 22:20, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > On Tue, Oct 27, 2020 at 1:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > >
+> > > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> > > > index 6e390d58a9f8..ac3fa37a84f9 100644
+> > > > --- a/include/linux/compiler_types.h
+> > > > +++ b/include/linux/compiler_types.h
+> > > > @@ -247,10 +247,6 @@ struct ftrace_likely_data {
+> > > >  #define asm_inline asm
+> > > >  #endif
+> > > >
+> > > > -#ifndef __no_fgcse
+> > > > -# define __no_fgcse
+> > > > -#endif
+> > > > -
+> > > Finally, this is going to disable GCSE for the whole translation unit,
+> > > which may be overkill.   Previously it was isolated to one function
+> > > definition.  You could lower the definition of the preprocessor define
+> > > into kernel/bpf/core.c to keep its use isolated as far as possible.
+> > >
+> >
+> > Which preprocessor define?
+>
+> __no_fgcse
+>
 
-Commit-ID:     2a9baf5ad4884108b3c6d56a50e8105ccf8a4ee7
-Gitweb:        https://git.kernel.org/tip/2a9baf5ad4884108b3c6d56a50e8105ccf8a4ee7
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 27 Oct 2020 10:15:05 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 27 Oct 2020 23:15:23 +01:00
-
-x86/debug: Fix BTF handling
-
-The SDM states that #DB clears DEBUGCTLMSR_BTF, this means that when the
-bit is set for userspace (TIF_BLOCKSTEP) and a kernel #DB happens first,
-the BTF bit meant for userspace execution is lost.
-
-Have the kernel #DB handler restore the BTF bit when it was requested
-for userspace.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Kyle Huey <me@kylehuey.com> 
-Link: https://lore.kernel.org/r/20201027093607.956147736@infradead.org
-
----
- arch/x86/kernel/traps.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 3c70fb3..b5208aa 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -799,13 +799,6 @@ static __always_inline unsigned long debug_read_clear_dr6(void)
- 	 */
- 	current->thread.virtual_dr6 = 0;
- 
--	/*
--	 * The SDM says "The processor clears the BTF flag when it
--	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
--	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
--	 */
--	clear_thread_flag(TIF_BLOCKSTEP);
--
- 	return dr6;
- }
- 
-@@ -873,6 +866,20 @@ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
- 	 */
- 	WARN_ON_ONCE(user_mode(regs));
- 
-+	if (test_thread_flag(TIF_BLOCKSTEP)) {
-+		/*
-+		 * The SDM says "The processor clears the BTF flag when it
-+		 * generates a debug exception." but PTRACE_BLOCKSTEP requested
-+		 * it for userspace, but we just took a kernel #DB, so re-set
-+		 * BTF.
-+		 */
-+		unsigned long debugctl;
-+
-+		rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-+		debugctl |= DEBUGCTLMSR_BTF;
-+		wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-+	}
-+
- 	/*
- 	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
- 	 * watchpoint at the same time then that will still be handled.
-@@ -936,6 +943,13 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
- 	instrumentation_begin();
- 
- 	/*
-+	 * The SDM says "The processor clears the BTF flag when it
-+	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
-+	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
-+	 */
-+	clear_thread_flag(TIF_BLOCKSTEP);
-+
-+	/*
- 	 * If dr6 has no reason to give us about the origin of this trap,
- 	 * then it's very likely the result of an icebp/int01 trap.
- 	 * User wants a sigtrap for that.
+But we can't use that, that is the whole point of this patch.
