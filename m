@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5167A29B83A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4270729BA0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799915AbgJ0PeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:34:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42866 "EHLO mail.kernel.org"
+        id S1803841AbgJ0Px3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:53:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368748AbgJ0P1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:27:19 -0400
+        id S368753AbgJ0P1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:27:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60A6020657;
-        Tue, 27 Oct 2020 15:27:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71C2D22202;
+        Tue, 27 Oct 2020 15:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812438;
-        bh=o426H1i3aVi6hnEFyHxSPISptOGmk3ZczSr4QHZcDSo=;
+        s=default; t=1603812441;
+        bh=Sz1MxoIX2bhhHXpza6QKvGLQfuaUSo/wFg+bSWNNUsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1TlzSjqiNIQOXxCwihoP844kgrcqBpDgp6GQ/CvjbAGdglIjw1Xu9yLJX+x9CrXg3
-         l4ZuXs4KXnm0cYeEJ+8naNtZkxJ1WBIEVdIXVnvEsNuQ11RAvv9k8eIwFUTQ4KNiO7
-         /Vcr2lkujVgW7Tw/v3Zw8i8xyrrPrdOtVs1gLtM0=
+        b=Y8YiEV1L3fZV7rSXMeffb+2sVQ2n4tXEru7N3TuFDC0jUs4hDUjNJUsz+bR1OI1UT
+         neARdUG1sPY0mFuwinWNzNepPPcj/k/C4AKrrQ1i37ROBeb+HUxSYAQ8dlgCvqddzs
+         9zyOSXhtfJJ6LipCl6byV6uC+X2sVLWev3YKquSk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Robin Gong <b38343@freescale.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 179/757] hwmon: (bt1-pvt) Wait for the completion with timeout
-Date:   Tue, 27 Oct 2020 14:47:09 +0100
-Message-Id: <20201027135458.992300435@linuxfoundation.org>
+Subject: [PATCH 5.9 180/757] spi: imx: Fix freeing of DMA channels if spi_bitbang_start() fails
+Date:   Tue, 27 Oct 2020 14:47:10 +0100
+Message-Id: <20201027135459.032020313@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,64 +47,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 0ffd21d5985506d164ada9e8fff6daae8ef469a1 ]
+[ Upstream commit 45f0bbdafd26d6d772172563b30bff561cec9133 ]
 
-If the PVT sensor is suddenly powered down while a caller is waiting for
-the conversion completion, the request won't be finished and the task will
-hang up on this procedure until the power is back up again. Let's call the
-wait_for_completion_timeout() method instead to prevent that. The cached
-timeout is exactly what we need to predict for how long conversion could
-normally last.
+If the SPI controller has has_dmamode = true and spi_bitbang_start() fails
+in spi_imx_probe(), then the driver must release the DMA channels acquired
+in spi_imx_sdma_init() by calling spi_imx_sdma_exit() in the fail path.
 
-Fixes: 87976ce2825d ("hwmon: Add Baikal-T1 PVT sensor driver")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Link: https://lore.kernel.org/r/20200920110924.19741-4-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: f62caccd12c1 ("spi: spi-imx: add DMA support")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Robin Gong <b38343@freescale.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Link: https://lore.kernel.org/r/20201005132229.513119-1-marex@denx.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/bt1-pvt.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/spi/spi-imx.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/bt1-pvt.c b/drivers/hwmon/bt1-pvt.c
-index 2600426a3b21c..3e1d56585b91a 100644
---- a/drivers/hwmon/bt1-pvt.c
-+++ b/drivers/hwmon/bt1-pvt.c
-@@ -477,6 +477,7 @@ static int pvt_read_data(struct pvt_hwmon *pvt, enum pvt_sensor_type type,
- 			 long *val)
- {
- 	struct pvt_cache *cache = &pvt->cache[type];
-+	unsigned long timeout;
- 	u32 data;
- 	int ret;
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 38a5f1304cec4..e38e5ad3c7068 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -1707,7 +1707,7 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 	ret = spi_bitbang_start(&spi_imx->bitbang);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "bitbang start failed with %d\n", ret);
+-		goto out_runtime_pm_put;
++		goto out_bitbang_start;
+ 	}
  
-@@ -500,7 +501,14 @@ static int pvt_read_data(struct pvt_hwmon *pvt, enum pvt_sensor_type type,
- 	pvt_update(pvt->regs + PVT_INTR_MASK, PVT_INTR_DVALID, 0);
- 	pvt_update(pvt->regs + PVT_CTRL, PVT_CTRL_EN, PVT_CTRL_EN);
+ 	dev_info(&pdev->dev, "probed\n");
+@@ -1717,6 +1717,9 @@ static int spi_imx_probe(struct platform_device *pdev)
  
--	wait_for_completion(&cache->conversion);
-+	/*
-+	 * Wait with timeout since in case if the sensor is suddenly powered
-+	 * down the request won't be completed and the caller will hang up on
-+	 * this procedure until the power is back up again. Multiply the
-+	 * timeout by the factor of two to prevent a false timeout.
-+	 */
-+	timeout = 2 * usecs_to_jiffies(ktime_to_us(pvt->timeout));
-+	ret = wait_for_completion_timeout(&cache->conversion, timeout);
+ 	return ret;
  
- 	pvt_update(pvt->regs + PVT_CTRL, PVT_CTRL_EN, 0);
- 	pvt_update(pvt->regs + PVT_INTR_MASK, PVT_INTR_DVALID,
-@@ -510,6 +518,9 @@ static int pvt_read_data(struct pvt_hwmon *pvt, enum pvt_sensor_type type,
- 
- 	mutex_unlock(&pvt->iface_mtx);
- 
-+	if (!ret)
-+		return -ETIMEDOUT;
-+
- 	if (type == PVT_TEMP)
- 		*val = pvt_calc_poly(&poly_N_to_temp, data);
- 	else
++out_bitbang_start:
++	if (spi_imx->devtype_data->has_dmamode)
++		spi_imx_sdma_exit(spi_imx);
+ out_runtime_pm_put:
+ 	pm_runtime_dont_use_autosuspend(spi_imx->dev);
+ 	pm_runtime_put_sync(spi_imx->dev);
 -- 
 2.25.1
 
