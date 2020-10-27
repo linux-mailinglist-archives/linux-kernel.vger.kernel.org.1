@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4429229C6FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC64D29C48D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827696AbgJ0S0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
+        id S2901008AbgJ0OSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390959AbgJ0OAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:00:34 -0400
+        id S2508012AbgJ0OOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:14:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 074C921D7B;
-        Tue, 27 Oct 2020 14:00:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6D34206F7;
+        Tue, 27 Oct 2020 14:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807233;
-        bh=08qxcCt7Hlmu9AiTjVzLyRv6NcOSyI4KdPv4xpvonkQ=;
+        s=default; t=1603808070;
+        bh=SSRlL4f84kMrgd9oCMsZLq8cF/Dwc/cJu7lwmU1Wjew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kiZEtWzNC/UYbGXDtQanNgpuFvCVpYbzk65NEOJcxI8r6+JxELSxX1oMbVFMkYMIL
-         /UUlLpkPi/sLUJWvetasueL1xygkcQmCBo6KQ9gpPoFRZ2Bc9z3hfgoHfe/pXZSgLm
-         dG543tJYT1H+qv5FY925eBXi8ZtL6eJAjIN6ER30=
+        b=TxujCxk6srnMq57ULEcEUKi+KMik6vydLT4a9MEd5dFTOheagqO5SnRVpt77PEITq
+         V3vzZsjp8GifxePS/QbZoD64vf5w7rq6FKBC/Vyt+0NmoFbSCjsmsaQ10IsAN8/LXh
+         l2nrG35NIYWQE653QuSpvM3GpNR9iI9oPkQauExE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Roman Bolshakov <r.bolshakov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 090/112] scsi: target: core: Add CONTROL field for trace events
-Date:   Tue, 27 Oct 2020 14:50:00 +0100
-Message-Id: <20201027134904.806744426@linuxfoundation.org>
+Subject: [PATCH 4.14 146/191] media: platform: sti: hva: Fix runtime PM imbalance on error
+Date:   Tue, 27 Oct 2020 14:50:01 +0100
+Message-Id: <20201027134916.730436007@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,111 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Bolshakov <r.bolshakov@yadro.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 7010645ba7256992818b518163f46bd4cdf8002a ]
+[ Upstream commit d912a1d9e9afe69c6066c1ceb6bfc09063074075 ]
 
-trace-cmd report doesn't show events from target subsystem because
-scsi_command_size() leaks through event format string:
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-  [target:target_sequencer_start] function scsi_command_size not defined
-  [target:target_cmd_complete] function scsi_command_size not defined
-
-Addition of scsi_command_size() to plugin_scsi.c in trace-cmd doesn't
-help because an expression is used inside TP_printk(). trace-cmd event
-parser doesn't understand minus sign inside [ ]:
-
-  Error: expected ']' but read '-'
-
-Rather than duplicating kernel code in plugin_scsi.c, provide a dedicated
-field for CONTROL byte.
-
-Link: https://lore.kernel.org/r/20200929125957.83069-1-r.bolshakov@yadro.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/scsi/scsi_common.h    |  7 +++++++
- include/trace/events/target.h | 12 ++++++------
- 2 files changed, 13 insertions(+), 6 deletions(-)
+ drivers/media/platform/sti/hva/hva-hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/scsi/scsi_common.h b/include/scsi/scsi_common.h
-index 11571b2a831e3..92ba09200f89b 100644
---- a/include/scsi/scsi_common.h
-+++ b/include/scsi/scsi_common.h
-@@ -24,6 +24,13 @@ scsi_command_size(const unsigned char *cmnd)
- 		scsi_varlen_cdb_length(cmnd) : COMMAND_SIZE(cmnd[0]);
- }
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index 8dce2ccc551cb..1185f6b6721e9 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -393,7 +393,7 @@ int hva_hw_probe(struct platform_device *pdev, struct hva_dev *hva)
+ 	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s     failed to set PM\n", HVA_PREFIX);
+-		goto err_clk;
++		goto err_pm;
+ 	}
  
-+static inline unsigned char
-+scsi_command_control(const unsigned char *cmnd)
-+{
-+	return (cmnd[0] == VARIABLE_LENGTH_CMD) ?
-+		cmnd[1] : cmnd[COMMAND_SIZE(cmnd[0]) - 1];
-+}
-+
- /* Returns a human-readable name for the device */
- extern const char *scsi_device_type(unsigned type);
- 
-diff --git a/include/trace/events/target.h b/include/trace/events/target.h
-index 50fea660c0f89..d543e8b87e50a 100644
---- a/include/trace/events/target.h
-+++ b/include/trace/events/target.h
-@@ -139,6 +139,7 @@ TRACE_EVENT(target_sequencer_start,
- 		__field( unsigned int,	opcode		)
- 		__field( unsigned int,	data_length	)
- 		__field( unsigned int,	task_attribute  )
-+		__field( unsigned char,	control		)
- 		__array( unsigned char,	cdb, TCM_MAX_COMMAND_SIZE	)
- 		__string( initiator,	cmd->se_sess->se_node_acl->initiatorname	)
- 	),
-@@ -148,6 +149,7 @@ TRACE_EVENT(target_sequencer_start,
- 		__entry->opcode		= cmd->t_task_cdb[0];
- 		__entry->data_length	= cmd->data_length;
- 		__entry->task_attribute	= cmd->sam_task_attr;
-+		__entry->control	= scsi_command_control(cmd->t_task_cdb);
- 		memcpy(__entry->cdb, cmd->t_task_cdb, TCM_MAX_COMMAND_SIZE);
- 		__assign_str(initiator, cmd->se_sess->se_node_acl->initiatorname);
- 	),
-@@ -157,9 +159,7 @@ TRACE_EVENT(target_sequencer_start,
- 		  show_opcode_name(__entry->opcode),
- 		  __entry->data_length, __print_hex(__entry->cdb, 16),
- 		  show_task_attribute_name(__entry->task_attribute),
--		  scsi_command_size(__entry->cdb) <= 16 ?
--			__entry->cdb[scsi_command_size(__entry->cdb) - 1] :
--			__entry->cdb[1]
-+		  __entry->control
- 	)
- );
- 
-@@ -174,6 +174,7 @@ TRACE_EVENT(target_cmd_complete,
- 		__field( unsigned int,	opcode		)
- 		__field( unsigned int,	data_length	)
- 		__field( unsigned int,	task_attribute  )
-+		__field( unsigned char,	control		)
- 		__field( unsigned char,	scsi_status	)
- 		__field( unsigned char,	sense_length	)
- 		__array( unsigned char,	cdb, TCM_MAX_COMMAND_SIZE	)
-@@ -186,6 +187,7 @@ TRACE_EVENT(target_cmd_complete,
- 		__entry->opcode		= cmd->t_task_cdb[0];
- 		__entry->data_length	= cmd->data_length;
- 		__entry->task_attribute	= cmd->sam_task_attr;
-+		__entry->control	= scsi_command_control(cmd->t_task_cdb);
- 		__entry->scsi_status	= cmd->scsi_status;
- 		__entry->sense_length	= cmd->scsi_status == SAM_STAT_CHECK_CONDITION ?
- 			min(18, ((u8 *) cmd->sense_buffer)[SPC_ADD_SENSE_LEN_OFFSET] + 8) : 0;
-@@ -202,9 +204,7 @@ TRACE_EVENT(target_cmd_complete,
- 		  show_opcode_name(__entry->opcode),
- 		  __entry->data_length, __print_hex(__entry->cdb, 16),
- 		  show_task_attribute_name(__entry->task_attribute),
--		  scsi_command_size(__entry->cdb) <= 16 ?
--			__entry->cdb[scsi_command_size(__entry->cdb) - 1] :
--			__entry->cdb[1]
-+		  __entry->control
- 	)
- );
- 
+ 	/* check IP hardware version */
 -- 
 2.25.1
 
