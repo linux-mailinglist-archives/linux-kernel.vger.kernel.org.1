@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB9029B47A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D442E29B47C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789706AbgJ0PCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:02:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32846 "EHLO mail.kernel.org"
+        id S1789728AbgJ0PCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784669AbgJ0O71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:59:27 -0400
+        id S1784696AbgJ0O7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:59:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A72B20715;
-        Tue, 27 Oct 2020 14:59:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5E1D22281;
+        Tue, 27 Oct 2020 14:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810767;
-        bh=mNhTHkVmX3M/Ysu7IIgyyOYMb5QWzrLt9mkFamXepxU=;
+        s=default; t=1603810772;
+        bh=9cAxKDDdBHgdQxLa10YFLtrt7HHtzL5GsjTkmHuEHUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d0/CmsMpAPj6VoxscQZ2frKvauU2pTWpX37QYuuL6XswjtexSnslQlXEKe/gDvTAN
-         653JoVAD42M/V2eyF5aseSMU2HebKpWDJJeBpTSn7/p8OFbjUjsFqal3CcaNNr7xsC
-         nbKTztT322WpbdgC+AeUckOIWG6fOHnJS2r0Pb3o=
+        b=G8D4ZwHKcssAZLGN9fGb9SwAEmp+4UE+oDO9T4hF5D4yLt0bBd9iQxv3g4M3g+PUs
+         6XnioDHP7qxWkV7rPr0bUMio8dPOXZHYOhTu3nOz3vRkofwU1I9c/0lJF49canv8a9
+         JXAxD29vt+gY6fSxFirL9KKI5biUq/n/T5ZzDZ5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 257/633] drm: rcar-du: Put reference to VSP device
-Date:   Tue, 27 Oct 2020 14:50:00 +0100
-Message-Id: <20201027135534.716222545@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 259/633] dmaengine: dmatest: Check list for emptiness before access its last entry
+Date:   Tue, 27 Oct 2020 14:50:02 +0100
+Message-Id: <20201027135534.811124460@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,60 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2a32dbdc2c7db5463483fa01fb220fd1b770c6bc ]
+[ Upstream commit b28de385b71abf31ce68ec0387638bee26ae9024 ]
 
-The reference to the VSP device acquired with of_find_device_by_node()
-in rcar_du_vsp_init() is never released. Fix it with a drmm action,
-which gets run both in the probe error path and in the remove path.
+After writing a garbage to the channel we get an Oops in dmatest_chan_set()
+due to access to last entry in the empty list.
 
-Fixes: 6d62ef3ac30b ("drm: rcar-du: Expose the VSP1 compositor through KMS planes")
-Reported-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+[  212.670672] BUG: unable to handle page fault for address: fffffff000000020
+[  212.677562] #PF: supervisor read access in kernel mode
+[  212.682702] #PF: error_code(0x0000) - not-present page
+...
+[  212.710074] RIP: 0010:dmatest_chan_set+0x149/0x2d0 [dmatest]
+[  212.715739] Code: e8 cc f9 ff ff 48 8b 1d 0d 55 00 00 48 83 7b 10 00 0f 84 63 01 00 00 48 c7 c7 d0 65 4d c0 e8 ee 4a f5 e1 48 89 c6 48 8b 43 10 <48> 8b 40 20 48 8b 78 58 48 85 ff 0f 84 f5 00 00 00 e8 b1 41 f5 e1
+
+Fix this by checking list for emptiness before accessing its last entry.
+
+Fixes: d53513d5dc28 ("dmaengine: dmatest: Add support for multi channel testing")
+Cc: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20200922115847.30100-2-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rcar-du/rcar_du_vsp.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/dma/dmatest.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
-index f1a81c9b184d4..fa09b3ae8b9d4 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
-@@ -13,6 +13,7 @@
- #include <drm/drm_fourcc.h>
- #include <drm/drm_gem_cma_helper.h>
- #include <drm/drm_gem_framebuffer_helper.h>
-+#include <drm/drm_managed.h>
- #include <drm/drm_plane_helper.h>
- #include <drm/drm_vblank.h>
+diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+index 323822372b4ce..7480fc1042093 100644
+--- a/drivers/dma/dmatest.c
++++ b/drivers/dma/dmatest.c
+@@ -1240,15 +1240,14 @@ static int dmatest_chan_set(const char *val, const struct kernel_param *kp)
+ 	add_threaded_test(info);
  
-@@ -341,6 +342,13 @@ static const struct drm_plane_funcs rcar_du_vsp_plane_funcs = {
- 	.atomic_destroy_state = rcar_du_vsp_plane_atomic_destroy_state,
- };
- 
-+static void rcar_du_vsp_cleanup(struct drm_device *dev, void *res)
-+{
-+	struct rcar_du_vsp *vsp = res;
-+
-+	put_device(vsp->vsp);
-+}
-+
- int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
- 		     unsigned int crtcs)
- {
-@@ -357,6 +365,10 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
- 
- 	vsp->vsp = &pdev->dev;
- 
-+	ret = drmm_add_action(rcdu->ddev, rcar_du_vsp_cleanup, vsp);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = vsp1_du_init(vsp->vsp);
- 	if (ret < 0)
- 		return ret;
+ 	/* Check if channel was added successfully */
+-	dtc = list_last_entry(&info->channels, struct dmatest_chan, node);
+-
+-	if (dtc->chan) {
++	if (!list_empty(&info->channels)) {
+ 		/*
+ 		 * if new channel was not successfully added, revert the
+ 		 * "test_channel" string to the name of the last successfully
+ 		 * added channel. exception for when users issues empty string
+ 		 * to channel parameter.
+ 		 */
++		dtc = list_last_entry(&info->channels, struct dmatest_chan, node);
+ 		if ((strcmp(dma_chan_name(dtc->chan), strim(test_channel)) != 0)
+ 		    && (strcmp("", strim(test_channel)) != 0)) {
+ 			ret = -EINVAL;
 -- 
 2.25.1
 
