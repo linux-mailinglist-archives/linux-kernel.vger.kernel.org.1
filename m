@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D451E29B489
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D1A29B57B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790006AbgJ0PDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:03:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33686 "EHLO mail.kernel.org"
+        id S1794574AbgJ0PMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1788707AbgJ0PAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:00:32 -0400
+        id S2899198AbgJ0PAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:00:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50BD622264;
-        Tue, 27 Oct 2020 15:00:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD13A22284;
+        Tue, 27 Oct 2020 15:00:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810831;
-        bh=XI/PGtV0g0DQ1gOTZuh8r193FjOwkN/55NTCqAc7kB8=;
+        s=default; t=1603810840;
+        bh=JCqkuyZ3RSpGTdzTJQyAtefNvboJJGIa/QlusIln+oM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NCC55EjwxSu1qiGK2DWGAp4OQCUO8D9eZLkvZGDJiWbljc7mGSwrY18owKqntPeYf
-         7fSF1zcsd7VTEPqVO9PImKK5VJkpyTW7o5/BUtYSvwlSBo0U7gulSuiKJvPNusJpQf
-         AZte+qUmwIUcYlYXDcHADUB3IuCLLhABWXIseBVQ=
+        b=IXURm2XlStKzxki3aF3YcZGMvMfV8dynf4VGKBYyx3ul5oyok5BVzpjwRE/EbVABO
+         SUWIxfnDf2xFbCVUp0af2xAQHBbOeaQv762r6JqrVycEAwrbyMPmaFh1TsgAJWU0xT
+         KhZidLg+cLH9HEavlKAdGJkylzLSC5ADsiRFtvF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        stable@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 247/633] ASoC: tas2770: Add missing bias level power states
-Date:   Tue, 27 Oct 2020 14:49:50 +0100
-Message-Id: <20201027135534.265361809@linuxfoundation.org>
+Subject: [PATCH 5.8 250/633] ASoC: tlv320aic32x4: Fix bdiv clock rate derivation
+Date:   Tue, 27 Oct 2020 14:49:53 +0100
+Message-Id: <20201027135534.405128668@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,41 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit 4272caf34aa4699eca8e6e7f4a8e5ea2bde275c9 ]
+[ Upstream commit 40b37136287ba6b34aa2f1f6123f3d6d205dc2f0 ]
 
-Add the BIAS_STANDBY and BIAS_PREPARE to the set_bias_level or else the
-driver will return -EINVAL which is not correct as they are valid
-states.
+Current code expects a single channel to be always used. Fix this
+situation by forwarding the number of channels used. Then fix the
+derivation of the bdiv clock rate.
 
-Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200918190548.12598-2-dmurphy@ti.com
+Fixes: 96c3bb00239d ("ASoC: tlv320aic32x4: Dynamically Determine Clocking")
+Suggested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/r/20200911173140.29984-3-miquel.raynal@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/tas2770.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic32x4.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 9f759c51ca435..4d67b1c160380 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -57,7 +57,12 @@ static int tas2770_set_bias_level(struct snd_soc_component *component,
- 			TAS2770_PWR_CTRL_MASK,
- 			TAS2770_PWR_CTRL_ACTIVE);
- 		break;
--
-+	case SND_SOC_BIAS_STANDBY:
-+	case SND_SOC_BIAS_PREPARE:
-+		snd_soc_component_update_bits(component,
-+			TAS2770_PWR_CTRL,
-+			TAS2770_PWR_CTRL_MASK, TAS2770_PWR_CTRL_MUTE);
-+		break;
- 	case SND_SOC_BIAS_OFF:
- 		snd_soc_component_update_bits(component,
- 			TAS2770_PWR_CTRL,
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index d087f3b20b1d5..50b66cf9ea8f9 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -665,7 +665,7 @@ static int aic32x4_set_processing_blocks(struct snd_soc_component *component,
+ }
+ 
+ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+-				unsigned int sample_rate)
++				unsigned int sample_rate, unsigned int channels)
+ {
+ 	u8 aosr;
+ 	u16 dosr;
+@@ -753,7 +753,9 @@ static int aic32x4_setup_clocks(struct snd_soc_component *component,
+ 							dosr);
+ 
+ 						clk_set_rate(clocks[5].clk,
+-							sample_rate * 32);
++							sample_rate * 32 *
++							channels);
++
+ 						return 0;
+ 					}
+ 				}
+@@ -775,7 +777,8 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
+ 	u8 iface1_reg = 0;
+ 	u8 dacsetup_reg = 0;
+ 
+-	aic32x4_setup_clocks(component, params_rate(params));
++	aic32x4_setup_clocks(component, params_rate(params),
++			     params_channels(params));
+ 
+ 	switch (params_width(params)) {
+ 	case 16:
 -- 
 2.25.1
 
