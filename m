@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8AF29BA89
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047EA29BA8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806525AbgJ0QGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:06:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53142 "EHLO mail.kernel.org"
+        id S1806534AbgJ0QGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:06:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802817AbgJ0Pvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:51:39 -0400
+        id S1802820AbgJ0Pvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:51:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CB78207C3;
-        Tue, 27 Oct 2020 15:51:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6686F21D42;
+        Tue, 27 Oct 2020 15:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813897;
-        bh=DQjGKbpQTULMZhHuUu2Ys3nYEbPtZNpbo/JbdCotYps=;
+        s=default; t=1603813900;
+        bh=FBqAX4Nlux7a4Uu4dXBl/qkcr0gRMHjl7qMm6n+y1Xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ud85NeXij8+7fecF6/XV9Y7XMLUeWcBE263c+xRaAySYuBovADPMEtt7vXGnAVHKM
-         wE+RGx+83kAUNXKYY/6XWE5tHOAF4xPh99nakugTAsUP1DPfoePSkt8gTuRDHzFF7O
-         XeNO03clqBVBu99sjEL9d9V4uu+cq+3Q9FN7gbWg=
+        b=ZFPk7GCusFRaCTrzXWGPkP9Vo98GPBwoaFVFpOIdSY2s/RgcC6l6rFqoP+XJP+qlm
+         8u3tQLaxlr7Q3E2sL0xihpVWWXKghnVunBL1zvcfWDho0fVudoTLCNtMhcmMQlAFy/
+         snCYMTtXJA+1zwErglioQ4839s7EDOIOoMeO7eDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 706/757] xfs: make sure the rt allocator doesnt run off the end
-Date:   Tue, 27 Oct 2020 14:55:56 +0100
-Message-Id: <20201027135523.621223082@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 707/757] usb: ohci: Default to per-port over-current protection
+Date:   Tue, 27 Oct 2020 14:55:57 +0100
+Message-Id: <20201027135523.662796763@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,56 +43,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 
-[ Upstream commit 2a6ca4baed620303d414934aa1b7b0a8e7bab05f ]
+[ Upstream commit b77d2a0a223bc139ee8904991b2922d215d02636 ]
 
-There's an overflow bug in the realtime allocator.  If the rt volume is
-large enough to handle a single allocation request that is larger than
-the maximum bmap extent length and the rt bitmap ends exactly on a
-bitmap block boundary, it's possible that the near allocator will try to
-check the freeness of a range that extends past the end of the bitmap.
-This fails with a corruption error and shuts down the fs.
+Some integrated OHCI controller hubs do not expose all ports of the hub
+to pins on the SoC. In some cases the unconnected ports generate
+spurious over-current events. For example the Broadcom 56060/Ranger 2 SoC
+contains a nominally 3 port hub but only the first port is wired.
 
-Therefore, constrain maxlen so that the range scan cannot run off the
-end of the rt bitmap.
+Default behaviour for ohci-platform driver is to use global over-current
+protection mode (AKA "ganged"). This leads to the spurious over-current
+events affecting all ports in the hub.
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+We now alter the default to use per-port over-current protection.
+
+This patch results in the following configuration changes depending
+on quirks:
+- For quirk OHCI_QUIRK_SUPERIO no changes. These systems remain set up
+  for ganged power switching and no over-current protection.
+- For quirk OHCI_QUIRK_AMD756 or OHCI_QUIRK_HUB_POWER power switching
+  remains at none, while over-current protection is now guaranteed to be
+  set to per-port rather than the previous behaviour where it was either
+  none or global over-current protection depending on the value at
+  function entry.
+
+Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20200910212512.16670-1-hamish.martin@alliedtelesis.co.nz
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_rtalloc.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/usb/host/ohci-hcd.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
-index 6209e7b6b895b..86994d7f7cba3 100644
---- a/fs/xfs/xfs_rtalloc.c
-+++ b/fs/xfs/xfs_rtalloc.c
-@@ -247,6 +247,9 @@ xfs_rtallocate_extent_block(
- 		end = XFS_BLOCKTOBIT(mp, bbno + 1) - 1;
- 	     i <= end;
- 	     i++) {
-+		/* Make sure we don't scan off the end of the rt volume. */
-+		maxlen = min(mp->m_sb.sb_rextents, i + maxlen) - i;
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index dd37e77dae001..2845ea328a064 100644
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -673,20 +673,24 @@ static int ohci_run (struct ohci_hcd *ohci)
+ 
+ 	/* handle root hub init quirks ... */
+ 	val = roothub_a (ohci);
+-	val &= ~(RH_A_PSM | RH_A_OCPM);
++	/* Configure for per-port over-current protection by default */
++	val &= ~RH_A_NOCP;
++	val |= RH_A_OCPM;
+ 	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
+-		/* NSC 87560 and maybe others */
++		/* NSC 87560 and maybe others.
++		 * Ganged power switching, no over-current protection.
++		 */
+ 		val |= RH_A_NOCP;
+-		val &= ~(RH_A_POTPGT | RH_A_NPS);
+-		ohci_writel (ohci, val, &ohci->regs->roothub.a);
++		val &= ~(RH_A_POTPGT | RH_A_NPS | RH_A_PSM | RH_A_OCPM);
+ 	} else if ((ohci->flags & OHCI_QUIRK_AMD756) ||
+ 			(ohci->flags & OHCI_QUIRK_HUB_POWER)) {
+ 		/* hub power always on; required for AMD-756 and some
+-		 * Mac platforms.  ganged overcurrent reporting, if any.
++		 * Mac platforms.
+ 		 */
+ 		val |= RH_A_NPS;
+-		ohci_writel (ohci, val, &ohci->regs->roothub.a);
+ 	}
++	ohci_writel(ohci, val, &ohci->regs->roothub.a);
 +
- 		/*
- 		 * See if there's a free extent of maxlen starting at i.
- 		 * If it's not so then next will contain the first non-free.
-@@ -442,6 +445,14 @@ xfs_rtallocate_extent_near(
- 	 */
- 	if (bno >= mp->m_sb.sb_rextents)
- 		bno = mp->m_sb.sb_rextents - 1;
-+
-+	/* Make sure we don't run off the end of the rt volume. */
-+	maxlen = min(mp->m_sb.sb_rextents, bno + maxlen) - bno;
-+	if (maxlen < minlen) {
-+		*rtblock = NULLRTBLOCK;
-+		return 0;
-+	}
-+
- 	/*
- 	 * Try the exact allocation first.
- 	 */
+ 	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
+ 	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
+ 						&ohci->regs->roothub.b);
 -- 
 2.25.1
 
