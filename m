@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC1F29C0CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E52329C0AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818415AbgJ0RTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:19:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
+        id S1818180AbgJ0RR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:17:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1782221AbgJ0O4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:56:54 -0400
+        id S1782271AbgJ0O46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:56:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CE1622264;
-        Tue, 27 Oct 2020 14:56:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E955A2071A;
+        Tue, 27 Oct 2020 14:56:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810612;
-        bh=ej7Pl3mn9A2u4s5nE3ZMFDCOOWE1YXY+NxAcVV9n9Kg=;
+        s=default; t=1603810618;
+        bh=iJnZVUHkBWMdIiC15dVvfmSEi1FVvefmqQkpr+lsdU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tqsAQpdpg2Sy3YbqjsrY1ih1oD9mmTt+kI58JxgM7wTchJYj1g1a5t0otsScgkJQO
-         LcGW03oQ/SLkGlIJ9VkDDs/KJ+O2yaywhRcKzfZ6X/AriwN7EwXaD7uo06U6uxin1C
-         gJk4IWUKIR20QZ1fCdoPtPI4RfJ8+Leboh+cj1vc=
+        b=OsTv0V9Cw+1EpZj9urItxopFF2rDhWiElhP6FycOnz2De9V+QVk+NrmqcW5tHS/H/
+         pb99kr7vfFO9+AYw+bGQyTYG8AlQR3/QgHvA/F6tkMYer3XHSxN5gJCOZV6cv2KlOt
+         uixDf++k6H/CDIGgjnG+ojPQGwc7Btqhmahj9L88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@intel.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Mathieu Malaterre <malat@debian.org>,
+        Kangjie Lu <kjlu@umn.edu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 201/633] video: fbdev: vga16fb: fix setting of pixclock because a pass-by-value error
-Date:   Tue, 27 Oct 2020 14:49:04 +0100
-Message-Id: <20201027135532.113407863@linuxfoundation.org>
+Subject: [PATCH 5.8 203/633] video: fbdev: radeon: Fix memleak in radeonfb_pci_register
+Date:   Tue, 27 Oct 2020 14:49:06 +0100
+Message-Id: <20201027135532.209258644@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,84 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit c72fab81ceaa54408b827a2f0486d9a0f4be34cf ]
+[ Upstream commit fe6c6a4af2be8c15bac77f7ea160f947c04840d1 ]
 
-The pixclock is being set locally because it is being passed as a
-pass-by-value argument rather than pass-by-reference, so the computed
-pixclock is never being set in var->pixclock. Fix this by passing
-by reference.
+When radeon_kick_out_firmware_fb() fails, info should be
+freed just like the subsequent error paths.
 
-[This dates back to 2002, I found the offending commit from the git
-history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git ]
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Jani Nikula <jani.nikula@intel.com>
-[b.zolnierkie: minor patch summary fixup]
-[b.zolnierkie: removed "Fixes:" tag (not in upstream tree)]
+Fixes: 069ee21a82344 ("fbdev: Fix loading of module radeonfb on PowerMac")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Mathieu Malaterre <malat@debian.org>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200723170227.996229-1-colin.king@canonical.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20200825062900.11210-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/vga16fb.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/video/fbdev/aty/radeon_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
-index 578d3541e3d6f..1e8a38a7967d8 100644
---- a/drivers/video/fbdev/vga16fb.c
-+++ b/drivers/video/fbdev/vga16fb.c
-@@ -243,7 +243,7 @@ static void vga16fb_update_fix(struct fb_info *info)
- }
+diff --git a/drivers/video/fbdev/aty/radeon_base.c b/drivers/video/fbdev/aty/radeon_base.c
+index e116a3f9ad566..687bd2c0d5040 100644
+--- a/drivers/video/fbdev/aty/radeon_base.c
++++ b/drivers/video/fbdev/aty/radeon_base.c
+@@ -2311,7 +2311,7 @@ static int radeonfb_pci_register(struct pci_dev *pdev,
  
- static void vga16fb_clock_chip(struct vga16fb_par *par,
--			       unsigned int pixclock,
-+			       unsigned int *pixclock,
- 			       const struct fb_info *info,
- 			       int mul, int div)
- {
-@@ -259,14 +259,14 @@ static void vga16fb_clock_chip(struct vga16fb_par *par,
- 		{     0 /* bad */,    0x00, 0x00}};
- 	int err;
+ 	ret = radeon_kick_out_firmware_fb(pdev);
+ 	if (ret)
+-		return ret;
++		goto err_release_fb;
  
--	pixclock = (pixclock * mul) / div;
-+	*pixclock = (*pixclock * mul) / div;
- 	best = vgaclocks;
--	err = pixclock - best->pixclock;
-+	err = *pixclock - best->pixclock;
- 	if (err < 0) err = -err;
- 	for (ptr = vgaclocks + 1; ptr->pixclock; ptr++) {
- 		int tmp;
- 
--		tmp = pixclock - ptr->pixclock;
-+		tmp = *pixclock - ptr->pixclock;
- 		if (tmp < 0) tmp = -tmp;
- 		if (tmp < err) {
- 			err = tmp;
-@@ -275,7 +275,7 @@ static void vga16fb_clock_chip(struct vga16fb_par *par,
- 	}
- 	par->misc |= best->misc;
- 	par->clkdiv = best->seq_clock_mode;
--	pixclock = (best->pixclock * div) / mul;		
-+	*pixclock = (best->pixclock * div) / mul;
- }
- 			       
- #define FAIL(X) return -EINVAL
-@@ -497,10 +497,10 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
- 
- 	if (mode & MODE_8BPP)
- 		/* pixel clock == vga clock / 2 */
--		vga16fb_clock_chip(par, var->pixclock, info, 1, 2);
-+		vga16fb_clock_chip(par, &var->pixclock, info, 1, 2);
- 	else
- 		/* pixel clock == vga clock */
--		vga16fb_clock_chip(par, var->pixclock, info, 1, 1);
-+		vga16fb_clock_chip(par, &var->pixclock, info, 1, 1);
- 	
- 	var->red.offset = var->green.offset = var->blue.offset = 
- 	var->transp.offset = 0;
+ 	/* request the mem regions */
+ 	ret = pci_request_region(pdev, 0, "radeonfb framebuffer");
 -- 
 2.25.1
 
