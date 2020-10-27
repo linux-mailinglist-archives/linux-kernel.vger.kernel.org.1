@@ -2,122 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BD429C614
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F9B29C60B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1825624AbgJ0SMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:12:45 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35844 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1825632AbgJ0SMK (ORCPT
+        id S1825661AbgJ0SMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:12:24 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:41144 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1825610AbgJ0SMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:12:10 -0400
-Received: by mail-wr1-f68.google.com with SMTP id x7so2986530wrl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:12:08 -0700 (PDT)
+        Tue, 27 Oct 2020 14:12:01 -0400
+Received: by mail-ej1-f66.google.com with SMTP id s15so3561428ejf.8;
+        Tue, 27 Oct 2020 11:11:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AizmEGLJWCh5e+BIl/5tzrCIJ5dIEIgB9BBqx3BLDyw=;
-        b=P2UTQj+r1SEKRJedJWTFLKzP8So657DIQN2igB9WKpnJ856BOvDDfhLzT9DqoAdWF2
-         kGplRYYu2HTJ/KE+eIhW6lNcI0+4I03RUL690XQRmlOGVhnMfC9z7AgiiKr43rrcu7Ck
-         48qsUdqDxpTL6c0x/WWSVXeMrpZ1T44svS/CO1rtcP6PIONfvEZ6w9Dm16JaqQQW+Fa5
-         N7dq/PTYCc6okwxpphEDjOj1VsK0sCgDoiH7qemoPGPyYaZ2o7NSEH1RSbUjqWVQuavW
-         4PQH5Tva2lt4aKmDZS5K36KPM79gR3Kz4coyHN2BcqYhepP+5Xb2e6QUlw9MpJjnOBun
-         vpnw==
+        bh=X+QwCJaXCPvUM/NJPq7e7lq/Xt5tTU8EStNpjKh1NUA=;
+        b=hQCVs6p0LKbTCY7DsTZRnffqeCThDRKsG5kMgr17NA+33i+s71KRCBQePPTg2SjNFd
+         C8Nr3swnguyyrqutB7zZZxrDDCJjC+1IwRYSJ3lTc3mW9KDS5rvaaG9mdnH+Gn+9ddkA
+         6VepBD8lN6lWuz+UHmhNquWZlPMwH3kdq/lXqxhGWw4ydd70+iWmZrDsxLJ+IH62ztPl
+         F232IhDGaraBW4IQNckvHZQu1+I7bVrea/YplgyLNVDKjtSaovQzQG6adBnHTqI3odgK
+         SFmhcVqccWA0ZYpAskg4cSEf3RAmGsfgEEOB67JgAiK6ZwZR/t/wpfqqh4bWYXl5YBeM
+         1aKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AizmEGLJWCh5e+BIl/5tzrCIJ5dIEIgB9BBqx3BLDyw=;
-        b=O/7e+rA1ArclaDkXq1GEsRHSXZ5QelZUisG2nso9/RB8SJTgNO71/lcabS4x2gLbMj
-         XHPVE1WzKi/8i5HKvbWk3vdIiF4Fm4iA23DUyL7P2ab7uSapkIeOiDHIsz71XdDpVwBV
-         vRbhLD1WUgWRB8OosJNz0KbciQ8BxOQwneM8ilnPvONjv5ZT4HpDlq0tdvF+bPpmCXs0
-         w2dRq/Ki8Z/luJPtYh98YzOhDk0TaX7bAKIfhs5zlhDBJzFJt12y4s1yPx3e8MvIuRPL
-         VDkhmGaM0X0aWYv6dO6ubBbsP84deNZhRmwZ+devlAbipthewlrTewHCeQklhsrRUEmO
-         e16Q==
-X-Gm-Message-State: AOAM531Sl/QKvzcVBgAAbxm8gXG5U2bRaIQhRP/bTYEDrZP5+FtXjFOD
-        Rx3BHSR2aBjGyPABHP6nX772Hg==
-X-Google-Smtp-Source: ABdhPJzW9nq4LkblMc0w9V7lubC2UdibGY38QsWzOP+oXqTs8LAZbRDjEIXechCCEn18xtlwRn4ufw==
-X-Received: by 2002:a5d:6052:: with SMTP id j18mr4408374wrt.306.1603822328165;
-        Tue, 27 Oct 2020 11:12:08 -0700 (PDT)
-Received: from localhost.localdomain (159.174.185.81.rev.sfr.net. [81.185.174.159])
-        by smtp.gmail.com with ESMTPSA id h206sm2801224wmf.47.2020.10.27.11.12.06
+        bh=X+QwCJaXCPvUM/NJPq7e7lq/Xt5tTU8EStNpjKh1NUA=;
+        b=YW+eda6CEZRraqk8ytQp1Mpz5A6ZY4ulohRx3KEd8htkgosIrrRb0god7zdQtahS8h
+         KB8oDL9omkw2AIm9gRADXS5a8S+kIn1S2ftZdarjROj8nUJl+Qi224m4d6/OLPlocvUS
+         4HyrLZXtGNfyhTfMD7+61bC4r/JgmrYpmUbfY0T/WdA3KWAybGmsYRlSa1+K9xV4FZ9A
+         Qc/gV/gr2h6xJekNygjm50XgSCYqh1yfHwrZEqSDUZ/pcxY1rJCpRRK0E7MVE5r9KQAY
+         8LW1T660AC7MbjQIvIdXFWexd9IaeNyvTP33bbJUzeWPxv6qgVZ+RAhxsEeWVqJfzoq/
+         3aoQ==
+X-Gm-Message-State: AOAM531zuEdyx2u1NA/GDuxiFlB+YrGEc9J10LPtaMW4lf8NDWeoKUnd
+        8xx4x+lp5Qb9qxzkDmLFu2Y=
+X-Google-Smtp-Source: ABdhPJweJPF6eEu3UsJ7mwptZ0e/+bndw18/+QzcId2TT5lSkFzF+bGSph4EwFUdqwBV1XJg0WZLjQ==
+X-Received: by 2002:a17:906:e103:: with SMTP id gj3mr3564877ejb.442.1603822318747;
+        Tue, 27 Oct 2020 11:11:58 -0700 (PDT)
+Received: from pce.localnet (host-95-249-217-124.retail.telecomitalia.it. [95.249.217.124])
+        by smtp.gmail.com with ESMTPSA id g8sm1472472ejp.73.2020.10.27.11.11.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 11:12:07 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        Rob Herring <robh@kernel.org>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 RESEND 2/3] dt-bindings: input: mtk-pmic-keys: add MT6392 binding definition
+        Tue, 27 Oct 2020 11:11:58 -0700 (PDT)
+From:   Elia Devito <eliadevito@gmail.com>
+To:     markpearson@lenovo.com, Mark Pearson <markpearson@lenovo.com>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, hadess@hadess.net, bberg@redhat.com,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] Documentation: Add documentation for new platform_profile sysfs attribute
 Date:   Tue, 27 Oct 2020 19:11:55 +0100
-Message-Id: <20201027181157.862927-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027181157.862927-1-fparent@baylibre.com>
-References: <20201027181157.862927-1-fparent@baylibre.com>
+Message-ID: <2177500.ElGaqSPkdT@pce>
+In-Reply-To: <20201027164219.868839-1-markpearson@lenovo.com>
+References: <markpearson@lenovo.com> <20201027164219.868839-1-markpearson@lenovo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the binding documentation of the mtk-pmic-keys for the MT6392 PMICs.
+Hi to all,
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
+In data marted=EC 27 ottobre 2020 17:42:19 CET, Mark Pearson ha scritto:
+> From: Hans de Goede <hdegoede@redhat.com>
+>=20
+> On modern systems the platform performance, temperature, fan and other
+> hardware related characteristics are often dynamically configurable. The
+> profile is often automatically adjusted to the load by somei
+> automatic-mechanism (which may very well live outside the kernel).
+>=20
+> These auto platform-adjustment mechanisms often can be configured with
+> one of several 'platform-profiles', with either a bias towards low-power
+> consumption or towards performance (and higher power consumption and
+> thermals).
+>=20
+> Introduce a new platform_profile sysfs API which offers a generic API for
+> selecting the performance-profile of these automatic-mechanisms.
+>=20
+> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
+> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Changes in V1:
+>  - Moved from RFC to proposed patch
+>  - Added cool profile as requested
+>  - removed extra-profiles as no longer relevant
+>=20
+>  .../ABI/testing/sysfs-platform_profile        | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-platform_profile
+> b/Documentation/ABI/testing/sysfs-platform_profile new file mode 100644
+> index 000000000000..240bd3d7532b
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-platform_profile
+> @@ -0,0 +1,66 @@
+> +Platform-profile selection (e.g. /sys/firmware/acpi/platform_profile)
+> +
+> +On modern systems the platform performance, temperature, fan and other
+> +hardware related characteristics are often dynamically configurable. The
+> +profile is often automatically adjusted to the load by some
+> +automatic-mechanism (which may very well live outside the kernel).
+> +
+> +These auto platform-adjustment mechanisms often can be configured with
+> +one of several 'platform-profiles', with either a bias towards low-power
+> +consumption or towards performance (and higher power consumption and
+> +thermals).
+> +
+> +The purpose of the platform_profile attribute is to offer a generic sysfs
+> +API for selecting the platform-profile of these automatic-mechanisms.
+> +
+> +Note that this API is only for selecting the platform-profile, it is
+> +NOT a goal of this API to allow monitoring the resulting performance
+> +characteristics. Monitoring performance is best done with device/vendor
+> +specific tools such as e.g. turbostat.
+> +
+> +Specifically when selecting a high-performance profile the actual achiev=
+ed
+> +performance may be limited by various factors such as: the heat generated
+> +by other components, room temperature, free air flow at the bottom of a
+> +laptop, etc. It is explicitly NOT a goal of this API to let userspace kn=
+ow
+> +about any sub-optimal conditions which are impeding reaching the request=
+ed
+> +performance level.
+> +
+> +Since numbers are a rather meaningless way to describe platform-profiles
+> +this API uses strings to describe the various profiles. To make sure that
+> +userspace gets a consistent experience when using this API this API
+> +document defines a fixed set of profile-names. Drivers *must* map their
+> +internal profile representation/names onto this fixed set.
+> +
+> +If for some reason there is no good match when mapping then a new
+> profile-name +may be added. Drivers which wish to introduce new
+> profile-names must: +1. Have very good reasons to do so.
+> +2. Add the new profile-name to this document, so that future drivers whi=
+ch
+> also +   have a similar problem can use the same name.
+> +
+> +What:		/sys/firmware/acpi/platform_profile_choices
+> +Date:		October 2020
+> +Contact:	Hans de Goede <hdegoede@redhat.com>
+> +Description:
+> +		Reading this file gives a space separated list of profiles
+> +		supported for this device.
+> +
+> +		Drivers must use the following standard profile-names:
+> +
+> +		low-power:		Emphasises low power consumption
+> +		cool:			Emphasises cooler=20
+operation
+> +		quiet:			Emphasises quieter=20
+operation
+> +		balanced:		Balance between low power=20
+consumption
+> +					and performance
+> +		performance:		Emphasises performance=20
+(and may lead to
+> +					higher temperatures and=20
+fan speeds)
+> +
+> +		Userspace may expect drivers to offer at least several of=20
+these
+> +		standard profile-names.
+> +
+> +What:		/sys/firmware/acpi/platform_profile
+> +Date:		October 2020
+> +Contact:	Hans de Goede <hdegoede@redhat.com>
+> +Description:
+> +		Reading this file gives the current selected profile for=20
+this
+> +		device. Writing this file with one of the strings from
+> +		available_profiles changes the profile to the new value.
+> --
+> 2.28.0
 
-v6:
-	* No changes
+=46rom my perspective now is perfect, thanks to all for the work.
 
-v5:
-	* rebased
-	* Rename MT6397/MT6392/MT6323 into MT63XX to make it more readable when
-	the list of support PMIC increase
-	* Removed Reviewed-by from Rob Herring because of the new extra changes
-	made to this patch
-	* change the compatible for MT6392 to also contains MT6397 since MT6392 PMIC
-	key driver is compatible with mt6397.
+Regards
+Elia
 
-v4:
-	* Patch was previously sent separately but merge to this patch series
-	since there is a hard dependency on the MFD patch.
 
- .../devicetree/bindings/input/mtk-pmic-keys.txt     | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/input/mtk-pmic-keys.txt b/Documentation/devicetree/bindings/input/mtk-pmic-keys.txt
-index 535d92885372..71c82687ab92 100644
---- a/Documentation/devicetree/bindings/input/mtk-pmic-keys.txt
-+++ b/Documentation/devicetree/bindings/input/mtk-pmic-keys.txt
-@@ -1,15 +1,18 @@
--MediaTek MT6397/MT6323 PMIC Keys Device Driver
-+MediaTek MT63xx PMIC Keys Device Driver
- 
--There are two key functions provided by MT6397/MT6323 PMIC, pwrkey
-+There are two key functions provided by MT63xx PMIC, pwrkey
- and homekey. The key functions are defined as the subnode of the function
--node provided by MT6397/MT6323 PMIC that is being defined as one kind
-+node provided by MT63xx PMIC that is being defined as one kind
- of Muti-Function Device (MFD)
- 
--For MT6397/MT6323 MFD bindings see:
-+For MT63xx MFD bindings see:
- Documentation/devicetree/bindings/mfd/mt6397.txt
- 
- Required properties:
--- compatible: "mediatek,mt6397-keys" or "mediatek,mt6323-keys"
-+- compatible: Should be one of:
-+	- "mediatek,mt6323-keys" for MT6323 PMIC
-+	- "mediatek,mt6392-keys", "mediatek,mt6397-keys" for MT6392 PMIC
-+	- "mediatek,mt6397-keys" for MT6397 PMIC
- - linux,keycodes: See Documentation/devicetree/bindings/input/input.yaml
- 
- Optional Properties:
--- 
-2.28.0
 
