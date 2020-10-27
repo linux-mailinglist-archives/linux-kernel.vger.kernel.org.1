@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9D729C4CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2E829C4C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823156AbgJ0R55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45694 "EHLO mail.kernel.org"
+        id S1823079AbgJ0R51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:57:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S460365AbgJ0OVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:21:25 -0400
+        id S2408015AbgJ0OVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:21:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBC11222D9;
-        Tue, 27 Oct 2020 14:21:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59055206D4;
+        Tue, 27 Oct 2020 14:21:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808485;
-        bh=tYpM5KsiTqaEvdIsqyoojda8mhpHB/V5C8mGYe07Lw0=;
+        s=default; t=1603808505;
+        bh=hFYmqeqPJGn0nx6FebWGZH7BGjxLl1jiSFbHq0FO1hI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMgqPaNngU8t1uSYhIRMabJkOrgC8c6IdcpsF728Lkjb8SyEMjWcDsbVm3QWZAPIL
-         A5fOm/GcFQn6lJsQZIJE/jNctTwC+a/t7uSVHkxtIJ3dH7lBbUJlMERAKNK2x2yA/G
-         VPZeZ2AsX97n4eSCTg9NskEXn+kq5eSq4J24FPno=
+        b=0XYY1IaNUBNLtqmV4/wIUaaXlD2g7GYgpec+jUwpXwjKNpfZgH705/5Eh94kCDkcN
+         DDVWHoX5ay9fJfbZQPd3qQDmOd/N78hOlmAdi8GR3gEOYgFKrwP8Gy8j9GHJuAGRXE
+         JSze7bHO/iEnu0IcusQN9NnHy7v4qcySWaJPMXP4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 108/264] slimbus: core: do not enter to clock pause mode in core
-Date:   Tue, 27 Oct 2020 14:52:46 +0100
-Message-Id: <20201027135435.755645718@linuxfoundation.org>
+        stable@vger.kernel.org, Kenneth Albanowski <kenalba@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 110/264] HID: hid-input: fix stylus battery reporting
+Date:   Tue, 27 Oct 2020 14:52:48 +0100
+Message-Id: <20201027135435.840736244@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,36 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit df2c471c4ae07e18a0396db670dca2ef867c5153 ]
+[ Upstream commit 505f394fa239cecb76d916aa858f87ed7ea7fde4 ]
 
-Let the controller logic decide when to enter into clock pause mode!
-Entering in to pause mode during unregistration does not really make
-sense as the controller is totally going down at that point in time.
+With commit 4f3882177240 hid-input started clearing of "ignored" usages
+to avoid using garbage that might have been left in them. However
+"battery strength" usages should not be ignored, as we do want to
+use them.
 
-Fixes: 4b14e62ad3c9e ("slimbus: Add support for 'clock-pause' feature")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200925095520.27316-3-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4f3882177240 ("HID: hid-input: clear unmapped usages")
+Reported-by: Kenneth Albanowski <kenalba@google.com>
+Tested-by: Kenneth Albanowski <kenalba@google.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/core.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/hid/hid-input.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index 6e690aaacad1e..3e63e4ce45b04 100644
---- a/drivers/slimbus/core.c
-+++ b/drivers/slimbus/core.c
-@@ -255,8 +255,6 @@ int slim_unregister_controller(struct slim_controller *ctrl)
- {
- 	/* Remove all clients */
- 	device_for_each_child(ctrl->dev, NULL, slim_ctrl_remove_device);
--	/* Enter Clock Pause */
--	slim_ctrl_clk_pause(ctrl, false, 0);
- 	ida_simple_remove(&ctrl_ida, ctrl->id);
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index a9da1526c40ae..11bd2ca22a2e6 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -796,7 +796,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+ 		case 0x3b: /* Battery Strength */
+ 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
+ 			usage->type = EV_PWR;
+-			goto ignore;
++			return;
  
- 	return 0;
+ 		case 0x3c: /* Invert */
+ 			map_key_clear(BTN_TOOL_RUBBER);
+@@ -1052,7 +1052,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+ 		case HID_DC_BATTERYSTRENGTH:
+ 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
+ 			usage->type = EV_PWR;
+-			goto ignore;
++			return;
+ 		}
+ 		goto unknown;
+ 
 -- 
 2.25.1
 
