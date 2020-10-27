@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C89E29ADE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57F429ADF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752766AbgJ0Nug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:50:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38000 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752753AbgJ0Nue (ORCPT
+        id S2502046AbgJ0Nwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:52:41 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:33442 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409279AbgJ0Nwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:50:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603806632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u97YpgkYwOflA5DyVOMrwMI90QOOsJn8Gu3ZLDUNc0g=;
-        b=AQDeBA4BglUdTuMI5Q1Acl9WsnNTo4wpud+NNve4xd5PRxJilGS+ADKCwsNEpPJ/gXodhe
-        zblIuiixh66w6JRAY1wCaCDt4BamyPPHJWLtqJwOuu1wjsFAGyR2FQZweCM0AB86Enl9WG
-        kzdkgHteZoytEMGB1zDL/eWswEJInK4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-222-ApJocr91McWnoZZsoSCXmg-1; Tue, 27 Oct 2020 09:50:29 -0400
-X-MC-Unique: ApJocr91McWnoZZsoSCXmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A667FADC24;
-        Tue, 27 Oct 2020 13:50:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E73941C4;
-        Tue, 27 Oct 2020 13:50:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 04/10] afs: Fix afs_launder_page to not clear PG_writeback
-From:   David Howells <dhowells@redhat.com>
-To:     linux-afs@lists.infradead.org
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 27 Oct 2020 13:50:27 +0000
-Message-ID: <160380662715.3467511.74460863169151977.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
-References: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 27 Oct 2020 09:52:40 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDnCGM180411;
+        Tue, 27 Oct 2020 13:52:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=6J5GN4d5P1+bocAuEidN1XpSs96xBvmmrRX7NOOyVS4=;
+ b=HkLdyw2l/iH/vE37I/zk6srJmKIzDiLfMKEUvrbxGmwhixxeyfQiXAL6t7TcNZ4yVfI/
+ 51jLJkBSggOcS11LiNgm2oIFGkx/g+I+xPyQP6APkJZ8QrLS0jVUDYMKj89Te8rIlv2L
+ 1sIebBJCBJnMtj+uXHy/Vm/Miw1eWhqWHnd+y3e+NhSwaOOq0ekcQy2EoftsU66NKFfu
+ OkjrlW0nJ73yyAdckggOrzA94Fs7BcW/shE4mtZTD9clMTdMgvDsQltkkHdyzOzcKCEN
+ MvaRkAguEaAqY+tBbFHj6yC0COv29TTwcp1XHQ7TFgFwbNqKgQYCq1jTHFIa06Ywohp9 3Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34c9sat6ub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 13:52:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDoJJW118430;
+        Tue, 27 Oct 2020 13:50:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34cx1qraa9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Oct 2020 13:50:35 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09RDoY0W011464;
+        Tue, 27 Oct 2020 13:50:34 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 27 Oct 2020 06:50:33 -0700
+Date:   Tue, 27 Oct 2020 16:50:28 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e, rtl8192u: use correct notation to
+ define pointer
+Message-ID: <20201027135028.GZ1042@kadam>
+References: <20201026121435.GA782465@LEGION>
+ <20201027112303.GA405023@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027112303.GA405023@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010270087
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix afs_launder_page() to not clear PG_writeback on the page it is
-laundering as the flag isn't set in this case.
+On Tue, Oct 27, 2020 at 12:23:03PM +0100, Greg KH wrote:
+> On Mon, Oct 26, 2020 at 05:14:35PM +0500, Muhammad Usama Anjum wrote:
+> > Use pointer notation instead of using array notation as info_element is
+> > a pointer not array.
+> > 
+> > Warnings from sparse:
+> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:1013:51: warning: array of flexible structures
+> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:985:51: warning: array of flexible structures
+> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:963:51: warning: array of flexible structures
+> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:996:51: warning: array of flexible structures
+> > drivers/staging/rtl8192u/ieee80211/ieee80211.h:974:51: warning: array of flexible structures
+> > 
+> > drivers/staging/rtl8192e/rtllib.h:832:48: warning: array of flexible structures
+> > drivers/staging/rtl8192e/rtllib.h:851:48: warning: array of flexible structures
+> > drivers/staging/rtl8192e/rtllib.h:805:48: warning: array of flexible structures
+> > drivers/staging/rtl8192e/rtllib.h:843:48: warning: array of flexible structures
+> > drivers/staging/rtl8192e/rtllib.h:821:48: warning: array of flexible structures
+> > 
+> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> > ---
+> >  drivers/staging/rtl8192e/rtllib.h              | 10 +++++-----
+> >  drivers/staging/rtl8192u/ieee80211/ieee80211.h | 12 ++++++------
+> >  2 files changed, 11 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+> > index b84f00b8d18b..1dab9c3d08a8 100644
+> > --- a/drivers/staging/rtl8192e/rtllib.h
+> > +++ b/drivers/staging/rtl8192e/rtllib.h
+> > @@ -802,7 +802,7 @@ struct rtllib_authentication {
+> >  	__le16 transaction;
+> >  	__le16 status;
+> >  	/*challenge*/
+> > -	struct rtllib_info_element info_element[];
+> > +	struct rtllib_info_element *info_element;
+> >  } __packed;
+> 
+> Are you sure these changes are correct?  This isn't just a list of
+> structures after this at the end of the structure?
 
-Fixes: 4343d00872e1 ("afs: Get rid of the afs_writeback record")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+Definitely the patch will break things at runtime.  I was surprised that
+it compiles, but it does.
 
- fs/afs/internal.h |    1 +
- fs/afs/write.c    |   10 ++++++----
- 2 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> Please look at commit 5979afa2c4d1 ("staging: Replace zero-length array
+> with flexible-array member") which made most of these flexible arrays.
+> 
+> This is not a pointer, it really is an array, I think sparse is really
+> wrong here, be careful.
 
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 81b0485fd22a..289f5dffa46f 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -812,6 +812,7 @@ struct afs_operation {
- 			pgoff_t		last;		/* last page in mapping to deal with */
- 			unsigned	first_offset;	/* offset into mapping[first] */
- 			unsigned	last_to;	/* amount of mapping[last] */
-+			bool		laundering;	/* Laundering page, PG_writeback not set */
- 		} store;
- 		struct {
- 			struct iattr	*attr;
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index da12abd6db21..b937ec047ec9 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -396,7 +396,8 @@ static void afs_store_data_success(struct afs_operation *op)
- 	op->ctime = op->file[0].scb.status.mtime_client;
- 	afs_vnode_commit_status(op, &op->file[0]);
- 	if (op->error == 0) {
--		afs_pages_written_back(vnode, op->store.first, op->store.last);
-+		if (!op->store.laundering)
-+			afs_pages_written_back(vnode, op->store.first, op->store.last);
- 		afs_stat_v(vnode, n_stores);
- 		atomic_long_add((op->store.last * PAGE_SIZE + op->store.last_to) -
- 				(op->store.first * PAGE_SIZE + op->store.first_offset),
-@@ -415,7 +416,7 @@ static const struct afs_operation_ops afs_store_data_operation = {
-  */
- static int afs_store_data(struct address_space *mapping,
- 			  pgoff_t first, pgoff_t last,
--			  unsigned offset, unsigned to)
-+			  unsigned offset, unsigned to, bool laundering)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
- 	struct afs_operation *op;
-@@ -448,6 +449,7 @@ static int afs_store_data(struct address_space *mapping,
- 	op->store.last = last;
- 	op->store.first_offset = offset;
- 	op->store.last_to = to;
-+	op->store.laundering = laundering;
- 	op->mtime = vnode->vfs_inode.i_mtime;
- 	op->flags |= AFS_OPERATION_UNINTR;
- 	op->ops = &afs_store_data_operation;
-@@ -601,7 +603,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 	if (end > i_size)
- 		to = i_size & ~PAGE_MASK;
- 
--	ret = afs_store_data(mapping, first, last, offset, to);
-+	ret = afs_store_data(mapping, first, last, offset, to, false);
- 	switch (ret) {
- 	case 0:
- 		ret = count;
-@@ -921,7 +923,7 @@ int afs_launder_page(struct page *page)
- 
- 		trace_afs_page_dirty(vnode, tracepoint_string("launder"),
- 				     page->index, priv);
--		ret = afs_store_data(mapping, page->index, page->index, t, f);
-+		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
- 	}
- 
- 	trace_afs_page_dirty(vnode, tracepoint_string("laundered"),
+It's an interesting warning message.  Sparse is correct that the code
+looks strange.  If there were ever two or more elements in the array
+then the code would break.  But since the code only uses a max of one
+element then it's fine.
 
+I guess the question is does this warning ever catch bugs in real life?
+It seems like that the kind of bug which would be caught in testing so
+static analysis is not going to be useful.
+
+regards,
+dan carpenter
 
