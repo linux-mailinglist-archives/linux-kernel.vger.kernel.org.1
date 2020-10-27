@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EDD299CE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C572299D8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgJ0AC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:02:29 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:43477 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728509AbgJ0ACY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:02:24 -0400
-Received: by mail-ua1-f68.google.com with SMTP id r21so3428151uaw.10;
-        Mon, 26 Oct 2020 17:02:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nc+LJIctkA2xokS8Hjft6K+F5HViXFmcJYECMK/0XSs=;
-        b=OQJ8kzN4C8CFDTkcCh2rA49sg4uUmOh9V4Korw02JjNdE/cPq08xUFfaA8odbE+NMx
-         tRuUn5bIJqDfUkoI3z6x+FzIJoAMUxD9EnTX14oCiLAOiNKLVKDrAqpUm+BzPy81a6+7
-         JrCM3k/4L21kBlJ+Ybi2JVcDhV/jf5E/xcCblqNXsd00EN2Ak1SKFD1Xf/YHPPdTKhfF
-         8zInTDMN9D9Ukek5LjPXoz88wj3NbBEFTAB4vedi9S9pAxvgaYqqIwdzOQ1mu6nYRY+H
-         edvEBa09ronjKBMHU9qkZ7fAMFaFksVZ4X5YzHa4acETkIVPuN5JNpqdONe+rFBKZkhh
-         wgKg==
-X-Gm-Message-State: AOAM5332Vyl6zd4zjaSQU53d0ayl0EBE6mwc6NA2aBPjtFEkkSIFbHoy
-        97JGltuXyqKGyPHyCMQwDCA=
-X-Google-Smtp-Source: ABdhPJy/QDAFsVqgKvAb81ohx+BGy1Y+c+QXCmSihcIl83n+0T4UvXBmk0bLcBPHg/LfD5io82Dx1g==
-X-Received: by 2002:ab0:6f81:: with SMTP id f1mr23600098uav.31.1603756943628;
-        Mon, 26 Oct 2020 17:02:23 -0700 (PDT)
-Received: from google.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
-        by smtp.gmail.com with ESMTPSA id f195sm374846vka.21.2020.10.26.17.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 17:02:22 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 00:02:21 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Lameter <cl@linux.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] asm-generic: percpu: avoid Wshadow warning
-Message-ID: <20201027000221.GA3804841@google.com>
-References: <20201026155353.3702892-1-arnd@kernel.org>
+        id S2438941AbgJ0AHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730314AbgJ0AES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:04:18 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FFB420791;
+        Tue, 27 Oct 2020 00:04:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603757057;
+        bh=+LpMNWkZOIsJFhhNGETQxEoneAHS1d/Z3oJsI5fb2rY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=2AFr8IClVrG0mq6hc0BGlGpw0qNJj7YFGHLNSHk0NSPtfyrGYckgoIWgszXQYW/VL
+         jLB/GIIU3xmse9Q+pjWa5FADOL/LbOMd18EVvDCzJNM10xoje79DVbrBmMT7wQPlCX
+         wbz9kzstkGVd3zaHqlNQsEf3OjYrWbZzFCCmFRcY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 4.19 01/60] powerpc/powernv/smp: Fix spurious DBG() warning
+Date:   Mon, 26 Oct 2020 20:03:16 -0400
+Message-Id: <20201027000415.1026364-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026155353.3702892-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Oliver O'Halloran <oohall@gmail.com>
 
-On Mon, Oct 26, 2020 at 04:53:48PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Nesting macros that use the same local variable names causes
-> warnings when building with "make W=2":
-> 
-> include/asm-generic/percpu.h:117:14: warning: declaration of '__ret' shadows a previous local [-Wshadow]
-> include/asm-generic/percpu.h:126:14: warning: declaration of '__ret' shadows a previous local [-Wshadow]
-> 
-> These are fairly harmless, but since the warning comes from
-> a global header, the warning happens every time the headers
-> are included, which is fairly annoying.
-> 
-> Rename the variables to avoid shadowing and shut up the warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/asm-generic/percpu.h | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/asm-generic/percpu.h b/include/asm-generic/percpu.h
-> index 35e4a53b83e6..6432a7fade91 100644
-> --- a/include/asm-generic/percpu.h
-> +++ b/include/asm-generic/percpu.h
-> @@ -114,21 +114,21 @@ do {									\
->  
->  #define __this_cpu_generic_read_nopreempt(pcp)				\
->  ({									\
-> -	typeof(pcp) __ret;						\
-> +	typeof(pcp) ___ret;						\
->  	preempt_disable_notrace();					\
-> -	__ret = READ_ONCE(*raw_cpu_ptr(&(pcp)));			\
-> +	___ret = READ_ONCE(*raw_cpu_ptr(&(pcp)));			\
->  	preempt_enable_notrace();					\
-> -	__ret;								\
-> +	___ret;								\
->  })
->  
->  #define __this_cpu_generic_read_noirq(pcp)				\
->  ({									\
-> -	typeof(pcp) __ret;						\
-> -	unsigned long __flags;						\
-> -	raw_local_irq_save(__flags);					\
-> -	__ret = raw_cpu_generic_read(pcp);				\
-> -	raw_local_irq_restore(__flags);					\
-> -	__ret;								\
-> +	typeof(pcp) ___ret;						\
-> +	unsigned long ___flags;						\
-> +	raw_local_irq_save(___flags);					\
-> +	___ret = raw_cpu_generic_read(pcp);				\
-> +	raw_local_irq_restore(___flags);				\
-> +	___ret;								\
->  })
->  
->  #define this_cpu_generic_read(pcp)					\
-> -- 
-> 2.27.0
-> 
+[ Upstream commit f6bac19cf65c5be21d14a0c9684c8f560f2096dd ]
 
-I've applied this to percpu#for-5.10-fixes.
+When building with W=1 we get the following warning:
 
-Thanks,
-Dennis
+ arch/powerpc/platforms/powernv/smp.c: In function ‘pnv_smp_cpu_kill_self’:
+ arch/powerpc/platforms/powernv/smp.c:276:16: error: suggest braces around
+ 	empty body in an ‘if’ statement [-Werror=empty-body]
+   276 |      cpu, srr1);
+       |                ^
+ cc1: all warnings being treated as errors
+
+The full context is this block:
+
+ if (srr1 && !generic_check_cpu_restart(cpu))
+ 	DBG("CPU%d Unexpected exit while offline srr1=%lx!\n",
+ 			cpu, srr1);
+
+When building with DEBUG undefined DBG() expands to nothing and GCC emits
+the warning due to the lack of braces around an empty statement.
+
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200804005410.146094-2-oohall@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/powerpc/platforms/powernv/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
+index 8d49ba370c504..889c3dbec6fb9 100644
+--- a/arch/powerpc/platforms/powernv/smp.c
++++ b/arch/powerpc/platforms/powernv/smp.c
+@@ -47,7 +47,7 @@
+ #include <asm/udbg.h>
+ #define DBG(fmt...) udbg_printf(fmt)
+ #else
+-#define DBG(fmt...)
++#define DBG(fmt...) do { } while (0)
+ #endif
+ 
+ static void pnv_smp_setup_cpu(int cpu)
+-- 
+2.25.1
+
