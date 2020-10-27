@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A8929B70E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CECA29B71E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1798581AbgJ0P24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:28:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40218 "EHLO mail.kernel.org"
+        id S1798618AbgJ0P3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:29:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797711AbgJ0PYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:24:51 -0400
+        id S1797731AbgJ0PY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:24:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0CCA2224A;
-        Tue, 27 Oct 2020 15:24:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09EF020657;
+        Tue, 27 Oct 2020 15:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812291;
-        bh=OpLbOhOpLkgVcWBbkxBCA/veGdYFoU8WNyf0u5A4wjg=;
+        s=default; t=1603812299;
+        bh=5tRloe/WquCIoD4rlZyg4y//tnx15kjtF5WLoGbJLHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJ2zzLBat03tLjxMBzXuVEHAP1TX9QFhrYt/DRD6J1ZSR7FImP8UI8c3SUYs6YB4U
-         w6t/TRbzzZL9J/N5VjCM9046RhLQy8GU1LMcZR+pV/TpeIdb/3m7Dy4JoHdF6uCMMZ
-         sCBXx7LpfHfrWPsD1Faeilt6flJckH30FMELCjjY=
+        b=TpRS4WL6FAR9vhX7SiFzlPiLEzQKAwbUi2Zwzc8zagVzAWaqitXSBpA9H2wmKk4Li
+         8gyTIgZLi+HVpFDLjRBa2LygoCL3SApqkbt9KI5XfINhjqRF7UsxeTw3JNidEg5rqv
+         qW/EjAo2kq3vSBp4yVRN4USTtEIhPMp+COkC0YWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Xiaoliang Pang <dawning.pang@gmail.com>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 158/757] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
-Date:   Tue, 27 Oct 2020 14:46:48 +0100
-Message-Id: <20201027135458.018331586@linuxfoundation.org>
+Subject: [PATCH 5.9 160/757] crypto: sun8i-ce - handle endianness of t_common_ctl
+Date:   Tue, 27 Oct 2020 14:46:50 +0100
+Message-Id: <20201027135458.097006242@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,43 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoliang Pang <dawning.pang@gmail.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 228d284aac61283cde508a925d666f854b57af63 ]
+[ Upstream commit 87f34260f5e09a4578132ad1c05aef2d707dd4bf ]
 
-In the init loop, if an error occurs in function 'dma_alloc_coherent',
-then goto the err_cleanup section, after run i--,
-in the array ring, the struct mtk_ring with index i will not be released,
-causing memory leaks
+t_common_ctl is LE32 so we need to convert its value before using it.
+This value is only used on H6 (ignored on other SoCs) and not handling
+the endianness cause failure on xRNG/hashes operations on H6 when running BE.
 
-Fixes: 785e5c616c849 ("crypto: mediatek - Add crypto driver support for some MediaTek chips")
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
+Fixes: 06f751b61329 ("crypto: allwinner - Add sun8i-ce Crypto Engine")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index ef4339e84d034..efce3a83b35a8 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -469,13 +469,13 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 	return 0;
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+index 138759dc8190e..08ed1ca12baf9 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
+@@ -120,7 +120,10 @@ int sun8i_ce_run_task(struct sun8i_ce_dev *ce, int flow, const char *name)
+ 	/* Be sure all data is written before enabling the task */
+ 	wmb();
  
- err_cleanup:
--	for (; i--; ) {
-+	do {
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->res_base, ring[i]->res_dma);
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
--	}
-+	} while (i--);
- 	return -ENOMEM;
- }
+-	v = 1 | (ce->chanlist[flow].tl->t_common_ctl & 0x7F) << 8;
++	/* Only H6 needs to write a part of t_common_ctl along with "1", but since it is ignored
++	 * on older SoCs, we have no reason to complicate things.
++	 */
++	v = 1 | ((le32_to_cpu(ce->chanlist[flow].tl->t_common_ctl) & 0x7F) << 8);
+ 	writel(v, ce->base + CE_TLR);
+ 	mutex_unlock(&ce->mlock);
  
 -- 
 2.25.1
