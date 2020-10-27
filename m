@@ -2,131 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C12529BE8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEF429BEAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813565AbgJ0QvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:51:01 -0400
-Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:33548 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1813523AbgJ0Quu (ORCPT
+        id S1813740AbgJ0QyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:54:09 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:46344 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1813728AbgJ0QyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:50:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 86139180A7FE0;
-        Tue, 27 Oct 2020 16:50:43 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3870:3872:3874:4321:4605:5007:6742:6743:7576:7903:8603:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:21990:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:30,LUA_SUMMARY:none
-X-HE-Tag: bag02_2a11e012727d
-X-Filterd-Recvd-Size: 4083
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 27 Oct 2020 16:50:38 +0000 (UTC)
-Message-ID: <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
-Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
-From:   Joe Perches <joe@perches.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-gpio@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, alsa-devel@alsa-project.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 27 Oct 2020 09:50:36 -0700
-In-Reply-To: <20201027112607-mutt-send-email-mst@kernel.org>
-References: <20201027121725.24660-1-brgl@bgdev.pl>
-         <20201027121725.24660-4-brgl@bgdev.pl>
-         <20201027112607-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 27 Oct 2020 12:54:06 -0400
+Received: by mail-ed1-f66.google.com with SMTP id 33so2151070edq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kxOgqqlVfNE/0giJq5nhZZ7jCo399QUJ06fkJloHJeU=;
+        b=k2HZ+kc9PzKK6W3Q8QLsthL3YlV+AV9D8RENdY4AZChhhm+yJvNIQzFS0WhpKvDA+x
+         IdWOym9pXG4m+38XI2TpJg03kjaEdd5rKYCQa9vUzuegLUa7CjVhgnlbhFDgZSmrt/3d
+         H112xEky60IFF5zf0hjWmdp8Khw54v7p0y5UJ0q9daG4LUeekjWrYnldkhxQX78v/8nI
+         DiPC6gI25gBa8Cu+81oAtWIDaM9NrT2ayTpOoxBAd/BbNjwADzJ+fWfujAvvW3PM6zcR
+         3N3godD2t9yjxnieR79nHyKt8SY1+rQKvK+Vr2oCEwKMY1CA7PJG9V3mmFOTA50Zignd
+         i/jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kxOgqqlVfNE/0giJq5nhZZ7jCo399QUJ06fkJloHJeU=;
+        b=fKICNjBcBTgTugDOm39yqGKlAnQ/iv1cvWqvh/sDZmVxsIVH7YOBxk5koTD+hD+3GE
+         MGQZaCNkiJk+wQW7ZazDZY+WLpRqjgeioudwvEWjJperrGBv8o4nPjvr/snQvHqwo+VQ
+         6/YpfoIY9snUvZxsbbgcnjwlj1iGaNAeIqNdPlDwoSd6kozpY1I7vfFovcKGtcDJkPOg
+         3sfgAbaTwkPfcPzjR2qg48epaZFZKgT4zYR9fT1hs/BmNoYoaUIfiDznqk8OWpi/1Icx
+         sKcPI6NnVncMXbLO8Z0OeU5ffrOtqfCld8YMX0SNjrAh47XRt+549M5AbthiIZZfdOFK
+         u19A==
+X-Gm-Message-State: AOAM5335bWCAcFvEXvU1rL2xy1WQctCqDCrFaUzFljsQXkPHnr40TwZA
+        3cDU7Bja8urvidVPRo6oRnDMOEWWWQwa7AycU+4=
+X-Google-Smtp-Source: ABdhPJzrxrMLAjgdC89YGfmF6JnIRNQrbMVaEXJ+3LUAvmaMnd6q2mfmEAZvbtsaMw5/IwHsNX7mn95NFYkX0ebdkhk=
+X-Received: by 2002:a05:6402:6d8:: with SMTP id n24mr3251195edy.168.1603817642883;
+ Tue, 27 Oct 2020 09:54:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201007161736.ACC6E387@viggo.jf.intel.com> <20201007161745.26B1D789@viggo.jf.intel.com>
+ <20201027152858.GA11135@linux>
+In-Reply-To: <20201027152858.GA11135@linux>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 27 Oct 2020 09:53:50 -0700
+Message-ID: <CAHbLzkpiPCj+acoUmPiokPcK25OVe=myM=7AAYsAV40Npanb+Q@mail.gmail.com>
+Subject: Re: [RFC][PATCH 5/9] mm/migrate: demote pages during reclaim
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-27 at 11:28 -0400, Michael S. Tsirkin wrote:
-> On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > 
-> > Use the helper that checks for overflows internally instead of manually
-> > calculating the size of the new array.
-> > 
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> No problem with the patch, it does introduce some symmetry in the code.
+On Tue, Oct 27, 2020 at 8:29 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Wed, Oct 07, 2020 at 09:17:45AM -0700, Dave Hansen wrote:
+> > Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Huang Ying <ying.huang@intel.com>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+>
+> I am still going through all the details, but just my thoughts on things
+> that caught my eye:
+>
+> > --- a/include/linux/migrate.h~demote-with-migrate_pages       2020-10-07 09:15:31.028642442 -0700
+> > +++ b/include/linux/migrate.h 2020-10-07 09:15:31.034642442 -0700
+> > @@ -27,6 +27,7 @@ enum migrate_reason {
+> >       MR_MEMPOLICY_MBIND,
+> >       MR_NUMA_MISPLACED,
+> >       MR_CONTIG_RANGE,
+> > +     MR_DEMOTION,
+> >       MR_TYPES
+>
+> I think you also need to add it under include/trace/events/migrate.h, so
+> mm_migrate_pages event can know about it.
 
-Perhaps more symmetry by using kmemdup
----
- drivers/vhost/vringh.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+Agree.
 
-diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-index 8bd8b403f087..99222a3651cd 100644
---- a/drivers/vhost/vringh.c
-+++ b/drivers/vhost/vringh.c
-@@ -191,26 +191,23 @@ static int move_to_indirect(const struct vringh *vrh,
- static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
- {
- 	struct kvec *new;
--	unsigned int flag, new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-+	size_t new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-+	size_t size;
- 
- 	if (new_num < 8)
- 		new_num = 8;
- 
--	flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
--	if (flag)
--		new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
--	else {
--		new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
--		if (new) {
--			memcpy(new, iov->iov,
--			       iov->max_num * sizeof(struct iovec));
--			flag = VRINGH_IOV_ALLOCATED;
--		}
--	}
-+	if (unlikely(check_mul_overflow(new_num, sizeof(struct iovec), &size)))
-+		return -ENOMEM;
-+
-+	if (iov->max_num & VRINGH_IOV_ALLOCATED)
-+		new = krealloc(iov->iov, size, gfp);
-+	else
-+		new = kmemdup(iov->iov, size, gfp);
- 	if (!new)
- 		return -ENOMEM;
- 	iov->iov = new;
--	iov->max_num = (new_num | flag);
-+	iov->max_num = new_num | VRINGH_IOV_ALLOCATED;
- 	return 0;
- }
- 
- 
+>
+> > +bool migrate_demote_page_ok(struct page *page, struct scan_control *sc)
+>
+> Make it static?
+> Also, scan_control seems to be unused here.
+>
+> > +{
+> > +     int next_nid = next_demotion_node(page_to_nid(page));
+> > +
+> > +     VM_BUG_ON_PAGE(!PageLocked(page), page);
+>
+> Right after the call to migrate_demote_page_ok, we call unlock_page
+> which already has this check in place.
+> I know that this is only to be on the safe side and we do not loss anything,
+> but just my thoughts.
+>
+> > +static struct page *alloc_demote_page(struct page *page, unsigned long node)
+> > +{
+> > +     /*
+> > +      * Try to fail quickly if memory on the target node is not
+> > +      * available.  Leaving out __GFP_IO and __GFP_FS helps with
+> > +      * this.  If the desintation node is full, we want kswapd to
+> > +      * run there so that its pages will get reclaimed and future
+> > +      * migration attempts may succeed.
+> > +      */
+> > +     gfp_t flags = (__GFP_HIGHMEM | __GFP_MOVABLE | __GFP_NORETRY |
+> > +                    __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE |
+> > +                    __GFP_KSWAPD_RECLAIM);
+>
+> I think it would be nicer to have this as a real GFP_ thingy defined.
+> e.g: GFP_DEMOTION
+>
+> > +     /* HugeTLB pages should not be on the LRU */
+> > +     WARN_ON_ONCE(PageHuge(page));
+>
+> I am not sure about this one.
+> This could only happen if the page, which now it is in another list, ends up in
+> the buddy system. That is quite unlikely bth.
+> And nevertheless, this is only a warning, which means that if this scenario gets
+> to happen, we will be allocating a single page to satisfy a higher-order page, and
+> I am not sure about the situation we will end up with.
 
+IMHO, we should use BUG_ON instead of WARN_ON or we should just back
+off if we see hugetlb page in this path and print out some warning.
+
+>
+> > +
+> > +     if (PageTransHuge(page)) {
+> > +             struct page *thp;
+> > +
+> > +             flags |= __GFP_COMP;
+> > +
+> > +             thp = alloc_pages_node(node, flags, HPAGE_PMD_ORDER);
+> > +             if (!thp)
+> > +                     return NULL;
+> > +             prep_transhuge_page(thp);
+> > +             return thp;
+> > +     }
+> > +
+> > +     return __alloc_pages_node(node, flags, 0);
+>
+> Would make sense to transform this in some sort of new_demotion_page,
+> which actually calls alloc_migration_target with the right stuff in place?
+> And then pass a struct migration_target_control so alloc_migration_target
+> does the right thing.
+> alloc_migration_target also takes care of calling prep_transhuge_page
+> when needed.
+> e.g:
+>
+> static struct page *new_demotion_node(struct page *page, unsigned long private)
+> {
+>         struct migration_target_control mtc = {
+>                 .nid = private,
+>                 .gfp_mask = GFP_DEMOTION,
+>         };
+>
+>         if (PageTransHuge(page))
+>                 mtc.gfp_mask |= __GFP_COMP;
+>
+>         return alloc_migration_target(page, (unsigned long)&mtc);
+> }
+>
+> The only thing I see is that alloc_migration_target seems to "override"
+> the gfp_mask and does ORs GFP_TRANSHUGE for THP pages, which includes
+> __GFP_DIRECT_RECLAIM (not appreciated in this case).
+> But maybe this can be worked around by checking if gfp_mask == GFP_DEMOTION,
+> and if so, just keep the mask as it is.
+
+Makes sense to me.
+
+>
+> > +
+> > +     if (list_empty(demote_pages))
+> > +             return 0;
+> > +
+> > +     /* Demotion ignores all cpuset and mempolicy settings */
+> > +     err = migrate_pages(demote_pages, alloc_demote_page, NULL,
+> > +                         target_nid, MIGRATE_ASYNC, MR_DEMOTION,
+> > +                         &nr_succeeded);
+>
+> As I said, instead of alloc_demote_page, use a new_demote_page and make
+> alloc_migration_target handle the allocations and prep thp pages.
+>
+>
+> --
+> Oscar Salvador
+> SUSE L3
+>
