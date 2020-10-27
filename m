@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7882229BA27
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFA029B821
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797437AbgJ0P5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
+        id S1799577AbgJ0PcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:32:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796507AbgJ0PTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:19:06 -0400
+        id S1797006AbgJ0PVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:21:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 933E72225E;
-        Tue, 27 Oct 2020 15:19:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1825921527;
+        Tue, 27 Oct 2020 15:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811946;
-        bh=DLx0wn6O1IvYMMtGamhATuorYPUG4JQWxkpIRTM9jGU=;
+        s=default; t=1603812063;
+        bh=plV74ACRqJ0VnjFZjAIsVTWYzSWS5YeylkC4Puqi540=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lsryPY2CVjB/DDyoJSjrETBOm744NyBVzSSQahJJTjTYXYnhieRYYy3ob3F1kbiRX
-         ET64AbMf4aFQKUBObhN3phXySuCZI30toYLfMdZFRW1X8sGx628np9WWpnefeO5snA
-         s2iTyXjxzp3RVuycB3cjqUI9gZ3N4PwqjmT9AmPw=
+        b=vvEOrPKgJ6PA11G0tTe8eiG4N9awEfX7iPTlstk2A0IASXUoD8edocJd57dCMyODe
+         ov2JozQ1uAzkALt7jdQlOcRUSEfsfskzi+vfwF+3EJQOMULktqZtjLj79G1D9YlW8k
+         MOSf/cDCMPwcASI25svsBgk3JucbgprZJp3KyPLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        stable@vger.kernel.org, Geliang Tang <geliangtang@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 037/757] ibmvnic: save changed mac address to adapter->mac_addr
-Date:   Tue, 27 Oct 2020 14:44:47 +0100
-Message-Id: <20201027135452.267205001@linuxfoundation.org>
+Subject: [PATCH 5.9 039/757] mptcp: initialize mptcp_options_receiveds ahmac
+Date:   Tue, 27 Oct 2020 14:44:49 +0100
+Message-Id: <20201027135452.357685293@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -42,39 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Geliang Tang <geliangtang@gmail.com>
 
-[ Upstream commit d9b0e599b2b892422f1cbc5d2658049b895b2b58 ]
+[ Upstream commit fe2d9b1a0e7805384770ec0ddd34c9f1e9fe6fa8 ]
 
-After mac address change request completes successfully, the new mac
-address need to be saved to adapter->mac_addr as well as
-netdev->dev_addr. Otherwise, adapter->mac_addr still holds old
-data.
+Initialize mptcp_options_received's ahmac to zero, otherwise it
+will be a random number when receiving ADD_ADDR suboption with echo-flag=1.
 
-Fixes: 62740e97881c ("net/ibmvnic: Update MAC address settings after adapter reset")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Link: https://lore.kernel.org/r/20201020223919.46106-1-ljp@linux.ibm.com
+Fixes: 3df523ab582c5 ("mptcp: Add ADD_ADDR handling")
+Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ net/mptcp/options.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -4194,8 +4194,13 @@ static int handle_change_mac_rsp(union i
- 		dev_err(dev, "Error %ld in CHANGE_MAC_ADDR_RSP\n", rc);
- 		goto out;
- 	}
-+	/* crq->change_mac_addr.mac_addr is the requested one
-+	 * crq->change_mac_addr_rsp.mac_addr is the returned valid one.
-+	 */
- 	ether_addr_copy(netdev->dev_addr,
- 			&crq->change_mac_addr_rsp.mac_addr[0]);
-+	ether_addr_copy(adapter->mac_addr,
-+			&crq->change_mac_addr_rsp.mac_addr[0]);
- out:
- 	complete(&adapter->fw_done);
- 	return rc;
+--- a/net/mptcp/options.c
++++ b/net/mptcp/options.c
+@@ -296,6 +296,7 @@ void mptcp_get_options(const struct sk_b
+ 	mp_opt->mp_capable = 0;
+ 	mp_opt->mp_join = 0;
+ 	mp_opt->add_addr = 0;
++	mp_opt->ahmac = 0;
+ 	mp_opt->rm_addr = 0;
+ 	mp_opt->dss = 0;
+ 
 
 
