@@ -2,130 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F212829BC13
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287E429BC6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764631AbgJ0Qb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:31:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763851AbgJ0QbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:31:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9EACBAFF2;
-        Tue, 27 Oct 2020 16:31:17 +0000 (UTC)
-To:     Laurent Dufour <ldufour@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-References: <20201027140926.276-1-ldufour@linux.ibm.com>
- <20201027142421.GW20500@dhcp22.suse.cz>
- <11bdd295-3ef8-fbeb-2c76-2a109fa26f19@linux.ibm.com>
- <20201027150350.GZ20500@dhcp22.suse.cz>
- <e2cea72f-d8fa-0ac7-e48d-63cc41414ed2@linux.ibm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/slub: fix panic in slab_alloc_node()
-Message-ID: <7ef64e75-2150-01a9-074d-a754348683b3@suse.cz>
-Date:   Tue, 27 Oct 2020 17:31:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1802576AbgJ0QcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:32:20 -0400
+Received: from casper.infradead.org ([90.155.50.34]:47756 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1798634AbgJ0QcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:32:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H05ltON33z0fCdXh2EgSujvsztqcC4kd9zN/VDX94OE=; b=gvrxYDSrU2k4WlnyLsg3sRhVt8
+        kE41rt04oAhSHOiWv1IReEwHvAAvs97HMaUj1sDhnJo/HduW/nIQR7i68q1Sm0q6vEpqHEpD+qdMR
+        v6Ta84ML8X7YJBqQBrMs7xrbS/xCx+pT5IXuUIO81XzRSbO38/POdxa/QELOxJTBMjqtWxKcbSEJ9
+        ZsQCvBrJvLLu6FY3v0O8FePX6DV5K4vd/Zly9PAaqJnzuRcWlvJYktYtCqkLCwjKv3WjctqzqT9sE
+        Kno2WRGH1Wjz3d57N+QdUfyssZ6ZS2OitMGVCbum12NVOgd2O87qPzbxyABovgvWKBezKWygVWvAF
+        kaLKoZHw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXRtN-0007eh-CM; Tue, 27 Oct 2020 16:32:13 +0000
+Date:   Tue, 27 Oct 2020 16:32:13 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: problems with splice from /proc (was Linux 5.10-rc1)
+Message-ID: <20201027163213.GA25390@infradead.org>
+References: <CAHk-=whcRFYSm0jj3Xh3xCyBaxCHA1ZMNO0h_gZso_WZFDUtiQ@mail.gmail.com>
+ <20201027064832.GA209538@kroah.com>
+ <20201027074911.GB29565@infradead.org>
+ <20201027075541.GA24429@kroah.com>
+ <20201027080745.GA31045@infradead.org>
+ <20201027081420.GA30177@kroah.com>
+ <20201027091725.GA42707@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <e2cea72f-d8fa-0ac7-e48d-63cc41414ed2@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027091725.GA42707@kroah.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 4:12 PM, Laurent Dufour wrote:
-> Le 27/10/2020 à 16:03, Michal Hocko a écrit :
->> On Tue 27-10-20 15:39:46, Laurent Dufour wrote:
->>> Le 27/10/2020 à 15:24, Michal Hocko a écrit :
->>>> [Cc Vlastimil]
->>>>
->>>> On Tue 27-10-20 15:09:26, Laurent Dufour wrote:
->>>>
->>>> Could you be more specific? I am especially confused how the memory
->>>> hotplug is involved here. What kind of flush are we talking about?
->>>
->>> This happens when flush_cpu_slab() is called when a memory block is about to
->>> be offlined, see slab_mem_going_offline_callback() called by the
->>> MEM_GOING_OFFLINE's callback triggered by offline_pages().
->> 
->> This would be a very valuable information for the changelog. I have to
->> admit that a more detailed description would help somebody not really
->> familiar with slub internals like me.
+On Tue, Oct 27, 2020 at 10:17:25AM +0100, Greg KH wrote:
+> Ok, I couldn't get a clean merge of that old branch on top of your
+> 5.10-rc1 tree, so I can't give it a run-through.  If you have an updated
+> series you want me to test, I'll be glad to do so.
 
-Agreed, please include that.
+Can you give this branch a spin?
 
->> I still fail to see why do we get an inconsistent state though. I
->> thought that no object is associated with an offlined page so how come
->> we have an object without any page?
-> 
-> The inconsistent state came from the IPI interrupt calling flush_cpu_slab()
-> being taken between reading c->freelist and c->page.
-
-Yes; also good to state explicitly.
-
->> How does this allocation path synchronizes with the offline callback?
-> 
-> My understanding is that this is done by the call to this_cpu_cmpxchg_double()
-> done later, but I would let the slub experts detail that point.
-
-Yes, cmpxchg will detect that c->freelist changed. If we managed to read both 
-c->freelist and c->page before the interrupt (and thus not crash), 
-cmpxchg_double will fail on the s->cpu_slab->tid part as flush_slab() will also 
-bump the tid.
-
->>>>> In commit 6159d0f5c03e ("mm/slub.c: page is always non-NULL in
->>>>> node_match()") check on the page pointer has been removed assuming that
->>>>> page is always valid when it is called. It happens that this is not true in
->>>>> that particular case, so check for page before calling node_match() here.
->>>>>
->>>>> Fixes: 6159d0f5c03e ("mm/slub.c: page is always non-NULL in node_match()")
->>>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-
-With the expanded changelog,
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Thanks!
-
->>>>> Cc: Christoph Lameter <cl@linux.com>
->>>>> Cc: Pekka Enberg <penberg@kernel.org>
->>>>> Cc: David Rientjes <rientjes@google.com>
->>>>> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>>> Cc: stable@vger.kernel.org
->>>>> ---
->>>>>    mm/slub.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/mm/slub.c b/mm/slub.c
->>>>> index 8f66de8a5ab3..7dc5c6aaf4b7 100644
->>>>> --- a/mm/slub.c
->>>>> +++ b/mm/slub.c
->>>>> @@ -2852,7 +2852,7 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
->>>>>    	object = c->freelist;
->>>>>    	page = c->page;
->>>>> -	if (unlikely(!object || !node_match(page, node))) {
->>>>> +	if (unlikely(!object || !page || !node_match(page, node))) {
->>>>>    		object = __slab_alloc(s, gfpflags, node, addr, c);
->>>>>    	} else {
->>>>>    		void *next_object = get_freepointer_safe(s, object);
->>>>> -- 
->>>>> 2.29.1
->>>>>
->>>>
->>>
->> 
-> 
-> 
-
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/set_fs-proc
