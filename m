@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38ED29A688
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E5929A68C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894764AbgJ0IYy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 04:24:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50364 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394931AbgJ0IYk (ORCPT
+        id S2894769AbgJ0I0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:26:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27559 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395416AbgJ0I0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:24:40 -0400
-Received: from mail-pl1-f200.google.com ([209.85.214.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kXKHV-00052P-MT
-        for linux-kernel@vger.kernel.org; Tue, 27 Oct 2020 08:24:37 +0000
-Received: by mail-pl1-f200.google.com with SMTP id x9so514980pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:24:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=SFlJSj1q7ASCYrGYYql1T2iPE3cfJ9xUSF5ewwsu+fw=;
-        b=Ki1AAEaoxD8c1YSxBQAdag3N4wi8yMuYXYPjqMJy23vz7QOh/lCtj5jDg3O8pyo6XF
-         ytXgQqQvWkH7IjZbO1/I12dst3AQkAJq5dMsxN4nJ5s4CvN63PLWuCB/xik8wbo71mo1
-         FuU1Iz/2g3T+oZiV7Ft5T6Q7wLJOdJqByJspiEGWYcIlGL4N/1iuy5CQ53ziXpzdIu4V
-         njlQ/1kZZjgmLtwqhDl0jB4UtDH6H+zk/cr7VbVRkhtQ+/ydeGJYO0n+fjG0PmayIl3e
-         sJnozOUmuRoAS5DRAu1p4YV8xxKw3DOVsRON3JYKQLN0+UENx1xG1wx1tUPRCZdHLPWT
-         oD9w==
-X-Gm-Message-State: AOAM531ZtxiBQPSgcrGSPGNTLVm17TaPq3uFMxm0uHyanMjMfaYASMhN
-        sHELLavjH/jbI8+sDkeMEQcACES3LD2Tqt/9QfhyLA7LtZW1tycRPFAuVrFQq83JiHlWAossTxP
-        Hj8Pr1wxwekxoMkSallODTPgDNRDoPPP6Cg6Jum5ZpQ==
-X-Received: by 2002:a63:2b53:: with SMTP id r80mr937289pgr.439.1603787076321;
-        Tue, 27 Oct 2020 01:24:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDWJ42nV2998HOqGb8LW3xxFBVpSepmFlAkoLUdN6qQWEtwNtB3zUkFHd+97bs19ZDzFpqTA==
-X-Received: by 2002:a63:2b53:: with SMTP id r80mr937273pgr.439.1603787075958;
-        Tue, 27 Oct 2020 01:24:35 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id a18sm1042842pgw.50.2020.10.27.01.24.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 01:24:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2 3/4] ALSA: hda: Separate runtime and system suspend
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <s5hft602ifo.wl-tiwai@suse.de>
-Date:   Tue, 27 Oct 2020 16:24:32 +0800
-Cc:     tiwai@suse.com, perex@perex.cz, hui.wang@canonical.com,
-        kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <585925F6-8262-41BB-A21D-EBCE6EBF9B5D@canonical.com>
-References: <20201027054001.1800-1-kai.heng.feng@canonical.com>
- <20201027054001.1800-4-kai.heng.feng@canonical.com>
- <s5hlffs2jsy.wl-tiwai@suse.de> <s5himaw2ilk.wl-tiwai@suse.de>
- <s5hft602ifo.wl-tiwai@suse.de>
-To:     Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Tue, 27 Oct 2020 04:26:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603787205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0SgGH32DtkrCtTnKEBBNXoBqjBSTDBuSJiubuSpA7gY=;
+        b=OlX7ec/71spC9nS/tD8+Ft4ioUZH10wkzjIcoyEnbiqxAd0AB0/Icw9GXY9tjvgrmtylnk
+        4UWPNKeGw5LgYm4odr3/CgfzZm69EEU3Qu3BaVp1RKNyZH9VDfruqmd2vQCXKp8+BUe+hE
+        4DwozDLc1Nd2BGvQhPq9SFGBZSY+RUA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-6RoR-GSeOCmfUqCmMk5Dsg-1; Tue, 27 Oct 2020 04:26:42 -0400
+X-MC-Unique: 6RoR-GSeOCmfUqCmMk5Dsg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51A7C5705E;
+        Tue, 27 Oct 2020 08:26:38 +0000 (UTC)
+Received: from [10.36.113.185] (ovpn-113-185.ams2.redhat.com [10.36.113.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 492196EF45;
+        Tue, 27 Oct 2020 08:26:31 +0000 (UTC)
+Subject: Re: [PATCH v7 1/7] mm: add definition of PMD_PAGE_ORDER
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20201026083752.13267-1-rppt@kernel.org>
+ <20201026083752.13267-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <9728bfdf-9f40-68dd-3862-5befc770268b@redhat.com>
+Date:   Tue, 27 Oct 2020 09:26:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201026083752.13267-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Oct 27, 2020, at 16:15, Takashi Iwai <tiwai@suse.de> wrote:
+On 26.10.20 09:37, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> On Tue, 27 Oct 2020 09:12:07 +0100,
-> Takashi Iwai wrote:
->> 
->> On Tue, 27 Oct 2020 08:46:05 +0100,
->> Takashi Iwai wrote:
->>>> @@ -1103,10 +1115,8 @@ static int azx_runtime_suspend(struct device *dev)
->>>> 	chip = card->private_data;
->>>> 
->>>> 	/* enable controller wake up event */
->>>> -	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
->>>> -		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
->>>> -			   STATESTS_INT_MASK);
->>>> -	}
->>>> +	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
->>>> +		   STATESTS_INT_MASK);
->>> 
->>> ... here we should have the check of chip->prepared, and set WAKEEN
->>> only when it's false.  Otherwise WAKEEN is set up for the system
->>> suspend, and it might lead to spurious wakeups.  (IOW, checking the
->>> flag at resume doesn't help for preventing the spurious wakeup :)
->> 
->> Scratch my comment above; it's the code path only for the runtime
->> suspend in your new code, then this cleanup makes sense.
+> The definition of PMD_PAGE_ORDER denoting the number of base pages in the
+> second-level leaf page is already used by DAX and maybe handy in other
+> cases as well.
 > 
-> Also, as one more cleanup: from_rt in __azx_runtime_resume() can be
-> replaced with !chip->prepared flag, so the extra argument can be
-> dropped.
-
-Ok, will send v3 to address it.
-
-Kai-Heng
-
+> Several architectures already have definition of PMD_ORDER as the size of
+> second level page table, so to avoid conflict with these definitions use
+> PMD_PAGE_ORDER name and update DAX respectively.
 > 
-> 
-> Takashi
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
