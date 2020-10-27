@@ -2,83 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8A229A9FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5897A29A9FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418589AbgJ0Kqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:46:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:5401 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1418538AbgJ0KqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:46:21 -0400
-IronPort-SDR: n3wR2xNXVCvuZPqPijwzXyoZgfHq+P83zG/DMJBIMMgDNeljEoY7K+3/K7d61cJpyreBzqFM0n
- 6ObZG6lWI3uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="232244795"
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="232244795"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 03:46:19 -0700
-IronPort-SDR: yhg4RqO2u1dTIO7Y9rtH4cZ+6SXPvTEHGn6CmjfRf/xuWfoawSwx9uJATwrElKSx709WgnSXaZ
- zocSclAqVrAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="360701761"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Oct 2020 03:46:18 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 93099249; Tue, 27 Oct 2020 12:46:17 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] mfd: intel-lpss: Add Intel Alder Lake PCH-S PCI IDs
-Date:   Tue, 27 Oct 2020 12:46:16 +0200
-Message-Id: <20201027104616.49098-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1418616AbgJ0KrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:47:07 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:46296 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1418295AbgJ0Kqx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:46:53 -0400
+Received: by mail-lf1-f67.google.com with SMTP id v6so1637415lfa.13;
+        Tue, 27 Oct 2020 03:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=n+R+IbGIJxakdbmAkfda0p2uyxFEg7csUXtIV29lJrk=;
+        b=SVfiFQtOYFa8vQUvYDmz3+JP27jTH3Is0VwBMhA6brpEQX6aqVVE7v8XoIXC2B/T9i
+         /UUxqtpgP8QO3Lz0YUWWU9MDmV1vJOLSFZMOysi8BLFxWrHc5VPheqvm98i9KTmFnUFr
+         QwLI7RApDDvh+pUFnpt7EfC8Nku9Bg4kLh5UKrH+hJ9giAWHOpBu3lgpQ8uZtQ9pRB9F
+         L2V92yUWWTyMa2+ZzPWJGShHBSbJogVxfj+9recRWgOTjg2lm2LmwV1MVGqWZhA56P6n
+         fEeHYGhjGnB1RJLuT6vCfwt+zfqcSizQCF1l+GZVM8ew92ojJ9hqFkEkNRQxB6Y44PQq
+         F0oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=n+R+IbGIJxakdbmAkfda0p2uyxFEg7csUXtIV29lJrk=;
+        b=MUBE4czwxNJ5K0+gsyD/7pHha6ughkwfRAzZAoqeiP+8mamBs2xYNPlB4kyp7XRDHg
+         xT4eujr2+SwCzWjGqWlealRLexD1M4KOxKov5ZpoHLS1AtqGf9GRrPrCNUz/eqBTaxjU
+         Vh45L4YYS4jWbPR2QwZdJ66rArJ/ez0LCv2seR9Z0R6W5qv/cAoYgMUhuv/9lR5HeHbw
+         mu0Dl+/XH/Hbp4a7p9m8dqK8+KX5VDnwVo7wchZShi7/vEvXrTQIWb6sIoOB/QZPLRwa
+         +w6WSVcADsdNJR3TExnqg6Se0lHYgQ/JRZnZxGPa8xnO2VjPgAdB3IlgnBms5N4y0xuN
+         +JlQ==
+X-Gm-Message-State: AOAM5315ZJRmc8I5eQZeQuoQY0Nk+dEwMQBZea92pPwEzWl4rkcAZ1oE
+        ZNsRn1cSi1tCU9w3ebDvdzXUETDr4xgUzh5Q/34=
+X-Google-Smtp-Source: ABdhPJzSxXRdGlZlEI7MXIMrUWEtGzO5f0hDcafc4ky8LbiK1uaq02psrtbhIjdejT+lZH8d5Mxsu4uDoIOyzBPaSLE=
+X-Received: by 2002:ac2:5f95:: with SMTP id r21mr690659lfe.209.1603795610496;
+ Tue, 27 Oct 2020 03:46:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
+ <20201027082900.GA21354@amd> <CADiBU3915nyB2OE_bqPy8kVqPhKbdTpBe8ay_ZAoFwuJoL-BfQ@mail.gmail.com>
+ <20201027101535.GB13900@duo.ucw.cz>
+In-Reply-To: <20201027101535.GB13900@duo.ucw.cz>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Tue, 27 Oct 2020 18:46:39 +0800
+Message-ID: <CADiBU39rQ=5vk31caa1rv32eyzFrYB78p8GubpSi21DS5JYQkA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
+ led controller
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Pavel Machek <pavel@ucw.cz> =E6=96=BC 2020=E5=B9=B410=E6=9C=8827=E6=97=A5 =
+=E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=886:15=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi!
+>
+> > > Please use upper-case "LED" everywhere.
+> > >
+> > > This should be 2nd in the series, after DT changes.
+> > Sure, will ack in next series patch.
+>
+> Feel free to wait for dt ACKs before resending.
+>
+Yes, sure.
+> > > > +     help
+> > > > +       This option enables support for the RT4505 flash led contro=
+ller.
+> > >
+> > > Information where it is used would be welcome here.
+> > How about to add the below line for the extra information?
+> > Usually used to company with the camera device on smartphone/tablet
+> > products
+>
+> Yes, that would help.
+>
+> "It is commonly used in smartphones, such as Bell Packard T899" would
+> be even better.
 
-Add Intel Alder Lake LPSS PCI IDs.
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mfd/intel-lpss-pci.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-index 2d7c588ef1ed..9d6daa780df7 100644
---- a/drivers/mfd/intel-lpss-pci.c
-+++ b/drivers/mfd/intel-lpss-pci.c
-@@ -293,6 +293,21 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x5ac4), (kernel_ulong_t)&bxt_info },
- 	{ PCI_VDEVICE(INTEL, 0x5ac6), (kernel_ulong_t)&bxt_info },
- 	{ PCI_VDEVICE(INTEL, 0x5aee), (kernel_ulong_t)&bxt_uart_info },
-+	/* ADL-S */
-+	{ PCI_VDEVICE(INTEL, 0x7aa8), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0x7aa9), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0x7aaa), (kernel_ulong_t)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x7aab), (kernel_ulong_t)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x7acc), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x7acd), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x7ace), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x7acf), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x7adc), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0x7af9), (kernel_ulong_t)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x7afb), (kernel_ulong_t)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x7afc), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x7afd), (kernel_ulong_t)&bxt_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0x7afe), (kernel_ulong_t)&bxt_uart_info },
- 	/* LKF */
- 	{ PCI_VDEVICE(INTEL, 0x98a8), (kernel_ulong_t)&bxt_uart_info },
- 	{ PCI_VDEVICE(INTEL, 0x98a9), (kernel_ulong_t)&bxt_uart_info },
--- 
-2.28.0
-
+Sorry, We don't focus on specific products. It's a general part flash
+led controller.
+I'll change it like as below
+"It's commonly used in smartphones and tablets to assist the builtin camera=
+."
+>
+> > > > +     ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, R=
+T4505_ENABLE_MASK, val);
+> > > > +
+> > > > +unlock:
+> > > > +     mutex_unlock(&priv->lock);
+> > > > +     return ret;
+> > > > +}
+> > >
+> > > Why is the locking needed? What will the /sys/class/leds interface
+> > > look like on system with your flash?
+> >
+> > The original thought is because there's still another way to control
+> > flash like as v4l2.
+> > But after reviewing the source code, led sysfs node will be protected
+> > by led_cdev->led_access.
+> > And V4L2 flash will also be protected by v4l2_fh_is_singular API.
+> > I think the whole locking in the source code code may be removed. Right=
+?
+>
+> Well, maybe you need it, I did not check..
+>
+> What will the /sys/class/leds interface look like on system with your fla=
+sh?
+>
+> > > > +     *state =3D ((val & RT4505_FLASH_GET) =3D=3D RT4505_FLASH_GET)=
+ ? true : false;
+> > >
+> > > No need for ? ... part.
+> > Do you mean this function is not needed? If yes, it can be removed.
+> > But if it removed, led sysfs flash_strobe show will be not supported.
+>
+> I meant "replace line with: *state =3D (val & RT4505_FLASH_GET) =3D=3D RT=
+4505_FLASH_GET;"
+Oh, I got it. redundant judgement.
+>
+> > > > +static bool rt4505_is_accessible_reg(struct device *dev, unsigned =
+int reg)
+> > > > +{
+> > > > +     if (reg =3D=3D RT4505_REG_RESET || (reg >=3D RT4505_REG_CONFI=
+G  && reg <=3D RT4505_REG_FLAGS))
+> > > > +             return true;
+> > >
+> > > Make this two stagements.
+> > Like as the below one?? Or separate it into two if case.
+> > if (reg =3D=3D RT4505_REG_RESET ||
+> >        reg >=3D RT4505_REG_CONFIG  && reg <=3D RT4505_REG_FLAGS))
+>
+> That would be fine, too... if you use just one space before "&&" :-).
+Thx.
+>
+> Best regards,
+>                                                         Pavel
+> --
+> http://www.livejournal.com/~pavelmachek
