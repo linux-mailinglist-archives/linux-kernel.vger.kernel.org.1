@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6130429B3CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED7729B3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752303AbgJ0Ozh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50180 "EHLO mail.kernel.org"
+        id S1781538AbgJ0Ozv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:55:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772899AbgJ0Ou1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:27 -0400
+        id S1772908AbgJ0Oub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:50:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 888FA20709;
-        Tue, 27 Oct 2020 14:50:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84CB4207DE;
+        Tue, 27 Oct 2020 14:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810227;
-        bh=U9XkeznRaBRhcxUYAB0DI2V9noC0os5Uhj8gTDfDIXo=;
+        s=default; t=1603810231;
+        bh=0YeDq31BLdUANo2Gvh0lwBsiRiQOzU5pl8c0EC/9zWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YJ2A5wFRdn/A+eyOVKvBMxNkOV9HNDCRN9ZfWgwWTCQDKij925z9FOLyIwDCrf+b7
-         wMBoh6yl7zsUuPO5M0uj7jB1rQD3dZijXLpY3jcbdx64BokmRScC1Z0DU9wQE0rrHQ
-         XdCp37DITEU4Z4zTjjHSL3NyUQx1qw46YrC7iiOk=
+        b=Yao1p/pS8tz6ANqW6sbbztzbQKhm/rrOQWQuvzXtXyEzTUGAOJVt9KicgeD46KP4b
+         c4yvW5EocXjytR9bhaXYA68fhLeUF2b8iZdo7qieKt4qym5uTyqXvkhgwJB8THYAFi
+         gwFnq4DNYNyCg7vsXM+77SFcxO5LD4G+IMTtMAPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.8 065/633] SMB3.1.1: Fix ids returned in POSIX query dir
-Date:   Tue, 27 Oct 2020 14:46:48 +0100
-Message-Id: <20201027135525.748467921@linuxfoundation.org>
+        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.8 066/633] smb3: do not try to cache root directory if dir leases not supported
+Date:   Tue, 27 Oct 2020 14:46:49 +0100
+Message-Id: <20201027135525.799197177@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,69 +43,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Steve French <stfrench@microsoft.com>
 
-commit 9934430e2178d5164eb1ac91a9b092f9e7e64745 upstream.
+commit 3c6e65e679182d55779ef6f8582f0945af4319b0 upstream.
 
-We were setting the uid/gid to the default in each dir entry
-in the parsing of the POSIX query dir response, rather
-than attempting to map the user and group SIDs returned by
-the server to well known SIDs (or upcall if not found).
+To servers which do not support directory leases (e.g. Samba)
+it is wasteful to try to open_shroot (ie attempt to cache the
+root directory handle).  Skip attempt to open_shroot when
+server does not indicate support for directory leases.
 
-CC: Stable <stable@vger.kernel.org>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Cuts the number of requests on mount from 17 to 15, and
+cuts the number of requests on stat of the root directory
+from 4 to 3.
+
 Signed-off-by: Steve French <stfrench@microsoft.com>
+CC: Stable <stable@vger.kernel.org> # v5.1+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/cifsacl.c   |    5 +++--
- fs/cifs/cifsproto.h |    2 ++
- fs/cifs/readdir.c   |    5 ++---
- 3 files changed, 7 insertions(+), 5 deletions(-)
+ fs/cifs/connect.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/fs/cifs/cifsacl.c
-+++ b/fs/cifs/cifsacl.c
-@@ -338,7 +338,7 @@ invalidate_key:
- 	goto out_key_put;
- }
- 
--static int
-+int
- sid_to_id(struct cifs_sb_info *cifs_sb, struct cifs_sid *psid,
- 		struct cifs_fattr *fattr, uint sidtype)
- {
-@@ -359,7 +359,8 @@ sid_to_id(struct cifs_sb_info *cifs_sb,
- 		return -EIO;
- 	}
- 
--	if (cifs_sb->mnt_cifs_flags & CIFS_MOUNT_UID_FROM_ACL) {
-+	if ((cifs_sb->mnt_cifs_flags & CIFS_MOUNT_UID_FROM_ACL) ||
-+	    (cifs_sb_master_tcon(cifs_sb)->posix_extensions)) {
- 		uint32_t unix_id;
- 		bool is_group;
- 
---- a/fs/cifs/cifsproto.h
-+++ b/fs/cifs/cifsproto.h
-@@ -208,6 +208,8 @@ extern int cifs_set_file_info(struct ino
- extern int cifs_rename_pending_delete(const char *full_path,
- 				      struct dentry *dentry,
- 				      const unsigned int xid);
-+extern int sid_to_id(struct cifs_sb_info *cifs_sb, struct cifs_sid *psid,
-+				struct cifs_fattr *fattr, uint sidtype);
- extern int cifs_acl_to_fattr(struct cifs_sb_info *cifs_sb,
- 			      struct cifs_fattr *fattr, struct inode *inode,
- 			      bool get_mode_from_special_sid,
---- a/fs/cifs/readdir.c
-+++ b/fs/cifs/readdir.c
-@@ -267,9 +267,8 @@ cifs_posix_to_fattr(struct cifs_fattr *f
- 	if (reparse_file_needs_reval(fattr))
- 		fattr->cf_flags |= CIFS_FATTR_NEED_REVAL;
- 
--	/* TODO map SIDs */
--	fattr->cf_uid = cifs_sb->mnt_uid;
--	fattr->cf_gid = cifs_sb->mnt_gid;
-+	sid_to_id(cifs_sb, &parsed.owner, fattr, SIDOWNER);
-+	sid_to_id(cifs_sb, &parsed.group, fattr, SIDGROUP);
- }
- 
- static void __dir_info_to_fattr(struct cifs_fattr *fattr, const void *info)
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -3594,7 +3594,10 @@ cifs_get_tcon(struct cifs_ses *ses, stru
+ 	 */
+ 	tcon->retry = volume_info->retry;
+ 	tcon->nocase = volume_info->nocase;
+-	tcon->nohandlecache = volume_info->nohandlecache;
++	if (ses->server->capabilities & SMB2_GLOBAL_CAP_DIRECTORY_LEASING)
++		tcon->nohandlecache = volume_info->nohandlecache;
++	else
++		tcon->nohandlecache = 1;
+ 	tcon->nodelete = volume_info->nodelete;
+ 	tcon->local_lease = volume_info->local_lease;
+ 	INIT_LIST_HEAD(&tcon->pending_opens);
 
 
