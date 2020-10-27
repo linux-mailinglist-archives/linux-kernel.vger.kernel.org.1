@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9804F29B40C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DF329B5F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782766AbgJ0O5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
+        id S1757615AbgJ0PSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:18:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763930AbgJ0Opd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:45:33 -0400
+        id S1794874AbgJ0POF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:14:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA01122264;
-        Tue, 27 Oct 2020 14:45:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 077F220728;
+        Tue, 27 Oct 2020 15:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809932;
-        bh=SNkoiLb3zjyEOWt2sJRIzo8Q0E8EUJ0NYpwfdvj3ATc=;
+        s=default; t=1603811644;
+        bh=MkgMDcccSHwun46vYipogs2oopYDY7nk+d6mYmDSuyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KXk2q8DMNccCOqtChq0wC1jp09AjiBfAFz1VFSFiAURjSl5A5TiTIq04olaKz8dLu
-         CFOxst0UDGckoSHOaY9f9RGxGmbe66IjrsT1xjE1uCRuQsHxuRctO3og8Pj8jQ8Y6G
-         K2xaiHDOEIXNE42sGkRQGHGsiPw3SyqmU4xRjwgY=
+        b=qPnc7k9yDUaG/xhN/bcmri4qs0T15DOgf15AVqUQf1XB18xU6p04tt/PBXI8IRil6
+         SykzCIU/4o8wt8dsfbI8ATdp+/88bqJQepj/QuAwior1vrj0pQwPLdkNtWmjnHraxU
+         TI7eMIXhK8N3G6xYebokk64u2efGh/FHIzfC65f4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 370/408] xfs: make sure the rt allocator doesnt run off the end
-Date:   Tue, 27 Oct 2020 14:55:08 +0100
-Message-Id: <20201027135512.175996539@linuxfoundation.org>
+        stable@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 566/633] mic: vop: copy data to kernel space then write to io memory
+Date:   Tue, 27 Oct 2020 14:55:09 +0100
+Message-Id: <20201027135549.354705053@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Sherry Sun <sherry.sun@nxp.com>
 
-[ Upstream commit 2a6ca4baed620303d414934aa1b7b0a8e7bab05f ]
+[ Upstream commit 675f0ad4046946e80412896436164d172cd92238 ]
 
-There's an overflow bug in the realtime allocator.  If the rt volume is
-large enough to handle a single allocation request that is larger than
-the maximum bmap extent length and the rt bitmap ends exactly on a
-bitmap block boundary, it's possible that the near allocator will try to
-check the freeness of a range that extends past the end of the bitmap.
-This fails with a corruption error and shuts down the fs.
+Read and write io memory should address align on ARCH ARM. Change to use
+memcpy_toio to avoid kernel panic caused by the address un-align issue.
 
-Therefore, constrain maxlen so that the range scan cannot run off the
-end of the rt bitmap.
-
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Link: https://lore.kernel.org/r/20200929091106.24624-5-sherry.sun@nxp.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_rtalloc.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/misc/mic/vop/vop_vringh.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
-index 4a48a8c75b4f7..b583669370825 100644
---- a/fs/xfs/xfs_rtalloc.c
-+++ b/fs/xfs/xfs_rtalloc.c
-@@ -247,6 +247,9 @@ xfs_rtallocate_extent_block(
- 		end = XFS_BLOCKTOBIT(mp, bbno + 1) - 1;
- 	     i <= end;
- 	     i++) {
-+		/* Make sure we don't scan off the end of the rt volume. */
-+		maxlen = min(mp->m_sb.sb_rextents, i + maxlen) - i;
-+
- 		/*
- 		 * See if there's a free extent of maxlen starting at i.
- 		 * If it's not so then next will contain the first non-free.
-@@ -442,6 +445,14 @@ xfs_rtallocate_extent_near(
+diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
+index 30eac172f0170..d069947b09345 100644
+--- a/drivers/misc/mic/vop/vop_vringh.c
++++ b/drivers/misc/mic/vop/vop_vringh.c
+@@ -602,6 +602,7 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
+ 	size_t partlen;
+ 	bool dma = VOP_USE_DMA && vi->dma_ch;
+ 	int err = 0;
++	size_t offset = 0;
+ 
+ 	if (dma) {
+ 		dma_alignment = 1 << vi->dma_ch->device->copy_align;
+@@ -655,13 +656,20 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
+ 	 * We are copying to IO below and should ideally use something
+ 	 * like copy_from_user_toio(..) if it existed.
  	 */
- 	if (bno >= mp->m_sb.sb_rextents)
- 		bno = mp->m_sb.sb_rextents - 1;
+-	if (copy_from_user((void __force *)dbuf, ubuf, len)) {
+-		err = -EFAULT;
+-		dev_err(vop_dev(vdev), "%s %d err %d\n",
+-			__func__, __LINE__, err);
+-		goto err;
++	while (len) {
++		partlen = min_t(size_t, len, VOP_INT_DMA_BUF_SIZE);
 +
-+	/* Make sure we don't run off the end of the rt volume. */
-+	maxlen = min(mp->m_sb.sb_rextents, bno + maxlen) - bno;
-+	if (maxlen < minlen) {
-+		*rtblock = NULLRTBLOCK;
-+		return 0;
-+	}
-+
- 	/*
- 	 * Try the exact allocation first.
- 	 */
++		if (copy_from_user(vvr->buf, ubuf + offset, partlen)) {
++			err = -EFAULT;
++			dev_err(vop_dev(vdev), "%s %d err %d\n",
++				__func__, __LINE__, err);
++			goto err;
++		}
++		memcpy_toio(dbuf + offset, vvr->buf, partlen);
++		offset += partlen;
++		vdev->out_bytes += partlen;
++		len -= partlen;
+ 	}
+-	vdev->out_bytes += len;
+ 	err = 0;
+ err:
+ 	vpdev->hw_ops->unmap(vpdev, dbuf);
 -- 
 2.25.1
 
