@@ -2,218 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADF929BDA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A8729BE7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811902AbgJ0Qn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:43:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55659 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1811880AbgJ0QnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:43:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603816997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
-        b=iMWK/9udZzW6xrAGHscjJXdgSKzRvPSDOpFhpewEulwue0luZDWR/Ryv1JtcRbdtckAno/
-        8gCre/qcu5loxPOISVxTx/Px6r/O5Yh9WbP8UDElywsNUWAGOrXct/LtPnIVtJFCBwfPv0
-        dL2+ox3hVo2/V3PWm26kL+Qs4OpFesk=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-v41__4QCPaqsU2sdZPGsNQ-1; Tue, 27 Oct 2020 12:43:15 -0400
-X-MC-Unique: v41__4QCPaqsU2sdZPGsNQ-1
-Received: by mail-ot1-f72.google.com with SMTP id v7so596966ots.19
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:43:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
-        b=FQeHEg4PO2pez1RxvECkkiBtXiBzLb/3yT1TE1KU1e3avJ1xCkorf6lQZ5x0zSUHra
-         s6ETFia4jvJooWmAPNp3zPLuWH6x0e1pcHMzMVCq9mII9HuJygMMCRHYxOy1N4qI43IU
-         NkR/xmypDEgWWtLYq5hAaWy6G8RbXFVBmnVyW5o0USyo5rxK1B0hmj7WrqaVpLqyNskQ
-         A8YbtO8/kNb4M1B/cweEZfSPnBLQmqMFKHW5lZtWzYdrSHeg47uheP14iWT5aogy8Zvo
-         s2Y33VeSM5Wcs3BTRvWY7glp3tJwxg0Kb8UHc7R67wmVbd3h18QP9+lt7VXowG6U6Jxp
-         txnQ==
-X-Gm-Message-State: AOAM531znfZ0cgtN/mXyuqWlqeNGGoPcGaNip223epKUXidtHjfp3zdF
-        TesQCSHEmJIHyK8AbD+77lXeKPRGI+CdaBGntJZgdA2A0EEaRhtDrwAmPS518oXwJAdc/McH8+b
-        BCc5INUkEeT+JgeV10Jeu1VtK
-X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048470oih.67.1603816993832;
-        Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7y1eCX7WfRNi9tkZnfLpiDio1qtG9FKTpwYlLMD9SlPYp6FIE57BquNUx5oTk2cs+UUc+WA==
-X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048435oih.67.1603816993577;
-        Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l89sm90968otc.6.2020.10.27.09.43.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 09:43:12 -0700 (PDT)
-From:   trix@redhat.com
-To:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        =?UTF-8?q?=EF=BB=BFFrom=20=3A=20Tom=20Rix?= <trix@redhat.com>
-Subject: Subject: [RFC] clang tooling cleanups
-Date:   Tue, 27 Oct 2020 09:42:55 -0700
-Message-Id: <20201027164255.1573301-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1813065AbgJ0Qru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:47:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1812028AbgJ0QpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:45:21 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ACC020727;
+        Tue, 27 Oct 2020 16:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603817120;
+        bh=it6+5eIhjAOmLpKS1T5u/uQqAOw4eN9xqiUyXoVjz7g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QLYSywKRXWs03RnAIzJlcc1AgTmlsc2n3apExFuB12H55A4vJEO3kpIM6R4Y1VFfh
+         9Ye+Tf6hbQ9a+MMiPrit7KhXXJFdbJh2tMrXiqktJHCUu7DKK5xcE4CsNYetBaMJWy
+         cGYHHWMoGm6d2XyjrWnoLoDfDhkPB1QQjRdJXuz0=
+Date:   Tue, 27 Oct 2020 17:43:43 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kyungtae Kim <kt0755@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: memory leak in u_audio_start_playback
+Message-ID: <20201027164343.GA1523116@kroah.com>
+References: <CAEAjamthOsn9JfL1K-sGUmTUJ-1GV6eCnn3baLNnG_MnUk12ow@mail.gmail.com>
+ <CAEAjams+ztDnt80M37ivQtGSUS1y6_zs-o0BoLDrTfBGAt+8ow@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEAjams+ztDnt80M37ivQtGSUS1y6_zs-o0BoLDrTfBGAt+8ow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This rfc will describe
-An upcoming treewide cleanup.
-How clang tooling was used to programatically do the clean up.
-Solicit opinions on how to generally use clang tooling.
+On Tue, Oct 27, 2020 at 11:50:25AM -0400, Kyungtae Kim wrote:
+> On Sun, Oct 25, 2020 at 3:32 PM Kyungtae Kim <kt0755@gmail.com> wrote:
+> >
+> > We report a bug (in linux-5.8.13) found by FuzzUSB (a modified version
+> > of syzkaller).
+> >
+> > An instance of struct usb_request allocated in f_audio_set_alt() leaked.
+> >
+> > ==================================================================
+> > BUG: memory leak
+> > unreferenced object 0xffff888053df0e00 (size 128):
+> >   comm "softirq", pid 0, jiffies 4294940573 (age 17.540s)
+> >   hex dump (first 32 bytes):
+> >     00 0e df 53 80 88 ff ff 00 0e df 53 80 88 ff ff  ...S.......S....
+> >     00 82 df 53 80 88 ff ff c0 00 00 00 00 00 00 00  ...S............
+> >   backtrace:
+> >     [<000000000694647e>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+> >     [<000000000694647e>] slab_post_alloc_hook mm/slab.h:588 [inline]
+> >     [<000000000694647e>] slab_alloc_node mm/slub.c:2824 [inline]
+> >     [<000000000694647e>] slab_alloc mm/slub.c:2832 [inline]
+> >     [<000000000694647e>] kmem_cache_alloc_trace+0x15c/0x310 mm/slub.c:2849
+> >     [<00000000d7d91433>] kmalloc include/linux/slab.h:555 [inline]
+> >     [<00000000d7d91433>] kzalloc include/linux/slab.h:669 [inline]
+> >     [<00000000d7d91433>] dummy_alloc_request+0x83/0x120 drivers/usb/gadget/udc/dummy_hcd.c:663
+> >     [<000000006e043557>] usb_ep_alloc_request+0x23/0x170 drivers/usb/gadget/udc/core.c:178
+> >     [<00000000fb13871b>] u_audio_start_playback+0x224/0x3c0 drivers/usb/gadget/function/u_audio.c:449
+> >     [<0000000017cb1f54>] f_audio_set_alt+0x8e/0x170 drivers/usb/gadget/function/f_uac1.c:463
+> >     [<0000000063ba610c>] composite_setup+0x62e/0x2690 drivers/usb/gadget/composite.c:1793
+> >     [<00000000e86333ed>] configfs_composite_setup+0xa5/0xd0 drivers/usb/gadget/configfs.c:1457
+> >     [<00000000f9a524ea>] dummy_timer+0x5a7/0x1460 drivers/usb/gadget/udc/dummy_hcd.c:1899
+> >     [<00000000182f2904>] call_timer_fn+0xdd/0x3a0 kernel/time/timer.c:1416
+> >     [<000000000d926b91>] expire_timers kernel/time/timer.c:1461 [inline]
+> >     [<000000000d926b91>] __run_timers kernel/time/timer.c:1792 [inline]
+> >     [<000000000d926b91>] run_timer_softirq+0x286/0x670 kernel/time/timer.c:1805
+> >     [<000000008902fa26>] __do_softirq+0xfa/0x684 kernel/softirq.c:292
+> >     [<000000003597f960>] asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
+> >     [<000000005c5a9a83>] __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+> >     [<000000005c5a9a83>] run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+> >     [<000000005c5a9a83>] do_softirq_own_stack+0x8b/0xb0 arch/x86/kernel/irq_64.c:77
+> >     [<00000000590d59e5>] invoke_softirq kernel/softirq.c:387 [inline]
+> >     [<00000000590d59e5>] __irq_exit_rcu kernel/softirq.c:417 [inline]
+> >     [<00000000590d59e5>] irq_exit_rcu+0xb5/0xf0 kernel/softirq.c:429
+> >     [<00000000689d4053>] sysvec_apic_timer_interrupt+0x83/0xf0 arch/x86/kernel/apic/apic.c:1091
+> >     [<00000000f2e90960>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:585
+> > ==================================================================
+> >
+> > Regards,
+> > Kyungtae Kim
 
-The clang warning -Wextra-semi-stmt produces about 10k warnings.
-Reviewing these, a subset of semicolon after a switch looks safe to
-fix all the time.  An example problem
+Nice, care to submit a patch to fix this?
 
-void foo(int a) {
-     switch(a) {
-     	       case 1:
-	       ...
-     }; <--- extra semicolon
-}
+We are drowning in syzbot-found issues, almost none will get resolved
+unless people start providing resources to fix them.  I would strongly
+recommend the people that find them also send a fix at the same time
+where ever possible.
 
-Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
-These fixes will be the upcoming cleanup.
+thanks,
 
-clang already supports fixing this problem. Add to your command line
-
-  clang -c -Wextra-semi-stmt -Xclang -fixit foo.c
-
-  foo.c:8:3: warning: empty expression statement has no effect;
-    remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
-        };
-         ^
-  foo.c:8:3: note: FIX-IT applied suggested code changes
-  1 warning generated.
-
-The big problem is using this treewide is it will fix all 10k problems.
-10k changes to analyze and upstream is not practical.
-
-Another problem is the generic fixer only removes the semicolon.
-So empty lines with some tabs need to be manually cleaned.
-
-What is needed is a more precise fixer.
-
-Enter clang-tidy.
-https://clang.llvm.org/extra/clang-tidy/
-
-Already part of the static checker infrastructure, invoke on the clang
-build with
-  make clang-tidy
-
-It is only a matter of coding up a specific checker for the cleanup.
-Upstream this is review is happening here
-https://reviews.llvm.org/D90180
-
-The development of a checker/fixer is
-Start with a reproducer
-
-void foo (int a) {
-  switch (a) {};
-}
-
-Generate the abstract syntax tree (AST)
-
-  clang -Xclang -ast-dump foo.c
-
-`-FunctionDecl 
-  |-ParmVarDecl 
-  `-CompoundStmt 
-    |-SwitchStmt 
-    | |-ImplicitCastExpr
-    | | `-DeclRefExpr
-    | `-CompoundStmt
-    `-NullStmt
-
-Write a matcher to get you most of the way
-
-void SwitchSemiCheck::registerMatchers(MatchFinder *Finder) {
-  Finder->addMatcher(
-      compoundStmt(has(switchStmt().bind("switch"))).bind("comp"), this);
-}
-
-The 'bind' method is important, it allows a string to be associated
-with a node in the AST.  In this case these are
-
-`-FunctionDecl 
-  |-ParmVarDecl 
-  `-CompoundStmt <-------- comp
-    |-SwitchStmt <-------- switch
-    | |-ImplicitCastExpr
-    | | `-DeclRefExpr
-    | `-CompoundStmt
-    `-NullStmt
-
-When a match is made the 'check' method will be called.
-
-  void SwitchSemiCheck::check(const MatchFinder::MatchResult &Result) {
-    auto *C = Result.Nodes.getNodeAs<CompoundStmt>("comp");
-    auto *S = Result.Nodes.getNodeAs<SwitchStmt>("switch");
-
-This is where the string in the bind calls are changed to nodes
-
-`-FunctionDecl 
-  |-ParmVarDecl 
-  `-CompoundStmt <-------- comp, C
-    |-SwitchStmt <-------- switch, S
-    | |-ImplicitCastExpr
-    | | `-DeclRefExpr
-    | `-CompoundStmt
-    `-NullStmt <---------- looking for N
-
-And then more logic to find the NullStmt
-
-  auto Current = C->body_begin();
-  auto Next = Current;
-  Next++;
-  while (Next != C->body_end()) {
-    if (*Current == S) {
-      if (const auto *N = dyn_cast<NullStmt>(*Next)) {
-
-When it is found, a warning is printed and a FixItHint is proposed.
-
-  auto H = FixItHint::CreateReplacement(
-    SourceRange(S->getBody()->getEndLoc(), N->getSemiLoc()), "}");
-  diag(N->getSemiLoc(), "unneeded semicolon") << H;
-
-This fixit replaces from the end of switch to the semicolon with a
-'}'.  Because the end of the switch is '}' this has the effect of
-removing all the whitespace as well as the semicolon.
-
-Because of the checker's placement in clang-tidy existing linuxkernel
-checkers, all that was needed to fix the tree was to add a '-fix'to the
-build's clang-tidy call.
-
-I am looking for opinions on what we want to do specifically with
-cleanups and generally about other source-to-source programmatic
-changes to the code base.
-
-For cleanups, I think we need a new toplevel target
-
-clang-tidy-fix
-
-And an explicit list of fixers that have a very high (100%?) fix rate.
-
-Ideally a bot should make the changes, but a bot could also nag folks.
-Is there interest in a bot making the changes? Does one already exist?
-
-The general source-to-source is a bit blue sky.  Ex/ could automagicly
-refactor api, outline similar cut-n-pasted functions etc. Anything on
-someone's wishlist you want to try out ?
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-
+greg k-h
