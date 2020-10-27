@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156A829B2B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D6629B31D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762745AbgJ0OoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42378 "EHLO mail.kernel.org"
+        id S1762763AbgJ0OoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:44:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750100AbgJ0Omn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:43 -0400
+        id S1762432AbgJ0Oms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89DB220773;
-        Tue, 27 Oct 2020 14:42:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 307AB206E5;
+        Tue, 27 Oct 2020 14:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809762;
-        bh=w62jf25ORWdzQ4ot+18VYIiu8KkmtKUVA961TCbBAWI=;
+        s=default; t=1603809767;
+        bh=swjl4p7RllGljrdM008F8gqHzyP1dgi3X4kHCB5vjAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O5PpXVfQ/fzQPIFUdcPkUXd8QbRNo3MLCzjdS+zFzO+TTxcZxjRAqKGAGwBYGHXCZ
-         JX4eTQEWwftcOw5efDuo+Csf+OIVZdMa/G7NBGbKO0BoqUDGkAVSUBFEXvJRXbf1c1
-         S23vxcVFaihsah4tjhEJzgao4MqBhFuDWR5tf7hI=
+        b=vk7vPMvldq2CknXOPaKohSotsXl63fdGBmUwSrwz6nvrFja/QpccNDqLmapua47hI
+         jHlms0HNGkL82YawF+56JDnJMOs8TatSOkxwn82D7nGqFIC1uSQfQLR010qVKnHFNx
+         FBJOx/OgQGEcJKP8ABhWDi3lAT97MSq57CN+ZSZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Peter Korsgaard <peter@korsgaard.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 309/408] arm64: dts: renesas: r8a774c0: Fix MSIOF1 DMA channels
-Date:   Tue, 27 Oct 2020 14:54:07 +0100
-Message-Id: <20201027135509.363181511@linuxfoundation.org>
+Subject: [PATCH 5.4 311/408] ARM: dts: owl-s500: Fix incorrect PPI interrupt specifiers
+Date:   Tue, 27 Oct 2020 14:54:09 +0100
+Message-Id: <20201027135509.464879722@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,37 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit c91dfc9818df5f43c10c727f1cecaebdb5e2fa92 ]
+[ Upstream commit 55f6c9931f7c32f19cf221211f099dfd8dab3af9 ]
 
-According to Technical Update TN-RCT-S0352A/E, MSIOF1 DMA can only be
-used with SYS-DMAC0 on R-Car E3.
+The PPI interrupts for cortex-a9 were incorrectly specified, fix them.
 
-Fixes: 62c0056f1c3eb15d ("arm64: dts: renesas: r8a774c0: Add MSIOF nodes")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200917132117.8515-3-geert+renesas@glider.be
+Fixes: fdfe7f4f9d85 ("ARM: dts: Add Actions Semi S500 and LeMaker Guitar")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Peter Korsgaard <peter@korsgaard.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r8a774c0.dtsi | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/owl-s500.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-index a1c2de90e4706..73ded80a79ba0 100644
---- a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
-@@ -1212,9 +1212,8 @@ msiof1: spi@e6ea0000 {
- 			reg = <0 0xe6ea0000 0 0x0064>;
- 			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cpg CPG_MOD 210>;
--			dmas = <&dmac1 0x43>, <&dmac1 0x42>,
--			       <&dmac2 0x43>, <&dmac2 0x42>;
--			dma-names = "tx", "rx", "tx", "rx";
-+			dmas = <&dmac0 0x43>, <&dmac0 0x42>;
-+			dma-names = "tx", "rx";
- 			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
- 			resets = <&cpg 210>;
- 			#address-cells = <1>;
+diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
+index 5ceb6cc4451d2..1dbe4e8b38ac7 100644
+--- a/arch/arm/boot/dts/owl-s500.dtsi
++++ b/arch/arm/boot/dts/owl-s500.dtsi
+@@ -84,21 +84,21 @@ scu: scu@b0020000 {
+ 		global_timer: timer@b0020200 {
+ 			compatible = "arm,cortex-a9-global-timer";
+ 			reg = <0xb0020200 0x100>;
+-			interrupts = <GIC_PPI 0 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
++			interrupts = <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
+ 			status = "disabled";
+ 		};
+ 
+ 		twd_timer: timer@b0020600 {
+ 			compatible = "arm,cortex-a9-twd-timer";
+ 			reg = <0xb0020600 0x20>;
+-			interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
++			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
+ 			status = "disabled";
+ 		};
+ 
+ 		twd_wdt: wdt@b0020620 {
+ 			compatible = "arm,cortex-a9-twd-wdt";
+ 			reg = <0xb0020620 0xe0>;
+-			interrupts = <GIC_PPI 3 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
++			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.25.1
 
