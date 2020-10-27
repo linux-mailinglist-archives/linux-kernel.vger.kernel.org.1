@@ -2,121 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F7129A1E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4C629A1EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443565AbgJ0Asa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:48:30 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44785 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442734AbgJ0As3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:48:29 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKtNp16w1z9sRR;
-        Tue, 27 Oct 2020 11:48:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603759707;
-        bh=822m9qPrS+s1QTXC9KKA+PRBV5PsASCb6wd+PHD2IGk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PK2x0obBl2hfCbbRMAxLpWaKbgU1lMndwYIVlfzoaL8Yzl79HT2/ZrJVv7rz4L4a7
-         39pfCGuLEQ043M44cWnJd+H+Irrrz+r6cA80fsIYASWS2YklUxR1A8H5fv17UEiCR9
-         lp8L+RtX5XKF78pmsM1hCeEN+z4xHRnKjOhcn+L0pxRnwHO4k5ILkS4PTfW8SH+4ov
-         CA7VQyntNNADU0Pq8vwiCnLO4sSJpxvS96xJRA0UUXUcVWq8fnzf01Xa5VBa7/I1mT
-         OXOyiU1HNaGYAgtzFeOoEVv2TJXOg3bvRjisLlwsP2zkacixkXRCTPksOQ7Jq1IOAD
-         FV4iba+idpI9A==
-Date:   Tue, 27 Oct 2020 11:48:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        xinhui pan <xinhui.pan@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: linux-next: manual merge of the amdgpu tree with Linus' tree
-Message-ID: <20201027114823.09453419@canb.auug.org.au>
+        id S2444577AbgJ0Aup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:50:45 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:37977 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390288AbgJ0Auo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:50:44 -0400
+Received: by mail-io1-f67.google.com with SMTP id y20so13303487iod.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:50:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1CZ2k4hR9c3bjTh0zoqy1spVt5F8Uv6qO7frIZFMui8=;
+        b=MKIHY4zgxSPG/n9XVnq6+PffUcL0ZlFFJ2mw2k63AaRiVO8V49k60+daDit0NXlsum
+         kRMH846fY4Est5lYhs6+8nXAUujsAKy+QR1uYU2dOLPZE60a2qhL2986HFlApMvYQThq
+         mkko3XmBeQY/GuHQQSXg+2kT0pCFG4N+S91Ik=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1CZ2k4hR9c3bjTh0zoqy1spVt5F8Uv6qO7frIZFMui8=;
+        b=PbUxZG89JzFJeJ+1Zf3dv6/OK3KnXfd1xMtvZ20vffOXZK8D92uMXOWHXKrvBzWeTa
+         PJw9hRSADFIz5GdsEoWYXKy90FGGqnvteuAd+JpBkbgxQ1jSt/Srla5HKtc507Rx+9In
+         VKpOAy4P0Bth4YvONTbKw3Nj0w9086sfctT1N+c1FwLvTMWOpsAaUUrlzop0Cobwb8xs
+         mmYc8OaqlNoZxsnOBrdUVcusqHbrI0e/B/siX7/yi9yqPxHpTziSDd8j/XodfLaJKGZO
+         SOnU00yLtm11E8uIGm4kaLbV6dSjoz3z+Z3VI8KWPNCHX6IgNgJ3oo5GGqX15Pmuss0X
+         qfaw==
+X-Gm-Message-State: AOAM5313Q4R6ga97RJhhRF64wm4uOvcw40asr6wcPU7f9RygDFfqjks5
+        F9fBoSFIahlNO/8RAfPqTyUt6Q==
+X-Google-Smtp-Source: ABdhPJzI6/YgrdTP7Pxl7fP0LGkzFgxf9z7H9Pr4VGcBoWiKHluDujRZ7xbJcmczFs6R/QM5wYI4KA==
+X-Received: by 2002:a6b:8d97:: with SMTP id p145mr12625844iod.190.1603759843715;
+        Mon, 26 Oct 2020 17:50:43 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id f65sm7427553ilg.88.2020.10.26.17.50.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 17:50:43 -0700 (PDT)
+Subject: Re: [PATCH v4 0/5] kselftest: Extend vDSO tests
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201026114945.48532-1-vincenzo.frascino@arm.com>
+ <87y2js1tic.fsf@nanos.tec.linutronix.de>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <127f025c-1ce5-0dcb-30a2-a26b4a8e5b35@linuxfoundation.org>
+Date:   Mon, 26 Oct 2020 18:50:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qr/RIjtqx3ZIyJFFILrt6ka";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <87y2js1tic.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qr/RIjtqx3ZIyJFFILrt6ka
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/26/20 5:01 PM, Thomas Gleixner wrote:
+> On Mon, Oct 26 2020 at 11:49, Vincenzo Frascino wrote:
+>> This series extends the kselftests for the vDSO library making sure: that
+>> they compile correctly on non x86 platforms, that they can be cross
+>> compiled and introducing new tests that verify the correctness of the
+>> library.
+>>
+>> The so extended vDSO kselftests have been verified on all the platforms
+>> supported by the unified vDSO library [1].
+>>
+>> The only new patch that this series introduces is the first one, patch 2 and
+>> patch 3 have already been reviewed in past as part of other series [2] [3].
+>>
+>> [1] https://lore.kernel.org/lkml/20190621095252.32307-1-vincenzo.frascino@arm.com
+>> [2] https://lore.kernel.org/lkml/20190621095252.32307-26-vincenzo.frascino@arm.com
+>> [3] https://lore.kernel.org/lkml/20190523112116.19233-4-vincenzo.frascino@arm.com
+>>
+>> It is possible to build the series using the command below:
+>>
+>> make -C tools/testing/selftests/ ARCH=<arch> TARGETS=vDSO CC=<compiler>
+>>
+>> A version of the series rebased on 5.10-rc1 to simplify the testing can be found
+>> at [4].
+>>
+>> [4] https://git.gitlab.arm.com/linux-arm/linux-vf.git vdso/v4.tests
+> 
+> Assuming Shuah will pick them up:
+> 
+>    Acked-by: Thomas Gleixner <tglx@linutronix.de>
+> 
 
-Hi all,
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+Thanks. I will pick these up.
 
-  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+thanks,
+-- Shuah
 
-between commits:
-
-  0fe438cec9e1 ("drm/ttm: remove default caching")
-  9c3006a4cc1b ("drm/ttm: remove available_caching")
-
-from Linus' tree and commit:
-
-  d836917da7e5 ("drm/amdgpu: Fix size calculation when init onchip memory")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 8039d2399584,11dd3d9eac15..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@@ -63,16 -63,13 +63,16 @@@
- =20
-  #define AMDGPU_TTM_VRAM_MAX_DW_READ	(size_t)128
- =20
- +static int amdgpu_ttm_backend_bind(struct ttm_bo_device *bdev,
- +				   struct ttm_tt *ttm,
- +				   struct ttm_resource *bo_mem);
- +
-  static int amdgpu_ttm_init_on_chip(struct amdgpu_device *adev,
-  				    unsigned int type,
-- 				    uint64_t size)
-+ 				    uint64_t size_in_page)
-  {
-  	return ttm_range_man_init(&adev->mman.bdev, type,
-- 				  false, size >> PAGE_SHIFT);
- -				  TTM_PL_FLAG_UNCACHED, TTM_PL_FLAG_UNCACHED,
-+ 				  false, size_in_page);
-  }
- =20
-  /**
-
---Sig_/qr/RIjtqx3ZIyJFFILrt6ka
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XblcACgkQAVBC80lX
-0GwsQwf+NNOmLmYkDDIOs7m//Rmr/GoZzfMviPlSKzg3K8YXO6kbuAzjY4EwPPWl
-X4wtUYBdStPPrY0GbRjAXwo//Sm/z3TM7ZaMUOzInAswVBkqz7npCyqVDhbftkiu
-3lVCC+zna2m7fMe68TxTedsEBKbGVd9kyXe7OcK4o8dthcYg+k3y8Ndc7EVktpDl
-4QSBO/6im1Ar2XMmYMkqXNi8iVP6supr5Iew1X2R67+73qzoDRSvEnFW0HEstGhv
-cBGTbK24y2lTWZSa/dippuCmoJAdP5KcjDTnSzsUHDdC715j0unyIc5vKG3H7nCN
-NmcCTm88jM1aBSD0Bv0kQVflpZKr9g==
-=iZ5l
------END PGP SIGNATURE-----
-
---Sig_/qr/RIjtqx3ZIyJFFILrt6ka--
