@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42EB29BA37
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB8729BA9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1804805AbgJ0P5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54864 "EHLO mail.kernel.org"
+        id S1806825AbgJ0QIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796333AbgJ0PR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:17:27 -0400
+        id S1803839AbgJ0Px3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:53:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB02C2064B;
-        Tue, 27 Oct 2020 15:17:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F8FB20657;
+        Tue, 27 Oct 2020 15:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811846;
-        bh=9Tg+4chMTK8bm7A8vFRKU5re1bN2ZXXqKnAZdc/dvzo=;
+        s=default; t=1603814009;
+        bh=+Y0a2asrL7jAicrUGmb4DlOlW6Zj6PfPYrl0sTo8Acc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eHQhqp2YkMOGbpTIdWn8fvP5IvDWe9SlDdb6GpBUn8RYECbDYBYrrsCimeiyHa0W+
-         UDtjQz5DmpDvKPDevs2B9dqeH1gTGG6yFoRNQuFO4qU82bMPKhjx0BHhJtmG2nUvac
-         ee57TkYTvt9QecbmUTWVYEFvvQ/vNOg3nMcOV0OY=
+        b=jf5n6mzYSqmAxNuxk3EKncTl387j08WI+p0yYwffUbC6+UZxXCuGxHID0lh77UlK0
+         qAioDafrKJCEFbjynGwdSzLccEtqWswQZlFNNDCooWnhcBrTKYcWGT6EI0e9VT7Dn/
+         ZXQWvbzVu9mTTn/ataEGCJ0h6SE9u+Fr+LGX3/n4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Arun Easi <aeasi@marvell.com>, Daniel Wagner <dwagner@suse.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 620/633] drm/amd/display: Screen corruption on dual displays (DP+USB-C)
-Date:   Tue, 27 Oct 2020 14:56:03 +0100
-Message-Id: <20201027135551.917984780@linuxfoundation.org>
+Subject: [PATCH 5.9 714/757] scsi: qla2xxx: Warn if done() or free() are called on an already freed srb
+Date:   Tue, 27 Oct 2020 14:56:04 +0100
+Message-Id: <20201027135523.991075987@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,74 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qingqing Zhuo <qingqing.zhuo@amd.com>
+From: Daniel Wagner <dwagner@suse.de>
 
-[ Upstream commit ce271b40a91f781af3dee985c39e841ac5148766 ]
+[ Upstream commit c0014f94218ea3a312f6235febea0d626c5f2154 ]
 
-[why]
-Current pipe merge and split logic only supports cases where new
-dc_state is allocated and relies on dc->current_state to gather
-information from previous dc_state.
+Emit a warning when ->done or ->free are called on an already freed
+srb. There is a hidden use-after-free bug in the driver which corrupts
+the srb memory pool which originates from the cleanup callbacks.
 
-Calls to validate_bandwidth on UPDATE_TYPE_MED would cause an issue
-because there is no new dc_state allocated, and data in
-dc->current_state would be overwritten during pipe merge.
+An extensive search didn't bring any lights on the real problem. The
+initial fix was to set both pointers to NULL and try to catch invalid
+accesses. But instead the memory corruption was gone and the driver
+didn't crash. Since not all calling places check for NULL pointer, add
+explicitly default handlers. With this we workaround the memory
+corruption and add a debug help.
 
-[how]
-Only allow validate_bandwidth when new dc_state space is created.
-
-Signed-off-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20200908081516.8561-2-dwagner@suse.de
+Reviewed-by: Martin Wilck <mwilck@suse.com>
+Reviewed-by: Arun Easi <aeasi@marvell.com>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c              | 2 +-
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c | 3 +++
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 3 +++
- 3 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_init.c   | 10 ++++++++++
+ drivers/scsi/qla2xxx/qla_inline.h |  5 +++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index d016f50e187c8..d261f425b80ec 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -2538,7 +2538,7 @@ void dc_commit_updates_for_stream(struct dc *dc,
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 0bd04a62af836..8d4b651e14422 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -63,6 +63,16 @@ void qla2x00_sp_free(srb_t *sp)
+ 	qla2x00_rel_sp(sp);
+ }
  
- 	copy_stream_update_to_stream(dc, context, stream, stream_update);
- 
--	if (update_type > UPDATE_TYPE_FAST) {
-+	if (update_type >= UPDATE_TYPE_FULL) {
- 		if (!dc->res_pool->funcs->validate_bandwidth(dc, context, false)) {
- 			DC_ERROR("Mode validation failed for stream update!\n");
- 			dc_release_state(context);
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-index 20bdabebbc434..76cd4f3de4eaf 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -3165,6 +3165,9 @@ static noinline bool dcn20_validate_bandwidth_fp(struct dc *dc,
- 	context->bw_ctx.dml.soc.allow_dram_clock_one_display_vactive =
- 		dc->debug.enable_dram_clock_change_one_display_vactive;
- 
-+	/*Unsafe due to current pipe merge and split logic*/
-+	ASSERT(context != dc->current_state);
++void qla2xxx_rel_done_warning(srb_t *sp, int res)
++{
++	WARN_ONCE(1, "Calling done() of an already freed srb %p object\n", sp);
++}
 +
- 	if (fast_validate) {
- 		return dcn20_validate_bandwidth_internal(dc, context, true);
- 	}
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-index f00a568350848..c6ab3dee4fd69 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-@@ -1184,6 +1184,9 @@ bool dcn21_validate_bandwidth(struct dc *dc, struct dc_state *context,
- 
- 	BW_VAL_TRACE_COUNT();
- 
-+	/*Unsafe due to current pipe merge and split logic*/
-+	ASSERT(context != dc->current_state);
++void qla2xxx_rel_free_warning(srb_t *sp)
++{
++	WARN_ONCE(1, "Calling free() of an already freed srb %p object\n", sp);
++}
 +
- 	out = dcn20_fast_validate_bw(dc, context, pipes, &pipe_cnt, pipe_split_from, &vlevel);
+ /* Asynchronous Login/Logout Routines -------------------------------------- */
  
- 	if (pipe_cnt == 0)
+ unsigned long
+diff --git a/drivers/scsi/qla2xxx/qla_inline.h b/drivers/scsi/qla2xxx/qla_inline.h
+index 861dc522723ce..2aa6f81f87c43 100644
+--- a/drivers/scsi/qla2xxx/qla_inline.h
++++ b/drivers/scsi/qla2xxx/qla_inline.h
+@@ -207,10 +207,15 @@ qla2xxx_get_qpair_sp(scsi_qla_host_t *vha, struct qla_qpair *qpair,
+ 	return sp;
+ }
+ 
++void qla2xxx_rel_done_warning(srb_t *sp, int res);
++void qla2xxx_rel_free_warning(srb_t *sp);
++
+ static inline void
+ qla2xxx_rel_qpair_sp(struct qla_qpair *qpair, srb_t *sp)
+ {
+ 	sp->qpair = NULL;
++	sp->done = qla2xxx_rel_done_warning;
++	sp->free = qla2xxx_rel_free_warning;
+ 	mempool_free(sp, qpair->srb_mempool);
+ 	QLA_QPAIR_MARK_NOT_BUSY(qpair);
+ }
 -- 
 2.25.1
 
