@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD5329C5B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03E129C5C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756260AbgJ0OMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58914 "EHLO mail.kernel.org"
+        id S1756314AbgJ0OMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:12:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900868AbgJ0OJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:09:42 -0400
+        id S1755186AbgJ0OIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:08:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58EEE22202;
-        Tue, 27 Oct 2020 14:09:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 252B8218AC;
+        Tue, 27 Oct 2020 14:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807781;
-        bh=EjlxQim+NHTPYeuTRFnTWyn/kiylGlxMEOyVJXRIgJU=;
+        s=default; t=1603807720;
+        bh=5l5lXuRCwiPdnM4NcsyKvki6e8dons/QoolZTFgRdjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=huCi5u58krxuZerE40UCK+pu7/bK+IefrFI2ohbXVS4GP3CtxJUwUIWOaBRNNOEM3
-         lIvNxsNaa+ypicr0Cx4rj4BV9cZQPUq5ia88BqQ8UXXY4JUhtP3PWHpPtD0VBSVi1P
-         hILWVn5SzYDOTaiZSIf8/EHXpEz2j7mhHY5mcnGc=
+        b=I7vtek0Cvj8peU3+NJGPU2jX4d9VAhIGNxeZVYLKcr1YDUJQsmGSxRwDbACLcJK1D
+         a2VGqpj7QdqrjeKGnVTaM9u9g9TTuQd2PVsFJG8VEzt3dUKPV2U+trJT8VFxLAoPE2
+         3ItCucaIj42nF6jOV7qNVAQuqrh8FfrhLgEpmpsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Tesarik <ptesarik@suse.cz>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH 4.14 008/191] r8169: fix data corruption issue on RTL8402
-Date:   Tue, 27 Oct 2020 14:47:43 +0100
-Message-Id: <20201027134910.113349698@linuxfoundation.org>
+        stable@vger.kernel.org, Shyam Prasad N <sprasad@microsoft.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.14 017/191] cifs: Return the error from crypt_message when enc/dec key not found.
+Date:   Tue, 27 Oct 2020 14:47:52 +0100
+Message-Id: <20201027134910.550559254@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -42,154 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Shyam Prasad N <sprasad@microsoft.com>
 
-[ Upstream commit ef9da46ddef071e1bbb943afbbe9b38771855554 ]
+commit 0bd294b55a5de442370c29fa53bab17aef3ff318 upstream.
 
-Petr reported that after resume from suspend RTL8402 partially
-truncates incoming packets, and re-initializing register RxConfig
-before the actual chip re-initialization sequence is needed to avoid
-the issue.
+In crypt_message, when smb2_get_enc_key returns error, we need to
+return the error back to the caller. If not, we end up processing
+the message further, causing a kernel oops due to unwarranted access
+of memory.
 
-Reported-by: Petr Tesarik <ptesarik@suse.cz>
-Proposed-by: Petr Tesarik <ptesarik@suse.cz>
-Tested-by: Petr Tesarik <ptesarik@suse.cz>
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Call Trace:
+smb3_receive_transform+0x120/0x870 [cifs]
+cifs_demultiplex_thread+0xb53/0xc20 [cifs]
+? cifs_handle_standard+0x190/0x190 [cifs]
+kthread+0x116/0x130
+? kthread_park+0x80/0x80
+ret_from_fork+0x1f/0x30
+
+Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+CC: Stable <stable@vger.kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/realtek/r8169.c |  108 ++++++++++++++++++-----------------
- 1 file changed, 56 insertions(+), 52 deletions(-)
 
---- a/drivers/net/ethernet/realtek/r8169.c
-+++ b/drivers/net/ethernet/realtek/r8169.c
-@@ -4501,6 +4501,58 @@ static void rtl_rar_set(struct rtl8169_p
- 	rtl_unlock_work(tp);
- }
- 
-+static void rtl_init_rxcfg(struct rtl8169_private *tp)
-+{
-+	void __iomem *ioaddr = tp->mmio_addr;
-+
-+	switch (tp->mac_version) {
-+	case RTL_GIGA_MAC_VER_01:
-+	case RTL_GIGA_MAC_VER_02:
-+	case RTL_GIGA_MAC_VER_03:
-+	case RTL_GIGA_MAC_VER_04:
-+	case RTL_GIGA_MAC_VER_05:
-+	case RTL_GIGA_MAC_VER_06:
-+	case RTL_GIGA_MAC_VER_10:
-+	case RTL_GIGA_MAC_VER_11:
-+	case RTL_GIGA_MAC_VER_12:
-+	case RTL_GIGA_MAC_VER_13:
-+	case RTL_GIGA_MAC_VER_14:
-+	case RTL_GIGA_MAC_VER_15:
-+	case RTL_GIGA_MAC_VER_16:
-+	case RTL_GIGA_MAC_VER_17:
-+		RTL_W32(RxConfig, RX_FIFO_THRESH | RX_DMA_BURST);
-+		break;
-+	case RTL_GIGA_MAC_VER_18:
-+	case RTL_GIGA_MAC_VER_19:
-+	case RTL_GIGA_MAC_VER_20:
-+	case RTL_GIGA_MAC_VER_21:
-+	case RTL_GIGA_MAC_VER_22:
-+	case RTL_GIGA_MAC_VER_23:
-+	case RTL_GIGA_MAC_VER_24:
-+	case RTL_GIGA_MAC_VER_34:
-+	case RTL_GIGA_MAC_VER_35:
-+		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
-+		break;
-+	case RTL_GIGA_MAC_VER_40:
-+	case RTL_GIGA_MAC_VER_41:
-+	case RTL_GIGA_MAC_VER_42:
-+	case RTL_GIGA_MAC_VER_43:
-+	case RTL_GIGA_MAC_VER_44:
-+	case RTL_GIGA_MAC_VER_45:
-+	case RTL_GIGA_MAC_VER_46:
-+	case RTL_GIGA_MAC_VER_47:
-+	case RTL_GIGA_MAC_VER_48:
-+	case RTL_GIGA_MAC_VER_49:
-+	case RTL_GIGA_MAC_VER_50:
-+	case RTL_GIGA_MAC_VER_51:
-+		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
-+		break;
-+	default:
-+		RTL_W32(RxConfig, RX128_INT_EN | RX_DMA_BURST);
-+		break;
-+	}
-+}
-+
- static int rtl_set_mac_address(struct net_device *dev, void *p)
- {
- 	struct rtl8169_private *tp = netdev_priv(dev);
-@@ -4519,6 +4571,10 @@ static int rtl_set_mac_address(struct ne
- 
- 	pm_runtime_put_noidle(d);
- 
-+	/* Reportedly at least Asus X453MA truncates packets otherwise */
-+	if (tp->mac_version == RTL_GIGA_MAC_VER_37)
-+		rtl_init_rxcfg(tp);
-+
- 	return 0;
- }
- 
-@@ -4955,58 +5011,6 @@ static void rtl_init_pll_power_ops(struc
- 		break;
+---
+ fs/cifs/smb2ops.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -2305,7 +2305,7 @@ crypt_message(struct TCP_Server_Info *se
+ 	if (rc) {
+ 		cifs_dbg(VFS, "%s: Could not get %scryption key\n", __func__,
+ 			 enc ? "en" : "de");
+-		return 0;
++		return rc;
  	}
- }
--
--static void rtl_init_rxcfg(struct rtl8169_private *tp)
--{
--	void __iomem *ioaddr = tp->mmio_addr;
--
--	switch (tp->mac_version) {
--	case RTL_GIGA_MAC_VER_01:
--	case RTL_GIGA_MAC_VER_02:
--	case RTL_GIGA_MAC_VER_03:
--	case RTL_GIGA_MAC_VER_04:
--	case RTL_GIGA_MAC_VER_05:
--	case RTL_GIGA_MAC_VER_06:
--	case RTL_GIGA_MAC_VER_10:
--	case RTL_GIGA_MAC_VER_11:
--	case RTL_GIGA_MAC_VER_12:
--	case RTL_GIGA_MAC_VER_13:
--	case RTL_GIGA_MAC_VER_14:
--	case RTL_GIGA_MAC_VER_15:
--	case RTL_GIGA_MAC_VER_16:
--	case RTL_GIGA_MAC_VER_17:
--		RTL_W32(RxConfig, RX_FIFO_THRESH | RX_DMA_BURST);
--		break;
--	case RTL_GIGA_MAC_VER_18:
--	case RTL_GIGA_MAC_VER_19:
--	case RTL_GIGA_MAC_VER_20:
--	case RTL_GIGA_MAC_VER_21:
--	case RTL_GIGA_MAC_VER_22:
--	case RTL_GIGA_MAC_VER_23:
--	case RTL_GIGA_MAC_VER_24:
--	case RTL_GIGA_MAC_VER_34:
--	case RTL_GIGA_MAC_VER_35:
--		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
--		break;
--	case RTL_GIGA_MAC_VER_40:
--	case RTL_GIGA_MAC_VER_41:
--	case RTL_GIGA_MAC_VER_42:
--	case RTL_GIGA_MAC_VER_43:
--	case RTL_GIGA_MAC_VER_44:
--	case RTL_GIGA_MAC_VER_45:
--	case RTL_GIGA_MAC_VER_46:
--	case RTL_GIGA_MAC_VER_47:
--	case RTL_GIGA_MAC_VER_48:
--	case RTL_GIGA_MAC_VER_49:
--	case RTL_GIGA_MAC_VER_50:
--	case RTL_GIGA_MAC_VER_51:
--		RTL_W32(RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
--		break;
--	default:
--		RTL_W32(RxConfig, RX128_INT_EN | RX_DMA_BURST);
--		break;
--	}
--}
  
- static void rtl8169_init_ring_indexes(struct rtl8169_private *tp)
- {
+ 	rc = smb3_crypto_aead_allocate(server);
 
 
