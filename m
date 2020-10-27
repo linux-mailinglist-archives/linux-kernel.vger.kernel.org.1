@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C986929AE18
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B446929AE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368089AbgJ0N4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43248 "EHLO mail.kernel.org"
+        id S368099AbgJ0N44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409433AbgJ0N4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:56:51 -0400
+        id S368092AbgJ0N4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:56:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25EB021D42;
-        Tue, 27 Oct 2020 13:56:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B488F2074B;
+        Tue, 27 Oct 2020 13:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807010;
-        bh=HetbI1naAvC+cEhHBmp/imWS6k7q8A6CMq+9QPveTDo=;
+        s=default; t=1603807013;
+        bh=vYqHa6lv0tcd1MlRaQ+jJjgy7UFuZEKXGYbCMNvfk1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KocYeDDq1Mza2l18f5K3ERHt5jRBjhqVoncuXjXccp2NpF3wCsp5JDxyaupB4ZZt2
-         TxU2uJbFRZjuanf4YnioDIjGpYCnYDVb7Hjypw9TK5OWXWjg2GX6v+05KW3Hfc8BEP
-         5Ej/Vs6UITAbmJTd6LE0uEyiijCDuPY82UoikGj4=
+        b=uNXAfI3u+ce9dZPVwJP/PwrbNLH7wCt+nkC2Jh4YaXpR67ZBH5oTdTurA7KXHXJk0
+         /3god1EIQc9SpvYhvrbzvpZ/Bjm1Hra7cCrpNJajmsh/hRg0g/WxSMt0KCy+QUBuHq
+         FTL/990ZcMg4xgQVoxSCHWDlAdSiit6lOBzytmho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Tobias Regnery <tobias.regnery@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        kasan-dev@googlegroups.com,
+        Alexander Potapenko <glider@google.com>,
+        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.4 010/112] lib/strscpy: Shut up KASAN false-positives in strscpy()
-Date:   Tue, 27 Oct 2020 14:48:40 +0100
-Message-Id: <20201027134901.039218681@linuxfoundation.org>
+Subject: [PATCH 4.4 011/112] x86/mm/ptdump: Fix soft lockup in page table walker
+Date:   Tue, 27 Oct 2020 14:48:41 +0100
+Message-Id: <20201027134901.090009773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -45,43 +50,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Ryabinin <aryabinin@virtuozzo.com>
 
-commit 1a3241ff10d038ecd096d03380327f2a0b5840a6 upstream.
+commit 146fbb766934dc003fcbf755b519acef683576bf upstream.
 
-strscpy() performs the word-at-a-time optimistic reads.  So it may may
-access the memory past the end of the object, which is perfectly fine
-since strscpy() doesn't use that (past-the-end) data and makes sure the
-optimistic read won't cross a page boundary.
+CONFIG_KASAN=y needs a lot of virtual memory mapped for its shadow.
+In that case ptdump_walk_pgd_level_core() takes a lot of time to
+walk across all page tables and doing this without
+a rescheduling causes soft lockups:
 
-Use new read_word_at_a_time() to shut up the KASAN.
+ NMI watchdog: BUG: soft lockup - CPU#3 stuck for 23s! [swapper/0:1]
+ ...
+ Call Trace:
+  ptdump_walk_pgd_level_core+0x40c/0x550
+  ptdump_walk_pgd_level_checkwx+0x17/0x20
+  mark_rodata_ro+0x13b/0x150
+  kernel_init+0x2f/0x120
+  ret_from_fork+0x2c/0x40
 
-Note that this potentially could hide some bugs.  In example bellow,
-stscpy() will copy more than we should (1-3 extra uninitialized bytes):
+I guess that this issue might arise even without KASAN on huge machines
+with several terabytes of RAM.
 
-        char dst[8];
-        char *src;
+Stick cond_resched() in pgd loop to fix this.
 
-        src = kmalloc(5, GFP_KERNEL);
-        memset(src, 0xff, 5);
-        strscpy(dst, src, 8);
-
+Reported-by: Tobias Regnery <tobias.regnery@gmail.com>
 Signed-off-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kasan-dev@googlegroups.com
+Cc: Alexander Potapenko <glider@google.com>
+Cc: "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: stable@vger.kernel.org
+Link: http://lkml.kernel.org/r/20170210095405.31802-1-aryabinin@virtuozzo.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+[bwh: Backported to 4.4: adjust context]
 Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/string.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/mm/dump_pagetables.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -202,7 +202,7 @@ ssize_t strscpy(char *dest, const char *
- 	while (max >= sizeof(unsigned long)) {
- 		unsigned long c, data;
+--- a/arch/x86/mm/dump_pagetables.c
++++ b/arch/x86/mm/dump_pagetables.c
+@@ -15,6 +15,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
++#include <linux/sched.h>
+ #include <linux/seq_file.h>
  
--		c = *(unsigned long *)(src+res);
-+		c = read_word_at_a_time(src+res);
- 		if (has_zero(c, &data, &constants)) {
- 			data = prep_zero_mask(c, data, &constants);
- 			data = create_zero_mask(data);
+ #include <asm/pgtable.h>
+@@ -407,6 +408,7 @@ static void ptdump_walk_pgd_level_core(s
+ 		} else
+ 			note_page(m, &st, __pgprot(0), 1);
+ 
++		cond_resched();
+ 		start++;
+ 	}
+ 
 
 
