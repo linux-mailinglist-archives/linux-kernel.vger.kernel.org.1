@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247CF29C423
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E73DC29C22D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758724AbgJ0OXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:23:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47048 "EHLO mail.kernel.org"
+        id S1820060AbgJ0Rcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:32:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758718AbgJ0OW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:22:26 -0400
+        id S1762197AbgJ0Ol0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:41:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A590E207BB;
-        Tue, 27 Oct 2020 14:22:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C52BA207BB;
+        Tue, 27 Oct 2020 14:41:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808545;
-        bh=0mN8TmZOcC4Y0B6sUPhKksNVA2GHXtJ7Blbbkn+Cw+0=;
+        s=default; t=1603809685;
+        bh=cXy6+26ePzReBMf/5wBOpAdSF2gtRECGNpeHu9LTGDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pdXRXHwa9Byz5Z1zhXd2VLQuqjRkalid7Z+8ENkKh01QIiKBH8ooy85u9d59zM4mq
-         bcyOX5xzcwa5jAMT2U2yF3jrPypeqQLsDN6SRLKQ1vlXMOSGjDdOHyRXb13hSp0Ktq
-         qaZF7PHAWGyN9UjoRTe4IvHQ5fwyfEM5Lqj5Cs4A=
+        b=bRS1IJ3TLarTWj066qXrNSl5/0Bz/zCGMvwWVtmR638gO3nwzQlaIxcNzpCqrJNQb
+         4oaMNHKx1rmRAr3If68ARZdSCzNQZTs5fL0TrUM4+n/Yp3jjY7qJIihZlBFpgjmy9w
+         HE9vmrehGaesc/q7KE1F9Jje4j5T54mgmLInEsR4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 132/264] powerpc/icp-hv: Fix missing of_node_put() in success path
+        stable@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chao Yu <chao@kernel.org>, Jamie Iles <jamie@nuviainc.com>,
+        Chao Yu <yuchao0@huawei.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 252/408] f2fs: wait for sysfs kobject removal before freeing f2fs_sb_info
 Date:   Tue, 27 Oct 2020 14:53:10 +0100
-Message-Id: <20201027135436.883342366@linuxfoundation.org>
+Message-Id: <20201027135506.734206214@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Mc Guire <hofrat@osadl.org>
+From: Jamie Iles <jamie@nuviainc.com>
 
-[ Upstream commit d3e669f31ec35856f5e85df9224ede5bdbf1bc7b ]
+[ Upstream commit ae284d87abade58c8db7760c808f311ef1ce693c ]
 
-Both of_find_compatible_node() and of_find_node_by_type() will return
-a refcounted node on success - thus for the success path the node must
-be explicitly released with a of_node_put().
+syzkaller found that with CONFIG_DEBUG_KOBJECT_RELEASE=y, unmounting an
+f2fs filesystem could result in the following splat:
 
-Fixes: 0b05ac6e2480 ("powerpc/xics: Rewrite XICS driver")
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1530691407-3991-1-git-send-email-hofrat@osadl.org
+  kobject: 'loop5' ((____ptrval____)): kobject_release, parent 0000000000000000 (delayed 250)
+  kobject: 'f2fs_xattr_entry-7:5' ((____ptrval____)): kobject_release, parent 0000000000000000 (delayed 750)
+  ------------[ cut here ]------------
+  ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x98
+  WARNING: CPU: 0 PID: 699 at lib/debugobjects.c:485 debug_print_object+0x180/0x240
+  Kernel panic - not syncing: panic_on_warn set ...
+  CPU: 0 PID: 699 Comm: syz-executor.5 Tainted: G S                5.9.0-rc8+ #101
+  Hardware name: linux,dummy-virt (DT)
+  Call trace:
+   dump_backtrace+0x0/0x4d8
+   show_stack+0x34/0x48
+   dump_stack+0x174/0x1f8
+   panic+0x360/0x7a0
+   __warn+0x244/0x2ec
+   report_bug+0x240/0x398
+   bug_handler+0x50/0xc0
+   call_break_hook+0x160/0x1d8
+   brk_handler+0x30/0xc0
+   do_debug_exception+0x184/0x340
+   el1_dbg+0x48/0xb0
+   el1_sync_handler+0x170/0x1c8
+   el1_sync+0x80/0x100
+   debug_print_object+0x180/0x240
+   debug_check_no_obj_freed+0x200/0x430
+   slab_free_freelist_hook+0x190/0x210
+   kfree+0x13c/0x460
+   f2fs_put_super+0x624/0xa58
+   generic_shutdown_super+0x120/0x300
+   kill_block_super+0x94/0xf8
+   kill_f2fs_super+0x244/0x308
+   deactivate_locked_super+0x104/0x150
+   deactivate_super+0x118/0x148
+   cleanup_mnt+0x27c/0x3c0
+   __cleanup_mnt+0x28/0x38
+   task_work_run+0x10c/0x248
+   do_notify_resume+0x9d4/0x1188
+   work_pending+0x8/0x34c
+
+Like the error handling for f2fs_register_sysfs(), we need to wait for
+the kobject to be destroyed before returning to prevent a potential
+use-after-free.
+
+Fixes: bf9e697ecd42 ("f2fs: expose features to sysfs entry")
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Chao Yu <chao@kernel.org>
+Signed-off-by: Jamie Iles <jamie@nuviainc.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/sysdev/xics/icp-hv.c | 1 +
+ fs/f2fs/sysfs.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/sysdev/xics/icp-hv.c b/arch/powerpc/sysdev/xics/icp-hv.c
-index bbc839a98c414..003deaabb5680 100644
---- a/arch/powerpc/sysdev/xics/icp-hv.c
-+++ b/arch/powerpc/sysdev/xics/icp-hv.c
-@@ -179,6 +179,7 @@ int icp_hv_init(void)
- 
- 	icp_ops = &icp_hv_ops;
- 
-+	of_node_put(np);
- 	return 0;
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 170934430d7d7..029e693e201cf 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -788,4 +788,5 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
+ 	}
+ 	kobject_del(&sbi->s_kobj);
+ 	kobject_put(&sbi->s_kobj);
++	wait_for_completion(&sbi->s_kobj_unregister);
  }
- 
 -- 
 2.25.1
 
