@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A4729C30C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898F829C335
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902296AbgJ0OcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:32:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56594 "EHLO mail.kernel.org"
+        id S2902174AbgJ0ObM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902103AbgJ0O3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:29:53 -0400
+        id S2902120AbgJ0O37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:29:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F044820780;
-        Tue, 27 Oct 2020 14:29:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FF0620780;
+        Tue, 27 Oct 2020 14:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808993;
-        bh=ODdMXT6rEqYE41sd1IuwIbG6hQnUrMyDYBUkElowpf4=;
+        s=default; t=1603808999;
+        bh=hX2WUAyvCksc83K2AAtiZEm+2c35fX3H9SIA3/IBEp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2cEQfwXdTkRBbhWI3rpCJi2cjhNh5uvO3+sidN2O1X+VDOfRM3wbKDSaS/yi7yoAK
-         tWLLehCaBNTvHP93MvM3j6ShRSs8Ry1/7J7bForTNqL+X06PWCg/4HnGt/XHtg1a4j
-         ourjOQ7Wxd3aJ8020wQ9r+3rZqLEwdWkijQAeVEg=
+        b=cXhQQa3WahjmkZxH4rHJlfHo/YlH2Kq78nwEjVaOr0pPi7a6g2WWi6BWJi2xLE5/c
+         TjGzo7EXzbu4sGzQ1n0mhMkmXjNGojjKsgOrOmXyKB+cJypR0vE4Awmp2KieLJ38rU
+         YvuaB+Z4JbeJpXt3ywl2gxkMINDOpBn+w4m2aZQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 036/408] r8169: fix operation under forced interrupt threading
-Date:   Tue, 27 Oct 2020 14:49:34 +0100
-Message-Id: <20201027135456.754963604@linuxfoundation.org>
+Subject: [PATCH 5.4 038/408] selftests: rtnetlink: load fou module for kci_test_encap_fou() test
+Date:   Tue, 27 Oct 2020 14:49:36 +0100
+Message-Id: <20201027135456.849351447@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -42,58 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
 
-[ Upstream commit 424a646e072a887aa87283b53aa6f8b19c2a7bef ]
+[ Upstream commit 26ebd6fed9bb3aa480c7c0f147ac0e7b11000f65 ]
 
-For several network drivers it was reported that using
-__napi_schedule_irqoff() is unsafe with forced threading. One way to
-fix this is switching back to __napi_schedule, but then we lose the
-benefit of the irqoff version in general. As stated by Eric it doesn't
-make sense to make the minimal hard irq handlers in drivers using NAPI
-a thread. Therefore ensure that the hard irq handler is never
-thread-ified.
+The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
+needs the fou module to work. Otherwise it will fail with:
 
-Fixes: 9a899a35b0d6 ("r8169: switch to napi_schedule_irqoff")
-Link: https://lkml.org/lkml/2020/10/18/19
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/4d3ef84a-c812-5072-918a-22a6f6468310@gmail.com
+  $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
+  RTNETLINK answers: No such file or directory
+  Error talking to the kernel
+
+Add the CONFIG_NET_FOU into the config file as well. Which needs at
+least to be set as a loadable module.
+
+Fixes: 6227efc1a20b ("selftests: rtnetlink.sh: add vxlan and fou test cases")
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Link: https://lore.kernel.org/r/20201019030928.9859-1-po-hsu.lin@canonical.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/net/config       |    1 +
+ tools/testing/selftests/net/rtnetlink.sh |    5 +++++
+ 2 files changed, 6 insertions(+)
 
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -6418,7 +6418,7 @@ static int rtl8169_close(struct net_devi
+--- a/tools/testing/selftests/net/config
++++ b/tools/testing/selftests/net/config
+@@ -29,3 +29,4 @@ CONFIG_NET_SCH_FQ=m
+ CONFIG_NET_SCH_ETF=m
+ CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_KALLSYMS=y
++CONFIG_NET_FOU=m
+--- a/tools/testing/selftests/net/rtnetlink.sh
++++ b/tools/testing/selftests/net/rtnetlink.sh
+@@ -521,6 +521,11 @@ kci_test_encap_fou()
+ 		return $ksft_skip
+ 	fi
  
- 	phy_disconnect(tp->phydev);
- 
--	pci_free_irq(pdev, 0, tp);
-+	free_irq(pci_irq_vector(pdev, 0), tp);
- 
- 	dma_free_coherent(&pdev->dev, R8169_RX_RING_BYTES, tp->RxDescArray,
- 			  tp->RxPhyAddr);
-@@ -6469,8 +6469,8 @@ static int rtl_open(struct net_device *d
- 
- 	rtl_request_firmware(tp);
- 
--	retval = pci_request_irq(pdev, 0, rtl8169_interrupt, NULL, tp,
--				 dev->name);
-+	retval = request_irq(pci_irq_vector(pdev, 0), rtl8169_interrupt,
-+			     IRQF_NO_THREAD | IRQF_SHARED, dev->name, tp);
- 	if (retval < 0)
- 		goto err_release_fw_2;
- 
-@@ -6503,7 +6503,7 @@ out:
- 	return retval;
- 
- err_free_irq:
--	pci_free_irq(pdev, 0, tp);
-+	free_irq(pci_irq_vector(pdev, 0), tp);
- err_release_fw_2:
- 	rtl_release_firmware(tp);
- 	rtl8169_rx_clear(tp);
++	if ! /sbin/modprobe -q -n fou; then
++		echo "SKIP: module fou is not found"
++		return $ksft_skip
++	fi
++	/sbin/modprobe -q fou
+ 	ip -netns "$testns" fou add port 7777 ipproto 47 2>/dev/null
+ 	if [ $? -ne 0 ];then
+ 		echo "FAIL: can't add fou port 7777, skipping test"
 
 
