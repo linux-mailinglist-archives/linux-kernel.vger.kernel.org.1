@@ -2,132 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0664E29C794
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C5C29C79D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1828867AbgJ0Siu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:38:50 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:43610 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1825136AbgJ0Sit (ORCPT
+        id S371112AbgJ0Skf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:40:35 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43419 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368559AbgJ0Skf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:38:49 -0400
-Received: by mail-il1-f194.google.com with SMTP id k1so2416173ilc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:38:47 -0700 (PDT)
+        Tue, 27 Oct 2020 14:40:35 -0400
+Received: by mail-qt1-f196.google.com with SMTP id f93so1757007qtb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aiO536AD0kVAcMS1nvBFWPaDHL/6Ip6VypBDRiSKR20=;
-        b=lsGwBrEqSVcHL0bMljNjO4ezVKGqSsp9nWInL3C63xb2PfozbnUf06FRu0AMl9ni6X
-         Bi9suCGK1f45eXLCN2ax8a76eSQYpZ+3gat8/oUDfrXl7oO5VehKVW/4R62swqsE2nC7
-         6wLpJB1VbC61FOGxIN9T9QaT7uFKaaNdhinIM=
+        bh=A71w7yxcxJWosYwjYFtKyzjRaHmNMuK6z2oSv7nSpPg=;
+        b=QPZgQo402e3z2dTd9e8kFd37vYAcbcvHxB22tHs8SiPwFdK+G2nPYISXeHQFpeJQ+c
+         IYPfkOie+ybsJTbQH9PD6PDIEdpFCyzT3BnhqXTCJMHjk9JuSJuzGjfZiVgIPGjYzdAH
+         Xg0XiQGOES05DCBHAI8hw8yRQ1Fwzf5bjP2CKZkdxFa9h86BUUcY4Q7HLhq06Be8uve4
+         YdMpHZc5WuQTf6u/Pm5YZG7cPc5xLuSL6tc1bPSNtgYZ+jdfAHpD30spBxc2Ya4snQ5D
+         fNsJFm9+TzCRM+z+NSyc4nu1y+1HeqW2Kdq34YG3tY6iqbpos1fIuUkLYkr4lcstG7P/
+         oLVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aiO536AD0kVAcMS1nvBFWPaDHL/6Ip6VypBDRiSKR20=;
-        b=mhs+CBEkIvR0QynkvZz5IS2u9YixbLw1Vp39bndUH2Sr8cIHr07yseKyo8//KsN902
-         6DooJloWEYm8Gwvj0yGkX4KqMhkR5F99qD5Fib5IUg0/XxmwR0yuvYTVrH1QGdskFfNU
-         XPD9ymynICaj0wxxpk3Y+NfO5dPBPFru2RPdcA9iBPrMaasqzUyeJ3Oeq4tevyrvFVjI
-         kdtBd+2flVPqF5CnoPpArMGL43oinJb1dmS6bljs8UcwWXx1wbxgqkSY406uCo17zn7l
-         ApSqCmSK/tTtlbN6QEVlm6p1AEOow0NXfkfVU9Q0zF5FFbiZAByoa+w/O1uPUom5DiK1
-         4hsQ==
-X-Gm-Message-State: AOAM532Qovdoam/GIHwaqqf/8/HbWs48ZdEWx/gTC+NxOl0PKwgFmn3t
-        WdRTzPbpaz6BiUn4APSrogNz6hsTnr8RGqzpRZYN
-X-Google-Smtp-Source: ABdhPJxm1R6B3j7qwb/SJHdaVnNFjfNds3NG15mUS4t24rGu4bAN9GXYSEVvdt0aR8PyxfyMpNMgdP2eEtXsuzXHfQ0=
-X-Received: by 2002:a92:6410:: with SMTP id y16mr3002898ilb.126.1603823927105;
- Tue, 27 Oct 2020 11:38:47 -0700 (PDT)
+        bh=A71w7yxcxJWosYwjYFtKyzjRaHmNMuK6z2oSv7nSpPg=;
+        b=JWCEgzTBBH5uncVw09vxdCb/tT/FGV/CCeI1TLZfYXYG9dP9OMDadyFgNgNSfQNv/7
+         QApKSbUaLb+7zVwsjaspGL2mOURXFlS+MyVFcqMdHqC+JEpxfwr87qgxUet26Z89veZG
+         qdp4jt99MFmdacVKp2gYgQj0NYkF7yEh25D9qVHcZBaS4Z81t1rhSKmMmWftwyXdepUC
+         5M7mfyJxCRqKXCw9zGKecHXWk9enm3kbd30VGiYkiHZNFZ1rdu1JXEoLwRrnScUtMv34
+         AN32P9KBuqx9fl4qBgO1Gb28CirfD62gV7z+dUCr4htzmA5WsFyKEsaUj0y+L97ksEMT
+         jZ0A==
+X-Gm-Message-State: AOAM532VvM+y0VWAbfItwbQqK7gyrq3Od0Wu9uc9en8ireCSX5T2ULu7
+        SWFTb+2dEfjMj47lyuRNoJxghog4uLNkS08HE6zTZxC3iPxk6g==
+X-Google-Smtp-Source: ABdhPJwQrITXfyaoMy1HWvBG+LeYx2HqH/pHaz3wycxt5T39PYbcFZDQQojSCEY/nvqDn1FfRoWe99vnETreqNTEtNQ=
+X-Received: by 2002:ac8:44b1:: with SMTP id a17mr3587453qto.43.1603824031886;
+ Tue, 27 Oct 2020 11:40:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026230254.911912-1-atish.patra@wdc.com> <20201026230254.911912-3-atish.patra@wdc.com>
- <20201027100427.GL1154158@kernel.org>
-In-Reply-To: <20201027100427.GL1154158@kernel.org>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 27 Oct 2020 11:38:35 -0700
-Message-ID: <CAOnJCUJF8DTNpiGxL0Tz8CUk43CvfJS2w5fw=Y51afKgW22cTQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] RISC-V: Initialize SBI early
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Anup Patel <anup@brainfault.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Michel Lespinasse <walken@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
+References: <20201027175810.GA26121@paulmck-ThinkPad-P72>
+In-Reply-To: <20201027175810.GA26121@paulmck-ThinkPad-P72>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 27 Oct 2020 19:40:19 +0100
+Message-ID: <CACT4Y+bB4sZjLx6tL6F5XzxGk5iG7j=SPbDkX_bwRXmXB=JxXA@mail.gmail.com>
+Subject: Re: Recording allocation location for blocks of memory?
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 3:04 AM Mike Rapoport <rppt@kernel.org> wrote:
+On Tue, Oct 27, 2020 at 6:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> On Mon, Oct 26, 2020 at 04:02:50PM -0700, Atish Patra wrote:
-> > Currently, SBI is initialized towards the end of arch setup. This prevents
-> > the set memory operations to be invoked earlier as it requires a full tlb
-> > flush.
-> >
-> > Initialize SBI as early as possible.
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > ---
-> >  arch/riscv/kernel/setup.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> > index c424cc6dd833..7d6a04ae3929 100644
-> > --- a/arch/riscv/kernel/setup.c
-> > +++ b/arch/riscv/kernel/setup.c
-> > @@ -89,6 +89,9 @@ void __init setup_arch(char **cmdline_p)
-> >               pr_err("No DTB found in kernel mappings\n");
-> >  #endif
-> >
-> > +#if IS_ENABLED(CONFIG_RISCV_SBI)
+> Hello!
 >
-> Maybe
->         if (IS_ENABLED(CONFIG_RISCV_SBI))
->                 sbi_init()
+> I have vague memories of some facility some time some where that recorded
+> who allocated a given block of memory, but am not seeing anything that
+> does this at present.  The problem is rare enough and the situation
+> sufficiently performance-sensitive that things like ftrace need not apply,
+> and the BPF guys suggest that BPF might not be the best tool for this job.
 >
-
-ok. Will update.
-
-> > +     sbi_init();
-> > +#endif
-> >  #ifdef CONFIG_SWIOTLB
-> >       swiotlb_init(1);
-> >  #endif
-> > @@ -97,10 +100,6 @@ void __init setup_arch(char **cmdline_p)
-> >       kasan_init();
-> >  #endif
-> >
-> > -#if IS_ENABLED(CONFIG_RISCV_SBI)
-> > -     sbi_init();
-> > -#endif
-> > -
-> >  #ifdef CONFIG_SMP
-> >       setup_smp();
-> >  #endif
-> > --
-> > 2.25.1
-> >
+> The problem I am trying to solve is that a generic function that detects
+> reference count underflow that was passed to call_rcu(), and there are
+> a lot of places where the underlying problem might lie, and pretty much
+> no information.  One thing that could help is something that identifies
+> which use case the underflow corresponds to.
 >
-> --
-> Sincerely yours,
-> Mike.
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> So, is there something out there (including old patches) that, given a
+> pointer to allocated memory, gives some information about who allocated
+> it?  Or should I risk further inflaming the MM guys by creating one?  ;-)
 
+Hi Paul,
 
+KASAN can do this. However (1) it has non-trivial overhead on its own
+(but why would you want to debug something without KASAN anyway :))
+(2) there is no support for doing just stack collection without the
+rest of KASAN (they are integrated at the moment) (3) there is no
+public interface function that does what you want, though, it should
+be easy to add it. The code is around here:
+https://github.com/torvalds/linux/blob/master/mm/kasan/report.c#L111-L128
 
--- 
-Regards,
-Atish
+Since KASAN already bears all overheads of stack collection/storing I
+was thinking that lots of other debugging tools could indeed piggy
+back on that and print much more informative errors message when
+enabled with KASAN.
+
+Since recently KASAN also memorizes up to 2 "other" stacks per
+objects. This is currently used to memorize call_rcu stacks, since
+they are frequently more useful than actual free stacks for
+rcu-managed objects.
+That mechanism could also memorize last refcount stacks, however I
+afraid that they will evict everything else, since we have only 2
+slots, and frequently there are lots of refcount operations.
