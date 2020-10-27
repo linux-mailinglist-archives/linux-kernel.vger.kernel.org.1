@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426F829B5CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E325C29B600
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796070AbgJ0PPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49808 "EHLO mail.kernel.org"
+        id S1796478AbgJ0PSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:18:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794706AbgJ0PNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:13:09 -0400
+        id S1794950AbgJ0POe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:14:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEABE20657;
-        Tue, 27 Oct 2020 15:13:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A45202225C;
+        Tue, 27 Oct 2020 15:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811588;
-        bh=4q+xtkTEw+8lhssERipfns72GCshcPgkPtDFSe2mnDA=;
+        s=default; t=1603811673;
+        bh=TPSg9F6aclc44MNfpeDtKYRLYQIcsA9t3mTkIqI3l/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wES//fZr9di5V+I3hIq/FmnL+gjd8ZCeSsSlDYnKy+YMpqa6yu5Ul5kSquyrjP4eb
-         k/ZeQXRuWuaqmHed9PFV3gVXoGkmbyUqbgUfrJsuFHLCh2xRai1l0SeFbBt91fD8aV
-         l4bYullFNrC3ZVQNFMb9axO6bEFjnNqTyK6uvtw4=
+        b=Ewtg/Ez2qEKCkFr+3kAGJ+Ll51wRq9QKoNcz6ELxncqfosvJBbxSSgndKuyf1Q5Om
+         JudaBn5CsIUU9Ww1+YGG82DZ2jU2hNTLrILw1fUb0bEzUbL1gDQOlHDAftt7/H+0cS
+         8tqMVYGJXo1AtQYjt43/0Fcvnq0uOBOGIBQbxLlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        stable@vger.kernel.org, Adam Goode <agoode@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 545/633] x86/mce: Annotate mce_rd/wrmsrl() with noinstr
-Date:   Tue, 27 Oct 2020 14:54:48 +0100
-Message-Id: <20201027135548.362166679@linuxfoundation.org>
+Subject: [PATCH 5.8 549/633] media: uvcvideo: Ensure all probed info is returned to v4l2
+Date:   Tue, 27 Oct 2020 14:54:52 +0100
+Message-Id: <20201027135548.549430648@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -42,85 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Adam Goode <agoode@google.com>
 
-[ Upstream commit e100777016fdf6ec3a9d7c1773b15a2b5eca6c55 ]
+[ Upstream commit 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe ]
 
-They do get called from the #MC handler which is already marked
-"noinstr".
+bFrameIndex and bFormatIndex can be negotiated by the camera during
+probing, resulting in the camera choosing a different format than
+expected. v4l2 can already accommodate such changes, but the code was
+not updating the proper fields.
 
-Commit
+Without such a change, v4l2 would potentially interpret the payload
+incorrectly, causing corrupted output. This was happening on the
+Elgato HD60 S+, which currently always renegotiates to format 1.
 
-  e2def7d49d08 ("x86/mce: Make mce_rdmsrl() panic on an inaccessible MSR")
+As an aside, the Elgato firmware is buggy and should not be renegotating,
+but it is still a valid thing for the camera to do. Both macOS and Windows
+will properly probe and read uncorrupted images from this camera.
 
-already got rid of the instrumentation in the MSR accessors, fix the
-annotation now too, in order to get rid of:
+With this change, both qv4l2 and chromium can now read uncorrupted video
+from the Elgato HD60 S+.
 
-  vmlinux.o: warning: objtool: do_machine_check()+0x4a: call to mce_rdmsrl() leaves .noinstr.text section
+[Add blank lines, remove periods at the of messages]
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200915194020.28807-1-bp@alien8.de
+Signed-off-by: Adam Goode <agoode@google.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/mce/core.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 14e4b4d17ee5b..d8dca24feccbe 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -371,16 +371,25 @@ static int msr_to_offset(u32 msr)
- }
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 0335e69b70abe..5e6f3153b5ff8 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -247,11 +247,41 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 	if (ret < 0)
+ 		goto done;
  
- /* MSR access wrappers used for error injection */
--static u64 mce_rdmsrl(u32 msr)
-+static noinstr u64 mce_rdmsrl(u32 msr)
- {
- 	u64 v;
++	/* After the probe, update fmt with the values returned from
++	 * negotiation with the device.
++	 */
++	for (i = 0; i < stream->nformats; ++i) {
++		if (probe->bFormatIndex == stream->format[i].index) {
++			format = &stream->format[i];
++			break;
++		}
++	}
++
++	if (i == stream->nformats) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
++			  probe->bFormatIndex);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < format->nframes; ++i) {
++		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
++			frame = &format->frame[i];
++			break;
++		}
++	}
++
++	if (i == format->nframes) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
++			  probe->bFrameIndex);
++		return -EINVAL;
++	}
++
+ 	fmt->fmt.pix.width = frame->wWidth;
+ 	fmt->fmt.pix.height = frame->wHeight;
+ 	fmt->fmt.pix.field = V4L2_FIELD_NONE;
+ 	fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(format, frame);
+ 	fmt->fmt.pix.sizeimage = probe->dwMaxVideoFrameSize;
++	fmt->fmt.pix.pixelformat = format->fcc;
+ 	fmt->fmt.pix.colorspace = format->colorspace;
  
- 	if (__this_cpu_read(injectm.finished)) {
--		int offset = msr_to_offset(msr);
-+		int offset;
-+		u64 ret;
- 
-+		instrumentation_begin();
-+
-+		offset = msr_to_offset(msr);
- 		if (offset < 0)
--			return 0;
--		return *(u64 *)((char *)this_cpu_ptr(&injectm) + offset);
-+			ret = 0;
-+		else
-+			ret = *(u64 *)((char *)this_cpu_ptr(&injectm) + offset);
-+
-+		instrumentation_end();
-+
-+		return ret;
- 	}
- 
- 	if (rdmsrl_safe(msr, &v)) {
-@@ -396,13 +405,19 @@ static u64 mce_rdmsrl(u32 msr)
- 	return v;
- }
- 
--static void mce_wrmsrl(u32 msr, u64 v)
-+static noinstr void mce_wrmsrl(u32 msr, u64 v)
- {
- 	if (__this_cpu_read(injectm.finished)) {
--		int offset = msr_to_offset(msr);
-+		int offset;
- 
-+		instrumentation_begin();
-+
-+		offset = msr_to_offset(msr);
- 		if (offset >= 0)
- 			*(u64 *)((char *)this_cpu_ptr(&injectm) + offset) = v;
-+
-+		instrumentation_end();
-+
- 		return;
- 	}
- 	wrmsrl(msr, v);
+ 	if (uvc_format != NULL)
 -- 
 2.25.1
 
