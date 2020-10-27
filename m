@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB9029C4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C2329C4AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757619AbgJ0OTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40648 "EHLO mail.kernel.org"
+        id S1757654AbgJ0OTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:19:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900917AbgJ0ORd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:17:33 -0400
+        id S460358AbgJ0ORi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DC6B2076A;
-        Tue, 27 Oct 2020 14:17:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF5D0206F7;
+        Tue, 27 Oct 2020 14:17:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808253;
-        bh=nMiF1lKpcngVdHRPcUz0KtDMqUpQA3P+mK8wD6eK9UE=;
+        s=default; t=1603808258;
+        bh=m5PM8Aalp8ez1lWfySaxFWEGz5AJ2IA8HDibuZMhuOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLGE9wsmFoJD/vRZ1NZ5kgL7nYOiCJtbDg0AeomgISGHm1G5cL7Nn1to1CNbdyYfi
-         8AZaEvSLOTV8BfyKWloyYGCSQUvGS2Mim2pLCTsEGpGyvohw83nlMlzhEgn2IwKrWB
-         JcUZv5A0XL5xERq1N8d617ZZSibDta7WmiuFZfgI=
+        b=w+9pnE+U57EBoP9v/7yMw9fJErYrwujxZ7ol6Cfl6CwseoPgzUhmaR+15dMDcsmSL
+         d/RihusAVzYIkLJ5b4orbmH8pgRGLeGdnsXk9fYM5EAcaJVgHBC9qEmaSbpVk8qgru
+         3lw27I4cYwb9WCtWxgx9+B1BgOAUfPNRl10ZOEVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Defang Bo <bodefang@126.com>,
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 022/264] nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME attribute in nfc_genl_fw_download()
-Date:   Tue, 27 Oct 2020 14:51:20 +0100
-Message-Id: <20201027135431.698419319@linuxfoundation.org>
+Subject: [PATCH 4.19 024/264] r8169: fix operation under forced interrupt threading
+Date:   Tue, 27 Oct 2020 14:51:22 +0100
+Message-Id: <20201027135431.790182685@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -42,37 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Defang Bo <bodefang@126.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 280e3ebdafb863b3cb50d5842f056267e15bf40c ]
+[ Upstream commit 424a646e072a887aa87283b53aa6f8b19c2a7bef ]
 
-Check that the NFC_ATTR_FIRMWARE_NAME attributes are provided by
-the netlink client prior to accessing them.This prevents potential
-unhandled NULL pointer dereference exceptions which can be triggered
-by malicious user-mode programs, if they omit one or both of these
-attributes.
+For several network drivers it was reported that using
+__napi_schedule_irqoff() is unsafe with forced threading. One way to
+fix this is switching back to __napi_schedule, but then we lose the
+benefit of the irqoff version in general. As stated by Eric it doesn't
+make sense to make the minimal hard irq handlers in drivers using NAPI
+a thread. Therefore ensure that the hard irq handler is never
+thread-ified.
 
-Similar to commit a0323b979f81 ("nfc: Ensure presence of required attributes in the activate_target handler").
-
-Fixes: 9674da8759df ("NFC: Add firmware upload netlink command")
-Signed-off-by: Defang Bo <bodefang@126.com>
-Link: https://lore.kernel.org/r/1603107538-4744-1-git-send-email-bodefang@126.com
+Fixes: 9a899a35b0d6 ("r8169: switch to napi_schedule_irqoff")
+Link: https://lkml.org/lkml/2020/10/18/19
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/4d3ef84a-c812-5072-918a-22a6f6468310@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/netlink.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/net/nfc/netlink.c
-+++ b/net/nfc/netlink.c
-@@ -1235,7 +1235,7 @@ static int nfc_genl_fw_download(struct s
- 	u32 idx;
- 	char firmware_name[NFC_FIRMWARE_NAME_MAXSIZE + 1];
+--- a/drivers/net/ethernet/realtek/r8169.c
++++ b/drivers/net/ethernet/realtek/r8169.c
+@@ -6830,7 +6830,7 @@ static int rtl8169_close(struct net_devi
  
--	if (!info->attrs[NFC_ATTR_DEVICE_INDEX])
-+	if (!info->attrs[NFC_ATTR_DEVICE_INDEX] || !info->attrs[NFC_ATTR_FIRMWARE_NAME])
- 		return -EINVAL;
+ 	phy_disconnect(dev->phydev);
  
- 	idx = nla_get_u32(info->attrs[NFC_ATTR_DEVICE_INDEX]);
+-	pci_free_irq(pdev, 0, tp);
++	free_irq(pci_irq_vector(pdev, 0), tp);
+ 
+ 	dma_free_coherent(&pdev->dev, R8169_RX_RING_BYTES, tp->RxDescArray,
+ 			  tp->RxPhyAddr);
+@@ -6885,8 +6885,8 @@ static int rtl_open(struct net_device *d
+ 
+ 	rtl_request_firmware(tp);
+ 
+-	retval = pci_request_irq(pdev, 0, rtl8169_interrupt, NULL, tp,
+-				 dev->name);
++	retval = request_irq(pci_irq_vector(pdev, 0), rtl8169_interrupt,
++			     IRQF_NO_THREAD | IRQF_SHARED, dev->name, tp);
+ 	if (retval < 0)
+ 		goto err_release_fw_2;
+ 
+@@ -6919,7 +6919,7 @@ out:
+ 	return retval;
+ 
+ err_free_irq:
+-	pci_free_irq(pdev, 0, tp);
++	free_irq(pci_irq_vector(pdev, 0), tp);
+ err_release_fw_2:
+ 	rtl_release_firmware(tp);
+ 	rtl8169_rx_clear(tp);
 
 
