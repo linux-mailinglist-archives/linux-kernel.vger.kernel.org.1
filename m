@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C6E29B3E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C612D29B2D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900850AbgJ0O4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46196 "EHLO mail.kernel.org"
+        id S1764015AbgJ0OqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:46:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1764135AbgJ0OqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:46:19 -0400
+        id S1763985AbgJ0Opv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D428D21D7B;
-        Tue, 27 Oct 2020 14:46:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3082220773;
+        Tue, 27 Oct 2020 14:45:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809978;
-        bh=yq0gWSECjPQM66kKtNub8gytoCMnqfIguqqQEgqvihY=;
+        s=default; t=1603809949;
+        bh=nCDXuJ8QS5hM+gIDi2XeymGN25m1pU86CVegkbydedc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mOlW7wr+iybl09e420P2XkkLD1tu/CTTVRr0WpJtcRW4mC96KQExFTplQDRe9/bXt
-         6SJ8zra0hbBJnOJQbLS9OEvzysuyMBk71s45aF3+Ml/IRMEvldGXGDLOrBRwjDP9NY
-         vQfMDhLGoinTuUcldQfW9sVXnQymMAQ1eYth6YKE=
+        b=Gb6EI0twfJ0GcKx6rahi/o+6yVwozxMOBdpOnQfHkXgfcj9RL7N6ZlLDm9yBEksi0
+         jdwFZRUxhv5aUshrqlC/n9S4D0M8L7LDfd3rhfOL3EdOJBOw1vAvzSaXQdkQNxlF2Z
+         1vBdrx1hNYMtPQXRuok7jNW/VEKHTBFy6c8ZTVH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 346/408] fs: dlm: fix configfs memory leak
-Date:   Tue, 27 Oct 2020 14:54:44 +0100
-Message-Id: <20201027135511.068399133@linuxfoundation.org>
+        stable@vger.kernel.org, William Tu <u9012063@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+4a2c52677a8a1aa283cb@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 349/408] ip_gre: set dev->hard_header_len and dev->needed_headroom properly
+Date:   Tue, 27 Oct 2020 14:54:47 +0100
+Message-Id: <20201027135511.205180498@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,68 +47,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit 3d2825c8c6105b0f36f3ff72760799fa2e71420e ]
+[ Upstream commit fdafed459998e2be0e877e6189b24cb7a0183224 ]
 
-This patch fixes the following memory detected by kmemleak and umount
-gfs2 filesystem which removed the last lockspace:
+GRE tunnel has its own header_ops, ipgre_header_ops, and sets it
+conditionally. When it is set, it assumes the outer IP header is
+already created before ipgre_xmit().
 
-unreferenced object 0xffff9264f482f600 (size 192):
-  comm "dlm_controld", pid 325, jiffies 4294690276 (age 48.136s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 6e 6f 64 65 73 00 00 00  ........nodes...
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000060481d7>] make_space+0x41/0x130
-    [<000000008d905d46>] configfs_mkdir+0x1a2/0x5f0
-    [<00000000729502cf>] vfs_mkdir+0x155/0x210
-    [<000000000369bcf1>] do_mkdirat+0x6d/0x110
-    [<00000000cc478a33>] do_syscall_64+0x33/0x40
-    [<00000000ce9ccf01>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This is not true when we send packets through a raw packet socket,
+where L2 headers are supposed to be constructed by user. Packet
+socket calls dev_validate_header() to validate the header. But
+GRE tunnel does not set dev->hard_header_len, so that check can
+be simply bypassed, therefore uninit memory could be passed down
+to ipgre_xmit(). Similar for dev->needed_headroom.
 
-The patch just remembers the "nodes" entry pointer in space as I think
-it's created as subdirectory when parent "spaces" is created. In
-function drop_space() we will lost the pointer reference to nds because
-configfs_remove_default_groups(). However as this subdirectory is always
-available when "spaces" exists it will just be freed when "spaces" will be
-freed.
+dev->hard_header_len is supposed to be the length of the header
+created by dev->header_ops->create(), so it should be used whenever
+header_ops is set, and dev->needed_headroom should be used when it
+is not set.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
+Reported-and-tested-by: syzbot+4a2c52677a8a1aa283cb@syzkaller.appspotmail.com
+Cc: William Tu <u9012063@gmail.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Acked-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/config.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/ipv4/ip_gre.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/fs/dlm/config.c b/fs/dlm/config.c
-index 3b21082e1b550..3b1012a3c4396 100644
---- a/fs/dlm/config.c
-+++ b/fs/dlm/config.c
-@@ -216,6 +216,7 @@ struct dlm_space {
- 	struct list_head members;
- 	struct mutex members_lock;
- 	int members_count;
-+	struct dlm_nodes *nds;
- };
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index 85ba1453ba5ca..fedad3a3e61b8 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -603,9 +603,7 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
+ 	}
  
- struct dlm_comms {
-@@ -424,6 +425,7 @@ static struct config_group *make_space(struct config_group *g, const char *name)
- 	INIT_LIST_HEAD(&sp->members);
- 	mutex_init(&sp->members_lock);
- 	sp->members_count = 0;
-+	sp->nds = nds;
- 	return &sp->group;
+ 	if (dev->header_ops) {
+-		/* Need space for new headers */
+-		if (skb_cow_head(skb, dev->needed_headroom -
+-				      (tunnel->hlen + sizeof(struct iphdr))))
++		if (skb_cow_head(skb, 0))
+ 			goto free_skb;
  
-  fail:
-@@ -445,6 +447,7 @@ static void drop_space(struct config_group *g, struct config_item *i)
- static void release_space(struct config_item *i)
- {
- 	struct dlm_space *sp = config_item_to_space(i);
-+	kfree(sp->nds);
- 	kfree(sp);
- }
+ 		tnl_params = (const struct iphdr *)skb->data;
+@@ -723,7 +721,11 @@ static void ipgre_link_update(struct net_device *dev, bool set_mtu)
+ 	len = tunnel->tun_hlen - len;
+ 	tunnel->hlen = tunnel->hlen + len;
  
+-	dev->needed_headroom = dev->needed_headroom + len;
++	if (dev->header_ops)
++		dev->hard_header_len += len;
++	else
++		dev->needed_headroom += len;
++
+ 	if (set_mtu)
+ 		dev->mtu = max_t(int, dev->mtu - len, 68);
+ 
+@@ -926,6 +928,7 @@ static void __gre_tunnel_init(struct net_device *dev)
+ 	tunnel->parms.iph.protocol = IPPROTO_GRE;
+ 
+ 	tunnel->hlen = tunnel->tun_hlen + tunnel->encap_hlen;
++	dev->needed_headroom = tunnel->hlen + sizeof(tunnel->parms.iph);
+ 
+ 	dev->features		|= GRE_FEATURES;
+ 	dev->hw_features	|= GRE_FEATURES;
+@@ -969,10 +972,14 @@ static int ipgre_tunnel_init(struct net_device *dev)
+ 				return -EINVAL;
+ 			dev->flags = IFF_BROADCAST;
+ 			dev->header_ops = &ipgre_header_ops;
++			dev->hard_header_len = tunnel->hlen + sizeof(*iph);
++			dev->needed_headroom = 0;
+ 		}
+ #endif
+ 	} else if (!tunnel->collect_md) {
+ 		dev->header_ops = &ipgre_header_ops;
++		dev->hard_header_len = tunnel->hlen + sizeof(*iph);
++		dev->needed_headroom = 0;
+ 	}
+ 
+ 	return ip_tunnel_init(dev);
 -- 
 2.25.1
 
