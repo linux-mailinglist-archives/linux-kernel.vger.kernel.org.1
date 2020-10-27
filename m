@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA77829BE54
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E7F29BE56
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794678AbgJ0PNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:13:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40202 "EHLO mail.kernel.org"
+        id S1794709AbgJ0PNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:13:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1791012AbgJ0PF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:05:56 -0400
+        id S1792968AbgJ0PGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:06:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 559ED21D24;
-        Tue, 27 Oct 2020 15:05:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F30421D24;
+        Tue, 27 Oct 2020 15:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811154;
-        bh=FP7FLeubJNaww4tHlqH6jE3IMVDpinLGpMcSKY7TakA=;
+        s=default; t=1603811171;
+        bh=aIocu76wD2yXksJDdVAhdWe1KeyuA03JrPSb51ndGaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CgHLAqt9MK4JzuJXFR1DZdte5Z2cM1pOgiLFOHtEbFefZIPAlOCeRKX1q/XfwLp8O
-         LhiwcacHgQ6S9YbQL+kSf4n0dbOadNF64YgUfyTtDsft3/ydhIOOW+2ficnXVUpKFw
-         NTjlXWlCiOzhlcxNYWvtlpEa8RssxBXqMU+IQl10=
+        b=E/6Xe/sRV5MIopas4pJO1udNK0krPW+UGlwPrpQM2i0JiU6Ysved4tpi9jZPhizF6
+         YdEGM+ZW2aaulbRcnSV6rSKCqezLuVwB/gfZRTopkSMUI+6Lyst7Xl7xd1X+RFwb8b
+         EZKfPBfTRIbi10gw9oHQH5LYTWUd4puSWrwNCro0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 393/633] mtd: rawnand: ams-delta: Fix non-OF build warning
-Date:   Tue, 27 Oct 2020 14:52:16 +0100
-Message-Id: <20201027135541.143139839@linuxfoundation.org>
+Subject: [PATCH 5.8 398/633] powerpc/64: fix irq replay pt_regs->softe value
+Date:   Tue, 27 Oct 2020 14:52:21 +0100
+Message-Id: <20201027135541.384140506@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,50 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 6d11178762f7c8338a028b428198383b8978b280 ]
+[ Upstream commit 2b48e96be2f9f7151197fd25dc41487054bc6f5b ]
 
-Commit 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device
-tables") introduced an OF module device table but wrapped a reference
-to it with of_match_ptr() which resolves to NULL in non-OF configs.
-That resulted in a clang compiler warning on unused variable in non-OF
-builds.  Fix it.
+Replayed interrupts get an "artificial" struct pt_regs constructed to
+pass to interrupt handler functions. This did not get the softe field
+set correctly, it's as though the interrupt has hit while irqs are
+disabled. It should be IRQS_ENABLED.
 
-drivers/mtd/nand/raw/ams-delta.c:373:34: warning: unused variable 'gpio_nand_of_id_table' [-Wunused-const-variable]
-   static const struct of_device_id gpio_nand_of_id_table[] = {
-                                    ^
-   1 warning generated.
+This is possibly harmless, asynchronous handlers should not be testing
+if irqs were disabled, but it might be possible for example some code
+is shared with synchronous or NMI handlers, and it makes more sense if
+debug output looks at this.
 
-Fixes: 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device tables")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200919080403.17520-1-jmkrzyszt@gmail.com
+Fixes: 3282a3da25bd ("powerpc/64: Implement soft interrupt replay in C")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200915114650.3980244-2-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/ams-delta.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index 3711e7a0436cd..b3390028c6bfb 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -400,12 +400,14 @@ static int gpio_nand_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/arch/powerpc/kernel/irq.c b/arch/powerpc/kernel/irq.c
+index 297ee79febc6c..3a22281a8264e 100644
+--- a/arch/powerpc/kernel/irq.c
++++ b/arch/powerpc/kernel/irq.c
+@@ -214,7 +214,7 @@ void replay_soft_interrupts(void)
+ 	struct pt_regs regs;
  
-+#ifdef CONFIG_OF
- static const struct of_device_id gpio_nand_of_id_table[] = {
- 	{
- 		/* sentinel */
- 	},
- };
- MODULE_DEVICE_TABLE(of, gpio_nand_of_id_table);
-+#endif
+ 	ppc_save_regs(&regs);
+-	regs.softe = IRQS_ALL_DISABLED;
++	regs.softe = IRQS_ENABLED;
  
- static const struct platform_device_id gpio_nand_plat_id_table[] = {
- 	{
+ again:
+ 	if (IS_ENABLED(CONFIG_PPC_IRQ_SOFT_MASK_DEBUG))
 -- 
 2.25.1
 
