@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236CF29AD01
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFE929AD06
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751886AbgJ0NRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:17:30 -0400
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:42458 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440805AbgJ0NR3 (ORCPT
+        id S1751915AbgJ0NR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:17:56 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:42171 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441417AbgJ0NRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:17:29 -0400
-Received: by mail-qv1-f68.google.com with SMTP id b11so592582qvr.9;
-        Tue, 27 Oct 2020 06:17:29 -0700 (PDT)
+        Tue, 27 Oct 2020 09:17:55 -0400
+Received: by mail-ej1-f67.google.com with SMTP id h24so2155958ejg.9;
+        Tue, 27 Oct 2020 06:17:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sv4MSsdbMGxld4Lj23VTm9RmQoViIo/kKrPn4dkU/IY=;
-        b=vNh8er+jimshlHNWTbr4gxIBpMpES1VfHM5fklA4+DGxjGBfFZMTBNrnWvRMDNzEfr
-         aQrfRcyA0YRlMkbE4iRd8LQFdeArBZ9l5u2mKk4ecgqvSfxudOFqI5447qbLTrmxWVxu
-         MZUs1sCVwjcKM77K7xR3A3fPqScf/wNvsOraon9HEj4uf5+0pOLLY0avW/tdBmuAFGze
-         2wXlIiRzczDBzOQoZN6yxBFuW/tl1JJMxJ0b5qMqVRTQISZPadZgZF7ZJVsxohgOlICP
-         hviF2mSA6Kpe8+FB0P5K1y+aiD2cqurYZzRe5yMm+ivlwi3k21Y19tDzHoSm1qOlOYil
-         eUHw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EGpkeOfJT8udzeeIP4D/m8toDPn+ozlWLbY7PJ5zipc=;
+        b=PsNia79cOr0HXyMjtoBqTMfRZXSgpo7wEbpHhVjyO9Twd9DSmEM3Hl84UaG/uw3sqc
+         1LfAfh6BzFS8ZNmoFyerno7f+Lglr1jTDW3AkIyHWzXi5F5PvBQ8PD2cCAtmLLgZ8A2D
+         MFaO5+AJ0NArVLX4FbzPMZVfm4Fx1WEw7j2pp513V6EWviR7Ipn4znFKJ0gVJTjjArQa
+         PUmlExVC6tFALpenIG/SMKdmTivjOLUPgt1sVX4mqR9eSvSStAmKn6Cw7HaqGyuoTLkD
+         smZ4CO5Vw5fWgli6tY6I6NPn2pILXadp/7LRXZZE89cgtmDsrIykazj9sJy5VoD/zoJw
+         TjXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sv4MSsdbMGxld4Lj23VTm9RmQoViIo/kKrPn4dkU/IY=;
-        b=ipcpG7bQQ1lcpA5bFeaRfLPLfgm2jI/GcCbm/2izxq0r4t7vHnGCF+GLIFfknOL74R
-         RabN5V25OPsQMkMrGpNNkCClgwggY4I/D/6Zh7HwmMsahF58kG0Ob/yc2hDChfLoizdD
-         SBeQygE+jEB4HaF5WWo/6nG+VcnqibWwCGgVlD5SnhixSUPN+QCb2Sg8HNIizIZIekYc
-         1kUglpajXZGN9vb++63gwcyvYyJ9eNXlNseJ94LtUhSgdsfhUqHimtHe2MEDh+vqvEQj
-         M1WCvGsUOrMDXWP4zntz1Vzk9ZC8FAl3YLE0QUBaXGN47WsIFbwnfAareKAVuIS9m9I4
-         I45A==
-X-Gm-Message-State: AOAM530Noy8+4mvUVz4uKtIoC+O5erhiEQesvo3MAXB75jynvlGVvFe7
-        ORu8My7o1TdLDV0pm9hVAC6EyKRy8G2us5BPcw4=
-X-Google-Smtp-Source: ABdhPJw7WHxGGt0QI/QBYgwttvjYmNUbf+/rEv7bpW+TknJBJlrymRHrxafQb7NUmoIIP3EJGVRRlgEZT+IDAOuSO8A=
-X-Received: by 2002:a0c:82c4:: with SMTP id i62mr2409110qva.28.1603804648818;
- Tue, 27 Oct 2020 06:17:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <1603708855-2663-1-git-send-email-shengjiu.wang@nxp.com>
- <1603708855-2663-2-git-send-email-shengjiu.wang@nxp.com> <20201026133003.GD7402@sirena.org.uk>
-In-Reply-To: <20201026133003.GD7402@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Tue, 27 Oct 2020 21:17:17 +0800
-Message-ID: <CAA+D8AMtFh_ZCPrxNDcMmLx2Uqxh9cRX=dX8=tJXt=O72baY5Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl_aud2htx: Add aud2htx module driver
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EGpkeOfJT8udzeeIP4D/m8toDPn+ozlWLbY7PJ5zipc=;
+        b=eftGQEYudxuRCnwIjMmu+NNrjt2qZAZ0viSW2DdWYxvV730zM2w10GKKwrApTxvFkZ
+         38JrBErjSq+wWEY08yMouTmmXM82UL5zKhWclioPiSvXHQ9rfy+mafZq9N7vsc3o4LVU
+         AFHxdgWDVTrsU7A3vWvEnYI/OCvTOHe5aR0dCpMDtbEk/a14JVBSbRoZjU7aJh7amjOW
+         nLo6XeBKiWKsVy7PaqaYNRwCbbamWaidvI5sisrDkbeG8fv/1kYNpdKkkAu9P3WguhpI
+         1qHzbm32lLIEljjLVnCWhPdYpuXveoqlVuiK4H2N7dZaUQ1/iE8SbK1pmaOjkOU7Pacd
+         MsVQ==
+X-Gm-Message-State: AOAM5317Q5ZhmiXSXdW8EH+gZyUooxAeDhlTcm0/FA1PtN3T8EpbemQY
+        qlKJ1LXOW7u789t4QqXFkOU=
+X-Google-Smtp-Source: ABdhPJzjO83UYzZfmiS5gD2nhgDucOtcUmApVHzzYJnXM5u3pHlpkb4B+1kWphmu/QKhI+9fXCU/zA==
+X-Received: by 2002:a17:906:cb82:: with SMTP id mf2mr2280977ejb.435.1603804672760;
+        Tue, 27 Oct 2020 06:17:52 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id v1sm936585eds.47.2020.10.27.06.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 06:17:51 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 14:17:50 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 02/52] soc/tegra: fuse: Export tegra_read_ram_code()
+Message-ID: <20201027131750.GE1822510@ulmo>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-3-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="47eKBCiAZYFK5l32"
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-3-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 9:31 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Oct 26, 2020 at 06:40:55PM +0800, Shengjiu Wang wrote:
->
-> > +static int fsl_aud2htx_hw_params(struct snd_pcm_substream *substream,
-> > +                              struct snd_pcm_hw_params *params,
-> > +                              struct snd_soc_dai *cpu_dai)
-> > +{
-> > +     struct fsl_aud2htx *aud2htx = snd_soc_dai_get_drvdata(cpu_dai);
-> > +
-> > +     /* DMA request when number of entries < WTMK_LOW */
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-> > +                        AUD2HTX_CTRE_DT_MASK, 0);
-> > +
-> > +     /* Disable interrupts*/
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_IRQ_MASK,
-> > +                        AUD2HTX_WM_HIGH_IRQ_MASK |
-> > +                        AUD2HTX_WM_LOW_IRQ_MASK |
-> > +                        AUD2HTX_OVF_MASK,
-> > +                        AUD2HTX_WM_HIGH_IRQ_MASK |
-> > +                        AUD2HTX_WM_LOW_IRQ_MASK |
-> > +                        AUD2HTX_OVF_MASK);
-> > +
-> > +     /* Configur watermark */
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-> > +                        AUD2HTX_CTRE_WL_MASK,
-> > +                        AUD2HTX_WTMK_LOW << AUD2HTX_CTRE_WL_SHIFT);
-> > +     regmap_update_bits(aud2htx->regmap, AUD2HTX_CTRL_EXT,
-> > +                        AUD2HTX_CTRE_WH_MASK,
-> > +                        AUD2HTX_WTMK_HIGH << AUD2HTX_CTRE_WH_SHIFT);
-> > +     return 0;
-> > +}
->
-> This doesn't look like a hw_params operation - it doesn't appear to
-> reference the params at all, or even containt any conditional
-> statements.  Shouldn't this be configured just once at driver load?
 
-Ok, I will update it.
+--47eKBCiAZYFK5l32
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-best regards
-wang shengjiu
+On Mon, Oct 26, 2020 at 01:16:45AM +0300, Dmitry Osipenko wrote:
+> The tegra_read_ram_code() is used by EMC drivers and we're going to make
+> these driver modular, hence this function needs to be exported.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/fuse/tegra-apbmisc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+
+I'm not a big fan of exporting yet another of these tiny helpers, but I
+don't have any better ideas, so:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--47eKBCiAZYFK5l32
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YHfsACgkQ3SOs138+
+s6Ge8g/+K11Rea4lesG6yOqiV+tgr808eTB04GzTxW2YHYQXECxOM+h5veIlJO7A
+MNYFWTnWUcUT3fG4FQUhXiy4w1h+1TpkZYiOHRxkmnCGkxhVXm7Tk9w//ndatBIo
+TMSNpgcluGaAz+SZrn08yVu+0Xifrf2QC3SRXEBbYDvV2HjNvHeqSokDG4R8u4at
+RM8krhnRarN612d5xkR09ffTFGdoAtfwrJ+0XS6JJpHQ/djZr2hJhY7h6oYUoz0D
+pOFX1JyXcIeomkw5cKSdyE1KN+VhhsIL5emAdXDrsWdkUIjEvnprBRPDMXQmR57V
+Y0OYvmldkVyDSCznhJtqinLMmXHuRWkD80KvB5sBcgk60AoIDZelvsQlHisSRYIL
+jaMidBbtFkwoBxLPJ+3ReUyx8gWI7HY/bNNI2zpv1NSXdpPtdbAX1J78Fkp/xLKw
+WsriAUbGiZ4WlDcNFVrJZuDSsVd6ZEroRgu1ksHU1tH0Fv8S9q2zNEL7gdR7WX6f
+49mHeSGvNM9JZsVXspMdpqmnW1A8/906ZdxiZQVq6l+7UabjxQt/atWMONdDPtl4
+BOEhsa3H55FM1pnAxhF32Cl98x4hjOqm/dpo0wSmnVKl7fU/dB7uY6UlC6wNbObz
+XdVJigEdvPWZq83816gX5thEgB8Dt4rSzLGbtwoP09PQrjyBUM0=
+=7Edt
+-----END PGP SIGNATURE-----
+
+--47eKBCiAZYFK5l32--
