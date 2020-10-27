@@ -2,138 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A9C29CACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 910FD29CAD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373462AbgJ0U5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:57:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443729AbgJ0U5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:57:43 -0400
-Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3635020706;
-        Tue, 27 Oct 2020 20:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603832263;
-        bh=1HIv2+pHzyYp8hpDB0NxtuBOQ5Za1hvza5Qv+Vu4Q90=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Xz1663r3QuVB6qtvYj+hWv6Y0/0mCAtXKMBUxSc5p7H2qrdBZP9fh5sCiaz/gGRYz
-         no1odXBalplpep8WUZ6WKa9INSgbCA0f2jqpCnDuzWlKbJv2D7Mnhtbt//+7L/0TST
-         MNbZvf/skyuR+zB070g6PH/ufSNL1wVdLbftf0ns=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S373480AbgJ0U6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:58:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49188 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373468AbgJ0U6K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:58:10 -0400
+Date:   Tue, 27 Oct 2020 21:58:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603832287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F0fJAkaJOg8MghLZ3WG/sCJuQU/mVqUutTyE3oHxMzk=;
+        b=OCXS40Fvu9bQ6xCZaPug1KgaEmYKhXN/ZJ0k4P8VVRI2Tn6uMCLWJWkjnf8gIxEngul2+X
+        mXTIHdNex5s7rq9bE9hgbcOB73QRTEDlIjtYfQDWyP8SvmKxKyHXGwCt5loVW0lOUXk+gs
+        F7c3CaXAedTVsLkrnGdg7SJxnkpvTEF3v+8tXTCL5ErFaz2KMq/Shhqr7xu3EjgpEt4+68
+        IXHwkYjnj1GfmhodJFblNq8QlHtIvnATLxy/q2ZEz9b1m1YC4q+3okhAK9iiB2J9QR/zTd
+        Y+Te+uDDyJ7yW2qi6cdra41TXaphnfHmfogxYU1cp2F07uREdQ4iq0J1XkZIuQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603832287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F0fJAkaJOg8MghLZ3WG/sCJuQU/mVqUutTyE3oHxMzk=;
+        b=GHAeAruUaSSLW9G3JOZouivv79VFgzdGEu5igh8KPJTlMXQq2AlG8Sy380jTg6FjuJJEod
+        Rr7B6BYfwg2clIBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to disable GCSE
-Date:   Tue, 27 Oct 2020 21:57:23 +0100
-Message-Id: <20201027205723.12514-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        Daniel Wagner <dwagner@suse.de>
+Subject: Re: [PATCH RFC] blk-mq: Don't IPI requests on PREEMPT_RT
+Message-ID: <20201027205806.s7qau5xf4lzuslcu@linutronix.de>
+References: <20201021175059.GA4989@hmbx>
+ <20201023110400.bx3uzsb7xy5jtsea@linutronix.de>
+ <20201023112130.GA23790@infradead.org>
+ <20201023135219.mzzl76eqqy6tqwhe@linutronix.de>
+ <20201027092606.GA20805@infradead.org>
+ <20201027101102.cvczdb3mkvtoguo5@linutronix.de>
+ <20201027160742.GA19073@infradead.org>
+ <87eelj1tx0.fsf@nanos.tec.linutronix.de>
+ <20201027172309.GA15004@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201027172309.GA15004@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
-___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-function scope __attribute__((optimize("-fno-gcse"))), to disable a
-GCC specific optimization that was causing trouble on x86 builds, and
-was not expected to have any positive effect in the first place.
+On 2020-10-27 17:23:09 [+0000], Christoph Hellwig wrote:
+> Ok.  I was hoping we could hide this in core code somehow, especially
+> a peterz didn't like the use of smp_call_function_single_async in the
+> blk-mq completion code very much.
 
-However, as the GCC manual documents, __attribute__((optimize))
-is not for production use, and results in all other optimization
-options to be forgotten for the function in question. This can
-cause all kinds of trouble, but in one particular reported case,
-it causes -fno-asynchronous-unwind-tables to be disregarded,
-resulting in .eh_frame info to be emitted for the function
-inadvertently.
+No idea how you could efficiently avoid smp_call_function_single_async():
+- workqueue (okay)
+- a timer_list timer which expires now. More code plus it may delay up
+  to HZ.
 
-This reverts commit 3193c0836f203, and instead, it disables the -fgcse
-optimization for the entire source file, but only when building for
-X86.
+> Sebastian, would this solve your preempt-rt and lockdep issues?
 
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Arvind Sankar <nivedita@alum.mit.edu>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Kees Cook <keescook@chromium.org>
-Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- include/linux/compiler-gcc.h   | 2 --
- include/linux/compiler_types.h | 4 ----
- kernel/bpf/Makefile            | 4 +++-
- kernel/bpf/core.c              | 2 +-
- 4 files changed, 4 insertions(+), 8 deletions(-)
+the problem with that is that on RT/force-threaded it will always wake
+ksoftirqd thread and complete there. That are extra steps which should
+be probably avoided.
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index d1e3c6896b71..5deb37024574 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -175,5 +175,3 @@
- #else
- #define __diag_GCC_8(s)
- #endif
--
--#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 6e390d58a9f8..ac3fa37a84f9 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -247,10 +247,6 @@ struct ftrace_likely_data {
- #define asm_inline asm
- #endif
+Now.
+The hunk in blk_mq_complete_need_ipi() will avoid the waking a thread
+with force-threaded enabled.
+
+The remaining part is a switch to llist which avoids locking (IRQ
+off/on) and it allows invoke the IPI/raise softirq only if something was
+added. The entries are now processed in the reverse order but this
+shouldn't matter right?
+
+I would split this into two patches (the blk_mq_complete_need_ipi() hunk
+and the llist part) unless there are objections.
+
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 55bcee5dc0320..d2452ee9b0e2c 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -41,7 +41,7 @@
+ #include "blk-mq-sched.h"
+ #include "blk-rq-qos.h"
  
--#ifndef __no_fgcse
--# define __no_fgcse
--#endif
--
- /* Are two types/vars the same type (ignoring qualifiers)? */
- #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+-static DEFINE_PER_CPU(struct list_head, blk_cpu_done);
++static DEFINE_PER_CPU(struct llist_head, blk_cpu_done);
  
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index bdc8cd1b6767..02b58f44c479 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -1,6 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-y := core.o
--CFLAGS_core.o += $(call cc-disable-warning, override-init)
-+# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
-+cflags-core-$(CONFIG_X86) := -fno-gcse
-+CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
+ static void blk_mq_poll_stats_start(struct request_queue *q);
+ static void blk_mq_poll_stats_fn(struct blk_stat_callback *cb);
+@@ -565,80 +565,31 @@ void blk_mq_end_request(struct request *rq, blk_status_t error)
+ }
+ EXPORT_SYMBOL(blk_mq_end_request);
  
- obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 9268d77898b7..55454d2278b1 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-  *
-  * Decode and execute eBPF instructions.
-  */
--static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-+static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+-/*
+- * Softirq action handler - move entries to local list and loop over them
+- * while passing them to the queue registered handler.
+- */
+-static __latent_entropy void blk_done_softirq(struct softirq_action *h)
++static void blk_complete_reqs(struct llist_head *cpu_list)
  {
- #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
- #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
--- 
-2.17.1
-
+-	struct list_head *cpu_list, local_list;
++	struct llist_node *entry;
++	struct request *rq, *rq_next;
+ 
+-	local_irq_disable();
+-	cpu_list = this_cpu_ptr(&blk_cpu_done);
+-	list_replace_init(cpu_list, &local_list);
+-	local_irq_enable();
++	entry = llist_del_all(cpu_list);
+ 
+-	while (!list_empty(&local_list)) {
+-		struct request *rq;
+-
+-		rq = list_entry(local_list.next, struct request, ipi_list);
+-		list_del_init(&rq->ipi_list);
++	llist_for_each_entry_safe(rq, rq_next, entry, ipi_list)
+ 		rq->q->mq_ops->complete(rq);
+-	}
+ }
+ 
+-static void blk_mq_trigger_softirq(struct request *rq)
++static __latent_entropy void blk_done_softirq(struct softirq_action *h)
+ {
+-	struct list_head *list;
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	list = this_cpu_ptr(&blk_cpu_done);
+-	list_add_tail(&rq->ipi_list, list);
+-
+-	/*
+-	 * If the list only contains our just added request, signal a raise of
+-	 * the softirq.  If there are already entries there, someone already
+-	 * raised the irq but it hasn't run yet.
+-	 */
+-	if (list->next == &rq->ipi_list)
+-		raise_softirq_irqoff(BLOCK_SOFTIRQ);
+-	local_irq_restore(flags);
++	blk_complete_reqs(this_cpu_ptr(&blk_cpu_done));
+ }
+ 
+ static int blk_softirq_cpu_dead(unsigned int cpu)
+ {
+-	/*
+-	 * If a CPU goes away, splice its entries to the current CPU
+-	 * and trigger a run of the softirq
+-	 */
+-	local_irq_disable();
+-	list_splice_init(&per_cpu(blk_cpu_done, cpu),
+-			 this_cpu_ptr(&blk_cpu_done));
+-	raise_softirq_irqoff(BLOCK_SOFTIRQ);
+-	local_irq_enable();
+-
++	blk_complete_reqs(&per_cpu(blk_cpu_done, cpu));
+ 	return 0;
+ }
+ 
+-
+ static void __blk_mq_complete_request_remote(void *data)
+ {
+-	struct request *rq = data;
+-
+-	/*
+-	 * For most of single queue controllers, there is only one irq vector
+-	 * for handling I/O completion, and the only irq's affinity is set
+-	 * to all possible CPUs.  On most of ARCHs, this affinity means the irq
+-	 * is handled on one specific CPU.
+-	 *
+-	 * So complete I/O requests in softirq context in case of single queue
+-	 * devices to avoid degrading I/O performance due to irqsoff latency.
+-	 */
+-	if (rq->q->nr_hw_queues == 1)
+-		blk_mq_trigger_softirq(rq);
+-	else
+-		rq->q->mq_ops->complete(rq);
++	__raise_softirq_irqoff(BLOCK_SOFTIRQ);
+ }
+ 
+ static inline bool blk_mq_complete_need_ipi(struct request *rq)
+@@ -648,6 +599,14 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
+ 	if (!IS_ENABLED(CONFIG_SMP) ||
+ 	    !test_bit(QUEUE_FLAG_SAME_COMP, &rq->q->queue_flags))
+ 		return false;
++	/*
++	 * With force threaded interrupts enabled, raising softirq from an SMP
++	 * function call will always result in waking the ksoftirqd thread.
++	 * This is probably worse than completing the request on a different
++	 * cache domain.
++	 */
++       if (force_irqthreads)
++               return false;
+ 
+ 	/* same CPU or cache domain?  Complete locally */
+ 	if (cpu == rq->mq_ctx->cpu ||
+@@ -661,6 +620,7 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
+ 
+ bool blk_mq_complete_request_remote(struct request *rq)
+ {
++	struct llist_head *cpu_list;
+ 	WRITE_ONCE(rq->state, MQ_RQ_COMPLETE);
+ 
+ 	/*
+@@ -671,14 +631,21 @@ bool blk_mq_complete_request_remote(struct request *rq)
+ 		return false;
+ 
+ 	if (blk_mq_complete_need_ipi(rq)) {
+-		rq->csd.func = __blk_mq_complete_request_remote;
+-		rq->csd.info = rq;
+-		rq->csd.flags = 0;
+-		smp_call_function_single_async(rq->mq_ctx->cpu, &rq->csd);
++		unsigned int cpu;
++
++		cpu = rq->mq_ctx->cpu;
++		cpu_list = &per_cpu(blk_cpu_done, cpu);
++		if (llist_add(&rq->ipi_list, cpu_list)) {
++			rq->csd.func = __blk_mq_complete_request_remote;
++			rq->csd.flags = 0;
++			smp_call_function_single_async(cpu, &rq->csd);
++		}
+ 	} else {
+ 		if (rq->q->nr_hw_queues > 1)
+ 			return false;
+-		blk_mq_trigger_softirq(rq);
++		cpu_list = this_cpu_ptr(&blk_cpu_done);
++		if (llist_add(&rq->ipi_list, cpu_list))
++			raise_softirq(BLOCK_SOFTIRQ);
+ 	}
+ 
+ 	return true;
+@@ -3909,7 +3876,7 @@ static int __init blk_mq_init(void)
+ 	int i;
+ 
+ 	for_each_possible_cpu(i)
+-		INIT_LIST_HEAD(&per_cpu(blk_cpu_done, i));
++		init_llist_head(&per_cpu(blk_cpu_done, i));
+ 	open_softirq(BLOCK_SOFTIRQ, blk_done_softirq);
+ 
+ 	cpuhp_setup_state_nocalls(CPUHP_BLOCK_SOFTIRQ_DEAD,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 639cae2c158b5..331b2b675b417 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -156,7 +156,7 @@ struct request {
+ 	 */
+ 	union {
+ 		struct hlist_node hash;	/* merge hash */
+-		struct list_head ipi_list;
++		struct llist_node ipi_list;
+ 	};
+ 
+ 	/*
