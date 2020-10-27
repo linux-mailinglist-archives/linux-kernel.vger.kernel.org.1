@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBF829A723
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CA329A727
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895243AbgJ0JAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:00:47 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:43069 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407456AbgJ0JAq (ORCPT
+        id S2895249AbgJ0JCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:02:19 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38548 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407613AbgJ0JCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:00:46 -0400
-Received: by mail-lj1-f194.google.com with SMTP id d24so842145ljg.10;
-        Tue, 27 Oct 2020 02:00:45 -0700 (PDT)
+        Tue, 27 Oct 2020 05:02:18 -0400
+Received: by mail-ed1-f66.google.com with SMTP id bc23so610972edb.5;
+        Tue, 27 Oct 2020 02:02:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aoc6PFAHcsZ4k1n+rAPEIlc7fJ4qApC7bZXv5nNCWDo=;
-        b=Hjxrq9kxNkaCeXNNiey16mkUKiieLSbNB8I0BFJ/EjxB/Xp5DvX7PHUXPzxtZlihkU
-         tbhKWas2W/MUkHJuculPwl3M63HmV9BDNH0X95j56JbO1gV6UzgVLpXNL+r4AYkw03aE
-         H4CjZE9wrg5x+O/Nc146miRGvn9C3KwNb1o+F67aRHz0H4qU7PHxyX7nvFIB/2DoEV31
-         Uw6fgjxB+J27bOPopaIi7f5OoA/QDZGg330XJaumnCrQr8tP04fJFe3iNAJcw1xRs+sF
-         RSwgA8r80oOu5h/QK5h9EwVTCpm8EAYZDSHyVBOPrXmmfPBpe+rLeVSFZts2mvpOy2zW
-         Fl/A==
-X-Gm-Message-State: AOAM5321ImFGOUG21wyLGTxYKmn3C6gVgHZXCBhJ/DCjx1v+q5sEF9fo
-        gdDG0PKnUXy84vPg/IKvE6E=
-X-Google-Smtp-Source: ABdhPJxJWrT+500Rqae99962YUMyLl1qAq5vzl313eUD61dYENLaqlKCvsUXPJ28lcsc0ayMVZQ7hw==
-X-Received: by 2002:a2e:9905:: with SMTP id v5mr619154lji.222.1603789244634;
-        Tue, 27 Oct 2020 02:00:44 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id f26sm103575lfc.302.2020.10.27.02.00.43
+        bh=yy8mpli12VbJ5JLskCF8LxLYU5O/pRr6aZZScegInuc=;
+        b=SqlDgisesqolOtI2dy/ENh3LanAjiPfkJ0XqDKenMokuSGvqNh8B4ZkxO0JTJf8Nx3
+         822DsJ3XroZj06+KLjFeuNOfX6g7uXWcJeztK8A4+A60yeUXD82mX+/IVE5LhC0vHXRK
+         di6HBsqea+gxB6g8U8LLqbZ/wIuZM/sBwQjNNXe7YnowE7/6gF51I5MH0yB//oK/Xkyk
+         OVI2/GiKMfi3qQZWc/PfhA0OLfKEElaxg+mtJq7dUAdHiY1SigE3llqYPixQoM9tF1PE
+         WkUPf4x8ZCaLYMiBkY2xoPNYPu8nAGSr+dIsfechB4LLyFzsEmoCbPoQzC0WzDjJEJId
+         0Q6g==
+X-Gm-Message-State: AOAM5305LxFyNaRCW9ssi7epgNFdL3Zt7xjH+gkeR9fOB/xUZKc5+/+b
+        mJDPEs/JD6ilzqPzhi1jSec=
+X-Google-Smtp-Source: ABdhPJyQzsFsuzcSltesuym9LKHSYVZWlMr0dq392E04psYkjmxzcSL6mq0PR1/lxApk19ZIsIN9OA==
+X-Received: by 2002:a50:eb0a:: with SMTP id y10mr1183592edp.342.1603789336363;
+        Tue, 27 Oct 2020 02:02:16 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id q3sm525786edv.17.2020.10.27.02.02.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 02:00:43 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kXKqR-0002G6-DS; Tue, 27 Oct 2020 10:00:43 +0100
-Date:   Tue, 27 Oct 2020 10:00:43 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: ftdi_sio: Fix serial port stall after resume
-Message-ID: <20201027090043.GG4085@localhost>
-References: <20200929193327.GA13987@ls3530.fritz.box>
- <20201008152103.GK26280@localhost>
- <1aefc37b-8976-efda-f397-2d9492b1260a@gmx.de>
+        Tue, 27 Oct 2020 02:02:15 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 10:02:12 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 08/52] dt-bindings: memory: tegra20: emc: Document
+ mfd-simple compatible and statistics sub-device
+Message-ID: <20201027090212.GG4244@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-9-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1aefc37b-8976-efda-f397-2d9492b1260a@gmx.de>
+In-Reply-To: <20201025221735.3062-9-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 08:16:02PM +0200, Helge Deller wrote:
-> On 10/8/20 5:21 PM, Johan Hovold wrote:
-> > On Tue, Sep 29, 2020 at 09:33:27PM +0200, Helge Deller wrote:
-> >> With a 4-port serial USB HUB with FT232BM chips the serial ports stop
-> >> working after a software suspend/resume cycle.
-> >> Rewriting the latency timer during the resume phase fixes it.
-
-> >> +static int ftdi_reset_resume(struct usb_serial *serial)
-> >> +{
-> >> +	struct usb_serial_port *port = serial->port[0];
-> >> +
-> >> +	if (tty_port_initialized(&port->port))
-> >> +		write_latency_timer(port);
-> >
-> > Why are you only doing this for open ports?
+On Mon, Oct 26, 2020 at 01:16:51AM +0300, Dmitry Osipenko wrote:
+> External Memory Controller can gather various hardware statistics that
+> are intended to be used for debugging purposes and for dynamic frequency
+> scaling of memory bus.
 > 
-> I more or less copied it from another driver....
+> Document the new mfd-simple compatible and EMC statistics sub-device.
+> The subdev contains EMC DFS OPP table and interconnect paths to be used
+> for dynamic scaling of system's memory bandwidth based on EMC utilization
+> statistics.
 > 
-> >> +
-> >> +	return usb_serial_generic_resume(serial);
-> >> +}
-> >
-> > And if the device has been reset there may need to reconfigured the
-> > termios settings for open ports.
-> >
-> > Could you expand a bit on what the problem is here?
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../memory-controllers/nvidia,tegra20-emc.txt | 43 +++++++++++++++++--
+>  1 file changed, 40 insertions(+), 3 deletions(-)
 > 
-> My testcase is pretty simple:
-> 1. I use e.g. "minicom -D /dev/ttyUSB2". Serial connection works.
-> 2. I exit minicom.
-> 3. I suspend the workstation: "systemctl suspend"
-> 4. I wake up the machine and wait a few seconds.
-> 5. I start "minicom -D /dev/ttyUSB2" again. No transfers on the serial port.
-> 
-> With my patch the minicom serial communications does work.
-> Another way to wake up the connection is to rmmod the driver and
-> insmod it again.
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> index 8d09b228ac42..382aabcd6952 100644
+> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> @@ -4,7 +4,7 @@ Properties:
+>  - name : Should be emc
+>  - #address-cells : Should be 1
+>  - #size-cells : Should be 0
+> -- compatible : Should contain "nvidia,tegra20-emc".
+> +- compatible : Should contain "nvidia,tegra20-emc" and "simple-mfd".
 
-Weird indeed. If you exit minicom before suspend and no other process is
-keeping the port open, then that write_latency_timer() above would never
-be executed.
+Changing a compatible match is another break of ABI, unless it is not
+really required. It's unclear to me from the contents of the patch.
 
-Could you enable some debugging and provide a dmesg log from a test
-cycle (open/close minicom, suspend/resume, open minicom)?
+>  - reg : Offset and length of the register set for the device
+>  - nvidia,use-ram-code : If present, the sub-nodes will be addressed
+>    and chosen using the ramcode board selector. If omitted, only one
+> @@ -17,7 +17,8 @@ Properties:
+>  - core-supply: Phandle of voltage regulator of the SoC "core" power domain.
+>  - operating-points-v2: See ../bindings/opp/opp.txt for details.
+>  
+> -Child device nodes describe the memory settings for different configurations and clock rates.
+> +Child device nodes describe the memory settings for different configurations and clock rates,
+> +as well as EMC activity statistics collection sub-device.
+>  
+>  Example:
+>  
+> @@ -31,17 +32,34 @@ Example:
+>  		...
+>  	};
+>  
+> +	emc_bw_dfs_opp_table: emc_opp_table1 {
 
-	echo file usb-serial.c +p > /sys/kernel/debug/dynamic_debug/control
+Hyphens for node name.
 
-Johan
+Best regards,
+Krzysztof
