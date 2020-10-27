@@ -2,76 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF76229B9CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DFE29B801
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1803232AbgJ0Pw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:52:27 -0400
-Received: from m12-15.163.com ([220.181.12.15]:39571 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799224AbgJ0Pa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:30:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=3oDqx
-        WCgFd8JrOidOt8LxnLGY8nQi1Gnn/BvOHEBY+o=; b=kDCrMmSDYdZ646fXY9nLz
-        nCe9pWrGjLJ/nZ6Q6MMhTn6yiklMIDkI815NVkqgpNl3/QPjdYPxVu3km4J+STnM
-        7gYHpH7BifJacAGkr4lYaYveHzEQC7FIEkkNQpCMXz1jKCXppetg01YdVByI1swl
-        +OQalbyoan2/VOdA13DlEI=
-Received: from localhost (unknown [101.86.209.121])
-        by smtp11 (Coremail) with SMTP id D8CowACnzxO8OJhfdX+LFA--.52256S2;
-        Tue, 27 Oct 2020 23:11:57 +0800 (CST)
-Date:   Tue, 27 Oct 2020 23:11:56 +0800
-From:   Hui Su <sh_def@163.com>
-To:     Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/oom_kill.c: remove the unmatched comments
-Message-ID: <20201027151156.GA4336@rlk>
-References: <20201027144529.GA3558@rlk>
- <20201027145814.GY20500@dhcp22.suse.cz>
+        id S1798905AbgJ0P3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:29:48 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34553 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1797737AbgJ0PZJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:25:09 -0400
+Received: by mail-wr1-f67.google.com with SMTP id i1so2411071wro.1;
+        Tue, 27 Oct 2020 08:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/gvpz0sZiGT+1Kv8y/VGFCyB/HnHXTwYLrBX1sFI/Yk=;
+        b=bY79v72yF3Tes//7cmXIf6qe4+vMktjuf6HMr+c1wX5Wi3Kmv7jLxJ6lYVcQehynq5
+         enj1byot9HZfnu8pk1UxLcsGVCx6IVLmOCwmGdKsDzlKABsF8mUFZYvIQLwiddqcjFgc
+         B41p/FxGmF0zvopf51ajs4iTkHNaSVV4/lL8P8Df5cmip9XRUDGZ6n3oBO8vDPFHTnMT
+         4/hhrF0SfFl9oYTtKryd1TcPUW3mPEWVvmSCB/l9uobPAqTk2HA3LGo+uHG1VNnpuYxD
+         lhblCfCNU5GsvZINLaO8+wSFoxbvIm3IlMRj81qrkSerJ3D9zkTOOcTgwGbY41dI4Kug
+         6J9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/gvpz0sZiGT+1Kv8y/VGFCyB/HnHXTwYLrBX1sFI/Yk=;
+        b=NmtMGNuzVumL/fTzeUUkVY7mnIh/OfRwJxQ5mHoEPPpC532jAfd6ERZqfGoerRSkwK
+         spRzQUgllIU227I7BhN6AZuzOQ8ZDAZWcCD/iDRZRnTt1lYhbH/Fj6GESN/eTr4Jkn0/
+         InoxGooZY9f9y5BGebudeonZwUWneIsTSNR3wKCfaYkYisYUDD9ft+rzjQ3Pnt37QWw1
+         rBqn+orvHIgxPdxFI1Nahv1KQjwMFpRPOyhO6QZJXrEBKGLQQ7qUkHvBfNVOF5mtfRlM
+         K79JACRfnAsPzqFjWkLmNcRH8SsPmFrybrlbelbkqtuEHyPQJNWY51dthm5B0fmgzqoX
+         CRkA==
+X-Gm-Message-State: AOAM531c1VlxC9l8yaQKa8WuzpaqtEvVJCMkQApL+wrLOsvadVu8DS4K
+        X41I7oT7KyWmZ1tHwMZfvLuYrWWO0n4=
+X-Google-Smtp-Source: ABdhPJz2VfcZhk3Ve0oTAGiNBwTV7ir9WqmXfWfXWKTG21lkR1jLcPgSugqH5HAUjYuUGV19OOprvw==
+X-Received: by 2002:adf:da4b:: with SMTP id r11mr3477155wrl.130.1603812306471;
+        Tue, 27 Oct 2020 08:25:06 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id y201sm2274875wmd.27.2020.10.27.08.25.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 08:25:05 -0700 (PDT)
+Subject: Re: [PATCH 1/2] system_data_types.7: Add 'off_t'
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, libc-alpha@sourceware.org,
+        linux-kernel@vger.kernel.org
+References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
+ <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com>
+ <87faeeeb-f2e0-7f1e-5692-78b43242f20b@gmail.com>
+ <bcfbf8ec-ca90-b736-1516-e096ef03222f@gmail.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <1e587ddc-99a3-f05a-857d-9d221c0818b1@gmail.com>
+Date:   Tue, 27 Oct 2020 16:25:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027145814.GY20500@dhcp22.suse.cz>
-X-CM-TRANSID: D8CowACnzxO8OJhfdX+LFA--.52256S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrurW8tF43XFWfur1rKryDWrg_yoWktFbE9a
-        nrtw4DJr4kGF95CF4IkayrZ39rWr4kAa15Z3W0qr12q34YqFZ3Wrn2qFn3Xa4DXFWIy34j
-        9FyDJay3AwnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1JPEPUUUUU==
-X-Originating-IP: [101.86.209.121]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJh3KX1v2eytZOgAAsw
+In-Reply-To: <bcfbf8ec-ca90-b736-1516-e096ef03222f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 03:58:14PM +0100, Michal Hocko wrote:
-> On Tue 27-10-20 22:45:29, Hui Su wrote:
-> > is_dump_unreclaim_slabs() just check whether nr_unreclaimable
-> > slabs amount is greater than user memory, not match witch comment.
+
+
+On 2020-10-27 14:47, Michael Kerrisk (man-pages) wrote:
+> On 10/27/20 11:23 AM, Alejandro Colomar wrote:
+>> Hi Michael,
+>>
+>> On 2020-10-07 08:53, Michael Kerrisk (man-pages) wrote:
+>>> On 10/6/20 12:12 AM, Alejandro Colomar wrote:
+>>>> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+>>>
+>>> Hi Alex,
+>>>
+>>> Thanks, patch applied. And I trimmed the "See also" a little.
+>>> I'd hold off on documenting loff_t and off64_t for the
+>>> moment. As you note in another mail, the *lseek* man page
+>>> situation is a bit of a mess. I'm not yet sure what to do.
+>>
+>>
+>> I saw a TODO in the page about loff_t.
+>> Just wanted to ping you in case you forgot about it (I did).
 > 
-> As I've tried to explain, the comment is not explaining what the
-> function does but how it should be used. It is not a kerneldoc afterall.
-> So it is a good match. I can see how that might confuse somebody so I am
-> not against changing this but the changelog shouldn't really be
-> confusing on its own. What do you think about the following instead.
+> I didn't forget it exactly. I just don't know that I have the
+> inclination to do anything about the messy *llseek* pages.
 > 
-
-Hi, Michal:
-
-Thanks for your fast reply, your changlog is much more accurate.
-
-And should i resend a patch V3 use the changlog below?
-
-Thanks.
-
-> "
-> Comment for is_dump_unreclaim_slabs is not really clear whether it is
-> meant to instruct how to use the function or whether it is an outdated
-> information of the past implementation of the function. it doesn't realy
-> help that is_dump_unreclaim_slabs is hard to grasp on its own.
-> Rename the helper to should_dump_unreclaim_slabs which should make it
-> clear what it is meant to do and drop the comment as the purpose should
-> be pretty evident now.
-> "
+> Thanks,
+> 
+> Michael
+> 
 > 
 
 
+Hi Michael,
+
+I've been reading them to add loff_t and off64_t to sys_data_types.
+Now that I've read them (not too deep),
+I think that lseek64(3) is good enough,
+and maybe we should look for small details
+missing there but present on the others,
+and merge those to lseek64.3.
+And then keep links in the other pages pointing to lseek64.3.
+
+Any thoughts?
+
+Cheers,
+
+A
