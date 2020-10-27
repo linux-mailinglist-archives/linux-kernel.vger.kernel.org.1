@@ -2,135 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFEB29C8FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607C829C8FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830063AbgJ0Tbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:31:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20533 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1830055AbgJ0Tbv (ORCPT
+        id S1830088AbgJ0Tcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:32:35 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:45423 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1830073AbgJ0Tcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:31:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603827110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZnjKdTzcVoK8bjG2j3uH+P21jgYVQfiQJ8DtHSLT9A=;
-        b=PF+IcRKyfduNmQrxJsUJRgGUkt/T08BYFSnOVJI/bLEhhbFciukUJwj+A9m+QW4QQP107S
-        VRJN4iDT84nIaVc3Ve+qkWk67B8UCnwmb9hxtDXopjECP9LHc7y5+ugJLpRbuhGHCtL7Y4
-        OtclUvmZO+WWXvS8V3WcBnnaXY4lfXs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-OY7Swwh6OYSTo-lQM79TfQ-1; Tue, 27 Oct 2020 15:31:46 -0400
-X-MC-Unique: OY7Swwh6OYSTo-lQM79TfQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D660D803F76;
-        Tue, 27 Oct 2020 19:31:43 +0000 (UTC)
-Received: from ovpn-66-71.rdu2.redhat.com (ovpn-66-71.rdu2.redhat.com [10.10.66.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6868C5B4B9;
-        Tue, 27 Oct 2020 19:31:42 +0000 (UTC)
-Message-ID: <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-From:   Qian Cai <cai@redhat.com>
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Tue, 27 Oct 2020 15:31:41 -0400
-In-Reply-To: <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
-         <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
-         <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Tue, 27 Oct 2020 15:32:32 -0400
+Received: by mail-io1-f68.google.com with SMTP id s7so1837435iol.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=AExj9aOFhvxmtnajnatMYd8PMsHr28fh7IU5OgxP5fI=;
+        b=WKcFIjM4yDsM8HcgPRK6SfFmYTvlsPOOcw9l3Y208vFzAi3biP0o3QF/C8MNYLgMNH
+         bololnv6m1a/BcowjA950XehWDu71bLNBGRawzX9z6nY7gbT7zPgQB1N80Jfi5igtkmD
+         qAkK147c9WD9aa4F24jxPBmUJyA6x3+wVXZiIVwgpbQDsWDGd9ig4AtC5V04BoQOfytc
+         nieOAap8pG9OVyN91bZfJTuyzcTT32IuJqurQfOL+FBUemkW/54Hb+SBaq56RtzGDYGw
+         XyNGNfjY1aticQY8hhnpPFfYmShb+ydHHrhAGXscGI5/H79fnbygsJvKqWWQqwb/Wh7S
+         7GtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AExj9aOFhvxmtnajnatMYd8PMsHr28fh7IU5OgxP5fI=;
+        b=NRKge9f0U4nY7C7WD/cTV4VPx7pnepliPfBibkXJtIu3A7mV5QPOKZHKuPsvm9xWbk
+         R7ucwRLypOh6LTusLvaeGEIeQP08yfLHiCs0X/oIbwrSohsFO1/a4UPpVzs5TGTl0PDx
+         nPlu/v5L7cwsyusBx+ZNRa1riS/9yiuRWuiJeOs/56BzQwOMjzpnrc4TElJ5Id/098tv
+         snKHkgXasfp/MBBnTPc+iNK/wVS1ChpcgEDf7PME1Fr0tRN288jI88swC7d/5IOlCSKI
+         8k9tnMR5FlojMYTtGLwKvyJbYHBCtUqela3hc9/kDDZtjgzWQMNI7qm7qwOwhJPVjWLv
+         1DJg==
+X-Gm-Message-State: AOAM530XnppKdPWdmTD+EJbyW7HEq01iFn73DP9lJcvE9IgPy2GBlGt/
+        P2W2wWgBZUCKKyw5NP1rDPubkkbRV5UhUg==
+X-Google-Smtp-Source: ABdhPJyq25TWfxXRwXbLcD0qjrtgJWM63aitgjfuwT1vPwjHt4i5opOp9StiSchHd1R66eYr8ZutqA==
+X-Received: by 2002:a02:b61a:: with SMTP id h26mr2778449jam.129.1603827151543;
+        Tue, 27 Oct 2020 12:32:31 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id r14sm1355546ilh.10.2020.10.27.12.32.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 12:32:31 -0700 (PDT)
+Subject: Re: [PATCH] Fix compat regression in process_vm_rw()
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Kyle Huey <me@kylehuey.com>
+References: <f69575e0-5170-2d51-8d74-8b3453723aa3@kernel.dk>
+ <20201027191920.GA262123@centos.familie-tometzki.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <43252884-dcf2-fe13-23ce-765f97e86579@kernel.dk>
+Date:   Tue, 27 Oct 2020 13:32:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201027191920.GA262123@centos.familie-tometzki.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-12 at 11:11 +0800, Boqun Feng wrote:
-> Hi,
+On 10/27/20 1:19 PM, damian wrote:
+> On Mo, 26. Okt 18:03, Jens Axboe wrote:
+>> The removal of compat_process_vm_{readv,writev} didn't change
+>> process_vm_rw(), which always assumes it's not doing a compat syscall.
+>> Instead of passing in 'false' unconditionally for 'compat', make it
+>> conditional on in_compat_syscall().
+>>
+>> Fixes: c3973b401ef2 ("mm: remove compat_process_vm_{readv,writev}")
+>> Reported-by: Kyle Huey <me@kylehuey.com>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>
+>> ---
+>>
+>> diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
+>> index fd12da80b6f2..05676722d9cd 100644
+>> --- a/mm/process_vm_access.c
+>> +++ b/mm/process_vm_access.c
+>> @@ -273,7 +273,8 @@ static ssize_t process_vm_rw(pid_t pid,
+>>  		return rc;
+>>  	if (!iov_iter_count(&iter))
+>>  		goto free_iov_l;
+>> -	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r, false);
+>> +	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r,
+>> +				in_compat_syscall());
+>>  	if (IS_ERR(iov_r)) {
+>>  		rc = PTR_ERR(iov_r);
+>>  		goto free_iov_l;
+>>
+>> -- 
+>> Jens Axboe
+>>
+> Hello Jens,
 > 
-> On Fri, Oct 09, 2020 at 09:41:24AM -0400, Qian Cai wrote:
-> > On Fri, 2020-10-09 at 07:58 +0000, tip-bot2 for Peter Zijlstra wrote:
-> > > The following commit has been merged into the locking/core branch of tip:
-> > > 
-> > > Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
-> > > Gitweb:        
-> > > https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
-> > > Author:        Peter Zijlstra <peterz@infradead.org>
-> > > AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
-> > > Committer:     Ingo Molnar <mingo@kernel.org>
-> > > CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
-> > > 
-> > > lockdep: Fix lockdep recursion
-> > > 
-> > > Steve reported that lockdep_assert*irq*(), when nested inside lockdep
-> > > itself, will trigger a false-positive.
-> > > 
-> > > One example is the stack-trace code, as called from inside lockdep,
-> > > triggering tracing, which in turn calls RCU, which then uses
-> > > lockdep_assert_irqs_disabled().
-> > > 
-> > > Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-
-> > > cpu
-> > > variables")
-> > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > 
-> > Reverting this linux-next commit fixed booting RCU-list warnings everywhere.
-> > 
+> i got the following error when i try to build. 
 > 
-> I think this happened because in this commit debug_lockdep_rcu_enabled()
-> didn't adopt to the change that made lockdep_recursion a percpu
-> variable?
-> 
-> Qian, mind to try the following?
+> m/process_vm_access.c: In Funktion »process_vm_rw«:
+> mm/process_vm_access.c:277:5: Fehler: Implizite Deklaration der Funktion »in_compat_syscall«; meinten Sie »in_ia32_syscall«? [-Werror=implicit-function-declaration]
+>   277 |     in_compat_syscall());
+>       |     ^~~~~~~~~~~~~~~~~
+>       |     in_ia32_syscall
 
-Boqun, Paul, may I ask what's the latest with the fixes? I must admit that I got
-lost in this thread, but I remember that the patch from Boqun below at least
-silence quite some of those warnings if not all. The problem is that some of
-those warnings would trigger a lockdep circular locks warning due to printk()
-with some locks held which in turn disabling the lockdep, makes our test runs
-inefficient.
+Yeah, sorry about that. Geert sent out a fix:
 
-> 
-> Although, arguably the problem still exists, i.e. we still have an RCU
-> read-side critical section inside lock_acquire(), which may be called on
-> a yet-to-online CPU, which RCU doesn't watch. I think this used to be OK
-> because we don't "free" anything from lockdep, IOW, there is no
-> synchronize_rcu() or call_rcu() that _needs_ to wait for the RCU
-> read-side critical sections inside lockdep. But now we lock class
-> recycling, so it might be a problem.
-> 
-> That said, currently validate_chain() and lock class recycling are
-> mutually excluded via graph_lock, so we are safe for this one ;-)
-> 
-> ----------->8
-> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> index 39334d2d2b37..35d9bab65b75 100644
-> --- a/kernel/rcu/update.c
-> +++ b/kernel/rcu/update.c
-> @@ -275,8 +275,8 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
->  
->  noinstr int notrace debug_lockdep_rcu_enabled(void)
->  {
-> -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
-> -	       current->lockdep_recursion == 0;
-> +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE &&
-> +	       __lockdep_enabled;
->  }
->  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
+https://lore.kernel.org/lkml/20201027182246.651908-1-geert+renesas@glider.be/
 
+-- 
+Jens Axboe
 
