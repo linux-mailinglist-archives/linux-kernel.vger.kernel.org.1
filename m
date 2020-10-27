@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0051929B7AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7190E29BA81
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795353AbgJ0PPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46514 "EHLO mail.kernel.org"
+        id S1806069AbgJ0QFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794254AbgJ0PKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:10:49 -0400
+        id S1802165AbgJ0Ppu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:45:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 447FF20657;
-        Tue, 27 Oct 2020 15:10:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87C1A21D42;
+        Tue, 27 Oct 2020 15:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811448;
-        bh=zR/4SYxqV0XpBDux8pkqtxQwrUvbY+G0bPc6m5JCbJ0=;
+        s=default; t=1603813550;
+        bh=EMkcT2i5uOjrTgGJ4EVBaMOozDKG5DGNbRy6bs4IlK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JZQAxMonoerOqZQAdWkMfsu4IrS+5SfHfPQDEfOW+tQOG18bLKzu10J/cOWv6QTlR
-         +3ZR7eRg04/KRPXjNP6w66CIeqQgolhm4rfKLmKFZ2vlRi+krxID29t56Yx5yJ+XdJ
-         jDkT4qpMVirjyYE+Gejyw8FGnTmv7KGOFXXgjlUo=
+        b=OwgGta7lCWrq17RpdJySFcyni+r/bMjdbJlp4+7fO9How4UtNDoFHh479XZbCZmPH
+         x1iq4C+FhhnFm6vFWCcry/1BjHd/dit2wOdzhawxsdg+X9rbvcT0eq9pZ0jy+0MTTQ
+         RIubVHjbJCtUCGmjwl7JDXX8ILaIFmn06ddun5y4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 497/633] arm64: dts: qcom: msm8916: Fix MDP/DSI interrupts
+Subject: [PATCH 5.9 590/757] memory: omap-gpmc: Fix a couple off by ones
 Date:   Tue, 27 Oct 2020 14:54:00 +0100
-Message-Id: <20201027135546.044210354@linuxfoundation.org>
+Message-Id: <20201027135518.215764206@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 027cca9eb5b450c3f6bb916ba999144c2ec23cb7 ]
+[ Upstream commit 4c54228ac8fd55044195825873c50a524131fa53 ]
 
-The mdss node sets #interrupt-cells = <1>, so its interrupts
-should be referenced using a single cell (in this case: only the
-interrupt number).
+These comparisons should be >= instead of > to prevent reading one
+element beyond the end of the gpmc_cs[] array.
 
-However, right now the mdp/dsi node both have two interrupt cells
-set, e.g. interrupts = <4 0>. The 0 is probably meant to say
-IRQ_TYPE_NONE (= 0), but with #interrupt-cells = <1> this is
-actually interpreted as a second interrupt line.
-
-Remove the IRQ flags from both interrupts to fix this.
-
-Fixes: 305410ffd1b2 ("arm64: dts: msm8916: Add display support")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200915071221.72895-5-stephan@gerhold.net
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: cdd6928c589a ("ARM: OMAP2+: Add device-tree support for NOR flash")
+Fixes: f37e4580c409 ("ARM: OMAP2: Dynamic allocator for GPMC memory space")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Roger Quadros <rogerq@ti.com>
+Link: https://lore.kernel.org/r/20200825104707.GB278587@mwanda
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916.dtsi | 4 ++--
+ drivers/memory/omap-gpmc.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index 729d36ff2e247..103d2226c579b 100644
---- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -1021,7 +1021,7 @@ mdp: mdp@1a01000 {
- 				reg-names = "mdp_phys";
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index ca0097664b125..1e6d6e9434c8b 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -943,7 +943,7 @@ static int gpmc_cs_remap(int cs, u32 base)
+ 	int ret;
+ 	u32 old_base, size;
  
- 				interrupt-parent = <&mdss>;
--				interrupts = <0 0>;
-+				interrupts = <0>;
+-	if (cs > gpmc_cs_num) {
++	if (cs >= gpmc_cs_num) {
+ 		pr_err("%s: requested chip-select is disabled\n", __func__);
+ 		return -ENODEV;
+ 	}
+@@ -978,7 +978,7 @@ int gpmc_cs_request(int cs, unsigned long size, unsigned long *base)
+ 	struct resource *res = &gpmc->mem;
+ 	int r = -1;
  
- 				clocks = <&gcc GCC_MDSS_AHB_CLK>,
- 					 <&gcc GCC_MDSS_AXI_CLK>,
-@@ -1053,7 +1053,7 @@ dsi0: dsi@1a98000 {
- 				reg-names = "dsi_ctrl";
- 
- 				interrupt-parent = <&mdss>;
--				interrupts = <4 0>;
-+				interrupts = <4>;
- 
- 				assigned-clocks = <&gcc BYTE0_CLK_SRC>,
- 						  <&gcc PCLK0_CLK_SRC>;
+-	if (cs > gpmc_cs_num) {
++	if (cs >= gpmc_cs_num) {
+ 		pr_err("%s: requested chip-select is disabled\n", __func__);
+ 		return -ENODEV;
+ 	}
 -- 
 2.25.1
 
