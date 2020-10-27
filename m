@@ -2,163 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74D629BAB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA75629BB9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807435AbgJ0QKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:10:36 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:43026 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1804333AbgJ0Pyo (ORCPT
+        id S1808802AbgJ0QWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:22:39 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:37197 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1758183AbgJ0P6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:54:44 -0400
-Received: by mail-pf1-f196.google.com with SMTP id a200so1142208pfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:54:44 -0700 (PDT)
+        Tue, 27 Oct 2020 11:58:23 -0400
+Received: by mail-pj1-f67.google.com with SMTP id lt2so963853pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:58:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=/dJcq9QxKtdJNhx+nsVsOcHkLZ97Ve8VpsG6zN36Ipk=;
-        b=C/S7PhtNmV1VV1Buz0pxqAyvprR9/Ls4erwM4MRF9n8KpZAEi/mLwb/86fwREdEu4s
-         z/W5AS4Co+D9EwVOnm1Zi52qThoB/mWxHIiSrqujKGzwCE2jkEpsTdFLqrKYKNbqpXpK
-         A4XWshQNqcVuwWH05AY6/UJflMn/V/qRH+r7TlYmDqawiulhrv4FlKOmUIkSbg4whLxj
-         yX37UWUK96D8xi3tP/1tGJs3Cs3fdKU350v3sm1jwQ2cyUNLnXfwVulIwYgvqjZ5+fDJ
-         Q980dOc+cnWzCj/xzH76Wd0rQdRyfu+BzXqnmKznpZJ58PipZ8k4AdO/ep5a9cygsptF
-         2n8g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SoTaUfKUJiDUW2h9mVvR0z/C6fXDGCdxxD7m50xJHb8=;
+        b=rybjDI81CxzKYzrASZ5gv2AhvfYB5PzaVZC9/2aiQonUm5lgOrk+EaY3p4Z8h1zsPb
+         k5Dkt9Gi3ZQpr3+JaIyFzHb3C/PUR5vKuKM2XB4WPxkd8eoSEDlHwPQ9QXeIQDj00Yvj
+         XNydCwLLfiNi1gLL5bfDTPVNHGaZISJfcBnG8r30HZZqpIds8u0+lxzqSHy17xmAoV04
+         8iCx+tJxTrJFvXIOhg6FGAh85pzmuPP/1pMH6/GmTx1umS3H4tLulbOWYaSXCr2fJn9J
+         L/E8CVV+4lRQR+aEc5oUHx21LJ7mtfDeCeytEFOIe50U/nHwbD7AYdqIava2UhsivQpQ
+         rujQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/dJcq9QxKtdJNhx+nsVsOcHkLZ97Ve8VpsG6zN36Ipk=;
-        b=q1wV/50MP++O0jI95lGTPFmfexN22MtjOJ3XSP+OT5jZuDPwLC2wsYahI/xzT6hoLa
-         DkzUzABojlncAy5wLzzhD7pCNUmPHaCbYbd2UG4a6t8tUlroW5sGuNkqPTFP0CfF/nbi
-         GH6Cv7XcMNy+wiBTajmukHKwp7DqxH19N521YpzS56R78QkcZ2hg662l8QFADNpIp9hr
-         O8g579+hkIfaxUfVjxdThn9zqm+pwewuQWuavpeWBUgYlv6QjM3uWxd1puJF87YVTFxr
-         amwj4Wj8PD2FXl7b1yfTeRhjP/PdIWp8Alo1x/XdlCYpSbmRjINdDe+CzKg6dEZtzQvF
-         dT7Q==
-X-Gm-Message-State: AOAM532RmglIwj23pJaB0pMp6pu6Hd4GB+Lho4d9oheZdEENTKwH/Toj
-        zlujHHXfnuYo/a4g3lzcdubb27PvKHqWC0cl
-X-Google-Smtp-Source: ABdhPJyHYznHpvc+E8BSBlMuIUcC1nlcg9Aq3NhIkbVP3ZvsTbtcrs7iw0iWnaW/iuROZu55nPrrdg==
-X-Received: by 2002:aa7:8652:0:b029:164:1346:7fe4 with SMTP id a18-20020aa786520000b029016413467fe4mr3050522pfo.65.1603814083876;
-        Tue, 27 Oct 2020 08:54:43 -0700 (PDT)
-Received: from jongpil-desktop ([39.117.32.248])
-        by smtp.gmail.com with ESMTPSA id y3sm2527759pfn.167.2020.10.27.08.54.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SoTaUfKUJiDUW2h9mVvR0z/C6fXDGCdxxD7m50xJHb8=;
+        b=TW0CqycXbu+5cjwEPiws/1W+e7zDkUyOkju2Co8qSJdCjE0iFcpm59O6pbovB36CcY
+         vttbHiI/XuNsoqZ2aImXCk7NX9DE6phtGRKJuPbZyp7AgPJeds0XvigLQWwW7zYpYMzF
+         SbScJ5CmlK+ksGBIJjwXqNnJjSQDc7ublA6ybubthJVh6ub4iuOLRyYd3klPmLJE1Pj5
+         t9mSHw1BIUN9QkCYBZJSELwypBrlHzG1WD4MJCFyleFW+OsFY4M52JFtI6y9TnFmwUlF
+         JaNg+0IyJfqBPoa09b9bXVHOMMIEGRLO1a2hoEA3b+TsaLtR5GFLPHpJKRy3RdqAAtzM
+         YUDA==
+X-Gm-Message-State: AOAM530vSgHbhkVZavYmsgf+m+AIdOJ9AE409AOqTB2onv7zGtmVbhu/
+        4df9jmrRkbhX47JptaCQsig=
+X-Google-Smtp-Source: ABdhPJz3Mhrkhhf6pw0Fakr4CvuPUHpSyI4t16gepWBLRKml1tb0WsR1Rp2tFfUCg6IfOtauFBvkeA==
+X-Received: by 2002:a17:902:8605:b029:d5:a6dc:ad0a with SMTP id f5-20020a1709028605b02900d5a6dcad0amr2996510plo.56.1603814302199;
+        Tue, 27 Oct 2020 08:58:22 -0700 (PDT)
+Received: from ubuntu (1-171-243-36.dynamic-ip.hinet.net. [1.171.243.36])
+        by smtp.gmail.com with ESMTPSA id a11sm2623072pfn.125.2020.10.27.08.58.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 08:54:42 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 00:54:38 +0900
-From:   Jongpil Jung <jongpuls@gmail.com>
-To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jongpil19.jung@samsung.com, gloria.tsai@ssstc.com,
-        jongpuls@gmail.com
-Subject: [PATCH 1/1] nvme: Add quirk for LiteON CL1 devices running FW
- 220TQ,22001
-Message-ID: <20201027155438.GA111754@jongpil-desktop>
+        Tue, 27 Oct 2020 08:58:21 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 23:58:13 +0800
+From:   Yun Hsiang <hsiang023167@gmail.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        qais.yousef@arm.com, patrick.bellasi@matbug.net
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201027155813.GA818508@ubuntu>
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
+ <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
+ <20201026154538.GA807103@ubuntu>
+ <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LiteON(SSSTC) CL1 device running FW 220TQ,22001 has bugs with simple
-suspend.
+Hi Dietmar,
 
-When NVMe device receive D3hot from host, NVMe firmware will do
-garbage collection. While NVMe device do Garbage collection,
-firmware has chance to going incorrect address.
-In that case, NVMe storage device goes to no device available state.
-Finally, host can't access the device any more.
+On Mon, Oct 26, 2020 at 08:00:48PM +0100, Dietmar Eggemann wrote:
+> On 26/10/2020 16:45, Yun Hsiang wrote:
+> > Hi Dietmar,
+> > 
+> > On Mon, Oct 26, 2020 at 10:47:11AM +0100, Dietmar Eggemann wrote:
+> >> On 25/10/2020 08:36, Yun Hsiang wrote:
+> >>> If the user wants to stop controlling uclamp and let the task inherit
+> >>> the value from the group, we need a method to reset.
+> >>>
+> >>> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
+> >>> sched_setattr syscall.
+> >>>
+> >>> The policy is
+> >>> _CLAMP_RESET                           => reset both min and max
+> >>> _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> >>> _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> >>> _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> >>>
+> >>> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
+> >>
+> >> [...]
+> >>
+> >>> @@ -1451,7 +1464,8 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> >>>  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+> >>>  
+> >>>  		/* Keep using defined clamps across class changes */
+> >>> -		if (uc_se->user_defined)
+> >>> +		if (flags != SCHED_FLAG_UTIL_CLAMP_RESET &&
+> >>> +				uc_se->user_defined)
+> >>>  			continue;
+> >>
+> >> With:
+> >>
+> >> (1) _CLAMP_RESET                           => reset both min and max
+> >> (2) _CLAMP_RESET | _CLAMP_MIN              => reset min value
+> >> (3) _CLAMP_RESET | _CLAMP_MAX              => reset max value
+> >> (4) _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
+> >>
+> >> If you reset an RT task with (1) you don't reset its uclamp.min value.
+> >>
+> >> __uclamp_update_util_min_rt_default(p) doesn't know about
+> >> SCHED_FLAG_UTIL_CLAMP_RESET. It only knows user_defined and will bail early.
+> >>
+> > 
+> > Sorry I didn't notice __uclamp_update_util_min_rt_default will return
+> > directly if user_defined is set, I'll fix it.
+> > 
+> >> [...]
+> >>
+> >>> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+> >>> +	if (likely(!flags || flags == SCHED_FLAG_UTIL_CLAMP_RESET))
+> >>>  		return;
+> >>>  
+> >>> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> >>> +	if (flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> >>> +		if (reset) {
+> >>> +			clamp_value = __default_uclamp_value(p, UCLAMP_MIN);
+> >>> +			user_defined = false;
+> >>> +		} else {
+> >>> +			clamp_value = attr->sched_util_min;
+> >>> +			user_defined = true;
+> >>> +		}
+> >>
+> >> Why do you reset for (1) in the for_each_clamp_id(clamp_id) loop and for
+> >> (2)-(4) in the if (flags & SCHED_FLAG_UTIL_CLAMP_MXX) condition?
+> >>
+> >> You could reset (1)-(4) in the for_each_clamp_id(clamp_id) loop? In this
+> >> case you wouldn't need __default_uclamp_value().
+> > 
+> > Do you mean adding these code in for_each_clamp_id(clamp_id) loop?
+> > 
+> > if (clamp_id == UCLAMP_MIN) {
+> > 	if (flags == SCHED_FLAG_UTIL_CLAMP_RESET || 
+> > 		(reset && (flags || SCHED_FLAG_UTIL_CLAMP_MIN)) ||
+> > 		!se->user_defined) {
+> > 		if (task_rt(p)) {
+> > 			clamp_value = sysctl_sched_uclamp_util_min_rt_default
+> > 		} else {
+> > 			clamp_value = uclamp_none(clamp_id);
+> > 		}
+> > 	} else 
+> > 		continue;
+> > }
+> > /* similar code for UCLAMP_MAX */
+> > ...
+> > uclamp_se_set(uc_se, clamp_value, false);
+> > 
+> > It seems more clear.
+> > If you think this one is better, I'll use this method and send patch V4.
+> 
+> I thought about something like this. Only lightly tested. 
+> 
+> ---8<---
+> 
+> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Date: Mon, 26 Oct 2020 13:52:23 +0100
+> Subject: [PATCH] SCHED_FLAG_UTIL_CLAMP_RESET
+> 
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> ---
+>  include/uapi/linux/sched.h |  4 +++-
+>  kernel/sched/core.c        | 31 +++++++++++++++++++++++++++----
+>  2 files changed, 30 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+> index 3bac0a8ceab2..0dd890822751 100644
+> --- a/include/uapi/linux/sched.h
+> +++ b/include/uapi/linux/sched.h
+> @@ -132,12 +132,14 @@ struct clone_args {
+>  #define SCHED_FLAG_KEEP_PARAMS		0x10
+>  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+>  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
+> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
+>  
+>  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+>  				 SCHED_FLAG_KEEP_PARAMS)
+>  
+>  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
+> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
+> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
+> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
+>  
+>  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
+>  			 SCHED_FLAG_RECLAIM		| \
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 3dc415f58bd7..717b1cf5cf1f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1438,6 +1438,23 @@ static int uclamp_validate(struct task_struct *p,
+>  	return 0;
+>  }
+>  
+> +static bool uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
+> +{
+> +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
+> +		return false;
+> +
+> +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
+> +		return true;
+> +
+> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
+> +		return true;
+> +
+> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  static void __setscheduler_uclamp(struct task_struct *p,
+>  				  const struct sched_attr *attr)
+>  {
+> @@ -1449,24 +1466,30 @@ static void __setscheduler_uclamp(struct task_struct *p,
+>  	 */
+>  	for_each_clamp_id(clamp_id) {
+>  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+> +		unsigned int value;
+>  
+>  		/* Keep using defined clamps across class changes */
+> -		if (uc_se->user_defined)
+> +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
+> +		    uc_se->user_defined) {
+>  			continue;
+> +		}
+>  
+>  		/*
+>  		 * RT by default have a 100% boost value that could be modified
+>  		 * at runtime.
+>  		 */
+>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> -			__uclamp_update_util_min_rt_default(p);
+> +			value = sysctl_sched_uclamp_util_min_rt_default;
+>  		else
+> -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+> +			value = uclamp_none(clamp_id);
+>  
+> +		uclamp_se_set(uc_se, value, false);
+>  	}
+>  
+> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+> +	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) ||
+> +	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET) {
+>  		return;
+> +	}
+>  
+>  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+>  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
 
-Quirk devices will not use simple suspend even if HMB is enabled.
-In case of poweroff scenario, NVMe receive "PME turn off".
-So garbage collection will not be happening.
+Got it. This is much better. I'll test and send patch V4.
+Thank for review and suggestions!
 
-Liteon(SSSTC) will fix the issue, that's why quirk apply on specific
-vendor id and firmware version.
+> -- 
+> 2.17.1
+> 
+> 
+> 
 
-Signed-off-by: Jongpil Jung <jongpuls@gmail.com>
----
- drivers/nvme/host/core.c | 30 ++++++++++++++++++++++++++++++
- drivers/nvme/host/nvme.h |  4 ++++
- drivers/nvme/host/pci.c  |  6 +++++-
- 3 files changed, 39 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 95ef4943d8bd..9ee520aa0100 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2637,6 +2637,36 @@ static const struct nvme_core_quirk_entry core_quirks[] = {
- 		.vid = 0x14a4,
- 		.fr = "22301111",
- 		.quirks = NVME_QUIRK_SIMPLE_SUSPEND,
-+	},
-+	{
-+		/*
-+		 * This LiteON CL1-3D256 CR22001 firmware version has some
-+		 * issue in simple suspend.
-+		 * Simple Suspend issue will be fixed in future firmware
-+		 */
-+		.vid = 0x14a4,
-+		.fr = "CR22001",
-+		.quirks = NVME_QUIRK_NORMAL_SUSPEND_HMB,
-+	},
-+		{
-+		/*
-+		 * This LiteON CL1-3D256 CR220TQ firmware version has some
-+		 * issue in simple suspend.
-+		 * Simple Suspend issue will be fixed in future firmware
-+		 */
-+		.vid = 0x14a4,
-+		.fr = "CR220TQ",
-+		.quirks = NVME_QUIRK_NORMAL_SUSPEND_HMB,
-+	},
-+	{
-+		/*
-+		 * This SSSTC CL1-3D256 CR22001 firmware version has some
-+		 * issue in simple suspend.
-+		 * Simple Suspend issue will be fixed in future firmware
-+		 */
-+		.vid = 0x1e95,
-+		.fr = "CR22001",
-+		.quirks = NVME_QUIRK_NORMAL_SUSPEND_HMB,
- 	}
- };
- 
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index cc111136a981..2fde019dad8e 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -144,6 +144,10 @@ enum nvme_quirks {
- 	 * NVMe 1.3 compliance.
- 	 */
- 	NVME_QUIRK_NO_NS_DESC_LIST		= (1 << 15),
-+	/*
-+	 * Force noraml suspend/resume path for HMB enabled devices.
-+	 */
-+	NVME_QUIRK_NORMAL_SUSPEND_HMB		= (1 << 16),
- };
- 
- /*
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index df8f3612107f..1b1221cfb257 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3014,10 +3014,14 @@ static int nvme_suspend(struct device *dev)
- 	 * specification allows the device to access the host memory buffer in
- 	 * host DRAM from all power states, but hosts will fail access to DRAM
- 	 * during S3.
-+	 *
-+	 * If NVME_QUIRK_NORMAL_SUSPEND_HMB is enabled,
-+	 * do not use SIMPLE_SUSPEND for HMB device.
- 	 */
- 	if (pm_suspend_via_firmware() || !ctrl->npss ||
- 	    !pcie_aspm_enabled(pdev) ||
--	    ndev->nr_host_mem_descs ||
-+	    (ndev->nr_host_mem_descs &&
-+	     !(ndev->ctrl.quirks & NVME_QUIRK_NORMAL_SUSPEND_HMB)) ||
- 	    (ndev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND))
- 		return nvme_disable_prepare_reset(ndev, true);
- 
--- 
-2.25.1
-
+Best Regards,
+Yun
