@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5459E29CB8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B6429CB92
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374527AbgJ0Vwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:52:42 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:46836 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2902336AbgJ0Vwl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:52:41 -0400
-Received: by mail-lj1-f195.google.com with SMTP id 2so3437882ljj.13;
-        Tue, 27 Oct 2020 14:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EOfn+rTY41ZPk98ImlWCzM2uVjjLkgWeTbnbpRiwx94=;
-        b=B4QspCpfrLoBxm8nbt/nY6Vc6pvrNIWz0XoyVAv6U5qDKlIhEpSOmL5MULuDcdRz4J
-         NdVU97JPLEFFINpxs1bR7kXaAKKRc5t1LCYjmSEpeV3k25tRxIfa+w5hulTco0XoPAL5
-         NuYRujrqdYbq/2dROB5gt/BTZEUgllml+clfdS5r0UrbBpE1TBOBE+/PavDPL2xwqXQC
-         X3UQBo8IKouDxrYKv17oC5H+7ff5WfzODsT8VtCHUrF6PnvPf8QBTXbyxtNZxLCHJioF
-         z5+/59liqD8IS9SzzLvJrOgdyLJ3wnvNbwVfCnJVNKk24nRT7n3gjTF0PfTy6hhJpJeE
-         /YcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EOfn+rTY41ZPk98ImlWCzM2uVjjLkgWeTbnbpRiwx94=;
-        b=gaNuYylAcbUkjyS2Zztvxv351HMaLvo1yTeBHmjOJojSB+4cD95r6bFbrAqTN9bgFY
-         J1xtPZ2TTmwvMqZbaOEipVz36C2o76Fsc6XJIg4YNkdgSB9vn7mvYVXBkNzz0WlUE1Ut
-         z4/VZjpXYvheBwJrgjjnvhy9h2BLjjeOR/SXEtSlbZ21Q1e0Q7QWQR0bGG4GlNlxnrMi
-         YUsoruxdjl9SVhZjdqP+N7eKsHy5pTBv/5JyP9avxgeVd2mLh/5KfiDvvkdq8ckVexdm
-         3De2tGah4SbDhbCRF3XOKMidqMvzMa2duv0+IrNUI4Eez64RUo1G3kqyG9zoodnU6e+L
-         yuJg==
-X-Gm-Message-State: AOAM530Z3fhEcSBKEWndZ53RHz0F4BiSnKxn95Vusw0y+eqXa3RXCr35
-        cFKKeKOCIj6710yJQ1EEWWo=
-X-Google-Smtp-Source: ABdhPJxqwwB2L+NAENWqofO9hI5lVEPJjt9KYwjz/a5RXKvfYnoEDFODsN2229mWTIkaTH7zqrcUAw==
-X-Received: by 2002:a2e:8985:: with SMTP id c5mr2100186lji.406.1603835559052;
-        Tue, 27 Oct 2020 14:52:39 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id v16sm303423lfq.68.2020.10.27.14.52.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 14:52:38 -0700 (PDT)
-Subject: Re: [PATCH v3 0/3] implement I2C retries for mXT1368
-To:     "Wang, Jiada" <jiada_wang@mentor.com>, dmitry.torokhov@gmail.com,
-        robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        erosca@de.adit-jv.com, andrew_gabbasov@mentor.com
-References: <20200930151259.18119-1-jiada_wang@mentor.com>
- <653c24a4-704a-4d65-2622-49c55a82c901@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <082b9b1c-5f89-7deb-728b-3de4339ac131@gmail.com>
-Date:   Wed, 28 Oct 2020 00:52:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S374541AbgJ0VyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:54:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2902368AbgJ0VyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:54:00 -0400
+Received: from sstabellini-ThinkPad-T480s (c-24-130-65-46.hsd1.ca.comcast.net [24.130.65.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7224220759;
+        Tue, 27 Oct 2020 21:53:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603835639;
+        bh=hLuBGmvknLJruJYQUNZGkX4EVqyzQJamlMv7F6lFoho=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=vOuhydjw9vlxiSuYbstg3MW2oGhlejZ8GriRzNfLn4RdkjVwbV2wc643qtmaqkPBj
+         fxNpyuRws07osa8Ikr3w7OWn6YN3ZIzLEsVSiqxn0xhx/2Ll93BusC3uRUEkjfDNRi
+         Ln94Z4m4p0cL6QbfhDQL50xIrZkIz0HWmJIOUVkM=
+Date:   Tue, 27 Oct 2020 14:53:58 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+cc:     Elliott Mitchell <ehem+undef@m5p.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, hch@lst.de
+Subject: Re: [PATCH] fix swiotlb panic on Xen
+In-Reply-To: <20201027192726.GA13396@char.us.oracle.com>
+Message-ID: <alpine.DEB.2.21.2010271453480.12247@sstabellini-ThinkPad-T480s>
+References: <alpine.DEB.2.21.2010261653320.12247@sstabellini-ThinkPad-T480s> <20201027175114.GA32110@mattapan.m5p.com> <20201027192726.GA13396@char.us.oracle.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <653c24a4-704a-4d65-2622-49c55a82c901@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.10.2020 04:14, Wang, Jiada пишет:
-> Hello Dmitry and all
+On Tue, 27 Oct 2020, Konrad Rzeszutek Wilk wrote:
+> > As the person who first found this and then confirmed this fixes a bug:
+> > 
+> > Tested-by: Elliott Mitchell <ehem+xen@m5p.com>
 > 
-> Kind reminder on this patch-set
+> Thank you!!
+> 
+> I changed the title and added the various tags and will put it in
+> linux-next later this week.
 
-Hello Jiada,
+Looks fine, thank you
 
-Thinking a bit more about these patches, I'm coming back to the variant
-with the atmel,wakeup-method property. There are three possible wake-up
-variants for mXT1368:
 
-  - NONE
-  - GPIO
-  - I2C-SCL
-
-and this series covers only the I2C-SCL.
-
-I was also skimming through datasheets of other maxtouch touchscreens
-and noticed that the retries aren't unique to mXT1368. For example
-mXT3432 controller also needs exactly the same retrying logic.
-
-Hence I think it should be better if we could generalize the
-wakeup-method in the device-tree. What do you think?
+> >From a1eb2768bf5954d25aa0f0136b38f0aa5d92d984 Mon Sep 17 00:00:00 2001
+> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> Date: Mon, 26 Oct 2020 17:02:14 -0700
+> Subject: [PATCH] swiotlb: fix "x86: Don't panic if can not alloc buffer for
+>  swiotlb"
+> 
+> kernel/dma/swiotlb.c:swiotlb_init gets called first and tries to
+> allocate a buffer for the swiotlb. It does so by calling
+> 
+>   memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
+> 
+> If the allocation must fail, no_iotlb_memory is set.
+> 
+> Later during initialization swiotlb-xen comes in
+> (drivers/xen/swiotlb-xen.c:xen_swiotlb_init) and given that io_tlb_start
+> is != 0, it thinks the memory is ready to use when actually it is not.
+> 
+> When the swiotlb is actually needed, swiotlb_tbl_map_single gets called
+> and since no_iotlb_memory is set the kernel panics.
+> 
+> Instead, if swiotlb-xen.c:xen_swiotlb_init knew the swiotlb hadn't been
+> initialized, it would do the initialization itself, which might still
+> succeed.
+> 
+> Fix the panic by setting io_tlb_start to 0 on swiotlb initialization
+> failure, and also by setting no_iotlb_memory to false on swiotlb
+> initialization success.
+> 
+> Fixes: ac2cbab21f31 ("x86: Don't panic if can not alloc buffer for swiotlb")
+> 
+> Reported-by: Elliott Mitchell <ehem+xen@m5p.com>
+> Tested-by: Elliott Mitchell <ehem+xen@m5p.com>
+> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> CC: stable@vger.kernel.org
+> Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> ---
+>  kernel/dma/swiotlb.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 465a567678d9..e08cac39c0ba 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -229,6 +229,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>  		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
+>  	}
+>  	io_tlb_index = 0;
+> +	no_iotlb_memory = false;
+>  
+>  	if (verbose)
+>  		swiotlb_print_info();
+> @@ -260,9 +261,11 @@ swiotlb_init(int verbose)
+>  	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
+>  		return;
+>  
+> -	if (io_tlb_start)
+> +	if (io_tlb_start) {
+>  		memblock_free_early(io_tlb_start,
+>  				    PAGE_ALIGN(io_tlb_nslabs << IO_TLB_SHIFT));
+> +		io_tlb_start = 0;
+> +	}
+>  	pr_warn("Cannot allocate buffer");
+>  	no_iotlb_memory = true;
+>  }
+> @@ -360,6 +363,7 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+>  		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
+>  	}
+>  	io_tlb_index = 0;
+> +	no_iotlb_memory = false;
+>  
+>  	swiotlb_print_info();
+>  
+> -- 
+> 2.13.6
+> 
