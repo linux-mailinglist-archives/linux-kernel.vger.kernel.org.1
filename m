@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD72629BDF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09F129BC9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813225AbgJ0Qth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
+        id S1810174AbgJ0QeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:34:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794870AbgJ0POD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:14:03 -0400
+        id S1802461AbgJ0Psv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:48:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40FCE2224A;
-        Tue, 27 Oct 2020 15:14:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C374822265;
+        Tue, 27 Oct 2020 15:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811641;
-        bh=qw3Vi2e2hKlFYN6n42eU43Ub6HBceSaWpe9Ma+pAkNg=;
+        s=default; t=1603813729;
+        bh=lCZKQ7KGG1SLMxrz/BobWDhhT068d+17W29g9IlqiF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jOqPBpm2X8kTohKOdHObuopKPBS56iZznAU2I8iS2pkmo1ZeDBkfC5oik9AnrpYHs
-         anhVpKPeUkrfNSaQPl+SMEKX3dbXmdCrW/6I5rJ+iAwtuxJO6XE9XlkWMneIkQrlff
-         RWcWC75uHKKJltBKfsWw6wcUQUx/k9Mf28uXfOAw=
+        b=ivlwTxGueFAE+TH1Yuq6qnfKpMozSNCn93lXeYETpIHgc2bUm+gJw1hUr/O9dD+sr
+         JwDPDn26jDCF4ugK2f22RB65IcjKq3R+DXsRpSoGf6I8dRuECyOc72nS3se2DYnhl4
+         QiOqpO0JgvTEoCQz/RPGkVaA+sRIGSGA8yl85oMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 548/633] x86/mce: Make mce_rdmsrl() panic on an inaccessible MSR
-Date:   Tue, 27 Oct 2020 14:54:51 +0100
-Message-Id: <20201027135548.501096028@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Mossberg <mark.mossberg@gmail.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 643/757] x86/dumpstack: Fix misleading instruction pointer error message
+Date:   Tue, 27 Oct 2020 14:54:53 +0100
+Message-Id: <20201027135520.731919820@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,176 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Mark Mossberg <mark.mossberg@gmail.com>
 
-[ Upstream commit e2def7d49d0812ea40a224161b2001b2e815dce2 ]
+[ Upstream commit 238c91115cd05c71447ea071624a4c9fe661f970 ]
 
-If an exception needs to be handled while reading an MSR - which is in
-most of the cases caused by a #GP on a non-existent MSR - then this
-is most likely the incarnation of a BIOS or a hardware bug. Such bug
-violates the architectural guarantee that MCA banks are present with all
-MSRs belonging to them.
+Printing "Bad RIP value" if copy_code() fails can be misleading for
+userspace pointers, since copy_code() can fail if the instruction
+pointer is valid but the code is paged out. This is because copy_code()
+calls copy_from_user_nmi() for userspace pointers, which disables page
+fault handling.
 
-The proper fix belongs in the hardware/firmware - not in the kernel.
+This is reproducible in OOM situations, where it's plausible that the
+code may be reclaimed in the time between entry into the kernel and when
+this message is printed. This leaves a misleading log in dmesg that
+suggests instruction pointer corruption has occurred, which may alarm
+users.
 
-Handling an #MC exception which is raised while an NMI is being handled
-would cause the nasty NMI nesting issue because of the shortcoming of
-IRET of reenabling NMIs when executed. And the machine is in an #MC
-context already so <Deity> be at its side.
+Change the message to state the error condition more precisely.
 
-Tracing MSR accesses while in #MC is another no-no due to tracing being
-inherently a bad idea in atomic context:
+ [ bp: Massage a bit. ]
 
-  vmlinux.o: warning: objtool: do_machine_check()+0x4a: call to mce_rdmsrl() leaves .noinstr.text section
-
-so remove all that "additional" functionality from mce_rdmsrl() and
-provide it with a special exception handler which panics the machine
-when that MSR is not accessible.
-
-The exception handler prints a human-readable message explaining what
-the panic reason is but, what is more, it panics while in the #GP
-handler and latter won't have executed an IRET, thus opening the NMI
-nesting issue in the case when the #MC has happened while handling
-an NMI. (#MC itself won't be reenabled until MCG_STATUS hasn't been
-cleared).
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-[ Add missing prototypes for ex_handler_* ]
-Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Mark Mossberg <mark.mossberg@gmail.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20200906212130.GA28456@zn.tnic
+Link: https://lkml.kernel.org/r/20201002042915.403558-1-mark.mossberg@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/mce/core.c     | 72 +++++++++++++++++++++++++-----
- arch/x86/kernel/cpu/mce/internal.h | 10 +++++
- 2 files changed, 70 insertions(+), 12 deletions(-)
+ arch/x86/kernel/dumpstack.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index d8dca24feccbe..07673a034d39c 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -370,10 +370,28 @@ static int msr_to_offset(u32 msr)
- 	return -1;
- }
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 48ce44576947c..ea8d51ec251bb 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -115,7 +115,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+ 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
  
-+__visible bool ex_handler_rdmsr_fault(const struct exception_table_entry *fixup,
-+				      struct pt_regs *regs, int trapnr,
-+				      unsigned long error_code,
-+				      unsigned long fault_addr)
-+{
-+	pr_emerg("MSR access error: RDMSR from 0x%x at rIP: 0x%lx (%pS)\n",
-+		 (unsigned int)regs->cx, regs->ip, (void *)regs->ip);
-+
-+	show_stack_regs(regs);
-+
-+	panic("MCA architectural violation!\n");
-+
-+	while (true)
-+		cpu_relax();
-+
-+	return true;
-+}
-+
- /* MSR access wrappers used for error injection */
- static noinstr u64 mce_rdmsrl(u32 msr)
- {
--	u64 v;
-+	DECLARE_ARGS(val, low, high);
- 
- 	if (__this_cpu_read(injectm.finished)) {
- 		int offset;
-@@ -392,21 +410,43 @@ static noinstr u64 mce_rdmsrl(u32 msr)
- 		return ret;
- 	}
- 
--	if (rdmsrl_safe(msr, &v)) {
--		WARN_ONCE(1, "mce: Unable to read MSR 0x%x!\n", msr);
--		/*
--		 * Return zero in case the access faulted. This should
--		 * not happen normally but can happen if the CPU does
--		 * something weird, or if the code is buggy.
--		 */
--		v = 0;
--	}
-+	/*
-+	 * RDMSR on MCA MSRs should not fault. If they do, this is very much an
-+	 * architectural violation and needs to be reported to hw vendor. Panic
-+	 * the box to not allow any further progress.
-+	 */
-+	asm volatile("1: rdmsr\n"
-+		     "2:\n"
-+		     _ASM_EXTABLE_HANDLE(1b, 2b, ex_handler_rdmsr_fault)
-+		     : EAX_EDX_RET(val, low, high) : "c" (msr));
- 
--	return v;
-+
-+	return EAX_EDX_VAL(val, low, high);
-+}
-+
-+__visible bool ex_handler_wrmsr_fault(const struct exception_table_entry *fixup,
-+				      struct pt_regs *regs, int trapnr,
-+				      unsigned long error_code,
-+				      unsigned long fault_addr)
-+{
-+	pr_emerg("MSR access error: WRMSR to 0x%x (tried to write 0x%08x%08x) at rIP: 0x%lx (%pS)\n",
-+		 (unsigned int)regs->cx, (unsigned int)regs->dx, (unsigned int)regs->ax,
-+		  regs->ip, (void *)regs->ip);
-+
-+	show_stack_regs(regs);
-+
-+	panic("MCA architectural violation!\n");
-+
-+	while (true)
-+		cpu_relax();
-+
-+	return true;
- }
- 
- static noinstr void mce_wrmsrl(u32 msr, u64 v)
- {
-+	u32 low, high;
-+
- 	if (__this_cpu_read(injectm.finished)) {
- 		int offset;
- 
-@@ -420,7 +460,15 @@ static noinstr void mce_wrmsrl(u32 msr, u64 v)
- 
- 		return;
- 	}
--	wrmsrl(msr, v);
-+
-+	low  = (u32)v;
-+	high = (u32)(v >> 32);
-+
-+	/* See comment in mce_rdmsrl() */
-+	asm volatile("1: wrmsr\n"
-+		     "2:\n"
-+		     _ASM_EXTABLE_HANDLE(1b, 2b, ex_handler_wrmsr_fault)
-+		     : : "c" (msr), "a"(low), "d" (high) : "memory");
- }
- 
- /*
-diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index 6473070b5da49..b122610e9046a 100644
---- a/arch/x86/kernel/cpu/mce/internal.h
-+++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -185,4 +185,14 @@ extern bool amd_filter_mce(struct mce *m);
- static inline bool amd_filter_mce(struct mce *m)			{ return false; };
- #endif
- 
-+__visible bool ex_handler_rdmsr_fault(const struct exception_table_entry *fixup,
-+				      struct pt_regs *regs, int trapnr,
-+				      unsigned long error_code,
-+				      unsigned long fault_addr);
-+
-+__visible bool ex_handler_wrmsr_fault(const struct exception_table_entry *fixup,
-+				      struct pt_regs *regs, int trapnr,
-+				      unsigned long error_code,
-+				      unsigned long fault_addr);
-+
- #endif /* __X86_MCE_INTERNAL_H__ */
+ 	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+-		printk("%sCode: Bad RIP value.\n", loglvl);
++		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
++		       loglvl, prologue);
+ 	} else {
+ 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
+ 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
 -- 
 2.25.1
 
