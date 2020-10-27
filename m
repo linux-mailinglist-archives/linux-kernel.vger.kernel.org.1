@@ -2,130 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CBF29C89D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B1A29C898
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829648AbgJ0TTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:19:40 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45201 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1823202AbgJ0TSk (ORCPT
+        id S1829633AbgJ0TTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:19:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48648 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1829605AbgJ0TTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:18:40 -0400
-Received: by mail-lf1-f66.google.com with SMTP id r127so3740189lff.12;
-        Tue, 27 Oct 2020 12:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rRmJEoczOaPt5oIq8pBYfrOwwnQx9zBhEX8LjsvLjPU=;
-        b=eaFIazKFNB5vyc1tXwMSYIlIFQxt6JNrRMyBSHpb7iU0RRmO77n4dc1iUE32UC4l5Y
-         ZGr96oD5UyzDGZUvJDqXU/yGz+us6hS0pomjhWv9z6Wf7KslMSImDcTLqNZhThgDPkuV
-         9zTHIVk9mkeHWhow/fn6FJE58nRSHHmZxFMDLLUnTnAzK4BRE1NrtwyF60Ms7YuBR/01
-         lsR2ZiwIrnPgwpUvIqx8l+VnyS3qKhIB71QRirpTh1Q3pe8XUZhexHWEWRFYcHxtflHm
-         Es08TcFSdBLKRYTUkSAetPSJtGJk1dhCDazar1+WDc8X+FMV3dzmzEq5iAKiJ/U2Rd0I
-         G3gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rRmJEoczOaPt5oIq8pBYfrOwwnQx9zBhEX8LjsvLjPU=;
-        b=F2mjxDwZ4d87UTiEdzpCvLvDYXi4kjHKaXWAtY0x/qOpOP1yc6UbJTJMh7bW4eYPjr
-         lQOiuIPtCDmwsyJntMjOb+AA+Y8mEJ21wOI89vrZ0E8u9+X+WF/I5tpZu3cRxfLSJxsv
-         gjfqQ/gFLz37QtodkR7asFxX56WODETNVM9E/oE/QGy1qjCzFcVD+wVVGHUk7PMKVYtp
-         P3b03vP7SVJb332qJpcslYxm/ikAXsDtvsi9KN3tA3cIQ3To1pJhYSIynV2DRJ4QOn3U
-         ZF0Tp+KbaQT0d+ZDXSvQflul4eTFyzQw6dV1iYK7MoDogvMaHQzeF4QIUb2gZF9m3CRc
-         r0Ww==
-X-Gm-Message-State: AOAM5330g+t2pdV5dCIsKulFYIdS8FdXrc14F0E2gN6ZvMTkNnEzZ11I
-        lCmmMbYaRvKPltUXKSP9jyHsf2dUj3c=
-X-Google-Smtp-Source: ABdhPJwIxxkDDHFxByTXYZCyDddCnWVGWPKWYwM/m33Y+OUz7VXxGlN+z1qlQDVq2IYrih/LUJUV3A==
-X-Received: by 2002:a19:3f57:: with SMTP id m84mr1532664lfa.17.1603826317134;
-        Tue, 27 Oct 2020 12:18:37 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id x19sm265377lff.189.2020.10.27.12.18.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:18:36 -0700 (PDT)
-Subject: Re: [PATCH v6 09/52] dt-bindings: memory: tegra30: mc: Document new
- interconnect property
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-10-digetx@gmail.com> <20201027090550.GI4244@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7770b89e-f30b-3bfd-1e21-8ebbe905efcd@gmail.com>
-Date:   Tue, 27 Oct 2020 22:18:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 15:19:22 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603826359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0CmGDDPRiNeoZmas3WC/BuGgJ2L+HXBpzjZ1xtym5Y=;
+        b=CJT35Ob+9BEk+pzK1G7vADh+AXYUOI8dtu3AGqSy9ZsGLcD2f5cOqxQJFNoOUnUjECe2gl
+        htxY0g/9FXlzESqidLgtrXkLsbnH6TNLr8JIj14QVKb+wUu1FnCjGEC5bBiUUVv5JVBK5d
+        ZoNqh/Wk66DPC3dGS+DmYjj3EtbbiAEQpxqjAJEVt92nItu2yGYMivm1fhY02ZgMUNIVHt
+        KpivOpCLzQvhXeUnEz80jvkuEcWElefx/AwEvI4wPZZLRiYYr5ll+dCMEne4HZ/SN9X+8p
+        kxLBGEYTIDcTNR+3xmE2stq8iLaaK8wpg5ot74EE2QmsR+IiMp2i3lJNu4yB6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603826359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p0CmGDDPRiNeoZmas3WC/BuGgJ2L+HXBpzjZ1xtym5Y=;
+        b=wGSJTne4di+ga8Wi8QvPkEJ2X0GUE7zBPXVCZRhU81Ff7SeNCoGnI0oEcsqf0KuxFxASCy
+        Ri/lIxZ/Eol2J2BA==
+To:     Petr Mladek <pmladek@suse.com>, qiang.zhang@windriver.com
+Cc:     tj@kernel.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] kthread_worker: re-set CPU affinities if CPU come online
+In-Reply-To: <20201027163925.GE31882@alley>
+References: <20201026065213.30477-1-qiang.zhang@windriver.com> <20201027163925.GE31882@alley>
+Date:   Tue, 27 Oct 2020 20:19:19 +0100
+Message-ID: <87a6w71npk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201027090550.GI4244@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 12:05, Krzysztof Kozlowski пишет:
-> On Mon, Oct 26, 2020 at 01:16:52AM +0300, Dmitry Osipenko wrote:
->> Memory controller is interconnected with memory clients and with the
->> External Memory Controller. Document new interconnect property which
->> turns memory controller into interconnect provider.
->>
->> Acked-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  .../bindings/memory-controllers/nvidia,tegra30-mc.yaml       | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
->> index 84fd57bcf0dc..5436e6d420bc 100644
->> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
->> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
->> @@ -57,6 +57,9 @@ properties:
->>    "#iommu-cells":
->>      const: 1
->>  
->> +  "#interconnect-cells":
->> +    const: 1
+Petr,
+
+On Tue, Oct 27 2020 at 17:39, Petr Mladek wrote:
+> On Mon 2020-10-26 14:52:13, qiang.zhang@windriver.com wrote:
+>> From: Zqiang <qiang.zhang@windriver.com>
+>> 
+>> When someone CPU offlined, the 'kthread_worker' which bind this CPU,
+>> will run anywhere, if this CPU online, recovery of 'kthread_worker'
+>> affinity by cpuhp notifiers.
+>
+> I am not familiar with CPU hotplug notifiers. I rather add Thomas and
+> Peter into Cc.
+
+Thanks!
+
+>> +static int kworker_cpu_online(unsigned int cpu, struct hlist_node *node)
+>> +{
+>> +	struct kthread_worker *worker = hlist_entry(node, struct kthread_worker, cpuhp_node);
+>
+> The code here looks correct.
+>
+> JFYI, I was curious why many cpuhp callbacks used hlist_entry_safe().
+> But they did not check for NULL. Hence the _safe() variant did
+> not really prevented any crash.
+>
+> I seems that it was a cargo-cult programming. cpuhp_invoke_callback() calls
+> simple hlist_for_each(). If I get it correctly, the operations are
+> synchronized by cpus_read_lock()/cpus_write_lock() and _safe variant
+> really is not needed.
+
+Correct.
+
+>> +static __init int kthread_worker_hotplug_init(void)
+>> +{
+>> +	int ret;
 >> +
->>  patternProperties:
->>    "^emc-timings-[0-9]+$":
->>      type: object
->> @@ -120,6 +123,7 @@ required:
->>    - clock-names
->>    - "#reset-cells"
->>    - "#iommu-cells"
->> +  - "#interconnect-cells"
-> 
-> Rob,
-> 
-> You were fine with adding a new required property which breaks all
-> existing DTBs?
+>> +	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "kthread-worker/online",
+>> +					kworker_cpu_online, NULL);
 
-This is a required property for the new bindings and optional for the
-older. Does it really need to be made optional in the binding?
+The dynamic hotplug states run late. What's preventing work to be queued
+on such a worker before it is bound to the CPU again?
 
-> Were these bindings marked as unstable? The patchset does not even
-> say/scream that it breaks the ABI, so this might be quite a surprise for
-> someone...
+Nothing at all.
 
-Please see tegra_mc_interconnect_setup() in "memory: tegra-mc: Add
-interconnect framework" patch, which check presence of the new ICC DT
-property.
+Moving the hotplug state early does not help either because this cannot
+happen _before_ the CPUHP_AP_ONLINE state. After that it's already too
+late because that's after interrupts have been reenabled on the upcoming
+CPU. Depending on the interrupt routing an interrupt hitting the
+upcoming CPU might queue work before the state is reached. Work might
+also be queued via a timer before rebind happens.
+
+The only current user (powerclamp) has it's own hotplug handling and
+stops the thread and creates a new one when the CPU comes online. So
+that's not a problem.
+
+But in general this _is_ a problem. There is also no mechanism to ensure
+that work on a CPU bound worker has been drained before the CPU goes
+offline and that work on the outgoing CPU cannot be queued after a
+certain point in the hotplug state machine.
+
+CPU bound kernel threads have special properties. You can access per CPU
+variables without further protection. This blows up in your face once
+the worker thread is unbound after a hotplug operation.
+
+So the proposed patch is duct tape and papers over the underlying design
+problem.
+
+Either this is fixed in a way which ensures operation on the bound CPU
+under all circumstances or it needs to be documented that users have to
+have their own hotplug handling similar to what powerclamp does.
+
+Thanks,
+
+        tglx
