@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5020A29CADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4555D29CADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829235AbgJ0VDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:03:43 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38041 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373533AbgJ0VDm (ORCPT
+        id S1831893AbgJ0VDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:03:50 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:43022 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1830508AbgJ0VDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:03:42 -0400
-Received: by mail-ot1-f68.google.com with SMTP id b2so2410938ots.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 14:03:41 -0700 (PDT)
+        Tue, 27 Oct 2020 17:03:49 -0400
+Received: by mail-ed1-f52.google.com with SMTP id dn5so2908301edb.10;
+        Tue, 27 Oct 2020 14:03:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MyXnLNK7IOSxObjzQjXARof4MBzCtf4uf+5fQC51Ucw=;
-        b=GWel6yja3p+9z+KCAVSsJgJmSeR1JJxG1us8ner92OwbrbM95UF8FY4hkTK4+3zc05
-         8yBgsV1Kwh6N2kM/5//Rv6J1OfUoVtpRdQMs5CGOcZ7lz7n5D/iFZOVJ0TDgnOlLBOpJ
-         dq4CrbHpMsWcIMykNA8UhhLIl4z0k2iH6iuwbgmmpwdftCLdy5qzGHsJYJtbMN2re0L3
-         kbWhjTxFNTcvanBPwog3jnsjze059t9DMxtvJaEvthckGXeA5o1UE1N12e6zs3oLxGOT
-         avJU82PCgOqGaJv4M/A9O3UIFcEKLOrdkwf/z1pCPK3LLDIS0zPQsCjvPOj1sSIrXuuY
-         OzDA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=MRHwpH162vRxJWjqj9O5WBo0P2xuR+MBOoVYL38uDGA=;
+        b=aWhxNujTl6QVa0Aq0eHESJ1qM8q9kaxOmrCiDd+9Zskh8wpz11e0ExZ7PYfQZzHiZ4
+         nYnXum5J6yJUMABY4XgIeobpk3AmZN5yINYDm9kpZW/XgBr4tqBGr3FufjikHDIDx0yQ
+         ueVNAW2KuryWKt0uqE51ByPFkTYzp3Hqleo3RZH7Zwcu24ALoD9PPI79y/yCKw7jQwIs
+         4mTDJCuPhNNgJq6RILGwpPOS7BPzm3Q9tymmJm/GDV1hVxkP07rfpx9f7MOvfsWXnQgi
+         86zf8OqA4sWId6UuEKKUSV7a1aEz0+hLcaLSrIUvSGW3UuHHmzhNBI+rrKNhM4XcvVwz
+         /iXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=MyXnLNK7IOSxObjzQjXARof4MBzCtf4uf+5fQC51Ucw=;
-        b=oK81LMnLQXvTbSIBQbQINT3eI/u2ILa3rCr6ZYy5HTbhdfQDxuBtqlGUvYrkgk04iX
-         l757zwPqILGnWnT2f6mCWYUz7TY3W+GTtx9TjTQMXhjc5t+OqRwleEzjKdC6zaaiSWLc
-         /Y1Jt909GHBVX4DViFRXxlQQwXosse8x+GXI2mV/uEEfd6R3NZ7K354FJALxiJScDrq4
-         gAzXwH40wOJmiyxK1wwrEBUnajS6HhL3Lo7YICloZHmYRtzCoOOD3bnhywuCs0ddy5Ly
-         BOBM9f0xJqpUd0xnsymm833tfK8doRBVaf2c0pOZhfgxkvHFAFqZFb75Tz6reErDxd7k
-         B/yg==
-X-Gm-Message-State: AOAM5308wcbmLQuRaZXFjqm8mjVCFFicN7cGm3S+FXcYJlLc1zy7FHZJ
-        qum4E1PqXlaKmbcrlC6YbQ==
-X-Google-Smtp-Source: ABdhPJyrxZFjiKl/XgpHR9IC8xJJVucOKnZXP66h8IzWX8JSD8jbuPaOSmEeMZvzmE8uaGPwd1dusw==
-X-Received: by 2002:a9d:649:: with SMTP id 67mr2966814otn.233.1603832621269;
-        Tue, 27 Oct 2020 14:03:41 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id m13sm1460502otn.20.2020.10.27.14.03.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=MRHwpH162vRxJWjqj9O5WBo0P2xuR+MBOoVYL38uDGA=;
+        b=b4zsACoGBezMYUa2PEp3hXH5jL9uo06PqAZkP2OFgJE/f0USrvphtvS6Q3l5LOtDVe
+         76B9Pdy7JTUlqedBBxYF7GpI6C/rPcbaRVp7YJL6WnVXr3jgbcrlRD6sNAiBgMsIl4Q1
+         hTvMpWRFnP4y9iL+WyRn2QKnE7MQ9cCW4ww3rDPwADjBYkdSQYuAZeH71I/chqDbwrl9
+         YMFUyrHpIJOoe0t+xx01ADCcYb3v1VX9ZlcOnEY25WXsb8o3JDsgV6sX7IfOv/LhXL7B
+         lOQV2C/vro42Q6Pucj9T0E56LI7EWBReaV7wsmmmpSFQqh5IIzsbxgu8XfqhggIaAYvy
+         +Evg==
+X-Gm-Message-State: AOAM533D6TuwzpzQyakiJhIE5+S/yMu+ws5kTgsPu1+c8qe6VUJNQV2m
+        4JkOjdzYo8MQL6wphemY4qHK+U6jqhw=
+X-Google-Smtp-Source: ABdhPJw/rNHAmxTYG8/fZLnJXg7AHQfBUN+6w/Bh/xEdvP9okcGOviz4Bf1I5Tsi0bJWKpnNAYTd4A==
+X-Received: by 2002:a05:6402:cac:: with SMTP id cn12mr4282750edb.326.1603832626617;
+        Tue, 27 Oct 2020 14:03:46 -0700 (PDT)
+Received: from ltop.local ([2a02:a03f:b7fe:f700:14ec:85cd:eb33:2a5c])
+        by smtp.gmail.com with ESMTPSA id m16sm1664990edj.37.2020.10.27.14.03.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 14:03:40 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:64b8:c481:9aa8:415f])
-        by serve.minyard.net (Postfix) with ESMTPSA id EA5B8180057;
-        Tue, 27 Oct 2020 21:03:38 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 16:03:37 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Openipmi-developer] [PATCH] ipmi_si: replace spin_lock_irqsave
- by spin_lock in hard IRQ
-Message-ID: <20201027210337.GM4296@minyard.net>
-Reply-To: minyard@acm.org
-References: <1602898810-31783-1-git-send-email-tiantao6@hisilicon.com>
+        Tue, 27 Oct 2020 14:03:45 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 22:03:44 +0100
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     linux-sparse@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Sparse improvements & regressions for Linux v5.9-rc1 -> v5.10-rc1
+Message-ID: <20201027210344.e6rwboxcktgh5vyc@ltop.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602898810-31783-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 09:40:10AM +0800, Tian Tao wrote:
-> It is redundant to do irqsave and irqrestore in hardIRQ context.
+Hi,
 
-Are ACPI GPEs run in hardirq context?  I looked around a bit and
-couldn't tell.  If not, then I can't take this patch.  Otherwise, it's
-ok.
+Here is a comparison of Sparse's unique warnings between v5.9-rc1 &
+v5.10-rc1 on x86-64 (defconfig + allyesconfig).
 
--corey
+This time, there is a VERY significant decrease in the number of
+warnings, almost 20% less. On ppc64, the difference is 31%. This big
+difference is mainly but not only caused by "cast to restricted type"
+warnings or related, like "different base types".
 
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/char/ipmi/ipmi_si_intf.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-> index 45546ac..97452a8 100644
-> --- a/drivers/char/ipmi/ipmi_si_intf.c
-> +++ b/drivers/char/ipmi/ipmi_si_intf.c
-> @@ -1116,7 +1116,6 @@ static void smi_timeout(struct timer_list *t)
->  irqreturn_t ipmi_si_irq_handler(int irq, void *data)
->  {
->  	struct smi_info *smi_info = data;
-> -	unsigned long   flags;
->  
->  	if (smi_info->io.si_type == SI_BT)
->  		/* We need to clear the IRQ flag for the BT interface. */
-> @@ -1124,14 +1123,14 @@ irqreturn_t ipmi_si_irq_handler(int irq, void *data)
->  				     IPMI_BT_INTMASK_CLEAR_IRQ_BIT
->  				     | IPMI_BT_INTMASK_ENABLE_IRQ_BIT);
->  
-> -	spin_lock_irqsave(&(smi_info->si_lock), flags);
-> +	spin_lock(&(smi_info->si_lock));
->  
->  	smi_inc_stat(smi_info, interrupts);
->  
->  	debug_timestamp("Interrupt");
->  
->  	smi_event_handler(smi_info, 0);
-> -	spin_unlock_irqrestore(&(smi_info->si_lock), flags);
-> +	spin_unlock(&(smi_info->si_lock));
->  	return IRQ_HANDLED;
->  }
->  
-> -- 
-> 2.7.4
-> 
-> 
-> 
-> _______________________________________________
-> Openipmi-developer mailing list
-> Openipmi-developer@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
+Some of these differences come from changes in Sparse, but most come
+from changes in the kernel itself.
+
+The raw logs as well as the result of the processing giving the
+'unique warnings' are available at:
+        git://github.com/lucvoo/sparse-logs.git
+
+
+- 18621 14983 Total
++   191   210 Initializer entry defined twice
+-   105    92 Using plain integer as NULL pointer
+-   394     0 advancing past deep designator
+      4     4 arithmetics on pointers to functions
++     0    88 array of flexible structures
+-    12    10 bad assignment to restricted type
+      4     4 cast between address spaces (__percpu -> __rcu)
+-   261   257 cast from restricted type
+-   473   468 cast removes address space '__iomem' of expression
+      1     1 cast removes address space '__percpu' of expression
+     15    15 cast removes address space '__rcu' of expression
+-    43    20 cast removes address space '__user' of expression
+-    13     0 cast to non-scalar
+-  4550  2862 cast to restricted type
+-   609   548 cast truncates bits from constant value
++   332   359 context imbalance - different lock contexts for basic block
++   467   472 context imbalance - unexpected unlock
++   189   191 context imbalance - wrong count at exit
+-   109   106 dereference of noderef expression
++     0     1 division by zero
++     0     1 dubious one-bit signed bitfield
+     16    16 dubious: !x & y
+      1     1 dubious: !x | !y
+      6     6 dubious: !x | y
+     56    56 dubious: x & !y
+-    20    19 dubious: x | !y
+-     1     0 duplicate [noderef]
+-    21    18 function with external linkage has definition
+      2     2 implicit cast from nocast type
+-   490   458 incompatible types in comparison expression (different address spaces)
++     3     4 incompatible types in comparison expression (different base types)
+-     1     0 incompatible types in comparison expression (different type sizes)
+      7     7 incompatible types in conditional expression (different base types)
+-  1087  1031 incorrect type in argument (different address spaces)
+-   494   477 incorrect type in argument (different base types)
+-     1     0 incorrect type in argument (incompatible argument (different address spaces))
+-   382   336 incorrect type in assignment (different address spaces)
+-  4762  3513 incorrect type in assignment (different base types)
+      1     1 incorrect type in assignment (different modifiers)
++   120   130 incorrect type in initializer (different address spaces)
+-   131   124 incorrect type in initializer (different base types)
+-     7     4 incorrect type in initializer (incompatible argument (different address spaces))
+-    25    24 incorrect type in return expression (different address spaces)
+-    30    25 incorrect type in return expression (different base types)
+-   285   282 invalid assignment
+     37    37 invalid bitfield specifier for type restricted type.
+      7     7 invalid initializer
++     1     2 marked inline, but without a definition
+-     1     0 memcpy with byte count of ...
+-     5     4 memset with byte count of ...
+      7     7 mixed bitwiseness
+      8     8 mixing different enum types:
+-     2     1 multiple address spaces given
+     12    12 multiple definitions for ...
++     0     2 no generic selection for ...
+-   918   902 restricted type degrades to integer
++     0     1 statement expected after label
++    12    16 static assertion failed
+      5     5 subtraction of different types can't work (different address spaces)
+     23    23 subtraction of functions? Share your drugs
+      1     1 switch with no cases
++     0     1 symbol redeclared with different type (different address spaces)
+-     5     2 symbol redeclared with different type (incompatible argument (different address spaces))
+-  1852  1705 symbol was not declared. Should it be static?
+      1     1 too long token expansion
+      3     3 trying to concatenate long character string (8191 bytes max)
