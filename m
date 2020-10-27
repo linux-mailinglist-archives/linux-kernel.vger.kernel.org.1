@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACDA29C3B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C791129C3CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901678AbgJ0OZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:25:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
+        id S1822574AbgJ0Rub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:50:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901613AbgJ0OZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:25:24 -0400
+        id S1758879AbgJ0OZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:25:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3007320773;
-        Tue, 27 Oct 2020 14:25:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FD0820780;
+        Tue, 27 Oct 2020 14:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808723;
-        bh=1fHMQsfwc+E4J485jdFMYQOsESavJapQ0G7HTOqP9Es=;
+        s=default; t=1603808728;
+        bh=hc3IxUAj9toAq0/vxIXbZJ9/pa0OOYceVsz4jHcHSzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=La8e/RgB+dETqzU1B19eUEWldsvpd3IKSSV17b1N9Ykoja3rphKV8SFuD+baPLKv4
-         seaGm/jmRTKSkjhZ2gdh/BXiF7NKcQyElKUwmJML+seu1RAyRbuhY2pD4++cpHyyJE
-         /wZUsk9F9Q5gQF3JBCQ7hAPUpk8MwKIUfiRaaWKM=
+        b=J09zxVjXcqvvqJZJUBS4MacZC/0M3W6yDQu1mEgqAS3OCoXn6czuJbMBJVNaSi2/z
+         hEG3b3yc9A44aJJm7W+69EfGFAi8blF27O6WBdPKxfTAgVhxwYI9LqZWk461SdS191
+         al8xvBjQmMAfROr+J6Kc4f61km2n3gz8v/zF11RI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 199/264] arm64: dts: zynqmp: Remove additional compatible string for i2c IPs
-Date:   Tue, 27 Oct 2020 14:54:17 +0100
-Message-Id: <20201027135440.016823650@linuxfoundation.org>
+        stable@vger.kernel.org, zhenwei pi <pizhenwei@bytedance.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 201/264] nvmet: fix uninitialized work for zero kato
+Date:   Tue, 27 Oct 2020 14:54:19 +0100
+Message-Id: <20201027135440.109067269@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,58 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Simek <michal.simek@xilinx.com>
+From: zhenwei pi <pizhenwei@bytedance.com>
 
-[ Upstream commit 35292518cb0a626fcdcabf739aed75060a018ab5 ]
+[ Upstream commit 85bd23f3dc09a2ae9e56885420e52c54bf983713 ]
 
-DT binding permits only one compatible string which was decribed in past by
-commit 63cab195bf49 ("i2c: removed work arounds in i2c driver for Zynq
-Ultrascale+ MPSoC").
-The commit aea37006e183 ("dt-bindings: i2c: cadence: Migrate i2c-cadence
-documentation to YAML") has converted binding to yaml and the following
-issues is reported:
-...: i2c@ff030000: compatible: Additional items are not allowed
-('cdns,i2c-r1p10' was unexpected)
-	From schema:
-.../Documentation/devicetree/bindings/i2c/cdns,i2c-r1p10.yaml fds
-...: i2c@ff030000: compatible: ['cdns,i2c-r1p14', 'cdns,i2c-r1p10'] is too
-long
+When connecting a controller with a zero kato value using the following
+command line
 
-The commit c415f9e8304a ("ARM64: zynqmp: Fix i2c node's compatible string")
-has added the second compatible string but without removing origin one.
-The patch is only keeping one compatible string "cdns,i2c-r1p14".
+   nvme connect -t tcp -n NQN -a ADDR -s PORT --keep-alive-tmo=0
 
-Fixes: c415f9e8304a ("ARM64: zynqmp: Fix i2c node's compatible string")
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Link: https://lore.kernel.org/r/cc294ae1a79ef845af6809ddb4049f0c0f5bb87a.1598259551.git.michal.simek@xilinx.com
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+the warning below can be reproduced:
+
+WARNING: CPU: 1 PID: 241 at kernel/workqueue.c:1627 __queue_delayed_work+0x6d/0x90
+with trace:
+  mod_delayed_work_on+0x59/0x90
+  nvmet_update_cc+0xee/0x100 [nvmet]
+  nvmet_execute_prop_set+0x72/0x80 [nvmet]
+  nvmet_tcp_try_recv_pdu+0x2f7/0x770 [nvmet_tcp]
+  nvmet_tcp_io_work+0x63f/0xb2d [nvmet_tcp]
+  ...
+
+This is caused by queuing up an uninitialized work.  Althrough the
+keep-alive timer is disabled during allocating the controller (fixed in
+0d3b6a8d213a), ka_work still has a chance to run (called by
+nvmet_start_ctrl).
+
+Fixes: 0d3b6a8d213a ("nvmet: Disable keep-alive timer when kato is cleared to 0h")
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvme/target/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index a516c0e01429a..8a885ae647b7e 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -411,7 +411,7 @@ gpio: gpio@ff0a0000 {
- 		};
+diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
+index f28df233dfcd0..2b492ad55f0e4 100644
+--- a/drivers/nvme/target/core.c
++++ b/drivers/nvme/target/core.c
+@@ -787,7 +787,8 @@ static void nvmet_start_ctrl(struct nvmet_ctrl *ctrl)
+ 	 * in case a host died before it enabled the controller.  Hence, simply
+ 	 * reset the keep alive timer when the controller is enabled.
+ 	 */
+-	mod_delayed_work(system_wq, &ctrl->ka_work, ctrl->kato * HZ);
++	if (ctrl->kato)
++		mod_delayed_work(system_wq, &ctrl->ka_work, ctrl->kato * HZ);
+ }
  
- 		i2c0: i2c@ff020000 {
--			compatible = "cdns,i2c-r1p14", "cdns,i2c-r1p10";
-+			compatible = "cdns,i2c-r1p14";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 17 4>;
-@@ -421,7 +421,7 @@ i2c0: i2c@ff020000 {
- 		};
- 
- 		i2c1: i2c@ff030000 {
--			compatible = "cdns,i2c-r1p14", "cdns,i2c-r1p10";
-+			compatible = "cdns,i2c-r1p14";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 18 4>;
+ static void nvmet_clear_ctrl(struct nvmet_ctrl *ctrl)
 -- 
 2.25.1
 
