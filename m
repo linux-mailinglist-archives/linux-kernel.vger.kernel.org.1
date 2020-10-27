@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A1329C51F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F34429C535
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824215AbgJ0SEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42278 "EHLO mail.kernel.org"
+        id S1824811AbgJ0SGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757318AbgJ0OSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:41 -0400
+        id S2900902AbgJ0OR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A763206F7;
-        Tue, 27 Oct 2020 14:18:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5D16206FA;
+        Tue, 27 Oct 2020 14:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808320;
-        bh=Ce5G3aT6s0R3Dn6U49AQ5sEQzHQ1jywGS2Wow75T/qQ=;
+        s=default; t=1603808245;
+        bh=Gi9xAWMjEtClV20W/NLcZ676yflt9sTIaWwn+GeQ66g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VBg2dGX1m0tYCXyG5J+BcWRaigmtnxDRuCpqvNXx48XCR9tD8vZXUPzj88Pt/jhzb
-         qKufNSa308U+uOQXH+k3YEembEQw5nIEzdr7GDE5qfUV1zMfCydT2I0aIWLT0LgZZp
-         OHMOM6gKjtQduZUq1RgEASVW8WVI2rv9NMMzdX/k=
+        b=ztR4gZUgbL1qrASasUWPiaa0ksTyfpGdHF1ONsv/IJCFb6b95hscKxZvT+pSQsbOK
+         abwZGWLIE1femdvK3BFh8TzBa589gdC1WPebKs/85O5deetbHU5ypYb815IawIDzlt
+         eKes/leOS8CtQcyn6JO85RPmvrhIDIm0XJjGH5vU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
+        Xie He <xie.he.0141@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 016/264] chelsio/chtls: fix socket lock
-Date:   Tue, 27 Oct 2020 14:51:14 +0100
-Message-Id: <20201027135431.431629116@linuxfoundation.org>
+Subject: [PATCH 4.19 019/264] net: hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
+Date:   Tue, 27 Oct 2020 14:51:17 +0100
+Message-Id: <20201027135431.570000754@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,30 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 0fb5f0160a36d7acaa8e84ce873af99f94b60484 ]
+[ Upstream commit 01c4ceae0a38a0bdbfea6896f41efcd985a9c064 ]
 
-In chtls_sendpage() socket lock is released but not acquired,
-fix it by taking lock.
+The hdlc_rcv function is used as hdlc_packet_type.func to process any
+skb received in the kernel with skb->protocol == htons(ETH_P_HDLC).
+The purpose of this function is to provide second-stage processing for
+skbs not assigned a "real" L3 skb->protocol value in the first stage.
 
-Fixes: 36bedb3f2e5b ("crypto: chtls - Inline TLS record Tx")
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+This function assumes the device from which the skb is received is an
+HDLC device (a device created by this module). It assumes that
+netdev_priv(dev) returns a pointer to "struct hdlc_device".
+
+However, it is possible that some driver in the kernel (not necessarily
+in our control) submits a received skb with skb->protocol ==
+htons(ETH_P_HDLC), from a non-HDLC device. In this case, the skb would
+still be received by hdlc_rcv. This will cause problems.
+
+hdlc_rcv should be able to recognize and drop invalid skbs. It should
+first make sure "dev" is actually an HDLC device, before starting its
+processing. This patch adds this check to hdlc_rcv.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201020013152.89259-1-xie.he.0141@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_io.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wan/hdlc.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/drivers/crypto/chelsio/chtls/chtls_io.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_io.c
-@@ -1217,6 +1217,7 @@ int chtls_sendpage(struct sock *sk, stru
- 	copied = 0;
- 	csk = rcu_dereference_sk_user_data(sk);
- 	cdev = csk->cdev;
-+	lock_sock(sk);
- 	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
+--- a/drivers/net/wan/hdlc.c
++++ b/drivers/net/wan/hdlc.c
+@@ -49,7 +49,15 @@ static struct hdlc_proto *first_proto;
+ static int hdlc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		    struct packet_type *p, struct net_device *orig_dev)
+ {
+-	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct hdlc_device *hdlc;
++
++	/* First make sure "dev" is an HDLC device */
++	if (!(dev->priv_flags & IFF_WAN_HDLC)) {
++		kfree_skb(skb);
++		return NET_RX_SUCCESS;
++	}
++
++	hdlc = dev_to_hdlc(dev);
  
- 	err = sk_stream_wait_connect(sk, &timeo);
+ 	if (!net_eq(dev_net(dev), &init_net)) {
+ 		kfree_skb(skb);
 
 
