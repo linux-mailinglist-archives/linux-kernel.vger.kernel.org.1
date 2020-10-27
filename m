@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079CD29B72A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF7F29B77C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799073AbgJ0P3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
+        id S1799854AbgJ0Pdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:33:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797742AbgJ0PZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:14 -0400
+        id S1797866AbgJ0PZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:25:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 363EB2064B;
-        Tue, 27 Oct 2020 15:25:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E86C20657;
+        Tue, 27 Oct 2020 15:25:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812313;
-        bh=o79LusNjYGGfOPQ6/cjiDgL9YeffsVcz3R0f2qlyXwk=;
+        s=default; t=1603812319;
+        bh=Bj9nvGy6FJH0Uaemm+kHcT+1DfewkYSeGOYxNRewNQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWVgXmkJb4wSltNugHqssBWeRh1zYmMoc3aT85fdy1zR5WJIIOHrjvgyLF5+RFKEN
-         8/iauQ5s3cJo/5xLHWy5TMchpoxf5pZkFMhYX50JOeGoV+u2cK6SLFVQN21S0UoUis
-         vHNl1pwJfl1SrJV4/uM6mmFnFtFaW0IrfzgfpP70=
+        b=IPy2ugS4WU+KKIdekf+6fWLBjM2jNFZ2wrAmMIUVypidLiMmsicgN5PxjC5cXLauJ
+         wVUrvuzASAg9YaD2h2EzWJ41yVpFZ9w6Il66GPfQ88mvy2Ef8POi6/1Ox6Ji2c/K18
+         sezcZZt2wdpfQI3L17IXm4r9cGqb2QuvpYkj2uEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 165/757] nvme: fix error handling in nvme_ns_report_zones
-Date:   Tue, 27 Oct 2020 14:46:55 +0100
-Message-Id: <20201027135458.330779536@linuxfoundation.org>
+Subject: [PATCH 5.9 167/757] media: rockchip/rga: Fix a reference count leak.
+Date:   Tue, 27 Oct 2020 14:46:57 +0100
+Message-Id: <20201027135458.426584658@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,95 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 936fab503ff4af94f5f9c0b549f3ab4d435500ec ]
+[ Upstream commit 884d638e0853c4b5f01eb6d048fc3b6239012404 ]
 
-nvme_submit_sync_cmd can return positive NVMe error codes in addition to
-the negative Linux error code, which are currently ignored.  Fix this
-by removing __nvme_ns_report_zones and handling the errors from
-nvme_submit_sync_cmd in the caller instead of multiplexing the return
-value and the number of zones reported into a single return value.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus call pm_runtime_put_noidle()
+if pm_runtime_get_sync() fails.
 
-Fixes: 240e6ee272c0 ("nvme: support for zoned namespaces")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/zns.c | 41 ++++++++++++++++-------------------------
- 1 file changed, 16 insertions(+), 25 deletions(-)
+ drivers/media/platform/rockchip/rga/rga-buf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/zns.c b/drivers/nvme/host/zns.c
-index 57cfd78731fbb..53efecb678983 100644
---- a/drivers/nvme/host/zns.c
-+++ b/drivers/nvme/host/zns.c
-@@ -133,28 +133,6 @@ static void *nvme_zns_alloc_report_buffer(struct nvme_ns *ns,
- 	return NULL;
- }
+diff --git a/drivers/media/platform/rockchip/rga/rga-buf.c b/drivers/media/platform/rockchip/rga/rga-buf.c
+index 36b821ccc1dba..bf9a75b75083b 100644
+--- a/drivers/media/platform/rockchip/rga/rga-buf.c
++++ b/drivers/media/platform/rockchip/rga/rga-buf.c
+@@ -81,6 +81,7 @@ static int rga_buf_start_streaming(struct vb2_queue *q, unsigned int count)
  
--static int __nvme_ns_report_zones(struct nvme_ns *ns, sector_t sector,
--				  struct nvme_zone_report *report,
--				  size_t buflen)
--{
--	struct nvme_command c = { };
--	int ret;
--
--	c.zmr.opcode = nvme_cmd_zone_mgmt_recv;
--	c.zmr.nsid = cpu_to_le32(ns->head->ns_id);
--	c.zmr.slba = cpu_to_le64(nvme_sect_to_lba(ns, sector));
--	c.zmr.numd = cpu_to_le32(nvme_bytes_to_numd(buflen));
--	c.zmr.zra = NVME_ZRA_ZONE_REPORT;
--	c.zmr.zrasf = NVME_ZRASF_ZONE_REPORT_ALL;
--	c.zmr.pr = NVME_REPORT_ZONE_PARTIAL;
--
--	ret = nvme_submit_sync_cmd(ns->queue, &c, report, buflen);
--	if (ret)
--		return ret;
--
--	return le64_to_cpu(report->nr_zones);
--}
--
- static int nvme_zone_parse_entry(struct nvme_ns *ns,
- 				 struct nvme_zone_descriptor *entry,
- 				 unsigned int idx, report_zones_cb cb,
-@@ -182,6 +160,7 @@ static int nvme_ns_report_zones(struct nvme_ns *ns, sector_t sector,
- 			unsigned int nr_zones, report_zones_cb cb, void *data)
- {
- 	struct nvme_zone_report *report;
-+	struct nvme_command c = { };
- 	int ret, zone_idx = 0;
- 	unsigned int nz, i;
- 	size_t buflen;
-@@ -190,14 +169,26 @@ static int nvme_ns_report_zones(struct nvme_ns *ns, sector_t sector,
- 	if (!report)
- 		return -ENOMEM;
- 
-+	c.zmr.opcode = nvme_cmd_zone_mgmt_recv;
-+	c.zmr.nsid = cpu_to_le32(ns->head->ns_id);
-+	c.zmr.numd = cpu_to_le32(nvme_bytes_to_numd(buflen));
-+	c.zmr.zra = NVME_ZRA_ZONE_REPORT;
-+	c.zmr.zrasf = NVME_ZRASF_ZONE_REPORT_ALL;
-+	c.zmr.pr = NVME_REPORT_ZONE_PARTIAL;
-+
- 	sector &= ~(ns->zsze - 1);
- 	while (zone_idx < nr_zones && sector < get_capacity(ns->disk)) {
- 		memset(report, 0, buflen);
--		ret = __nvme_ns_report_zones(ns, sector, report, buflen);
--		if (ret < 0)
-+
-+		c.zmr.slba = cpu_to_le64(nvme_sect_to_lba(ns, sector));
-+		ret = nvme_submit_sync_cmd(ns->queue, &c, report, buflen);
-+		if (ret) {
-+			if (ret > 0)
-+				ret = -EIO;
- 			goto out_free;
-+		}
- 
--		nz = min_t(unsigned int, ret, nr_zones);
-+		nz = min((unsigned int)le64_to_cpu(report->nr_zones), nr_zones);
- 		if (!nz)
- 			break;
- 
+ 	ret = pm_runtime_get_sync(rga->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(rga->dev);
+ 		rga_buf_return_buffers(q, VB2_BUF_STATE_QUEUED);
+ 		return ret;
+ 	}
 -- 
 2.25.1
 
