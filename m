@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04AD29B28E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384C029B317
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762412AbgJ0Oml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39596 "EHLO mail.kernel.org"
+        id S1750877AbgJ0Onj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762021AbgJ0Okd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:40:33 -0400
+        id S2899181AbgJ0Ol2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:41:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCE4A206B2;
-        Tue, 27 Oct 2020 14:40:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5195206B2;
+        Tue, 27 Oct 2020 14:41:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809631;
-        bh=Kgjl+nmVTWZScmV+yXhrClIYvCqn0EryO2Gs81rb3yQ=;
+        s=default; t=1603809688;
+        bh=6iNgf1jOVE5Jgq3YA/ekXFTlsyVoU1AiArcDjjJpnNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfMXhl8JEvywqTscrA1QY5i2/npJmpYUL/qAcNwirSmvjvQt7PEzBcqqyVY2RXOTk
-         9lqzSqU/ql9caSJXkGlL8si88l0rdLAPLKYmtKJxYTw08DW38QwU25Mnp7YxeSBiDq
-         ZcbLMPmB+NkX80yrr3mhtMcVPJ6560SjAOwzw738=
+        b=npjGJsxHg06ON55uLns2bk3lSeIZ9dBga1Qbv2bv6xmhKSmN1OW/lnlJ3tVNN5hzJ
+         3PPkut1WZ9mE5FvU5Z83fYIKJheD7tZLe8ZcrfEHssfLblFEJufuENZBOTaT6VLDZr
+         PP51xzNKi8jLEhI0kFU4FCw2RrRWxtefQCGptfgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 247/408] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
-Date:   Tue, 27 Oct 2020 14:53:05 +0100
-Message-Id: <20201027135506.517458820@linuxfoundation.org>
+Subject: [PATCH 5.4 253/408] RDMA/rxe: Handle skb_clone() failure in rxe_recv.c
+Date:   Tue, 27 Oct 2020 14:53:11 +0100
+Message-Id: <20201027135506.775858094@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,49 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+From: Bob Pearson <rpearsonhpe@gmail.com>
 
-[ Upstream commit a2d0230b91f7e23ceb5d8fb6a9799f30517ec33a ]
+[ Upstream commit 71abf20b28ff87fee6951ec2218d5ce7969c4e87 ]
 
-The patch avoids allocating cpufreq_policy on stack hence fixing frame
-size overflow in 'powernv_cpufreq_reboot_notifier':
+If skb_clone() is unable to allocate memory for a new sk_buff this is not
+detected by the current code.
 
-  drivers/cpufreq/powernv-cpufreq.c: In function powernv_cpufreq_reboot_notifier:
-  drivers/cpufreq/powernv-cpufreq.c:906:1: error: the frame size of 2064 bytes is larger than 2048 bytes
+Check for a NULL return and continue. This is similar to other errors in
+this loop over QPs attached to the multicast address and consistent with
+the unreliable UD transport.
 
-Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency during reboot/kexec")
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200922080254.41497-1-srikar@linux.vnet.ibm.com
+Fixes: e7ec96fc7932f ("RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()")
+Addresses-Coverity-ID: 1497804: Null pointer dereferences (NULL_RETURNS)
+Link: https://lore.kernel.org/r/20201013184236.5231-1-rpearson@hpe.com
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/powernv-cpufreq.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_recv.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index 3a2f022f6bde2..bc6ccf2c7aae0 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -884,12 +884,15 @@ static int powernv_cpufreq_reboot_notifier(struct notifier_block *nb,
- 				unsigned long action, void *unused)
- {
- 	int cpu;
--	struct cpufreq_policy cpu_policy;
-+	struct cpufreq_policy *cpu_policy;
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index be6416a982c70..9bfb98056fc2a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -319,6 +319,9 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 		else
+ 			per_qp_skb = skb;
  
- 	rebooting = true;
- 	for_each_online_cpu(cpu) {
--		cpufreq_get_policy(&cpu_policy, cpu);
--		powernv_cpufreq_target_index(&cpu_policy, get_nominal_index());
-+		cpu_policy = cpufreq_cpu_get(cpu);
-+		if (!cpu_policy)
++		if (unlikely(!per_qp_skb))
 +			continue;
-+		powernv_cpufreq_target_index(cpu_policy, get_nominal_index());
-+		cpufreq_cpu_put(cpu_policy);
- 	}
- 
- 	return NOTIFY_DONE;
++
+ 		per_qp_pkt = SKB_TO_PKT(per_qp_skb);
+ 		per_qp_pkt->qp = qp;
+ 		rxe_add_ref(qp);
 -- 
 2.25.1
 
