@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D10C299CE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EDD299CE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437460AbgJ0ACc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437433AbgJ0ACQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:02:16 -0400
-Received: from sstabellini-ThinkPad-T480s (c-24-130-65-46.hsd1.ca.comcast.net [24.130.65.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53D6520773;
-        Tue, 27 Oct 2020 00:02:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756935;
-        bh=S2fWz7i/YT4lvIbM2qM9onXOHifLeu3fj+WHAM6/Uic=;
-        h=Date:From:To:cc:Subject:From;
-        b=L1iKctRVl+HbjZOuleP6fj+u871oq3QJwoicqf8T9s77ZZfViR4y4lgH0KRvluXXE
-         7HFEZzg/saCMcBDD3TkhqW7EZrHaEYEnFTIS3Cl1IUMxL3LX1kr+N2tNI8mguV1DC9
-         Mu+SdZmJhL00T7eivPsMxiectmupJ6g6BRr5e3Xo=
-Date:   Mon, 26 Oct 2020 17:02:14 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-cc:     sstabellini@kernel.org, xen-devel@lists.xenproject.org,
-        konrad.wilk@oracle.com, hch@lst.de
-Subject: [PATCH] fix swiotlb panic on Xen
-Message-ID: <alpine.DEB.2.21.2010261653320.12247@sstabellini-ThinkPad-T480s>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1725881AbgJ0AC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:02:29 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:43477 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728509AbgJ0ACY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:02:24 -0400
+Received: by mail-ua1-f68.google.com with SMTP id r21so3428151uaw.10;
+        Mon, 26 Oct 2020 17:02:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nc+LJIctkA2xokS8Hjft6K+F5HViXFmcJYECMK/0XSs=;
+        b=OQJ8kzN4C8CFDTkcCh2rA49sg4uUmOh9V4Korw02JjNdE/cPq08xUFfaA8odbE+NMx
+         tRuUn5bIJqDfUkoI3z6x+FzIJoAMUxD9EnTX14oCiLAOiNKLVKDrAqpUm+BzPy81a6+7
+         JrCM3k/4L21kBlJ+Ybi2JVcDhV/jf5E/xcCblqNXsd00EN2Ak1SKFD1Xf/YHPPdTKhfF
+         8zInTDMN9D9Ukek5LjPXoz88wj3NbBEFTAB4vedi9S9pAxvgaYqqIwdzOQ1mu6nYRY+H
+         edvEBa09ronjKBMHU9qkZ7fAMFaFksVZ4X5YzHa4acETkIVPuN5JNpqdONe+rFBKZkhh
+         wgKg==
+X-Gm-Message-State: AOAM5332Vyl6zd4zjaSQU53d0ayl0EBE6mwc6NA2aBPjtFEkkSIFbHoy
+        97JGltuXyqKGyPHyCMQwDCA=
+X-Google-Smtp-Source: ABdhPJy/QDAFsVqgKvAb81ohx+BGy1Y+c+QXCmSihcIl83n+0T4UvXBmk0bLcBPHg/LfD5io82Dx1g==
+X-Received: by 2002:ab0:6f81:: with SMTP id f1mr23600098uav.31.1603756943628;
+        Mon, 26 Oct 2020 17:02:23 -0700 (PDT)
+Received: from google.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
+        by smtp.gmail.com with ESMTPSA id f195sm374846vka.21.2020.10.26.17.02.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 17:02:22 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 00:02:21 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Lameter <cl@linux.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] asm-generic: percpu: avoid Wshadow warning
+Message-ID: <20201027000221.GA3804841@google.com>
+References: <20201026155353.3702892-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026155353.3702892-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Hello,
 
-kernel/dma/swiotlb.c:swiotlb_init gets called first and tries to
-allocate a buffer for the swiotlb. It does so by calling
+On Mon, Oct 26, 2020 at 04:53:48PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Nesting macros that use the same local variable names causes
+> warnings when building with "make W=2":
+> 
+> include/asm-generic/percpu.h:117:14: warning: declaration of '__ret' shadows a previous local [-Wshadow]
+> include/asm-generic/percpu.h:126:14: warning: declaration of '__ret' shadows a previous local [-Wshadow]
+> 
+> These are fairly harmless, but since the warning comes from
+> a global header, the warning happens every time the headers
+> are included, which is fairly annoying.
+> 
+> Rename the variables to avoid shadowing and shut up the warning.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  include/asm-generic/percpu.h | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/asm-generic/percpu.h b/include/asm-generic/percpu.h
+> index 35e4a53b83e6..6432a7fade91 100644
+> --- a/include/asm-generic/percpu.h
+> +++ b/include/asm-generic/percpu.h
+> @@ -114,21 +114,21 @@ do {									\
+>  
+>  #define __this_cpu_generic_read_nopreempt(pcp)				\
+>  ({									\
+> -	typeof(pcp) __ret;						\
+> +	typeof(pcp) ___ret;						\
+>  	preempt_disable_notrace();					\
+> -	__ret = READ_ONCE(*raw_cpu_ptr(&(pcp)));			\
+> +	___ret = READ_ONCE(*raw_cpu_ptr(&(pcp)));			\
+>  	preempt_enable_notrace();					\
+> -	__ret;								\
+> +	___ret;								\
+>  })
+>  
+>  #define __this_cpu_generic_read_noirq(pcp)				\
+>  ({									\
+> -	typeof(pcp) __ret;						\
+> -	unsigned long __flags;						\
+> -	raw_local_irq_save(__flags);					\
+> -	__ret = raw_cpu_generic_read(pcp);				\
+> -	raw_local_irq_restore(__flags);					\
+> -	__ret;								\
+> +	typeof(pcp) ___ret;						\
+> +	unsigned long ___flags;						\
+> +	raw_local_irq_save(___flags);					\
+> +	___ret = raw_cpu_generic_read(pcp);				\
+> +	raw_local_irq_restore(___flags);				\
+> +	___ret;								\
+>  })
+>  
+>  #define this_cpu_generic_read(pcp)					\
+> -- 
+> 2.27.0
+> 
 
-  memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
+I've applied this to percpu#for-5.10-fixes.
 
-If the allocation must fail, no_iotlb_memory is set.
-
-
-Later during initialization swiotlb-xen comes in
-(drivers/xen/swiotlb-xen.c:xen_swiotlb_init) and given that io_tlb_start
-is != 0, it thinks the memory is ready to use when actually it is not.
-
-When the swiotlb is actually needed, swiotlb_tbl_map_single gets called
-and since no_iotlb_memory is set the kernel panics.
-
-Instead, if swiotlb-xen.c:xen_swiotlb_init knew the swiotlb hadn't been
-initialized, it would do the initialization itself, which might still
-succeed.
-
-
-Fix the panic by setting io_tlb_start to 0 on swiotlb initialization
-failure, and also by setting no_iotlb_memory to false on swiotlb
-initialization success.
-
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-
-
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index c19379fabd20..9924214df60a 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -231,6 +231,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
- 		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
- 	}
- 	io_tlb_index = 0;
-+	no_iotlb_memory = false;
- 
- 	if (verbose)
- 		swiotlb_print_info();
-@@ -262,9 +263,11 @@ swiotlb_init(int verbose)
- 	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
- 		return;
- 
--	if (io_tlb_start)
-+	if (io_tlb_start) {
- 		memblock_free_early(io_tlb_start,
- 				    PAGE_ALIGN(io_tlb_nslabs << IO_TLB_SHIFT));
-+		io_tlb_start = 0;
-+	}
- 	pr_warn("Cannot allocate buffer");
- 	no_iotlb_memory = true;
- }
-@@ -362,6 +365,7 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
- 		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
- 	}
- 	io_tlb_index = 0;
-+	no_iotlb_memory = false;
- 
- 	swiotlb_print_info();
- 
+Thanks,
+Dennis
