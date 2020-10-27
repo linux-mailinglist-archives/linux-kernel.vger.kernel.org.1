@@ -2,182 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81EB29A7E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F090329A7EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895620AbgJ0Jbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:31:34 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34455 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408796AbgJ0Jbe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:31:34 -0400
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 592B71BF212;
-        Tue, 27 Oct 2020 09:31:21 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 10:31:19 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com,
-        =?utf-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>
-Subject: Re: [PATCH 05/14] media: sun6i-csi: Only configure the interface
- data width for parallel
-Message-ID: <20201027093119.GD168350@aptenodytes>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-6-paul.kocialkowski@bootlin.com>
- <20201026160035.sr6kifrpkev773o6@gilmour.lan>
+        id S2409148AbgJ0JdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:33:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732268AbgJ0JdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:33:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46C512224E;
+        Tue, 27 Oct 2020 09:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603791183;
+        bh=z5CM28156VEXnHyu1Yja2r3drQA5pjsZ18ZLWjM1vEs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dLGUfGuBMR/YH5n22GfjQ93X7kYrSkLIpZiby/SnOVR5a2i8HFOuO5jnuKueouoS1
+         stG/FjiW5z2UdszeJaJTa92sialDUlalKvJNu1Jw1pwwBevnvW0+3cik0HB5wBMJNO
+         JXrgfhyWVFiWLauTEylgTdpwCRJZtvY/51iIE8PA=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kXLLh-004dI0-7g; Tue, 27 Oct 2020 09:33:01 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
-Content-Disposition: inline
-In-Reply-To: <20201026160035.sr6kifrpkev773o6@gilmour.lan>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 09:33:01 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Biwen Li <biwen.li@oss.nxp.com>
+Cc:     linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, leoyang.li@nxp.com, zhiqiang.hou@nxp.com,
+        tglx@linutronix.de, jason@lakedaemon.net,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
+Subject: Re: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
+ interrupt
+In-Reply-To: <20201027044619.41879-1-biwen.li@oss.nxp.com>
+References: <20201027044619.41879-1-biwen.li@oss.nxp.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d5d6deb90b4b3d086024fcf01b737da9@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: biwen.li@oss.nxp.com, linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, leoyang.li@nxp.com, zhiqiang.hou@nxp.com, tglx@linutronix.de, jason@lakedaemon.net, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, jiafei.pan@nxp.com, xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org, biwen.li@nxp.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-27 04:46, Biwen Li wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> Add an new IRQ chip declaration for LS1043A and LS1088A
+> - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A. 
+> SCFG_INTPCR[31:0]
+>   of these SoCs is stored/read as SCFG_INTPCR[0:31] defaultly(bit
+>   reverse)
+> - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
+> 
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Biwen Li <biwen.li@nxp.com>
 
---5gxpn/Q6ypwruk0T
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You clearly couldn't be bothered to read what I wrote in my earlier
+replies. I'm thus ignoring this series...
 
-Hi,
+> ---
+> Change in v2:
+> 	- add despcription of bit reverse
+> 	- update copyright
+> 
+>  drivers/irqchip/irq-ls-extirq.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-ls-extirq.c 
+> b/drivers/irqchip/irq-ls-extirq.c
+> index 4d1179fed77c..9587bc2607fc 100644
+> --- a/drivers/irqchip/irq-ls-extirq.c
+> +++ b/drivers/irqchip/irq-ls-extirq.c
+> @@ -1,5 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -
+> +/*
+> + * Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> + * Copyright 2020 NXP
 
-On Mon 26 Oct 20, 17:00, Maxime Ripard wrote:
-> On Fri, Oct 23, 2020 at 07:45:37PM +0200, Paul Kocialkowski wrote:
-> > Bits related to the interface data width do not have any effect when
-> > the CSI controller is taking input from the MIPI CSI-2 controller.
->=20
-> I guess it would be clearer to mention that the data width is only
-> applicable for parallel here.
+... specially when you keep attributing someone else's copyright to NXP.
 
-Understood, will change the wording in the next version.
-
-> > In prevision of adding support for this case, set these bits
-> > conditionally so there is no ambiguity.
-> >=20
-> > Co-developed-by: K=C3=A9vin L'h=C3=B4pital <kevin.lhopital@bootlin.com>
-> > Signed-off-by: K=C3=A9vin L'h=C3=B4pital <kevin.lhopital@bootlin.com>
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  .../platform/sunxi/sun6i-csi/sun6i_csi.c      | 42 +++++++++++--------
-> >  1 file changed, 25 insertions(+), 17 deletions(-)
-> >=20
-> > diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c b/drive=
-rs/media/platform/sunxi/sun6i-csi/sun6i_csi.c
-> > index 5d2389a5cd17..a876a05ea3c7 100644
-> > --- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
-> > +++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
-> > @@ -378,8 +378,13 @@ static void sun6i_csi_setup_bus(struct sun6i_csi_d=
-ev *sdev)
-> >  	unsigned char bus_width;
-> >  	u32 flags;
-> >  	u32 cfg;
-> > +	bool input_parallel =3D false;
-> >  	bool input_interlaced =3D false;
-> > =20
-> > +	if (endpoint->bus_type =3D=3D V4L2_MBUS_PARALLEL ||
-> > +	    endpoint->bus_type =3D=3D V4L2_MBUS_BT656)
-> > +		input_parallel =3D true;
-> > +
-> >  	if (csi->config.field =3D=3D V4L2_FIELD_INTERLACED
-> >  	    || csi->config.field =3D=3D V4L2_FIELD_INTERLACED_TB
-> >  	    || csi->config.field =3D=3D V4L2_FIELD_INTERLACED_BT)
-> > @@ -395,6 +400,26 @@ static void sun6i_csi_setup_bus(struct sun6i_csi_d=
-ev *sdev)
-> >  		 CSI_IF_CFG_HREF_POL_MASK | CSI_IF_CFG_FIELD_MASK |
-> >  		 CSI_IF_CFG_SRC_TYPE_MASK);
-> > =20
-> > +	if (input_parallel) {
-> > +		switch (bus_width) {
-> > +		case 8:
-> > +			cfg |=3D CSI_IF_CFG_IF_DATA_WIDTH_8BIT;
-> > +			break;
-> > +		case 10:
-> > +			cfg |=3D CSI_IF_CFG_IF_DATA_WIDTH_10BIT;
-> > +			break;
-> > +		case 12:
-> > +			cfg |=3D CSI_IF_CFG_IF_DATA_WIDTH_12BIT;
-> > +			break;
-> > +		case 16: /* No need to configure DATA_WIDTH for 16bit */
-> > +			break;
-> > +		default:
-> > +			dev_warn(sdev->dev, "Unsupported bus width: %u\n",
-> > +				 bus_width);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> >  	if (input_interlaced)
-> >  		cfg |=3D CSI_IF_CFG_SRC_TYPE_INTERLACED;
-> >  	else
-> > @@ -440,23 +465,6 @@ static void sun6i_csi_setup_bus(struct sun6i_csi_d=
-ev *sdev)
-> >  		break;
-> >  	}
-> > =20
-> > -	switch (bus_width) {
-> > -	case 8:
-> > -		cfg |=3D CSI_IF_CFG_IF_DATA_WIDTH_8BIT;
-> > -		break;
-> > -	case 10:
-> > -		cfg |=3D CSI_IF_CFG_IF_DATA_WIDTH_10BIT;
-> > -		break;
-> > -	case 12:
-> > -		cfg |=3D CSI_IF_CFG_IF_DATA_WIDTH_12BIT;
-> > -		break;
-> > -	case 16: /* No need to configure DATA_WIDTH for 16bit */
-> > -		break;
-> > -	default:
-> > -		dev_warn(sdev->dev, "Unsupported bus width: %u\n", bus_width);
-> > -		break;
-> > -	}
-> > -
->=20
-> Is there any reason to move it around?
-
-The main reason is cosmetics: input_parallel is introduced to match the alr=
-eady
-existing input_interlaced variable, so it made sense to me to have both of =
-these
-conditionals one after the other instead of spreading them randomly.
-
-I can mention this in the commit log if you prefer.
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---5gxpn/Q6ypwruk0T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+X6OcACgkQ3cLmz3+f
-v9E4ZAf9G4WrazCR7uzhJ6TzaObPDuK3ZcpoqfZh7GopUZHGTQkIg1MdpqnZTUor
-NXm7n2mI41WUp9/F7URC05l8+ySbojy6jjIhGdf9IorawBgrlRAVplqPJaF2uuWD
-NnxVIys2WTw2FwHrh3zEVHKJPO+1qTleIoBPu5WFodwsvz/Pb2zVS2/Kdtv5KhXa
-G1GBNQ7UlQqvbShqs7f5LoYlp9GHuB8/NmVHH/jP89BhpDBTbsYLWQXjvs6fqNgb
-ggICWUXB5Uwjfsj8PWcFBXJFStux5NoeOypCLJCxKau86uphz6VLodbj/T2VvmCW
-qmjrvw6LqmyPx5pJpg9gPupbc+plpw==
-=qqnp
------END PGP SIGNATURE-----
-
---5gxpn/Q6ypwruk0T--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
