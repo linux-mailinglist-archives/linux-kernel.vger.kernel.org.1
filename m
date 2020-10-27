@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD49E29B3E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8416029B1B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782114AbgJ0O4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
+        id S2902401AbgJ0OdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1764140AbgJ0OqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:46:22 -0400
+        id S1759134AbgJ0O2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:28:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE5AF20773;
-        Tue, 27 Oct 2020 14:46:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CE6320780;
+        Tue, 27 Oct 2020 14:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809981;
-        bh=wQr68+vYs99n5H4ysvc98rbX0sn/3HNW51O3srouVyc=;
+        s=default; t=1603808881;
+        bh=iDxgveLN2b0CKm9G7QR9mf/hC+Mj7iydSynSeUUnsA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q6qrUomzBrHsZJzj9ZdHwLxyYjJD8oXJX39vuvO6qb9zDKsv71kRnKywXTrMaOF7Y
-         XQeZHKs5Spq8bKoezyEtbIiUMTfANSUl/Q4iYpsdThupRcupnvL8274YcpPCB0Bs/3
-         i1qNiGyWTevrZprK5SffmrKFpQQGbXxD0Je3x0qs=
+        b=sWKpQcyKIM8ZZpVKud1KwhpAS/lYmEU2SVWC1y03GE44q0cQZpWxeZwCIKbKME3I6
+         DRfsbtrz/UrAFsrLBfjm4zjcb8kekOvIYDztXmqpRBF3UFoIa8SoOXYbL/N1ewx/7V
+         6CY/jyJUcwFDeg70jABJHxJRKhV4gjdCDF4pLVe8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Horn <doughorn@google.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 380/408] Fix use after free in get_capset_info callback.
+        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 4.19 260/264] tty: serial: fsl_lpuart: fix lpuart32_poll_get_char
 Date:   Tue, 27 Oct 2020 14:55:18 +0100
-Message-Id: <20201027135512.626726151@linuxfoundation.org>
+Message-Id: <20201027135442.862166404@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Horn <doughorn@google.com>
+From: Peng Fan <peng.fan@nxp.com>
 
-[ Upstream commit e219688fc5c3d0d9136f8d29d7e0498388f01440 ]
+commit 29788ab1d2bf26c130de8f44f9553ee78a27e8d5 upstream.
 
-If a response to virtio_gpu_cmd_get_capset_info takes longer than
-five seconds to return, the callback will access freed kernel memory
-in vg->capsets.
+The watermark is set to 1, so we need to input two chars to trigger RDRF
+using the original logic. With the new logic, we could always get the
+char when there is data in FIFO.
 
-Signed-off-by: Doug Horn <doughorn@google.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20200902210847.2689-2-gurchetansingh@chromium.org
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Suggested-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Link: https://lore.kernel.org/r/20200929095509.21680-1-peng.fan@nxp.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/virtio/virtgpu_kms.c |  2 ++
- drivers/gpu/drm/virtio/virtgpu_vq.c  | 10 +++++++---
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ drivers/tty/serial/fsl_lpuart.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index c190702fab726..6dcc05ab31eba 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -96,8 +96,10 @@ static void virtio_gpu_get_capsets(struct virtio_gpu_device *vgdev,
- 					 vgdev->capsets[i].id > 0, 5 * HZ);
- 		if (ret == 0) {
- 			DRM_ERROR("timed out waiting for cap set %d\n", i);
-+			spin_lock(&vgdev->display_info_lock);
- 			kfree(vgdev->capsets);
- 			vgdev->capsets = NULL;
-+			spin_unlock(&vgdev->display_info_lock);
- 			return;
- 		}
- 		DRM_INFO("cap set %d: id %d, max-version %d, max-size %d\n",
-diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
-index 7ac20490e1b4c..92022a83bbd5e 100644
---- a/drivers/gpu/drm/virtio/virtgpu_vq.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
-@@ -572,9 +572,13 @@ static void virtio_gpu_cmd_get_capset_info_cb(struct virtio_gpu_device *vgdev,
- 	int i = le32_to_cpu(cmd->capset_index);
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -563,7 +563,7 @@ static void lpuart32_poll_put_char(struc
  
- 	spin_lock(&vgdev->display_info_lock);
--	vgdev->capsets[i].id = le32_to_cpu(resp->capset_id);
--	vgdev->capsets[i].max_version = le32_to_cpu(resp->capset_max_version);
--	vgdev->capsets[i].max_size = le32_to_cpu(resp->capset_max_size);
-+	if (vgdev->capsets) {
-+		vgdev->capsets[i].id = le32_to_cpu(resp->capset_id);
-+		vgdev->capsets[i].max_version = le32_to_cpu(resp->capset_max_version);
-+		vgdev->capsets[i].max_size = le32_to_cpu(resp->capset_max_size);
-+	} else {
-+		DRM_ERROR("invalid capset memory.");
-+	}
- 	spin_unlock(&vgdev->display_info_lock);
- 	wake_up(&vgdev->resp_wq);
- }
--- 
-2.25.1
-
+ static int lpuart32_poll_get_char(struct uart_port *port)
+ {
+-	if (!(lpuart32_read(port, UARTSTAT) & UARTSTAT_RDRF))
++	if (!(lpuart32_read(port, UARTWATER) >> UARTWATER_RXCNT_OFF))
+ 		return NO_POLL_CHAR;
+ 
+ 	return lpuart32_read(port, UARTDATA);
 
 
