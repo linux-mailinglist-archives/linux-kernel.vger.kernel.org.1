@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B899529A300
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3167129A301
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442329AbgJ0DLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 23:11:02 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:37419 "EHLO
+        id S2442418AbgJ0DLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:11:07 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:40337 "EHLO
         mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441478AbgJ0DLB (ORCPT
+        with ESMTP id S2411605AbgJ0DLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 23:11:01 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 126so82572pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 20:11:01 -0700 (PDT)
+        Mon, 26 Oct 2020 23:11:06 -0400
+Received: by mail-pf1-f193.google.com with SMTP id w21so75243pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 20:11:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=eKg08zyJMCR/Obh9fsxLt+/CcExOahzavLAHoNQrPig=;
-        b=ZV8wy7ExJVi1Jp1pQhMJF+0Zpn7p3W0nYRpvEtGlKRkqYG+eH66Q5AiQ1Z8TjJhSLK
-         AHiqJAGBitDOFq31ZHDIciBdk2UkbNg4JmzBu97zJulp7WvLpJhnm4MaDDiI0dgqmA12
-         vTYvD6p+RIphv5htGRz071f6pxKanxjwdTwbrDmSMJlwPNWV0owXb3kBzvQ2XX3E5AD0
-         K6hBo4p6wq1Y9clsyPR99gx43A6hoCbetESa+GXlqe+HjHV/x9tyreamY71z9l2Q+H/W
-         sEwTat14fi26YxRH4TPPj6cOaYuXqgXRhNSpuaCYmwb0PDHTKvsAfkxEyzyT51YSKXkM
-         Gd2w==
+        bh=GYRdYwhERhFOA9e5oy++bAO3+3Vnt/3kzYcTCfjnYY0=;
+        b=EcFMZwWEzUb1Gk30pTizDgghUF0ybUWLoU3UCA5E1Gmn80QiMPHetDW1A6uwWKCS9g
+         abnafihmIcwP8t6E/ozcrgNB2XEFMbcO3gYU2+8cpGNCJeo89SZgHGuGp1rLTs64Dqg5
+         FhRKq0V9awckB/lxwPovTHAKWUWA12u5lCaJ+KAu6+EPb2xEkI410K99qqcB/bHa87gz
+         XW+ExESJtCe2HCjHQYd3yglL7hlouphNOHM/m34Cuf6JA3nUGq0tNYJGaKfzeRG1C/DB
+         LbxyK886SEDwT2L64RwTyU3rt5ZDmc3DvbPkVGJV2nGMzt7YtD8SC6QGKUidUm6o6Qha
+         j6oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=eKg08zyJMCR/Obh9fsxLt+/CcExOahzavLAHoNQrPig=;
-        b=fh/keYPWmVALYte5QRROmtIRhzl/88ZS2xgW7hqbiOEvGDVUQwIImDm3sZ1DA5R0y+
-         i433kcvGwPx5ZMPpLzvm/qq7Qs4LDn9438w7or/K2tLnHRKv3gyVS9wVZmEyKTGuS+NU
-         55KKrTMMW7HW1/FWFoMOztrhnQn1/r36r7YKQA+/yahPx0inyI1bl3ch+/Fn9z9xKAHi
-         Wyj09pnuVRqfitLCf52G4snVFyGanICYktEhNrriA1NlNnwU3lwrRuAN9eJIzMMlEX3J
-         N+c8EfJQfafFKeazt+gFYJ2akG79lh2jg2ek1l3yR2FaW2Ax9BrpvSDbf3twdBlOMOMn
-         8INg==
-X-Gm-Message-State: AOAM531wngu7oxZ/kaZDJm3noPMgb9Xh8f3nxuffDj5bPrgOUPa41aeJ
-        ha7OpGkBI8uApu0QsWkVP1+lDeTTeCmA5X6W
-X-Google-Smtp-Source: ABdhPJw4anY7d6Tv6a8Osg7z3hY2Fh7JaAWnmiQWZJ46dF1bCja33yU7/0gjrTvanc/18rQnMSof1Q==
-X-Received: by 2002:a65:6158:: with SMTP id o24mr98260pgv.120.1603768261000;
-        Mon, 26 Oct 2020 20:11:01 -0700 (PDT)
+        bh=GYRdYwhERhFOA9e5oy++bAO3+3Vnt/3kzYcTCfjnYY0=;
+        b=Y2XU89PvIKAnBmEvhQLiKfv7AgyVoPpuVhyAnQz/TeY14Q4XSaFwUZwG/zAoRsZRIT
+         PtvEmOwdnyE5SAWsabKAjm5YLYCm+wdsjJ2fjUztrytkNrXAU8uEFGlA5WoA29akyTlf
+         I5GFISRTGNCPP3WCGLXsE+/xsXGtLK/7gP25HVJBdCzLKRs9MYreyfkvqaDoVZShZfb5
+         qxk3dIUfm/5iIbM9wkOwIRpFH/PFF3HjJjKyhBk3XSMXbK5iD+gp9SeqWKXYC1W8AL1v
+         R8z2Hu9/Uov271vef9Z74VZ9ZSh7sx9/YMXASjj/eOwFW6qwVbtDXq5Bqw0KpmcKxWFQ
+         DR2Q==
+X-Gm-Message-State: AOAM530GZNF4WpXAoYojBGmFTw+wAoleso2oBWg9/xgsMIFuzLVHeEqp
+        aFm6CkbZp/Yys/6RDINzLw2xpQ==
+X-Google-Smtp-Source: ABdhPJyiQ4AE7Fdxpr6n8HaAjbQjoGKvtAYYn6uF22hmpOwKNvDus5GbLxOtCtdOjrsGUJk7peI+lg==
+X-Received: by 2002:a62:54c2:0:b029:156:4e4c:ff49 with SMTP id i185-20020a6254c20000b02901564e4cff49mr202537pfb.26.1603768265967;
+        Mon, 26 Oct 2020 20:11:05 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id 9sm190541pjs.1.2020.10.26.20.11.00
+        by smtp.gmail.com with ESMTPSA id r201sm199117pfc.98.2020.10.26.20.11.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 20:11:00 -0700 (PDT)
+        Mon, 26 Oct 2020 20:11:05 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andre Przywara <andre.przywara@arm.com>,
@@ -57,9 +57,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
         Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 10/21] perf arm_spe: Fixup top byte for data virtual address
-Date:   Tue, 27 Oct 2020 11:09:06 +0800
-Message-Id: <20201027030917.15404-11-leo.yan@linaro.org>
+Subject: [PATCH v4 11/21] perf arm-spe: Refactor context packet handling
+Date:   Tue, 27 Oct 2020 11:09:07 +0800
+Message-Id: <20201027030917.15404-12-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201027030917.15404-1-leo.yan@linaro.org>
 References: <20201027030917.15404-1-leo.yan@linaro.org>
@@ -67,65 +67,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To establish a valid address from the address packet payload and finally
-the address value can be used for parsing data symbol in DSO, current
-code uses 0xff to replace the tag in the top byte of data virtual
-address.
-
-So far the code only fixups top byte for the memory layouts with 4KB
-pages, it misses to support memory layouts with 64KB pages.
-
-This patch adds the conditions for checking bits [55:48] are 0xf0 or
-0xfd, if detects the patterns it will fill 0xff into the top byte of the
-address, also adds comment to explain the fixing up.
+Minor refactoring to use macro for index mask.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 ---
- .../util/arm-spe-decoder/arm-spe-decoder.c    | 24 ++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 2 +-
+ tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-index 776b3e6628bb..e135ac01d94a 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-@@ -24,7 +24,7 @@
- 
- static u64 arm_spe_calc_ip(int index, u64 payload)
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+index 1218a731638f..9304dfe72ebd 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+@@ -136,7 +136,7 @@ static int arm_spe_get_context(const unsigned char *buf, size_t len,
+ 			       struct arm_spe_pkt *packet)
  {
--	u64 ns, el;
-+	u64 ns, el, val;
+ 	packet->type = ARM_SPE_CONTEXT;
+-	packet->index = buf[0] & 0x3;
++	packet->index = SPE_CTX_PKT_HDR_INDEX(buf[0]);
+ 	return arm_spe_get_payload(buf, len, 0, packet);
+ }
  
- 	/* Instruction virtual address or Branch target address */
- 	if (index == SPE_ADDR_PKT_HDR_INDEX_INS ||
-@@ -45,8 +45,26 @@ static u64 arm_spe_calc_ip(int index, u64 payload)
- 		/* Clean tags */
- 		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+index f97d6840be3a..9bc876bffd35 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+@@ -79,6 +79,9 @@ struct arm_spe_pkt {
+ #define SPE_ADDR_PKT_EL2			2
+ #define SPE_ADDR_PKT_EL3			3
  
--		/* Fill highest byte if bits [48..55] is 0xff */
--		if (SPE_ADDR_PKT_ADDR_GET_BYTE_6(payload) == 0xffULL)
-+		/*
-+		 * Armv8 ARM (ARM DDI 0487F.c), chapter "D10.2.1 Address packet"
-+		 * defines the data virtual address payload format, the top byte
-+		 * (bits [63:56]) is assigned as top-byte tag; so we only can
-+		 * retrieve address value from bits [55:0].
-+		 *
-+		 * According to Documentation/arm64/memory.rst, if detects the
-+		 * specific pattern in bits [55:48] of payload which falls in
-+		 * the kernel space, should fixup the top byte and this allows
-+		 * perf tool to parse DSO symbol for data address correctly.
-+		 *
-+		 * For this reason, if detects the bits [55:48] is one of
-+		 * following values, will fill 0xff into the top byte:
-+		 *
-+		 *   - 0xff (for most kernel memory regions);
-+		 *   - 0xf0 (for kernel logical memory map with 64KB pages);
-+		 *   - 0xfd (for kasan shadow region with 64KB pages).
-+		 */
-+		val = SPE_ADDR_PKT_ADDR_GET_BYTE_6(payload);
-+		if (val == 0xffULL || val == 0xf0ULL || val == 0xfdULL)
- 			payload |= 0xffULL << SPE_ADDR_PKT_ADDR_BYTE7_SHIFT;
++/* Context packet header */
++#define SPE_CTX_PKT_HDR_INDEX(h)		((h) & GENMASK_ULL(1, 0))
++
+ const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
  
- 	/* Data access physical address */
+ int arm_spe_get_packet(const unsigned char *buf, size_t len,
 -- 
 2.17.1
 
