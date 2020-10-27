@@ -2,123 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DE529A835
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760EB29A837
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895964AbgJ0JtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:49:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
+        id S2896006AbgJ0JuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:50:00 -0400
+Received: from mout.gmx.net ([212.227.15.19]:38383 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895946AbgJ0JtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:49:01 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7CAF20759;
-        Tue, 27 Oct 2020 09:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603792140;
-        bh=wcj6sqvr10YA2nIxp8QFswfSebjeDskPYpJl+9Hjv5I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=li/s39XFgB24jJSUCjqf8zNKcx6M9bh+uU6phnSX6LJCJRBegjZ0SOdTEugjflO1e
-         WgquGhsCXXsZ3V2YD7JRAQc2nfgUEjBNCSoKoM6GZx5SGcpgMkSqE8zAapjDeCrodZ
-         Fc2zbcZd41+mXwuTSqYXiceoEMKXjGqiG53f7j/s=
-Date:   Tue, 27 Oct 2020 11:48:45 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "tycho@tycho.ws" <tycho@tycho.ws>, "cl@linux.com" <cl@linux.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>
-Subject: Re: [PATCH v7 3/7] set_memory: allow set_direct_map_*_noflush() for
- multiple pages
-Message-ID: <20201027094845.GJ1154158@kernel.org>
-References: <20201026083752.13267-1-rppt@kernel.org>
- <20201026083752.13267-4-rppt@kernel.org>
- <e754ae3873e02e398e58091d586fe57e105803db.camel@intel.com>
- <9202c4c1-9f1f-175f-0a85-fc8c30bc5e3b@redhat.com>
+        id S2895997AbgJ0Jt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:49:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603792146;
+        bh=md6P4mIqJNm4Z74SBvAdHygGTPRRylq7Nvq0KO6MK8Y=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=IgAFWVzvKwQlOWPFmIBfMhwu/xClwCCQwXxAFt3GlFoIc5KYjW6vpk7HrCPJZPQcA
+         WS99T9NRyjnzhhXXU4C/XIiBRw5+2RRJs//804YWUvjPXnXTXNtcSXOij4n/KUoyFm
+         8Jb6LpEn2oVg4WW2FkKBFtdmuvpXuw0fA0KSdbrM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.simpson.net ([185.146.51.69]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MK3Rs-1kpPv22hNW-00LSWT; Tue, 27
+ Oct 2020 10:49:06 +0100
+Message-ID: <73f0a095b06ce8778411cc251d0edf6ffe46557c.camel@gmx.de>
+Subject: Re: kvm+nouveau induced lockdep  gripe
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Date:   Tue, 27 Oct 2020 10:49:04 +0100
+In-Reply-To: <20201027090019.3vteojm43ljqqe33@linutronix.de>
+References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
+         <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+         <20201023090108.5lunh4vqfpkllmap@linutronix.de>
+         <20201024022236.19608-1-hdanton@sina.com>
+         <20201024050000.8104-1-hdanton@sina.com>
+         <20201026173107.quylcy6fgjvrqat6@linutronix.de>
+         <431e81699f2310eabfe5af0a3de400ab99d9323b.camel@gmx.de>
+         <20201026195308.wsbk7xy57wuzfbao@linutronix.de>
+         <0dfae65db2f0d3ef603c1db34f37cee63f7f41f4.camel@gmx.de>
+         <20201027090019.3vteojm43ljqqe33@linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9202c4c1-9f1f-175f-0a85-fc8c30bc5e3b@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QphFDyGFLVb07ZImYmAxiVppT+XiPpb9UaX/lJgNTkxbHrtfSMi
+ enEPFBq4CpL0RJ6aCoT4I1PhGlP80T2J1nZCSM7xeVScae1V20N+gXxVgVID4UobzN75YKY
+ qlhZLICW+VC0unc1RXfaywQsbCODsRUFpoye+7fZLX98Ym5D+1kyorBRR81AraCpk/rX9eO
+ myJdGp0W/6fRpyFZsSGHQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:27DmJYfCjFQ=:KDv21O6CDGrEm5LiFRRfhz
+ BQuWXGAje3IYxJZcAEFOFha0asFEUB9baTjHAmALrzU6Suy7wVxVPSK7vOmpa83IHLgqM84NB
+ xJQgPTnBXo8kT0JQM1RHzzZ5U6S85I4qmXNsamHBU5fO1lYKjTYdnIgUvv/+BLBSUTlc9XYZn
+ DTCPk/nrErsGskT3FVStmzlpGfLuIuJMlKo/uuAcIxofR/vg3GCnGk/5k456yAs1pYhk+BT1K
+ lglEQLCK6wcp44axjc45FtrXfoKHSZ9qsnKL8PEYRQ5Zo1aonhnqhl+pT0E8MTSh12Vm+SNpE
+ arsmmRtBnbdC0V1OO/XfAEL/psFiEsRo0GtwdSo/dujqk3DbFpzdijIi8Mp2YddwyqH1GRAxJ
+ Z+IYcWp5IGLWq2gu7yPP5lJgc7lZbPa9NxshAoGRuERME5UEb5QtYjTaAbSBtzjecDoFndjbV
+ pVfNevkAP236OOUBfrYWOW81xDfyM+Y3ty133X8rzNbe5SKINi0IGRDaICxwye3M5wPWZuEmJ
+ 5UXiok33v7/7d7UDYMok0YKb2JnZu5zstU9cVhBa+vOGf0aOx0LtI572WXN8sFkGa00WxncGW
+ s98BU1W/TJvzWpJcY0Zb+OWXWLvdq2MVGfeS3dQ9Nj4vY4SUfLPmTzpMfisbtnL5YJbME1ys5
+ fSrnPol5IXlkumNJHgXZbpou5nPMN6m2ZQkm4CDsm8hougAppTZQlWPzoffCeQX1nGXVw6Tpe
+ Y26+58tsDTUfPpZRjR03B2G2iSxsoS1MC2KtnybBdEoRuFuTCw4cV74hVSb0jEHvH01AarBqC
+ boTh4yavW9wfFUubPbwO6LcMnVU88CtCdpQO1Lo75CDitt7MxqgVHxiqHCmZGMoM+yB3YTLRg
+ Uzzh3I53T9Y2hBGpmQkA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:12:23AM +0100, David Hildenbrand wrote:
-> On 26.10.20 20:01, Edgecombe, Rick P wrote:
-> > On Mon, 2020-10-26 at 10:37 +0200, Mike Rapoport wrote:
-> >> +++ b/arch/x86/mm/pat/set_memory.c
-> >> @@ -2184,14 +2184,14 @@ static int __set_pages_np(struct page *page,
-> >> int numpages)
-> >>         return __change_page_attr_set_clr(&cpa, 0);
-> >>  }
-> >>  
-> >> -int set_direct_map_invalid_noflush(struct page *page)
-> >> +int set_direct_map_invalid_noflush(struct page *page, int numpages)
-> >>  {
-> >> -       return __set_pages_np(page, 1);
-> >> +       return __set_pages_np(page, numpages);
-> >>  }
-> >>  
-> >> -int set_direct_map_default_noflush(struct page *page)
-> >> +int set_direct_map_default_noflush(struct page *page, int numpages)
-> >>  {
-> >> -       return __set_pages_p(page, 1);
-> >> +       return __set_pages_p(page, numpages);
-> >>  }
-> > 
-> > Somewhat related to your other series, this could result in large NP
-> > pages and trip up hibernate.
-> > 
-> 
-> It feels somewhat desirable to disable hibernation once secretmem is
-> enabled, right? Otherwise you'll be writing out your secrets to swap,
-> where they will remain even after booting up again ...
-> 
-> Skipping secretmem pages when hibernating is the wrong approach I guess ...
+On Tue, 2020-10-27 at 10:00 +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-10-27 07:03:38 [+0100], Mike Galbraith wrote:
+> > On Mon, 2020-10-26 at 20:53 +0100, Sebastian Andrzej Siewior wrote:
+> > >
+> > > Could you try this, please?
+> >
+> > Nogo, first call of sched_setscheduler() is via kthread_create().  I
+> > confirmed that nuking that (gratuitous user foot saving override) call
+> > on top of moving sched_set_fifo() does shut it up, but that won't fly.
+>
+> mkay. but this then, too.
 
-Completely agree.
-I'll look into preventing hibernation from touching secretmem.
+Yup, might even fly.
 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
+>  Let me try if I can figure out when this
+> broke.
+>
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 3edaa380dc7b4..64d6afb127239 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -244,6 +244,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
+>  static int kthread(void *_create)
+>  {
+>  	/* Copy data: it's on kthread's stack */
+> +	static const struct sched_param param =3D { .sched_priority =3D 0 };
+>  	struct kthread_create_info *create =3D _create;
+>  	int (*threadfn)(void *data) =3D create->threadfn;
+>  	void *data =3D create->data;
+> @@ -273,6 +274,13 @@ static int kthread(void *_create)
+>  	init_completion(&self->parked);
+>  	current->vfork_done =3D &self->exited;
+>
+> +	/*
+> +	 * root may have changed our (kthreadd's) priority or CPU mask.
+> +	 * The kernel thread should not inherit these properties.
+> +	 */
+> +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
+> +	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
+> +
+>  	/* OK, tell user we're spawned, wait for stop or wakeup */
+>  	__set_current_state(TASK_UNINTERRUPTIBLE);
+>  	create->result =3D current;
+> @@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*t=
+hreadfn)(void *data),
+>  	}
+>  	task =3D create->result;
+>  	if (!IS_ERR(task)) {
+> -		static const struct sched_param param =3D { .sched_priority =3D 0 };
+>  		char name[TASK_COMM_LEN];
+>
+>  		/*
+> @@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*=
+threadfn)(void *data),
+>  		 */
+>  		vsnprintf(name, sizeof(name), namefmt, args);
+>  		set_task_comm(task, name);
+> -		/*
+> -		 * root may have changed our (kthreadd's) priority or CPU mask.
+> -		 * The kernel thread should not inherit these properties.
+> -		 */
+> -		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
+> -		set_cpus_allowed_ptr(task,
+> -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
+>  	}
+>  	kfree(create);
+>  	return task;
+>
+> Sebastian
 
--- 
-Sincerely yours,
-Mike.
