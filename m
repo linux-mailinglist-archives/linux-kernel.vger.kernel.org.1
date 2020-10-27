@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B9829BE03
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0586829BE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813519AbgJ0Quj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:50:39 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:50978 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1813389AbgJ0Qt5 (ORCPT
+        id S1813434AbgJ0Qv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:51:26 -0400
+Received: from mail-pl1-f202.google.com ([209.85.214.202]:36605 "EHLO
+        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1813395AbgJ0Qt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:49:57 -0400
-Received: by mail-pf1-f202.google.com with SMTP id a27so1244654pfl.17
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:49:56 -0700 (PDT)
+        Tue, 27 Oct 2020 12:49:59 -0400
+Received: by mail-pl1-f202.google.com with SMTP id v6so1264994plo.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:49:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=nuxxs/Px/9QpRIlm7J+PyL0HWcASsbcWXqWCTDpjZLY=;
-        b=SGQLLWiB+LUjaqR1TSdlpCpxrsi+POAiH2xjFLEZiQ/Wy8axJ7MQAwv6yJG4RQFjVH
-         2Bde6HUbl3/5tLJBqO2GGocfLTNhD4piiEGuFcTE3tNlCR/vOkEweNCcRo8i7U2fOu0+
-         UigavmfeQIAdOyfoCOq2wOlrR79bpk/B9bpd91hzS8apgFhVrwDZTlzlp/XoK5RIrc7U
-         EgtcREjXUgluwLgZ/dBJ5fEwwxTQeMMERb5hdHFyDyg3jdX/f8TcLnKuVuBqHWDSO/Vf
-         KMxOlowmn6ogA67Z+poRwIIIfbhDDnFdxm80hDvd3shtA5cXQWT1psAvvLBLUm4epcsX
-         KbqQ==
+        bh=9wWRec99gN9dBHws62nUYEcveG+Fv/NYOt3MJb2ccyQ=;
+        b=aUMB149cvGGQuG2bVbNSUocZgWt1sioEvdQd1cZrZrEqyOKZ+Quzhm+vTh197m0dc5
+         0Vh57Q3oISS9HGv+r2I9dZMDV770VJlHwU3svC8s+mIllf3iDoeX6oD2B7dV2aKqHzUp
+         Q4tIdMUo47oLRLSRiXIgnpJsz0dOrget/Unwv/O9XWGXkSFdwArwcINKdj95dtMvsy04
+         3czpJYElfSsGu4IpB8T5pMod3JxnvmtlnbSMsqvyJHUnT74eIqXKxdzzyCh2YoBeaGPm
+         JMcqioxwFoyynkj9fgCt6MfJLBctSBh6bUW4R3xkleTBkKt0PqXAa/9dUl8iMA82QeYN
+         jUYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=nuxxs/Px/9QpRIlm7J+PyL0HWcASsbcWXqWCTDpjZLY=;
-        b=hZMceAJvmOdHlEFZUPO9kmSOEdCrtHytCGpDFZxJcdVqZWvst8YKjfKfw5gqq/g++0
-         qdXCfJ9OOG473rHKfSA9JhzRudTwSced5PpYONeyn9Gqegk2UHDqmPTr8qnVAecZVWuD
-         JGDIbER8k+Dms6Sc25sA3+snDdSyD2x2lN5NUJmgQ6xaAWa6B4GXgT9FJa9kFqgbh2Hj
-         duXhQBPSB9XQREN15oNSnSS4rGTB50UmUelItuG+KIM4G4zunON90imxcMKjo5RXNVAm
-         uK0e3lPkBnn0eOAcTCHrLP+c3D/gPuntuQX/X2YzKANRuEUWJ0RJ5wQPoHvnzGovxlgS
-         Dmbg==
-X-Gm-Message-State: AOAM530QwxRGNnUiy7ffyXMYbqYlEsDgDOY3WDj5bUOMD+LXVe8EkuaZ
-        jReMpB/V4pSMor7w+ewQDwENLPN04WSfnkyAxey/XCx13S5aPmwqe4/9RahKR1bkPvph/4pGfMy
-        GhIjTO3F+oiGDEEnB+6KE3SpZEybxbPKQ4/4II47LSCfjSZGcixnxmF1VXhotcx6XgWNzJT6+
-X-Google-Smtp-Source: ABdhPJzT7GGtUaXKyrFhHPKMnptHgg3JCdWq1CQfBl6a05IhJ1AanAbFiyvdLmOm1ZktrH0sdKOH1g5fzZjb
+        bh=9wWRec99gN9dBHws62nUYEcveG+Fv/NYOt3MJb2ccyQ=;
+        b=WDE2PU9G7AVapdRjSvEKhGFdKD/4NF/tCo5dn3O0EiPTcqUshB2IgpaGks6s/mOjl9
+         D4TwOLfDdgcAzbA8CbglrlnEXKZlYekoptCdi0rlSZqZMPamPpBeXRJyecbEUi+EhoiK
+         rh6P1EQNrVXfkYGi5c+LkjCqWyOdfy1otfOwhwauKlJu2cowHca+OqCw8P691EwcqRHd
+         ycZg1pNPBg0S4ECzP7wruRRE2lEY2UJVp2DkZmetVBjK+BfMO9BdY0c9CAqHf1sonAQK
+         DPm8HeWSXF5to/remSjA9IpQmAE2vXDGHTcvkkI5FZVCWQdDAcVLhTbmy33BXtcurneC
+         9NmA==
+X-Gm-Message-State: AOAM533bNvwScg/RYNVZ+zbETG+rZmqqh48dsg0JbwjS2cOk0PL5yxhk
+        e7Nf5wSwid2r3cOqK24iySnAJuUeEGbDFBCEJ4LSMSp801FjMVWywVFkQSlzFtytr4eVlgZfIZl
+        4gPOtGnXiDk7GtUHP1YXsaR2fgtHuJVR30ZEJGYVenJiiJwzgZe5feBw4StTg7dhnyeOAwZ8F
+X-Google-Smtp-Source: ABdhPJwcmANEN9+xA/xdNMbReOFXLVV5MCPIMd8gklhGJVpnaHvVILVlA/jnwXbAZHA9QeUOm94UHlN8lzAN
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a62:8097:0:b029:153:ce1d:c46 with SMTP id
- j145-20020a6280970000b0290153ce1d0c46mr3179460pfd.68.1603817395887; Tue, 27
- Oct 2020 09:49:55 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 09:49:49 -0700
+ (user=bgardon job=sendgmr) by 2002:a17:90a:f198:: with SMTP id
+ bv24mr2820492pjb.230.1603817397922; Tue, 27 Oct 2020 09:49:57 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 09:49:50 -0700
 In-Reply-To: <20201027164950.1057601-1-bgardon@google.com>
-Message-Id: <20201027164950.1057601-2-bgardon@google.com>
+Message-Id: <20201027164950.1057601-3-bgardon@google.com>
 Mime-Version: 1.0
 References: <20201027164950.1057601-1-bgardon@google.com>
 X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH 2/3] sched: Add needbreak for rwlocks
+Subject: [PATCH 3/3] sched: Add cond_resched_rwlock
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
@@ -67,43 +66,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Contention awareness while holding a spin lock is essential for reducing
-latency when long running kernel operations can hold that lock. Add the
-same contention detection interface for read/write spin locks.
+Rescheduling while holding a spin lock is essential for keeping long
+running kernel operations running smoothly. Add the facility to
+cond_resched rwlocks.
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- include/linux/sched.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ include/linux/sched.h | 12 ++++++++++++
+ kernel/sched/core.c   | 40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 063cd120b4593..77179160ec3ab 100644
+index 77179160ec3ab..2eb0c53fce115 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1870,6 +1870,23 @@ static inline int spin_needbreak(spinlock_t *lock)
- #endif
- }
+@@ -1841,12 +1841,24 @@ static inline int _cond_resched(void) { return 0; }
+ })
  
-+/*
-+ * Check if a rwlock is contended.
-+ * Returns non-zero if there is another task waiting on the rwlock.
-+ * Returns zero if the lock is not contended or the system / underlying
-+ * rwlock implementation does not support contention detection.
-+ * Technically does not depend on CONFIG_PREEMPTION, but a general need
-+ * for low latency.
-+ */
-+static inline int rwlock_needbreak(rwlock_t *lock)
-+{
-+#ifdef CONFIG_PREEMPTION
-+	return rwlock_is_contended(lock);
-+#else
-+	return 0;
-+#endif
-+}
+ extern int __cond_resched_lock(spinlock_t *lock);
++extern int __cond_resched_rwlock_read(rwlock_t *lock);
++extern int __cond_resched_rwlock_write(rwlock_t *lock);
+ 
+ #define cond_resched_lock(lock) ({				\
+ 	___might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);\
+ 	__cond_resched_lock(lock);				\
+ })
+ 
++#define cond_resched_rwlock_read(lock) ({			\
++	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
++	__cond_resched_rwlock_read(lock);			\
++})
 +
- static __always_inline bool need_resched(void)
++#define cond_resched_rwlock_write(lock) ({			\
++	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
++	__cond_resched_rwlock_write(lock);			\
++})
++
+ static inline void cond_resched_rcu(void)
  {
- 	return unlikely(tif_need_resched());
+ #if defined(CONFIG_DEBUG_ATOMIC_SLEEP) || !defined(CONFIG_PREEMPT_RCU)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index d2003a7d5ab55..ac58e7829a063 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6152,6 +6152,46 @@ int __cond_resched_lock(spinlock_t *lock)
+ }
+ EXPORT_SYMBOL(__cond_resched_lock);
+ 
++int __cond_resched_rwlock_read(rwlock_t *lock)
++{
++	int resched = should_resched(PREEMPT_LOCK_OFFSET);
++	int ret = 0;
++
++	lockdep_assert_held(lock);
++
++	if (rwlock_needbreak(lock) || resched) {
++		read_unlock(lock);
++		if (resched)
++			preempt_schedule_common();
++		else
++			cpu_relax();
++		ret = 1;
++		read_lock(lock);
++	}
++	return ret;
++}
++EXPORT_SYMBOL(__cond_resched_rwlock_read);
++
++int __cond_resched_rwlock_write(rwlock_t *lock)
++{
++	int resched = should_resched(PREEMPT_LOCK_OFFSET);
++	int ret = 0;
++
++	lockdep_assert_held(lock);
++
++	if (rwlock_needbreak(lock) || resched) {
++		write_unlock(lock);
++		if (resched)
++			preempt_schedule_common();
++		else
++			cpu_relax();
++		ret = 1;
++		write_lock(lock);
++	}
++	return ret;
++}
++EXPORT_SYMBOL(__cond_resched_rwlock_write);
++
+ /**
+  * yield - yield the current processor to other threads.
+  *
 -- 
 2.29.0.rc2.309.g374f81d7ae-goog
 
