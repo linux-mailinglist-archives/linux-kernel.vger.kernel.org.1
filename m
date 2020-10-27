@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB65129C29F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2B729C298
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820760AbgJ0Rh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:37:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33962 "EHLO mail.kernel.org"
+        id S1760565AbgJ0OfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:35:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760574AbgJ0OfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:35:15 -0400
+        id S1760189AbgJ0Ody (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:33:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2FC7207BB;
-        Tue, 27 Oct 2020 14:35:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4226520709;
+        Tue, 27 Oct 2020 14:33:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809315;
-        bh=jk++oXg9ZuIaZJ4ij8Qs7cweRKYW8CKYUpAEO/LCNbc=;
+        s=default; t=1603809233;
+        bh=U2L4TI+ODW1DfSENXpsKzJMS8rsBSGdviXkUOtLUq+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bO5o2/1smxRXxdhr4hiNj70IXIcw/EK1vZJ7AbVLBA96JM1l9nEG/ZybO9vzdL4t+
-         SaS9oN66DNhEsKvWViXcdsobk6Lv1phpO8m+HIuVpy0vGAx7oyMtvf3NL0SG32oIte
-         fzasQVvwibbdbzh5TBtnvZ6dTLlssQKSngxE7e+0=
+        b=zuvmPazy2eZmdkbi3pKPzGrW4QCYST9IU/GobPrp9+RAoGQ85aDMgs1nS8FZbw1SM
+         F/zR0QkKtgMgFTXq8xSp+YUbqhzvb3Z1u2/TxzYCgTqYgLkoyJoR/reJlYSvSXO9kt
+         M1sjgJxw38oVIKq7/MXlAdVqHuR97lSaLLwLpnow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Alex Dewar <alex.dewar90@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 122/408] backlight: sky81452-backlight: Fix refcount imbalance on error
-Date:   Tue, 27 Oct 2020 14:51:00 +0100
-Message-Id: <20201027135500.768910201@linuxfoundation.org>
+Subject: [PATCH 5.4 124/408] VMCI: check return value of get_user_pages_fast() for errors
+Date:   Tue, 27 Oct 2020 14:51:02 +0100
+Message-Id: <20201027135500.860797084@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,35 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dinghao.liu@zju.edu.cn <dinghao.liu@zju.edu.cn>
+From: Alex Dewar <alex.dewar90@gmail.com>
 
-[ Upstream commit b7a4f80bc316a56d6ec8750e93e66f42431ed960 ]
+[ Upstream commit 90ca6333fd65f318c47bff425e1ea36c0a5539f6 ]
 
-When of_property_read_u32_array() returns an error code, a
-pairing refcount decrement is needed to keep np's refcount
-balanced.
+In a couple of places in qp_host_get_user_memory(),
+get_user_pages_fast() is called without properly checking for errors. If
+e.g. -EFAULT is returned, this negative value will then be passed on to
+qp_release_pages(), which expects a u64 as input.
 
-Fixes: f705806c9f355 ("backlight: Add support Skyworks SKY81452 backlight driver")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fix this by only calling qp_release_pages() when we have a positive
+number returned.
+
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+Link: https://lore.kernel.org/r/20200825164522.412392-1-alex.dewar90@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/sky81452-backlight.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/backlight/sky81452-backlight.c b/drivers/video/backlight/sky81452-backlight.c
-index 2355f00f57732..1f6301375fd33 100644
---- a/drivers/video/backlight/sky81452-backlight.c
-+++ b/drivers/video/backlight/sky81452-backlight.c
-@@ -196,6 +196,7 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
- 					num_entry);
- 		if (ret < 0) {
- 			dev_err(dev, "led-sources node is invalid.\n");
-+			of_node_put(np);
- 			return ERR_PTR(-EINVAL);
- 		}
- 
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index 8531ae7811956..c49065887e8f5 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -657,8 +657,9 @@ static int qp_host_get_user_memory(u64 produce_uva,
+ 	if (retval < (int)produce_q->kernel_if->num_pages) {
+ 		pr_debug("get_user_pages_fast(produce) failed (retval=%d)",
+ 			retval);
+-		qp_release_pages(produce_q->kernel_if->u.h.header_page,
+-				 retval, false);
++		if (retval > 0)
++			qp_release_pages(produce_q->kernel_if->u.h.header_page,
++					retval, false);
+ 		err = VMCI_ERROR_NO_MEM;
+ 		goto out;
+ 	}
+@@ -670,8 +671,9 @@ static int qp_host_get_user_memory(u64 produce_uva,
+ 	if (retval < (int)consume_q->kernel_if->num_pages) {
+ 		pr_debug("get_user_pages_fast(consume) failed (retval=%d)",
+ 			retval);
+-		qp_release_pages(consume_q->kernel_if->u.h.header_page,
+-				 retval, false);
++		if (retval > 0)
++			qp_release_pages(consume_q->kernel_if->u.h.header_page,
++					retval, false);
+ 		qp_release_pages(produce_q->kernel_if->u.h.header_page,
+ 				 produce_q->kernel_if->num_pages, false);
+ 		err = VMCI_ERROR_NO_MEM;
 -- 
 2.25.1
 
