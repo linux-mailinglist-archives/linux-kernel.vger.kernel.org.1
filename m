@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E3729B1C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3641B29B1C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760243AbgJ0OeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:34:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59720 "EHLO mail.kernel.org"
+        id S2897783AbgJ0OeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902347AbgJ0Oct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:32:49 -0400
+        id S2902367AbgJ0Ocy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:32:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 558F0206DC;
-        Tue, 27 Oct 2020 14:32:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAA8420725;
+        Tue, 27 Oct 2020 14:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809168;
-        bh=ewlaxnRaadBePgHr+xb/RrbkFOIArvJHc4Jxdh9EBn8=;
+        s=default; t=1603809174;
+        bh=YLXIVoUUsD7oLtHfedDeIn2EIULEmfZqsrfd4FKJ/4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DMR+rvnbd6egkpJjxp98383vBpcQC4He8FUffPPQ/rkkb5Qm/fAd9K9r7o5V7r4X7
-         7y3zXfyV6HVqZRNGsoHUJt/2H4cze/kmlwqbIRm1fZI1+4GjRVsnJMWMUt96wj23/v
-         erPiFDtoT/WM/txw5hQb29ayPFRWE380jM0O+83M=
+        b=d6Y3WEoKMtGTL/+YAu6NwTKAMNwsijkJmEsSk0BazAJapAsS1QUCnpGEfi0TlYt25
+         rixayYK46rSS8/NKZs4noaQri4PDxUXcvZsV29i2a+gn9bAevIW5idXeYc/U3A5vqj
+         6HjCLhpvg++q6ATpN3WRQF8UfEjb1zSisw9DxRmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Yang Yang <yang.yang@vivo.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 100/408] spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and s3c64xx_enable_datapath()
-Date:   Tue, 27 Oct 2020 14:50:38 +0100
-Message-Id: <20201027135459.731814913@linuxfoundation.org>
+Subject: [PATCH 5.4 102/408] blk-mq: move cancel of hctx->run_work to the front of blk_exit_queue
+Date:   Tue, 27 Oct 2020 14:50:40 +0100
+Message-Id: <20201027135459.829784146@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,41 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Łukasz Stelmach <l.stelmach@samsung.com>
+From: Yang Yang <yang.yang@vivo.com>
 
-[ Upstream commit 581e2b41977dfc2d4c26c8e976f89c43bb92f9bf ]
+[ Upstream commit 47ce030b7ac5a5259a9a5919f230b52497afc31a ]
 
-Fix issues with DMA transfers bigger than 512 bytes on Exynos3250. Without
-the patches such transfers fail to complete. This solution to the problem
-is found in the vendor kernel for ARTIK5 boards based on Exynos3250.
+blk_exit_queue will free elevator_data, while blk_mq_run_work_fn
+will access it. Move cancel of hctx->run_work to the front of
+blk_exit_queue to avoid use-after-free.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-Link: https://lore.kernel.org/r/20201002122243.26849-2-l.stelmach@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 1b97871b501f ("blk-mq: move cancel of hctx->run_work into blk_mq_hw_sysfs_release")
+Signed-off-by: Yang Yang <yang.yang@vivo.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-s3c64xx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ block/blk-mq-sysfs.c | 2 --
+ block/blk-sysfs.c    | 9 ++++++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 7b7151ec14c8a..322f75f89c713 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -678,11 +678,11 @@ static int s3c64xx_spi_transfer_one(struct spi_master *master,
- 		sdd->state &= ~RXBUSY;
- 		sdd->state &= ~TXBUSY;
+diff --git a/block/blk-mq-sysfs.c b/block/blk-mq-sysfs.c
+index a09ab0c3d074d..5dafd7a8ec913 100644
+--- a/block/blk-mq-sysfs.c
++++ b/block/blk-mq-sysfs.c
+@@ -36,8 +36,6 @@ static void blk_mq_hw_sysfs_release(struct kobject *kobj)
+ 	struct blk_mq_hw_ctx *hctx = container_of(kobj, struct blk_mq_hw_ctx,
+ 						  kobj);
  
--		s3c64xx_enable_datapath(sdd, xfer, use_dma);
+-	cancel_delayed_work_sync(&hctx->run_work);
 -
- 		/* Start the signals */
- 		s3c64xx_spi_set_cs(spi, true);
+ 	if (hctx->flags & BLK_MQ_F_BLOCKING)
+ 		cleanup_srcu_struct(hctx->srcu);
+ 	blk_free_flush_queue(hctx->fq);
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index 46f5198be0173..bf33570da5ac7 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -891,9 +891,16 @@ static void __blk_release_queue(struct work_struct *work)
  
-+		s3c64xx_enable_datapath(sdd, xfer, use_dma);
+ 	blk_free_queue_stats(q->stats);
+ 
+-	if (queue_is_mq(q))
++	if (queue_is_mq(q)) {
++		struct blk_mq_hw_ctx *hctx;
++		int i;
 +
- 		spin_unlock_irqrestore(&sdd->lock, flags);
+ 		cancel_delayed_work_sync(&q->requeue_work);
  
- 		if (use_dma)
++		queue_for_each_hw_ctx(q, hctx, i)
++			cancel_delayed_work_sync(&hctx->run_work);
++	}
++
+ 	blk_exit_queue(q);
+ 
+ 	blk_queue_free_zone_bitmaps(q);
 -- 
 2.25.1
 
