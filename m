@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D90A29B7B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B2E29BA73
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795446AbgJ0PPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46994 "EHLO mail.kernel.org"
+        id S369035AbgJ0QCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794319AbgJ0PLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:11:11 -0400
+        id S1802330AbgJ0PqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:46:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E81F222EA;
-        Tue, 27 Oct 2020 15:11:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24EC421D42;
+        Tue, 27 Oct 2020 15:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811470;
-        bh=swjl4p7RllGljrdM008F8gqHzyP1dgi3X4kHCB5vjAU=;
+        s=default; t=1603813573;
+        bh=Yy/V6wqg3pFNjUhu9m9xh4868mWtP3TNBy/8sGlApSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ZEYXtDxwb25He2/0Mz79VC1uXEgLvEaUqEz8rKOIk9MMH/wEALJBcTT4hPtxWjAh
-         97mhkpdOgTG6fbWGjQO+sc+Vb+kM+6TKaatbRMoR/TgW/EMBAdqr8XbLcZho+z9NDy
-         fMSDsOaTYU6s6GY+RTFbmDbvG0uAdmJP6ZPLOeio=
+        b=b/3UvQiVEPjBNWo+5l4M+J0kdlyAAqGNU4RnRC/2udhg+d8fUS9yHvc4l/ZnUDTJI
+         mJKwZDGaecJoMGbMUW3cEZe3CeiK2uNcp+AUNlVIis6ijNPyxDo+NNkrntNqZ4WJcg
+         oXRuxqurx9KNOxI1JP8kKuYI3Fubog6paXSgOQys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 504/633] ARM: dts: owl-s500: Fix incorrect PPI interrupt specifiers
+Subject: [PATCH 5.9 597/757] firmware: arm_scmi: Fix NULL pointer dereference in mailbox_chan_free
 Date:   Tue, 27 Oct 2020 14:54:07 +0100
-Message-Id: <20201027135546.374063560@linuxfoundation.org>
+Message-Id: <20201027135518.545302004@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit 55f6c9931f7c32f19cf221211f099dfd8dab3af9 ]
+[ Upstream commit 6ed6c558234f0b6c22e47a3c2feddce3d02324dd ]
 
-The PPI interrupts for cortex-a9 were incorrectly specified, fix them.
+scmi_mailbox is obtained from cinfo->transport_info and the first
+call to mailbox_chan_free frees the channel and sets cinfo->transport_info
+to NULL. Care is taken to check for non NULL smbox->chan but smbox can
+itself be NULL. Fix it by checking for it without which, kernel crashes
+with below NULL pointer dereference and eventually kernel panic.
 
-Fixes: fdfe7f4f9d85 ("ARM: dts: Add Actions Semi S500 and LeMaker Guitar")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Peter Korsgaard <peter@korsgaard.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+   Unable to handle kernel NULL pointer dereference at
+   		virtual address 0000000000000038
+   Modules linked in: scmi_module(-)
+   Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno
+   		Development Platform, BIOS EDK II Sep  2 2020
+   pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
+   pc : mailbox_chan_free+0x2c/0x70 [scmi_module]
+   lr : idr_for_each+0x6c/0xf8
+   Call trace:
+    mailbox_chan_free+0x2c/0x70 [scmi_module]
+    idr_for_each+0x6c/0xf8
+    scmi_remove+0xa8/0xf0 [scmi_module]
+    platform_drv_remove+0x34/0x58
+    device_release_driver_internal+0x118/0x1f0
+    driver_detach+0x58/0xe8
+    bus_remove_driver+0x64/0xe0
+    driver_unregister+0x38/0x68
+    platform_driver_unregister+0x1c/0x28
+    scmi_driver_exit+0x38/0x44 [scmi_module]
+   ---[ end trace 17bde19f50436de9 ]---
+   Kernel panic - not syncing: Fatal exception
+   SMP: stopping secondary CPUs
+   Kernel Offset: 0x1d0000 from 0xffff800010000000
+   PHYS_OFFSET: 0x80000000
+   CPU features: 0x0240022,25806004
+   Memory Limit: none
+   ---[ end Kernel panic - not syncing: Fatal exception ]---
+
+Link: https://lore.kernel.org/r/20200908112611.31515-1-sudeep.holla@arm.com
+Fixes: 5c8a47a5a91d ("firmware: arm_scmi: Make scmi core independent of the transport type")
+Cc: Cristian Marussi <cristian.marussi@arm.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Tested-by: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/firmware/arm_scmi/mailbox.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index 5ceb6cc4451d2..1dbe4e8b38ac7 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -84,21 +84,21 @@ scu: scu@b0020000 {
- 		global_timer: timer@b0020200 {
- 			compatible = "arm,cortex-a9-global-timer";
- 			reg = <0xb0020200 0x100>;
--			interrupts = <GIC_PPI 0 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
+diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
+index 6998dc86b5ce8..b797a713c3313 100644
+--- a/drivers/firmware/arm_scmi/mailbox.c
++++ b/drivers/firmware/arm_scmi/mailbox.c
+@@ -110,7 +110,7 @@ static int mailbox_chan_free(int id, void *p, void *data)
+ 	struct scmi_chan_info *cinfo = p;
+ 	struct scmi_mailbox *smbox = cinfo->transport_info;
  
- 		twd_timer: timer@b0020600 {
- 			compatible = "arm,cortex-a9-twd-timer";
- 			reg = <0xb0020600 0x20>;
--			interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
- 		twd_wdt: wdt@b0020620 {
- 			compatible = "arm,cortex-a9-twd-wdt";
- 			reg = <0xb0020620 0xe0>;
--			interrupts = <GIC_PPI 3 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
-+			interrupts = <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_EDGE_RISING)>;
- 			status = "disabled";
- 		};
- 
+-	if (!IS_ERR(smbox->chan)) {
++	if (smbox && !IS_ERR(smbox->chan)) {
+ 		mbox_free_channel(smbox->chan);
+ 		cinfo->transport_info = NULL;
+ 		smbox->chan = NULL;
 -- 
 2.25.1
 
