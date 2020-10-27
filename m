@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C752A29AE93
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1211E29AF23
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753748AbgJ0OB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48712 "EHLO mail.kernel.org"
+        id S1754886AbgJ0OHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753611AbgJ0OBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:01:08 -0400
+        id S1754784AbgJ0OHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:07:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 361B3221F8;
-        Tue, 27 Oct 2020 14:01:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1B4922258;
+        Tue, 27 Oct 2020 14:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807266;
-        bh=nE9sYJGW7Gd3tHtoSy/tIeKH2o8k6bvzAfO/B54u6P4=;
+        s=default; t=1603807623;
+        bh=O+IHjo24MmO5QxbAQXUaVG9tU1jK7u/IyWbU513gXiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hxil8a2XLQlKJg4jMvGZnPQJnruiEx4CMxPIhHezYZS4ioD2zzWK0/T/UejrkvchB
-         1MLCXFz3EOMKsmHmthI3+o0xboT8XegxTh8VFPiLAs4FLKrDR59vrh3267mJQQPmz1
-         Qum61d2VEyXziBKBxWLre2ZFmUJSLONjXnJ515Bw=
+        b=ummyH8iJo0I/pbuIsJzUvY/NsFxDyUE9bwcngCVM1zEPiIESAtENj5zg2Lx5iKxL0
+         ePX85vpg9cB34j1zK6j/5zn7GEk4EhgRsDHARf3dpnRpgCr3qVJTBiJh5qE0dsIkuC
+         yMOPs+RVn0hK7LLZLfAY1GePZ3mnE5XthMW1KDp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 104/112] tty: ipwireless: fix error handling
+Subject: [PATCH 4.9 120/139] misc: rtsx: Fix memory leak in rtsx_pci_probe
 Date:   Tue, 27 Oct 2020 14:50:14 +0100
-Message-Id: <20201027134905.471042795@linuxfoundation.org>
+Message-Id: <20201027134907.839556992@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-[ Upstream commit db332356222d9429731ab9395c89cca403828460 ]
+[ Upstream commit bc28369c6189009b66d9619dd9f09bd8c684bb98 ]
 
-ipwireless_send_packet() can only return 0 on success and -ENOMEM on
-error, the caller should check non zero for error condition
+When mfd_add_devices() fail, pcr->slots should also be freed. However,
+the current implementation does not free the member, leading to a memory
+leak.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Acked-by: David Sterba <dsterba@suse.com>
-Link: https://lore.kernel.org/r/20200821161942.36589-1-ztong0001@gmail.com
+Fix this by adding a new goto label that frees pcr->slots.
+
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Link: https://lore.kernel.org/r/20200909071853.4053-1-keitasuzuki.park@sslab.ics.keio.ac.jp
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/ipwireless/network.c | 4 ++--
- drivers/tty/ipwireless/tty.c     | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mfd/rtsx_pcr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/ipwireless/network.c b/drivers/tty/ipwireless/network.c
-index c0dfb642383b2..dc7f4eb18e0a7 100644
---- a/drivers/tty/ipwireless/network.c
-+++ b/drivers/tty/ipwireless/network.c
-@@ -116,7 +116,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       skb->len,
- 					       notify_packet_sent,
- 					       network);
--			if (ret == -1) {
-+			if (ret < 0) {
- 				skb_pull(skb, 2);
- 				return 0;
- 			}
-@@ -133,7 +133,7 @@ static int ipwireless_ppp_start_xmit(struct ppp_channel *ppp_channel,
- 					       notify_packet_sent,
- 					       network);
- 			kfree(buf);
--			if (ret == -1)
-+			if (ret < 0)
- 				return 0;
- 		}
- 		kfree_skb(skb);
-diff --git a/drivers/tty/ipwireless/tty.c b/drivers/tty/ipwireless/tty.c
-index 345cebb07ae79..0b06b1847450f 100644
---- a/drivers/tty/ipwireless/tty.c
-+++ b/drivers/tty/ipwireless/tty.c
-@@ -217,7 +217,7 @@ static int ipw_write(struct tty_struct *linux_tty,
- 	ret = ipwireless_send_packet(tty->hardware, IPW_CHANNEL_RAS,
- 			       buf, count,
- 			       ipw_write_packet_sent_callback, tty);
--	if (ret == -1) {
-+	if (ret < 0) {
- 		mutex_unlock(&tty->ipw_tty_mutex);
- 		return 0;
- 	}
+diff --git a/drivers/mfd/rtsx_pcr.c b/drivers/mfd/rtsx_pcr.c
+index 98029ee0959e3..be61f8606a045 100644
+--- a/drivers/mfd/rtsx_pcr.c
++++ b/drivers/mfd/rtsx_pcr.c
+@@ -1255,12 +1255,14 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
+ 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
+ 	if (ret < 0)
+-		goto disable_irq;
++		goto free_slots;
+ 
+ 	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
+ 
+ 	return 0;
+ 
++free_slots:
++	kfree(pcr->slots);
+ disable_irq:
+ 	free_irq(pcr->irq, (void *)pcr);
+ disable_msi:
 -- 
 2.25.1
 
