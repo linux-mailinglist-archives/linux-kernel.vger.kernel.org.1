@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2E829C4C4
+	by mail.lfdr.de (Postfix) with ESMTP id 77AA929C4C5
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823079AbgJ0R51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:57:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
+        id S1823085AbgJ0R5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408015AbgJ0OVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:21:46 -0400
+        id S1758658AbgJ0OVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:21:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59055206D4;
-        Tue, 27 Oct 2020 14:21:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE19F206D4;
+        Tue, 27 Oct 2020 14:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808505;
-        bh=hFYmqeqPJGn0nx6FebWGZH7BGjxLl1jiSFbHq0FO1hI=;
+        s=default; t=1603808511;
+        bh=jf7g5UPaA5s7cpXsKWu8XLwiyTVyJiohjlrqjnDr+0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0XYY1IaNUBNLtqmV4/wIUaaXlD2g7GYgpec+jUwpXwjKNpfZgH705/5Eh94kCDkcN
-         DDVWHoX5ay9fJfbZQPd3qQDmOd/N78hOlmAdi8GR3gEOYgFKrwP8Gy8j9GHJuAGRXE
-         JSze7bHO/iEnu0IcusQN9NnHy7v4qcySWaJPMXP4=
+        b=ELncI8GJ62BDrChhDxbwKuo8i2Wn4nwC/lXo8jePoKpizHg+2A9FFLkzjW+fpVp28
+         vG3FOEkGPvQqAIglivDqlTrLT5CD2sicbH7Vzq2dfJ579vm8CQwW3+hOGVKuE8w9Yh
+         kVlkkcwGDo59l5hxubschmWXrcmnM9KNTU38zFgY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kenneth Albanowski <kenalba@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 110/264] HID: hid-input: fix stylus battery reporting
-Date:   Tue, 27 Oct 2020 14:52:48 +0100
-Message-Id: <20201027135435.840736244@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        John Donnelly <john.p.donnelly@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 120/264] scsi: target: tcmu: Fix warning: page may be used uninitialized
+Date:   Tue, 27 Oct 2020 14:52:58 +0100
+Message-Id: <20201027135436.326454473@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,47 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: John Donnelly <john.p.donnelly@oracle.com>
 
-[ Upstream commit 505f394fa239cecb76d916aa858f87ed7ea7fde4 ]
+[ Upstream commit 61741d8699e1fc764a309ebd20211bb1cb193110 ]
 
-With commit 4f3882177240 hid-input started clearing of "ignored" usages
-to avoid using garbage that might have been left in them. However
-"battery strength" usages should not be ignored, as we do want to
-use them.
+Corrects drivers/target/target_core_user.c:688:6: warning: 'page' may be
+used uninitialized.
 
-Fixes: 4f3882177240 ("HID: hid-input: clear unmapped usages")
-Reported-by: Kenneth Albanowski <kenalba@google.com>
-Tested-by: Kenneth Albanowski <kenalba@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Link: https://lore.kernel.org/r/20200924001920.43594-1-john.p.donnelly@oracle.com
+Fixes: 3c58f737231e ("scsi: target: tcmu: Optimize use of flush_dcache_page")
+Cc: Mike Christie <michael.christie@oracle.com>
+Acked-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-input.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/target/target_core_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index a9da1526c40ae..11bd2ca22a2e6 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -796,7 +796,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 		case 0x3b: /* Battery Strength */
- 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
- 			usage->type = EV_PWR;
--			goto ignore;
-+			return;
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 99314e5162447..0219b5a865bee 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -680,7 +680,7 @@ static void scatter_data_area(struct tcmu_dev *udev,
+ 	void *from, *to = NULL;
+ 	size_t copy_bytes, to_offset, offset;
+ 	struct scatterlist *sg;
+-	struct page *page;
++	struct page *page = NULL;
  
- 		case 0x3c: /* Invert */
- 			map_key_clear(BTN_TOOL_RUBBER);
-@@ -1052,7 +1052,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 		case HID_DC_BATTERYSTRENGTH:
- 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
- 			usage->type = EV_PWR;
--			goto ignore;
-+			return;
- 		}
- 		goto unknown;
- 
+ 	for_each_sg(data_sg, sg, data_nents, i) {
+ 		int sg_remaining = sg->length;
 -- 
 2.25.1
 
