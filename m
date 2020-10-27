@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FC129B6C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0F429B6C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797701AbgJ0PYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:24:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38792 "EHLO mail.kernel.org"
+        id S1797718AbgJ0PYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:24:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797471AbgJ0PXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:23:46 -0400
+        id S1797494AbgJ0PXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:23:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E86A520657;
-        Tue, 27 Oct 2020 15:23:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7D562064B;
+        Tue, 27 Oct 2020 15:23:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812225;
-        bh=EvSr6iME9Pn8juqN3utg0mh0k+DBER0BhSes0lO4a5I=;
+        s=default; t=1603812234;
+        bh=YPwl2nRRBXhJB6gTrOoIj+hCojriWwjLq577jOuLd20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+s6fjFYZ585gW2DOreYFLcdRpQhRb74MQjj0H5PIPWL5VvxwLZ6s2PsMFBP7sIKB
-         DWPl1iOkWF8QzctZ70F4p+cfc+eNwUC2ZDWZBw5b/kctMomfnsBEADQU6qiIupFbc8
-         6ZYV8qsWj0ib0Rku2UM4DV0aVIKGGWSusCvketYg=
+        b=eOWZamYHCUAks0DnX9wHbGHgd2JB9Qj5P/4A+ER1p4nFOunc+zTdEOkzHHsSLniqQ
+         onnCiLoxOi+R/hcZUWZ4Vcsdu/0niCzkLeAKBn+6MWfqElYo2pSa2hTLH1avKGaUH8
+         /rdFoEpAL3WkYUzNCCmNOkQxJ1Er/8aegF8iZr9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Bingbu Cao <bingbu.cao@intel.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 135/757] media: staging/intel-ipu3: css: Correctly reset some memory
-Date:   Tue, 27 Oct 2020 14:46:25 +0100
-Message-Id: <20201027135456.929239508@linuxfoundation.org>
+Subject: [PATCH 5.9 137/757] media: i2c: ov5640: Remain in power down for DVP mode unless streaming
+Date:   Tue, 27 Oct 2020 14:46:27 +0100
+Message-Id: <20201027135457.026746359@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,36 +47,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-[ Upstream commit 08913a8e458e03f886a1a1154a6501fcb9344c39 ]
+[ Upstream commit 3b987d70e903962eb8c5961ba166c345a49d1a0b ]
 
-The intent here is to reset the whole 'scaler_coeffs_luma' array, not just
-the first element.
+Keep the sensor in software power down mode and wake up only in
+ov5640_set_stream_dvp() callback.
 
-Fixes: e11110a5b744 ("media: staging/intel-ipu3: css: Compute and program ccs")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Tested-by: Jacopo Mondi <jacopo@jmondi.org>
 Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/ipu3/ipu3-css-params.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/i2c/ov5640.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/media/ipu3/ipu3-css-params.c b/drivers/staging/media/ipu3/ipu3-css-params.c
-index fbd53d7c097cd..e9d6bd9e9332a 100644
---- a/drivers/staging/media/ipu3/ipu3-css-params.c
-+++ b/drivers/staging/media/ipu3/ipu3-css-params.c
-@@ -159,7 +159,7 @@ imgu_css_scaler_calc(u32 input_width, u32 input_height, u32 target_width,
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index ab19e04720d3a..6e558a7e2d244 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -34,6 +34,8 @@
+ #define OV5640_REG_SYS_RESET02		0x3002
+ #define OV5640_REG_SYS_CLOCK_ENABLE02	0x3006
+ #define OV5640_REG_SYS_CTRL0		0x3008
++#define OV5640_REG_SYS_CTRL0_SW_PWDN	0x42
++#define OV5640_REG_SYS_CTRL0_SW_PWUP	0x02
+ #define OV5640_REG_CHIP_ID		0x300a
+ #define OV5640_REG_IO_MIPI_CTRL00	0x300e
+ #define OV5640_REG_PAD_OUTPUT_ENABLE01	0x3017
+@@ -1120,6 +1122,12 @@ static int ov5640_load_regs(struct ov5640_dev *sensor,
+ 		val = regs->val;
+ 		mask = regs->mask;
  
- 	memset(&cfg->scaler_coeffs_chroma, 0,
- 	       sizeof(cfg->scaler_coeffs_chroma));
--	memset(&cfg->scaler_coeffs_luma, 0, sizeof(*cfg->scaler_coeffs_luma));
-+	memset(&cfg->scaler_coeffs_luma, 0, sizeof(cfg->scaler_coeffs_luma));
- 	do {
- 		phase_step_correction++;
++		/* remain in power down mode for DVP */
++		if (regs->reg_addr == OV5640_REG_SYS_CTRL0 &&
++		    val == OV5640_REG_SYS_CTRL0_SW_PWUP &&
++		    sensor->ep.bus_type != V4L2_MBUS_CSI2_DPHY)
++			continue;
++
+ 		if (mask)
+ 			ret = ov5640_mod_reg(sensor, reg_addr, mask, val);
+ 		else
+@@ -1297,9 +1305,14 @@ static int ov5640_set_stream_dvp(struct ov5640_dev *sensor, bool on)
+ 	 * PAD OUTPUT ENABLE 02
+ 	 * - [7:2]:	D[5:0] output enable
+ 	 */
+-	return ov5640_write_reg(sensor,
+-				OV5640_REG_PAD_OUTPUT_ENABLE02,
+-				on ? 0xfc : 0);
++	ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE02,
++			       on ? 0xfc : 0);
++	if (ret)
++		return ret;
++
++	return ov5640_write_reg(sensor, OV5640_REG_SYS_CTRL0, on ?
++				OV5640_REG_SYS_CTRL0_SW_PWUP :
++				OV5640_REG_SYS_CTRL0_SW_PWDN);
+ }
  
+ static int ov5640_set_stream_mipi(struct ov5640_dev *sensor, bool on)
 -- 
 2.25.1
 
