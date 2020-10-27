@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CF829C421
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E6A29C22E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753959AbgJ0OXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:23:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46932 "EHLO mail.kernel.org"
+        id S1820067AbgJ0Rce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758708AbgJ0OWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:22:22 -0400
+        id S1762180AbgJ0OlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:41:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 276EE206FA;
-        Tue, 27 Oct 2020 14:22:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E38A020773;
+        Tue, 27 Oct 2020 14:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808542;
-        bh=gAnXIdKLsqUvOJAAyBxNNufl+z8q4nno/Dh7BsCrLTg=;
+        s=default; t=1603809682;
+        bh=/AgdZpYKHEmdN5fGFoYyxwBX0RIOkFZ6ZZ1HZRDqrRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Veh9j1DLSor6YraqPcUzcP1ynelIlRoFeE3943001jT1xhKpBbQc228sOmNb7REtN
-         Tz/xRw3uH87GZC8mXDir4IUT+tTmq9PAVU41V6JtDDQnqTfx93Ze+TDi/n+nx6OwS9
-         XJZlkl1ZtAvMAd4INsbQNB/1lFNPsHIMo6h0FKrI=
+        b=jBNqLvBYR6hDKbrZlo+INgn0g6J23xNmVwRYxCXROdMOJ1ZUOpkiku9+nxKae8vfG
+         L+6QWLYHOPmuV8ZtmiYUYFTEV3cLc6dz98ciwX9ffUV9JqIztbnN3L6WPXk4+e7FHh
+         IsrGcKE5LDq+vV6Q98cF1xoBE+gitm9ysGbop0vs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+        stable@vger.kernel.org, Oliver OHalloran <oohall@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 131/264] powerpc/pseries: Fix missing of_node_put() in rng_init()
+Subject: [PATCH 5.4 251/408] selftests/powerpc: Fix eeh-basic.sh exit codes
 Date:   Tue, 27 Oct 2020 14:53:09 +0100
-Message-Id: <20201027135436.836559400@linuxfoundation.org>
+Message-Id: <20201027135506.702225959@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Mc Guire <hofrat@osadl.org>
+From: Oliver O'Halloran <oohall@gmail.com>
 
-[ Upstream commit 67c3e59443f5fc77be39e2ce0db75fbfa78c7965 ]
+[ Upstream commit 996f9e0f93f16211945c8d5f18f296a88cb32f91 ]
 
-The call to of_find_compatible_node() returns a node pointer with
-refcount incremented thus it must be explicitly decremented here
-before returning.
+The kselftests test running infrastructure expects tests to finish with an
+exit code of 4 if the test decided it should be skipped. Currently
+eeh-basic.sh exits with the number of devices that failed to recover, so if
+four devices didn't recover we'll report a skip instead of a fail.
 
-Fixes: a489043f4626 ("powerpc/pseries: Implement arch_get_random_long() based on H_RANDOM")
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Fix this by checking if the return code is non-zero and report success
+and failure by returning 0 or 1 respectively. For the cases where should
+actually skip return 4.
+
+Fixes: 85d86c8aa52e ("selftests/powerpc: Add basic EEH selftest")
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1530522496-14816-1-git-send-email-hofrat@osadl.org
+Link: https://lore.kernel.org/r/20201014024711.1138386-1-oohall@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/rng.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/powerpc/eeh/eeh-basic.sh | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/rng.c b/arch/powerpc/platforms/pseries/rng.c
-index 31ca557af60bc..262b8c5e1b9d0 100644
---- a/arch/powerpc/platforms/pseries/rng.c
-+++ b/arch/powerpc/platforms/pseries/rng.c
-@@ -40,6 +40,7 @@ static __init int rng_init(void)
+diff --git a/tools/testing/selftests/powerpc/eeh/eeh-basic.sh b/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
+index f988d2f42e8f2..cf001a2c69420 100755
+--- a/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
++++ b/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
+@@ -1,17 +1,19 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-only
  
- 	ppc_md.get_random_seed = pseries_get_random_long;
++KSELFTESTS_SKIP=4
++
+ . ./eeh-functions.sh
  
-+	of_node_put(dn);
- 	return 0;
- }
- machine_subsys_initcall(pseries, rng_init);
+ if ! eeh_supported ; then
+ 	echo "EEH not supported on this system, skipping"
+-	exit 0;
++	exit $KSELFTESTS_SKIP;
+ fi
+ 
+ if [ ! -e "/sys/kernel/debug/powerpc/eeh_dev_check" ] && \
+    [ ! -e "/sys/kernel/debug/powerpc/eeh_dev_break" ] ; then
+ 	echo "debugfs EEH testing files are missing. Is debugfs mounted?"
+-	exit 1;
++	exit $KSELFTESTS_SKIP;
+ fi
+ 
+ pre_lspci=`mktemp`
+@@ -79,4 +81,5 @@ echo "$failed devices failed to recover ($dev_count tested)"
+ lspci | diff -u $pre_lspci -
+ rm -f $pre_lspci
+ 
+-exit $failed
++test "$failed" == 0
++exit $?
 -- 
 2.25.1
 
