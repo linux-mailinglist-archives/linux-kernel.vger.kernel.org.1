@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD56629BA9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E9429BB39
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806561AbgJ0QGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53610 "EHLO mail.kernel.org"
+        id S1805075AbgJ0QA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1803044AbgJ0PwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:52:06 -0400
+        id S1757267AbgJ0PQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:16:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A36F12225E;
-        Tue, 27 Oct 2020 15:52:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 669A820728;
+        Tue, 27 Oct 2020 15:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813924;
-        bh=f3mIBaTX5UcmzkqFWcYCbEA40V1tAclHvuZfTWZ31vQ=;
+        s=default; t=1603811785;
+        bh=MVcA8RairfrcRn+2/dlyy4yyOnFWH1hl4AupGXpwJkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=auJLwNiYGDZhGJK6DqtgBohBVLPnE7Jyq/qaHp4jU+cPy1WyymlCbXSlWqMBcGGdQ
-         N0QPIE5yNOzY1D6DhsEdguSjLGPckUU2ubR4x2XYR48iG761O3NvNlEZ8fye2Qx2Ww
-         pFtkElE8Ir2Fsopv+Zf0vWWzx14S+cz3oLIcdLuM=
+        b=ex4iFd2ViH8kbBuJa8uAFX/8KhvzbrF8w8H6ppQv9uCJauUBsebJJYOhOXR4uqosN
+         rb/r9NTN6IUyBbRm6DGAUNNLbZiwlUrq0YqlwPhIAQ0RJRGObsl4a26LnKMjRiZVLB
+         Db1LLQiHa79R9+QPkE1D1ODwOk1S3+Q5JLZSr9kw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Pedersen <thomas@adapt-ip.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 675/757] mac80211: handle lack of sband->bitrates in rates
-Date:   Tue, 27 Oct 2020 14:55:25 +0100
-Message-Id: <20201027135522.195991411@linuxfoundation.org>
+Subject: [PATCH 5.8 584/633] bpf: Limit callers stack depth 256 for subprogs with tailcalls
+Date:   Tue, 27 Oct 2020 14:55:27 +0100
+Message-Id: <20201027135550.203241920@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Pedersen <thomas@adapt-ip.com>
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-[ Upstream commit 8b783d104e7f40684333d2ec155fac39219beb2f ]
+[ Upstream commit 7f6e4312e15a5c370e84eaa685879b6bdcc717e4 ]
 
-Even though a driver or mac80211 shouldn't produce a
-legacy bitrate if sband->bitrates doesn't exist, don't
-crash if that is the case either.
+Protect against potential stack overflow that might happen when bpf2bpf
+calls get combined with tailcalls. Limit the caller's stack depth for
+such case down to 256 so that the worst case scenario would result in 8k
+stack size (32 which is tailcall limit * 256 = 8k).
 
-This fixes a kernel panic if station dump is run before
-last_rate can be updated with a data frame when
-sband->bitrates is missing (eg. in S1G bands).
-
-Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
-Link: https://lore.kernel.org/r/20201005164522.18069-1-thomas@adapt-ip.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c      | 3 ++-
- net/mac80211/sta_info.c | 4 ++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ include/linux/bpf_verifier.h |  1 +
+ kernel/bpf/verifier.c        | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 87fddd84c621e..82d516d117385 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -709,7 +709,8 @@ void sta_set_rate_info_tx(struct sta_info *sta,
- 		u16 brate;
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index ca08db4ffb5f7..ce3f5231aa698 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -358,6 +358,7 @@ struct bpf_subprog_info {
+ 	u32 start; /* insn idx of function entry point */
+ 	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
+ 	u16 stack_depth; /* max. stack depth used by this function */
++	bool has_tail_call;
+ };
  
- 		sband = ieee80211_get_sband(sta->sdata);
--		if (sband) {
-+		WARN_ON_ONCE(sband && !sband->bitrates);
-+		if (sband && sband->bitrates) {
- 			brate = sband->bitrates[rate->idx].bitrate;
- 			rinfo->legacy = DIV_ROUND_UP(brate, 1 << shift);
- 		}
-diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
-index f2840d1d95cfb..fb4f2b9b294f0 100644
---- a/net/mac80211/sta_info.c
-+++ b/net/mac80211/sta_info.c
-@@ -2122,6 +2122,10 @@ static void sta_stats_decode_rate(struct ieee80211_local *local, u32 rate,
- 		int rate_idx = STA_STATS_GET(LEGACY_IDX, rate);
+ /* single container for all structs
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c953dfbbaa6a9..12eb9e47d101c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1470,6 +1470,10 @@ static int check_subprogs(struct bpf_verifier_env *env)
+ 	for (i = 0; i < insn_cnt; i++) {
+ 		u8 code = insn[i].code;
  
- 		sband = local->hw.wiphy->bands[band];
-+
-+		if (WARN_ON_ONCE(!sband->bitrates))
-+			break;
-+
- 		brate = sband->bitrates[rate_idx].bitrate;
- 		if (rinfo->bw == RATE_INFO_BW_5)
- 			shift = 2;
++		if (code == (BPF_JMP | BPF_CALL) &&
++		    insn[i].imm == BPF_FUNC_tail_call &&
++		    insn[i].src_reg != BPF_PSEUDO_CALL)
++			subprog[cur_subprog].has_tail_call = true;
+ 		if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
+ 			goto next;
+ 		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
+@@ -2951,6 +2955,31 @@ static int check_max_stack_depth(struct bpf_verifier_env *env)
+ 	int ret_prog[MAX_CALL_FRAMES];
+ 
+ process_func:
++	/* protect against potential stack overflow that might happen when
++	 * bpf2bpf calls get combined with tailcalls. Limit the caller's stack
++	 * depth for such case down to 256 so that the worst case scenario
++	 * would result in 8k stack size (32 which is tailcall limit * 256 =
++	 * 8k).
++	 *
++	 * To get the idea what might happen, see an example:
++	 * func1 -> sub rsp, 128
++	 *  subfunc1 -> sub rsp, 256
++	 *  tailcall1 -> add rsp, 256
++	 *   func2 -> sub rsp, 192 (total stack size = 128 + 192 = 320)
++	 *   subfunc2 -> sub rsp, 64
++	 *   subfunc22 -> sub rsp, 128
++	 *   tailcall2 -> add rsp, 128
++	 *    func3 -> sub rsp, 32 (total stack size 128 + 192 + 64 + 32 = 416)
++	 *
++	 * tailcall will unwind the current stack frame but it will not get rid
++	 * of caller's stack as shown on the example above.
++	 */
++	if (idx && subprog[idx].has_tail_call && depth >= 256) {
++		verbose(env,
++			"tail_calls are not allowed when call stack of previous frames is %d bytes. Too large\n",
++			depth);
++		return -EACCES;
++	}
+ 	/* round up to 32-bytes, since this is granularity
+ 	 * of interpreter stack size
+ 	 */
 -- 
 2.25.1
 
