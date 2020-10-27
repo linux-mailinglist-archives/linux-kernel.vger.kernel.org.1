@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F1D29C692
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2447429C665
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826359AbgJ0ST0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:19:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
+        id S1826145AbgJ0SQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393563AbgJ0ODk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:40 -0400
+        id S1756207AbgJ0OMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:12:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7999E2222C;
-        Tue, 27 Oct 2020 14:03:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 237D6222EA;
+        Tue, 27 Oct 2020 14:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807420;
-        bh=5uujSNEjrcS7EpXKjxkYyUzDHLbOjK2pug37pf/PNRc=;
+        s=default; t=1603807912;
+        bh=gAnXIdKLsqUvOJAAyBxNNufl+z8q4nno/Dh7BsCrLTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YblyvqODSxBg6BxpO77ksrKd6B5RpiWvtZ151n+yCseXhhGaFfHOM2ALsaAr/gPRx
-         gEtoRyVK7ifwX2JOaZMncUsXxeGhU2QlHEHNq9R/GS3Q9F55vH3QObGS8RTuS+/FqV
-         yEXngIJOvJTL1YCSSPMszFCHXmHgi0FqgXOU+pgQ=
+        b=yjrYK8En9cI4d0llMEaZMtlqVHM1Q+g0+lF+xGYi6TgeInCLbX9lqBHasSG3aYH7p
+         grkhIzLuaJaNUNWRiiQtJ4CZMLaz4h/WsqjybkWqWcbNV71/MmOWVJqoCVd7I+3Gmf
+         f5HVV96b9HZh5rmZ6M8smO4b5p75EOldebjrTsns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 047/139] net: enic: Cure the enic api locking trainwreck
-Date:   Tue, 27 Oct 2020 14:49:01 +0100
-Message-Id: <20201027134904.366202910@linuxfoundation.org>
+Subject: [PATCH 4.14 087/191] powerpc/pseries: Fix missing of_node_put() in rng_init()
+Date:   Tue, 27 Oct 2020 14:49:02 +0100
+Message-Id: <20201027134913.874730204@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,155 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Nicholas Mc Guire <hofrat@osadl.org>
 
-[ Upstream commit a53b59ece86c86d16d12ccdaa1ad0c78250a9d96 ]
+[ Upstream commit 67c3e59443f5fc77be39e2ce0db75fbfa78c7965 ]
 
-enic_dev_wait() has a BUG_ON(in_interrupt()).
+The call to of_find_compatible_node() returns a node pointer with
+refcount incremented thus it must be explicitly decremented here
+before returning.
 
-Chasing the callers of enic_dev_wait() revealed the gems of enic_reset()
-and enic_tx_hang_reset() which are both invoked through work queues in
-order to be able to call rtnl_lock(). So far so good.
-
-After locking rtnl both functions acquire enic::enic_api_lock which
-serializes against the (ab)use from infiniband. This is where the
-trainwreck starts.
-
-enic::enic_api_lock is a spin_lock() which implicitly disables preemption,
-but both functions invoke a ton of functions under that lock which can
-sleep. The BUG_ON(in_interrupt()) does not trigger in that case because it
-can't detect the preempt disabled condition.
-
-This clearly has never been tested with any of the mandatory debug options
-for 7+ years, which would have caught that for sure.
-
-Cure it by adding a enic_api_busy member to struct enic, which is modified
-and evaluated with enic::enic_api_lock held.
-
-If enic_api_devcmd_proxy_by_index() observes enic::enic_api_busy as true,
-it drops enic::enic_api_lock and busy waits for enic::enic_api_busy to
-become false.
-
-It would be smarter to wait for a completion of that busy period, but
-enic_api_devcmd_proxy_by_index() is called with other spin locks held which
-obviously can't sleep.
-
-Remove the BUG_ON(in_interrupt()) check as well because it's incomplete and
-with proper debugging enabled the problem would have been caught from the
-debug checks in schedule_timeout().
-
-Fixes: 0b038566c0ea ("drivers/net: enic: Add an interface for USNIC to interact with firmware")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: a489043f4626 ("powerpc/pseries: Implement arch_get_random_long() based on H_RANDOM")
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1530522496-14816-1-git-send-email-hofrat@osadl.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cisco/enic/enic.h      |  1 +
- drivers/net/ethernet/cisco/enic/enic_api.c  |  6 +++++
- drivers/net/ethernet/cisco/enic/enic_main.c | 27 ++++++++++++++++-----
- 3 files changed, 28 insertions(+), 6 deletions(-)
+ arch/powerpc/platforms/pseries/rng.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/cisco/enic/enic.h b/drivers/net/ethernet/cisco/enic/enic.h
-index 130f910e47854..b6ebcee40a0d4 100644
---- a/drivers/net/ethernet/cisco/enic/enic.h
-+++ b/drivers/net/ethernet/cisco/enic/enic.h
-@@ -163,6 +163,7 @@ struct enic {
- 	u16 num_vfs;
- #endif
- 	spinlock_t enic_api_lock;
-+	bool enic_api_busy;
- 	struct enic_port_profile *pp;
+diff --git a/arch/powerpc/platforms/pseries/rng.c b/arch/powerpc/platforms/pseries/rng.c
+index 31ca557af60bc..262b8c5e1b9d0 100644
+--- a/arch/powerpc/platforms/pseries/rng.c
++++ b/arch/powerpc/platforms/pseries/rng.c
+@@ -40,6 +40,7 @@ static __init int rng_init(void)
  
- 	/* work queue cache line section */
-diff --git a/drivers/net/ethernet/cisco/enic/enic_api.c b/drivers/net/ethernet/cisco/enic/enic_api.c
-index b161f24522b87..b028ea2dec2b9 100644
---- a/drivers/net/ethernet/cisco/enic/enic_api.c
-+++ b/drivers/net/ethernet/cisco/enic/enic_api.c
-@@ -34,6 +34,12 @@ int enic_api_devcmd_proxy_by_index(struct net_device *netdev, int vf,
- 	struct vnic_dev *vdev = enic->vdev;
+ 	ppc_md.get_random_seed = pseries_get_random_long;
  
- 	spin_lock(&enic->enic_api_lock);
-+	while (enic->enic_api_busy) {
-+		spin_unlock(&enic->enic_api_lock);
-+		cpu_relax();
-+		spin_lock(&enic->enic_api_lock);
-+	}
-+
- 	spin_lock_bh(&enic->devcmd_lock);
- 
- 	vnic_dev_cmd_proxy_by_index_start(vdev, vf);
-diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
-index 96290b83dfde9..3a3f3a7d7a75f 100644
---- a/drivers/net/ethernet/cisco/enic/enic_main.c
-+++ b/drivers/net/ethernet/cisco/enic/enic_main.c
-@@ -1938,8 +1938,6 @@ static int enic_dev_wait(struct vnic_dev *vdev,
- 	int done;
- 	int err;
- 
--	BUG_ON(in_interrupt());
--
- 	err = start(vdev, arg);
- 	if (err)
- 		return err;
-@@ -2116,6 +2114,13 @@ static int enic_set_rss_nic_cfg(struct enic *enic)
- 		rss_hash_bits, rss_base_cpu, rss_enable);
++	of_node_put(dn);
+ 	return 0;
  }
- 
-+static void enic_set_api_busy(struct enic *enic, bool busy)
-+{
-+	spin_lock(&enic->enic_api_lock);
-+	enic->enic_api_busy = busy;
-+	spin_unlock(&enic->enic_api_lock);
-+}
-+
- static void enic_reset(struct work_struct *work)
- {
- 	struct enic *enic = container_of(work, struct enic, reset);
-@@ -2125,7 +2130,9 @@ static void enic_reset(struct work_struct *work)
- 
- 	rtnl_lock();
- 
--	spin_lock(&enic->enic_api_lock);
-+	/* Stop any activity from infiniband */
-+	enic_set_api_busy(enic, true);
-+
- 	enic_stop(enic->netdev);
- 	enic_dev_soft_reset(enic);
- 	enic_reset_addr_lists(enic);
-@@ -2133,7 +2140,10 @@ static void enic_reset(struct work_struct *work)
- 	enic_set_rss_nic_cfg(enic);
- 	enic_dev_set_ig_vlan_rewrite_mode(enic);
- 	enic_open(enic->netdev);
--	spin_unlock(&enic->enic_api_lock);
-+
-+	/* Allow infiniband to fiddle with the device again */
-+	enic_set_api_busy(enic, false);
-+
- 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
- 
- 	rtnl_unlock();
-@@ -2145,7 +2155,9 @@ static void enic_tx_hang_reset(struct work_struct *work)
- 
- 	rtnl_lock();
- 
--	spin_lock(&enic->enic_api_lock);
-+	/* Stop any activity from infiniband */
-+	enic_set_api_busy(enic, true);
-+
- 	enic_dev_hang_notify(enic);
- 	enic_stop(enic->netdev);
- 	enic_dev_hang_reset(enic);
-@@ -2154,7 +2166,10 @@ static void enic_tx_hang_reset(struct work_struct *work)
- 	enic_set_rss_nic_cfg(enic);
- 	enic_dev_set_ig_vlan_rewrite_mode(enic);
- 	enic_open(enic->netdev);
--	spin_unlock(&enic->enic_api_lock);
-+
-+	/* Allow infiniband to fiddle with the device again */
-+	enic_set_api_busy(enic, false);
-+
- 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
- 
- 	rtnl_unlock();
+ machine_subsys_initcall(pseries, rng_init);
 -- 
 2.25.1
 
