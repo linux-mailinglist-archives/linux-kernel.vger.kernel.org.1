@@ -2,74 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218F329A867
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F7729A869
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896212AbgJ0JwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2896225AbgJ0Jw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:52:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:48774 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2896060AbgJ0JwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 05:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896072AbgJ0Jvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:51:44 -0400
-Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 736DF2465D;
-        Tue, 27 Oct 2020 09:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603792303;
-        bh=F38L5HcK+PWN6kp1gWIMXrEICgbpC/K+TO5DkjZ2XS4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EX9l9vf3HbIZEEI37hdweaRJXcMeyEcYy2oHwoazWXhVWr0xazkdHoijeHKB/zp0M
-         hTXt3zlPFmxW5rlzbXNLbjhhlKkJn6QknCrkq777KoMRXOuYm2oyVHKYH4Ikajjg/l
-         rDcMXWiK6wmEAgRhzkgKGLLHcdUdOZqqmd2baKP0=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kXLdk-003FFt-19; Tue, 27 Oct 2020 10:51:40 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Micah Morton <mortonm@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 32/32] docs: SafeSetID: fix a warning
-Date:   Tue, 27 Oct 2020 10:51:36 +0100
-Message-Id: <4afa281c170daabd1ce522653d5d5d5078ebd92c.1603791716.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
-References: <cover.1603791716.git.mchehab+huawei@kernel.org>
+X-UUID: f8e7e7ec608f441aa01c3ebdfbdb3071-20201027
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=LDji51ZuVtXodbYhY6ntu2rO47u7vkwshUVSjF4m5dQ=;
+        b=fXAhHZIguYrWdZk7rzJue5/OdNv0iTdE03yTAcUgDMS+CqCRd6XDwSAqDpgzT9fTDJrT0WTolTGkrHA/vJ9YZhIbkjsUWU41xwBS+H2EehFJlfgu0zcQE13qOBHG+WkY9L7JOgmv7yofcRK+D6g5V0C0X5SaHh4SDQOPTfib9kE=;
+X-UUID: f8e7e7ec608f441aa01c3ebdfbdb3071-20201027
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 818533378; Tue, 27 Oct 2020 17:52:17 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 27 Oct 2020 17:52:14 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 27 Oct 2020 17:52:14 +0800
+Message-ID: <1603792335.2104.12.camel@mtkswgap22>
+Subject: RE: [PATCH 3/4] scsi: ufs-mediatek: Fix flag of unipro low-power
+ mode
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Avri Altman <Avri.Altman@wdc.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Date:   Tue, 27 Oct 2020 17:52:15 +0800
+In-Reply-To: <BY5PR04MB67058DE7C6B5F63E960280CBFC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <20200908064507.30774-1-stanley.chu@mediatek.com>
+         <20200908064507.30774-4-stanley.chu@mediatek.com>
+         <BY5PR04MB67058DE7C6B5F63E960280CBFC3C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+X-TM-SNTS-SMTP: 58549434F085AA0CF554C6FA97DDC7A7439B1FBB93D811B8F34E8BA4BBC087112000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported by Sphinx 2.4.4:
-
-	docs/Documentation/admin-guide/LSM/SafeSetID.rst:110: WARNING: Title underline too short.
-
-	Note on GID policies and setgroups()
-	==================
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/admin-guide/LSM/SafeSetID.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/LSM/SafeSetID.rst b/Documentation/admin-guide/LSM/SafeSetID.rst
-index 17996c9070e2..0ec34863c674 100644
---- a/Documentation/admin-guide/LSM/SafeSetID.rst
-+++ b/Documentation/admin-guide/LSM/SafeSetID.rst
-@@ -107,7 +107,7 @@ for a UID/GID will prevent that UID/GID from obtaining auxiliary setid
- privileges, such as allowing a user to set up user namespace UID/GID mappings.
- 
- Note on GID policies and setgroups()
--==================
-+====================================
- In v5.9 we are adding support for limiting CAP_SETGID privileges as was done
- previously for CAP_SETUID. However, for compatibility with common sandboxing
- related code conventions in userspace, we currently allow arbitrary
--- 
-2.26.2
+SGkgQXZyaSwNCg0KT24gU2F0LCAyMDIwLTA5LTE5IGF0IDA4OjA4ICswMDAwLCBBdnJpIEFsdG1h
+biB3cm90ZToNCj4gPiANCj4gPiBGb3JjaWJseSBsZWF2ZSBVbmlQcm8gbG93LXBvd2VyIG1vZGUg
+aWYgVUlDIGNvbW1hbmRzIGlzIGZhaWxlZC4NCj4gPiBUaGlzIG1ha2VzIGhiYV9lbmFibGVfZGVs
+YXlfdXMgYXMgY29ycmVjdCAoZGVmYXVsdCkgdmFsdWUgZm9yDQo+ID4gcmUtZW5hYmxpbmcgdGhl
+IGhvc3QuDQo+ID4gDQo+ID4gQXQgdGhlIHNhbWUgdGltZSwgY2hhbmdlIHR5cGUgb2YgcGFyYW1l
+dGVyICJscG0iIGluIGZ1bmN0aW9uDQo+ID4gdWZzX210a191bmlwcm9fc2V0X3BtKCkgdG8gImJv
+b2wiLg0KPiBTZW1hbnRpY2FsbHksIGJldHRlciBsZWF2ZSBpdCB1MzIgYXMgaXRzIGV2ZW50dWFs
+bHkgYXNzaWduZWQgdG8gdGhlIGFyZzMgb2YgdGhlIHVpYyBjb21tYW5kIA0KPiANCg0KVGhhbmtz
+IGZvciByZW1pbmRpbmcuDQpJIHdpbGwgdXNlIHNwZWNpZmljIHUzMiB2YWx1ZXMgd2hpbGUgc2Vu
+ZGluZyBhcmczIHRvIGZpeCB0aGlzLg0KDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogU3Rhbmxl
+eSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9z
+Y3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyB8IDIwICsrKysrKysrKysrKysrLS0tLS0tDQo+ID4gIDEg
+ZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIGIvZHJpdmVycy9z
+Y3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiA+IGluZGV4IDg4N2MwM2U4YmNjMC4uZmViYTc0YTcy
+MzA5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCj4g
+PiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+ID4gQEAgLTQxOSw3ICs0
+MTksNyBAQCBzdGF0aWMgaW50IHVmc19tdGtfcHdyX2NoYW5nZV9ub3RpZnkoc3RydWN0IHVmc19o
+YmENCj4gPiAqaGJhLA0KPiA+ICAgICAgICAgcmV0dXJuIHJldDsNCj4gPiAgfQ0KPiA+IA0KPiA+
+IC1zdGF0aWMgaW50IHVmc19tdGtfdW5pcHJvX3NldF9wbShzdHJ1Y3QgdWZzX2hiYSAqaGJhLCB1
+MzIgbHBtKQ0KPiA+ICtzdGF0aWMgaW50IHVmc19tdGtfdW5pcHJvX3NldF9wbShzdHJ1Y3QgdWZz
+X2hiYSAqaGJhLCBib29sIGxwbSkNCj4gPiAgew0KPiA+ICAgICAgICAgaW50IHJldDsNCj4gPiAg
+ICAgICAgIHN0cnVjdCB1ZnNfbXRrX2hvc3QgKmhvc3QgPSB1ZnNoY2RfZ2V0X3ZhcmlhbnQoaGJh
+KTsNCj4gPiBAQCAtNDI3LDggKzQyNywxNCBAQCBzdGF0aWMgaW50IHVmc19tdGtfdW5pcHJvX3Nl
+dF9wbShzdHJ1Y3QgdWZzX2hiYQ0KPiA+ICpoYmEsIHUzMiBscG0pDQo+ID4gICAgICAgICByZXQg
+PSB1ZnNoY2RfZG1lX3NldChoYmEsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBV
+SUNfQVJHX01JQl9TRUwoVlNfVU5JUFJPUE9XRVJET1dOQ09OVFJPTCwgMCksDQo+ID4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBscG0pOw0KPiA+IC0gICAgICAgaWYgKCFyZXQpDQo+ID4g
+KyAgICAgICBpZiAoIXJldCB8fCAhbHBtKSB7DQo+ID4gKyAgICAgICAgICAgICAgIC8qDQo+ID4g
+KyAgICAgICAgICAgICAgICAqIEZvcmNpYmx5IHNldCBhcyBub24tTFBNIG1vZGUgaWYgVUlDIGNv
+bW1hbmRzIGlzIGZhaWxlZA0KPiA+ICsgICAgICAgICAgICAgICAgKiB0byB1c2UgZGVmYXVsdCBo
+YmFfZW5hYmxlX2RlbGF5X3VzIHZhbHVlIGZvciByZS1lbmFibGluZw0KPiA+ICsgICAgICAgICAg
+ICAgICAgKiB0aGUgaG9zdC4NCj4gPiArICAgICAgICAgICAgICAgICovDQo+ID4gICAgICAgICAg
+ICAgICAgIGhvc3QtPnVuaXByb19scG0gPSBscG07DQo+IE1heWJlIGp1c3QgaG9zdC0+dW5pcHJv
+X2xwbSA9IGZhbHNlOyBpbnN0ZWFkDQoNClRoaXMgc3RhdGVtZW50IHNoYWxsIHN0YXkgbGlrZSB0
+aGlzIGZvciBjYXNlOiAibHBtID0gdHJ1ZSINCg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0KDQo=
 
