@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE5D29CB0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D55929CB10
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373703AbgJ0VQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:16:33 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:14747 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373558AbgJ0VQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:16:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603833389; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=1IAAZO+JxIM064yeTBlbAYAX6R/5t+b3oS0O5W5n3sw=; b=sq47S5QJserZq68nTBNuBg+Kc8JSe4GtgOgBrBdSdnAD/ICAKH8VeCKFjGIQ5MVb9Q38F2V3
- ckDZOchmgnDTfIia70JG6c/7wJObL0+rheq8ZwyTjz1SKEia2t7oNzKVZVRrQ3dKfsNlfD8E
- fHa4pbJBnEiYHcO37lyQou6q6Mk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f988dfa807e82a153ea9f03 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 21:15:38
- GMT
-Sender: ilina=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8CAAAC433F0; Tue, 27 Oct 2020 21:15:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: ilina)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87251C433CB;
-        Tue, 27 Oct 2020 21:15:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87251C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ilina@codeaurora.org
-Date:   Tue, 27 Oct 2020 15:15:36 -0600
-From:   Lina Iyer <ilina@codeaurora.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mkshah@codeaurora.org
-Subject: Re: [PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
-Message-ID: <20201027211536.GB19979@codeaurora.org>
-References: <20201027111422.4008114-1-anders.roxell@linaro.org>
+        id S373706AbgJ0VQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:16:38 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:45150 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373557AbgJ0VQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:16:34 -0400
+Received: by mail-io1-f68.google.com with SMTP id s7so2144650iol.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 14:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pGFs6C8VYOAYY3Cv4pHG5uzsWG4Q+pilWSuMe/kuTqg=;
+        b=rVk4X0PMSBLtGuVsOVwaWzLHzbDTC5xNxTrme35jwZ8Yiej919jXchGq3YVEdtyP/V
+         Wn4BEj+svXNHms2mqc4wKbc20X1jeaixX+z/9RhBHGHPQE/mNqdI40hTqbx1iEPIHKqs
+         GxmdzbroYWUjbdE+JUBT8AuJr45tH/GCVtxb7MFwowcyBKvkZqMLfuBcaT18Gy1mEIH3
+         omt8PVhbk3ncIDDqHJ0/UcFTvWCf9AAn/nWDGkweeGmjRhCZOMQ/h882GXmLrHjG+66Q
+         yiASH2wZNHPGHBiISbBbDPDuv2Yu5h7WzyQKJUIT8Zr/zTVX+nD2yFlCsuz7F3T+Ske3
+         Lalw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pGFs6C8VYOAYY3Cv4pHG5uzsWG4Q+pilWSuMe/kuTqg=;
+        b=prIyEyBu53m5Y4F+Sj1JrQ6g/A348jzF/JZbpiXX8wvJ6ug46eUa1d8hCIsSJ22eHI
+         YBzBJR3GiVwOtNOn9jY/ze/AP9t4g7C0lWgp/1r6eotI35F/W379hkTjfAQTP1XWkuIf
+         LuZXiEPN+VGYL4EaXJEO8f33odsXPDe15vLITFhyfQJfMxDqXgK5TLc0DYmLX4j3a8j4
+         TuEqiR6V+nTDrIbyqHDtCBiQLF0NYQa6ruxYx0DuhG6SffvAFTE3Pyi6iaMmZQHbRXa2
+         WMzD41CKIPyUVUP66W9YMj+TiYQ53ShPzEj+wGQXWWUTt15wPkhPa2gXAWM+h1H8pBeI
+         mqDQ==
+X-Gm-Message-State: AOAM532lCXcGilI0DrRI69UkSaK5EZzizXITZQME4OaSfNCmCeDruDPq
+        O41AHfexh/XSR2fSQkhMNd4dNeoKAk4aooL5mNpq+A==
+X-Google-Smtp-Source: ABdhPJxT0OuVK6OChsnkhKxzrZFXZ6la8BdEkzmBSfiVmcTz1t7A9wQFzJesS9grhn1hO/tuEA2ogczM8pFNFQTQ8Hg=
+X-Received: by 2002:a02:b786:: with SMTP id f6mr4336431jam.75.1603833393648;
+ Tue, 27 Oct 2020 14:16:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201027111422.4008114-1-anders.roxell@linaro.org>
+References: <20201024200304.1427864-1-fparent@baylibre.com>
+ <20201026121316.GB7402@sirena.org.uk> <CAOwMV_w5N0_Qgg3MFph1147cbvFP1Y=mUtNjGbcr-Tca4ZJ3yA@mail.gmail.com>
+ <20201026172431.GI7402@sirena.org.uk> <CAOwMV_xt=OV6cKqQTZUUSAvYKxUUQZAUywAHtFFHL=E5xVu-Zg@mail.gmail.com>
+ <20201026203608.GJ7402@sirena.org.uk>
+In-Reply-To: <20201026203608.GJ7402@sirena.org.uk>
+From:   Fabien Parent <fparent@baylibre.com>
+Date:   Tue, 27 Oct 2020 22:16:22 +0100
+Message-ID: <CAOwMV_xUWea81rKFE=zD4xWL3rZ5G8cpWm5xJHT_AX=_frLDRQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: regulator: add support for MT6392
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anders,
+Hi Mark,
 
-On Tue, Oct 27 2020 at 05:14 -0600, Anders Roxell wrote:
->When building allmodconfig leading to the following link error with
->CONFIG_QCOM_RPMH=y and CONFIG_QCOM_COMMAND_DB=m:
+On Mon, Oct 26, 2020 at 9:36 PM Mark Brown <broonie@kernel.org> wrote:
 >
->aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
->  drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr'
->  drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
+> On Mon, Oct 26, 2020 at 07:38:14PM +0100, Fabien Parent wrote:
+> > On Mon, Oct 26, 2020 at 6:24 PM Mark Brown <broonie@kernel.org> wrote:
 >
->Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
->module when QCOM_COMMAND_DB is a module. Also removing the dependency on
->'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
->QCOM_COMMAND_DB.
+> > > >         .name = "mt6392-regulator",
+> > > >         .of_compatible = "mediatek,mt6392-regulator"
 >
->Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
->Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
->---
-> drivers/soc/qcom/Kconfig | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > This is still unneeded, it's just a reflection of Linux implementation
+> > > details and should be removed.   The MFD can just register the child
+> > > without supplying a compatible and things will continue to work just as
+> > > well.
 >
->diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
->index 9b4ae9c16ba7..3bdd1604f78f 100644
->--- a/drivers/soc/qcom/Kconfig
->+++ b/drivers/soc/qcom/Kconfig
->@@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
+> > I'm not exactly sure how it is supposed to work. mfd_add_devices seems
+> > to register devices based on of_compatible or acpi_match from the
+> > mfd_cell. This platform does not have ACPI so I don't understand how
 >
-> config QCOM_RPMH
-> 	tristate "Qualcomm RPM-Hardened (RPMH) Communication"
->-	depends on ARCH_QCOM || COMPILE_TEST
->+	depends on QCOM_COMMAND_DB
-A solution was posted in the mailing list alredy -
-https://lore.kernel.org/linux-arm-msm/20201008040907.7036-1-ilina@codeaurora.org/
+> It should also support unconditionally registering devices, if it no
+> longer does so that's a regression in the framework which should be
+> fixed.  Looking at mfd_add_devices() I can't see an issue though, both
+> ACPI and DT information is optional - the entire DT section in
+> mfd_add_device() will be skipped if no of_compatible is specified in the
+> cell.  Are you *sure* that the regulator driver isn't running?
 
-If you get a chance, please give that a shot to see if that works for
-you.
-
-Thanks,
-Lina
-
-> 	help
-> 	  Support for communication with the hardened-RPM blocks in
-> 	  Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
->-- 
->2.28.0
->
+You are correct, the regulator driver is running and probes
+successfully. From my investigation it seems the failure when removing
+the compatible string from the MFD and the DTS is because the
+regulator driver does not have a of_node matched since the compatible
+is gone. Because of that all the regulators registered by the driver
+are not linked to the regulator definitions in the device tree. And
+all the drivers that tries to acquire a regulator get -EPROBE_DEFER
+because of it.
