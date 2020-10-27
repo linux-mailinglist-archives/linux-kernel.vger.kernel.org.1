@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AA729B1CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CED29B1D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760338AbgJ0Oel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:34:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60430 "EHLO mail.kernel.org"
+        id S1760392AbgJ0Oer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760116AbgJ0Od3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:33:29 -0400
+        id S1760173AbgJ0Odn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:33:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05D7020709;
-        Tue, 27 Oct 2020 14:33:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E89A820773;
+        Tue, 27 Oct 2020 14:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809208;
-        bh=UW694r2BT7GJBFMAXNwWYlh4G2VDwzaQsxzntQ1VTUE=;
+        s=default; t=1603809222;
+        bh=V3aP/bAmjKvZth6bzJQoWBRnwTTaQ6YPbPgawguOf2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OMqLZ6ZvnALiOEzl14hxl/ngFKHYyGpP7B313/Vn5zJn3QEoy4fcIqxoN9bVbRhHv
-         NmkBVXcgN4SPSbL2F2spg0XTGiCWT1HdOLIVAcBcJl5GPWwgBEEbTrObAnmXqQ2uAu
-         G7gs/0oYGTHbS+ydY1x/ILs01vaKYYm9MaXU0Z1E=
+        b=2etqTTeNjvE49jPlqywptUZBqnLvSCFqAs7U/ZFCaEAcUr65PRtMtsnwv+ZnnKeEu
+         AFY59/7hS+nL9s8CV8TTr3lSSjjDXBG7QdeEekDe25dysEiX1TtEdLQdgy8M1R0MzP
+         iwQBJ7tkQK7xAsNAWntOPlvN929zkTAOuR5oYB7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 084/408] media: rcar-csi2: Allocate v4l2_async_subdev dynamically
-Date:   Tue, 27 Oct 2020 14:50:22 +0100
-Message-Id: <20201027135458.964377685@linuxfoundation.org>
+Subject: [PATCH 5.4 089/408] media: tc358743: initialize variable
+Date:   Tue, 27 Oct 2020 14:50:27 +0100
+Message-Id: <20201027135459.209724304@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,82 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 2cac7cbfb4099980e78244359ab9c6f056d6a7ec ]
+[ Upstream commit 274cf92d5dff5c2fec1a518078542ffe70d07646 ]
 
-v4l2_async_notifier_add_subdev() requires the asd to be allocated
-dynamically, but the rcar-csi2 driver embeds it in the rcar_csi2
-structure. This causes memory corruption when the notifier is destroyed
-at remove time with v4l2_async_notifier_cleanup().
+clang static analysis flags this error
 
-Fix this issue by registering the asd with
-v4l2_async_notifier_add_fwnode_subdev(), which allocates it dynamically
-internally.
+tc358743.c:1468:9: warning: Branch condition evaluates
+  to a garbage value
+        return handled ? IRQ_HANDLED : IRQ_NONE;
+               ^~~~~~~
+handled should be initialized to false.
 
-Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Fixes: d747b806abf4 ("[media] tc358743: add direct interrupt handling")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar-vin/rcar-csi2.c | 24 +++++++++------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ drivers/media/i2c/tc358743.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-index c14af1b929dff..d27eccfa57cae 100644
---- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-+++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-@@ -361,7 +361,6 @@ struct rcar_csi2 {
- 	struct media_pad pads[NR_OF_RCAR_CSI2_PAD];
- 
- 	struct v4l2_async_notifier notifier;
--	struct v4l2_async_subdev asd;
- 	struct v4l2_subdev *remote;
- 
- 	struct v4l2_mbus_framefmt mf;
-@@ -810,6 +809,8 @@ static int rcsi2_parse_v4l2(struct rcar_csi2 *priv,
- 
- static int rcsi2_parse_dt(struct rcar_csi2 *priv)
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index dbbab75f135ec..211caade9f998 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -1461,7 +1461,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
+ static irqreturn_t tc358743_irq_handler(int irq, void *dev_id)
  {
-+	struct v4l2_async_subdev *asd;
-+	struct fwnode_handle *fwnode;
- 	struct device_node *ep;
- 	struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
- 	int ret;
-@@ -833,24 +834,19 @@ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
- 		return ret;
- 	}
+ 	struct tc358743_state *state = dev_id;
+-	bool handled;
++	bool handled = false;
  
--	priv->asd.match.fwnode =
--		fwnode_graph_get_remote_endpoint(of_fwnode_handle(ep));
--	priv->asd.match_type = V4L2_ASYNC_MATCH_FWNODE;
--
-+	fwnode = fwnode_graph_get_remote_endpoint(of_fwnode_handle(ep));
- 	of_node_put(ep);
+ 	tc358743_isr(&state->sd, 0, &handled);
  
--	v4l2_async_notifier_init(&priv->notifier);
--
--	ret = v4l2_async_notifier_add_subdev(&priv->notifier, &priv->asd);
--	if (ret) {
--		fwnode_handle_put(priv->asd.match.fwnode);
--		return ret;
--	}
-+	dev_dbg(priv->dev, "Found '%pOF'\n", to_of_node(fwnode));
- 
-+	v4l2_async_notifier_init(&priv->notifier);
- 	priv->notifier.ops = &rcar_csi2_notify_ops;
- 
--	dev_dbg(priv->dev, "Found '%pOF'\n",
--		to_of_node(priv->asd.match.fwnode));
-+	asd = v4l2_async_notifier_add_fwnode_subdev(&priv->notifier, fwnode,
-+						    sizeof(*asd));
-+	fwnode_handle_put(fwnode);
-+	if (IS_ERR(asd))
-+		return PTR_ERR(asd);
- 
- 	ret = v4l2_async_subdev_notifier_register(&priv->subdev,
- 						  &priv->notifier);
 -- 
 2.25.1
 
