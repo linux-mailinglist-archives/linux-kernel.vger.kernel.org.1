@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B867429B54D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D1A29B549
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794222AbgJ0PKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37202 "EHLO mail.kernel.org"
+        id S1794198AbgJ0PK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789789AbgJ0PCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:02:53 -0400
+        id S1789824AbgJ0PDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:03:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A81AC2071A;
-        Tue, 27 Oct 2020 15:02:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7C73206E5;
+        Tue, 27 Oct 2020 15:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810973;
-        bh=QZrPLNJpuWsmNkV0nyFp3PfJ1PGCgZCjAPJZR4EMZPU=;
+        s=default; t=1603810984;
+        bh=9eyIh/eEivJFYg7sKk/aeU7uy2yB9dzcxGoK1RgxLgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z32WtevVIoNkp2ApYwWlR0nJcrBV45g421+MnDeWl4/UGqW+RszUGMBwQRoweVZzJ
-         YOLLbPhvdIzocaCdKhZGqgXGMpPUe0/+ZD0KI7mDFNfLZCkSt4mfeWj89aZv2/D3X3
-         QdRim7bDmrauPpur5ULVyxt2wET1iZ05aGCSJaaM=
+        b=aUPGkdOl6NZy7ZqScSfxN95/5qgQ5L/btGeFUMqnW3SKFzhSDGcGiC+yyYlSKXwAh
+         EsEC+hsdIv6Qr0PpPvZoiJoddBZb8Yh6F5OndgdN0DIoJ1bINozED7drgyzEeaFHqU
+         OhfyJd4DkZtb0/jwJjSR7HoQ9TmaFXmwHA2m3IHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        stable@vger.kernel.org, Lang Cheng <chenglang@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 329/633] RDMA/ucma: Fix locking for ctx->events_reported
-Date:   Tue, 27 Oct 2020 14:51:12 +0100
-Message-Id: <20201027135538.113663554@linuxfoundation.org>
+Subject: [PATCH 5.8 332/633] RDMA/hns: Add a check for current state before modifying QP
+Date:   Tue, 27 Oct 2020 14:51:15 +0100
+Message-Id: <20201027135538.257132440@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,56 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Lang Cheng <chenglang@huawei.com>
 
-[ Upstream commit 98837c6c3d7285f6eca86480b6f7fac6880e27a8 ]
+[ Upstream commit e0ef0f68c4c0d85b1eb63f38d5d10324361280e8 ]
 
-This value is locked under the file->mut, ensure it is held whenever
-touching it.
+It should be considered an illegal operation if the ULP attempts to modify
+a QP from another state to the current hardware state. Otherwise, the ULP
+can modify some fields of QPC at any time. For example, for a QP in state
+of RTS, modify it from RTR to RTS can change the PSN, which is always not
+as expected.
 
-The case in ucma_migrate_id() is a race, while in ucma_free_uctx() it is
-already not possible for the write side to run, the movement is just for
-clarity.
-
-Fixes: 88314e4dda1e ("RDMA/cma: add support for rdma_migrate_id()")
-Link: https://lore.kernel.org/r/20200818120526.702120-10-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Link: https://lore.kernel.org/r/1598353674-24270-1-git-send-email-liweihang@huawei.com
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/ucma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index d03dacaef7880..cf283b70bf877 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -586,6 +586,7 @@ static int ucma_free_ctx(struct ucma_context *ctx)
- 			list_move_tail(&uevent->list, &list);
- 	}
- 	list_del(&ctx->list);
-+	events_reported = ctx->events_reported;
- 	mutex_unlock(&ctx->file->mut);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 4edea397b6b80..4486c9b7c3e43 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1171,8 +1171,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
  
- 	list_for_each_entry_safe(uevent, tmp, &list, list) {
-@@ -595,7 +596,6 @@ static int ucma_free_ctx(struct ucma_context *ctx)
- 		kfree(uevent);
- 	}
+ 	mutex_lock(&hr_qp->mutex);
  
--	events_reported = ctx->events_reported;
- 	mutex_destroy(&ctx->mutex);
- 	kfree(ctx);
- 	return events_reported;
-@@ -1678,7 +1678,9 @@ static ssize_t ucma_migrate_id(struct ucma_file *new_file,
+-	cur_state = attr_mask & IB_QP_CUR_STATE ?
+-		    attr->cur_qp_state : (enum ib_qp_state)hr_qp->state;
++	if (attr_mask & IB_QP_CUR_STATE && attr->cur_qp_state != hr_qp->state)
++		goto out;
++
++	cur_state = hr_qp->state;
+ 	new_state = attr_mask & IB_QP_STATE ? attr->qp_state : cur_state;
  
- 	cur_file = ctx->file;
- 	if (cur_file == new_file) {
-+		mutex_lock(&cur_file->mut);
- 		resp.events_reported = ctx->events_reported;
-+		mutex_unlock(&cur_file->mut);
- 		goto response;
- 	}
- 
+ 	if (ibqp->uobject &&
 -- 
 2.25.1
 
