@@ -2,243 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F7F29AD3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DD029AD3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900649AbgJ0NZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:25:47 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:40263 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900639AbgJ0NZ3 (ORCPT
+        id S2900664AbgJ0N0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:26:21 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40598 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410280AbgJ0N0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:25:29 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201027132501euoutp028d06c8fe60f4e4dff8153117b0815deb~B3D36OBX82527625276euoutp02D
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:25:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201027132501euoutp028d06c8fe60f4e4dff8153117b0815deb~B3D36OBX82527625276euoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603805101;
-        bh=POwP+6ssYbGtjKbozvag9P4TjIzi8CJK2Df+yEQb2Lo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=K6LhHa/YWeddzq8aR7SmpSE3CPDmPj9oWRa4v+AHh4ANJUsYCXg7bOOx4ow9i6BbP
-         e3nLp+K7YiDuwdB956MT1447kMc3r8FKp2jAFMFVe5WM1oY+Smtro7hR03GFJoV49O
-         JGYw6mW58PsYmR8FanyyjoCSiGO4wFY9CxDYU7OY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201027132459eucas1p227059f617b7ec439b0071b35264f5440~B3D2evzFI1793017930eucas1p2B;
-        Tue, 27 Oct 2020 13:24:59 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 15.42.06456.BAF189F5; Tue, 27
-        Oct 2020 13:24:59 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201027132459eucas1p1e31c288a9939f751765a3b54d00adf22~B3D2CwpNp1791517915eucas1p17;
-        Tue, 27 Oct 2020 13:24:59 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201027132459eusmtrp1d17108d75a4f8a3f4980d58d607b4437~B3D2BlawX1693416934eusmtrp1a;
-        Tue, 27 Oct 2020 13:24:59 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-6f-5f981fabde84
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 10.05.06017.AAF189F5; Tue, 27
-        Oct 2020 13:24:58 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201027132458eusmtip20ed65f267ccd092a632603c2fa3a3129~B3D1Z9p6B0052200522eusmtip2A;
-        Tue, 27 Oct 2020 13:24:58 +0000 (GMT)
-Subject: Re: [PATCH v2 5/6] pci: dwc: pci-exynos: rework the driver to
- support Exynos5433 variant
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <4cad3d12-e47b-18a3-7c9f-1947415a14b6@samsung.com>
-Date:   Tue, 27 Oct 2020 14:24:58 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.4.0
+        Tue, 27 Oct 2020 09:26:21 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RDQD7f069029;
+        Tue, 27 Oct 2020 08:26:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603805173;
+        bh=jFlTmK7DiJVnBpGbWIY3UaPdeNtf7KfJypLsXmoxVco=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kedXen2lWi1q0+03mV18wcUxtBhcmTtIK7NXBYPe5VK1P46dNlu/m2EuKMHlProp+
+         BNrOD+8RzRBUk/otp5jiZ49PC8wlGOWZxY5KZapy+HRu+KEHrbphzAKnOIy9GWoKfC
+         BsFbUg7GEhV/EupPN7Ku/X+nZEXBNGDeQ6zv7o9U=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RDQDAH015839
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 08:26:13 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
+ Oct 2020 08:26:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 27 Oct 2020 08:26:12 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RDQ7Cv080837;
+        Tue, 27 Oct 2020 08:26:09 -0500
+Subject: Re: [PATCH] arm64: dts: ti: k3-j7200-main: Add McASP nodes
+To:     Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
+CC:     <t-kristo@ti.com>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201005074850.11247-1-peter.ujfalusi@ti.com>
+ <20201005115805.d6yhykn7oc6x2tbu@charm>
+ <5a9ed7d3-fcfd-edbf-fc34-112a7e55aa1c@ti.com>
+ <20201005120837.75cwdmcpvzbvayq7@kinfolk>
+ <d0e05389-9bd1-92a9-9624-4e9ac02a6a52@ti.com>
+ <20201026145031.ggfugctq65zvgwp2@dismiss> <20201027130701.GE5639@atomide.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <8cd2b8fa-366f-804f-5b10-d9100c96cf49@ti.com>
+Date:   Tue, 27 Oct 2020 15:26:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <86df523b-cf3d-5a88-5ccc-c6f2ca9830a4@samsung.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRjtt3t3791ydTcNPywyRhlJOa2wC8V616WkFyFR2Zx60cjN2m09
-        7B9rKLUsKqF0PiZlJHM+mI80LGlYSzY3syCRogdGrTTBZdB6er09/O983zmHcz74KEzlk8ZQ
-        B41HOZNRn6sm5Hjbw6/+JXWxpbrEdlssU3Mmh7F3+6XMQLhIytR+LiOZvrfFBBMINJHMkzsV
-        BNNb5SGY0sA9CTP87T3JFN7tJpmO54+wNRGss8qJ2A7bC5KtdplZl+McwV5scSDWM3BbwoZc
-        c3eQe+Wrsrjcg8c4k0abLs+5X59y+NWSE69DBWQBciy0IhkF9HIYLazErUhOqehaBAHrOBKH
-        zwga3HZSHEIIgnU+6V+Lr7KaEIlbCF7W3CAFQkWPIvC9yBRwJJ0Jdc9KJAIm6CSwjlgJAUfR
-        86Hp3SAmmDHaj0Hn2EdcIBS0Fty/nmICxukF8PHVg0nDLDoDfoS+Y6JGCT1lQ5N6Gb0a2q94
-        JoMxOhYsreWYiKNhcMguEQKAfkNCeaX7T+0NEAx9I0UcCR88LX/wHPCWFOOiwYLgtb+eFIdi
-        BE/OlCJRtRKe+8MTlaiJiEXQeEcjrtdCV6BVIqyBngEDI0qxxAy40nYNE9cKOFukEtVxYPM0
-        /Iu939ePXUJq25TTbFPOsU05x/Y/txrhDhTNmXlDNscnGbnjCbzewJuN2QmZeQYXmvgx70/P
-        WDsa789wI5pC6ghF38hVnUqqP8afNLgRUJg6SrGu13tApcjSn8znTHk6kzmX491oNoWroxXL
-        rgfTVHS2/ih3iOMOc6a/rISSxRQgV3xjxcjtVNCp+a7O7v3bNT3HY2Xs5ZhP6wuS/duah8fL
-        NNqb6x2WxRd2s9O1X4jiPHyopLNs5wrlvlPnPaDRNleE7V2J/VWp7yLTBsM/8A3OjlW8d9O0
-        mU5lum5efpp3z2nD5pQtccnDxq27vj82bvy5tCZ4pI23W95YLmuT1Tifo0+Kx0y8/jf4+QwJ
-        XwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsVy+t/xe7qr5WfEG1xltVjSlGEx/8g5Vosb
-        v9pYLVZ8mcluceFpD5vF+fMb2C0u75rDZnF23nE2ixnn9zFZvPn9gt2ide8Rdoudd04wO/B4
-        rJm3htFj56y77B4LNpV6bFrVyebRt2UVo8fxG9uZPD5vkgtgj9KzKcovLUlVyMgvLrFVija0
-        MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLOLjWp+CBbsXDzw3sDYyr1LsYOTkk
-        BEwkzsxdwNbFyMUhJLCUUWLB1wdMEAkZiZPTGlghbGGJP9e6oIreMkoc//iIHSQhLJAs0T7h
-        OQuIzSZgKNH1FqSIk0NEQEViw/NbzCANzALnmCVOfb3ACNF9kEli1/SPYFW8AnYSh/5fYQax
-        WQRUJV4/OAoWFxVIknh5YSoTRI2gxMmZT8A2cArYS+yYdBxsM7OAmcS8zQ+ZIWx5ieats6Fs
-        cYlbT+YzTWAUmoWkfRaSlllIWmYhaVnAyLKKUSS1tDg3PbfYSK84Mbe4NC9dLzk/dxMjMG63
-        Hfu5ZQdj17vgQ4wCHIxKPLwX3k6LF2JNLCuuzD3EKMHBrCTC63T2dJwQb0piZVVqUX58UWlO
-        avEhRlOg5yYyS4km5wNTSl5JvKGpobmFpaG5sbmxmYWSOG+HwMEYIYH0xJLU7NTUgtQimD4m
-        Dk6pBkab/29mcxpUlC7USbAo7J0VLZZjrdUUcFAyLDvpn3XXomWfK+vvmy7++nBC7bfXRn4L
-        AsR6997NXahhHzBP+dBlpictC0uSNOR2sguuWjdt9p2jzb/Mze1OXuXY+e5PVlwb74fFPdrL
-        T4ULLvj53bL7kUPuw0JT1rjSzh9b/Xddte9g+nXxtq0SS3FGoqEWc1FxIgBLGhE48QIAAA==
-X-CMS-MailID: 20201027132459eucas1p1e31c288a9939f751765a3b54d00adf22
-X-Msg-Generator: CA
+In-Reply-To: <20201027130701.GE5639@atomide.com>
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201023075756eucas1p18765653e747842eef4b438aff32ef136
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201023075756eucas1p18765653e747842eef4b438aff32ef136
-References: <CGME20201023075756eucas1p18765653e747842eef4b438aff32ef136@eucas1p1.samsung.com>
-        <20201023075744.26200-1-m.szyprowski@samsung.com>
-        <20201023075744.26200-6-m.szyprowski@samsung.com>
-        <CAL_JsqK+kVOzLaYS6Xk9RoK8AOpVF+n5nNC1EBS-+UxR334d3g@mail.gmail.com>
-        <86df523b-cf3d-5a88-5ccc-c6f2ca9830a4@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On 27.10.2020 13:04, Marek Szyprowski wrote:
-> On 26.10.2020 20:14, Rob Herring wrote:
->> On Fri, Oct 23, 2020 at 2:58 AM Marek Szyprowski
->> <m.szyprowski@samsung.com> wrote:
->>> From: Jaehoon Chung <jh80.chung@samsung.com>
+
+On 27/10/2020 15.07, Tony Lindgren wrote:
+> * Nishanth Menon <nm@ti.com> [201026 14:58]:
+>> On 13:38-20201007, Peter Ujfalusi wrote:
+>> [...]
+>>>>>>> +		status = "disabled";
+>>>>>>
+>>>>>> I see that there is inconsistent usage of "disabled" in our SoC.dts
+>>>>>>
+>>>>>> Our generic rule has been set them to disabled in board.dtsi
+>>>>>> McASP and DSS for existing SoC dts do not follow this.. which is a tad
+>>>>>> confusing.. (considering that not even all uarts come out on every board
+>>>>>> and every uart needs pinmux to function..)
+>>>>>
+>>>>> "keep them disabled because several required properties are not present
+>>>>> as they are board specific."
+>>>>>
+>>>>> In board file the enabled mcasp must be updated with options that is
+>>>>> required for operation. Without those option the McASP can not be
+>>>>> initialized.
+>>>>>
+>>>>> I think we have been revisiting the very same discussion every time we
+>>>>> have a new SoC with McASP...
+>>>>>
+>>>>
+>>>> Yep.. This doe'snt really follow the rest of the SoC definition. [1]
+>>>> came to mind. The McASP discussion is a variation in the debate of the
+>>>> same.
 >>>
->>> Exynos5440 SoC support has been dropped since commit 8c83315da1cf 
->>> ("ARM:
->>> dts: exynos: Remove Exynos5440"). Rework this driver to support DWC 
->>> PCIe
->>> variant found in the Exynos5433 SoCs.
+>>> Right, saying status = "okay" to a node which is missing required
+>>> properties (which can only be added by boards when the McASP is
+>>> connected up) does not sound a good solution.
+>>> How should the SW handle that? Fail the device probe and return with
+>>> -EINVAL or eat up the error and just probe with broken configuration.
+>>> Since the peripheral is not used, the broken configuration will not
+>>> cause much runtime errors as there will be no runtime use of the peripheral.
 >>>
->>> The main difference in Exynos5433 variant is lack of the MSI support
->>> (the MSI interrupt is not even routed to the CPU).
+>>> status of fail or fail-sss is not a good one either, their definition is:
+>>> "Indicates that the device is not operational. A serious error was
+>>> detected in the device, and it is unlikely to become operational without
+>>> repair."
 >>>
->>> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
->>> [mszyprow: reworked the driver to support only Exynos5433 variant,
->>>             simplified code, rebased onto current kernel code, added
->>>             regulator support, converted to the regular platform 
->>> driver,
->>>             removed MSI related code, rewrote commit message]
->>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
->>> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
->>> ---
->>>   drivers/pci/controller/dwc/Kconfig      |   3 +-
->>>   drivers/pci/controller/dwc/pci-exynos.c | 358 
->>> ++++++++++--------------
->>>   drivers/pci/quirks.c                    |   1 +
->>>   3 files changed, 145 insertions(+), 217 deletions(-) 
-...
->>> +static int __maybe_unused exynos_pcie_suspend_noirq(struct device 
->>> *dev)
->>> +{
->> Why noirq variant needed? Lot's of PCI host drivers do this and I've
->> yet to get a reason...
-> Frankly, I have no idea, but switching to SET_LATE_SYSTEM_SLEEP_PM_OPS 
-> breaks system suspend/resume operation - the board doesn't resume from 
-> suspend. If this is really important I will add some more logs and try 
-> to find what happens between late/early and noirq phases.
+>>> The peripheral is fine, we are just trying to enable it without
+>>> providing the needed properties.
+>>>
+>>>> I'd argue Serdes, or for that matter any IP that has a link to
+>>>> outside-the-SoC world has the same discussion point.
+>>>
+>>> status = "disabled" is still the closest thing for everything which have
+>>> external dependencies. There is not much point to enable an i2c bus
+>>> without making sure that the signals are actually routed to the pins
+>>> where they supposed to go.
+> 
+> There is one reason to keep using the default status = "okay", for
+> i2c Linux can properly idle the device on boot without dependencies
+> to a certain boot loader version.
 
-It looks that PCI framework does something with the device or controller 
-in noirq phase, so the driver cannot shutdown the controller earlier. 
-Here is a relevant part from the kernel log after system suspend/resume 
-cycle captured with init_calldebug enabled:
+Right, but I would expect board files to disable not used peripherals,
+peripherals which is not connected up in the board. Including i2c buses.
 
-$ dmesg | grep pci
-brcmfmac 0000:01:00.0: calling pci_pm_suspend+0x0/0x248 @ 96, parent: 
-0000:00:00.0
-brcmfmac 0000:01:00.0: pci_pm_suspend+0x0/0x248 returned 0 after 650 usecs
-pcieport 0000:00:00.0: calling pci_pm_suspend+0x0/0x248 @ 7, parent: 
-pci0000:00
-pcieport 0000:00:00.0: pci_pm_suspend+0x0/0x248 returned 0 after 85 usecs
-exynos-pcie 15700000.pcie: calling platform_pm_suspend+0x0/0x68 @ 447, 
-parent: soc@0
-exynos-pcie 15700000.pcie: platform_pm_suspend+0x0/0x68 returned 0 after 
-4 usecs
-exynos_pcie_phy 15680000.pcie-phy: calling platform_pm_suspend+0x0/0x68 
-@ 447, parent: soc@0
-exynos_pcie_phy 15680000.pcie-phy: platform_pm_suspend+0x0/0x68 returned 
-0 after 3 usecs
-brcmfmac 0000:01:00.0: calling pci_pm_suspend_late+0x0/0x50 @ 448, 
-parent: 0000:00:00.0
-brcmfmac 0000:01:00.0: pci_pm_suspend_late+0x0/0x50 returned 0 after 4 usecs
-pcieport 0000:00:00.0: calling pci_pm_suspend_late+0x0/0x50 @ 449, 
-parent: pci0000:00
-pcieport 0000:00:00.0: pci_pm_suspend_late+0x0/0x50 returned 0 after 4 usecs
-exynos-pcie 15700000.pcie: calling exynos_pcie_suspend_late+0x0/0x30 @ 
-447, parent: soc@0
-exynos-pcie 15700000.pcie: exynos_pcie_suspend_late 439
-exynos-pcie 15700000.pcie: exynos_pcie_suspend_late+0x0/0x30 returned 0 
-after 17 usecs
-brcmfmac 0000:01:00.0: calling pci_pm_suspend_noirq+0x0/0x278 @ 449, 
-parent: 0000:00:00.0
-brcmfmac 0000:01:00.0: pci_pm_suspend_noirq+0x0/0x278 returned 0 after 
-24272 usecs
-pcieport 0000:00:00.0: calling pci_pm_suspend_noirq+0x0/0x278 @ 448, 
-parent: pci0000:00
-pcieport 0000:00:00.0: pci_pm_suspend_noirq+0x0/0x278 returned 0 after 
-196 usecs
-exynos-pcie 15700000.pcie: calling exynos_pcie_suspend_noirq+0x0/0x40 @ 
-447, parent: soc@0
-exynos-pcie 15700000.pcie: exynos_pcie_suspend_noirq+0x0/0x40 returned 0 
-after 653 usecs
-exynos-pcie 15700000.pcie: calling exynos_pcie_resume_noirq+0x0/0x38 @ 
-447, parent: soc@0
-exynos-pcie 15700000.pcie: Link up
-exynos-pcie 15700000.pcie: exynos_pcie_resume_noirq+0x0/0x38 returned 0 
-after 91433 usecs
-pcieport 0000:00:00.0: calling pci_pm_resume_noirq+0x0/0x140 @ 96, 
-parent: pci0000:00
-pcieport 0000:00:00.0: pci_pm_resume_noirq+0x0/0x140 returned 0 after 
-316 usecs
-brcmfmac 0000:01:00.0: calling pci_pm_resume_noirq+0x0/0x140 @ 143, 
-parent: 0000:00:00.0
-brcmfmac 0000:01:00.0: pci_pm_resume_noirq+0x0/0x140 returned 0 after 
-25470 usecs
-exynos-pcie 15700000.pcie: calling exynos_pcie_resume_late+0x0/0x30 @ 
-447, parent: soc@0
-exynos-pcie 15700000.pcie: exynos_pcie_resume_late 445
-exynos-pcie 15700000.pcie: exynos_pcie_resume_late+0x0/0x30 returned 0 
-after 24 usecs
-pcieport 0000:00:00.0: calling pci_pm_resume_early+0x0/0x48 @ 449, 
-parent: pci0000:00
-pcieport 0000:00:00.0: pci_pm_resume_early+0x0/0x48 returned 0 after 3 usecs
-brcmfmac 0000:01:00.0: calling pci_pm_resume_early+0x0/0x48 @ 448, 
-parent: 0000:00:00.0
-brcmfmac 0000:01:00.0: pci_pm_resume_early+0x0/0x48 returned 0 after 3 usecs
-exynos_pcie_phy 15680000.pcie-phy: calling platform_pm_resume+0x0/0x60 @ 
-447, parent: soc@0
-exynos_pcie_phy 15680000.pcie-phy: platform_pm_resume+0x0/0x60 returned 
-0 after 4 usecs
-exynos-pcie 15700000.pcie: calling platform_pm_resume+0x0/0x60 @ 447, 
-parent: soc@0
-exynos-pcie 15700000.pcie: platform_pm_resume+0x0/0x60 returned 0 after 
-4 usecs
-pcieport 0000:00:00.0: calling pci_pm_resume+0x0/0xe0 @ 96, parent: 
-pci0000:00
-pcieport 0000:00:00.0: pci_pm_resume+0x0/0xe0 returned 0 after 54 usecs
-brcmfmac 0000:01:00.0: calling pci_pm_resume+0x0/0xe0 @ 142, parent: 
-0000:00:00.0
-brcmfmac 0000:01:00.0: pci_pm_resume+0x0/0xe0 returned 0 after 554 usecs
+>>> Or from other pow: a board design is not based on what is _not_
+>>> connected to outside world, but you actually _connect_ or _enable_
+>>> certain peripherals to external components, connectors.
+>>
+>> OK, I will buy the argument that the current status thingy is a bit
+>> overloaded and does'nt imply the correct state we need it to imply with
+>> "fail-sss" either - I remember an argument for "fail-incomplete", but
+>> that never happened anyways.
+>>
+>> Lets add this argument to the commit message and repost after testing
+>> on 5.10-rc1 please?
+> 
+> We should use status = "disabled" when the hardware is not accessible
+> to the SoC. That goes for things like secure world devices, and hardware
+> that relies on a missing external clock for example. For other things
+> we should just stick to the default which "okay" :)
 
+Even for peripherals which needs board specific properties and those
+properties are mandatory for the IP to be operational and usable?
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+The McASP bindings demands several must be present properties
+(tdm-slots, slot direction for example) and they are coming from the
+board design.
+Board files will disable all unused McASPs, they should. Imho the board
+dts file represents the board design and the board design is to
+_connect_ peripherals and not _disconnect_ them.
+Why would a board file should be in charge to disable what is not
+connected/used?
 
+iow: what is the difference of a peripheral disabled in dtsi over a
+peripheral disabled in board dts file?
+
+> 
+> Regards,
+> 
+> Tony
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
