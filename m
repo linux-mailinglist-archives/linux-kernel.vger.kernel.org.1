@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A0F29B0DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC56029B0DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901572AbgJ0OYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49542 "EHLO mail.kernel.org"
+        id S1758832AbgJ0OYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901553AbgJ0OYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:18 -0400
+        id S1754014AbgJ0OYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:24:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9794B2072D;
-        Tue, 27 Oct 2020 14:24:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D68220773;
+        Tue, 27 Oct 2020 14:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808658;
-        bh=Zp5R/o6sfxPSBqE0VHQoU1EeH/qveGCZlnPnzpv+JWU=;
+        s=default; t=1603808663;
+        bh=x4/W+EqyE8cRLC70C0gguX4Izs1KXoSwMfj8JfATk8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WkbsjIuHxi8tes3v8RntOuRsvYlAgBVqDkmGmANQssRUAHMlYGN6n2ylgyZo7bBwY
-         xo3oWuKr3f1jnoBfEEBCTmoA4DIvctv9B0azmGyOxrpdYvMwp9JNvidfySzKLDE+PM
-         qJUWHpL5Id71CMF7TDgdiNn9s+AamMyLGJ/n4dYk=
+        b=ycEbNV7CwWJB1usDwVx5uOiEkA+ey0RG8o51MHqS0mnfX11OmRK3QTBECpn0Dhv2g
+         JXoXNe9b3VcJ8HSeGg+xUvnH2NJJI1ObEtZMo/ovrV3+5jwxj9ar76SrxhjtJ+IwEL
+         RFwLkv2s1DfK6qwMCfu4Rqzh4WgNOLzzTILex5vM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 173/264] clk: bcm2835: add missing release if devm_clk_hw_register fails
-Date:   Tue, 27 Oct 2020 14:53:51 +0100
-Message-Id: <20201027135438.815270465@linuxfoundation.org>
+Subject: [PATCH 4.19 175/264] watchdog: Use put_device on error
+Date:   Tue, 27 Oct 2020 14:53:53 +0100
+Message-Id: <20201027135438.902025761@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -44,39 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit f6c992ca7dd4f49042eec61f3fb426c94d901675 ]
+[ Upstream commit 937425d4cd3ae4e2882b41e332bbbab616bcf0ad ]
 
-In the implementation of bcm2835_register_pll(), the allocated pll is
-leaked if devm_clk_hw_register() fails to register hw. Release pll if
-devm_clk_hw_register() fails.
+We should use put_device() instead of freeing device
+directly after device_initialize().
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Link: https://lore.kernel.org/r/20200809231202.15811-1-navid.emamdoost@gmail.com
-Fixes: 41691b8862e2 ("clk: bcm2835: Add support for programming the audio domain clocks")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: cb36e29bb0e4b ("watchdog: initialize device before misc_register")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200824031230.31050-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/bcm/clk-bcm2835.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/watchdog/watchdog_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
-index 1c093fb35ebee..e4fee233849d2 100644
---- a/drivers/clk/bcm/clk-bcm2835.c
-+++ b/drivers/clk/bcm/clk-bcm2835.c
-@@ -1319,8 +1319,10 @@ static struct clk_hw *bcm2835_register_pll(struct bcm2835_cprman *cprman,
- 	pll->hw.init = &init;
- 
- 	ret = devm_clk_hw_register(cprman->dev, &pll->hw);
--	if (ret)
-+	if (ret) {
-+		kfree(pll);
- 		return NULL;
-+	}
- 	return &pll->hw;
- }
- 
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 1e4921f89fb52..8fe59b7d8eec8 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -973,7 +973,7 @@ static int watchdog_cdev_register(struct watchdog_device *wdd)
+ 				pr_err("%s: a legacy watchdog module is probably present.\n",
+ 					wdd->info->identity);
+ 			old_wd_data = NULL;
+-			kfree(wd_data);
++			put_device(&wd_data->dev);
+ 			return err;
+ 		}
+ 	}
 -- 
 2.25.1
 
