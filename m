@@ -2,154 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E2129AA0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF0D29AA0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421354AbgJ0Kwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:52:34 -0400
-Received: from mail.monom.org ([188.138.9.77]:54546 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1421168AbgJ0Kwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:52:31 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id A69EE50046C;
-        Tue, 27 Oct 2020 11:52:26 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 6250E500299;
-        Tue, 27 Oct 2020 11:52:26 +0100 (CET)
-Date:   Tue, 27 Oct 2020 11:52:26 +0100
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Clark Williams <williams@redhat.com>
-Subject: Re: [ANNOUNCE] v5.9.1-rt19
-Message-ID: <20201027105226.pzqqgeni572juhje@beryllium.lan>
-References: <20201024091838.gzhn2dlx2j7xnixg@linutronix.de>
- <20201027093616.5vn6xinmthxulhvx@beryllium.lan>
- <20201027100049.xtkmjqdwkn7zec2f@linutronix.de>
- <20201027102547.y6wop7j2ovzg2tyx@beryllium.lan>
- <20201027102851.gizepjlu4opensqb@linutronix.de>
- <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
+        id S1421658AbgJ0Kxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:53:44 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37146 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1421573AbgJ0Kxj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:53:39 -0400
+Received: by mail-wr1-f67.google.com with SMTP id w1so1357273wrm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WpqypFnY9U7+uLzrR/1nVmk8p5K95P6Yb5r5N8zFRV8=;
+        b=SMviA3v7hqhKjl0nNuRoXzMKyrWCHttiZtdn3Ryxceo34RlaxwsSVGfZE9aBh66ic7
+         XVBDmwzvUy0hcFtsIQZyYFDp8jFoacC7pL7oR99+YkkOElWEQy55jjCj6E6mzKoZYKDo
+         YbytgNuPCMp65uYnq/4e9bHZGLYUZqXIokImv9u8vQlmbFUJLpvra7p19DNgeAlTc72C
+         oVfNY8QXGJFkE4uDLTLIuq+Ldxj0LPn5gLph80+JBsxssfkMXyvUsH5gih4WlSoyURJZ
+         TaghWavZJz71030V5bV5huvIyU0e8aKaibwPO4dwbXfQ0IUr3UhBMYAX7ZSA3VPLx8VV
+         03+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WpqypFnY9U7+uLzrR/1nVmk8p5K95P6Yb5r5N8zFRV8=;
+        b=TmMF0Ksf4Gq5mCoxCRUjGIrrxV3vYMA841u5Sos+xqymu1umlFgoGsQ3XlnWeHCy8Q
+         PxBDC8RegwkOIKWNjuXYfplQD2MeroPyFiJXfs+tDkipzrrgsqTdw1wfZczDu4mkx8Ml
+         pFIrRn7KqQpX2lIER3FEk1NTEdzWEBV1eLfDOQ63H1oDv03sr8xe20jPNl9fufI2iPWi
+         PJjRRikWVIG2bJwFuwfmXKJT5ObNPBjMLpqrkqRVuMvFXTt8jNAKsHjvGF9Jz0iegYQZ
+         I16Rk3TIR+0yFbG5cZcwNROojDXPbNG0uv9u7Z4My6mZiinsgTmDjFAff+ht7rY7oQTq
+         V58A==
+X-Gm-Message-State: AOAM531qX7SAfodq2txvHqc5AkvxrKoI7Tcn8uHIXUN+UXaMDzfpCE8Y
+        YcX0h5YjA55FGmBCM8ySXWg=
+X-Google-Smtp-Source: ABdhPJwyIZPcF6b+fQtE1zkd+SAnxeK5QDQlxoK7O1bXCgNEwx76qskbS2hNznMNMX01TBXkvCJjnw==
+X-Received: by 2002:adf:8541:: with SMTP id 59mr2138495wrh.61.1603796016049;
+        Tue, 27 Oct 2020 03:53:36 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.117.206])
+        by smtp.gmail.com with ESMTPSA id m12sm1489623wrs.92.2020.10.27.03.53.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 03:53:35 -0700 (PDT)
+Subject: Re: [PATCH v3 15/16] soc: mediatek: pm-domains: Add default power off
+ flag
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     drinkcat@chromium.org, hsinyi@chromium.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        fparent@baylibre.com, weiyi.lu@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201026175526.2915399-1-enric.balletbo@collabora.com>
+ <20201026175526.2915399-16-enric.balletbo@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <05be2a94-d6e6-36e5-2c14-6d971e4a7677@gmail.com>
+Date:   Tue, 27 Oct 2020 11:53:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
+In-Reply-To: <20201026175526.2915399-16-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:34:11AM +0100, Daniel Wagner wrote:
-> It says so, let me double check if those task really run with SCHED_FIFO.
 
-I just got an RCU stall without any background load. Anyway, just for
-completeness here is the ps output:
 
-root@c2d:~# ps -eLo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wchan:14,comm
-  PID   TID CLS RTPRIO  NI PRI PSR %CPU STAT WCHAN          COMMAND
-    1     1 TS       -   0  19   0  0.0 Ss   -              systemd
-    2     2 TS       -   0  19   0  0.0 S    -              kthreadd
-    3     3 TS       - -20  39   0  0.0 I<   -              rcu_gp
-    4     4 TS       - -20  39   0  0.0 I<   -              rcu_par_gp
-    6     6 TS       - -20  39   0  0.0 I<   -              kworker/0:0H-events_highpri
-    8     8 TS       - -20  39   0  0.0 I<   -              mm_percpu_wq
-    9     9 TS       -   0  19   0  0.0 S    -              ksoftirqd/0
-   10    10 FF       1   -  41   0  0.0 S    -              rcuc/0
-   11    11 FF       1   -  41   0  0.0 I    -              rcu_preempt
-   12    12 FF       1   -  41   0  0.0 S    -              rcub/0
-   13    13 FF      99   - 139   0  0.0 S    -              migration/0
-   14    14 TS       -   0  19   0  0.0 S    -              cpuhp/0
-   15    15 TS       -   0  19   1  0.0 S    -              cpuhp/1
-   16    16 FF      99   - 139   1  0.0 S    -              migration/1
-   17    17 FF       1   -  41   1  0.0 R    -              rcuc/1
-   18    18 TS       -   0  19   1  0.0 R    -              ksoftirqd/1
-   19    19 TS       -   0  19   1  0.0 I    -              kworker/1:0-events_freezable_power_
-   20    20 TS       - -20  39   1  0.0 I<   -              kworker/1:0H-kblockd
-   21    21 TS       -   0  19   1  0.0 S    -              kdevtmpfs
-   22    22 TS       - -20  39   0  0.0 I<   -              netns
-   23    23 TS       -   0  19   1  0.0 S    -              rcu_tasks_kthre
-   24    24 TS       -   0  19   1  0.0 S    -              rcu_tasks_rude_
-   25    25 TS       -   0  19   0  0.0 S    -              kauditd
-   26    26 TS       -   0  19   1  0.0 I    -              kworker/1:1-events_freezable_power_
-   27    27 TS       -   0  19   0  0.0 I    -              kworker/0:1-ata_sff
-   28    28 TS       -   0  19   1  0.0 S    -              oom_reaper
-   29    29 TS       - -20  39   1  0.0 I<   -              writeback
-   30    30 TS       -   0  19   0  0.0 S    -              kcompactd0
-   50    50 TS       - -20  39   1  0.0 I<   -              kblockd
-   51    51 FF      50   -  90   1  0.0 S    -              irq/9-acpi
-   52    52 TS       - -20  39   1  0.0 I<   -              ata_sff
-   53    53 TS       - -20  39   0  0.0 I<   -              md
-   54    54 TS       - -20  39   0  0.0 I<   -              rpciod
-   55    55 TS       - -20  39   0  0.0 I<   -              kworker/u9:0-xprtiod
-   56    56 TS       - -20  39   0  0.0 I<   -              xprtiod
-   57    57 TS       - -20  39   1  0.0 I<   -              cfg80211
-   58    58 TS       -   0  19   0  0.0 S    -              kswapd0
-   59    59 TS       - -20  39   1  0.0 I<   -              nfsiod
-   61    61 TS       - -20  39   1  0.0 I<   -              acpi_thermal_pm
-   63    63 FF      50   -  90   0  0.0 S    -              card0-crtc0
-   64    64 FF      50   -  90   0  0.0 S    -              card0-crtc1
-   65    65 FF      50   -  90   0  0.0 S    -              irq/16-i915
-   66    66 TS       - -20  39   0  0.0 I<   -              kworker/0:1H-kblockd
-   67    67 FF      50   -  90   1  0.0 S    -              irq/14-ata_piix
-   68    68 FF      50   -  90   0  0.0 S    -              irq/15-ata_piix
-   69    69 TS       -   0  19   1  0.0 S    -              scsi_eh_0
-   70    70 TS       - -20  39   1  0.0 I<   -              scsi_tmf_0
-   71    71 TS       -   0  19   1  0.0 S    -              scsi_eh_1
-   72    72 TS       - -20  39   0  0.0 I<   -              scsi_tmf_1
-   78    78 FF      50   -  90   1  0.0 S    -              irq/23-ehci_hcd
-   79    79 FF      50   -  90   1  0.0 S    -              irq/23-uhci_hcd
-   80    80 FF      50   -  90   0  0.0 S    -              irq/19-uhci_hcd
-   81    81 FF      50   -  90   1  0.0 S    -              irq/18-uhci_hcd
-   82    82 FF      50   -  90   0  0.0 S    -              irq/16-uhci_hcd
-   83    83 FF      50   -  90   0  0.0 S    -              irq/1-i8042
-   84    84 FF      50   -  90   1  0.0 S    -              irq/8-rtc0
-   85    85 FF      50   -  90   0  0.0 S    -              irq/19-i801_smb
-   86    86 TS       - -20  39   1  0.0 I<   -              ipv6_addrconf
-   88    88 TS       -   0  19   0  0.2 S    -              pr/ttyS0
-   89    89 TS       -   0  19   0  0.0 S    -              pr/netcon0
-   93    93 TS       - -20  39   1  0.0 I<   -              kworker/1:1H-kblockd
-   94    94 FF      50   -  90   0  0.0 S    -              irq/26-eth0
-   95    95 TS       -   0  19   1  0.0 S    -              scsi_eh_2
-   96    96 TS       - -20  39   1  0.0 I<   -              scsi_tmf_2
-   97    97 TS       -   0  19   0  0.0 S    -              usb-storage
-  105   105 TS       - -20  39   1  0.0 I<   -              kworker/u9:1-xprtiod
-  106   106 TS       -   0  19   0  0.0 S    -              NFSv4 callback
-  114   114 TS       -   0  19   0  0.0 I    -              kworker/u8:8-events_unbound
-  158   158 TS       -   0  19   0  0.0 Ss   -              systemd-journal
-  167   167 TS       -   0  19   0  0.0 Ss   -              systemd-udevd
-  175   175 TS       -   0  19   0  0.0 Ss   -              systemd-network
-  195   195 TS       -   0  19   0  0.0 Ssl  -              systemd-timesyn
-  195   200 TS       -   0  19   0  0.0 Ssl  -              sd-resolve
-  224   224 TS       -   0  19   0  0.0 Ss   -              sshd
-  226   226 TS       -   0  19   1  0.0 Ss+  -              agetty
-  227   227 TS       -   0  19   0  0.0 Ss+  -              agetty
-  228   228 TS       -   0  19   1  0.0 Ss+  -              agetty
-  232   232 TS       -   0  19   0  0.0 Ss+  -              agetty
-  233   233 TS       -   0  19   1  0.0 Ss+  -              agetty
-  234   234 TS       -   0  19   0  0.0 Ss+  -              agetty
-  236   236 TS       -   0  19   1  0.0 Ss+  -              agetty
-  241   241 FF      50   -  90   1  0.0 S    -              irq/4-ttyS0
-  263   263 TS       -   0  19   0  0.0 I    -              kworker/u8:47-rpciod
-  266   266 TS       -   0  19   1  0.0 R    -              kworker/1:2+events_freezable_power_
-  267   267 TS       -   0  19   0  0.0 I    -              kworker/0:0-events_power_efficient
-  269   269 TS       -   0  19   0  0.0 Ss   -              sshd
-  275   275 TS       -   0  19   0  0.0 Ss   -              bash
-  282   282 FF       4   -  44   0  0.0 Sl+  -              pi_stress
-  282   283 FF       1   -  41   1 42.0 Rl+  -              pi_stress
-  282   284 FF       2   -  42   1 22.1 Sl+  -              pi_stress
-  282   285 FF       3   -  43   1 35.7 Rl+  -              pi_stress
-  297   297 TS       -   0  19   1  0.0 R    -              kworker/1:3
-  303   303 TS       -   0  19   0  0.0 I    -              kworker/0:2-ata_sff
-  308   308 TS       -   0  19   1  0.0 R    -              kworker/1:4
-  312   312 TS       -   0  19   0  0.0 I    -              kworker/0:3-ata_sff
-  316   316 TS       -   0  19   0  0.0 I    -              kworker/u8:0-rpciod
-  317   317 TS       -   0  19   0  0.0 I    -              kworker/u8:1-rpciod
-  320   320 TS       -   0  19   0  1.0 Ss   -              sshd
-  326   326 TS       -   0  19   0  0.0 Ss   -              bash
-  329   329 TS       -   0  19   0  0.0 R+   -              ps
+On 26/10/2020 18:55, Enric Balletbo i Serra wrote:
+> From: Weiyi Lu <weiyi.lu@mediatek.com>
+> 
+> For some power domain, like conn on MT8192, it should be default OFF.
+> Because the power on/off control relies the function of connectivity chip
+> and its firmware. And if project choose other chip vendor solution,
+> those necessary connectivity functions will not provided.
+> 
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> 
+> Changes in v3: None
+> Changes in v2: None
+> 
+>   drivers/soc/mediatek/mtk-pm-domains.c | 23 +++++++++++++++++------
+>   drivers/soc/mediatek/mtk-pm-domains.h |  1 +
+>   2 files changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index 63993076a544..fe0e955076a0 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -378,10 +378,16 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>   	 * software.  The unused domains will be switched off during
+>   	 * late_init time.
+>   	 */
+> -	ret = scpsys_power_on(&pd->genpd);
+> -	if (ret < 0) {
+> -		dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+> -		goto err_unprepare_clocks;
+> +	if (MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF)) {
+> +		if (scpsys_domain_is_on(pd))
+> +			dev_warn(scpsys->dev,
+> +				 "%pOF: A default off power domain has been ON\n", node);
+> +	} else {
+> +		ret = scpsys_power_on(&pd->genpd);
+> +		if (ret < 0) {
+> +			dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+> +			goto err_unprepare_clocks;
+> +		}
+>   	}
+>   
+>   	if (scpsys->domains[id]) {
+> @@ -395,7 +401,11 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>   	pd->genpd.power_off = scpsys_power_off;
+>   	pd->genpd.power_on = scpsys_power_on;
+>   
+> -	pm_genpd_init(&pd->genpd, NULL, false);
+> +	if (MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF))
+> +		pm_genpd_init(&pd->genpd, NULL, true);
+> +	else
+> +		pm_genpd_init(&pd->genpd, NULL, false);
+> +
+>   	scpsys->domains[id] = &pd->genpd;
+>   
+>   	return scpsys->pd_data.domains[id];
+> @@ -478,7 +488,8 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+>   			"failed to remove domain '%s' : %d - state may be inconsistent\n",
+>   			pd->genpd.name, ret);
+>   
+> -	scpsys_power_off(&pd->genpd);
+> +	if (!MTK_SCPD_CAPS(pd, MTK_SCPD_KEEP_DEFAULT_OFF))
+> +		scpsys_power_off(&pd->genpd);
+
+OK, so you merged Weiyi's patches in this series :)
+
+So same comment here: Does it really hurt if we turn-off a already turned-off 
+power domain? Or can we get rid of this check?
+
+Regards,
+Matthias
+
+>   
+>   	clk_bulk_unprepare(pd->num_clks, pd->clks);
+>   	clk_bulk_put(pd->num_clks, pd->clks);
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index 2ad213be84a5..0fa6a938b40c 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -6,6 +6,7 @@
+>   #define MTK_SCPD_ACTIVE_WAKEUP		BIT(0)
+>   #define MTK_SCPD_FWAIT_SRAM		BIT(1)
+>   #define MTK_SCPD_SRAM_ISO		BIT(2)
+> +#define MTK_SCPD_KEEP_DEFAULT_OFF	BIT(3)
+>   #define MTK_SCPD_CAPS(_scpd, _x)	((_scpd)->data->caps & (_x))
+>   
+>   #define SPM_VDE_PWR_CON			0x0210
+> 
