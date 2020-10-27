@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523E329A73D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D39329A744
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895293AbgJ0JDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895286AbgJ0JDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:03:54 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2243A206DC;
-        Tue, 27 Oct 2020 09:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603789434;
-        bh=9i3xc1N4T9XdkH48tZRMTBAeFg4Bk4OEANGgtVvnDdI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=h2mq+Cuc2s83ZF+bFsQzu9jFiVGTXPUgBa6LgqKTBFFODBpbYVumjct1cxTwWrrJ7
-         xQY66ASydgWd2v2Vmg8mI9c7O4MfawBsD8KJeVBt6rQrt5VRkgDl1RNogKsy81W+Kw
-         XJr0XmhYaK83GVtpqcK8ycox8kpn+z/I5cMoeYv4=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kXKtT-004cie-TM; Tue, 27 Oct 2020 09:03:52 +0000
+        id S2895316AbgJ0JEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:04:20 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6571 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408355AbgJ0JET (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:04:19 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f97e27e0000>; Tue, 27 Oct 2020 02:03:58 -0700
+Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 27 Oct
+ 2020 09:04:17 +0000
+Subject: Re: [PATCH] [v2] firmware: tegra: fix strncpy()/strncat() confusion
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Timo Alho <talho@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201026164937.3722420-1-arnd@kernel.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <5bcc7693-6e1b-224f-1f95-9b2745aec919@nvidia.com>
+Date:   Tue, 27 Oct 2020 09:04:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201026164937.3722420-1-arnd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Oct 2020 09:03:51 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     balbi@kernel.org
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] irqchip: bcm2836: fix section mismatch warning
-In-Reply-To: <20201027085157.1964906-3-balbi@kernel.org>
-References: <20201027085157.1964906-1-balbi@kernel.org>
- <20201027085157.1964906-3-balbi@kernel.org>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <49f17502445e5ae5b35df15577957ae6@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: balbi@kernel.org, mathieu.poirier@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, alexander.shishkin@linux.intel.com, suzuki.poulose@arm.com, f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603789438; bh=IaHQsl7SVg3HnXn+o8TqiYkqYO+dY6DhSsBVvpOQFho=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=bAgLctRMT+zqOyMdLgbmfQ0eti2FBHY3Cg+f715hV+cknF6Gj3Fum4PMmb14UUEGx
+         a34p0YEHLzGcNDFiLdLjKwSSBAIpTbGcjo+byrki6yAzaYwjcDn115zoHoOKrd1yMM
+         uYuIZTB2IAdwf6FoStoaXgsGilxF+xOZNTY7hPFjGd7rb6D1DquT08ev/Kc3Sk2ASy
+         WQxuNGc7IOzCtI89byw26PPQc7vzadUX/020fg8QM7FaCPKmMwy0qase928lyozwC4
+         KsEdXg5i7NP8AIi6Ve2Gdq0sB6kO62Tpu+h8hgy5dsEjfNnWDrg744P56qy58N93W0
+         iCfvd3Bfr0pCw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 08:51, balbi@kernel.org wrote:
-> From: Felipe Balbi <balbi@kernel.org>
+
+
+On 26/10/2020 16:49, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Fix the following warning:
+> The way that bpmp_populate_debugfs_inband() uses strncpy()
+> and strncat() makes no sense since the size argument for
+> the first is insufficient to contain the trailing '/'
+
+I don't believe that is the case, because there is a +1 for trailing '/'
+and the if statement is checking if the len is equal to or greater than.
+If it is equal then there is no room for the nul character and will
+fail. So it should not overflow.
+
+> and the second passes the length of the input rather than
+> the output, which triggers a warning:
 > 
-> WARNING: modpost: vmlinux.o(.text.unlikely+0x17b2c): Section mismatch
-> in reference from the function bcm2836_arm_irqchip_smp_init() to the
-> function .init.text:set_smp_ipi_range()
-> The function bcm2836_arm_irqchip_smp_init() references
-> the function __init set_smp_ipi_range().
-> This is often because bcm2836_arm_irqchip_smp_init lacks a __init
-> annotation or the annotation of set_smp_ipi_range is wrong.
+> In function 'strncat',
+>     inlined from 'bpmp_populate_debugfs_inband' at ../drivers/firmware/tegra/bpmp-debugfs.c:422:4:
+> include/linux/string.h:289:30: warning: '__builtin_strncat' specified bound depends on the length of the source argument [-Wstringop-overflow=]
+>   289 | #define __underlying_strncat __builtin_strncat
+>       |                              ^
+> include/linux/string.h:367:10: note: in expansion of macro '__underlying_strncat'
+>   367 |   return __underlying_strncat(p, q, count);
+>       |          ^~~~~~~~~~~~~~~~~~~~
+> drivers/firmware/tegra/bpmp-debugfs.c: In function 'bpmp_populate_debugfs_inband':
+> include/linux/string.h:288:29: note: length computed here
+>   288 | #define __underlying_strlen __builtin_strlen
+>       |                             ^
+> include/linux/string.h:321:10: note: in expansion of macro '__underlying_strlen'
+>   321 |   return __underlying_strlen(p);
 > 
-> Signed-off-by: Felipe Balbi <balbi@kernel.org>
+> Simplify this to use an snprintf() instead.
+> 
+> Fixes: 5e37b9c137ee ("firmware: tegra: Add support for in-band debug")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/irqchip/irq-bcm2836.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v2: Use the correct arguments for snprintf(), as pointed out by Arvind Sankar
+> ---
+>  drivers/firmware/tegra/bpmp-debugfs.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> diff --git a/drivers/irqchip/irq-bcm2836.c 
-> b/drivers/irqchip/irq-bcm2836.c
-> index 97838eb705f9..cbc7c740e4dc 100644
-> --- a/drivers/irqchip/irq-bcm2836.c
-> +++ b/drivers/irqchip/irq-bcm2836.c
-> @@ -244,7 +244,7 @@ static int bcm2836_cpu_dying(unsigned int cpu)
+> diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
+> index c1bbba9ee93a..440d99c63638 100644
+> --- a/drivers/firmware/tegra/bpmp-debugfs.c 
+> +++ b/drivers/firmware/tegra/bpmp-debugfs.c
+> @@ -412,16 +412,12 @@ static int bpmp_populate_debugfs_inband(struct tegra_bpmp *bpmp,
+>  				goto out;
+>  			}
+>  
+> -			len = strlen(ppath) + strlen(name) + 1;
+> +			len = snprintf(pathbuf, pathlen, "%s%s/", ppath, name);
+>  			if (len >= pathlen) {
+>  				err = -EINVAL;
+>  				goto out;
+>  			}
+>  
+> -			strncpy(pathbuf, ppath, pathlen);
+> -			strncat(pathbuf, name, strlen(name));
+> -			strcat(pathbuf, "/");
+> -
+>  			err = bpmp_populate_debugfs_inband(bpmp, dentry,
+>  							   pathbuf);
+>  			if (err < 0)
 > 
->  #define BITS_PER_MBOX	32
-> 
-> -static void bcm2836_arm_irqchip_smp_init(void)
-> +static void __init bcm2836_arm_irqchip_smp_init(void)
->  {
->  	struct irq_fwspec ipi_fwspec = {
->  		.fwnode		= intc.domain->fwnode,
 
-I already have a fix for this one[1], which should be in -next.
+However, this is indeed much better and so thanks for the simplification.
 
-Thanks,
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
 
-         M.
+Cheers
+Jon
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=irq/irqchip-next&id=57733e009f0c7e0526e10a18be12f56996c5460e
 -- 
-Jazz is not dead. It just smells funny...
+nvpublic
