@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F7F29B44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560BA29B452
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787847AbgJ0PAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56234 "EHLO mail.kernel.org"
+        id S1762474AbgJ0PAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781441AbgJ0Ozk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:55:40 -0400
+        id S1782741AbgJ0O5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:57:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A1B720679;
-        Tue, 27 Oct 2020 14:55:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D8B620714;
+        Tue, 27 Oct 2020 14:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810539;
-        bh=l1kaWWINDqgYxtprcmfWxtaQ+1hArbtHtpIwUpQLm0w=;
+        s=default; t=1603810654;
+        bh=kLe7/vY0Ls6IeBaiIiu8SqNpxvuanMu5PQdyxxmZd2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RuQcz7EhbGt0eHigOghp1828q0S9tXP6jVh9HBzqCW+wUaYQVcknKhbKey+yXClS/
-         M8IyfzgGjHgjYHeqnyYCjp+sMGXo64YMI5ctVk0Aky0tsrRkwwaxypKoilkgzlhUIq
-         r5DUtmVSiAqaUBuEqnlH2AdC+xZ5S1TjB1Rgwg5U=
+        b=kB0FE2+jGgNVTtUPrmyORdssw6AN4HbMiRFwKkoYej79+XRd2yGzy/a04RPVDco/W
+         L4miEVOF/9jUWrHE1gcmCqIS3dNZO/sif/0a1evk6ZHawza8eG4OKLM0Z5/BOvgclF
+         E5KupJFBUdFdVBjL/Dy3Smi/kLsfEHr0AXNb7CEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 173/633] drm/gma500: fix error check
-Date:   Tue, 27 Oct 2020 14:48:36 +0100
-Message-Id: <20201027135530.794567525@linuxfoundation.org>
+Subject: [PATCH 5.8 175/633] scsi: qla2xxx: Fix the size used in a dma_free_coherent() call
+Date:   Tue, 27 Oct 2020 14:48:38 +0100
+Message-Id: <20201027135530.891528596@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,52 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit cdd296cdae1af2d27dae3fcfbdf12c5252ab78cf ]
+[ Upstream commit 650b323c8e7c3ac4830a20895b1d444fd68dd787 ]
 
-Reviewing this block of code in cdv_intel_dp_init()
+Update the size used in 'dma_free_coherent()' in order to match the one
+used in the corresponding 'dma_alloc_coherent()'.
 
-ret = cdv_intel_dp_aux_native_read(gma_encoder, DP_DPCD_REV, ...
+[mkp: removed memset() hunk that has already been addressed]
 
-cdv_intel_edp_panel_vdd_off(gma_encoder);
-if (ret == 0) {
-	/* if this fails, presume the device is a ghost */
-	DRM_INFO("failed to retrieve link info, disabling eDP\n");
-	drm_encoder_cleanup(encoder);
-	cdv_intel_dp_destroy(connector);
-	goto err_priv;
-} else {
-
-The (ret == 0) is not strict enough.
-cdv_intel_dp_aux_native_read() returns > 0 on success
-otherwise it is failure.
-
-So change to <=
-
-Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200805205911.20927-1-trix@redhat.com
+Link: https://lore.kernel.org/r/20200802110721.677707-1-christophe.jaillet@wanadoo.fr
+Fixes: 4161cee52df8 ("[SCSI] qla4xxx: Add host statistics support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
+ drivers/scsi/qla2xxx/qla_mbx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index f41cbb753bb46..720a767118c9c 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -2078,7 +2078,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 					       intel_dp->dpcd,
- 					       sizeof(intel_dp->dpcd));
- 		cdv_intel_edp_panel_vdd_off(gma_encoder);
--		if (ret == 0) {
-+		if (ret <= 0) {
- 			/* if this fails, presume the device is a ghost */
- 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
- 			drm_encoder_cleanup(encoder);
+diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
+index fdb2ce7acb912..9f5d3aa1d8745 100644
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
+@@ -4908,7 +4908,7 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t *vha)
+ 		    "Done %s.\n", __func__);
+ 	}
+ 
+-	dma_free_coherent(&ha->pdev->dev, DMA_POOL_SIZE,
++	dma_free_coherent(&ha->pdev->dev, ELS_CMD_MAP_SIZE,
+ 	   els_cmd_map, els_cmd_map_dma);
+ 
+ 	return rval;
 -- 
 2.25.1
 
