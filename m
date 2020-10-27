@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAE029C23E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F4D29C3F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820190AbgJ0Rdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41262 "EHLO mail.kernel.org"
+        id S2901549AbgJ0OYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:24:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762292AbgJ0Olt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:41:49 -0400
+        id S2901531AbgJ0OYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:24:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BCC9207BB;
-        Tue, 27 Oct 2020 14:41:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32D8320773;
+        Tue, 27 Oct 2020 14:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809708;
-        bh=AHPu6VlPpb0XC/2887H1Sa35fVDy3w65m8Olms9NGyU=;
+        s=default; t=1603808651;
+        bh=MwScFoHCrD1FTWEgOOql8sERHWVfpoxY/zlARsLFSh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W4SFxVgC7mEbllbksON1t52cg9k5cRzqML/7S0imE6xlwMe9TybnECTr+DaFfLnfW
-         l6uuasv3b0XHrV234Q5XutJ4Wh3Q9o2X5lPoGCAaYrhFPjZXXmPiWgK3tQWcInhtGv
-         9qGpAY/hxWLz+OURyw8kDlSwINKzxzSInscJNKQI=
+        b=qJ2ZISROerzR7vg3AFIJpLTgNgGL4iJYMG6lu8qpxAM2naxKSvysZQJoDIXwW7su6
+         2YhpRyfgJxu0kKxinyhDX3+ItMCsHZSuld9lnImH+oaiXJB8qdDwX6PkHtXixYtPnr
+         tn+J0KVQNJX7pGmJX/CUFBJ23HM9U+FDTwQ5l1zE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Francesco Ruggeri <fruggeri@arista.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 292/408] netfilter: conntrack: connection timeout after re-register
+Subject: [PATCH 4.19 172/264] clk: at91: clk-main: update key before writing AT91_CKGR_MOR
 Date:   Tue, 27 Oct 2020 14:53:50 +0100
-Message-Id: <20201027135508.585157601@linuxfoundation.org>
+Message-Id: <20201027135438.761055144@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Francesco Ruggeri <fruggeri@arista.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 4f25434bccc28cf8a07876ef5142a2869a674353 ]
+[ Upstream commit 85d071e7f19a6a9abf30476b90b3819642568756 ]
 
-If the first packet conntrack sees after a re-register is an outgoing
-keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to
-SND.NXT-1.
-When the peer correctly acknowledges SND.NXT, tcp_in_window fails
-check III (Upper bound for valid (s)ack: sack <= receiver.td_end) and
-returns false, which cascades into nf_conntrack_in setting
-skb->_nfct = 0 and in later conntrack iptables rules not matching.
-In cases where iptables are dropping packets that do not match
-conntrack rules this can result in idle tcp connections to time out.
+SAMA5D2 datasheet specifies on chapter 33.22.8 (PMC Clock Generator
+Main Oscillator Register) that writing any value other than
+0x37 on KEY field aborts the write operation. Use the key when
+selecting main clock parent.
 
-v2: adjust td_end when getting the reply rather than when sending out
-    the keepalive packet.
-
-Fixes: f94e63801ab2 ("netfilter: conntrack: reset tcp maxwin on re-register")
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 27cb1c2083373 ("clk: at91: rework main clk implementation")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1598338751-20607-3-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto_tcp.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/clk/at91/clk-main.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index 1926fd56df56a..848b137151c26 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -541,13 +541,20 @@ static bool tcp_in_window(const struct nf_conn *ct,
- 			swin = win << sender->td_scale;
- 			sender->td_maxwin = (swin == 0 ? 1 : swin);
- 			sender->td_maxend = end + sender->td_maxwin;
--			/*
--			 * We haven't seen traffic in the other direction yet
--			 * but we have to tweak window tracking to pass III
--			 * and IV until that happens.
--			 */
--			if (receiver->td_maxwin == 0)
-+			if (receiver->td_maxwin == 0) {
-+				/* We haven't seen traffic in the other
-+				 * direction yet but we have to tweak window
-+				 * tracking to pass III and IV until that
-+				 * happens.
-+				 */
- 				receiver->td_end = receiver->td_maxend = sack;
-+			} else if (sack == receiver->td_end + 1) {
-+				/* Likely a reply to a keepalive.
-+				 * Needed for III.
-+				 */
-+				receiver->td_end++;
-+			}
+diff --git a/drivers/clk/at91/clk-main.c b/drivers/clk/at91/clk-main.c
+index 90988e7a5b47f..2e7da9b379d48 100644
+--- a/drivers/clk/at91/clk-main.c
++++ b/drivers/clk/at91/clk-main.c
+@@ -517,12 +517,17 @@ static int clk_sam9x5_main_set_parent(struct clk_hw *hw, u8 index)
+ 		return -EINVAL;
+ 
+ 	regmap_read(regmap, AT91_CKGR_MOR, &tmp);
+-	tmp &= ~MOR_KEY_MASK;
+ 
+ 	if (index && !(tmp & AT91_PMC_MOSCSEL))
+-		regmap_write(regmap, AT91_CKGR_MOR, tmp | AT91_PMC_MOSCSEL);
++		tmp = AT91_PMC_MOSCSEL;
+ 	else if (!index && (tmp & AT91_PMC_MOSCSEL))
+-		regmap_write(regmap, AT91_CKGR_MOR, tmp & ~AT91_PMC_MOSCSEL);
++		tmp = 0;
++	else
++		return 0;
 +
- 		}
- 	} else if (((state->state == TCP_CONNTRACK_SYN_SENT
- 		     && dir == IP_CT_DIR_ORIGINAL)
++	regmap_update_bits(regmap, AT91_CKGR_MOR,
++			   AT91_PMC_MOSCSEL | MOR_KEY_MASK,
++			   tmp | AT91_PMC_KEY);
+ 
+ 	while (!clk_sam9x5_main_ready(regmap))
+ 		cpu_relax();
 -- 
 2.25.1
 
