@@ -2,157 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6D329AC8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C96D29AC95
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900336AbgJ0MzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:55:13 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:37659 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439375AbgJ0MzN (ORCPT
+        id S2900368AbgJ0M5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:57:37 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43828 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2900360AbgJ0M5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:55:13 -0400
-Received: by mail-ej1-f67.google.com with SMTP id p9so2079801eji.4;
-        Tue, 27 Oct 2020 05:55:10 -0700 (PDT)
+        Tue, 27 Oct 2020 08:57:37 -0400
+Received: by mail-io1-f68.google.com with SMTP id h21so1369135iob.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:57:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NmWbBGj0lkHe0t79tv/Jf0SQbBWE8aedRom+eTRmfzc=;
-        b=XKbecVq1Ik0kDILHFzzL8d8bpttLxS6dESkXXO8J4CXuqnb9t6t5hdiFWWhOtsrxGl
-         FfT1Z2nHdRwX41X1K88ruflhzopy8zrF//t+SD242mAlwU+zZ9jiY7vu0rP4YkGGKB2e
-         6UkVAxr/JgGrZxP0YOzvgLTgyb+sFMkpmvl2M2R2FgzHNYkKMCPMZE/No2X6vSYkJsha
-         +3U6G/kklfJ/3i/JzCoTfYQVHfV1rIvs2dycsXJOezsm+jiqnde/tx8G18la6hTkNBDt
-         Ap1jpfkVhgYGFJCnlWTZfPjYdScWsMu8NR5463W1kf2sulLsq7HreIJQA4vfTLU32jvc
-         Gwuw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iFiKV/id+bhp/OGyzJyPrVgrZf8FoY0fdLp5S5yqHuk=;
+        b=we/SNQIky5YrQh0PzXP6Tgc1eIaMm9E+w9wS9WP1wIMyhXLi3Qc00UqUJ/rWulxl4X
+         S0JMd/4I7MEy/gjBu/RmJEcSkF2lNMRaW5JzUPodhWNlaZb0uE9J8JtBsqctVxmW9IVO
+         U2xNQ12PzyVLQYGwQ/dPySIq6lOjMsSQZpy1iMxR7rqztopW9wJvIZTcihhNHq7gUD4Z
+         PB8BoQcOle680zaF9ywOl0YyvTcQoThDF7oTv0LWEsxHIb3q3cKxsT97yu5gM8Jcnt49
+         ALDxk41xIvjj9e5eSaDMrHteCxC8C1h8wF9vVBR+H/FbrvTnfX5bU9Sfn2K9m9x+Alx1
+         vHxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NmWbBGj0lkHe0t79tv/Jf0SQbBWE8aedRom+eTRmfzc=;
-        b=WyvSObybhQCAQt4P4AIcM7nDwlLyP4c+o/QlNGKt7bO7/iyf9dPG0e99T4mX+sqUXt
-         jfb1Q6bbzn6DwOH7odZ2N/irT51M6bJrntuAZ9JCkvRel+7cvF1xeVfWDtlkr5dxOvsU
-         yH4TyIYKvb4mgMHEyYIRJVEHwJiDgdIgtHWBEANQMde+zV+3Ies9nPvkJPsaYuqq5vhs
-         02/OqmL39ETv23fxi5yV/iO0uAKHFXQ81qQeD78+5C7bBhbYytS+jOQB+Ubfi1VQmlAS
-         8FyOQ6iZZZHXxSQucZUroi3O4OR6C5262gSiABb5fbz1bLMStN5Nbd4L3LxMat6HKYoE
-         bSCQ==
-X-Gm-Message-State: AOAM5324XTimUFpQdatySTOEG63F9GNVXQB9eZQnrbE5YsVcqCsvADNK
-        D2mSjCS+M6fLiMlbX5w2A+g=
-X-Google-Smtp-Source: ABdhPJz3kwQEXps0U4CXrM9GDXdaXs2o9NBv9jhp3Vmq5iDuCFu/Vxe55NWvsrFgADjy8eqP8FsubQ==
-X-Received: by 2002:a17:907:b19:: with SMTP id h25mr2372404ejl.368.1603803309253;
-        Tue, 27 Oct 2020 05:55:09 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id sb29sm1013080ejb.76.2020.10.27.05.55.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 05:55:07 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 13:55:06 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] dt-bindings: memory: tegra: Add missing swgroups
-Message-ID: <20201027125506.GA1822510@ulmo>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-5-nicoleotsuka@gmail.com>
- <20201009122110.GD458338@ulmo>
- <20201009155218.GA4469@Asurada-Nvidia>
- <20201026201758.GD248919@kozik-lap>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iFiKV/id+bhp/OGyzJyPrVgrZf8FoY0fdLp5S5yqHuk=;
+        b=RoLAiq1u4rx41iGddtIVaFMgqw1SoDoIQcbCmVMbkXKiAcBVyOBNa1qNBpLwIVE7Ez
+         E6b/x0VUfmQBOfmRzPFMksBWpfKCEQo0Jzn+rnYOR5PSlpBs9KwkwSbSOtED1+VOoWQq
+         uZRO5QaZ/Urat7JAnAKtLObqlbtgJxHpEQ6jecHmsbG1tidtxn20oDh8j9svkckmLb6S
+         +b4c0MMGTBxr6tpSONwHZ9C4nEMvjbS4l8a/v7k8tXqWYUNTCFKjHiWnyfkbHfW8rLZQ
+         5N0r8DWoLbpHN6eTtAXpWIAHQzjHlonmpqrz49hHVCwEffRYmoCvqAXFd6SQgC41MveP
+         pYVw==
+X-Gm-Message-State: AOAM533LN5WI9uOO4afSES+km8CuX/qcCPtJrUK9FbeQdfGH6hWM9Yr1
+        rJu+pI3Jv35Jzk/NRG4XsxnoLSiKGM1qxKpBHLaTCg==
+X-Google-Smtp-Source: ABdhPJw80+MpzHK/ilur7RHbshltPyxr4dvaxh10InBIwhnvQNFGY94xAJejcWr/D8nBiTS/x4L28Z23strGJkwwj8s=
+X-Received: by 2002:a02:b812:: with SMTP id o18mr2137454jam.55.1603803456107;
+ Tue, 27 Oct 2020 05:57:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
-Content-Disposition: inline
-In-Reply-To: <20201026201758.GD248919@kozik-lap>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20201026175526.2915399-1-enric.balletbo@collabora.com> <20201026175526.2915399-6-enric.balletbo@collabora.com>
+In-Reply-To: <20201026175526.2915399-6-enric.balletbo@collabora.com>
+From:   Fabien Parent <fparent@baylibre.com>
+Date:   Tue, 27 Oct 2020 13:57:25 +0100
+Message-ID: <CAOwMV_xJez8WB=XjBSWfRmQ7x6265+2iJ+nLN4BR5YjoQzingQ@mail.gmail.com>
+Subject: Re: [PATCH v3 05/16] soc: mediatek: pm_domains: Make bus protection generic
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        weiyi.lu@mediatek.com, Matthias Brugger <mbrugger@suse.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> -               ret = mtk_infracfg_set_bus_protection(pd->infracfg,
+> -                                                     bpd[i].bus_prot_mask,
+> -                                                     bpd[i].bus_prot_reg_update);
 
---cNdxnHkX5QqsyA0e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[snip]
 
-On Mon, Oct 26, 2020 at 09:17:58PM +0100, Krzysztof Kozlowski wrote:
-> On Fri, Oct 09, 2020 at 08:52:18AM -0700, Nicolin Chen wrote:
-> > On Fri, Oct 09, 2020 at 02:21:10PM +0200, Thierry Reding wrote:
-> > > On Wed, Oct 07, 2020 at 05:37:45PM -0700, Nicolin Chen wrote:
-> > > > According to Tegra X1 TRM, there are missing swgroups in the
-> > > > tegra210_swgroups list. So this patch adds them in bindings.
-> > > >=20
-> > > > Note that the TEGRA_SWGROUP_GPU (in list) should be actually
-> > > > TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
-> > > > is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
-> > > > this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
-> > > > TEGRA_SWGROUP_GPU (in list) as it is.
-> > > >=20
-> > > > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> > > > ---
-> > > >  include/dt-bindings/memory/tegra210-mc.h | 10 ++++++++++
-> > > >  1 file changed, 10 insertions(+)
-> > > >=20
-> > > > diff --git a/include/dt-bindings/memory/tegra210-mc.h b/include/dt-=
-bindings/memory/tegra210-mc.h
-> > > > index c226cba9e077..f9fcb18a6d9b 100644
-> > > > --- a/include/dt-bindings/memory/tegra210-mc.h
-> > > > +++ b/include/dt-bindings/memory/tegra210-mc.h
-> > > > @@ -33,6 +33,16 @@
-> > > >  #define TEGRA_SWGROUP_AXIAP	28
-> > > >  #define TEGRA_SWGROUP_ETR	29
-> > > >  #define TEGRA_SWGROUP_TSECB	30
-> > > > +#define TEGRA_SWGROUP_NV	31
-> > > > +#define TEGRA_SWGROUP_NV2	32
-> > > > +#define TEGRA_SWGROUP_PPCS1	33
-> > > > +#define TEGRA_SWGROUP_DC1	34
-> > > > +#define TEGRA_SWGROUP_PPCS2	35
-> > > > +#define TEGRA_SWGROUP_HC1	36
-> > > > +#define TEGRA_SWGROUP_SE1	37
-> > > > +#define TEGRA_SWGROUP_TSEC1	38
-> > > > +#define TEGRA_SWGROUP_TSECB1	39
-> > > > +#define TEGRA_SWGROUP_NVDEC1	40
-> > >=20
-> > > I'm not sure this is right. The existing list is based on "Table 4:
-> > > Client to Software Name Mapping" from page 28 of the Tegra X1 TRM, and
-> > > none of these new swgroups seem to be present in that table.
-> >=20
-> > I went through all the MC_SMMU_XX_ASID_0 registers. All of
-> > them have their own ASID registers that I added in PATCH-5.
->=20
-> Thierry,
->=20
-> Any follow ups on this topic? Does it require a fix or looks correct?
+> -               ret = mtk_infracfg_clear_bus_protection(pd->infracfg,
+> -                                                       bpd[i].bus_prot_mask,
+> -                                                       bpd[i].bus_prot_reg_update);
 
-This does indeed look correct, based on what registers exist for these.
-It'd be good to know how Nicolin expects these to be used, since these
-are currently not listed in device tree. There's certainly some like
-TSEC or NVDEC that we don't support (yet) upstream, but things like DC1
-and HC1 already have equivalents that we use, so I'm not sure how we'll
-integrate these new ones.
-
-I suppose it doesn't really matter if any of these end up being unused,
-so:
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---cNdxnHkX5QqsyA0e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YGKUACgkQ3SOs138+
-s6HdXQ/9GY5+CG+UleVCHEphwtCAPS/kk6cf5OqVlP0/1Txw2gaC5IA0IlgZBcrI
-TB2IxEFKsQQV4yIeGqWfrBpHw3vq3NN0T281dzvp7Qt4L0ZW0ZukGerMJu+OrDEt
-d5nkbkqblillWQtd3Gh42GOxIF5E/ZTFuW+jrSOJZX5Q4Fd6c0nkU9+sUxj+SsD2
-lUX7u+fCYP3U11kx6dxbhTm6cXGDzVNwXUu789DSIq97vL8IpvjlkfM3BGb5P30/
-m0Nxv2YtnxaggYR7jFtxFkZz6mXDlTMsMv4h6EmKGVXPchj8kj8Te7u8IKblX3wC
-yx88smlCqCLhFYhJY/v8kL4oYve6e4FIL1Fl/VbU+1Vy+dOwcx+LMM/gfCIOg6Un
-VMjtNqAa9TOIZxtPTOsRZa6CgY6UzjRzhWPzjhOGFq4ndsvRMNl9al0l9Qu6tFEJ
-BH2uHj8rcAhv8bebLwPhTBYmHciBJL2Rl711LCPY8wubPOwQwAAnf9hwfRAzui+/
-11V3EFh/8LEebyQGzuVc57E5xVKcW9o6IIayZRvI+LZ0eNAJ0E1TGzXePyUv8izY
-QVPUp/bPG0OUCmPM7P2A2c9uDeMO2qI6yGFz1lkG3yvUy+05hTNvuL0oZICNPesz
-LlhxnJ5I8TvPiTTGXn5e7aEGhFSRc0CjAiXFm9rCkiJtMuPbzas=
-=H//q
------END PGP SIGNATURE-----
-
---cNdxnHkX5QqsyA0e--
+Since you got rid of all the dependencies to mtk-infracfg.c, maybe you
+can also remove the "depends on MTK_INFRACFG" in the Kconfig.
