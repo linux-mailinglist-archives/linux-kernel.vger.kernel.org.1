@@ -2,65 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A1529A87E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDB529A87C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896499AbgJ0J4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:56:20 -0400
-Received: from verein.lst.de ([213.95.11.211]:38228 "EHLO verein.lst.de"
+        id S2896489AbgJ0J4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:56:19 -0400
+Received: from verein.lst.de ([213.95.11.211]:38240 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409904AbgJ0Jy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:54:58 -0400
+        id S2410126AbgJ0Jzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:55:48 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 98EC068AFE; Tue, 27 Oct 2020 10:54:55 +0100 (CET)
-Date:   Tue, 27 Oct 2020 10:54:55 +0100
+        id D8C2068B02; Tue, 27 Oct 2020 10:55:45 +0100 (CET)
+Date:   Tue, 27 Oct 2020 10:55:45 +0100
 From:   Christoph Hellwig <hch@lst.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] fs: don't allow splice read/write without
- explicit ops
-Message-ID: <20201027095455.GA30298@lst.de>
-References: <3088368.1603790984@warthog.procyon.org.uk> <20200827150030.282762-3-hch@lst.de> <20200827150030.282762-1-hch@lst.de> <3155818.1603792294@warthog.procyon.org.uk>
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
+Message-ID: <20201027095545.GA30382@lst.de>
+References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com> <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com> <20201027093301.GA16090@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3155818.1603792294@warthog.procyon.org.uk>
+In-Reply-To: <20201027093301.GA16090@quack2.suse.cz>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:51:34AM +0000, David Howells wrote:
-> David Howells <dhowells@redhat.com> wrote:
-> 
-> > > default_file_splice_write is the last piece of generic code that uses
-> > > set_fs to make the uaccess routines operate on kernel pointers.  It
-> > > implements a "fallback loop" for splicing from files that do not actually
-> > > provide a proper splice_read method.  The usual file systems and other
-> > > high bandwith instances all provide a ->splice_read, so this just removes
-> > > support for various device drivers and procfs/debugfs files.  If splice
-> > > support for any of those turns out to be important it can be added back
-> > > by switching them to the iter ops and using generic_file_splice_read.
-> > 
-> > Hmmm...  this causes the copy_file_range() syscall to fail with EINVAL in some
-> > places where before it used to work.
-> > 
-> > For my part, it causes the generic/112 xfstest to fail with afs, but there may
-> > be other places.
-> > 
-> > Is this a regression we need to fix in the VFS core?  Or is it something we
-> > need to fix in xfstests and assume userspace will fallback to doing it itself?
-> 
-> That said, for afs at least, the fix seems to be just this:
+On Tue, Oct 27, 2020 at 10:33:01AM +0100, Jan Kara wrote:
+> Actually there are callers that care about partial success. See e.g.
+> iov_iter_get_pages() usage in fs/direct_io.c:dio_refill_pages() or
+> bio_iov_iter_get_pages(). These places handle partial success just fine and
+> not allowing partial success from GUP could regress things...
 
-And that is the correct fix, I was about to send it to you.
-
-We can't have a "generic" splice using ->read/->write without set_fs,
-in addition to the iter_file_splice_write based version being a lot
-more efficient than what you had before.
+But most users do indeed not care.  Maybe an explicit FOLL_PARTIAL to
+opt into partial handling could clean up a lot of the mess.  Maybe just
+for pin_user_pages for now.
