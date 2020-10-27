@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9203E29BEDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C002B29BE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794095AbgJ0PJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39640 "EHLO mail.kernel.org"
+        id S1794035AbgJ0PJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790953AbgJ0PFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:05:04 -0400
+        id S1790230AbgJ0PEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B72E2071A;
-        Tue, 27 Oct 2020 15:05:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB35921D24;
+        Tue, 27 Oct 2020 15:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811104;
-        bh=3MF96z3/pPoGgH1L9zE3w8imvST2t6lftauu81oTr+g=;
+        s=default; t=1603811046;
+        bh=NJacS4oBuVWWmLqcOvAH3Yozjh4PxvQaH9pRervH21s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BE/sw9qVt32s8zwVf2lNHqzJQg7mrm8lKCu5/TXvPkFIMOuWoWsavOqOR0T7exzWZ
-         VDetRSWrsSGkTAA9YnrAM7tHEmmKid088qKjcZFNn8Idj4s+E/s/CPqYzvE3HJbaz4
-         OfIJpR0UAfbzd5NfLxHUT+ZOiF7MA5xCpegOJn58=
+        b=rrUeHM93gnsIQWy+ZwBERVdC9VFypivlmJQL/diBj7SLQpNzviIvW85AYGaFxxdBw
+         B9iXixljXto4e0YZ+ki0uw9PhnwEXvotsdz4Yfeeo/KOruxvbfF5a4eQcYqvlo0JKb
+         dl+rQGFS9wHfB41NGYaUP8SWNSiI8nPmzfVkkzHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Mayhew <smayhew@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 347/633] nfs: add missing "posix" local_lock constant table definition
-Date:   Tue, 27 Oct 2020 14:51:30 +0100
-Message-Id: <20201027135538.960325128@linuxfoundation.org>
+Subject: [PATCH 5.8 355/633] RDMA/qedr: Fix doorbell setting
+Date:   Tue, 27 Oct 2020 14:51:38 +0100
+Message-Id: <20201027135539.340629519@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,33 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Mayhew <smayhew@redhat.com>
+From: Michal Kalderon <michal.kalderon@marvell.com>
 
-[ Upstream commit a2d24bcb97dc7b0be1cb891e60ae133bdf36c786 ]
+[ Upstream commit 0b1eddc1964351cd5ce57aff46853ed4ce9ebbff ]
 
-"mount -o local_lock=posix..." was broken by the mount API conversion
-due to the missing constant.
+Change the doorbell setting so that the maximum value between the last and
+current value is set. This is to avoid doorbells being lost.
 
-Fixes: e38bb238ed8c ("NFS: Convert mount option parsing to use functionality from fs_parser.h")
-Signed-off-by: Scott Mayhew <smayhew@redhat.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Fixes: a7efd7773e31 ("qedr: Add support for PD,PKEY and CQ verbs")
+Link: https://lore.kernel.org/r/20200902165741.8355-3-michal.kalderon@marvell.com
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/fs_context.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/qedr/verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
-index ccc88be88d6ae..a30b4bcb95a2c 100644
---- a/fs/nfs/fs_context.c
-+++ b/fs/nfs/fs_context.c
-@@ -94,6 +94,7 @@ enum {
- static const struct constant_table nfs_param_enums_local_lock[] = {
- 	{ "all",		Opt_local_lock_all },
- 	{ "flock",	Opt_local_lock_flock },
-+	{ "posix",	Opt_local_lock_posix },
- 	{ "none",		Opt_local_lock_none },
- 	{}
- };
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index c6165c6390a71..7de96ac4ce543 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -998,7 +998,7 @@ int qedr_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		/* Generate doorbell address. */
+ 		cq->db.data.icid = cq->icid;
+ 		cq->db_addr = dev->db_addr + db_offset;
+-		cq->db.data.params = DB_AGG_CMD_SET <<
++		cq->db.data.params = DB_AGG_CMD_MAX <<
+ 		    RDMA_PWM_VAL32_DATA_AGG_CMD_SHIFT;
+ 
+ 		/* point to the very last element, passing it we will toggle */
 -- 
 2.25.1
 
