@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C611B29C032
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AB829C068
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784891AbgJ0O7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:59:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44142 "EHLO mail.kernel.org"
+        id S1782729AbgJ0O5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:57:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762733AbgJ0OoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:44:19 -0400
+        id S1763914AbgJ0Opa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7360A206B2;
-        Tue, 27 Oct 2020 14:44:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 131DD206E5;
+        Tue, 27 Oct 2020 14:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809859;
-        bh=H4z9I9lFOofqBONBWteLXxjLefx9H4vflLddRM0CAnY=;
+        s=default; t=1603809929;
+        bh=Yq5QBUFmeAJ3CnHOsKM943tqU9OSR3p5eyu+0akTefI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gJPreok7Zq8xW6jRA7Hn+PVkGQ/dnEyDpnlaCmHqOEM6n6ljSoqR2CJ3EsB4OSZsH
-         DGVEsz7A00ydsQyH6LMzOLFRuYhauVcVdeFv5U5pcwf4xBdOyzeFRIKL3UOh4En/2+
-         Dxp2Kd1P7zAlkjIxKpJvKYVIc7Aoa5eutIn3xLBw=
+        b=crLCQJG8xXFVqjKcPQZB3iBW4zyUbSvjKe1l75R+ImZNh6idJ2TmJUOP/nnyJG0JB
+         zuWW4QS7zHJX/9tYzUZusUz8YCC/eU5B5ekTleYK0A+d4aqCGPgF0Mdtghe7wYGV0h
+         KneNJdHbpiO+2iFfLjiP2rT6dvpXBB2DdRXE4Gb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 343/408] mmc: sdio: Check for CISTPL_VERS_1 buffer size
-Date:   Tue, 27 Oct 2020 14:54:41 +0100
-Message-Id: <20201027135510.939650079@linuxfoundation.org>
+Subject: [PATCH 5.4 369/408] opp: Prevent memory leak in dev_pm_opp_attach_genpd()
+Date:   Tue, 27 Oct 2020 14:55:07 +0100
+Message-Id: <20201027135512.125845924@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,35 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit 8ebe2607965d3e2dc02029e8c7dd35fbe508ffd0 ]
+[ Upstream commit cb60e9602cce1593eb1e9cdc8ee562815078a354 ]
 
-Before parsing CISTPL_VERS_1 structure check that its size is at least two
-bytes to prevent buffer overflow.
+If dev_pm_opp_attach_genpd() is called multiple times (once for each CPU
+sharing the table), then it would result in unwanted behavior like
+memory leak, attaching the domain multiple times, etc.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20200727133837.19086-2-pali@kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Handle that by checking and returning earlier if the domains are already
+attached. Now that dev_pm_opp_detach_genpd() can get called multiple
+times as well, we need to protect that too.
+
+Note that the virtual device pointers aren't returned in this case, as
+they may become unavailable to some callers during the middle of the
+operation.
+
+Reported-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/core/sdio_cis.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/opp/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mmc/core/sdio_cis.c b/drivers/mmc/core/sdio_cis.c
-index e0655278c5c32..3efaa9534a777 100644
---- a/drivers/mmc/core/sdio_cis.c
-+++ b/drivers/mmc/core/sdio_cis.c
-@@ -26,6 +26,9 @@ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
- 	unsigned i, nr_strings;
- 	char **buffer, *string;
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 29dfaa591f8b0..8867bab72e171 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1796,6 +1796,9 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
+ {
+ 	int index;
  
-+	if (size < 2)
-+		return 0;
++	if (!opp_table->genpd_virt_devs)
++		return;
 +
- 	/* Find all null-terminated (including zero length) strings in
- 	   the TPLLV1_INFO field. Trailing garbage is ignored. */
- 	buf += 2;
+ 	for (index = 0; index < opp_table->required_opp_count; index++) {
+ 		if (!opp_table->genpd_virt_devs[index])
+ 			continue;
+@@ -1842,6 +1845,9 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+ 	if (!opp_table)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	if (opp_table->genpd_virt_devs)
++		return opp_table;
++
+ 	/*
+ 	 * If the genpd's OPP table isn't already initialized, parsing of the
+ 	 * required-opps fail for dev. We should retry this after genpd's OPP
 -- 
 2.25.1
 
