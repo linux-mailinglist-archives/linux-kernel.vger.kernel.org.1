@@ -2,171 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910A129CD68
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5307E29CD56
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725799AbgJ1BiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 21:38:17 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:43996 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1832977AbgJ0XLl (ORCPT
+        id S1725834AbgJ1BiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 21:38:18 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:46764 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1832981AbgJ0XM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:11:41 -0400
-Received: by mail-pf1-f194.google.com with SMTP id a200so1795158pfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:11:39 -0700 (PDT)
+        Tue, 27 Oct 2020 19:12:29 -0400
+Received: by mail-il1-f195.google.com with SMTP id a20so3033791ilk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2/YFOuw4+r4f6LoQTQtzwijEnqUvWGCvGd0kdzc/Qt4=;
-        b=vVn/EriwOAYPsaHnKCm3LB/5ii579QAKxkx7Q+PeeyytjWowAIjG69e8NhCxPgJAmI
-         A/+H74mENfivjnO3LqVP2PC6ujAW7Gfx9T95GBoRdybAmvepQzCGX/2IeBBVbZNozHyY
-         zARwRH1httejP1gxVizMDlr5Irvromf61GvalriDkUhJtO1MKGLzBddMGEOD3hkkqj31
-         SU74DlHbvOzxIt1y7QY961xq2MB+fvhz+bxbx7XuSbc73Z93AM1qhtHZaprbG+Wrs22B
-         B99rJxgsRrOSpe320Vj67g/b7XfZWUtG9Tp5rx1DKeHcyrWpVsTJCoqH3Y1N+Uz9HgiD
-         InyA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IzmqPB1puGOHsvhueEOlE8eXJd/vgq2Jd8OPbR8IPAM=;
+        b=PfNpxTr4eOMHuntStW7oFjw7a6QhzSfUZ8KYnCpgYIgAHTG9wjLZnMKHK1SojB79R8
+         2wFCHTRNKPDQ/gTFvj6sSE/gThldpxrYWNDN4Vd/6IDW7XEMVBu/i0KmYPYM4jK8T9Yr
+         9dLqLRm33HbhP4rDXx/cSTrceB2RcMA0wV7Zw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2/YFOuw4+r4f6LoQTQtzwijEnqUvWGCvGd0kdzc/Qt4=;
-        b=OwBuieAHXHrRN84OADjPLzhZv5GKM1hlGEeZzavRMFOCBOvZ5AALE37TIwlZNWsDcR
-         QkvBbq8cbiL85i+a08d4qAGPnMKNUpTCjhMMaXgJYLMlJcu+422bI02QUd0CmrIem/r8
-         W0/xZcOxGR5dAelI83BPO06lIsXoV9Rti1I3DVgSE28ahLufevAJ7ao7GtqHu0sdVzHD
-         8j35XaUncwGMjWjAtihReD6dGBGDm1S8rOvoKg/CBkkPpdcg9TkpqnohNmK1msP6yLZt
-         N6SXRnO0qFDwqrKv7PsHhTdceK55RT6obNQaNj65TmsfQSkrj5EgHb9KskQ/bwJf9UhF
-         /hUA==
-X-Gm-Message-State: AOAM530O4Kb8PTZ0iXUcdXiC03byym+IP17BNRDCXcRKcVeYTOe8wqXK
-        iA7BlvDH+0zXLKvahkxEZ8h6T0cb+SD6a5DcxDKmjg==
-X-Google-Smtp-Source: ABdhPJymw50PBTyHH1b6wCSguQrkRkG/rqXafHH76UIc7lhKGd651I4gjTg4LLDMjhzClnXnyjFghMNZNTptxyFRejQ=
-X-Received: by 2002:a62:2905:0:b029:15b:57ef:3356 with SMTP id
- p5-20020a6229050000b029015b57ef3356mr3674232pfp.36.1603840298504; Tue, 27 Oct
- 2020 16:11:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IzmqPB1puGOHsvhueEOlE8eXJd/vgq2Jd8OPbR8IPAM=;
+        b=tRpLd/3K8fdEa8BcGPoDk68UIKnzPQpeZchZIz5Z3XRUE7xSXlka3g0PQyCUDtz20g
+         TZaf85+/yRc5MNjoZfm1lSYjs2KTYFQlshBewNg/fW/6P8D9Q3fI4AeY68vNoCTc/4/6
+         HHtdbYmebvtaI99s032eA0NfhJFK8+XGQS48cgjyfY2MU2acd6X/JLwaQ7oVKK4xv9Yz
+         56Jly7j1xD1vi7vrpMOAscC0oj/eHb04k1j9OJtavUbqsbs1EJ2pawRpNVu3g4+jltM5
+         oEOWmFspe6Nti2GsuU78wG3UdHPoTRK+OHnum2Dk/O9pYfqMF2Io9DC4W1Iu94hhs0oR
+         xQYw==
+X-Gm-Message-State: AOAM531FOxBQjc271Rw/lGpyjfqxKfvIru4Ng6v0K9S0NmHn545cOtdo
+        TEYCw7ZcmT33GWfF04i/7HGI7A==
+X-Google-Smtp-Source: ABdhPJzEWlsqYvdWniHqNDADoZ721JW5NWRo0RnMwfmzMhHwSQ3zyxkQgt6PX9MVCmUsRQ6fM+hsgw==
+X-Received: by 2002:a92:1307:: with SMTP id 7mr3770123ilt.142.1603840347497;
+        Tue, 27 Oct 2020 16:12:27 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s10sm1586129ilh.33.2020.10.27.16.12.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 16:12:26 -0700 (PDT)
+Subject: Re: [PATCH 00/13] selftests fixes
+To:     Tommi Rantala <tommi.t.rantala@nokia.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <700bf9e6-1fbf-3b29-8df8-8625b2967e18@linuxfoundation.org>
+Date:   Tue, 27 Oct 2020 17:12:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org> <72f0dd64-9f65-cbd0-873a-684540912847@iogearbox.net>
-In-Reply-To: <72f0dd64-9f65-cbd0-873a-684540912847@iogearbox.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Oct 2020 16:11:27 -0700
-Message-ID: <CAKwvOdmvyBbqKiR=wFmyiZcXaN1mYHe-VJtqbBS9enhDcUcN=w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201008122633.687877-1-tommi.t.rantala@nokia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 4:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 10/27/20 9:57 PM, Ard Biesheuvel wrote:
-> > Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
-> > ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> > function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> > GCC specific optimization that was causing trouble on x86 builds, and
-> > was not expected to have any positive effect in the first place.
-> >
-> > However, as the GCC manual documents, __attribute__((optimize))
-> > is not for production use, and results in all other optimization
-> > options to be forgotten for the function in question. This can
-> > cause all kinds of trouble, but in one particular reported case,
->
-> Looks like there are couple more as well aside from __no_fgcse, are you
-> also planning to fix them?
->
->    arch/powerpc/kernel/setup.h:14:#define __nostackprotector __attribute__((__optimize__("no-stack-protector")))
+On 10/8/20 6:26 AM, Tommi Rantala wrote:
+> Hi, small fixes to issues I hit with selftests.
+> 
+> Tommi Rantala (13):
+>    selftests: filter kselftest headers from command in lib.mk
+>    selftests: pidfd: fix compilation errors due to wait.h
+>    selftests: add vmaccess to .gitignore
+>    selftests/harness: prettify SKIP message whitespace again
+>    selftests: pidfd: use ksft_test_result_skip() when skipping test
+>    selftests: pidfd: skip test on kcmp() ENOSYS
+>    selftests: pidfd: add CONFIG_CHECKPOINT_RESTORE=y to config
+>    selftests: pidfd: drop needless linux/kcmp.h inclusion in
+>      pidfd_setns_test.c
+>    selftests: android: fix multiple definition of sock_name
+>    selftests: proc: fix warning: _GNU_SOURCE redefined
+>    selftests: core: use SKIP instead of XFAIL in close_range_test.c
+>    selftests: clone3: use SKIP instead of XFAIL
+>    selftests: binderfs: use SKIP instead of XFAIL
+> 
+>   tools/testing/selftests/android/ion/ipcsocket.c           | 1 +
+>   tools/testing/selftests/android/ion/ipcsocket.h           | 2 --
+>   .../selftests/clone3/clone3_cap_checkpoint_restore.c      | 2 +-
+>   tools/testing/selftests/core/close_range_test.c           | 8 ++++----
+>   .../selftests/filesystems/binderfs/binderfs_test.c        | 8 ++++----
+>   tools/testing/selftests/kselftest_harness.h               | 2 +-
+>   tools/testing/selftests/lib.mk                            | 2 +-
+>   tools/testing/selftests/pidfd/config                      | 1 +
+>   tools/testing/selftests/pidfd/pidfd_getfd_test.c          | 5 ++++-
+>   tools/testing/selftests/pidfd/pidfd_open_test.c           | 1 -
+>   tools/testing/selftests/pidfd/pidfd_poll_test.c           | 1 -
+>   tools/testing/selftests/pidfd/pidfd_setns_test.c          | 1 -
+>   tools/testing/selftests/pidfd/pidfd_test.c                | 2 +-
+>   tools/testing/selftests/proc/proc-loadavg-001.c           | 1 -
+>   tools/testing/selftests/proc/proc-self-syscall.c          | 1 -
+>   tools/testing/selftests/proc/proc-uptime-002.c            | 1 -
+>   tools/testing/selftests/ptrace/.gitignore                 | 1 +
+>   17 files changed, 19 insertions(+), 21 deletions(-)
+> 
 
-GCC literally just landed support for
-__attribute__((no_stack_protector)) a few days ago.  I was planning on
-sending a patch adding it to compiler_attributes.h, but we won't be
-able to rely on it for a while.  Now I see I'll have to clean up ppc a
-bit. Surely they've had bugs related to optimize attribute
-unexpectedly dropping flags.
+Thanks for fixing these.
 
->    tools/include/linux/compiler-gcc.h:37:#define __no_tail_call __attribute__((optimize("no-optimize-sibling-calls")))
+Applied all except 03/13 which is already fixed.
 
-Only used in perf?
-tools/perf/tests/dwarf-unwind.c
-
->
-> > it causes -fno-asynchronous-unwind-tables to be disregarded,
-> > resulting in .eh_frame info to be emitted for the function
-> > inadvertently.
->
-> Would have been useful to add a pointer to the original discussion with
-> Link tag.
->
-> Link: https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
->
-> > This reverts commit 3193c0836f203, and instead, it disables the -fgcse
-> > optimization for the entire source file, but only when building for
-> > X86.
-> >
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> [...]
-> > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > index bdc8cd1b6767..02b58f44c479 100644
-> > --- a/kernel/bpf/Makefile
-> > +++ b/kernel/bpf/Makefile
-> > @@ -1,6 +1,8 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> >   obj-y := core.o
-> > -CFLAGS_core.o += $(call cc-disable-warning, override-init)
-> > +# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
-> > +cflags-core-$(CONFIG_X86) := -fno-gcse
-> > +CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
->
-> Also, this needs to be guarded behind !CONFIG_RETPOLINE and !CONFIG_BPF_JIT_ALWAYS_ON
-> in particular the latter since only in this case interpreter is compiled in ... most
-> distros have the CONFIG_BPF_JIT_ALWAYS_ON set these days for x86.
->
-> Do you have an analysis for the commit log on what else this penalizes in core.c if
-> it's now for the entire translation unit?
->
-> >   obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> >   obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 9268d77898b7..55454d2278b1 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-> >    *
-> >    * Decode and execute eBPF instructions.
-> >    */
-> > -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> > +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> >   {
-> >   #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
-> >   #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
-> >
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+thanks,
+-- Shuah
