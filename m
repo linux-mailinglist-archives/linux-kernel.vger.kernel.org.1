@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453C529B288
+	by mail.lfdr.de (Postfix) with ESMTP id B434E29B289
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762370AbgJ0Om1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:42:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39494 "EHLO mail.kernel.org"
+        id S1762380AbgJ0Oma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:42:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761835AbgJ0OkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:40:20 -0400
+        id S1761931AbgJ0OkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:40:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34AA420773;
-        Tue, 27 Oct 2020 14:40:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F753207BB;
+        Tue, 27 Oct 2020 14:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809619;
-        bh=LP7K6FZ7DeVk3Bu4IuEonwgizeKL6b6Buh7ttu/yYxQ=;
+        s=default; t=1603809622;
+        bh=Pkodcc0QYTb16u6wZo6rczQdApgVsy1vL1dCe8RTyis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s0DzTzNxfmxRKw/9eIq02qlFx5drMLpDc89br5aKzqrD7t1W39j6WlE5FDUQVsAUT
-         xje8Ep2d7oBbhZ5LaOh6Z1AadupcZogGH8iqTLbdgX+2ydzAVA8GrMMqRzvT1uO1Hi
-         3+tuh9q838QnbeXo2WqNmnQ41dOOiSIQ+8EhEaJE=
+        b=O3KGW1rXzKIOOvNjqG1T6++qLNzGck+dp8B/hJAtp3xoVu6iEe9HKajbSZoTtzNOv
+         NVYaBryiBgwss+0+EEzed5mkKfWTE4/0gIJRfVxY+V7R+GRrawELl+InrgV3UbCyZx
+         EgQm3ZfUuhKwQI31krrVamlzowc0Ftb67ZG3Krq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 261/408] clk: meson: g12a: mark fclk_div2 as critical
-Date:   Tue, 27 Oct 2020 14:53:19 +0100
-Message-Id: <20201027135507.153133294@linuxfoundation.org>
+Subject: [PATCH 5.4 262/408] PCI: aardvark: Check for errors from pci_bridge_emul_init() call
+Date:   Tue, 27 Oct 2020 14:53:20 +0100
+Message-Id: <20201027135507.201240352@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,53 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 2c4e80e06790cb49ad2603855d30c5aac2209c47 ]
+[ Upstream commit 7862a6134456c8b4f8c39e8c94aa97e5c2f7f2b7 ]
 
-On Amlogic Meson G12b platform, similar to fclk_div3, the fclk_div2
-seems to be necessary for the system to operate correctly as well.
+Function pci_bridge_emul_init() may fail so correctly check for errors.
 
-Typically, the clock also gets chosen by the eMMC peripheral. This
-probably masked the problem so far. However, when booting from a SD
-card the clock seems to get disabled which leads to a system freeze.
-
-Let's mark this clock as critical, fixing boot from SD card on G12b
-platforms.
-
-Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Tested-by: Anand Moon <linux.amoon@gmail.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/577e0129e8ee93972d92f13187ff4e4286182f67.1598629915.git.stefan@agner.ch
+Link: https://lore.kernel.org/r/20200907111038.5811-3-pali@kernel.org
+Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <marek.behun@nic.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/g12a.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/pci/controller/pci-aardvark.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-index d2760a021301d..3143e16065de6 100644
---- a/drivers/clk/meson/g12a.c
-+++ b/drivers/clk/meson/g12a.c
-@@ -298,6 +298,17 @@ static struct clk_regmap g12a_fclk_div2 = {
- 			&g12a_fclk_div2_div.hw
- 		},
- 		.num_parents = 1,
-+		/*
-+		 * Similar to fclk_div3, it seems that this clock is used by
-+		 * the resident firmware and is required by the platform to
-+		 * operate correctly.
-+		 * Until the following condition are met, we need this clock to
-+		 * be marked as critical:
-+		 * a) Mark the clock used by a firmware resource, if possible
-+		 * b) CCF has a clock hand-off mechanism to make the sure the
-+		 *    clock stays on until the proper driver comes along
-+		 */
-+		.flags = CLK_IS_CRITICAL,
- 	},
- };
+diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+index f2481e80e2723..d0e60441dc8f2 100644
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -503,7 +503,7 @@ static struct pci_bridge_emul_ops advk_pci_bridge_emul_ops = {
+  * Initialize the configuration space of the PCI-to-PCI bridge
+  * associated with the given PCIe interface.
+  */
+-static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)
++static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
+ {
+ 	struct pci_bridge_emul *bridge = &pcie->bridge;
  
+@@ -527,8 +527,7 @@ static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)
+ 	bridge->data = pcie;
+ 	bridge->ops = &advk_pci_bridge_emul_ops;
+ 
+-	pci_bridge_emul_init(bridge, 0);
+-
++	return pci_bridge_emul_init(bridge, 0);
+ }
+ 
+ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
+@@ -1027,7 +1026,11 @@ static int advk_pcie_probe(struct platform_device *pdev)
+ 
+ 	advk_pcie_setup_hw(pcie);
+ 
+-	advk_sw_pci_bridge_init(pcie);
++	ret = advk_sw_pci_bridge_init(pcie);
++	if (ret) {
++		dev_err(dev, "Failed to register emulated root PCI bridge\n");
++		return ret;
++	}
+ 
+ 	ret = advk_pcie_init_irq_domain(pcie);
+ 	if (ret) {
 -- 
 2.25.1
 
