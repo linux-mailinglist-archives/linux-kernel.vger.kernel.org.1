@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FFF29C597
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9D329C63E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753725AbgJ0OBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:01:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
+        id S1825961AbgJ0SOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753590AbgJ0OAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:00:53 -0400
+        id S1756418AbgJ0ONG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:13:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B11921D7B;
-        Tue, 27 Oct 2020 14:00:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E08F7206F7;
+        Tue, 27 Oct 2020 14:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807252;
-        bh=71RSy4/ywzh9HOc4pC4rijPq9qiNxmStj1VnLhKexwA=;
+        s=default; t=1603807986;
+        bh=kGDbJpILW1RdbePrEXsk6EWHy+WZdjQNB7twtxBVuV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWTa3mpVbWiR/atM7QWbUIDiudphWG86v+Sk6iR087E8gEMAvCUxC/ZfKjX124KlV
-         WyHKpyxmLPyzCAvT2L83F0005jRZyARiFvacOehm3wC29nqBvxYzSnyxwUU97HuqdL
-         LYLuofLvyPfPb5JcT0LrkSfXv0ysdQVc9skaI6yk=
+        b=Zl8N3eTVKxhZppTrTarDiOO47pEJxZf8eBTB2pWpUlPmKI6FMpgNJ8EhoulUNZSm3
+         EXVMuplZ/8BVq7mmwf4M7fVw9NnSJOJmi5Sd4MNYrOhRzz82aaootzhJDzF0mjZ9UX
+         qYUIxnnPMS4AC4sOcCwPkGfWmiJX5U4Tx+IbeFv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 058/112] ARM: 9007/1: l2c: fix prefetch bits init in L2X0_AUX_CTRL using DT values
-Date:   Tue, 27 Oct 2020 14:49:28 +0100
-Message-Id: <20201027134903.313912675@linuxfoundation.org>
+Subject: [PATCH 4.14 115/191] clk: bcm2835: add missing release if devm_clk_hw_register fails
+Date:   Tue, 27 Oct 2020 14:49:30 +0100
+Message-Id: <20201027134915.236362780@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Tucker <guillaume.tucker@collabora.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 8e007b367a59bcdf484c81f6df9bd5a4cc179ca6 ]
+[ Upstream commit f6c992ca7dd4f49042eec61f3fb426c94d901675 ]
 
-The L310_PREFETCH_CTRL register bits 28 and 29 to enable data and
-instruction prefetch respectively can also be accessed via the
-L2X0_AUX_CTRL register.  They appear to be actually wired together in
-hardware between the registers.  Changing them in the prefetch
-register only will get undone when restoring the aux control register
-later on.  For this reason, set these bits in both registers during
-initialisation according to the devicetree property values.
+In the implementation of bcm2835_register_pll(), the allocated pll is
+leaked if devm_clk_hw_register() fails to register hw. Release pll if
+devm_clk_hw_register() fails.
 
-Link: https://lore.kernel.org/lkml/76f2f3ad5e77e356e0a5b99ceee1e774a2842c25.1597061474.git.guillaume.tucker@collabora.com/
-
-Fixes: ec3bd0e68a67 ("ARM: 8391/1: l2c: add options to overwrite prefetching behavior")
-Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Link: https://lore.kernel.org/r/20200809231202.15811-1-navid.emamdoost@gmail.com
+Fixes: 41691b8862e2 ("clk: bcm2835: Add support for programming the audio domain clocks")
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mm/cache-l2x0.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/clk/bcm/clk-bcm2835.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mm/cache-l2x0.c b/arch/arm/mm/cache-l2x0.c
-index 493692d838c67..0b6f8a93d8c60 100644
---- a/arch/arm/mm/cache-l2x0.c
-+++ b/arch/arm/mm/cache-l2x0.c
-@@ -1228,20 +1228,28 @@ static void __init l2c310_of_parse(const struct device_node *np,
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index 6db4204e5d5d5..98295b9703178 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -1354,8 +1354,10 @@ static struct clk_hw *bcm2835_register_pll(struct bcm2835_cprman *cprman,
+ 	pll->hw.init = &init;
  
- 	ret = of_property_read_u32(np, "prefetch-data", &val);
- 	if (ret == 0) {
--		if (val)
-+		if (val) {
- 			prefetch |= L310_PREFETCH_CTRL_DATA_PREFETCH;
--		else
-+			*aux_val |= L310_PREFETCH_CTRL_DATA_PREFETCH;
-+		} else {
- 			prefetch &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
-+			*aux_val &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
-+		}
-+		*aux_mask &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
- 	} else if (ret != -EINVAL) {
- 		pr_err("L2C-310 OF prefetch-data property value is missing\n");
- 	}
+ 	ret = devm_clk_hw_register(cprman->dev, &pll->hw);
+-	if (ret)
++	if (ret) {
++		kfree(pll);
+ 		return NULL;
++	}
+ 	return &pll->hw;
+ }
  
- 	ret = of_property_read_u32(np, "prefetch-instr", &val);
- 	if (ret == 0) {
--		if (val)
-+		if (val) {
- 			prefetch |= L310_PREFETCH_CTRL_INSTR_PREFETCH;
--		else
-+			*aux_val |= L310_PREFETCH_CTRL_INSTR_PREFETCH;
-+		} else {
- 			prefetch &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
-+			*aux_val &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
-+		}
-+		*aux_mask &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
- 	} else if (ret != -EINVAL) {
- 		pr_err("L2C-310 OF prefetch-instr property value is missing\n");
- 	}
 -- 
 2.25.1
 
