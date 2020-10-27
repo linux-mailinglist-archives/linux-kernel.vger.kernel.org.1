@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71DC29AE32
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E7329AE42
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752985AbgJ0N57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45056 "EHLO mail.kernel.org"
+        id S1753098AbgJ0N6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:58:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752974AbgJ0N54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:56 -0400
+        id S1753076AbgJ0N60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:58:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F9692072D;
-        Tue, 27 Oct 2020 13:57:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FBD2206D4;
+        Tue, 27 Oct 2020 13:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807075;
-        bh=WFFq5ar3ruMzAMynG5wOyIDaC2NCes//NZXhhXsTGyA=;
+        s=default; t=1603807105;
+        bh=CWOsMEaANEf7qNSYdqqZULq7S6mlURdugVZpMugxmZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WS3VHgWathQzt2yMDnWcwMR/3r2AHiGnhCZQ+cuFDAsZugP7sj5erI3SV+uWgptsn
-         Xr3YzDPdbClFzZJi91gU33QzIAE/Y3ajKsUDnxoeTUJOPwS/pcFdMpioBBCVe3RdEw
-         1T8fWnENUVoPZY+6iKLjj5tEtI/RTAzMYk1rzZPs=
+        b=IfY2EI3GB0TUeC5P7wjwEczX4+hMZhkN27wSfd6rATUCConNEukg4kL3W5NQxizrl
+         xH3C6DLNISgoxVYFM4OJfvg/bs6rkgsV/mSw6zEdc+u4L3p7zUZC60wqwiNkMEnlI9
+         p4K1i9A55RRFTPTN01mwguncfj8+qSjH94u0zsPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 026/112] media: ti-vpe: Fix a missing check and reference count leak
-Date:   Tue, 27 Oct 2020 14:48:56 +0100
-Message-Id: <20201027134901.797253435@linuxfoundation.org>
+Subject: [PATCH 4.4 027/112] ath6kl: prevent potential array overflow in ath6kl_add_new_sta()
+Date:   Tue, 27 Oct 2020 14:48:57 +0100
+Message-Id: <20201027134901.846181625@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -44,40 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7dae2aaaf432767ca7aa11fa84643a7c2600dbdd ]
+[ Upstream commit 54f9ab7b870934b70e5a21786d951fbcf663970f ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code, causing incorrect ref count if
-pm_runtime_put_noidle() is not called in error handling paths.
-And also, when the call of function vpe_runtime_get() failed,
-we won't call vpe_runtime_put().
-Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails
-inside vpe_runtime_get().
+The value for "aid" comes from skb->data so Smatch marks it as
+untrusted.  If it's invalid then it can result in an out of bounds array
+access in ath6kl_add_new_sta().
 
-Fixes: 4571912743ac ("[media] v4l: ti-vpe: Add VPE mem to mem driver")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 572e27c00c9d ("ath6kl: Fix AP mode connect event parsing and TIM updates")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200813141315.GB457408@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/ti-vpe/vpe.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath6kl/main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/platform/ti-vpe/vpe.c b/drivers/media/platform/ti-vpe/vpe.c
-index b5f8c425cd2ef..8a3714bfb77e8 100644
---- a/drivers/media/platform/ti-vpe/vpe.c
-+++ b/drivers/media/platform/ti-vpe/vpe.c
-@@ -2135,6 +2135,8 @@ static int vpe_runtime_get(struct platform_device *pdev)
+diff --git a/drivers/net/wireless/ath/ath6kl/main.c b/drivers/net/wireless/ath/ath6kl/main.c
+index 1af3fed5a72ca..1a68518279689 100644
+--- a/drivers/net/wireless/ath/ath6kl/main.c
++++ b/drivers/net/wireless/ath/ath6kl/main.c
+@@ -430,6 +430,9 @@ void ath6kl_connect_ap_mode_sta(struct ath6kl_vif *vif, u16 aid, u8 *mac_addr,
  
- 	r = pm_runtime_get_sync(&pdev->dev);
- 	WARN_ON(r < 0);
-+	if (r)
-+		pm_runtime_put_noidle(&pdev->dev);
- 	return r < 0 ? r : 0;
- }
+ 	ath6kl_dbg(ATH6KL_DBG_TRC, "new station %pM aid=%d\n", mac_addr, aid);
  
++	if (aid < 1 || aid > AP_MAX_NUM_STA)
++		return;
++
+ 	if (assoc_req_len > sizeof(struct ieee80211_hdr_3addr)) {
+ 		struct ieee80211_mgmt *mgmt =
+ 			(struct ieee80211_mgmt *) assoc_info;
 -- 
 2.25.1
 
