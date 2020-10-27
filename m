@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA99129B201
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C3529B202
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760918AbgJ0OhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:37:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S1760931AbgJ0OhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760901AbgJ0OhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:37:01 -0400
+        id S1758649AbgJ0OhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:37:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FDB3207BB;
-        Tue, 27 Oct 2020 14:36:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33F5A2225E;
+        Tue, 27 Oct 2020 14:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809419;
-        bh=T/p1oJjCZKsJ0jjIhh7oW721eNYuaYGpn/SWSvKnsvQ=;
+        s=default; t=1603809422;
+        bh=PahXq6/N5/uraeLROJKcnKZLcuVN559gvYkSccDVgWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YfXD4D6ULIiE11USBQhY4b9oHmC0/6dgNOo/XanqENY9Jz2iS2SsdFSuBd2CDEWDr
-         diPY3YwuPQNGVGDn6CQRemukzZAq3LJGnLJjrGOEXkSNwL/KtdMSvZ/z3VfQ3EI4wU
-         UadesTZ7iRTuoMrUHT3K+NnWvXr4HPqkqDxgVAD0=
+        b=jlvOnQ7k2F37+GvlUeOYw1ExLxSpmjj6wgc0icTJ1vK7BQTmq9v3u0jPkHh1TD/yW
+         ZJuo+BOPZFNhbDxth/3CY+5YoH2qmVbwD7W3pU+54qAsMAk1+cTvFyP2NiSL7dq6gb
+         6ks5xAtDkqvccIA5T4U0LjndoQoEnicK3i1itzNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 190/408] netfilter: nf_log: missing vlan offload tag and proto
-Date:   Tue, 27 Oct 2020 14:52:08 +0100
-Message-Id: <20201027135503.903045602@linuxfoundation.org>
+Subject: [PATCH 5.4 191/408] mm/swapfile.c: fix potential memory leak in sys_swapon
+Date:   Tue, 27 Oct 2020 14:52:09 +0100
+Message-Id: <20201027135503.952005751@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -42,137 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 0d9826bc18ce356e8909919ad681ad65d0a6061e ]
+[ Upstream commit 822bca52ee7eb279acfba261a423ed7ac47d6f73 ]
 
-Dump vlan tag and proto for the usual vlan offload case if the
-NF_LOG_MACDECODE flag is set on. Without this information the logging is
-misleading as there is no reference to the VLAN header.
+If we failed to drain inode, we would forget to free the swap address
+space allocated by init_swap_address_space() above.
 
-[12716.993704] test: IN=veth0 OUT= MACSRC=86:6c:92:ea:d6:73 MACDST=0e:3b:eb:86:73:76 VPROTO=8100 VID=10 MACPROTO=0800 SRC=192.168.10.2 DST=172.217.168.163 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=2548 DF PROTO=TCP SPT=55848 DPT=80 WINDOW=501 RES=0x00 ACK FIN URGP=0
-[12721.157643] test: IN=veth0 OUT= MACSRC=86:6c:92:ea:d6:73 MACDST=0e:3b:eb:86:73:76 VPROTO=8100 VID=10 MACPROTO=0806 ARP HTYPE=1 PTYPE=0x0800 OPCODE=2 MACSRC=86:6c:92:ea:d6:73 IPSRC=192.168.10.2 MACDST=0e:3b:eb:86:73:76 IPDST=192.168.10.1
-
-Fixes: 83e96d443b37 ("netfilter: log: split family specific code to nf_log_{ip,ip6,common}.c files")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: dc617f29dbe5 ("vfs: don't allow writes to swap files")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lkml.kernel.org/r/20200930101803.53884-1-linmiaohe@huawei.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/netfilter/nf_log.h   |  1 +
- net/ipv4/netfilter/nf_log_arp.c  | 19 +++++++++++++++++--
- net/ipv4/netfilter/nf_log_ipv4.c |  6 ++++--
- net/ipv6/netfilter/nf_log_ipv6.c |  8 +++++---
- net/netfilter/nf_log_common.c    | 12 ++++++++++++
- 5 files changed, 39 insertions(+), 7 deletions(-)
+ mm/swapfile.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/netfilter/nf_log.h b/include/net/netfilter/nf_log.h
-index 0d3920896d502..716db4a0fed89 100644
---- a/include/net/netfilter/nf_log.h
-+++ b/include/net/netfilter/nf_log.h
-@@ -108,6 +108,7 @@ int nf_log_dump_tcp_header(struct nf_log_buf *m, const struct sk_buff *skb,
- 			   unsigned int logflags);
- void nf_log_dump_sk_uid_gid(struct net *net, struct nf_log_buf *m,
- 			    struct sock *sk);
-+void nf_log_dump_vlan(struct nf_log_buf *m, const struct sk_buff *skb);
- void nf_log_dump_packet_common(struct nf_log_buf *m, u_int8_t pf,
- 			       unsigned int hooknum, const struct sk_buff *skb,
- 			       const struct net_device *in,
-diff --git a/net/ipv4/netfilter/nf_log_arp.c b/net/ipv4/netfilter/nf_log_arp.c
-index 7a83f881efa9e..136030ad2e546 100644
---- a/net/ipv4/netfilter/nf_log_arp.c
-+++ b/net/ipv4/netfilter/nf_log_arp.c
-@@ -43,16 +43,31 @@ static void dump_arp_packet(struct nf_log_buf *m,
- 			    const struct nf_loginfo *info,
- 			    const struct sk_buff *skb, unsigned int nhoff)
- {
--	const struct arphdr *ah;
--	struct arphdr _arph;
- 	const struct arppayload *ap;
- 	struct arppayload _arpp;
-+	const struct arphdr *ah;
-+	unsigned int logflags;
-+	struct arphdr _arph;
- 
- 	ah = skb_header_pointer(skb, 0, sizeof(_arph), &_arph);
- 	if (ah == NULL) {
- 		nf_log_buf_add(m, "TRUNCATED");
- 		return;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index cf62bdb7b3045..ff83ffe7a9108 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3284,7 +3284,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	error = inode_drain_writes(inode);
+ 	if (error) {
+ 		inode->i_flags &= ~S_SWAPFILE;
+-		goto bad_swap_unlock_inode;
++		goto free_swap_address_space;
  	}
-+
-+	if (info->type == NF_LOG_TYPE_LOG)
-+		logflags = info->u.log.logflags;
-+	else
-+		logflags = NF_LOG_DEFAULT_MASK;
-+
-+	if (logflags & NF_LOG_MACDECODE) {
-+		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM ",
-+			       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest);
-+		nf_log_dump_vlan(m, skb);
-+		nf_log_buf_add(m, "MACPROTO=%04x ",
-+			       ntohs(eth_hdr(skb)->h_proto));
-+	}
-+
- 	nf_log_buf_add(m, "ARP HTYPE=%d PTYPE=0x%04x OPCODE=%d",
- 		       ntohs(ah->ar_hrd), ntohs(ah->ar_pro), ntohs(ah->ar_op));
  
-diff --git a/net/ipv4/netfilter/nf_log_ipv4.c b/net/ipv4/netfilter/nf_log_ipv4.c
-index 4b2d49cc9f1a1..cb288ffbcfde2 100644
---- a/net/ipv4/netfilter/nf_log_ipv4.c
-+++ b/net/ipv4/netfilter/nf_log_ipv4.c
-@@ -284,8 +284,10 @@ static void dump_ipv4_mac_header(struct nf_log_buf *m,
+ 	mutex_lock(&swapon_mutex);
+@@ -3309,6 +3309,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
  
- 	switch (dev->type) {
- 	case ARPHRD_ETHER:
--		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM MACPROTO=%04x ",
--			       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest,
-+		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM ",
-+			       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest);
-+		nf_log_dump_vlan(m, skb);
-+		nf_log_buf_add(m, "MACPROTO=%04x ",
- 			       ntohs(eth_hdr(skb)->h_proto));
- 		return;
- 	default:
-diff --git a/net/ipv6/netfilter/nf_log_ipv6.c b/net/ipv6/netfilter/nf_log_ipv6.c
-index 22b80db6d8826..5b40258d3a5e9 100644
---- a/net/ipv6/netfilter/nf_log_ipv6.c
-+++ b/net/ipv6/netfilter/nf_log_ipv6.c
-@@ -297,9 +297,11 @@ static void dump_ipv6_mac_header(struct nf_log_buf *m,
- 
- 	switch (dev->type) {
- 	case ARPHRD_ETHER:
--		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM MACPROTO=%04x ",
--		       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest,
--		       ntohs(eth_hdr(skb)->h_proto));
-+		nf_log_buf_add(m, "MACSRC=%pM MACDST=%pM ",
-+			       eth_hdr(skb)->h_source, eth_hdr(skb)->h_dest);
-+		nf_log_dump_vlan(m, skb);
-+		nf_log_buf_add(m, "MACPROTO=%04x ",
-+			       ntohs(eth_hdr(skb)->h_proto));
- 		return;
- 	default:
- 		break;
-diff --git a/net/netfilter/nf_log_common.c b/net/netfilter/nf_log_common.c
-index ae5628ddbe6d7..fd7c5f0f5c25b 100644
---- a/net/netfilter/nf_log_common.c
-+++ b/net/netfilter/nf_log_common.c
-@@ -171,6 +171,18 @@ nf_log_dump_packet_common(struct nf_log_buf *m, u_int8_t pf,
- }
- EXPORT_SYMBOL_GPL(nf_log_dump_packet_common);
- 
-+void nf_log_dump_vlan(struct nf_log_buf *m, const struct sk_buff *skb)
-+{
-+	u16 vid;
-+
-+	if (!skb_vlan_tag_present(skb))
-+		return;
-+
-+	vid = skb_vlan_tag_get(skb);
-+	nf_log_buf_add(m, "VPROTO=%04x VID=%u ", ntohs(skb->vlan_proto), vid);
-+}
-+EXPORT_SYMBOL_GPL(nf_log_dump_vlan);
-+
- /* bridge and netdev logging families share this code. */
- void nf_log_l2packet(struct net *net, u_int8_t pf,
- 		     __be16 protocol,
+ 	error = 0;
+ 	goto out;
++free_swap_address_space:
++	exit_swap_address_space(p->type);
+ bad_swap_unlock_inode:
+ 	inode_unlock(inode);
+ bad_swap:
 -- 
 2.25.1
 
