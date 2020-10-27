@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0CE29BB15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 063C629B85D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1803223AbgJ0Pw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:52:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47148 "EHLO mail.kernel.org"
+        id S1800149AbgJ0PfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760829AbgJ0Pa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:30:26 -0400
+        id S1799235AbgJ0Pa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:30:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CBF320728;
-        Tue, 27 Oct 2020 15:30:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C09D422264;
+        Tue, 27 Oct 2020 15:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812625;
-        bh=YxubElHCnHLxaw+s0cJTn88MBLKvWvKGAU+fkaTe9Gw=;
+        s=default; t=1603812628;
+        bh=AIxofYzRJxltUlJ4fmWkUr0YBOTkJFgftejeF3Ie04E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+rxdfyaztwnq9zlIWeVQ/D0LC6RU/+ls1NF7x0QPARYtP7sd4dWq2MuozG2odAgj
-         BqdZ1qA5PqoU7qF5ZA9H0vfw9H6cYWVKPE/T6BHmdlqDfBvZL4DIL1v0cFq6De+FAa
-         psuIsUOvLxrIGWirO1vff2cpQ1aejoKtvMwzHyCI=
+        b=1gYPOd3Yvf8IZf0mW2P3ciiqNSTE2t1foQmYgwdEyLI+aS5kkV6G8Q2Cj1JSKuNSc
+         WsKEPDDVTueAgU3Vi+ANoQXOlNyx9ha8Z/fqnI7hKQ6E221VEtO8gadBZIHvk2BqWd
+         MfyTkckVf1TqrXP2n0di8uG608TcBOst3QKQ9JUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 244/757] scsi: ufs: ufs-mediatek: Fix HOST_PA_TACTIVATE quirk
-Date:   Tue, 27 Oct 2020 14:48:14 +0100
-Message-Id: <20201027135502.032457448@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 245/757] HID: roccat: add bounds checking in kone_sysfs_write_settings()
+Date:   Tue, 27 Oct 2020 14:48:15 +0100
+Message-Id: <20201027135502.078667614@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,40 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley Chu <stanley.chu@mediatek.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit a3e40b80dc951057033dce86f0e675b2b822b513 ]
+[ Upstream commit d4f98dbfe717490e771b6e701904bfcf4b4557f0 ]
 
-Simply add HOST_PA_TACTIVATE quirk back since it was incorrectly removed
-before.
+This code doesn't check if "settings->startup_profile" is within bounds
+and that could result in an out of bounds array access.  What the code
+does do is it checks if the settings can be written to the firmware, so
+it's possible that the firmware has a bounds check?  It's safer and
+easier to verify when the bounds checking is done in the kernel.
 
-Link: https://lore.kernel.org/r/20200908064507.30774-3-stanley.chu@mediatek.com
-Fixes: 47d054580a75 ("scsi: ufs-mediatek: fix HOST_PA_TACTIVATE quirk for Samsung UFS Devices")
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 14bf62cde794 ("HID: add driver for Roccat Kone gaming mouse")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufs-mediatek.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/hid/hid-roccat-kone.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index 0a50b95315f8f..6b661135c03b5 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -672,13 +672,7 @@ static int ufs_mtk_apply_dev_quirks(struct ufs_hba *hba)
+diff --git a/drivers/hid/hid-roccat-kone.c b/drivers/hid/hid-roccat-kone.c
+index 2ff4c8e366ff2..1ca64481145ee 100644
+--- a/drivers/hid/hid-roccat-kone.c
++++ b/drivers/hid/hid-roccat-kone.c
+@@ -294,31 +294,40 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
+ 	struct kone_device *kone = hid_get_drvdata(dev_get_drvdata(dev));
+ 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
+ 	int retval = 0, difference, old_profile;
++	struct kone_settings *settings = (struct kone_settings *)buf;
  
- static void ufs_mtk_fixup_dev_quirks(struct ufs_hba *hba)
- {
--	struct ufs_dev_info *dev_info = &hba->dev_info;
--	u16 mid = dev_info->wmanufacturerid;
--
- 	ufshcd_fixup_dev_quirks(hba, ufs_mtk_dev_fixups);
--
--	if (mid == UFS_VENDOR_SAMSUNG)
--		hba->dev_quirks &= ~UFS_DEVICE_QUIRK_HOST_PA_TACTIVATE;
+ 	/* I need to get my data in one piece */
+ 	if (off != 0 || count != sizeof(struct kone_settings))
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&kone->kone_lock);
+-	difference = memcmp(buf, &kone->settings, sizeof(struct kone_settings));
++	difference = memcmp(settings, &kone->settings,
++			    sizeof(struct kone_settings));
+ 	if (difference) {
+-		retval = kone_set_settings(usb_dev,
+-				(struct kone_settings const *)buf);
+-		if (retval) {
+-			mutex_unlock(&kone->kone_lock);
+-			return retval;
++		if (settings->startup_profile < 1 ||
++		    settings->startup_profile > 5) {
++			retval = -EINVAL;
++			goto unlock;
+ 		}
+ 
++		retval = kone_set_settings(usb_dev, settings);
++		if (retval)
++			goto unlock;
++
+ 		old_profile = kone->settings.startup_profile;
+-		memcpy(&kone->settings, buf, sizeof(struct kone_settings));
++		memcpy(&kone->settings, settings, sizeof(struct kone_settings));
+ 
+ 		kone_profile_activated(kone, kone->settings.startup_profile);
+ 
+ 		if (kone->settings.startup_profile != old_profile)
+ 			kone_profile_report(kone, kone->settings.startup_profile);
+ 	}
++unlock:
+ 	mutex_unlock(&kone->kone_lock);
+ 
++	if (retval)
++		return retval;
++
+ 	return sizeof(struct kone_settings);
  }
- 
- /**
+ static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
 -- 
 2.25.1
 
