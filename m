@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13F829C4F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA5829C4E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823725AbgJ0SBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:01:01 -0400
-Received: from mga17.intel.com ([192.55.52.151]:65115 "EHLO mga17.intel.com"
+        id S1823673AbgJ0R7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1823202AbgJ0R6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:58:10 -0400
-IronPort-SDR: R1vBY2fKZnzwNEBtP2k7LZdmod7vSKPv1TfXKJxzRDZiw6xNCG6VX8nsZzPDl/RR35Em0zXRdI
- 1c1OOAjvtTSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="147987989"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="147987989"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 10:58:09 -0700
-IronPort-SDR: bvwsthhye2XuSPqNGB6XvGVJKkyKB1pk7wdw5kbWdYnykL4ML0QNApKGnu1XSWcvRWRngRFqYv
- vMJNx9DC7lug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="468422795"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 27 Oct 2020 10:58:07 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1B26B567; Tue, 27 Oct 2020 19:58:07 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peng Hao <peng.hao2@zte.com.cn>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v1 5/5] misc: pvpanic: Replace OF headers by mod_devicetable.h
-Date:   Tue, 27 Oct 2020 19:58:06 +0200
-Message-Id: <20201027175806.20305-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
-References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+        id S1823204AbgJ0R6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:58:11 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B867721556;
+        Tue, 27 Oct 2020 17:58:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603821490;
+        bh=+WdREhYOpPlOy7/jYqsbnSwfvnjFHZx6hOjap1wi2fk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=c/C/5297m3QN3xalQSz0+R0cgn41tFT6MisMrH8UDvXSKLoW6FnhzIktmWMA+C4Pv
+         IjGo63beACo+3t+HM1u3MQfX9RQcPdp4yAPwJDTnQUOZXZ915WFrXCUM60Q/nkcYmB
+         SOP1PGi0iRjD7SJlFqiMqKUcLO761B3yLUa6rUbs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5E90C35229CE; Tue, 27 Oct 2020 10:58:10 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 10:58:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     elver@google.com, dvyukov@google.com
+Cc:     linux-kernel@vger.kernel.org, andriin@fb.com
+Subject: Recording allocation location for blocks of memory?
+Message-ID: <20201027175810.GA26121@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no use for OF headers in the driver, but mod_devicetable.h
-must be included. Update driver accordingly.
+Hello!
 
-Cc: Peng Hao <peng.hao2@zte.com.cn>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/misc/pvpanic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I have vague memories of some facility some time some where that recorded
+who allocated a given block of memory, but am not seeing anything that
+does this at present.  The problem is rare enough and the situation
+sufficiently performance-sensitive that things like ftrace need not apply,
+and the BPF guys suggest that BPF might not be the best tool for this job.
 
-diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index 103a09ed651d..a45e70c5b6b9 100644
---- a/drivers/misc/pvpanic.c
-+++ b/drivers/misc/pvpanic.c
-@@ -11,11 +11,11 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/kexec.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/types.h>
-+
- #include <uapi/misc/pvpanic.h>
- 
- static void __iomem *base;
--- 
-2.28.0
+The problem I am trying to solve is that a generic function that detects
+reference count underflow that was passed to call_rcu(), and there are
+a lot of places where the underlying problem might lie, and pretty much
+no information.  One thing that could help is something that identifies
+which use case the underflow corresponds to.
 
+So, is there something out there (including old patches) that, given a
+pointer to allocated memory, gives some information about who allocated
+it?  Or should I risk further inflaming the MM guys by creating one?  ;-)
+
+							Thanx, Paul
