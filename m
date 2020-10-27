@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06F329C3F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B4529C3F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1822684AbgJ0Rvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49222 "EHLO mail.kernel.org"
+        id S1822673AbgJ0Rve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901508AbgJ0OYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:04 -0400
+        id S2901516AbgJ0OYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:24:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3867920780;
-        Tue, 27 Oct 2020 14:24:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E73F320773;
+        Tue, 27 Oct 2020 14:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808643;
-        bh=7mpwnG2c/HpRVOZkLlEM6xFLuF/c+ZfhXMlSaebxHSQ=;
+        s=default; t=1603808646;
+        bh=eKiQzv22GiZPQaooQmQqwAP0pgqKAn2zqbeOSKlbBOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zv/soq7yFpBKs0m0e8frPEsevvAsNqDLzfUXYs//gWEJv62gdOeFJdkdzTQiTx7wg
-         Qee6w0uiO02M6gLB7zSrw4/qMf7dFZbB3hrUjotYUririvJx/4L27lVjI6urFF0t/M
-         no3dNaFtRSVhkGnBTmQXH2ciH+QE9uLtECZNyZQk=
+        b=j4L0eiyEZ07+ba6sOHAt746dzl9d35yzhn8JbUqO0kMW/6Vyr6AuBor0/MLQIZzX6
+         op+y8dX5azstbhpo6PJpXEf5tI1Gdh/d8BEqPw0nL+PeO84aC8wE131TS9yGihRvjz
+         8ARIaP35Bgn3PLyEwbUwHh7eHnP7Q5xBNSPxRY/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 169/264] rpmsg: smd: Fix a kobj leak in in qcom_smd_parse_edge()
-Date:   Tue, 27 Oct 2020 14:53:47 +0100
-Message-Id: <20201027135438.619012228@linuxfoundation.org>
+Subject: [PATCH 4.19 170/264] pwm: img: Fix null pointer access in probe
+Date:   Tue, 27 Oct 2020 14:53:48 +0100
+Message-Id: <20201027135438.665175696@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,109 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Hauke Mehrtens <hauke@hauke-m.de>
 
-[ Upstream commit e69ee0cf655e8e0c4a80f4319e36019b74f17639 ]
+[ Upstream commit b39c0615d0667b3a6f2f5c4bf99ffadf3b518bb1 ]
 
-We need to call of_node_put(node) on the error paths for this function.
+dev_get_drvdata() is called in img_pwm_runtime_resume() before the
+driver data is set.
+When pm_runtime_enabled() returns false in img_pwm_probe() it calls
+img_pwm_runtime_resume() which results in a null pointer access.
 
-Fixes: 53e2822e56c7 ("rpmsg: Introduce Qualcomm SMD backend")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200908071841.GA294938@mwanda
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+This patch fixes the problem by setting the driver data earlier in the
+img_pwm_probe() function.
+
+This crash was seen when booting the Imagination Technologies Creator
+Ci40 (Marduk) with kernel 5.4 in OpenWrt.
+
+Fixes: e690ae526216 ("pwm: img: Add runtime PM")
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rpmsg/qcom_smd.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ drivers/pwm/pwm-img.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/rpmsg/qcom_smd.c b/drivers/rpmsg/qcom_smd.c
-index b2e5a6abf7d5c..aa008fa11002e 100644
---- a/drivers/rpmsg/qcom_smd.c
-+++ b/drivers/rpmsg/qcom_smd.c
-@@ -1338,7 +1338,7 @@ static int qcom_smd_parse_edge(struct device *dev,
- 	ret = of_property_read_u32(node, key, &edge->edge_id);
- 	if (ret) {
- 		dev_err(dev, "edge missing %s property\n", key);
--		return -EINVAL;
-+		goto put_node;
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index da72b2866e88e..3b0a097ce2abd 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -280,6 +280,8 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 		return PTR_ERR(pwm->pwm_clk);
  	}
  
- 	edge->remote_pid = QCOM_SMEM_HOST_ANY;
-@@ -1349,32 +1349,37 @@ static int qcom_smd_parse_edge(struct device *dev,
- 	edge->mbox_client.knows_txdone = true;
- 	edge->mbox_chan = mbox_request_channel(&edge->mbox_client, 0);
- 	if (IS_ERR(edge->mbox_chan)) {
--		if (PTR_ERR(edge->mbox_chan) != -ENODEV)
--			return PTR_ERR(edge->mbox_chan);
-+		if (PTR_ERR(edge->mbox_chan) != -ENODEV) {
-+			ret = PTR_ERR(edge->mbox_chan);
-+			goto put_node;
-+		}
- 
- 		edge->mbox_chan = NULL;
- 
- 		syscon_np = of_parse_phandle(node, "qcom,ipc", 0);
- 		if (!syscon_np) {
- 			dev_err(dev, "no qcom,ipc node\n");
--			return -ENODEV;
-+			ret = -ENODEV;
-+			goto put_node;
- 		}
- 
- 		edge->ipc_regmap = syscon_node_to_regmap(syscon_np);
--		if (IS_ERR(edge->ipc_regmap))
--			return PTR_ERR(edge->ipc_regmap);
-+		if (IS_ERR(edge->ipc_regmap)) {
-+			ret = PTR_ERR(edge->ipc_regmap);
-+			goto put_node;
-+		}
- 
- 		key = "qcom,ipc";
- 		ret = of_property_read_u32_index(node, key, 1, &edge->ipc_offset);
- 		if (ret < 0) {
- 			dev_err(dev, "no offset in %s\n", key);
--			return -EINVAL;
-+			goto put_node;
- 		}
- 
- 		ret = of_property_read_u32_index(node, key, 2, &edge->ipc_bit);
- 		if (ret < 0) {
- 			dev_err(dev, "no bit in %s\n", key);
--			return -EINVAL;
-+			goto put_node;
- 		}
++	platform_set_drvdata(pdev, pwm);
++
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, IMG_PWM_PM_TIMEOUT);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+@@ -316,7 +318,6 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 		goto err_suspend;
  	}
  
-@@ -1385,7 +1390,8 @@ static int qcom_smd_parse_edge(struct device *dev,
- 	irq = irq_of_parse_and_map(node, 0);
- 	if (irq < 0) {
- 		dev_err(dev, "required smd interrupt missing\n");
--		return -EINVAL;
-+		ret = irq;
-+		goto put_node;
- 	}
- 
- 	ret = devm_request_irq(dev, irq,
-@@ -1393,12 +1399,18 @@ static int qcom_smd_parse_edge(struct device *dev,
- 			       node->name, edge);
- 	if (ret) {
- 		dev_err(dev, "failed to request smd irq\n");
--		return ret;
-+		goto put_node;
- 	}
- 
- 	edge->irq = irq;
- 
+-	platform_set_drvdata(pdev, pwm);
  	return 0;
-+
-+put_node:
-+	of_node_put(node);
-+	edge->of_node = NULL;
-+
-+	return ret;
- }
  
- /*
+ err_suspend:
 -- 
 2.25.1
 
