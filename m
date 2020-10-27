@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20E529C6C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C8729C4E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827250AbgJ0SWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:22:33 -0400
-Received: from mailhost.m5p.com ([74.104.188.4]:29455 "EHLO mailhost.m5p.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1826543AbgJ0SUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:20:22 -0400
-X-Greylist: delayed 1721 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Oct 2020 14:20:22 EDT
-Received: from m5p.com (mailhost.m5p.com [IPv6:2001:470:1f07:15ff:0:0:0:f7])
-        by mailhost.m5p.com (8.15.2/8.15.2) with ESMTPS id 09RHpF0L032137
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Tue, 27 Oct 2020 13:51:20 -0400 (EDT)
-        (envelope-from ehem@m5p.com)
-Received: (from ehem@localhost)
-        by m5p.com (8.15.2/8.15.2/Submit) id 09RHpEQr032136;
-        Tue, 27 Oct 2020 10:51:14 -0700 (PDT)
-        (envelope-from ehem)
-Date:   Tue, 27 Oct 2020 10:51:14 -0700
-From:   Elliott Mitchell <ehem+undef@m5p.com>
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, konrad.wilk@oracle.com, hch@lst.de
-Subject: Re: [PATCH] fix swiotlb panic on Xen
-Message-ID: <20201027175114.GA32110@mattapan.m5p.com>
-References: <alpine.DEB.2.21.2010261653320.12247@sstabellini-ThinkPad-T480s>
+        id S1823627AbgJ0R7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:59:04 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:38828 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S370831AbgJ0R4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:56:08 -0400
+Received: by mail-oi1-f194.google.com with SMTP id h10so2181485oie.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:56:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e2O1KCO6hwywnVoo1ZUF7NbbA0C0IV0tNoU9l9bzMP0=;
+        b=S1ViT2cHVrQmbU96VSK2LZyZr+ilkGS2VBfzvJW6Z+a+nnW93t3/d3bJ+xbMiD5oVe
+         CwoFCLmh3vIcFNKibKE/vFkWXIqMKnvoNVXZPV6LKwaHldgtP/OZ0Ad3KR5crCaCpMia
+         hQemT14snZbTMZ9MEHtQtI9tl28bHMXI+CmXz6V566TRpnieFOiS1XzcfG2Ep5oN3/pM
+         6d2XIHJA9prbRbet/wLtz7xCooDDubJBinCXHaMkbO4uTbR4yRWu+SCvb1eyIfGpKzT1
+         Y2xysxMxtVist0vYrWO6PctYp1llUVnLwEd6sM6nD00jlcRQTDarb0Qybyj2d3pB35iF
+         EOZA==
+X-Gm-Message-State: AOAM530W0v3IPhvznnBKThXjzz772s15DSeNJOOr0LC1sKss+toYQCCx
+        1AvAUIUy1mJ3pUD7rHzqXTt0gBazwuxX4JDarEg=
+X-Google-Smtp-Source: ABdhPJzQPI+DV8csI4m/7ymq3SmMrcl2Dj4fQcISRslcjewCvGzla2ybIoo1TlgGWyOFjqCJCG3WMursfGdXiNmi/X8=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr2387344oif.54.1603821367589;
+ Tue, 27 Oct 2020 10:56:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2010261653320.12247@sstabellini-ThinkPad-T480s>
-X-Spam-Status: No, score=0.0 required=10.0 tests=KHOP_HELO_FCRDNS
-        autolearn=unavailable autolearn_force=no version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mattapan.m5p.com
+References: <20201027151132.14066-1-ardb@kernel.org>
+In-Reply-To: <20201027151132.14066-1-ardb@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Oct 2020 18:55:56 +0100
+Message-ID: <CAMuHMdXz5Q+V3eAePLOdBgGjecs1aZmjka3PAphVsHV+Mu3u=Q@mail.gmail.com>
+Subject: Re: [PATCH] module: use hidden visibility for weak symbol references
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:02:14PM -0700, Stefano Stabellini wrote:
-> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> 
-> kernel/dma/swiotlb.c:swiotlb_init gets called first and tries to
-> allocate a buffer for the swiotlb. It does so by calling
-> 
->   memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
-> 
-> If the allocation must fail, no_iotlb_memory is set.
-> 
-> 
-> Later during initialization swiotlb-xen comes in
-> (drivers/xen/swiotlb-xen.c:xen_swiotlb_init) and given that io_tlb_start
-> is != 0, it thinks the memory is ready to use when actually it is not.
-> 
-> When the swiotlb is actually needed, swiotlb_tbl_map_single gets called
-> and since no_iotlb_memory is set the kernel panics.
-> 
-> Instead, if swiotlb-xen.c:xen_swiotlb_init knew the swiotlb hadn't been
-> initialized, it would do the initialization itself, which might still
-> succeed.
-> 
-> 
-> Fix the panic by setting io_tlb_start to 0 on swiotlb initialization
-> failure, and also by setting no_iotlb_memory to false on swiotlb
-> initialization success.
-> 
-> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> 
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index c19379fabd20..9924214df60a 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -231,6 +231,7 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->  		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
->  	}
->  	io_tlb_index = 0;
-> +	no_iotlb_memory = false;
->  
->  	if (verbose)
->  		swiotlb_print_info();
-> @@ -262,9 +263,11 @@ swiotlb_init(int verbose)
->  	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
->  		return;
->  
-> -	if (io_tlb_start)
-> +	if (io_tlb_start) {
->  		memblock_free_early(io_tlb_start,
->  				    PAGE_ALIGN(io_tlb_nslabs << IO_TLB_SHIFT));
-> +		io_tlb_start = 0;
-> +	}
->  	pr_warn("Cannot allocate buffer");
->  	no_iotlb_memory = true;
->  }
-> @@ -362,6 +365,7 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
->  		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
->  	}
->  	io_tlb_index = 0;
-> +	no_iotlb_memory = false;
->  
->  	swiotlb_print_info();
->  
+On Tue, Oct 27, 2020 at 4:11 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
+> unwanted sections") results in build errors on arm64 for configurations
+> that have CONFIG_MODULES disabled.
+>
+> The commit in question added ASSERT()s to the arm64 linker script to
+> ensure that linker generated sections such as .got, .plt etc are empty,
+> but as it turns out, there are corner cases where the linker does emit
+> content into those sections. More specifically, weak references to
+> function symbols (which can remain unsatisfied, and can therefore not
+> be emitted as relative references) will be emitted as GOT and PLT
+> entries when linking the kernel in PIE mode (which is the case when
+> CONFIG_RELOCATABLE is enabled, which is on by default).
+>
+> What happens is that code such as
+>
+>         struct device *(*fn)(struct device *dev);
+>         struct device *iommu_device;
+>
+>         fn = symbol_get(mdev_get_iommu_device);
+>         if (fn) {
+>                 iommu_device = fn(dev);
+>
+> essentially gets converted into the following when CONFIG_MODULES is off:
+>
+>         struct device *iommu_device;
+>
+>         if (&mdev_get_iommu_device) {
+>                 iommu_device = mdev_get_iommu_device(dev);
+>
+> where mdev_get_iommu_device is emitted as a weak symbol reference into
+> the object file. The first reference is decorated with an ordinary
+> ABS64 data relocation (which yields 0x0 if the reference remains
+> unsatisfied). However, the indirect call is turned into a direct call
+> covered by a R_AARCH64_CALL26 relocation, which is converted into a
+> call via a PLT entry taking the target address from the associated
+> GOT entry.
+>
+> Given that such GOT and PLT entries are unnecessary for fully linked
+> binaries such as the kernel, let's give these weak symbol references
+> hidden visibility, so that the linker knows that the weak reference
+> via R_AARCH64_CALL26 can simply remain unsatisfied.
+>
+> Cc: Jessica Yu <jeyu@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-As the person who first found this and then confirmed this fixes a bug:
+Thanks, this get rids of
 
-Tested-by: Elliott Mitchell <ehem+xen@m5p.com>
+    aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+    aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
 
+which you may want to mention in the patch description, to make
+it easier to be found.
+
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-(\___(\___(\______          --=> 8-) EHM <=--          ______/)___/)___/)
- \BS (    |         ehem+sigmsg@m5p.com  PGP 87145445         |    )   /
-  \_CS\   |  _____  -O #include <stddisclaimer.h> O-   _____  |   /  _/
-8A19\___\_|_/58D2 7E3D DDF4 7BA6 <-PGP-> 41D1 B375 37D0 8714\_|_/___/5445
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
