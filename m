@@ -2,135 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8766129AA29
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BED29AA39
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437470AbgJ0K6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:58:20 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:51333 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729590AbgJ0K6T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:58:19 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kXMg7-00046a-Qk; Tue, 27 Oct 2020 11:58:11 +0100
-Subject: Re: [Linux-stm32] [PATCH v7 10/12] ARM: dts: stm32: Fix schema
- warnings for pwm-leds
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Alexander Dahl <ada@thorsis.com>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-leds@vger.kernel.org
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-11-post@lespocky.de>
- <b387bda8-3643-1d27-4996-2aa4dc94d69f@pengutronix.de>
- <20201027100536.cpfizc67gwrolp2z@falbala.internal.home.lespocky.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <f6ed201d-51b6-f278-7a95-3e3e49dc19ee@pengutronix.de>
-Date:   Tue, 27 Oct 2020 11:58:10 +0100
+        id S2898896AbgJ0LFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:05:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896940AbgJ0LFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:05:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7CD1AAF1;
+        Tue, 27 Oct 2020 11:05:21 +0000 (UTC)
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>
+References: <20201026173358.14704-1-vbabka@suse.cz>
+ <20201026173358.14704-4-vbabka@suse.cz>
+ <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 3/3] mm, page_alloc: reduce static keys in prep_new_page()
+Message-ID: <1fc7ec3a-367c-eb9f-1cb4-b9e015fea87c@suse.cz>
+Date:   Tue, 27 Oct 2020 12:05:21 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <20201027100536.cpfizc67gwrolp2z@falbala.internal.home.lespocky.de>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 10/27/20 11:05 AM, Alexander Dahl wrote:
-> Hello Ahmad,
+On 10/27/20 10:10 AM, David Hildenbrand wrote:
+> On 26.10.20 18:33, Vlastimil Babka wrote:
+>> prep_new_page() will always zero a new page (regardless of __GFP_ZERO) when
+>> init_on_alloc is enabled, but will also always skip zeroing if the page was
+>> already zeroed on free by init_on_free or page poisoning.
+>> 
+>> The latter check implemented by free_pages_prezeroed() can involve two
+>> different static keys. As prep_new_page() is really a hot path, let's introduce
+>> a single static key free_pages_not_prezeroed for this purpose and initialize it
+>> in init_mem_debugging().
 > 
-> thanks for your feedback, comments below.
+> Is this actually observable in practice? This smells like
+> micro-optimization to me.
 > 
+> Also, I thought the whole reason for static keys is to have basically no
+> overhead at runtime, so I wonder if replacing two static key checks by a
+> single one actually makes *some* difference.
 
->>> -	led-rgb {
->>> +	led-controller-2 {
->>
->> Is a single RGB LED really a controller?
-> 
-> I just followed the recommendations by Rob here.
+You're right, the difference seems to be just a single NOP. The static key 
+infrastructure seems to be working really well.
+(At least the asm inspection made me realize that kernel_poison_pages() is 
+called unconditionally and the static key is checked inside, not inline so I'll 
+be amending patch 2...)
 
-Do you happen to know if the new multicolor LED support could be used here?
+Initially I thought I would be reducing 3 keys to 1 in this patch, but I got the 
+code wrong. So unless others think it's a readability improvements, we can drop 
+this patch.
 
-I find it unfortunate that the device tree loses information relevant to humans
-to adhere to a fixed nomenclature. Apparently led-controller isn't even codified
-in the YAML binding (It's just in the examples). If you respin, please add a
-comment that this is a single RGB led. I'd prefer to keep the information
-in the DTB as well though.
-
+Or we can also reconsider this whole optimization. If the point is to be 
+paranoid and enable both init_on_free and init_on_alloc, should we trust that 
+nobody wrote something after the clearing on free via use-after-free? :) Kees/Alex?
 
 
-> 
->>>  		compatible = "pwm-leds";
->>>  
->>> -		led-red {
->>> +		led-2 {
->>
->> Shouldn't this have been led-1 as well or is the numbering "global" ?
-> 
-> Also good question. This numbering is for dts only, it usually does
-> not correspond with LEDs on the board, so it could be numbered per
-> led-controller as well?
-
-I'd prefer that it starts by 1. That way it's aligned with PWM channel
-ID.
-
-Thanks for fixing the dtschema warnings by the way!
-
-Cheers,
-Ahmad
-
-> 
-> Greets
-> Alex
-> 
->>
->>>  			label = "mc1:red:rgb";
->>>  			pwms = <&leds_pwm 1 1000000 0>;
->>>  			max-brightness = <255>;
->>>  			active-low;
->>>  		};
->>>  
->>> -		led-green {
->>> +		led-3 {
->>>  			label = "mc1:green:rgb";
->>>  			pwms = <&leds_pwm 2 1000000 0>;
->>>  			max-brightness = <255>;
->>>  			active-low;
->>>  		};
->>>  
->>> -		led-blue {
->>> +		led-4 {
->>>  			label = "mc1:blue:rgb";
->>>  			pwms = <&leds_pwm 3 1000000 0>;
->>>  			max-brightness = <255>;
->>>
->>
->> -- 
->> Pengutronix e.K.                           |                             |
->> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
->> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
->> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
