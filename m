@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A7C29C239
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFBC29C44A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820161AbgJ0RdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
+        id S2901283AbgJ0OV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:21:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760958AbgJ0OhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:37:14 -0400
+        id S1758616AbgJ0OUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:20:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B44B1223B0;
-        Tue, 27 Oct 2020 14:37:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA83F206F7;
+        Tue, 27 Oct 2020 14:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809434;
-        bh=fmzIGfAlmxA5UW7j9+y7Oh768fnkxykn31ZUG9EwbDk=;
+        s=default; t=1603808419;
+        bh=0v8Fu24+QRyx7jkDgm6T86sfyGxEGNkJoZOL5b0BRDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRI26PrEEmNgmp4V+owaanJ+a1B6oAUgwVI/Rr0Y2ttv731YujJo1kfUtvxP303iq
-         882X11hfzN9g76pugBo7VrQcciifWXmSVFWNGh7XywV/MXXd/Vl3q1FAIDPe5QG4nq
-         VAEg9OnffUPyI9yRca0Sikqm+F34FcRZpTiIBj5w=
+        b=UUuHR1Yd4I4zItT15tL3EW79pAAQuQvp2L+VI+wE4TD4ZLYpoXqQlVdQU2mqO085j
+         4he7wTVoyXPTcDLKSmKlDNYbCRMOY/ba5hkqXrsBY5Rr6jpgYD2GyEI2o8vatz7WBw
+         g8aiS5na8u4IxtEJuhP5rpzjZMWUqOByGtLrimpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 195/408] selftests/ftrace: Change synthetic event name for inter-event-combined test
-Date:   Tue, 27 Oct 2020 14:52:13 +0100
-Message-Id: <20201027135504.139977444@linuxfoundation.org>
+Subject: [PATCH 4.19 077/264] drm/gma500: fix error check
+Date:   Tue, 27 Oct 2020 14:52:15 +0100
+Message-Id: <20201027135434.326130502@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 96378b2088faea68f1fb05ea6b9a566fc569a44c ]
+[ Upstream commit cdd296cdae1af2d27dae3fcfbdf12c5252ab78cf ]
 
-This test uses waking+wakeup_latency as an event name, which doesn't
-make sense since it includes an operator.  Illegal names are now
-detected by the synthetic event command parsing, which causes this
-test to fail.  Change the name to 'waking_plus_wakeup_latency' to
-prevent this.
+Reviewing this block of code in cdv_intel_dp_init()
 
-Link: https://lkml.kernel.org/r/a1ee2f76ff28ef7166fb788ca8be968887808920.1602598160.git.zanussi@kernel.org
+ret = cdv_intel_dp_aux_native_read(gma_encoder, DP_DPCD_REV, ...
 
-Fixes: f06eec4d0f2c (selftests: ftrace: Add inter-event hist triggers testcases)
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+cdv_intel_edp_panel_vdd_off(gma_encoder);
+if (ret == 0) {
+	/* if this fails, presume the device is a ghost */
+	DRM_INFO("failed to retrieve link info, disabling eDP\n");
+	drm_encoder_cleanup(encoder);
+	cdv_intel_dp_destroy(connector);
+	goto err_priv;
+} else {
+
+The (ret == 0) is not strict enough.
+cdv_intel_dp_aux_native_read() returns > 0 on success
+otherwise it is failure.
+
+So change to <=
+
+Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200805205911.20927-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../inter-event/trigger-inter-event-combined-hist.tc      | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
-index f3eb8aacec0e7..a2b0e4eb1fe4c 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
-@@ -34,12 +34,12 @@ echo 'wakeup_latency u64 lat pid_t pid' >> synthetic_events
- echo 'hist:keys=pid:ts1=common_timestamp.usecs if comm=="ping"' >> events/sched/sched_wakeup/trigger
- echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts1:onmatch(sched.sched_wakeup).wakeup_latency($wakeup_lat,next_pid) if next_comm=="ping"' > events/sched/sched_switch/trigger
- 
--echo 'waking+wakeup_latency u64 lat; pid_t pid' >> synthetic_events
--echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking+wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
--echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking+wakeup_latency/trigger
-+echo 'waking_plus_wakeup_latency u64 lat; pid_t pid' >> synthetic_events
-+echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking_plus_wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
-+echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking_plus_wakeup_latency/trigger
- 
- ping $LOCALHOST -c 3
--if ! grep -q "pid:" events/synthetic/waking+wakeup_latency/hist; then
-+if ! grep -q "pid:" events/synthetic/waking_plus_wakeup_latency/hist; then
-     fail "Failed to create combined histogram"
- fi
- 
+diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+index 90ed20083009f..05eba6dec5ebf 100644
+--- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
++++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+@@ -2119,7 +2119,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+ 					       intel_dp->dpcd,
+ 					       sizeof(intel_dp->dpcd));
+ 		cdv_intel_edp_panel_vdd_off(gma_encoder);
+-		if (ret == 0) {
++		if (ret <= 0) {
+ 			/* if this fails, presume the device is a ghost */
+ 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
+ 			cdv_intel_dp_encoder_destroy(encoder);
 -- 
 2.25.1
 
