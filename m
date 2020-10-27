@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF5329C2AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C1829C2E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760301AbgJ0Oe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:34:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59992 "EHLO mail.kernel.org"
+        id S1821181AbgJ0RlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902384AbgJ0OdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:33:03 -0400
+        id S2902392AbgJ0OdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:33:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44D4720709;
-        Tue, 27 Oct 2020 14:33:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F045C22202;
+        Tue, 27 Oct 2020 14:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809182;
-        bh=8OizcMn5AwbhJXEjMw/6CbWNIS8lePr5a+to/ulScTA=;
+        s=default; t=1603809185;
+        bh=5H0L6513JseOI8vUgBX2DFIwpZ4pecmuOakmrXTygSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OFDGSpCq0k674rKsFoOhEdTAI0vtd1C0fLziL7M02lDx+ytBIlnm/J1kkrRT1+xiB
-         udw+MQfz1BTUhf9eKhfn+YoIhoup3ubWGmnXWozVIDbSNM+YMrJp5QAjq/5W9C3C3H
-         yUebVTowf8UTK/+jGXCHOAzYzxcRt+8Jn8sKhPU4=
+        b=khnSJVzIL+tUwuaHemmplOb/qU6Dh6k/BjIvsueD/SNaPhaASDb3RhLH1iSTsSlXy
+         mI7uc5tMyo3C/WasRcz/DG9RvzyWkzYi26Ix6ZR2vaELlpYkwmayuSuUJopIudi9HV
+         JaqXCtEd6G3pSzJ5MJ4ZWUmp6U1mWR7B9HgKhGxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 105/408] Bluetooth: hci_uart: Cancel init work before unregistering
-Date:   Tue, 27 Oct 2020 14:50:43 +0100
-Message-Id: <20201027135459.970160644@linuxfoundation.org>
+Subject: [PATCH 5.4 106/408] drm/amd/display: Fix wrong return value in dm_update_plane_state()
+Date:   Tue, 27 Oct 2020 14:50:44 +0100
+Message-Id: <20201027135500.020591749@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,49 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 3b799254cf6f481460719023d7a18f46651e5e7f ]
+[ Upstream commit c35376137e940c3389df2726a92649c01a9844b4 ]
 
-If hci_uart_tty_close() or hci_uart_unregister_device() is called while
-hu->init_ready is scheduled, hci_register_dev() could be called after
-the hci_uart is torn down. Avoid this by ensuring the work is complete
-or canceled before checking the HCI_UART_REGISTERED flag.
+On an error exit path, a negative error code should be returned
+instead of a positive return value.
 
-Fixes: 9f2aee848fe6 ("Bluetooth: Add delayed init sequence support for UART controllers")
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 9e869063b0021 ("drm/amd/display: Move iteration out of dm_update_planes")
+Cc: Leo Li <sunpeng.li@amd.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_ldisc.c  | 1 +
- drivers/bluetooth/hci_serdev.c | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
-index 85a30fb9177bb..f83d67eafc9f0 100644
---- a/drivers/bluetooth/hci_ldisc.c
-+++ b/drivers/bluetooth/hci_ldisc.c
-@@ -538,6 +538,7 @@ static void hci_uart_tty_close(struct tty_struct *tty)
- 		clear_bit(HCI_UART_PROTO_READY, &hu->flags);
- 		percpu_up_write(&hu->proto_lock);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 2384aa018993d..7c58085031732 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6984,8 +6984,7 @@ static int dm_update_plane_state(struct dc *dc,
+ 				dm_old_plane_state->dc_state,
+ 				dm_state->context)) {
  
-+		cancel_work_sync(&hu->init_ready);
- 		cancel_work_sync(&hu->write_work);
+-			ret = EINVAL;
+-			return ret;
++			return -EINVAL;
+ 		}
  
- 		if (hdev) {
-diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
-index ad2f26cb2622e..5b9aa73ff2b7f 100644
---- a/drivers/bluetooth/hci_serdev.c
-+++ b/drivers/bluetooth/hci_serdev.c
-@@ -357,6 +357,8 @@ void hci_uart_unregister_device(struct hci_uart *hu)
- 	struct hci_dev *hdev = hu->hdev;
  
- 	clear_bit(HCI_UART_PROTO_READY, &hu->flags);
-+
-+	cancel_work_sync(&hu->init_ready);
- 	if (test_bit(HCI_UART_REGISTERED, &hu->flags))
- 		hci_unregister_dev(hdev);
- 	hci_free_dev(hdev);
 -- 
 2.25.1
 
