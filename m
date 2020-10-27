@@ -2,136 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029F129A52B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9182F29A531
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507087AbgJ0HDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 03:03:50 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:45487 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387606AbgJ0HDu (ORCPT
+        id S2507291AbgJ0HFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 03:05:45 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17141 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507281AbgJ0HFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 03:03:50 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kXJ1C-00019L-Kr; Tue, 27 Oct 2020 08:03:42 +0100
-Subject: Re: [Linux-stm32] [PATCH v7 10/12] ARM: dts: stm32: Fix schema
- warnings for pwm-leds
-To:     Alexander Dahl <post@lespocky.de>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Alexander Dahl <ada@thorsis.com>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-leds@vger.kernel.org
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-11-post@lespocky.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <b387bda8-3643-1d27-4996-2aa4dc94d69f@pengutronix.de>
-Date:   Tue, 27 Oct 2020 08:03:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 27 Oct 2020 03:05:44 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f97c6cc0001>; Tue, 27 Oct 2020 00:05:48 -0700
+Received: from [10.41.23.128] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 27 Oct
+ 2020 07:05:38 +0000
+Subject: Re: [PATCH v3] cpufreq: tegra194: get consistent cpuinfo_cur_freq
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rjw@rjwysocki.net>, <sudeep.holla@arm.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
+        <ksitaraman@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <1602668171-30104-1-git-send-email-sumitg@nvidia.com>
+ <c56983dc-dc45-3e8c-a67c-14d7d09464ae@nvidia.com>
+ <20201027065855.ghekpybjwtaufwgy@vireshk-i7>
+From:   Sumit Gupta <sumitg@nvidia.com>
+Message-ID: <e3dc2ac5-2561-dd48-5110-918a47b3a473@nvidia.com>
+Date:   Tue, 27 Oct 2020 12:35:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201005203451.9985-11-post@lespocky.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201027065855.ghekpybjwtaufwgy@vireshk-i7>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603782348; bh=WtJy4r7svb4J2IZUnV3t+9wxR1WW37gNHcX6Awa3jIM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=cl6cysfhaz4s59yJxqetLooytzBoR9HqHpSZuVGyPoiQOuUDeZN2w5QQQOvgs0VIQ
+         9zVZ6QGS/KW9wiM7GaLx1v45VAZeEpXJKZJIJ+WUoxNhD+x6dyK3jTEhnwyPjfXKmk
+         pqcw8uo5Zkuj13wAP632pxrVqPfsIIEKRUe59TdegqHjtuURz39iq12+e9KgUMk1KW
+         GcNhuFtQT7t3GO7oZAgBi9+PlC7kQb7Nt2xiBkMT3aTEtmYBMI3Kzwk3yRSkAvc9o2
+         MviyljpnMCjpzUugH/WuPt8Jrqr4lf630wV5EG4ho/a9nV34CFn3/ny0JzVccNhsBl
+         Q16BR+95YNx4w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander,
+Thank you.
 
-On 10/5/20 10:34 PM, Alexander Dahl wrote:
-> The node names for devices using the pwm-leds driver follow a certain
-> naming scheme (now).  Parent node name is not enforced, but recommended
-> by DT project.
+On 27/10/20 12:28 PM, Viresh Kumar wrote:
+> External email: Use caution opening links or attachments
 > 
->   DTC     arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
->   CHECK   arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
-> /home/alex/build/linux/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml: led-rgb: 'led-blue', 'led-green', 'led-red' do not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
->         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
 > 
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
-
-Acked-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-But got two questions below:
-
-> ---
+> On 27-10-20, 11:46, Sumit Gupta wrote:
+>> Ping.
 > 
-> Notes:
->     v6 -> v7:
->       * split up patch (one per sub arch)
->       * added actual warnings to commit message
+> I was waiting for 5.10-rc1 to be released before I can start applying stuff for
+> 5.11. Now that it is released, I will apply this.
 > 
->  arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> --
+> viresh
 > 
-> diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-> index 5700e6b700d3..25d548cb975b 100644
-> --- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-> +++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-> @@ -36,34 +36,34 @@
->  		stdout-path = &uart4;
->  	};
->  
-> -	led-act {
-> +	led-controller-1 {
->  		compatible = "gpio-leds";
->  
-> -		led-green {
-> +		led-1 {
->  			label = "mc1:green:act";
->  			gpios = <&gpioa 13 GPIO_ACTIVE_LOW>;
->  			linux,default-trigger = "heartbeat";
->  		};
->  	};
->  
-> -	led-rgb {
-> +	led-controller-2 {
-
-Is a single RGB LED really a controller?
-
->  		compatible = "pwm-leds";
->  
-> -		led-red {
-> +		led-2 {
-
-Shouldn't this have been led-1 as well or is the numbering "global" ?
-
->  			label = "mc1:red:rgb";
->  			pwms = <&leds_pwm 1 1000000 0>;
->  			max-brightness = <255>;
->  			active-low;
->  		};
->  
-> -		led-green {
-> +		led-3 {
->  			label = "mc1:green:rgb";
->  			pwms = <&leds_pwm 2 1000000 0>;
->  			max-brightness = <255>;
->  			active-low;
->  		};
->  
-> -		led-blue {
-> +		led-4 {
->  			label = "mc1:blue:rgb";
->  			pwms = <&leds_pwm 3 1000000 0>;
->  			max-brightness = <255>;
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
