@@ -2,117 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9863729A80B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8AF29A814
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895746AbgJ0JmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:42:17 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:46569 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895736AbgJ0JmQ (ORCPT
+        id S2895758AbgJ0Jmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:42:45 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:38951 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895750AbgJ0Jmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:42:16 -0400
-Received: by mail-ed1-f65.google.com with SMTP id 33so696998edq.13;
-        Tue, 27 Oct 2020 02:42:14 -0700 (PDT)
+        Tue, 27 Oct 2020 05:42:44 -0400
+Received: by mail-pg1-f193.google.com with SMTP id o7so464567pgv.6;
+        Tue, 27 Oct 2020 02:42:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XCeec5IImxL2EGXfGQqgVj5bq/FQ6sYk1H41/XnYwtU=;
+        b=TIGNx8Y4jEjyo+b7+5wApbszjIMBLHM2fsBg458QxhAvvvv4s8zZxCALWrqBhRrahb
+         /odYggV8e8wy66I3MwdjPyB0gxtRUH1upAEmSo+JoSwBgViOusxtdO0WXsTn293siaF2
+         F7bgZg6O0V6uD+geGKe10nDPvH6nxrjbkHDhut2RyTFv92W7TxznWQPRr+6pEjv4ZYhe
+         QTU9eRG9o28mUDNkNPZ2Il/14ImuOuFq7w7suCFPH+uSbGpRxBMWAxFsGscN339DmVXB
+         mWkxK3JS7NyyodfQcEVmWY77ZqWqO4jhoN/a8t16TsakpZFq8KMwdFBj7tQhdh7g3oNc
+         3Iwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lHBBkHuI0IUnOYJdkmLUqOouaAvwVU9iVEiJW9WoiK0=;
-        b=I7Vin3CsZp+ryTWOH6S6g5E5lehY6iWOkdwUj551VB260HcAeQo/M4DeiiTrwrlH5c
-         anA7G3XDjEIVEDNrJeG4tYu2LeyQsFbM1ygpQOyKBuiqVKjOJzUTODygdCxIKlvpcWFB
-         rCAli1wpLoULxWA5Bz4JUFuCGlAyPnYL9uIkv78uhvgneUJE9vXvP8NW2Hz+2y4IBhr9
-         5H7CC7PzQwId7S1kipZGusryeDTPWhImHQ8bwI/wYrLbffKnyuQlWUHzZ4DJlfhnYalT
-         8AA25e2uMdJrgFWox+ouLJZsZ0H44phdVVTCwldMG1QNbnYBi+m/M5mVemFCO2ElVUUS
-         fyPg==
-X-Gm-Message-State: AOAM53107Yo+jMMESb55d9vOKw21OcWV3ZE9ejL/GUejiqFeGjwV+Qce
-        wbFkRYMMwRYfhWGoHVQxnq4=
-X-Google-Smtp-Source: ABdhPJz72Eh4ixWHKjawYoG+VJV8TMQNsshX247FygzKAqPkSLsgpy1VBkkcxgwv76i5r6OyRrv9sw==
-X-Received: by 2002:aa7:c608:: with SMTP id h8mr1255855edq.16.1603791734178;
-        Tue, 27 Oct 2020 02:42:14 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id p17sm610248edw.10.2020.10.27.02.42.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 02:42:12 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 10:42:10 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 28/52] memory: tegra: Add and use
- devm_tegra_get_memory_controller()
-Message-ID: <20201027094210.GD10762@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-29-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XCeec5IImxL2EGXfGQqgVj5bq/FQ6sYk1H41/XnYwtU=;
+        b=h7/A818XVDnQQ0V4XwNXtKhlZ990uAr2xwbhKz6wd8JGORZ6cHAnVw9+X7LP27Sc6G
+         RL4Flt7UiQDgcdSYSupzwowGAwWagh+avifHZMN9tOTOJIBLd0bgiWXCUyU58KNuUF3c
+         5EBGqZ4+nvEKQOt7bGwc0Sv1A2DhEquFi7izAa+gKToLpwl03vQUmOw2w9yiOcUj0khy
+         i2qUeDYUUEq4dEA+gn4YRfph7mCN6woPiQLy4eeYi9OHfJW0enJlHhKE12hiAg5TJD3J
+         wr5CqTsM/A3SFc2rOJl+Kg9Zg9LqxFjF/xAWQkAg9RQ0jBDSqhwJoWf6RabUdynZ/Tu4
+         AYHA==
+X-Gm-Message-State: AOAM531SyNz3gOxT/3fqL3sxjw+Tw1z2Dl0JcynB3XBsKq/BfF/CcGZJ
+        99LoenrtRakvegK7KGAU0EazdiSRqTu7ktyinmVEiLQsob8=
+X-Google-Smtp-Source: ABdhPJyw0I0ivrd4JvJPVqMDPwksBG9fNzq0U+AZ/BV8tlThqbR4h/cBHc/ggmdt2xdVB4TldoQ9xD1ZBNZqv2OWgXA=
+X-Received: by 2002:a62:343:0:b029:15c:e33c:faff with SMTP id
+ 64-20020a6203430000b029015ce33cfaffmr718328pfd.7.1603791762715; Tue, 27 Oct
+ 2020 02:42:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-29-digetx@gmail.com>
+References: <20201026151600.2703-1-coiby.xu@gmail.com> <CAHp75VfZ+-rJFWVpowXyViA99_9tA5VaFLfJGH1WF4W=kQHr8w@mail.gmail.com>
+ <20201026231631.6l6kei3z45cunzmx@Rk>
+In-Reply-To: <20201026231631.6l6kei3z45cunzmx@Rk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Oct 2020 11:42:26 +0200
+Message-ID: <CAHp75VcLRjZDckuUDSsZ5KWfqFGRZbeEMSqMYSuF4P9iWt_LhA@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: amd: print debounce filter info in debugfs
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:17:11AM +0300, Dmitry Osipenko wrote:
-> Multiple Tegra drivers need to retrieve Memory Controller and there is
-> duplication of the retrieval code among the drivers. This patch removes
-> the duplication and fixes put_device() which was missed in the duplicated
-> code.
-> 
-> EMC drivers now use new common devm_tegra_get_memory_controller() helper
-> instead of opencoding the MC retrieval.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/mc.c                | 48 ++++++++++++++++++++++++
->  drivers/memory/tegra/tegra124-emc.c      | 18 ++-------
->  drivers/memory/tegra/tegra210-emc-core.c | 39 +++++--------------
->  drivers/memory/tegra/tegra30-emc.c       | 18 ++-------
->  include/soc/tegra/mc.h                   | 10 +++++
->  5 files changed, 74 insertions(+), 59 deletions(-)
-> 
-> diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
-> index ec8403557ed4..12ea2c79205a 100644
-> --- a/drivers/memory/tegra/mc.c
-> +++ b/drivers/memory/tegra/mc.c
-> @@ -42,6 +42,54 @@ static const struct of_device_id tegra_mc_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
->  
-> +static void tegra_mc_devm_action_put_device(void *data)
-> +{
-> +	struct tegra_mc *mc = data;
-> +
-> +	put_device(mc->dev);
-> +}
-> +
-> +/**
-> + * devm_tegra_get_memory_controller() - get Tegra Memory Controller handle
-> + * @dev: device pointer for the consumer device
-> + *
-> + * This function will search for the Memory Controller node in a device-tree
-> + * and retrieve the Memory Controller handle.
-> + *
-> + * Return: ERR_PTR() on error or a valid pointer to a struct tegra_mc.
-> + */
-> +struct tegra_mc *devm_tegra_get_memory_controller(struct device *dev)
+On Tue, Oct 27, 2020 at 1:16 AM Coiby Xu <coiby.xu@gmail.com> wrote:
+> On Mon, Oct 26, 2020 at 05:22:45PM +0200, Andy Shevchenko wrote:
+> >On Mon, Oct 26, 2020 at 5:16 PM Coiby Xu <coiby.xu@gmail.com> wrote:
 
-Usually 'get' is a suffix (for example in clk, gpiod, iio, led), so:
-devm_tegra_memory_controller_get()
+...
 
-Best regards,
-Krzysztof
+> >> +                               if (tmr_large) {
+> >> +                                       if (tmr_out_unit)
+> >> +                                               unit = 62500;
+> >> +                                       else
+> >
+> >> +                                               unit = 15600;
+> >
+> >Side note: Hmm... Shouldn't be 15625? As 1/4.
+>
+> Thank you for discovering the inconsistency! I wrote these code based on
+> amd_gpio_set_debounce. I'll send an email to the original author to
+> confirm it.
+>
+> static int amd_gpio_set_debounce(struct gpio_chip *gc, unsigned offset,
+>                 unsigned debounce)
+> {
+>      ...
+>         if (debounce) {
+>                 pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+>                 pin_reg &= ~DB_TMR_OUT_MASK;
+>                 /*
+>                 Debounce        Debounce        Timer   Max
+>                 TmrLarge        TmrOutUnit      Unit    Debounce
+>                                                         Time
+>                 0       0       61 usec (2 RtcClk)      976 usec
+>                 0       1       244 usec (8 RtcClk)     3.9 msec
+>                 1       0       15.6 msec (512 RtcClk)  250 msec
+>                 1       1       62.5 msec (2048 RtcClk) 1 sec
+>                 */
+
+What the heck with HW companies! (Just an emotion based on the experience)
+They like to use really bad precision when it's clear that the numbers
+should be different (note the cycles, it's 1/4 sharp ratio).
+
+>                 if (debounce < 61) {
+>                         pin_reg |= 1;
+>                         pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
+>                         pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
+>                 } else if (debounce < 976) {
+>                         time = debounce / 61;
+>                         pin_reg |= time & DB_TMR_OUT_MASK;
+>                         pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
+>                         pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
+>          ...
+> >
+> >> +                               } else {
+> >> +                                       if (tmr_out_unit)
+> >> +                                               unit = 244;
+> >> +                                       else
+> >> +                                               unit = 61;
+
+-- 
+With Best Regards,
+Andy Shevchenko
