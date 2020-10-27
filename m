@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9EB29A79A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304E929A79F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505369AbgJ0JSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:18:12 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:46330 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394889AbgJ0JSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:18:11 -0400
-Received: by mail-ed1-f66.google.com with SMTP id 33so627079edq.13;
-        Tue, 27 Oct 2020 02:18:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HAb5s57kc6FoxJJ5M7USdfq0o0bKGmCp0q9T2Pfs8tQ=;
-        b=TXaO1+VHX5OYgJfTIhS05eodj40obeRzhzC1QtUfXFLmiUnWiQwlmTDyMYopDsMQSd
-         N8IJ+lWZQf40616gYv4hROK7s8Ptj0Rfs08mKECtZJ5vqQhsy4pojhlhG3iQfR16vT6o
-         PZaF/XejckNiJ+RL+PRYcLtjxVyQ+rHCImWuXcPvJ8zVLqgNiksAzG2Z1p1+LltB/yej
-         Ean6rkNntx345vog4kWwtiy/Yxu06/onjRhAcp45SBX1LkSJYXmgfXx7PJAL2migP8jQ
-         uMnw46mqmTf6gQk2MHC8sTeD6yFk/lz+hz3tTeNQlvtASTx9WikAVCefac/WprXyJUze
-         n3XQ==
-X-Gm-Message-State: AOAM530YxVEjrFr0Eth5QYggBryPGXlzNVMK8JHmCcHAUsd+65xA5XpA
-        HiduxsDTtBW4YVTRGL0ROBU=
-X-Google-Smtp-Source: ABdhPJzOLthwFj6nDtDIvhLVvFPoESLoUtoRlDAuM65L24KRPnOdjwxWM9Zp5eXDz2i7noU2UuMTag==
-X-Received: by 2002:a05:6402:135a:: with SMTP id y26mr1207604edw.114.1603790288831;
-        Tue, 27 Oct 2020 02:18:08 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id v18sm658320ejj.10.2020.10.27.02.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 02:18:07 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 10:18:05 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 25/52] ARM: tegra: Add DVFS properties to Tegra20 EMC
- device-tree node
-Message-ID: <20201027091805.GC10762@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-26-digetx@gmail.com>
+        id S2505750AbgJ0JTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407507AbgJ0JTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:19:01 -0400
+Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 690B02224E;
+        Tue, 27 Oct 2020 09:18:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603790340;
+        bh=APYsaGexIvLPnOo7r338WsGJoQsC/lI3MZUO2JiEcok=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ZZ2JJUagdVkVauWfqh+GeLuc18v3DO49rvP6+w7LJoihNvXtPnAe+tUBCUU3KTnXH
+         YRy+D9OXJRd4BxsVel27e4bTcQvwgEULUJOxu6qWLS8SjSUdDFp7a3X2tE1AlLE4QW
+         7W4ukaneaGAY6iZ6a6dGa7Kbt0/gsju4IeyyOGW4=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        David Cohen <david.a.cohen@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@ti.com>
+Subject: Re: [PATCH 2/3] usb: dwc3: ulpi: Replace CPU-based busyloop with
+ Protocol-based one
+In-Reply-To: <20201010222351.7323-3-Sergey.Semin@baikalelectronics.ru>
+References: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
+ <20201010222351.7323-3-Sergey.Semin@baikalelectronics.ru>
+Date:   Tue, 27 Oct 2020 11:18:51 +0200
+Message-ID: <87h7qgc9hg.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-26-digetx@gmail.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:17:08AM +0300, Dmitry Osipenko wrote:
-> Add EMC OPP DVFS/DFS tables and emc-stats subdev that will be used for
-> dynamic memory bandwidth scaling, while EMC itself will perform voltage
-> scaling. Update board device-trees with optional EMC core supply and
-> remove unsupported OPPs.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+
+Hi,
+
+Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
+
+> Originally the procedure of the ULPI transaction finish detection has been
+> developed as a simple busy-loop with just decrementing counter and no
+> delays. It's wrong since on different systems the loop will take a
+> different time to complete. So if the system bus and CPU are fast enough
+> to overtake the ULPI bus and the companion PHY reaction, then we'll get to
+> take a false timeout error. Fix this by converting the busy-loop procedure
+> to take the standard bus speed, address value and the registers access
+> mode into account for the busy-loop delay calculation.
+>
+> Here is the way the fix works. It's known that the ULPI bus is clocked
+> with 60MHz signal. In accordance with [1] the ULPI bus protocol is created
+> so to spend 5 and 6 clock periods for immediate register write and read
+> operations respectively, and 6 and 7 clock periods - for the extended
+> register writes and reads. Based on that we can easily pre-calculate the
+> time which will be needed for the controller to perform a requested IO
+> operation. Note we'll still preserve the attempts counter in case if the
+> DWC USB3 controller has got some internals delays.
+>
+> [1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+>     October 20, 2004, pp. 30 - 36.
+>
+> Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > ---
->  .../boot/dts/tegra20-acer-a500-picasso.dts    |  12 ++
->  arch/arm/boot/dts/tegra20-colibri.dtsi        |   8 +
->  arch/arm/boot/dts/tegra20-paz00.dts           |  10 +
->  .../arm/boot/dts/tegra20-peripherals-opp.dtsi | 181 ++++++++++++++++++
->  arch/arm/boot/dts/tegra20.dtsi                |  12 +-
->  5 files changed, 222 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
-> 
-> diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> index a0b829738e8f..f5c1591c8ea8 100644
-> --- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> +++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> @@ -1058,9 +1058,21 @@ map0 {
->  		};
->  	};
->  
-> +	emc_opp_table0 {
+>  drivers/usb/dwc3/ulpi.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/usb/dwc3/ulpi.c b/drivers/usb/dwc3/ulpi.c
+> index 20f5d9aba317..0dbc826355a5 100644
+> --- a/drivers/usb/dwc3/ulpi.c
+> +++ b/drivers/usb/dwc3/ulpi.c
+> @@ -7,6 +7,8 @@
+>   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>   */
+>=20=20
+> +#include <linux/delay.h>
+> +#include <linux/time64.h>
+>  #include <linux/ulpi/regs.h>
+>=20=20
+>  #include "core.h"
+> @@ -17,12 +19,22 @@
+>  		DWC3_GUSB2PHYACC_ADDR(ULPI_ACCESS_EXTENDED) | \
+>  		DWC3_GUSB2PHYACC_EXTEND_ADDR(a) : DWC3_GUSB2PHYACC_ADDR(a))
+>=20=20
+> -static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
+> +#define DWC3_ULPI_BASE_DELAY	DIV_ROUND_UP(NSEC_PER_SEC, 60000000L)
+> +
+> +static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
+>  {
+> +	unsigned long ns =3D 5L * DWC3_ULPI_BASE_DELAY;
+>  	unsigned count =3D 1000;
+>  	u32 reg;
+>=20=20
+> +	if (addr >=3D ULPI_EXT_VENDOR_SPECIFIC)
+> +		ns +=3D DWC3_ULPI_BASE_DELAY;
+> +
+> +	if (read)
+> +		ns +=3D DWC3_ULPI_BASE_DELAY;
+> +
+>  	while (count--) {
+> +		ndelay(ns);
 
-All node names with hyphens -. Not underscores.
+could we allow for a sleep here instead of a delay? Also, I wonder if
+you need to make this so complex or should we just take the larger
+access time of 7 clock cycles.
 
-Best regards,
-Krzysztof
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+X5fsRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQbFOA//RLMezPqI1XnIaQfE6WN7WFWhwAEzYoiJ
+dRa0fDLg2AsievUsW29QDN25/0FrGsZKDrQSy4u13LW41ba6H4d2J+T3vdTlm5xI
+ug1cSMaV49aKpQo1oE8KEsl2b5S4Fc1AwZXtDeY3m4phgDgszu/XUTQY0cC5/jzq
+Z+TARubUj6soFIcICM2KNZishegmu9i2jOjHdvizA+CRoiPxCAmzsqfllgE69Imj
+OZrmbgQeNg5uAD7eOS0cOLWAAggU3LNysMDTlQ5cp/An3OxotyIj0NzpdMfjptzU
+c6Gke3nXTOraV7U0xR/BPtM7v4g9xE+c9o/IoYkfbgnRE1hnvZuKIfb/ksrL6X7F
+1DZZQ2GGaZ0ThOZ0B+u3B3DEnP5PHm62E2zcni09D/b4rzJwVOWZUY2IqziXH6qO
+99sz9tnFgX3g573UB24k5MY5J5a5zynbl7YVouqCf6loCuzCBM7iuCgXKw0II5/y
+aVutZWTtOOrDn3UsEqjrM1UtwTLIUM/o3RP03SQLBdJnm7Szav8I69HQ0X3gFqFg
+mKUwadHbpx3zk8UKYNEkM3T4pQ/IF+W83QsZ1T6TojUFzLHs0xIaoZNW5EQJwEwz
+VzHt24Q9T+aAoOWunH5h5IKQk1uQmjlcZCIk8duZI8mQT5TgX+5fOucQnAFDlNSn
+dS5781fafjw=
+=Izn9
+-----END PGP SIGNATURE-----
+--=-=-=--
