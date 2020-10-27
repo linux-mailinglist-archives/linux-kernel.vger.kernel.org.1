@@ -2,127 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37F929A267
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AA329A269
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504179AbgJ0Bxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:53:39 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35288 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504172AbgJ0Bxj (ORCPT
+        id S2504193AbgJ0Bxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:53:45 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36872 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2504182AbgJ0Bxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:53:39 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 140so10381531qko.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 18:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jaq2W3xchM9KI6J/OXjGhaLPINcfLLrG9R/EockJfhY=;
-        b=amUt/D8WttPJoGNqqtqscorrRabLD8gwaJZVPtUFGCIDYjDk/Oc2wK+sV/tK+Fvunj
-         RjGC4TO0Yf/T/Q7upACal38eL1ZoDRCti9nEq6a3Yp7tY7bR14xg0MAutHjQ6DaWuEHn
-         IafR0rcaQhHR3cQ/2ROHVtTe1dt3BWGO6ndXSmWszovlqshd776slXQ2lx1cwYyM1M9P
-         MPcU0YN9N06PSHjfXy7SpI9Zt31EuX1LNywA6Ao6ZDGGVoPQ7JTZZMIPxKHwX02K2dOj
-         MaLiu+ZMIxteMu6EinFs3SBTHSZjceZa4Yfc1GArnMGsLpgITluqPZmIQpUQRD/exw6s
-         x5Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jaq2W3xchM9KI6J/OXjGhaLPINcfLLrG9R/EockJfhY=;
-        b=VjLWGOSyOE8jRE7nffK1wEu9tBzglE4FToYEsjwTXTCV6cgTXeyoZp8KfkUCV1J+44
-         3FWVSeMzF3FYOMmayx8T13muNNwfzdl2p3NUSw2tf0Mf5iQJSdfkkHNPSDzd5AsqDBWj
-         FUqrc0Hy/gA2mDG6y2ZL1Ue4xB/8s0dt6iT+v/z2nkMXRGO6HAwIVIUUX76DgNwKL5G5
-         f7fNX7l+o7L7uFPiGhrE7/fIUsrVm5gKMy+6I2M2PMcm5md78aEgEELhBOeJjtC060y6
-         KZdilSGjeLAXAYclAPyWb+3hgAf4BYcGGAF8KEtzMLEWYQvrOcn1t/jDfjaMbKD1Vjnn
-         OM7A==
-X-Gm-Message-State: AOAM5326t3pqhYeiyD3iUyLUVXl7C+K7Q4SOEhspq8yjx63YbQLnQQj+
-        iL8oHaoAm0svRxgaSi6XZ78=
-X-Google-Smtp-Source: ABdhPJyjpu/1U3selnx44bdEwa8qooSewwyVPwM87ZQEKgstrdCD1o4lugou/nINyn3ITnfJZYS58w==
-X-Received: by 2002:a37:6cc1:: with SMTP id h184mr16165qkc.18.1603763616750;
-        Mon, 26 Oct 2020 18:53:36 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45d1:2600::3])
-        by smtp.gmail.com with ESMTPSA id z2sm7788367qkl.22.2020.10.26.18.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 18:53:36 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 18:53:34 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [rcu:rcu/test 76/76] drivers/dax/super.c:21:1: error: use of
- undeclared identifier '___srcu_struct_ptrs'
-Message-ID: <20201027015334.GA842991@ubuntu-m3-large-x86>
-References: <202010270828.0bL3aIGL-lkp@intel.com>
+        Mon, 26 Oct 2020 21:53:44 -0400
+X-UUID: 226aefd4c30841cfa359834994fff7be-20201027
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=wwWUNMKywSAbaJtNHiIr+Yim+MEAyDNc5pgDqalR8Nw=;
+        b=fXWq64A18BTKXdrN3xUh0Uo3oqS3k7fFJB6y98ExxS2eWW9KCQJKSDcgquqprMJI1xkvk9aKcJDOW3GgAgnh/v3NBkkLsB8h9GaNm6T8psPSeyjsMvDVNJwm665NITtUysgIM8C9YBLmHktN5l2aazn/0usP6xagvtSHZQLpNkw=;
+X-UUID: 226aefd4c30841cfa359834994fff7be-20201027
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 85215013; Tue, 27 Oct 2020 09:53:41 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS09N1.mediatek.inc (172.21.101.35) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 27 Oct 2020 09:53:40 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 27 Oct 2020 09:53:40 +0800
+Message-ID: <1603763620.2104.0.camel@mtkswgap22>
+Subject: Re: [PATCH v1 1/2] scsi: ufs: Put hba into LPM during clk gating
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Asutosh Das <asutoshd@codeaurora.org>
+CC:     <cang@codeaurora.org>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 27 Oct 2020 09:53:40 +0800
+In-Reply-To: <ce0a3be9c685506803597fb770e37c099ae27232.1603754932.git.asutoshd@codeaurora.org>
+References: <ce0a3be9c685506803597fb770e37c099ae27232.1603754932.git.asutoshd@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202010270828.0bL3aIGL-lkp@intel.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+T24gTW9uLCAyMDIwLTEwLTI2IGF0IDE2OjMwIC0wNzAwLCBBc3V0b3NoIERhcyB3cm90ZToNCj4g
+RnJvbTogQ2FuIEd1byA8Y2FuZ0Bjb2RlYXVyb3JhLm9yZz4NCj4gDQo+IER1cmluZyBjbG9jayBn
+YXRpbmcsIGFmdGVyIGNsb2NrcyBhcmUgZGlzYWJsZWQsDQo+IHB1dCBoYmEgaW50byBMUE0gdG8g
+c2F2ZSBtb3JlIHBvd2VyLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bjb2Rl
+YXVyb3JhLm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogQXN1dG9zaCBEYXMgPGFzdXRvc2hkQGNvZGVh
+dXJvcmEub3JnPg0KDQpBY2tlZC1ieTogU3RhbmxleSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVr
+LmNvbT4NCg0KDQo=
 
-On Tue, Oct 27, 2020 at 08:50:52AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/test
-> head:   784a6343c3660446ae62db13628b20e9f876100f
-> commit: 784a6343c3660446ae62db13628b20e9f876100f [76/76] Merge commit '3650b22' into rcu/test
-> config: arm-randconfig-r026-20201026 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project f2c25c70791de95d2466e09b5b58fc37f6ccd7a4)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm cross compiling tool for clang build
->         # apt-get install binutils-arm-linux-gnueabi
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=784a6343c3660446ae62db13628b20e9f876100f
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu rcu/test
->         git checkout 784a6343c3660446ae62db13628b20e9f876100f
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> drivers/dax/super.c:21:1: error: use of undeclared identifier '___srcu_struct_ptrs'
->    DEFINE_STATIC_SRCU(dax_srcu);
->    ^
->    include/linux/srcutree.h:135:34: note: expanded from macro 'DEFINE_STATIC_SRCU'
->    #define DEFINE_STATIC_SRCU(name)        __DEFINE_SRCU(name, static)
->                                            ^
->    include/linux/srcutree.h:127:13: note: expanded from macro '__DEFINE_SRCU'
->                    __section(___srcu_struct_ptrs) = &name
->                              ^
->    drivers/dax/super.c:70:6: warning: no previous prototype for function '__generic_fsdax_supported' [-Wmissing-prototypes]
->    bool __generic_fsdax_supported(struct dax_device *dax_dev,
->         ^
->    drivers/dax/super.c:70:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    bool __generic_fsdax_supported(struct dax_device *dax_dev,
->    ^
->    static 
->    drivers/dax/super.c:168:6: warning: no previous prototype for function '__bdev_dax_supported' [-Wmissing-prototypes]
->    bool __bdev_dax_supported(struct block_device *bdev, int blocksize)
->         ^
->    drivers/dax/super.c:168:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    bool __bdev_dax_supported(struct block_device *bdev, int blocksize)
->    ^
->    static 
->    drivers/dax/super.c:452:6: warning: no previous prototype for function 'run_dax' [-Wmissing-prototypes]
->    void run_dax(struct dax_device *dax_dev)
->         ^
->    drivers/dax/super.c:452:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    void run_dax(struct dax_device *dax_dev)
->    ^
->    static 
->    3 warnings and 1 error generated.
-
-Please drop commit c1370c128cf4 ("srcu: Avoid escaped section names"),
-it has been fixed in a different way as of v5.10-rc1, in
-commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
-to __section("foo")").
-
-Cheers,
-Nathan
