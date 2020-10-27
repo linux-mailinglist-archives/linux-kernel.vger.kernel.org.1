@@ -2,223 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D8C29C8F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFEB29C8FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830038AbgJ0TbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:31:05 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:37914 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1830028AbgJ0TbC (ORCPT
+        id S1830063AbgJ0Tbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:31:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20533 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1830055AbgJ0Tbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:31:02 -0400
-Received: by mail-lf1-f65.google.com with SMTP id c141so3838295lfg.5;
-        Tue, 27 Oct 2020 12:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LvZumlP31qHBxjJEshej0bJc9X40oipjDpQPJKtO+GE=;
-        b=ts2EcOPdVgCrYrhoDDml0MtDIH3KavQ4606q/jt1JejvkszziZ44//Jt9P6LcuMzsk
-         tzu4TULHVLxyiWMaFYMuavSMcbldk/KSnW3GwlFdgb1G7b313aQaHDlzjEt2kVV8AvRb
-         EvhM7MH1aK3LslL5t+waPaO17BK9v4G+gT6FgcDgVbM4gp2N4YsrhDfSk0Avq+SwctFC
-         L8ckkTMLLop0IyEtDbwEnylrbtkLefRjFTXYuJvXjUzdnP3ECmUGZj7KHCNUn+Gb5Cem
-         VI8b6VVn0ohGnS/PRzKC+aLKrZdzgNd5vTAPjpglE+gUovKmeZlCv+ZIiGZabwNcK+Ot
-         5yTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LvZumlP31qHBxjJEshej0bJc9X40oipjDpQPJKtO+GE=;
-        b=VhnePu68dgl7EoH52n+7r9q9RDuyeXMoIF9vhYHReI6W/5/z7kWY43Qm8jMEZdeZ1l
-         M+eseBiKw84ZlpmN4tbvfuLX7Cq61N4MP4060QcIGEGMjO4L/rCBqRFRar6bkyCJ99TH
-         +9wvgyQ+caTx4mjenfTjJAGAuDATav8dPAlr8nqCskJ//c3E+szlFWVrIt2wlf8QeulN
-         JmCR0WHUTlCxojGGvAYTxcJPKiJRFndVOD6IitbHU5opPUd7M27K0C4BW9XOW2PI84Ac
-         2TvRyMgFxK5jTILNbDnRfaBzmxkjz146gPnKPJcFdJ3ql9zbebF3mZZtlcuoFmsxQ93w
-         DoNg==
-X-Gm-Message-State: AOAM531GxS8fMJ5PuKDUpbXkQe6ssGX5qv1vl9HkBz+7bvdkvb7viPq+
-        jcVywkLFq752sAsTjw9AvRe/2auzQcw=
-X-Google-Smtp-Source: ABdhPJzQz9k2oel0unqHbNe5Kaic8WjLVyQwtS9/rIWkZ1OeRnczlYmf7TF9r4TQK3gsFB+zVprSQQ==
-X-Received: by 2002:ac2:5633:: with SMTP id b19mr1536460lff.334.1603827058806;
-        Tue, 27 Oct 2020 12:30:58 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id o22sm290553ljg.122.2020.10.27.12.30.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:30:58 -0700 (PDT)
-Subject: Re: [PATCH v6 29/52] memory: tegra-mc: Add interconnect framework
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-30-digetx@gmail.com> <20201027134805.GJ1822510@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <aec58c94-2c12-fcb6-6b36-2043a35bd9e2@gmail.com>
-Date:   Tue, 27 Oct 2020 22:30:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201027134805.GJ1822510@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 27 Oct 2020 15:31:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603827110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AZnjKdTzcVoK8bjG2j3uH+P21jgYVQfiQJ8DtHSLT9A=;
+        b=PF+IcRKyfduNmQrxJsUJRgGUkt/T08BYFSnOVJI/bLEhhbFciukUJwj+A9m+QW4QQP107S
+        VRJN4iDT84nIaVc3Ve+qkWk67B8UCnwmb9hxtDXopjECP9LHc7y5+ugJLpRbuhGHCtL7Y4
+        OtclUvmZO+WWXvS8V3WcBnnaXY4lfXs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-OY7Swwh6OYSTo-lQM79TfQ-1; Tue, 27 Oct 2020 15:31:46 -0400
+X-MC-Unique: OY7Swwh6OYSTo-lQM79TfQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D660D803F76;
+        Tue, 27 Oct 2020 19:31:43 +0000 (UTC)
+Received: from ovpn-66-71.rdu2.redhat.com (ovpn-66-71.rdu2.redhat.com [10.10.66.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6868C5B4B9;
+        Tue, 27 Oct 2020 19:31:42 +0000 (UTC)
+Message-ID: <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+From:   Qian Cai <cai@redhat.com>
+To:     Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Tue, 27 Oct 2020 15:31:41 -0400
+In-Reply-To: <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+         <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+         <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 16:48, Thierry Reding пишет:
-...
->> +static struct icc_node_data *
->> +tegra_mc_of_icc_xlate_extended(struct of_phandle_args *spec, void *data)
->> +{
->> +	struct icc_provider *provider = data;
->> +	unsigned int idx = spec->args[0];
->> +	struct icc_node_data *ndata;
->> +	struct icc_node *node;
->> +
->> +	list_for_each_entry(node, &provider->nodes, node_list) {
->> +		if (node->id != idx)
->> +			continue;
->> +
->> +		ndata = kzalloc(sizeof(*ndata), GFP_KERNEL);
->> +		if (!ndata)
->> +			return ERR_PTR(-ENOMEM);
->> +
->> +		ndata->node = node;
->> +
->> +		/* these clients are isochronous by default on all SoCs */
->> +		if (strstarts(node->name, "display") ||
->> +		    strstarts(node->name, "ptc") ||
->> +		    strstarts(node->name, "vi"))
->> +			ndata->tag = TEGRA_MC_ICC_TAG_ISO;
+On Mon, 2020-10-12 at 11:11 +0800, Boqun Feng wrote:
+> Hi,
 > 
-> This looks like something that might be better left to the drivers to
-> decide. Doing this here seems okay for now, but I suspect that this will
-> get fairly complicated to keep accurate as we add more clients later on.
-
-It's not a problem to add a driver-specific hook for the
-xlate_extended(), like it's done for the aggregate() and set() hooks below.
-
-...
->> +static int tegra_mc_interconnect_setup(struct tegra_mc *mc)
->> +{
->> +	struct icc_node *node;
->> +	unsigned int i;
->> +	int err;
->> +
->> +	/* older device-trees don't have interconnect properties */
->> +	if (!of_find_property(mc->dev->of_node, "#interconnect-cells", NULL) ||
->> +	    !mc->soc->icc_ops)
->> +		return 0;
+> On Fri, Oct 09, 2020 at 09:41:24AM -0400, Qian Cai wrote:
+> > On Fri, 2020-10-09 at 07:58 +0000, tip-bot2 for Peter Zijlstra wrote:
+> > > The following commit has been merged into the locking/core branch of tip:
+> > > 
+> > > Commit-ID:     4d004099a668c41522242aa146a38cc4eb59cb1e
+> > > Gitweb:        
+> > > https://git.kernel.org/tip/4d004099a668c41522242aa146a38cc4eb59cb1e
+> > > Author:        Peter Zijlstra <peterz@infradead.org>
+> > > AuthorDate:    Fri, 02 Oct 2020 11:04:21 +02:00
+> > > Committer:     Ingo Molnar <mingo@kernel.org>
+> > > CommitterDate: Fri, 09 Oct 2020 08:53:30 +02:00
+> > > 
+> > > lockdep: Fix lockdep recursion
+> > > 
+> > > Steve reported that lockdep_assert*irq*(), when nested inside lockdep
+> > > itself, will trigger a false-positive.
+> > > 
+> > > One example is the stack-trace code, as called from inside lockdep,
+> > > triggering tracing, which in turn calls RCU, which then uses
+> > > lockdep_assert_irqs_disabled().
+> > > 
+> > > Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-
+> > > cpu
+> > > variables")
+> > > Reported-by: Steven Rostedt <rostedt@goodmis.org>
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > 
+> > Reverting this linux-next commit fixed booting RCU-list warnings everywhere.
+> > 
 > 
-> This indicates that this property is indeed optional, so the bindings
-> should reflect that.
-
-Yes, but the property isn't optional for the newer binding. Does it
-really need to be documented as optional?
-
->> +	mc->provider.dev = mc->dev;
->> +	mc->provider.data = &mc->provider;
->> +	mc->provider.set = mc->soc->icc_ops->set;
->> +	mc->provider.aggregate = mc->soc->icc_ops->aggregate;
->> +	mc->provider.xlate_extended = tegra_mc_of_icc_xlate_extended;
->> +
->> +	err = icc_provider_add(&mc->provider);
->> +	if (err)
->> +		goto err_msg;
->> +
->> +	/* create Memory Controller node */
->> +	node = icc_node_create(TEGRA_ICC_MC);
->> +	err = PTR_ERR_OR_ZERO(node);
->> +	if (err)
->> +		goto del_provider;
->> +
->> +	node->name = "Memory Controller";
->> +	icc_node_add(node, &mc->provider);
->> +
->> +	/* link Memory Controller to External Memory Controller */
->> +	err = icc_link_create(node, TEGRA_ICC_EMC);
->> +	if (err)
->> +		goto remove_nodes;
->> +
->> +	for (i = 0; i < mc->soc->num_clients; i++) {
->> +		/* create MC client node */
->> +		node = icc_node_create(mc->soc->clients[i].id);
->> +		err = PTR_ERR_OR_ZERO(node);
->> +		if (err)
->> +			goto remove_nodes;
->> +
->> +		node->name = mc->soc->clients[i].name;
->> +		icc_node_add(node, &mc->provider);
+> I think this happened because in this commit debug_lockdep_rcu_enabled()
+> didn't adopt to the change that made lockdep_recursion a percpu
+> variable?
 > 
-> I'm not fully familiar with how these nodes are set up, but would it be
-> possible to set the isochronous tag here already? I'd still prefer this
-> to be up to the drivers because I think that nicely localizes the
-> device-specific information in the driver, but if that's not an option,
-> then doing it here, based on lookup data from the MC clients table
-> sounds like the next best thing.
+> Qian, mind to try the following?
 
-The tag needs to be set by xlate_extended(), otherwise it won't be
-applied by default.
+Boqun, Paul, may I ask what's the latest with the fixes? I must admit that I got
+lost in this thread, but I remember that the patch from Boqun below at least
+silence quite some of those warnings if not all. The problem is that some of
+those warnings would trigger a lockdep circular locks warning due to printk()
+with some locks held which in turn disabling the lockdep, makes our test runs
+inefficient.
 
-https://elixir.bootlin.com/linux/v5.10-rc1/source/drivers/interconnect/core.c#L501
-
-...
->>  static int tegra_mc_probe(struct platform_device *pdev)
->>  {
->>  	struct resource *res;
->> @@ -747,6 +874,8 @@ static int tegra_mc_probe(struct platform_device *pdev)
->>  		}
->>  	}
->>  
->> +	tegra_mc_interconnect_setup(mc);
 > 
-> Do you want to check the return value here for errors? If not, might as
-> well make the function return void.
-
-The error won't be fatal and shouldn't block the rest functionality of
-the MC driver.
-
-It's possible to return void, but it's not necessary because compiler
-will take care of optimizing the code and to me it's more consistent to
-have error code returned by the function.
-
-Perhaps should be better to just add a comment telling that error
-skipping is intentional?
-
-...
->> diff --git a/drivers/memory/tegra/mc.h b/drivers/memory/tegra/mc.h
->> index afa3ba45c9e6..abeb6a2cc36a 100644
->> --- a/drivers/memory/tegra/mc.h
->> +++ b/drivers/memory/tegra/mc.h
->> @@ -115,4 +115,12 @@ extern const struct tegra_mc_soc tegra132_mc_soc;
->>  extern const struct tegra_mc_soc tegra210_mc_soc;
->>  #endif
->>  
->> +/*
->> + * These IDs are for internal use of Tegra's ICC, the values are chosen
->> + * such that they don't conflict with the device-tree ICC node IDs.
->> + */
->> +#define TEGRA_ICC_EMC		1000
->> +#define TEGRA_ICC_EMEM		2000
->> +#define TEGRA_ICC_MC		3000
+> Although, arguably the problem still exists, i.e. we still have an RCU
+> read-side critical section inside lock_acquire(), which may be called on
+> a yet-to-online CPU, which RCU doesn't watch. I think this used to be OK
+> because we don't "free" anything from lockdep, IOW, there is no
+> synchronize_rcu() or call_rcu() that _needs_ to wait for the RCU
+> read-side critical sections inside lockdep. But now we lock class
+> recycling, so it might be a problem.
 > 
-> Sounds to me like these could equally well be 1000, 1001 and 1002. Why
-> leave these large holes in the number space?
+> That said, currently validate_chain() and lock class recycling are
+> mutually excluded via graph_lock, so we are safe for this one ;-)
+> 
+> ----------->8
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 39334d2d2b37..35d9bab65b75 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -275,8 +275,8 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
+>  
+>  noinstr int notrace debug_lockdep_rcu_enabled(void)
+>  {
+> -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+> -	       current->lockdep_recursion == 0;
+> +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE &&
+> +	       __lockdep_enabled;
+>  }
+>  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
 
-There is no specific reason, I can change the numbers if you want.
+
