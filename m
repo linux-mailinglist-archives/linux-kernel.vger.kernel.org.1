@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3930429BB6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F8D29B7A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1806123AbgJ0QFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:05:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
+        id S1795298AbgJ0PPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802144AbgJ0Ppp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:45:45 -0400
+        id S1794233AbgJ0PKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:10:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA1EF22403;
-        Tue, 27 Oct 2020 15:45:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 889CD206F4;
+        Tue, 27 Oct 2020 15:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813544;
-        bh=Z9uZAnmgGHJ32INYeOTMkXQS5l4BzWuMqHFivHWStm4=;
+        s=default; t=1603811442;
+        bh=datDmBA4U7YZmVzQlAmkqlro81PjwMPIAx8NNhAHkx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LAoqdBr6gSh5IsqLL+BUi+sFwIBuTpI0vKVUu5LP+tOnz/vWd5VVco9SWfgQBqgW2
-         iGoud1T5mY4P6AwIfChrRoNbre/KlBpNCUy5bCjgQPrFG76BHmQmOKS1KlQPwsAXJ2
-         aTgSMEPIOJ8qmDS6mUMV7CTKgdiMFeB69G9GkwiM=
+        b=u2IzVAbZ6xCbLda2D6RQxgCpRDY4pz83BD4oGCSu4zJLlW3BXVKqp7qkPqccgIkdI
+         143j52hzHjViNe25MFVifSKzGQ2ztQJplutkMQVmWFGHEfzEA4era0WZyOuZghtc/z
+         IVeCG3yMQSgrah/zS47biaVZOLDDt1p5qnkblTF0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Amit Kucheria <amit.kucheria@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 588/757] ARM: dts: sun8i: r40: bananapi-m2-ultra: Fix dcdc1 regulator
+Subject: [PATCH 5.8 495/633] arm64: dts: qcom: msm8916: Remove one more thermal trip point unit name
 Date:   Tue, 27 Oct 2020 14:53:58 +0100
-Message-Id: <20201027135518.114064405@linuxfoundation.org>
+Message-Id: <20201027135545.961091707@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 3658a2b7f3e16c7053eb8d70657b94bb62c5a0f4 ]
+[ Upstream commit e6859ae8603c5946b8f3ecbd9b4f02b72955b9d0 ]
 
-DCDC1 regulator powers many different subsystems. While some of them can
-work at 3.0 V, some of them can not. For example, VCC-HDMI can only work
-between 3.24 V and 3.36 V. According to OS images provided by the board
-manufacturer this regulator should be set to 3.3 V.
+Commit fe2aff0c574d2 ("arm64: dts: qcom: msm8916: remove unit name for thermal trip points")
+removed the unit names for most of the thermal trip points defined
+in msm8916.dtsi, but missed to update the one for cpu0_1-thermal.
 
-Set DCDC1 and DCDC1SW to 3.3 V in order to fix this.
+So why wasn't this spotted by "make dtbs_check"? Apparently, the name
+of the thermal zone is already invalid: thermal-zones.yaml specifies
+a regex of ^[a-zA-Z][a-zA-Z0-9\\-]{1,12}-thermal$, so it is not allowed
+to contain underscores. Therefore the thermal zone was never verified
+using the DTB schema.
 
-Fixes: da7ac948fa93 ("ARM: dts: sun8i: Add board dts file for Banana Pi M2 Ultra")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20200824193649.978197-1-jernej.skrabec@siol.net
+After replacing the underscore in the thermal zone name, the warning
+shows up:
+
+    apq8016-sbc.dt.yaml: thermal-zones: cpu0-1-thermal:trips: 'trip-point@0'
+    does not match any of the regexes: '^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$', 'pinctrl-[0-9]+'
+
+Fix up the thermal zone names and remove the unit name for the trip point.
+
+Cc: Amit Kucheria <amit.kucheria@linaro.org>
+Fixes: fe2aff0c574d2 ("arm64: dts: qcom: msm8916: remove unit name for thermal trip points")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20200915071221.72895-3-stephan@gerhold.net
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-index 42d62d1ba1dc7..ea15073f0c79c 100644
---- a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-+++ b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
-@@ -223,16 +223,16 @@ &reg_aldo3 {
- };
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 32bd140ac9fd4..729d36ff2e247 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -228,14 +228,14 @@ pmu {
+ 	};
  
- &reg_dc1sw {
--	regulator-min-microvolt = <3000000>;
--	regulator-max-microvolt = <3000000>;
-+	regulator-min-microvolt = <3300000>;
-+	regulator-max-microvolt = <3300000>;
- 	regulator-name = "vcc-gmac-phy";
- };
+ 	thermal-zones {
+-		cpu0_1-thermal {
++		cpu0-1-thermal {
+ 			polling-delay-passive = <250>;
+ 			polling-delay = <1000>;
  
- &reg_dcdc1 {
- 	regulator-always-on;
--	regulator-min-microvolt = <3000000>;
--	regulator-max-microvolt = <3000000>;
--	regulator-name = "vcc-3v0";
-+	regulator-min-microvolt = <3300000>;
-+	regulator-max-microvolt = <3300000>;
-+	regulator-name = "vcc-3v3";
- };
+ 			thermal-sensors = <&tsens 5>;
  
- &reg_dcdc2 {
+ 			trips {
+-				cpu0_1_alert0: trip-point@0 {
++				cpu0_1_alert0: trip-point0 {
+ 					temperature = <75000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+@@ -258,7 +258,7 @@ map0 {
+ 			};
+ 		};
+ 
+-		cpu2_3-thermal {
++		cpu2-3-thermal {
+ 			polling-delay-passive = <250>;
+ 			polling-delay = <1000>;
+ 
 -- 
 2.25.1
 
