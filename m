@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ED129B112
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048BF29B0E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758953AbgJ0O0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51644 "EHLO mail.kernel.org"
+        id S2901588AbgJ0OZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:25:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901697AbgJ0O0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:26:03 -0400
+        id S368070AbgJ0OYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:24:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 809862072D;
-        Tue, 27 Oct 2020 14:26:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE7C92072D;
+        Tue, 27 Oct 2020 14:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808763;
-        bh=Gm6quWG61QDKSQll4BJQfDy3dvG4rp4sAm9JUEJKn28=;
+        s=default; t=1603808686;
+        bh=aUaCq+ABJ015NZQWid6SoBHEGAphAYcU5/XDqh9DNUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Svubma3hP5lgRIKbiNDliM055KQjyyS4QQcW08omqW99ZyMnPd3ISeQEbFWgWiMbU
-         5rju/1NLqIKgWm+QC+E1bnrrH3JRlAnOw7gZ48fEX5yZHJa1CsKbO7sIuniDtf8gcU
-         k4aGyyOj2kyzullT0xp0De/159AcPrHkuKshxVUI=
+        b=ih7RdSSRpT0K6V3k0Hh2cxqakEglWS/03C+uHP2sdXUJbYhzzElNXSpDG84Otwoiz
+         O+PDaBaNDwt32h+p9EC4m8uSbm2WCRygo+Mj9L95A0lk5U9wcpgrJXodnle3tzwUii
+         EBnbw8KN4n70RlczORoudjEt26qzoUVmOzYrLPw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 184/264] Input: ep93xx_keypad - fix handling of platform_get_irq() error
-Date:   Tue, 27 Oct 2020 14:54:02 +0100
-Message-Id: <20201027135439.311302436@linuxfoundation.org>
+Subject: [PATCH 4.19 186/264] Input: twl4030_keypad - fix handling of platform_get_irq() error
+Date:   Tue, 27 Oct 2020 14:54:04 +0100
+Message-Id: <20201027135439.401687471@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -45,35 +46,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 7d50f6656dacf085a00beeedbc48b19a37d17881 ]
+[ Upstream commit c277e1f0dc3c7d7b5b028e20dd414df241642036 ]
 
-platform_get_irq() returns -ERRNO on error.  In such case comparison
-to 0 would pass the check.
+platform_get_irq() returns -ERRNO on error.  In such case casting to
+unsigned and comparing to 0 would pass the check.
 
-Fixes: 60214f058f44 ("Input: ep93xx_keypad - update driver to new core support")
+Fixes: 7abf38d6d13c ("Input: twl4030-keypad - add device tree support")
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20200828145744.3636-1-krzk@kernel.org
+Link: https://lore.kernel.org/r/20200828145744.3636-3-krzk@kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/input/keyboard/twl4030_keypad.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-index f77b295e0123e..01788a78041b3 100644
---- a/drivers/input/keyboard/ep93xx_keypad.c
-+++ b/drivers/input/keyboard/ep93xx_keypad.c
-@@ -257,8 +257,8 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
+diff --git a/drivers/input/keyboard/twl4030_keypad.c b/drivers/input/keyboard/twl4030_keypad.c
+index f9f98ef1d98e3..8677dbe0fd209 100644
+--- a/drivers/input/keyboard/twl4030_keypad.c
++++ b/drivers/input/keyboard/twl4030_keypad.c
+@@ -63,7 +63,7 @@ struct twl4030_keypad {
+ 	bool		autorepeat;
+ 	unsigned int	n_rows;
+ 	unsigned int	n_cols;
+-	unsigned int	irq;
++	int		irq;
+ 
+ 	struct device *dbg_dev;
+ 	struct input_dev *input;
+@@ -389,10 +389,8 @@ static int twl4030_kp_probe(struct platform_device *pdev)
  	}
  
- 	keypad->irq = platform_get_irq(pdev, 0);
--	if (!keypad->irq) {
--		err = -ENXIO;
-+	if (keypad->irq < 0) {
-+		err = keypad->irq;
- 		goto failed_free;
- 	}
+ 	kp->irq = platform_get_irq(pdev, 0);
+-	if (!kp->irq) {
+-		dev_err(&pdev->dev, "no keyboard irq assigned\n");
+-		return -EINVAL;
+-	}
++	if (kp->irq < 0)
++		return kp->irq;
  
+ 	error = matrix_keypad_build_keymap(keymap_data, NULL,
+ 					   TWL4030_MAX_ROWS,
 -- 
 2.25.1
 
