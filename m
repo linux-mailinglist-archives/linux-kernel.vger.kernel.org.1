@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2880429C0EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FC729C076
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780819AbgJ0OzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:55:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
+        id S1781245AbgJ0OzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772437AbgJ0OuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:19 -0400
+        id S1772587AbgJ0OuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:50:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19310207DE;
-        Tue, 27 Oct 2020 14:50:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D90F620709;
+        Tue, 27 Oct 2020 14:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810218;
-        bh=r0Kd9LdRGLX1hEVXAH6dDtEBZdTcwVQLImYqqGjor1w=;
+        s=default; t=1603810221;
+        bh=UXWVw92xD2IiNl8i0Lbk5m04/x79jJuEpl26RVJC2EI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HHqxUvsuX3DvPaSTnP0fxDIqDkwKbeHLRllAf3Xma5QkjYKg8udQyigw78IKqwahc
-         OMdYMOoK1EmeWiTD05aUEMcMmlkFW71p4slarXIZzgRqipO8N35dIDDuoe4IlR2slb
-         G+I3eWQOjwJzre3vwGSF1QabE3GvyoYtC8vcGLdY=
+        b=F59iYNgkXt1CP1zQ54wOu1e1qs3KqM20OguD50fX4Xaf6OgnwIBesY19b8v/IBMPo
+         7BTVTCH4ZLWHj1t1x6Jmz3NRF/QXwMe/22KiU+CntRASxuJYRcQPnL8E8MF0QpdcD3
+         S9TFXCWdaBPy8tn0CMuUd82ZMcolOlpIckRMcGUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dominik Maier <dmaier@sect.tu-berlin.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Shyam Prasad N <sprasad@microsoft.com>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
         Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.8 062/633] cifs: remove bogus debug code
-Date:   Tue, 27 Oct 2020 14:46:45 +0100
-Message-Id: <20201027135525.601645925@linuxfoundation.org>
+Subject: [PATCH 5.8 063/633] cifs: Return the error from crypt_message when enc/dec key not found.
+Date:   Tue, 27 Oct 2020 14:46:46 +0100
+Message-Id: <20201027135525.652582033@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,72 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Shyam Prasad N <sprasad@microsoft.com>
 
-commit d367cb960ce88914898cbfa43645c2e43ede9465 upstream.
+commit 0bd294b55a5de442370c29fa53bab17aef3ff318 upstream.
 
-The "end" pointer is either NULL or it points to the next byte to parse.
-If there isn't a next byte then dereferencing "end" is an off-by-one out
-of bounds error.  And, of course, if it's NULL that leads to an Oops.
-Printing "*end" doesn't seem very useful so let's delete this code.
+In crypt_message, when smb2_get_enc_key returns error, we need to
+return the error back to the caller. If not, we end up processing
+the message further, causing a kernel oops due to unwarranted access
+of memory.
 
-Also for the last debug statement, I noticed that it should be printing
-"sequence_end" instead of "end" so fix that as well.
+Call Trace:
+smb3_receive_transform+0x120/0x870 [cifs]
+cifs_demultiplex_thread+0xb53/0xc20 [cifs]
+? cifs_handle_standard+0x190/0x190 [cifs]
+kthread+0x116/0x130
+? kthread_park+0x80/0x80
+ret_from_fork+0x1f/0x30
 
-Reported-by: Dominik Maier <dmaier@sect.tu-berlin.de>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
+CC: Stable <stable@vger.kernel.org>
 Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/asn1.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ fs/cifs/smb2ops.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/asn1.c
-+++ b/fs/cifs/asn1.c
-@@ -530,8 +530,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
- 		   || (tag != ASN1_EOC)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
-+			 cls, con, tag, end);
- 		return 0;
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -3924,7 +3924,7 @@ crypt_message(struct TCP_Server_Info *se
+ 	if (rc) {
+ 		cifs_server_dbg(VFS, "%s: Could not get %scryption key\n", __func__,
+ 			 enc ? "en" : "de");
+-		return 0;
++		return rc;
  	}
  
-@@ -541,8 +541,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
- 		   || (tag != ASN1_SEQ)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 1\n",
-+			 cls, con, tag, end);
- 		return 0;
- 	}
- 
-@@ -552,8 +552,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
- 		   || (tag != ASN1_EOC)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
-+			 cls, con, tag, end);
- 		return 0;
- 	}
- 
-@@ -564,8 +564,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
- 		   || (tag != ASN1_SEQ)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d sequence_end = %p exit 1\n",
-+			 cls, con, tag, sequence_end);
- 		return 0;
- 	}
- 
+ 	rc = smb3_crypto_aead_allocate(server);
 
 
