@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5091029AB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC6129AB33
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899610AbgJ0LvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:51:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46018 "EHLO mx2.suse.de"
+        id S2899619AbgJ0LvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:51:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393622AbgJ0LvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:51:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 21D65AAB2;
-        Tue, 27 Oct 2020 11:51:02 +0000 (UTC)
-Message-ID: <d2b6693aefe6d2cad03432366c48e05cb5c8d3a3.camel@suse.de>
-Subject: Re: [PATCH v4 0/7] arm64: Default to 32-bit wide ZONE_DMA
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Jeremy Linton <jeremy.linton@arm.com>, robh+dt@kernel.org,
-        catalin.marinas@arm.com, hch@lst.de, ardb@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        will@kernel.org, lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
-        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org
-Date:   Tue, 27 Oct 2020 12:50:53 +0100
-In-Reply-To: <9bccc5ef-9457-044b-7193-d002a395e461@arm.com>
-References: <20201021123437.21538-1-nsaenzjulienne@suse.de>
-         <9bccc5ef-9457-044b-7193-d002a395e461@arm.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-7KtHL8JmijrZUDdO/9dK"
-User-Agent: Evolution 3.36.5 
+        id S2394050AbgJ0LvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:51:24 -0400
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6104207C3;
+        Tue, 27 Oct 2020 11:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603799483;
+        bh=Jkm9KTP2d4FaPkRwRtL8+peWn2RqI0SjRbGNKFX9l24=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dCosEtnAGgQAyhH9LGV1mSx7fyOoQg67erOLZ5nhJ9pAl4C/m5CDPgZST/+vZ9adV
+         K8M2M/90d09rfYz+GXQD7YY9GUxSDV2xiBMYpUJRXvkBLqXVAEgyJ8NfoqfDg/vHCI
+         5NjvzJW3bIoPfH5zZTyVx4T/HyWn+zxjxGHRR6Yk=
+Received: by mail-qk1-f182.google.com with SMTP id z6so796595qkz.4;
+        Tue, 27 Oct 2020 04:51:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530z7ZQ1ghPUuZZfCacrvX5ttM7MQ2KSPPqVJh8XLTWHVIfMQ0Ak
+        RtxA7X/rJJq+HG13mqBWyW2nzGMa3hXYw9HyQd0=
+X-Google-Smtp-Source: ABdhPJzcfllDuvkPvTZe2bxMZp9RKsNVH6ol/ilVbFi7E0XaIe77KwQyB3aloZk6orShkn3HWJevON2FAhvigxbmtHw=
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr1552663qkg.3.1603799482840;
+ Tue, 27 Oct 2020 04:51:22 -0700 (PDT)
 MIME-Version: 1.0
+References: <20201026213040.3889546-1-arnd@kernel.org> <20201026213040.3889546-4-arnd@kernel.org>
+ <03c5bc171594c884c903994ef82d703776bfcbc0.camel@sipsolutions.net>
+In-Reply-To: <03c5bc171594c884c903994ef82d703776bfcbc0.camel@sipsolutions.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 12:51:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
+Message-ID: <CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        linux-wimax@intel.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 8:22 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Mon, 2020-10-26 at 22:29 +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > gcc -Wextra points out multiple fields that use the same index '1'
+> > in the wimax_gnl_policy definition:
+> >
+> > net/wimax/stack.c:393:29: warning: initialized field overwritten [-Woverride-init]
+> > net/wimax/stack.c:397:28: warning: initialized field overwritten [-Woverride-init]
+> > net/wimax/stack.c:398:26: warning: initialized field overwritten [-Woverride-init]
+> >
+> > This seems to work since all four use the same NLA_U32 value, but it
+> > still appears to be wrong. In addition, there is no intializer for
+> > WIMAX_GNL_MSG_PIPE_NAME, which uses the same index '2' as
+> > WIMAX_GNL_RFKILL_STATE.
+>
+> That's funny. This means that WIMAX_GNL_MSG_PIPE_NAME was never used,
+> since it is meant to be a string, and that won't (usually) fit into 4
+> bytes...
+>
+> I suppose that's all an artifact of wimax being completely and utterly
+> dead anyway. We should probably just remove it.
 
---=-7KtHL8JmijrZUDdO/9dK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Makes sense. I checked
+https://en.wikipedia.org/wiki/List_of_WiMAX_networks, and it appears
+that these entries are all stale, after everyone has migrated to LTE
+or discontinued their service altogether.
 
-On Fri, 2020-10-23 at 14:05 -0500, Jeremy Linton wrote:
-> Hi,
->=20
-> On 10/21/20 7:34 AM, Nicolas Saenz Julienne wrote:
-> > Using two distinct DMA zones turned out to be problematic. Here's an
-> > attempt go back to a saner default.
-> >=20
-> > I tested this on both a RPi4 and QEMU.
->=20
-> I've tested this in ACPI mode on the rpi4 (4+8G with/without the 3G=20
-> limiter) as well, with Ard's IORT patch. Nothing seems to have regressed.
->=20
-> Thanks,
->=20
-> Tested-by: Jeremy Linton <jeremy.linton@arm.com>
+NetworkManager appears to have dropped userspace support in 2015
+https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
+www.linuxwimax.org site had already shut down earlier.
+
+WiMax is apparently still being deployed on airport campus
+networks ("AeroMACS"), but in a frequency band that was not
+supported by the old Intel 2400m (used in Sandy Bridge laptops
+and earlier), which is the only driver using the kernel's wimax
+stack.
+
+Inaky, do you have any additional information about possible
+users? If we are sure there are none, then I'd suggest removing
+all the wimax code directly, otherwise it could go through
+drivers/staging/ for a release or two (and move it back in case
+there are users after all). I can send a patch if you like.
+
+> So as far as the warning fix is concerned:
+>
+> Acked-by: Johannes Berg <johannes@sipsolutions.net>
+>
 
 Thanks!
 
-
---=-7KtHL8JmijrZUDdO/9dK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+YCZ0ACgkQlfZmHno8
-x/7nHAf+NsPBIeE87IsQQDXb+Yj9HG4BT9qoFjLz6YOJ82f2k6RHxorkNMBGv/Kn
-mh1U2wjHbKJvDKSHIM/qsvcbSI8ZKQyqQBLYXintA5koBEw88a1UA3OXCqbs35Eu
-5s4sHfoPVAAM8OE9b7+sKTNBFXBLngmBotO0Tt9dAXrTEPNLfPu9pXt22zGb2gCy
-34Sv2032HmUGXMX3Dd1eEKPsfqYqHDsBMXmYsh1GrV5/xIJ2ClpD3yM7xjQ/PNtI
-c2VffRjFikj/PUTf8I1HPDOeSwX101QkV3Uq9TatMWsLwQYv9Y5EM8Gz8XPPCDF3
-CDY5pxiYqZdowQMQ53hVr9yjOjogdQ==
-=XjDo
------END PGP SIGNATURE-----
-
---=-7KtHL8JmijrZUDdO/9dK--
-
+        Arnd
