@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D84F29B746
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355DD29B6AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799373AbgJ0PbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36968 "EHLO mail.kernel.org"
+        id S1797518AbgJ0PYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:24:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797205AbgJ0PWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:12 -0400
+        id S1797225AbgJ0PWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:22:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BE3B20657;
-        Tue, 27 Oct 2020 15:22:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11FF120728;
+        Tue, 27 Oct 2020 15:22:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812132;
-        bh=7HZTw5mvbuZFFcdTHl4abAjmB3vQWgFC+dGVsKVI8Bc=;
+        s=default; t=1603812138;
+        bh=qcbtqMFBDuE4oRkZ6ZzbWvb7tYcgwL+MvzA/cB4cZTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tLRRBqBo6c6QacNTW37pXTkjgm/wKYPvYHTUPSGqKj2Ch3MrlYA6TkCp7gb15hbLx
-         GpuPDnP9xGQDUbq4QDLelyrroFh0Kd+mXveh2xHvxYeVOVpeTG5bFXAbTM5IDSIUsb
-         wMt10DkqLtjMrjYRzBp9EkTYSL+pFtjJ9mDSj7uY=
+        b=ZG7tE5uRbDhYE4qZJ8Dnh8BTm/ghpJbRAuVcR4DnlBJyVfUvAoQsjfmHc8BX7stRd
+         NBLGYV7kzjXe6CIo2WWarcrK2yOv1nMU3/VIaFaQg2cmBWRgsX31Cvto2fEOIawqGT
+         RCw+3uy+hBcmdcdHHp73b/2gRtIhYdA2tvoD9xjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 102/757] sched/fair: Fix wrong cpu selecting from isolated domain
-Date:   Tue, 27 Oct 2020 14:45:52 +0100
-Message-Id: <20201027135455.338768160@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Thierry <julien.thierry@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 5.9 104/757] arm64: perf: Add missing ISB in armv8pmu_enable_counter()
+Date:   Tue, 27 Oct 2020 14:45:54 +0100
+Message-Id: <20201027135455.422462146@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,77 +54,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xunlei Pang <xlpang@linux.alibaba.com>
+From: Alexandru Elisei <alexandru.elisei@arm.com>
 
-[ Upstream commit df3cb4ea1fb63ff326488efd671ba3c39034255e ]
+[ Upstream commit 490d7b7c0845eacf5593db333fd2ae7715416e16 ]
 
-We've met problems that occasionally tasks with full cpumask
-(e.g. by putting it into a cpuset or setting to full affinity)
-were migrated to our isolated cpus in production environment.
+Writes to the PMXEVTYPER_EL0 register are not self-synchronising. In
+armv8pmu_enable_event(), the PE can reorder configuring the event type
+after we have enabled the counter and the interrupt. This can lead to an
+interrupt being asserted because of the previous event type that we were
+counting using the same counter, not the one that we've just configured.
 
-After some analysis, we found that it is due to the current
-select_idle_smt() not considering the sched_domain mask.
+The same rationale applies to writes to the PMINTENSET_EL1 register. The PE
+can reorder enabling the interrupt at any point in the future after we have
+enabled the event.
 
-Steps to reproduce on my 31-CPU hyperthreads machine:
-1. with boot parameter: "isolcpus=domain,2-31"
-   (thread lists: 0,16 and 1,17)
-2. cgcreate -g cpu:test; cgexec -g cpu:test "test_threads"
-3. some threads will be migrated to the isolated cpu16~17.
+Prevent both situations from happening by adding an ISB just before we
+enable the event counter.
 
-Fix it by checking the valid domain mask in select_idle_smt().
-
-Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
-Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
-Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Jiang Biao <benbjiang@tencent.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com
+Fixes: 030896885ade ("arm64: Performance counters support")
+Reported-by: Julien Thierry <julien.thierry@arm.com>
+Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+Tested-by: Sumit Garg <sumit.garg@linaro.org> (Developerbox)
+Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lore.kernel.org/r/20200924110706.254996-2-alexandru.elisei@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/kernel/perf_event.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 51408ebd76c27..ea3d20be3e756 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
- /*
-  * Scan the local SMT mask for idle CPUs.
-  */
--static int select_idle_smt(struct task_struct *p, int target)
-+static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+index 462f9a9cc44be..481d48e3872b8 100644
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -532,6 +532,11 @@ static u32 armv8pmu_event_cnten_mask(struct perf_event *event)
+ 
+ static inline void armv8pmu_enable_counter(u32 mask)
  {
- 	int cpu;
- 
-@@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
- 		return -1;
- 
- 	for_each_cpu(cpu, cpu_smt_mask(target)) {
--		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-+		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-+		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
- 			continue;
- 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
- 			return cpu;
-@@ -6099,7 +6100,7 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
- 	return -1;
++	/*
++	 * Make sure event configuration register writes are visible before we
++	 * enable the counter.
++	 * */
++	isb();
+ 	write_sysreg(mask, pmcntenset_el0);
  }
- 
--static inline int select_idle_smt(struct task_struct *p, int target)
-+static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	return -1;
- }
-@@ -6274,7 +6275,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
--	i = select_idle_smt(p, target);
-+	i = select_idle_smt(p, sd, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
  
 -- 
 2.25.1
