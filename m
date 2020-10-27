@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF63629C774
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2016C29C770
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1828535AbgJ0Scf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:32:35 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39096 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1828410AbgJ0ScI (ORCPT
+        id S1828476AbgJ0ScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:32:18 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33443 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1828442AbgJ0ScJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:32:08 -0400
-Received: by mail-wr1-f67.google.com with SMTP id y12so3033592wrp.6;
-        Tue, 27 Oct 2020 11:32:06 -0700 (PDT)
+        Tue, 27 Oct 2020 14:32:09 -0400
+Received: by mail-wr1-f66.google.com with SMTP id b8so3079423wrn.0;
+        Tue, 27 Oct 2020 11:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9Q1L59OjiDLpqGnNODju6fMwtd7Ss5Fh+8syeSPkSMs=;
-        b=qr4NHz6bm05lZeqaartO3EjR8pFWyaqj3VDBOvDv8jBjxAuQCdrUzUcGSO0hbOFZbI
-         cQW/AwGJU4gSV8ALHf077Te761/PN2Y4liN4ZBMbhead6bYJCIqkzDD8WTkknmQhNguh
-         2uyKgReepohknYihfBJBbPDoq/Rp8T8yLhzQ3nxtYwaDF44utBCuDdHlnr+/PFmc1wNv
-         VPOwRxDPBnCu833tyKv+gMTrbOnZOjLf7xFek3sNzgQOdNwCO4uwPqeegehvxMiB03lI
-         JwCvlS3xBOe0WgggzWjpNpT/AoTfBla6sU5JDEMDfqtRHf8L5IGCl9OK3PXkdKXI/Ahw
-         s5cw==
+        bh=Lryb+OP/I/Ms7egySRuAjr25d3wKcdnJ3fbOd1ZGv1M=;
+        b=KHWmTg6iNDzrUklwwoPUYeB3JIWWDKo+WfE3xEOm21ijBsMHfDp0aI6XXbDtue4XaH
+         yF0uAVTb/N3UE0kxVcoNUSQePrz1qUYCgERhqUVFas+4XWL00P9Hmtu9HqBv5R4oVP+j
+         c0quqR5yhlruMZ1kqMBRXJrD3WZ91qofkjITlAPNS3FBjTiT9ERLIdTTJ1YBcGnRdNfw
+         L4sBfxOFuTEqxkMidOBmwJFJZXxEHsghsrEsS5BpZbSp2CNXNzHcG3rR9gLEvd8k3hGd
+         N1yNXHh/yq0neAeDIT8ponfii5LZjEWnjSjHBfMCLEgYqbPpmXKyoyPuEN5vAiA5+glm
+         PG5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9Q1L59OjiDLpqGnNODju6fMwtd7Ss5Fh+8syeSPkSMs=;
-        b=YKkFFon3WXtkWUfqD7aLz9Twhsorfhbm+0oYLZHIU3z1F59014aDwsUUgnkn2eya4S
-         TOskEN9ioFjxYkQVQdbyETox2DbBzSNWt3UU+Kvxhqt2ruduQfwxAuyNLk59QZZbKGGt
-         XF+Cv7Zgyp4HTXvmncA6vo92i4v7nie7ZwEBTdyYSAvoQD4LibovfyRbhT+FHRGv5GKH
-         eNbg+4LWdQla6JYr282cSKNHgAasqEAaqVnoy4oa6btbHsrfJSf78GJhKvm18vZsXerx
-         RMynqrGb7Ne1v+TsKC+0mi76qaNmU72+AcBD2lFgOR/0MwHNzz8s6vV2bmjieQkVIG5y
-         DljQ==
-X-Gm-Message-State: AOAM530J0SuyEXX3A5DljxjSfw6s5iVxLFnOd/Ceo05jrtguqlS4IqsI
-        15EUytve8T4EtI5svZoUUZM=
-X-Google-Smtp-Source: ABdhPJw6yj+heMDTliwHemk6LvJ/wQOTTX6O5m3SvjVsdUREddIGSEd28TtoCEP2g2DrMfqI/9VHDA==
-X-Received: by 2002:a5d:46cf:: with SMTP id g15mr4631760wrs.342.1603823525818;
-        Tue, 27 Oct 2020 11:32:05 -0700 (PDT)
+        bh=Lryb+OP/I/Ms7egySRuAjr25d3wKcdnJ3fbOd1ZGv1M=;
+        b=MzkfGlXSASBTyyi9CESHwLKlPdjeuQ6Ty6K057+KjzEWG8tcX3gU+IY2Sf8U6pcRgd
+         PZQ+a/tsJ85eylRwHYnluPwQogi1VtZNHrZQerjSRCSPgqDqlPLon2L0rt340J2ToUkH
+         BF7zHSkqt+GyPROM+esb7Ou1Ona89c3xXGiKB4P9S+9vzPAG+2nVstZR09ZDTc0Ntuz+
+         hxaBJ58tEsdQMw8OpuNHYRpMFZTIs63hHEOdV5SGp271baOjpdMwYSfaIULPKKDGtW2E
+         qo3X1lCN+P3b3Kn4CfQT/k+821E2y68MTgfN37JoVHUZwPPdy8KGvEpuHLP5kYya7eHR
+         9GjA==
+X-Gm-Message-State: AOAM533D97hqF0vJZsPOmGfcYXKYHIaH1iuiJ23MVkyMSAJhaoWUAYC7
+        rZR89QPSKBbp3pY0jNlnGfA=
+X-Google-Smtp-Source: ABdhPJxafdY3wzwsE3nWndD8a+Tz8AuK8P+cxxtLyIH8fPdH/CbdGOoBaBsh/wxXO/+pPitC+UGQmQ==
+X-Received: by 2002:adf:e30e:: with SMTP id b14mr4120044wrj.195.1603823526969;
+        Tue, 27 Oct 2020 11:32:06 -0700 (PDT)
 Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
-        by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.32.04
+        by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.32.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 11:32:04 -0700 (PDT)
+        Tue, 27 Oct 2020 11:32:06 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,10 +56,11 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v9 12/14] arm64: defconfig: Enable Allwinner i2s driver
-Date:   Tue, 27 Oct 2020 19:31:47 +0100
-Message-Id: <20201027183149.145165-13-peron.clem@gmail.com>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v9 13/14] dt-bindings: sound: sun4i-i2s: Document H3 with missing RX channel possibility
+Date:   Tue, 27 Oct 2020 19:31:48 +0100
+Message-Id: <20201027183149.145165-14-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201027183149.145165-1-peron.clem@gmail.com>
 References: <20201027183149.145165-1-peron.clem@gmail.com>
@@ -70,25 +71,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable Allwinner I2S driver for arm64 defconfig.
+Like A83T the Allwinner H3 doesn't have the DMA reception available for
+some audio interfaces.
 
+As it's already documented for A83T convert this to an enum and add the H3
+interface.
+
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml    | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 17a2df6a263e..3f89f427a355 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -706,6 +706,7 @@ CONFIG_SND_SOC_ROCKCHIP_RT5645=m
- CONFIG_SND_SOC_RK3399_GRU_SOUND=m
- CONFIG_SND_SOC_SAMSUNG=y
- CONFIG_SND_SOC_RCAR=m
-+CONFIG_SND_SUN4I_I2S=m
- CONFIG_SND_SUN4I_SPDIF=m
- CONFIG_SND_SOC_TEGRA=m
- CONFIG_SND_SOC_TEGRA210_AHUB=m
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+index 606ad2d884a8..a16e37b01e1d 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+@@ -70,7 +70,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: allwinner,sun8i-a83t-i2s
++            enum:
++              - allwinner,sun8i-a83t-i2s
++              - allwinner,sun8i-h3-i2s
+ 
+     then:
+       properties:
 -- 
 2.25.1
 
