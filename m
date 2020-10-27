@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52F729C02A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047DB29C02D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785821AbgJ0O7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1785774AbgJ0O7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 10:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43628 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:43782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762641AbgJ0Ons (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:43:48 -0400
+        id S1762660AbgJ0On5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:43:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B5FA206E5;
-        Tue, 27 Oct 2020 14:43:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C77206B2;
+        Tue, 27 Oct 2020 14:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809827;
-        bh=xSI6GVNCFkFvJXIuLdB7QNqj8UQDNWjO7EfhUzUaK28=;
+        s=default; t=1603809836;
+        bh=oDOnjFHkVgiIoA7tw0e2d0rfAy5TH6MzhU8d0U9ZVbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fKCvNqcn6KmmSfgCFmtvazVRDJqlDQMx8nW6fu+5S75+g98uzP92pC1x3Sxc2JuV4
-         HmaR4lN4XkHGNHrgM2RB0qLVJyj4fCbmPBhaig5Dqt0vsxTBnnZnxzlE62qcnnOYr/
-         /6g8FLD06xr4jX3MHpAOL2Lzlnx/92aavySkbU0s=
+        b=tEmfJqz0YQzDwW/yoyV37jiazCNzlyaCiPjv5HbPSTf2egBEZTIbVXrLjTqs2D6hB
+         tnHtHQUScl62OKXZv2YwddTZEC4CMEqg7YRLQOUcRXsNaKodaIlPYl6cUnlU8vrKfP
+         vbpoNoqhSOcNt8Z2UHYua5k6dbOLa7aHjCi3u6TU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 333/408] media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync
-Date:   Tue, 27 Oct 2020 14:54:31 +0100
-Message-Id: <20201027135510.487790908@linuxfoundation.org>
+Subject: [PATCH 5.4 336/408] media: vsp1: Fix runtime PM imbalance on error
+Date:   Tue, 27 Oct 2020 14:54:34 +0100
+Message-Id: <20201027135510.621146646@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,52 +46,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 7ef64ceea0008c17e94a8a2c60c5d6d46f481996 ]
+[ Upstream commit 98fae901c8883640202802174a4bd70a1b9118bd ]
 
-On calling pm_runtime_get_sync() the reference count of the device
-is incremented. In case of failure, decrement the
-reference count before returning the error.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/fimc-isp.c  | 4 +++-
- drivers/media/platform/exynos4-is/fimc-lite.c | 2 +-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/platform/vsp1/vsp1_drv.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp.c b/drivers/media/platform/exynos4-is/fimc-isp.c
-index cde0d254ec1c4..a77c49b185115 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp.c
-@@ -305,8 +305,10 @@ static int fimc_isp_subdev_s_power(struct v4l2_subdev *sd, int on)
+diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+index c650e45bb0ad1..dc62533cf32ce 100644
+--- a/drivers/media/platform/vsp1/vsp1_drv.c
++++ b/drivers/media/platform/vsp1/vsp1_drv.c
+@@ -562,7 +562,12 @@ int vsp1_device_get(struct vsp1_device *vsp1)
+ 	int ret;
  
- 	if (on) {
- 		ret = pm_runtime_get_sync(&is->pdev->dev);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put(&is->pdev->dev);
- 			return ret;
-+		}
- 		set_bit(IS_ST_PWR_ON, &is->state);
+ 	ret = pm_runtime_get_sync(vsp1->dev);
+-	return ret < 0 ? ret : 0;
++	if (ret < 0) {
++		pm_runtime_put_noidle(vsp1->dev);
++		return ret;
++	}
++
++	return 0;
+ }
  
- 		ret = fimc_is_start_firmware(is);
-diff --git a/drivers/media/platform/exynos4-is/fimc-lite.c b/drivers/media/platform/exynos4-is/fimc-lite.c
-index e87c6a09205bd..efd06621951c7 100644
---- a/drivers/media/platform/exynos4-is/fimc-lite.c
-+++ b/drivers/media/platform/exynos4-is/fimc-lite.c
-@@ -470,7 +470,7 @@ static int fimc_lite_open(struct file *file)
- 	set_bit(ST_FLITE_IN_USE, &fimc->state);
- 	ret = pm_runtime_get_sync(&fimc->pdev->dev);
+ /*
+@@ -845,12 +850,12 @@ static int vsp1_probe(struct platform_device *pdev)
+ 	/* Configure device parameters based on the version register. */
+ 	pm_runtime_enable(&pdev->dev);
+ 
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = vsp1_device_get(vsp1);
  	if (ret < 0)
--		goto unlock;
-+		goto err_pm;
+ 		goto done;
  
- 	ret = v4l2_fh_open(file);
- 	if (ret < 0)
+ 	vsp1->version = vsp1_read(vsp1, VI6_IP_VERSION);
+-	pm_runtime_put_sync(&pdev->dev);
++	vsp1_device_put(vsp1);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(vsp1_device_infos); ++i) {
+ 		if ((vsp1->version & VI6_IP_VERSION_MODEL_MASK) ==
 -- 
 2.25.1
 
