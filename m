@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97B429A6EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AC929A6F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509462AbgJ0Iul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:50:41 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:43228 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509349AbgJ0IuZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:50:25 -0400
-Received: by mail-wr1-f65.google.com with SMTP id g12so887550wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7To5fR7Q9UAxOnsymTWEk2T2/isEIEenNe0vcod1MTQ=;
-        b=FrVGJAASwgGOHLjXsVS+TDlkp2LPHGEzVqVnlxcTjSD/cr6nN5p7or5UypZO6DinI6
-         A8By5nb9orQHmknCoIS7/rVHrTn1/1O/TCZxGA15rZ3drA8crrQEd5Y7MP5XcOF9A6i7
-         13+dhBlEA4TVsjMhCjwNYEmfMaXJSuHVHqmbuRplFQ8b5qDI+ffJ+AaGoGHLYUFuXWkW
-         asWgirT7AhBXnV59TcXJJ8EHqi2N7OydsrDG1qmkPgsbfD3pkXGHepUiUowN8PUqthat
-         +GYZwye0qXh/u1xBzGoTbXMLrOQYiJP1EXlMpQChn9MUAfxETVk+Jlu84RJh84528TW5
-         sxmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7To5fR7Q9UAxOnsymTWEk2T2/isEIEenNe0vcod1MTQ=;
-        b=C0d0X26L4oWWOAxtWSI1oGCwKsPUNvGq9PCuJXJ5L3w4vLa64xryLtk2w62PN8RDKI
-         RH6tvvhIGHaHvNQVfSPXT7mPchloMYnsbBtdMUEnNCIo23xr3k2/AEavY0pe2vXaWQnF
-         APbsG6RjMfrOzKlGbT0AYYyAvOQJxnOmNfAveNrqzbkGUIEyugl41aAvEGRepEdqK7dM
-         SNc/QduNqfJ2Gumi0Ep1Oyljkb5l4B2/aICCqv0+pt3gVHS0J56UR9IC77hxILP5TazY
-         VcLlq41htn+MsR2Cc1QhB+AxJ1g8suErJoVPSdGjpm0oZL+dKLuh2s3zJj6YTEurCKfK
-         72gA==
-X-Gm-Message-State: AOAM5336P9AwbgTUYonWScQv/Xay80ca/boCi/JwBAcOlt50IpzB4pGd
-        ckLruj5PwoBe4Dy0ymYSbV03kQ==
-X-Google-Smtp-Source: ABdhPJzPfN26xhtrp7ZCg5xkLG2vH8Zt33AKBxdQuOt3lywV6PI43r3anfW88dN/8XCOlUjPjlvJ3w==
-X-Received: by 2002:adf:81e5:: with SMTP id 92mr1469248wra.411.1603788623417;
-        Tue, 27 Oct 2020 01:50:23 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451? ([2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451])
-        by smtp.googlemail.com with ESMTPSA id 71sm1124828wrm.20.2020.10.27.01.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 01:50:22 -0700 (PDT)
-Subject: Re: [PATCH v2] drivers/thermal: optimize the for circle to run a bit
- fast
-To:     Bernard Zhao <bernard@vivo.com>, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20201027013743.62392-1-bernard@vivo.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <15cc88a3-9a96-c7a8-a9e0-375578de4305@linaro.org>
-Date:   Tue, 27 Oct 2020 09:50:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2509484AbgJ0IvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2509468AbgJ0IvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:51:18 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC80B207DE;
+        Tue, 27 Oct 2020 08:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603788678;
+        bh=8dUViDF5AY6tlMc5Zv1B0uvXiJWKjdjrfSA2hyJnu28=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=waBWXHTqt80D98RIveVBsQt6EJGt9YZqLHtwaRK9rAclMOx08LZIK9YMmqSaqOtvH
+         YjA/f8lhEIZG3jfMjd74abkaEl4Cp49JUn/1zfsGXdBVEpABFHKaAI/ukFV+EM6TGk
+         omphyMaLuYEjNhCsXtta74oQ9l+Z7bSCz4RQ9MnY=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kXKhH-004cXA-IH; Tue, 27 Oct 2020 08:51:15 +0000
 MIME-Version: 1.0
-In-Reply-To: <20201027013743.62392-1-bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 08:51:15 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH AUTOSEL 5.9 087/147] genirq: Add stub for set_handle_irq()
+ when !GENERIC_IRQ_MULTI_HANDLER
+In-Reply-To: <20201026234905.1022767-87-sashal@kernel.org>
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-87-sashal@kernel.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <afd454bc23c458d4561378907f95a0aa@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sashal@kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, thunder.leizhen@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2020 02:37, Bernard Zhao wrote:
-> Function thermal_zone_device_register, in the for circle, if the
-> first if branch set the count bit in tz->trips_disabled, there is
-> no need to set in the other if branch again.
-> This change is to make the code run a bit fast and readable.
+On 2020-10-26 23:48, Sasha Levin wrote:
+> From: Zhen Lei <thunder.leizhen@huawei.com>
 > 
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> [ Upstream commit ea0c80d1764449acf2f70fdb25aec33800cd0348 ]
 > 
-> Changes since V1:
-> *make the code more clear and readable
+> In order to avoid compilation errors when a driver references 
+> set_handle_irq(),
+> but that the architecture doesn't select GENERIC_IRQ_MULTI_HANDLER,
+> add a stub function that will just WARN_ON_ONCE() if ever used.
 > 
-> Link for V1:
-> *https://lore.kernel.org/patchwork/patch/1324507/
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> [maz: commit message]
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link: 
+> https://lore.kernel.org/r/20200924071754.4509-2-thunder.leizhen@huawei.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  include/linux/irq.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/irq.h b/include/linux/irq.h
+> index 1b7f4dfee35b3..b167baef88c0b 100644
+> --- a/include/linux/irq.h
+> +++ b/include/linux/irq.h
+> @@ -1252,6 +1252,12 @@ int __init set_handle_irq(void
+> (*handle_irq)(struct pt_regs *));
+>   * top-level IRQ handler.
+>   */
+>  extern void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
+> +#else
+> +#define set_handle_irq(handle_irq)		\
+> +	do {					\
+> +		(void)handle_irq;		\
+> +		WARN_ON(1);			\
+> +	} while (0)
+>  #endif
+> 
+>  #endif /* _LINUX_IRQ_H */
 
-When adding a changelog, add it after the signed off separated with a
-'---' symbol. So when commiting the patch, the changelog is discarded.
+What is the reason for this backport? The only user is a driver that
+isn't getting backported (d59f7d159891 and following patches).
 
+Thanks,
 
+         M.
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Jazz is not dead. It just smells funny...
