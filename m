@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607B529BBA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E5929BB32
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808863AbgJ0QXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:23:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54052 "EHLO mail.kernel.org"
+        id S368887AbgJ0P70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:59:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1803245AbgJ0Pw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:52:28 -0400
+        id S1796285AbgJ0PRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:17:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C7A4204EF;
-        Tue, 27 Oct 2020 15:52:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E68420657;
+        Tue, 27 Oct 2020 15:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813948;
-        bh=7FhvxEzjT00hcJe2A4kMsdfABA3zFVZWm25OuutXf9M=;
+        s=default; t=1603811830;
+        bh=/UpGJSqZVZlNiVuhj4Mdx26q/M7kQMCbPS706LOA/yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TJVU+tOYhvw6ZH6WJBL3L/SsTsfLZBEMkImk4FehjrLa8s67+eOeo0w5K/sI5c/0u
-         ei/IGBGaWOynf+rS7jQb9mQK1Ez52ru0WASmQc508+bcMKBJ1UfPpC+drzd7nafEVw
-         WsKaCI+m7TcZtctV0QdVPIH173l7jJs+dyZKf6Pc=
+        b=EOOmZabiHIqizlPuRrIZ8pvLPPz2KGZwYMhqCu30vrJy6vJjfH5918iFw8XH1ZaSn
+         fP90ycHijWv+Zybq8nF4BxO+yedRjeUGp9ZMbc5GXL0hsna1yjpi327iYGwh7+dJWR
+         HlzxGTsVU/I7/5jA3ZBKfXbV/b87CBT8DPMlpRaE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
-        syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 725/757] fbmem: add margin check to fb_check_caps()
+        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>
+Subject: [PATCH 5.8 632/633] eeprom: at25: set minimum read/write access stride to 1
 Date:   Tue, 27 Oct 2020 14:56:15 +0100
-Message-Id: <20201027135524.518262663@linuxfoundation.org>
+Message-Id: <20201027135552.465392022@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +41,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Kennedy <george.kennedy@oracle.com>
+From: Christian Eggers <ceggers@arri.de>
 
-[ Upstream commit a49145acfb975d921464b84fe00279f99827d816 ]
+commit 284f52ac1c6cfa1b2e5c11b84653dd90e4e91de7 upstream.
 
-A fb_ioctl() FBIOPUT_VSCREENINFO call with invalid xres setting
-or yres setting in struct fb_var_screeninfo will result in a
-KASAN: vmalloc-out-of-bounds failure in bitfill_aligned() as
-the margins are being cleared. The margins are cleared in
-chunks and if the xres setting or yres setting is a value of
-zero upto the chunk size, the failure will occur.
+SPI eeproms are addressed by byte.
 
-Add a margin check to validate xres and yres settings.
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200728092959.24600-1-ceggers@arri.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-Reported-by: syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Dhaval Giani <dhaval.giani@oracle.com>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/1594149963-13801-1-git-send-email-george.kennedy@oracle.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/core/fbmem.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/misc/eeprom/at25.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-index 6815bfb7f5724..e33bf1c386926 100644
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -1006,6 +1006,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
- 		return 0;
- 	}
+--- a/drivers/misc/eeprom/at25.c
++++ b/drivers/misc/eeprom/at25.c
+@@ -358,7 +358,7 @@ static int at25_probe(struct spi_device
+ 	at25->nvmem_config.reg_read = at25_ee_read;
+ 	at25->nvmem_config.reg_write = at25_ee_write;
+ 	at25->nvmem_config.priv = at25;
+-	at25->nvmem_config.stride = 4;
++	at25->nvmem_config.stride = 1;
+ 	at25->nvmem_config.word_size = 1;
+ 	at25->nvmem_config.size = chip.byte_len;
  
-+	/* bitfill_aligned() assumes that it's at least 8x8 */
-+	if (var->xres < 8 || var->yres < 8)
-+		return -EINVAL;
-+
- 	ret = info->fbops->fb_check_var(var, info);
- 
- 	if (ret)
--- 
-2.25.1
-
 
 
