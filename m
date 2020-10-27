@@ -2,221 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708D229AC0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15AC129AC14
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899846AbgJ0M3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:29:09 -0400
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.116]:9586 "EHLO
-        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2899836AbgJ0M3H (ORCPT
+        id S2899858AbgJ0M3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:29:24 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:52364 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2899848AbgJ0M3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:29:07 -0400
-Received: from [100.112.7.7] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-5.bemta.az-c.us-east-1.aws.symcld.net id 75/DA-11870-B82189F5; Tue, 27 Oct 2020 12:28:59 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBKsWRWlGSWpSXmKPExsWS8eIhj26X0Ix
-  4g0UvrSz2X5ew6FpoYLHw/ilWi6/fbrNbvDk+ncli+b5+RovLu+awWXzuPcJo0dTZBGR1TGax
-  WL3nBbMDt8ekmTOYPXbOusvu8WvbGhaPzSu0POadDPR4v+8qm8fnTXIB7FGsmXlJ+RUJrBnf9
-  icWtGpWfF3+lqmBca98FyMXh5DAf0aJ5Q8fMEI4LxglLv5fw9bFyM4hLFAicTCpi5GTQ0TAW+
-  L7pWlMICXMIPW9W6awQdQvYZSY8fcQO0gVm4C2xJYtv9hAbF4BW4nu9V9YQWwWAVWJzUcfgMV
-  FBcIlOm7sYIKoEZQ4OfMJC4jNKaAm0dl4AizOLGAhMXP+eUYIW1zi1pP5UHF5ieats5lBbAkB
-  BYk1D65B2QkSy17eYZ7AKDgLydhZSEbNQjJqFpJRCxhZVjGaJRVlpmeU5CZm5ugaGhjoGhoa6
-  ZrpGhlb6CVW6SbrlRbrpiYWl+ga6iWWF+sVV+Ym56To5aWWbGIERmBKAdu7HYzb3nzQO8Qoyc
-  GkJMq7ftf0eCG+pPyUyozE4oz4otKc1OJDjDIcHEoSvJMEZsQLCRalpqdWpGXmAJMBTFqCg0d
-  JhNdOECjNW1yQmFucmQ6ROsWoKCXOywhMIUICIImM0jy4NlgCusQoKyXMy8jAwCDEU5BalJtZ
-  gir/ilGcg1FJmPcVyHiezLwSuOmvgBYzAS1uq5gCsrgkESEl1cBUKXlCXUA/Tur8Kn+X2YG6d
-  gZz3mqmP0nZknoj8/F954PVCm/dZGfKb721fbrPiy/d8/ac8nphPHfPwrzb+9/e7N2cX5h91O
-  FvBVecVtSsx4u+Ls75tF3zzFOtmb6iDNFL7UXiJ0bx1HV9T+MonZYz4Wnbv72J+n815svwXzt
-  69nfybist/cR5epc7ow7eFX9+QOUKV4X3n9y5JmvYDii9+HklRqlPqfenU9uPG9XX4q7mrl3A
-  LpG19utFX6kXVXe+/bKbylR0ZrHD3HWz16y9eV9nJUO+7ttYlXaLkMXq75jb39llvd92N9Q8e
-  OmC67f0ApUfr02+WD9vk2XgNAXxyKKCX3wSzJf3PpjUNCPGWomlOCPRUIu5qDgRALJOAW27Aw
-  AA
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-23.tower-406.messagelabs.com!1603801738!808234!1
-X-Originating-IP: [104.232.225.12]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.60.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 27457 invoked from network); 27 Oct 2020 12:28:58 -0000
-Received: from unknown (HELO lenovo.com) (104.232.225.12)
-  by server-23.tower-406.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 27 Oct 2020 12:28:58 -0000
-Received: from reswpmail04.lenovo.com (unknown [10.62.32.23])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by Forcepoint Email with ESMTPS id B57836ECE6A6E4B1DADE;
-        Tue, 27 Oct 2020 08:28:58 -0400 (EDT)
-Received: from localhost.localdomain (10.46.57.204) by reswpmail04.lenovo.com
- (10.62.32.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Tue, 27 Oct
- 2020 05:28:56 -0700
-Subject: Re: [External] Re: [PATCH] [RFC] Documentation: Add documentation for
- new platform_profile sysfs attribute
-To:     Elia Devito <eliadevito@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-CC:     <dvhart@infradead.org>, <mgross@linux.intel.com>,
-        <mario.limonciello@dell.com>, <hadess@hadess.net>,
-        <bberg@redhat.com>, <linux-pm@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <markpearson@lenovo.com>
- <ef9b93a0-636f-9b96-9d5b-fee1e5738af7@lenovo.com>
- <1fbaf1fa-47c6-afe7-ca9e-41b3ad6a4556@redhat.com> <12633630.uLZWGnKmhe@pce>
-From:   Mark Pearson <markpearson@lenovo.com>
-Message-ID: <1bddcede-5e12-6089-8920-26dd5f534b44@lenovo.com>
-Date:   Tue, 27 Oct 2020 08:28:54 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 27 Oct 2020 08:29:23 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201027122911euoutp013531172f43e0dada50565ed79b3b2302~B2TID4cWa0162401624euoutp01T
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:29:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201027122911euoutp013531172f43e0dada50565ed79b3b2302~B2TID4cWa0162401624euoutp01T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603801751;
+        bh=CjdMI1tmB90miqbqTksyvUXWDiO0ncL6v7W915kb7J4=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=APFWvEkJvSt8uoFS9HJf3PG/KjYDSUPqtsIH6nr95eBnbtjnBSIBqyMzgyUdtYhsr
+         AUBJ+QokOK6xSNSITkr8laxh9bTlansTVFdrWgZMkolgqmE/o5ikcO/yJVDDa6GkDx
+         GRaqImSvBSOUDA3iHT5SRp+dvR132AAyn9WK7B/M=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201027122906eucas1p194269e642811d06b63335e300de88ea4~B2TDRVZXo0881708817eucas1p1f;
+        Tue, 27 Oct 2020 12:29:06 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id F6.6B.05997.192189F5; Tue, 27
+        Oct 2020 12:29:05 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201027122905eucas1p16ba9af9ea08ac43aed86970595a2ea78~B2TC95igX0038500385eucas1p1c;
+        Tue, 27 Oct 2020 12:29:05 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201027122905eusmtrp25c498067e019f40f47c5e34f8297eaa2~B2TC8SiH92828528285eusmtrp2b;
+        Tue, 27 Oct 2020 12:29:05 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-e7-5f9812915051
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 65.C8.06314.882189F5; Tue, 27
+        Oct 2020 12:28:56 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201027122855eusmtip14adc70a2a031ac56fab75930dc378878~B2S5gyLQm2340823408eusmtip1V;
+        Tue, 27 Oct 2020 12:28:55 +0000 (GMT)
+Subject: Re: [PATCH v2 4/6] phy: samsung: phy-exynos-pcie: rework driver to
+ support Exynos5433 PCIe PHY
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <e2ba43d4-3991-e98e-6ec0-6ff3ad5d954b@samsung.com>
+Date:   Tue, 27 Oct 2020 13:28:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <12633630.uLZWGnKmhe@pce>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <CAL_JsqLUT7aLnQsLvcCOHCaoVAao9VSmEhoscBxu3ARXX33zrA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.46.57.204]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail04.lenovo.com (10.62.32.23)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsWy7djPc7oThWbEG9x8aGWxpCnDYv6Rc6wW
+        N361sVqs+DKT3eLC0x42i/PnN7BbXN41h83i7LzjbBYzzu9jsnjz+wW7ReveI+wWO++cYHbg
+        8Vgzbw2jx85Zd9k9Fmwq9di0qpPNo2/LKkaP4ze2M3l83iQXwB7FZZOSmpNZllqkb5fAlTHz
+        zlzWgtPqFd9f3mRvYLwk28XIwSEhYCLxuDmki5GLQ0hgBaPElNuPWLsYOYGcL4wS97b6QyQ+
+        M0rcXX2OESQB0rBwxXI2iMRyRoknkzsZIZz3jBJXn9xiAxkrLJAp0bLXAKRBREBFYsPzW8wg
+        NcwC55gl9nx6zQKSYBMwlOh628UGYvMK2EnsOL0ZLM4ioCqxr2UemC0qkCTx9/MfZogaQYmT
+        M5+AxTkFAiXWv/oOZjMLyEtsfzuHGcIWl7j1ZD4TyDIJgUfsEjtvrWCGONtFYsXVmVC2sMSr
+        41vYIWwZif87YRqaGSUenlvLDuH0MEpcbpoB9bS1xJ1zv8BeYxbQlFi/Sx8i7Cix4eBZNkhA
+        8knceCsIcQSfxKRt05khwrwSHW1CENVqErOOr4Nbe/DCJeYJjEqzkLw2C8k7s5C8Mwth7wJG
+        llWM4qmlxbnpqcVGeanlesWJucWleel6yfm5mxiBSez0v+NfdjDu+pN0iFGAg1GJh/fC22nx
+        QqyJZcWVuYcYJTiYlUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EKM3BoiTOa7zoZayQQHpiSWp2
+        ampBahFMlomDU6qBMSxDrlna9MIEpdWHs+cIXLbyfdSip1YlemXP5dP/vW5lbDi+qs7g833u
+        6BMsX2ID1FVKVm+O+Kj4Nv5ReON2/40N31bEc0n8k8q91GW3p9/o8u2ly687vquzNHM6+F5r
+        4oWPamv/BwWrf/n5zHGuyNmg2jCDK2+bPmxPXartfGK23rwi+9upuUosxRmJhlrMRcWJAM4R
+        oQheAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsVy+t/xu7odQjPiDeZv4LJY0pRhMf/IOVaL
+        G7/aWC1WfJnJbnHhaQ+bxfnzG9gtLu+aw2Zxdt5xNosZ5/cxWbz5/YLdonXvEXaLnXdOMDvw
+        eKyZt4bRY+esu+weCzaVemxa1cnm0bdlFaPH8RvbmTw+b5ILYI/SsynKLy1JVcjILy6xVYo2
+        tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy5h5Zy5rwWn1iu8vb7I3MF6S7WLk
+        5JAQMJFYuGI5G4gtJLCUUaK/XwsiLiNxcloDK4QtLPHnWhdQDRdQzVtGiZs/9jB2MXJwCAtk
+        SrTsNQCpERFQkdjw/BYzSA2zwDlmiVNfLzBCNPQwSfTtegw2iU3AUKLrbRfYNl4BO4kdpzez
+        gNgsAqoS+1rmgdmiAkkSLy9MZYKoEZQ4OfMJWJxTIFBi/avvYDazgJnEvM0PmSFseYntb+dA
+        2eISt57MZ5rAKDQLSfssJC2zkLTMQtKygJFlFaNIamlxbnpusaFecWJucWleul5yfu4mRmDc
+        bjv2c/MOxksbgw8xCnAwKvHwXng7LV6INbGsuDL3EKMEB7OSCK/T2dNxQrwpiZVVqUX58UWl
+        OanFhxhNgZ6byCwlmpwPTCl5JfGGpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNTUwtSi2D6
+        mDg4pRoY03/0Wt9eJ/5IallTb9uktxtXqvYEFfjPM5X/H3PkaNa69e6Wa/YyuL2xvvJUvOXk
+        z8Lcf00+l859Mbzhy6Xa+7eroynNQIDJYurnTX2nNeMPyqi0CcuWqM7uirl+Jru0dtvcu13+
+        K3SPLwqa6f5/0aQ9fDqeJw80h4nWh3tUTjr2Wm2Z4NHrSizFGYmGWsxFxYkAtzVddvECAAA=
+X-CMS-MailID: 20201027122905eucas1p16ba9af9ea08ac43aed86970595a2ea78
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201023075756eucas1p2c27cc3e6372127d107e5b84c810ba98f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201023075756eucas1p2c27cc3e6372127d107e5b84c810ba98f
+References: <CGME20201023075756eucas1p2c27cc3e6372127d107e5b84c810ba98f@eucas1p2.samsung.com>
+        <20201023075744.26200-1-m.szyprowski@samsung.com>
+        <20201023075744.26200-5-m.szyprowski@samsung.com>
+        <CAL_JsqLUT7aLnQsLvcCOHCaoVAao9VSmEhoscBxu3ARXX33zrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Elia
+Hi Rob,
 
-On 27/10/2020 05:19, Elia Devito wrote:
-> Hi to all,
-> 
-> In data martedì 27 ottobre 2020 08:54:44 CET, Hans de Goede ha scritto:
->> Hi,
+On 26.10.2020 19:50, Rob Herring wrote:
+> On Fri, Oct 23, 2020 at 2:58 AM Marek Szyprowski
+> <m.szyprowski@samsung.com> wrote:
+>> From: Jaehoon Chung <jh80.chung@samsung.com>
 >>
->> On 10/26/20 8:55 PM, Mark Pearson wrote:
->>> Thanks Hans
->>>
->>> On 26/10/2020 14:33, Hans de Goede wrote:
->>>> Hi Mark,
->>>>
->>>> Thank you for this new version.
->>>>
->>>> On 10/26/20 6:44 PM, Mark Pearson wrote:
->>>>> From: Hans de Goede <hdegoede@redhat.com>
->>>
->>> <snip>
->>>
->>>>> +
->>>>> +If for some reason there is no good match when mapping then a new
->>>>> profile-name +may be added. Drivers which wish to introduce new
->>>>> profile-names must: +1. Have very good reasons to do so.
->>>>> +2. Add the new profile-name to this document, so that future drivers
->>>>> which also +   have a similar problem can use the same new.
->>>>
->>>> s/same new/same name/
->>>
->>> I've read this document so many times...I'm not sure how I missed that
->>> one. Thanks.>
->>>>> + Usually new profile-names will
->>>>> +   be added to the "extra profile-names" section of this document. But
->>>>> in some +   cases the set of standard profile-names may be extended.
->>>>
->>>> With the change from a more generic API to this new one more targeted
->>>> towards DPTF I would drop this part.
->>>
->>> OK - I have some questions then related to this change, below
->>>
->>>>> +
->>>>> +What:        /sys/firmware/acpi/platform_profile_choices
->>>>> +Date:        October 2020
->>>>> +Contact:    Hans de Goede <hdegoede@redhat.com>
->>>>> +Description:
->>>>> +        Reading this file gives a space separated list of profiles
->>>>> +        supported for this device.
->>>>> +
->>>>> +        Drivers must use the following standard profile-names whenever
->>>>> +        possible:
->>>>> +
->>>>> +        low-power:        Emphasises low power consumption
->>>>> +        quiet:            Offers quieter operation (lower fan
->>>>> +                    speed but with higher performance and
->>>>> +                    temperatures then seen in low-power
->>>>
->>>> I think the description here is a bit too specific, this may cause
->>>> userspace to have expectations which are not necessary true. I would
->>>> describe this as just:
->>>>
->>>>          quiet:            Emphasises quieter operation
->>>
->>> Agreed. I'll update
->>>
->>>>> +        balanced:        Balance between low power consumption
->>>>> +                    and performance
->>>>> +        performance:        Emphasises performance (and may lead to
->>>>> +                    higher temperatures and fan speeds)
->>>>> +
->>>>> +        Userspace may expect drivers to offer at least several of these
->>>>> +        standard profile-names! If none of the above are a good match
->>>>> +        for some of the drivers profiles, then drivers may use one of
->>>>> +        these extra profile-names:
->>>>> +        <reserved for future use>
->>>>> +
->>>
->>> If we remove the extra profile-names section above then I think it should
->>> be removed here too. If someone wants to add a new 'mode' then it would
->>> be added to the list of 'standard names', and becomes a new option.
->>> Wanted to check I'm not missing something important.
->> You are completely right, any references to an extra profile-names section
->> should be removed here too. I did intend to add that it should be removed
->> here too, but I forgot.
+>> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
+>> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
+>> variant found in the Exynos5433 SoCs.
 >>
->>>>> +What:        /sys/firmware/acpi/platform_profile
->>>>> +Date:        October 2020
->>>>> +Contact:    Hans de Goede <hdegoede@redhat.com>
->>>>> +Description:
->>>>> +        Reading this file gives the current selected profile for this
->>>>> +        device. Writing this file with one of the strings from
->>>>> +        available_profiles changes the profile to the new value.
->>>>
->>>> The part about custom profiles below may be dropped. That was intended
->>>> for use with e.g. GPUs but since this now strictly is a system-level
->>>> profile API, the part below can be dropped now.
->>>
->>> Agreed
->>>
->>>>> +
->>>>> +        Reading this file may also return "custom". This is intended
->>>>> for
->>>>> +        drivers which have and export multiple knobs. Such drivers may
->>>>> +        very well still want to offer a set of profiles for easy of use
->>>>> +        and to be able to offer a consistent standard API (this API) to
->>>>> +        userspace for configuring their performance. The "custom" value
->>>>> +        is intended for when ai user has directly configured the knobs
->>>>> +        (through e.g. some advanced control-panel for a GPU) and the
->>>>> +        knob values do not match any of the presets represented by the
->>>>> +        platform-profiles. In this case writing this file will
->>>>> +        override the modifications and restore the selected presets.
->>>>> +
->>>>
->>>> Regards,
->>>>
->>>> Hans
->>>
->>> Thanks!
->>> mark
+>> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+>> [mszyprow: reworked the driver to support only Exynos5433 variant, rebased
+>>             onto current kernel code, rewrote commit message]
+>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+>> ---
+>>   drivers/phy/samsung/phy-exynos-pcie.c | 304 ++++++++++----------------
+>>   1 file changed, 112 insertions(+), 192 deletions(-)
 >>
->> Regards,
+>> diff --git a/drivers/phy/samsung/phy-exynos-pcie.c b/drivers/phy/samsung/phy-exynos-pcie.c
+>> index 7e28b1aea0d1..d91de323dd0e 100644
+>> --- a/drivers/phy/samsung/phy-exynos-pcie.c
+>> +++ b/drivers/phy/samsung/phy-exynos-pcie.c
+>> @@ -4,70 +4,41 @@
+>>    *
+>>    * Phy provider for PCIe controller on Exynos SoC series
+>>    *
+>> - * Copyright (C) 2017 Samsung Electronics Co., Ltd.
+>> + * Copyright (C) 2017-2020 Samsung Electronics Co., Ltd.
+>>    * Jaehoon Chung <jh80.chung@samsung.com>
+>>    */
 >>
->> Hans
-> 
-> This look good,
-> only thing is that hp-wmi driver need a cool profile (Emphasises the computer
-> cool to touch), if you can add it would be perfect.
-> 
-> Regards
-> Elia
-> 
-> 
-> 
-Is low-power is different to cool? I figured low-power was going to be 
-cool so combined them.
-I could call it low-power-cool if that helps? It seems a little clunky 
-but not too bad. I'm sure the user space folks can put sunglasses on it 
-or something ;)
+>> -#include <linux/delay.h>
+>>   #include <linux/io.h>
+>> -#include <linux/iopoll.h>
+>> -#include <linux/init.h>
+>>   #include <linux/mfd/syscon.h>
+>> -#include <linux/of.h>
+>> -#include <linux/of_address.h>
+>>   #include <linux/of_platform.h>
+>>   #include <linux/platform_device.h>
+>>   #include <linux/phy/phy.h>
+>>   #include <linux/regmap.h>
+>>
+>> -/* PCIe Purple registers */
+>> -#define PCIE_PHY_GLOBAL_RESET          0x000
+>> -#define PCIE_PHY_COMMON_RESET          0x004
+>> -#define PCIE_PHY_CMN_REG               0x008
+>> -#define PCIE_PHY_MAC_RESET             0x00c
+>> -#define PCIE_PHY_PLL_LOCKED            0x010
+>> -#define PCIE_PHY_TRSVREG_RESET         0x020
+>> -#define PCIE_PHY_TRSV_RESET            0x024
+>> -
+>> -/* PCIe PHY registers */
+>> -#define PCIE_PHY_IMPEDANCE             0x004
+>> -#define PCIE_PHY_PLL_DIV_0             0x008
+>> -#define PCIE_PHY_PLL_BIAS              0x00c
+>> -#define PCIE_PHY_DCC_FEEDBACK          0x014
+>> -#define PCIE_PHY_PLL_DIV_1             0x05c
+>> -#define PCIE_PHY_COMMON_POWER          0x064
+>> -#define PCIE_PHY_COMMON_PD_CMN         BIT(3)
+>> -#define PCIE_PHY_TRSV0_EMP_LVL         0x084
+>> -#define PCIE_PHY_TRSV0_DRV_LVL         0x088
+>> -#define PCIE_PHY_TRSV0_RXCDR           0x0ac
+>> -#define PCIE_PHY_TRSV0_POWER           0x0c4
+>> -#define PCIE_PHY_TRSV0_PD_TSV          BIT(7)
+>> -#define PCIE_PHY_TRSV0_LVCC            0x0dc
+>> -#define PCIE_PHY_TRSV1_EMP_LVL         0x144
+>> -#define PCIE_PHY_TRSV1_RXCDR           0x16c
+>> -#define PCIE_PHY_TRSV1_POWER           0x184
+>> -#define PCIE_PHY_TRSV1_PD_TSV          BIT(7)
+>> -#define PCIE_PHY_TRSV1_LVCC            0x19c
+>> -#define PCIE_PHY_TRSV2_EMP_LVL         0x204
+>> -#define PCIE_PHY_TRSV2_RXCDR           0x22c
+>> -#define PCIE_PHY_TRSV2_POWER           0x244
+>> -#define PCIE_PHY_TRSV2_PD_TSV          BIT(7)
+>> -#define PCIE_PHY_TRSV2_LVCC            0x25c
+>> -#define PCIE_PHY_TRSV3_EMP_LVL         0x2c4
+>> -#define PCIE_PHY_TRSV3_RXCDR           0x2ec
+>> -#define PCIE_PHY_TRSV3_POWER           0x304
+>> -#define PCIE_PHY_TRSV3_PD_TSV          BIT(7)
+>> -#define PCIE_PHY_TRSV3_LVCC            0x31c
+>> -
+>> -struct exynos_pcie_phy_data {
+>> -       const struct phy_ops    *ops;
+>> -};
+>> +#define PCIE_PHY_OFFSET(x)             ((x) * 0x4)
+>> +
+>> +/* Sysreg FSYS register offsets and bits for Exynos5433 */
+>> +#define PCIE_EXYNOS5433_PHY_MAC_RESET          0x0208
+>> +#define PCIE_MAC_RESET_MASK                    0xFF
+>> +#define PCIE_MAC_RESET                         BIT(4)
+>> +#define PCIE_EXYNOS5433_PHY_L1SUB_CM_CON       0x1010
+>> +#define PCIE_REFCLK_GATING_EN                  BIT(0)
+>> +#define PCIE_EXYNOS5433_PHY_COMMON_RESET       0x1020
+>> +#define PCIE_PHY_RESET                         BIT(0)
+>> +#define PCIE_EXYNOS5433_PHY_GLOBAL_RESET       0x1040
+>> +#define PCIE_GLOBAL_RESET                      BIT(0)
+> Resets, why is this block not a reset provider?
 
-Mark
+Because most of those registers need to be configured together with the 
+rest of the PHY registers. IMHO there is no simple "do the reset" logic 
+there. There is also PHY reference clock configuration there. This phy 
+driver is already Exynos5433 specific and I see no point in extracting 
+separate reset driver from it. Other Exynos PHY drivers also access PMU 
+and SYSREG via the respective regmaps and don't use any kind of reset 
+drivers.
+
+>> +#define PCIE_REFCLK                            BIT(1)
+>> +#define PCIE_REFCLK_MASK                       0x16
+>> +#define PCIE_APP_REQ_EXIT_L1_MODE              BIT(5)
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
