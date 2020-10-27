@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0541B29C392
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA7529C391
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1817137AbgJ0Rs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:48:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52208 "EHLO mail.kernel.org"
+        id S1822240AbgJ0RsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:48:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901788AbgJ0O01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:26:27 -0400
+        id S1758939AbgJ0O0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:26:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85D26207C3;
-        Tue, 27 Oct 2020 14:26:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50D0E20780;
+        Tue, 27 Oct 2020 14:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808787;
-        bh=h3lhKVwNNqO84gRm1v6CxPFXZOUV0dnlo5dbHzA65SM=;
+        s=default; t=1603808794;
+        bh=1QLGxxB92voLmkhnmWBAgiVBZOvIXqVvypv3m4j7TeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nUeAyACD81McX038kc+rD3+wy8xSEBxdzZ3HZzZ8iEVrZXVmewBajfhTA/iv/d5xT
-         mnMxUf3H0FCJZQO7qmzzaNJjrkxSzCaDx6I9nCVgRC3yiITEG8ZzA4m8dBL3ZFzKwY
-         a1GDp9bm1RU+r3Rwfj7FrJE4KM9p45k8Z2na1KTM=
+        b=0FhJuTOjOW4SZsRK5aEdp6Saxi9yRH40aIY7CjdFQ3VfkXVm/s0YJ0d6srFdYrKyg
+         c9uuhT47DSZkHeYZOl9dVcF9k7rm7D0zMV57pGQWHQWY1kFGDTn16xLJvaidi4Bda8
+         RVVsvqbyxoUdvw6hbzTOTsbutK6QlKV7ES5aZ42k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Thomas Pedersen <thomas@adapt-ip.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 224/264] media: venus: core: Fix runtime PM imbalance in venus_probe
-Date:   Tue, 27 Oct 2020 14:54:42 +0100
-Message-Id: <20201027135441.195776903@linuxfoundation.org>
+Subject: [PATCH 4.19 227/264] mac80211: handle lack of sband->bitrates in rates
+Date:   Tue, 27 Oct 2020 14:54:45 +0100
+Message-Id: <20201027135441.318200412@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,51 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Thomas Pedersen <thomas@adapt-ip.com>
 
-[ Upstream commit bbe516e976fce538db96bd2b7287df942faa14a3 ]
+[ Upstream commit 8b783d104e7f40684333d2ec155fac39219beb2f ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced. For other error
-paths after this call, things are the same.
+Even though a driver or mac80211 shouldn't produce a
+legacy bitrate if sband->bitrates doesn't exist, don't
+crash if that is the case either.
 
-Fix this by adding pm_runtime_put_noidle() after 'err_runtime_disable'
-label. But in this case, the error path after pm_runtime_put_sync()
-will decrease PM usage counter twice. Thus add an extra
-pm_runtime_get_noresume() in this path to balance PM counter.
+This fixes a kernel panic if station dump is run before
+last_rate can be updated with a data frame when
+sband->bitrates is missing (eg. in S1G bands).
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Thomas Pedersen <thomas@adapt-ip.com>
+Link: https://lore.kernel.org/r/20201005164522.18069-1-thomas@adapt-ip.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/venus/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/mac80211/cfg.c      | 3 ++-
+ net/mac80211/sta_info.c | 4 ++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 60069869596cb..168f5af6abcc2 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -321,8 +321,10 @@ static int venus_probe(struct platform_device *pdev)
- 		goto err_dev_unregister;
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index b6670e74aeb7b..9926455dd546d 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -664,7 +664,8 @@ void sta_set_rate_info_tx(struct sta_info *sta,
+ 		u16 brate;
  
- 	ret = pm_runtime_put_sync(dev);
--	if (ret)
-+	if (ret) {
-+		pm_runtime_get_noresume(dev);
- 		goto err_dev_unregister;
-+	}
+ 		sband = ieee80211_get_sband(sta->sdata);
+-		if (sband) {
++		WARN_ON_ONCE(sband && !sband->bitrates);
++		if (sband && sband->bitrates) {
+ 			brate = sband->bitrates[rate->idx].bitrate;
+ 			rinfo->legacy = DIV_ROUND_UP(brate, 1 << shift);
+ 		}
+diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
+index 2a82d438991b5..9968b8a976f19 100644
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -2009,6 +2009,10 @@ static void sta_stats_decode_rate(struct ieee80211_local *local, u32 rate,
+ 		int rate_idx = STA_STATS_GET(LEGACY_IDX, rate);
  
- 	return 0;
- 
-@@ -333,6 +335,7 @@ static int venus_probe(struct platform_device *pdev)
- err_venus_shutdown:
- 	venus_shutdown(dev);
- err_runtime_disable:
-+	pm_runtime_put_noidle(dev);
- 	pm_runtime_set_suspended(dev);
- 	pm_runtime_disable(dev);
- 	hfi_destroy(core);
+ 		sband = local->hw.wiphy->bands[band];
++
++		if (WARN_ON_ONCE(!sband->bitrates))
++			break;
++
+ 		brate = sband->bitrates[rate_idx].bitrate;
+ 		if (rinfo->bw == RATE_INFO_BW_5)
+ 			shift = 2;
 -- 
 2.25.1
 
