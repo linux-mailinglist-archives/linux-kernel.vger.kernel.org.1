@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCCA29AE84
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E72B29AF64
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753638AbgJ0OBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46240 "EHLO mail.kernel.org"
+        id S1754628AbgJ0OGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:06:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753160AbgJ0N6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:58:50 -0400
+        id S1754595AbgJ0OGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:06:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 851702068D;
-        Tue, 27 Oct 2020 13:58:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81A7F22258;
+        Tue, 27 Oct 2020 14:06:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807130;
-        bh=+jtZlyJvi3nEmWK4CY+5CuE/tPR+kSen5eO4hy8agZw=;
+        s=default; t=1603807567;
+        bh=kLqIkf1/SE8r4Wp0lP0UfuPx18W515CGoNhTtTNwxRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2oQ1a8gXFcMKDnooxtaab0ZtFEgoGo1r2yDAMjrGdBM3mSJnEIiKtsZaEUlDMrDZ2
-         Q2CVErlnL+yWbGs9sEwlWjmhvN7TJ6yulqOpKlrkAMkhdHNDqOZ9BBKEHCC6iUEcwD
-         cF7zks+xJtmjr4DlJUGy5dNvkLJ33nuTRPBx8BQY=
+        b=1Fh7DcatNOFhRxZjRN0jVqltfAznxy/oyT1uTAO0TXt+0WWv0OJDCIuRwna48C/Al
+         dxh4MXGQcPrMBjf+9iK+Ik2KcTw1O52ViLzhlE/GjZ193VsDHgwMN9dyL1ROB/NZTO
+         mE+gMbNDtFYf1NIZTZrFB8RR0hTQT5CCoLebWdeM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 053/112] IB/mlx4: Adjust delayed work when a dup is observed
+Subject: [PATCH 4.9 069/139] kdb: Fix pager search for multi-line strings
 Date:   Tue, 27 Oct 2020 14:49:23 +0100
-Message-Id: <20201027134903.080571425@linuxfoundation.org>
+Message-Id: <20201027134905.395685942@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Håkon Bugge <haakon.bugge@oracle.com>
+From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit 785167a114855c5aa75efca97000e405c2cc85bf ]
+[ Upstream commit d081a6e353168f15e63eb9e9334757f20343319f ]
 
-When scheduling delayed work to clean up the cache, if the entry already
-has been scheduled for deletion, we adjust the delay.
+Currently using forward search doesn't handle multi-line strings correctly.
+The search routine replaces line breaks with \0 during the search and, for
+regular searches ("help | grep Common\n"), there is code after the line
+has been discarded or printed to replace the break character.
 
-Fixes: 3cf69cc8dbeb ("IB/mlx4: Add CM paravirtualization")
-Link: https://lore.kernel.org/r/20200803061941.1139994-7-haakon.bugge@oracle.com
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+However during a pager search ("help\n" followed by "/Common\n") when the
+string is matched we will immediately return to normal output and the code
+that should restore the \n becomes unreachable. Fix this by restoring the
+replaced character when we disable the search mode and update the comment
+accordingly.
+
+Fixes: fb6daa7520f9d ("kdb: Provide forward search at more prompt")
+Link: https://lore.kernel.org/r/20200909141708.338273-1-daniel.thompson@linaro.org
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/cm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/debug/kdb/kdb_io.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
-index 5dc920fe13269..c8c586c78d071 100644
---- a/drivers/infiniband/hw/mlx4/cm.c
-+++ b/drivers/infiniband/hw/mlx4/cm.c
-@@ -309,6 +309,9 @@ static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id)
- 	if (!sriov->is_going_down) {
- 		id->scheduled_delete = 1;
- 		schedule_delayed_work(&id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+	} else if (id->scheduled_delete) {
-+		/* Adjust timeout if already scheduled */
-+		mod_delayed_work(system_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
- 	}
- 	spin_unlock_irqrestore(&sriov->going_down_lock, flags);
- 	spin_unlock(&sriov->id_map_lock);
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index cc892a9e109d8..ae39b014b7d6c 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -683,12 +683,16 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
+ 			size_avail = sizeof(kdb_buffer) - len;
+ 			goto kdb_print_out;
+ 		}
+-		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH)
++		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH) {
+ 			/*
+ 			 * This was a interactive search (using '/' at more
+-			 * prompt) and it has completed. Clear the flag.
++			 * prompt) and it has completed. Replace the \0 with
++			 * its original value to ensure multi-line strings
++			 * are handled properly, and return to normal mode.
+ 			 */
++			*cphold = replaced_byte;
+ 			kdb_grepping_flag = 0;
++		}
+ 		/*
+ 		 * at this point the string is a full line and
+ 		 * should be printed, up to the null.
 -- 
 2.25.1
 
