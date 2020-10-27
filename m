@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992EF29B557
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A5629B54A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794302AbgJ0PLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:11:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37062 "EHLO mail.kernel.org"
+        id S1794210AbgJ0PKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789747AbgJ0PCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:02:44 -0400
+        id S1789780AbgJ0PCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:02:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 229D521556;
-        Tue, 27 Oct 2020 15:02:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C900B207DE;
+        Tue, 27 Oct 2020 15:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810964;
-        bh=mlBNBUT6nslyv3He4klUS121kRNBOHMWavGMQwynaTQ=;
+        s=default; t=1603810970;
+        bh=aFd9ur7hT0GIQZTgRmYM7KH2SdNLqiNpKrUw14nKtlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XGB2XtbYUIdGDyj1Owj8h9142xjE5Q7ONbjtehbgUUgTBzh2uW7jf++yaeymOk3Bc
-         0g5y6u4bGuSB1M13+4RnAs1DbiDw6dKCwaCA289fvCb5PeZ6R4ian6LhOzy9V/mxRk
-         +/JvrURLowH9/YI9tKJ84E8h4PWcXKpGZQfZimWw=
+        b=ymqPsNy9AktUWLu0YyqDF5Zb8EgaLFTKiyeCEiLiSt2Q5wFueGbDaU6JmgxrwNOk/
+         EHH+8crdiG8pWVwIqNMwgKdk0wa9a20iN6YNSTsDZE0qQso2qZMcliZnb1noVuB1CJ
+         a8OQdrSSpptiHFN2Kj5E5X8x2ax0v3b6ogkXnC70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 326/633] powerpc/icp-hv: Fix missing of_node_put() in success path
-Date:   Tue, 27 Oct 2020 14:51:09 +0100
-Message-Id: <20201027135537.974005442@linuxfoundation.org>
+Subject: [PATCH 5.8 328/633] rcutorture: Properly set rcu_fwds for OOM handling
+Date:   Tue, 27 Oct 2020 14:51:11 +0100
+Message-Id: <20201027135538.064671987@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,34 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Mc Guire <hofrat@osadl.org>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit d3e669f31ec35856f5e85df9224ede5bdbf1bc7b ]
+[ Upstream commit c8fa63714763b7795a3f5fb7ed6d000763e6dccc ]
 
-Both of_find_compatible_node() and of_find_node_by_type() will return
-a refcounted node on success - thus for the success path the node must
-be explicitly released with a of_node_put().
+The conversion of rcu_fwds to dynamic allocation failed to actually
+allocate the required structure.  This commit therefore allocates it,
+frees it, and updates rcu_fwds accordingly.  While in the area, it
+abstracts the cleanup actions into rcu_torture_fwd_prog_cleanup().
 
-Fixes: 0b05ac6e2480 ("powerpc/xics: Rewrite XICS driver")
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1530691407-3991-1-git-send-email-hofrat@osadl.org
+Fixes: 5155be9994e5 ("rcutorture: Dynamically allocate rcu_fwds structure")
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/sysdev/xics/icp-hv.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/rcutorture.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/sysdev/xics/icp-hv.c b/arch/powerpc/sysdev/xics/icp-hv.c
-index ad8117148ea3b..21b9d1bf39ff6 100644
---- a/arch/powerpc/sysdev/xics/icp-hv.c
-+++ b/arch/powerpc/sysdev/xics/icp-hv.c
-@@ -174,6 +174,7 @@ int icp_hv_init(void)
- 
- 	icp_ops = &icp_hv_ops;
- 
-+	of_node_put(np);
- 	return 0;
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index efb792e13fca9..23ec68d8ff3aa 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2154,9 +2154,20 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 		return -ENOMEM;
+ 	spin_lock_init(&rfp->rcu_fwd_lock);
+ 	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
++	rcu_fwds = rfp;
+ 	return torture_create_kthread(rcu_torture_fwd_prog, rfp, fwd_prog_task);
  }
+ 
++static void rcu_torture_fwd_prog_cleanup(void)
++{
++	struct rcu_fwd *rfp;
++
++	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
++	rfp = rcu_fwds;
++	rcu_fwds = NULL;
++	kfree(rfp);
++}
++
+ /* Callback function for RCU barrier testing. */
+ static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
+ {
+@@ -2360,7 +2371,7 @@ rcu_torture_cleanup(void)
+ 
+ 	show_rcu_gp_kthreads();
+ 	rcu_torture_barrier_cleanup();
+-	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
++	rcu_torture_fwd_prog_cleanup();
+ 	torture_stop_kthread(rcu_torture_stall, stall_task);
+ 	torture_stop_kthread(rcu_torture_writer, writer_task);
  
 -- 
 2.25.1
