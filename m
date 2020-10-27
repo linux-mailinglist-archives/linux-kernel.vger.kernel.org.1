@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940DA29B1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6189229B1BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760122AbgJ0Odb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58050 "EHLO mail.kernel.org"
+        id S1760157AbgJ0Odj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760036AbgJ0ObS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:31:18 -0400
+        id S1760049AbgJ0Obb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:31:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B7A92222C;
-        Tue, 27 Oct 2020 14:31:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8175206DC;
+        Tue, 27 Oct 2020 14:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809078;
-        bh=QVd6QlgNgF7Dj1ClZ5khBbnx+SNOXdYFoRqUoXUNlM8=;
+        s=default; t=1603809089;
+        bh=1Gr1VumVpL/J3/Rg8pZcI647T5nB3p5ZEscPdFL9Po4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GqPJWY7tD66Tp0iWYj4q8rgYKD4MeKPTAalzggOQXysguQZfAQUISvPwidqYFdmt5
-         iH14+kOE/J+uAIQi7hSoKnOegbpYjwBqyI+U1bYPRKj9XtTQFBDtQyvMD4MlQklewv
-         7+L0S/szJBP2Unu44kDjSUOGDXXkBS+ZDOPGvrko=
+        b=QIbfzh8q2s1enLB7E3cwZKKMgkz4Jt/sGXFRBGwFxa68a/6J/j2IOb2qdeG9fVh2I
+         LZSQUQ//xsAMzyjVZE51T/pGoRqRwa6t8gmmkHzb1NjBzOjmdyfOjdMeN2JHefHQ7v
+         efF0P1i+zKBxkJU40gjMI6UkPL71pZePG02yP4z4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/408] crypto: algif_skcipher - EBUSY on aio should be an error
-Date:   Tue, 27 Oct 2020 14:50:05 +0100
-Message-Id: <20201027135458.169072692@linuxfoundation.org>
+Subject: [PATCH 5.4 071/408] media: tuner-simple: fix regression in simple_set_radio_freq
+Date:   Tue, 27 Oct 2020 14:50:09 +0100
+Message-Id: <20201027135458.358601510@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -42,35 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 2a05b029c1ee045b886ebf9efef9985ca23450de ]
+[ Upstream commit 505bfc2a142f12ce7bc7a878b44abc3496f2e747 ]
 
-I removed the MAY_BACKLOG flag on the aio path a while ago but
-the error check still incorrectly interpreted EBUSY as success.
-This may cause the submitter to wait for a request that will never
-complete.
+clang static analysis reports this problem
 
-Fixes: dad419970637 ("crypto: algif_skcipher - Do not set...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+tuner-simple.c:714:13: warning: Assigned value is
+  garbage or undefined
+        buffer[1] = buffer[3];
+                  ^ ~~~~~~~~~
+In simple_set_radio_freq buffer[3] used to be done
+in-function with a switch of tuner type, now done
+by a call to simple_radio_bandswitch which has this case
+
+	case TUNER_TENA_9533_DI:
+	case TUNER_YMEC_TVF_5533MF:
+		tuner_dbg("This tuner doesn't ...
+		return 0;
+
+which does not set buffer[3].  In the old logic, this case
+would have returned 0 from simple_set_radio_freq.
+
+Recover this old behavior by returning an error for this
+codition. Since the old simple_set_radio_freq behavior
+returned a 0, do the same.
+
+Fixes: c7a9f3aa1e1b ("V4L/DVB (7129): tuner-simple: move device-specific code into three separate functions")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/algif_skcipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/tuners/tuner-simple.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index 81c4022285a7c..30069a92a9b22 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -123,7 +123,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 			crypto_skcipher_decrypt(&areq->cra_u.skcipher_req);
+diff --git a/drivers/media/tuners/tuner-simple.c b/drivers/media/tuners/tuner-simple.c
+index b6e70fada3fb2..8fb186b25d6af 100644
+--- a/drivers/media/tuners/tuner-simple.c
++++ b/drivers/media/tuners/tuner-simple.c
+@@ -500,7 +500,7 @@ static int simple_radio_bandswitch(struct dvb_frontend *fe, u8 *buffer)
+ 	case TUNER_TENA_9533_DI:
+ 	case TUNER_YMEC_TVF_5533MF:
+ 		tuner_dbg("This tuner doesn't have FM. Most cards have a TEA5767 for FM\n");
+-		return 0;
++		return -EINVAL;
+ 	case TUNER_PHILIPS_FM1216ME_MK3:
+ 	case TUNER_PHILIPS_FM1236_MK3:
+ 	case TUNER_PHILIPS_FMD1216ME_MK3:
+@@ -702,7 +702,8 @@ static int simple_set_radio_freq(struct dvb_frontend *fe,
+ 		    TUNER_RATIO_SELECT_50; /* 50 kHz step */
  
- 		/* AIO operation in progress */
--		if (err == -EINPROGRESS || err == -EBUSY)
-+		if (err == -EINPROGRESS)
- 			return -EIOCBQUEUED;
+ 	/* Bandswitch byte */
+-	simple_radio_bandswitch(fe, &buffer[0]);
++	if (simple_radio_bandswitch(fe, &buffer[0]))
++		return 0;
  
- 		sock_put(sk);
+ 	/* Convert from 1/16 kHz V4L steps to 1/20 MHz (=50 kHz) PLL steps
+ 	   freq * (1 Mhz / 16000 V4L steps) * (20 PLL steps / 1 MHz) =
 -- 
 2.25.1
 
