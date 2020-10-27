@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560BA29B452
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF10929B4C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762474AbgJ0PAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58608 "EHLO mail.kernel.org"
+        id S1788603AbgJ0PAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1782741AbgJ0O5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:57:35 -0400
+        id S2900648AbgJ0O4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:56:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D8B620714;
-        Tue, 27 Oct 2020 14:57:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCD1D22202;
+        Tue, 27 Oct 2020 14:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810654;
-        bh=kLe7/vY0Ls6IeBaiIiu8SqNpxvuanMu5PQdyxxmZd2s=;
+        s=default; t=1603810594;
+        bh=JRLSTeeSFm2/jdP3W9a+M6SxnV/Sj8bzuRaqM4XN+Rc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kB0FE2+jGgNVTtUPrmyORdssw6AN4HbMiRFwKkoYej79+XRd2yGzy/a04RPVDco/W
-         L4miEVOF/9jUWrHE1gcmCqIS3dNZO/sif/0a1evk6ZHawza8eG4OKLM0Z5/BOvgclF
-         E5KupJFBUdFdVBjL/Dy3Smi/kLsfEHr0AXNb7CEM=
+        b=NVXddm4zWba+FtPknZXwGBg4OUsfEXJUohMpsqGr/rL8FeZWc9FPaB7+HAbLIahiH
+         Xd6SW3K3KMoq3UW3KiT/wJTLz9+DGmGjqd2Ee1fbScXd5Lw/6tNCknsB1eLMiXsHNU
+         7o+e+DnTzlWDF7WNd6S6dhqh3zli5RNPGMIyaXd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Quinn Tran <quinn.tran@cavium.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 175/633] scsi: qla2xxx: Fix the size used in a dma_free_coherent() call
-Date:   Tue, 27 Oct 2020 14:48:38 +0100
-Message-Id: <20201027135530.891528596@linuxfoundation.org>
+Subject: [PATCH 5.8 177/633] scsi: qla2xxx: Fix wrong return value in qla_nvme_register_hba()
+Date:   Tue, 27 Oct 2020 14:48:40 +0100
+Message-Id: <20201027135530.990257113@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,37 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 650b323c8e7c3ac4830a20895b1d444fd68dd787 ]
+[ Upstream commit ca4fb89a3d714a770e9c73c649da830f3f4a5326 ]
 
-Update the size used in 'dma_free_coherent()' in order to match the one
-used in the corresponding 'dma_alloc_coherent()'.
+On an error exit path, a negative error code should be returned instead of
+a positive return value.
 
-[mkp: removed memset() hunk that has already been addressed]
-
-Link: https://lore.kernel.org/r/20200802110721.677707-1-christophe.jaillet@wanadoo.fr
-Fixes: 4161cee52df8 ("[SCSI] qla4xxx: Add host statistics support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20200802111530.5020-1-tianjia.zhang@linux.alibaba.com
+Fixes: 8777e4314d39 ("scsi: qla2xxx: Migrate NVME N2N handling into state machine")
+Cc: Quinn Tran <quinn.tran@cavium.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_mbx.c | 2 +-
+ drivers/scsi/qla2xxx/qla_nvme.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index fdb2ce7acb912..9f5d3aa1d8745 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -4908,7 +4908,7 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t *vha)
- 		    "Done %s.\n", __func__);
- 	}
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index 262dfd7635a48..7b14fd1cb0309 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -683,7 +683,7 @@ int qla_nvme_register_hba(struct scsi_qla_host *vha)
+ 	struct nvme_fc_port_template *tmpl;
+ 	struct qla_hw_data *ha;
+ 	struct nvme_fc_port_info pinfo;
+-	int ret = EINVAL;
++	int ret = -EINVAL;
  
--	dma_free_coherent(&ha->pdev->dev, DMA_POOL_SIZE,
-+	dma_free_coherent(&ha->pdev->dev, ELS_CMD_MAP_SIZE,
- 	   els_cmd_map, els_cmd_map_dma);
- 
- 	return rval;
+ 	if (!IS_ENABLED(CONFIG_NVME_FC))
+ 		return ret;
 -- 
 2.25.1
 
