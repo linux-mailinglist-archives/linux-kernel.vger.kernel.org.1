@@ -2,267 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69F129C10A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1200B29C106
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818633AbgJ0RVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:21:00 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46598 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1818196AbgJ0RSH (ORCPT
+        id S1818524AbgJ0RUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:20:53 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:18763 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1818331AbgJ0RTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:18:07 -0400
-Received: by mail-ot1-f66.google.com with SMTP id j21so1786693ota.13;
-        Tue, 27 Oct 2020 10:18:06 -0700 (PDT)
+        Tue, 27 Oct 2020 13:19:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1603819144; x=1635355144;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=xhVQfJyBUq4O04kaSsEusHhCAE5k7mfFdtUZEBmdRaQ=;
+  b=HHtYfdAQCtWErd06A1HM0nBh/wwzyKTjTxcAoUFzlSUjTfqH1Sh2cLfh
+   AO+7LTISn14ZN5QcRjCoeaFfSMMSCk0s+KO2kTpQI7MHem8beH0xq8r6i
+   mN1oZfU1nHn/fnfLaBQrrooAcOXOmw5vNaQA+ZDyc6qNY7t9lVvXtTDHJ
+   V3Ke4brZxe8dQNXm12Tu2Av9Fe+o7Jkknd527X34IJjge9SMiOPOrV7QB
+   aX94zdRL6Z5EL1QoolpdlDQiJonBTovXulLKHCf50gqTMJ/vrZdzD+WQ/
+   Zt61ZVz+YUtK602S47eVgh1PJaLB7K2XbBxdye3Ylnoeb4H+xwtgmO6uk
+   Q==;
+IronPort-SDR: BWmxHnfwfJ8Wk13cSGmmJkCJe3VuzrBqzIqKtSpe+nCCpob+R022OZb+qQmDBncOh8pBGWaFVJ
+ euxNaae0P4gv3xQWTjQtvH9ct/0Vi9d+j/34qEujifYqbZe5B/B2KLR8rbJxb03ugxnu4brcJv
+ 9naOcbXlwT0X3MwbK9t6M69f0UpSSwGTXVify2cO4Mk/Vis/KuxgjREjO1DprQNukcSampQ1Wp
+ Iz1VfBEbsCOJ5O4H8a0Arl5MLXKzWSXdRwQP06iPkOMOGccd81PKIl8QfD9DrivHZuVepUIcDc
+ GR0=
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="101132432"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Oct 2020 10:19:03 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 27 Oct 2020 10:19:03 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 27 Oct 2020 10:19:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XgXCYkW0vbjX53wsUxqM9XVHJT8FLjBZ/y9FuIvbyINoogYbNlEMxfMsIsBKM5IwlCf5wN1o/1KQ/J9D3YDVypZSV4j+tpR796zCpvdphVuhFQO3SEAWThyC5RQPtyevROn3KEu8v8INgc5bAjbjaR592GzuruBazwAuptHvfFaEwphTckjR6SB8GVDvQObczyOZu+aa2wU3L9i3XUdPLmWDLjAp/MGkoB2IjKmPw8fxvsaRC383C87qS4fLLClZu+NrYZImc0dsWoIUKrAREZ+8kQNdIkFqNqGfKDd78QOhzbgC2CAnaqe+xyTYG/lVXbrUORw8zPpzHpu9HjjhOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xhVQfJyBUq4O04kaSsEusHhCAE5k7mfFdtUZEBmdRaQ=;
+ b=PeqmIxod0TjTLjOFaMqkgEIfoAjR5EgOjMBlvxf5mewQ4REkmLxXELwg9mFVpyNC/QPZu9tBZdzKHjVsKLR1sLD/UjPY53ArauQPI+J1jv+f9284Ai1SbLBASJsZ3O/UcjInE0Ur1xjxEfhVACEFEiZMPhif1ot424qqvbtuWrCt77mD7jPqJK0Cru3JjyV3kYgypChMaOEUDWxDxMpYPgjyJcbAKxEhEFefst13Q7U9km91WkNEE0wXcE6mqbBC18p0y56SgCunerlOzqFBJZ4xNx5XY9Ediwn/HvDXQ4WqORf4qGUaEunHhHBuASNFp2wXD1sTGtAlwCxWjUmp9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7H+Lg0qir4fBM/+Ge4cbBHa1JZjzTa4EjScqkxv75EI=;
-        b=KzyV1rtFBY0FsDlMAcdbe1mlCFW2yUgg+t5Ggq0mdbbIAOs4NqSAZspO8AW009/Sf+
-         DCYedEujAbhwbvKdWYIzFJM7IN8EucnSNiwT9hkuYTRiC3mxADH90V+JWbdPvkO6O8gq
-         +wbkiVJ66G+/CX2ojuhgLaoLyeGP1d5Q5/t/vJ7Ae1mRNkCm9QtVLd3WlSdPaPSLU1Ah
-         feHRFfmFIk2nuFBuxXoCJdna8nfE3AUSE2ikQHM3GKScKU9lbWTWJqNwL1wT7JdN6E4z
-         bARsvNv+Zhn5WIgNrd5KYOom6emyQQ39seFr/zHq7wObI2z6kMqPuQrUuGuGv6yw24yr
-         TrzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7H+Lg0qir4fBM/+Ge4cbBHa1JZjzTa4EjScqkxv75EI=;
-        b=PEo6r5dCFxyV9ChE1RpRzK8cMqKSblpPiz8ZBnOhSEoV3RTo3+8RRFtiHSy2DCga3q
-         AzfWuPwI3SCIbDQ/kzlE5mDHNCdH7dUB1c4PFwjczOeSCWUjDu7PbS/gGxuwXYdJT6DS
-         DofLHn/+oPs1jXF6x2k0B/XiHz70ie8Hu+SdtUPEz2uVpQ54WwMRc/1znQl9qG7N+g0r
-         ohHWEhcutImFvgO4DBZ1sYntJwbu30aUu4iO6TmRJ+Ezvfks7wFPBZNdM3Qf63agIt2Y
-         /B38VTfS6HJqJi+1D4SO2QDd2CiBodWZKlcW39Vw3nGp6G3eZPW3mgUBewxgDQ/olHB0
-         wdbg==
-X-Gm-Message-State: AOAM530kaB/M6FmLb4Zkph2POg/WzVqCYuPI4+bdAiItHjiWX/q2RUKE
-        jNB0smvh+yaYCnHf9pBQaxh8Eg+oVHENO7vhu34=
-X-Google-Smtp-Source: ABdhPJwzWyVfYKukORY4wKtLu0o3+DLLOeIXp59ba2ugDU+wHNUy1vC9oR1e5a7sL4gNc54GOjUkySZjCY5HbpGJIkI=
-X-Received: by 2002:a05:6830:134c:: with SMTP id r12mr2138684otq.240.1603819085680;
- Tue, 27 Oct 2020 10:18:05 -0700 (PDT)
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xhVQfJyBUq4O04kaSsEusHhCAE5k7mfFdtUZEBmdRaQ=;
+ b=ZR3x0gYWSYWi912e9RxAc4o9JDTxIc8h4G6TkhJ4UVAua0b9er1bAHHCAxdt98Kp0SNB0xgb0oOLjyeYLIBUvGG4PGbCPtgIODU8vFqq3comPsQ658eqfn5zv3aoNi7vKMF+IUxd4mVHQFgzrASjy31KVo6xvFJrNKV19rE3NOY=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB3024.namprd11.prod.outlook.com (2603:10b6:805:d9::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 27 Oct
+ 2020 17:19:01 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::7c1b:6212:7f1e:5c6f]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::7c1b:6212:7f1e:5c6f%3]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
+ 17:19:01 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <masonccyang@mxic.com.tw>, <broonie@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <boris.brezillon@collabora.com>, <matthias.bgg@gmail.com>
+CC:     <juliensu@mxic.com.tw>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <p.yadav@ti.com>, <ycllin@mxic.com.tw>
+Subject: Re: [PATCH v4 2/7] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+Thread-Topic: [PATCH v4 2/7] mtd: spi-nor: sfdp: parse xSPI Profile 1.0 table
+Thread-Index: AQHWrIVDOpu8fNTtIEWVa0cdn6EZ+Q==
+Date:   Tue, 27 Oct 2020 17:19:01 +0000
+Message-ID: <786750c7-595f-2954-5382-78005c71ade0@microchip.com>
+References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
+ <1590737775-4798-3-git-send-email-masonccyang@mxic.com.tw>
+In-Reply-To: <1590737775-4798-3-git-send-email-masonccyang@mxic.com.tw>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: mxic.com.tw; dkim=none (message not signed)
+ header.d=none;mxic.com.tw; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [86.127.107.112]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c731a01c-ac53-4f8d-db01-08d87a9c661a
+x-ms-traffictypediagnostic: SN6PR11MB3024:
+x-microsoft-antispam-prvs: <SN6PR11MB3024E301DAFACF43E6765680F0160@SN6PR11MB3024.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:635;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kMDMRN4yIpdmYUedhIMi2ZslfasO1MQ5VO63ufrgnaohDh5aWYG/VJZnbZRKqpieDAm906gn63NwfXGwnh4+1dTyJAU/VUTcaYZbMA7hmfT2G/j9uvnDbH2f08DJnqffNQoixxOwKfECcDMqOthPFviYyzyesM+tboS3gj0nQlp8/8aha5WsleeP4qloJJL2kAEuPUrmAla5vlJubMiWCzDmPs6y7zVlMrlJdIMkFriZcJ/05mHPAQ5b437ftMvoWW9HWpKqPiGQXcLX9jnb61OlSehWY+QQX6ekCgMVrZ16rn9BZjtOMlHVeQbXqafTWu1shHPgdfkFkCBE1TSh1yP3QojlaW9xaExA0IVBo4VfJ3+CIJDfoVbF0p1PmHWO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(136003)(396003)(376002)(346002)(366004)(478600001)(36756003)(54906003)(7416002)(26005)(66946007)(6486002)(83380400001)(66556008)(186003)(6506007)(66476007)(76116006)(66446008)(110136005)(53546011)(31696002)(64756008)(2616005)(8676002)(31686004)(86362001)(4326008)(8936002)(316002)(5660300002)(71200400001)(2906002)(6512007)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Z7DoZ8lnyLf4i5/MPkyQpKnRTe+twTygGNNuvab5q1+rBW4Y7rFJnQPOuqI/NUEfNVYZA/FnGb/Pk1jRP1O2Ih14erybL7aWyVbqMj0nN8DnVTGq7VS01qBEZX/COJEqF98j7cjt2ODQ4oEAXOqMxZANwAbrxjvJEQdmiUxFykLMdfLfYgsU5tIpdeSLEa0SAIzKUuhNj34BLnnODu9hcLc1bnzvpq1jP6U2OH6cnbNtzwE8BHHITZx0ZFcEhqMibZt0zcfDCZSTeY3Fj5d4Rx9QDxMvmRpIdg/z5jM8g9F36LMi9RaJ7Hg+qD+dKc+sHb6I/eX4lCUnGiVgSUvtXZ4wT/H9Fbwuh7Mf9xKQDSg3OSZUirQMgX4Yo78GVpCwZhuZpzNq1cqhws6fxjiCehjy4cVR35/EqiBQyYezlujuk1cuNLspOar2xksbfQxwQWnGJjSkERLlVLoFqqJvtP52COWfZcJHoZyw/QgnMTrjcoBAlojgwBbwjEPtw2WSu3ttj2fCmPD17LNLDOHLcWbEGaQtY+b1KDpmYgB2SXhuvDyV7kAeT/1Ub6tJb17yUPnqS6rDBmPh6ICbVvML89Dck0YkUOZogg1QTtAXMVILHm27EZADtLY8eEwExpUAQ/xClXR1/CxYrZrBe+n2XQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EFDFEC9D7E2CAC49B16614A6F375CF6A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200929080324.632523-1-tientzu@chromium.org> <CALiNf28k5C48_ivAeRW7sSEEXp0gd-h_1n03YH6jQhYhaCXUDA@mail.gmail.com>
- <CALWDO_UqPS2eETieKHN_enJ-x+6C0Y8C7A0Jjg=a+L=of7Fz1w@mail.gmail.com>
-In-Reply-To: <CALWDO_UqPS2eETieKHN_enJ-x+6C0Y8C7A0Jjg=a+L=of7Fz1w@mail.gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 27 Oct 2020 10:17:54 -0700
-Message-ID: <CABBYNZJd2hGhNreNWwVzghHsjycGo+a9h5s5cOY+dJx3pNJ-0A@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: Move force_bredr_smp debugfs into hci_debugfs_create_bredr
-To:     Alain Michaud <alainmichaud@google.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c731a01c-ac53-4f8d-db01-08d87a9c661a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2020 17:19:01.8820
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CbPM0YkmaqkSu0SRQkW1IoAY+fWc+cpY/PlVKid6oODrXxIW7eTXOsaDat5e6hZBOEA8trF2xuPWMn3uPS5B9dTYZMOGca8Pnd3BULWUrXk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3024
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:12 AM Alain Michaud <alainmichaud@google.com> wrote:
->
-> Friendly ping and adding my review-by tag.
->
->
-> On Wed, Oct 7, 2020 at 12:38 AM Claire Chang <tientzu@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > This patch is to fix the kernel error
-> > [   46.271811] debugfs: File 'force_bredr_smp' in directory 'hci0'
-> > already present!
-> >
-> > When powering off and on the bluetooth, the smp_register will try to create the
-> > force_bredr_smp entry again.
-> > Move the creation to hci_debugfs_create_bredr so the force_bredr_smp entry will
-> > only be created when HCI_SETUP and HCI_CONFIG are not set.
-> >
-> > Thanks,
-> > Claire
-> >
-> > On Tue, Sep 29, 2020 at 4:03 PM Claire Chang <tientzu@chromium.org> wrote:
-> > >
-> > > Avoid multiple attempts to create the debugfs entry, force_bredr_smp,
-> > > by moving it from the SMP registration to the BR/EDR controller init
-> > > section. hci_debugfs_create_bredr is only called when HCI_SETUP and
-> > > HCI_CONFIG is not set.
-> > >
-> > > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-
-Reviewed-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-
-> > > ---
-> > > v2: correct a typo in commit message
-> > >
-> > >  net/bluetooth/hci_debugfs.c | 50 +++++++++++++++++++++++++++++++++++++
-> > >  net/bluetooth/smp.c         | 44 ++------------------------------
-> > >  net/bluetooth/smp.h         |  2 ++
-> > >  3 files changed, 54 insertions(+), 42 deletions(-)
-> > >
-> > > diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-> > > index 5e8af2658e44..4626e0289a97 100644
-> > > --- a/net/bluetooth/hci_debugfs.c
-> > > +++ b/net/bluetooth/hci_debugfs.c
-> > > @@ -494,6 +494,45 @@ static int auto_accept_delay_get(void *data, u64 *val)
-> > >  DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
-> > >                         auto_accept_delay_set, "%llu\n");
-> > >
-> > > +static ssize_t force_bredr_smp_read(struct file *file,
-> > > +                                   char __user *user_buf,
-> > > +                                   size_t count, loff_t *ppos)
-> > > +{
-> > > +       struct hci_dev *hdev = file->private_data;
-> > > +       char buf[3];
-> > > +
-> > > +       buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP) ? 'Y' : 'N';
-> > > +       buf[1] = '\n';
-> > > +       buf[2] = '\0';
-> > > +       return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-> > > +}
-> > > +
-> > > +static ssize_t force_bredr_smp_write(struct file *file,
-> > > +                                    const char __user *user_buf,
-> > > +                                    size_t count, loff_t *ppos)
-> > > +{
-> > > +       struct hci_dev *hdev = file->private_data;
-> > > +       bool enable;
-> > > +       int err;
-> > > +
-> > > +       err = kstrtobool_from_user(user_buf, count, &enable);
-> > > +       if (err)
-> > > +               return err;
-> > > +
-> > > +       err = smp_force_bredr(hdev, enable);
-> > > +       if (err)
-> > > +               return err;
-> > > +
-> > > +       return count;
-> > > +}
-> > > +
-> > > +static const struct file_operations force_bredr_smp_fops = {
-> > > +       .open           = simple_open,
-> > > +       .read           = force_bredr_smp_read,
-> > > +       .write          = force_bredr_smp_write,
-> > > +       .llseek         = default_llseek,
-> > > +};
-> > > +
-> > >  static int idle_timeout_set(void *data, u64 val)
-> > >  {
-> > >         struct hci_dev *hdev = data;
-> > > @@ -589,6 +628,17 @@ void hci_debugfs_create_bredr(struct hci_dev *hdev)
-> > >         debugfs_create_file("voice_setting", 0444, hdev->debugfs, hdev,
-> > >                             &voice_setting_fops);
-> > >
-> > > +       /* If the controller does not support BR/EDR Secure Connections
-> > > +        * feature, then the BR/EDR SMP channel shall not be present.
-> > > +        *
-> > > +        * To test this with Bluetooth 4.0 controllers, create a debugfs
-> > > +        * switch that allows forcing BR/EDR SMP support and accepting
-> > > +        * cross-transport pairing on non-AES encrypted connections.
-> > > +        */
-> > > +       if (!lmp_sc_capable(hdev))
-> > > +               debugfs_create_file("force_bredr_smp", 0644, hdev->debugfs,
-> > > +                                   hdev, &force_bredr_smp_fops);
-> > > +
-> > >         if (lmp_ssp_capable(hdev)) {
-> > >                 debugfs_create_file("ssp_debug_mode", 0444, hdev->debugfs,
-> > >                                     hdev, &ssp_debug_mode_fops);
-> > > diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
-> > > index 433227f96c73..8b817e4358fd 100644
-> > > --- a/net/bluetooth/smp.c
-> > > +++ b/net/bluetooth/smp.c
-> > > @@ -3353,31 +3353,8 @@ static void smp_del_chan(struct l2cap_chan *chan)
-> > >         l2cap_chan_put(chan);
-> > >  }
-> > >
-> > > -static ssize_t force_bredr_smp_read(struct file *file,
-> > > -                                   char __user *user_buf,
-> > > -                                   size_t count, loff_t *ppos)
-> > > +int smp_force_bredr(struct hci_dev *hdev, bool enable)
-> > >  {
-> > > -       struct hci_dev *hdev = file->private_data;
-> > > -       char buf[3];
-> > > -
-> > > -       buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP) ? 'Y': 'N';
-> > > -       buf[1] = '\n';
-> > > -       buf[2] = '\0';
-> > > -       return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-> > > -}
-> > > -
-> > > -static ssize_t force_bredr_smp_write(struct file *file,
-> > > -                                    const char __user *user_buf,
-> > > -                                    size_t count, loff_t *ppos)
-> > > -{
-> > > -       struct hci_dev *hdev = file->private_data;
-> > > -       bool enable;
-> > > -       int err;
-> > > -
-> > > -       err = kstrtobool_from_user(user_buf, count, &enable);
-> > > -       if (err)
-> > > -               return err;
-> > > -
-> > >         if (enable == hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
-> > >                 return -EALREADY;
-> > >
-> > > @@ -3399,16 +3376,9 @@ static ssize_t force_bredr_smp_write(struct file *file,
-> > >
-> > >         hci_dev_change_flag(hdev, HCI_FORCE_BREDR_SMP);
-> > >
-> > > -       return count;
-> > > +       return 0;
-> > >  }
-> > >
-> > > -static const struct file_operations force_bredr_smp_fops = {
-> > > -       .open           = simple_open,
-> > > -       .read           = force_bredr_smp_read,
-> > > -       .write          = force_bredr_smp_write,
-> > > -       .llseek         = default_llseek,
-> > > -};
-> > > -
-> > >  int smp_register(struct hci_dev *hdev)
-> > >  {
-> > >         struct l2cap_chan *chan;
-> > > @@ -3433,17 +3403,7 @@ int smp_register(struct hci_dev *hdev)
-> > >
-> > >         hdev->smp_data = chan;
-> > >
-> > > -       /* If the controller does not support BR/EDR Secure Connections
-> > > -        * feature, then the BR/EDR SMP channel shall not be present.
-> > > -        *
-> > > -        * To test this with Bluetooth 4.0 controllers, create a debugfs
-> > > -        * switch that allows forcing BR/EDR SMP support and accepting
-> > > -        * cross-transport pairing on non-AES encrypted connections.
-> > > -        */
-> > >         if (!lmp_sc_capable(hdev)) {
-> > > -               debugfs_create_file("force_bredr_smp", 0644, hdev->debugfs,
-> > > -                                   hdev, &force_bredr_smp_fops);
-> > > -
-> > >                 /* Flag can be already set here (due to power toggle) */
-> > >                 if (!hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
-> > >                         return 0;
-> > > diff --git a/net/bluetooth/smp.h b/net/bluetooth/smp.h
-> > > index 121edadd5f8d..fc35a8bf358e 100644
-> > > --- a/net/bluetooth/smp.h
-> > > +++ b/net/bluetooth/smp.h
-> > > @@ -193,6 +193,8 @@ bool smp_irk_matches(struct hci_dev *hdev, const u8 irk[16],
-> > >  int smp_generate_rpa(struct hci_dev *hdev, const u8 irk[16], bdaddr_t *rpa);
-> > >  int smp_generate_oob(struct hci_dev *hdev, u8 hash[16], u8 rand[16]);
-> > >
-> > > +int smp_force_bredr(struct hci_dev *hdev, bool enable);
-> > > +
-> > >  int smp_register(struct hci_dev *hdev);
-> > >  void smp_unregister(struct hci_dev *hdev);
-> > >
-> > > --
-> > > 2.28.0.618.gf4bc123cb7-goog
-> > >
-
-
-
--- 
-Luiz Augusto von Dentz
+SGksIE1hc29uLCBZQyBMaW4sDQoNCk9uIDUvMjkvMjAgMTA6MzYgQU0sIE1hc29uIFlhbmcgd3Jv
+dGU6DQo+IEpFU0QyNTEsIHhTUEkgcHJvZmlsZSAxLjAgdGFibGUgc3VwcG9ydHMgb2N0YWwgRFRS
+IG1vZGUuDQo+IEV4dHJhY3QgaW5mb3JtYXRpb24gbGlrZSB0aGUgZmFzdCByZWFkIG9wY29kZSwg
+ZHVtbXkgY3ljbGVzIGZvciB2YXJpb3VzDQo+IGZyZXF1ZW5jaWVzLCB0aGUgbnVtYmVyIG9mIGR1
+bW15IGN5Y2xlcyBuZWVkZWQgZm9yIGEgUmVhZCBTdGF0dXMNCj4gUmVnaXN0ZXIgY29tbWFuZCwg
+dGhlIG51bWJlciBvZiBhZGRyZXNzIGJ5dGVzIG5lZWRlZCBmb3IgYSBSZWFkDQo+IFN0YXR1cyBS
+ZWdpc3RlciBjb21tYW5kLCByZWFkIHZvbGF0aWxlIHJlZ2lzdGVyIGNvbW1hbmQgYW5kIHdyaXRl
+DQo+IHZvbGF0aWxlIHJlZ2lzdGVyIGNvbW1hbmQuDQo+IA0KPiBBY2NvcmRpbmcgdG8gQkZQVCAy
+MHRoIERXT1JEIG9mIG9jdGFsIG1heGltdW0gc3BlZWQsIGRyaXZlciBnZXQgaXQncw0KPiBzcGVj
+aWZpYyBkdW1teSBjeWNsZXMgZnJvbSBwcm9maWxlIDEuMCB0YWJsZSBhbmQgdGhlbiBjb3VsZCB1
+cGRhdGUNCj4gaXQgdG8gZGV2aWNlIGJ5IHRoZWlyIGZpeHVwIGhvb2tzLg0KPiANCj4gU2luY2Ug
+ZHJpdmVyIGdldCBvY3RhbCBEVFIgcmVhZCBvcGNvZGUgYW5kIHRoZW4gc2V0IHJlYWQgc2V0dGlu
+Z3MsDQo+IGV4cG9zZSBzcGlfbm9yX3NldF9yZWFkX3NldHRpbmdzKCkgaW4gY29yZS5oLg0KPiAN
+Cj4gU2lnbmVkLW9mZi1ieTogTWFzb24gWWFuZyA8bWFzb25jY3lhbmdAbXhpYy5jb20udHc+DQo+
+IC0tLQ0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgfCAgIDIgKy0NCj4gIGRyaXZlcnMv
+bXRkL3NwaS1ub3IvY29yZS5oIHwgIDE2ICsrKysrKysNCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Iv
+c2ZkcC5jIHwgMTA2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+Kw0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAxMjMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0K
+PiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9t
+dGQvc3BpLW5vci9jb3JlLmMNCj4gaW5kZXggMWFiNDM4Ni4uMzc5OTQxNyAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9jb3JlLmMNCj4gQEAgLTIyMDQsNyArMjIwNCw3IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9jaGVj
+ayhzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgCXJldHVybiAwOw0KPiAgfQ0KPiAgDQo+IC1zdGF0
+aWMgdm9pZA0KPiArdm9pZA0KPiAgc3BpX25vcl9zZXRfcmVhZF9zZXR0aW5ncyhzdHJ1Y3Qgc3Bp
+X25vcl9yZWFkX2NvbW1hbmQgKnJlYWQsDQo+ICAJCQkgIHU4IG51bV9tb2RlX2Nsb2NrcywNCj4g
+IAkJCSAgdTggbnVtX3dhaXRfc3RhdGVzLA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3Bp
+LW5vci9jb3JlLmggYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaA0KPiBpbmRleCA3YTM2YjIy
+Li5hMzNmODA3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaA0KPiAr
+KysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaA0KPiBAQCAtMTkxLDYgKzE5MSwxMiBAQCBz
+dHJ1Y3Qgc3BpX25vcl9sb2NraW5nX29wcyB7DQo+ICAgKiBAc2l6ZToJCXRoZSBmbGFzaCBtZW1v
+cnkgZGVuc2l0eSBpbiBieXRlcy4NCj4gICAqIEBwYWdlX3NpemU6CQl0aGUgcGFnZSBzaXplIG9m
+IHRoZSBTUEkgTk9SIGZsYXNoIG1lbW9yeS4NCj4gICAqIEBvY3RhbF9tYXhfc3BlZWQ6CW1heGlt
+dW0gb3BlcmF0aW9uIHNwZWVkIG9mIGRldmljZSBpbiBvY3RhbCBtb2RlLg0KPiArICogQHJkc3Jf
+ZHVtbXk6CQlkdW1teSBjeWNsZXMgbmVlZGVkIGZvciBSZWFkIFN0YXR1cyBSZWdpc3RlciBjb21t
+YW5kLg0KPiArICogQHJkc3JfYWRkcl9uYnl0ZXM6CWR1bW15IGFkZHJlc3MgYnl0ZXMgbmVlZGVk
+IGZvciBSZWFkIFN0YXR1cyBSZWdpc3Rlcg0KPiArICoJCQljb21tYW5kLg0KPiArICogQHJkX3Jl
+Z19jbWQ6CQlyZWFkIHZvbGF0aWxlIHJlZ2lzdGVyIGNvbW1hbmQgZm9yIHhTUEkgZGV2aWNlLg0K
+PiArICogQHdyX3JlZ19jbWQ6CQl3cml0ZSB2b2xhdGlsZSByZWdpc3RlciBjb21tYW5kIGZvciB4
+U1BJIGRldmljZS4NCg0KQ2FuIGFsbCB0aGUgdm9sYXRpbGUgcmVnaXN0ZXJzIGJlIGFjY2Vzc2Vk
+IHdpdGggdGhlc2UgY29tbWFuZHM/DQpUaGUgcHJvZmlsZTEuMCB0YWJsZSBsYWNrcyBkZXNjcmlw
+dGlvbi4NCg0KPiArICogQGR1bW15X2N5Y2xlczoJZHVtbXkgY3ljbGVzIHVzZWQgZm9yIHZhcmlv
+dXMgZnJlcXVlbmNpZXMNCj4gICAqIEBod2NhcHM6CQlkZXNjcmliZXMgdGhlIHJlYWQgYW5kIHBh
+Z2UgcHJvZ3JhbSBoYXJkd2FyZQ0KPiAgICoJCQljYXBhYmlsaXRpZXMuDQo+ICAgKiBAcmVhZHM6
+CQlyZWFkIGNhcGFiaWxpdGllcyBvcmRlcmVkIGJ5IHByaW9yaXR5OiB0aGUgaGlnaGVyIGluZGV4
+DQo+IEBAIC0yMTQsNiArMjIwLDExIEBAIHN0cnVjdCBzcGlfbm9yX2ZsYXNoX3BhcmFtZXRlciB7
+DQo+ICAJdTY0CQkJCXNpemU7DQo+ICAJdTMyCQkJCXBhZ2Vfc2l6ZTsNCj4gIAl1MTYJCQkJb2N0
+YWxfbWF4X3NwZWVkOw0KPiArCXU4CQkJCXJkc3JfZHVtbXk7DQo+ICsJdTgJCQkJcmRzcl9hZGRy
+X25ieXRlczsNCj4gKwl1OAkJCQlyZF9yZWdfY21kOw0KPiArCXU4CQkJCXdyX3JlZ19jbWQ7DQo+
+ICsJdTgJCQkJZHVtbXlfY3ljbGVzOw0KPiAgDQo+ICAJc3RydWN0IHNwaV9ub3JfaHdjYXBzCQlo
+d2NhcHM7DQo+ICAJc3RydWN0IHNwaV9ub3JfcmVhZF9jb21tYW5kCXJlYWRzW1NOT1JfQ01EX1JF
+QURfTUFYXTsNCj4gQEAgLTQyMCw2ICs0MzEsMTEgQEAgc3NpemVfdCBzcGlfbm9yX3dyaXRlX2Rh
+dGEoc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IHRvLCBzaXplX3QgbGVuLA0KPiAgDQo+ICBp
+bnQgc3BpX25vcl9od2NhcHNfcmVhZDJjbWQodTMyIGh3Y2Fwcyk7DQo+ICB1OCBzcGlfbm9yX2Nv
+bnZlcnRfM3RvNF9yZWFkKHU4IG9wY29kZSk7DQo+ICt2b2lkIHNwaV9ub3Jfc2V0X3JlYWRfc2V0
+dGluZ3Moc3RydWN0IHNwaV9ub3JfcmVhZF9jb21tYW5kICpyZWFkLA0KPiArCQkJICAgICAgIHU4
+IG51bV9tb2RlX2Nsb2NrcywNCj4gKwkJCSAgICAgICB1OCBudW1fd2FpdF9zdGF0ZXMsDQo+ICsJ
+CQkgICAgICAgdTggb3Bjb2RlLA0KPiArCQkJICAgICAgIGVudW0gc3BpX25vcl9wcm90b2NvbCBw
+cm90byk7DQo+ICB2b2lkIHNwaV9ub3Jfc2V0X3BwX3NldHRpbmdzKHN0cnVjdCBzcGlfbm9yX3Bw
+X2NvbW1hbmQgKnBwLCB1OCBvcGNvZGUsDQo+ICAJCQkgICAgIGVudW0gc3BpX25vcl9wcm90b2Nv
+bCBwcm90byk7DQo+ICANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5j
+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMNCj4gaW5kZXggNGQxM2Y2Ni4uMjdhNGRlNCAx
+MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMNCj4gKysrIGIvZHJpdmVy
+cy9tdGQvc3BpLW5vci9zZmRwLmMNCj4gQEAgLTIwLDYgKzIwLDcgQEANCj4gICNkZWZpbmUgU0ZE
+UF9CRlBUX0lECQkweGZmMDAJLyogQmFzaWMgRmxhc2ggUGFyYW1ldGVyIFRhYmxlICovDQo+ICAj
+ZGVmaW5lIFNGRFBfU0VDVE9SX01BUF9JRAkweGZmODEJLyogU2VjdG9yIE1hcCBUYWJsZSAqLw0K
+PiAgI2RlZmluZSBTRkRQXzRCQUlUX0lECQkweGZmODQgIC8qIDQtYnl0ZSBBZGRyZXNzIEluc3Ry
+dWN0aW9uIFRhYmxlICovDQo+ICsjZGVmaW5lIFNGRFBfUFJPRklMRTFfSUQJMHhmZjA1CS8qIHhT
+UEkgUHJvZmlsZSAxLjAgdGFibGUuICovDQo+ICANCj4gICNkZWZpbmUgU0ZEUF9TSUdOQVRVUkUJ
+CTB4NTA0NDQ2NTNVDQo+ICAjZGVmaW5lIFNGRFBfSkVTRDIxNl9NQUpPUgkxDQo+IEBAIC0yNyw2
+ICsyOCwyNyBAQA0KPiAgI2RlZmluZSBTRkRQX0pFU0QyMTZBX01JTk9SCTUNCj4gICNkZWZpbmUg
+U0ZEUF9KRVNEMjE2Ql9NSU5PUgk2DQo+ICANCj4gKy8qIHhTUEkgUHJvZmlsZSAxLjAgdGFibGUg
+KGZyb20gSkVTRDIxNkQuMDEpLiAqLw0KPiArI2RlZmluZSBYU1BJX1BGMV9EV09SRDFfUkRfQ01E
+ICAgICAgICAgICAgICAgICAgR0VOTUFTSygxNSwgOCkNCj4gKyNkZWZpbmUgWFNQSV9QRjFfRFdP
+UkQxX1JEU1JfQUREUl9CWVRFUyAgICAgICAgIEJJVCgyOSkNCj4gKyNkZWZpbmUgWFNQSV9QRjFf
+RFdPUkQxX1JEU1JfRFVNTVlfQ1lDTEVTICAgICAgIEJJVCgyOCkNCj4gKyNkZWZpbmUgWFNQSV9Q
+RjFfRFdPUkQyX1JEX1JFR19DTUQgICAgICAgICAgICAgIEdFTk1BU0soMzEsIDI0KQ0KPiArI2Rl
+ZmluZSBYU1BJX1BGMV9EV09SRDJfV1JfUkVHX0NNRCAgICAgICAgICAgICAgR0VOTUFTSygxNSwg
+OCkNCj4gKyNkZWZpbmUgWFNQSV9QRjFfRFVNTVlfQ1lDTEVTX0RFRkFVTFQJCTIwDQo+ICsjZGVm
+aW5lIFhTUElfRFdPUkQoeCkgICAoKHgpIC0gMSkNCj4gKyNkZWZpbmUgWFNQSV9EV09SRF9NQVgg
+IDUNCj4gKw0KPiArc3RydWN0IHNmZHBfeHNwaSB7DQo+ICsJdTMyIGR3b3Jkc1tYU1BJX0RXT1JE
+X01BWF07DQo+ICt9Ow0KPiArDQo+ICtzdHJ1Y3QgeHNwaV9kdW1teV9jeWNsZXMgew0KPiArCXUx
+NiBzcGVlZF9oejsJLyogU3BlZWQgTUh6ICovDQo+ICsJdTggZHdvcmRzOwkvKiBEd29yZHMgaW5k
+ZXggKi8NCj4gKwl1MzIgbWFzazsJLyogTWFzayAqLw0KPiArCXU4IHNoaWZ0OwkvKiBCaXQgc2hp
+ZnQgKi8NCj4gK307DQo+ICsNCj4gIC8qIEJhc2ljIEZsYXNoIFBhcmFtZXRlciBUYWJsZSAyMHRo
+IERXT1JELCBNYXggb3BlcmF0aW9uIHNwZWVkIG9mIGRldmljZSAqLw0KPiAgc3RydWN0IG9jdGFs
+X21heF9zcGVlZCB7DQo+ICAJdTggaWR4OyAvKiBCaXRzIHZhbHVlICovDQo+IEBAIC0xMTE3LDYg
+KzExMzksODYgQEAgc3RhdGljIGludCBzcGlfbm9yX3BhcnNlXzRiYWl0KHN0cnVjdCBzcGlfbm9y
+ICpub3IsDQo+ICB9DQo+ICANCj4gIC8qKg0KPiArICogc3BpX25vcl9wYXJzZV9wcm9maWxlMSgp
+IC0gcGFyc2UgdGhlIHhTUEkgUHJvZmlsZSAxLjAgdGFibGUNCj4gKyAqIEBub3I6CQlwb2ludGVy
+IHRvIGEgJ3N0cnVjdCBzcGlfbm9yJw0KPiArICogQHBhcmFtX2hlYWRlcjoJeHNwaSBwcm9maWxl
+IDEgcGFyYW1ldGVyIHRhYmxlIGhlYWRlcg0KPiArICogQHBhcmFtczoJCXBvaW50ZXIgdG8gdGhl
+ICdzdHJ1Y3Qgc3BpX25vcl9mbGFzaF9wYXJhbWV0ZXInIHRvIGJlLg0KPiArICoNCj4gKyAqIFJl
+dHVybjogMCBvbiBzdWNjZXNzLCAtZXJybm8gb3RoZXJ3aXNlLg0KPiArICovDQo+ICtzdGF0aWMg
+aW50IHNwaV9ub3JfcGFyc2VfcHJvZmlsZTEoc3RydWN0IHNwaV9ub3IgKm5vciwNCj4gKwkJCQkg
+IGNvbnN0IHN0cnVjdCBzZmRwX3BhcmFtZXRlcl9oZWFkZXIgKmhlYWRlciwNCj4gKwkJCQkgIHN0
+cnVjdCBzcGlfbm9yX2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zKQ0KPiArew0KPiArCXN0cnVjdCBz
+ZmRwX3hzcGkgcGZpbGUxOw0KPiArCXU4IG9wY29kZTsNCj4gKwl1MzIgaSwgYWRkcjsNCj4gKwlz
+aXplX3QgbGVuOw0KPiArCWludCByZXQ7DQo+ICsJc3RhdGljIGNvbnN0IHN0cnVjdCB4c3BpX2R1
+bW15X2N5Y2xlcyBkdW1teVtdID0gew0KPiArCQkvKiB7TUh6LCBEd29yZHMgaW5kZXgsIE1hc2ss
+IEJpdCBzaGlmdH0gKi8NCj4gKwkJeyAyMDAsIDQsIEdFTk1BU0soMTEsIDcpLCAgIDd9LA0KPiAr
+CQl7IDE2NiwgNSwgR0VOTUFTSygzMSwgMjcpLCAyN30sDQo+ICsJCXsgMTMzLCA1LCBHRU5NQVNL
+KDIxLCAxNyksIDE3fSwNCj4gKwkJeyAxMDAsIDUsIEdFTk1BU0soMTEsIDcpLCAgIDd9LA0KPiAr
+CX07DQo+ICsNCj4gKwlpZiAoaGVhZGVyLT5tYWpvciAhPSBTRkRQX0pFU0QyMTZfTUFKT1IgfHwN
+Cj4gKwkgICAgaGVhZGVyLT5sZW5ndGggPCBYU1BJX0RXT1JEX01BWCkNCj4gKwkJcmV0dXJuIC1F
+SU5WQUw7DQo+ICsNCj4gKwlsZW4gPSBtaW5fdChzaXplX3QsIHNpemVvZihwZmlsZTEpLA0KPiAr
+CQkgICAgaGVhZGVyLT5sZW5ndGggKiBzaXplb2YodTMyKSk7DQo+ICsNCj4gKwltZW1zZXQoJnBm
+aWxlMSwgMCwgc2l6ZW9mKHBmaWxlMSkpOw0KPiArDQo+ICsJYWRkciA9IFNGRFBfUEFSQU1fSEVB
+REVSX1BUUChoZWFkZXIpOw0KPiArCXJldCA9IHNwaV9ub3JfcmVhZF9zZmRwKG5vciwgYWRkciwg
+bGVuLCAmcGZpbGUxKTsNCj4gKwlpZiAocmV0KQ0KPiArCQlnb3RvIG91dDsNCj4gKw0KPiArCS8q
+IEZpeCBlbmRpYW5uZXNzIG9mIHRoZSB4U1BJIDEuMCBEV09SRHMuICovDQo+ICsJbGUzMl90b19j
+cHVfYXJyYXkocGZpbGUxLmR3b3JkcywgWFNQSV9EV09SRF9NQVgpOw0KPiArDQo+ICsJLyogR2V0
+IDhELThELThEIGZhc3QgcmVhZCBvcGNvZGUgYW5kIGR1bW15IGN5Y2xlcy4gKi8NCj4gKwlvcGNv
+ZGUgPSBGSUVMRF9HRVQoWFNQSV9QRjFfRFdPUkQxX1JEX0NNRCwNCj4gKwkJCSAgIHBmaWxlMS5k
+d29yZHNbWFNQSV9EV09SRCgxKV0pOw0KPiArDQo+ICsJaWYgKHBmaWxlMS5kd29yZHNbWFNQSV9E
+V09SRCgxKV0gJiBYU1BJX1BGMV9EV09SRDFfUkRTUl9BRERSX0JZVEVTKQ0KPiArCQlwYXJhbXMt
+PnJkc3JfYWRkcl9uYnl0ZXMgPSA0Ow0KPiArCWVsc2UNCj4gKwkJcGFyYW1zLT5yZHNyX2FkZHJf
+bmJ5dGVzID0gMDsNCj4gKw0KPiArCWlmIChwZmlsZTEuZHdvcmRzW1hTUElfRFdPUkQoMSldICYg
+WFNQSV9QRjFfRFdPUkQxX1JEU1JfRFVNTVlfQ1lDTEVTKQ0KPiArCQlwYXJhbXMtPnJkc3JfZHVt
+bXkgPSA4Ow0KPiArCWVsc2UNCj4gKwkJcGFyYW1zLT5yZHNyX2R1bW15ID0gNDsNCj4gKw0KPiAr
+CXBhcmFtcy0+cmRfcmVnX2NtZCA9IEZJRUxEX0dFVChYU1BJX1BGMV9EV09SRDJfUkRfUkVHX0NN
+RCwNCj4gKwkJCQkgICAgICAgcGZpbGUxLmR3b3Jkc1tYU1BJX0RXT1JEKDIpXSk7DQo+ICsJcGFy
+YW1zLT53cl9yZWdfY21kID0gRklFTERfR0VUKFhTUElfUEYxX0RXT1JEMl9XUl9SRUdfQ01ELA0K
+PiArCQkJCSAgICAgICBwZmlsZTEuZHdvcmRzW1hTUElfRFdPUkQoMildKTsNCj4gKw0KPiArCS8q
+IGFjY29yZGluZyB0byBCRlBUIDIwdGggRE9XUkQgdG8gZ2V0IGRldmljZXMgZHVtbXkgY3ljbGVz
+ICovDQo+ICsJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoZHVtbXkpOyBpKyspIHsNCj4gKwkJ
+aWYgKHBhcmFtcy0+b2N0YWxfbWF4X3NwZWVkID09IGR1bW15W2ldLnNwZWVkX2h6KSB7DQoNCldo
+eSBkbyB5b3UgaW50cm9kdWNlZCB0aGlzIHJlc3RyaWN0aW9uPyBUaGUgZHVtbXkgY3ljbGVzIGZp
+ZWxkcyB0aGVtc2VsdmVzDQpjYW4gYmUgdXNlZCB0byBkZXRlcm1pbmUgaWYgYSBzcGVlZCBpcyBz
+dXBwb3J0ZWQgb3Igbm90LiBBIHZhbHVlIGRpZmZlcmVudA0KdGhhbiB6ZXJvIGZvciB0aGUgZHVt
+bXkgY3ljbGVzIGZpZWxkcyBtZWFucyB0aGF0IHRoZSBjb3JyZXNwb25kaW5nIGZyZXF1ZW5jeQ0K
+aXMgc3VwcG9ydGVkLg0KDQpDaGVlcnMsDQp0YQ0KDQoNCj4gKwkJCXBhcmFtcy0+ZHVtbXlfY3lj
+bGVzID0gKGR1bW15W2ldLm1hc2sgJg0KPiArCQkJCXBmaWxlMS5kd29yZHNbWFNQSV9EV09SRChk
+dW1teVtpXS5kd29yZHMpXSkgPj4NCj4gKwkJCQlkdW1teVtpXS5zaGlmdDsNCj4gKwkJCWJyZWFr
+Ow0KPiArCQl9DQo+ICsJfQ0KPiArCWlmIChpID09IEFSUkFZX1NJWkUoZHVtbXkpKQ0KPiArCQlw
+YXJhbXMtPmR1bW15X2N5Y2xlcyA9IFhTUElfUEYxX0RVTU1ZX0NZQ0xFU19ERUZBVUxUOw0KPiAr
+DQo+ICsJc3BpX25vcl9zZXRfcmVhZF9zZXR0aW5ncygmcGFyYW1zLT5yZWFkc1tTTk9SX0NNRF9S
+RUFEXzhfOF84X0RUUl0sDQo+ICsJCQkJICAwLCBwYXJhbXMtPmR1bW15X2N5Y2xlcywNCj4gKwkJ
+CQkgIG9wY29kZSwgU05PUl9QUk9UT184XzhfOF9EVFIpOw0KPiArb3V0Og0KPiArCXJldHVybiBy
+ZXQ7DQo+ICt9DQo+ICsNCj4gKy8qKg0KPiAgICogc3BpX25vcl9wYXJzZV9zZmRwKCkgLSBwYXJz
+ZSB0aGUgU2VyaWFsIEZsYXNoIERpc2NvdmVyYWJsZSBQYXJhbWV0ZXJzLg0KPiAgICogQG5vcjoJ
+CXBvaW50ZXIgdG8gYSAnc3RydWN0IHNwaV9ub3InDQo+ICAgKiBAcGFyYW1zOgkJcG9pbnRlciB0
+byB0aGUgJ3N0cnVjdCBzcGlfbm9yX2ZsYXNoX3BhcmFtZXRlcicgdG8gYmUNCj4gQEAgLTEyMTcs
+NiArMTMxOSwxMCBAQCBpbnQgc3BpX25vcl9wYXJzZV9zZmRwKHN0cnVjdCBzcGlfbm9yICpub3Is
+DQo+ICAJCQllcnIgPSBzcGlfbm9yX3BhcnNlXzRiYWl0KG5vciwgcGFyYW1faGVhZGVyLCBwYXJh
+bXMpOw0KPiAgCQkJYnJlYWs7DQo+ICANCj4gKwkJY2FzZSBTRkRQX1BST0ZJTEUxX0lEOg0KPiAr
+CQkJZXJyID0gc3BpX25vcl9wYXJzZV9wcm9maWxlMShub3IsIHBhcmFtX2hlYWRlciwgcGFyYW1z
+KTsNCj4gKwkJCWJyZWFrOw0KPiArDQo+ICAJCWRlZmF1bHQ6DQo+ICAJCQlicmVhazsNCj4gIAkJ
+fQ0KPiANCg0K
