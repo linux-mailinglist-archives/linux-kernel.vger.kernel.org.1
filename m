@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2A329B21E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C709729B293
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761126AbgJ0OiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37122 "EHLO mail.kernel.org"
+        id S1762444AbgJ0Om4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761095AbgJ0Oh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:37:57 -0400
+        id S1761124AbgJ0OiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:38:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA944207BB;
-        Tue, 27 Oct 2020 14:37:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 837C8206B2;
+        Tue, 27 Oct 2020 14:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809476;
-        bh=a7tWooIq1JwVf+nKvVRDjSP9fBHenH+DxoBQ0HKZLSE=;
+        s=default; t=1603809482;
+        bh=oCslFUlESiEpVn7iFFjf5E+c/u+6AHCQp4TdHxfD4dQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oHXM2cgtz5S7rReCmwkN8Mtc6mClAeIlhye1w/rE+Tq4WkoYoFvc6iXprQ06TpMWL
-         SdlY1zu0Z1hzQuXx+V0gOG9gQHECwhZ3+1kFah3PB4yrGTGoBO85Ax7ApbR1UiwH3k
-         m0BeI9l2z1IgEFqyFgla9IMXHO4KUNiSn44Xam3E=
+        b=CXzSF2JQr+y9OVwNcJG4lx2PqmJQ9mrQ+LA1O8sLgfMY+VZeau+RRYMkRKTLarj0e
+         xEoY2NhzMC7MWi0UBaC3/Ber2DLVmF26yO2ra3xvnYPqjgeB7+xV7jYMtLhYNgj8PF
+         vISnFqzeycCj1chhUkTlIaF1rJ5C5TmYNEEo/L6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 209/408] mtd: mtdoops: Dont write panic data twice
-Date:   Tue, 27 Oct 2020 14:52:27 +0100
-Message-Id: <20201027135504.792874831@linuxfoundation.org>
+Subject: [PATCH 5.4 210/408] ARM: 9007/1: l2c: fix prefetch bits init in L2X0_AUX_CTRL using DT values
+Date:   Tue, 27 Oct 2020 14:52:28 +0100
+Message-Id: <20201027135504.838719771@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,47 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Guillaume Tucker <guillaume.tucker@collabora.com>
 
-[ Upstream commit c1cf1d57d1492235309111ea6a900940213a9166 ]
+[ Upstream commit 8e007b367a59bcdf484c81f6df9bd5a4cc179ca6 ]
 
-If calling mtdoops_write, don't also schedule work to be done later.
+The L310_PREFETCH_CTRL register bits 28 and 29 to enable data and
+instruction prefetch respectively can also be accessed via the
+L2X0_AUX_CTRL register.  They appear to be actually wired together in
+hardware between the registers.  Changing them in the prefetch
+register only will get undone when restoring the aux control register
+later on.  For this reason, set these bits in both registers during
+initialisation according to the devicetree property values.
 
-Although this appears to not be causing an issue, possibly because the
-scheduled work will never get done, it is confusing.
+Link: https://lore.kernel.org/lkml/76f2f3ad5e77e356e0a5b99ceee1e774a2842c25.1597061474.git.guillaume.tucker@collabora.com/
 
-Fixes: 016c1291ce70 ("mtd: mtdoops: do not use mtd->panic_write directly")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200903034217.23079-1-mark.tomlinson@alliedtelesis.co.nz
+Fixes: ec3bd0e68a67 ("ARM: 8391/1: l2c: add options to overwrite prefetching behavior")
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/mtdoops.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/arm/mm/cache-l2x0.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 4ced68be7ed7e..774970bfcf859 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -279,12 +279,13 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
- 	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
- 			     record_size - MTDOOPS_HEADER_SIZE, NULL);
+diff --git a/arch/arm/mm/cache-l2x0.c b/arch/arm/mm/cache-l2x0.c
+index 12c26eb88afbc..43d91bfd23600 100644
+--- a/arch/arm/mm/cache-l2x0.c
++++ b/arch/arm/mm/cache-l2x0.c
+@@ -1249,20 +1249,28 @@ static void __init l2c310_of_parse(const struct device_node *np,
  
--	/* Panics must be written immediately */
--	if (reason != KMSG_DUMP_OOPS)
-+	if (reason != KMSG_DUMP_OOPS) {
-+		/* Panics must be written immediately */
- 		mtdoops_write(cxt, 1);
--
--	/* For other cases, schedule work to write it "nicely" */
--	schedule_work(&cxt->work_write);
-+	} else {
-+		/* For other cases, schedule work to write it "nicely" */
-+		schedule_work(&cxt->work_write);
-+	}
- }
+ 	ret = of_property_read_u32(np, "prefetch-data", &val);
+ 	if (ret == 0) {
+-		if (val)
++		if (val) {
+ 			prefetch |= L310_PREFETCH_CTRL_DATA_PREFETCH;
+-		else
++			*aux_val |= L310_PREFETCH_CTRL_DATA_PREFETCH;
++		} else {
+ 			prefetch &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
++			*aux_val &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
++		}
++		*aux_mask &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
+ 	} else if (ret != -EINVAL) {
+ 		pr_err("L2C-310 OF prefetch-data property value is missing\n");
+ 	}
  
- static void mtdoops_notify_add(struct mtd_info *mtd)
+ 	ret = of_property_read_u32(np, "prefetch-instr", &val);
+ 	if (ret == 0) {
+-		if (val)
++		if (val) {
+ 			prefetch |= L310_PREFETCH_CTRL_INSTR_PREFETCH;
+-		else
++			*aux_val |= L310_PREFETCH_CTRL_INSTR_PREFETCH;
++		} else {
+ 			prefetch &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
++			*aux_val &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
++		}
++		*aux_mask &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
+ 	} else if (ret != -EINVAL) {
+ 		pr_err("L2C-310 OF prefetch-instr property value is missing\n");
+ 	}
 -- 
 2.25.1
 
