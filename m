@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9D329C63E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD7029C6F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1825961AbgJ0SOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:14:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
+        id S2900859AbgJ0OAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:00:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756418AbgJ0ONG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:13:06 -0400
+        id S1753328AbgJ0N74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:59:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E08F7206F7;
-        Tue, 27 Oct 2020 14:13:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CA3F218AC;
+        Tue, 27 Oct 2020 13:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807986;
-        bh=kGDbJpILW1RdbePrEXsk6EWHy+WZdjQNB7twtxBVuV8=;
+        s=default; t=1603807195;
+        bh=o0qb1mx8c1q6P4fZ7BG4638XwjlCO0XynwSpxNRUr5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zl8N3eTVKxhZppTrTarDiOO47pEJxZf8eBTB2pWpUlPmKI6FMpgNJ8EhoulUNZSm3
-         EXVMuplZ/8BVq7mmwf4M7fVw9NnSJOJmi5Sd4MNYrOhRzz82aaootzhJDzF0mjZ9UX
-         qYUIxnnPMS4AC4sOcCwPkGfWmiJX5U4Tx+IbeFv8=
+        b=JXN1jideFUQ7HignYv0qxKRiqicBnTaI4wvriPZckP5XWNuMBkxcGHfy+DDL7hiU8
+         iQJGnBFi+UYWmSQYWYlI/jTmjQg8pmhDYLnXfEBRH9isUVeT/pBa+8dkzDBtJ+H2Vc
+         jQgJUkuOCFIqp5y2l7/kggmuByzorMokTSR5UOlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 115/191] clk: bcm2835: add missing release if devm_clk_hw_register fails
+Subject: [PATCH 4.4 060/112] powerpc/tau: Remove duplicated set_thresholds() call
 Date:   Tue, 27 Oct 2020 14:49:30 +0100
-Message-Id: <20201027134915.236362780@linuxfoundation.org>
+Message-Id: <20201027134903.408784230@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit f6c992ca7dd4f49042eec61f3fb426c94d901675 ]
+[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
 
-In the implementation of bcm2835_register_pll(), the allocated pll is
-leaked if devm_clk_hw_register() fails to register hw. Release pll if
-devm_clk_hw_register() fails.
+The commentary at the call site seems to disagree with the code. The
+conditional prevents calling set_thresholds() via the exception handler,
+which appears to crash. Perhaps that's because it immediately triggers
+another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
+is redundant because tau_timeout() does so.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Link: https://lore.kernel.org/r/20200809231202.15811-1-navid.emamdoost@gmail.com
-Fixes: 41691b8862e2 ("clk: bcm2835: Add support for programming the audio domain clocks")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/bcm/clk-bcm2835.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/tau_6xx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
-index 6db4204e5d5d5..98295b9703178 100644
---- a/drivers/clk/bcm/clk-bcm2835.c
-+++ b/drivers/clk/bcm/clk-bcm2835.c
-@@ -1354,8 +1354,10 @@ static struct clk_hw *bcm2835_register_pll(struct bcm2835_cprman *cprman,
- 	pll->hw.init = &init;
- 
- 	ret = devm_clk_hw_register(cprman->dev, &pll->hw);
--	if (ret)
-+	if (ret) {
-+		kfree(pll);
- 		return NULL;
-+	}
- 	return &pll->hw;
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index 1880481322880..f6a92bf5ebfc6 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -107,11 +107,6 @@ void TAUupdate(int cpu)
+ #ifdef DEBUG
+ 	printk("grew = %d\n", tau[cpu].grew);
+ #endif
+-
+-#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
+-	set_thresholds(cpu);
+-#endif
+-
  }
  
+ #ifdef CONFIG_TAU_INT
 -- 
 2.25.1
 
