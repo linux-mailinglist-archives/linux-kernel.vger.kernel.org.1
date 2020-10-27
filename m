@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9422C29BA01
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECC229B9ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1803740AbgJ0PxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:53:23 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36741 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1759218AbgJ0P1w (ORCPT
+        id S1803547AbgJ0PxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:53:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1798566AbgJ0P24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:27:52 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4F06E5C012E;
-        Tue, 27 Oct 2020 11:27:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 27 Oct 2020 11:27:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=hvOE926BMwRPcVsTY7vA6vM+v5v
-        qveqiHwZTJuprkG0=; b=mEpre88K4kz8UV7+hA0J9G6Rg0SQ6owSBrcwW4KrhL1
-        dZaXHFCHYji6mc1XwlisKdTk4cFVM65/co9xWCPgyEmxcj9wqri0uFAeWGeRL1gu
-        MxhkvviBV6OsR5Oa5EGtvdpCCRZDB6LQrKFqoQimW68Z+AcEiXaqz2ddOUDEvudf
-        EUSU5AL2TDfW9bgUp5cbaYvwe3gwt9JOpvifaEeRSnc6zzXOAHn0lhosP72GSdM0
-        V18Cc+RR2tevaCpe+dePeyt55qvfkYc/fwi6CBBVVIR9AKnhb9CxYqYWmWovCLzP
-        HKUGApzjQIGiE4av9LLKelSWgY9rJ66Rp9fE18jRvAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=hvOE92
-        6BMwRPcVsTY7vA6vM+v5vqveqiHwZTJuprkG0=; b=J53JRrOOwiS16aoL+sVD+V
-        /fJzW1shFRFYxoWtDyf26CgeMGkAtELM5U2aTrEIRX5+wSugMNeRkwWQ7kxRDlcW
-        EzivdPmhK4XjmjA0MnHp1xQk5Qq45YTLMW4EnFV2RyviORgHtRDjOlcT5z8wDpE0
-        UGFFv2RUfMCHhZ0mGJIwCpf4GWl+ZqYtLGw9mqwdmmvIqvkJeNFFaY/nXqfvyOCq
-        3f+EbCGJVcfAdoqRYt+Goxbut7kLtutEpXqiMd8n9AciLTVIgqI3+gorPwieURTs
-        9JPcPM0vsfw3L2xUydFw2s2vSKWpadYiveKLtBeRyrzN0w7iH64XbqyXCatAPMdg
-        ==
-X-ME-Sender: <xms:dTyYX0WoW_5K7pLJiBhktXq-BZVa7vR2-wh6uvc79IgLJewDBVZLKA>
-    <xme:dTyYX4m_xuMVmbDWZQBz4sx-JOzxWjUWUZltaS-Dzp_uYtLKLB230ceaM0wQnx1RE
-    ce7drB2B8faRV4PUik>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgdejiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehgtderre
-    dttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghr
-    nhhordhtvggthheqnecuggftrfgrthhtvghrnhepleekgeehhfdutdeljefgleejffehff
-    fgieejhffgueefhfdtveetgeehieehgedunecukfhppeeltddrkeelrdeikedrjeeinecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimh
-    gvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:dTyYX4b7YOPVre4ydSrk0rOtmwU3NHpYHuEXTNFDMIwKbGE4GLGkIA>
-    <xmx:dTyYXzXosEpU_II8kpfNzpBrgkEEvGdO5kpbLX1fFGoKLNu7XVJvDQ>
-    <xmx:dTyYX-lAEgGEvfWNxt-Nhxgp1czeGqLwXRPyiyx74VYlq73NjZKEBQ>
-    <xmx:djyYXwiFBumfuHJrODzJL-FOVqwATCMGmqIvew1rXkP9eYPhAGARdw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5A240328005A;
-        Tue, 27 Oct 2020 11:27:49 -0400 (EDT)
-Date:   Tue, 27 Oct 2020 16:27:47 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Yu-Tung Chang <mtwget@gmail.com>
-Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun8i: zeropi: remove useless pinctrl
- properties
-Message-ID: <20201027152747.ohedeqklzz6np3io@gilmour.lan>
-References: <20201027101258.18094-1-mtwget@gmail.com>
+        Tue, 27 Oct 2020 11:28:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603812533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mlWO+8V1OcYguip2KBsMhYWBSFJwL/+zUDmEZaIbfJ4=;
+        b=StVGGlOwtyvhP/3laWCb2RdgGghjqmvxjiuHFj/uDWwEjrCRxo7uHo6sUFMQvND77hfAIR
+        WT+QPVvEaaNvCs0H1I+oBxeYYl4txCa4sKLUKeeaDhXUa9wrQBJu873e7nvCjUgmu/lwoJ
+        vqz4OB+guTB2fYykjJQ83Q6BhRTKL1Y=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-9XFlM3DrMGu_uBCd8yxR-Q-1; Tue, 27 Oct 2020 11:28:51 -0400
+X-MC-Unique: 9XFlM3DrMGu_uBCd8yxR-Q-1
+Received: by mail-wm1-f70.google.com with SMTP id s25so710971wmj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:28:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mlWO+8V1OcYguip2KBsMhYWBSFJwL/+zUDmEZaIbfJ4=;
+        b=k9GDQ//xeJZSMidOuM2CysZbq69q5cTGe7ZneRT3VCswD1J9FvF5Qjk92yiwHnZsRb
+         w0Uukg9uu0LYVdi2lplOIM2tqpGj0+ipnXhA5TcjHTk7H6p0o3ZZ57pmmMF9udKcHilE
+         F03G4h4RB5JCfXXpf9uxIDvLr7hK52aRp2WsbktG3JFF9Xnu75a6Z0P+o8ikO9mNoPsw
+         QDSMFE+fEQK4FUZun7KEmDYXEIZ7k0Y+cpc8rKVwzpoJDbfGU+OuneI+BmRaVkJmL58G
+         emK5fNIFIQGTlv3fjLVCkHcMLfVEnTU6wmJuGGfVyERXXX0oa3cKceK78vuWDXtdPaq3
+         eIWQ==
+X-Gm-Message-State: AOAM531xryTDAFcjntCXY/nXBwRlDIgbd2BTKN0enMqa0R4tD/QB6k3P
+        ivlMUjCf18QRwdtpvdlqrzab6tcPSCbDA1vbiKx0uZIDAftE5nlfDISu8pnL5hXF8EwcpRUJLng
+        8tiX6DQfoMo26EVacB6wb2dol
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3177546wms.182.1603812526982;
+        Tue, 27 Oct 2020 08:28:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuH3n7lQ9eR5dnqf6yc1oFeHmyleXhbTjubsRyj6zs3Jak/y/oaUl12gqM18qHQ8tFGKD6AA==
+X-Received: by 2002:a1c:2cd7:: with SMTP id s206mr3177537wms.182.1603812526789;
+        Tue, 27 Oct 2020 08:28:46 -0700 (PDT)
+Received: from redhat.com (bzq-109-65-21-184.red.bezeqint.net. [109.65.21.184])
+        by smtp.gmail.com with ESMTPSA id 3sm2370433wmd.19.2020.10.27.08.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 08:28:45 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 11:28:40 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-gpio@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, alsa-devel@alsa-project.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
+Message-ID: <20201027112607-mutt-send-email-mst@kernel.org>
+References: <20201027121725.24660-1-brgl@bgdev.pl>
+ <20201027121725.24660-4-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6k5mw3tnqf6affyj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201027101258.18094-1-mtwget@gmail.com>
+In-Reply-To: <20201027121725.24660-4-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Use the helper that checks for overflows internally instead of manually
+> calculating the size of the new array.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
---6k5mw3tnqf6affyj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No problem with the patch, it does introduce some symmetry in the code.
 
-On Tue, Oct 27, 2020 at 06:12:58PM +0800, Yu-Tung Chang wrote:
-> Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Ah so it was to fix the build breakage in next. I've squashed it into
-your previous patch.
 
-Generally speaking though, a commit log is needed
 
-Thanks!
-Maxime
+> ---
+>  drivers/vhost/vringh.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index 8bd8b403f087..08a0e1c842df 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -198,7 +198,8 @@ static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
+>  
+>  	flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
+>  	if (flag)
+> -		new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
+> +		new = krealloc_array(iov->iov, new_num,
+> +				     sizeof(struct iovec), gfp);
+>  	else {
+>  		new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
+>  		if (new) {
+> -- 
+> 2.29.1
 
---6k5mw3tnqf6affyj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5g8cwAKCRDj7w1vZxhR
-xeLuAP96ocT+YPjTN3Ps4JreHt8/HEJKBCFS+6To8l6Rhw7QXAEA7iVgW7ius5eN
-u/hFixJJh1VqxmwzmV8Q1u8r8/s6PQY=
-=Hd/R
------END PGP SIGNATURE-----
-
---6k5mw3tnqf6affyj--
