@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B1F29A9CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B616929A9C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898478AbgJ0KgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:36:05 -0400
-Received: from mail.monom.org ([188.138.9.77]:54478 "EHLO mail.monom.org"
+        id S2898463AbgJ0KgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:36:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:37778 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898415AbgJ0KeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:34:14 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id C727C50046C;
-        Tue, 27 Oct 2020 11:34:11 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 65E70500299;
-        Tue, 27 Oct 2020 11:34:11 +0100 (CET)
-Date:   Tue, 27 Oct 2020 11:34:11 +0100
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Clark Williams <williams@redhat.com>
-Subject: Re: [ANNOUNCE] v5.9.1-rt19
-Message-ID: <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
-References: <20201024091838.gzhn2dlx2j7xnixg@linutronix.de>
- <20201027093616.5vn6xinmthxulhvx@beryllium.lan>
- <20201027100049.xtkmjqdwkn7zec2f@linutronix.de>
- <20201027102547.y6wop7j2ovzg2tyx@beryllium.lan>
- <20201027102851.gizepjlu4opensqb@linutronix.de>
+        id S2436524AbgJ0Keh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:34:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71A5F30E;
+        Tue, 27 Oct 2020 03:34:36 -0700 (PDT)
+Received: from [10.57.11.195] (unknown [10.57.11.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 762033F66E;
+        Tue, 27 Oct 2020 03:34:33 -0700 (PDT)
+Subject: Re: [PATCH 6/6] kselftest/arm64: Fix check_user_mem test
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Gabor Kertesz <gabor.kertesz@arm.com>
+References: <20201026121248.2340-1-vincenzo.frascino@arm.com>
+ <20201026121248.2340-7-vincenzo.frascino@arm.com>
+From:   Amit Kachhap <amit.kachhap@arm.com>
+Message-ID: <1fdc6fda-fdba-6640-eca0-194a56ab9326@arm.com>
+Date:   Tue, 27 Oct 2020 16:04:30 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027102851.gizepjlu4opensqb@linutronix.de>
+In-Reply-To: <20201026121248.2340-7-vincenzo.frascino@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:28:51AM +0100, Sebastian Andrzej Siewior wrote:
-> Is it running as a RT task?
 
-root@c2d:~/rt-tests# ./pi_stress
-Starting PI Stress Test
-Number of thread groups: 1
-Duration of test run: infinite
-Number of inversions per group: unlimited
-     Admin thread SCHED_FIFO priority 4
-1 groups of 3 threads will be created
-      High thread SCHED_FIFO priority 3
-       Med thread SCHED_FIFO priority 2
-       Low thread SCHED_FIFO priority 1
 
-It says so, let me double check if those task really run with SCHED_FIFO.
+On 10/26/20 5:42 PM, Vincenzo Frascino wrote:
+> The check_user_mem test reports the error below because the test
+> plan is not declared correctly:
+> 
+>    # Planned tests != run tests (0 != 4)
+> 
+> Fix the test adding the correct test plan declaration.
 
-> Do you have RCU-boosting enabled?
+This change looks fine and got missed earlier.
+Acked by: Amit Daniel Kachhap <amit.kachhap@arm.com>
 
-Yes
-
-#
-# RCU Subsystem
-#
-CONFIG_TREE_RCU=y
-CONFIG_PREEMPT_RCU=y
-CONFIG_RCU_EXPERT=y
-CONFIG_SRCU=y
-CONFIG_TREE_SRCU=y
-CONFIG_TASKS_RCU_GENERIC=y
-CONFIG_TASKS_RCU=y
-CONFIG_TASKS_RUDE_RCU=y
-CONFIG_RCU_STALL_COMMON=y
-CONFIG_RCU_NEED_SEGCBLIST=y
-CONFIG_RCU_FANOUT=64
-CONFIG_RCU_FANOUT_LEAF=16
-CONFIG_RCU_BOOST=y
-CONFIG_RCU_BOOST_DELAY=500
-CONFIG_RCU_NOCB_CPU=y
-# CONFIG_TASKS_TRACE_RCU_READ_MB is not set
-# end of RCU Subsystem
-
-> Otherwise it looks that if you throw enough non-RT load on the system,
-> RCU can not catch up which does not sound good.
-
-I think this is what Clark tried to tell me. If I understood him
-correctly the test tool is not correct though.
+> 
+> Fixes: 4dafc08d0ba4 ("kselftest/arm64: Check mte tagged user address in kernel")
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Gabor Kertesz <gabor.kertesz@arm.com>
+> Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>   tools/testing/selftests/arm64/mte/check_user_mem.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/arm64/mte/check_user_mem.c b/tools/testing/selftests/arm64/mte/check_user_mem.c
+> index 594e98e76880..4bfa80f2a8c3 100644
+> --- a/tools/testing/selftests/arm64/mte/check_user_mem.c
+> +++ b/tools/testing/selftests/arm64/mte/check_user_mem.c
+> @@ -92,9 +92,13 @@ int main(int argc, char *argv[])
+>   	err = mte_default_setup();
+>   	if (err)
+>   		return err;
+> +
+>   	/* Register signal handlers */
+>   	mte_register_signal(SIGSEGV, mte_default_handler);
+>   
+> +	/* Set test plan */
+> +	ksft_set_plan(4);
+> +
+>   	evaluate_test(check_usermem_access_fault(USE_MMAP, MTE_SYNC_ERR, MAP_PRIVATE),
+>   		"Check memory access from kernel in sync mode, private mapping and mmap memory\n");
+>   	evaluate_test(check_usermem_access_fault(USE_MMAP, MTE_SYNC_ERR, MAP_SHARED),
+> 
