@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6C729B09C
+	by mail.lfdr.de (Postfix) with ESMTP id 98C4D29B09D
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901242AbgJ0OVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:21:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
+        id S2901249AbgJ0OVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:21:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757433AbgJ0OTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:19:33 -0400
+        id S1757529AbgJ0OTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:19:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFB0A206D4;
-        Tue, 27 Oct 2020 14:19:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CC36206F7;
+        Tue, 27 Oct 2020 14:19:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808372;
-        bh=keTaYeCXi16i5v/w5MtnvT74wtC3mGt1PSdIcZWbPWk=;
+        s=default; t=1603808388;
+        bh=NN02vzp/1B6c+lvKiJ//yVU0C1nhUGO1z+w/ZV88oxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ww8mySNiQt6X7cZpa8/KcqxhFML7VKyUw7pAgq1TgUWEO4JRA8UHQB5CMmeLMCzS4
-         sX7B11AOan7Is8wC3szko5SxWA0nwfUntKeWyyxMpgyOJwJ4hD6NSFL24N9WBVfOna
-         El3Y/NT9fQzpx/SoB1LT5mwV0rStvCQaxuExgUdg=
+        b=wLtjM/2qJ68Re+rBswtl1qM8WB+fOoiz7aNcWNZwRgkOX2B/fHKo2gL9/Mw8ZLfvh
+         FoQMyVOyHOXPmA7/wEzbZngEGnbTaiWiAOooXR+PBumjrKlmjQOJsY6IZxnKL15gMr
+         I5/kE7nJK9ZyxD+m3uMmq6iu6prbakkoK1H5go6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Venkateswara Naralasetty <vnaralas@codeaurora.org>,
-        Markus Theil <markus.theil@tu-ilmenau.de>,
-        John Deere <24601deerej@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 066/264] ath10k: provide survey info as accumulated data
-Date:   Tue, 27 Oct 2020 14:52:04 +0100
-Message-Id: <20201027135433.783736640@linuxfoundation.org>
+Subject: [PATCH 4.19 072/264] ASoC: qcom: lpass-platform: fix memory leak
+Date:   Tue, 27 Oct 2020 14:52:10 +0100
+Message-Id: <20201027135434.080956764@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -47,70 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+From: Rohit kumar <rohitkr@codeaurora.org>
 
-[ Upstream commit 720e5c03e5cb26d33d97f55192b791bb48478aa5 ]
+[ Upstream commit 5fd188215d4eb52703600d8986b22311099a5940 ]
 
-It is expected that the returned counters by .get_survey are monotonic
-increasing. But the data from ath10k gets reset to zero regularly. Channel
-active/busy time are then showing incorrect values (less than previous or
-sometimes zero) for the currently active channel during successive survey
-dump commands.
+lpass_pcm_data is never freed. Free it in close
+ops to avoid memory leak.
 
-example:
-
-  $ iw dev wlan0 survey dump
-  Survey data from wlan0
-  	frequency:                      5180 MHz [in use]
-  	channel active time:            54995 ms
-  	channel busy time:              432 ms
-  	channel receive time:           0 ms
-  	channel transmit time:          59 ms
-  ...
-
-  $ iw dev wlan0 survey dump
-  Survey data from wlan0
-  	frequency:                      5180 MHz [in use]
-  	channel active time:            32592 ms
-  	channel busy time:              254 ms
-  	channel receive time:           0 ms
-  	channel transmit time:          0 ms
-  ...
-
-The correct way to handle this is to use the non-clearing
-WMI_BSS_SURVEY_REQ_TYPE_READ wmi_bss_survey_req_type. The firmware will
-then accumulate the survey data and handle wrap arounds.
-
-Tested-on: QCA9984 hw1.0 10.4-3.5.3-00057
-Tested-on: QCA988X hw2.0 10.2.4-1.0-00047
-Tested-on: QCA9888 hw2.0 10.4-3.9.0.2-00024
-Tested-on: QCA4019 hw1.0 10.4-3.6-00140
-
-Fixes: fa7937e3d5c2 ("ath10k: update bss channel survey information")
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Tested-by: Markus Theil <markus.theil@tu-ilmenau.de>
-Tested-by: John Deere <24601deerej@gmail.com>
-[sven@narfation.org: adjust commit message]
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1592232686-28712-1-git-send-email-kvalo@codeaurora.org
+Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/1597402388-14112-5-git-send-email-rohitkr@codeaurora.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/lpass-platform.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 81af403c19c2a..faaca7fe9ad1e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6862,7 +6862,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
- 				  struct ieee80211_channel *channel)
- {
- 	int ret;
--	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
-+	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index d07271ea4c451..2f29672477892 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -69,7 +69,7 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	int ret, dma_ch, dir = substream->stream;
+ 	struct lpass_pcm_data *data;
  
- 	lockdep_assert_held(&ar->conf_mutex);
+-	data = devm_kzalloc(soc_runtime->dev, sizeof(*data), GFP_KERNEL);
++	data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+@@ -127,6 +127,7 @@ static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
+ 	if (v->free_dma_channel)
+ 		v->free_dma_channel(drvdata, data->dma_ch);
+ 
++	kfree(data);
+ 	return 0;
+ }
  
 -- 
 2.25.1
