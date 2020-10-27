@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE31E29B882
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA3A29BAFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800499AbgJ0Pfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50334 "EHLO mail.kernel.org"
+        id S1802921AbgJ0Pv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:51:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799717AbgJ0PdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:33:00 -0400
+        id S1799730AbgJ0PdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7B1F20728;
-        Tue, 27 Oct 2020 15:32:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BBA322202;
+        Tue, 27 Oct 2020 15:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812780;
-        bh=1Aj6JeR182PwkxhNRcNlUtJai3evxxD9/5dvhRXyi1U=;
+        s=default; t=1603812782;
+        bh=09BtgDStkjmQQSw+UuaeyxieHWs44qv+TUAKa6HcKmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RVwO6qd7X/RaWpJA/lqzld4VE6FxuPCYmxfiZK6ExATVgMQYLRy0rXs3ESC2v/vdn
-         g0Hs5ImSmlz1UkwXCg8F6vm+BOeZia5/03vnLItCWE7i2vY9yWpJgVOcBDwn0Gd2Eu
-         M89gd+1AZObhwkSZSN8ZfKSoX5qtEddAUyNut27o=
+        b=oEVCvBEeDDbWGQLUo5X+Ie5VNVYef9pzcoUC2z/t09WZ9E8bNQ7ihix60ZSS+v1iq
+         rqRl311LPTDkbyuD/YVukxTds8haoz+1R40nF8xrvo1hw97TCQyRqemDDkzNQk7wsA
+         l5INpdajDgMIRoNJ9+nAWt9XnhxoTFnB9WaHE2CM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 327/757] slimbus: core: do not enter to clock pause mode in core
-Date:   Tue, 27 Oct 2020 14:49:37 +0100
-Message-Id: <20201027135505.880876519@linuxfoundation.org>
+Subject: [PATCH 5.9 328/757] slimbus: qcom-ngd-ctrl: disable ngd in qmi server down callback
+Date:   Tue, 27 Oct 2020 14:49:38 +0100
+Message-Id: <20201027135505.929137502@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,34 +45,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit df2c471c4ae07e18a0396db670dca2ef867c5153 ]
+[ Upstream commit 709ec3f7fc5773ac4aa6fb22c3f0ac8103c674db ]
 
-Let the controller logic decide when to enter into clock pause mode!
-Entering in to pause mode during unregistration does not really make
-sense as the controller is totally going down at that point in time.
+In QMI new server notification we enable the NGD however during
+delete server notification we do not disable the NGD.
 
-Fixes: 4b14e62ad3c9e ("slimbus: Add support for 'clock-pause' feature")
+This can lead to multiple instances of NGD being enabled, so make
+sure that we disable NGD in delete server callback to fix this issue!
+
+Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200925095520.27316-3-srinivas.kandagatla@linaro.org
+Link: https://lore.kernel.org/r/20200925095520.27316-4-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/core.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index 58b63ae0e75a6..1d2bc181da050 100644
---- a/drivers/slimbus/core.c
-+++ b/drivers/slimbus/core.c
-@@ -301,8 +301,6 @@ int slim_unregister_controller(struct slim_controller *ctrl)
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index 743ee7b4e63f2..218aefc3531cd 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1277,9 +1277,13 @@ static void qcom_slim_ngd_qmi_del_server(struct qmi_handle *hdl,
  {
- 	/* Remove all clients */
- 	device_for_each_child(ctrl->dev, NULL, slim_ctrl_remove_device);
--	/* Enter Clock Pause */
--	slim_ctrl_clk_pause(ctrl, false, 0);
- 	ida_simple_remove(&ctrl_ida, ctrl->id);
+ 	struct qcom_slim_ngd_qmi *qmi =
+ 		container_of(hdl, struct qcom_slim_ngd_qmi, svc_event_hdl);
++	struct qcom_slim_ngd_ctrl *ctrl =
++		container_of(qmi, struct qcom_slim_ngd_ctrl, qmi);
  
- 	return 0;
+ 	qmi->svc_info.sq_node = 0;
+ 	qmi->svc_info.sq_port = 0;
++
++	qcom_slim_ngd_enable(ctrl, false);
+ }
+ 
+ static struct qmi_ops qcom_slim_ngd_qmi_svc_event_ops = {
 -- 
 2.25.1
 
