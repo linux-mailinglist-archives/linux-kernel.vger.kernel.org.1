@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D39A29B65B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36CC29B5AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797401AbgJ0PXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:23:21 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:22034 "EHLO z5.mailgun.us"
+        id S1794960AbgJ0POh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:14:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797033AbgJ0PVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:21:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603812074; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=8zEDZmuq5cE02uLFePBLh24m6C2hPjoKjaM7v38zGmM=; b=l4BLwrxiZMTSJCrHehbHC8wXd+Se8f+IqvKYzqKe4U+RR//HB6aExXEMEKt8XM28LFshegff
- uHBRhZDK5QuUqpSw125ysOo9SDqY1KDkdeFCie/UEIxQaPy30Od/BopgpYZy5G4SFo8V72kX
- H99ZQWyUEk5MLuCdkjKMeLD1pq8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f98376000143fe652780864 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 15:06:08
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7276EC433AF; Tue, 27 Oct 2020 15:06:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        id S1793882AbgJ0PIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:08:51 -0400
+Received: from localhost.localdomain (i16-lef01-ix2-212-195-25-126.ft.lns.abo.bbox.fr [212.195.25.126])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3654FC433A0;
-        Tue, 27 Oct 2020 15:06:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3654FC433A0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] bus: mhi: core: Introduce sysfs ul chan id for mhi chan
- device
-To:     carl.yin@quectel.com, manivannan.sadhasivam@linaro.org,
-        hemantk@codeaurora.org, sfr@canb.auug.org.au
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        naveen.kumar@quectel.com
-References: <20201027094304.23025-1-carl.yin@quectel.com>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <b1da800d-4919-edac-b651-ecdd7e0625ca@codeaurora.org>
-Date:   Tue, 27 Oct 2020 09:06:04 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        by mail.kernel.org (Postfix) with ESMTPSA id 486F721D41;
+        Tue, 27 Oct 2020 15:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603811331;
+        bh=4dgq+z2vPqYQQvvHTq/bdF2ebKzWbnRopdc7rPho5Lg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dtyNP+2rLWs30hjm297kR2MT2xNBTb304TZrotMtpziRBtGQ7EuUBeZ1/Pz40Xf6d
+         GViZ+ZidYR38wemml5jsyOjBsTY5vPSScHArrzrOI0B+jVWJi60XWtZ+CMQqNsdAKw
+         lteQsLQOASKpd+SYUGnp6pEHcpnbWVczfiBL/5Vo=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Phil Auld <pauld@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [PATCH 1/5] context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
+Date:   Tue, 27 Oct 2020 16:08:23 +0100
+Message-Id: <20201027150827.148821-2-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201027150827.148821-1-frederic@kernel.org>
+References: <20201027150827.148821-1-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201027094304.23025-1-carl.yin@quectel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/2020 3:43 AM, carl.yin@quectel.com wrote:
-> From: "carl.yin" <carl.yin@quectel.com>
-> 
-> User space software like ModemManager can identify the function
-> of the mhi chan device by ul_chan_id.
-> 
-> Signed-off-by: carl.yin <carl.yin@quectel.com>
-> ---
->   Documentation/ABI/stable/sysfs-bus-mhi | 10 ++++++++++
->   drivers/bus/mhi/core/init.c            | 15 +++++++++++++++
->   2 files changed, 25 insertions(+)
-> 
-> diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
-> index ecfe766..6d52768 100644
-> --- a/Documentation/ABI/stable/sysfs-bus-mhi
-> +++ b/Documentation/ABI/stable/sysfs-bus-mhi
-> @@ -19,3 +19,13 @@ Description:	The file holds the OEM PK Hash value of the endpoint device
->   		read without having the device power on at least once, the file
->   		will read all 0's.
->   Users:		Any userspace application or clients interested in device info.
-> +
-> +What:		/sys/bus/mhi/devices/.../ul_chan_id
-> +Date:		November 2020
-> +KernelVersion:	5.10
-> +Contact:	Carl Yin <carl.yin@quectel.com>
-> +Description:	The file holds the uplink chan id of the mhi chan device.
-> +		User space software like ModemManager can identify the function of
-> +		the mhi chan device. If the mhi device is not a chan device,
-> +		eg mhi controller device, the file read -1.
-> +Users:		Any userspace application or clients interested in device info.
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index c6b43e9..ac4aa5c 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -105,9 +105,24 @@ static ssize_t oem_pk_hash_show(struct device *dev,
->   }
->   static DEVICE_ATTR_RO(oem_pk_hash);
->   
-> +static ssize_t ul_chan_id_show(struct device *dev,
-> +				struct device_attribute *attr,
-> +				char *buf)
-> +{
-> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
-> +	int ul_chan_id = -1;
-> +
-> +	if (mhi_dev->ul_chan)
-> +		ul_chan_id = mhi_dev->ul_chan_id;
-> +
-> +	return snprintf(buf, PAGE_SIZE, "%d\n", ul_chan_id);
-> +}
-> +static DEVICE_ATTR_RO(ul_chan_id);
-> +
->   static struct attribute *mhi_dev_attrs[] = {
->   	&dev_attr_serial_number.attr,
->   	&dev_attr_oem_pk_hash.attr,
-> +	&dev_attr_ul_chan_id.attr,
->   	NULL,
->   };
->   ATTRIBUTE_GROUPS(mhi_dev);
-> 
+Historically, context tracking had to deal with fragile entry code path,
+ie: before user_exit() is called and after user_enter() is called, in
+case some of those spots would call schedule() or use RCU. On such
+cases, the site had to be protected between exception_enter() and
+exception_exit() that save the context tracking state in the task stack.
 
-NACK
+Such sleepable fragile code path had many different origins: tracing,
+exceptions, early or late calls to context tracking on syscalls...
 
-Channel ID is a device specific detail.  Userspace should be basing 
-decisions on the channel name.
+Aside of that not being pretty, saving the context tracking state on
+the task stack forces us to run context tracking on all CPUs, including
+housekeepers, and prevents us to completely shutdown nohz_full at
+runtime on a CPU in the future as context tracking and its overhead
+would still need to run system wide.
 
+Now thanks to the extensive efforts to sanitize x86 entry code, those
+conditions have been removed and we can now get rid of these workarounds
+in this architecture.
+
+Create a Kconfig feature to express this achievement.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Phil Auld <pauld@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/Kconfig | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 56b6ccc0e32d..090ef3566c56 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -618,6 +618,23 @@ config HAVE_CONTEXT_TRACKING
+ 	  protected inside rcu_irq_enter/rcu_irq_exit() but preemption or signal
+ 	  handling on irq exit still need to be protected.
+ 
++config HAVE_CONTEXT_TRACKING_OFFSTACK
++	bool
++	help
++	  Architecture neither relies on exception_enter()/exception_exit()
++	  nor on schedule_user(). Also preempt_schedule_notrace() and
++	  preempt_schedule_irq() can't be called in a preemptible section
++	  while context tracking is CONTEXT_USER. This feature reflects a sane
++	  entry implementation where the following requirements are met on
++	  critical entry code, ie: before user_exit() or after user_enter():
++
++	  - Critical entry code isn't preemptible (or better yet:
++	    not interruptible).
++	  - No use of RCU read side critical sections, unless rcu_nmi_enter()
++	    got called.
++	  - No use of instrumentation, unless instrumentation_begin() got
++	    called.
++
+ config HAVE_TIF_NOHZ
+ 	bool
+ 	help
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.25.1
+
