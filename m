@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBD529B1ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA1E29B1EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760722AbgJ0OgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34184 "EHLO mail.kernel.org"
+        id S1760743AbgJ0OgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760613AbgJ0Of1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:35:27 -0400
+        id S1760624AbgJ0Ofc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:35:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E70AB207BB;
-        Tue, 27 Oct 2020 14:35:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD3CF207BB;
+        Tue, 27 Oct 2020 14:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809326;
-        bh=LslNL0ooECmB64WwPSF8kT0ObZy7wvntcobCeYzBi0w=;
+        s=default; t=1603809332;
+        bh=vwWsyEqVF510GoD9wKQ9SHMGIwnMQ/X4r5iqj77aW0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AkblUBSPflzJPPlJhRDrdGY+PDKgalXVwYxHHYAuwr7X4v2vGNFmxIN2DVHqucfJ6
-         scHwM76UbidPKGwGrnL6yIL1o0W23/5sx6HstegYOfVh5VU/92tKL9yOX4fi79VOHV
-         Bwod3vauopAmhGr367DWiK3pS76edKb/s1fagEsg=
+        b=Go11AR8r3uS91JUP9sozUz1N5XKObEVdkujx7r8O0UaJ3ptigY6q9PQjbjr5yov3V
+         C8gNWxXjcnh/Ys5oVb0+rrEmvJkiT7E4dEibJvqoUsUT9Nd+pgOSHco16/Gf4BfSIH
+         8GhbBh2BFp7aQR2WGAzdWrX2OttwzfPtxKlNwZEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 157/408] net: dsa: rtl8366rb: Support all 4096 VLANs
-Date:   Tue, 27 Oct 2020 14:51:35 +0100
-Message-Id: <20201027135502.373921249@linuxfoundation.org>
+Subject: [PATCH 5.4 159/408] ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
+Date:   Tue, 27 Oct 2020 14:51:37 +0100
+Message-Id: <20201027135502.467269629@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,36 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit a7920efdd86d8a0d74402dbc80ead03b023294ba ]
+[ Upstream commit 6a950755cec1a90ddaaff3e4acb5333617441c32 ]
 
-There is an off-by-one error in rtl8366rb_is_vlan_valid()
-making VLANs 0..4094 valid while it should be 1..4095.
-Fix it.
+The "tsid" is a user controlled u8 which comes from debugfs.  Values
+more than 15 are invalid because "active_tsids" is a 16 bit variable.
+If the value of "tsid" is more than 31 then that leads to a shift
+wrapping bug.
 
-Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8fffd9e5ec9e ("ath6kl: Implement support for QOS-enable and QOS-disable from userspace")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200918142732.GA909725@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/rtl8366rb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath6kl/wmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
-index f5cc8b0a7c74c..7f731bf369980 100644
---- a/drivers/net/dsa/rtl8366rb.c
-+++ b/drivers/net/dsa/rtl8366rb.c
-@@ -1269,7 +1269,7 @@ static bool rtl8366rb_is_vlan_valid(struct realtek_smi *smi, unsigned int vlan)
- 	if (smi->vlan4k_enabled)
- 		max = RTL8366RB_NUM_VIDS - 1;
+diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
+index 2382c6c46851e..c610fe21c85c0 100644
+--- a/drivers/net/wireless/ath/ath6kl/wmi.c
++++ b/drivers/net/wireless/ath/ath6kl/wmi.c
+@@ -2645,6 +2645,11 @@ int ath6kl_wmi_delete_pstream_cmd(struct wmi *wmi, u8 if_idx, u8 traffic_class,
+ 		return -EINVAL;
+ 	}
  
--	if (vlan == 0 || vlan >= max)
-+	if (vlan == 0 || vlan > max)
- 		return false;
- 
- 	return true;
++	if (tsid >= 16) {
++		ath6kl_err("invalid tsid: %d\n", tsid);
++		return -EINVAL;
++	}
++
+ 	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd));
+ 	if (!skb)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
