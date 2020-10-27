@@ -2,158 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520C429BD21
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE2929BD86
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811764AbgJ0Qlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:41:46 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:33853 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1811757AbgJ0Qln (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:41:43 -0400
-Received: by mail-ed1-f66.google.com with SMTP id x1so2144944eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FZmDD+YwecYMtLs7AF3FCkDHyOxts/Yev02gIWozl0c=;
-        b=eCyFghPGjK49KlpfZ0325tZmiqVZTeRLrVNqj5Gb9jpiNopib6XnZOPOome/iWhWbM
-         vKlwHpfBXdeSTVDpUdp+O183n3p0CgtI2cdh39gsRRU9iAPsxuPBndh8m4vhWZR8VNGb
-         4331kSpwQ9XrTqAG7MzhQBVfJlPNUQXGfkq5WEZtDAQbLmaJ7ZU4dwWJOENoMtlwCc0g
-         9WtCv0LA0HIFLgNoa8outBTKEprJCuoJpGKeXRd70p80Cd66rpRjmqIxHOVi++SlyMuY
-         ZEt459ogF4FwWypbDUrC4JtFAauisb2WRCT5O6g35gM+9huFq9khSCNBn/kWna7un2AA
-         2t8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FZmDD+YwecYMtLs7AF3FCkDHyOxts/Yev02gIWozl0c=;
-        b=TBCxenKzlFZyG346oqBF6oOqC9Zvd/dVj6J9bLZX41gaAwqk3m7Jr13F8vWgn7UuPg
-         lKL8T1DlWmRiFNEOOsUN4D39dBikrr2MPLTGsLF4oHfGKYS5vkkWIumVq16LqjmYgG53
-         35DXv62uRUBc99F99jUeBTbHqIPcHryxoQ3q60ron8ybmghs2oT9VW5gl/86knW1kUi3
-         QLG50/GsSlwPtqNt6BuY1EKyhxqRN8H9ltcWkHVFQvKs47U81R1iPLSfOj7YG8Kjyv4r
-         i9I2VAokVk3lBPYyE+WFoQN4b82hy3aOftcmsYPq0ZhC7+1tXRqlidDcZaQ+myo8vU1A
-         NhWg==
-X-Gm-Message-State: AOAM531dj6HiBXYE5EF8uc6OWNlGMCOVAs6sDmzn9tony0G7TOdqP2Zo
-        baMRxwZTtRfto7UBcenssD9un9SbenhTkgDw4Iw=
-X-Google-Smtp-Source: ABdhPJxE+b5plorT12cDmUEPqZISsyoknTOw4zb/BvzQnJMV3xvzcD7OUAZXB5qvfm4jtx2lLCvNguR3PCR9x8fKfjo=
-X-Received: by 2002:aa7:cd42:: with SMTP id v2mr3103548edw.151.1603816901602;
- Tue, 27 Oct 2020 09:41:41 -0700 (PDT)
+        id S1811785AbgJ0QmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:42:23 -0400
+Received: from aposti.net ([89.234.176.197]:47424 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1811767AbgJ0QmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:42:21 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Bin Liu <b-liu@ti.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Lindgren <tony@atomide.com>, od@zcrc.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [RESEND PATCH 0/4] MUSB and jz4740-musb fixes
+Date:   Tue, 27 Oct 2020 16:41:56 +0000
+Message-Id: <20201027164200.18602-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20201007161736.ACC6E387@viggo.jf.intel.com> <20201007161747.FE7288F0@viggo.jf.intel.com>
- <87v9f6hdik.fsf@yhuang-dev.intel.com>
-In-Reply-To: <87v9f6hdik.fsf@yhuang-dev.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 27 Oct 2020 09:41:27 -0700
-Message-ID: <CAHbLzkpFTVhBhrj715ixu_bYrbpOZwLn3Y3=+miKs9hCCiOW7g@mail.gmail.com>
-Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 12:38 AM Huang, Ying <ying.huang@intel.com> wrote:
->
-> Dave Hansen <dave.hansen@linux.intel.com> writes:
->
-> > From: Yang Shi <yang.shi@linux.alibaba.com>
-> >
-> > Account the number of demoted pages into reclaim_state->nr_demoted.
->
-> It appears that you don't add "nr_demoted" into struct reclaim_state.
->
-> > Add pgdemote_kswapd and pgdemote_direct VM counters showed in
-> > /proc/vmstat.
-> >
-> > [ daveh:
-> >    - __count_vm_events() a bit, and made them look at the THP
-> >      size directly rather than getting data from migrate_pages()
->
-> It appears that we get the data from migrate_pages() now.
->
-> > ]
-> >
-> > Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> > Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: David Rientjes <rientjes@google.com>
-> > Cc: Huang Ying <ying.huang@intel.com>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > ---
-> >
-> >  b/include/linux/vm_event_item.h |    2 ++
-> >  b/mm/vmscan.c                   |    6 ++++++
-> >  b/mm/vmstat.c                   |    2 ++
-> >  3 files changed, 10 insertions(+)
-> >
-> > diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
-> > --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter       2020-10-07 09:15:32.171642439 -0700
-> > +++ b/include/linux/vm_event_item.h   2020-10-07 09:15:32.179642439 -0700
-> > @@ -33,6 +33,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
-> >               PGREUSE,
-> >               PGSTEAL_KSWAPD,
-> >               PGSTEAL_DIRECT,
-> > +             PGDEMOTE_KSWAPD,
-> > +             PGDEMOTE_DIRECT,
-> >               PGSCAN_KSWAPD,
-> >               PGSCAN_DIRECT,
-> >               PGSCAN_DIRECT_THROTTLE,
-> > diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
-> > --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter 2020-10-07 09:15:32.173642439 -0700
-> > +++ b/mm/vmscan.c     2020-10-07 09:15:32.180642439 -0700
-> > @@ -147,6 +147,7 @@ struct scan_control {
-> >               unsigned int immediate;
-> >               unsigned int file_taken;
-> >               unsigned int taken;
-> > +             unsigned int demoted;
->
-> It appears that this newly added field isn't used in the patch.
+Hi Bin,
 
-My original patch tracked nr_demoted in reclaim_stat as well, but it
-seems Dave dropped that part. If Dave thinks it is not necessary to
-keep tracking nr_demoted in reclaim_stat, then that field should be
-dropped.
+The first two patches of this series have already been sent before but
+were never merged, hence the RESEND. This is not really a V2 as nothing
+changed there.
 
->
-> >       } nr;
-> >
-> >       /* for recording the reclaimed slab by now */
-> > @@ -1134,6 +1135,11 @@ static unsigned int demote_page_list(str
-> >                           target_nid, MIGRATE_ASYNC, MR_DEMOTION,
-> >                           &nr_succeeded);
-> >
-> > +     if (current_is_kswapd())
-> > +             __count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
-> > +     else
-> > +             __count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
-> > +
-> >       return nr_succeeded;
-> >  }
-> >
-> > diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
-> > --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter 2020-10-07 09:15:32.175642439 -0700
-> > +++ b/mm/vmstat.c     2020-10-07 09:15:32.181642439 -0700
-> > @@ -1244,6 +1244,8 @@ const char * const vmstat_text[] = {
-> >       "pgreuse",
-> >       "pgsteal_kswapd",
-> >       "pgsteal_direct",
-> > +     "pgdemote_kswapd",
-> > +     "pgdemote_direct",
-> >       "pgscan_kswapd",
-> >       "pgscan_direct",
-> >       "pgscan_direct_throttle",
-> > _
->
-> Best Regards,
-> Huang, Ying
->
+Patches 3/4 are new.
+
+Cheers,
+-Paul
+
+Paul Cercueil (4):
+  usb: musb: Fix runtime PM race in musb_queue_resume_work
+  usb: musb: Fix NULL check on struct musb_request field
+  usb: musb: dma: Remove unused variable
+  musb: jz4740: Add missing CR to error strings
+
+ drivers/usb/musb/jz4740.c      | 14 +++++++-------
+ drivers/usb/musb/musb_core.c   | 31 +++++++++++++++++--------------
+ drivers/usb/musb/musb_gadget.c |  2 +-
+ drivers/usb/musb/musbhsdma.c   |  4 ----
+ 4 files changed, 25 insertions(+), 26 deletions(-)
+
+-- 
+2.28.0
+
