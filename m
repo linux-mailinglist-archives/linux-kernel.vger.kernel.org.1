@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AA229A872
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A62729A877
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896255AbgJ0Jwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:52:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
+        id S2896282AbgJ0Jws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:52:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896050AbgJ0Jvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2896052AbgJ0Jvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 05:51:44 -0400
 Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E7ED24179;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EACB2417B;
         Tue, 27 Oct 2020 09:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603792301;
-        bh=P+4hgRaJiwOFtFWPGSIkLjccBO+KlAPIlwaQSCUk+mg=;
+        bh=SLlCxYtnKWjDjR6xkI87fNMGzcB0tiqNJ9pWSUh4OoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0Ax6670SZ19vUkEx2aYgLdaGXKJns0PZJ68PGsxL4ckZYt3b2Bs9FMmz7ZbfE3Ai
-         RFsYVwmxse0VTPFOONVXWL6cmw5f0DFlHj7NG02GA8WP5i1caXBPm04VQMyxv4Xlnf
-         Ibjri8PIGP+1TbQ/wAagk3zuaAm1gliT8GBtQeZM=
+        b=nTjBO5wdjUKoc//FExBdD72S2llXTT2cXfLsNj7oOXz58Gu5gCFw4MMSJ62Rm4Dr6
+         twiYyF5XY6dcmdDFboOOunJY0AqNdcovFvL5ql2aF1hqNUddG2VUmelLA9fLppslX6
+         Q2JwaEo7QHEerBVI19z+rPlB/2qiWOHMwR0xnvmQ=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kXLdj-003FFB-Gk; Tue, 27 Oct 2020 10:51:39 +0100
+        id 1kXLdj-003FFH-Iz; Tue, 27 Oct 2020 10:51:39 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 17/32] MAINTAINERS: fix broken doc refs due to yaml conversion
-Date:   Tue, 27 Oct 2020 10:51:21 +0100
-Message-Id: <3b58afec5195d4ea505ea9b3f74d53f7abed4e6f.1603791716.git.mchehab+huawei@kernel.org>
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 19/32] locking/refcount: move kernel-doc markups to the proper place
+Date:   Tue, 27 Oct 2020 10:51:23 +0100
+Message-Id: <7985c31d1ace591bc5e1faa05c367f1295b78afd.1603791716.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
 References: <cover.1603791716.git.mchehab+huawei@kernel.org>
@@ -51,91 +48,282 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several *.txt files got converted to yaml. Update their
-references at MAINTAINERS file accordingly.
+Changeset a435b9a14356 ("locking/refcount: Provide __refcount API to obtain the old value")
+added a set of functions starting with __ that have a new
+parameter, adding a series of new warnings:
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+	$ ./scripts/kernel-doc -none include/linux/refcount.h
+	include/linux/refcount.h:169: warning: Function parameter or member 'oldp' not described in '__refcount_add_not_zero'
+	include/linux/refcount.h:208: warning: Function parameter or member 'oldp' not described in '__refcount_add'
+	include/linux/refcount.h:239: warning: Function parameter or member 'oldp' not described in '__refcount_inc_not_zero'
+	include/linux/refcount.h:261: warning: Function parameter or member 'oldp' not described in '__refcount_inc'
+	include/linux/refcount.h:291: warning: Function parameter or member 'oldp' not described in '__refcount_sub_and_test'
+	include/linux/refcount.h:327: warning: Function parameter or member 'oldp' not described in '__refcount_dec_and_test'
+	include/linux/refcount.h:347: warning: Function parameter or member 'oldp' not described in '__refcount_dec'
+
+The issue is that the kernel-doc markups are now misplaced,
+as they should be added just before the functions.
+
+So, move the kernel-doc markups to the proper places,
+in order to drop the warnings.
+
+It should be noticed that git show produces a crappy output,
+for this patch without "--patience" flag.
+
+Fixes: a435b9a14356 ("locking/refcount: Provide __refcount API to obtain the old value")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/devicetree/bindings/clock/hi6220-clock.txt | 2 +-
- MAINTAINERS                                              | 9 ++++-----
- .../devicetree/bindings/net/wireless/silabs,wfx.yaml     | 2 +-
- 3 files changed, 6 insertions(+), 7 deletions(-)
+ include/linux/refcount.h | 158 +++++++++++++++++++--------------------
+ 1 file changed, 79 insertions(+), 79 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/hi6220-clock.txt b/Documentation/devicetree/bindings/clock/hi6220-clock.txt
-index ef3deb7b86ea..17ac4a3dd26a 100644
---- a/Documentation/devicetree/bindings/clock/hi6220-clock.txt
-+++ b/Documentation/devicetree/bindings/clock/hi6220-clock.txt
-@@ -4,7 +4,7 @@ Clock control registers reside in different Hi6220 system controllers,
- please refer the following document to know more about the binding rules
- for these system controllers:
+diff --git a/include/linux/refcount.h b/include/linux/refcount.h
+index 7fabb1af18e0..497990c69b0b 100644
+--- a/include/linux/refcount.h
++++ b/include/linux/refcount.h
+@@ -147,24 +147,6 @@ static inline unsigned int refcount_read(const refcount_t *r)
+ 	return atomic_read(&r->refs);
+ }
  
--Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
-+Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+-/**
+- * refcount_add_not_zero - add a value to a refcount unless it is 0
+- * @i: the value to add to the refcount
+- * @r: the refcount
+- *
+- * Will saturate at REFCOUNT_SATURATED and WARN.
+- *
+- * Provides no memory ordering, it is assumed the caller has guaranteed the
+- * object memory to be stable (RCU, etc.). It does provide a control dependency
+- * and thereby orders future stores. See the comment on top.
+- *
+- * Use of this function is not recommended for the normal reference counting
+- * use case in which references are taken and released one at a time.  In these
+- * cases, refcount_inc(), or one of its variants, should instead be used to
+- * increment a reference count.
+- *
+- * Return: false if the passed refcount is 0, true otherwise
+- */
+ static inline __must_check bool __refcount_add_not_zero(int i, refcount_t *r, int *oldp)
+ {
+ 	int old = refcount_read(r);
+@@ -183,27 +165,29 @@ static inline __must_check bool __refcount_add_not_zero(int i, refcount_t *r, in
+ 	return old;
+ }
  
- Required Properties:
++/**
++ * refcount_add_not_zero - add a value to a refcount unless it is 0
++ * @i: the value to add to the refcount
++ * @r: the refcount
++ *
++ * Will saturate at REFCOUNT_SATURATED and WARN.
++ *
++ * Provides no memory ordering, it is assumed the caller has guaranteed the
++ * object memory to be stable (RCU, etc.). It does provide a control dependency
++ * and thereby orders future stores. See the comment on top.
++ *
++ * Use of this function is not recommended for the normal reference counting
++ * use case in which references are taken and released one at a time.  In these
++ * cases, refcount_inc(), or one of its variants, should instead be used to
++ * increment a reference count.
++ *
++ * Return: false if the passed refcount is 0, true otherwise
++ */
+ static inline __must_check bool refcount_add_not_zero(int i, refcount_t *r)
+ {
+ 	return __refcount_add_not_zero(i, r, NULL);
+ }
  
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b75f29..4511501cd59c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -978,7 +978,7 @@ M:	Michael Hennerich <Michael.Hennerich@analog.com>
- L:	linux-iio@vger.kernel.org
- S:	Supported
- W:	http://ez.analog.com/community/linux-device-drivers
--F:	Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.txt
-+F:	Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
- F:	drivers/iio/adc/ad7768-1.c
+-/**
+- * refcount_add - add a value to a refcount
+- * @i: the value to add to the refcount
+- * @r: the refcount
+- *
+- * Similar to atomic_add(), but will saturate at REFCOUNT_SATURATED and WARN.
+- *
+- * Provides no memory ordering, it is assumed the caller has guaranteed the
+- * object memory to be stable (RCU, etc.). It does provide a control dependency
+- * and thereby orders future stores. See the comment on top.
+- *
+- * Use of this function is not recommended for the normal reference counting
+- * use case in which references are taken and released one at a time.  In these
+- * cases, refcount_inc(), or one of its variants, should instead be used to
+- * increment a reference count.
+- */
+ static inline void __refcount_add(int i, refcount_t *r, int *oldp)
+ {
+ 	int old = atomic_fetch_add_relaxed(i, &r->refs);
+@@ -217,11 +201,32 @@ static inline void __refcount_add(int i, refcount_t *r, int *oldp)
+ 		refcount_warn_saturate(r, REFCOUNT_ADD_OVF);
+ }
  
- ANALOG DEVICES INC AD7780 DRIVER
-@@ -3860,7 +3860,7 @@ M:	Roger Quadros <rogerq@ti.com>
- L:	linux-usb@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
--F:	Documentation/devicetree/bindings/usb/cdns-usb3.txt
-+F:	Documentation/devicetree/bindings/usb/cdns,usb3.yaml
- F:	drivers/usb/cdns3/
++/**
++ * refcount_add - add a value to a refcount
++ * @i: the value to add to the refcount
++ * @r: the refcount
++ *
++ * Similar to atomic_add(), but will saturate at REFCOUNT_SATURATED and WARN.
++ *
++ * Provides no memory ordering, it is assumed the caller has guaranteed the
++ * object memory to be stable (RCU, etc.). It does provide a control dependency
++ * and thereby orders future stores. See the comment on top.
++ *
++ * Use of this function is not recommended for the normal reference counting
++ * use case in which references are taken and released one at a time.  In these
++ * cases, refcount_inc(), or one of its variants, should instead be used to
++ * increment a reference count.
++ */
+ static inline void refcount_add(int i, refcount_t *r)
+ {
+ 	__refcount_add(i, r, NULL);
+ }
  
- CADET FM/AM RADIO RECEIVER DRIVER
-@@ -7920,7 +7920,7 @@ HISILICON LPC BUS DRIVER
- M:	john.garry@huawei.com
- S:	Maintained
- W:	http://www.hisilicon.com
--F:	Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
-+F:	Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
- F:	drivers/bus/hisi_lpc.c
++static inline __must_check bool __refcount_inc_not_zero(refcount_t *r, int *oldp)
++{
++	return __refcount_add_not_zero(1, r, oldp);
++}
++
+ /**
+  * refcount_inc_not_zero - increment a refcount unless it is 0
+  * @r: the refcount to increment
+@@ -235,16 +240,16 @@ static inline void refcount_add(int i, refcount_t *r)
+  *
+  * Return: true if the increment was successful, false otherwise
+  */
+-static inline __must_check bool __refcount_inc_not_zero(refcount_t *r, int *oldp)
+-{
+-	return __refcount_add_not_zero(1, r, oldp);
+-}
+-
+ static inline __must_check bool refcount_inc_not_zero(refcount_t *r)
+ {
+ 	return __refcount_inc_not_zero(r, NULL);
+ }
  
- HISILICON NETWORK SUBSYSTEM 3 DRIVER (HNS3)
-@@ -14902,7 +14902,6 @@ RENESAS ETHERNET DRIVERS
- R:	Sergei Shtylyov <sergei.shtylyov@gmail.com>
- L:	netdev@vger.kernel.org
- L:	linux-renesas-soc@vger.kernel.org
--F:	Documentation/devicetree/bindings/net/renesas,*.txt
- F:	Documentation/devicetree/bindings/net/renesas,*.yaml
- F:	drivers/net/ethernet/renesas/
- F:	include/linux/sh_eth.h
-@@ -18106,7 +18105,7 @@ M:	Yu Chen <chenyu56@huawei.com>
- M:	Binghui Wang <wangbinghui@hisilicon.com>
- L:	linux-usb@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/phy/phy-hi3660-usb3.txt
-+F:	Documentation/devicetree/bindings/phy/hisilicon,hi3660-usb3.yaml
- F:	drivers/phy/hisilicon/phy-hi3660-usb3.c
++static inline void __refcount_inc(refcount_t *r, int *oldp)
++{
++	__refcount_add(1, r, oldp);
++}
++
+ /**
+  * refcount_inc - increment a refcount
+  * @r: the refcount to increment
+@@ -257,36 +262,11 @@ static inline __must_check bool refcount_inc_not_zero(refcount_t *r)
+  * Will WARN if the refcount is 0, as this represents a possible use-after-free
+  * condition.
+  */
+-static inline void __refcount_inc(refcount_t *r, int *oldp)
+-{
+-	__refcount_add(1, r, oldp);
+-}
+-
+ static inline void refcount_inc(refcount_t *r)
+ {
+ 	__refcount_inc(r, NULL);
+ }
  
- USB ISP116X DRIVER
-diff --git a/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml b/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
-index 43b5630c0407..510edd12ed19 100644
---- a/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
-+++ b/drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
-@@ -24,7 +24,7 @@ description:
-     In addition, it is recommended to declare a mmc-pwrseq on SDIO host above
-     WFx. Without it, you may encounter issues with warm boot. The mmc-pwrseq
-     should be compatible with mmc-pwrseq-simple. Please consult
--    Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.txt for more
-+    Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.yaml for more
-     information.
+-/**
+- * refcount_sub_and_test - subtract from a refcount and test if it is 0
+- * @i: amount to subtract from the refcount
+- * @r: the refcount
+- *
+- * Similar to atomic_dec_and_test(), but it will WARN, return false and
+- * ultimately leak on underflow and will fail to decrement when saturated
+- * at REFCOUNT_SATURATED.
+- *
+- * Provides release memory ordering, such that prior loads and stores are done
+- * before, and provides an acquire ordering on success such that free()
+- * must come after.
+- *
+- * Use of this function is not recommended for the normal reference counting
+- * use case in which references are taken and released one at a time.  In these
+- * cases, refcount_dec(), or one of its variants, should instead be used to
+- * decrement a reference count.
+- *
+- * Return: true if the resulting refcount is 0, false otherwise
+- */
+ static inline __must_check bool __refcount_sub_and_test(int i, refcount_t *r, int *oldp)
+ {
+ 	int old = atomic_fetch_sub_release(i, &r->refs);
+@@ -305,11 +285,36 @@ static inline __must_check bool __refcount_sub_and_test(int i, refcount_t *r, in
+ 	return false;
+ }
  
-   For SPI':'
++/**
++ * refcount_sub_and_test - subtract from a refcount and test if it is 0
++ * @i: amount to subtract from the refcount
++ * @r: the refcount
++ *
++ * Similar to atomic_dec_and_test(), but it will WARN, return false and
++ * ultimately leak on underflow and will fail to decrement when saturated
++ * at REFCOUNT_SATURATED.
++ *
++ * Provides release memory ordering, such that prior loads and stores are done
++ * before, and provides an acquire ordering on success such that free()
++ * must come after.
++ *
++ * Use of this function is not recommended for the normal reference counting
++ * use case in which references are taken and released one at a time.  In these
++ * cases, refcount_dec(), or one of its variants, should instead be used to
++ * decrement a reference count.
++ *
++ * Return: true if the resulting refcount is 0, false otherwise
++ */
+ static inline __must_check bool refcount_sub_and_test(int i, refcount_t *r)
+ {
+ 	return __refcount_sub_and_test(i, r, NULL);
+ }
+ 
++static inline __must_check bool __refcount_dec_and_test(refcount_t *r, int *oldp)
++{
++	return __refcount_sub_and_test(1, r, oldp);
++}
++
+ /**
+  * refcount_dec_and_test - decrement a refcount and test if it is 0
+  * @r: the refcount
+@@ -323,26 +328,11 @@ static inline __must_check bool refcount_sub_and_test(int i, refcount_t *r)
+  *
+  * Return: true if the resulting refcount is 0, false otherwise
+  */
+-static inline __must_check bool __refcount_dec_and_test(refcount_t *r, int *oldp)
+-{
+-	return __refcount_sub_and_test(1, r, oldp);
+-}
+-
+ static inline __must_check bool refcount_dec_and_test(refcount_t *r)
+ {
+ 	return __refcount_dec_and_test(r, NULL);
+ }
+ 
+-/**
+- * refcount_dec - decrement a refcount
+- * @r: the refcount
+- *
+- * Similar to atomic_dec(), it will WARN on underflow and fail to decrement
+- * when saturated at REFCOUNT_SATURATED.
+- *
+- * Provides release memory ordering, such that prior loads and stores are done
+- * before.
+- */
+ static inline void __refcount_dec(refcount_t *r, int *oldp)
+ {
+ 	int old = atomic_fetch_sub_release(1, &r->refs);
+@@ -354,6 +344,16 @@ static inline void __refcount_dec(refcount_t *r, int *oldp)
+ 		refcount_warn_saturate(r, REFCOUNT_DEC_LEAK);
+ }
+ 
++/**
++ * refcount_dec - decrement a refcount
++ * @r: the refcount
++ *
++ * Similar to atomic_dec(), it will WARN on underflow and fail to decrement
++ * when saturated at REFCOUNT_SATURATED.
++ *
++ * Provides release memory ordering, such that prior loads and stores are done
++ * before.
++ */
+ static inline void refcount_dec(refcount_t *r)
+ {
+ 	__refcount_dec(r, NULL);
 -- 
 2.26.2
 
