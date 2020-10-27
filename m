@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BED29AA39
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75F929AA3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898896AbgJ0LFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:05:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43474 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896940AbgJ0LFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:05:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7CD1AAF1;
-        Tue, 27 Oct 2020 11:05:21 +0000 (UTC)
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>
-References: <20201026173358.14704-1-vbabka@suse.cz>
- <20201026173358.14704-4-vbabka@suse.cz>
- <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 3/3] mm, page_alloc: reduce static keys in prep_new_page()
-Message-ID: <1fc7ec3a-367c-eb9f-1cb4-b9e015fea87c@suse.cz>
-Date:   Tue, 27 Oct 2020 12:05:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S2898923AbgJ0LGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:06:05 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:40914 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2898906AbgJ0LGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:06:03 -0400
+Received: by mail-yb1-f194.google.com with SMTP id n142so873358ybf.7;
+        Tue, 27 Oct 2020 04:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fAkQFeXsZSoQo8Ixdy03bk73JABL5fKKNRt0WsI4OiI=;
+        b=VBcRUwl3G/ASm/P4F+TRY+35HgJJw1i9VwUdF0TXFNcj6XYD9F6A7Rr2GPlat/vi/o
+         GVhosFgQzJHEYg9HfHClfJMvDKe4kncSB1gzArBgNRve3OA3zcwA+MvsZXiru4HBKoeO
+         4NfZXJEAXAGUcPL7XlQvrDWNVUjgZ2FgX0n01NPpPJV9mJstmUiUE4l7wGgYr+eFXUtX
+         ltIlSMp2eUc9JaosiIlA9s3Rk+uP4uzUCyOVQcH3kjjDWn+E3IEjRnAbuYVU7Lqs3NsX
+         I5gDqpUvrLv9lWjERT1nzxKSariSY+dP/grT1khLqleqxJMIFaVTosttzrOdMYKitVYk
+         o8PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fAkQFeXsZSoQo8Ixdy03bk73JABL5fKKNRt0WsI4OiI=;
+        b=OPAOz2j9WsNE2/ueF/mbxOGk9iknb+p4QN7WsY2qOg3n9wqJJUQMGfPhm37AzJFlCk
+         GXiDp4ElrjhKNNUwugaVMvapTseL/N4D3dh4ARmJPcGZAJ1qu2S1KON8vyj1MyC4oD61
+         W5TEpjv2yFmoo7IFi763nhM1K6Gpv4yF/0pfz/LgKxp9rllbRBd1rH7yVszL4JeFlcP3
+         H2+JBy032/gAAIz9RJI0YkGAbLy/PSBbcPLIfsKMh+s/eX5CPCl5i6a9goF26ljTzhSw
+         wpA9HuN2y468H2UHE2USzvDWxuHBvGDJsUdH4u3IXkT1rPeOqvOQd/K3ozp88SdkkvBH
+         W2ww==
+X-Gm-Message-State: AOAM5338Iva/hBDyA2ql7ZkceUlJytKNF4wy3SYjZbd0/XYlzJ9B8R+S
+        QCzyE/KRm9nWqznGV/wqLQVGzLFpEVFRPUSJlzY=
+X-Google-Smtp-Source: ABdhPJzlRGGpU7APibB8Rghrp1dbvcZQoFnUblTEQYRpQdsNX75ZevUNZ9hpwdTWWW6AR5c4Cy3oFtT77pOZ/KLqfak=
+X-Received: by 2002:a25:41c9:: with SMTP id o192mr2236771yba.127.1603796762491;
+ Tue, 27 Oct 2020 04:06:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201023075530.19295-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201023075530.19295-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 27 Oct 2020 11:05:36 +0000
+Message-ID: <CA+V-a8t+2ioNTw1m9Xz0_Go=p6dSRWobL15Va5aE3GcWzOHTpA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] RZ/G2x add optee node
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 10:10 AM, David Hildenbrand wrote:
-> On 26.10.20 18:33, Vlastimil Babka wrote:
->> prep_new_page() will always zero a new page (regardless of __GFP_ZERO) when
->> init_on_alloc is enabled, but will also always skip zeroing if the page was
->> already zeroed on free by init_on_free or page poisoning.
->> 
->> The latter check implemented by free_pages_prezeroed() can involve two
->> different static keys. As prep_new_page() is really a hot path, let's introduce
->> a single static key free_pages_not_prezeroed for this purpose and initialize it
->> in init_mem_debugging().
-> 
-> Is this actually observable in practice? This smells like
-> micro-optimization to me.
-> 
-> Also, I thought the whole reason for static keys is to have basically no
-> overhead at runtime, so I wonder if replacing two static key checks by a
-> single one actually makes *some* difference.
+Hi Geert,
 
-You're right, the difference seems to be just a single NOP. The static key 
-infrastructure seems to be working really well.
-(At least the asm inspection made me realize that kernel_poison_pages() is 
-called unconditionally and the static key is checked inside, not inline so I'll 
-be amending patch 2...)
+On Fri, Oct 23, 2020 at 8:55 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>
+> Hi All,
+>
+> This patch series adds optee node to HiHope RZ/G2{HMN} and EK874 boards.
+>
+> This patch series applies on top of [1].
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
+>     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.11
+>
+> Cheers,
+> Prabhakar
+>
+> Lad Prabhakar (2):
+>   arm64: dts: renesas: hihope-common: Add optee node
+>   arm64: dts: renesas: r8a774c0-ek874: Add optee node
+>
+As agreed on the irc (optee nodes should be coming from firmware
+stack) let's drop these patches.
 
-Initially I thought I would be reducing 3 keys to 1 in this patch, but I got the 
-code wrong. So unless others think it's a readability improvements, we can drop 
-this patch.
+Cheers,
+Prabhakar
 
-Or we can also reconsider this whole optimization. If the point is to be 
-paranoid and enable both init_on_free and init_on_alloc, should we trust that 
-nobody wrote something after the clearing on free via use-after-free? :) Kees/Alex?
-
-
+>  arch/arm64/boot/dts/renesas/hihope-common.dtsi | 7 +++++++
+>  arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts | 7 +++++++
+>  2 files changed, 14 insertions(+)
+>
+> --
+> 2.17.1
+>
