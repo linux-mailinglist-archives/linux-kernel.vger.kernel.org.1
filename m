@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E60829CB04
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C8829CB1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832115AbgJ0VL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:11:27 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38100 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505367AbgJ0VL0 (ORCPT
+        id S2505064AbgJ0VVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:21:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34671 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732492AbgJ0VVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:11:26 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RL8gCJ168382;
-        Tue, 27 Oct 2020 21:11:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=lRZmq3kWpRJ7AxDzYsfJ3jGJvDrAet61pmfQoBn+ils=;
- b=P5LHWXvRAIsaSx9WhFZC0Es1OCmbw8MWwYSR41GoCDhjrfgZ3Hb7P4oUcCWY2kD0zbwK
- 8uaukGj2yRaNbXW5lbtNBKzjCG6aN95xrPdPrHKs4KQGaha3rnLlVRhvl/3opDMVVb+J
- Ne9FfXw+W4acQegSIqQCgmabEoxCOX83q0jF1gQFzBscCOL2Jq9/jsM5YSWhu7POeUaT
- CRK7phLEDRZnyR726Z+AzXr30eqWLD+up7Jp3z+zS+05/Mc9S1j60EMHsNxsJz3AKGDs
- LHxD7DA9/smrlC6GcP+/UTfAe2hAMx/yW0Co5bf/uyP6HTmXqsBCRXWChHWq50+DS3nX dw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34dgm4203u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 21:11:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RL5LL9186830;
-        Tue, 27 Oct 2020 21:11:21 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34cx6wf1x7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 21:11:21 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09RLBJEv016279;
-        Tue, 27 Oct 2020 21:11:19 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Oct 2020 14:11:19 -0700
-Date:   Tue, 27 Oct 2020 17:20:34 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Nico Pache <npache@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        steffen.klassert@secunet.com, daniel.m.jordan@oracle.com
-Subject: Re: [PATCH v2] Remove __init from padata_do_multithreaded and
- padata_mt_helper.
-Message-ID: <20201027212034.qiwk34ihwsdwlqv3@ca-dmjordan1.us.oracle.com>
-References: <20200702155548.14690-1-npache@redhat.com>
- <20200708195140.hioiltf7pwppz6j7@ca-dmjordan1.us.oracle.com>
+        Tue, 27 Oct 2020 17:21:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603833668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J50aX1Edk3DFLyS24ty0stdo5ZU9u9zVLScpcoiA/8E=;
+        b=ZyP6AeJyb6t8SyvgZ/ip2SabYQq4Ky59gj91i3SFVQ0CN8ogzLncCvkDf/rZ9dDEMuKFpq
+        EU73tz3EObFbs9O/vQ9A6CEi9jzQO9fWdWRcvM0+bMM3mDjGTeAk7o5OxvfVFsPSXYcjlx
+        CBADzdIBRB2EvxxaTWu/hbVXY/Kj/eo=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-Nd_3OusRMwGyhlwlwEmn6A-1; Tue, 27 Oct 2020 17:21:06 -0400
+X-MC-Unique: Nd_3OusRMwGyhlwlwEmn6A-1
+Received: by mail-ot1-f70.google.com with SMTP id y26so910878otk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 14:21:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=J50aX1Edk3DFLyS24ty0stdo5ZU9u9zVLScpcoiA/8E=;
+        b=sNwbUmXe3lK9RPwZXKgOuQRNZdJLfY9vXovEfNHpe5lq4txy3U4BRO9cyNaMQnEh7l
+         Mvsl6S0qm2FdVuov7GZMgVy3wx6ZxTQT079dCezZHVmJnfftHCL7AR5Og0CJ6eYeGMnY
+         o5rDSnqUeDUNc0R+Ca40oV+82ZJ8vF2uyHOCSuVRlObjfktmqQB3FpcRvLG/3yTz/TN3
+         U3OfzsLFwdzh05KhF54Q7Kq/dMfQqd1rtXk/oriu6L70gr1IzFyYhf/EijgVPgK/Jjv5
+         zq/vb454vvgXJBYzB4zItulSt76lDHp8LHFNbeATjznonAp8U5atCme7ww5h6SS0ltar
+         TqZQ==
+X-Gm-Message-State: AOAM5318EntPqcyZY9Dpbnet1ech5AKUdXujKk//xUvW5mfJs7LsPGRV
+        jKWwm3+snvi+cU5NLJNPbx7JD4+fi4UFUl48qQ6WtTutQsdNVIPjaHgghgkUHT8v+xojXPq+zJh
+        +oFpYCfdsRbZ42vYxmhwDuc6s
+X-Received: by 2002:a4a:e40b:: with SMTP id t11mr3343263oov.43.1603833666031;
+        Tue, 27 Oct 2020 14:21:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPKxh3i0FcFYQbqbDuA3UOwrFx3pL1SszVWVNxDwVuI9T0xhGFE0ZMr1ontS9IYnqBoxF4ng==
+X-Received: by 2002:a4a:e40b:: with SMTP id t11mr3343243oov.43.1603833665754;
+        Tue, 27 Oct 2020 14:21:05 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f142sm2092468oib.10.2020.10.27.14.21.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 14:21:05 -0700 (PDT)
+Subject: Re: Subject: [RFC] clang tooling cleanups
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Perches <joe@perches.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org, Julia.Lawall@lip6.fr,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Huckleberry <nhuck15@gmail.com>
+References: <20201027164255.1573301-1-trix@redhat.com>
+ <CAKwvOd=83v0Sv-NhQ5xgqdNSRm2b=pOJDziX8axZ9t2YyYwz-A@mail.gmail.com>
+ <8abd1e5a-511a-e4f6-6f2c-a045d33fa2aa@redhat.com>
+ <a4c58c21f0361f844588f5479f6fee33dc1a1dae.camel@perches.com>
+ <CAKwvOd=NiUEv51BCXVUDERwbs9qCX1SbMarrof5H0RoCdxP0NA@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <1e05fa22-491c-75fa-8ece-7c87a8b34b0e@redhat.com>
+Date:   Tue, 27 Oct 2020 14:21:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708195140.hioiltf7pwppz6j7@ca-dmjordan1.us.oracle.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270124
+In-Reply-To: <CAKwvOd=NiUEv51BCXVUDERwbs9qCX1SbMarrof5H0RoCdxP0NA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 12:46 AM, Nico Pache wrote:
-> On Wed, Jul 08, 2020 at 03:51:40PM -0400, Daniel Jordan wrote:
-> > (I was away for a while)
-> > 
-> > On Thu, Jul 02, 2020 at 11:55:48AM -0400, Nico Pache wrote:
-> > > Allow padata_do_multithreaded function to be called after bootstrap.
-> > 
-> > The functions are __init because they're currently only needed during boot, and
-> > using __init allows the text to be freed once it's over, saving some memory.
-> > 
-> > So this change, in isolation, doesn't make sense.  If there were an enhancement
-> > you were thinking of making, this patch could then be bundled with it so the
-> > change is made only when it's used.
-> > 
-> > However, there's still work that needs to be merged before
-> > padata_do_multithreaded can be called after boot.  See the parts about priority
-> > adjustments (MAX_NICE/renicing) and concurrency limits in this branch
-> > 
-> >   https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-wip-v0.5
-> > 
-> > and the ktask discussions from linux-mm/lkml where concerns about these issues
-> > were raised.  I plan to post these parts fairly soon and can include you if you
-> > want.
+
+On 10/27/20 1:50 PM, Nick Desaulniers wrote:
+> On Tue, Oct 27, 2020 at 12:52 PM Joe Perches <joe@perches.com> wrote:
+>> (Adding Stephen Rothwell)
+>>
+>> On Tue, 2020-10-27 at 12:33 -0700, Tom Rix wrote:
+>>> On 10/27/20 11:42 AM, Nick Desaulniers wrote:
+>>>> (cutting down the CC list to something more intimate)
+>> []
+>>
+>>> I am interested in treewide fixes.
+>> As am I, but here the definition of fixes is undefined though.
+>> Whitespace / style changes and other bits that don't change generated
+>> object code aren't considered fixes by many maintainers.
+>>
+>>> Cleaning them up (maybe me not doing all the patches) and keeping them clean.
+>>>
+>>> The clang -Wextra-semi-stmt -fixit will fix all 10,000 problems
+>> I rather doubt there are 10K extra semicolons in the kernel source tree.
+>> Is there a proposed diff/patch posted somewhere?
+> Ah, I think I see where I (and Joe) may be misinterpreting.  Tom, do
+> you mean to say that `clang -fixit` will attempt to fix EVERY warning
+> in tree (including but regardless of -Wextra-semi-stmt, where
+> -Wextra-semi-stmt is a red herring), so the clang-tidy check is
+> specific to applying fixits just for -Wextra-semi-stmt?  (If so, I
+> wonder if we could improve clang to accept more fine grain control
+> over *which* fixits we want applied.  Not at all of them for all of
+> the different distinct warnings, for example).
+
+Using clang and -fixit with -Wextra-semi-stmt will fix all of this warning AND all of the other warnings.
+
+(At least thats what i think it will do)
+
+My opinion, clang doing the fixes is a neat but the purpose of the compiler is to compile.
+
+Fixing should be left to all the other clang-tools.
+
+Tom
+
+>>> This clang tidy fixer will fix only the 100 problems that are 'switch() {};'
+>>>
+>>> When doing a treewide cleanup, batching a bunch of fixes that are the same problem and fix
+>>> is much easier on everyone to review and more likely to be accepted.
+>> That depends on the definition of batching.
+>>
+>> If individual patches are sent to multiple maintainers, the
+>> acceptance / apply rate seems always < 50% and some are rejected
+>> outright by various maintainers as "unnecessary churn".
+>>
+>> Single treewide patches are generally not applied unless by Linus.
+>> The trivial tree isn't widely used for this.
+>>
+>> Perhaps a 'scripted' git tree could be established that is integrated
+>> into -next that would allow these automated patches to be better
+>> vetted and increase the acceptance rate of these automated patches.
+>>
+>>> Long term, a c/i system would keep the tree clean by running the switch-semi checker/fixer.
+>>> And we can all move onto the next problem.
+>> Good idea...
+>> I hope a scripted patches mechanism will be established.
+> Yes, if I can automate myself out of job, then I can hang out of the
+> roof and drink margaritas all day.  That is the plan of record, but
+> this !##$'ing compiler is constantly broken!!!!1
 >
-> I really like the speed benefits I've been able to achieve by using your
-> padata multithreaded interface in the branch you linked me to. Do you
-> still have plans on moving forward with this upstream?
 
-Yes, I'm still planning to push these patches upstream, but it's going to take
-some time with all the prerequisites.  I'm working on remote charging in the
-CPU controller now, which is the biggest unfinished task.  A little background
-on that here:
-
-https://lore.kernel.org/linux-mm/20200219220859.GF54486@cmpxchg.org/
