@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7281D29C856
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8C529C85A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829392AbgJ0TGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:06:46 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:38563 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S371423AbgJ0TGp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:06:45 -0400
-Received: by mail-io1-f65.google.com with SMTP id y20so2748962iod.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=coz6L+xiFoQZV2Vxdqg9iD/Q24xRRVSUodgb27gSoZI=;
-        b=NZtVctUU8Wlajt9aO3t4DyQNeU4xDeX79lGJwlAy+vpQiGx73VmhgKRVbFl2ldRUzh
-         AS1j+ImOWNJyHPXsQRlAYwDpJdrFG7+1dGGiRrM8Bj/mvM3Sh7UEO78o6P1KAX/nYQGx
-         qBG9qTgnmRXKCnP8K72A2EpefUUlte38amUlc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=coz6L+xiFoQZV2Vxdqg9iD/Q24xRRVSUodgb27gSoZI=;
-        b=A/BM6KTEBUB5pIev0WdSXjxZ0wSdEslCZOzxnI5tDODZUHm9kZI2uRY7DM86OcfHVx
-         FozCPJMUXvwsfDPF3WuXiRYXiH9uhnoa4YtimSiu1BHipy+kHGg2At4S9nDn35TCCn9e
-         XpnEIwuk6ZkSjDflee24CWuViuqgK3zfnBVRjYEEWy7k/m7xFoKF2xfyC3n4S7Kt4OKT
-         MQ4iMIALCsyAzAVSeG6UmQomTkRzhE6uaLLpHBeOyjjx8m44OqJzERmFYsAPQkaeTuJG
-         afG0kFHqeGiSLKWf+ZOmo+p3X79fhQqRqGFIR7bhTYaZMNfieYZz0amAlQ6U4P8ZrRiO
-         60IA==
-X-Gm-Message-State: AOAM5306hihU4/3aKbORGcAMwGe/vXA4XLKMPC2MIsLqX5F9sRjokgBk
-        d99S4Az5wAwPxIPkTWbUjbL03Q==
-X-Google-Smtp-Source: ABdhPJwA0O4Oz5p1kn4CgBnlbdtAWAnkTmCiYd1F+ZisJqDaI+vUGpTJ7L56/22cOXVDAcVi1P/frA==
-X-Received: by 2002:a05:6602:22cf:: with SMTP id e15mr3416769ioe.1.1603825604788;
-        Tue, 27 Oct 2020 12:06:44 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n15sm1354758ilt.58.2020.10.27.12.06.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:06:44 -0700 (PDT)
-Subject: Re: [PATCH] selftests/ftrace: Use $FUNCTION_FORK to reference kernel
- fork function
-To:     Steven Rostedt <rostedt@goodmis.org>, Shuah Khan <shuah@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kselftest@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201026162032.124c728d@gandalf.local.home>
- <20201027223831.dba931ab868584fc999b0617@kernel.org>
- <20201027102548.713c4604@gandalf.local.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3ba0fbc0-1071-48a4-5821-fbbe75f96d29@linuxfoundation.org>
-Date:   Tue, 27 Oct 2020 13:06:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1829403AbgJ0THT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:07:19 -0400
+Received: from m12-17.163.com ([220.181.12.17]:34092 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2902408AbgJ0THT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 15:07:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=mEweC
+        mt22E7HtZLqqnDVM3+F4KShMEJihMB8YkEVp50=; b=Aty8GcfNm5mnErMNWfpvk
+        AJpcCL/5OAwhb7uzpxUqyCPZCVlTRsu6LuCRIZOJFAVBIQCZWLLHRbsiFMGCLvIs
+        mYNAlAT8o0baSNbQUoOootlwSlAndmRyn4iQfYPDEc3xxpfA7eMur6h6shrjw8at
+        ybgHgm7vMEfleU549XOLQU=
+Received: from localhost (unknown [101.86.209.121])
+        by smtp13 (Coremail) with SMTP id EcCowACXJRLJb5hf0bLkQA--.9970S2;
+        Wed, 28 Oct 2020 03:06:49 +0800 (CST)
+Date:   Wed, 28 Oct 2020 03:06:49 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     akpm@linux-foundation.org, gustavo@embeddedor.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/list_lru: optimize condition of exiting the loop
+Message-ID: <20201027190649.GA67829@rlk>
+References: <20201027170420.GA61326@rlk>
+ <ae359cb8-5bf9-c2e5-ddd0-812df81de0fb@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20201027102548.713c4604@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae359cb8-5bf9-c2e5-ddd0-812df81de0fb@suse.cz>
+X-CM-TRANSID: EcCowACXJRLJb5hf0bLkQA--.9970S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrur43Aw1xuw4UKFy5Kw17KFg_yoWDArcE9r
+        9YvFn29a15CrWSgFsFgrn3ArZ5Wr48WFykJF9rJr1Dtry7Za4jg3ZxWF1DXrykWFWfXryU
+        Xw18Ar18uw1UtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8fWrJUUUUU==
+X-Originating-IP: [101.86.209.121]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiLgnKX1SIqoT7igAAsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 8:25 AM, Steven Rostedt wrote:
-> On Tue, 27 Oct 2020 22:38:31 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Tue, Oct 27, 2020 at 07:45:53PM +0100, Vlastimil Babka wrote:
+> On 10/27/20 6:04 PM, Hui Su wrote:
+> > In list_lru_walk(), nr_to_walk type is 'unsigned long',
+> > so nr_to_walk won't be '< 0'.
+> > 
+> > In list_lru_walk_node(), nr_to_walk type is 'unsigned long',
+> > so *nr_to_walk won't be '< 0' too.
+> > 
+> > We can use '!nr_to_walk' instead of 'nr_to_walk <= 0', which
+> > is more precise.
+> > 
+> > Signed-off-by: Hui Su <sh_def@163.com>
 > 
->>>
->>> Fixes: eea11285dab3 ("tracing: switch to kernel_clone()")
->>> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->>
->> This looks good to me.
->>
->> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> OK. Why not this too?
 > 
-> Shuah,
+> --- a/mm/list_lru.c
+> +++ b/mm/list_lru.c
+> @@ -294,7 +294,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
 > 
-> Can you take this through your tree?
+>         isolated += list_lru_walk_one(lru, nid, NULL, isolate, cb_arg,
+>                                       nr_to_walk);
+> -       if (*nr_to_walk > 0 && list_lru_memcg_aware(lru)) {
+> +       if (*nr_to_walk && list_lru_memcg_aware(lru)) {
+>                 for_each_memcg_cache_index(memcg_idx) {
+>                         struct list_lru_node *nlru = &lru->node[nid];
+> 
 > 
 
-Yes. I will queue this up for next rc.
+Thanks for your fast reply.
 
-thanks,
--- Shuah
+I did not notice that, and i would add this to my change.
+I will resend PATCH V2, and cc to you.
+
+Thanks.
+
