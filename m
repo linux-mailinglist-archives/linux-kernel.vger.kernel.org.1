@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED94A29BFE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A9929BFE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801067AbgJ0RIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:08:50 -0400
-Received: from mga04.intel.com ([192.55.52.120]:28427 "EHLO mga04.intel.com"
+        id S1816666AbgJ0RIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:08:40 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:55722 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1816422AbgJ0RGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:06:34 -0400
-IronPort-SDR: 10H51hlFb11Skyg1i5YFnotLBq0AK2g5dX/e1KO9Pgym4tDdErGNNhyeZbrqIBfYEzMw2nvbCB
- tigwavxnh0pg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="165533162"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="165533162"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 10:06:33 -0700
-IronPort-SDR: Xd4sd0Ubp7EaRjVBW42biV2RL93jGw3qZBF/uMLMyYdtxZ8+pqlT4OYtdA4eSw9MoKZ9RTa4+I
- Q5P5V18xskRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="355616914"
-Received: from lkp-server02.sh.intel.com (HELO 74b0a1e0e619) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 27 Oct 2020 10:06:32 -0700
-Received: from kbuild by 74b0a1e0e619 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kXSQZ-00001x-A0; Tue, 27 Oct 2020 17:06:31 +0000
-Date:   Wed, 28 Oct 2020 01:06:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Subject: drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2341:52: warning:
- Uninitialized variable: pw
-Message-ID: <202010280108.rT3PmzVv-lkp@intel.com>
+        id S1793558AbgJ0RGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:06:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603818409; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=5pG35uJKp6em/LcuBe+x/98128f/lxYBlQLa1lAR/rI=; b=d5K55sgVRIfYV1dOToYrr5wVNLAytocGidH1ddFFoSra3wU4fqKFlmeBkXzi79b2W9rWtQ4h
+ jcrWFSrpH4vZohw8APgZt1Ah8KhrDFecoDCUVosNdy30sd5PBxg5jWaA+7J7mZZBpB9S13IY
+ d3ltksOlYZo2h9KKY4bBASnrKBQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f9853a8b317790c806aea54 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 17:06:48
+ GMT
+Sender: eberman=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CEEB6C38523; Tue, 27 Oct 2020 17:06:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.70] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02277C4A61D;
+        Tue, 27 Oct 2020 17:06:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02277C4A61D
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
+Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        linux-doc@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
+References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
+ <87v9f04n8r.fsf@nanos.tec.linutronix.de>
+ <a6d7f84679240fcf580520230a88c058@codeaurora.org>
+ <20201026171224.GV2611@hirez.programming.kicks-ass.net>
+From:   Elliot Berman <eberman@codeaurora.org>
+Message-ID: <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org>
+Date:   Tue, 27 Oct 2020 10:06:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201026171224.GV2611@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4525c8781ec0701ce824e8bd379ae1b129e26568
-commit: c60b93cd4862d108214a14e655358ea714d7a12a drm/i915: Avoid mixing integer types during batch copies
-date:   4 weeks ago
-compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+On 10/26/2020 10:12 AM, Peter Zijlstra wrote:
+> On Mon, Oct 26, 2020 at 10:08:47AM -0700, psodagud@codeaurora.org wrote:
+>> On 2020-10-23 14:59, Thomas Gleixner wrote:
+>>> On Thu, Oct 22 2020 at 15:04, Elliot Berman wrote:
+>>>> In a heterogeneous multiprocessor system, specifying the 'maxcpus'
+>>>> parameter on kernel command line does not provide sufficient control
+>>>> over which CPUs are brought online at kernel boot time, since CPUs may
+>>>> have nonuniform performance characteristics. Thus, add bootcpus kernel
+>>>> parameter to control which CPUs should be brought online during kernel
+>>>> boot. When both maxcpus and bootcpus is set, the more restrictive of
+>>>> the
+>>>> two are booted.
+>>>
+>>> What for? 'maxcpus' is a debug hack at best and outright dangerous on
+>>> certain architectures. Why do we need more of that? Just let the machine
+>>> boot and offline the CPUs from user space.
+>>
+>> Hi Thomas and Peter,
+>>
+>> Based on my understanding with maxcpus option provides, maximum no of CPUs
+>> are brough up during the device boot up. There is a different case, in which
+>> we want to restrict which CPUs to be brough up.
+>> On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 are
+>> brough up during the bootup.  For example, if we want to bring core0, core3
+>> and core4 current maxcpu(as 3) setting would not help us.
+>> On some platform we want the flexibility on which CPUs to bring up during
+>> the device bootup. bootcpus command line is helping to bring specific CPUs
+>> and these patches are working downstream.
+> 
+> That's a lot of words, but exactly 0 on _WHY_ you would want to do that.
+> 
 
+We find the ability to limit the number of cpus brought online at bootup 
+useful, and to possibly later enable those cores. One use case is when 
+device is undergoing initial testing is to use bootcpus to limit bootup 
+to only a couple cores and later bring up the other cores for a 
+controlled stress test. A core brought up during boot is also running 
+device initialization. Besides being useful for SoC vendor bringup which 
+typically occurs downstream, this particular use case could be exercised 
+by developer of upstream support for a SoC when initial CPU settings are 
+being determined.
 
-"cppcheck warnings: (new ones prefixed by >>)"
->> drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2341:52: warning: Uninitialized variable: pw [uninitvar]
-    GEM_BUG_ON(overflows_type(eb->batch_start_offset, pw->batch_offset));
-                                                      ^
-   drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2342:43: warning: Uninitialized variable: pw [uninitvar]
-    GEM_BUG_ON(overflows_type(eb->batch_len, pw->batch_length));
-                                             ^
-
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
-
-   drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:1535:6: warning: Local variable reloc_gpu shadows outer function [shadowFunction]
-    int reloc_gpu = reloc_entry_gpu(eb, vma, offset, target_addr);
-        ^
-   drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:1384:13: note: Shadowed declaration
-   static u32 *reloc_gpu(struct i915_execbuffer *eb,
-               ^
-   drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:1535:6: note: Shadow variable
-    int reloc_gpu = reloc_entry_gpu(eb, vma, offset, target_addr);
-        ^
-
-vim +2341 drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-
-  2333	
-  2334	static int eb_parse_pipeline(struct i915_execbuffer *eb,
-  2335				     struct i915_vma *shadow,
-  2336				     struct i915_vma *trampoline)
-  2337	{
-  2338		struct eb_parse_work *pw;
-  2339		int err;
-  2340	
-> 2341		GEM_BUG_ON(overflows_type(eb->batch_start_offset, pw->batch_offset));
-  2342		GEM_BUG_ON(overflows_type(eb->batch_len, pw->batch_length));
-  2343	
-  2344		pw = kzalloc(sizeof(*pw), GFP_KERNEL);
-  2345		if (!pw)
-  2346			return -ENOMEM;
-  2347	
-  2348		err = i915_active_acquire(&eb->batch->vma->active);
-  2349		if (err)
-  2350			goto err_free;
-  2351	
-  2352		err = i915_active_acquire(&shadow->active);
-  2353		if (err)
-  2354			goto err_batch;
-  2355	
-  2356		if (trampoline) {
-  2357			err = i915_active_acquire(&trampoline->active);
-  2358			if (err)
-  2359				goto err_shadow;
-  2360		}
-  2361	
-  2362		dma_fence_work_init(&pw->base, &eb_parse_ops);
-  2363	
-  2364		pw->engine = eb->engine;
-  2365		pw->batch = eb->batch->vma;
-  2366		pw->batch_offset = eb->batch_start_offset;
-  2367		pw->batch_length = eb->batch_len;
-  2368		pw->shadow = shadow;
-  2369		pw->trampoline = trampoline;
-  2370	
-  2371		/* Mark active refs early for this worker, in case we get interrupted */
-  2372		err = parser_mark_active(pw, eb->context->timeline);
-  2373		if (err)
-  2374			goto err_commit;
-  2375	
-  2376		err = dma_resv_reserve_shared(pw->batch->resv, 1);
-  2377		if (err)
-  2378			goto err_commit;
-  2379	
-  2380		/* Wait for all writes (and relocs) into the batch to complete */
-  2381		err = i915_sw_fence_await_reservation(&pw->base.chain,
-  2382						      pw->batch->resv, NULL, false,
-  2383						      0, I915_FENCE_GFP);
-  2384		if (err < 0)
-  2385			goto err_commit;
-  2386	
-  2387		/* Keep the batch alive and unwritten as we parse */
-  2388		dma_resv_add_shared_fence(pw->batch->resv, &pw->base.dma);
-  2389	
-  2390		/* Force execution to wait for completion of the parser */
-  2391		dma_resv_add_excl_fence(shadow->resv, &pw->base.dma);
-  2392	
-  2393		dma_fence_work_commit_imm(&pw->base);
-  2394		return 0;
-  2395	
-  2396	err_commit:
-  2397		i915_sw_fence_set_error_once(&pw->base.chain, err);
-  2398		dma_fence_work_commit_imm(&pw->base);
-  2399		return err;
-  2400	
-  2401	err_shadow:
-  2402		i915_active_release(&shadow->active);
-  2403	err_batch:
-  2404		i915_active_release(&eb->batch->vma->active);
-  2405	err_free:
-  2406		kfree(pw);
-  2407		return err;
-  2408	}
-  2409	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Another use case is if user wishes to limit bootup only to the smaller 
+or bigger cores. maxcpus= is not sufficient here to ensure that only 
+those cores are booted since it limits only to the first N cores, which 
+may not be the desired small or big cores. User may want to bring up 
+only the smaller cores during bootup for thermal reasons. For instance, 
+device may be later sufficiently charged such that boot up of the bigger 
+cores is now permissible. Relying on thermal drivers to later take care 
+of putting core into lower power idle may not occur until much later in 
+boot (for instance, if the governor is a module).
