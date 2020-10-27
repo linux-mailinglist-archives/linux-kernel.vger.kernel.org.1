@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8194D29B0FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6771029B0FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505427AbgJ0OZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:25:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50652 "EHLO mail.kernel.org"
+        id S2895955AbgJ0OZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:25:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758871AbgJ0OZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:25:16 -0400
+        id S2901623AbgJ0OZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:25:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E91D20780;
-        Tue, 27 Oct 2020 14:25:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA37B20773;
+        Tue, 27 Oct 2020 14:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808716;
-        bh=cLaNBB6AnDMMfGESDOCXCe12YlDrGVGT5U6gj77FQV0=;
+        s=default; t=1603808726;
+        bh=9JXnFFBSF9/WSm3bZ0WxH2EdyF4PzlXC3enXoBJasmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FiS2nwrnvldooKhKa6ESGzqIROXmLBUJunnU2modovSU2c2LAghqiYCHBjLG7jcRv
-         eR1Uo3kQyWU/I/BWIlkRwTkAi/HJUkhV62+1V1p5k6OsvDGHLHbTMBwt3m1hetdVFR
-         wvV6gSoTKKU6u53/X0cwq0nMbvnaTQLoQaRP0QnM=
+        b=VLzz2SaxwFvukHa8xQrPaSXxEWScAr/ikdjMuEhUxxtEGQI33FzRkDn1bvqwMCGVN
+         VmCBjXYFMteIrxTDZkgirWZp74I10MsLF5g+DZ5TRm0EE6trEqF0Swi667E3ZBD8+w
+         gmheBqHskkdf0UC/3OdwVR6VHcmpQmouej718q/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 196/264] arm64: dts: qcom: pm8916: Remove invalid reg size from wcd_codec
-Date:   Tue, 27 Oct 2020 14:54:14 +0100
-Message-Id: <20201027135439.878748020@linuxfoundation.org>
+Subject: [PATCH 4.19 200/264] powerpc/powernv/dump: Fix race while processing OPAL dump
+Date:   Tue, 27 Oct 2020 14:54:18 +0100
+Message-Id: <20201027135440.058970572@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,46 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
 
-[ Upstream commit c2f0cbb57dbac6da3d38b47b5b96de0fe4e23884 ]
+[ Upstream commit 0a43ae3e2beb77e3481d812834d33abe270768ab ]
 
-Tha parent node of "wcd_codec" specifies #address-cells = <1>
-and #size-cells = <0>, which means that each resource should be
-described by one cell for the address and size omitted.
+Every dump reported by OPAL is exported to userspace through a sysfs
+interface and notified using kobject_uevent(). The userspace daemon
+(opal_errd) then reads the dump and acknowledges that the dump is
+saved safely to disk. Once acknowledged the kernel removes the
+respective sysfs file entry causing respective resources to be
+released including kobject.
 
-However, wcd_codec currently lists 0x200 as second cell (probably
-the size of the resource). When parsing this would be treated like
-another memory resource - which is entirely wrong.
+However it's possible the userspace daemon may already be scanning
+dump entries when a new sysfs dump entry is created by the kernel.
+User daemon may read this new entry and ack it even before kernel can
+notify userspace about it through kobject_uevent() call. If that
+happens then we have a potential race between
+dump_ack_store->kobject_put() and kobject_uevent which can lead to
+use-after-free of a kernfs object resulting in a kernel crash.
 
-To quote the device tree specification [1]:
-  "If the parent node specifies a value of 0 for #size-cells,
-   the length field in the value of reg shall be omitted."
+This patch fixes this race by protecting the sysfs file
+creation/notification by holding a reference count on kobject until we
+safely send kobject_uevent().
 
-[1]: https://www.devicetree.org/specifications/
+The function create_dump_obj() returns the dump object which if used
+by caller function will end up in use-after-free problem again.
+However, the return value of create_dump_obj() function isn't being
+used today and there is no need as well. Hence change it to return
+void to make this fix complete.
 
-Fixes: 5582fcb3829f ("arm64: dts: apq8016-sbc: add analog audio support with multicodec")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200915071221.72895-4-stephan@gerhold.net
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: c7e64b9ce04a ("powerpc/powernv Platform dump interface")
+Signed-off-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201017164210.264619-1-hegdevasant@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/pm8916.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/powernv/opal-dump.c | 41 +++++++++++++++-------
+ 1 file changed, 29 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
-index 196b1c0ceb9b0..b968afa8da175 100644
---- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
-@@ -99,7 +99,7 @@ pm8916_1: pm8916@1 {
+diff --git a/arch/powerpc/platforms/powernv/opal-dump.c b/arch/powerpc/platforms/powernv/opal-dump.c
+index 198143833f00d..1dc2122a3cf51 100644
+--- a/arch/powerpc/platforms/powernv/opal-dump.c
++++ b/arch/powerpc/platforms/powernv/opal-dump.c
+@@ -322,15 +322,14 @@ static ssize_t dump_attr_read(struct file *filep, struct kobject *kobj,
+ 	return count;
+ }
  
- 		wcd_codec: codec@f000 {
- 			compatible = "qcom,pm8916-wcd-analog-codec";
--			reg = <0xf000 0x200>;
-+			reg = <0xf000>;
- 			reg-names = "pmic-codec-core";
- 			clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
- 			clock-names = "mclk";
+-static struct dump_obj *create_dump_obj(uint32_t id, size_t size,
+-					uint32_t type)
++static void create_dump_obj(uint32_t id, size_t size, uint32_t type)
+ {
+ 	struct dump_obj *dump;
+ 	int rc;
+ 
+ 	dump = kzalloc(sizeof(*dump), GFP_KERNEL);
+ 	if (!dump)
+-		return NULL;
++		return;
+ 
+ 	dump->kobj.kset = dump_kset;
+ 
+@@ -350,21 +349,39 @@ static struct dump_obj *create_dump_obj(uint32_t id, size_t size,
+ 	rc = kobject_add(&dump->kobj, NULL, "0x%x-0x%x", type, id);
+ 	if (rc) {
+ 		kobject_put(&dump->kobj);
+-		return NULL;
++		return;
+ 	}
+ 
++	/*
++	 * As soon as the sysfs file for this dump is created/activated there is
++	 * a chance the opal_errd daemon (or any userspace) might read and
++	 * acknowledge the dump before kobject_uevent() is called. If that
++	 * happens then there is a potential race between
++	 * dump_ack_store->kobject_put() and kobject_uevent() which leads to a
++	 * use-after-free of a kernfs object resulting in a kernel crash.
++	 *
++	 * To avoid that, we need to take a reference on behalf of the bin file,
++	 * so that our reference remains valid while we call kobject_uevent().
++	 * We then drop our reference before exiting the function, leaving the
++	 * bin file to drop the last reference (if it hasn't already).
++	 */
++
++	/* Take a reference for the bin file */
++	kobject_get(&dump->kobj);
+ 	rc = sysfs_create_bin_file(&dump->kobj, &dump->dump_attr);
+-	if (rc) {
++	if (rc == 0) {
++		kobject_uevent(&dump->kobj, KOBJ_ADD);
++
++		pr_info("%s: New platform dump. ID = 0x%x Size %u\n",
++			__func__, dump->id, dump->size);
++	} else {
++		/* Drop reference count taken for bin file */
+ 		kobject_put(&dump->kobj);
+-		return NULL;
+ 	}
+ 
+-	pr_info("%s: New platform dump. ID = 0x%x Size %u\n",
+-		__func__, dump->id, dump->size);
+-
+-	kobject_uevent(&dump->kobj, KOBJ_ADD);
+-
+-	return dump;
++	/* Drop our reference */
++	kobject_put(&dump->kobj);
++	return;
+ }
+ 
+ static irqreturn_t process_dump(int irq, void *data)
 -- 
 2.25.1
 
