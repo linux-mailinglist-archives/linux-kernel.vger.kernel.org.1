@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EDF29C02F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10D629C1B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784502AbgJ0O7N convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 10:59:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:26400 "EHLO mga07.intel.com"
+        id S1819160AbgJ0R1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:27:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773160AbgJ0Ovk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:51:40 -0400
-IronPort-SDR: 8ygIKS9jiWCfU+dllPCfxa+qXGMDkl0nBUZ8RNm6/IjDAbYPbUHuWD3CANk41cBq5HwUWA19QZ
- Q3ByahE6XbMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="232278238"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="232278238"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:51:39 -0700
-IronPort-SDR: QsN1CmXeuCWCB83XI37JPoftKcFSesGTOGfClnAFj9tL3jY3rHZErjuxhjhP26FmlSh1ZMJegN
- QJSCZXQiY/vQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="468337811"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga004.jf.intel.com with ESMTP; 27 Oct 2020 07:51:39 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 27 Oct 2020 07:51:38 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 27 Oct 2020 07:51:37 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
- Tue, 27 Oct 2020 07:51:37 -0700
-From:   "Perez-Gonzalez, Inaky" <inaky.perez-gonzalez@intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>
-CC:     linux-wimax <linux-wimax@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
-Thread-Topic: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
-Thread-Index: AQHWq9+IizPtCG0Uk0iW2uocMKyLWamrgVyAgABLJQD//7tyFw==
-Date:   Tue, 27 Oct 2020 14:51:37 +0000
-Message-ID: <b102ea5e9e2e4365a1c05a1c24e66cc4@intel.com>
-References: <20201026213040.3889546-1-arnd@kernel.org>
- <20201026213040.3889546-4-arnd@kernel.org>
- <03c5bc171594c884c903994ef82d703776bfcbc0.camel@sipsolutions.net>,<CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1775650AbgJ0OxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:53:00 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D8B322265;
+        Tue, 27 Oct 2020 14:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603810379;
+        bh=lRyihQET4wWx+8eZkdWW/pEjjC0GgzuvTCnX9bjWC58=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vWHtUIU3xS3y972jDvabA7wU5uusJLJNPIqvCNH4++kQmDLjEujYO2dT0z5CE3CnJ
+         GFh2fD2xao/N4nvwRK4YspksIahDl9wNyDBja9hX6n96y8Vp0iK7RlOqrL7aeyUU/K
+         ohk+KEh4/8n/NwztAYfPHTFnucqTtAs/s+C+7XNw=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v2] seq_file: fix clang warning for NULL pointer arithmetic
+Date:   Tue, 27 Oct 2020 15:52:23 +0100
+Message-Id: <20201027145252.3976138-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Arnd Bergmann <arnd@kernel.org>
-> 
-> Makes sense. I checked
-> https://en.wikipedia.org/wiki/List_of_WiMAX_networks, and it appears
-> that these entries are all stale, after everyone has migrated to LTE
-> or discontinued their service altogether.
-> 
-> NetworkManager appears to have dropped userspace support in 2015
-> https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
-> www.linuxwimax.org site had already shut down earlier.
-> 
-> WiMax is apparently still being deployed on airport campus
-> networks ("AeroMACS"), but in a frequency band that was not
-> supported by the old Intel 2400m (used in Sandy Bridge laptops
-> and earlier), which is the only driver using the kernel's wimax
-> stack.
-> 
-> Inaky, do you have any additional information about possible
-> users? If we are sure there are none, then I'd suggest removing
-> all the wimax code directly, otherwise it could go through
-> drivers/staging/ for a release or two (and move it back in case
-> there are users after all). I can send a patch if you like.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I have not
+Clang points out that adding something to NULL is notallowed
+in standard C:
 
-Every now and then I get the occasional message from a student or
-researcher asking for support about a production network, but they
-have dwindled in the last years.
+fs/kernfs/file.c:127:15: warning: performing pointer arithmetic on a
+null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+                return NULL + !*ppos;
+                       ~~~~ ^
+fs/seq_file.c:529:14: warning: performing pointer arithmetic on a
+null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+        return NULL + (*pos == 0);
 
-My vote would be to scrap the whole thing; if there are die hard
-users, they can always rise up and move it back from staging.
+Rephrase the code to be extra explicit about the valid, giving
+them named SEQ_OPEN_EOF and SEQ_OPEN_SINGLE definitions.
+The instance in kernfs was copied from single_start, so fix both
+at once.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: c2b19daf6760 ("sysfs, kernfs: prepare read path for kernfs")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: add the named macros after Christoph Hellwig pointed out
+that my original logic was too ugly.
+Suggestions for better names welcome
+---
+ fs/kernfs/file.c         | 8 ++++----
+ fs/seq_file.c            | 4 ++--
+ include/linux/seq_file.h | 3 +++
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index f277d023ebcd..eafeb8bf4fe4 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -121,10 +121,10 @@ static void *kernfs_seq_start(struct seq_file *sf, loff_t *ppos)
+ 		return next;
+ 	} else {
+ 		/*
+-		 * The same behavior and code as single_open().  Returns
+-		 * !NULL if pos is at the beginning; otherwise, NULL.
++		 * The same behavior and code as single_open().  Continues
++		 * if pos is at the beginning; otherwise, EOF.
+ 		 */
+-		return NULL + !*ppos;
++		return *ppos ? SEQ_OPEN_SINGLE : SEQ_OPEN_EOF;
+ 	}
+ }
+ 
+@@ -145,7 +145,7 @@ static void *kernfs_seq_next(struct seq_file *sf, void *v, loff_t *ppos)
+ 		 * terminate after the initial read.
+ 		 */
+ 		++*ppos;
+-		return NULL;
++		return SEQ_OPEN_EOF;
+ 	}
+ }
+ 
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 31219c1db17d..203cd86136ad 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -526,13 +526,13 @@ EXPORT_SYMBOL(seq_dentry);
+ 
+ static void *single_start(struct seq_file *p, loff_t *pos)
+ {
+-	return NULL + (*pos == 0);
++	return *pos == 0 ? SEQ_OPEN_SINGLE : SEQ_OPEN_EOF;
+ }
+ 
+ static void *single_next(struct seq_file *p, void *v, loff_t *pos)
+ {
+ 	++*pos;
+-	return NULL;
++	return SEQ_OPEN_EOF;
+ }
+ 
+ static void single_stop(struct seq_file *p, void *v)
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index 813614d4b71f..26f0758b6551 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -37,6 +37,9 @@ struct seq_operations {
+ 
+ #define SEQ_SKIP 1
+ 
++#define SEQ_OPEN_EOF	(void *)0
++#define SEQ_OPEN_SINGLE	(void *)1
++
+ /**
+  * seq_has_overflowed - check if the buffer has overflowed
+  * @m: the seq_file handle
+-- 
+2.27.0
+
