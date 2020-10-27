@@ -2,186 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA5E29AB18
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F6829AB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750187AbgJ0LsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:48:02 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:37872 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899543AbgJ0LsB (ORCPT
+        id S2899535AbgJ0Low (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:44:52 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43017 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2899481AbgJ0Lov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:48:01 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201027114749euoutp01b0d120c6e80e572913277a318ea97289~B1vBBVraU0243402434euoutp01g
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:47:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201027114749euoutp01b0d120c6e80e572913277a318ea97289~B1vBBVraU0243402434euoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603799269;
-        bh=+6TmqewcngAaw1AzJXeK9FrivbLzGJcUPqOJsaqXGzk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=biCL/9tPuCUIulmi5qTHS0Je5mXR8oinFd3Reqo6hYmsYGaBNYlWIIPQMZh7SpYXy
-         XPMANpUh6Vc4MhZKEpdvDoJRDIAVcpne5QgmDQ5lIL+Nz6EOZSewh2lUjchV91yAsB
-         /tblSSBo/DU3a2W876ocj3uFG0/cVqzJbhgkESpM=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201027114744eucas1p10763432fb308b544b9fc3c14645f93a0~B1u8A200j2024320243eucas1p1U;
-        Tue, 27 Oct 2020 11:47:44 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 25.DF.06456.0E8089F5; Tue, 27
-        Oct 2020 11:47:44 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201027114743eucas1p23c4a5e6762ce18509296cf23435e7268~B1u7j0uaj1780617806eucas1p2v;
-        Tue, 27 Oct 2020 11:47:43 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201027114743eusmtrp28cf53377ebc7de1441612a0a2bf0532b~B1u7in6vp0588405884eusmtrp2z;
-        Tue, 27 Oct 2020 11:47:43 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-84-5f9808e02d58
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 63.F1.06017.FD8089F5; Tue, 27
-        Oct 2020 11:47:43 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201027114743eusmtip2823c77c36ee11bd84a6d4630ed7904b4~B1u7ZA6ZP0639906399eusmtip2g;
-        Tue, 27 Oct 2020 11:47:43 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v3 RESEND] net: mii: Report advertised link capabilities
- when autonegotiation is off
-Date:   Tue, 27 Oct 2020 12:43:17 +0100
-Message-Id: <20201027114317.8259-1-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 27 Oct 2020 07:44:51 -0400
+Received: by mail-io1-f67.google.com with SMTP id h21so1139263iob.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F0K2Mt0cLswR12jsU6gnevEK6yDw/vw4uHmBGVB802s=;
+        b=qyBy7eUmjpEsh3fvokoKwKjVV7MbxuJ0n0N7eZjugv6g4aH1ZSUUsEeECWFZBiMpHO
+         4KMUhqSbhj0eTzv4kgd88rZvLpNFsojoOUvOBaGh7Q3ASh3UOSxY8GDrvrxGp6WNAc/M
+         s6Rv77OELbUEeYJRzmUmi8e08nNBc2VYi9Wz0GXXgtgvLxR/UnKIPy4qU2V6Ej9ouzHt
+         GUvbAU91YROSYag2tQDIVRDRwLPS8e2dTEuC3W6eCf9+8be4J441VZYeF604CbvXh8dd
+         7u0fXkx82xbtPqgiNjguP8yJMA0qLuhHvAM/SlMIzg24RpPGc35C/GoIo24a8UkIurUI
+         yMuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F0K2Mt0cLswR12jsU6gnevEK6yDw/vw4uHmBGVB802s=;
+        b=abTzj6xUJDL44SsWYfHhBXW4s1UKlExWWcZmvTC++DfwCauTvlsi8ngvkrjiIiU1h0
+         gd+6TiWpcYkBwxeX3wCMcxLChL6EfIfZmLIbt1ShmjHHHdRHAfLH3QyZi/G5t83zdle3
+         aWIj3iVaRN5HQBqBU2yH5smzded7xJhm2YAX7JpAtFHRQDfLXg05Hs+yv0RSHHcK7w5w
+         yb34oJ31TDJpha57k1eHdwoRqLwIBeM2YB2NuicNJrAbSCDz8Qnd11guazxrbo9DEHM1
+         dpM7LNTX6F2VK6AJIPKjDXxSHdfRWh8edgRovsMcctN+N1SAQkLGGjffHfWwFHEEHEpd
+         BBPw==
+X-Gm-Message-State: AOAM531RlOcwmI/HBHEENVtcdwklTw27LNYX+HgaA9/sjKuifI9/VrhB
+        L9U6ta1aLnwkyOiwpBr6r517LtlpFHJ6OKBuum7aYw==
+X-Google-Smtp-Source: ABdhPJyzoSl9IkDPIXH0U3eudbApcTKUl9+IAmZSejsMQH/+IRauAmqD1yhE5unMri2eA+DrrSOV4+XlFhSNFgJAbU8=
+X-Received: by 2002:a02:c785:: with SMTP id n5mr1891204jao.128.1603799088366;
+ Tue, 27 Oct 2020 04:44:48 -0700 (PDT)
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRTmt7vHdTi7btKO9sJhoIZT6XWxlCz/mP4R9U+CoLb0ppavdtWa
-        BKn5KPOVmZoNEytcko+t6aak1RKn+FbwQVpRYrgwIR/4CMvtTvK/7zvn+853DhwcE+o5Lnhc
-        YgqlSJTHS7h8dmv3+qDXV7wy0qfIbE8OzRgxUlPZxCFVQ9lssnaxkkMOtxZxyCmjGpFj7Sou
-        aXzcgciGrhke2V2z9wxfNjY+gsl0r6ZYsraqGZ5MW3+fK2szLLFkRbp6JFvSHrzAC+Ofjqbi
-        49IohXfAZX7sgG4TS84S31LnTrAzUJ0oH9nhQByDAq2Zm4/4uJBQIyhq3rSRZQTPq7d4DFlC
-        0FWRzd2xjI2qMaZRh6C2/xeHIT8QvJ8sZFlUXCIQil/2WBtOxAqC2blmZCEY0Ymg7XMZZlGJ
-        iKtgalqzzmUTh6F/ZHQ7EMcFhB+oHnCYuEOQV6e3SgSEI/Q+mWVb8B7CE15nTVgxtq252/LU
-        uhIQnTwwmUvYjDkIMjPLbFgEZpOOx+D98LftGcuSBcQdeFR6gvEWIGhVrdn0p2B6cINr0WCE
-        BzS1ezPlQDCsajDG6gCTC47MCg5Q2lphKwvgXq6QUbtBY/Fb20AXKDSrEYNlYOj9ySpBrlW7
-        DqvadUzV/9wahNUjMZVKJ8RQtG8idVNKyxPo1MQYaVRSghZtv1Pflum3Aa2MXjEiAkcSe8Hw
-        QnmkkCNPo5UJRgQ4JnESnB3oixAKouXKdEqRFKlIjadoI9qHsyViwdHa+XAhESNPoa5TVDKl
-        2OmycDuXDJQ096cvRKmjA0XmT+KHmp7b+jB9zosowfFx/+aLxsyNjfSs2Ea/Hk3Pu3MfncPB
-        teLSlCu3EFbj4xrnOzPcV3M4GeejljvIZveua9/cpA3GYNP38C8TIQdCp7E3a9r5oOC8k+Vi
-        5xaPDzWhSmlIXsS6f8Cij5fbjaZsj5zqI14SNh0r9/XEFLT8H/rN8/hKAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsVy+t/xe7r3OWbEG7y9rW9x/u4hZouNM9az
-        Wsw538Jisej9DFaLC9v6WC1uHlrBaHF51xw2i0NT9zJarD1yl93i2AIxBy6Py9cuMntsWXmT
-        yWPnrLvsHptWdbJ57Nzxmcmjb8sqRo/Pm+QC2KP0bIryS0tSFTLyi0tslaINLYz0DC0t9IxM
-        LPUMjc1jrYxMlfTtbFJSczLLUov07RL0Ms5u+c1c0CResaLtOksD43LhLkZODgkBE4nLl1Yw
-        dzFycQgJLGWU+HC9g6WLkQMoISWxcm46RI2wxJ9rXWwQNU8ZJb62X2QDSbAJOEr0Lz3BCpIQ
-        EfjNKLHl6Dwwh1lgH6PE/qOL2UGqhAVSJPb9fgTWwSKgKnHm4iV2kA28AlYSc7pZITbIS7Qv
-        3w5WwisgKHFy5hOwI5gF1CXWzxMCCfMLaEmsabrOAmIzA5U3b53NPIFRYBaSjlkIHbOQVC1g
-        ZF7FKJJaWpybnltspFecmFtcmpeul5yfu4kRGFnbjv3csoOx613wIUYBDkYlHt4Lb6fFC7Em
-        lhVX5h5ilOBgVhLhdTp7Ok6INyWxsiq1KD++qDQntfgQoynQNxOZpUST84FRn1cSb2hqaG5h
-        aWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgbHINbiz9Gf0MdfQllzhkv0xk28u
-        C064qmcj/Xry7rXBbfXXvdemqp1/sf3iJhfP36eW/j70mLHW6MNMlbZmc38+yQKdLZOTG1TE
-        zUWZOX6G7rjV75yaPl+/ckb3mVZLsT/7n4Y0GiznYSzY3Pp84uT9k6ManscWr1j3qaBLytBh
-        ybvc7N08r5RYijMSDbWYi4oTAYXQXsLCAgAA
-X-CMS-MailID: 20201027114743eucas1p23c4a5e6762ce18509296cf23435e7268
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201027114743eucas1p23c4a5e6762ce18509296cf23435e7268
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201027114743eucas1p23c4a5e6762ce18509296cf23435e7268
-References: <CGME20201027114743eucas1p23c4a5e6762ce18509296cf23435e7268@eucas1p2.samsung.com>
+References: <20201027111422.4008114-1-anders.roxell@linaro.org>
+In-Reply-To: <20201027111422.4008114-1-anders.roxell@linaro.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Oct 2020 17:14:37 +0530
+Message-ID: <CA+G9fYuk57Ys8jVS7Ue7fPc2jd8fTBPY-ZvAixDvpgy3+H9hHA@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unify the set of information returned by mii_ethtool_get_link_ksettings(),
-mii_ethtool_gset() and phy_ethtool_ksettings_get(). Make the mii_*()
-functions report advertised settings when autonegotiation if disabled.
+On Tue, 27 Oct 2020 at 16:45, Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> When building allmodconfig leading to the following link error with
+> CONFIG_QCOM_RPMH=y and CONFIG_QCOM_COMMAND_DB=m:
+>
+> aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
+>   drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr'
+>   drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
+>
+> Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
+> module when QCOM_COMMAND_DB is a module. Also removing the dependency on
+> 'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
+> QCOM_COMMAND_DB.
+>
+> Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-Suggested-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
-Resending according to last Anddrew Lunn's request last week.
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-This is the third version of ("net: phy: Prevent reporting advertised
-modes when autoneg is off")  patch[1] that started as change for phy.c
-to make phy_ethtool_ksettings_get() work like mii_*() below. After
-suggestions from Russell King came v2[2].
+This patch fixed the arm64 build error.
 
-Following Andrew Lunn's suggestions[2] to report advertised parameters even
-when autonegotiation is off I decided to drop changes to phy.c and make
-appropriate to mii.c
+> ---
+>  drivers/soc/qcom/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 9b4ae9c16ba7..3bdd1604f78f 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
+>
+>  config QCOM_RPMH
+>         tristate "Qualcomm RPM-Hardened (RPMH) Communication"
+> -       depends on ARCH_QCOM || COMPILE_TEST
+> +       depends on QCOM_COMMAND_DB
+>         help
+>           Support for communication with the hardened-RPM blocks in
+>           Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
 
-Changes in v3:
-  - drop changes to phy.c
-  - introduce changes to mii.c
 
-Changes in v2:
-  - clear lp_advertising
-  - set ETHTOOL_LINK_MODE_TP_BIT and ETHTOOL_LINK_MODE_MII_BIT in advertising
+Build error noticed on linux next 20201027 tag.
 
-[1] https://lore.kernel.org/lkml/20201014125650.12137-1-l.stelmach@samsung.com/ 
-[2] https://lore.kernel.org/lkml/20201015084435.24368-1-l.stelmach@samsung.com/
+ LD      .tmp_vmlinux.kallsyms1
+aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
+aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
+/home/naresh/kernel/next/linux-next/drivers/clk/qcom/clk-rpmh.c:474:
+undefined reference to `cmd_db_read_addr'
+aarch64-linux-gnu-ld:
+/home/naresh/kernel/next/linux-next/drivers/clk/qcom/clk-rpmh.c:481:
+undefined reference to `cmd_db_read_aux_data'
+aarch64-linux-gnu-ld: drivers/soc/qcom/rpmh-rsc.o: in function `rpmh_rsc_probe':
+/home/naresh/kernel/next/linux-next/drivers/soc/qcom/rpmh-rsc.c:948:
+undefined reference to `cmd_db_ready'
+aarch64-linux-gnu-ld: drivers/regulator/qcom-rpmh-regulator.o: in
+function `rpmh_regulator_init_vreg':
+/home/naresh/kernel/next/linux-next/drivers/regulator/qcom-rpmh-regulator.c:438:
+undefined reference to `cmd_db_read_addr'
+make: *** [Makefile:1164: vmlinux] Error 1
 
- drivers/net/mii.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/mii.c b/drivers/net/mii.c
-index f6a97c859f3a..e71ebb933266 100644
---- a/drivers/net/mii.c
-+++ b/drivers/net/mii.c
-@@ -84,15 +84,16 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
-  		ctrl1000 = mii->mdio_read(dev, mii->phy_id, MII_CTRL1000);
- 		stat1000 = mii->mdio_read(dev, mii->phy_id, MII_STAT1000);
- 	}
-+
-+	ecmd->advertising |= mii_get_an(mii, MII_ADVERTISE);
-+	if (mii->supports_gmii)
-+		ecmd->advertising |=
-+			mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
-+
- 	if (bmcr & BMCR_ANENABLE) {
- 		ecmd->advertising |= ADVERTISED_Autoneg;
- 		ecmd->autoneg = AUTONEG_ENABLE;
- 
--		ecmd->advertising |= mii_get_an(mii, MII_ADVERTISE);
--		if (mii->supports_gmii)
--			ecmd->advertising |=
--					mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
--
- 		if (bmsr & BMSR_ANEGCOMPLETE) {
- 			ecmd->lp_advertising = mii_get_an(mii, MII_LPA);
- 			ecmd->lp_advertising |=
-@@ -171,14 +172,15 @@ void mii_ethtool_get_link_ksettings(struct mii_if_info *mii,
- 		ctrl1000 = mii->mdio_read(dev, mii->phy_id, MII_CTRL1000);
- 		stat1000 = mii->mdio_read(dev, mii->phy_id, MII_STAT1000);
- 	}
-+
-+	advertising |= mii_get_an(mii, MII_ADVERTISE);
-+	if (mii->supports_gmii)
-+		advertising |= mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
-+
- 	if (bmcr & BMCR_ANENABLE) {
- 		advertising |= ADVERTISED_Autoneg;
- 		cmd->base.autoneg = AUTONEG_ENABLE;
- 
--		advertising |= mii_get_an(mii, MII_ADVERTISE);
--		if (mii->supports_gmii)
--			advertising |= mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
--
- 		if (bmsr & BMSR_ANEGCOMPLETE) {
- 			lp_advertising = mii_get_an(mii, MII_LPA);
- 			lp_advertising |=
--- 
-2.26.2
-
+- Naresh
