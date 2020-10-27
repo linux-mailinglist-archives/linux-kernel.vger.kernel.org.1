@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3788A29C22F
+	by mail.lfdr.de (Postfix) with ESMTP id A8DBC29C230
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820074AbgJ0Rck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:32:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40620 "EHLO mail.kernel.org"
+        id S1820081AbgJ0Rcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:32:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762163AbgJ0OlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:41:18 -0400
+        id S1762172AbgJ0OlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:41:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FCBB22275;
-        Tue, 27 Oct 2020 14:41:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 053F5206B2;
+        Tue, 27 Oct 2020 14:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809676;
-        bh=B/DywA4ArtioFHUmuchIufgDI7PqnX5KvfP7mYFUHo8=;
+        s=default; t=1603809679;
+        bh=5o+yxZX1mU8gGvdDUupcWkARggDyA4/HHpz9PRZbCnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZzzYwol/ffe4S5Sb9jhKhzP5En45GXNn8kv4bHElyZdirw5gObwLuIJmO+x3Bmaru
-         ffJR7L28l1+BPJx/qyZKDuLFon73RfGqWskr7bILFTFCpLFeV0nOcxscnMA5pvRyXd
-         zRz5cgSvXVW5G4pNt3mA11pb3pRCm3AlK4LRIIyM=
+        b=uToemrbxKoDFGHic2UGVi5f4ru/0yArW2nB7mV3Flhyz88KkgQTAmYHK5ZntPeIcd
+         sTgsHya+G3/JxDXbg/+oR/NcaJDXczrNiHnZPHaJcxKNRH7pdQMCqdQ/mRawvCgHkE
+         /xRnXFq9emWLzbzL2nwLd4rdvWvVexdAGfojkx6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 249/408] RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()
-Date:   Tue, 27 Oct 2020 14:53:07 +0100
-Message-Id: <20201027135506.614472189@linuxfoundation.org>
+Subject: [PATCH 5.4 250/408] maiblox: mediatek: Fix handling of platform_get_irq() error
+Date:   Tue, 27 Oct 2020 14:53:08 +0100
+Message-Id: <20201027135506.654187848@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,77 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit e7ec96fc7932f48a6d6cdd05bf82004a1a04285b ]
+[ Upstream commit 558e4c36ec9f2722af4fe8ef84dc812bcdb5c43a ]
 
-The changes referenced below replaced sbk_clone)_ by taking additional
-references, passing the skb along and then freeing the skb. This
-deleted the packets before they could be processed and additionally
-passed bad data in each packet. Since pkt is stored in skb->cb
-changing pkt->qp changed it for all the packets.
+platform_get_irq() returns -ERRNO on error.  In such case casting to u32
+and comparing to 0 would pass the check.
 
-Replace skb_get() by sbk_clone() in rxe_rcv_mcast_pkt() for cases where
-multiple QPs are receiving multicast packets on the same address.
-
-Delete kfree_skb() because the packets need to live until they have been
-processed by each QP. They are freed later.
-
-Fixes: 86af61764151 ("IB/rxe: remove unnecessary skb_clone")
-Fixes: fe896ceb5772 ("IB/rxe: replace refcount_inc with skb_get")
-Link: https://lore.kernel.org/r/20201008203651.256958-1-rpearson@hpe.com
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 623a6143a845 ("mailbox: mediatek: Add Mediatek CMDQ driver")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_recv.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/mailbox/mtk-cmdq-mailbox.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 46e111c218fd4..be6416a982c70 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -281,6 +281,8 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 	struct rxe_mc_elem *mce;
- 	struct rxe_qp *qp;
- 	union ib_gid dgid;
-+	struct sk_buff *per_qp_skb;
-+	struct rxe_pkt_info *per_qp_pkt;
- 	int err;
- 
- 	if (skb->protocol == htons(ETH_P_IP))
-@@ -309,21 +311,26 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 		if (err)
- 			continue;
- 
--		/* if *not* the last qp in the list
--		 * increase the users of the skb then post to the next qp
-+		/* for all but the last qp create a new clone of the
-+		 * skb and pass to the qp.
- 		 */
- 		if (mce->qp_list.next != &mcg->qp_list)
--			skb_get(skb);
-+			per_qp_skb = skb_clone(skb, GFP_ATOMIC);
-+		else
-+			per_qp_skb = skb;
- 
--		pkt->qp = qp;
-+		per_qp_pkt = SKB_TO_PKT(per_qp_skb);
-+		per_qp_pkt->qp = qp;
- 		rxe_add_ref(qp);
--		rxe_rcv_pkt(pkt, skb);
-+		rxe_rcv_pkt(per_qp_pkt, per_qp_skb);
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index 9a6ce9f5a7db5..3c8b365ce635a 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -70,7 +70,7 @@ struct cmdq_task {
+ struct cmdq {
+ 	struct mbox_controller	mbox;
+ 	void __iomem		*base;
+-	u32			irq;
++	int			irq;
+ 	u32			thread_nr;
+ 	u32			irq_mask;
+ 	struct cmdq_thread	*thread;
+@@ -474,10 +474,8 @@ static int cmdq_probe(struct platform_device *pdev)
  	}
  
- 	spin_unlock_bh(&mcg->mcg_lock);
+ 	cmdq->irq = platform_get_irq(pdev, 0);
+-	if (!cmdq->irq) {
+-		dev_err(dev, "failed to get irq\n");
+-		return -EINVAL;
+-	}
++	if (cmdq->irq < 0)
++		return cmdq->irq;
  
- 	rxe_drop_ref(mcg);	/* drop ref from rxe_pool_get_key. */
- 
-+	return;
-+
- err1:
- 	kfree_skb(skb);
- }
+ 	cmdq->thread_nr = (u32)(unsigned long)of_device_get_match_data(dev);
+ 	cmdq->irq_mask = GENMASK(cmdq->thread_nr - 1, 0);
 -- 
 2.25.1
 
