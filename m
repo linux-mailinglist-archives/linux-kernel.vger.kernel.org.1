@@ -2,140 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37B329A30C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897C029A30E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502267AbgJ0DN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 23:13:59 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:38501 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502220AbgJ0DN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 23:13:59 -0400
-Received: by mail-pg1-f196.google.com with SMTP id i26so6878912pgl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 20:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=xQU5G7Ya8yKiDus7kvYDAMdxkZxC/k3Nmfb5N20XC2o=;
-        b=BAdL3LaJcDg9l9Nj5XANFP4YuN2vQGNDOrVX+PHZWYkoGvfIBwqeQSA/T5cuC9IOff
-         vgoW+5DSvHgjwS8E3AkeRV4qIJ0x+L54dz/QdR8cUWDHeKTPBFsTHx8OxLaGWTfF8axF
-         H89FKh2jvAMSepd4k53Y/Xyr4iwmugAHjR7y2rMiLlzH0fYDWOxdxHBRfFx0tbssojfy
-         +W6Pb/sWY+jtSKsmswCw8ZI+BxPIyCvAi8zpx7seCFCkIjoR0fMmRwxP7Ji7lRkPubc9
-         kekndevCzNi5g5zHdKiZVTYOmP5dA02D+j7GBAW4LZcmrVjOAJhyEtWJeFlJcJ1zMfS3
-         tMTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=xQU5G7Ya8yKiDus7kvYDAMdxkZxC/k3Nmfb5N20XC2o=;
-        b=FaeCJySRTJbMFtWOWvmgixQ1nxFoEMLzL8FsfXW2CwMKclHtPqN51VIfgB2c71edlQ
-         eIEtyuIj0may9xdWrmpNTmGnJwieo64jf40z05x5ftBI4XJ4tHbDNqrbCtY7aQNKtUpz
-         H123+T4juNcW1ethZVRY2Bl7ZQHiRNVf0uSMzJc3nHUfSwY3Y96cZlKGLVl+L0VrwsGD
-         NZMVhikBU48drlReWe7y2jQSp86KohLz+z0sKe/oSiz9+kfRy4fDoz+FJoFnz9xveSOL
-         VulYn67JxUDdMbEtN6DONhn7FEDYsno/Hp4+TQac2B6O12KBVkVVEpRNdDpYaMn34Ml/
-         tECA==
-X-Gm-Message-State: AOAM533ZOdXcwOMVlsdiglpu0MLGFI4UunG+Ql3f/lf0NJRneR6r9Hlz
-        hbBpUFvQqWFXaNEhygL/V9X1xA==
-X-Google-Smtp-Source: ABdhPJxwi//mKUpo/a2+PFhvMC/xEC5CaXKWq8j9VcB6QpYT0ueLf6tA5afMngcXyU94nVhlinOXLA==
-X-Received: by 2002:a63:55:: with SMTP id 82mr66393pga.261.1603768438255;
-        Mon, 26 Oct 2020 20:13:58 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id v3sm144638pju.38.2020.10.26.20.13.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 20:13:57 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 11:13:50 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 20/20] perf arm-spe: Add support for ARMv8.3-SPE
-Message-ID: <20201027031350.GC32667@leoy-ThinkPad-X240s>
-References: <20201022145816.14069-1-leo.yan@linaro.org>
- <20201022145816.14069-21-leo.yan@linaro.org>
- <c4baccf4-2ecd-1633-ec87-0f4911cbdc50@arm.com>
+        id S2502372AbgJ0DOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:14:14 -0400
+Received: from mail-am6eur05on2051.outbound.protection.outlook.com ([40.107.22.51]:63942
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2409229AbgJ0DOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 23:14:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VIjP+SVQhfYw4Sgnuef4tsK3mN+W53axWPpkQVapHkftcjVvF417G7/eV4XgQ4HJ1agJIZ9NxU/CcFCB+gsBxGrhrQpqAt6JRdQ5Rxm731Yf1QIfnnxH3C9hXu+CJESDOOfKB0boZghczmNHxD5yG7+8xdufLoIxCVYJbxR7C1SySMp1rY4WFQ6SlgAwSc6OP1R9sIJZStMcmlvbqwl6vc0xatQts8YjLv5k2tF9/41FoHpyUA+SbhZLP70k++h8IRNlLW8CV/PTc7uyPd8WaT8EgQ0qfnqQPJo/WZLMw122TbaUK7mUfImw3DYnoNZXtLe+Q28WGgvOY/DUB+2myg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HKi2HMqfmNOmz0tn0d04bFFbjloRXz7aq4/Fj24zPAA=;
+ b=XxMPWef3bdZFtdgyVgBFmbRPiuUjTAf7ftOcMVIuyR3DvgigTidjXeNncCzEoq2WPa6vvxSzTECfaqv8Jv28RCKgHIjSGE68J5RL35N31kBCd8HKKOdsQ088JHBM36xD5/oIzUccFcdoMhYO3xN7iV8hVayDNA3QJDvJbxV8RPNmcLo8rUwhlNh3H3vsCWUthOve0aGq7dmo4IsiZaRHhAqdma9mTySSadO6rTFbWaEMxUkAhHsFIt3ecJBp94rIKN5StRHEW1Zp6snpjQg+bMr871zXcfULV7afJsqei367MJ0ArUEZy2mNP7/nFy8csSU5BPoCDoox6liyLvZhmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HKi2HMqfmNOmz0tn0d04bFFbjloRXz7aq4/Fj24zPAA=;
+ b=k3B695qAfroQm3hde7hELyCbw/d/DGbILv2h94onjQm6rMexeArJIGm1XvFHZ1niU8jtQ3Eo1zoyGO+qR708fvIF5LbFMohWBD1ltIPq6Q5uo/pGpLvbChRBpeGW9QVVGRjf6LKBX6DJziBq8CVj9APKuIki3kFEVCm5km//N90=
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
+ by DB7PR04MB4058.eurprd04.prod.outlook.com (2603:10a6:5:1b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Tue, 27 Oct
+ 2020 03:14:10 +0000
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::c8a:a759:d4ba:181e]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::c8a:a759:d4ba:181e%7]) with mapi id 15.20.3477.029; Tue, 27 Oct 2020
+ 03:14:09 +0000
+From:   Biwen Li <biwen.li@nxp.com>
+To:     Leo Li <leoyang.li@nxp.com>, Marc Zyngier <maz@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+CC:     "Biwen Li (OSS)" <biwen.li@oss.nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "Z.q. Hou" <zhiqiang.hou@nxp.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "jason@lakedaemon.net" <jason@lakedaemon.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        Xiaobo Xie <xiaobo.xie@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [RESEND 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
+ interrupt
+Thread-Topic: [RESEND 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
+ interrupt
+Thread-Index: AQHWq6mP+ALMp9rpPEmvsss83oVh0Kmqxp/Q
+Date:   Tue, 27 Oct 2020 03:14:09 +0000
+Message-ID: <DB6PR0401MB2438DEFC7410BB75B1F89E528F160@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+References: <20201026080127.40499-1-biwen.li@oss.nxp.com>
+ <31d8971374c261003aee9f4807c8ac8c@kernel.org>
+ <3448c822-31b1-7f9d-fedf-49912418fc3f@rasmusvillemoes.dk>
+ <b65acafab54b62a2a22aa942089b8033@kernel.org>
+ <VE1PR04MB668737DF1DDA6E1007BCA24C8F190@VE1PR04MB6687.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB668737DF1DDA6E1007BCA24C8F190@VE1PR04MB6687.eurprd04.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5aafe518-a6bf-48fd-ac5a-08d87a265f51
+x-ms-traffictypediagnostic: DB7PR04MB4058:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB405863FAAC1EDA2910DD95098F160@DB7PR04MB4058.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1HX5VTjgkNW3FfRNaSSBb5aGZXgURQX2bVndsIKF9SBsiVV7lfItE0NfkuA6n3v4Lvp9cndu2EC5wyxG1pAuVCckOIv/H3Qgl/JtRumqRpf/RbqbzgXTgFzSvrOLdT2sBDtiRFrsL1VBK2Mf3G8JV7WXGhrUEDnvtj4hYuIxp+KKe1G59prn32YaXgjb7m2o0GXwLaZ2HKHUyDLf0pfl5VUZ5q3B4dFbqpnxBnWJ8urRXcfbKfBP+irwpaMLWW00oFHox+1qKdvN7oy9Wtxq9Y0diFj3LpuCPuhfs5Ci4KtcGxJ8bfiusq4DflZ7vojs4tJfrgoHhJxikvQr+F2J0g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(136003)(376002)(39860400002)(44832011)(64756008)(71200400001)(8676002)(55016002)(54906003)(7416002)(316002)(478600001)(186003)(8936002)(66946007)(52536014)(110136005)(26005)(6506007)(66476007)(66556008)(53546011)(86362001)(7696005)(83380400001)(5660300002)(9686003)(76116006)(4001150100001)(66446008)(33656002)(4326008)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: qeKIfy4AcNNP+GYd5pZ1D4pmnNBLG+5kFysesogFJxsgKPC4k354dQwdFlz5jZ6HG2XeXf0U5FvpFRFBCBYB7VIh3Z04/ea5My1fSZ+/kIMzQ5YZfmfivS3xKvQcV+vL+c8LBGlpqDYQ1MzKprLOVjADAciOutOhfwuNnX/qS2Lu1gxAAbWZwuS2KFp4gOTRU3yVCM5iwzBGpwWW7JEWcp27awDU5nopUXqU3ZPyWG3aC2Qztaued3WDXUu0uTMLf6TY2AF6BZY+CwOOh6g+X4NFX1wEHwU0QljeBJjtgKhoocmCyzi0edihAPmsLXIMEUruN0HpY4oV/k5ESEBEuYWXvz8bm8R+YQSLHi16S8NJSZHC3BtCfZzQ7anQGxIJteVlNOUsezvUQyZVCgrfOZ8/4L71DCsXG+/+DWehqX2uQjVuJg2rCpT4nCDWaiFAg1xcTL2HDtNM9/z5TXAiJfN1WcCj/AlOxtGrpZecbUdcjNVBN6wiPmwFLb6O/ajClZt2E2X/kvLv/s5oraQAyRzBukirnU8OwgHVD0uBf//eJE0RDdAfu9hWkrF+N3Hdqno+ntKgF3bwsHxdiiFZvzo3tbFIKbuMZDxS6aCwuCJHzn2kvaEneEMT4YqEeGq0Po6X2LAYSGIxf+jXN6qY7Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c4baccf4-2ecd-1633-ec87-0f4911cbdc50@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5aafe518-a6bf-48fd-ac5a-08d87a265f51
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2020 03:14:09.7329
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TadxpEu7fy2pD4VBtBVPZtyWq0ksLzKS/vaPD5xYKd0ufGdcgPNi3tiZWNYkIIQjnjRT9qOVcvhBHaz84WPI7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 06:17:20PM +0000, André Przywara wrote:
-> On 22/10/2020 15:58, Leo Yan wrote:
-> 
-> Hi,
-> 
-> > From: Wei Li <liwei391@huawei.com>
-> > 
-> > This patch is to support Armv8.3 extension for SPE, it adds alignment
-> > field in the Events packet and it supports the Scalable Vector Extension
-> > (SVE) for Operation packet and Events packet with two additions:
-> > 
-> >   - The vector length for SVE operations in the Operation Type packet;
-> >   - The incomplete predicate and empty predicate fields in the Events
-> >     packet.
-> > 
-> > Signed-off-by: Wei Li <liwei391@huawei.com>
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 74 ++++++++++++++++++-
-> >  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 18 +++++
-> >  2 files changed, 90 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > index 74ac12cbec69..6da4cfbc9914 100644
-> > --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > @@ -332,6 +332,21 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
-> >  		if (ret < 0)
-> >  			return ret;
-> >  	}
-> > +	if (payload & BIT(EV_ALIGNMENT)) {
-> > +		ret = arm_spe_pkt_snprintf(&buf, &blen, " ALIGNMENT");
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	}
-> > +	if (payload & BIT(EV_PARTIAL_PREDICATE)) {
-> > +		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-PARTIAL-PRED");
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	}
-> > +	if (payload & BIT(EV_EMPTY_PREDICATE)) {
-> > +		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-EMPTY-PRED");
-> > +		if (ret < 0)
-> > +			return ret;
-> > +	}
-> >  
-> >  	return buf_len - blen;
-> >  }
-> > @@ -345,8 +360,43 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
-> >  
-> >  	switch (class) {
-> >  	case SPE_OP_PKT_HDR_CLASS_OTHER:
-> > -		return arm_spe_pkt_snprintf(&buf, &blen,
-> > -			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
-> > +		if (SPE_OP_PKT_OTHER_SUBCLASS_SVE_OP_GET(payload) ==
-> > +				SPE_OP_PKT_OTHER_SUBCLASS_SVE_OP) {
-> 
-> Same comment as in the other patch, can you combine those two into one
-> symbol?
-
-Thanks for the suggestion, have refined patches for this and sent out
-patch set v4 for reviewing.
-
-Leo
+> > -----Original Message-----
+> > From: Marc Zyngier <maz@kernel.org>
+> > Sent: Monday, October 26, 2020 4:23 AM
+> > To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > Cc: Biwen Li (OSS) <biwen.li@oss.nxp.com>; shawnguo@kernel.org;
+> > robh+dt@kernel.org; mark.rutland@arm.com; Leo Li <leoyang.li@nxp.com>;
+> > Z.q. Hou <zhiqiang.hou@nxp.com>; tglx@linutronix.de;
+> > jason@lakedaemon.net; devicetree@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; Xiaobo Xie
+> > <xiaobo.xie@nxp.com>; linux-arm-kernel@lists.infradead.org; Biwen Li
+> > <biwen.li@nxp.com>
+> > Subject: Re: [RESEND 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A
+> > external interrupt
+> >
+> > On 2020-10-26 09:06, Rasmus Villemoes wrote:
+> > > On 26/10/2020 09.44, Marc Zyngier wrote:
+> > >> On 2020-10-26 08:01, Biwen Li wrote:
+> > >>> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> > >>>
+> > >>> Add an new IRQ chip declaration for LS1043A and LS1088A
+> > >>> - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A
+> > >>> - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
+> > >>
+> > >> Three things:
+> > >> - This commit message doesn't describe the bit_reverse change
+> > >
+> > > Yeah, please elaborate on that, as the RM for 1043 or 1046 doesn't
+> > > mention anything about bit reversal for the scfg registers - they
+> > > don't seem to have the utter nonsense that is SCFG_SCFGREVCR, but
+> > > perhaps, instead of removing it, that has just become a hard-coded
+> > > part of the IP.
+> > >
+> > > Also, IANAL etc., but
+> > >
+> > >>> +// Copyright 2019-2020 NXP
+> > >
+> > > really? Seems to be a bit of a stretch.
+> > >
+> > > At the very least, cc'ing the original author and only person to
+> > > ever touch that file would have been appreciated.
+> >
+> > Huh. Well spotted. That's definitely not on.
+> > NXP people, please talk to your legal department.
+>=20
+> We do have an internal policy to require developer adding/updating NXP
+> copyright on non-trivial changes.  I'm not sure if this change should be
+> considered trivial, but adding copyright claim on a file without prior co=
+pyright
+> claims could causing confusion like in this case.  One potential solution=
+ is to
+> add a more specific description on the NXP change together with the copyr=
+ight
+> claim.  But maybe an easier solution is to add Rasmus your Copyright clai=
+m
+> first if you are ok with it.
+Yes, added a wrong Copyright.
+>=20
+> Regards,
+> Leo
