@@ -2,303 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B2629C2F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734FA29C301
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1821275AbgJ0Rlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:41:47 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:39412 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S369991AbgJ0Rjy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:39:54 -0400
-Received: by mail-ot1-f67.google.com with SMTP id o14so1876006otj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oDtB+eghwJOjXqKtOewABuOEz9Qjl3er6dI/sU5rBDU=;
-        b=sk89hnO48O7QxDHkVzjVVYl7ZfRw9Hk4eS+Y4lFOgybm5oYaeI4psuDW36oq1PGqXb
-         MNcTpVzV1bVo5rBO5eZIF/MvQpo4/jagrFUNRdYiz5mCCbKqGNMHtULJ/b1KJnwy1ttm
-         93/qBOzEAY30d3lnFVAnByTKcUuvo02dC659BXc5t2WPTtrRFYzCHq9SB4h25eivsui2
-         kHeofTy6mtK0IVWqAD53reHm42o7SUD0DF7HL7TqAVZ//oJrY44hlISjBg6OZWXJnfaK
-         EHhmjEwJFEhLCXBJ5n2+HqfwsdEV6pXlCHooyzHpaawowSi24Kvr+WzQCkJAYG2eMNEd
-         g1qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oDtB+eghwJOjXqKtOewABuOEz9Qjl3er6dI/sU5rBDU=;
-        b=ckYehpR8xz4C/Ly+Wo1WoapaOxTJ99T0VQsjfwsnDOYs2y2YpiVCgVu7twyw/AOVoK
-         rU87KW6AWTytj+HM2iTeAqpBxJDAqIA497P0YC9ZzvRm8IpGmBihO5d28WvqDUQoNQbU
-         TzH4wns9viM2uLUtCenWWVRF5aTMU6VKkb3MVY3G/4nsQI+L5aDrAhv0am8qFbDU0yFS
-         UvLMm0pOKZYNTYCUy2bPhz9+m/PRIc3fTHH9qxX0inuQ0L48n/Tpmc8ZoxxZCJkCw6Q1
-         Em+61o+cg1QffBSv2IfA3HVWjCS3C0bei8wLYf5s7SrPL/nfcsUoLxHW8em8nhO3aOo3
-         9nHQ==
-X-Gm-Message-State: AOAM532AAwvXgSCeAXuRJTJ5RXeH60UFGMVbhChhBk9vpgFCjQ+vbFbh
-        /c2rE+bxVTMI2yFi1NfQQomzI9CIV/lNUIVY8LtMDg==
-X-Google-Smtp-Source: ABdhPJyEmgS7AzBizZ+ALnWOp2e/lw3WUf1uVAGW6qILcFa5k95Q7+eMcg3Ki4FopxlACl1FBMeXg9Lpz45pmJRVl0I=
-X-Received: by 2002:a9d:70d1:: with SMTP id w17mr2156655otj.219.1603820392233;
- Tue, 27 Oct 2020 10:39:52 -0700 (PDT)
+        id S1821298AbgJ0RmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:42:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35804 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1821208AbgJ0RlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:41:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CB7E4AAF1;
+        Tue, 27 Oct 2020 17:41:16 +0000 (UTC)
+Subject: Re: [PATCH 3/3] mm, page_alloc: reduce static keys in prep_new_page()
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Laura Abbott <labbott@kernel.org>
+References: <20201026173358.14704-1-vbabka@suse.cz>
+ <20201026173358.14704-4-vbabka@suse.cz>
+ <93ab79df-cf8c-294b-3ed1-8a563e4a452b@redhat.com>
+ <1fc7ec3a-367c-eb9f-1cb4-b9e015fea87c@suse.cz>
+ <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
+Message-ID: <38de5bb0-5559-d069-0ce0-daec66ef2746@suse.cz>
+Date:   Tue, 27 Oct 2020 18:41:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201024225716.2854163-1-xii@google.com> <20201024225716.2854163-2-xii@google.com>
- <CAKfTPtDf_PXjk62sctdBAuVPSYg2gVdFtX=UgJn+JEOyog8YSQ@mail.gmail.com>
-In-Reply-To: <CAKfTPtDf_PXjk62sctdBAuVPSYg2gVdFtX=UgJn+JEOyog8YSQ@mail.gmail.com>
-From:   Xi Wang <xii@google.com>
-Date:   Tue, 27 Oct 2020 10:39:57 -0700
-Message-ID: <CAOBoifgyM7Zo3jjBtt_s1mHGnmGnmarJEmZch3cnK9+K9QU33A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] sched: watchdog: Touch kernel watchdog with sched count
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Don <joshdon@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <81faf3d6-9536-ff00-447d-e964a010492d@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 1:32 AM Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Sun, 25 Oct 2020 at 00:57, Xi Wang <xii@google.com> wrote:
-> >
-> > Instead of periodically resetting watchdogs from thread context,
-> > this patch simply forces resched and checks rq->sched_count.
-> > Watchdog is reset if the sched count increases. If the same thread
-> > is picked by pick_next_task during resched, there is no context
-> > switch.
-> >
-> > With the new method we lose coverage on: a migration/n thread
-> > actually gets picked and we actually context switch to the
-> > migration/n thread. These steps are unlikely to silently fail.
-> > The change would provide nearly the same level of protection with
-> > less latency / jitter.
->
-> When a patch provides an improvement, it's usually good to give
-> figures that show the improvement
+On 10/27/20 2:32 PM, Vlastimil Babka wrote:
+> So my conclusion:
+> - We can remove PAGE_POISONING_NO_SANITY because it only makes sense with
+> PAGE_POISONING_ZERO, and we can use init_on_free instead
 
-This change would reduce jitters for a continuously running thread.
-The difference is likely too small to tell for sched latency
-benchmarks.
+Note for this we first have to make sanity checking compatible with
+hibernation, but that should be easy as the zeroing variants already
+paved the way. The patch below will be added to the next version of
+the series:
 
-will-it-scale mmap1 reported 15.8% improvement for the v1 patch:
-https://lkml.org/lkml/2020/3/10/129
+ From 44474ee27c4f5248061ea2e5bbc2aeefc91bcdfc Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Tue, 27 Oct 2020 18:25:17 +0100
+Subject: [PATCH] kernel/power: allow hibernation with page_poison sanity
+  checking
 
-The performance change is actually unexpected. If it's not noise there
-might be contentions related to watchdog thread wake up or context
-switch.
+Page poisoning used to be incompatible with hibernation, as the state of
+poisoned pages was lost after resume, thus enabling CONFIG_HIBERNATION forces
+CONFIG_PAGE_POISONING_NO_SANITY. For the same reason, the poisoning with zeroes
+variant CONFIG_PAGE_POISONING_ZERO used to disable hibernation. The latter
+restriction was removed by commit 1ad1410f632d ("PM / Hibernate: allow
+hibernation with PAGE_POISONING_ZERO") and similarly for init_on_free by commit
+18451f9f9e58 ("PM: hibernate: fix crashes with init_on_free=1") by making sure
+free pages are cleared after resume.
 
--Xi
+We can use the same mechanism to instead poison free pages with PAGE_POISON
+after resume. This covers both zero and 0xAA patterns. Thus we can remove the
+Kconfig restriction that disables page poison sanity checking when hibernation
+is enabled.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+  kernel/power/hibernate.c |  2 +-
+  kernel/power/power.h     |  2 +-
+  kernel/power/snapshot.c  | 14 ++++++++++----
+  mm/Kconfig.debug         |  1 -
+  4 files changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 2fc7d509a34f..da0b41914177 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -326,7 +326,7 @@ static int create_image(int platform_mode)
+
+  	if (!in_suspend) {
+  		events_check_enabled = false;
+-		clear_free_pages();
++		clear_or_poison_free_pages();
+  	}
+
+  	platform_leave(platform_mode);
+diff --git a/kernel/power/power.h b/kernel/power/power.h
+index 24f12d534515..778bf431ec02 100644
+--- a/kernel/power/power.h
++++ b/kernel/power/power.h
+@@ -106,7 +106,7 @@ extern int create_basic_memory_bitmaps(void);
+  extern void free_basic_memory_bitmaps(void);
+  extern int hibernate_preallocate_memory(void);
+
+-extern void clear_free_pages(void);
++extern void clear_or_poison_free_pages(void);
+
+  /**
+   *	Auxiliary structure used for reading the snapshot image data and
+diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+index 46b1804c1ddf..6b1c84afa891 100644
+--- a/kernel/power/snapshot.c
++++ b/kernel/power/snapshot.c
+@@ -1144,7 +1144,7 @@ void free_basic_memory_bitmaps(void)
+  	pr_debug("Basic memory bitmaps freed\n");
+  }
+
+-void clear_free_pages(void)
++void clear_or_poison_free_pages(void)
+  {
+  	struct memory_bitmap *bm = free_pages_map;
+  	unsigned long pfn;
+@@ -1152,12 +1152,18 @@ void clear_free_pages(void)
+  	if (WARN_ON(!(free_pages_map)))
+  		return;
+
+-	if (IS_ENABLED(CONFIG_PAGE_POISONING_ZERO) || want_init_on_free()) {
++	if (page_poisoning_enabled() || want_init_on_free()) {
+  		memory_bm_position_reset(bm);
+  		pfn = memory_bm_next_pfn(bm);
+  		while (pfn != BM_END_OF_MAP) {
+-			if (pfn_valid(pfn))
+-				clear_highpage(pfn_to_page(pfn));
++			if (pfn_valid(pfn)) {
++				struct page *page = pfn_to_page(pfn);
++				if (page_poisoning_enabled_static())
++					kernel_poison_pages(page, 1);
++				else if (want_init_on_free())
++					clear_highpage(page);
++
++			}
+
+  			pfn = memory_bm_next_pfn(bm);
+  		}
+diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
+index 864f129f1937..c57786ad5be9 100644
+--- a/mm/Kconfig.debug
++++ b/mm/Kconfig.debug
+@@ -64,7 +64,6 @@ config PAGE_OWNER
+
+  config PAGE_POISONING
+  	bool "Poison pages after freeing"
+-	select PAGE_POISONING_NO_SANITY if HIBERNATION
+  	help
+  	  Fill the pages with poison patterns after free_pages() and verify
+  	  the patterns before alloc_pages. The filling of the memory helps
+-- 
+2.29.0
 
 
->
-> >
-> > Suggested-by: Paul Turner <pjt@google.com>
-> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Xi Wang <xii@google.com>
-> > ---
-> >  include/linux/sched.h |  4 ++++
-> >  kernel/sched/core.c   | 23 +++++++++++++++++++--
-> >  kernel/sched/sched.h  |  6 +++++-
-> >  kernel/watchdog.c     | 47 +++++++++++++------------------------------
-> >  4 files changed, 44 insertions(+), 36 deletions(-)
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index d383cf09e78f..1e3bef9a9cdb 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1662,6 +1662,10 @@ extern int sched_setattr(struct task_struct *, const struct sched_attr *);
-> >  extern int sched_setattr_nocheck(struct task_struct *, const struct sched_attr *);
-> >  extern struct task_struct *idle_task(int cpu);
-> >
-> > +#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-> > +extern unsigned int sched_get_count(int cpu);
-> > +#endif
-> > +
-> >  /**
-> >   * is_idle_task - is the specified task an idle task?
-> >   * @p: the task in question.
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 8160ab5263f8..378f0f36c402 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4293,8 +4293,6 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
-> >         rcu_sleep_check();
-> >
-> >         profile_hit(SCHED_PROFILING, __builtin_return_address(0));
-> > -
-> > -       schedstat_inc(this_rq()->sched_count);
-> >  }
-> >
-> >  static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
-> > @@ -4492,6 +4490,12 @@ static void __sched notrace __schedule(bool preempt)
-> >         clear_tsk_need_resched(prev);
-> >         clear_preempt_need_resched();
-> >
-> > +#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-> > +       this_rq()->sched_count++; /* sched count is also used by watchdog */
-> > +#else
-> > +       schedstat_inc(this_rq()->sched_count);
-> > +#endif
-> > +
-> >         if (likely(prev != next)) {
-> >                 rq->nr_switches++;
-> >                 /*
-> > @@ -5117,6 +5121,21 @@ struct task_struct *idle_task(int cpu)
-> >         return cpu_rq(cpu)->idle;
-> >  }
-> >
-> > +#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-> > +
-> > +/**
-> > + * sched_get_count - get the sched count of a CPU.
-> > + * @cpu: the CPU in question.
-> > + *
-> > + * Return: sched count.
-> > + */
-> > +unsigned int sched_get_count(int cpu)
-> > +{
-> > +       return cpu_rq(cpu)->sched_count;
-> > +}
-> > +
-> > +#endif
-> > +
-> >  /**
-> >   * find_process_by_pid - find a process with a matching PID value.
-> >   * @pid: the pid in question.
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index 28709f6b0975..f23255981d52 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -959,6 +959,11 @@ struct rq {
-> >         u64                     clock_pelt;
-> >         unsigned long           lost_idle_time;
-> >
-> > +#if defined(CONFIG_SCHEDSTATS) || defined(CONFIG_SOFTLOCKUP_DETECTOR)
-> > +       /* Also used by watchdog - no longer grouping with other sched stats */
-> > +       unsigned int            sched_count;
-> > +#endif
-> > +
-> >         atomic_t                nr_iowait;
-> >
-> >  #ifdef CONFIG_MEMBARRIER
-> > @@ -1036,7 +1041,6 @@ struct rq {
-> >         unsigned int            yld_count;
-> >
-> >         /* schedule() stats */
-> > -       unsigned int            sched_count;
-> >         unsigned int            sched_goidle;
-> >
-> >         /* try_to_wake_up() stats */
-> > diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> > index 5abb5b22ad13..22f87aded95a 100644
-> > --- a/kernel/watchdog.c
-> > +++ b/kernel/watchdog.c
-> > @@ -170,6 +170,7 @@ static bool softlockup_initialized __read_mostly;
-> >  static u64 __read_mostly sample_period;
-> >
-> >  static DEFINE_PER_CPU(unsigned long, watchdog_touch_ts);
-> > +static DEFINE_PER_CPU(unsigned int, watchdog_sched_prev);
-> >  static DEFINE_PER_CPU(struct hrtimer, watchdog_hrtimer);
-> >  static DEFINE_PER_CPU(bool, softlockup_touch_sync);
-> >  static DEFINE_PER_CPU(bool, soft_watchdog_warn);
-> > @@ -239,6 +240,7 @@ static void set_sample_period(void)
-> >  static void __touch_watchdog(void)
-> >  {
-> >         __this_cpu_write(watchdog_touch_ts, get_timestamp());
-> > +       __this_cpu_write(watchdog_sched_prev, sched_get_count(smp_processor_id()));
-> >  }
-> >
-> >  /**
-> > @@ -318,25 +320,6 @@ static void watchdog_interrupt_count(void)
-> >         __this_cpu_inc(hrtimer_interrupts);
-> >  }
-> >
-> > -static DEFINE_PER_CPU(struct completion, softlockup_completion);
-> > -static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
-> > -
-> > -/*
-> > - * The watchdog thread function - touches the timestamp.
-> > - *
-> > - * It only runs once every sample_period seconds (4 seconds by
-> > - * default) to reset the softlockup timestamp. If this gets delayed
-> > - * for more than 2*watchdog_thresh seconds then the debug-printout
-> > - * triggers in watchdog_timer_fn().
-> > - */
-> > -static int softlockup_fn(void *data)
-> > -{
-> > -       __touch_watchdog();
-> > -       complete(this_cpu_ptr(&softlockup_completion));
-> > -
-> > -       return 0;
-> > -}
-> > -
-> >  /* watchdog kicker functions */
-> >  static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
-> >  {
-> > @@ -351,15 +334,6 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
-> >         /* kick the hardlockup detector */
-> >         watchdog_interrupt_count();
-> >
-> > -       /* kick the softlockup detector */
-> > -       if (completion_done(this_cpu_ptr(&softlockup_completion))) {
-> > -               reinit_completion(this_cpu_ptr(&softlockup_completion));
-> > -               stop_one_cpu_nowait(smp_processor_id(),
-> > -                               softlockup_fn, NULL,
-> > -                               this_cpu_ptr(&softlockup_stop_work));
-> > -       }
-> > -
-> > -       /* .. and repeat */
-> >         hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
-> >
-> >         if (touch_ts == SOFTLOCKUP_RESET) {
-> > @@ -378,6 +352,18 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
-> >                 return HRTIMER_RESTART;
-> >         }
-> >
-> > +       /* Trigger reschedule for the next round */
-> > +       set_tsk_need_resched(current);
-> > +       set_preempt_need_resched();
-> > +
-> > +       /* sched_count increase in __schedule is taken as watchdog touched */
-> > +       if (sched_get_count(smp_processor_id()) -
-> > +           __this_cpu_read(watchdog_sched_prev)) {
-> > +               __touch_watchdog();
-> > +               __this_cpu_write(soft_watchdog_warn, false);
-> > +               return HRTIMER_RESTART;
-> > +       }
-> > +
-> >         /* check for a softlockup
-> >          * This is done by making sure a high priority task is
-> >          * being scheduled.  The task touches the watchdog to
-> > @@ -443,13 +429,9 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
-> >  static void watchdog_enable(unsigned int cpu)
-> >  {
-> >         struct hrtimer *hrtimer = this_cpu_ptr(&watchdog_hrtimer);
-> > -       struct completion *done = this_cpu_ptr(&softlockup_completion);
-> >
-> >         WARN_ON_ONCE(cpu != smp_processor_id());
-> >
-> > -       init_completion(done);
-> > -       complete(done);
-> > -
-> >         /*
-> >          * Start the timer first to prevent the NMI watchdog triggering
-> >          * before the timer has a chance to fire.
-> > @@ -479,7 +461,6 @@ static void watchdog_disable(unsigned int cpu)
-> >          */
-> >         watchdog_nmi_disable(cpu);
-> >         hrtimer_cancel(hrtimer);
-> > -       wait_for_completion(this_cpu_ptr(&softlockup_completion));
-> >  }
-> >
-> >  static int softlockup_stop_fn(void *data)
-> > --
-> > 2.29.0.rc2.309.g374f81d7ae-goog
-> >
