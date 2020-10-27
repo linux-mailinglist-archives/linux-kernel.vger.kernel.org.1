@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8732429A2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27BD29A2E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410324AbgJ0DB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 23:01:26 -0400
-Received: from mx.dsbt.gov.ua ([185.160.91.87]:61131 "EHLO mail.dsbt.gov.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410277AbgJ0DBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 23:01:25 -0400
-X-Greylist: delayed 594 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 23:01:24 EDT
-Received: from mail.dsbt.gov.ua (localhost [127.0.0.1])
-        by mail.dsbt.gov.ua (Postfix) with ESMTP id 4CKx6k5jV6z43c9J
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:51:26 +0200 (EET)
-Authentication-Results: mail.dsbt.gov.ua (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=udxc.net.ua
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=udxc.net.ua; h=
-        user-agent:message-id:reply-to:organization:subject:subject:to
-        :from:from:date:date:content-transfer-encoding:content-type
-        :content-type:mime-version; s=dkim; t=1603767076; x=1606359077;
-         bh=848fShshWwgtUShn9oKoVIAnyW2XdIN1D3v6nF7Q3YI=; b=JsybQhbmjBls
-        R4Fa3vqLd1D7hOc51857qb94WyM2IV8Y0oIwCvpgQ9Jv69PCoDaVIn6OuzEcCDmD
-        Gi+BMmdsww5U8D2xQVPEBFYJw9RPd1vBs/rfU+NR8aClQQPVMSXJk22gtTDndD/o
-        qm/KTLNJ+O37DuxMdFmG9wkPaiHjkb4=
-X-Virus-Scanned: amavisd-new at mail.dsbt.gov.ua
-X-Spam-Flag: NO
-X-Spam-Score: 2.604
-X-Spam-Level: **
-X-Spam-Status: No, score=2.604 tagged_above=2 required=6.2
-        tests=[ALL_TRUSTED=-1, DCC_CHECK=1.1, FREEMAIL_FORGED_REPLYTO=2.503,
-        FSL_BULK_SIG=0.001] autolearn=no autolearn_force=no
-Received: from mail.dsbt.gov.ua ([127.0.0.1])
-        by mail.dsbt.gov.ua (mail.dsbt.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id MsH8J1USyPMR for <linux-kernel@vger.kernel.org>;
-        Tue, 27 Oct 2020 04:51:16 +0200 (EET)
-Received: from _ (localhost [127.0.0.1])
-        by mail.dsbt.gov.ua (Postfix) with ESMTPSA id 4CKm8b5t3Lz43YgJ;
-        Mon, 26 Oct 2020 22:07:27 +0200 (EET)
+        id S2410261AbgJ0DBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:01:10 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:43869 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410153AbgJ0DBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 23:01:09 -0400
+Received: by mail-pf1-f181.google.com with SMTP id a200so56025pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 20:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IsOYX4+IMgZ8Q0J4+yeY1Ll/vwg/3Aaa1rF+y/oAfEM=;
+        b=Xc8v4nuuTGnMpLDnwNWJAGRAYADx4FdZr9teVWPLOxOoF8L3TZLe/lULZuXwO5qTl2
+         UKDDN5Zyc7827L+GiNa/4Eeczs6WBG+M2ZRcFr5mRFw+sUK4vAP/qkAqiybrdSHcTRKS
+         uIp/0ZizoXq7UFXvXYBW1Zju90LyzE/oYOMF12n8lM8cHXqUHb90K+JHEZ6y5JgUy0bp
+         fe5bX5WU+NpvFLIe+Yj+bd5wq3eWksiIp4WW0Xp0m4lMBuT0TR7b6IlIygiigOuaGLrs
+         yBxvHgiO78JQ8OpAGCWgGCobTUjMjc9isWg/BE380suaS/DjioAmGHuu4EW5p04l9aOj
+         hBIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IsOYX4+IMgZ8Q0J4+yeY1Ll/vwg/3Aaa1rF+y/oAfEM=;
+        b=KsZkJdoXyzeKYHdTxXaTTkP1booENEtLUDm8+AxdUaIsEON6pkPpQeW5Nu/c1OIwJ4
+         /zyyncaxoNRfBctARuIYAhLA0BuzzaVCjw2s9ggBdJEtWPkgxHcGLxfbQQw71fAIYZ0l
+         94sO94f+dhZ00XTsYkoAr4FXVIHSvzY1Raay6+R6NxqHBILg+R4tfcfWnr7Y442o4yFm
+         ZncRqIpSBXfSTM1iJn8ImE2JqyKpxgnjr/Cq6ygOIrIxWwZdna7NiiRRdOGBjjXl31ex
+         v7+MFEElpVzCU6uklmajqwtpUMaXH8QT0WY6h5o2oP4I5OEl6hIsUbTZCBGLCKbOXMXk
+         Ub6g==
+X-Gm-Message-State: AOAM5321grukNA1t3B+3+rJOp8u3gkS8vxpLvVG9radwzCjL7XwOozM1
+        s1JNTAjFBVaz/tG/71PK9VjyZg==
+X-Google-Smtp-Source: ABdhPJxEFfeSAqJ90cUQO42tv5frhgMoEDuwOEgI1aIKK+gtKf+SGe1pacesaW5PGjjXpV5p0puS1Q==
+X-Received: by 2002:a62:6044:0:b029:151:1a04:895 with SMTP id u65-20020a6260440000b02901511a040895mr165226pfb.34.1603767667543;
+        Mon, 26 Oct 2020 20:01:07 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id jy19sm147632pjb.9.2020.10.26.20.01.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Oct 2020 20:01:06 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 08:31:04 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201027030104.fkklavfx5igdy62p@vireshk-i7>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201023061246.irzbrl62baoawmqv@vireshk-i7>
+ <2251006.PXaUfaNY4o@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Oct 2020 21:07:27 +0100
-From:   BBT Loan <31@dsbt.gov.ua>
-To:     undisclosed-recipients:;
-Subject: Re: Loan Offer
-Organization: info@bbtloan.org
-Reply-To: bbtloans@gmail.com
-Mail-Reply-To: bbtloans@gmail.com
-Message-ID: <449f924f29b6d4fca39cf754935f8a39@dsbt.gov.ua>
-X-Sender: 31@dsbt.gov.ua
-User-Agent: Roundcube Webmail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2251006.PXaUfaNY4o@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 23-10-20, 17:06, Rafael J. Wysocki wrote:
+> On Friday, October 23, 2020 8:12:46 AM CEST Viresh Kumar wrote:
+> > On 22-10-20, 13:45, Rafael J. Wysocki wrote:
+> > > On Thursday, October 22, 2020 12:47:03 PM CEST Viresh Kumar wrote:
+> > > > And I am not really sure why we always wanted this backup performance
+> > > > governor to be there unless the said governors are built as module.
+> > > 
+> > > Apparently, some old drivers had problems with switching frequencies fast enough
+> > > for ondemand to be used with them and the fallback was for those cases.  AFAICS.
+> > 
+> > Do we still need this ?
+> 
+> For the reasonably modern hardware, I don't think so.
+> 
+> > Or better ask those platforms to individually
+> > enable both of them.
+> 
+> Bu who knows what they are? :-)
 
+I was planning to break them and let them complain :)
 
 -- 
-Hello,
-
-Do you need an urgent loan? We offer Educational loan, Business loan,
-Housing loan, Agricultural loan, Personal loan, auto loan, and other
-good reasons at 3%. Contact us for more details
-
-Admin,
-BBT Loan.
+viresh
