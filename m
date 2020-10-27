@@ -2,148 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9443129A9CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32D629A9D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898486AbgJ0KgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:36:07 -0400
-Received: from mail-eopbgr80085.outbound.protection.outlook.com ([40.107.8.85]:55712
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2898449AbgJ0KgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:36:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tvh3nzWqJktN2PiaA0fBnC5jMVMJJhzn/m3kBa5aWZkasnSsp/CtFdyIytM57BAG5jIDCfCwkhjcS3DGQeaUQjgvGIPG2xRXw4rzHHAhsB6xYkPQniX3jPT4HfC53oESnjSlzZ+fjfS+53pOM1rwzkj+Y6MP+RtmldMhrNfm1cGXZHEiSD5MHPXb1pOrcphLzkVVfNidg80ZR/yjlVCn8PCtfbhWXckrYuDM2j3f3PUEqsfDRgHFofozBzJuxEU13JlAdTCWAMGPof7I/horb58lYMsq0F+5aP2fGoIY4jK0ExaI/o4r1AZ86I8vL2Hg1qyaXsFDNyM2B0CK64qGoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JN5bdLi0+FL0ViYdZGssLKaqfR5ZvbJ9jT+ueiPN57A=;
- b=CEw1gLB4B8Dsc6HRYL6R7yNRwLuFusFT3qrjhHdYxJmaR9U5wtMGU1kIkpVIqs/FWxuEblpvRPeASqTCuKLy2yM9PSLYTq83AIQEOAsTNkeiSTbyNB4kTiaEFGR4KnZrtjTe8rgx+WeCVZIoIO4uaZtlsJ8lTFML6/vs/gNzwSQPrc7vLUtrHs20vprWit3wVqdjpmBEiEiDZdrrJkwrv0s/Vx2w9v2w+d9TVIMC4+UF38skb/M3LqU0vsXuQFRrTrRg1De4clOGfKczNA/nO50br+gHVmUrt31ewhk3nyFsiRKJFxHpdF2C7UQW5yRo3Wo9HUqS6/XC+Z0zj4QcBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JN5bdLi0+FL0ViYdZGssLKaqfR5ZvbJ9jT+ueiPN57A=;
- b=NfTrT7H7rqGvXFK7OCaOqXiCwyOwkIEzMu7CeLlRjIXJ0BiLKi5DP2Xdke+Z9JHknIkoY5rqk+N3p7awMZZHLEF7VZ0eZK8prwf63oFc6FwyCQMjxIuQHHMs8qk1LMcgS+nYZiZW3Cm2as+LMlLf/BhU82i6c8mFbwsTWjVyQ/M=
-Received: from HE1PR0401MB2444.eurprd04.prod.outlook.com (2603:10a6:3:83::15)
- by HE1PR0402MB2698.eurprd04.prod.outlook.com (2603:10a6:3:dc::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 27 Oct
- 2020 10:35:56 +0000
-Received: from HE1PR0401MB2444.eurprd04.prod.outlook.com
- ([fe80::2465:b69a:bcd7:75d9]) by HE1PR0401MB2444.eurprd04.prod.outlook.com
- ([fe80::2465:b69a:bcd7:75d9%5]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
- 10:35:56 +0000
-From:   "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
-To:     Marc Zyngier <maz@kernel.org>,
-        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
-CC:     "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        Leo Li <leoyang.li@nxp.com>, "Z.q. Hou" <zhiqiang.hou@nxp.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jason@lakedaemon.net" <jason@lakedaemon.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        Xiaobo Xie <xiaobo.xie@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
- interrupt
-Thread-Topic: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
- interrupt
-Thread-Index: AQHWrEzzsEWsQcWWFESnNpVhpDbBsQ==
-Date:   Tue, 27 Oct 2020 10:35:56 +0000
-Message-ID: <HE1PR0401MB2444AA759104F4A34F91B61F8F160@HE1PR0401MB2444.eurprd04.prod.outlook.com>
-References: <20201027044619.41879-1-biwen.li@oss.nxp.com>
- <d5d6deb90b4b3d086024fcf01b737da9@kernel.org>
-In-Reply-To: <d5d6deb90b4b3d086024fcf01b737da9@kernel.org>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 53cee19a-d5b9-4076-d1ce-08d87a64166b
-x-ms-traffictypediagnostic: HE1PR0402MB2698:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0402MB26987F4A23911B194F5CEA2ACE160@HE1PR0402MB2698.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:390;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 66/DZXm0D9HjxeHgrtMJewrPpZI0H+0J00uQtN2C4dRL+hiUUKotmjYYHoEGOAWuYlIiCp7Kg1AS99qTLwJTA1t/FKB9hervjNi/kUwGTLN10gqs21r1zmz+kVTZuwmznPCajnuxUnm94lQZTiHbn+hOIsUVs/h+7EnlZJQIwZ7JTqCuAuT6N0+OZ+XHwzKTUFANUSXUHxX+uFmi+A7bVEOBPzQPMeuPQjiULKP6+2tNXOfjZ34bgnYJE4Wb7Sx9Vj+Sg71B57iaYmQigS+f4kZOpylPd8KCEoLYxXqjhIWvtlzDvdXXx5aNnAXeMvFWrP4V8vzwTGDjLt+OIYdwPQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0401MB2444.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(366004)(346002)(376002)(71200400001)(6506007)(76116006)(2906002)(52536014)(66946007)(66556008)(83380400001)(5660300002)(66476007)(64756008)(66446008)(9686003)(110136005)(86362001)(316002)(26005)(478600001)(8676002)(7416002)(7696005)(54906003)(4001150100001)(8936002)(53546011)(55016002)(186003)(33656002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: cLYMT0kdGS9M5XkzCAe3/pHY9A6Np/X5pMlnDgjhwd3PCsS2P8zSWvf5EdqhcE4XZ6ZFiSvwQd4YsFW3ZwlaM/WBzxnclUq4TeUc0IozBcpj2B3oiufQGugVVtUj1a3lhc/epA+14qk8zTEZS2kaC9gm77pMmzWhpNuBnR7ylxnHY8fd2jp9IBnbyWGonUdOupWpeD3+wH0PEniPAKAisYT+DbXYhrLh91GPSFzVOppGoP22b7GlBZM0nWdxV+kIWNy1TKN6HptgDZ1Tk18qXYI8+PioyznRmlztcWXNKdrLG5HFg3RRQcqVoG+50KdIpBp3VZPmRxNBHyNsd4zlbjhLtKWq4nokFbHGbgY44mAycsSnnYHewfDpWNxesCHiHxUbpIfYrkEyItB4/DWW+MASpFiWuPcM0dMb2Qs+GP1nFz2QT1rmCn1ASWwFHq0T1uANLR63VaxR1Xq36mj02OdKO821rWe834MMRTkyiGfPsR8MgA4xU9vCvudVNLBUcR2QGRA9In62idlHYPoNCCbRYtHL8KFDZj7JORZ58oO+iqg98YZ8IKaoBPKOVWf9eGxBYFTHOaeegkr8YTyT07Cdff+g5X6v5IjGHIdhB2AoWnBgrbWSXEjB0nV3Gk1zjnloOFL0kprskSa2cJIg2A==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2437093AbgJ0Kh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:37:59 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:44710 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436596AbgJ0Khi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:37:38 -0400
+Received: by mail-ej1-f66.google.com with SMTP id d6so1449710ejb.11;
+        Tue, 27 Oct 2020 03:37:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UCQxlKOKzQn6npHWL+chgiqrZv7e5KPLyCbYaVbyysg=;
+        b=FXe2lGus0CcETq/0NAZH8UCq17vj3Etk/oE0Rn8Ehqc6ciCstKd1uX3sIxY0aGEZn/
+         QQw61ccAJ7g0FEo77vxLJvEfjm0X2KAQ7wxESDHLhPs8/wgrJjC1D4llpP2Y5Zw6jIAq
+         LlZ+b+Xu/9Q5vi7fIDRn43Jzj3/KcNMGsersCfdrZ1ubGmVZsEYRNnWxF5l9If+zHt3e
+         5XTsR6mpu6/hH/WZs7pASDn7A2AuTfSUfMh7g28gD0jZA017szi978v80vQOtLK17A8I
+         ETM30TAURuU4m4Of9AqXwQO+/Ze8azputbkTiBDlS90GiLnOjP7qWracNDxlfF//zGYS
+         sprA==
+X-Gm-Message-State: AOAM530FnK42A+GkP0DpkoDOpL9oJu9NrPkBoSoaLkNNAiLL2p/KJwrN
+        OEY86ksIo+ZGIJwSZvx6bD0=
+X-Google-Smtp-Source: ABdhPJyDHPgPUFF8HO24yXsm5O+2et3SJH7AaZyv5j2kp7V8iKd5OFxvy1aK9EXyS3oSAdQ0tMhWJQ==
+X-Received: by 2002:a17:906:ca54:: with SMTP id jx20mr1775790ejb.541.1603795055225;
+        Tue, 27 Oct 2020 03:37:35 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id pw17sm762269ejb.116.2020.10.27.03.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 03:37:34 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 11:37:32 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH 08/12] ARM: dts: exynos: adjust node names to DT spec in
+ Exynos542x boards
+Message-ID: <20201027103732.GA20429@kozik-lap>
+References: <20201026181528.163143-1-krzk@kernel.org>
+ <CGME20201026181608eucas1p17927126482dc9ed2aefa2ff4c64491cd@eucas1p1.samsung.com>
+ <20201026181528.163143-9-krzk@kernel.org>
+ <f14a69bc-bd8f-b0d7-2967-1e7582562d5e@samsung.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0401MB2444.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53cee19a-d5b9-4076-d1ce-08d87a64166b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2020 10:35:56.3088
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oU+QNPoZ83eNlBOI72Oikpfp1RGOrsT+HYLRiX19QRiqWIYOiySroHSs3OhnJj9esu1vmaYm6UJLb3btgAOCew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0402MB2698
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f14a69bc-bd8f-b0d7-2967-1e7582562d5e@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->=20
-> On 2020-10-27 04:46, Biwen Li wrote:
-> > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Mon, Oct 26, 2020 at 10:47:47PM +0100, Marek Szyprowski wrote:
+> Hi Krzysztof,
+> 
+> On 26.10.2020 19:15, Krzysztof Kozlowski wrote:
+> > The Devicetree specification expects device node names to have a generic
+> > name, representing the class of a device.  Also the convention for node
+> > names is to use hyphens, not underscores.
 > >
-> > Add an new IRQ chip declaration for LS1043A and LS1088A
-> > - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A.
-> > SCFG_INTPCR[31:0]
-> >   of these SoCs is stored/read as SCFG_INTPCR[0:31] defaultly(bit
-> >   reverse)
-> > - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
+> > No functional changes.
 > >
-> > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > Signed-off-by: Biwen Li <biwen.li@nxp.com>
->=20
-> You clearly couldn't be bothered to read what I wrote in my earlier repli=
-es. I'm
-> thus ignoring this series...
-Okay, got it.
->=20
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > > ---
-> > Change in v2:
-> > 	- add despcription of bit reverse
-> > 	- update copyright
+> >   arch/arm/boot/dts/exynos5420-arndale-octa.dts      | 4 ++--
+> >   arch/arm/boot/dts/exynos5420-peach-pit.dts         | 4 ++--
+> >   arch/arm/boot/dts/exynos5420-smdk5420.dts          | 2 +-
+> >   arch/arm/boot/dts/exynos5422-odroid-core.dtsi      | 2 +-
+> >   arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi  | 2 +-
+> >   arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi | 4 ++--
+> >   arch/arm/boot/dts/exynos5422-odroidxu3.dts         | 8 ++++----
+> >   arch/arm/boot/dts/exynos5800-peach-pi.dts          | 4 ++--
+> >   8 files changed, 15 insertions(+), 15 deletions(-)
 > >
-> >  drivers/irqchip/irq-ls-extirq.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/irqchip/irq-ls-extirq.c
-> > b/drivers/irqchip/irq-ls-extirq.c index 4d1179fed77c..9587bc2607fc
-> > 100644
-> > --- a/drivers/irqchip/irq-ls-extirq.c
-> > +++ b/drivers/irqchip/irq-ls-extirq.c
-> > @@ -1,5 +1,8 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> > -
-> > +/*
-> > + * Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > + * Copyright 2020 NXP
->=20
-> ... specially when you keep attributing someone else's copyright to NXP.
-Then I don't know how to add the copyright, any suggestions?
->=20
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+> > diff --git a/arch/arm/boot/dts/exynos5420-arndale-octa.dts b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
+> > index dd7f8385d81e..bf457d0c02eb 100644
+> > --- a/arch/arm/boot/dts/exynos5420-arndale-octa.dts
+> > +++ b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
+> > @@ -39,7 +39,7 @@ oscclk {
+> >   		};
+> >   	};
+> >   
+> > -	gpio_keys {
+> > +	gpio-keys {
+> >   		compatible = "gpio-keys";
+> >   
+> >   		wakeup {
+> > @@ -344,7 +344,7 @@ &hdmi {
+> >   &hsi2c_4 {
+> >   	status = "okay";
+> >   
+> > -	s2mps11_pmic@66 {
+> > +	pmic@66 {
+> >   		compatible = "samsung,s2mps11-pmic";
+> >   		reg = <0x66>;
+> >   
+> > diff --git a/arch/arm/boot/dts/exynos5420-peach-pit.dts b/arch/arm/boot/dts/exynos5420-peach-pit.dts
+> > index 2bcbdf8a39bf..d54392fe6260 100644
+> > --- a/arch/arm/boot/dts/exynos5420-peach-pit.dts
+> > +++ b/arch/arm/boot/dts/exynos5420-peach-pit.dts
+> > @@ -138,7 +138,7 @@ panel_in: endpoint {
+> >   		};
+> >   	};
+> >   
+> > -	mmc1_pwrseq: mmc1_pwrseq {
+> > +	mmc1_pwrseq: mmc1-pwrseq {
+> >   		compatible = "mmc-pwrseq-simple";
+> >   		reset-gpios = <&gpx0 0 GPIO_ACTIVE_LOW>; /* WIFI_EN */
+> >   		clocks = <&max77802 MAX77802_CLK_32K_CP>;
+> > @@ -205,7 +205,7 @@ &hsi2c_4 {
+> >   	status = "okay";
+> >   	clock-frequency = <400000>;
+> >   
+> > -	max77802: max77802-pmic@9 {
+> > +	max77802: pmic@9 {
+> >   		compatible = "maxim,max77802";
+> >   		interrupt-parent = <&gpx3>;
+> >   		interrupts = <1 IRQ_TYPE_NONE>;
+> > diff --git a/arch/arm/boot/dts/exynos5420-smdk5420.dts b/arch/arm/boot/dts/exynos5420-smdk5420.dts
+> > index 4e49d8095b29..d506da9fa661 100644
+> > --- a/arch/arm/boot/dts/exynos5420-smdk5420.dts
+> > +++ b/arch/arm/boot/dts/exynos5420-smdk5420.dts
+> > @@ -129,7 +129,7 @@ &hdmi {
+> >   &hsi2c_4 {
+> >   	status = "okay";
+> >   
+> > -	s2mps11_pmic@66 {
+> > +	pmic@66 {
+> >   		compatible = "samsung,s2mps11-pmic";
+> >   		reg = <0x66>;
+> >   
+> > diff --git a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
+> > index b1cf9414ce17..25fb6331c75e 100644
+> > --- a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
+> > +++ b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
+> > @@ -503,7 +503,7 @@ &dmc {
+> >   &hsi2c_4 {
+> >   	status = "okay";
+> >   
+> > -	s2mps11_pmic@66 {
+> > +	pmic@66 {
+> >   		compatible = "samsung,s2mps11-pmic";
+> >   		reg = <0x66>;
+> >   		samsung,s2mps11-acokb-ground;
+> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
+> > index b5ec4f47eb3a..f5f9c077df74 100644
+> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
+> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
+> > @@ -40,7 +40,7 @@ codec {
+> >   
+> >   &hsi2c_5 {
+> >   	status = "okay";
+> > -	max98090: max98090@10 {
+> > +	max98090: codec@10 {
+> >   		compatible = "maxim,max98090";
+> >   		reg = <0x10>;
+> >   		interrupt-parent = <&gpx3>;
+> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+> > index 5da2d81e3be2..e35af40a55cb 100644
+> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+> > @@ -13,12 +13,12 @@
+> >   #include "exynos5422-odroid-core.dtsi"
+> >   
+> >   / {
+> > -	gpio_keys {
+> > +	gpio-keys {
+> >   		compatible = "gpio-keys";
+> >   		pinctrl-names = "default";
+> >   		pinctrl-0 = <&power_key>;
+> >   
+> > -		power_key {
+> > +		power-key {
+> >   			/*
+> >   			 * The power button (SW2) is connected to the PWRON
+> >   			 * pin (active high) of the S2MPS11 PMIC, which acts
+> > diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> > index d0f6ac5fa79d..5ff493ecb6ff 100644
+> > --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> > +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> > @@ -21,28 +21,28 @@ &i2c_0 {
+> >   	status = "okay";
+> >   
+> >   	/* A15 cluster: VDD_ARM */
+> > -	ina231@40 {
+> > +	sensor@40 {
+> power-sensor?
+
+Good point, thanks!
+
+Best regards,
+Krzysztof
