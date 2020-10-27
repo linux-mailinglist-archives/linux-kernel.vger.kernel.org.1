@@ -2,149 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DEC29A21E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A8229A222
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503730AbgJ0BTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:19:07 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:55206 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411311AbgJ0BTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:19:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603761545; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=ykRa/SRdEbudabccJMxxWepehMTr63NuIg68ElZPYA8=; b=L/0DPWpjBRb1u6CfUkpf9iK0Se2CCl9Cxg//ZJAsUn2lValpRARsy42bwYPcVREk+8RsoPhu
- 7KUaMngC0P5myhMTo0f39ZAZUe38UnB6g9/JT9R6RghXfqf1WngGxxLQf1Pri3nveIzJQYJQ
- WBe25A0Jgh0SIFqBNVl7b4NsBL0=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f97758401bdd11b7948caaf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 01:19:00
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3DB17C433CB; Tue, 27 Oct 2020 01:18:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 30096C433C9;
-        Tue, 27 Oct 2020 01:18:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 30096C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v9 4/4] bus: mhi: Add userspace client interface driver
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>, netdev@vger.kernel.org
-References: <1603495075-11462-1-git-send-email-hemantk@codeaurora.org>
- <1603495075-11462-5-git-send-email-hemantk@codeaurora.org>
- <CAMZdPi_MQ0SqK7s6h_1_9yEDD0vuAOpCTjSHTd1PBsGjvXukiA@mail.gmail.com>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <aefee6d1-da2c-d081-6bda-b9bd49e8c12f@codeaurora.org>
-Date:   Mon, 26 Oct 2020 18:18:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2503786AbgJ0BUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:20:14 -0400
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:32028 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409855AbgJ0BUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 21:20:14 -0400
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 50C571A1675;
+        Tue, 27 Oct 2020 09:19:37 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ALoAaQDvDY5SjUaRtOCYw4ro.3.1603761577319.Hmail.bernard@vivo.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>, Amit Kucheria <amitk@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: =?UTF-8?B?UmU6UmU6IFtSZXNlbmRdW1BBVENIXSBkcml2ZXJzL3RoZXJtYWw6IG9wdGltaXplIHRoZSBmb3IgY2lyY2xlIHRvIHJ1biBhIGJpdCBmYXN0?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.124
+In-Reply-To: <33587c80-d273-acf3-2d95-65d757b188df@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMZdPi_MQ0SqK7s6h_1_9yEDD0vuAOpCTjSHTd1PBsGjvXukiA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from bernard@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 27 Oct 2020 09:19:37 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Tue, 27 Oct 2020 09:19:37 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTB0dQ05KGExKTElIVkpNS0hMTUpOTExPSk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU5CSE5CT0tLTExLN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6NxQ6Gio*DT8iTigRLhopDzQ4IgxPCRRVSFVKTUtITE1KTkxMQklLVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSU9ZV1kIAVlBT0NITjcG
+X-HM-Tid: 0a7567a39d7a93b4kuws50c571a1675
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Loic,
-
-On 10/26/20 10:34 AM, Loic Poulain wrote:
-> Hi Hemant,
-> 
-> That looks better IMHO, just small comments on locking.
-> 
-[..]
->     +static ssize_t mhi_uci_write(struct file *file,
->     +                            const char __user *buf,
->     +                            size_t count,
->     +                            loff_t *offp)
->     +{
->     +       struct uci_dev *udev = file->private_data;
->     +       struct mhi_device *mhi_dev = udev->mhi_dev;
->     +       struct device *dev = &mhi_dev->dev;
->     +       struct uci_chan *uchan = udev->uchan;
->     +       size_t bytes_xfered = 0;
->     +       int ret, nr_avail = 0;
->     +
->     +       /* if ul channel is not supported return error */
->     +       if (!buf || !count || !mhi_dev->ul_chan)
->     +               return -EINVAL;
->     +
->     +       dev_dbg(dev, "%s: to xfer: %zu bytes\n", __func__, count);
->     +
->     +       mutex_lock(&uchan->write_lock);
-> 
-> 
-> Maybe mutex_lock_interruptible is more appropriate here (same in read fops).
-i agree, will return -EINTR if mutex_lock_interruptible returns < 0.
-> 
-[..]
->     +static ssize_t mhi_uci_read(struct file *file,
->     +                           char __user *buf,
->     +                           size_t count,
->     +                           loff_t *ppos)
->     +{
->     +       struct uci_dev *udev = file->private_data;
->     +       struct mhi_device *mhi_dev = udev->mhi_dev;
->     +       struct uci_chan *uchan = udev->uchan;
->     +       struct device *dev = &mhi_dev->dev;
->     +       struct uci_buf *ubuf;
->     +       size_t rx_buf_size;
->     +       char *ptr;
->     +       size_t to_copy;
->     +       int ret = 0;
->     +
->     +       /* if dl channel is not supported return error */
->     +       if (!buf || !mhi_dev->dl_chan)
->     +               return -EINVAL;
->     +
->     +       mutex_lock(&uchan->read_lock);
->     +       spin_lock_bh(&uchan->dl_pending_lock);
->     +       /* No data available to read, wait */
->     +       if (!uchan->cur_buf && list_empty(&uchan->dl_pending)) {
->     +               dev_dbg(dev, "No data available to read, waiting\n");
->     +
->     +               spin_unlock_bh(&uchan->dl_pending_lock);
->     +               ret = wait_event_interruptible(uchan->dl_wq,
->     +                                              (!udev->enabled ||
->     +                                           
->       !list_empty(&uchan->dl_pending)));
-> 
-> 
-> If you need to protect dl_pending list against concurent access, you 
-> need to do it in wait_event as well. I would suggest to lookg at 
-> `wait_event_interruptible_lock_irq` function, that allows to pass a 
-> locked spinlock as parameter. That would be safer and prevent this 
-> lock/unlock dance.
-When using this API difference is, first we take spin_lock_bh() and then 
-wait API is using spin_unlock_irq()/spin_lock_irq(). I am getting
-"BUG: scheduling while atomic" when i use this way. When i changed 
-spin_lock_bh to spin_lock_irq then we got rid of the kernel BUG.
-
-Thanks,
-Hemant
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+CkZyb206IERhbmllbCBMZXpjYW5vIDxkYW5pZWwubGV6Y2Fub0BsaW5hcm8ub3JnPgpEYXRlOiAy
+MDIwLTEwLTI3IDAyOjM1OjE4ClRvOiAgQmVybmFyZCA8YmVybmFyZEB2aXZvLmNvbT4sWmhhbmcg
+UnVpIDxydWkuemhhbmdAaW50ZWwuY29tPixBbWl0IEt1Y2hlcmlhIDxhbWl0a0BrZXJuZWwub3Jn
+PixsaW51eC1wbUB2Z2VyLmtlcm5lbC5vcmcsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwpD
+YzogIG9wZW5zb3VyY2Uua2VybmVsQHZpdm8uY29tClN1YmplY3Q6IFJlOiBbUmVzZW5kXVtQQVRD
+SF0gZHJpdmVycy90aGVybWFsOiBvcHRpbWl6ZSB0aGUgZm9yIGNpcmNsZSB0byBydW4gYSBiaXQg
+ZmFzdD5PbiAyNi8xMC8yMDIwIDAyOjQ5LCBCZXJuYXJkIHdyb3RlOgo+PiBGdW5jdGlvbiB0aGVy
+bWFsX3pvbmVfZGV2aWNlX3JlZ2lzdGVyLCBpbiB0aGUgZm9yIGNpcmNsZSwgaWYgdGhlCj4+IGZp
+cnN0IGlmIGJyYW5jaCBzZXQgdGhlIGNvdW50IGJpdCBpbiB0ei0+dHJpcHNfZGlzYWJsZWQsIHRo
+ZXJlIGlzCj4+IG5vIG5lZWQgdG8gc2V0IGluIHRoZSBvdGhlciBpZiBicmFuY2ggYWdhaW4uCj4+
+IFRoaXMgY2hhbmdlIGlzIHRvIG1ha2UgdGhlIGNvZGUgcnVuIGEgYml0IGZhc3QgYW5kIHJlYWRh
+YmxlLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29t
+Pgo+PiAtLS0KPj4gIGRyaXZlcnMvdGhlcm1hbC90aGVybWFsX2NvcmUuYyB8IDggKysrKysrLS0K
+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+IAo+
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy90aGVybWFsL3RoZXJtYWxfY29yZS5jIGIvZHJpdmVycy90
+aGVybWFsL3RoZXJtYWxfY29yZS5jCj4+IGluZGV4IGM2ZDc0YmMxYzkwYi4uMDM1Nzc3OTRlZWEz
+IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL3RoZXJtYWwvdGhlcm1hbF9jb3JlLmMKPj4gKysrIGIv
+ZHJpdmVycy90aGVybWFsL3RoZXJtYWxfY29yZS5jCj4+IEBAIC0xNDQ2LDEwICsxNDQ2LDE0IEBA
+IHRoZXJtYWxfem9uZV9kZXZpY2VfcmVnaXN0ZXIoY29uc3QgY2hhciAqdHlwZSwgaW50IHRyaXBz
+LCBpbnQgbWFzaywKPj4gIAkJZ290byByZWxlYXNlX2RldmljZTsKPj4gIAo+PiAgCWZvciAoY291
+bnQgPSAwOyBjb3VudCA8IHRyaXBzOyBjb3VudCsrKSB7Cj4+IC0JCWlmICh0ei0+b3BzLT5nZXRf
+dHJpcF90eXBlKHR6LCBjb3VudCwgJnRyaXBfdHlwZSkpCj4+ICsJCWlmICh0ei0+b3BzLT5nZXRf
+dHJpcF90eXBlKHR6LCBjb3VudCwgJnRyaXBfdHlwZSkpIHsKPj4gIAkJCXNldF9iaXQoY291bnQs
+ICZ0ei0+dHJpcHNfZGlzYWJsZWQpOwo+PiAtCQlpZiAodHotPm9wcy0+Z2V0X3RyaXBfdGVtcCh0
+eiwgY291bnQsICZ0cmlwX3RlbXApKQo+PiArCQkJY29udGludWU7Cj4+ICsJCX0KPj4gKwkJaWYg
+KHR6LT5vcHMtPmdldF90cmlwX3RlbXAodHosIGNvdW50LCAmdHJpcF90ZW1wKSkgewo+PiAgCQkJ
+c2V0X2JpdChjb3VudCwgJnR6LT50cmlwc19kaXNhYmxlZCk7Cj4+ICsJCQljb250aW51ZTsKPj4g
+KwkJfQo+PiAgCQkvKiBDaGVjayBmb3IgYm9ndXMgdHJpcCBwb2ludHMgKi8KPj4gIAkJaWYgKHRy
+aXBfdGVtcCA9PSAwKQo+PiAgCQkJc2V0X2JpdChjb3VudCwgJnR6LT50cmlwc19kaXNhYmxlZCk7
+Cj4KPgo+V2hhdCBhYm91dCA/Cj4JaWYgKHR6LT5vcHMtPmdldF90cmlwX3R5cGUodHosIGNvdW50
+LCAmdHJpcF90eXBlKSB8fAo+CQl0ei0+b3BzLT5nZXRfdHJpcF90ZW1wKHR6LCBjb3VudCwgJnRy
+aXBfdGVtcCkgfHwKPgkJIXRyaXBfdGVtcCkKPgkJc2V0X2JpdChjb3VudCwgJnR6LT50cmlwc19k
+aXNhYmxlZCk7Cj4KCkhpCgogIFN1cmUsIEkgd2lsbCByZXN1Ym1pdCB0aGlzIHBhdGNoLCB0aGFu
+a3MhCgpCUi8vQmVybmFyZAoKPgo+Cj4tLSAKPjxodHRwOi8vd3d3LmxpbmFyby5vcmcvPiBMaW5h
+cm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKPgo+Rm9sbG93IExp
+bmFybzogIDxodHRwOi8vd3d3LmZhY2Vib29rLmNvbS9wYWdlcy9MaW5hcm8+IEZhY2Vib29rIHwK
+PjxodHRwOi8vdHdpdHRlci5jb20vIyEvbGluYXJvb3JnPiBUd2l0dGVyIHwKPjxodHRwOi8vd3d3
+LmxpbmFyby5vcmcvbGluYXJvLWJsb2cvPiBCbG9nCg0KDQo=
