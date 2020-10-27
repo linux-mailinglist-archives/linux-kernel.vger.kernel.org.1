@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B9829B7A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B1229BB6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795243AbgJ0PPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46196 "EHLO mail.kernel.org"
+        id S1806187AbgJ0QGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794202AbgJ0PKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:10:32 -0400
+        id S1802098AbgJ0Ppg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:45:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B220F20657;
-        Tue, 27 Oct 2020 15:10:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02AE422265;
+        Tue, 27 Oct 2020 15:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811431;
-        bh=Yy/V6wqg3pFNjUhu9m9xh4868mWtP3TNBy/8sGlApSk=;
+        s=default; t=1603813535;
+        bh=uvecXbYCTZPped8G2lvRDzSBokW15fhQaFrKRnLJeFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S5Y1cV/tXkf1essbFw1mV+snLytNs7xOYV8CJ9Lo3Lxkyd/ZEfqzPrayMfJjIF/xI
-         +MYIDiFHaNL1YaX+MK7XC80bMsK9PNLM2sSwi/sg53l9ejUjgUIX2vHTkBe5PEjKFc
-         dJtTYZVfXign6vGmBJhuzzLcevzpXt9R/9frRkVY=
+        b=HGr2WxqaCgl9b/IaBWKuBnHi/0Lx6qV4M2j/AQhnyW3QyKJob2TbApUslPmpfwb2I
+         Js1i3JSwDsltBSFPCfMkV/UzvUen/6f97KIjLTOJSUIUUZj5ukJi16uYUX22pL4FJH
+         WC2O98JVF935y2BEH2aZ4Cu/rC7nYGotsF2oX4PU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 491/633] firmware: arm_scmi: Fix NULL pointer dereference in mailbox_chan_free
-Date:   Tue, 27 Oct 2020 14:53:54 +0100
-Message-Id: <20201027135545.769404307@linuxfoundation.org>
+Subject: [PATCH 5.9 585/757] ARM: at91: pm: of_node_put() after its usage
+Date:   Tue, 27 Oct 2020 14:53:55 +0100
+Message-Id: <20201027135517.971883723@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 6ed6c558234f0b6c22e47a3c2feddce3d02324dd ]
+[ Upstream commit e222f943519564978e082c152b4140a47e93392c ]
 
-scmi_mailbox is obtained from cinfo->transport_info and the first
-call to mailbox_chan_free frees the channel and sets cinfo->transport_info
-to NULL. Care is taken to check for non NULL smbox->chan but smbox can
-itself be NULL. Fix it by checking for it without which, kernel crashes
-with below NULL pointer dereference and eventually kernel panic.
+Put node after it has been used.
 
-   Unable to handle kernel NULL pointer dereference at
-   		virtual address 0000000000000038
-   Modules linked in: scmi_module(-)
-   Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno
-   		Development Platform, BIOS EDK II Sep  2 2020
-   pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
-   pc : mailbox_chan_free+0x2c/0x70 [scmi_module]
-   lr : idr_for_each+0x6c/0xf8
-   Call trace:
-    mailbox_chan_free+0x2c/0x70 [scmi_module]
-    idr_for_each+0x6c/0xf8
-    scmi_remove+0xa8/0xf0 [scmi_module]
-    platform_drv_remove+0x34/0x58
-    device_release_driver_internal+0x118/0x1f0
-    driver_detach+0x58/0xe8
-    bus_remove_driver+0x64/0xe0
-    driver_unregister+0x38/0x68
-    platform_driver_unregister+0x1c/0x28
-    scmi_driver_exit+0x38/0x44 [scmi_module]
-   ---[ end trace 17bde19f50436de9 ]---
-   Kernel panic - not syncing: Fatal exception
-   SMP: stopping secondary CPUs
-   Kernel Offset: 0x1d0000 from 0xffff800010000000
-   PHYS_OFFSET: 0x80000000
-   CPU features: 0x0240022,25806004
-   Memory Limit: none
-   ---[ end Kernel panic - not syncing: Fatal exception ]---
-
-Link: https://lore.kernel.org/r/20200908112611.31515-1-sudeep.holla@arm.com
-Fixes: 5c8a47a5a91d ("firmware: arm_scmi: Make scmi core independent of the transport type")
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
-Tested-by: Cristian Marussi <cristian.marussi@arm.com>
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Fixes: 13f16017d3e3f ("ARM: at91: pm: Tie the USB clock mask to the pmc")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1596616610-15460-4-git-send-email-claudiu.beznea@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/arm_scmi/mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-at91/pm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/arm_scmi/mailbox.c b/drivers/firmware/arm_scmi/mailbox.c
-index 6998dc86b5ce8..b797a713c3313 100644
---- a/drivers/firmware/arm_scmi/mailbox.c
-+++ b/drivers/firmware/arm_scmi/mailbox.c
-@@ -110,7 +110,7 @@ static int mailbox_chan_free(int id, void *p, void *data)
- 	struct scmi_chan_info *cinfo = p;
- 	struct scmi_mailbox *smbox = cinfo->transport_info;
+diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
+index 2aab043441e8f..eae8aaaadc3bf 100644
+--- a/arch/arm/mach-at91/pm.c
++++ b/arch/arm/mach-at91/pm.c
+@@ -800,6 +800,7 @@ static void __init at91_pm_init(void (*pm_idle)(void))
  
--	if (!IS_ERR(smbox->chan)) {
-+	if (smbox && !IS_ERR(smbox->chan)) {
- 		mbox_free_channel(smbox->chan);
- 		cinfo->transport_info = NULL;
- 		smbox->chan = NULL;
+ 	pmc_np = of_find_matching_node_and_match(NULL, atmel_pmc_ids, &of_id);
+ 	soc_pm.data.pmc = of_iomap(pmc_np, 0);
++	of_node_put(pmc_np);
+ 	if (!soc_pm.data.pmc) {
+ 		pr_err("AT91: PM not supported, PMC not found\n");
+ 		return;
 -- 
 2.25.1
 
