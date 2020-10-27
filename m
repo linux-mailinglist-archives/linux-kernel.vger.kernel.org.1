@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D468C29BE52
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA77829BE54
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756926AbgJ0PMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:12:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
+        id S1794678AbgJ0PNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1791008AbgJ0PFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:05:49 -0400
+        id S1791012AbgJ0PF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:05:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B23D122283;
-        Tue, 27 Oct 2020 15:05:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 559ED21D24;
+        Tue, 27 Oct 2020 15:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811149;
-        bh=Zi/6Agu3AptgIO7mIFylc82hjZYgqO06v7ajIwnqxLA=;
+        s=default; t=1603811154;
+        bh=FP7FLeubJNaww4tHlqH6jE3IMVDpinLGpMcSKY7TakA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xALiN2aoyxbRuHlorJiNbiD9Wi/7r32FrACCFVhSSVnz/4vmTB5Y3ecNPoR5N8rmv
-         gKNIQzoXAblRWBwePgHHvN7VBZg7oBQ63b3U78wKZAwTZ2lU4R5vOP0qA/fHY9zgWS
-         IjqRv6ItdBboJmB4nH5EkCcNOAaGOLzPOh5W3Yf8=
+        b=CgHLAqt9MK4JzuJXFR1DZdte5Z2cM1pOgiLFOHtEbFefZIPAlOCeRKX1q/XfwLp8O
+         LhiwcacHgQ6S9YbQL+kSf4n0dbOadNF64YgUfyTtDsft3/ydhIOOW+2ficnXVUpKFw
+         NTjlXWlCiOzhlcxNYWvtlpEa8RssxBXqMU+IQl10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        Chuanhong Guo <gch981213@gmail.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 391/633] mtd: spinand: gigadevice: Only one dummy byte in QUADIO
-Date:   Tue, 27 Oct 2020 14:52:14 +0100
-Message-Id: <20201027135541.045443926@linuxfoundation.org>
+Subject: [PATCH 5.8 393/633] mtd: rawnand: ams-delta: Fix non-OF build warning
+Date:   Tue, 27 Oct 2020 14:52:16 +0100
+Message-Id: <20201027135541.143139839@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,49 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hauke Mehrtens <hauke@hauke-m.de>
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 
-[ Upstream commit 6387ad9caf8f09747a8569e5876086b72ee9382c ]
+[ Upstream commit 6d11178762f7c8338a028b428198383b8978b280 ]
 
-The datasheet only lists one dummy byte in the 0xEH operation for the
-following chips:
-* GD5F1GQ4xExxG
-* GD5F1GQ4xFxxG
-* GD5F1GQ4UAYIG
-* GD5F4GQ4UAYIG
+Commit 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device
+tables") introduced an OF module device table but wrapped a reference
+to it with of_match_ptr() which resolves to NULL in non-OF configs.
+That resulted in a clang compiler warning on unused variable in non-OF
+builds.  Fix it.
 
-Fixes: c93c613214ac ("mtd: spinand: add support for GigaDevice GD5FxGQ4xA")
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Tested-by: Chuanhong Guo <gch981213@gmail.com>
+drivers/mtd/nand/raw/ams-delta.c:373:34: warning: unused variable 'gpio_nand_of_id_table' [-Wunused-const-variable]
+   static const struct of_device_id gpio_nand_of_id_table[] = {
+                                    ^
+   1 warning generated.
+
+Fixes: 7c2f66a960fc ("mtd: rawnand: ams-delta: Add module device tables")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200820165121.3192-2-hauke@hauke-m.de
+Link: https://lore.kernel.org/linux-mtd/20200919080403.17520-1-jmkrzyszt@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/gigadevice.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/ams-delta.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index d219c970042a2..679d3c43e15aa 100644
---- a/drivers/mtd/nand/spi/gigadevice.c
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -21,7 +21,7 @@
- #define GD5FXGQ4UXFXXG_STATUS_ECC_UNCOR_ERROR	(7 << 4)
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index 3711e7a0436cd..b3390028c6bfb 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -400,12 +400,14 @@ static int gpio_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- static SPINAND_OP_VARIANTS(read_cache_variants,
--		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-@@ -29,7 +29,7 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++#ifdef CONFIG_OF
+ static const struct of_device_id gpio_nand_of_id_table[] = {
+ 	{
+ 		/* sentinel */
+ 	},
+ };
+ MODULE_DEVICE_TABLE(of, gpio_nand_of_id_table);
++#endif
  
- static SPINAND_OP_VARIANTS(read_cache_variants_f,
--		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP_3A(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X2_OP_3A(0, 1, NULL, 0),
+ static const struct platform_device_id gpio_nand_plat_id_table[] = {
+ 	{
 -- 
 2.25.1
 
