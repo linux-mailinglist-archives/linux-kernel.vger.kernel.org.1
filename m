@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A58029C68F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC7429C662
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902132AbgJ0STW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        id S1826136AbgJ0SQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:16:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505275AbgJ0ODn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:43 -0400
+        id S1756206AbgJ0OMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:12:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21EA522258;
-        Tue, 27 Oct 2020 14:03:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE623218AC;
+        Tue, 27 Oct 2020 14:11:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807422;
-        bh=92lYKycp3LRSuIwpZ+EUNNbI2yKZHwMOSf60O1raYzs=;
+        s=default; t=1603807915;
+        bh=0mN8TmZOcC4Y0B6sUPhKksNVA2GHXtJ7Blbbkn+Cw+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ISYeXgNoUw/aE+gGBmQcjqWKkdiWl737tDaRTJNboYN+Udb9GzwGazslkqh+vP3eD
-         uioaWYZpMsc6RKRVJmtvhTTbpXSJiQWDuODa1abC3mc1MM4al9xo3DgBBMuR0S63A8
-         GJ+UQNMKNZw0Ai9iCzpsOQ9N3/tlmBEvi+DYy2Y0=
+        b=bdRg0ZV//jusfY/G9X6tqBLSfZ24wJeipWWxPqB/VpwilDrSUC5LH9+E7mL3SzTUg
+         Yh/9+Yznzz4pov+3ZdnhbkNr+UWgpJN/AScIS1+WyeqKpzQOZHgBqpO6aE94CQTuhV
+         AU7PRIyPPJmpkNbl5Q4AoLAilv+bhiHFqDk7KWtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 048/139] mfd: sm501: Fix leaks in probe()
-Date:   Tue, 27 Oct 2020 14:49:02 +0100
-Message-Id: <20201027134904.414857519@linuxfoundation.org>
+Subject: [PATCH 4.14 088/191] powerpc/icp-hv: Fix missing of_node_put() in success path
+Date:   Tue, 27 Oct 2020 14:49:03 +0100
+Message-Id: <20201027134913.923916173@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nicholas Mc Guire <hofrat@osadl.org>
 
-[ Upstream commit 8ce24f8967df2836b4557a23e74dc4bb098249f1 ]
+[ Upstream commit d3e669f31ec35856f5e85df9224ede5bdbf1bc7b ]
 
-This code should clean up if sm501_init_dev() fails.
+Both of_find_compatible_node() and of_find_node_by_type() will return
+a refcounted node on success - thus for the success path the node must
+be explicitly released with a of_node_put().
 
-Fixes: b6d6454fdb66 ("[PATCH] mfd: SM501 core driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 0b05ac6e2480 ("powerpc/xics: Rewrite XICS driver")
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1530691407-3991-1-git-send-email-hofrat@osadl.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/sm501.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/powerpc/sysdev/xics/icp-hv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mfd/sm501.c b/drivers/mfd/sm501.c
-index 3270b8dbc9498..4ca245518a199 100644
---- a/drivers/mfd/sm501.c
-+++ b/drivers/mfd/sm501.c
-@@ -1425,8 +1425,14 @@ static int sm501_plat_probe(struct platform_device *dev)
- 		goto err_claim;
- 	}
+diff --git a/arch/powerpc/sysdev/xics/icp-hv.c b/arch/powerpc/sysdev/xics/icp-hv.c
+index bbc839a98c414..003deaabb5680 100644
+--- a/arch/powerpc/sysdev/xics/icp-hv.c
++++ b/arch/powerpc/sysdev/xics/icp-hv.c
+@@ -179,6 +179,7 @@ int icp_hv_init(void)
  
--	return sm501_init_dev(sm);
-+	ret = sm501_init_dev(sm);
-+	if (ret)
-+		goto err_unmap;
-+
-+	return 0;
+ 	icp_ops = &icp_hv_ops;
  
-+ err_unmap:
-+	iounmap(sm->regs);
-  err_claim:
- 	release_resource(sm->regs_claim);
- 	kfree(sm->regs_claim);
++	of_node_put(np);
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
