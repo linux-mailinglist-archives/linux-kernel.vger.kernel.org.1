@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACE229AD6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDD029AD72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752293AbgJ0Nfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:35:36 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:46380 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752272AbgJ0Nfg (ORCPT
+        id S1752305AbgJ0Nf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:35:57 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39052 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752296AbgJ0Nf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:35:36 -0400
-Received: by mail-ej1-f66.google.com with SMTP id t25so2218884ejd.13;
-        Tue, 27 Oct 2020 06:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8mQg3nh3RaesRS2P5WKkQKj2n7Sdjc0/yYomgGjrqio=;
-        b=iNNryRd2nlTyxGTMh11x7reba8pbjJ8oqfWUoqPdnRReHWdK6LUDGWM37tgyyDiv2N
-         nmVRPh2dnjwsreFvaLadAUa4r0NXafbS0cJjVn0CEAGJx4eOdW2Em5ss8a12y8JZMB+4
-         /S/Yln/enOzx6L1kmudHZ1nv+NQ9o1lPA0rJg7590Wn4H6Qss8bLjEmxtM5fCCN7o9Wf
-         sHUahJRhBp6VZkCtCdUFCawRCFuthVnlM3P4VIhf4F3UwSrkUf7OXKU35ikqReEa9EaX
-         qKd2NASh2NmgCn+6hfZM55WiAUQ7wBFXG4WsqUWSa9XEE9JWgDuJLG4bQJJSkp7p7s2S
-         JfOg==
+        Tue, 27 Oct 2020 09:35:56 -0400
+Received: by mail-wr1-f65.google.com with SMTP id y12so1937141wrp.6;
+        Tue, 27 Oct 2020 06:35:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8mQg3nh3RaesRS2P5WKkQKj2n7Sdjc0/yYomgGjrqio=;
-        b=DR98hxxTxDEYd7wFPoqFfELoL2kOdlZeDdVd20p4ZKl2p1ybiUwFX0pO+aN7kqVAip
-         XLbB/Im6FTZNxfqwbbAGRYgtMfKXs3u00N/K1XyTLEB8W0p9IwppR9FuBhAeTJdbbHUt
-         gt+zSyTcMKIRFsBmPkoBm4EdVUyJ1u4Uo9VxwlnS1cNoO1ciA0y22haNVXA86U5168F/
-         WjOy0cFagMCLUx67L09luT/i7fUNa0pYvormWcINnlawI8gdhePE/8EhZoVW3+u2YvB6
-         dH9iulXpqCHrjui14euqCpWcHqbjrQm99YscVqj00/5E9LfLXNvN4xChgWW9MfwrzC6/
-         cQvw==
-X-Gm-Message-State: AOAM530OH7xtpqH+VDXHaVeQlS16qddENbqROKXI9VNWLzs9WOpa+nSR
-        YaQTg5e9N17/DfBkgIRNdFg=
-X-Google-Smtp-Source: ABdhPJyOS2GplJQHwJKYItyPwxlHn7uJ1Z/j8baAH8JyKjiTKLXB69/Mh3ufO4PujfYg/8EqfgktPw==
-X-Received: by 2002:a17:906:c095:: with SMTP id f21mr2593939ejz.108.1603805733846;
-        Tue, 27 Oct 2020 06:35:33 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id 6sm1054545ejv.49.2020.10.27.06.35.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g6+0uI07gwej8vOY9AHu1gUHHmahsVxYAJt5Q+A7Des=;
+        b=ZZ3GMgxRwAqYpJfyTKg0M/AL6RIKV+uZH8sZpB3VFZXzQbKaDsh6lbPWEm9H0qXgYP
+         99V+0Uqx3P+S+U2zgNzHnC3BR1T6Uw12dUmtHked+gbv9TuBgwqHVUDRrkzkuDOE7EbI
+         iOKNpYM1YXPi7I7iC3XGtFFnQxCtxdJo3MqY0f6V9nh4nOiMfoPtUZi16i3RuncGoG6W
+         oOZeTSKRWitWdhn3mYcuwwP5rD83Pq9ov9vBDQkQZDce1zxWowrSa/yBh503d2U9W+EI
+         JypS3UW6l5EQB4tHYrkVbb8krbsOPPBY9uI3/3UFbSuFn3I4W69OL5ipaGSetRGt95lA
+         gGYg==
+X-Gm-Message-State: AOAM531CvD54o0vlc1F4PiAsZAK4rtUBefvK6bZ5TVU4k6GUFRE7CkoT
+        IsHfVe6kIBJnVPu+kHCmP0J6Lru47g4=
+X-Google-Smtp-Source: ABdhPJz/LlrWPEcwYlzMUVrMCj4Wvg+V3Nbj8qBfkW3mSTfRY9vUmxd86f0gtb1MKixU/pzkz+Ybiw==
+X-Received: by 2002:adf:a354:: with SMTP id d20mr3140972wrb.29.1603805754703;
+        Tue, 27 Oct 2020 06:35:54 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-2-36-134-112.cust.vodafonedsl.it. [2.36.134.112])
+        by smtp.gmail.com with ESMTPSA id x15sm2218175wrr.36.2020.10.27.06.35.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:35:32 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 14:35:31 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 28/52] memory: tegra: Add and use
- devm_tegra_get_memory_controller()
-Message-ID: <20201027133531.GI1822510@ulmo>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-29-digetx@gmail.com>
+        Tue, 27 Oct 2020 06:35:54 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>, Petr Mladek <pmladek@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Fabian Frederick <fabf@skynet.be>, stable@vger.kernel.org
+Subject: [PATCH v2 0/2] fix parsing of reboot= cmdline
+Date:   Tue, 27 Oct 2020 14:35:43 +0100
+Message-Id: <20201027133545.58625-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oxV4ZoPwBLqAyY+a"
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-29-digetx@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Matteo Croce <mcroce@microsoft.com>
 
---oxV4ZoPwBLqAyY+a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The parsing of the reboot= cmdline has two major errors:
+- a missing bound check can crash the system on reboot
+- parsing of the cpu number only works if specified last
 
-On Mon, Oct 26, 2020 at 01:17:11AM +0300, Dmitry Osipenko wrote:
-> Multiple Tegra drivers need to retrieve Memory Controller and there is
-> duplication of the retrieval code among the drivers. This patch removes
-> the duplication and fixes put_device() which was missed in the duplicated
-> code.
->=20
-> EMC drivers now use new common devm_tegra_get_memory_controller() helper
-> instead of opencoding the MC retrieval.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/mc.c                | 48 ++++++++++++++++++++++++
->  drivers/memory/tegra/tegra124-emc.c      | 18 ++-------
->  drivers/memory/tegra/tegra210-emc-core.c | 39 +++++--------------
->  drivers/memory/tegra/tegra30-emc.c       | 18 ++-------
->  include/soc/tegra/mc.h                   | 10 +++++
->  5 files changed, 74 insertions(+), 59 deletions(-)
+Fix both, along with a small code refactor.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+v1->v2:
+As Petr suggested, don't force base 10 in simple_strtoul(),
+so hex values are accepted as well.
 
---oxV4ZoPwBLqAyY+a
-Content-Type: application/pgp-signature; name="signature.asc"
+Matteo Croce (2):
+  reboot: fix overflow parsing reboot cpu number
+  reboot: fix parsing of reboot cpu number
 
------BEGIN PGP SIGNATURE-----
+ kernel/reboot.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YIiMACgkQ3SOs138+
-s6Hfiw//dsmnyOi26C1B542Xl69Kt0RSahaqPgCob+RFtXhq//XjyEuLvOvQAjRe
-lxz5ae9bOY4g4M2xwaGEoD+itgWFP0Ls+bvD5nbLBGnO1Z+oHWlKyGx2qzJveXOj
-qP+dJHaaIyBO49MBznLzuWCOiP/lXB32WBNU3i/qsxh9S/7X7q3ihqYqezzrUMfh
-Gdhsfj+EWMF5w7ZlXv9WoiR0ZSdmqDTJTuE3JDs/r0olxRtN/wb0PRzAaYo1qyiv
-7YRNvSzCDWeap4l0SH+i/Yndul783XqNtZAjEb0oS/wzCiH+szPJNhcozS/2TI+D
-Xza9bOPLxiY0GcngyhUQb/z6Z3PfdODVP6tHfFjOKzHnwyh9/XqgyZIzl8dKsk73
-n9aYJUmv3cFU9fqqNFf3hjpcwjXIYk1FimqFTrvoC6emwsMjwEu7qARmWqpyIDEA
-bMTabxLAnzBW1Q/ftB8K1MK4h24B1jLGG6BfQDwW272+zbRkVP5fI5bhAKn85X1s
-npFW3cCKehnIAuxgLIob/RxLcu0T6U5TBD7yqyiuL79WqlW8xpN1oKLirEuToWFi
-0XxaYBzC4vWO/5CGlSkbxlfBXNDscHte/b/Rany9br+SuiWFybW3a/IirgDSEzUh
-fiH8r5or8XwD6rXR5Qy7IhBmJOYserCHHQk0AGmwMUhfBHPgXRw=
-=Gbon
------END PGP SIGNATURE-----
+-- 
+2.28.0
 
---oxV4ZoPwBLqAyY+a--
