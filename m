@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0240129CD0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D45929CD24
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgJ1Biz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 21:38:55 -0400
-Received: from mail-pl1-f202.google.com ([209.85.214.202]:48704 "EHLO
-        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1833023AbgJ0XhB (ORCPT
+        id S1726385AbgJ1BkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 21:40:03 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:40441 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1833055AbgJ0Xrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:37:01 -0400
-Received: by mail-pl1-f202.google.com with SMTP id w16so1770749ply.15
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:37:01 -0700 (PDT)
+        Tue, 27 Oct 2020 19:47:37 -0400
+Received: by mail-pl1-f193.google.com with SMTP id j5so1591254plk.7;
+        Tue, 27 Oct 2020 16:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=4a9MYiiaTByHEbKl6To5Tz0gAmU1s4D2bue8aWKymII=;
-        b=ti0ysnDzMX8K9s3iOF6d3+2ZR/oAqISGhCt//Y8qyqRAD+FFbTBuNGhv/HfDxO0iWO
-         Tnksd0YoilK4CS7LK0en3GtVxELV5DhrS8cpR1XC4IEjbU9qoA7CbX9fg4xVGcSZe4aY
-         CDDrO2ZjyZhFnSVvdFL/nbOFmlZKk2d0TGMPT+qdGsuBVZhjmeKfuMIYt4dfGcFQv2iT
-         I8t3YhyERHXCwFzAPrm9TY1WmCkybWOg7uhosZ5ze9YDVNm+FUb1s31Qwi6gwIfXF66F
-         kpYyUxxUkNsmtGwKEV4suUGGYe56pCNYU7pj6pHyITQfO8mZsJDLMKmFuZ0bVhQHYiIq
-         ZZJw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/6ryBAjhYQWjKYyZ6Le172OJUQcIiSdBP4BaH3Rlg64=;
+        b=Q5gMs+eOrcdJ0AbdplqdNB3rhSB/lSY5Y1go23d0pWx+kotcrMMZ2eH0eHgM7NQmzQ
+         2z8lGgrFJP1jZ2hPRNzMF2LYKufDydPcmIMcGtlS5rRUb5lQ8batLXTaqeBbKPBYcyuj
+         B9f4eXjn3Yy+MdtRDDgp1EczG9DOIaDVz0+BDjjIF+NG3abqAEM6Y70H+4+TqTMek7RV
+         9NxP+zGtRVhC5Yv/R54iQIQ4KTbzoAko39W2fCG8RzodJyEVMeS8Dcjwzqxch6cOqo8Z
+         RJDVHeUEIVxP7KmDuDr1EgKH3LwYSWX5lqiuQX4O4iejXYWBFj+pgMzUvkOWS3gzUlvP
+         dzag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4a9MYiiaTByHEbKl6To5Tz0gAmU1s4D2bue8aWKymII=;
-        b=C0I98gz+E45MplVMAO6o5uhawK6zDd20J0O9DW6l7N7p4OKJH+vvkuZpKkSeu0eRrW
-         k+TM+Q0B6xloDC7I41YK2paa8e+zNr4imkbQkRJS66ywh6Xn79VewxDRR+KBV3lTeZjx
-         /NtpmfoPIub16nLeyBx9jePsrUeQ+ftS8ZTO7mEd26ygAvkDIyVa0UPatvCxbKGHD+Pm
-         59OTWhcg3Gkqswnf2/nIDGpaSxwy5TUteeWFD/R94W7jUmNFrSZLHCjRmsi51a0Oq39D
-         ruxDohuhpQl4LjtAp4MiJTl7bwqNOjfE6WlaL3e9UniSkgvgtb/8+Z9b2m9f3XMi0igV
-         BCsg==
-X-Gm-Message-State: AOAM530iQ5FlmDhsOabCkkubL7kdmEScG20nMVX2k92drPf4RqY9s6gY
-        TaC+bxV/nm2XOOMJ832jEkggJF/n7P6J
-X-Google-Smtp-Source: ABdhPJyFHO0f4PxvIORwWA5M0VfCJIehQ4AlnLeaLHsxZx+/28M/X1yaGhFBvfcBbffl9uTCEYmyzwBptmWK
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a17:90a:7e0a:: with SMTP id
- i10mr4190504pjl.89.1603841820716; Tue, 27 Oct 2020 16:37:00 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 16:36:46 -0700
-In-Reply-To: <20201027233646.3434896-1-irogers@google.com>
-Message-Id: <20201027233646.3434896-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20201027233646.3434896-1-irogers@google.com>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH 2/2] tools, bpftool: Remove two unused variables.
-From:   Ian Rogers <irogers@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Michal Rostecki <mrostecki@opensuse.org>,
-        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/6ryBAjhYQWjKYyZ6Le172OJUQcIiSdBP4BaH3Rlg64=;
+        b=GkOAMQeCTwx7e32ECW/lRnlFinH5ZdimUIskp+jMjYCzkX3wGVx5VCTYB4VYunyGdL
+         UhqzYWSaOam5QOEK9WnIjZQFaOlHYmtXmHEb7YkLpiP0Zr2/fWYySBh7CB6U+OtXKrKp
+         fgI+gSZaOlfrm8xpK22dne2E8h3YQSqgTZSkVQHVs/jVHW999iEobCL0FjagCShjgLNt
+         M7db+zPi3wrYaToDMHyejqPUMaBrSBUr6aCYG5ErVNlEJ6S3ZWZduwEO4ub/gpvpRbqW
+         jikIsVBa7lOdP3z7nF0MKOArxuakwycXcqI12Wq1GOt7JUN8T9AqJPtSkuZtobGWsNWt
+         xFYQ==
+X-Gm-Message-State: AOAM532a4pvRC36MEQUDqBoJNu++WJJVvHBWZpE9t6jX2TE37GeOcCZS
+        gjec6pkda2RQMi40zyI5x4g=
+X-Google-Smtp-Source: ABdhPJz/lQbram89lQGpaIKmmR0hCnzx0BFgcEU0n7e10YYJ0CbPFhHKKcYO48buaN6RbQgEtmMO5g==
+X-Received: by 2002:a17:902:bc43:b029:d6:711c:1a77 with SMTP id t3-20020a170902bc43b02900d6711c1a77mr620272plz.43.1603842456452;
+        Tue, 27 Oct 2020 16:47:36 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id b17sm3271543pgb.94.2020.10.27.16.47.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 27 Oct 2020 16:47:36 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 16:37:12 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     krzk@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] memory: tegra: Complete tegra210_swgroups
+Message-ID: <20201027233711.GB11164@Asurada-Nvidia>
+References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
+ <20201008003746.25659-6-nicoleotsuka@gmail.com>
+ <20201027130111.GB1822510@ulmo>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027130111.GB1822510@ulmo>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid an unused variable warning.
+On Tue, Oct 27, 2020 at 02:01:11PM +0100, Thierry Reding wrote:
+> On Wed, Oct 07, 2020 at 05:37:46PM -0700, Nicolin Chen wrote:
+> > According to Tegra X1 TRM, there are missing swgroups in the
+> > tegra210_swgroups list. So this patch adds them to the list.
+> > 
+> > Note that the TEGRA_SWGROUP_GPU (in list) should be actually
+> > TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
+> > is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
+> > this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
+> > TEGRA_SWGROUP_GPU (in list) as it is.
+> > 
+> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > ---
+> >  drivers/memory/tegra/tegra210.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra210.c
+> > index b400802c9f14..b3bbc5a05ba1 100644
+> > --- a/drivers/memory/tegra/tegra210.c
+> > +++ b/drivers/memory/tegra/tegra210.c
+> > @@ -1028,6 +1028,8 @@ static const struct tegra_smmu_swgroup tegra210_swgroups[] = {
+> >  	{ .name = "hda",       .swgroup = TEGRA_SWGROUP_HDA,       .reg = 0x254 },
+> >  	{ .name = "isp2",      .swgroup = TEGRA_SWGROUP_ISP2,      .reg = 0x258 },
+> >  	{ .name = "nvenc",     .swgroup = TEGRA_SWGROUP_NVENC,     .reg = 0x264 },
+> > +	{ .name = "nv",        .swgroup = TEGRA_SWGROUP_NV,        .reg = 0x268 },
+> > +	{ .name = "nv2",       .swgroup = TEGRA_SWGROUP_NV2,       .reg = 0x26c },
+> 
+> Oddly enough I can see these in the TRM, but they are not in the
+> internal reference manuals that are supposed to be the canonical
+> reference for the TRM. Perhaps the TRM is out of date?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/bpf/bpftool/skeleton/profiler.bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/bpf/bpftool/skeleton/profiler.bpf.c b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-index 4e3512f700c0..ce5b65e07ab1 100644
---- a/tools/bpf/bpftool/skeleton/profiler.bpf.c
-+++ b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-@@ -70,7 +70,7 @@ int BPF_PROG(fentry_XXX)
- static inline void
- fexit_update_maps(u32 id, struct bpf_perf_event_value *after)
- {
--	struct bpf_perf_event_value *before, diff, *accum;
-+	struct bpf_perf_event_value *before, diff;
- 
- 	before = bpf_map_lookup_elem(&fentry_readings, &id);
- 	/* only account samples with a valid fentry_reading */
-@@ -95,7 +95,7 @@ int BPF_PROG(fexit_XXX)
- {
- 	struct bpf_perf_event_value readings[MAX_NUM_MATRICS];
- 	u32 cpu = bpf_get_smp_processor_id();
--	u32 i, one = 1, zero = 0;
-+	u32 i, zero = 0;
- 	int err;
- 	u64 *count;
- 
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
-
+Hmm..I actually have been using the TRM from official site all
+the time. These two aren't being used downstream either; I put
+them in the patch merely because they exist in the TRM. So we
+may drop them if you feel that's better.
