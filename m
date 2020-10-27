@@ -2,124 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B274A29A9E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47AC29A9EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898693AbgJ0KlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:41:18 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:47073 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898664AbgJ0Kkt (ORCPT
+        id S1416354AbgJ0KmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:42:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46220 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436497AbgJ0KmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:40:49 -0400
-Received: by mail-ej1-f65.google.com with SMTP id t25so1459036ejd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uTxMRA4/c1G5gjulnxVBfnJK6XAxYI7ClJM6lo1HV0s=;
-        b=qqiRWFU+UXC7Zw0SqnNgluYvZSaoqCUfaHtRq7Xma4zW6Pkovsz+14fGyz22X3w+Z4
-         d/g7cvlGZ3ZE0hrfhKYmO+b+1VTYuFf/8qW858mqOzo7ILcN/nsEJfMG32SmavwJWj4+
-         KrQOJoJrkFz8sMHM0pjWrfjecJxFa9/9YEjoL584XbLBVllpCdxMBhKswzMyCCaPtzfI
-         D+x+POJj0RFMYDu14W9uVIoso4ckZSvDDZxgnXvTkeYxhLVYmOkm7w4sSfJels2LKhsN
-         gcHgs5eIQ69tQQJ+yaly0nyQmECdEMp3gE48XrjP+guopMxRQJzhr9mSWt2Iw3Zcd/dx
-         +cFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uTxMRA4/c1G5gjulnxVBfnJK6XAxYI7ClJM6lo1HV0s=;
-        b=et0QS04VVbfgQjas09pA/57Vs8Zxwl7re08MansokMZsPET+8WS8NYEEFf4bglKnEV
-         uJayQXjljBtTKulXZscLb1rEsvRwHgxKwMmg186tripnO4UnxvUix+vb+skK2xYECE9M
-         j3E6kuRo13/wL0j8TZCW6f1VBlCU/gZZm0e64n6bPyi/ALvD6yjr9HZYhdX4z6Gph0zi
-         h49AHlobjoDxw8wrAybZr7yzyFyXlQnO5PuX4qUHT2jcfHRh/x15vY9YHgsEdGb9M1wr
-         BdAFIoQCHnRpnggz7HCIcfgGuyU1KWqC6H4wcTKlrqESST6t9SmZEWxu38uLLjpmQiTG
-         +AEg==
-X-Gm-Message-State: AOAM532Y8JMEuZK7cTdDl7V1QcYMtKFocMGKabpJc8wEbp1uvV6YMSdU
-        /sFzZTXvVAfIEy2BKuLk0hsKzGqksuOfe1q4xalfjA==
-X-Google-Smtp-Source: ABdhPJzeY90F2ZT44I1CsbyMJrlcyjfgRa7+QDxzsQKMQ0nX22n4K2iNKsRhc4EwRIy+/lSHaV6EkTIXK0h5XOWQI2I=
-X-Received: by 2002:a17:906:5f96:: with SMTP id a22mr1708926eju.168.1603795247655;
- Tue, 27 Oct 2020 03:40:47 -0700 (PDT)
+        Tue, 27 Oct 2020 06:42:10 -0400
+Date:   Tue, 27 Oct 2020 11:42:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603795328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2J5Vn7lq4uBMVse4v+EjvO4APamDhiXrx+ql33TLVFs=;
+        b=R7lkm+gauCN528QGLFvNgMpE5zNRNqYoyVWOR0Lg69+UJjgo7fYZJPcvYaY+O+Iy+G3XdT
+        vBF3BSqfiIO3FnoYTGsRfL4ORLTV6etHdwF7ssd5B3VFGlQs6XuORNn1Yfyxa+duUnOAv6
+        r7soyOlMNU2tJdFjArKI7tehH3NGH+rnTMsHBh5L0ZBU9ub1vhTN+CidzhhP42dBOluiBB
+        EYeUCSqDHgjfonnbkEoNuyeN/4/JGNA6t/r3jDIkIRlMMbEhho7kdi8E6ijcnwTSuzhf+2
+        lDDCKIb1FaKsxD4yPYn033nahrjqdGn74wje7sgFF+Krjp18oR/6ZOE5xGncpQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603795328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2J5Vn7lq4uBMVse4v+EjvO4APamDhiXrx+ql33TLVFs=;
+        b=0gpJkuYyOqeNWslrzt6t+P8CC7aV7E4i2pqvmnqlPL/CdSNKV1a0v8aoSgCLzvgdYJj5L/
+        V34pOdiOO3PWRLAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+Subject: Re: [patch 2/2] x86/fpu: Make kernel FPU protection RT friendly
+Message-ID: <20201027104207.ruurrumyg447egrk@linutronix.de>
+References: <20201027100949.181320853@linutronix.de>
+ <20201027101349.588965083@linutronix.de>
 MIME-Version: 1.0
-References: <20201026133609.24262-1-brgl@bgdev.pl> <20201026133609.24262-3-brgl@bgdev.pl>
- <CAHp75VfeBXszvhrz_YgtX6=HY=TJJXhWdTSTC1=S4UV2cOkJvA@mail.gmail.com>
- <CAMRc=Mf33JMNMT1vcrHx33QK7wj_gPY-CPaPUsqtON8X8S-JtQ@mail.gmail.com> <CAHp75Vf-z8yba-QX4G51PRkMV9VKAczd_79sma96zHRf+bMD2w@mail.gmail.com>
-In-Reply-To: <CAHp75Vf-z8yba-QX4G51PRkMV9VKAczd_79sma96zHRf+bMD2w@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 27 Oct 2020 11:40:37 +0100
-Message-ID: <CAMpxmJUPsz3o8pDAU9e5x1gD-yGf5Fym2DgYnfpCKEFTj9DSYw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] iio: adc: xilinx: use devm_krealloc() instead of
- kfree() + kcalloc()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201027101349.588965083@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:29 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Tue, Oct 27, 2020 at 12:04 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > On Tue, Oct 27, 2020 at 10:33 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > > On Mon, Oct 26, 2020 at 4:03 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > > >
-> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > >
-> > > > We now have devm_krealloc() in the kernel Use it indstead of calling
-> > > > kfree() and kcalloc() separately.
-> > >
-> > > Which is completely lawful when size > previous_size (I mean, the
-> > > additional patch you sent previously seems not related to this).
-> > >
-> >
-> > Sure but devm_krealloc() is cleaner and adds the benefit of resource management.
->
-> I meant devm_krealloc(). It should work in this case without your
-> additional "fix" patch.
->
+On 2020-10-27 11:09:51 [+0100], Thomas Gleixner wrote:
+> --- a/arch/x86/include/asm/fpu/api.h
+> +++ b/arch/x86/include/asm/fpu/api.h
+> @@ -32,15 +32,27 @@ extern void fpregs_mark_activate(void);
+>   *
+>   * local_bh_disable() protects against both preemption and soft interrupts
+>   * on !RT kernels.
+> + *
+> + * On RT kernels local_bh_disable() is not sufficient because it only
+> + * serializes soft interrupt related sections via a local lock, but stays
+> + * preemptible. Disabling preemption is the right choice here as bottom
+> + * half processing is always in thread context on RT kernels so it
+> + * implicitly prevents bottom half processing as well.
 
-I know, this is why I sent the fix separately. The fix is still
-correct on its own.
+The important part is that kernel_fpu_begin() also disables preemption
+and it may run in softirq. It does not use fpregs_lock() and
+fpregs_lock() serializes against kernel_fpu_begin().
 
-> > > > -       kfree(xadc->data);
-> > > > -       xadc->data = kcalloc(n, sizeof(*xadc->data), GFP_KERNEL);
-> > > > +       xadc->data = devm_krealloc(indio_dev->dev.parent, xadc->data,
-> > > > +                                  n * sizeof(*xadc->data),
-> > >
-> > > I think you need to use something from overflow.h instead of explicit
-> > > multiplication here.
-> > >
-> >
-> > Or maybe add devm_krealloc_array() which would perform the checks
-> > behind the scenes?
->
-> Maybe. But what to do in the cases when you have struct with flexible
-> arrays, like
-> struct foo {
-> ...
->  type bar[];
-> };
->
-> ?
+>   */
+>  static inline void fpregs_lock(void)
+>  {
+> -	local_bh_disable();
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +		local_bh_disable();
+> +	else
+> +		preempt_disable();
 
-Just use regular devm_krealloc() with struct_size()?
+Could you please swap that to
+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
+		preempt_disable();
+	else
+		local_bh_disable();
 
->
-> And you do kzalloc(sizeof(foo)) followed by krealloc(). The above name
-> (krealloc_array) may be a bit ambiguous.
+>  }
+>  
 
-But devm_krealloc_array() would only be useful for memory allocated by
-kmalloc_array() or kcalloc(). I don't see what's your point.
-
-Bartosz
+Sebastian
