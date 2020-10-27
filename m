@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAED929C916
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5197029C91F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830346AbgJ0TjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:39:01 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:36034 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504430AbgJ0TjA (ORCPT
+        id S370315AbgJ0Tjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:39:40 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:38327 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1830357AbgJ0Tjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:39:00 -0400
-Received: by mail-lf1-f67.google.com with SMTP id h6so3890602lfj.3;
-        Tue, 27 Oct 2020 12:38:58 -0700 (PDT)
+        Tue, 27 Oct 2020 15:39:39 -0400
+Received: by mail-lj1-f194.google.com with SMTP id m20so3141628ljj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oSKJ52KX02pbIoZHYzF+rH9Iv+ZGut7jSb61YOY1u8k=;
-        b=A5QlT5Ajrg5hX3qeNVkBillmBH/crjEuzDP8STRVYmqQ2x6onxY/hq07gpy6OFWjmN
-         EjC/+CsbBUDSJRkmevpFr2r4akZGf9cbfA29AChzMkcEv/NGuqrNMJDULX2CgS0Voll+
-         brSwpHEXhEbTAkLXle27QRaoh4+k/W17Mskq51bJ7t2xgAFkzw05yzRFyZxRC0xJVY2O
-         40vSf6srqo6klIAYhkecoEgA9RjFHqTNYyHWJyEEqo2uD5snp2WESzI0WbGcXYEpXSd/
-         QWieY/p8Ox6t1VPdLTNWuMzD7PMCfQhKIdukSW1XIOayP6i5W/42RESI3Ou8b3QH9Y4b
-         bvzA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x/ZjpB7n4FkhzFJT9cWI1qyNowromE99mrhGgv/JAmU=;
+        b=KeATWeNipyp1eWODhRbUlx9kFO99Nm9k6qs84jXqerWUcCzTZENLcty09ys+27qY3J
+         4574zHE7ZbcZAn5FfJV86/stLb76ObZ7cu41BZldRsJWuzi8i/e2I0sB3ESm07n9QOeJ
+         vsqcBbuFHVNwAHde6xQiI5oXO1vL63/dxhGLo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oSKJ52KX02pbIoZHYzF+rH9Iv+ZGut7jSb61YOY1u8k=;
-        b=BfxHg98yQPLOtWdyR1YYvyY5Y1p5pB9gVtcdsI05ZDrmzcCR5bkmmVNJNZm0V9ful5
-         LIdxjjhHhZAWy9ZrjTtDAvuXJCLb9CynutOe56tjcF9h8CSImJKmOdw9Cv5+Dy1CQG1Q
-         eKKCykhLDR1SRt6NR9Axv3rJKC92ukjjVOuEdLdZIbg1T05qmjGn/8GqsI3DqyJsB/JE
-         NAtkL0tjnKUMfPe/ky/aCqMTk6LRYH1exfcMLTSPnT/0Z/NtOH9kzk1Ty1DY41iX1lD1
-         keNad6Q3zwZ3mWX7t8muuUwUeUHBvQcApJDqWU+gg7jUnoer1rWOqVUhn+ZczPbwCvXU
-         R0BQ==
-X-Gm-Message-State: AOAM530M72IHSdyKtKW++pwjxPZ9V7KAtsISeVZ1cDQgjb3dSM62/p+l
-        92jmehGX3wx+S0FVa65d0SCWgD2H3YQ=
-X-Google-Smtp-Source: ABdhPJxB1pU1rokYucpbd4/MZx1uZgD8u6sMCmHa6qc331GV6WUYPZB/6urRjr6Bn7o0SbCnnlBUNQ==
-X-Received: by 2002:a19:834e:: with SMTP id f75mr1362840lfd.111.1603827537672;
-        Tue, 27 Oct 2020 12:38:57 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id c4sm272462lfm.294.2020.10.27.12.38.56
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x/ZjpB7n4FkhzFJT9cWI1qyNowromE99mrhGgv/JAmU=;
+        b=A7PS+pmQQRFpK2pNMYfcUQqrZf0YYMhOabHuKxUYIfnDaM9Ynvvr9rT6dCZSTKFTYR
+         DV21PZ+4raMwI1C7XZgdyD/qot9sJpshokP8rZ+QAiEIGDVFvJMSkg8G6Nx/FHUhdpA4
+         /kJVCD1a4oSdv8M+3RDCgUztPNUtc4R5SgEIJb7rD6tEExQHbFupMZxehITkrEfcsef5
+         E8lpTD/HTIZbU3T9fl0I3SdMKvRdTvkVsSl9TfFrvuO9WLnn2IMTINvDF1iGsnMYR/f+
+         YkhLsy+1J0NUOCsD8tYoCsqJSP1cVlxPfrech+8HAEmuL+ew4ZWl63nTE5EHIju3zd2t
+         MFGA==
+X-Gm-Message-State: AOAM531lwkTHkNffmk8NQoyEdjkqLjl010gBvmzOWiANOFv6b78pDB20
+        aiiokOJxzz81QyJETEnvP+BtROnmdSwJ7w==
+X-Google-Smtp-Source: ABdhPJwGLeMn0T069urLQ+voAfF/NdWvBjQ/lCJuQNxMM7tgMf0i3kFXu05XOvFNIzvAvM+v32xl4g==
+X-Received: by 2002:a2e:7d08:: with SMTP id y8mr1685931ljc.257.1603827576321;
+        Tue, 27 Oct 2020 12:39:36 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id e21sm290951ljl.44.2020.10.27.12.39.34
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:38:57 -0700 (PDT)
-Subject: Re: [PATCH v6 32/52] memory: tegra20-emc: Continue probing if timings
- are missing in device-tree
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-33-digetx@gmail.com> <20201027135244.GM1822510@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0c306309-6f49-cbac-99ce-6d956d5e910c@gmail.com>
-Date:   Tue, 27 Oct 2020 22:38:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 12:39:35 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 2so3066047ljj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:39:34 -0700 (PDT)
+X-Received: by 2002:a2e:2202:: with SMTP id i2mr1623327lji.70.1603827574410;
+ Tue, 27 Oct 2020 12:39:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201027135244.GM1822510@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201027164255.1573301-1-trix@redhat.com> <CAKwvOd=83v0Sv-NhQ5xgqdNSRm2b=pOJDziX8axZ9t2YyYwz-A@mail.gmail.com>
+In-Reply-To: <CAKwvOd=83v0Sv-NhQ5xgqdNSRm2b=pOJDziX8axZ9t2YyYwz-A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 27 Oct 2020 12:39:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi0urcZx_TU=U5_hWEFbuwd67QV=7k7H5q7uWtvnV72kg@mail.gmail.com>
+Message-ID: <CAHk-=wi0urcZx_TU=U5_hWEFbuwd67QV=7k7H5q7uWtvnV72kg@mail.gmail.com>
+Subject: Re: Subject: [RFC] clang tooling cleanups
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Tom Rix <trix@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-toolchains@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Huckleberry <nhuck15@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 16:52, Thierry Reding пишет:
-> On Mon, Oct 26, 2020 at 01:17:15AM +0300, Dmitry Osipenko wrote:
->> EMC driver will become mandatory after turning it into interconnect
->> provider because interconnect users, like display controller driver, will
->> fail to probe using newer device-trees that have interconnect properties.
->> Thus make EMC driver to probe even if timings are missing in device-tree.
-> 
-> Does it really have to be mandatory? Sounds like that's going to make it
-> unnecessarily complicated to merge all of this. Is it complicated to
-> make interconnect support optional in consumer drivers?
+On Tue, Oct 27, 2020 at 11:42 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Most recently Joe sent a treewide fix for section attributes that
+> Linux pulled just after the merge window closed, IIUC.  Maybe that
+> would be the best time, since automation makes it trivial for anyone
+> to run the treewide fixit whenever.
 
-Interconnect provider can't be optional if interconnect properties
-present in a device-tree because drivers that use ICC path will get
--EPROBE_DEFER until ICC provider is registered.
+Well, it worked fine timing-wise, but the fact that it wasn't in
+linux-next did mean that it then hit a few small snags once merged.
 
-Older device-trees don't have ICC properties, and thus, the ICC
-users/consumers will get a dummy NULL ICC path in this case. I.e. ICC
-core handles this for us.
+It's not a big deal - I never got the feeling that that patch was
+rushed or that Joe hadn't vetted it enough, and it was well worth it,
+but I'm pointing that out simply as an example of the model having a
+few gotchas.
+
+So avoiding linux-next (in order to avoid merge pain) does have
+downsides. And even obvious and 100% automated fixes can cause issues
+if there are #ifdef's or other architecture-specific things that then
+mean that the extra semicolon might matter after all. Usually for
+horribly bad reasons, but still..
+
+So it would be best if this got a lot of multi-architecture (and
+multi-config) coverage if it avoids linux-next.
+
+                Linus
