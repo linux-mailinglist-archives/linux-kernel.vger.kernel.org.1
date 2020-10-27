@@ -2,11 +2,11 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51E329AA9C
+	by mail.lfdr.de (Postfix) with ESMTP id 3071629AA9B
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1749945AbgJ0L3w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 07:29:52 -0400
+        id S1749954AbgJ0L3x convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 07:29:53 -0400
 Received: from mail.fireflyinternet.com ([77.68.26.236]:63441 "EHLO
         fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
         with ESMTP id S1749937AbgJ0L3w (ORCPT
