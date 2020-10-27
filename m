@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A7329C44D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0744229C287
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758648AbgJ0OVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43956 "EHLO mail.kernel.org"
+        id S1820656AbgJ0RhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:37:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758196AbgJ0OUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:20:02 -0400
+        id S1760711AbgJ0OgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:36:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A313206D4;
-        Tue, 27 Oct 2020 14:20:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD81C207BB;
+        Tue, 27 Oct 2020 14:36:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808401;
-        bh=D7pOB4UeX64TA7T+LmLBQ3GB8qID1uTunDVHK+zJdsU=;
+        s=default; t=1603809361;
+        bh=g975v8wUm1M1txfr455ndY6jeJAWydIyWNJ5MBqKuE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=smT1qu9kr+yEoht5A+Vx3ZbikSzOnU6lHPbeE5QTKjlVQBiAYHdklEWOCZeDuJhxH
-         FuzLuFYcsro3j9Apjvr5KCu65JRv/7ZII6naA14IhqkrCPTOozEvRvHnbmjgdLMF2P
-         J9uycCSsbUIEUzG6hU0m8h5Uvoxdl8tzLzLGteNg=
+        b=TJt9QpfLP/1CSjTGEIRgrNeAXWSZMsqBDqp3+HCOoFtk94jgc/NBuV7MUX0OBr10w
+         L/6JHXZlkRfk2oyhdVfpqfTN5i6XBuuL+WRi9ajfgxkvPEdxoN+lwKa/FMtkxzA3hK
+         mabkfQJy+HObO3idiD+bzq77dHALGTUil15oee/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 047/264] media: uvcvideo: Silence shift-out-of-bounds warning
-Date:   Tue, 27 Oct 2020 14:51:45 +0100
-Message-Id: <20201027135432.885995944@linuxfoundation.org>
+Subject: [PATCH 5.4 168/408] ASoC: fsl_sai: Instantiate snd_soc_dai_driver
+Date:   Tue, 27 Oct 2020 14:51:46 +0100
+Message-Id: <20201027135502.888538514@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +43,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 171994e498a0426cbe17f874c5c6af3c0af45200 ]
+[ Upstream commit 22a16145af824f91014d07f8664114859900b9e6 ]
 
-UBSAN reports a shift-out-of-bounds warning in uvc_get_le_value(). The
-report is correct, but the issue should be harmless as the computed
-value isn't used when the shift is negative. This may however cause
-incorrect behaviour if a negative shift could generate adverse side
-effects (such as a trap on some architectures for instance).
+Instantiate snd_soc_dai_driver for independent symmetric control.
+Otherwise the symmetric setting may be overwritten by other
+instance.
 
-Regardless of whether that may happen or not, silence the warning as a
-full WARN backtrace isn't nice.
-
-Reported-by: Bart Van Assche <bvanassche@acm.org>
-Fixes: c0efd232929c ("V4L/DVB (8145a): USB Video Class driver")
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Tested-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 08fdf65e37d5 ("ASoC: fsl_sai: Add asynchronous mode support")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1600424760-32071-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 19 +++++++++++--------
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index f2854337cdcac..abfc49901222e 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -778,12 +778,16 @@ static s32 uvc_get_le_value(struct uvc_control_mapping *mapping,
- 	offset &= 7;
- 	mask = ((1LL << bits) - 1) << offset;
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 914b75c23d1bf..027259695551c 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -694,7 +694,7 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	return 0;
+ }
  
--	for (; bits > 0; data++) {
-+	while (1) {
- 		u8 byte = *data & mask;
- 		value |= offset > 0 ? (byte >> offset) : (byte << (-offset));
- 		bits -= 8 - (offset > 0 ? offset : 0);
-+		if (bits <= 0)
-+			break;
-+
- 		offset -= 8;
- 		mask = (1 << bits) - 1;
-+		data++;
+-static struct snd_soc_dai_driver fsl_sai_dai = {
++static struct snd_soc_dai_driver fsl_sai_dai_template = {
+ 	.probe = fsl_sai_dai_probe,
+ 	.playback = {
+ 		.stream_name = "CPU-Playback",
+@@ -965,12 +965,15 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return ret;
  	}
  
- 	/* Sign-extend the value if needed. */
++	memcpy(&sai->cpu_dai_drv, &fsl_sai_dai_template,
++	       sizeof(fsl_sai_dai_template));
++
+ 	/* Sync Tx with Rx as default by following old DT binding */
+ 	sai->synchronous[RX] = true;
+ 	sai->synchronous[TX] = false;
+-	fsl_sai_dai.symmetric_rates = 1;
+-	fsl_sai_dai.symmetric_channels = 1;
+-	fsl_sai_dai.symmetric_samplebits = 1;
++	sai->cpu_dai_drv.symmetric_rates = 1;
++	sai->cpu_dai_drv.symmetric_channels = 1;
++	sai->cpu_dai_drv.symmetric_samplebits = 1;
+ 
+ 	if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
+ 	    of_find_property(np, "fsl,sai-asynchronous", NULL)) {
+@@ -987,9 +990,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		/* Discard all settings for asynchronous mode */
+ 		sai->synchronous[RX] = false;
+ 		sai->synchronous[TX] = false;
+-		fsl_sai_dai.symmetric_rates = 0;
+-		fsl_sai_dai.symmetric_channels = 0;
+-		fsl_sai_dai.symmetric_samplebits = 0;
++		sai->cpu_dai_drv.symmetric_rates = 0;
++		sai->cpu_dai_drv.symmetric_channels = 0;
++		sai->cpu_dai_drv.symmetric_samplebits = 0;
+ 	}
+ 
+ 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
+@@ -1018,7 +1021,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
+-			&fsl_sai_dai, 1);
++					      &sai->cpu_dai_drv, 1);
+ 	if (ret)
+ 		goto err_pm_disable;
+ 
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 6aba7d28f5f34..677ecfc1ec68f 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -180,6 +180,7 @@ struct fsl_sai {
+ 	unsigned int bclk_ratio;
+ 
+ 	const struct fsl_sai_soc_data *soc_data;
++	struct snd_soc_dai_driver cpu_dai_drv;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ };
 -- 
 2.25.1
 
