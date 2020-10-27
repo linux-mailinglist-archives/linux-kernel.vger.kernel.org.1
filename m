@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E87F29B6B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2AE29B75A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797564AbgJ0PYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:24:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37486 "EHLO mail.kernel.org"
+        id S1799549AbgJ0PcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797272AbgJ0PWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:38 -0400
+        id S1797028AbgJ0PVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:21:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FF3520728;
-        Tue, 27 Oct 2020 15:22:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F9F620728;
+        Tue, 27 Oct 2020 15:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812158;
-        bh=BUOhf/KhDDkfbOeeQln3sQwrnmCVU5E+id99mlkoif8=;
+        s=default; t=1603812071;
+        bh=XtdJE6dWAtutXnXj6NmWoMsVjBAWDBhrlV/tcxgTGvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p9ELFGungfg/qHnWDzr9s+D9iDsaiDrjPc+/ceE6+mmNassSxXQHN98YpoecJKcss
-         1kuMwPSFn4OqHcexjBuvQZthHH1YdF/2GTFMUl9VKehx25qmptRsAmmtArz27d3YhN
-         wpRhDo2qIlGbWg7ov4GlEs/SIoYZ4du7AKEA63aU=
+        b=t4b4aEH5XX1lyZjSVamm40m8iwa2CRawIdt1NYQPj2aAzaMWq/8XJWNBQY+PtHFQk
+         FWF+VLEM5izFVEwkFS4d3zCVKLeXVIYpCPLgqPUJpachJsT7XKyacxD66v/JS3PKTd
+         j76jUw9BJXqgMEdg3ne085QFxVMEqsvQRQT+eaho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.9 081/757] crypto: algif_aead - Do not set MAY_BACKLOG on the async path
-Date:   Tue, 27 Oct 2020 14:45:31 +0100
-Message-Id: <20201027135454.346085592@linuxfoundation.org>
+        stable@vger.kernel.org, Andrei Botila <andrei.botila@nxp.com>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.9 083/757] crypto: caam/qi - add support for more XTS key lengths
+Date:   Tue, 27 Oct 2020 14:45:33 +0100
+Message-Id: <20201027135454.444949724@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -41,56 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Andrei Botila <andrei.botila@nxp.com>
 
-commit cbdad1f246dd98e6c9c32a6e5212337f542aa7e0 upstream.
+commit 62b9a6690926ee199445b23fd46e6349d9057146 upstream.
 
-The async path cannot use MAY_BACKLOG because it is not meant to
-block, which is what MAY_BACKLOG does.  On the other hand, both
-the sync and async paths can make use of MAY_SLEEP.
+CAAM accelerator only supports XTS-AES-128 and XTS-AES-256 since
+it adheres strictly to the standard. All the other key lengths
+are accepted and processed through a fallback as long as they pass
+the xts_verify_key() checks.
 
-Fixes: 83094e5e9e49 ("crypto: af_alg - add async support to...")
-Cc: <stable@vger.kernel.org>
+Fixes: b189817cf789 ("crypto: caam/qi - add ablkcipher and authenc algorithms")
+Cc: <stable@vger.kernel.org> # v4.12+
+Signed-off-by: Andrei Botila <andrei.botila@nxp.com>
+Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/algif_aead.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/crypto/caam/caamalg_qi.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -78,7 +78,7 @@ static int crypto_aead_copy_sgl(struct c
- 	SYNC_SKCIPHER_REQUEST_ON_STACK(skreq, null_tfm);
+--- a/drivers/crypto/caam/caamalg_qi.c
++++ b/drivers/crypto/caam/caamalg_qi.c
+@@ -18,6 +18,7 @@
+ #include "qi.h"
+ #include "jr.h"
+ #include "caamalg_desc.h"
++#include <crypto/xts.h>
+ #include <asm/unaligned.h>
  
- 	skcipher_request_set_sync_tfm(skreq, null_tfm);
--	skcipher_request_set_callback(skreq, CRYPTO_TFM_REQ_MAY_BACKLOG,
-+	skcipher_request_set_callback(skreq, CRYPTO_TFM_REQ_MAY_SLEEP,
- 				      NULL, NULL);
- 	skcipher_request_set_crypt(skreq, src, dst, len, NULL);
+ /*
+@@ -68,6 +69,7 @@ struct caam_ctx {
+ 	struct device *qidev;
+ 	spinlock_t lock;	/* Protects multiple init of driver context */
+ 	struct caam_drv_ctx *drv_ctx[NUM_OP];
++	bool xts_key_fallback;
+ 	struct crypto_skcipher *fallback;
+ };
  
-@@ -291,19 +291,20 @@ static int _aead_recvmsg(struct socket *
- 		areq->outlen = outlen;
+@@ -734,11 +736,15 @@ static int xts_skcipher_setkey(struct cr
+ 	int ret = 0;
+ 	int err;
  
- 		aead_request_set_callback(&areq->cra_u.aead_req,
--					  CRYPTO_TFM_REQ_MAY_BACKLOG,
-+					  CRYPTO_TFM_REQ_MAY_SLEEP,
- 					  af_alg_async_cb, areq);
- 		err = ctx->enc ? crypto_aead_encrypt(&areq->cra_u.aead_req) :
- 				 crypto_aead_decrypt(&areq->cra_u.aead_req);
+-	if (keylen != 2 * AES_MIN_KEY_SIZE  && keylen != 2 * AES_MAX_KEY_SIZE) {
++	err = xts_verify_key(skcipher, key, keylen);
++	if (err) {
+ 		dev_dbg(jrdev, "key size mismatch\n");
+-		return -EINVAL;
++		return err;
+ 	}
  
- 		/* AIO operation in progress */
--		if (err == -EINPROGRESS || err == -EBUSY)
-+		if (err == -EINPROGRESS)
- 			return -EIOCBQUEUED;
++	if (keylen != 2 * AES_KEYSIZE_128 && keylen != 2 * AES_KEYSIZE_256)
++		ctx->xts_key_fallback = true;
++
+ 	err = crypto_skcipher_setkey(ctx->fallback, key, keylen);
+ 	if (err)
+ 		return err;
+@@ -1407,7 +1413,8 @@ static inline int skcipher_crypt(struct
+ 	if (!req->cryptlen && !ctx->fallback)
+ 		return 0;
  
- 		sock_put(sk);
- 	} else {
- 		/* Synchronous operation */
- 		aead_request_set_callback(&areq->cra_u.aead_req,
-+					  CRYPTO_TFM_REQ_MAY_SLEEP |
- 					  CRYPTO_TFM_REQ_MAY_BACKLOG,
- 					  crypto_req_done, &ctx->wait);
- 		err = crypto_wait_req(ctx->enc ?
+-	if (ctx->fallback && xts_skcipher_ivsize(req)) {
++	if (ctx->fallback && (xts_skcipher_ivsize(req) ||
++			      ctx->xts_key_fallback)) {
+ 		struct caam_skcipher_req_ctx *rctx = skcipher_request_ctx(req);
+ 
+ 		skcipher_request_set_tfm(&rctx->fallback_req, ctx->fallback);
 
 
