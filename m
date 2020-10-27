@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653DF29B81E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B185429BA12
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799540AbgJ0PcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40904 "EHLO mail.kernel.org"
+        id S1803922AbgJ0Pxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798146AbgJ0PZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:58 -0400
+        id S368709AbgJ0P1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:27:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B58B220728;
-        Tue, 27 Oct 2020 15:25:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DD6E22409;
+        Tue, 27 Oct 2020 15:27:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812358;
-        bh=mK95Y5EpJLO5QnvBvmW3V/40l56fS/jzkZVuuRNb4VY=;
+        s=default; t=1603812421;
+        bh=D3+jbUZCjsQ+43WgyJ8uB2n6YYOBr73LxOhhGw2uoaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZWYujmAx/cDKpN4iQN6RgvpIT/6mp0I6cdS+AjKtpwxAIgy6S/FWHKGg/xhdTTric
-         QDIg/72XVfJ+f149UpOG28FIcWWRoUAtrXE+3y05IiNynT8yh+MlrHYQm2NDsFEgQa
-         5wulf2FbKUyf1JuIsnUM/ArTo6XsvI8NdaUh1H0s=
+        b=XAd0mT93CwmBjr3quNxbXlQ+wNGxTP/D+ABjfr7s2nQV0D0unnZR20+6kXaePlUte
+         aEEh9Uka9V7FZPl4wzs3btxaVF7q3jhuC+erLOPjJhjMMyTJ/rWRC/usBZ4xErSbEY
+         9VDm/DunJxL9gIIM9W/L+hNrmDAnSk95NL0FK/zI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 174/757] pinctrl: bcm: fix kconfig dependency warning when !GPIOLIB
-Date:   Tue, 27 Oct 2020 14:47:04 +0100
-Message-Id: <20201027135458.754721456@linuxfoundation.org>
+Subject: [PATCH 5.9 176/757] spi: spi-s3c64xx: Check return values
+Date:   Tue, 27 Oct 2020 14:47:06 +0100
+Message-Id: <20201027135458.845372032@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,45 +44,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Łukasz Stelmach <l.stelmach@samsung.com>
 
-[ Upstream commit 513034d8b089b9a49dab57845aee70e830fe7334 ]
+[ Upstream commit 2f4db6f705c5cba85d23836c19b44d9687dc1334 ]
 
-When PINCTRL_BCM2835 is enabled and GPIOLIB is disabled, it results in the
-following Kbuild warning:
+Check return values in prepare_dma() and s3c64xx_spi_config() and
+propagate errors upwards.
 
-WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
-  Depends on [n]: GPIOLIB [=n]
-  Selected by [y]:
-  - PINCTRL_BCM2835 [=y] && PINCTRL [=y] && OF [=y] && (ARCH_BCM2835 [=n] || ARCH_BRCMSTB [=n] || COMPILE_TEST [=y])
-
-The reason is that PINCTRL_BCM2835 selects GPIOLIB_IRQCHIP without
-depending on or selecting GPIOLIB while GPIOLIB_IRQCHIP is subordinate to
-GPIOLIB.
-
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
-
-Fixes: 85ae9e512f43 ("pinctrl: bcm2835: switch to GPIOLIB_IRQCHIP")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Link: https://lore.kernel.org/r/20200914144025.371370-1-fazilyildiran@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 788437273fa8 ("spi: s3c64xx: move to generic dmaengine API")
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Link: https://lore.kernel.org/r/20201002122243.26849-4-l.stelmach@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/bcm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-s3c64xx.c | 50 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 41 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
-index dcf7df797af75..0ed14de0134cf 100644
---- a/drivers/pinctrl/bcm/Kconfig
-+++ b/drivers/pinctrl/bcm/Kconfig
-@@ -23,6 +23,7 @@ config PINCTRL_BCM2835
- 	select PINMUX
- 	select PINCONF
- 	select GENERIC_PINCONF
-+	select GPIOLIB
- 	select GPIOLIB_IRQCHIP
- 	default ARCH_BCM2835 || ARCH_BRCMSTB
- 	help
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index 26c7cb79cd784..1f08e32a10fe2 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -122,6 +122,7 @@
+ 
+ struct s3c64xx_spi_dma_data {
+ 	struct dma_chan *ch;
++	dma_cookie_t cookie;
+ 	enum dma_transfer_direction direction;
+ };
+ 
+@@ -271,12 +272,13 @@ static void s3c64xx_spi_dmacb(void *data)
+ 	spin_unlock_irqrestore(&sdd->lock, flags);
+ }
+ 
+-static void prepare_dma(struct s3c64xx_spi_dma_data *dma,
++static int prepare_dma(struct s3c64xx_spi_dma_data *dma,
+ 			struct sg_table *sgt)
+ {
+ 	struct s3c64xx_spi_driver_data *sdd;
+ 	struct dma_slave_config config;
+ 	struct dma_async_tx_descriptor *desc;
++	int ret;
+ 
+ 	memset(&config, 0, sizeof(config));
+ 
+@@ -300,12 +302,24 @@ static void prepare_dma(struct s3c64xx_spi_dma_data *dma,
+ 
+ 	desc = dmaengine_prep_slave_sg(dma->ch, sgt->sgl, sgt->nents,
+ 				       dma->direction, DMA_PREP_INTERRUPT);
++	if (!desc) {
++		dev_err(&sdd->pdev->dev, "unable to prepare %s scatterlist",
++			dma->direction == DMA_DEV_TO_MEM ? "rx" : "tx");
++		return -ENOMEM;
++	}
+ 
+ 	desc->callback = s3c64xx_spi_dmacb;
+ 	desc->callback_param = dma;
+ 
+-	dmaengine_submit(desc);
++	dma->cookie = dmaengine_submit(desc);
++	ret = dma_submit_error(dma->cookie);
++	if (ret) {
++		dev_err(&sdd->pdev->dev, "DMA submission failed");
++		return -EIO;
++	}
++
+ 	dma_async_issue_pending(dma->ch);
++	return 0;
+ }
+ 
+ static void s3c64xx_spi_set_cs(struct spi_device *spi, bool enable)
+@@ -355,11 +369,12 @@ static bool s3c64xx_spi_can_dma(struct spi_master *master,
+ 	return xfer->len > (FIFO_LVL_MASK(sdd) >> 1) + 1;
+ }
+ 
+-static void s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
++static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 				    struct spi_transfer *xfer, int dma_mode)
+ {
+ 	void __iomem *regs = sdd->regs;
+ 	u32 modecfg, chcfg;
++	int ret = 0;
+ 
+ 	modecfg = readl(regs + S3C64XX_SPI_MODE_CFG);
+ 	modecfg &= ~(S3C64XX_SPI_MODE_TXDMA_ON | S3C64XX_SPI_MODE_RXDMA_ON);
+@@ -385,7 +400,7 @@ static void s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 		chcfg |= S3C64XX_SPI_CH_TXCH_ON;
+ 		if (dma_mode) {
+ 			modecfg |= S3C64XX_SPI_MODE_TXDMA_ON;
+-			prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
++			ret = prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
+ 		} else {
+ 			switch (sdd->cur_bpw) {
+ 			case 32:
+@@ -417,12 +432,17 @@ static void s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 			writel(((xfer->len * 8 / sdd->cur_bpw) & 0xffff)
+ 					| S3C64XX_SPI_PACKET_CNT_EN,
+ 					regs + S3C64XX_SPI_PACKET_CNT);
+-			prepare_dma(&sdd->rx_dma, &xfer->rx_sg);
++			ret = prepare_dma(&sdd->rx_dma, &xfer->rx_sg);
+ 		}
+ 	}
+ 
++	if (ret)
++		return ret;
++
+ 	writel(modecfg, regs + S3C64XX_SPI_MODE_CFG);
+ 	writel(chcfg, regs + S3C64XX_SPI_CH_CFG);
++
++	return 0;
+ }
+ 
+ static u32 s3c64xx_spi_wait_for_timeout(struct s3c64xx_spi_driver_data *sdd,
+@@ -555,9 +575,10 @@ static int s3c64xx_wait_for_pio(struct s3c64xx_spi_driver_data *sdd,
+ 	return 0;
+ }
+ 
+-static void s3c64xx_spi_config(struct s3c64xx_spi_driver_data *sdd)
++static int s3c64xx_spi_config(struct s3c64xx_spi_driver_data *sdd)
+ {
+ 	void __iomem *regs = sdd->regs;
++	int ret;
+ 	u32 val;
+ 
+ 	/* Disable Clock */
+@@ -605,7 +626,9 @@ static void s3c64xx_spi_config(struct s3c64xx_spi_driver_data *sdd)
+ 
+ 	if (sdd->port_conf->clk_from_cmu) {
+ 		/* The src_clk clock is divided internally by 2 */
+-		clk_set_rate(sdd->src_clk, sdd->cur_speed * 2);
++		ret = clk_set_rate(sdd->src_clk, sdd->cur_speed * 2);
++		if (ret)
++			return ret;
+ 	} else {
+ 		/* Configure Clock */
+ 		val = readl(regs + S3C64XX_SPI_CLK_CFG);
+@@ -619,6 +642,8 @@ static void s3c64xx_spi_config(struct s3c64xx_spi_driver_data *sdd)
+ 		val |= S3C64XX_SPI_ENCLK_ENABLE;
+ 		writel(val, regs + S3C64XX_SPI_CLK_CFG);
+ 	}
++
++	return 0;
+ }
+ 
+ #define XFER_DMAADDR_INVALID DMA_BIT_MASK(32)
+@@ -661,7 +686,9 @@ static int s3c64xx_spi_transfer_one(struct spi_master *master,
+ 		sdd->cur_bpw = bpw;
+ 		sdd->cur_speed = speed;
+ 		sdd->cur_mode = spi->mode;
+-		s3c64xx_spi_config(sdd);
++		status = s3c64xx_spi_config(sdd);
++		if (status)
++			return status;
+ 	}
+ 
+ 	if (!is_polling(sdd) && (xfer->len > fifo_len) &&
+@@ -688,10 +715,15 @@ static int s3c64xx_spi_transfer_one(struct spi_master *master,
+ 		/* Start the signals */
+ 		s3c64xx_spi_set_cs(spi, true);
+ 
+-		s3c64xx_enable_datapath(sdd, xfer, use_dma);
++		status = s3c64xx_enable_datapath(sdd, xfer, use_dma);
+ 
+ 		spin_unlock_irqrestore(&sdd->lock, flags);
+ 
++		if (status) {
++			dev_err(&spi->dev, "failed to enable data path for transfer: %d\n", status);
++			break;
++		}
++
+ 		if (use_dma)
+ 			status = s3c64xx_wait_for_dma(sdd, xfer);
+ 		else
 -- 
 2.25.1
 
