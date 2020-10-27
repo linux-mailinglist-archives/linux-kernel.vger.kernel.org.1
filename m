@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2EA29BA65
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8657129BA67
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805648AbgJ0QBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60858 "EHLO mail.kernel.org"
+        id S1805669AbgJ0QBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801408AbgJ0PlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:41:11 -0400
+        id S1801415AbgJ0PlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:41:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D6A32231B;
-        Tue, 27 Oct 2020 15:41:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10936223AB;
+        Tue, 27 Oct 2020 15:41:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813270;
-        bh=NSVsy1EO6niZi1vmCGr1HIWgFPlrK2jIIgNuW2XxwCA=;
+        s=default; t=1603813273;
+        bh=ChXSg92q0KDDStYfIpuZUm65CrxV/X8/S/XpJifQi6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BfZGykdjLCW1bzkXVsptr9914fKvL751mDNA0aASAkKzD00wWPJls8Ae7ZsoVAZXZ
-         6zZ4lO7oQ3Qzry3j0V1PWBvbIHE4ZIyV2/MLLcECjtuIw9nzPEE13jgEAwsyyIC8mG
-         GAWMxWecNsf21EGhg5l9ilOs6FZ16zT8XGX4Bcd8=
+        b=scyHZa2nDfHj2Yx4dau1Ku92esywswZ4/r3yqN3lsI/kpouOPputNrasb1L2ZjAPs
+         i8j2qLfJck1aGGZlb3iZYgKuhgKOqu3GiIuwGjMFH18JFT4Dc1EuMHqZnL/tn0SmAk
+         d8ZiGvwbzL3NXl2dRNHxe6TcxdqiyFwDPqcOeV30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 495/757] um: vector: Use GFP_ATOMIC under spin lock
-Date:   Tue, 27 Oct 2020 14:52:25 +0100
-Message-Id: <20201027135513.677026217@linuxfoundation.org>
+Subject: [PATCH 5.9 496/757] um: time-travel: Fix IRQ handling in time_travel_handle_message()
+Date:   Tue, 27 Oct 2020 14:52:26 +0100
+Message-Id: <20201027135513.724343723@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,44 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit e4e721fe4ccb504a29d1e8d4047667557281d932 ]
+[ Upstream commit ebef8ea2ba967026192a26f4529890893919bc57 ]
 
-Use GFP_ATOMIC instead of GFP_KERNEL under spin lock to fix possible
-sleep-in-atomic-context bugs.
+As the comment here indicates, we need to do the polling in the
+idle loop without blocking interrupts, since interrupts can be
+vhost-user messages that we must process even while in our idle
+loop.
 
-Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+I don't know why I explained one thing and implemented another,
+but we have indeed observed random hangs due to this, depending
+on the timing of the messages.
+
+Fixes: 88ce64249233 ("um: Implement time-travel=ext")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/vector_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/kernel/time.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 8735c468230a5..555203e3e7b45 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1403,7 +1403,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 		kfree(vp->bpf->filter);
- 		vp->bpf->filter = NULL;
- 	} else {
--		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
-+		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
- 		if (vp->bpf == NULL) {
- 			netdev_err(dev, "failed to allocate memory for firmware\n");
- 			goto flash_fail;
-@@ -1415,7 +1415,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
- 		goto flash_fail;
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 25eaa6a0c6583..c07436e89e599 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -70,13 +70,17 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
+ 	 * read of the message and write of the ACK.
+ 	 */
+ 	if (mode != TTMH_READ) {
++		bool disabled = irqs_disabled();
++
++		BUG_ON(mode == TTMH_IDLE && !disabled);
++
++		if (disabled)
++			local_irq_enable();
+ 		while (os_poll(1, &time_travel_ext_fd) != 0) {
+-			if (mode == TTMH_IDLE) {
+-				BUG_ON(!irqs_disabled());
+-				local_irq_enable();
+-				local_irq_disable();
+-			}
++			/* nothing */
+ 		}
++		if (disabled)
++			local_irq_disable();
+ 	}
  
--	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
-+	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_ATOMIC);
- 	if (!vp->bpf->filter)
- 		goto free_buffer;
- 
+ 	ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
 -- 
 2.25.1
 
