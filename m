@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E297C29A645
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F95A29A649
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394691AbgJ0ILE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:11:04 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:32797 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393441AbgJ0ILE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:11:04 -0400
-Received: by mail-lf1-f65.google.com with SMTP id l2so1203052lfk.0;
-        Tue, 27 Oct 2020 01:11:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c4U/bePG4EkRAuU7q5fD+zQ7TcaCJxzYB3PUucsW7gA=;
-        b=VtvdjqUz4jYjKsVbgEPwdhr2m294Ct33uTTTs/TMruXg3X89PXEMW2CdWV7doa7ubD
-         Erahb4R3z62GIhtHOtC5f8/qWrnTstSaviHvQ/rfh19BWEGZqiDgIi4UoXO4pZVxpSYZ
-         C4dumzqBGHISjXdBc/5ppOIH9cm3TI+s0S3UeNR12+KOXpUTu3AU49t6bVnYZVbHRUC1
-         sBJUrGtgXtoVBijsFdHG2j9s/0hQukvfVDcGh72TYe9hsw7otn1+Nt9EtPenK2x/iud1
-         6vXCHIoEAQul14zlJ1vb7SqFGlSby6QaOCTtSF7U1HfG6/0FOn3a0b50y/NoUcb9Kl4b
-         LIDg==
-X-Gm-Message-State: AOAM533DKyguJdyt/VMXyLrBtPeAjNlSJjUoPv5iW3r+/n1zH2lZYn4I
-        n8LYPlz8gY3NuhdNr8aooaU=
-X-Google-Smtp-Source: ABdhPJx+/yd7bjRy+5Wp+6VCZKqPKqTGc1rcK3Fr4HvX3t1S6NNQLIjX7Q48sgkV24ILhmh+7WKD6g==
-X-Received: by 2002:a19:671c:: with SMTP id b28mr412518lfc.40.1603786261666;
-        Tue, 27 Oct 2020 01:11:01 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id f25sm85962ljk.57.2020.10.27.01.11.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 01:11:00 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kXK4K-0001G5-B5; Tue, 27 Oct 2020 09:11:00 +0100
-Date:   Tue, 27 Oct 2020 09:11:00 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/14] USB: serial: keyspan_pda: fix up write
- implementation
-Message-ID: <20201027081100.GB4085@localhost>
-References: <20201025174600.27896-1-johan@kernel.org>
- <20201026121318.4mqwkkhahnsujngw@linutronix.de>
+        id S2508837AbgJ0ILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:11:09 -0400
+Received: from verein.lst.de ([213.95.11.211]:37795 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393441AbgJ0ILH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:11:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C9A7967373; Tue, 27 Oct 2020 09:11:03 +0100 (CET)
+Date:   Tue, 27 Oct 2020 09:11:03 +0100
+From:   "hch@lst.de" <hch@lst.de>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "hch@lst.de" <hch@lst.de>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linaro-mm-sig-owner@lists.linaro.org" 
+        <linaro-mm-sig-owner@lists.linaro.org>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: WARNING in dma_map_page_attrs
+Message-ID: <20201027081103.GA22877@lst.de>
+References: <000000000000335adc05b23300f6@google.com> <000000000000a0f8a305b261fe4a@google.com> <20201024111516.59abc9ec@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net> <BY5PR12MB4322CC03CE0D34B83269676ADC190@BY5PR12MB4322.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026121318.4mqwkkhahnsujngw@linutronix.de>
+In-Reply-To: <BY5PR12MB4322CC03CE0D34B83269676ADC190@BY5PR12MB4322.namprd12.prod.outlook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:13:18PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2020-10-25 18:45:46 [+0100], Johan Hovold wrote:
-> > This series fixes a number of long-standing issues with the keyspan_pda
-> > driver and reworks its write implementation so that it can be used with
-> > any line discipline or for a system console.
+On Mon, Oct 26, 2020 at 05:23:48AM +0000, Parav Pandit wrote:
+> Hi Christoph,
+> 
+> > From: Jakub Kicinski <kuba@kernel.org>
+> > Sent: Saturday, October 24, 2020 11:45 PM
 > > 
-> > The last few patches cleans up the xircom device support and some style
-> > issues.
+> > CC: rdma, looks like rdma from the stack trace
+> > 
+> > On Fri, 23 Oct 2020 20:07:17 -0700 syzbot wrote:
+> > > syzbot has found a reproducer for the following issue on:
+> > >
+> > > HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of git://git.kernel.org/..
 > 
-> Thank you Johan. This series fixes quite some issues including the
-> in_interrupt() part. I added the buffer part because it hurt to see an
-> allocation for one byte. There is no loss without it :)
+> In [1] you mentioned that dma_mask should not be set for dma_virt_ops.
+> So patch [2] removed it.
+>
+> But check to validate the dma mask for all dma_ops was added in [3].
 > 
-> Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> What is the right way? Did I misunderstood your comment about dma_mask in [1]?
 
-Sounds good. And thanks for taking a look at the series.
+No, I did not say we don't need the mask.  I said copying over the
+various dma-related fields from the parent is bogus.
 
-Johan
+I think rxe (and ther other drivers/infiniband/sw drivers) need a simple
+dma_coerce_mask_and_coherent and nothing else.
