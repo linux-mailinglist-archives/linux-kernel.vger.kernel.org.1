@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8B529BA30
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E0929BA21
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799362AbgJ0P5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
+        id S1760131AbgJ0P45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:56:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796483AbgJ0PS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:18:58 -0400
+        id S1796534AbgJ0PTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:19:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ABE920657;
-        Tue, 27 Oct 2020 15:18:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 961832064B;
+        Tue, 27 Oct 2020 15:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811937;
-        bh=lMBRtfN+x0fEfJw097aAfZfK9fpuRHja5PaQFINeo9w=;
+        s=default; t=1603811955;
+        bh=yQ3Y1R0db0DuVskM0r//BVh3ASMhqaXU54hFmd+aZ3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AvRi4nKuXwXxzP1HXZ+bqSAYjGnmSXqBAaN97xahmcsRqxUpjcno7Zj2sOhnIxB6q
-         bjxhv59jjXRWV+uU71tOh2Tb+veQgZoroUSjBT17B9Yd44Tz6LRrfwIfsFNbuqBUkQ
-         x6yBezKhowxOiFCBCKBhvvKT99WrnzI1FnrnmH2s=
+        b=GJpFgtZH94NzlP00JoWZ7GbQGAdLHxKhAQzDYmp/GO1IZK7vt3TFeDAhRwmGbI4nF
+         4mVtnkAZcnzaJxc8lNUTeHXdTDbNNARe9Cxj2Ute1pAr5uwIQTHjOhgz/IrvAYAd++
+         y37rHCHt1/aPdm/5Xwtz8VfZaiaLtnlAdQa1E7ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Richard Leitner <richard.leitner@skidata.com>,
+        Marek Vasut <marex@denx.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 008/757] net: dsa: microchip: fix race condition
-Date:   Tue, 27 Oct 2020 14:44:18 +0100
-Message-Id: <20201027135450.919986318@linuxfoundation.org>
+Subject: [PATCH 5.9 010/757] net: fec: Fix PHY init after phy_reset_after_clk_enable()
+Date:   Tue, 27 Oct 2020 14:44:20 +0100
+Message-Id: <20201027135451.013356808@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,112 +48,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 8098bd69bc4e925070313b1b95d03510f4f24738 ]
+[ Upstream commit 0da1ccbbefb662915228bc17e1c7d4ad28b3ddab ]
 
-Between queuing the delayed work and finishing the setup of the dsa
-ports, the process may sleep in request_module() (via
-phy_device_create()) and the queued work may be executed prior to the
-switch net devices being registered. In ksz_mib_read_work(), a NULL
-dereference will happen within netof_carrier_ok(dp->slave).
+The phy_reset_after_clk_enable() does a PHY reset, which means the PHY
+loses its register settings. The fec_enet_mii_probe() starts the PHY
+and does the necessary calls to configure the PHY via PHY framework,
+and loads the correct register settings into the PHY. Therefore,
+fec_enet_mii_probe() should be called only after the PHY has been
+reset, not before as it is now.
 
-Not queuing the delayed work in ksz_init_mib_timer() makes things even
-worse because the work will now be queued for immediate execution
-(instead of 2000 ms) in ksz_mac_link_down() via
-dsa_port_link_register_of().
-
-Call tree:
-ksz9477_i2c_probe()
-\--ksz9477_switch_register()
-   \--ksz_switch_register()
-      +--dsa_register_switch()
-      |  \--dsa_switch_probe()
-      |     \--dsa_tree_setup()
-      |        \--dsa_tree_setup_switches()
-      |           +--dsa_switch_setup()
-      |           |  +--ksz9477_setup()
-      |           |  |  \--ksz_init_mib_timer()
-      |           |  |     |--/* Start the timer 2 seconds later. */
-      |           |  |     \--schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
-      |           |  \--__mdiobus_register()
-      |           |     \--mdiobus_scan()
-      |           |        \--get_phy_device()
-      |           |           +--get_phy_id()
-      |           |           \--phy_device_create()
-      |           |              |--/* sleeping, ksz_mib_read_work() can be called meanwhile */
-      |           |              \--request_module()
-      |           |
-      |           \--dsa_port_setup()
-      |              +--/* Called for non-CPU ports */
-      |              +--dsa_slave_create()
-      |              |  +--/* Too late, ksz_mib_read_work() may be called beforehand */
-      |              |  \--port->slave = ...
-      |             ...
-      |              +--Called for CPU port */
-      |              \--dsa_port_link_register_of()
-      |                 \--ksz_mac_link_down()
-      |                    +--/* mib_read must be initialized here */
-      |                    +--/* work is already scheduled, so it will be executed after 2000 ms */
-      |                    \--schedule_delayed_work(&dev->mib_read, 0);
-      \-- /* here port->slave is setup properly, scheduling the delayed work should be safe */
-
-Solution:
-1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
-2. Only queue delayed work in ksz_mac_link_down() if init is completed.
-3. Queue work once in ksz_switch_register(), after dsa_register_switch()
-has completed.
-
-Fixes: 7c6ff470aa86 ("net: dsa: microchip: add MIB counter reading support")
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Fixes: 1b0a83ac04e3 ("net: fec: add phy_reset_after_clk_enable() support")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Tested-by: Richard Leitner <richard.leitner@skidata.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/microchip/ksz_common.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -103,14 +103,8 @@ void ksz_init_mib_timer(struct ksz_devic
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -3005,17 +3005,17 @@ fec_enet_open(struct net_device *ndev)
+ 	/* Init MAC prior to mii bus probe */
+ 	fec_restart(ndev);
  
- 	INIT_DELAYED_WORK(&dev->mib_read, ksz_mib_read_work);
- 
--	/* Read MIB counters every 30 seconds to avoid overflow. */
--	dev->mib_read_interval = msecs_to_jiffies(30000);
+-	/* Probe and connect to PHY when open the interface */
+-	ret = fec_enet_mii_probe(ndev);
+-	if (ret)
+-		goto err_enet_mii_probe;
 -
- 	for (i = 0; i < dev->mib_port_cnt; i++)
- 		dev->dev_ops->port_init_cnt(dev, i);
--
--	/* Start the timer 2 seconds later. */
--	schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
- }
- EXPORT_SYMBOL_GPL(ksz_init_mib_timer);
+ 	/* Call phy_reset_after_clk_enable() again if it failed during
+ 	 * phy_reset_after_clk_enable() before because the PHY wasn't probed.
+ 	 */
+ 	if (reset_again)
+ 		fec_enet_phy_reset_after_clk_enable(ndev);
  
-@@ -143,7 +137,9 @@ void ksz_mac_link_down(struct dsa_switch
- 
- 	/* Read all MIB counters when the link is going down. */
- 	p->read = true;
--	schedule_delayed_work(&dev->mib_read, 0);
-+	/* timer started */
-+	if (dev->mib_read_interval)
-+		schedule_delayed_work(&dev->mib_read, 0);
- }
- EXPORT_SYMBOL_GPL(ksz_mac_link_down);
- 
-@@ -450,6 +446,12 @@ int ksz_switch_register(struct ksz_devic
- 		return ret;
- 	}
- 
-+	/* Read MIB counters every 30 seconds to avoid overflow. */
-+	dev->mib_read_interval = msecs_to_jiffies(30000);
++	/* Probe and connect to PHY when open the interface */
++	ret = fec_enet_mii_probe(ndev);
++	if (ret)
++		goto err_enet_mii_probe;
 +
-+	/* Start the MIB timer. */
-+	schedule_delayed_work(&dev->mib_read, 0);
-+
- 	return 0;
- }
- EXPORT_SYMBOL(ksz_switch_register);
+ 	if (fep->quirks & FEC_QUIRK_ERR006687)
+ 		imx6q_cpuidle_fec_irqs_used();
+ 
 
 
