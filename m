@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E6B29B6C1
+	by mail.lfdr.de (Postfix) with ESMTP id E7BEC29B6C2
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797633AbgJ0PYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38176 "EHLO mail.kernel.org"
+        id S1797635AbgJ0PYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:24:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796997AbgJ0PXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:23:13 -0400
+        id S1797399AbgJ0PXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:23:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BB3A20657;
-        Tue, 27 Oct 2020 15:23:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A40F20657;
+        Tue, 27 Oct 2020 15:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812193;
-        bh=9wKS+bOD5X6wF0z12+Q03h5eBqJKEhOTM9h6X8XjQEo=;
+        s=default; t=1603812199;
+        bh=16jPuAAJbVkS6S0piZRoKInnOQvNinQFd/PbSMxA4L8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IJKVhJ8gwLEf6vUFFGIEPakX4WYJN0Pzo+JhqUUGhs3DcHBG/V0uRWDVRm7b3brUs
-         GxFjPHKYbemesShy0nbQ/RJdrObEi6zeQ35cBy1lRDfQnRwc+T2Rmv1XX1LH2vs3dY
-         na3+fSjD3G2f5dEKQMDgsyTp2RQSvD/LcbToDu7I=
+        b=fFPyR7be79cdHmGVdFTki5m+nUH5oEmXSFxBMLX1Q2HYlgfZ4MVaP3AiXnXCQpfTy
+         S4ElKSfy9WHtMZwUDMsn5lx34npS+Ry/6t7qUqmi7py4blCwR/vDUC2V0AUIHVV/gV
+         KbqTBwf/SGx7aN+WxQF2H8FjlWL2Eu9YzILfbUXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 125/757] crypto: ccree - fix runtime PM imbalance on error
-Date:   Tue, 27 Oct 2020 14:46:15 +0100
-Message-Id: <20201027135456.447588212@linuxfoundation.org>
+Subject: [PATCH 5.9 126/757] media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+Date:   Tue, 27 Oct 2020 14:46:16 +0100
+Message-Id: <20201027135456.488347474@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,42 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dinghao.liu@zju.edu.cn <dinghao.liu@zju.edu.cn>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit b7b57a5643c2ae45afe6aa5e73363b553cacd14b ]
+[ Upstream commit 00d21f325d58567d81d9172096692d0a9ea7f725 ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter
-even when it returns an error code. However, users of cc_pm_get(),
-a direct wrapper of pm_runtime_get_sync(), assume that PM usage
-counter will not change on error. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+The "idle" pinctrl state is optional as documented in the DT binding.
+The change introduced by the commit being reverted makes that pinctrl state
+mandatory and breaks initialization of the whole media driver, since the
+"idle" state is not specified in any mainline dts.
 
-Fixes: 8c7849a30255c ("crypto: ccree - simplify Runtime PM handling")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This reverts commit 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+to fix the regression.
+
+Fixes: 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccree/cc_pm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/media/platform/exynos4-is/media-dev.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/ccree/cc_pm.c b/drivers/crypto/ccree/cc_pm.c
-index d39e1664fc7ed..3c65bf070c908 100644
---- a/drivers/crypto/ccree/cc_pm.c
-+++ b/drivers/crypto/ccree/cc_pm.c
-@@ -65,8 +65,12 @@ const struct dev_pm_ops ccree_pm = {
- int cc_pm_get(struct device *dev)
- {
- 	int rc = pm_runtime_get_sync(dev);
-+	if (rc < 0) {
-+		pm_runtime_put_noidle(dev);
-+		return rc;
-+	}
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index 16dd660137a8d..9a575233e4c1e 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1268,11 +1268,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+ 	if (IS_ERR(pctl->state_default))
+ 		return PTR_ERR(pctl->state_default);
  
--	return (rc == 1 ? 0 : rc);
-+	return 0;
++	/* PINCTRL_STATE_IDLE is optional */
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
+-	if (IS_ERR(pctl->state_idle))
+-		return PTR_ERR(pctl->state_idle);
+-
+ 	return 0;
  }
  
- void cc_pm_put_suspend(struct device *dev)
 -- 
 2.25.1
 
