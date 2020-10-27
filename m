@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C77929C44E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A7C29C239
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757342AbgJ0OV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:21:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
+        id S1820161AbgJ0RdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:33:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757420AbgJ0OT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:19:27 -0400
+        id S1760958AbgJ0OhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:37:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60694206D4;
-        Tue, 27 Oct 2020 14:19:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B44B1223B0;
+        Tue, 27 Oct 2020 14:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808367;
-        bh=ewlaxnRaadBePgHr+xb/RrbkFOIArvJHc4Jxdh9EBn8=;
+        s=default; t=1603809434;
+        bh=fmzIGfAlmxA5UW7j9+y7Oh768fnkxykn31ZUG9EwbDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w7ejmDnkM/V31UWwyQ7jW3PzeeMCwYswO2Nqiep18kNHChMe4EqfODAA3L/XEJsud
-         JAkaLJeMufn7vu0D/zSV5gaI3T61NcbkolPjl90VPAt7UT0dALBWa+h7BGVrKNK1nE
-         aTsHvI5lEpeogXjCHM4PoXIicBTQ6HikBmdfRIis=
+        b=mRI26PrEEmNgmp4V+owaanJ+a1B6oAUgwVI/Rr0Y2ttv731YujJo1kfUtvxP303iq
+         882X11hfzN9g76pugBo7VrQcciifWXmSVFWNGh7XywV/MXXd/Vl3q1FAIDPe5QG4nq
+         VAEg9OnffUPyI9yRca0Sikqm+F34FcRZpTiIBj5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 064/264] spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and s3c64xx_enable_datapath()
-Date:   Tue, 27 Oct 2020 14:52:02 +0100
-Message-Id: <20201027135433.683971910@linuxfoundation.org>
+Subject: [PATCH 5.4 195/408] selftests/ftrace: Change synthetic event name for inter-event-combined test
+Date:   Tue, 27 Oct 2020 14:52:13 +0100
+Message-Id: <20201027135504.139977444@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Łukasz Stelmach <l.stelmach@samsung.com>
+From: Tom Zanussi <zanussi@kernel.org>
 
-[ Upstream commit 581e2b41977dfc2d4c26c8e976f89c43bb92f9bf ]
+[ Upstream commit 96378b2088faea68f1fb05ea6b9a566fc569a44c ]
 
-Fix issues with DMA transfers bigger than 512 bytes on Exynos3250. Without
-the patches such transfers fail to complete. This solution to the problem
-is found in the vendor kernel for ARTIK5 boards based on Exynos3250.
+This test uses waking+wakeup_latency as an event name, which doesn't
+make sense since it includes an operator.  Illegal names are now
+detected by the synthetic event command parsing, which causes this
+test to fail.  Change the name to 'waking_plus_wakeup_latency' to
+prevent this.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-Link: https://lore.kernel.org/r/20201002122243.26849-2-l.stelmach@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lkml.kernel.org/r/a1ee2f76ff28ef7166fb788ca8be968887808920.1602598160.git.zanussi@kernel.org
+
+Fixes: f06eec4d0f2c (selftests: ftrace: Add inter-event hist triggers testcases)
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-s3c64xx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../inter-event/trigger-inter-event-combined-hist.tc      | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 7b7151ec14c8a..322f75f89c713 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -678,11 +678,11 @@ static int s3c64xx_spi_transfer_one(struct spi_master *master,
- 		sdd->state &= ~RXBUSY;
- 		sdd->state &= ~TXBUSY;
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
+index f3eb8aacec0e7..a2b0e4eb1fe4c 100644
+--- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
++++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
+@@ -34,12 +34,12 @@ echo 'wakeup_latency u64 lat pid_t pid' >> synthetic_events
+ echo 'hist:keys=pid:ts1=common_timestamp.usecs if comm=="ping"' >> events/sched/sched_wakeup/trigger
+ echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts1:onmatch(sched.sched_wakeup).wakeup_latency($wakeup_lat,next_pid) if next_comm=="ping"' > events/sched/sched_switch/trigger
  
--		s3c64xx_enable_datapath(sdd, xfer, use_dma);
--
- 		/* Start the signals */
- 		s3c64xx_spi_set_cs(spi, true);
+-echo 'waking+wakeup_latency u64 lat; pid_t pid' >> synthetic_events
+-echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking+wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
+-echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking+wakeup_latency/trigger
++echo 'waking_plus_wakeup_latency u64 lat; pid_t pid' >> synthetic_events
++echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking_plus_wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
++echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking_plus_wakeup_latency/trigger
  
-+		s3c64xx_enable_datapath(sdd, xfer, use_dma);
-+
- 		spin_unlock_irqrestore(&sdd->lock, flags);
+ ping $LOCALHOST -c 3
+-if ! grep -q "pid:" events/synthetic/waking+wakeup_latency/hist; then
++if ! grep -q "pid:" events/synthetic/waking_plus_wakeup_latency/hist; then
+     fail "Failed to create combined histogram"
+ fi
  
- 		if (use_dma)
 -- 
 2.25.1
 
