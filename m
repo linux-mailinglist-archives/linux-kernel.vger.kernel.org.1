@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE1C29B727
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D828629B721
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1798677AbgJ0P3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:29:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40052 "EHLO mail.kernel.org"
+        id S1798637AbgJ0P3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:29:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797636AbgJ0PYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:24:43 -0400
+        id S1797666AbgJ0PYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:24:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EC7120728;
-        Tue, 27 Oct 2020 15:24:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7D8820728;
+        Tue, 27 Oct 2020 15:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812282;
-        bh=RWI66fzNuLXWJHH8o+kA9gx7YpfLXHZgKJso3sM8pe0=;
+        s=default; t=1603812285;
+        bh=FcZ9oAcLnJ3iHNV2wOlJDe85UXwQ0TyY6NTBbu+Fz8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2RA8K4PUq7Q2hIywo8LK4ZgGt8goinYFcyGTNKahoV1yoPFwcv5oUCRxNEqpMm4wr
-         nyAw7m+p/lLwKj6gW+q0QDkAkIqLnrIhB2iz6YqWvQO5/c7viG/q5sE2LQpmkB6FaX
-         Y8AyLHytoygyMzQsF2cXux3lGLNAcyY59UllbOJA=
+        b=qPkuWvjU/gBowCWhAFZ22AM+2OVNcId71JebcIs9DNckTIyVv27PvyxLlUu1HgIls
+         KcENL+kbW98wtL3WpYo0YQhZ5Pkj0tf5Zk3endAcHfg/sIxmzuDMPg1ckxi8FIQKK/
+         XM5zpSMw1rRxBYoe+x7iyDpZqTtxSO7O6To8Sh2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Steve Foreman <foremans@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 155/757] regmap: debugfs: Fix more error path regressions
-Date:   Tue, 27 Oct 2020 14:46:45 +0100
-Message-Id: <20201027135457.877208827@linuxfoundation.org>
+Subject: [PATCH 5.9 156/757] hwmon: (pmbus/max34440) Fix status register reads for MAX344{51,60,61}
+Date:   Tue, 27 Oct 2020 14:46:46 +0100
+Message-Id: <20201027135457.921503752@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,37 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 1d512ee861b80da63cbc501b973c53131aa22f29 ]
+[ Upstream commit 6c094b31ea2ad773824362ba0fccb88d36f8d32d ]
 
-Many error paths in __regmap_init rely on ret being pre-initialised to
--EINVAL, add an extra initialisation in after the new call to
-regmap_set_name.
+Starting with MAX34451, the chips of this series support STATUS_IOUT and
+STATUS_TEMPERATURE commands, and no longer report over-current and
+over-temperature status with STATUS_MFR_SPECIFIC.
 
-Fixes: 94cc89eb8fa5 ("regmap: debugfs: Fix handling of name string for debugfs init delays")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200918152212.22200-1-ckeepax@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 7a001dbab4ade ("hwmon: (pmbus/max34440) Add support for MAX34451.")
+Fixes: 50115ac9b6f35 ("hwmon: (pmbus/max34440) Add support for MAX34460 and MAX34461")
+Reported-by: Steve Foreman <foremans@google.com>
+Cc: Steve Foreman <foremans@google.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hwmon/pmbus/max34440.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index b71f9ecddff5d..fff0547c26c53 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -711,6 +711,8 @@ struct regmap *__regmap_init(struct device *dev,
- 	if (ret)
- 		goto err_map;
- 
-+	ret = -EINVAL; /* Later error paths rely on this */
-+
- 	if (config->disable_locking) {
- 		map->lock = map->unlock = regmap_lock_unlock_none;
- 		regmap_debugfs_disable(map);
+diff --git a/drivers/hwmon/pmbus/max34440.c b/drivers/hwmon/pmbus/max34440.c
+index 18b4e071067f7..de04dff28945b 100644
+--- a/drivers/hwmon/pmbus/max34440.c
++++ b/drivers/hwmon/pmbus/max34440.c
+@@ -388,7 +388,6 @@ static struct pmbus_driver_info max34440_info[] = {
+ 		.func[18] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+ 		.func[19] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+ 		.func[20] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+-		.read_byte_data = max34440_read_byte_data,
+ 		.read_word_data = max34440_read_word_data,
+ 		.write_word_data = max34440_write_word_data,
+ 	},
+@@ -419,7 +418,6 @@ static struct pmbus_driver_info max34440_info[] = {
+ 		.func[15] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+ 		.func[16] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+ 		.func[17] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+-		.read_byte_data = max34440_read_byte_data,
+ 		.read_word_data = max34440_read_word_data,
+ 		.write_word_data = max34440_write_word_data,
+ 	},
+@@ -455,7 +453,6 @@ static struct pmbus_driver_info max34440_info[] = {
+ 		.func[19] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+ 		.func[20] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+ 		.func[21] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+-		.read_byte_data = max34440_read_byte_data,
+ 		.read_word_data = max34440_read_word_data,
+ 		.write_word_data = max34440_write_word_data,
+ 	},
 -- 
 2.25.1
 
