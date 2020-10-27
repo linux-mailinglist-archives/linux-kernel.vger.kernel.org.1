@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E848A29C1D6
+	by mail.lfdr.de (Postfix) with ESMTP id 07DFD29C1D4
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1819231AbgJ0R2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:28:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51636 "EHLO mail.kernel.org"
+        id S1819212AbgJ0R2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:28:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900474AbgJ0OwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:52:17 -0400
+        id S2901243AbgJ0OwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:52:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 887CB207DE;
-        Tue, 27 Oct 2020 14:52:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 143D02225E;
+        Tue, 27 Oct 2020 14:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810336;
-        bh=ZaVjIWVv8PtuZehReE4iWCq4c9wvjvXt8JCOgG+Mj0Y=;
+        s=default; t=1603810341;
+        bh=m2JXGGlnBB/6hxqnA1eCiZSmNAMbYZ/CJ4RrKd0MVX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O+tzyxsmf3YpbbksVLbEYqnjYGL/8BV0dRQo6rr68M5e9aVgVjQjGjVOKHtpwkPXM
-         wn0pkL9d4ovwWpxuNdT5QD3OyOXeppBDXDPUT9Yw1ugtca1udgHImZADH8rsj4Km1h
-         aXuBc3cRT/LPqthpZ1GZZA5/NsZaKgvyX2ED8MTc=
+        b=lLg9CDfWRI2cchPC51qt27Yb6Er+qOPxTtj8uWYx3ywA8U9IS5UPZqSMmvwPtATF5
+         evij/17Z093XwquTa8XfOgYSNGZ7d7QHJcb7zWXRDknz3ILd+nUuaeWHPgCZ/KkvMu
+         w2oHhqP1A/agLlo1mjXqAvi7c5/gqIrqP2pUCl5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 103/633] crypto: mediatek - Fix wrong return value in mtk_desc_ring_alloc()
-Date:   Tue, 27 Oct 2020 14:47:26 +0100
-Message-Id: <20201027135527.534559340@linuxfoundation.org>
+Subject: [PATCH 5.8 104/633] crypto: ixp4xx - Fix the size used in a dma_free_coherent() call
+Date:   Tue, 27 Oct 2020 14:47:27 +0100
+Message-Id: <20201027135527.570791852@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,44 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 8cbde6c6a6d2b1599ff90f932304aab7e32fce89 ]
+[ Upstream commit f7ade9aaf66bd5599690acf0597df2c0f6cd825a ]
 
-In case of memory allocation failure, a negative error code should
-be returned.
+Update the size used in 'dma_free_coherent()' in order to match the one
+used in the corresponding 'dma_alloc_coherent()', in 'setup_crypt_desc()'.
 
-Fixes: 785e5c616c849 ("crypto: mediatek - Add crypto driver support for some MediaTek chips")
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Fixes: 81bef0150074 ("crypto: ixp4xx - Hardware crypto support for IXP4xx CPUs")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/ixp4xx_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index 7e3ad085b5bdd..ef4339e84d034 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -442,7 +442,7 @@ static void mtk_desc_dma_free(struct mtk_cryp *cryp)
- static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- {
- 	struct mtk_ring **ring = cryp->ring;
--	int i, err = ENOMEM;
-+	int i;
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index ad73fc9466821..3be6e0db0f9fc 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -528,7 +528,7 @@ static void release_ixp_crypto(struct device *dev)
  
- 	for (i = 0; i < MTK_RING_MAX; i++) {
- 		ring[i] = kzalloc(sizeof(**ring), GFP_KERNEL);
-@@ -476,7 +476,7 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
+ 	if (crypt_virt) {
+ 		dma_free_coherent(dev,
+-			NPE_QLEN_TOTAL * sizeof( struct crypt_ctl),
++			NPE_QLEN * sizeof(struct crypt_ctl),
+ 			crypt_virt, crypt_phys);
  	}
--	return err;
-+	return -ENOMEM;
  }
- 
- static int mtk_crypto_probe(struct platform_device *pdev)
 -- 
 2.25.1
 
