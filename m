@@ -2,155 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2619629A977
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E5B29A97C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410423AbgJ0KW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:22:58 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:32978 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410017AbgJ0KW6 (ORCPT
+        id S2436471AbgJ0KXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:23:16 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42007 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410469AbgJ0KXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:22:58 -0400
-Received: by mail-wr1-f68.google.com with SMTP id b8so1276869wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:22:56 -0700 (PDT)
+        Tue, 27 Oct 2020 06:23:15 -0400
+Received: by mail-wr1-f65.google.com with SMTP id j7so1219329wrt.9;
+        Tue, 27 Oct 2020 03:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kWfU0dsyfTV6Wn29xNZN4rB2izI9mNIuZ5x5HbFggb0=;
-        b=TfOGSAIo690wcW1CPshgXsDVYR5lDSaWjS8jI2wLXZffUxp7+0vANRr2T3ro0ATwGe
-         ttyqu6UNKdahyR70yZRCX2JEiCTn1X9YbHmksiOxYyA06n98V9UmrYRhyfVxiA8N1vBz
-         4zhY6iT9jp/nTy9vfeFVzZMkdmw8S18gzJboU=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B//Sw2wJ0hqD7Gjr+kfAvqiPXu+g6LMWNc+2dvqZKIA=;
+        b=U2LVGOjuEcsuTaQ7PTIcv/VGNK7UzLj5gvyajdmn/J8FGZPsqYgUblOpjDzP7cenol
+         sxi2McX05b+mBho+dssdYLyRMapbDpvfSfXzHfL9SgAehzDiXtEwEoj4RWmGlIC3hjIS
+         Hf4KzrOERlUwhlGwNFYXQ1Sxll3QFB8dF4l0Qh61+G8nhbas5KaVf5u62VWs3QeR0kiy
+         D7JmrX4IM0t4b5hSvYxVvy0LwskKa+rmffYjgh9UMqEnG8nFciT6cPRcymmKtsYBRMy8
+         MRcXNNRLDS4kQgPjcPkE//GrbUDAKxSeTjzDiFuMlC+i7nGn8yJ4XrNMxh+mfRa2frCx
+         xwqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=kWfU0dsyfTV6Wn29xNZN4rB2izI9mNIuZ5x5HbFggb0=;
-        b=At6x20QqeXSlFl/J1NXzEdYSsBzwxvIrTk/phxrFW5G/CLdOPTAGDhpaq7PAsvZet8
-         8itj3S5LYWxebfSA6x0+Kt8DlZoZ/dPGsRe4yU2Obg9WJAVVfjM/KR3DSrUD4gyY0Kta
-         hiOl51gKLqTFx5EDF2gAWC8J3Olt/JEyQLC2P4VIN7Gk5DIbzMvED+p3Dv375bSuXl6j
-         Di6xPEiJe8o31kYbz05Dlje2G6XhlmHJRVDXvx3ksTcNqIOA2XZE0Z7YWdL1VcnVd5Pn
-         NbwkRWPFcH1OE/ac9zTD+LJ4vSOeXeFbG5EDdZZyR0ZZXp9NJ/nHFB3/cNIU7jFpcotG
-         j31g==
-X-Gm-Message-State: AOAM533mVrLNrjoDxWkP33R29CITXuBeq3g03+i0CNHUbaxPxawWfQiF
-        f6xz9tSOCkAMuibkRALbKFEHlg==
-X-Google-Smtp-Source: ABdhPJydcxVBv/ADPzNa2jJ5qOWXsDx1BNtlSbm3Tn+0CBzU5+ltuST+K2UUh6w1jxJ+OjkENwSVng==
-X-Received: by 2002:a5d:4e48:: with SMTP id r8mr1880774wrt.141.1603794176106;
-        Tue, 27 Oct 2020 03:22:56 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id h3sm1403110wrw.78.2020.10.27.03.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 03:22:55 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 11:22:53 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 31/32] drm: drm_print.h: fix kernel-doc markups
-Message-ID: <20201027102253.GK401619@phenom.ffwll.local>
-Mail-Followup-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <cover.1603791716.git.mchehab+huawei@kernel.org>
- <5b76c5625709aaaa3abee98faa620b9f3d27ff85.1603791716.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B//Sw2wJ0hqD7Gjr+kfAvqiPXu+g6LMWNc+2dvqZKIA=;
+        b=HxR+3xYXSmKAVs95BwpwNS92gJ0bGafnZNMOZdnI7hnZxHPhI2XSrSAD50MJbAbsPv
+         KaK4MDEafMlJDQ1DYD9fAYu8KULcuRuV6f1P642PEfAvufcLsorzhha39X65GA/xPSLa
+         g6krl3VgsW7IHisAMBmeJtiQSnEUumUZyG486V19k2WgZcIML4ZV5jPoHn366MDyJDYv
+         qX5JOb166KtTOoGCad0zPNVyaqOCq+T6bIojlxtemdXsnGZ9GoxX2Q13eSjQwTUPxmkL
+         F4EpJuYudSmdius7nrr6MgorU3S8OkQlYSjGX36AwWOK9L2rqa1r/YPepggHzAy9GQFo
+         mLuQ==
+X-Gm-Message-State: AOAM5316AiyIghUm44QWaUaiy/Rt89IrNQzNSNJibfSFXxtZbDTLyDDy
+        EhipZuUKBM2W3ImL89JHT5l3DYqr6n0=
+X-Google-Smtp-Source: ABdhPJzvcuK2CIHkQV/DwWjteTFGMtPQLGAwYCGeX4Ipo1xxA2jrDeD0BwPs11em3axTqMHkiTbdFQ==
+X-Received: by 2002:adf:fd09:: with SMTP id e9mr1988097wrr.241.1603794193189;
+        Tue, 27 Oct 2020 03:23:13 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id x21sm1338343wmi.3.2020.10.27.03.23.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 03:23:12 -0700 (PDT)
+Subject: Re: [PATCH 1/2] system_data_types.7: Add 'off_t'
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, libc-alpha@sourceware.org,
+        linux-kernel@vger.kernel.org
+References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
+ <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <87faeeeb-f2e0-7f1e-5692-78b43242f20b@gmail.com>
+Date:   Tue, 27 Oct 2020 11:23:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b76c5625709aaaa3abee98faa620b9f3d27ff85.1603791716.git.mchehab+huawei@kernel.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:51:35AM +0100, Mauro Carvalho Chehab wrote:
-> A kernel-doc markup should start with the identifier on its
-> first line.
+Hi Michael,
+
+On 2020-10-07 08:53, Michael Kerrisk (man-pages) wrote:
+> On 10/6/20 12:12 AM, Alejandro Colomar wrote:
+>> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-I've merged all the drm patches, excluding the amdgpu ones, to
-drm-misc-fixes. Should land in -rc2.
-
-Thanks for doing these patches.
--Daniel
-
-> ---
->  include/drm/drm_print.h | 20 +++++++++++++++++---
->  1 file changed, 17 insertions(+), 3 deletions(-)
+> Hi Alex,
 > 
-> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
-> index 1c9417430d08..f32d179e139d 100644
-> --- a/include/drm/drm_print.h
-> +++ b/include/drm/drm_print.h
-> @@ -338,7 +338,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  		 const char *format, ...);
->  
->  /**
-> - * Error output.
-> + * DRM_DEV_ERROR() - Error output.
->   *
->   * @dev: device pointer
->   * @fmt: printf() like format string.
-> @@ -347,10 +347,12 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  	drm_dev_printk(dev, KERN_ERR, "*ERROR* " fmt, ##__VA_ARGS__)
->  
->  /**
-> - * Rate limited error output.  Like DRM_ERROR() but won't flood the log.
-> + * DRM_DEV_ERROR_RATELIMITED() - Rate limited error output.
->   *
->   * @dev: device pointer
->   * @fmt: printf() like format string.
-> + *
-> + * Like DRM_ERROR() but won't flood the log.
->   */
->  #define DRM_DEV_ERROR_RATELIMITED(dev, fmt, ...)			\
->  ({									\
-> @@ -375,15 +377,27 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  })
->  
->  /**
-> - * Debug output.
-> + * DRM_DEV_DEBUG() - Debug output for generic drm code
->   *
->   * @dev: device pointer
->   * @fmt: printf() like format string.
->   */
->  #define DRM_DEV_DEBUG(dev, fmt, ...)					\
->  	drm_dev_dbg(dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
-> +/**
-> + * DRM_DEV_DEBUG_DRIVER() - Debug output for vendor specific part of the driver
-> + *
-> + * @dev: device pointer
-> + * @fmt: printf() like format string.
-> + */
->  #define DRM_DEV_DEBUG_DRIVER(dev, fmt, ...)				\
->  	drm_dev_dbg(dev, DRM_UT_DRIVER,	fmt, ##__VA_ARGS__)
-> +/**
-> + * DRM_DEV_DEBUG_KMS() - Debug output for modesetting code
-> + *
-> + * @dev: device pointer
-> + * @fmt: printf() like format string.
-> + */
->  #define DRM_DEV_DEBUG_KMS(dev, fmt, ...)				\
->  	drm_dev_dbg(dev, DRM_UT_KMS, fmt, ##__VA_ARGS__)
->  
-> -- 
-> 2.26.2
-> 
+> Thanks, patch applied. And I trimmed the "See also" a little.
+> I'd hold off on documenting loff_t and off64_t for the
+> moment. As you note in another mail, the *lseek* man page
+> situation is a bit of a mess. I'm not yet sure what to do.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+I saw a TODO in the page about loff_t.
+Just wanted to ping you in case you forgot about it (I did).
+
+Thanks,
+
+Alex
