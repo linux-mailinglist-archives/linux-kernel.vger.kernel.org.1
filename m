@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CAB29A202
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2B829A205
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411549AbgJ0BFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:05:52 -0400
-Received: from ozlabs.org ([203.11.71.1]:35863 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408613AbgJ0BFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:05:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKtms4TYyz9sRK;
-        Tue, 27 Oct 2020 12:05:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603760749;
-        bh=lPKXSMNrrrUfU7oXUMBJyamwJ+XBop/o83Zh0KYxJMo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=u/PsmOIArackl+F5S2IenlOlbjdQqBpbF1L5dESkLYSh6pSlxvOBZJOAKAa/D6Zlx
-         Kd1lkJaqJ+xOyBRpxzZP4HU01V3rShx1mnAoMSdF8cdW6aUQ8x7tLssOyJ/TMTiGlE
-         HnOEnEjZYsVW0aNtDiao2mAZvF1qk28/1nBCPbSYxRGO/Beji+DPMHyAAIVHm3blE0
-         CtaTj4qFCsdcz74FcqIxxcezfo/brd21kw6jva7kEN8tvjULcfunH6TGT7L3C/MfCB
-         TnjpXdPe6Cz8Rv9PzWKWVdr/5ffnGM36L9Bb/gtV7J2g0l0kBwt4Mt6f12buJzVGNL
-         KFuuEzGIBNsTA==
-Date:   Tue, 27 Oct 2020 12:05:48 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Yifan Zhang <yifan1.zhang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the amdgpu tree
-Message-ID: <20201027120548.5618aa56@canb.auug.org.au>
+        id S2442519AbgJ0BGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:06:02 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:5423 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439444AbgJ0BGB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 21:06:01 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CKtn76hkWz6yYb;
+        Tue, 27 Oct 2020 09:06:03 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 27 Oct 2020 09:05:50 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <niklas.soderlund@ragnatech.se>, <rui.zhang@intel.com>,
+        <daniel.lezcano@linaro.org>, <amitk@kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] thermal: rcar: replace spin_lock_irqsave by spin_lock in hard IRQ
+Date:   Tue, 27 Oct 2020 09:06:30 +0800
+Message-ID: <1603760790-37748-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WNd.wFTf6=VoXhUcMUeZJQE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WNd.wFTf6=VoXhUcMUeZJQE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On RT or even on mainline with 'threadirqs' on the command line all
+interrupts which are not explicitly requested with IRQF_NO_THREAD
+run their handlers in thread context. The same applies to soft interrupts.
+That means they are subject to the normal scheduler rules and no other
+code is going to acquire that lock from hard interrupt context either,
+so the irqsave() here is pointless in all cases.
 
-Hi all,
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/thermal/rcar_thermal.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-After merging the amdgpu tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+diff --git a/drivers/thermal/rcar_thermal.c b/drivers/thermal/rcar_thermal.c
+index 5c2a13b..6ae757d 100644
+--- a/drivers/thermal/rcar_thermal.c
++++ b/drivers/thermal/rcar_thermal.c
+@@ -409,16 +409,15 @@ static irqreturn_t rcar_thermal_irq(int irq, void *data)
+ {
+ 	struct rcar_thermal_common *common = data;
+ 	struct rcar_thermal_priv *priv;
+-	unsigned long flags;
+ 	u32 status, mask;
+ 
+-	spin_lock_irqsave(&common->lock, flags);
++	spin_lock(&common->lock);
+ 
+ 	mask	= rcar_thermal_common_read(common, INTMSK);
+ 	status	= rcar_thermal_common_read(common, STR);
+ 	rcar_thermal_common_write(common, STR, 0x000F0F0F & mask);
+ 
+-	spin_unlock_irqrestore(&common->lock, flags);
++	spin_unlock(&common->lock);
+ 
+ 	status = status & ~mask;
+ 
+-- 
+2.7.4
 
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'a=
-mdgpu_dm_init':
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:947:34: warning=
-: unused variable 'pa_config' [-Wunused-variable]
-  947 |  struct dc_phy_addr_space_config pa_config;
-      |                                  ^~~~~~~~~
-At top level:
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:888:13: warning=
-: 'mmhub_read_system_context' defined but not used [-Wunused-function]
-  888 | static void mmhub_read_system_context(struct amdgpu_device *adev, s=
-truct dc_phy_addr_space_config *pa_config)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
-
-Introduced by commit
-
-  0b08c54bb7a3 ("drm/amd/display: Fix the display corruption issue on Navi1=
-0")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WNd.wFTf6=VoXhUcMUeZJQE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XcmwACgkQAVBC80lX
-0GxToAf/dgU5iXyaetur5vsgdX3FJr5iR48r4dGsM2egblmA1sVQU2B5RXQJAKtj
-ePLyROMsYzOT8wXUlqGPjiZVCz8ROWil22IPJ1XhQaWVA2bq5fpOS0Y/0DxN6CM+
-btVfdb5yxscCZImthu9Qm84FkSNZiHcbyjkMU18PxTup5Lk3J3MW5fPqdJ5BCONw
-/0dMZMJUiQm0Xonwv7wKK99spEbH7mLGotWKdoRA20fqLQ7jrUGu+Gt/rDFajbnz
-DvNEMAjOJJG+7dkku8fByivaFOPDlO4ZTE67QrqDbEC4HkWUwtfvwP2I2OReAVn/
-+sz0Zo7Nuf312VPS5RM5LlaiIusCRw==
-=jyM9
------END PGP SIGNATURE-----
-
---Sig_/WNd.wFTf6=VoXhUcMUeZJQE--
