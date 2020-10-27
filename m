@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DD029B854
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126D129B9E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800067AbgJ0Pen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45814 "EHLO mail.kernel.org"
+        id S1803444AbgJ0Pwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:52:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760280AbgJ0P31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:29:27 -0400
+        id S1798646AbgJ0P33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:29:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 381F020728;
-        Tue, 27 Oct 2020 15:29:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2FE522202;
+        Tue, 27 Oct 2020 15:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812565;
-        bh=GEWsL5kHeaGNnM9fbhUycWFM/b/snUlx/WOb6hN3K6s=;
+        s=default; t=1603812568;
+        bh=t0IIFvNxgtXf2P2DTxOxttu6NInFUcfx3rT5AbaaOc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZrQ3j+GLnWAyvWFEbSs/600E2TjvV3srJK1CiPpCvp68gSNINr080t2zqLQXZijA4
-         aKG7OQKKya5VcAs8ZPFPyuyPQNCce8/iXV8IaMU7LcKcyGNCOdLF/EgrmiaqNPp1hH
-         xudlOP9BFUHq/iQZTNzclnFzlpEBACUN5UIsnyyM=
+        b=dtdPRfUrkaUQk5446Trwe0p+Q4ymCB21GODq1T2B7cXjY9aks/6o+pnKWHIG7SO5V
+         OApBL7d0mVkcqAaHy84NE8999Z3ZPFIOwCpPoUZt6C9N+7EXwwtlVBI+eBRWySMwr1
+         bMOipXXEuDDVYiPui/IA9vDWKnUp8gByAcr3I96Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Preston <thomas.preston@codethink.co.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Thierry Reding <treding@nvidia.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 255/757] pinctrl: mcp23s08: Fix mcp23x17 precious range
-Date:   Tue, 27 Oct 2020 14:48:25 +0100
-Message-Id: <20201027135502.533761359@linuxfoundation.org>
+Subject: [PATCH 5.9 256/757] pinctrl: devicetree: Keep deferring even on timeout
+Date:   Tue, 27 Oct 2020 14:48:26 +0100
+Message-Id: <20201027135502.581919427@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,40 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Preston <thomas.preston@codethink.co.uk>
+From: Thierry Reding <treding@nvidia.com>
 
-[ Upstream commit b9b7fb29433b906635231d0a111224efa009198c ]
+[ Upstream commit 84f28fc38d2ff99e2ac623325ba37809da611b8e ]
 
-On page 23 of the datasheet [0] it says "The register remains unchanged
-until the interrupt is cleared via a read of INTCAP or GPIO." Include
-INTCAPA and INTCAPB registers in precious range, so that they aren't
-accidentally cleared when we read via debugfs.
+driver_deferred_probe_check_state() may return -ETIMEDOUT instead of
+-EPROBE_DEFER after all built-in drivers have been probed. This can
+cause issues for built-in drivers that depend on resources provided by
+loadable modules.
 
-[0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
+One such case happens on Tegra where I2C controllers are used during
+early boot to set up the system PMIC, so the I2C driver needs to be a
+built-in driver. At the same time, some instances of the I2C controller
+depend on the DPAUX hardware for pinmuxing. Since the DPAUX is handled
+by the display driver, which is usually not built-in, the pin control
+states will not become available until after the root filesystem has
+been mounted and the display driver loaded from it.
 
-Fixes: 8f38910ba4f6 ("pinctrl: mcp23s08: switch to regmap caching")
-Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20200828213226.1734264-3-thomas.preston@codethink.co.uk
+Fixes: bec6c0ecb243 ("pinctrl: Remove use of driver_deferred_probe_check_state_continue()")
+Suggested-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20200825143348.1358679-1-thierry.reding@gmail.com
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/devicetree.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index 87cde8fb08dd9..7edb067f5e76a 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -109,7 +109,7 @@ static const struct regmap_access_table mcp23x17_volatile_table = {
- };
- 
- static const struct regmap_range mcp23x17_precious_range = {
--	.range_min = MCP_GPIO << 1,
-+	.range_min = MCP_INTCAP << 1,
- 	.range_max = MCP_GPIO << 1,
- };
- 
+diff --git a/drivers/pinctrl/devicetree.c b/drivers/pinctrl/devicetree.c
+index 5eff8c2965528..3fb2387147189 100644
+--- a/drivers/pinctrl/devicetree.c
++++ b/drivers/pinctrl/devicetree.c
+@@ -130,9 +130,8 @@ static int dt_to_map_one_config(struct pinctrl *p,
+ 		if (!np_pctldev || of_node_is_root(np_pctldev)) {
+ 			of_node_put(np_pctldev);
+ 			ret = driver_deferred_probe_check_state(p->dev);
+-			/* keep deferring if modules are enabled unless we've timed out */
+-			if (IS_ENABLED(CONFIG_MODULES) && !allow_default &&
+-			    (ret == -ENODEV))
++			/* keep deferring if modules are enabled */
++			if (IS_ENABLED(CONFIG_MODULES) && !allow_default && ret < 0)
+ 				ret = -EPROBE_DEFER;
+ 			return ret;
+ 		}
 -- 
 2.25.1
 
