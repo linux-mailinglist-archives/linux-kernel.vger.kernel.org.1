@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A91329B74A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB8E29B74F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799412AbgJ0PbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40822 "EHLO mail.kernel.org"
+        id S1799455AbgJ0Pbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:31:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798141AbgJ0PZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:50 -0400
+        id S1798144AbgJ0PZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:25:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4150C20657;
-        Tue, 27 Oct 2020 15:25:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39A552064B;
+        Tue, 27 Oct 2020 15:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812349;
-        bh=J4REINZOHT+mo5UJ7vS/fqY36s16U5xGSnBqpbisXW4=;
+        s=default; t=1603812352;
+        bh=y7On0RCz/haadqxRkMbWjY19ZAc0IGLkSro9W9aNuLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jg9ivsXWgfUzfrTw++w93caaPLlql7FKKq/LYOGFAhZH25C4e3rkyN06VQXOnRZvJ
-         JkvRXXmslWmwoUIOJfBGvYFn9H8o6OHvSmX2rtf55me2aOmnefjJL5V07/GsgT3w/L
-         HoF2yqS5luIQUKTQkWBlQmbMbSONNsAEBhd/kDYk=
+        b=na/0COTQIUHSu/C/eL5UG2xnn76SPpVjbuoLfjNwOujnXh3l3J2+Fg17zHkqUtO/W
+         yLCKpzrejlQVZYXJDHRgSjdGJ04V4KAYqn71nQ2UmLoVZmpAZn7My7ovEE22YFykmc
+         XwTphO1Odxc+CJJtFkRI/rjomqoXr5FfG1IA4ETc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Jay Fang <f.fangjian@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 148/757] spi: dw-pci: free previously allocated IRQs if desc->setup() fails
-Date:   Tue, 27 Oct 2020 14:46:38 +0100
-Message-Id: <20201027135457.547501014@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Keerthy <j-keerthy@ti.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 149/757] crypto: sa2ul - Select CRYPTO_AUTHENC
+Date:   Tue, 27 Oct 2020 14:46:39 +0100
+Message-Id: <20201027135457.595489327@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,63 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jay Fang <f.fangjian@huawei.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 9599f341889c87e56bb944659c32490d05e2532f ]
+[ Upstream commit 61f033ba18c37e6b9ddfc4ee6dffe049d981fe7e ]
 
-Free previously allocated IRQs when return an error code of desc->setup()
-which is not always successful. And simplify the code by adding a goto
-label.
+The sa2ul driver uses crypto_authenc_extractkeys and therefore
+must select CRYPTO_AUTHENC.
 
-Fixes: 8f5c285f3ef5 ("SPI: designware: pci: Switch over to MSI interrupts")
-CC: Felipe Balbi <felipe.balbi@linux.intel.com>
-Signed-off-by: Jay Fang <f.fangjian@huawei.com>
-Link: https://lore.kernel.org/r/1600132969-53037-1-git-send-email-f.fangjian@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Reviewed-by: Keerthy <j-keerthy@ti.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-pci.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/crypto/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-dw-pci.c b/drivers/spi/spi-dw-pci.c
-index 2ea73809ca345..271839a8add0e 100644
---- a/drivers/spi/spi-dw-pci.c
-+++ b/drivers/spi/spi-dw-pci.c
-@@ -127,18 +127,16 @@ static int spi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		if (desc->setup) {
- 			ret = desc->setup(dws);
- 			if (ret)
--				return ret;
-+				goto err_free_irq_vectors;
- 		}
- 	} else {
--		pci_free_irq_vectors(pdev);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_free_irq_vectors;
- 	}
- 
- 	ret = dw_spi_add_host(&pdev->dev, dws);
--	if (ret) {
--		pci_free_irq_vectors(pdev);
--		return ret;
--	}
-+	if (ret)
-+		goto err_free_irq_vectors;
- 
- 	/* PCI hook and SPI hook use the same drv data */
- 	pci_set_drvdata(pdev, dws);
-@@ -152,6 +150,10 @@ static int spi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	pm_runtime_allow(&pdev->dev);
- 
- 	return 0;
-+
-+err_free_irq_vectors:
-+	pci_free_irq_vectors(pdev);
-+	return ret;
- }
- 
- static void spi_pci_remove(struct pci_dev *pdev)
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index 52a9b7cf6576f..ab941cfd27a88 100644
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -876,6 +876,7 @@ config CRYPTO_DEV_SA2UL
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_SHA256
+ 	select CRYPTO_SHA512
++	select CRYPTO_AUTHENC
+ 	select HW_RANDOM
+ 	select SG_SPLIT
+ 	help
 -- 
 2.25.1
 
