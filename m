@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FFD29C9CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD57229C9D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830951AbgJ0ULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:11:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42066 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S372731AbgJ0ULp (ORCPT
+        id S1830968AbgJ0UM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:12:27 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:35991 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1830960AbgJ0UM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:11:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603829504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=lt6MI9lyzWRQsxhjflylYnJ4QKAMKvBFCYdtvU/Wi4k=;
-        b=do7QZbNmd/OBssWjhwETHX/AF+oj17yAsnpi7R7S28kCNoVybd+1TEj5Kbb+rRUmV0rUv+
-        56Kbx9vgwGqm5FxPoU4W9nA6gZNOtR/SCG0xbts5cAfA8fU9Oe3gnaAcP2+EywUV3nkjBO
-        W3chViXo8FmHIc9ExGxTi+zvqgJutHg=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-x4ihKK_NM-aEUSsSwvPmgQ-1; Tue, 27 Oct 2020 16:11:42 -0400
-X-MC-Unique: x4ihKK_NM-aEUSsSwvPmgQ-1
-Received: by mail-oo1-f69.google.com with SMTP id s134so1280136oos.20
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:11:41 -0700 (PDT)
+        Tue, 27 Oct 2020 16:12:26 -0400
+Received: by mail-pf1-f193.google.com with SMTP id w65so1573253pfd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WQGaMfOKa51GcrilLPDkwx8CUgU5xVnHdlwKgF5WGgo=;
+        b=ttcVPykR26yUFCeKEMcnbNX0SQhp+mh0vtMiVYoCCEhJ3xkz+PgXQkuniqTrATFYBv
+         7vxxxnL11JMRDc1Be7Plm0e6nfv4s5ApOQqrcCMGpgcrvDJ14BOOnZlmTAHSIr9gtKjs
+         zg2+pIqI4/cEYEgHgvH24QvPhKHHNRc6pSyEZ5ip0+8MOKm/MT5+/NYzUcufOaBoS/V4
+         N3VyuXleV/2lr+4MwakYmOZ3IjYIGG0AKgNsKXXBEq9JgAr+O78PgxcRa2XikSCZ/IxQ
+         XtFXco33DH+wnXtpfgyFMb7w9PmGgPWL49+AiVm32PiggIMzOG6BQTcsP88jPiiMPLlb
+         zpPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lt6MI9lyzWRQsxhjflylYnJ4QKAMKvBFCYdtvU/Wi4k=;
-        b=KA0uTSHrPYxf5eNwDKPmWAHrOrW3h05C4wWnplDnvfzdpWxB724TSFclE7oJHcKyxZ
-         vnN6Za0T8yE8b4ZwqFjAlv9Cb3NaYMNZrBOJwOE6rPnHiB961+x+y8hGimk2uwOEeFqn
-         f/v82UzOdd4tL7m9kbXvKq60c92Sr87tXtzlNg0b18H0oP6EYRIpL/Kptmx4a1qkdNtZ
-         hPGaY3ormGWKad/768ttcfoUrv9T7Ouk6eyr0WwUWKK47oZkAmMxEqSIlUCp3MU9IY5i
-         8Km49BorKycAAhAhFsgfh42LbZF4w1DPVD+7yt+2u4lOqrgNAM3UAnqCv5x9xYi1Sl4u
-         WL6w==
-X-Gm-Message-State: AOAM531Jcetg0iq9DO0AzWgZhkwe8lH1H02yHRQcEA6Y9xFkysVQ2u+A
-        BDGWVFnzoA8HWqkEz+vmv7MdUuceyPVZw7r3G7s/IAoUswi1EBniciLn4XWUV2QQgGjFZqRkRSy
-        2LMYnzOwDhXQdd+M5YLKrNJNo
-X-Received: by 2002:a9d:2f09:: with SMTP id h9mr2747417otb.186.1603829501206;
-        Tue, 27 Oct 2020 13:11:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxc0SFqKRZ753fViQfz8Ms1OZtjfHdVFd98OZflO1c8SHIGNz3TNx9l2WhvvKu/YMKZORnLDQ==
-X-Received: by 2002:a9d:2f09:: with SMTP id h9mr2747408otb.186.1603829501002;
-        Tue, 27 Oct 2020 13:11:41 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q139sm1940445oic.38.2020.10.27.13.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 13:11:40 -0700 (PDT)
-From:   trix@redhat.com
-To:     paul@crapouillou.net, jic23@kernel.org, lars@metafoo.de,
-        pmeerw@pmeerw.net
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] iio/adc: ingenic: remove unneeded semicolon
-Date:   Tue, 27 Oct 2020 13:11:28 -0700
-Message-Id: <20201027201128.1597230-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WQGaMfOKa51GcrilLPDkwx8CUgU5xVnHdlwKgF5WGgo=;
+        b=nNLbCFrXignnwmoQ4udGhzqVQmPHfJNjb9Qq/FoHBlLGJxDDkRMpjYaYiy6JCAIAYu
+         C7iytOEPxxdfE4/34p/OSvwO6qlKuCHNrGf7PDQ0hDdmKbi4osR6hrg+6LQLsxave58z
+         r3RsyiqJhedY17mqJOmkP152v/i13E1n32Y78sbaHUbF6r6MjUPH2RIjwLd30T1Gj67E
+         KoZoKcWql1G7zOU11Pf636sJz8OtIvr2fySBo1Ac5mgJbbUb8aV7PADVRXp7V+/lgTlx
+         ZjcoImDcpKuIJ5xI4vQGG+LozhUf2pJMne0/HLNwH1QCeQix4kWrcrepHUHa1c71s1yG
+         b1gQ==
+X-Gm-Message-State: AOAM531Vu/iouTa14IHV8NCGi5rEQHpaWQGs69kdP5oXIQlm8DNMLLr4
+        4FQKO07VDp3EQwMdousSjFBlI6XTopqWR3jDofn/tA==
+X-Google-Smtp-Source: ABdhPJwPqDQ/tmlAPegC727D8iMnDQfRVD28GyCfZv/XFpusr7xZJY54NBnztofKjPI9X9mssJshQXsjgznzIsmYWFU=
+X-Received: by 2002:a63:5152:: with SMTP id r18mr3175051pgl.381.1603829546039;
+ Tue, 27 Oct 2020 13:12:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200821194310.3089815-1-keescook@chromium.org>
+ <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
+ <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
+ <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
+ <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
+ <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
+ <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com> <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 27 Oct 2020 13:12:14 -0700
+Message-ID: <CAKwvOdkE=ViGOhvoBRcV=9anjowC_vb4Vtefp9010+sC4c_+Sw@mail.gmail.com>
+Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        kernel-toolchains@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Oct 27, 2020 at 12:25 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Nick,
+>
+> CC Josh
+>
+> On Mon, Oct 26, 2020 at 6:49 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> > On Mon, Oct 26, 2020 at 10:44 AM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> > > On Mon, Oct 26, 2020 at 6:39 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > On Mon, 26 Oct 2020 at 17:01, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > > I.e. including the ".eh_frame" warning. I have tried bisecting that
+> > > > > > > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
+> > > > > > > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
+> > > > > > > placement"), which is another red herring.
+> > > > > >
+> > > > > > kernel/bpf/core.o is the only file containing an eh_frame section,
+> > > > > > causing the warning.
+> >
+> > When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
+> > missing from someone's KBUILD_CFLAGS.
+> > But I don't see anything curious in kernel/bpf/Makefile, unless
+> > cc-disable-warning is somehow broken.
+>
+> I tracked it down to kernel/bpf/core.c:___bpf_prog_run() being tagged
+> with __no_fgcse aka __attribute__((optimize("-fno-gcse"))).
+>
+> Even if the function is trivially empty ("return 0;"), a ".eh_frame" section
+> is generated.  Removing the __no_fgcse tag fixes that.
 
-A semicolon is not needed after a switch statement.
+That's weird.  I feel pretty strongly that unless we're working around
+a well understood compiler bug with a comment that links to a
+submitted bug report, turning off rando compiler optimizations is a
+terrible hack for which one must proceed straight to jail; do not pass
+go; do not collect $200.  But maybe I'd feel differently for this case
+given the context of the change that added it.  (Ard mentions
+retpolines+orc+objtool; can someone share the relevant SHA if you have
+it handy so I don't have to go digging?)  (I feel the same about there
+being an empty asm(); statement in the definition of asm_volatile_goto
+for compiler-gcc.h).  Might be time to "fix the compiler."
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/iio/adc/ingenic-adc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+(It sounds like Arvind is both in agreement with my sentiment, and has
+the root cause).
 
-diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
-index 92b25083e23f..7886cdca5a5e 100644
---- a/drivers/iio/adc/ingenic-adc.c
-+++ b/drivers/iio/adc/ingenic-adc.c
-@@ -542,7 +542,7 @@ static int ingenic_adc_read_avail(struct iio_dev *iio_dev,
- 		return IIO_AVAIL_LIST;
- 	default:
- 		return -EINVAL;
--	};
-+	}
- }
- 
- static int ingenic_adc_read_chan_info_raw(struct iio_dev *iio_dev,
--- 
-2.18.1
-
+--
+Thanks,
+~Nick Desaulniers
