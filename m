@@ -2,94 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550BE29AA5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C2929AA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897001AbgJ0LO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:14:27 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:42036 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437480AbgJ0LO0 (ORCPT
+        id S2899056AbgJ0LPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:15:38 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:51639 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897016AbgJ0LPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:14:26 -0400
-Received: by mail-lf1-f65.google.com with SMTP id a7so1763941lfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:14:25 -0700 (PDT)
+        Tue, 27 Oct 2020 07:15:37 -0400
+Received: by mail-wm1-f65.google.com with SMTP id v5so984351wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Kx7CART/DxUoMm7Sa0Vnq6dGV13FhDvd/kD3/8Gg8ho=;
-        b=WRJYCi/8PhiE0aSiq4DKWnugOqmyTUWLV8teC20a5eXAm5ZLQiJW04YbGu5S4FHHq3
-         1+IeBpgH04lJoQ6rWkn2/QxP9VVQdrJNsOLULYrKF8NDLE0stJ/XBfuan65BZf+7nmNt
-         pKhzp0IvahIJI5FENoxBxlrik/XKeWlWHzYl2/mHDRIvolZzBXKvlpY/0sJNXJcQVU2w
-         YsMhKCGwCNkKz+SJYLNdmCkSOi2dPx8EccUG0L7Y8Tqb8pzXVBMLE8LG9qwamBBAxYqu
-         +bNJxg7y+jnflAyqykkVER2bHI5Ac1j+JTGAjcjXjmPhG4QVNcv36LDYcg4rfBK9jtqp
-         BStg==
+        bh=xbK4gaQOq/bUIpGKsNMyOlQPjutx0rk45ygjxEisbnA=;
+        b=G2kdLdWgqqNpX0bHSEyClwKPVbiN9Z601TcVF7VcvFRhmiVDqZOmtqpHktu3xjNwAP
+         XHVevvLEQN6Jt2NnsNo84o4wnVn2Pn4NxO/fDLFoeXvT5xkf2RGqmKUGh5q4K6h4hB1M
+         96lC7xaRcuDWtmw2bKiyG/cpk9fPQ1Iu6QoQvE1MIET5pZb6qDXa5IKAomYqTs4Vi9WE
+         QaeziN7lJuAhErao83OxwprCQkLRi/jH4F7d8ToTKJwggdzaqrIQpT+5TV+tU6V/Jhvy
+         JGad2ozTs2IxBhz64xb+neNRrvFp0TTjK7/LWA1ukC1bT6ooiMEzLOzfloh8M11HzvPS
+         4utg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Kx7CART/DxUoMm7Sa0Vnq6dGV13FhDvd/kD3/8Gg8ho=;
-        b=jqD7xZSwh+F/lRFnc7n4TKQvmwl9Yu7Z6LwUAJIian0KEpP6xoW7N/WT7Lj3lAK0my
-         BWkOnE25foFdvwNCfX9gUDTgtfi6QXkkR09djF2RJ/1Ys8wiTmrvkpjZd5PobdVFvC2s
-         2n4CZEgyoG8Ji/unvIVlwyHAwZPd/5XtsiXv2O6r1MPb0D4yMnObZfa+GBG4x9EBL3Qr
-         6IbscWCIhtAsoNmEJKsgYibbjZZTEXjoBgsqRajBcc0odzKqhGgs2bKOj2JosyIwydNg
-         QcBegvkBZy6L47PNw+aooBgeRsnbVEnolBVNjuhj+oSb4gs33vsLQyGzLSkgTOi8Zcmh
-         qaFw==
-X-Gm-Message-State: AOAM530MXyuy8JO5qZ+2EvJafH5pXwets1LGheT0892GeZ+t29B9NEeW
-        l6C63LbmpO6RgzKdKNt7OAAsgg==
-X-Google-Smtp-Source: ABdhPJy51B0fBfONLYlyme+1w8w8xXl3VWMrx+7AUldah86lSav3URmcgsagxOT3Yt43Hco6OvucOQ==
-X-Received: by 2002:a19:84d3:: with SMTP id g202mr703123lfd.346.1603797264351;
-        Tue, 27 Oct 2020 04:14:24 -0700 (PDT)
-Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
-        by smtp.gmail.com with ESMTPSA id j19sm140462lfb.74.2020.10.27.04.14.23
+        bh=xbK4gaQOq/bUIpGKsNMyOlQPjutx0rk45ygjxEisbnA=;
+        b=jTvsm1txGDxim12wdZ0491PII1pkKY/M5l3mK89aSbpEjVJicj8CCW0jqsvTNzisRZ
+         edvDiop2yEBE2FCgeuQ1Ifc4yv5EMMpQTHkR97Wl2GanG7cCDEwz3ZWe8goNMocY9MWu
+         QBJqPc/am4fSIp6lzI42SEgfbcBdWitiBjGXnu4h97Pp14x1efx8xzGxMifuz+mpHaZJ
+         XNDy+Z4gLI4gysiIy2wI+NXQDdjQvZ/UC9qQG4TS90tik1Zez5IQMFiBxYP5e0gpOCAP
+         bDMRLUG1htmmc64WrBnLlL5MCuB3Mal4gStXhx+6bNGMXD/1vS2Po0SANs6jDfWISFf8
+         yLZA==
+X-Gm-Message-State: AOAM533eXbbX2JPkwD9BD7IYqXJITeLvg8P9uRztCUGmNreX+ZqRE00G
+        p5pDLdj+ojhBkjx259iaQE2y2A==
+X-Google-Smtp-Source: ABdhPJwl1KRQS9vpklnvJ9uNX3G3YrMEoK/TYMxOg2TsH6GhK+eMJXROXcnfkF+Z4VlwIoXFqroUNQ==
+X-Received: by 2002:a7b:cb81:: with SMTP id m1mr2267889wmi.140.1603797335725;
+        Tue, 27 Oct 2020 04:15:35 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id t62sm1495432wmf.22.2020.10.27.04.15.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 04:14:23 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
-Date:   Tue, 27 Oct 2020 12:14:22 +0100
-Message-Id: <20201027111422.4008114-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        Tue, 27 Oct 2020 04:15:34 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2] ASoC: qcom: qdsp6: make use of devm_of_platform_populate
+Date:   Tue, 27 Oct 2020 11:15:26 +0000
+Message-Id: <20201027111526.12326-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building allmodconfig leading to the following link error with
-CONFIG_QCOM_RPMH=y and CONFIG_QCOM_COMMAND_DB=m:
+make use of devm_of_platform_populate to remove some redundant code!
 
-aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
-  drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr'
-  drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
-
-Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
-module when QCOM_COMMAND_DB is a module. Also removing the dependency on
-'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
-QCOM_COMMAND_DB.
-
-Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soc/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v1: rebased on top of sound-next
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 9b4ae9c16ba7..3bdd1604f78f 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
+ sound/soc/qcom/qdsp6/q6adm.c | 10 +---------
+ sound/soc/qcom/qdsp6/q6afe.c | 10 +---------
+ sound/soc/qcom/qdsp6/q6asm.c | 10 +---------
+ 3 files changed, 3 insertions(+), 27 deletions(-)
+
+diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
+index 72f29720398c..1855b805eba2 100644
+--- a/sound/soc/qcom/qdsp6/q6adm.c
++++ b/sound/soc/qcom/qdsp6/q6adm.c
+@@ -601,14 +601,7 @@ static int q6adm_probe(struct apr_device *adev)
+ 	INIT_LIST_HEAD(&adm->copps_list);
+ 	spin_lock_init(&adm->copps_list_lock);
  
- config QCOM_RPMH
- 	tristate "Qualcomm RPM-Hardened (RPMH) Communication"
--	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on QCOM_COMMAND_DB
- 	help
- 	  Support for communication with the hardened-RPM blocks in
- 	  Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
+-	return of_platform_populate(dev->of_node, NULL, NULL, dev);
+-}
+-
+-static int q6adm_remove(struct apr_device *adev)
+-{
+-	of_platform_depopulate(&adev->dev);
+-
+-	return 0;
++	return devm_of_platform_populate(dev);
+ }
+ 
+ #ifdef CONFIG_OF
+@@ -621,7 +614,6 @@ MODULE_DEVICE_TABLE(of, q6adm_device_id);
+ 
+ static struct apr_driver qcom_q6adm_driver = {
+ 	.probe = q6adm_probe,
+-	.remove = q6adm_remove,
+ 	.callback = q6adm_callback,
+ 	.driver = {
+ 		.name = "qcom-q6adm",
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 0ca1e4aae518..daa58b5f941e 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -1740,14 +1740,7 @@ static int q6afe_probe(struct apr_device *adev)
+ 
+ 	dev_set_drvdata(dev, afe);
+ 
+-	return of_platform_populate(dev->of_node, NULL, NULL, dev);
+-}
+-
+-static int q6afe_remove(struct apr_device *adev)
+-{
+-	of_platform_depopulate(&adev->dev);
+-
+-	return 0;
++	return devm_of_platform_populate(dev);
+ }
+ 
+ #ifdef CONFIG_OF
+@@ -1760,7 +1753,6 @@ MODULE_DEVICE_TABLE(of, q6afe_device_id);
+ 
+ static struct apr_driver qcom_q6afe_driver = {
+ 	.probe = q6afe_probe,
+-	.remove = q6afe_remove,
+ 	.callback = q6afe_callback,
+ 	.driver = {
+ 		.name = "qcom-q6afe",
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index c547c560cb24..a6618efe22f2 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -1727,14 +1727,7 @@ static int q6asm_probe(struct apr_device *adev)
+ 	spin_lock_init(&q6asm->slock);
+ 	dev_set_drvdata(dev, q6asm);
+ 
+-	return of_platform_populate(dev->of_node, NULL, NULL, dev);
+-}
+-
+-static int q6asm_remove(struct apr_device *adev)
+-{
+-	of_platform_depopulate(&adev->dev);
+-
+-	return 0;
++	return devm_of_platform_populate(dev);
+ }
+ 
+ #ifdef CONFIG_OF
+@@ -1747,7 +1740,6 @@ MODULE_DEVICE_TABLE(of, q6asm_device_id);
+ 
+ static struct apr_driver qcom_q6asm_driver = {
+ 	.probe = q6asm_probe,
+-	.remove = q6asm_remove,
+ 	.callback = q6asm_srvc_callback,
+ 	.driver = {
+ 		.name = "qcom-q6asm",
 -- 
-2.28.0
+2.21.0
 
