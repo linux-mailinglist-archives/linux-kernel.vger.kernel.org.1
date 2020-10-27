@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A19529B405
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8471329B428
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782524AbgJ0O5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
+        id S1783937AbgJ0O6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773012AbgJ0Ouv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:51 -0400
+        id S1773109AbgJ0OvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:51:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01B5D207DE;
-        Tue, 27 Oct 2020 14:50:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5471F207DE;
+        Tue, 27 Oct 2020 14:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810250;
-        bh=C1ayFxe0sZ0A3ghas3cZGBURR93wVfuJ7LUuAjENuNg=;
+        s=default; t=1603810275;
+        bh=biabbz6vVQve8wqA4V1ide8c+rFTbecPsv24HC4oUuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sw/cofHwVguc0wOa/JoI4rmKeCFwUrnrzLiTT6MT8zpPlbUF8HGuVRNBJJBVkbjha
-         prpLibQ2hgr5Iaref/2J9+680DR4v9pW47eQ1aWOVMqUSdQz/Pc0ZGR2vR6eW72Wz5
-         ZcPy/byPc6+1kH0RdJfF/hjrypllu1LvJP50ehqk=
+        b=qiPHGoKWwHXOYfC/UkmASwowRnFNA2ozV3OM89gwUc1hEybeABttlnzeLHR21b0Xi
+         3yqIUqWH2z+jtKyjSckEV3skP3pVBaYlE+gfvxHW7V2SpPeqIAwzO5LYRWAHGf9LLw
+         6RYjuN2I48QURANArfMQPuBHBs6y4xsNBoVUpKdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junaid Shahid <junaids@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.8 072/633] KVM: x86/mmu: Commit zap of remaining invalid pages when recovering lpages
-Date:   Tue, 27 Oct 2020 14:46:55 +0100
-Message-Id: <20201027135526.081631580@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.8 075/633] ima: Dont ignore errors from crypto_shash_update()
+Date:   Tue, 27 Oct 2020 14:46:58 +0100
+Message-Id: <20201027135526.213145504@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,39 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit e89505698c9f70125651060547da4ff5046124fc upstream.
+commit 60386b854008adc951c470067f90a2d85b5d520f upstream.
 
-Call kvm_mmu_commit_zap_page() after exiting the "prepare zap" loop in
-kvm_recover_nx_lpages() to finish zapping pages in the unlikely event
-that the loop exited due to lpage_disallowed_mmu_pages being empty.
-Because the recovery thread drops mmu_lock() when rescheduling, it's
-possible that lpage_disallowed_mmu_pages could be emptied by a different
-thread without to_zap reaching zero despite to_zap being derived from
-the number of disallowed lpages.
+Errors returned by crypto_shash_update() are not checked in
+ima_calc_boot_aggregate_tfm() and thus can be overwritten at the next
+iteration of the loop. This patch adds a check after calling
+crypto_shash_update() and returns immediately if the result is not zero.
 
-Fixes: 1aa9b9572b105 ("kvm: x86: mmu: Recovery of shattered NX large pages")
-Cc: Junaid Shahid <junaids@google.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200923183735.584-2-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 3323eec921efd ("integrity: IMA as an integrity service provider")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/mmu/mmu.c |    1 +
- 1 file changed, 1 insertion(+)
+ security/integrity/ima/ima_crypto.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6341,6 +6341,7 @@ static void kvm_recover_nx_lpages(struct
- 				cond_resched_lock(&kvm->mmu_lock);
- 		}
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -829,6 +829,8 @@ static int ima_calc_boot_aggregate_tfm(c
+ 		/* now accumulate with current aggregate */
+ 		rc = crypto_shash_update(shash, d.digest,
+ 					 crypto_shash_digestsize(tfm));
++		if (rc != 0)
++			return rc;
  	}
-+	kvm_mmu_commit_zap_page(kvm, &invalid_list);
- 
- 	spin_unlock(&kvm->mmu_lock);
- 	srcu_read_unlock(&kvm->srcu, rcu_idx);
+ 	/*
+ 	 * Extend cumulative digest over TPM registers 8-9, which contain
 
 
