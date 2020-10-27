@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D057E29A8C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8B729A8D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896743AbgJ0KBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:01:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42504 "EHLO mail.kernel.org"
+        id S2896854AbgJ0KBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896051AbgJ0Jvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:51:44 -0400
+        id S2896047AbgJ0Jvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:51:43 -0400
 Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B536924198;
+        by mail.kernel.org (Postfix) with ESMTPSA id A473024181;
         Tue, 27 Oct 2020 09:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603792301;
-        bh=/+WizXjKPpyHjvSoygOYgiSt/yZZwGfH0RVEUoUmQJE=;
+        bh=8mKeoT70W2C80dpgS/0uhSrxkN5L//sEcSOYWAnufuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7KMZfoTHzUI7aCWexvHTfnFUnNkPHcK2eyiLOZLsEZxbcREbixU4/rUCg3jC0VC8
-         BhOwlIJc+EOFS2xUYZVQSutbubvKR7EwNPHMmTXRGGOSGsUqBjZgcNoBsgzKS0GjBF
-         SDfZDHJpnAjRiUBahQID1T0xDlXmUgnYsuF6RQqI=
+        b=Dcj+iBLDefcsZCffQDyU6g6cxqytgEQrWkycRYBjFTWCqdB/FMkkbU3mMweCLPsQF
+         N9u+dtnGjkheIafRCLhlzG67s122eo1WpCO57iTWYttcVLnkcrQWId/HxXTZ2yw/XA
+         aLH1B0GN7fSFOALlAhNLsPzap3r36Ebaz9E8FJow=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kXLdj-003FFL-K7; Tue, 27 Oct 2020 10:51:39 +0100
+        id 1kXLdj-003FFO-Lg; Tue, 27 Oct 2020 10:51:39 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: [PATCH v3 20/32] IB/srpt: docs: add a description for cq_size member
-Date:   Tue, 27 Oct 2020 10:51:24 +0100
-Message-Id: <df0e5f0e866b91724299ef569a2da8115e48c0cf.1603791716.git.mchehab+huawei@kernel.org>
+        David Sterba <dsterba@suse.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 21/32] docs: fs: api-summary.rst: get rid of kernel-doc include
+Date:   Tue, 27 Oct 2020 10:51:25 +0100
+Message-Id: <d0a9fffedca102633c168adaf157f34288a4ea67.1603791716.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
 References: <cover.1603791716.git.mchehab+huawei@kernel.org>
@@ -52,35 +49,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-added a new member for struct srpt_rdma_ch, but didn't add the
-corresponding kernel-doc markup, as repoted when doing
-"make htmldocs":
+The direct-io.c file used to have just two exported symbols:
 
-	./drivers/infiniband/ulp/srpt/ib_srpt.h:331: warning: Function parameter or member 'cq_size' not described in 'srpt_rdma_ch'
+	- dio_end_io()
+	- __blockdev_direct_IO()
 
-Add a description for it.
+The first one was removed by changeset
+c33fe275b530 ("fs: remove no longer used dio_end_io()")
 
-Fixes: c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
+And the last one is used on most places indirectly, via
+the inline macro blockdev_direct_IO() provided by fs.h.
+Yet, neither the macro or the function have kernel-doc
+markups.
+
+So, drop the inclusion of fs/direct-io.c at the docs.
+
+Fixes: c33fe275b530 ("fs: remove no longer used dio_end_io()")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.h | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/filesystems/api-summary.rst | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-index 41435a699b53..bdeb010efee6 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-@@ -256,6 +256,7 @@ enum rdma_ch_state {
-  * @rdma_cm:	   See below.
-  * @rdma_cm.cm_id: RDMA CM ID associated with the channel.
-  * @cq:            IB completion queue for this channel.
-+ * @cq_size:	   Number of CQEs in @cq.
-  * @zw_cqe:	   Zero-length write CQE.
-  * @rcu:           RCU head.
-  * @kref:	   kref for this channel.
+diff --git a/Documentation/filesystems/api-summary.rst b/Documentation/filesystems/api-summary.rst
+index bbb0c1c0e5cf..a94f17d9b836 100644
+--- a/Documentation/filesystems/api-summary.rst
++++ b/Documentation/filesystems/api-summary.rst
+@@ -86,9 +86,6 @@ Other Functions
+ .. kernel-doc:: fs/dax.c
+    :export:
+ 
+-.. kernel-doc:: fs/direct-io.c
+-   :export:
+-
+ .. kernel-doc:: fs/libfs.c
+    :export:
+ 
 -- 
 2.26.2
 
