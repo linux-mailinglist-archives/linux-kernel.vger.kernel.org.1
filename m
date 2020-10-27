@@ -2,274 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC4529C0A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69F129C10A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818075AbgJ0RRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:17:14 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:41587 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1817248AbgJ0RPG (ORCPT
+        id S1818633AbgJ0RVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:21:00 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:46598 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1818196AbgJ0RSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:15:06 -0400
-Received: by mail-ej1-f68.google.com with SMTP id s15so3318004ejf.8
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:15:03 -0700 (PDT)
+        Tue, 27 Oct 2020 13:18:07 -0400
+Received: by mail-ot1-f66.google.com with SMTP id j21so1786693ota.13;
+        Tue, 27 Oct 2020 10:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+YG7zkgnx5qOXdRyIr/ZsTmXWebdIbRLlVsPyhxnzh0=;
-        b=N7kyHxPUIgEJKuYr+k8G/TPQD9rHDstF4MWUPj/nxa5BZzXCIJdQlaO/rdU21fUeuO
-         5y+sRG/nGgIXI+6WkDkh++EBNxEe+RsPw5WfbvxmZ8sodYGcl4fq3akQ730BAmyKg6Yz
-         Qkt/UO8l8gTpgqNpzv3lfi9lYDQgApie0zF7q4RmTet8rFOaVZvjbUa88f/STICIuEEw
-         vjjvSCdqEYgvFkaiiL0YcWtDyI3FlwaW0P8emkBmiwhhsk7YNtH8FlrJQWGcw7jGe3u4
-         VHBzBqjsK4XiHN2euxvsCImajTt3mbIbvZ34vFH0BOYYIcrv3N3ESpwTBLbSez8kAC5p
-         o/Tw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7H+Lg0qir4fBM/+Ge4cbBHa1JZjzTa4EjScqkxv75EI=;
+        b=KzyV1rtFBY0FsDlMAcdbe1mlCFW2yUgg+t5Ggq0mdbbIAOs4NqSAZspO8AW009/Sf+
+         DCYedEujAbhwbvKdWYIzFJM7IN8EucnSNiwT9hkuYTRiC3mxADH90V+JWbdPvkO6O8gq
+         +wbkiVJ66G+/CX2ojuhgLaoLyeGP1d5Q5/t/vJ7Ae1mRNkCm9QtVLd3WlSdPaPSLU1Ah
+         feHRFfmFIk2nuFBuxXoCJdna8nfE3AUSE2ikQHM3GKScKU9lbWTWJqNwL1wT7JdN6E4z
+         bARsvNv+Zhn5WIgNrd5KYOom6emyQQ39seFr/zHq7wObI2z6kMqPuQrUuGuGv6yw24yr
+         TrzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+YG7zkgnx5qOXdRyIr/ZsTmXWebdIbRLlVsPyhxnzh0=;
-        b=louVqmXx+CJ9Al9qiETRlIegz2DYVEf9+Fqz5T21XA+KeTQO2dcUu2J6Orst/o1Svb
-         vILjP3EsGkC+Wof/Wz0wPQ+UnGzbcXP2XXiBkLrx1CJWfHMfcPGqv3CnY5VWHwQQWm0U
-         InPOBXDlkCnv2iCv0hnTEusQnOtwS/iPgUruQ5qqZGLWw/ahvkO4RaW71y58p50Ixoao
-         gIDrNSk1oQFNFolWMH2Wq/vDvE06sRsnsSswP5vsutndn0wmlSkwnG5RntJucFmHnvLO
-         wIUEV9hNo/vCEMGV8BgHvq77BIUTWv03l7uJ7qaIpVx9o47R9M8vDWcPV861/RWzGCPT
-         XRmQ==
-X-Gm-Message-State: AOAM533t2VAOpPWfToQ2wOsU6K1s9Vg+LW85keKBApal0VlPWAp7DxJH
-        AMI5pSpSpjqmKZMbqTor+d4=
-X-Google-Smtp-Source: ABdhPJxjC/dwhdLE7H2UIyg3mMDyMEcNrGgVg+UqAr6VcxjSSbFR4iMj+A/c1mMMOdNYFOzZGh5Rdg==
-X-Received: by 2002:a17:906:bc50:: with SMTP id s16mr3306138ejv.275.1603818902420;
-        Tue, 27 Oct 2020 10:15:02 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id o3sm1311815edv.63.2020.10.27.10.15.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 10:15:00 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 18:14:59 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>,
-        robdclark@chromium.org, Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] drm: panel: simple: Allow timing constraints, not
- fixed delays
-Message-ID: <20201027171459.GA2097755@ulmo>
-References: <20201027094553.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7H+Lg0qir4fBM/+Ge4cbBHa1JZjzTa4EjScqkxv75EI=;
+        b=PEo6r5dCFxyV9ChE1RpRzK8cMqKSblpPiz8ZBnOhSEoV3RTo3+8RRFtiHSy2DCga3q
+         AzfWuPwI3SCIbDQ/kzlE5mDHNCdH7dUB1c4PFwjczOeSCWUjDu7PbS/gGxuwXYdJT6DS
+         DofLHn/+oPs1jXF6x2k0B/XiHz70ie8Hu+SdtUPEz2uVpQ54WwMRc/1znQl9qG7N+g0r
+         ohHWEhcutImFvgO4DBZ1sYntJwbu30aUu4iO6TmRJ+Ezvfks7wFPBZNdM3Qf63agIt2Y
+         /B38VTfS6HJqJi+1D4SO2QDd2CiBodWZKlcW39Vw3nGp6G3eZPW3mgUBewxgDQ/olHB0
+         wdbg==
+X-Gm-Message-State: AOAM530kaB/M6FmLb4Zkph2POg/WzVqCYuPI4+bdAiItHjiWX/q2RUKE
+        jNB0smvh+yaYCnHf9pBQaxh8Eg+oVHENO7vhu34=
+X-Google-Smtp-Source: ABdhPJwzWyVfYKukORY4wKtLu0o3+DLLOeIXp59ba2ugDU+wHNUy1vC9oR1e5a7sL4gNc54GOjUkySZjCY5HbpGJIkI=
+X-Received: by 2002:a05:6830:134c:: with SMTP id r12mr2138684otq.240.1603819085680;
+ Tue, 27 Oct 2020 10:18:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
-Content-Disposition: inline
-In-Reply-To: <20201027094553.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20200929080324.632523-1-tientzu@chromium.org> <CALiNf28k5C48_ivAeRW7sSEEXp0gd-h_1n03YH6jQhYhaCXUDA@mail.gmail.com>
+ <CALWDO_UqPS2eETieKHN_enJ-x+6C0Y8C7A0Jjg=a+L=of7Fz1w@mail.gmail.com>
+In-Reply-To: <CALWDO_UqPS2eETieKHN_enJ-x+6C0Y8C7A0Jjg=a+L=of7Fz1w@mail.gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Tue, 27 Oct 2020 10:17:54 -0700
+Message-ID: <CABBYNZJd2hGhNreNWwVzghHsjycGo+a9h5s5cOY+dJx3pNJ-0A@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: Move force_bredr_smp debugfs into hci_debugfs_create_bredr
+To:     Alain Michaud <alainmichaud@google.com>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 10:12 AM Alain Michaud <alainmichaud@google.com> wrote:
+>
+> Friendly ping and adding my review-by tag.
+>
+>
+> On Wed, Oct 7, 2020 at 12:38 AM Claire Chang <tientzu@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > This patch is to fix the kernel error
+> > [   46.271811] debugfs: File 'force_bredr_smp' in directory 'hci0'
+> > already present!
+> >
+> > When powering off and on the bluetooth, the smp_register will try to create the
+> > force_bredr_smp entry again.
+> > Move the creation to hci_debugfs_create_bredr so the force_bredr_smp entry will
+> > only be created when HCI_SETUP and HCI_CONFIG are not set.
+> >
+> > Thanks,
+> > Claire
+> >
+> > On Tue, Sep 29, 2020 at 4:03 PM Claire Chang <tientzu@chromium.org> wrote:
+> > >
+> > > Avoid multiple attempts to create the debugfs entry, force_bredr_smp,
+> > > by moving it from the SMP registration to the BR/EDR controller init
+> > > section. hci_debugfs_create_bredr is only called when HCI_SETUP and
+> > > HCI_CONFIG is not set.
+> > >
+> > > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-On Tue, Oct 27, 2020 at 09:45:54AM -0700, Douglas Anderson wrote:
-> The simple panel code currently allows panels to define fixed delays
-> at certain stages of initialization.  These work OK, but they don't
-> really map all that clearly to the requirements presented in many
-> panel datasheets.  Instead of defining a fixed delay, those datasheets
-> provide a timing diagram and specify a minimum amount of time that
-> needs to pass from event A to event B.
->=20
-> Because of the way things are currently defined, most panels end up
-> over-delaying.  One prime example here is that a number of panels I've
-> looked at define the amount of time that must pass between turning a
-> panel off and turning it back on again.  Since there is no way to
-> specify this, many developers have listed this as the "unprepare"
-> delay.  However, if nobody ever tried to turn the panel on again in
-> the next 500 ms (or whatever the delay was) then this delay was
-> pointless.  It's better to do the delay only in the case that someone
-> tried to turn the panel on too quickly.
->=20
-> Let's support specifying delays as constraints.  We'll start with the
-> one above and also a second one: the minimum time between prepare
-> being done and doing the enable.  On the panel I'm looking at, there's
-> an 80 ms minimum time between HPD being asserted by the panel and
-> setting the backlight enable GPIO.  By specifying as a constraint we
-> can enforce this without over-delaying.  Specifically the link
-> training is allowed to happen in parallel with this delay so adding a
-> fixed 80 ms delay isn't ideal.
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->=20
->  drivers/gpu/drm/panel/panel-simple.c | 51 ++++++++++++++++++++++++----
->  1 file changed, 44 insertions(+), 7 deletions(-)
+> > > ---
+> > > v2: correct a typo in commit message
+> > >
+> > >  net/bluetooth/hci_debugfs.c | 50 +++++++++++++++++++++++++++++++++++++
+> > >  net/bluetooth/smp.c         | 44 ++------------------------------
+> > >  net/bluetooth/smp.h         |  2 ++
+> > >  3 files changed, 54 insertions(+), 42 deletions(-)
+> > >
+> > > diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
+> > > index 5e8af2658e44..4626e0289a97 100644
+> > > --- a/net/bluetooth/hci_debugfs.c
+> > > +++ b/net/bluetooth/hci_debugfs.c
+> > > @@ -494,6 +494,45 @@ static int auto_accept_delay_get(void *data, u64 *val)
+> > >  DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
+> > >                         auto_accept_delay_set, "%llu\n");
+> > >
+> > > +static ssize_t force_bredr_smp_read(struct file *file,
+> > > +                                   char __user *user_buf,
+> > > +                                   size_t count, loff_t *ppos)
+> > > +{
+> > > +       struct hci_dev *hdev = file->private_data;
+> > > +       char buf[3];
+> > > +
+> > > +       buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP) ? 'Y' : 'N';
+> > > +       buf[1] = '\n';
+> > > +       buf[2] = '\0';
+> > > +       return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+> > > +}
+> > > +
+> > > +static ssize_t force_bredr_smp_write(struct file *file,
+> > > +                                    const char __user *user_buf,
+> > > +                                    size_t count, loff_t *ppos)
+> > > +{
+> > > +       struct hci_dev *hdev = file->private_data;
+> > > +       bool enable;
+> > > +       int err;
+> > > +
+> > > +       err = kstrtobool_from_user(user_buf, count, &enable);
+> > > +       if (err)
+> > > +               return err;
+> > > +
+> > > +       err = smp_force_bredr(hdev, enable);
+> > > +       if (err)
+> > > +               return err;
+> > > +
+> > > +       return count;
+> > > +}
+> > > +
+> > > +static const struct file_operations force_bredr_smp_fops = {
+> > > +       .open           = simple_open,
+> > > +       .read           = force_bredr_smp_read,
+> > > +       .write          = force_bredr_smp_write,
+> > > +       .llseek         = default_llseek,
+> > > +};
+> > > +
+> > >  static int idle_timeout_set(void *data, u64 val)
+> > >  {
+> > >         struct hci_dev *hdev = data;
+> > > @@ -589,6 +628,17 @@ void hci_debugfs_create_bredr(struct hci_dev *hdev)
+> > >         debugfs_create_file("voice_setting", 0444, hdev->debugfs, hdev,
+> > >                             &voice_setting_fops);
+> > >
+> > > +       /* If the controller does not support BR/EDR Secure Connections
+> > > +        * feature, then the BR/EDR SMP channel shall not be present.
+> > > +        *
+> > > +        * To test this with Bluetooth 4.0 controllers, create a debugfs
+> > > +        * switch that allows forcing BR/EDR SMP support and accepting
+> > > +        * cross-transport pairing on non-AES encrypted connections.
+> > > +        */
+> > > +       if (!lmp_sc_capable(hdev))
+> > > +               debugfs_create_file("force_bredr_smp", 0644, hdev->debugfs,
+> > > +                                   hdev, &force_bredr_smp_fops);
+> > > +
+> > >         if (lmp_ssp_capable(hdev)) {
+> > >                 debugfs_create_file("ssp_debug_mode", 0444, hdev->debugfs,
+> > >                                     hdev, &ssp_debug_mode_fops);
+> > > diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
+> > > index 433227f96c73..8b817e4358fd 100644
+> > > --- a/net/bluetooth/smp.c
+> > > +++ b/net/bluetooth/smp.c
+> > > @@ -3353,31 +3353,8 @@ static void smp_del_chan(struct l2cap_chan *chan)
+> > >         l2cap_chan_put(chan);
+> > >  }
+> > >
+> > > -static ssize_t force_bredr_smp_read(struct file *file,
+> > > -                                   char __user *user_buf,
+> > > -                                   size_t count, loff_t *ppos)
+> > > +int smp_force_bredr(struct hci_dev *hdev, bool enable)
+> > >  {
+> > > -       struct hci_dev *hdev = file->private_data;
+> > > -       char buf[3];
+> > > -
+> > > -       buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP) ? 'Y': 'N';
+> > > -       buf[1] = '\n';
+> > > -       buf[2] = '\0';
+> > > -       return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+> > > -}
+> > > -
+> > > -static ssize_t force_bredr_smp_write(struct file *file,
+> > > -                                    const char __user *user_buf,
+> > > -                                    size_t count, loff_t *ppos)
+> > > -{
+> > > -       struct hci_dev *hdev = file->private_data;
+> > > -       bool enable;
+> > > -       int err;
+> > > -
+> > > -       err = kstrtobool_from_user(user_buf, count, &enable);
+> > > -       if (err)
+> > > -               return err;
+> > > -
+> > >         if (enable == hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
+> > >                 return -EALREADY;
+> > >
+> > > @@ -3399,16 +3376,9 @@ static ssize_t force_bredr_smp_write(struct file *file,
+> > >
+> > >         hci_dev_change_flag(hdev, HCI_FORCE_BREDR_SMP);
+> > >
+> > > -       return count;
+> > > +       return 0;
+> > >  }
+> > >
+> > > -static const struct file_operations force_bredr_smp_fops = {
+> > > -       .open           = simple_open,
+> > > -       .read           = force_bredr_smp_read,
+> > > -       .write          = force_bredr_smp_write,
+> > > -       .llseek         = default_llseek,
+> > > -};
+> > > -
+> > >  int smp_register(struct hci_dev *hdev)
+> > >  {
+> > >         struct l2cap_chan *chan;
+> > > @@ -3433,17 +3403,7 @@ int smp_register(struct hci_dev *hdev)
+> > >
+> > >         hdev->smp_data = chan;
+> > >
+> > > -       /* If the controller does not support BR/EDR Secure Connections
+> > > -        * feature, then the BR/EDR SMP channel shall not be present.
+> > > -        *
+> > > -        * To test this with Bluetooth 4.0 controllers, create a debugfs
+> > > -        * switch that allows forcing BR/EDR SMP support and accepting
+> > > -        * cross-transport pairing on non-AES encrypted connections.
+> > > -        */
+> > >         if (!lmp_sc_capable(hdev)) {
+> > > -               debugfs_create_file("force_bredr_smp", 0644, hdev->debugfs,
+> > > -                                   hdev, &force_bredr_smp_fops);
+> > > -
+> > >                 /* Flag can be already set here (due to power toggle) */
+> > >                 if (!hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
+> > >                         return 0;
+> > > diff --git a/net/bluetooth/smp.h b/net/bluetooth/smp.h
+> > > index 121edadd5f8d..fc35a8bf358e 100644
+> > > --- a/net/bluetooth/smp.h
+> > > +++ b/net/bluetooth/smp.h
+> > > @@ -193,6 +193,8 @@ bool smp_irk_matches(struct hci_dev *hdev, const u8 irk[16],
+> > >  int smp_generate_rpa(struct hci_dev *hdev, const u8 irk[16], bdaddr_t *rpa);
+> > >  int smp_generate_oob(struct hci_dev *hdev, u8 hash[16], u8 rand[16]);
+> > >
+> > > +int smp_force_bredr(struct hci_dev *hdev, bool enable);
+> > > +
+> > >  int smp_register(struct hci_dev *hdev);
+> > >  void smp_unregister(struct hci_dev *hdev);
+> > >
+> > > --
+> > > 2.28.0.618.gf4bc123cb7-goog
+> > >
 
-This has always been bugging me a bit about the current setup, so I very
-much like this idea.
 
->=20
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel=
-/panel-simple.c
-> index 2be358fb46f7..cbbe71a2a940 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -92,6 +92,19 @@ struct panel_desc {
->  		unsigned int unprepare;
->  	} delay;
-> =20
-> +	/**
-> +	 * @prepare_to_enable_ms: If this many milliseconds hasn't passed after
-> +	 *                        prepare finished, add a delay to the start
-> +	 *                        of enable.
-> +	 * @unprepare_to_prepare_ms: If this many milliseconds hasn't passed
-> +	 *                           unprepare finished, add a delay to the
-> +	 *                           start of prepare.
 
-I find this very difficult to understand and it's also not clear from
-this what exactly the delay is. Perhaps this can be somewhat clarified
-Something like the below perhaps?
-
-	@prepare_to_enable_ms: The minimum time, in milliseconds, that
-	    needs to have passed between when prepare finished and enable
-	    may begin. If at enable time less time has passed since
-	    prepare finished, the driver waits for the remaining time.
-
-> +	 */
-> +	struct {
-> +		unsigned int prepare_to_enable_ms;
-> +		unsigned int unprepare_to_prepare_ms;
-> +	} timing_constraints;
-> +
->  	u32 bus_format;
->  	u32 bus_flags;
->  	int connector_type;
-> @@ -99,10 +112,12 @@ struct panel_desc {
-> =20
->  struct panel_simple {
->  	struct drm_panel base;
-> -	bool prepared;
-
-I understand how you're trying to reuse the value of prepared_time to
-replace this flag, but I find the logic very hard to understand now.
-
->  	bool enabled;
->  	bool no_hpd;
-> =20
-> +	ktime_t prepared_time;
-> +	ktime_t unprepared_time;
-> +
->  	const struct panel_desc *desc;
-> =20
->  	struct regulator *supply;
-> @@ -230,6 +245,21 @@ static int panel_simple_get_non_edid_modes(struct pa=
-nel_simple *panel,
->  	return num;
->  }
-> =20
-> +static void panel_simple_enforce_constraint(ktime_t start_ktime,
-> +					    unsigned int min_ms)
-> +{
-> +	ktime_t now_ktime, min_ktime;
-> +
-> +	if (!min_ms)
-> +		return;
-> +
-> +	min_ktime =3D ktime_add(start_ktime, ms_to_ktime(min_ms));
-> +	now_ktime =3D ktime_get();
-> +
-> +	if (ktime_before(now_ktime, min_ktime))
-> +		msleep(ktime_to_ms(ktime_sub(min_ktime, now_ktime)) + 1);
-> +}
-> +
->  static int panel_simple_disable(struct drm_panel *panel)
->  {
->  	struct panel_simple *p =3D to_panel_simple(panel);
-> @@ -249,18 +279,19 @@ static int panel_simple_unprepare(struct drm_panel =
-*panel)
->  {
->  	struct panel_simple *p =3D to_panel_simple(panel);
-> =20
-> -	if (!p->prepared)
-> +	if (!p->prepared_time)
->  		return 0;
-
-Here for example I now need to actively think about what exactly
-!prepared_time actually means, when all it really means is that we're
-checking if the panel has already been enabled.
-
-Perhaps we could provide a tiny helper to make this clearer?
-
-	static inline bool panel_simple_prepared(struct drm_panel *panel)
-	{
-		return p->prepared_time !=3D 0;
-	}
-
-I think that clarifies what's meant here. We could even add a comment
-explaining what's going on here if that's still not clear.
-
-Actually, looking at that, I think the explicit comparison alone makes
-this clearer, so this already seems better to me as well:
-
-	if (p->prepared_time !=3D 0)
-		return 0
-
-Then again, this may just be me. If everyone else thinks this is clear
-enough, feel free to leave it as-is.
-
-Another alternative would be to leave the current flag and logic in
-place and not rely on a special value for prepared_time to control the
-flow. That's slightly redundant, but it's really just one flag.
-
->  	gpiod_set_value_cansleep(p->enable_gpio, 0);
-> =20
->  	regulator_disable(p->supply);
-> =20
-> +	p->prepared_time =3D 0;
-> +	p->unprepared_time =3D ktime_get();
-> +
->  	if (p->desc->delay.unprepare)
->  		msleep(p->desc->delay.unprepare);
-> =20
-> -	p->prepared =3D false;
-> -
->  	return 0;
->  }
-> =20
-> @@ -296,9 +327,12 @@ static int panel_simple_prepare(struct drm_panel *pa=
-nel)
->  	int err;
->  	int hpd_asserted;
-> =20
-> -	if (p->prepared)
-> +	if (p->prepared_time)
->  		return 0;
-> =20
-> +	panel_simple_enforce_constraint(p->unprepared_time,
-> +					p->desc->timing_constraints.unprepare_to_prepare_ms);
-
-Looking at this, perhaps we can come up with shorter names for these?
-
-Thierry
-
---PNTmBPCT7hxwcZjr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YVY8ACgkQ3SOs138+
-s6H+sw/8DDA6Ecc/I6tAbFaAHcLujardUGK42UdBGG7ZBmYY+4BYDXpLPpm6gqTe
-xUKjeTmecc+029J1/XWuqLde/PsBGMDbIxPZfp0VjMbE6pkqC3KzGDMVuJVZPetP
-2zuSaUOj+t3+TQJMrOhQ1IlGUWx0Sv2aoxt6IIeDWBvMtCcG0GEC9JT/qCt6K2u2
-FFD98fDtvJIyx9SOKWWKMH3cIHBBFrzEuLyucjbFSrTZNxMiouGkMEDC9Mo3MYvj
-hhpiedT8sIrvkgrBOXme6GptHdNAhozswNuWIKRCYWuDF3I3cMQoJ4WzG78yrwSk
-aMuz6w9nIB0LmKcHP6rS8Bk2fyyx5pX3wHEQzvRwn75Zm2KB6XgU1mvWF/8mjD3f
-LbBUdvXOeLeq6pcAvT6uFs0XDKjDuVd4hozl6TQ4L+c+cEa5etN1MkQWTtq45qRm
-saglM9zBoTqIY++huNSRc4Sgom2X/1/3OKMojFMsnahKL39c5U6m+lW1GkgxRiMy
-gQU+tA1xxvKTytJuWhc4gLPqE8uXyvUenmRsvC4aJ+NAXo40BUY9hTE+Be90iXkb
-xMVcb2xBWdqoORdmByIVrETSPR/e5VGGCpLhTtHydlrZPAlOBOqOLqJA8MFx5p5G
-pvriym2e5OWq/jrOskHfi/BXpXNqCvohhXZOZcb+ah4Ep9p7EbE=
-=UH1U
------END PGP SIGNATURE-----
-
---PNTmBPCT7hxwcZjr--
+-- 
+Luiz Augusto von Dentz
