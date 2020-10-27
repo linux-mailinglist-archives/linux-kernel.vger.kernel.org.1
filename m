@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F69829B037
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1785629B040
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757260AbgJ0ORG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:17:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34754 "EHLO mail.kernel.org"
+        id S1757284AbgJ0ORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:17:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756455AbgJ0ONX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:13:23 -0400
+        id S1756516AbgJ0ONx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:13:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30A0D2222C;
-        Tue, 27 Oct 2020 14:13:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DAEA206F7;
+        Tue, 27 Oct 2020 14:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808002;
-        bh=82GcXZDbIcivgRmlOwbWBv25JRjEbhFhmORh4A3grv4=;
+        s=default; t=1603808032;
+        bh=MLuDDTaUB4uTmwZ4dpT5VYniVaviqDvFtxNSNE2cCGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OTAiBmNGu33kuTth1mU7Nw7N21xGpXovDZPau9dePFSq9Pjivy43tETMlSwoThzwx
-         F6SHLriccI0G8a7eOLyc4s/+MIz36HMR5rTfJI4kSLsTeQpsJPkWJoGODXGOqMgh65
-         C04S7TjKUu6GteM8XxrZ/40c1+H/ukxOYg85W9bg=
+        b=p0maz7DcGIRTU4o+ezj98CWJHQikZA5Ponbmdo7I5s8RhUfLtNa+PjgcglhcwDuIH
+         loh57/2Ffs90s2RGgTb7CLKsS5do1HfynT8s98TXSUdaf/5UAYJANbIlA69qTMJSs3
+         rIu9e0kAgpeP476VWPJur6qM3019G4POzFBkmDNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kajol Jain <kjain@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Daniel Axtens <dja@axtens.net>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 103/191] powerpc/perf/hv-gpci: Fix starting index value
-Date:   Tue, 27 Oct 2020 14:49:18 +0100
-Message-Id: <20201027134914.650304561@linuxfoundation.org>
+Subject: [PATCH 4.14 104/191] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
+Date:   Tue, 27 Oct 2020 14:49:19 +0100
+Message-Id: <20201027134914.699029638@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -43,74 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kajol Jain <kjain@linux.ibm.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit 0f9866f7e85765bbda86666df56c92f377c3bc10 ]
+[ Upstream commit a2d0230b91f7e23ceb5d8fb6a9799f30517ec33a ]
 
-Commit 9e9f60108423f ("powerpc/perf/{hv-gpci, hv-common}: generate
-requests with counters annotated") adds a framework for defining
-gpci counters.
-In this patch, they adds starting_index value as '0xffffffffffffffff'.
-which is wrong as starting_index is of size 32 bits.
+The patch avoids allocating cpufreq_policy on stack hence fixing frame
+size overflow in 'powernv_cpufreq_reboot_notifier':
 
-Because of this, incase we try to run hv-gpci event we get error.
+  drivers/cpufreq/powernv-cpufreq.c: In function powernv_cpufreq_reboot_notifier:
+  drivers/cpufreq/powernv-cpufreq.c:906:1: error: the frame size of 2064 bytes is larger than 2048 bytes
 
-In power9 machine:
-
-command#: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-          -C 0 -I 1000
-event syntax error: '..bie_count_and_time_tlbie_instructions_issued/'
-                                  \___ value too big for format, maximum is 4294967295
-
-This patch fix this issue and changes starting_index value to '0xffffffff'
-
-After this patch:
-
-command#: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/ -C 0 -I 1000
-     1.000085786              1,024      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     2.000287818              1,024      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-     2.439113909             17,408      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
-
-Fixes: 9e9f60108423 ("powerpc/perf/{hv-gpci, hv-common}: generate requests with counters annotated")
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency during reboot/kexec")
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201003074943.338618-1-kjain@linux.ibm.com
+Link: https://lore.kernel.org/r/20200922080254.41497-1-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/perf/hv-gpci-requests.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/cpufreq/powernv-cpufreq.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/perf/hv-gpci-requests.h b/arch/powerpc/perf/hv-gpci-requests.h
-index e608f9db12ddc..8965b4463d433 100644
---- a/arch/powerpc/perf/hv-gpci-requests.h
-+++ b/arch/powerpc/perf/hv-gpci-requests.h
-@@ -95,7 +95,7 @@ REQUEST(__field(0,	8,	partition_id)
+diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
+index dc81fc2bf8015..56c3d86e5b9de 100644
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -846,12 +846,15 @@ static int powernv_cpufreq_reboot_notifier(struct notifier_block *nb,
+ 				unsigned long action, void *unused)
+ {
+ 	int cpu;
+-	struct cpufreq_policy cpu_policy;
++	struct cpufreq_policy *cpu_policy;
  
- #define REQUEST_NAME system_performance_capabilities
- #define REQUEST_NUM 0x40
--#define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
-+#define REQUEST_IDX_KIND "starting_index=0xffffffff"
- #include I(REQUEST_BEGIN)
- REQUEST(__field(0,	1,	perf_collect_privileged)
- 	__field(0x1,	1,	capability_mask)
-@@ -223,7 +223,7 @@ REQUEST(__field(0,	2, partition_id)
+ 	rebooting = true;
+ 	for_each_online_cpu(cpu) {
+-		cpufreq_get_policy(&cpu_policy, cpu);
+-		powernv_cpufreq_target_index(&cpu_policy, get_nominal_index());
++		cpu_policy = cpufreq_cpu_get(cpu);
++		if (!cpu_policy)
++			continue;
++		powernv_cpufreq_target_index(cpu_policy, get_nominal_index());
++		cpufreq_cpu_put(cpu_policy);
+ 	}
  
- #define REQUEST_NAME system_hypervisor_times
- #define REQUEST_NUM 0xF0
--#define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
-+#define REQUEST_IDX_KIND "starting_index=0xffffffff"
- #include I(REQUEST_BEGIN)
- REQUEST(__count(0,	8,	time_spent_to_dispatch_virtual_processors)
- 	__count(0x8,	8,	time_spent_processing_virtual_processor_timers)
-@@ -234,7 +234,7 @@ REQUEST(__count(0,	8,	time_spent_to_dispatch_virtual_processors)
- 
- #define REQUEST_NAME system_tlbie_count_and_time
- #define REQUEST_NUM 0xF4
--#define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
-+#define REQUEST_IDX_KIND "starting_index=0xffffffff"
- #include I(REQUEST_BEGIN)
- REQUEST(__count(0,	8,	tlbie_instructions_issued)
- 	/*
+ 	return NOTIFY_DONE;
 -- 
 2.25.1
 
