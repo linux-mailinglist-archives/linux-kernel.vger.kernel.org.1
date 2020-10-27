@@ -2,143 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4555D29CADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B3629CAE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831893AbgJ0VDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:03:50 -0400
-Received: from mail-ed1-f52.google.com ([209.85.208.52]:43022 "EHLO
-        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1830508AbgJ0VDt (ORCPT
+        id S1832037AbgJ0VGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:06:13 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:34126 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S370950AbgJ0VGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:03:49 -0400
-Received: by mail-ed1-f52.google.com with SMTP id dn5so2908301edb.10;
-        Tue, 27 Oct 2020 14:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=MRHwpH162vRxJWjqj9O5WBo0P2xuR+MBOoVYL38uDGA=;
-        b=aWhxNujTl6QVa0Aq0eHESJ1qM8q9kaxOmrCiDd+9Zskh8wpz11e0ExZ7PYfQZzHiZ4
-         nYnXum5J6yJUMABY4XgIeobpk3AmZN5yINYDm9kpZW/XgBr4tqBGr3FufjikHDIDx0yQ
-         ueVNAW2KuryWKt0uqE51ByPFkTYzp3Hqleo3RZH7Zwcu24ALoD9PPI79y/yCKw7jQwIs
-         4mTDJCuPhNNgJq6RILGwpPOS7BPzm3Q9tymmJm/GDV1hVxkP07rfpx9f7MOvfsWXnQgi
-         86zf8OqA4sWId6UuEKKUSV7a1aEz0+hLcaLSrIUvSGW3UuHHmzhNBI+rrKNhM4XcvVwz
-         /iXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MRHwpH162vRxJWjqj9O5WBo0P2xuR+MBOoVYL38uDGA=;
-        b=b4zsACoGBezMYUa2PEp3hXH5jL9uo06PqAZkP2OFgJE/f0USrvphtvS6Q3l5LOtDVe
-         76B9Pdy7JTUlqedBBxYF7GpI6C/rPcbaRVp7YJL6WnVXr3jgbcrlRD6sNAiBgMsIl4Q1
-         hTvMpWRFnP4y9iL+WyRn2QKnE7MQ9cCW4ww3rDPwADjBYkdSQYuAZeH71I/chqDbwrl9
-         YMFUyrHpIJOoe0t+xx01ADCcYb3v1VX9ZlcOnEY25WXsb8o3JDsgV6sX7IfOv/LhXL7B
-         lOQV2C/vro42Q6Pucj9T0E56LI7EWBReaV7wsmmmpSFQqh5IIzsbxgu8XfqhggIaAYvy
-         +Evg==
-X-Gm-Message-State: AOAM533D6TuwzpzQyakiJhIE5+S/yMu+ws5kTgsPu1+c8qe6VUJNQV2m
-        4JkOjdzYo8MQL6wphemY4qHK+U6jqhw=
-X-Google-Smtp-Source: ABdhPJw/rNHAmxTYG8/fZLnJXg7AHQfBUN+6w/Bh/xEdvP9okcGOviz4Bf1I5Tsi0bJWKpnNAYTd4A==
-X-Received: by 2002:a05:6402:cac:: with SMTP id cn12mr4282750edb.326.1603832626617;
-        Tue, 27 Oct 2020 14:03:46 -0700 (PDT)
-Received: from ltop.local ([2a02:a03f:b7fe:f700:14ec:85cd:eb33:2a5c])
-        by smtp.gmail.com with ESMTPSA id m16sm1664990edj.37.2020.10.27.14.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 14:03:45 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 22:03:44 +0100
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     linux-sparse@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Sparse improvements & regressions for Linux v5.9-rc1 -> v5.10-rc1
-Message-ID: <20201027210344.e6rwboxcktgh5vyc@ltop.local>
+        Tue, 27 Oct 2020 17:06:11 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id C7E348030718;
+        Tue, 27 Oct 2020 21:06:06 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9jTbhXBZIp3Y; Wed, 28 Oct 2020 00:06:06 +0300 (MSK)
+Date:   Wed, 28 Oct 2020 00:06:04 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Felipe Balbi <balbi@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        David Cohen <david.a.cohen@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <balbi@ti.com>
+Subject: Re: [PATCH 2/3] usb: dwc3: ulpi: Replace CPU-based busyloop with
+ Protocol-based one
+Message-ID: <20201027210604.4jfecr6zjtdfamsb@mobilestation>
+References: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
+ <20201010222351.7323-3-Sergey.Semin@baikalelectronics.ru>
+ <87h7qgc9hg.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
+In-Reply-To: <87h7qgc9hg.fsf@kernel.org>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Oct 27, 2020 at 11:18:51AM +0200, Felipe Balbi wrote:
+> 
+> Hi,
+> 
+> Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
+> 
+> > Originally the procedure of the ULPI transaction finish detection has been
+> > developed as a simple busy-loop with just decrementing counter and no
+> > delays. It's wrong since on different systems the loop will take a
+> > different time to complete. So if the system bus and CPU are fast enough
+> > to overtake the ULPI bus and the companion PHY reaction, then we'll get to
+> > take a false timeout error. Fix this by converting the busy-loop procedure
+> > to take the standard bus speed, address value and the registers access
+> > mode into account for the busy-loop delay calculation.
+> >
+> > Here is the way the fix works. It's known that the ULPI bus is clocked
+> > with 60MHz signal. In accordance with [1] the ULPI bus protocol is created
+> > so to spend 5 and 6 clock periods for immediate register write and read
+> > operations respectively, and 6 and 7 clock periods - for the extended
+> > register writes and reads. Based on that we can easily pre-calculate the
+> > time which will be needed for the controller to perform a requested IO
+> > operation. Note we'll still preserve the attempts counter in case if the
+> > DWC USB3 controller has got some internals delays.
+> >
+> > [1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+> >     October 20, 2004, pp. 30 - 36.
+> >
+> > Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > ---
+> >  drivers/usb/dwc3/ulpi.c | 18 +++++++++++++++---
+> >  1 file changed, 15 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/usb/dwc3/ulpi.c b/drivers/usb/dwc3/ulpi.c
+> > index 20f5d9aba317..0dbc826355a5 100644
+> > --- a/drivers/usb/dwc3/ulpi.c
+> > +++ b/drivers/usb/dwc3/ulpi.c
+> > @@ -7,6 +7,8 @@
+> >   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >   */
+> >  
+> > +#include <linux/delay.h>
+> > +#include <linux/time64.h>
+> >  #include <linux/ulpi/regs.h>
+> >  
+> >  #include "core.h"
+> > @@ -17,12 +19,22 @@
+> >  		DWC3_GUSB2PHYACC_ADDR(ULPI_ACCESS_EXTENDED) | \
+> >  		DWC3_GUSB2PHYACC_EXTEND_ADDR(a) : DWC3_GUSB2PHYACC_ADDR(a))
+> >  
+> > -static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
+> > +#define DWC3_ULPI_BASE_DELAY	DIV_ROUND_UP(NSEC_PER_SEC, 60000000L)
+> > +
+> > +static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
+> >  {
+> > +	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
+> >  	unsigned count = 1000;
+> >  	u32 reg;
+> >  
+> > +	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
+> > +		ns += DWC3_ULPI_BASE_DELAY;
+> > +
+> > +	if (read)
+> > +		ns += DWC3_ULPI_BASE_DELAY;
+> > +
+> >  	while (count--) {
+> > +		ndelay(ns);
+> 
 
-Here is a comparison of Sparse's unique warnings between v5.9-rc1 &
-v5.10-rc1 on x86-64 (defconfig + allyesconfig).
+> could we allow for a sleep here instead of a delay?
 
-This time, there is a VERY significant decrease in the number of
-warnings, almost 20% less. On ppc64, the difference is 31%. This big
-difference is mainly but not only caused by "cast to restricted type"
-warnings or related, like "different base types".
+The kernel ULPI-bus API isn't clear about that. I also couldn't find an example
+of using the ULPI-bus accessors in the atomic context or being implemented with
+the sleeping methods. So there is no certain answer to your question. Anyway I
+added an ms-sleep in the later patch to fix the suspend-regression problem. I
+thought it was reasonable since I couldn't find an example of using the
+accessors in the atomic context.
 
-Some of these differences come from changes in Sparse, but most come
-from changes in the kernel itself.
+Regarding this patch. I wouldn't suggest to replace the ndelay with sleeping
+here, since 5-7 ref clock ticks is enough to finish the transaction for the vast
+majority of the cases. It's just 80 - 115 ns, which can't be reached by the
+sleeping procedures.
 
-The raw logs as well as the result of the processing giving the
-'unique warnings' are available at:
-        git://github.com/lucvoo/sparse-logs.git
+> Also, I wonder if
+> you need to make this so complex or should we just take the larger
+> access time of 7 clock cycles.
+
+I wouldn't say it's complex. Here I've implemented a simple calculation of the
+time needed to finish the ULPI-bus commands in accordance with the number of
+ticks they normally require. Regarding the while-looping alas we can't get rid
+of it here for the reason I've described in the patch 3 of the series.
+
+-Sergey
+
+> 
+> -- 
+> balbi
 
 
-- 18621 14983 Total
-+   191   210 Initializer entry defined twice
--   105    92 Using plain integer as NULL pointer
--   394     0 advancing past deep designator
-      4     4 arithmetics on pointers to functions
-+     0    88 array of flexible structures
--    12    10 bad assignment to restricted type
-      4     4 cast between address spaces (__percpu -> __rcu)
--   261   257 cast from restricted type
--   473   468 cast removes address space '__iomem' of expression
-      1     1 cast removes address space '__percpu' of expression
-     15    15 cast removes address space '__rcu' of expression
--    43    20 cast removes address space '__user' of expression
--    13     0 cast to non-scalar
--  4550  2862 cast to restricted type
--   609   548 cast truncates bits from constant value
-+   332   359 context imbalance - different lock contexts for basic block
-+   467   472 context imbalance - unexpected unlock
-+   189   191 context imbalance - wrong count at exit
--   109   106 dereference of noderef expression
-+     0     1 division by zero
-+     0     1 dubious one-bit signed bitfield
-     16    16 dubious: !x & y
-      1     1 dubious: !x | !y
-      6     6 dubious: !x | y
-     56    56 dubious: x & !y
--    20    19 dubious: x | !y
--     1     0 duplicate [noderef]
--    21    18 function with external linkage has definition
-      2     2 implicit cast from nocast type
--   490   458 incompatible types in comparison expression (different address spaces)
-+     3     4 incompatible types in comparison expression (different base types)
--     1     0 incompatible types in comparison expression (different type sizes)
-      7     7 incompatible types in conditional expression (different base types)
--  1087  1031 incorrect type in argument (different address spaces)
--   494   477 incorrect type in argument (different base types)
--     1     0 incorrect type in argument (incompatible argument (different address spaces))
--   382   336 incorrect type in assignment (different address spaces)
--  4762  3513 incorrect type in assignment (different base types)
-      1     1 incorrect type in assignment (different modifiers)
-+   120   130 incorrect type in initializer (different address spaces)
--   131   124 incorrect type in initializer (different base types)
--     7     4 incorrect type in initializer (incompatible argument (different address spaces))
--    25    24 incorrect type in return expression (different address spaces)
--    30    25 incorrect type in return expression (different base types)
--   285   282 invalid assignment
-     37    37 invalid bitfield specifier for type restricted type.
-      7     7 invalid initializer
-+     1     2 marked inline, but without a definition
--     1     0 memcpy with byte count of ...
--     5     4 memset with byte count of ...
-      7     7 mixed bitwiseness
-      8     8 mixing different enum types:
--     2     1 multiple address spaces given
-     12    12 multiple definitions for ...
-+     0     2 no generic selection for ...
--   918   902 restricted type degrades to integer
-+     0     1 statement expected after label
-+    12    16 static assertion failed
-      5     5 subtraction of different types can't work (different address spaces)
-     23    23 subtraction of functions? Share your drugs
-      1     1 switch with no cases
-+     0     1 symbol redeclared with different type (different address spaces)
--     5     2 symbol redeclared with different type (incompatible argument (different address spaces))
--  1852  1705 symbol was not declared. Should it be static?
-      1     1 too long token expansion
-      3     3 trying to concatenate long character string (8191 bytes max)
