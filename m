@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CED29B1D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E3729B1C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760392AbgJ0Oer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:34:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60720 "EHLO mail.kernel.org"
+        id S1760243AbgJ0OeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760173AbgJ0Odn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:33:43 -0400
+        id S2902347AbgJ0Oct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:32:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E89A820773;
-        Tue, 27 Oct 2020 14:33:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 558F0206DC;
+        Tue, 27 Oct 2020 14:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809222;
-        bh=V3aP/bAmjKvZth6bzJQoWBRnwTTaQ6YPbPgawguOf2I=;
+        s=default; t=1603809168;
+        bh=ewlaxnRaadBePgHr+xb/RrbkFOIArvJHc4Jxdh9EBn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2etqTTeNjvE49jPlqywptUZBqnLvSCFqAs7U/ZFCaEAcUr65PRtMtsnwv+ZnnKeEu
-         AFY59/7hS+nL9s8CV8TTr3lSSjjDXBG7QdeEekDe25dysEiX1TtEdLQdgy8M1R0MzP
-         iwQBJ7tkQK7xAsNAWntOPlvN929zkTAOuR5oYB7M=
+        b=DMR+rvnbd6egkpJjxp98383vBpcQC4He8FUffPPQ/rkkb5Qm/fAd9K9r7o5V7r4X7
+         7y3zXfyV6HVqZRNGsoHUJt/2H4cze/kmlwqbIRm1fZI1+4GjRVsnJMWMUt96wj23/v
+         erPiFDtoT/WM/txw5hQb29ayPFRWE380jM0O+83M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 089/408] media: tc358743: initialize variable
-Date:   Tue, 27 Oct 2020 14:50:27 +0100
-Message-Id: <20201027135459.209724304@linuxfoundation.org>
+Subject: [PATCH 5.4 100/408] spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and s3c64xx_enable_datapath()
+Date:   Tue, 27 Oct 2020 14:50:38 +0100
+Message-Id: <20201027135459.731814913@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,40 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Łukasz Stelmach <l.stelmach@samsung.com>
 
-[ Upstream commit 274cf92d5dff5c2fec1a518078542ffe70d07646 ]
+[ Upstream commit 581e2b41977dfc2d4c26c8e976f89c43bb92f9bf ]
 
-clang static analysis flags this error
+Fix issues with DMA transfers bigger than 512 bytes on Exynos3250. Without
+the patches such transfers fail to complete. This solution to the problem
+is found in the vendor kernel for ARTIK5 boards based on Exynos3250.
 
-tc358743.c:1468:9: warning: Branch condition evaluates
-  to a garbage value
-        return handled ? IRQ_HANDLED : IRQ_NONE;
-               ^~~~~~~
-handled should be initialized to false.
-
-Fixes: d747b806abf4 ("[media] tc358743: add direct interrupt handling")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Link: https://lore.kernel.org/r/20201002122243.26849-2-l.stelmach@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tc358743.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-s3c64xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index dbbab75f135ec..211caade9f998 100644
---- a/drivers/media/i2c/tc358743.c
-+++ b/drivers/media/i2c/tc358743.c
-@@ -1461,7 +1461,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
- static irqreturn_t tc358743_irq_handler(int irq, void *dev_id)
- {
- 	struct tc358743_state *state = dev_id;
--	bool handled;
-+	bool handled = false;
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index 7b7151ec14c8a..322f75f89c713 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -678,11 +678,11 @@ static int s3c64xx_spi_transfer_one(struct spi_master *master,
+ 		sdd->state &= ~RXBUSY;
+ 		sdd->state &= ~TXBUSY;
  
- 	tc358743_isr(&state->sd, 0, &handled);
+-		s3c64xx_enable_datapath(sdd, xfer, use_dma);
+-
+ 		/* Start the signals */
+ 		s3c64xx_spi_set_cs(spi, true);
  
++		s3c64xx_enable_datapath(sdd, xfer, use_dma);
++
+ 		spin_unlock_irqrestore(&sdd->lock, flags);
+ 
+ 		if (use_dma)
 -- 
 2.25.1
 
