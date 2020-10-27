@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B52B29C491
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6E529C5F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901054AbgJ0OSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36560 "EHLO mail.kernel.org"
+        id S1825197AbgJ0SJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:09:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754347AbgJ0OOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:14:54 -0400
+        id S2508489AbgJ0OP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:15:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEEA8206F7;
-        Tue, 27 Oct 2020 14:14:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B24B8206F7;
+        Tue, 27 Oct 2020 14:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808094;
-        bh=3BpnqO3HAOZZuIA352xBin6HwuuJeAgKkuyK8XOP52w=;
+        s=default; t=1603808125;
+        bh=OCj/8NsSojQ0BxbpC31Yz318JM50e/36vBJazaoYzYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RVC3Ol38OdpRfp8QXaqUSUEn+2sWhXxckC6lxwDwm5whwdO2F0CMPFgYsjudj885S
-         ztIbHl5HJqbBZXRmKO9hDoZqvA8R8jSpkr27btgzQ2FlF9Q/S6QJe4LC+QOMrIzySD
-         qj4vRDUUJJ6dLu54kmFhJzwdXEon+f2YYZqJhC3A=
+        b=Os6SbSZ53t+ar2a24KJnxg91pPJr7qHKOj9NtS1zha9L29Vs7/V+98+586hw2Ny7T
+         cACDGkDr4u+0SlGfpJ0GzWpKKVy0gC+QzMmtEGvEtojnOpjFE4N6LKvmmEJQVNahQi
+         6r42Y1vaewspFb2tD+TKMy7FfYqOKklTsErFKLPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org,
+        syzbot+998261c2ae5932458f6c@syzkaller.appspotmail.com,
+        Oliver Neukum <oneukum@suse.com>, Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 137/191] media: firewire: fix memory leak
-Date:   Tue, 27 Oct 2020 14:49:52 +0100
-Message-Id: <20201027134916.294694879@linuxfoundation.org>
+Subject: [PATCH 4.14 138/191] media: ati_remote: sanity check for both endpoints
+Date:   Tue, 27 Oct 2020 14:49:53 +0100
+Message-Id: <20201027134916.346698319@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -44,37 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek <pavel@ucw.cz>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit b28e32798c78a346788d412f1958f36bb760ec03 ]
+[ Upstream commit a8be80053ea74bd9c3f9a3810e93b802236d6498 ]
 
-Fix memory leak in node_probe.
+If you do sanity checks, you should do them for both endpoints.
+Hence introduce checking for endpoint type for the output
+endpoint, too.
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reported-by: syzbot+998261c2ae5932458f6c@syzkaller.appspotmail.com
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/firewire/firedtv-fw.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/rc/ati_remote.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/firewire/firedtv-fw.c b/drivers/media/firewire/firedtv-fw.c
-index 5d634706a7eaa..382f290c3f4d5 100644
---- a/drivers/media/firewire/firedtv-fw.c
-+++ b/drivers/media/firewire/firedtv-fw.c
-@@ -271,8 +271,10 @@ static int node_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 
- 	name_len = fw_csr_string(unit->directory, CSR_MODEL,
- 				 name, sizeof(name));
--	if (name_len < 0)
--		return name_len;
-+	if (name_len < 0) {
-+		err = name_len;
-+		goto fail_free;
+diff --git a/drivers/media/rc/ati_remote.c b/drivers/media/rc/ati_remote.c
+index d0871d60a7231..8e3af398a6c4e 100644
+--- a/drivers/media/rc/ati_remote.c
++++ b/drivers/media/rc/ati_remote.c
+@@ -845,6 +845,10 @@ static int ati_remote_probe(struct usb_interface *interface,
+ 		err("%s: endpoint_in message size==0? \n", __func__);
+ 		return -ENODEV;
+ 	}
++	if (!usb_endpoint_is_int_out(endpoint_out)) {
++		err("%s: Unexpected endpoint_out\n", __func__);
++		return -ENODEV;
 +	}
- 	for (i = ARRAY_SIZE(model_names); --i; )
- 		if (strlen(model_names[i]) <= name_len &&
- 		    strncmp(name, model_names[i], name_len) == 0)
+ 
+ 	ati_remote = kzalloc(sizeof (struct ati_remote), GFP_KERNEL);
+ 	rc_dev = rc_allocate_device(RC_DRIVER_SCANCODE);
 -- 
 2.25.1
 
