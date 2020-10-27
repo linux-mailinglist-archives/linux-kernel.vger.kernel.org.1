@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7F729BB53
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA1929BB5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805586AbgJ0QA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:00:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60702 "EHLO mail.kernel.org"
+        id S1805797AbgJ0QBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:01:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801395AbgJ0PlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:41:04 -0400
+        id S368844AbgJ0Pl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:41:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8572E2231B;
-        Tue, 27 Oct 2020 15:41:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 197D8223C6;
+        Tue, 27 Oct 2020 15:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813262;
-        bh=v1TWsyl9QkVJ3ilSlyOLFTJV5GSW46ODBKPlzPkHzno=;
+        s=default; t=1603813315;
+        bh=7iywypHRS25UYOvU0nsn8Y0Un6JL/5nDIz85CQLZEPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gRuo7QPxyFyofT7BU7FCZeqHB5ZnNJ0LoZiHiEg4r6NIOuyHBgM5MIVSCVDF/EkMQ
-         EI2pBDbDFPW7Uf8xkr8s+tj9OvGsdjAA19opflhPOCrODanLoBqm8IHZchoXHyWGCR
-         qBiNS7OT0UOPY0jO9iuXA/lp9YxY8mtB0kKuL3s8=
+        b=ae9DTr9MFYL/+Tt4wj5ceBtWaF8quiYuadoMkdWqPJ6WcuKa7SZqxXX7BQYx102au
+         31c3TJxsYObiNyE/wyAkecPzOpKCqPC2nu480lNmR4L6/J+mxAO4TSzlY//ElC+KOI
+         oGFsBxfDCGe0KqjE+qW2AWrcORaaeoY5ghUndeOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 475/757] mtd: spinand: gigadevice: Add QE Bit
-Date:   Tue, 27 Oct 2020 14:52:05 +0100
-Message-Id: <20201027135512.787179699@linuxfoundation.org>
+Subject: [PATCH 5.9 480/757] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
+Date:   Tue, 27 Oct 2020 14:52:10 +0100
+Message-Id: <20201027135512.994250149@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,78 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hauke Mehrtens <hauke@hauke-m.de>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit aea7687e77bebce5b67fab9d03347bd8df7933c7 ]
+[ Upstream commit 5ce2dced8e95e76ff7439863a118a053a7fc6f91 ]
 
-The following GigaDevice chips have the QE BIT in the feature flags, I
-checked the datasheets, but did not try this.
-* GD5F1GQ4xExxG
-* GD5F1GQ4xFxxG
-* GD5F1GQ4UAYIG
-* GD5F4GQ4UAYIG
+Report the "ipoib pkey", "mode" and "umcast" netlink attributes for every
+IPoiB interface type, not just children created with 'ip link add'.
 
-The Quad operations like 0xEB mention that the QE bit has to be set.
+After setting the rtnl_link_ops for the parent interface, implement the
+dellink() callback to block users from trying to remove it.
 
-Fixes: c93c613214ac ("mtd: spinand: add support for GigaDevice GD5FxGQ4xA")
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-Tested-by: Chuanhong Guo <gch981213@gmail.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200820165121.3192-3-hauke@hauke-m.de
+Fixes: 862096a8bbf8 ("IB/ipoib: Add more rtnl_link_ops callbacks")
+Link: https://lore.kernel.org/r/20201004132948.26669-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/gigadevice.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/ulp/ipoib/ipoib_main.c    |  2 ++
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 11 +++++++++++
+ drivers/infiniband/ulp/ipoib/ipoib_vlan.c    |  2 ++
+ 3 files changed, 15 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index 679d3c43e15aa..0b7667e60780f 100644
---- a/drivers/mtd/nand/spi/gigadevice.c
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -202,7 +202,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
- 	SPINAND_INFO("GD5F2GQ4xA",
-@@ -212,7 +212,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
- 	SPINAND_INFO("GD5F4GQ4xA",
-@@ -222,7 +222,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
- 				     gd5fxgq4xa_ecc_get_status)),
- 	SPINAND_INFO("GD5F1GQ4UExxG",
-@@ -232,7 +232,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
- 				     gd5fxgq4uexxg_ecc_get_status)),
- 	SPINAND_INFO("GD5F1GQ4UFxxG",
-@@ -242,7 +242,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
--		     0,
-+		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
- 				     gd5fxgq4ufxxg_ecc_get_status)),
- };
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+index f772fe8c5b663..abfab89423f41 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+@@ -2480,6 +2480,8 @@ static struct net_device *ipoib_add_port(const char *format,
+ 	/* call event handler to ensure pkey in sync */
+ 	queue_work(ipoib_workqueue, &priv->flush_heavy);
+ 
++	ndev->rtnl_link_ops = ipoib_get_link_ops();
++
+ 	result = register_netdev(ndev);
+ 	if (result) {
+ 		pr_warn("%s: couldn't register ipoib port %d; error %d\n",
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+index 38c984d16996d..d5a90a66b45cf 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+@@ -144,6 +144,16 @@ static int ipoib_new_child_link(struct net *src_net, struct net_device *dev,
+ 	return 0;
+ }
+ 
++static void ipoib_del_child_link(struct net_device *dev, struct list_head *head)
++{
++	struct ipoib_dev_priv *priv = ipoib_priv(dev);
++
++	if (!priv->parent)
++		return;
++
++	unregister_netdevice_queue(dev, head);
++}
++
+ static size_t ipoib_get_size(const struct net_device *dev)
+ {
+ 	return nla_total_size(2) +	/* IFLA_IPOIB_PKEY   */
+@@ -158,6 +168,7 @@ static struct rtnl_link_ops ipoib_link_ops __read_mostly = {
+ 	.priv_size	= sizeof(struct ipoib_dev_priv),
+ 	.setup		= ipoib_setup_common,
+ 	.newlink	= ipoib_new_child_link,
++	.dellink	= ipoib_del_child_link,
+ 	.changelink	= ipoib_changelink,
+ 	.get_size	= ipoib_get_size,
+ 	.fill_info	= ipoib_fill_info,
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+index 30865605e0980..4c50a87ed7cc2 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+@@ -195,6 +195,8 @@ int ipoib_vlan_add(struct net_device *pdev, unsigned short pkey)
+ 	}
+ 	priv = ipoib_priv(ndev);
+ 
++	ndev->rtnl_link_ops = ipoib_get_link_ops();
++
+ 	result = __ipoib_vlan_add(ppriv, priv, pkey, IPOIB_LEGACY_CHILD);
+ 
+ 	if (result && ndev->reg_state == NETREG_UNINITIALIZED)
 -- 
 2.25.1
 
