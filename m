@@ -2,47 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E0D29B04B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FA229AE7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900961AbgJ0ORv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:17:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35872 "EHLO mail.kernel.org"
+        id S1753610AbgJ0OBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756583AbgJ0OOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:14:20 -0400
+        id S1753202AbgJ0N66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:58:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA068206F7;
-        Tue, 27 Oct 2020 14:14:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45331218AC;
+        Tue, 27 Oct 2020 13:58:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808059;
-        bh=LY6enk6uNGT3/UMfis9ZTVxHgdtI7+RdqDLAz8YKuvE=;
+        s=default; t=1603807137;
+        bh=tKQMJJwDXpMZnW9cdlkALEdVFSaEaABQEBTHHsTXEZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=icPf0RU8SSckQkYg8Gf7fMZHJ6kIz193GIWqzHapLUoxeXfSPBNyYp2p3kaLCy/hA
-         LCjUbqT2LIpb3jcAKbG98+hQOt4nf5zxl7qFlJhdGjaBKz1VF9SZlFXOZHptXT6WIs
-         qHpa/FSA5rcGf0X1VWfpCwSfYx2sJzXB0iV/Yp9Q=
+        b=qwOapAApvK4SvDjJyDK14f6+xap66Yhc4yPT2cmXuYztN738ddT7/f6802/azxv+s
+         wtB1dX8kECcAT2OkAhePSYrbhdl/itnyjrvoYl1/yseUtgl57e/4LE+e5bDQSjlDPJ
+         5KpXsLF3slI3yZic73440YiIJyPbI7q1sWkajCBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 110/191] rapidio: fix the missed put_device() for rio_mport_add_riodev
+Subject: [PATCH 4.4 055/112] powerpc/icp-hv: Fix missing of_node_put() in success path
 Date:   Tue, 27 Oct 2020 14:49:25 +0100
-Message-Id: <20201027134914.993015858@linuxfoundation.org>
+Message-Id: <20201027134903.167585361@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,53 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Nicholas Mc Guire <hofrat@osadl.org>
 
-[ Upstream commit 85094c05eeb47d195a74a25366a2db066f1c9d47 ]
+[ Upstream commit d3e669f31ec35856f5e85df9224ede5bdbf1bc7b ]
 
-rio_mport_add_riodev() misses to call put_device() when the device already
-exists.  Add the missed function call to fix it.
+Both of_find_compatible_node() and of_find_node_by_type() will return
+a refcounted node on success - thus for the success path the node must
+be explicitly released with a of_node_put().
 
-Fixes: e8de370188d0 ("rapidio: add mport char device driver")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lkml.kernel.org/r/20200922072525.42330-1-jingxiangfeng@huawei.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 0b05ac6e2480 ("powerpc/xics: Rewrite XICS driver")
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1530691407-3991-1-git-send-email-hofrat@osadl.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rapidio/devices/rio_mport_cdev.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/powerpc/sysdev/xics/icp-hv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index 171d6bcad5bc5..a87c024d56700 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -1739,6 +1739,7 @@ static int rio_mport_add_riodev(struct mport_cdev_priv *priv,
- 	struct rio_dev *rdev;
- 	struct rio_switch *rswitch = NULL;
- 	struct rio_mport *mport;
-+	struct device *dev;
- 	size_t size;
- 	u32 rval;
- 	u32 swpinfo = 0;
-@@ -1753,8 +1754,10 @@ static int rio_mport_add_riodev(struct mport_cdev_priv *priv,
- 	rmcd_debug(RDEV, "name:%s ct:0x%x did:0x%x hc:0x%x", dev_info.name,
- 		   dev_info.comptag, dev_info.destid, dev_info.hopcount);
+diff --git a/arch/powerpc/sysdev/xics/icp-hv.c b/arch/powerpc/sysdev/xics/icp-hv.c
+index c1917cf67c3de..3205e64c452bd 100644
+--- a/arch/powerpc/sysdev/xics/icp-hv.c
++++ b/arch/powerpc/sysdev/xics/icp-hv.c
+@@ -179,6 +179,7 @@ int icp_hv_init(void)
  
--	if (bus_find_device_by_name(&rio_bus_type, NULL, dev_info.name)) {
-+	dev = bus_find_device_by_name(&rio_bus_type, NULL, dev_info.name);
-+	if (dev) {
- 		rmcd_debug(RDEV, "device %s already exists", dev_info.name);
-+		put_device(dev);
- 		return -EEXIST;
- 	}
+ 	icp_ops = &icp_hv_ops;
+ 
++	of_node_put(np);
+ 	return 0;
+ }
  
 -- 
 2.25.1
