@@ -2,130 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DAA29A225
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFCE29A227
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503801AbgJ0BUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:20:48 -0400
-Received: from ozlabs.org ([203.11.71.1]:46659 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503792AbgJ0BUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:20:48 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKv620vqKz9sSW;
-        Tue, 27 Oct 2020 12:20:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603761644;
-        bh=JqnLPt5PpfQpxYmHkHTWZuecwdhM0kzTZE1MAPG/y7Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=k4ErA3lx1Lx+J0XM9vO/Jkga9PpYn1tcocS9S+XvXhR388VChiDu6ddX2SRF/9JXh
-         TG86XEvSoJARW52KphQImj2POMgiVXrvwzgSLk+ztOicOGWOVwxRjiPgZtEbPjORmn
-         cdhULGMF+CidADASxUHoCDE3MfXcBzEtftL1WhnDpcLoIrB922RJIjRt5lNShyEghb
-         Jjx8FB/3kcl1pCzIywF1AvtzDfXQD1wviz3WpgQVfj4ajODS/s9D5XdFStjGh/YO9/
-         2JjKqPbWq/MkCR8E5hNpo42npMWTeb7jpwxUIxEczxLjg4XfuwAjHrBVETN4USY5BN
-         KfrjqiduIrBYQ==
-Date:   Tue, 27 Oct 2020 12:20:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Clark <robdclark@chromium.org>,
-        Dave Airlie <airlied@linux.ie>
-Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20201027122041.021ab60e@canb.auug.org.au>
+        id S2503816AbgJ0BWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:22:09 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:34277 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408536AbgJ0BWJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 21:22:09 -0400
+Received: by mail-pf1-f193.google.com with SMTP id o129so1656302pfb.1;
+        Mon, 26 Oct 2020 18:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rI8te7v5ilh6pzRn0d2OmLYfZc63jY1KzGefybMeBy4=;
+        b=ZH0VX8/9+sGfUb4G0/V2yn4UqoCEjIThPJk1zgAQE3FTpuBgJoWrSz46fWBUQdRlcj
+         hyKFV/8XcnhoU3yFl6//DHqBBLcIMgQeoA6JUCwi/TR476A90QuQzLUsZKLlzbE8BiXn
+         o+W3jM4O7AkahBLq4WOmja4LghnH4QpchM9GktDkbmIDQsYnzizgDu7IGeaxi9tCLCXi
+         Cu0/YrXFGBfi92SkAOXB8CCCKvoImvSa42nN7gxzA8Uepfb6NM+DSjf8HUbqjsuLh9LU
+         FtiAIs/W842hY825JWndVu7fr/MVvY/2WMHADkOSBXHLsrxC7yEPCQ+4tQ26M9irgkak
+         +2ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rI8te7v5ilh6pzRn0d2OmLYfZc63jY1KzGefybMeBy4=;
+        b=d++bQU5k8oooyQc5By8JlQENyVviMzVRBIpq0/kr3hBYr6faycdGNLdMygx/sdgBqN
+         1lpqRV9/0EM69pk0Z90G8ocfxjoy9Rm9USzXHRM9B2NkkxMrw62KIQd5j6okO+PyMt1L
+         /VAr6W/ERmayyLTY5MiaTQZ3tecRvJJXEqSCBUiKI9bmCOJ6eK8dyKNe36kCRU3lOzyA
+         3mICT5vMERc7iOPeMlgDMbo+hzNI08XZFMmD0e+7MSPPW1qxX5WPZev2ZmDUMlgt1TnA
+         Xs/QAn9HvPlUVduOgJfmnjY16n+umJOhH7AOC5oyHxJ1Rj9Kpqj5PCUcLL9ixpfTi8zT
+         kFLQ==
+X-Gm-Message-State: AOAM53014j7Rpu8LrmnYOp3ogtRxYisuKOU/mdowsU5KoepSC5FEsprP
+        +oOhOOpk7OAg6MgC776Ne/+k8RU8ijc=
+X-Google-Smtp-Source: ABdhPJyDoGNgp7gqxwSKzvvLhi9UVRs6VaLzoTzGBU4T6Rgncmr844y6MuptgtwNGp0OmdRlnVWeBg==
+X-Received: by 2002:a62:8744:0:b029:162:8c76:a8a1 with SMTP id i65-20020a6287440000b02901628c76a8a1mr632100pfe.54.1603761727963;
+        Mon, 26 Oct 2020 18:22:07 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
+        by smtp.gmail.com with ESMTPSA id b1sm12696338pft.127.2020.10.26.18.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 18:22:07 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 10:22:04 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+To:     Rui Salvaterra <rsalvaterra@gmail.com>
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH v3] zram: break the strict dependency from lzo
+Message-ID: <20201027012204.GD2412725@google.com>
+References: <20201026085141.1179-1-rsalvaterra@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8ZwN35nvZKtnZAWySf_KM4h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026085141.1179-1-rsalvaterra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8ZwN35nvZKtnZAWySf_KM4h
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On (20/10/26 08:51), Rui Salvaterra wrote:
+>  static const char * const backends[] = {
+> +#if IS_ENABLED(CONFIG_CRYPTO_LZO)
+>  	"lzo",
+>  	"lzo-rle",
+> +#endif
+>  #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
+>  	"lz4",
+>  #endif
+[..]
+> +static const char *default_compressor =
+> +#if IS_ENABLED(CONFIG_CRYPTO_LZO)
+> +	"lzo-rle";
+> +#elif IS_ENABLED(CONFIG_CRYPTO_LZ4)
+> +	"lz4";
+> +#elif IS_ENABLED(CONFIG_CRYPTO_LZ4HC)
+> +	"lz4hc";
+> +#elif IS_ENABLED(CONFIG_CRYPTO_842)
+> +	"842";
+> +#elif IS_ENABLED(CONFIG_CRYPTO_ZSTD)
+> +	"zstd";
+> +#endif
 
-Hi all,
+Honestly, I'm not entirely excited. lzo is a fallback compression
+algorithm. If you want to use zram with something else thenconfigure
+zram to use something else. What do all these #if/#elif buy us?
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
-
-  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-
-between commit:
-
-  e12e5263bf1d ("drm/msm/dpu: clean up some impossibilities")
-
-from Linus' tree and commit:
-
-  351f950db4ab ("drm/atomic: Pass the full state to CRTC atomic enable/disa=
-ble")
-
-from the drm-misc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-index f56414a06ec4,5ba9b49dfa7a..000000000000
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-@@@ -706,10 -753,12 +707,12 @@@ static struct drm_crtc_state *dpu_crtc_
-  }
- =20
-  static void dpu_crtc_disable(struct drm_crtc *crtc,
-- 			     struct drm_crtc_state *old_crtc_state)
-+ 			     struct drm_atomic_state *state)
-  {
-+ 	struct drm_crtc_state *old_crtc_state =3D drm_atomic_get_old_crtc_state(=
-state,
-+ 									      crtc);
- -	struct dpu_crtc *dpu_crtc;
- -	struct dpu_crtc_state *cstate;
- +	struct dpu_crtc *dpu_crtc =3D to_dpu_crtc(crtc);
- +	struct dpu_crtc_state *cstate =3D to_dpu_crtc_state(crtc->state);
-  	struct drm_encoder *encoder;
-  	unsigned long flags;
-  	bool release_bandwidth =3D false;
-@@@ -770,9 -826,9 +773,9 @@@
-  }
- =20
-  static void dpu_crtc_enable(struct drm_crtc *crtc,
-- 		struct drm_crtc_state *old_crtc_state)
-+ 		struct drm_atomic_state *state)
-  {
- -	struct dpu_crtc *dpu_crtc;
- +	struct dpu_crtc *dpu_crtc =3D to_dpu_crtc(crtc);
-  	struct drm_encoder *encoder;
-  	bool request_bandwidth =3D false;
- =20
-
---Sig_/8ZwN35nvZKtnZAWySf_KM4h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XdekACgkQAVBC80lX
-0GxiFgf+JOF9yTwW6s5sstWU7IcuyXmb57dSpnf3ExUxqm/gqvHzGQ/k83EUWoQC
-lMOp84eQtrpB171N4+kzzJSlJzkUOOLHMPaQ/vI4jXPupP52Z6ZIMKCtx27rrrae
-TQ5LvVaWrVFKVRR8SEsOEYKqvi1yBLb0BVe2jKMinlWIQsixYEFNXRpnjlHRTK56
-JoFXBzXwT/KUC/xFcbXAD0xMnEu9WOTvH5FuKtIwc3UY+mOr1xsTjwjfzWcuWzmA
-hq+j7npb0h4+wLVDw7NNqiX5sRrmLZlE9W6r7msbs/x+XPHkPOZ8juOm34vX+42a
-WUJqM/Cu5gjtirEyQ0RxhTezI6xyvg==
-=gWGt
------END PGP SIGNATURE-----
-
---Sig_/8ZwN35nvZKtnZAWySf_KM4h--
+	-ss
