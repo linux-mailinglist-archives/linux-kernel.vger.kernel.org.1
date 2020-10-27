@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304A729A82B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DE529A835
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895943AbgJ0Jrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:47:53 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:41268 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409758AbgJ0Jrw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:47:52 -0400
-Received: by mail-yb1-f195.google.com with SMTP id c129so695554yba.8
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oFwSSyZ6tdGB8SL5Ua5qFlSStYifHOLGWVo06VaDKtE=;
-        b=m+imZfafWY+ffQCSP9jpxAMp9R1J/cBxpZbxvgQpEJfZCaSX7R47xuAP36sbK44knV
-         cgUhtOYWDSBTJYWqUVjhlAtKXcOikjlxgukry146VWZeoiB4YZc9oLQsuWQLL5Bcq0aO
-         YtdGCPE5cMqrp2asIQP7G8NXjDYrHwCjAO6ligJmxhBxJehfihrjJ/tTQMNOs5gOp+Gj
-         my+8XDjGEEPbm36krBQi1B13UEEbg3YFRwRwjNo/GldAn7xgG2YnjqZr8UXxi1BygpEQ
-         eKDI4Ym/RzTv+A0PbufKhlwg8/rHP9DJy2yTFQBrtFgZMnkgIcv3kwAmhESgof27manG
-         /g+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oFwSSyZ6tdGB8SL5Ua5qFlSStYifHOLGWVo06VaDKtE=;
-        b=GoLufC6HRNytUAgA+HoEV/qW2XNlAg4F5ucBKPPUDMddaJzXdazVpaQcuo5mkKVYnq
-         +2S8c1HJLB+AoItDx/jrxugKmEfPQ9i8r5/N301E6Wg6jexFptk18tYg/q/L3g1JZuxl
-         0ylM0wzl5ekBY7U09c3ZYA1tCSJby4wmIg/LfwCEoxxD/vok4yo2/bDCLRvYS2f6j10o
-         j+wmJBSUs+oCr4G7/rlhupm9qB34bSHCQS+O9Wx5hmc4ZNSI7EaArxYf5P/FOMSnLo0y
-         T6v+7tN+2gffYgtVs9sg/6/y1h21oF8yGiJFh9oKXR82wtOng0JmbX7oVJtls07v/mj1
-         jFmQ==
-X-Gm-Message-State: AOAM530olfqLtpTr895w6VbFIObLcTiVt4bKr5xTy/A65pNQgX9F1XIF
-        fOXzWW6D7enphuVPOQAaVM4+31VsB3rfG/unSKZ6SFylGQ8=
-X-Google-Smtp-Source: ABdhPJyph5gsq+nqB5mMcP9mSU+qtaIoNqzNScqx0eqPFEqFZXGM4LM4/7E6TyNrTCXjjykO8YIjQONGWxWAa4ZPbsg=
-X-Received: by 2002:a25:b792:: with SMTP id n18mr2094133ybh.93.1603792070514;
- Tue, 27 Oct 2020 02:47:50 -0700 (PDT)
+        id S2895964AbgJ0JtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:49:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2895946AbgJ0JtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:49:01 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7CAF20759;
+        Tue, 27 Oct 2020 09:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603792140;
+        bh=wcj6sqvr10YA2nIxp8QFswfSebjeDskPYpJl+9Hjv5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=li/s39XFgB24jJSUCjqf8zNKcx6M9bh+uU6phnSX6LJCJRBegjZ0SOdTEugjflO1e
+         WgquGhsCXXsZ3V2YD7JRAQc2nfgUEjBNCSoKoM6GZx5SGcpgMkSqE8zAapjDeCrodZ
+         Fc2zbcZd41+mXwuTSqYXiceoEMKXjGqiG53f7j/s=
+Date:   Tue, 27 Oct 2020 11:48:45 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "tycho@tycho.ws" <tycho@tycho.ws>, "cl@linux.com" <cl@linux.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>
+Subject: Re: [PATCH v7 3/7] set_memory: allow set_direct_map_*_noflush() for
+ multiple pages
+Message-ID: <20201027094845.GJ1154158@kernel.org>
+References: <20201026083752.13267-1-rppt@kernel.org>
+ <20201026083752.13267-4-rppt@kernel.org>
+ <e754ae3873e02e398e58091d586fe57e105803db.camel@intel.com>
+ <9202c4c1-9f1f-175f-0a85-fc8c30bc5e3b@redhat.com>
 MIME-Version: 1.0
-References: <20201026192117.3811525-1-arnd@kernel.org>
-In-Reply-To: <20201026192117.3811525-1-arnd@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 27 Oct 2020 10:47:39 +0100
-Message-ID: <CANiq72n72FMnNnWveSZOj_3_beXKX03CVL8=cQqqa8QyK-PKig@mail.gmail.com>
-Subject: Re: [PATCH v2] ctype.h: remove duplicate isdigit() helper
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9202c4c1-9f1f-175f-0a85-fc8c30bc5e3b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:57 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> +#ifdef __has_builtin
-> +#define has_builtin(x) __has_builtin(x)
-> +#else
-> +#define has_builtin(x) (0)
-> +#endif
+On Tue, Oct 27, 2020 at 09:12:23AM +0100, David Hildenbrand wrote:
+> On 26.10.20 20:01, Edgecombe, Rick P wrote:
+> > On Mon, 2020-10-26 at 10:37 +0200, Mike Rapoport wrote:
+> >> +++ b/arch/x86/mm/pat/set_memory.c
+> >> @@ -2184,14 +2184,14 @@ static int __set_pages_np(struct page *page,
+> >> int numpages)
+> >>         return __change_page_attr_set_clr(&cpa, 0);
+> >>  }
+> >>  
+> >> -int set_direct_map_invalid_noflush(struct page *page)
+> >> +int set_direct_map_invalid_noflush(struct page *page, int numpages)
+> >>  {
+> >> -       return __set_pages_np(page, 1);
+> >> +       return __set_pages_np(page, numpages);
+> >>  }
+> >>  
+> >> -int set_direct_map_default_noflush(struct page *page)
+> >> +int set_direct_map_default_noflush(struct page *page, int numpages)
+> >>  {
+> >> -       return __set_pages_p(page, 1);
+> >> +       return __set_pages_p(page, numpages);
+> >>  }
+> > 
+> > Somewhat related to your other series, this could result in large NP
+> > pages and trip up hibernate.
+> > 
+> 
+> It feels somewhat desirable to disable hibernation once secretmem is
+> enabled, right? Otherwise you'll be writing out your secrets to swap,
+> where they will remain even after booting up again ...
+> 
+> Skipping secretmem pages when hibernating is the wrong approach I guess ...
 
-Could this be
+Completely agree.
+I'll look into preventing hibernation from touching secretmem.
 
-    #ifndef __has_builtin
-    # define __has_builtin(x) 0
-    #endif
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
 
-? i.e. mimicking what we do for `__has_attribute`.
-
-It would also be a nice idea to put a reminder comment like:
-
-    /*
-     * __has_builtin is supported on gcc >= 10, clang >= 3 and icc >= 21.
-     * In the meantime, to support gcc < 10, we implement __has_builtin
-     * by hand.
-     */
-
-Cheers,
-Miguel
+-- 
+Sincerely yours,
+Mike.
