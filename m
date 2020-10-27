@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00A529BB38
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF5729BA59
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805086AbgJ0QA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53326 "EHLO mail.kernel.org"
+        id S1804970AbgJ0QAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:00:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790230AbgJ0PQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:16:28 -0400
+        id S1793972AbgJ0PQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:16:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45DFE2225C;
-        Tue, 27 Oct 2020 15:16:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7559A20657;
+        Tue, 27 Oct 2020 15:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811787;
-        bh=CilbWumy1OkKKoMV0AS7uYNfVWeemj8VkFJRUL7CD0c=;
+        s=default; t=1603811796;
+        bh=DQjGKbpQTULMZhHuUu2Ys3nYEbPtZNpbo/JbdCotYps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hBaoUOQ6hXdU94GAcit015u1uoupABj7cfizU7tb3qwyKJBKOSJBlrtcXJcG7Mz1l
-         v2ItjIBUPCpOc+QMyYjqxyREueTdcETHBI9DqUCXo7lAc1/J8Iaf6QrC5aOVmwbzX+
-         GJGNID2uXZonaFDdI5vmrS+1JiIpLPEoR2mBIwls=
+        b=aCAjZna0E4lpoA67sEAAUZEF+k/HPz0y0a7ZclrE3qPc06btcEC5rPmGs0dPHySgq
+         DwbCpsas++ky0w+FYdRK4X53KCxnDruA3sF8tqKgekKlto9eWA/98IVFjDgPgYG7le
+         hfh+pxCbdjWbNioVsj3tzIB8RAVNggaYqJQYw2vs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 585/633] misc: rtsx: Fix memory leak in rtsx_pci_probe
-Date:   Tue, 27 Oct 2020 14:55:28 +0100
-Message-Id: <20201027135550.251206953@linuxfoundation.org>
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 588/633] xfs: make sure the rt allocator doesnt run off the end
+Date:   Tue, 27 Oct 2020 14:55:31 +0100
+Message-Id: <20201027135550.395057285@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,44 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit bc28369c6189009b66d9619dd9f09bd8c684bb98 ]
+[ Upstream commit 2a6ca4baed620303d414934aa1b7b0a8e7bab05f ]
 
-When mfd_add_devices() fail, pcr->slots should also be freed. However,
-the current implementation does not free the member, leading to a memory
-leak.
+There's an overflow bug in the realtime allocator.  If the rt volume is
+large enough to handle a single allocation request that is larger than
+the maximum bmap extent length and the rt bitmap ends exactly on a
+bitmap block boundary, it's possible that the near allocator will try to
+check the freeness of a range that extends past the end of the bitmap.
+This fails with a corruption error and shuts down the fs.
 
-Fix this by adding a new goto label that frees pcr->slots.
+Therefore, constrain maxlen so that the range scan cannot run off the
+end of the rt bitmap.
 
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Link: https://lore.kernel.org/r/20200909071853.4053-1-keitasuzuki.park@sslab.ics.keio.ac.jp
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/cardreader/rtsx_pcr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/xfs/xfs_rtalloc.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 0d5928bc1b6d7..82246f7aec6fb 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -1536,12 +1536,14 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
- 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
- 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
- 	if (ret < 0)
--		goto disable_irq;
-+		goto free_slots;
- 
- 	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
- 
- 	return 0;
- 
-+free_slots:
-+	kfree(pcr->slots);
- disable_irq:
- 	free_irq(pcr->irq, (void *)pcr);
- disable_msi:
+diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
+index 6209e7b6b895b..86994d7f7cba3 100644
+--- a/fs/xfs/xfs_rtalloc.c
++++ b/fs/xfs/xfs_rtalloc.c
+@@ -247,6 +247,9 @@ xfs_rtallocate_extent_block(
+ 		end = XFS_BLOCKTOBIT(mp, bbno + 1) - 1;
+ 	     i <= end;
+ 	     i++) {
++		/* Make sure we don't scan off the end of the rt volume. */
++		maxlen = min(mp->m_sb.sb_rextents, i + maxlen) - i;
++
+ 		/*
+ 		 * See if there's a free extent of maxlen starting at i.
+ 		 * If it's not so then next will contain the first non-free.
+@@ -442,6 +445,14 @@ xfs_rtallocate_extent_near(
+ 	 */
+ 	if (bno >= mp->m_sb.sb_rextents)
+ 		bno = mp->m_sb.sb_rextents - 1;
++
++	/* Make sure we don't run off the end of the rt volume. */
++	maxlen = min(mp->m_sb.sb_rextents, bno + maxlen) - bno;
++	if (maxlen < minlen) {
++		*rtblock = NULLRTBLOCK;
++		return 0;
++	}
++
+ 	/*
+ 	 * Try the exact allocation first.
+ 	 */
 -- 
 2.25.1
 
