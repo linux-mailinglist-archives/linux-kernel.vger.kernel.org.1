@@ -2,65 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C413529AC9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD5829AC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900394AbgJ0NAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:00:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58592 "EHLO
+        id S2900402AbgJ0NA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:00:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58597 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900387AbgJ0NAy (ORCPT
+        with ESMTP id S2900396AbgJ0NA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:00:54 -0400
+        Tue, 27 Oct 2020 09:00:56 -0400
 Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kXOah-0007gc-MD; Tue, 27 Oct 2020 13:00:44 +0000
+        id 1kXOal-0007hB-0z; Tue, 27 Oct 2020 13:00:47 +0000
 From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
 To:     tiwai@suse.com
 Cc:     perex@perex.cz, hui.wang@canonical.com,
         kai.vehmanen@linux.intel.com, mwolf@adiumentum.com,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH v3 0/3] HDA controller PM and codec PM cleanups
-Date:   Tue, 27 Oct 2020 21:00:35 +0800
-Message-Id: <20201027130038.16463-1-kai.heng.feng@canonical.com>
+Subject: [PATCH v3 1/3] ALSA: hda: Refactor codec PM to use direct-complete optimization
+Date:   Tue, 27 Oct 2020 21:00:36 +0800
+Message-Id: <20201027130038.16463-2-kai.heng.feng@canonical.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201027130038.16463-1-kai.heng.feng@canonical.com>
+References: <20201027130038.16463-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While working on the issue "ALSA: hda: fix jack detection with Realtek
-codecs when in D3", I've found using pm_runtime_force_{suspend,resume}()
-have surprising behavior, specifically, pm_runtime_need_not_resume()
-uses pm_runtime_need_not_resume() to avoid calling resume callback, so
-jackpoll was used to really power up the codec.
+Upon system resume, hda_codec_pm_resume() uses hda_codec_force_resume()
+to resume the codec. However, pm_runtime_force_resume() won't really
+resume the codec because of pm_runtime_need_not_resume() check.
 
-We can use direct-complete to do the keep the codec suspended throughout
-the system PM flow, namely, keep the codec suspended all the way, unless
-the codec needs to be woken up after resume.
+Hence, hda_codec_force_resume() schedules a jackpoll work, which is to
+really power up the codec.
 
-For HDA controller, PCI core may enable direct-complete for it if
-conditions are met. So make runtime and system PM distinctive to always
-apply correct wake up setting.
+Instead of doing that, we can use direct-complete to make the PM flow
+more straightforward, and keep codec always suspended through system PM
+flow if conditions are met.
 
-At least point, hopefully all runtime PM issues are solved, let's enable
-runtime PM by default again.
+On system suspend, PM core will decide what to do based on
+hda_codec_pm_prepare():
+- If codec is not runtime-suspended, PM core will suspend and resume the
+device as normal.
+- If codec is runtime-suspended, PM core will try to keep it suspended.
+If it's still suspended after system resume, we use
+hda_codec_pm_complete() to resume codec if it's needed.
 
-v3:
- - Drop "ALSA: hda: Stop mangling PCI IRQ"
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v3: 
+ - No change
 
-Kai-Heng Feng (3):
-  ALSA: hda: Refactor codec PM to use direct-complete optimization
-  ALSA: hda: Separate runtime and system suspend
-  ALSA: hda: Reinstate runtime_allow() for all hda controllers
+v2:
+ - Also resume when codec->jackpoll_interval is set
 
- sound/pci/hda/hda_codec.c      | 45 +++++++++++++++---------
- sound/pci/hda/hda_controller.h |  3 +-
- sound/pci/hda/hda_intel.c      | 63 +++++++++++++++++++---------------
- 3 files changed, 66 insertions(+), 45 deletions(-)
+ sound/pci/hda/hda_codec.c | 45 +++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
 
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index a356c21edb90..4bb58e8b08a8 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2934,7 +2934,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
+ 	snd_hdac_leave_pm(&codec->core);
+ }
+ 
+-static int hda_codec_runtime_suspend(struct device *dev)
++static int hda_codec_suspend(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 	unsigned int state;
+@@ -2953,7 +2953,7 @@ static int hda_codec_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int hda_codec_runtime_resume(struct device *dev)
++static int hda_codec_resume(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 
+@@ -2967,57 +2967,70 @@ static int hda_codec_runtime_resume(struct device *dev)
+ 	pm_runtime_mark_last_busy(dev);
+ 	return 0;
+ }
++
++static int hda_codec_runtime_suspend(struct device *dev)
++{
++	return hda_codec_suspend(dev);
++}
++
++static int hda_codec_runtime_resume(struct device *dev)
++{
++	return hda_codec_resume(dev);
++}
++
+ #endif /* CONFIG_PM */
+ 
+ #ifdef CONFIG_PM_SLEEP
+-static int hda_codec_force_resume(struct device *dev)
++static int hda_codec_pm_prepare(struct device *dev)
++{
++	return pm_runtime_suspended(dev);
++}
++
++static void hda_codec_pm_complete(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+-	int ret;
+ 
+-	ret = pm_runtime_force_resume(dev);
+-	/* schedule jackpoll work for jack detection update */
+-	if (codec->jackpoll_interval ||
+-	    (pm_runtime_suspended(dev) && hda_codec_need_resume(codec)))
+-		schedule_delayed_work(&codec->jackpoll_work,
+-				      codec->jackpoll_interval);
+-	return ret;
++	if (pm_runtime_suspended(dev) && (codec->jackpoll_interval ||
++	    hda_codec_need_resume(codec) || codec->forced_resume))
++		pm_request_resume(dev);
+ }
+ 
+ static int hda_codec_pm_suspend(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_SUSPEND;
+-	return pm_runtime_force_suspend(dev);
++	return hda_codec_suspend(dev);
+ }
+ 
+ static int hda_codec_pm_resume(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESUME;
+-	return hda_codec_force_resume(dev);
++	return hda_codec_resume(dev);
+ }
+ 
+ static int hda_codec_pm_freeze(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_FREEZE;
+-	return pm_runtime_force_suspend(dev);
++	return hda_codec_suspend(dev);
+ }
+ 
+ static int hda_codec_pm_thaw(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_THAW;
+-	return hda_codec_force_resume(dev);
++	return hda_codec_resume(dev);
+ }
+ 
+ static int hda_codec_pm_restore(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESTORE;
+-	return hda_codec_force_resume(dev);
++	return hda_codec_resume(dev);
+ }
+ #endif /* CONFIG_PM_SLEEP */
+ 
+ /* referred in hda_bind.c */
+ const struct dev_pm_ops hda_codec_driver_pm = {
+ #ifdef CONFIG_PM_SLEEP
++	.prepare = hda_codec_pm_prepare,
++	.complete = hda_codec_pm_complete,
+ 	.suspend = hda_codec_pm_suspend,
+ 	.resume = hda_codec_pm_resume,
+ 	.freeze = hda_codec_pm_freeze,
 -- 
 2.17.1
 
