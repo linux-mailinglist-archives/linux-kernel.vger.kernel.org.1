@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA2D29C269
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8164C29C467
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760732AbgJ0OgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:36:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34214 "EHLO mail.kernel.org"
+        id S1758019AbgJ0OT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760619AbgJ0Ofa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:35:30 -0400
+        id S2901069AbgJ0OSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:18:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6178207BB;
-        Tue, 27 Oct 2020 14:35:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9A85207BB;
+        Tue, 27 Oct 2020 14:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809329;
-        bh=EgbG8939x54jC/rOVlyRwTqvBNMYsEeSwPgAzubUMt8=;
+        s=default; t=1603808302;
+        bh=sIo/7h7FIC8sGsld5TmAz7NDlpLp7pCjHOFMUHYBtbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iEqnzTm9k6/fE68E2M+RRuVJtueFdAfPoMAUgv8gzCzvQ33CSY6Uv7y8cuizU38Oy
-         tvoQ002O3EmPMZSw9eGyCWUJMbkD+Jxm2yvDl/m+LdCHMaq9zwlA5J5mFG+gkZ8xIh
-         dgIpyniNzpsdz5N554UE9/EBgmJVntgCUt5ndmOA=
+        b=tNdEdYm2xwwO4YRk9h0MSKITClAEvrEcrPeOJ/ePBZXNSu9a/JGprcMKr2BnuSLFs
+         H9vtptr8Zvu+k6WNdHWBCKatv/ICXPzjgVxctZiJ3UuVojaEY5wGwVedfOTUfG4UTN
+         4NGczN0Nf2FxRV/K0++1LAZKUUYaOxapvUDeo590=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 158/408] spi: omap2-mcspi: Improve performance waiting for CHSTAT
-Date:   Tue, 27 Oct 2020 14:51:36 +0100
-Message-Id: <20201027135502.423189837@linuxfoundation.org>
+Subject: [PATCH 4.19 039/264] crypto: algif_skcipher - EBUSY on aio should be an error
+Date:   Tue, 27 Oct 2020 14:51:37 +0100
+Message-Id: <20201027135432.503013249@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aswath Govindraju <a-govindraju@ti.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 7b1d96813317358312440d0d07abbfbeb0ef8d22 ]
+[ Upstream commit 2a05b029c1ee045b886ebf9efef9985ca23450de ]
 
-This reverts commit 13d515c796 (spi: omap2-mcspi: Switch to
-readl_poll_timeout()).
+I removed the MAY_BACKLOG flag on the aio path a while ago but
+the error check still incorrectly interpreted EBUSY as success.
+This may cause the submitter to wait for a request that will never
+complete.
 
-The amount of time spent polling for the MCSPI_CHSTAT bits to be set on
-AM335x-icev2 platform is less than 1us (about 0.6us) in most cases, with
-or without using DMA. So, in most cases the function need not sleep.
-Also, setting the sleep_usecs to zero would not be optimal here because
-ktime_add_us() used in readl_poll_timeout() is slower compared to the
-direct addition used after the revert. So, it is sub-optimal to use
-readl_poll_timeout in this case.
-
-When DMA is not enabled, this revert results in an increase of about 27%
-in throughput and decrease of about 20% in CPU usage. However, the CPU
-usage and throughput are almost the same when used with DMA.
-
-Therefore, fix this by reverting the commit which switched to using
-readl_poll_timeout().
-
-Fixes: 13d515c796ad ("spi: omap2-mcspi: Switch to readl_poll_timeout()")
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Link: https://lore.kernel.org/r/20200910122624.8769-1-a-govindraju@ti.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: dad419970637 ("crypto: algif_skcipher - Do not set...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-omap2-mcspi.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ crypto/algif_skcipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
-index 4433cb4de564e..7646b4b56bed9 100644
---- a/drivers/spi/spi-omap2-mcspi.c
-+++ b/drivers/spi/spi-omap2-mcspi.c
-@@ -24,7 +24,6 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/gcd.h>
--#include <linux/iopoll.h>
+diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+index 1cb106c46043d..9d2e9783c0d4e 100644
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -127,7 +127,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 			crypto_skcipher_decrypt(&areq->cra_u.skcipher_req);
  
- #include <linux/spi/spi.h>
- #include <linux/gpio.h>
-@@ -348,9 +347,19 @@ static void omap2_mcspi_set_fifo(const struct spi_device *spi,
+ 		/* AIO operation in progress */
+-		if (err == -EINPROGRESS || err == -EBUSY)
++		if (err == -EINPROGRESS)
+ 			return -EIOCBQUEUED;
  
- static int mcspi_wait_for_reg_bit(void __iomem *reg, unsigned long bit)
- {
--	u32 val;
--
--	return readl_poll_timeout(reg, val, val & bit, 1, MSEC_PER_SEC);
-+	unsigned long timeout;
-+
-+	timeout = jiffies + msecs_to_jiffies(1000);
-+	while (!(readl_relaxed(reg) & bit)) {
-+		if (time_after(jiffies, timeout)) {
-+			if (!(readl_relaxed(reg) & bit))
-+				return -ETIMEDOUT;
-+			else
-+				return 0;
-+		}
-+		cpu_relax();
-+	}
-+	return 0;
- }
- 
- static int mcspi_wait_for_completion(struct  omap2_mcspi *mcspi,
+ 		sock_put(sk);
 -- 
 2.25.1
 
