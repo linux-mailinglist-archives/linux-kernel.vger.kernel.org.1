@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34AA29BAF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF11329B9C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802801AbgJ0Pv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:51:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51314 "EHLO mail.kernel.org"
+        id S1802809AbgJ0Pvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:51:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799848AbgJ0Pdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:33:44 -0400
+        id S1799860AbgJ0Pdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9AC622202;
-        Tue, 27 Oct 2020 15:33:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2C5520728;
+        Tue, 27 Oct 2020 15:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812823;
-        bh=dYcv4tDEhde/s5BoT/Il3EGla2BwCbZdaGugmZ/EUsc=;
+        s=default; t=1603812826;
+        bh=S3FmQrq5G32JwUbm1AVXYhE3s1OK4/lx+DdjaR/FakM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yy1ccHf+/xk1LRu1JUk1f2ZNEQFBnfbgWUzN/PDpS2JSU94CpvEvC/MthQGNSkL3d
-         c0+amTHkS4u5PqVC3taIERoP3hPgSjTngs0YIpyONu6tOEFCoB29hFZyc9dn2yKB4N
-         GpX3IcQfZ3XBYfB47bpuwmtAN986EeXueP/yuN4o=
+        b=y2ZlyM2AVcC6gajSGFlEIa3I0DHAhHkObLQQStEn+CMkJ9Y+y/zLXSa8EXY4iqZVU
+         dHFk6VS/uHBRarc/Vlyv5OAfHXpsF1HaeEklL9YmiOhz8rl+Z/KPrivUCVKOTI+MPD
+         HbyWRO7Jh8jQc878stRK0Q6o3woE00XqEiQunZm8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Thinh Nguyen <thinhn@synopsys.com>,
+        stable@vger.kernel.org, Minas Harutyunyan <hminas@synopsys.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 311/757] usb: dwc3: core: Properly default unspecified speed
-Date:   Tue, 27 Oct 2020 14:49:21 +0100
-Message-Id: <20201027135505.127653562@linuxfoundation.org>
+Subject: [PATCH 5.9 312/757] usb: dwc2: Add missing cleanups when usb_add_gadget_udc() fails
+Date:   Tue, 27 Oct 2020 14:49:22 +0100
+Message-Id: <20201027135505.177053274@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,85 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit b574ce3ee45937f4a01edc98c59213bfc7effe50 ]
+[ Upstream commit e1c08cf23172ed6fb228d75efc9f4c80a6812116 ]
 
-If the maximum_speed is not specified, default the device speed base on
-its HW capability. Don't prematurely check HW capability before
-validating the maximum_speed device property. The device property takes
-precedence in dwc->maximum_speed.
+Call dwc2_debugfs_exit() and dwc2_hcd_remove() (if the HCD was enabled
+earlier) when usb_add_gadget_udc() has failed. This ensures that the
+debugfs entries created by dwc2_debugfs_init() as well as the HCD are
+cleaned up in the error path.
 
-Fixes: 0e1e5c47f7a9 ("usb: dwc3: add support for USB 2.0-only core configuration")
-Reported-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Fixes: 207324a321a866 ("usb: dwc2: Postponed gadget registration to the udc class driver")
+Acked-by: Minas Harutyunyan <hminas@synopsys.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/core.c | 35 ++++++++++++++++++-----------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
+ drivers/usb/dwc2/platform.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 2eb34c8b4065f..c8e0ef2c1db33 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -929,13 +929,6 @@ static int dwc3_core_init(struct dwc3 *dwc)
- 	 */
- 	dwc3_writel(dwc->regs, DWC3_GUID, LINUX_VERSION_CODE);
- 
--	/* Handle USB2.0-only core configuration */
--	if (DWC3_GHWPARAMS3_SSPHY_IFC(dwc->hwparams.hwparams3) ==
--			DWC3_GHWPARAMS3_SSPHY_IFC_DIS) {
--		if (dwc->maximum_speed == USB_SPEED_SUPER)
--			dwc->maximum_speed = USB_SPEED_HIGH;
--	}
--
- 	ret = dwc3_phy_setup(dwc);
- 	if (ret)
- 		goto err0;
-@@ -1381,6 +1374,8 @@ bool dwc3_has_imod(struct dwc3 *dwc)
- static void dwc3_check_params(struct dwc3 *dwc)
- {
- 	struct device *dev = dwc->dev;
-+	unsigned int hwparam_gen =
-+		DWC3_GHWPARAMS3_SSPHY_IFC(dwc->hwparams.hwparams3);
- 
- 	/* Check for proper value of imod_interval */
- 	if (dwc->imod_interval && !dwc3_has_imod(dwc)) {
-@@ -1412,17 +1407,23 @@ static void dwc3_check_params(struct dwc3 *dwc)
- 			dwc->maximum_speed);
- 		fallthrough;
- 	case USB_SPEED_UNKNOWN:
--		/* default to superspeed */
--		dwc->maximum_speed = USB_SPEED_SUPER;
--
--		/*
--		 * default to superspeed plus if we are capable.
--		 */
--		if ((DWC3_IP_IS(DWC31) || DWC3_IP_IS(DWC32)) &&
--		    (DWC3_GHWPARAMS3_SSPHY_IFC(dwc->hwparams.hwparams3) ==
--		     DWC3_GHWPARAMS3_SSPHY_IFC_GEN2))
-+		switch (hwparam_gen) {
-+		case DWC3_GHWPARAMS3_SSPHY_IFC_GEN2:
- 			dwc->maximum_speed = USB_SPEED_SUPER_PLUS;
--
-+			break;
-+		case DWC3_GHWPARAMS3_SSPHY_IFC_GEN1:
-+			if (DWC3_IP_IS(DWC32))
-+				dwc->maximum_speed = USB_SPEED_SUPER_PLUS;
-+			else
-+				dwc->maximum_speed = USB_SPEED_SUPER;
-+			break;
-+		case DWC3_GHWPARAMS3_SSPHY_IFC_DIS:
-+			dwc->maximum_speed = USB_SPEED_HIGH;
-+			break;
-+		default:
-+			dwc->maximum_speed = USB_SPEED_SUPER;
-+			break;
-+		}
- 		break;
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index db9fd4bd1a38c..b28e90e0b685d 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -584,12 +584,16 @@ static int dwc2_driver_probe(struct platform_device *dev)
+ 		if (retval) {
+ 			hsotg->gadget.udc = NULL;
+ 			dwc2_hsotg_remove(hsotg);
+-			goto error_init;
++			goto error_debugfs;
+ 		}
  	}
- }
+ #endif /* CONFIG_USB_DWC2_PERIPHERAL || CONFIG_USB_DWC2_DUAL_ROLE */
+ 	return 0;
+ 
++error_debugfs:
++	dwc2_debugfs_exit(hsotg);
++	if (hsotg->hcd_enabled)
++		dwc2_hcd_remove(hsotg);
+ error_init:
+ 	if (hsotg->params.activate_stm_id_vb_detection)
+ 		regulator_disable(hsotg->usb33d);
 -- 
 2.25.1
 
