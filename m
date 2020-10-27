@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58D829A6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D10429A6DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509272AbgJ0IrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:47:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:49696 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395489AbgJ0IrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:47:07 -0400
-IronPort-SDR: AzEJ2m8Q/gXlzkLPlsfi8IR2T66Hfn/vze5I/L2abBytfbkOyzMVOK2HQlQv8Uep5flw+dJNWO
- T+n8bnJ9Wq8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="185785440"
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="185785440"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 01:47:07 -0700
-IronPort-SDR: pkB0yZgBu4yrbBvF/VdPfd24RDOD1EXaLC5jcnqqXO/+KplfTJP5kBgA7CuGBvMx435HyxF/GG
- LFHOthsbjGpw==
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="525812017"
-Received: from zzhao15-mobl1.ccr.corp.intel.com ([10.255.30.125])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 01:47:05 -0700
-Message-ID: <c4ee77a4c25788a4b65b6e081c61d4ac1933c08f.camel@intel.com>
-Subject: Re: [PATCH v2 2/4] cpufreq: intel_pstate: Avoid missing HWP max
- updates in passive mode
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Date:   Tue, 27 Oct 2020 16:47:02 +0800
-In-Reply-To: <3212190.yEXfVNHMLB@kreacher>
-References: <2183878.gTFULuzKx9@kreacher> <3212190.yEXfVNHMLB@kreacher>
+        id S2509284AbgJ0Irg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:47:36 -0400
+Received: from mail-vk1-f193.google.com ([209.85.221.193]:35319 "EHLO
+        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2444587AbgJ0Irg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:47:36 -0400
+Received: by mail-vk1-f193.google.com with SMTP id a8so178698vkm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:47:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
+        b=GW1yTCAzKbWmmDP5TMTt3VjlCUE1eO2luUYbisIyY3F5ls2yQ/xVnUe2YvUiJpEeU/
+         RJ0dG4hYN3fk9+DpXcS6BRbHSqd1ax1Jf7yoWS+CBFww7RyLWfPlryd/NZ/Lt7TNuFag
+         MQkozWK7dnk2Zq5n219ik/SpZs1ZddTK4/+WKb2elUZ5o0rL8K8Foyw7C0x2eGWiHyUv
+         c3DSan4HNOzzZCrHff5L8doPEKEpKCc8zkuhNYkj/n28Jtm1NYHZqeXv56U8tP8epJ12
+         nU7ljsrYxEwwAX4UiKjvcm7rHYUiW1mSH8QUFUJSZp7MehggyOQfGzRuueoHeYY2LsgM
+         Y8Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=3niQnp6Xkf21oPQ9gKE5EOxxtej8Exq79aPM4XzaEgA=;
+        b=RAZCjthqrG9StltkqeV6pYs9BJ/+A1yBfLf4fSuPk1GFY8XkA4FizZVpR9G4m/C2sh
+         CcPveiX7uhd5C86fMfyqeHSAKjsQIJkQ6SEmgwOEIOQgjCv9Qe8XoS6Cs/ewgvWMUhSk
+         TclPX1qzbUQYB1MCNoIULcK968rVTJMym74YOqtk3iFtCn8rtsig/Gtl8jiaby2OZIoT
+         i7I6P7yo++Ng0jhppxSFLq2Ti1BDEyXd8k54yFDAipf5d1zeXkbDy7DEAgDIKHIMggXO
+         m4dFt2ZUX/6EngOSrCR0+pH0nA15wBDJYEo0C6JSwG9L6uSgxFU0WoBkZOr9HNBvRxfo
+         DzPg==
+X-Gm-Message-State: AOAM531ns8T5b6cTT31ZEvQ9Q8bivsPgTkpZUAJ9XFKLGNZCjOKZHo+F
+        3eifHbJYdkE3vGMhSX3RHyFjaPhf9olkdzmZC04=
+X-Google-Smtp-Source: ABdhPJxTHTCJWotAUTCyvAuDNrOfK8u2/eLfKf42DljLCoQUEcmKw6eNHBi57I5i95va7kHq9J8unFje4RdYyhrTvZ8=
+X-Received: by 2002:a1f:5c87:: with SMTP id q129mr586949vkb.13.1603788454120;
+ Tue, 27 Oct 2020 01:47:34 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: oliviaeorge@hotmail.com
+Sender: olusimton@gmail.com
+Received: by 2002:a67:ec4b:0:0:0:0:0 with HTTP; Tue, 27 Oct 2020 01:47:33
+ -0700 (PDT)
+From:   George Olivia <oliviaeorge@gmail.com>
+Date:   Tue, 27 Oct 2020 02:47:33 -0600
+X-Google-Sender-Auth: nl1ukhgpSNhnZU_jYafCnWNDaHo
+Message-ID: <CAAkOt0dpAx60SKtpTJX0BSLZ7SSLUzOLYmiRz7GpdTCG3E7kYw@mail.gmail.com>
+Subject: I need your prompt response
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-23 at 17:35 +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> If the cpufreq policy max limit is changed when intel_pstate operates
-> in the passive mode with HWP enabled and the "powersave" governor is
-> used on top of it, the HWP max limit is not updated as appropriate.
-> 
-> Namely, in the "powersave" governor case, the target P-state
-> is always equal to the policy min limit, so if the latter does
-> not change, intel_cpufreq_adjust_hwp() is not invoked to update
-> the HWP Request MSR due to the "target_pstate != old_pstate" check
-> in intel_cpufreq_update_pstate(), so the HWP max limit is not
-> updated as a result.
-> 
-> Also, if the CPUFREQ_NEED_UPDATE_LIMITS flag is not set for the
-> driver and the target frequency does not change along with the
-> policy max limit, the "target_freq == policy->cur" check in
-> __cpufreq_driver_target() prevents the driver's ->target() callback
-> from being invoked at all, so the HWP max limit is not updated.
-> 
-> To prevent that occurring, set the CPUFREQ_NEED_UPDATE_LIMITS flag
-> in the intel_cpufreq driver structure if HWP is enabled and modify
-> intel_cpufreq_update_pstate() to do the "target_pstate != old_pstate"
-> check only in the non-HWP case and let intel_cpufreq_adjust_hwp()
-> always run in the HWP case (it will update HWP Request only if the
-> cached value of the register is different from the new one including
-> the limits, so if neither the target P-state value nor the max limit
-> changes, the register write will still be avoided).
-> 
-> Fixes: f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive mode
-> with HWP enabled")
-> Reported-by: Zhang Rui <rui.zhang@intel.com>
-> Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+With due respect, I am Mrs. George Olivia; I have decided to donate
+what I have to you / Motherless babies/Less privileged/Widows' because
+I am dying and diagnosed for cancer for about 2 years ago. I have been
+touched by God Almighty to donate from what I have inherited from my
+late husband to you for good work of God Almighty. I have asked
+Almighty God to forgive me and believe he has, because he is a
+Merciful God I will be going in for an operation surgery soon.
 
-I have confirmed that the problem is gone with this patch series
-applied.
-The HWP register is updated after changing the scaling_max_freq sysfs
-attribute, with powersave governor.
+I decided to will/donate the sum of ($ 8.1 million DOLLARS) to you for
+the good work of God Almighty, and also to help the motherless and
+less privilege and also forth assistance of the widows. At the moment
+I cannot take any telephone calls right now due to the fact that my
+relatives (that have squandered the funds gave them for this purpose
+before) are around me and my health status also. I have adjusted my
+will and my lawyer is aware.
 
-Tested-by: Zhang Rui <rui.zhang@intel.com>
+I wish you all the best and May the good Lord bless you abundantly,
+and please use the funds judiciously and always extend the good work
+to others. As soon as you get back to me, I shall give you info on
+what I need from you, then you will contact the bank and tell them I
+have willed those properties to you by quoting my personal file
+routing and account information. And I have also notified the bank
+that I am willing that properties to you for a good, effective and
+prudent work. I know I don't know you but I have been directed to do
+this by God Almighty.
 
-thanks,
-rui
-> ---
-> 
-> The v2 is just the intel_pstate changes (without the core changes)
-> and setting
-> the new flag.
-> 
-> ---
->  drivers/cpufreq/intel_pstate.c |   13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> Index: linux-pm/drivers/cpufreq/intel_pstate.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-> +++ linux-pm/drivers/cpufreq/intel_pstate.c
-> @@ -2550,14 +2550,12 @@ static int intel_cpufreq_update_pstate(s
->  	int old_pstate = cpu->pstate.current_pstate;
->  
->  	target_pstate = intel_pstate_prepare_request(cpu,
-> target_pstate);
-> -	if (target_pstate != old_pstate) {
-> +	if (hwp_active) {
-> +		intel_cpufreq_adjust_hwp(cpu, target_pstate,
-> fast_switch);
-> +		cpu->pstate.current_pstate = target_pstate;
-> +	} else if (target_pstate != old_pstate) {
-> +		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate,
-> fast_switch);
->  		cpu->pstate.current_pstate = target_pstate;
-> -		if (hwp_active)
-> -			intel_cpufreq_adjust_hwp(cpu, target_pstate,
-> -						 fast_switch);
-> -		else
-> -			intel_cpufreq_adjust_perf_ctl(cpu,
-> target_pstate,
-> -						      fast_switch);
->  	}
->  
->  	intel_cpufreq_trace(cpu, fast_switch ?
-> INTEL_PSTATE_TRACE_FAST_SWITCH :
-> @@ -3014,6 +3012,7 @@ static int __init intel_pstate_init(void
->  			hwp_mode_bdw = id->driver_data;
->  			intel_pstate.attr = hwp_cpufreq_attrs;
->  			intel_cpufreq.attr = hwp_cpufreq_attrs;
-> +			intel_cpufreq.flags |=
-> CPUFREQ_NEED_UPDATE_LIMITS;
->  			if (!default_driver)
->  				default_driver = &intel_pstate;
->  
-> 
-> 
-> 
+I Have all my Hospital document which i can send to you as prove to
+what am tell you and my seriousness to this. If you are interested in
+carrying out this task, get back to me for more details on this noble
+project of mine.
 
+Yours Faithfully,
+Mrs. George Olivia
