@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C6629AF89
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4967729AF91
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755363AbgJ0OJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:09:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58832 "EHLO mail.kernel.org"
+        id S2507033AbgJ0OLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:11:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408067AbgJ0OJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:09:35 -0400
+        id S2900544AbgJ0OJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:09:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C96F722202;
-        Tue, 27 Oct 2020 14:09:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9281022263;
+        Tue, 27 Oct 2020 14:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807775;
-        bh=Noym+lf8cZ47Ly+mv+s8DXWgLUwSiQZUDXTZQt2zu7A=;
+        s=default; t=1603807778;
+        bh=DlYbAzA6iOZDSk6ag16mLvWrHjHmAkC9DuNGKlCcMKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DojXupZvKB6xEY7YGna4lfXsh8b9V1wa+ZeFYXLK7uMTMV1sXXRgj8SsSr2f+MjLA
-         eg/DxhYf2GKDenfjEqgJ4PIW6r6nWVMglK3NRjV5NyrHtfFkvAkAvX+X1VilZlbE5U
-         R0xymkEViWJT7ur2i6ZOb7DyXOP5XfTSKQowOQJc=
+        b=sh8rHiZIYyaP63Sy9w/fziefJQgQpKyAKz4rsc35VMkh3yCE3/JyBQIe58oFPsT7r
+         tEYuNi+2QWCBB3ur+J9AThaswBqBL9qef1E+tTOmPsVMKuajHGG0aixQWtIhn2EB3n
+         xCabEm7RmXSDMXIqty58KmLUTy+bB3/TMC0acP9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 006/191] tipc: fix the skb_unshare() in tipc_buf_append()
-Date:   Tue, 27 Oct 2020 14:47:41 +0100
-Message-Id: <20201027134910.018656697@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        "Sunmeet Gill (Sunny)" <sgill@quicinc.com>,
+        Vinay Paradkar <vparadka@qti.qualcomm.com>,
+        Tyler Wear <twear@quicinc.com>,
+        David Ahern <dsahern@kernel.org>
+Subject: [PATCH 4.14 007/191] net/ipv4: always honour route mtu during forwarding
+Date:   Tue, 27 Oct 2020 14:47:42 +0100
+Message-Id: <20201027134910.063553930@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -46,41 +49,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: "Maciej Żenczykowski" <maze@google.com>
 
-[ Upstream commit ed42989eab57d619667d7e87dfbd8fe207db54fe ]
+[ Upstream commit 02a1b175b0e92d9e0fa5df3957ade8d733ceb6a0 ]
 
-skb_unshare() drops a reference count on the old skb unconditionally,
-so in the failure case, we end up freeing the skb twice here.
-And because the skb is allocated in fclone and cloned by caller
-tipc_msg_reassemble(), the consequence is actually freeing the
-original skb too, thus triggered the UAF by syzbot.
+Documentation/networking/ip-sysctl.txt:46 says:
+  ip_forward_use_pmtu - BOOLEAN
+    By default we don't trust protocol path MTUs while forwarding
+    because they could be easily forged and can lead to unwanted
+    fragmentation by the router.
+    You only need to enable this if you have user-space software
+    which tries to discover path mtus by itself and depends on the
+    kernel honoring this information. This is normally not the case.
+    Default: 0 (disabled)
+    Possible values:
+    0 - disabled
+    1 - enabled
 
-Fix this by replacing this skb_unshare() with skb_cloned()+skb_copy().
+Which makes it pretty clear that setting it to 1 is a potential
+security/safety/DoS issue, and yet it is entirely reasonable to want
+forwarded traffic to honour explicitly administrator configured
+route mtus (instead of defaulting to device mtu).
 
-Fixes: ff48b6222e65 ("tipc: use skb_unshare() instead in tipc_buf_append()")
-Reported-and-tested-by: syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
-Cc: Jon Maloy <jmaloy@redhat.com>
-Cc: Ying Xue <ying.xue@windriver.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Indeed, I can't think of a single reason why you wouldn't want to.
+Since you configured a route mtu you probably know better...
+
+It is pretty common to have a higher device mtu to allow receiving
+large (jumbo) frames, while having some routes via that interface
+(potentially including the default route to the internet) specify
+a lower mtu.
+
+Note that ipv6 forwarding uses device mtu unless the route is locked
+(in which case it will use the route mtu).
+
+This approach is not usable for IPv4 where an 'mtu lock' on a route
+also has the side effect of disabling TCP path mtu discovery via
+disabling the IPv4 DF (don't frag) bit on all outgoing frames.
+
+I'm not aware of a way to lock a route from an IPv6 RA, so that also
+potentially seems wrong.
+
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Cc: Sunmeet Gill (Sunny) <sgill@quicinc.com>
+Cc: Vinay Paradkar <vparadka@qti.qualcomm.com>
+Cc: Tyler Wear <twear@quicinc.com>
+Cc: David Ahern <dsahern@kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/net/ip.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -140,7 +140,8 @@ int tipc_buf_append(struct sk_buff **hea
- 	if (fragid == FIRST_FRAGMENT) {
- 		if (unlikely(head))
- 			goto err;
--		frag = skb_unshare(frag, GFP_ATOMIC);
-+		if (skb_cloned(frag))
-+			frag = skb_copy(frag, GFP_ATOMIC);
- 		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -364,12 +364,18 @@ static inline unsigned int ip_dst_mtu_ma
+ 						    bool forwarding)
+ {
+ 	struct net *net = dev_net(dst->dev);
++	unsigned int mtu;
+ 
+ 	if (net->ipv4.sysctl_ip_fwd_use_pmtu ||
+ 	    ip_mtu_locked(dst) ||
+ 	    !forwarding)
+ 		return dst_mtu(dst);
+ 
++	/* 'forwarding = true' case should always honour route mtu */
++	mtu = dst_metric_raw(dst, RTAX_MTU);
++	if (mtu)
++		return mtu;
++
+ 	return min(READ_ONCE(dst->dev->mtu), IP_MAX_MTU);
+ }
+ 
 
 
