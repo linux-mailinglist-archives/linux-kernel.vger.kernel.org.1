@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E46329C6BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DE129C5DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827219AbgJ0SWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
+        id S1756746AbgJ0OOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753833AbgJ0OCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:02:36 -0400
+        id S1755732AbgJ0OKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EA302222C;
-        Tue, 27 Oct 2020 14:02:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97D3D2072D;
+        Tue, 27 Oct 2020 14:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807355;
-        bh=ToyCB8mOlzlUvQGlaoOa2u6cJZk+wfEy1fgrRDwiyKc=;
+        s=default; t=1603807843;
+        bh=gs572yzi9DtUTqIEsOp/fXLzap33LPim28JRC4DjSJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CwQM3o1RpyOaIWfE2k9w852UAOxsuFR2tAh8P/odRzY43pPfNsX7bPYxOxU624Gm/
-         pNOBHYb6e+Ts5CSnkdW4g3be8xXBpggh1nyn0cWxE77TfXKV/cWOcGxZX/BrSG5YnT
-         GAOxlDpEoMr33bjPmdkU40s3h+EDJXVyAquLtMd4=
+        b=dpdCfDGuVdygjmn0h6B5g1KsWrW2dZ0wMYyQ1+yAPwe2QItjeWfZtGRo9ktyUUjiK
+         nWyAmEh0+3n7je3Hpvpjlkgp7pbMjCH2J+xmCQX/nL+zEhJF5n9VoPKe/oH/Srz6sb
+         Ik1h06qdjoxuS0F9Fdu1FSY5Vr/3UWLQM69gGKx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 022/139] media: platform: fcp: Fix a reference count leak.
+Subject: [PATCH 4.14 061/191] video: fbdev: vga16fb: fix setting of pixclock because a pass-by-value error
 Date:   Tue, 27 Oct 2020 14:48:36 +0100
-Message-Id: <20201027134903.186342579@linuxfoundation.org>
+Message-Id: <20201027134912.665890201@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +45,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 63e36a381d92a9cded97e90d481ee22566557dd1 ]
+[ Upstream commit c72fab81ceaa54408b827a2f0486d9a0f4be34cf ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code, causing incorrect ref count if
-pm_runtime_put_noidle() is not called in error handling paths.
-Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+The pixclock is being set locally because it is being passed as a
+pass-by-value argument rather than pass-by-reference, so the computed
+pixclock is never being set in var->pixclock. Fix this by passing
+by reference.
 
-Fixes: 6eaafbdb668b ("[media] v4l: rcar-fcp: Keep the coding style consistent")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+[This dates back to 2002, I found the offending commit from the git
+history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git ]
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Jani Nikula <jani.nikula@intel.com>
+[b.zolnierkie: minor patch summary fixup]
+[b.zolnierkie: removed "Fixes:" tag (not in upstream tree)]
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200723170227.996229-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar-fcp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/vga16fb.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/platform/rcar-fcp.c b/drivers/media/platform/rcar-fcp.c
-index 8e9c3bd36d03e..5b5722e65e9b9 100644
---- a/drivers/media/platform/rcar-fcp.c
-+++ b/drivers/media/platform/rcar-fcp.c
-@@ -107,8 +107,10 @@ int rcar_fcp_enable(struct rcar_fcp_device *fcp)
- 		return 0;
- 
- 	ret = pm_runtime_get_sync(fcp->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(fcp->dev);
- 		return ret;
-+	}
- 
- 	return 0;
+diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
+index ee6957a799bb6..aea8fd85cbf70 100644
+--- a/drivers/video/fbdev/vga16fb.c
++++ b/drivers/video/fbdev/vga16fb.c
+@@ -243,7 +243,7 @@ static void vga16fb_update_fix(struct fb_info *info)
  }
+ 
+ static void vga16fb_clock_chip(struct vga16fb_par *par,
+-			       unsigned int pixclock,
++			       unsigned int *pixclock,
+ 			       const struct fb_info *info,
+ 			       int mul, int div)
+ {
+@@ -259,14 +259,14 @@ static void vga16fb_clock_chip(struct vga16fb_par *par,
+ 		{     0 /* bad */,    0x00, 0x00}};
+ 	int err;
+ 
+-	pixclock = (pixclock * mul) / div;
++	*pixclock = (*pixclock * mul) / div;
+ 	best = vgaclocks;
+-	err = pixclock - best->pixclock;
++	err = *pixclock - best->pixclock;
+ 	if (err < 0) err = -err;
+ 	for (ptr = vgaclocks + 1; ptr->pixclock; ptr++) {
+ 		int tmp;
+ 
+-		tmp = pixclock - ptr->pixclock;
++		tmp = *pixclock - ptr->pixclock;
+ 		if (tmp < 0) tmp = -tmp;
+ 		if (tmp < err) {
+ 			err = tmp;
+@@ -275,7 +275,7 @@ static void vga16fb_clock_chip(struct vga16fb_par *par,
+ 	}
+ 	par->misc |= best->misc;
+ 	par->clkdiv = best->seq_clock_mode;
+-	pixclock = (best->pixclock * div) / mul;		
++	*pixclock = (best->pixclock * div) / mul;
+ }
+ 			       
+ #define FAIL(X) return -EINVAL
+@@ -497,10 +497,10 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
+ 
+ 	if (mode & MODE_8BPP)
+ 		/* pixel clock == vga clock / 2 */
+-		vga16fb_clock_chip(par, var->pixclock, info, 1, 2);
++		vga16fb_clock_chip(par, &var->pixclock, info, 1, 2);
+ 	else
+ 		/* pixel clock == vga clock */
+-		vga16fb_clock_chip(par, var->pixclock, info, 1, 1);
++		vga16fb_clock_chip(par, &var->pixclock, info, 1, 1);
+ 	
+ 	var->red.offset = var->green.offset = var->blue.offset = 
+ 	var->transp.offset = 0;
 -- 
 2.25.1
 
