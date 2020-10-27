@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAC929AEC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C5C29AEC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754055AbgJ0ODz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        id S1754075AbgJ0OED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754043AbgJ0ODv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:51 -0400
+        id S1754060AbgJ0OD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:03:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8206B22282;
-        Tue, 27 Oct 2020 14:03:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60FBD22264;
+        Tue, 27 Oct 2020 14:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807431;
-        bh=/baYraJi+Pht6vpdWJf47jOweaIOgbrOL5aPIbqatZo=;
+        s=default; t=1603807439;
+        bh=6iMBtlQdRbJIag1x6++qJXPiPFHHnfdmxqQxp594tgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2l6f+pVoJbeTcf+b8lFyCgno25bVWw7yrSrYparDmRi0d8Vg5a5RZ1uGzM5gr5iqN
-         WYpwsARZE+iSHyYpRzUcaiwabl0QqvgNLZEc5f6TUuduni6VQHFUfnCY631ybuKwPU
-         BWmXlnR5e7u9G3DhK6w7v3LZk7EJvFV8pwWi6MQI=
+        b=LfFEvjdOGHUzvF0QDVigA2R4e28cCQiTIAH7uEVJgmcBaM1u/XQV9ILXU7m6CBDEd
+         a2lpiW0vWBFfcIJbUgrjJtEkcFmXKxkQpxuzxGy25QMDiDunbcRRj8PJXnKm39zT/L
+         wzhVhGOGCV7BYnJUhZQdPUkYhcRGVkn4ZYHL1Oz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 051/139] usb: gadget: u_ether: enable qmult on SuperSpeed Plus as well
-Date:   Tue, 27 Oct 2020 14:49:05 +0100
-Message-Id: <20201027134904.552035241@linuxfoundation.org>
+Subject: [PATCH 4.9 053/139] scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()
+Date:   Tue, 27 Oct 2020 14:49:07 +0100
+Message-Id: <20201027134904.649655057@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
 References: <20201027134902.130312227@linuxfoundation.org>
@@ -45,51 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Colitti <lorenzo@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 4eea21dc67b0c6ba15ae41b1defa113a680a858e ]
+[ Upstream commit 38b2db564d9ab7797192ef15d7aade30633ceeae ]
 
-The u_ether driver has a qmult setting that multiplies the
-transmit queue length (which by default is 2).
+The be_fill_queue() function can only fail when "eq_vaddress" is NULL and
+since it's non-NULL here that means the function call can't fail.  But
+imagine if it could, then in that situation we would want to store the
+"paddr" so that dma memory can be released.
 
-The intent is that it should be enabled at high/super speed, but
-because the code does not explicitly check for USB_SUPER_PLUS,
-it is disabled at that speed.
-
-Fix this by ensuring that the queue multiplier is enabled for any
-wired link at high speed or above. Using >= for USB_SPEED_*
-constants seems correct because it is what the gadget_is_xxxspeed
-functions do.
-
-The queue multiplier substantially helps performance at higher
-speeds. On a direct SuperSpeed Plus link to a Linux laptop,
-iperf3 single TCP stream:
-
-Before (qmult=1): 1.3 Gbps
-After  (qmult=5): 3.2 Gbps
-
-Fixes: 04617db7aa68 ("usb: gadget: add SS descriptors to Ethernet gadget")
-Reviewed-by: Maciej Żenczykowski <maze@google.com>
-Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Link: https://lore.kernel.org/r/20200928091300.GD377727@mwanda
+Fixes: bfead3b2cb46 ("[SCSI] be2iscsi: Adding msix and mcc_rings V3")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/u_ether.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/be2iscsi/be_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
-index d5fbc2352029b..589d1f5fb575a 100644
---- a/drivers/usb/gadget/function/u_ether.c
-+++ b/drivers/usb/gadget/function/u_ether.c
-@@ -97,7 +97,7 @@ struct eth_dev {
- static inline int qlen(struct usb_gadget *gadget, unsigned qmult)
- {
- 	if (gadget_is_dualspeed(gadget) && (gadget->speed == USB_SPEED_HIGH ||
--					    gadget->speed == USB_SPEED_SUPER))
-+					    gadget->speed >= USB_SPEED_SUPER))
- 		return qmult * DEFAULT_QLEN;
- 	else
- 		return DEFAULT_QLEN;
+diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
+index 741cc96379cb7..04788e0b90236 100644
+--- a/drivers/scsi/be2iscsi/be_main.c
++++ b/drivers/scsi/be2iscsi/be_main.c
+@@ -3052,6 +3052,7 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
+ 		if (!eq_vaddress)
+ 			goto create_eq_error;
+ 
++		mem->dma = paddr;
+ 		mem->va = eq_vaddress;
+ 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
+ 				    sizeof(struct be_eq_entry), eq_vaddress);
+@@ -3061,7 +3062,6 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
+ 			goto create_eq_error;
+ 		}
+ 
+-		mem->dma = paddr;
+ 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
+ 					    phwi_context->cur_eqd);
+ 		if (ret) {
+@@ -3116,6 +3116,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
+ 		if (!cq_vaddress)
+ 			goto create_cq_error;
+ 
++		mem->dma = paddr;
+ 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
+ 				    sizeof(struct sol_cqe), cq_vaddress);
+ 		if (ret) {
+@@ -3125,7 +3126,6 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
+ 			goto create_cq_error;
+ 		}
+ 
+-		mem->dma = paddr;
+ 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
+ 					    false, 0);
+ 		if (ret) {
 -- 
 2.25.1
 
