@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06A729C9BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DF329C9BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830916AbgJ0UIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:08:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55130 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504820AbgJ0UIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:08:12 -0400
-Received: from zn.tnic (p200300ec2f0dae0027de8a0d2c2515c8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:27de:8a0d:2c25:15c8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AF33A1EC03C1;
-        Tue, 27 Oct 2020 21:08:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1603829290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+i5e7y4zrzzXLxL+wnxdCVox1HHvWMsATZ7U/XZnHdA=;
-        b=Mkla+x/UCwglP/js+4HkoEspPrCtO4l/TZWsSuX3Ywdn1ccMJyrMVZD9U4N4c5p112N5oK
-        0DqMjlh8YVSHF9d00O3KRmNHWudyp2quh2erQ4sSFPwOqG98JzKPdwFSYtVo3IhR9UH7+v
-        SEk+jvSTfKBhoPhdiBnyMXqGeqvTIoE=
-Date:   Tue, 27 Oct 2020 21:08:03 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
-Message-ID: <20201027200803.GL15580@zn.tnic>
-References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
+        id S1830928AbgJ0UIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:08:36 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:38909 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1830920AbgJ0UIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:08:34 -0400
+Received: by mail-io1-f65.google.com with SMTP id y20so2945296iod.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=4HIc/0MR2zHvdieD9zh6vgSLY8pbQbGIFImMryqW80s=;
+        b=PPPa3tmp2ks9hMD+/SvUol0Jx+R7oBCr+e32JI5nCuiG5v1h2ucr/FqTIkj9xsqVMk
+         82ZR0Ou9cOuG1rkvlK/33AXrWcAmuXcDoj7+Ax3tfPhEd4XOPHUE2JgiVGcHG2kAVp07
+         zvMESFRR7oZiOKXo8KvZpW4q9iZ9AgHen6rdI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4HIc/0MR2zHvdieD9zh6vgSLY8pbQbGIFImMryqW80s=;
+        b=ErrHCiqJrJRiKRcIJH5bOdp7WyB0zjGnQbwnZ8+Wps28kbp8iDA5yQ93csXn+gvTJj
+         ByoM3kmbTnI+aa3VfvG+SDCvr4Lz7cRcvjNxJGgEz6OBKpXowToL24v3YKrBpcoVl6TS
+         hxcu1ee8T08gW8TylGpD6lk0ERF27WiBwjxdd7SdRbwknGOU1VHGWJxe+mzFP2ltEGcs
+         N60UCBegLTdXIQrI1CPUVh0oaejfJriTnH/YXUxQ7VDXs/km6Fi11+rfKe20DWwbC5+4
+         +aDS5uoDvjhwuUzQZsO+uM+/pDyNueSoTBcqPjpUrWUWZ8RbkgNbbX2SE/qGUQkDASvo
+         EnKg==
+X-Gm-Message-State: AOAM532/lD9K6fAneqWiisDDvWRHlQqH55HQkORN3RSN1KhwsSHn71tI
+        Sr+DGjxFcy/XaKLOUrMxEK16ZA==
+X-Google-Smtp-Source: ABdhPJxEnhHXp/fd89iC17rp6whQwz7mY2Q1l1AjQHbSPGMfQBiuPwlJgoZQ8cCXi+zUMR++RBiyyw==
+X-Received: by 2002:a6b:cf18:: with SMTP id o24mr3595316ioa.57.1603829313981;
+        Tue, 27 Oct 2020 13:08:33 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r14sm1456512ilc.78.2020.10.27.13.08.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 13:08:33 -0700 (PDT)
+Subject: Re: [PATCH] selftests: intel_pstate: ftime() is deprecated
+To:     Tommi Rantala <tommi.t.rantala@nokia.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201016132245.73378-1-tommi.t.rantala@nokia.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <d315994a-3398-be41-1b26-e78f8359aa5c@linuxfoundation.org>
+Date:   Tue, 27 Oct 2020 14:08:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201005151539.2214095-1-nivedita@alum.mit.edu>
+In-Reply-To: <20201016132245.73378-1-tommi.t.rantala@nokia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:15:39AM -0400, Arvind Sankar wrote:
-> Commit b4e0409a36f4 ("x86: check vmlinux limits, 64-bit") added a check
-> that the size of the 64-bit kernel is less than KERNEL_IMAGE_SIZE.
+Hi Tommi,
+
+On 10/16/20 7:22 AM, Tommi Rantala wrote:
+> Use clock_gettime() instead of deprecated ftime().
 > 
-> The check uses (_end - _text), but this is not enough. The initial PMD
-> used in startup_64() (level2_kernel_pgt) can only map upto
-> KERNEL_IMAGE_SIZE from __START_KERNEL_map, not from _text.
+>    aperf.c: In function ‘main’:
+>    aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-declarations]
+>       58 |  ftime(&before);
+>          |  ^~~~~
+>    In file included from aperf.c:9:
+>    /usr/include/sys/timeb.h:39:12: note: declared here
+>       39 | extern int ftime (struct timeb *__timebuf)
+>          |            ^~~~~
 > 
-> The correct check is the same as for 32-bit, since LOAD_OFFSET is
-> defined appropriately for the two architectures. Just check
-> (_end - LOAD_OFFSET) against KERNEL_IMAGE_SIZE unconditionally.
-> 
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+
+Thanks for the fix. One comment below
+
+> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
 > ---
->  arch/x86/kernel/vmlinux.lds.S | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
+>   tools/testing/selftests/intel_pstate/aperf.c | 17 ++++++++++++-----
+>   1 file changed, 12 insertions(+), 5 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-> index bf9e0adb5b7e..b38832821b98 100644
-> --- a/arch/x86/kernel/vmlinux.lds.S
-> +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -454,13 +454,12 @@ SECTIONS
->  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
->  }
->  
-> -#ifdef CONFIG_X86_32
->  /*
->   * The ASSERT() sink to . is intentional, for binutils 2.14 compatibility:
->   */
->  . = ASSERT((_end - LOAD_OFFSET <= KERNEL_IMAGE_SIZE),
->  	   "kernel image bigger than KERNEL_IMAGE_SIZE");
-> -#else
-> +#ifdef CONFIG_X86_64
->  /*
->   * Per-cpu symbols which need to be offset from __per_cpu_load
->   * for the boot processor.
-> @@ -470,18 +469,12 @@ INIT_PER_CPU(gdt_page);
->  INIT_PER_CPU(fixed_percpu_data);
->  INIT_PER_CPU(irq_stack_backing_store);
->  
-> -/*
-> - * Build-time check on the image size:
-> - */
-> -. = ASSERT((_end - _text <= KERNEL_IMAGE_SIZE),
-> -	   "kernel image bigger than KERNEL_IMAGE_SIZE");
+> diff --git a/tools/testing/selftests/intel_pstate/aperf.c b/tools/testing/selftests/intel_pstate/aperf.c
+> index f6cd03a87493..eea9dbab459b 100644
+> --- a/tools/testing/selftests/intel_pstate/aperf.c
+> +++ b/tools/testing/selftests/intel_pstate/aperf.c
+> @@ -10,6 +10,7 @@
+>   #include <sched.h>
+>   #include <errno.h>
+>   #include <string.h>
+> +#include <time.h>
+>   #include "../kselftest.h"
+>   
+>   void usage(char *name) {
+> @@ -22,7 +23,7 @@ int main(int argc, char **argv) {
+>   	long long tsc, old_tsc, new_tsc;
+>   	long long aperf, old_aperf, new_aperf;
+>   	long long mperf, old_mperf, new_mperf;
+> -	struct timeb before, after;
+> +	struct timespec before, after;
+>   	long long int start, finish, total;
+>   	cpu_set_t cpuset;
+>   
+> @@ -55,7 +56,10 @@ int main(int argc, char **argv) {
+>   		return 1;
+>   	}
+>   
+> -	ftime(&before);
+> +	if (clock_gettime(CLOCK_MONOTONIC, &before) < 0) {
+> +		perror("clock_gettime");
+> +		return 1;
+> +	}
+>   	pread(fd, &old_tsc,  sizeof(old_tsc), 0x10);
+>   	pread(fd, &old_aperf,  sizeof(old_mperf), 0xe7);
+>   	pread(fd, &old_mperf,  sizeof(old_aperf), 0xe8);
+> @@ -64,7 +68,10 @@ int main(int argc, char **argv) {
+>   		sqrt(i);
+>   	}
+>   
+> -	ftime(&after);
+> +	if (clock_gettime(CLOCK_MONOTONIC, &after) < 0) {
+> +		perror("clock_gettime");
+> +		return 1;
+> +	}
+>   	pread(fd, &new_tsc,  sizeof(new_tsc), 0x10);
+>   	pread(fd, &new_aperf,  sizeof(new_mperf), 0xe7);
+>   	pread(fd, &new_mperf,  sizeof(new_aperf), 0xe8);
+> @@ -73,8 +80,8 @@ int main(int argc, char **argv) {
+>   	aperf = new_aperf-old_aperf;
+>   	mperf = new_mperf-old_mperf;
+>   
+> -	start = before.time*1000 + before.millitm;
+> -	finish = after.time*1000 + after.millitm;
+> +	start = before.tv_sec*1000 + before.tv_nsec/1000000L;
+> +	finish = after.tv_sec*1000 + after.tv_nsec/1000000L;
 
-So we have this:
+Why not use timespec dNSEC_PER_MSEC define from  include/vdso/time64.h?
 
-SECTIONS
-{       
-#ifdef CONFIG_X86_32
-        . = LOAD_OFFSET + LOAD_PHYSICAL_ADDR;
-        phys_startup_32 = ABSOLUTE(startup_32 - LOAD_OFFSET);
-#else     
-        . = __START_KERNEL;
-	^^^^^^^^^^
+thanks,
+-- Shuah
 
-which sets the location counter to
-
-#define __START_KERNEL          (__START_KERNEL_map + __PHYSICAL_START)
-
-which is 	0xffffffff80000000 + ALIGN(CONFIG_PHYSICAL_START, CONFIG_PHYSICAL_ALIGN)
-
-and that second term after the '+' has effect only when
-CONFIG_RELOCATABLE=n and that's not really used on modern kernel configs
-as RELOCATABLE is selected by EFI_STUB and RANDOMIZE_BASE depends on at
-and and ...
-
-So IOW, in a usual .config we have:
-
-__START_KERNEL_map at 0xffffffff80000000
-_text		   at 0xffffffff81000000
-
-So practically and for the majority of configs, the kernel image really
-does start at _text and not at __START_KERNEL_map and we map 16Mb which
-is 4 PMDs of unused pages. So basically you're correcting that here -
-that the number tested against KERNEL_IMAGE_SIZE is 16Mb more.
-
-Yes, no?
-
-Or am I missing some more important aspect and this is more than just a
-small correctness fixlet?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
