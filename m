@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21D129B7E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BB729B7F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1798499AbgJ0P2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:28:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39862 "EHLO mail.kernel.org"
+        id S2902388AbgJ0P3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797601AbgJ0PYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:24:31 -0400
+        id S1797725AbgJ0PYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:24:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8D4E2225E;
-        Tue, 27 Oct 2020 15:24:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8901620657;
+        Tue, 27 Oct 2020 15:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812271;
-        bh=6z1GlKEHSp5e5ACyIwqWZepobB9Kxm65ZQa/XjTzVns=;
+        s=default; t=1603812294;
+        bh=Oky0kQbUmdVT7RxWFVQPDpHpT3abUf6UOiboywpHHQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mFhjwQ4/cMYc5g7YF03tnpINHkTxQQr+5vmJNQ9H46l10u/GvLRhBJdRRXvbvdmAH
-         AjAv/FykK4ZBSvbwt/WqSynVvM4Od+4+XS3pR03i4yQYEh5oI6T8Sngdedn9W0oyhr
-         wyK1CWFKgCs7X4aCyqpqy1jH1nVC9dKZXpBkD0OQ=
+        b=pSyiVUABaxJtBXYDzeGCtS/QC8QB4mEURPZoeniqTSLzLkW5s97M3T295cq0qeDuW
+         sw4fQ6LW9OruhF5P3kfPKZeFyJc0NTP916+DgaUtFeuRn+LCltlIs3S33IooXuLABV
+         vh6uUnS4dq6LB0GMxtt+mzEA00kEKa4aRlpylAao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org,
+        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 151/757] crypto: sa2ul - Fix pm_runtime_get_sync() error checking
-Date:   Tue, 27 Oct 2020 14:46:41 +0100
-Message-Id: <20201027135457.692771286@linuxfoundation.org>
+Subject: [PATCH 5.9 159/757] crypto: stm32/crc32 - Avoid lock if hardware is already used
+Date:   Tue, 27 Oct 2020 14:46:49 +0100
+Message-Id: <20201027135458.057161747@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,34 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 
-[ Upstream commit 2baace5feb86c6916221911f391f11fcd8e1a259 ]
+[ Upstream commit bbf2cb1ea1e1428589d7f4d652bed15b265ce92d ]
 
-The pm_runtime_get_sync() function returns either 0 or 1 on success but
-this code treats a return of 1 as a failure.
+If STM32 CRC device is already in use, calculate CRC by software.
 
-Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+This will release CPU constraint for a concurrent access to the
+hardware, and avoid masking irqs during the whole block processing.
+
+Fixes: 7795c0baf5ac ("crypto: stm32/crc32 - protect from concurrent accesses")
+
+Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/sa2ul.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/stm32/Kconfig       |  1 +
+ drivers/crypto/stm32/stm32-crc32.c | 15 ++++++++++++---
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index ff8bbdb4d235d..039579b7cc818 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -2331,7 +2331,7 @@ static int sa_ul_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/stm32/Kconfig b/drivers/crypto/stm32/Kconfig
+index 4ef3eb11361c2..4a4c3284ae1f3 100644
+--- a/drivers/crypto/stm32/Kconfig
++++ b/drivers/crypto/stm32/Kconfig
+@@ -3,6 +3,7 @@ config CRYPTO_DEV_STM32_CRC
+ 	tristate "Support for STM32 crc accelerators"
+ 	depends on ARCH_STM32
+ 	select CRYPTO_HASH
++	select CRC32
+ 	help
+ 	  This enables support for the CRC32 hw accelerator which can be found
+ 	  on STMicroelectronics STM32 SOC.
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 3ba41148c2a46..2c13f5214d2cf 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -6,6 +6,7 @@
  
- 	pm_runtime_enable(dev);
- 	ret = pm_runtime_get_sync(dev);
--	if (ret) {
-+	if (ret < 0) {
- 		dev_err(&pdev->dev, "%s: failed to get sync: %d\n", __func__,
- 			ret);
- 		return ret;
+ #include <linux/bitrev.h>
+ #include <linux/clk.h>
++#include <linux/crc32.h>
+ #include <linux/crc32poly.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+@@ -147,7 +148,6 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
+ 	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
+ 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
+ 	struct stm32_crc *crc;
+-	unsigned long flags;
+ 
+ 	crc = stm32_crc_get_next_crc();
+ 	if (!crc)
+@@ -155,7 +155,15 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
+ 
+ 	pm_runtime_get_sync(crc->dev);
+ 
+-	spin_lock_irqsave(&crc->lock, flags);
++	if (!spin_trylock(&crc->lock)) {
++		/* Hardware is busy, calculate crc32 by software */
++		if (mctx->poly == CRC32_POLY_LE)
++			ctx->partial = crc32_le(ctx->partial, d8, length);
++		else
++			ctx->partial = __crc32c_le(ctx->partial, d8, length);
++
++		goto pm_out;
++	}
+ 
+ 	/*
+ 	 * Restore previously calculated CRC for this context as init value
+@@ -195,8 +203,9 @@ static int burst_update(struct shash_desc *desc, const u8 *d8,
+ 	/* Store partial result */
+ 	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
+ 
+-	spin_unlock_irqrestore(&crc->lock, flags);
++	spin_unlock(&crc->lock);
+ 
++pm_out:
+ 	pm_runtime_mark_last_busy(crc->dev);
+ 	pm_runtime_put_autosuspend(crc->dev);
+ 
 -- 
 2.25.1
 
