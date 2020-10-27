@@ -2,123 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C5829A35B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A5E29A359
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505073AbgJ0Dcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 23:32:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58213 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442737AbgJ0Dcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 23:32:55 -0400
-IronPort-SDR: +ZKM+gL9xpdpaHRd6e42OXbvAXaKXAnS8MTkVMkchcd2Gh/eRNyRflG2rmi/t0Lz2RcuzIPDi5
- IKWvJ+Fibhpw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="164522268"
-X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
-   d="scan'208";a="164522268"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 20:32:54 -0700
-IronPort-SDR: gDdf5aD0cVHkx3dm0A1nTvfc2YB+fIPjcoCHhXHmO8rJUkNHKa5BLGO5D2NyAOIr+Cud45heXx
- S04aoJCfIZcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
-   d="scan'208";a="361229685"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga007.jf.intel.com with ESMTP; 26 Oct 2020 20:32:51 -0700
-Date:   Tue, 27 Oct 2020 11:27:32 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, mdf@kernel.org,
-        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, netdev@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [RFC PATCH 1/6] docs: networking: add the document for DFL Ether
-  Group driver
-Message-ID: <20201027032732.GC10743@yilunxu-OptiPlex-7050>
-References: <1603442745-13085-1-git-send-email-yilun.xu@intel.com>
- <1603442745-13085-2-git-send-email-yilun.xu@intel.com>
- <20201023153731.GC718124@lunn.ch>
- <20201026085246.GC25281@yilunxu-OptiPlex-7050>
- <20201026130001.GC836546@lunn.ch>
- <20201026173803.GA10743@yilunxu-OptiPlex-7050>
- <20201026191400.GO752111@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026191400.GO752111@lunn.ch>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S2440724AbgJ0Dbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:31:34 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:40942 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408645AbgJ0Dbd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 23:31:33 -0400
+Received: by mail-pj1-f66.google.com with SMTP id l2so54098pjt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 20:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=JIqvo1SmTvJJlWmNsKQ6y5LN9w+nEb8ooG3L8JYz5F4=;
+        b=O5Fi3nfeR1o0l3o0c450phJtpsg1Eb8tBJQh/85Qgw2PwU6MDVsHoEfUSQGZyOXqEj
+         SwAAOvhTEz+/45Z1/ScpQfzJln58xjQFMilrj7gsb/fTukw9F+Pv2+yqIZzd2CQCV0oN
+         pHtflJ1ewGl8k7QVxd2MWrIWjq2w3B+1wPT3lOEKeuhDXiSfyqJzUm+BGNAvHvL2hpx2
+         9RR9nHboDxNf2rAvhjeqmrjWQlfJG+zYX8b46cLg1yxmZ9cbOhsI9Htvu4xeN5rBLH33
+         n6wJQP09iEN9psm9WI16H4yuEcVr2avbl/rKmCFXqpas7XFEVVW64usVu3NCkLXG5S3m
+         dqOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=JIqvo1SmTvJJlWmNsKQ6y5LN9w+nEb8ooG3L8JYz5F4=;
+        b=OOx45fuNyxTW29jGJRSGouszQOVSU26ePxMwqOQJR/rueq2GNlQTZwotXXNfjGKLwI
+         GFkpGoAdXRGIqa6UKsZ6fTfMwwlosjo2X5xmvTIQQGAjnMGvKy0patYV+iTICbXUCkg0
+         /IOH6nPfiX8p8B+eJM6qXQga+/4gDh3S2SC/Use97PsRnkyQQUicq+gFVG7jDlQpydFw
+         4iIwazFrkgUyDelWEenNVxOZlOlNIdG3unYYMDdxH5zd6fYV2P1zfrXBrbNx2/OOfugD
+         DwReGOISSYioX6yb6K0bCt+XS640SnAS8uANgSAR6ta/AV/7K7FnYvhnFl5gZY8GXE6I
+         Gy9g==
+X-Gm-Message-State: AOAM530wuG8rPaD515GuAvjVtKnFhH2bPmQiiu+/0rwa2JVpVn1k/cqw
+        M1XfaWHPnPrfS2tj3ZXKUp49zQ==
+X-Google-Smtp-Source: ABdhPJzPZRReh45Xo8wC1NlB4rv8JCxecl6FB/aSzayUVunn28J+mgoXnp+1p/1aMuTBjjbHPcbSgw==
+X-Received: by 2002:a17:902:c405:b029:d6:5616:9aef with SMTP id k5-20020a170902c405b02900d656169aefmr411385plk.61.1603769492943;
+        Mon, 26 Oct 2020 20:31:32 -0700 (PDT)
+Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
+        by smtp.gmail.com with ESMTPSA id y27sm217619pfr.122.2020.10.26.20.31.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Oct 2020 20:31:32 -0700 (PDT)
+Message-ID: <27c0cda7fd103f05021adaf67490e9298ed5cc3f.camel@areca.com.tw>
+Subject: [PATCH v2 1/2] scsi: arcmsr: configure the default SCSI device
+ command timeout value
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 27 Oct 2020 11:31:31 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 08:14:00PM +0100, Andrew Lunn wrote:
-> > > > > Do you really mean PHY? I actually expect it is PCS? 
-> > > > 
-> > > > For this implementation, yes.
-> > > 
-> > > Yes, you have a PHY? Or Yes, it is PCS?
-> > 
-> > Sorry, I mean I have a PHY.
-> > 
-> > > 
-> > > To me, the phylib maintainer, having a PHY means you have a base-T
-> > > interface, 25Gbase-T, 40Gbase-T?  That would be an odd and expensive
-> > > architecture when you should be able to just connect SERDES interfaces
-> > > together.
-> 
-> You really have 25Gbase-T, 40Gbase-T? Between the FPGA & XL710?
-> What copper PHYs are using? 
+From: ching Huang <ching2048@areca.com.tw>
 
-Sorry for the confusing. I'll check with our board designer and reply
-later.
+Configure the default SCSI device command timeout value.
 
-> 
-> > I see your concerns about the SERDES interface between FPGA & XL710.
-> 
-> I have no concerns about direct SERDES connections. That is the normal
-> way of doing this. It keeps it a lot simpler, since you don't have to
-> worry about driving the PHYs.
-> 
-> > I did some investigation about the DSA, and actually I wrote a
-> > experimental DSA driver. It works and almost meets my need, I can make
-> > configuration, run pktgen on slave inf.
-> 
-> Cool. As i said, I don't know if this actually needs to be a DSA
-> driver. It might just need to borrow some ideas from DSA.
-> 
-> > Mm.. seems the hardware should be changed, either let host directly
-> > access the QSFP, or re-design the BMC to provide more info for QSFP.
-> 
-> At a minimum, you need to support ethtool -m. It could be a firmware
-> call to the BMC, our you expose the i2c bus somehow. There are plenty
-> of MAC drivers which implement eththool -m without using phylink.
-> 
-> But i think you need to take a step back first, and look at the bigger
-> picture. What is Intel's goal? Are they just going to sell complete
-> cards? Or do they also want to sell the FPGA as a components anybody
-> get put onto their own board?
-> 
-> If there are only ever going to be compete cards, then you can go the
-> firmware direction, push a lot of functionality into the BMC, and have
-> the card driver make firmware calls to control the SFP, retimer,
-> etc. You can then throw away your mdio and phy driver hacks.
-> 
-> If however, the FPGA is going to be available as a component, can you
-> also assume there is a BMC? Running Intel firmware? Can the customer
-> also modify this firmware for their own needs? I think that is going
-> to be difficult. So you need to push as much as possible towards
-> linux, and let Linux drive all the hardware, the SFP, retimer, FPGA,
-> etc.
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+---
 
-This is a very helpful. I'll share with our team and reconsider about the
-design.
+diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
+index 5d054d5..0f6abd2 100644
+--- a/drivers/scsi/arcmsr/arcmsr.h
++++ b/drivers/scsi/arcmsr/arcmsr.h
+@@ -83,6 +83,7 @@ struct device_attribute;
+ #define PCI_DEVICE_ID_ARECA_1886	0x188A
+ #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
+ #define	ARCMSR_MINUTES			(1000 * 60 * 60)
++#define ARCMSR_DEFAULT_TIMEOUT		90
+ /*
+ **********************************************************************************
+ **
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index e4fdb47..7cfae1d 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -99,6 +99,10 @@ static int set_date_time = 0;
+ module_param(set_date_time, int, S_IRUGO);
+ MODULE_PARM_DESC(set_date_time, " send date, time to iop(0 ~ 1), set_date_time=1(enable), default(=0) is disable");
+ 
++static int cmd_timeout = ARCMSR_DEFAULT_TIMEOUT;
++module_param(cmd_timeout, int, S_IRUGO);
++MODULE_PARM_DESC(cmd_timeout, " scsi cmd timeout(0 ~ 120 sec.), default is 90");
++
+ #define	ARCMSR_SLEEPTIME	10
+ #define	ARCMSR_RETRYCOUNT	12
+ 
+@@ -140,6 +144,7 @@ static irqreturn_t arcmsr_interrupt(struct AdapterControlBlock *acb);
+ static void arcmsr_free_irq(struct pci_dev *, struct AdapterControlBlock *);
+ static void arcmsr_wait_firmware_ready(struct AdapterControlBlock *acb);
+ static void arcmsr_set_iop_datetime(struct timer_list *);
++static int arcmsr_slave_config(struct scsi_device *sdev);
+ static int arcmsr_adjust_disk_queue_depth(struct scsi_device *sdev, int queue_depth)
+ {
+ 	if (queue_depth > ARCMSR_MAX_CMD_PERLUN)
+@@ -155,6 +160,7 @@ static struct scsi_host_template arcmsr_scsi_host_template = {
+ 	.eh_abort_handler	= arcmsr_abort,
+ 	.eh_bus_reset_handler	= arcmsr_bus_reset,
+ 	.bios_param		= arcmsr_bios_param,
++	.slave_configure	= arcmsr_slave_config,
+ 	.change_queue_depth	= arcmsr_adjust_disk_queue_depth,
+ 	.can_queue		= ARCMSR_DEFAULT_OUTSTANDING_CMD,
+ 	.this_id		= ARCMSR_SCSI_INITIATOR_ID,
+@@ -3256,6 +3262,16 @@ static int arcmsr_queue_command_lck(struct scsi_cmnd *cmd,
+ 
+ static DEF_SCSI_QCMD(arcmsr_queue_command)
+ 
++static int arcmsr_slave_config(struct scsi_device *sdev)
++{
++	unsigned int	dev_timeout;
++
++	dev_timeout = sdev->request_queue->rq_timeout;
++	if ((cmd_timeout > 0) && ((cmd_timeout * HZ) > dev_timeout))
++		blk_queue_rq_timeout(sdev->request_queue, cmd_timeout * HZ);
++	return 0;
++}
++
+ static void arcmsr_get_adapter_config(struct AdapterControlBlock *pACB, uint32_t *rwbuffer)
+ {
+ 	int count;
 
-Thanks,
-Yilun
-
-> 
-> 	Andrew
-> 
