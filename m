@@ -2,385 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070C329A7BF
+	by mail.lfdr.de (Postfix) with ESMTP id DF28029A7C1
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509869AbgJ0JZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:25:31 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:37626 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404542AbgJ0JZa (ORCPT
+        id S2509878AbgJ0JZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:25:40 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:43799 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408020AbgJ0JZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:25:30 -0400
-Received: by mail-lj1-f194.google.com with SMTP id i2so947675ljg.4;
-        Tue, 27 Oct 2020 02:25:25 -0700 (PDT)
+        Tue, 27 Oct 2020 05:25:39 -0400
+Received: by mail-oi1-f193.google.com with SMTP id x203so592498oia.10;
+        Tue, 27 Oct 2020 02:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=MUm9nEX/D5FCwmjruPYOg/b121NV5PO1/2nYn3+TNl8=;
+        b=o8IwAZ6QWUpOUpWZ448EylhR+H8oGS/N6Udu2QL9TZm+F8hYCH8+w0aPR33UiTglKm
+         7zr0pmnHvvCSqyzYEkdI1SCjxTK7ysLxpQOdMyqrcxvfb1o7HIkH4IdBUegB1buW7vuy
+         CT6H8Md8O5dPLnGHayEWjBrVGIFif7/neG5A2KtRNuPHZHi+94Wdp6lJNnN9jctQVoK1
+         bD7kH48yFIEJima21GjidDn8OFP2eDN+YnS8SE51FLQnNXGowGO4qHw2O+mpyk6JTCRz
+         AtW7su+ujN4C5sn3ss3ujaQ20S/xkb0eRGqGHWTt/1CPRk5BQBMF9rfwZX3oseGMV6yS
+         2GYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1qHVGmQPbYqRAfNgERw/fejM3Snp6cPTLGfdKk774Xg=;
-        b=AY+3SBInBXIGryRwnWw99Cqv8/wMTlsUe1iv9dnmMWi8xUqhF+8HGQJUHsbiHa703/
-         C/7UPMRVWkvDdDPzt8yYoP1kBOLlhQk/Gk/QhQsjC+9dIKpRjcHNPH/LJ7ahNo3/laRC
-         eyiVd2EQ+hGkmJYsPkWGOw/CQdOVMBXhhE1pamfWfAtuSGnxp3OAOEN5Zk7t+Cdz2Co9
-         +7pZNZkR5vfaKWCuvvAvjW0LtnI/pghGNOHD2kPO4tl7bfCkFxUl4Luxqnjkb9MtdZpi
-         Y+i2qUTWmuQFeD0eP53aBXFjjTazueoVc7rYFELWpL8yruqbToXPcaCY+Uq4uu63UA3P
-         GeFA==
-X-Gm-Message-State: AOAM5314vhm8PXkUp7ewGJmFyhXP5z4vcT4wEhnbisHz3La6EV97zxF9
-        Y8B9vJiDAJk6og4C03LEq+7vVIwqs+e0qQ==
-X-Google-Smtp-Source: ABdhPJxxLo2ZEbFtgQz90Ooosq+3QP+Ft6F84FJPBpw1NBsrUwQo2T68TnfhlU4+PENh6/EILqkOfg==
-X-Received: by 2002:a2e:9847:: with SMTP id e7mr693476ljj.46.1603790724422;
-        Tue, 27 Oct 2020 02:25:24 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b21sm110354lfg.309.2020.10.27.02.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 02:25:23 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1kXLEI-0002oN-G8; Tue, 27 Oct 2020 10:25:23 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-usb@vger.kernel.org
-Cc:     "Ahmed S . Darwish" <a.darwish@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arm-kernel@lists.infradead.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 11/14] USB: serial: keyspan_pda: clean up xircom/entrega support
-Date:   Tue, 27 Oct 2020 10:25:02 +0100
-Message-Id: <20201027092502.10761-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201027080912.GA4085@localhost>
-References: <20201027080912.GA4085@localhost>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=MUm9nEX/D5FCwmjruPYOg/b121NV5PO1/2nYn3+TNl8=;
+        b=tS8MQAFXDL+3KMvMFn0fi9Hq9jir0sMCNzRSZCAi40HTxv9/V1vhykj+1uCrMVwhil
+         QogehaaLLiVfpbp4CVv9pBgRDRgrgaXJkxFmpoLgRK4UTaTQ9C7XC5qeOdyeiu5S8tCt
+         Z5THPbMBDUk4CU8hyExZBRV9Bd8Jz+B2xv7MeVv60aOHFzE3ec324UlWME+6Biegu8AO
+         39ScWUSAdSp0XvdI5Npt5vRRD4tnlKtQJR9sjd0w2YRlvMAf9odE9gKvBgzz/0IpkfS/
+         5tDLf8PUU3qu0+q47Wz93pJ95DCAgdoO2wvljuy37oeRkqmQxoIa/iwvdIZ8m4ZmxJdA
+         9ZYA==
+X-Gm-Message-State: AOAM532EgskBxLYfnhYbzqpMK3BMYvw3duchH3mUOv2WmGoTuq/NHiNe
+        tLO5vHag06QVhyiaMwqt7FadpxHeuvWCg05ziKt6d440
+X-Google-Smtp-Source: ABdhPJx7hn5WiQKe7vytiP9c23shmBGIsmkjZpn7/BT/ToDoVa6kJVIK2gEJx2TIZUxcfm4Nh5Doet9dZ8nMn8P+sf0=
+X-Received: by 2002:aca:4c06:: with SMTP id z6mr307205oia.177.1603790737197;
+ Tue, 27 Oct 2020 02:25:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <18d1083d-efe5-f5f8-c531-d142c0e5c1a8@linux.intel.com>
+ <ed6f63bd-5dcb-425d-60ee-311a68756bfe@gmail.com> <e3ff6ff2-8fa5-de27-3bc4-f578b6957de8@linux.intel.com>
+In-Reply-To: <e3ff6ff2-8fa5-de27-3bc4-f578b6957de8@linux.intel.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Tue, 27 Oct 2020 10:25:26 +0100
+Message-ID: <CAKgNAkirXKh6VocM7-gwvC1CoDgqV7NjpU5OSVvXJX9mwiNnBg@mail.gmail.com>
+Subject: Re: [PATCH v1] perf_event_open.2: update the man page with
+ CAP_PERFMON related information
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     linux-man <linux-man@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the separate Kconfig symbol for Xircom / Entrega and always include
-support in the keyspan_pda driver.
+Hi Alexei,
 
-Note that all configs that enabled CONFIG_USB_SERIAL_XIRCOM also enable
-CONFIG_USB_SERIAL_KEYSPAN_PDA.
+Would you be able to refresh this patch and resend please?
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
+Thnks,
 
-v2
- - update the defconfigs (Sebastian)
+Michael
+
+On Mon, 24 Aug 2020 at 22:17, Alexey Budankov
+<alexey.budankov@linux.intel.com> wrote:
+>
+> Hi Michael,
+>
+> On 23.08.2020 20:28, Michael Kerrisk (man-pages) wrote:
+> > Hello Alexey,
+> >
+> > Could you look at the question below and update the patch.
+> >
+> > On 2/17/20 9:18 AM, Alexey Budankov wrote:
+> >>
+> >> Extend perf_event_open 2 man page with the information about
+> >> CAP_PERFMON capability designed to secure performance monitoring
+> >> and observability operation in a system according to the principle
+> >> of least privilege [1] (POSIX IEEE 1003.1e, 2.2.2.39).
+> >>
+> >> [1] https://sites.google.com/site/fullycapable/, posix_1003.1e-990310.pdf
+> >>
+> >> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> >> ---
+> >>   man2/perf_event_open.2 | 27 +++++++++++++++++++++++++++
+> >>   1 file changed, 27 insertions(+)
+> >>
+> >> diff --git a/man2/perf_event_open.2 b/man2/perf_event_open.2
+> >> index 89d267c02..e9aab2ca1 100644
+> >> --- a/man2/perf_event_open.2
+> >> +++ b/man2/perf_event_open.2
+> >> @@ -98,6 +98,8 @@ when running on the specified CPU.
+> >>   .BR "pid == \-1" " and " "cpu >= 0"
+> >>   This measures all processes/threads on the specified CPU.
+> >>   This requires
+> >> +.B CAP_PERFMON
+> >> +or
+> >>   .B CAP_SYS_ADMIN
+> >>   capability or a
+> >>   .I /proc/sys/kernel/perf_event_paranoid
+> >> @@ -2920,6 +2922,8 @@ to hold the result.
+> >>   This allows attaching a Berkeley Packet Filter (BPF)
+> >>   program to an existing kprobe tracepoint event.
+> >>   You need
+> >> +.B CAP_PERFMON
+> >> +or
+> >>   .B CAP_SYS_ADMIN
+> >>   privileges to use this ioctl.
+> >>   .IP
+> >> @@ -2962,6 +2966,8 @@ have multiple events attached to a tracepoint.
+> >>   Querying this value on one tracepoint event returns the id
+> >>   of all BPF programs in all events attached to the tracepoint.
+> >>   You need
+> >> +.B CAP_PERFMON
+> >> +or
+> >>   .B CAP_SYS_ADMIN
+> >>   privileges to use this ioctl.
+> >>   .IP
+> >> @@ -3170,6 +3176,8 @@ it was expecting.
+> >>   .TP
+> >>   .B EACCES
+> >>   Returned when the requested event requires
+> >> +.B CAP_PERFMON
+> >> +or
+> >>   .B CAP_SYS_ADMIN
+> >>   permissions (or a more permissive perf_event paranoid setting).
+> >>   Some common cases where an unprivileged process
+> >> @@ -3291,6 +3299,8 @@ setting is specified.
+> >>   It can also happen, as with
+> >>   .BR EACCES ,
+> >>   when the requested event requires
+> >> +.B CAP_PERFMON
+> >> +or
+> >>   .B CAP_SYS_ADMIN
+> >>   permissions (or a more permissive perf_event paranoid setting).
+> >>   This includes setting a breakpoint on a kernel address,
+> >> @@ -3321,6 +3331,23 @@ The official way of knowing if
+> >>   support is enabled is checking
+> >>   for the existence of the file
+> >>   .IR /proc/sys/kernel/perf_event_paranoid .
+> >> +.PP
+> >> +.B CAP_PERFMON
+> >> +capability (since Linux X.Y) provides secure approach to
+> >
+> > What's the version?
+>
+> It's since Linux 5.8 .
+>
+> >
+> >> +performance monitoring and observability operations in a system
+> >> +according to the principal of least privilege (POSIX IEEE 1003.1e).
+> >> +Accessing system performance monitoring and observability operations
+> >> +using
+> >> +.B CAP_PERFMON
+> >> +capability singly, without the rest of
+> >> +.B CAP_SYS_ADMIN
+> >> +credentials, excludes chances to misuse the credentials and makes
+> >
+> > I think that wording like "using CAP_PERFMON rather than the much
+> > more powerful CAP_SYS_ADMIN..."
+>
+> Sounds good to me like this, or similar:
+>
+> "Accessing system performance monitoring and observability operations
+>  using CAP_PERFMON rather than the much more powerful CAP_SYS_ADMIN
+>  excludes chances to misuse credentials and makes operations more
+>  secure."
+>
+> >
+> >> +the operations more secure.
+> >> +.B CAP_SYS_ADMIN
+> >> +usage for secure system performance monitoring and observability
+> >> +is discouraged with respect to
+> >> +.B CAP_PERFMON
+> >> +capability.
+> >>   .SH BUGS
+> >>   The
+> >>   .B F_SETOWN_EX
+> >
+> > Thanks,
+> >
+> > Michael
+> >
+>
+> Thanks,
+> Alexei
+>
+> P.S.
+> I am on vacations till 08/31.
+> Please expect delay in response.
+>
 
 
- arch/arm/configs/badge4_defconfig     |  1 -
- arch/arm/configs/corgi_defconfig      |  1 -
- arch/arm/configs/pxa_defconfig        |  1 -
- arch/arm/configs/spitz_defconfig      |  1 -
- arch/mips/configs/mtx1_defconfig      |  1 -
- arch/mips/configs/rm200_defconfig     |  1 -
- arch/powerpc/configs/g5_defconfig     |  1 -
- arch/powerpc/configs/ppc6xx_defconfig |  1 -
- drivers/usb/serial/Kconfig            | 19 ++------
- drivers/usb/serial/Makefile           |  1 -
- drivers/usb/serial/keyspan_pda.c      | 68 ++++-----------------------
- 11 files changed, 13 insertions(+), 83 deletions(-)
-
-diff --git a/arch/arm/configs/badge4_defconfig b/arch/arm/configs/badge4_defconfig
-index ef484c4cfd1a..d9119da65f48 100644
---- a/arch/arm/configs/badge4_defconfig
-+++ b/arch/arm/configs/badge4_defconfig
-@@ -89,7 +89,6 @@ CONFIG_USB_SERIAL_KEYSPAN=m
- CONFIG_USB_SERIAL_MCT_U232=m
- CONFIG_USB_SERIAL_PL2303=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_EXT2_FS=m
- CONFIG_EXT3_FS=m
-diff --git a/arch/arm/configs/corgi_defconfig b/arch/arm/configs/corgi_defconfig
-index 4fec2ec379ad..911e880f06ed 100644
---- a/arch/arm/configs/corgi_defconfig
-+++ b/arch/arm/configs/corgi_defconfig
-@@ -191,7 +191,6 @@ CONFIG_USB_SERIAL_PL2303=m
- CONFIG_USB_SERIAL_SAFE=m
- CONFIG_USB_SERIAL_TI=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_EMI62=m
- CONFIG_USB_EMI26=m
-diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
-index d7b9eaf4783c..8654ece13004 100644
---- a/arch/arm/configs/pxa_defconfig
-+++ b/arch/arm/configs/pxa_defconfig
-@@ -574,7 +574,6 @@ CONFIG_USB_SERIAL_PL2303=m
- CONFIG_USB_SERIAL_SAFE=m
- CONFIG_USB_SERIAL_TI=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_EMI62=m
- CONFIG_USB_EMI26=m
-diff --git a/arch/arm/configs/spitz_defconfig b/arch/arm/configs/spitz_defconfig
-index a1cdbfa064c5..8b2c14424927 100644
---- a/arch/arm/configs/spitz_defconfig
-+++ b/arch/arm/configs/spitz_defconfig
-@@ -185,7 +185,6 @@ CONFIG_USB_SERIAL_PL2303=m
- CONFIG_USB_SERIAL_SAFE=m
- CONFIG_USB_SERIAL_TI=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_EMI62=m
- CONFIG_USB_EMI26=m
-diff --git a/arch/mips/configs/mtx1_defconfig b/arch/mips/configs/mtx1_defconfig
-index 914af125a7fa..9750bcc38f05 100644
---- a/arch/mips/configs/mtx1_defconfig
-+++ b/arch/mips/configs/mtx1_defconfig
-@@ -565,7 +565,6 @@ CONFIG_USB_SERIAL_SAFE=m
- CONFIG_USB_SERIAL_SIERRAWIRELESS=m
- CONFIG_USB_SERIAL_TI=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OPTION=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_EMI62=m
-diff --git a/arch/mips/configs/rm200_defconfig b/arch/mips/configs/rm200_defconfig
-index 30d7c3db884e..3dc2da2bee0d 100644
---- a/arch/mips/configs/rm200_defconfig
-+++ b/arch/mips/configs/rm200_defconfig
-@@ -311,7 +311,6 @@ CONFIG_USB_SERIAL_PL2303=m
- CONFIG_USB_SERIAL_SAFE=m
- CONFIG_USB_SERIAL_SAFE_PADDED=y
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_LEGOTOWER=m
- CONFIG_USB_LCD=m
-diff --git a/arch/powerpc/configs/g5_defconfig b/arch/powerpc/configs/g5_defconfig
-index 1c674c4c1d86..1de0dbf6cbba 100644
---- a/arch/powerpc/configs/g5_defconfig
-+++ b/arch/powerpc/configs/g5_defconfig
-@@ -194,7 +194,6 @@ CONFIG_USB_SERIAL_SAFE=m
- CONFIG_USB_SERIAL_SAFE_PADDED=y
- CONFIG_USB_SERIAL_TI=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_APPLEDISPLAY=m
- CONFIG_EXT2_FS=y
-diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
-index 66e9a0fd64ff..ac92cbe1f581 100644
---- a/arch/powerpc/configs/ppc6xx_defconfig
-+++ b/arch/powerpc/configs/ppc6xx_defconfig
-@@ -911,7 +911,6 @@ CONFIG_USB_SERIAL_SAFE_PADDED=y
- CONFIG_USB_SERIAL_SIERRAWIRELESS=m
- CONFIG_USB_SERIAL_TI=m
- CONFIG_USB_SERIAL_CYBERJACK=m
--CONFIG_USB_SERIAL_XIRCOM=m
- CONFIG_USB_SERIAL_OPTION=m
- CONFIG_USB_SERIAL_OMNINET=m
- CONFIG_USB_SERIAL_DEBUG=m
-diff --git a/drivers/usb/serial/Kconfig b/drivers/usb/serial/Kconfig
-index 4007fa25a8ff..a21ff5ab6df9 100644
---- a/drivers/usb/serial/Kconfig
-+++ b/drivers/usb/serial/Kconfig
-@@ -298,12 +298,12 @@ config USB_SERIAL_IUU
- 	  module will be called iuu_phoenix.o
- 
- config USB_SERIAL_KEYSPAN_PDA
--	tristate "USB Keyspan PDA Single Port Serial Driver"
-+	tristate "USB Keyspan PDA / Xircom Single Port Serial Driver"
- 	select USB_EZUSB_FX2
- 	help
--	  Say Y here if you want to use a Keyspan PDA single port USB to
--	  serial converter device.  This driver makes use of firmware
--	  developed from scratch by Brian Warner.
-+	  Say Y here if you want to use a Keyspan PDA, Xircom or Entrega single
-+	  port USB to serial converter device. This driver makes use of
-+	  firmware developed from scratch by Brian Warner.
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called keyspan_pda.
-@@ -538,17 +538,6 @@ config USB_SERIAL_CYBERJACK
- 
- 	  If unsure, say N.
- 
--config USB_SERIAL_XIRCOM
--	tristate "USB Xircom / Entrega Single Port Serial Driver"
--	select USB_EZUSB_FX2
--	help
--	  Say Y here if you want to use a Xircom or Entrega single port USB to
--	  serial converter device.  This driver makes use of firmware
--	  developed from scratch by Brian Warner.
--
--	  To compile this driver as a module, choose M here: the
--	  module will be called keyspan_pda.
--
- config USB_SERIAL_WWAN
- 	tristate
- 
-diff --git a/drivers/usb/serial/Makefile b/drivers/usb/serial/Makefile
-index 2d491e434f11..50c53aed787a 100644
---- a/drivers/usb/serial/Makefile
-+++ b/drivers/usb/serial/Makefile
-@@ -61,5 +61,4 @@ obj-$(CONFIG_USB_SERIAL_UPD78F0730)		+= upd78f0730.o
- obj-$(CONFIG_USB_SERIAL_VISOR)			+= visor.o
- obj-$(CONFIG_USB_SERIAL_WISHBONE)		+= wishbone-serial.o
- obj-$(CONFIG_USB_SERIAL_WHITEHEAT)		+= whiteheat.o
--obj-$(CONFIG_USB_SERIAL_XIRCOM)			+= keyspan_pda.o
- obj-$(CONFIG_USB_SERIAL_XSENS_MT)		+= xsens_mt.o
-diff --git a/drivers/usb/serial/keyspan_pda.c b/drivers/usb/serial/keyspan_pda.c
-index aa19dd181e42..f102dbf83492 100644
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -26,18 +26,6 @@
- #include <linux/usb/serial.h>
- #include <linux/usb/ezusb.h>
- 
--/* make a simple define to handle if we are compiling keyspan_pda or xircom support */
--#if IS_ENABLED(CONFIG_USB_SERIAL_KEYSPAN_PDA)
--	#define KEYSPAN
--#else
--	#undef KEYSPAN
--#endif
--#if IS_ENABLED(CONFIG_USB_SERIAL_XIRCOM)
--	#define XIRCOM
--#else
--	#undef XIRCOM
--#endif
--
- #define DRIVER_AUTHOR "Brian Warner <warner@lothar.com>, Johan Hovold <johan@kernel.org>"
- #define DRIVER_DESC "USB Keyspan PDA Converter driver"
- 
-@@ -64,18 +52,13 @@ static int keyspan_pda_write_start(struct usb_serial_port *port);
- #define ENTREGA_FAKE_ID			0x8093
- 
- static const struct usb_device_id id_table_combined[] = {
--#ifdef KEYSPAN
- 	{ USB_DEVICE(KEYSPAN_VENDOR_ID, KEYSPAN_PDA_FAKE_ID) },
--#endif
--#ifdef XIRCOM
- 	{ USB_DEVICE(XIRCOM_VENDOR_ID, XIRCOM_FAKE_ID) },
- 	{ USB_DEVICE(XIRCOM_VENDOR_ID, XIRCOM_FAKE_ID_2) },
- 	{ USB_DEVICE(ENTREGA_VENDOR_ID, ENTREGA_FAKE_ID) },
--#endif
- 	{ USB_DEVICE(KEYSPAN_VENDOR_ID, KEYSPAN_PDA_ID) },
- 	{ }						/* Terminating entry */
- };
--
- MODULE_DEVICE_TABLE(usb, id_table_combined);
- 
- static const struct usb_device_id id_table_std[] = {
-@@ -83,21 +66,13 @@ static const struct usb_device_id id_table_std[] = {
- 	{ }						/* Terminating entry */
- };
- 
--#ifdef KEYSPAN
- static const struct usb_device_id id_table_fake[] = {
- 	{ USB_DEVICE(KEYSPAN_VENDOR_ID, KEYSPAN_PDA_FAKE_ID) },
--	{ }						/* Terminating entry */
--};
--#endif
--
--#ifdef XIRCOM
--static const struct usb_device_id id_table_fake_xircom[] = {
- 	{ USB_DEVICE(XIRCOM_VENDOR_ID, XIRCOM_FAKE_ID) },
- 	{ USB_DEVICE(XIRCOM_VENDOR_ID, XIRCOM_FAKE_ID_2) },
- 	{ USB_DEVICE(ENTREGA_VENDOR_ID, ENTREGA_FAKE_ID) },
--	{ }
-+	{ }						/* Terminating entry */
- };
--#endif
- 
- static int keyspan_pda_get_write_room(struct keyspan_pda_private *priv)
- {
-@@ -647,22 +622,21 @@ static void keyspan_pda_close(struct usb_serial_port *port)
- /* download the firmware to a "fake" device (pre-renumeration) */
- static int keyspan_pda_fake_startup(struct usb_serial *serial)
- {
-+	unsigned int vid = le16_to_cpu(serial->dev->descriptor.idVendor);
- 	const char *fw_name;
- 
- 	/* download the firmware here ... */
- 	ezusb_fx1_set_reset(serial->dev, 1);
- 
--	if (0) { ; }
--#ifdef KEYSPAN
--	else if (le16_to_cpu(serial->dev->descriptor.idVendor) == KEYSPAN_VENDOR_ID)
-+	switch (vid) {
-+	case KEYSPAN_VENDOR_ID:
- 		fw_name = "keyspan_pda/keyspan_pda.fw";
--#endif
--#ifdef XIRCOM
--	else if ((le16_to_cpu(serial->dev->descriptor.idVendor) == XIRCOM_VENDOR_ID) ||
--		 (le16_to_cpu(serial->dev->descriptor.idVendor) == ENTREGA_VENDOR_ID))
-+		break;
-+	case XIRCOM_VENDOR_ID:
-+	case ENTREGA_VENDOR_ID:
- 		fw_name = "keyspan_pda/xircom_pgs.fw";
--#endif
--	else {
-+		break;
-+	default:
- 		dev_err(&serial->dev->dev, "%s: unknown vendor, aborting.\n",
- 			__func__);
- 		return -ENODEV;
-@@ -681,12 +655,8 @@ static int keyspan_pda_fake_startup(struct usb_serial *serial)
- 	return 1;
- }
- 
--#ifdef KEYSPAN
- MODULE_FIRMWARE("keyspan_pda/keyspan_pda.fw");
--#endif
--#ifdef XIRCOM
- MODULE_FIRMWARE("keyspan_pda/xircom_pgs.fw");
--#endif
- 
- static int keyspan_pda_port_probe(struct usb_serial_port *port)
- {
-@@ -716,7 +686,6 @@ static int keyspan_pda_port_remove(struct usb_serial_port *port)
- 	return 0;
- }
- 
--#ifdef KEYSPAN
- static struct usb_serial_driver keyspan_pda_fake_device = {
- 	.driver = {
- 		.owner =	THIS_MODULE,
-@@ -727,20 +696,6 @@ static struct usb_serial_driver keyspan_pda_fake_device = {
- 	.num_ports =		1,
- 	.attach =		keyspan_pda_fake_startup,
- };
--#endif
--
--#ifdef XIRCOM
--static struct usb_serial_driver xircom_pgs_fake_device = {
--	.driver = {
--		.owner =	THIS_MODULE,
--		.name =		"xircom_no_firm",
--	},
--	.description =		"Xircom / Entrega PGS - (prerenumeration)",
--	.id_table =		id_table_fake_xircom,
--	.num_ports =		1,
--	.attach =		keyspan_pda_fake_startup,
--};
--#endif
- 
- static struct usb_serial_driver keyspan_pda_device = {
- 	.driver = {
-@@ -770,12 +725,7 @@ static struct usb_serial_driver keyspan_pda_device = {
- 
- static struct usb_serial_driver * const serial_drivers[] = {
- 	&keyspan_pda_device,
--#ifdef KEYSPAN
- 	&keyspan_pda_fake_device,
--#endif
--#ifdef XIRCOM
--	&xircom_pgs_fake_device,
--#endif
- 	NULL
- };
- 
 -- 
-2.26.2
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
