@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B967429B002
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CFB29AEF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756945AbgJ0OPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:15:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53976 "EHLO mail.kernel.org"
+        id S1754513AbgJ0OFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:05:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754474AbgJ0OFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:05:39 -0400
+        id S1754484AbgJ0OFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:05:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 918632222C;
-        Tue, 27 Oct 2020 14:05:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 895AE2222C;
+        Tue, 27 Oct 2020 14:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807539;
-        bh=vdRF+n8FPKystMTO0J2qTG77A+2/Gqa6IqVIF3sU2Bo=;
+        s=default; t=1603807542;
+        bh=18DXnliRU0CryEHJZlhgz6yUC8T291J7K8spefSILdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtEfSQjY31dtisnGTZC/kxiSO28Zg+QwnxGnknYV435RflxqYuIFh98dJhHgU1WiZ
-         aS2bnrlGZpuXc7eM40bjXJkvSko0asnNR04Q9dnPYVca5AdgVElJBQ4QZeaOeI1m8t
-         BG0VI7mVVYlxZySgK2cN9zLnYrXzTqhQHJ2GQ94g=
+        b=CiaVYZiAVN7RtjOo11dp1GRw9PtNsFY2wNueWXr0Ybl1r9Ofk1XFgYT5f9Vlg2JWC
+         7coY1fXbpPcTpDd1rjeHel31ebt0mqXr0HGQU1WC9oCaiSP9BZkjdR82No9YlcIWOz
+         fePpVD+J3BfgdkR2mh7ktilfD3R9pcZRIch18qEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 089/139] arm64: dts: qcom: msm8916: Fix MDP/DSI interrupts
-Date:   Tue, 27 Oct 2020 14:49:43 +0100
-Message-Id: <20201027134906.357795645@linuxfoundation.org>
+Subject: [PATCH 4.9 090/139] arm64: dts: zynqmp: Remove additional compatible string for i2c IPs
+Date:   Tue, 27 Oct 2020 14:49:44 +0100
+Message-Id: <20201027134906.406350647@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
 References: <20201027134902.130312227@linuxfoundation.org>
@@ -43,52 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Michal Simek <michal.simek@xilinx.com>
 
-[ Upstream commit 027cca9eb5b450c3f6bb916ba999144c2ec23cb7 ]
+[ Upstream commit 35292518cb0a626fcdcabf739aed75060a018ab5 ]
 
-The mdss node sets #interrupt-cells = <1>, so its interrupts
-should be referenced using a single cell (in this case: only the
-interrupt number).
+DT binding permits only one compatible string which was decribed in past by
+commit 63cab195bf49 ("i2c: removed work arounds in i2c driver for Zynq
+Ultrascale+ MPSoC").
+The commit aea37006e183 ("dt-bindings: i2c: cadence: Migrate i2c-cadence
+documentation to YAML") has converted binding to yaml and the following
+issues is reported:
+...: i2c@ff030000: compatible: Additional items are not allowed
+('cdns,i2c-r1p10' was unexpected)
+	From schema:
+.../Documentation/devicetree/bindings/i2c/cdns,i2c-r1p10.yaml fds
+...: i2c@ff030000: compatible: ['cdns,i2c-r1p14', 'cdns,i2c-r1p10'] is too
+long
 
-However, right now the mdp/dsi node both have two interrupt cells
-set, e.g. interrupts = <4 0>. The 0 is probably meant to say
-IRQ_TYPE_NONE (= 0), but with #interrupt-cells = <1> this is
-actually interpreted as a second interrupt line.
+The commit c415f9e8304a ("ARM64: zynqmp: Fix i2c node's compatible string")
+has added the second compatible string but without removing origin one.
+The patch is only keeping one compatible string "cdns,i2c-r1p14".
 
-Remove the IRQ flags from both interrupts to fix this.
-
-Fixes: 305410ffd1b2 ("arm64: dts: msm8916: Add display support")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200915071221.72895-5-stephan@gerhold.net
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: c415f9e8304a ("ARM64: zynqmp: Fix i2c node's compatible string")
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Link: https://lore.kernel.org/r/cc294ae1a79ef845af6809ddb4049f0c0f5bb87a.1598259551.git.michal.simek@xilinx.com
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916.dtsi | 4 ++--
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index 08b88f6791beb..fb5001a6879c7 100644
---- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -715,7 +715,7 @@ mdp: mdp@1a01000 {
- 				reg-names = "mdp_phys";
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+index 54dc28351c8cb..b9ff697987338 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
++++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+@@ -175,7 +175,7 @@ gpio: gpio@ff0a0000 {
+ 		};
  
- 				interrupt-parent = <&mdss>;
--				interrupts = <0 0>;
-+				interrupts = <0>;
+ 		i2c0: i2c@ff020000 {
+-			compatible = "cdns,i2c-r1p14", "cdns,i2c-r1p10";
++			compatible = "cdns,i2c-r1p14";
+ 			status = "disabled";
+ 			interrupt-parent = <&gic>;
+ 			interrupts = <0 17 4>;
+@@ -185,7 +185,7 @@ i2c0: i2c@ff020000 {
+ 		};
  
- 				clocks = <&gcc GCC_MDSS_AHB_CLK>,
- 					 <&gcc GCC_MDSS_AXI_CLK>,
-@@ -745,7 +745,7 @@ dsi0: dsi@1a98000 {
- 				reg-names = "dsi_ctrl";
- 
- 				interrupt-parent = <&mdss>;
--				interrupts = <4 0>;
-+				interrupts = <4>;
- 
- 				assigned-clocks = <&gcc BYTE0_CLK_SRC>,
- 						  <&gcc PCLK0_CLK_SRC>;
+ 		i2c1: i2c@ff030000 {
+-			compatible = "cdns,i2c-r1p14", "cdns,i2c-r1p10";
++			compatible = "cdns,i2c-r1p14";
+ 			status = "disabled";
+ 			interrupt-parent = <&gic>;
+ 			interrupts = <0 18 4>;
 -- 
 2.25.1
 
