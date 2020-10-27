@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED52629BB27
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5359229BA36
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801080AbgJ0P5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55728 "EHLO mail.kernel.org"
+        id S1804795AbgJ0P5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796419AbgJ0PSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:18:22 -0400
+        id S2901017AbgJ0PSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:18:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85CC420657;
-        Tue, 27 Oct 2020 15:18:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63D742064B;
+        Tue, 27 Oct 2020 15:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811901;
-        bh=V7dREi8fC+dA9++ovT36KVgbZ66sB5aTseBMqv1pjpo=;
+        s=default; t=1603811904;
+        bh=c/9wlfARBEJpTCpm3PS07TAi8NtXw+RfVjcsG7o0TFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QGzUP8yCxNVXVqK6IfjyFPccAjktXPHmZzwddY3KzSyvyFmGkazHcqrc4vJIBPn6K
-         b1yPWAD83zTfVkoYvIr9YstZHJcikerE/J9+LmsBi065QPXDYtXU3RLncea14iK+dg
-         zW8814iDndgBFY6cLmRSKkkjyz8o3L4IOco5NygQ=
+        b=tem1KIf8/J1zRaqlfFytUX0om6Ivn0D6jjEyL1Wy1By4jsfgh7lITU5a5aG9U6gB4
+         gb7AWTV77AmoKm3zjBrleNun6NirrY4PgbUs5JbR+zImGRT8CnI8k8N7+elBi3tJC3
+         sjW0zQMBngLeVZeQ3igs7seASt6h8C4oUqx7QHbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        syzbot+3f3837e61a48d32b495f@syzkaller.appspotmail.com
-Subject: [PATCH 5.9 023/757] can: j1935: j1939_tp_tx_dat_new(): fix missing initialization of skbcnt
-Date:   Tue, 27 Oct 2020 14:44:33 +0100
-Message-Id: <20201027135451.607741578@linuxfoundation.org>
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.9 024/757] net: j1939: j1939_session_fresh_new(): fix missing initialization of skbcnt
+Date:   Tue, 27 Oct 2020 14:44:34 +0100
+Message-Id: <20201027135451.656263232@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -47,22 +42,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit e009f95b1543e26606dca2f7e6e9f0f9174538e5 ]
+[ Upstream commit 13ba4c434422837d7c8c163f9c8d854e67bf3c99 ]
 
-This fixes an uninit-value warning:
-BUG: KMSAN: uninit-value in can_receive+0x26b/0x630 net/can/af_can.c:650
+This patch add the initialization of skbcnt, similar to:
 
-Reported-and-tested-by: syzbot+3f3837e61a48d32b495f@syzkaller.appspotmail.com
+    e009f95b1543 can: j1935: j1939_tp_tx_dat_new(): fix missing initialization of skbcnt
+
+Let's play save and initialize this skbcnt as well.
+
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: Robin van der Gracht <robin@protonic.nl>
-Cc: Oleksij Rempel <linux@rempel-privat.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Link: https://lore.kernel.org/r/20201008061821.24663-1-xiyou.wangcong@gmail.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -71,13 +62,13 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -580,6 +580,7 @@ sk_buff *j1939_tp_tx_dat_new(struct j193
+@@ -1488,6 +1488,7 @@ j1939_session *j1939_session_fresh_new(s
  	skb->dev = priv->ndev;
  	can_skb_reserve(skb);
  	can_skb_prv(skb)->ifindex = priv->ndev->ifindex;
 +	can_skb_prv(skb)->skbcnt = 0;
- 	/* reserve CAN header */
- 	skb_reserve(skb, offsetof(struct can_frame, data));
+ 	skcb = j1939_skb_to_cb(skb);
+ 	memcpy(skcb, rel_skcb, sizeof(*skcb));
  
 
 
