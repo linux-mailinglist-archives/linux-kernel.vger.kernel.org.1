@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AEC29B855
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D986029B9DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800076AbgJ0Pes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46212 "EHLO mail.kernel.org"
+        id S1803384AbgJ0Pwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:52:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798675AbgJ0P3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:29:43 -0400
+        id S1799204AbgJ0PaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:30:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D80520728;
-        Tue, 27 Oct 2020 15:29:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EF8B2225E;
+        Tue, 27 Oct 2020 15:30:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812582;
-        bh=fy9N58wjZup82r/EkguW3PAFikuqfdGSsjTn1IAuGoY=;
+        s=default; t=1603812613;
+        bh=u6tmtFzoQhNJoYX9gYV+e9lb3rVX2mHMPLxiTP6Gkv8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ouaAY5pqAqagBnyifvm6OTNjHtViirMdqTvI4R5zykGYUxk+rDbgqP2sYAMFXgU5i
-         hHEOoWmJqYPFifQVRh12H0HGs9RcKB9qkkyAUQTW9H61jTne3M5cJd+SbNDCx36vJh
-         qV9kX5ItY8iiR+R5LtwkaA1QjSijuGVtaRgLLl3M=
+        b=2Mm6fdysWm2MMqM9xW75T5pLW1756Ls05fSkHzVsT+hmA8yeYsCgeenKuL8zEc0KP
+         SdhHvRFO36RyPopmclYYTDaWaISSXy+8pX3V/C7dyWxaWBFb2lyE+HihEA7ADhiZrx
+         MIFHUjs92w5gFOXWe7xD3fr9KC2rATGCpeooenmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 242/757] ASoC: fsl: imx-es8328: add missing put_device() call in imx_es8328_probe()
-Date:   Tue, 27 Oct 2020 14:48:12 +0100
-Message-Id: <20201027135501.941802022@linuxfoundation.org>
+Subject: [PATCH 5.9 243/757] scsi: ufs: ufs-mediatek: Eliminate error message for unbound mphy
+Date:   Tue, 27 Oct 2020 14:48:13 +0100
+Message-Id: <20201027135501.990327635@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,72 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Stanley Chu <stanley.chu@mediatek.com>
 
-[ Upstream commit e525db7e4b44c5b2b5aac0dad24e23cb58c54d22 ]
+[ Upstream commit 30a90782c105fe498df74161392aa143796b6886 ]
 
-if of_find_device_by_node() succeed, imx_es8328_probe() doesn't have
-a corresponding put_device(). Thus add a jump target to fix the exception
-handling for this function implementation.
+Some MediaTek platforms does not have to bind MPHY so users shall not see
+any unnecessary logs. Simply remove logs for this case.
 
-Fixes: 7e7292dba215 ("ASoC: fsl: add imx-es8328 machine driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20200825130224.1488694-1-yukuai3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200908064507.30774-2-stanley.chu@mediatek.com
+Fixes: fc4983018fea ("scsi: ufs-mediatek: Allow unbound mphy")
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/imx-es8328.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/scsi/ufs/ufs-mediatek.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index 15a27a2cd0cae..fad1eb6253d53 100644
---- a/sound/soc/fsl/imx-es8328.c
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -145,13 +145,13 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data) {
- 		ret = -ENOMEM;
--		goto fail;
-+		goto put_device;
+diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+index 1755dd6b04aec..0a50b95315f8f 100644
+--- a/drivers/scsi/ufs/ufs-mediatek.c
++++ b/drivers/scsi/ufs/ufs-mediatek.c
+@@ -129,7 +129,10 @@ static int ufs_mtk_bind_mphy(struct ufs_hba *hba)
+ 			__func__, err);
+ 	} else if (IS_ERR(host->mphy)) {
+ 		err = PTR_ERR(host->mphy);
+-		dev_info(dev, "%s: PHY get failed %d\n", __func__, err);
++		if (err != -ENODEV) {
++			dev_info(dev, "%s: PHY get failed %d\n", __func__,
++				 err);
++		}
  	}
  
- 	comp = devm_kzalloc(dev, 3 * sizeof(*comp), GFP_KERNEL);
- 	if (!comp) {
- 		ret = -ENOMEM;
--		goto fail;
-+		goto put_device;
- 	}
- 
- 	data->dev = dev;
-@@ -182,12 +182,12 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	ret = snd_soc_of_parse_card_name(&data->card, "model");
- 	if (ret) {
- 		dev_err(dev, "Unable to parse card name\n");
--		goto fail;
-+		goto put_device;
- 	}
- 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
- 	if (ret) {
- 		dev_err(dev, "Unable to parse routing: %d\n", ret);
--		goto fail;
-+		goto put_device;
- 	}
- 	data->card.num_links = 1;
- 	data->card.owner = THIS_MODULE;
-@@ -196,10 +196,12 @@ static int imx_es8328_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_card(&data->card);
- 	if (ret) {
- 		dev_err(dev, "Unable to register: %d\n", ret);
--		goto fail;
-+		goto put_device;
- 	}
- 
- 	platform_set_drvdata(pdev, data);
-+put_device:
-+	put_device(&ssi_pdev->dev);
- fail:
- 	of_node_put(ssi_np);
- 	of_node_put(codec_np);
+ 	if (err)
 -- 
 2.25.1
 
