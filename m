@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0E229BA75
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5588F29B7AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801342AbgJ0QC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43524 "EHLO mail.kernel.org"
+        id S1795481AbgJ0PPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901456AbgJ0PqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:46:20 -0400
+        id S1756863AbgJ0PLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:11:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAE8A21D42;
-        Tue, 27 Oct 2020 15:46:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8DCA21D24;
+        Tue, 27 Oct 2020 15:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813579;
-        bh=z4xFy9j49OUnmiY3/lx8+n22eqHBVvFwSdZmhixlAEs=;
+        s=default; t=1603811476;
+        bh=uZxgvXsTuZEVeZJFJRaqPTQhvh18DilCfGbVejeewDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=off6lGJxpD9AzhJgbwBsTYX3qh4CKJrLA+5VYP6TD8+8j2UdKvMd/JQBxQ0UxzeHK
-         yMF5F1f1D9nnMADt3uwpT/3Qyhi5INrYiK18+TPN+vsPnyGo4ln0J18zBP6SRGUPqR
-         MucU8qyBEuIgiCZ5vyd6qSAxB1bjEE3+LAFZwgZg=
+        b=Ql6yFgAPKYB/nk7Hi3poHn2+TSdVWkNJQsTrAO6lFGMp1A0qPlpEhDOTtuTWTtELu
+         LCTrD6USeSr3ZVkMDywV/K7N40H5+Tc8u9sd7x5J0w1ui+IkHXNqgeH7WBdNi0iOnc
+         IyVC5D8CA1ZNGlI86uYaRTyR8eM31aiNZ92kOy0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 599/757] arm64: dts: qcom: sm8250: Rename UART2 node to UART12
+Subject: [PATCH 5.8 506/633] ARM: OMAP2+: Restore MPU power domain if cpu_cluster_pm_enter() fails
 Date:   Tue, 27 Oct 2020 14:54:09 +0100
-Message-Id: <20201027135518.641655267@linuxfoundation.org>
+Message-Id: <20201027135546.467504506@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit bb1dfb4da1d031380cd631dd0d6884d4e79a8d51 ]
+[ Upstream commit 8f04aea048d56f3e39a7e543939450246542a6fc ]
 
-The UART12 node has been mistakenly mentioned as UART2. Let's fix that
-for both SM8250 SoC and MTP board and also add pinctrl definition for
-it.
+If cpu_cluster_pm_enter() fails, we need to set MPU power domain back
+to enabled to prevent the next WFI from potentially triggering an
+undesired MPU power domain state change.
 
-Fixes: 60378f1a171e ("arm64: dts: qcom: sm8250: Add sm8250 dts file")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20200904063637.28632-3-manivannan.sadhasivam@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+We already do this for omap_enter_idle_smp() but are missing it for
+omap_enter_idle_coupled().
+
+Fixes: 55be2f50336f ("ARM: OMAP2+: Handle errors for cpu_pm")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8250-mtp.dts |  4 ++--
- arch/arm64/boot/dts/qcom/sm8250.dtsi    | 11 ++++++++++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ arch/arm/mach-omap2/cpuidle44xx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-index 6894f8490dae7..6e2f7ae1d6211 100644
---- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-@@ -17,7 +17,7 @@ / {
- 	compatible = "qcom,sm8250-mtp";
+diff --git a/arch/arm/mach-omap2/cpuidle44xx.c b/arch/arm/mach-omap2/cpuidle44xx.c
+index 6f5f89711f256..a92d277f81a08 100644
+--- a/arch/arm/mach-omap2/cpuidle44xx.c
++++ b/arch/arm/mach-omap2/cpuidle44xx.c
+@@ -174,8 +174,10 @@ static int omap_enter_idle_coupled(struct cpuidle_device *dev,
+ 		 */
+ 		if (mpuss_can_lose_context) {
+ 			error = cpu_cluster_pm_enter();
+-			if (error)
++			if (error) {
++				omap_set_pwrdm_state(mpu_pd, PWRDM_POWER_ON);
+ 				goto cpu_cluster_pm_out;
++			}
+ 		}
+ 	}
  
- 	aliases {
--		serial0 = &uart2;
-+		serial0 = &uart12;
- 	};
- 
- 	chosen {
-@@ -371,7 +371,7 @@ &tlmm {
- 	gpio-reserved-ranges = <28 4>, <40 4>;
- };
- 
--&uart2 {
-+&uart12 {
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 377172e8967b7..e7d139e1a6cec 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -935,11 +935,13 @@ spi12: spi@a90000 {
- 				status = "disabled";
- 			};
- 
--			uart2: serial@a90000 {
-+			uart12: serial@a90000 {
- 				compatible = "qcom,geni-debug-uart";
- 				reg = <0x0 0x00a90000 0x0 0x4000>;
- 				clock-names = "se";
- 				clocks = <&gcc GCC_QUPV3_WRAP1_S4_CLK>;
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&qup_uart12_default>;
- 				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
- 				status = "disabled";
- 			};
-@@ -1880,6 +1882,13 @@ config {
- 					bias-disable;
- 				};
- 			};
-+
-+			qup_uart12_default: qup-uart12-default {
-+				mux {
-+					pins = "gpio34", "gpio35";
-+					function = "qup12";
-+				};
-+			};
- 		};
- 
- 		adsp: remoteproc@17300000 {
 -- 
 2.25.1
 
