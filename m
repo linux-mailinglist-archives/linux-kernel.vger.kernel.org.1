@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2E629BAF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC4D29B89B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802840AbgJ0Pvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
+        id S368885AbgJ0PmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799825AbgJ0Pdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:33:35 -0400
+        id S1761420AbgJ0Pdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2736922202;
-        Tue, 27 Oct 2020 15:33:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20AF72225E;
+        Tue, 27 Oct 2020 15:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812814;
-        bh=GR1HLGjzzBZ6kJF7VI1tPO8n6okpV02rKFtVV+ZHCSc=;
+        s=default; t=1603812817;
+        bh=V6WCZhbYK8PM3SlyYU26MRyCWmQLC97n29Y1qJ48Kkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nYZoDyrJBoEkO0n+tPCcEXRALNupLboz+1bjf6TJNu1jqA2VGAG3H09qvqKCqJsV8
-         Vsa4k3xTw8mF2VwCN+zrw1GYwaMvY6QN0dCnUeerXEqcxEnvKs40UqpqPkqiMwQTzg
-         kFuwoHzXsUTiXfFyZAVbaCoPKoVYGuAwbJMtNWgo=
+        b=Yu7foEcFrL7VuEl74uW1pQh5oYO5Yqseni5YyKXQosM20rxyJIuITlYTdpMwZfTA/
+         GeeUHWauZU4jPY+NBcY4vVj9+MRkM/6gzyPJSKvhgZ4HnrP3m6NBXBd/yknOKorgN1
+         V9bzqucu8Fzui6hwFnQ4m/Kxhb/oBf8MTGT0W1X8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
+        stable@vger.kernel.org, Tingwei Zhang <tingwei@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 338/757] coresight: etm: perf: Fix warning caused by etm_setup_aux failure
-Date:   Tue, 27 Oct 2020 14:49:48 +0100
-Message-Id: <20201027135506.423844820@linuxfoundation.org>
+Subject: [PATCH 5.9 339/757] coresight: cti: Fix remove sysfs link error
+Date:   Tue, 27 Oct 2020 14:49:49 +0100
+Message-Id: <20201027135506.473379537@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,45 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tingwei Zhang <tingwei@codeaurora.org>
+From: Mike Leach <mike.leach@linaro.org>
 
-[ Upstream commit 716f5652a13122364a65e694386b9b26f5e98c51 ]
+[ Upstream commit 1cce921bce7dcf6fef9bdfa4dcc9406383274408 ]
 
-When coresight_build_path() fails on all the cpus, etm_setup_aux
-calls etm_free_aux() to free allocated event_data.
-WARN_ON(cpumask_empty(mask) will be triggered since cpu mask is empty.
-Check event_data->snk_config is not NULL first to avoid this
-warning.
+CTI code to remove sysfs link to other devices on shutdown, incorrectly
+tries to remove a single ended link when these are all double ended. This
+implementation leaves elements in the link info structure undefined which
+results in a crash in recent tests for driver module unload.
 
-Fixes: f5200aa9831f38 ("coresight: perf: Refactor function free_event_data()")
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+This patch corrects the link removal code.
+
+Fixes: 73274abb6557 ("coresight: cti: Add in sysfs links to other coresight devices")
+Reported-by: Tingwei Zhang <tingwei@codeaurora.org>
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200928163513.70169-9-mathieu.poirier@linaro.org
+Link: https://lore.kernel.org/r/20200928163513.70169-18-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-etm-perf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwtracing/coresight/coresight-cti.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 9d61a71da96f7..be591b557df94 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -126,10 +126,10 @@ static void free_sink_buffer(struct etm_event_data *event_data)
- 	cpumask_t *mask = &event_data->mask;
- 	struct coresight_device *sink;
+diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
+index 47f3c9abae303..92aa535f9e134 100644
+--- a/drivers/hwtracing/coresight/coresight-cti.c
++++ b/drivers/hwtracing/coresight/coresight-cti.c
+@@ -494,12 +494,15 @@ static bool cti_add_sysfs_link(struct cti_drvdata *drvdata,
+ 	return !link_err;
+ }
  
--	if (WARN_ON(cpumask_empty(mask)))
-+	if (!event_data->snk_config)
- 		return;
+-static void cti_remove_sysfs_link(struct cti_trig_con *tc)
++static void cti_remove_sysfs_link(struct cti_drvdata *drvdata,
++				  struct cti_trig_con *tc)
+ {
+ 	struct coresight_sysfs_link link_info;
  
--	if (!event_data->snk_config)
-+	if (WARN_ON(cpumask_empty(mask)))
- 		return;
++	link_info.orig = drvdata->csdev;
+ 	link_info.orig_name = tc->con_dev_name;
+ 	link_info.target = tc->con_dev;
++	link_info.target_name = dev_name(&drvdata->csdev->dev);
+ 	coresight_remove_sysfs_link(&link_info);
+ }
  
- 	cpu = cpumask_first(mask);
+@@ -590,7 +593,7 @@ void cti_remove_assoc_from_csdev(struct coresight_device *csdev)
+ 		ctidev = &ctidrv->ctidev;
+ 		list_for_each_entry(tc, &ctidev->trig_cons, node) {
+ 			if (tc->con_dev == csdev->ect_dev) {
+-				cti_remove_sysfs_link(tc);
++				cti_remove_sysfs_link(ctidrv, tc);
+ 				tc->con_dev = NULL;
+ 				break;
+ 			}
+@@ -634,7 +637,7 @@ static void cti_remove_conn_xrefs(struct cti_drvdata *drvdata)
+ 		if (tc->con_dev) {
+ 			coresight_set_assoc_ectdev_mutex(tc->con_dev,
+ 							 NULL);
+-			cti_remove_sysfs_link(tc);
++			cti_remove_sysfs_link(drvdata, tc);
+ 			tc->con_dev = NULL;
+ 		}
+ 	}
 -- 
 2.25.1
 
