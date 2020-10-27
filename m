@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8F529BF68
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E11D29BF6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793769AbgJ0PIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:08:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37288 "EHLO mail.kernel.org"
+        id S1793784AbgJ0PIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:08:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789814AbgJ0PC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:02:59 -0400
+        id S1753874AbgJ0PDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:03:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B898206E5;
-        Tue, 27 Oct 2020 15:02:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64E8021707;
+        Tue, 27 Oct 2020 15:03:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810979;
-        bh=n71vcehzr33cJetW1tpQ/ln9xHyg2YYy/j1Cqs+ZkE8=;
+        s=default; t=1603810987;
+        bh=00VfQAyHIhYkNU+oPuPIMFUTURpy2UggZAz4orAQ9dI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aw/zOLvboxTzL8NaHFCMb3q/XW7llVPmTzJISBu4HC5qicpnrSC0DE10woHdex6OQ
-         m+L6pKDqY4bon88NSjOvU9qQs/EMgWmO9hpTaHxDNa3khwgwWQUXTv/W9whFVM5v1a
-         Rd7bhD/iK8ZqPzCfAsA8WsR+Oewd6yRAgCU7oF9I=
+        b=I8i4WKYF38GUGh+GA24OmvwXr5+yhuQfJY7fhzl/hS9ue9qVykRBlAe/wXn8D3I0W
+         IaazXkQPGTwdrq/INXN8YnefcWhELShqnucTZknQC2S/Y1FguNX66V+o4dH9eNZva+
+         IHSvH34eqjX2Cwa6XaRlpc9dPR/sMdeTcpq7AfKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        stable@vger.kernel.org, Gal Pressman <galpress@amazon.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 330/633] RDMA/ucma: Add missing locking around rdma_leave_multicast()
-Date:   Tue, 27 Oct 2020 14:51:13 +0100
-Message-Id: <20201027135538.160781057@linuxfoundation.org>
+Subject: [PATCH 5.8 333/633] RDMA/umem: Fix signature of stub ib_umem_find_best_pgsz()
+Date:   Tue, 27 Oct 2020 14:51:16 +0100
+Message-Id: <20201027135538.304085260@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,34 +46,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@nvidia.com>
 
-[ Upstream commit 38e03d092699891c3237b5aee9e8029d4ede0956 ]
+[ Upstream commit 61690d01db32eb1f94adc9ac2b8bb741d34e4671 ]
 
-All entry points to the rdma_cm from a ULP must be single threaded,
-even this error unwinds. Add the missing locking.
+The original function returns unsigned long and 0 on failure.
 
-Fixes: 7c11910783a1 ("RDMA/ucma: Put a lock around every call to the rdma_cm layer")
-Link: https://lore.kernel.org/r/20200818120526.702120-11-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Fixes: 4a35339958f1 ("RDMA/umem: Add API to find best driver supported page size in an MR")
+Link: https://lore.kernel.org/r/0-v1-982a13cc5c6d+501ae-fix_best_pgsz_stub_jgg@nvidia.com
+Reviewed-by: Gal Pressman <galpress@amazon.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/ucma.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/rdma/ib_umem.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index cf283b70bf877..2643d5dbe1da8 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -1512,7 +1512,9 @@ static ssize_t ucma_process_join(struct ucma_file *file,
- 	return 0;
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index e3518fd6b95b1..9353910915d41 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -95,10 +95,11 @@ static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offs
+ 		      		    size_t length) {
+ 	return -EINVAL;
+ }
+-static inline int ib_umem_find_best_pgsz(struct ib_umem *umem,
+-					 unsigned long pgsz_bitmap,
+-					 unsigned long virt) {
+-	return -EINVAL;
++static inline unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
++						   unsigned long pgsz_bitmap,
++						   unsigned long virt)
++{
++	return 0;
+ }
  
- err3:
-+	mutex_lock(&ctx->mutex);
- 	rdma_leave_multicast(ctx->cm_id, (struct sockaddr *) &mc->addr);
-+	mutex_unlock(&ctx->mutex);
- 	ucma_cleanup_mc_events(mc);
- err2:
- 	xa_erase(&multicast_table, mc->id);
+ #endif /* CONFIG_INFINIBAND_USER_MEM */
 -- 
 2.25.1
 
