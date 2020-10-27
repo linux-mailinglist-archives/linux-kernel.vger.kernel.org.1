@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD9A29B851
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C3F29BB0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800019AbgJ0Pei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:34:38 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:55462 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1798627AbgJ0P3U (ORCPT
+        id S1803122AbgJ0PwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:52:18 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:43618 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1799418AbgJ0PbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:29:20 -0400
-Received: by mail-pj1-f67.google.com with SMTP id c17so955645pjo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:29:19 -0700 (PDT)
+        Tue, 27 Oct 2020 11:31:25 -0400
+Received: by mail-lf1-f66.google.com with SMTP id l28so2838520lfp.10;
+        Tue, 27 Oct 2020 08:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hd4Zwt5PXEpm6eViTnwTXykQMYZvM5v1ZFeuSjbWmlo=;
-        b=r3Ksl1qIwMG+hbonTokXizEkSvoUg0aAsvKshEMkVICu/XgCyttqAioj27YhGWH9Lx
-         7SJ1VFw0ymqQk2R+KxJe9t0a6/XJJxDjdZN5ZlQaKSwGg4oS8T2ZZ8D9/Vn9K/uLlYgV
-         mZzkKXhA8jWQ+d6g05vQ489N1yHLc/QzwX8gTeYY1Ewk/mcKoLbTccPADbFLmS8Ul5nu
-         k1wmtF0mUwYq2WsCmB3DPMpvVMycXICs2hPXCnItZ9OcY277GEsbxPXCXiFdXENDqIA7
-         VMx1xAXRNb427y94rlojosfbVHwiOuWF/qPef8pjsJfknUW0e3+fpCxfa6evQQzrSez1
-         9SQw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fHBOxQ4ds2L5zAe+IuVRpnyZ/0NNh1Z4K/iPh0DplL0=;
+        b=FrFeVRKYfjR60SUSEWYarWyVfbowL0Ud1Eji9GIT0h5PaTT8VDCPnslo8AaFuNtyTd
+         jWYa1PiIUnDfYqal6c8SXQEGtn35Dx21FF1vpSXT/Btm2N9+/PYsVDp7eH9bU0f59QPY
+         HXARwhnWZ8mHG6Me8oDKdLMsoWrWhpCPn802tusd2n260z0+Ji2TSVsZbPB3dojZQcre
+         FMzxlua8ApZGgx/pHHhBci76Np9dDQWX7/3v8iziLolh76ZICVvcLICkNuqidccCVUJ8
+         kIBYt1gFcoDUs80eLG3Kpj0NEfPuZB7bqQtufpYzTE2XOQepKo+kxYGjR6bCRzFbtDm/
+         Lx4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hd4Zwt5PXEpm6eViTnwTXykQMYZvM5v1ZFeuSjbWmlo=;
-        b=Rt7wNt6xi/m1HckEFmgzarN8mPNMyySioMF3Cz8L30KyYv5bwN4lJchfm0t/beBQU4
-         R+f3F7UwQvJXBq/FbF9B232FE7Z/e5ARk83ECdL3l+g5OcmGcwfWkHMTFnKsIDXFOB9Z
-         Gt37JhVY17rykTN1BTT8evo6yyttFjOo5yIHQ3yMBIofFYI3j248LazFqJBHZQxMPihL
-         WKzVCLKYo6l0WzMIDtjDNcaZ9eA3RdkEdNgZc3AYg/7XnUmMmVcl3+LSlWZedU7PcDIm
-         7qqH+wdqaO+6/y0m3GmjVU6AVAqEld5uQzuUJjH8FPewYNUYelwle02kX3cxKFzb+WZn
-         m5Jw==
-X-Gm-Message-State: AOAM530o3bH5V9DmeKXFzRBnm2uU2DYKFuGcnPNFQu2KB9TKg/FOtxun
-        FPMTyQyWXsRJZAV5wfs2tT7cFQ==
-X-Google-Smtp-Source: ABdhPJzwuUI1cCRF/gQN5sAx2r+SnZ9ayE8CJn/C6zLLTe8t3eJuCNynosZc6XYwADNYjMcZG4zWUg==
-X-Received: by 2002:a17:902:860b:b029:d3:c430:7eb9 with SMTP id f11-20020a170902860bb02900d3c4307eb9mr3034654plo.9.1603812559103;
-        Tue, 27 Oct 2020 08:29:19 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id mp13sm2400614pjb.36.2020.10.27.08.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 08:29:17 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 09:29:15 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     balbi@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwtracing: coresight: add missing MODULE_LICENSE()
-Message-ID: <20201027152915.GA955990@xps15>
-References: <20201027085157.1964906-1-balbi@kernel.org>
- <20201027085157.1964906-2-balbi@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fHBOxQ4ds2L5zAe+IuVRpnyZ/0NNh1Z4K/iPh0DplL0=;
+        b=dYOmeYo2MQqLAiD6bHUSem9hN3ZDOnXnGdPHkL167i9owALV3wqjWBIxzGikS9Idon
+         Co1exfnMC15jTnokCHej5ZYVlyZM4jXz/r1Boj/ckaK0zRjxyXBcZaM6GFgzC4S48UB6
+         CKv0WBYwEbPfetAOK86lj6ekd0nnnjfl+0qRhe0zZVq9OttPiSzvg4jzdTqZlf+SgXep
+         ABmdOxSOjxUTWMOglM5Uf80hPlTNILLxbS7e4a3kg4/tDLfS5pt0Vi23HY8Zx03nJoj+
+         6zNE5XCbG42bciGKcK8QZxCDy0baSd2hexddyxS9OcS1tfkOAw3oQh5Fcicc9ObB/5Si
+         /jxg==
+X-Gm-Message-State: AOAM531E0I6e0oqsSkiOXCwRNhgIZS9a9mO6wA52wbWrFn0lsbIAa33k
+        yVBA8S6bVGED0Xjr7Db/6acFCFiuXkEZPIzzx1lOZnKMrDY=
+X-Google-Smtp-Source: ABdhPJyNHgiM1WZV6kimlOxnv8sy1Xt8EYt2qlI4JysJ/j1JiAgXlQLt4MJyxmzzEcCrEQ+POBbOR25Kj72oKnNqHiE=
+X-Received: by 2002:a19:7fc2:: with SMTP id a185mr970412lfd.84.1603812683068;
+ Tue, 27 Oct 2020 08:31:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027085157.1964906-2-balbi@kernel.org>
+References: <20201026125227.54520-1-a.nogikh@gmail.com> <20201026125227.54520-3-a.nogikh@gmail.com>
+In-Reply-To: <20201026125227.54520-3-a.nogikh@gmail.com>
+From:   Akinobu Mita <akinobu.mita@gmail.com>
+Date:   Wed, 28 Oct 2020 00:31:11 +0900
+Message-ID: <CAC5umyjZn+gtO=u8GhptVggzodbY-vnk9NNTOqyZyUW2up2ASQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] docs: add fail_lsm_hooks info to fault-injection.rst
+To:     Aleksandr Nogikh <a.nogikh@gmail.com>
+Cc:     jmorris@namei.org, serge@hallyn.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>, keescook@google.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org,
+        Aleksandr Nogikh <nogikh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felipe,
-
-On Tue, Oct 27, 2020 at 10:51:56AM +0200, balbi@kernel.org wrote:
-> From: Felipe Balbi <balbi@kernel.org>
-> 
-> Fix the following build warning:
-> 
-> WARNING: modpost: missing MODULE_LICENSE() in drivers/hwtracing/coresight/coresight.o
-> 
-
-Arnd already sent a patch about this[1] yesterday.
-
-Thanks,
-Mathieu
-
-[1]. https://lists.linaro.org/pipermail/coresight/2020-October/005041.html
-
-> Signed-off-by: Felipe Balbi <balbi@kernel.org>
+2020=E5=B9=B410=E6=9C=8826=E6=97=A5(=E6=9C=88) 21:52 Aleksandr Nogikh <a.no=
+gikh@gmail.com>:
+>
+> From: Aleksandr Nogikh <nogikh@google.com>
+>
+> Describe fail_lsm_hooks fault injection capability.
+>
+> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
 > ---
->  drivers/hwtracing/coresight/coresight-core.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 6994c1309b2b..7936fca8436c 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1692,3 +1692,4 @@ module_exit(coresight_exit);
->  MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
->  MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
->  MODULE_DESCRIPTION("Arm CoreSight tracer driver");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.29.1
-> 
+> v2:
+> - Added this commit.
+> ---
+>  Documentation/fault-injection/fault-injection.rst | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/Documentation/fault-injection/fault-injection.rst b/Document=
+ation/fault-injection/fault-injection.rst
+> index 31ecfe44e5b4..48705adfbc18 100644
+> --- a/Documentation/fault-injection/fault-injection.rst
+> +++ b/Documentation/fault-injection/fault-injection.rst
+> @@ -48,6 +48,12 @@ Available fault injection capabilities
+>    status code is NVME_SC_INVALID_OPCODE with no retry. The status code a=
+nd
+>    retry flag can be set via the debugfs.
+>
+> +- fail_lsm_hooks
+> +
+> +  injects failures into LSM hooks. When a fault is injected, actual hook=
+s
+> +  are not executed and a code from /sys/kernel/debug/fail_lsm_hooks/retv=
+al
+> +  is returned (the default value is -EACCES).
+
+In addition to this global one, what do you think about per-hook fault
+injection,
+i.e. /sys/kernel/debug/fail_lsm_hooks/<FUNC>/retval ?
+
+In this case, we need a fault_attr for each hook. (Maybe, we can use the sa=
+me
+technique that is used to define security_hook_heads).
