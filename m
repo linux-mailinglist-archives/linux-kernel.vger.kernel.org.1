@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541D129B5A1
+	by mail.lfdr.de (Postfix) with ESMTP id CAE5929B5A2
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794834AbgJ0PNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:13:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41394 "EHLO mail.kernel.org"
+        id S1794846AbgJ0PNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793577AbgJ0PHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:07:16 -0400
+        id S1793664AbgJ0PHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:07:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF787223AB;
-        Tue, 27 Oct 2020 15:07:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A123C20720;
+        Tue, 27 Oct 2020 15:07:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811232;
-        bh=VL6ylCSbZaXJwcapvIXH6TYP8HJ5sfg/4QUgunIUebQ=;
+        s=default; t=1603811263;
+        bh=zTrIGX5j6lGm9KtvsQcpAoF40FD1TkjkOgesb4rR1FI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IO2ThJUTq/rIukiPFvCw8q/FURw6GQsy5msC8bhUfk+hQamNOABEEBzKQw5JV/IwH
-         oVFkFalYCrfK9U6o3XlgHY6UQlg0ZEtwBvzxAMP2UUnNwFwqyiIQl7Njep9HWIDVBB
-         wcnv6yJTQe1/NmJKu6b2/ghEj4cKSWp3hKpty6Lo=
+        b=KBDza88DIjujJahjSJ8e5B5xoZ2eWhbob1vTCKsXlh+/Knxdl5y7wsSrxXNb6cDcw
+         JZBwD2m5NdaYE4w5K1YVjGRi1BdEvf5ZZ+wQBvGXL7Aa9PPa0U97KzvCiSg06RrkRx
+         u9iUjpDepNSenxP18gw8N681mBQL5oh68iaovCHo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 421/633] ramfs: fix nommu mmap with gaps in the page cache
-Date:   Tue, 27 Oct 2020 14:52:44 +0100
-Message-Id: <20201027135542.472763772@linuxfoundation.org>
+Subject: [PATCH 5.8 431/633] PCI: aardvark: Check for errors from pci_bridge_emul_init() call
+Date:   Tue, 27 Oct 2020 14:52:54 +0100
+Message-Id: <20201027135542.939260118@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -46,40 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 50b7d85680086126d7bd91dae81d57d4cb1ab6b7 ]
+[ Upstream commit 7862a6134456c8b4f8c39e8c94aa97e5c2f7f2b7 ]
 
-ramfs needs to check that pages are both physically contiguous and
-contiguous in the file.  If the page cache happens to have, eg, page A for
-index 0 of the file, no page for index 1, and page A+1 for index 2, then
-an mmap of the first two pages of the file will succeed when it should
-fail.
+Function pci_bridge_emul_init() may fail so correctly check for errors.
 
-Fixes: 642fb4d1f1dd ("[PATCH] NOMMU: Provide shared-writable mmap support on ramfs")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Howells <dhowells@redhat.com>
-Link: https://lkml.kernel.org/r/20200914122239.GO6583@casper.infradead.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20200907111038.5811-3-pali@kernel.org
+Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <marek.behun@nic.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ramfs/file-nommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/pci-aardvark.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ramfs/file-nommu.c b/fs/ramfs/file-nommu.c
-index 4146954549560..355523f4a4bf3 100644
---- a/fs/ramfs/file-nommu.c
-+++ b/fs/ramfs/file-nommu.c
-@@ -224,7 +224,7 @@ static unsigned long ramfs_nommu_get_unmapped_area(struct file *file,
- 	if (!pages)
- 		goto out_free;
+diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+index 8caa80b19cf86..d5f58684d962c 100644
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -608,7 +608,7 @@ static struct pci_bridge_emul_ops advk_pci_bridge_emul_ops = {
+  * Initialize the configuration space of the PCI-to-PCI bridge
+  * associated with the given PCIe interface.
+  */
+-static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)
++static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
+ {
+ 	struct pci_bridge_emul *bridge = &pcie->bridge;
  
--	nr = find_get_pages(inode->i_mapping, &pgoff, lpages, pages);
-+	nr = find_get_pages_contig(inode->i_mapping, pgoff, lpages, pages);
- 	if (nr != lpages)
- 		goto out_free_pages; /* leave if some pages were missing */
+@@ -634,8 +634,7 @@ static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)
+ 	bridge->data = pcie;
+ 	bridge->ops = &advk_pci_bridge_emul_ops;
  
+-	pci_bridge_emul_init(bridge, 0);
+-
++	return pci_bridge_emul_init(bridge, 0);
+ }
+ 
+ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
+@@ -1169,7 +1168,11 @@ static int advk_pcie_probe(struct platform_device *pdev)
+ 
+ 	advk_pcie_setup_hw(pcie);
+ 
+-	advk_sw_pci_bridge_init(pcie);
++	ret = advk_sw_pci_bridge_init(pcie);
++	if (ret) {
++		dev_err(dev, "Failed to register emulated root PCI bridge\n");
++		return ret;
++	}
+ 
+ 	ret = advk_pcie_init_irq_domain(pcie);
+ 	if (ret) {
 -- 
 2.25.1
 
