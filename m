@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878BF29B07F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7458029B081
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758186AbgJ0OUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42098 "EHLO mail.kernel.org"
+        id S1758211AbgJ0OUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756593AbgJ0OSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:33 -0400
+        id S2508484AbgJ0OSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:18:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BA0C206D4;
-        Tue, 27 Oct 2020 14:18:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D2B7206D4;
+        Tue, 27 Oct 2020 14:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808312;
-        bh=WUbHRaoqJfCsnlYmdkmweJM2LnXWWp4F9r/tgGzHg4s=;
+        s=default; t=1603808317;
+        bh=6Ru14FfKMxajVakNntDal+Pwp6FhhFhEwqVPOngvRe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CG3nKmW212l8GVdy+NOOpsJNTDAFYTsAkkrYCRstZQZiHCPZdCcKvhrk8AX2Tcp47
-         HwNrZ3q9TcREzWitjQg03FQUh6k9hAyxge1B9mEK+/s9B8qQ8l9x6Vv5gcmYcrBTYI
-         aCmMrcdLwU7JSkuhttEMraL9uL4tWKI3KROaRI8c=
+        b=Td1XXybbs6JQLKI3/iMYJC4F+xE0YeuB16jx3lJtNPRgYSpyVfVAlowBgXxoVKxQB
+         KtMkG4CUPdsp4q1W81uY5ijjHRynTnhYqZ7TaUyW9O0BHZjF+iyWnJ9Mrc2RN5W7qn
+         Mm/0QwWU9xTNrgBE7TymoPa9F5au6yqFAjAsSTqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 013/264] net/tls: sendfile fails with ktls offload
-Date:   Tue, 27 Oct 2020 14:51:11 +0100
-Message-Id: <20201027135431.286491589@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 015/264] ALSA: bebob: potential info leak in hwdep_read()
+Date:   Tue, 27 Oct 2020 14:51:13 +0100
+Message-Id: <20201027135431.384619279@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -42,66 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rohit Maheshwari <rohitm@chelsio.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit ea1dd3e9d080c961b9a451130b61c72dc9a5397b ]
+commit b41c15f4e1c1f1657da15c482fa837c1b7384452 upstream.
 
-At first when sendpage gets called, if there is more data, 'more' in
-tls_push_data() gets set which later sets pending_open_record_frags, but
-when there is no more data in file left, and last time tls_push_data()
-gets called, pending_open_record_frags doesn't get reset. And later when
-2 bytes of encrypted alert comes as sendmsg, it first checks for
-pending_open_record_frags, and since this is set, it creates a record with
-0 data bytes to encrypt, meaning record length is prepend_size + tag_size
-only, which causes problem.
- We should set/reset pending_open_record_frags based on more bit.
+The "count" variable needs to be capped on every path so that we don't
+copy too much information to the user.
 
-Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
-Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 618eabeae711 ("ALSA: bebob: Add hwdep interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201007074928.GA2529578@mwanda
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/tls/tls_device.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -351,13 +351,13 @@ static int tls_push_data(struct sock *sk
- 	struct tls_context *tls_ctx = tls_get_ctx(sk);
- 	struct tls_offload_context_tx *ctx = tls_offload_ctx_tx(tls_ctx);
- 	int tls_push_record_flags = flags | MSG_SENDPAGE_NOTLAST;
--	int more = flags & (MSG_SENDPAGE_NOTLAST | MSG_MORE);
- 	struct tls_record_info *record = ctx->open_record;
- 	struct page_frag *pfrag;
- 	size_t orig_size = size;
- 	u32 max_open_record_len;
--	int copy, rc = 0;
-+	bool more = false;
- 	bool done = false;
-+	int copy, rc = 0;
- 	long timeo;
+---
+ sound/firewire/bebob/bebob_hwdep.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/sound/firewire/bebob/bebob_hwdep.c
++++ b/sound/firewire/bebob/bebob_hwdep.c
+@@ -37,12 +37,11 @@ hwdep_read(struct snd_hwdep *hwdep, char
+ 	}
  
- 	if (flags &
-@@ -422,9 +422,8 @@ handle_error:
- 		if (!size) {
- last_record:
- 			tls_push_record_flags = flags;
--			if (more) {
--				tls_ctx->pending_open_record_frags =
--						record->num_frags;
-+			if (flags & (MSG_SENDPAGE_NOTLAST | MSG_MORE)) {
-+				more = true;
- 				break;
- 			}
+ 	memset(&event, 0, sizeof(event));
++	count = min_t(long, count, sizeof(event.lock_status));
+ 	if (bebob->dev_lock_changed) {
+ 		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
+ 		event.lock_status.status = (bebob->dev_lock_count > 0);
+ 		bebob->dev_lock_changed = false;
+-
+-		count = min_t(long, count, sizeof(event.lock_status));
+ 	}
  
-@@ -445,6 +444,8 @@ last_record:
- 		}
- 	} while (!done);
- 
-+	tls_ctx->pending_open_record_frags = more;
-+
- 	if (orig_size - size > 0)
- 		rc = orig_size - size;
- 
+ 	spin_unlock_irq(&bebob->lock);
 
 
