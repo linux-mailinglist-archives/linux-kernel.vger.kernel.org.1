@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7EA29B259
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B13929B296
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761424AbgJ0Ojj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:39:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38630 "EHLO mail.kernel.org"
+        id S1762486AbgJ0OnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761379AbgJ0OjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:39:21 -0400
+        id S1761386AbgJ0OjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:39:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D447822202;
-        Tue, 27 Oct 2020 14:39:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C562206B2;
+        Tue, 27 Oct 2020 14:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809560;
-        bh=nkB96SWmOMFCEw8PxawYRRfX7ld+cwFg33Fk1bgvC20=;
+        s=default; t=1603809563;
+        bh=eFZ/oyPdUgxHAEE7v9H/Sflidyvb+8diGlbs85+U3IU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oMSqmv33EiM2LNqElE3MuKZGbn0sKMuRCughfF0CrZMaykpJm39KVQh8SsGn+nGSb
-         Hh/ZIdBzP1ZaJBZKbsuF6OjgHC1epF4oQtUnoa6YIQzn93j7unQpgHVe22tFKZaPnE
-         PYWFTstIXMuTCquuXKsz62yRPmWUdXMTdIuZp7YU=
+        b=OQGJ7nJGCkqon4w5kTnV/M4Y2JVIBuJ9Rlqo0y7gBJiCh5LPeHbPbswy8QPQF7jSt
+         PEPVgdqctHpk0y4ZCBgb0+Jzx1gFKKpMULOhPwYpxPrl5kFE/f1d35vSG04PA4Wcrf
+         1igLHeJh/ePXowYuLvrnOh13FlViNn9Ck9OAgk5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Chuanhong Guo <gch981213@gmail.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 239/408] mtd: spinand: gigadevice: Only one dummy byte in QUADIO
-Date:   Tue, 27 Oct 2020 14:52:57 +0100
-Message-Id: <20201027135506.144477307@linuxfoundation.org>
+Subject: [PATCH 5.4 240/408] mtd: spinand: gigadevice: Add QE Bit
+Date:   Tue, 27 Oct 2020 14:52:58 +0100
+Message-Id: <20201027135506.189832484@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -46,47 +46,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hauke Mehrtens <hauke@hauke-m.de>
 
-[ Upstream commit 6387ad9caf8f09747a8569e5876086b72ee9382c ]
+[ Upstream commit aea7687e77bebce5b67fab9d03347bd8df7933c7 ]
 
-The datasheet only lists one dummy byte in the 0xEH operation for the
-following chips:
+The following GigaDevice chips have the QE BIT in the feature flags, I
+checked the datasheets, but did not try this.
 * GD5F1GQ4xExxG
 * GD5F1GQ4xFxxG
 * GD5F1GQ4UAYIG
 * GD5F4GQ4UAYIG
 
+The Quad operations like 0xEB mention that the QE bit has to be set.
+
 Fixes: c93c613214ac ("mtd: spinand: add support for GigaDevice GD5FxGQ4xA")
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 Tested-by: Chuanhong Guo <gch981213@gmail.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200820165121.3192-2-hauke@hauke-m.de
+Link: https://lore.kernel.org/linux-mtd/20200820165121.3192-3-hauke@hauke-m.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/gigadevice.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/spi/gigadevice.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index e99d425aa93f5..45f4c1f4a3d1c 100644
+index 45f4c1f4a3d1c..b13b39763a405 100644
 --- a/drivers/mtd/nand/spi/gigadevice.c
 +++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -21,7 +21,7 @@
- #define GD5FXGQ4UXFXXG_STATUS_ECC_UNCOR_ERROR	(7 << 4)
- 
- static SPINAND_OP_VARIANTS(read_cache_variants,
--		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-@@ -29,7 +29,7 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
- 
- static SPINAND_OP_VARIANTS(read_cache_variants_f,
--		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP_3A(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X2_OP_3A(0, 1, NULL, 0),
+@@ -201,7 +201,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     0,
++		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+ 				     gd5fxgq4xa_ecc_get_status)),
+ 	SPINAND_INFO("GD5F2GQ4xA", 0xF2,
+@@ -210,7 +210,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     0,
++		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+ 				     gd5fxgq4xa_ecc_get_status)),
+ 	SPINAND_INFO("GD5F4GQ4xA", 0xF4,
+@@ -219,7 +219,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     0,
++		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&gd5fxgq4xa_ooblayout,
+ 				     gd5fxgq4xa_ecc_get_status)),
+ 	SPINAND_INFO("GD5F1GQ4UExxG", 0xd1,
+@@ -228,7 +228,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     0,
++		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
+ 				     gd5fxgq4uexxg_ecc_get_status)),
+ 	SPINAND_INFO("GD5F1GQ4UFxxG", 0xb148,
+@@ -237,7 +237,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_f,
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+-		     0,
++		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&gd5fxgq4_variant2_ooblayout,
+ 				     gd5fxgq4ufxxg_ecc_get_status)),
+ };
 -- 
 2.25.1
 
