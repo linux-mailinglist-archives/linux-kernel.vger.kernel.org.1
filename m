@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E2629B634
+	by mail.lfdr.de (Postfix) with ESMTP id C116429B635
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797088AbgJ0PVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:21:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56460 "EHLO mail.kernel.org"
+        id S1797105AbgJ0PVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796477AbgJ0PSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:18:55 -0400
+        id S1796512AbgJ0PTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:19:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 385BA2064B;
-        Tue, 27 Oct 2020 15:18:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7186521D41;
+        Tue, 27 Oct 2020 15:19:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811934;
-        bh=l6PdRIk2q9kQkm+pHSYC9bMdJ4FHIN5XHDF1uNwVZbc=;
+        s=default; t=1603811949;
+        bh=nstPzUardyPZb8ENdyhzbw1WAnRVrR9xXGc9+0Og5QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RmTY/xyLbXIz6ak6h2LPgvvlrDpAZcQNxbfq5RYaEREntdfFVkLz7AKgvIN2kCrjB
-         AN2cJvCOh2qWkAwEfRuJjDcLvMq/uFEOc1FoDvSgKKeBMXnMVDa9LM4L+t4CY8NP9y
-         L0mu7oyifYeDHj/s4kNRID1WLVz+oCYhwlNV7QxU=
+        b=xmFiqkgPwt6CUv3Dp4RBTZ8XvJMNzIxYNaogQxGwvQrcb7lp8yGY8T+joctrU7Pu1
+         ce0ZrLmUreqo8g3VcqGTBDSDMLwRRbrrYxCwkGga/UI6sHgxgf9BgtQzeL44UEHX3I
+         t30yKOwUnHAjbzc7qXu3qA3f27DTs8I6FiiYoanU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Venkatesh Ellapu <venkatesh.e@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 034/757] chelsio/chtls: Fix panic when listen on multiadapter
-Date:   Tue, 27 Oct 2020 14:44:44 +0100
-Message-Id: <20201027135452.124074922@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 038/757] icmp: randomize the global rate limiter
+Date:   Tue, 27 Oct 2020 14:44:48 +0100
+Message-Id: <20201027135452.311960829@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,53 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 9819f22c410b4bf6589d3126e8bc3952db507cbf ]
+[ Upstream commit b38e7819cae946e2edf869e604af1e65a5d241c5 ]
 
-Add the logic to compare net_device returned by ip_dev_find()
-with the net_device list in cdev->ports[] array and return
-net_device if matched else NULL.
+Keyu Man reported that the ICMP rate limiter could be used
+by attackers to get useful signal. Details will be provided
+in an upcoming academic publication.
 
-Fixes: 6abde0b24122 ("crypto/chtls: IPv6 support for inline TLS")
-Signed-off-by: Venkatesh Ellapu <venkatesh.e@chelsio.com>
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Our solution is to add some noise, so that the attackers
+no longer can get help from the predictable token bucket limiter.
+
+Fixes: 4cdf507d5452 ("icmp: add a global rate limitation")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_cm.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ Documentation/networking/ip-sysctl.rst |    4 +++-
+ net/ipv4/icmp.c                        |    7 +++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/crypto/chelsio/chtls/chtls_cm.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -92,11 +92,13 @@ static void chtls_sock_release(struct kr
- static struct net_device *chtls_find_netdev(struct chtls_dev *cdev,
- 					    struct sock *sk)
- {
-+	struct adapter *adap = pci_get_drvdata(cdev->pdev);
- 	struct net_device *ndev = cdev->ports[0];
- #if IS_ENABLED(CONFIG_IPV6)
- 	struct net_device *temp;
- 	int addr_type;
- #endif
-+	int i;
+--- a/Documentation/networking/ip-sysctl.rst
++++ b/Documentation/networking/ip-sysctl.rst
+@@ -1142,13 +1142,15 @@ icmp_ratelimit - INTEGER
+ icmp_msgs_per_sec - INTEGER
+ 	Limit maximal number of ICMP packets sent per second from this host.
+ 	Only messages whose type matches icmp_ratemask (see below) are
+-	controlled by this limit.
++	controlled by this limit. For security reasons, the precise count
++	of messages per second is randomized.
  
- 	switch (sk->sk_family) {
- 	case PF_INET:
-@@ -127,8 +129,12 @@ static struct net_device *chtls_find_net
- 		return NULL;
+ 	Default: 1000
  
- 	if (is_vlan_dev(ndev))
--		return vlan_dev_real_dev(ndev);
--	return ndev;
-+		ndev = vlan_dev_real_dev(ndev);
-+
-+	for_each_port(adap, i)
-+		if (cdev->ports[i] == ndev)
-+			return ndev;
-+	return NULL;
- }
+ icmp_msgs_burst - INTEGER
+ 	icmp_msgs_per_sec controls number of ICMP packets sent per second,
+ 	while icmp_msgs_burst controls the burst size of these packets.
++	For security reasons, the precise burst size is randomized.
  
- static void assign_rxopt(struct sock *sk, unsigned int opt)
+ 	Default: 50
+ 
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -239,7 +239,7 @@ static struct {
+ /**
+  * icmp_global_allow - Are we allowed to send one more ICMP message ?
+  *
+- * Uses a token bucket to limit our ICMP messages to sysctl_icmp_msgs_per_sec.
++ * Uses a token bucket to limit our ICMP messages to ~sysctl_icmp_msgs_per_sec.
+  * Returns false if we reached the limit and can not send another packet.
+  * Note: called with BH disabled
+  */
+@@ -267,7 +267,10 @@ bool icmp_global_allow(void)
+ 	}
+ 	credit = min_t(u32, icmp_global.credit + incr, sysctl_icmp_msgs_burst);
+ 	if (credit) {
+-		credit--;
++		/* We want to use a credit of one in average, but need to randomize
++		 * it for security reasons.
++		 */
++		credit = max_t(int, credit - prandom_u32_max(3), 0);
+ 		rc = true;
+ 	}
+ 	WRITE_ONCE(icmp_global.credit, credit);
 
 
