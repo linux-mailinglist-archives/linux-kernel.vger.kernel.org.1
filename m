@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5D729C426
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391CA29C1F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758756AbgJ0OX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
+        id S1762339AbgJ0OmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901332AbgJ0OWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:22:39 -0400
+        id S1761663AbgJ0OkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:40:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E11F206D4;
-        Tue, 27 Oct 2020 14:22:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCA1322202;
+        Tue, 27 Oct 2020 14:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808558;
-        bh=gA/kQuNx5y9iTPnnVnSP64o9Q8dLbfj8oHnA/S4S1uE=;
+        s=default; t=1603809608;
+        bh=7X4uAvFQWtMwCQSZPhy55axYCWJfwSqig/lY17g5kOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bQBltWWk5WUgA/3n8etWSqAOLO5Unv/IqqIqtbqWk2RcdOqhY/0qwb1s0ErwM0JBE
-         0NQwVfg8zlKcXbNU0FT9wHZS0DT8Uxr1f3zgitKsJxCHELATTmb0Z0QQwACbsvcURQ
-         J2nhmAmgzig1qdjiN2tyrgJlurzDo6x3h33iOyqw=
+        b=Txw+r64AFZy+4lm2kDdsxTIyId1nd5oqBq7on90EjNIBBsNHIJA3ZXVutfzR9G5lo
+         +DzWWU9xwxjkqP1AIZ9YCAShzdHNTYjyBPe/sWT03QRdRUjUIs8EN7TGp8OT5NxyKr
+         ddMGnWaSawNqdJk87/fuPghFSYtryQRhe+6Fl1kI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Souptick Joarder <jrdr.linux@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 137/264] mtd: mtdoops: Dont write panic data twice
+Subject: [PATCH 5.4 257/408] rapidio: fix error handling path
 Date:   Tue, 27 Oct 2020 14:53:15 +0100
-Message-Id: <20201027135437.116564840@linuxfoundation.org>
+Message-Id: <20201027135506.959710984@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +52,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit c1cf1d57d1492235309111ea6a900940213a9166 ]
+[ Upstream commit fa63f083b3492b5ed5332b8d7c90b03b5ef24a1d ]
 
-If calling mtdoops_write, don't also schedule work to be done later.
+rio_dma_transfer() attempts to clamp the return value of
+pin_user_pages_fast() to be >= 0.  However, the attempt fails because
+nr_pages is overridden a few lines later, and restored to the undesirable
+-ERRNO value.
 
-Although this appears to not be causing an issue, possibly because the
-scheduled work will never get done, it is confusing.
+The return value is ultimately stored in nr_pages, which in turn is passed
+to unpin_user_pages(), which expects nr_pages >= 0, else, disaster.
 
-Fixes: 016c1291ce70 ("mtd: mtdoops: do not use mtd->panic_write directly")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200903034217.23079-1-mark.tomlinson@alliedtelesis.co.nz
+Fix this by fixing the nesting of the assignment to nr_pages: nr_pages
+should be clamped to zero if pin_user_pages_fast() returns -ERRNO, or set
+to the return value of pin_user_pages_fast(), otherwise.
+
+[jhubbard@nvidia.com: new changelog]
+
+Fixes: e8de370188d09 ("rapidio: add mport char device driver")
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lkml.kernel.org/r/1600227737-20785-1-git-send-email-jrdr.linux@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/mtdoops.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/rapidio/devices/rio_mport_cdev.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index e078fc41aa612..feeffde2d4fa9 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -293,12 +293,13 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
- 	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
- 			     record_size - MTDOOPS_HEADER_SIZE, NULL);
+diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
+index 0b85a80ae7ef6..1222522b4ae76 100644
+--- a/drivers/rapidio/devices/rio_mport_cdev.c
++++ b/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -873,15 +873,16 @@ rio_dma_transfer(struct file *filp, u32 transfer_mode,
+ 				rmcd_error("get_user_pages_unlocked err=%ld",
+ 					   pinned);
+ 				nr_pages = 0;
+-			} else
++			} else {
+ 				rmcd_error("pinned %ld out of %ld pages",
+ 					   pinned, nr_pages);
++				/*
++				 * Set nr_pages up to mean "how many pages to unpin, in
++				 * the error handler:
++				 */
++				nr_pages = pinned;
++			}
+ 			ret = -EFAULT;
+-			/*
+-			 * Set nr_pages up to mean "how many pages to unpin, in
+-			 * the error handler:
+-			 */
+-			nr_pages = pinned;
+ 			goto err_pg;
+ 		}
  
--	/* Panics must be written immediately */
--	if (reason != KMSG_DUMP_OOPS)
-+	if (reason != KMSG_DUMP_OOPS) {
-+		/* Panics must be written immediately */
- 		mtdoops_write(cxt, 1);
--
--	/* For other cases, schedule work to write it "nicely" */
--	schedule_work(&cxt->work_write);
-+	} else {
-+		/* For other cases, schedule work to write it "nicely" */
-+		schedule_work(&cxt->work_write);
-+	}
- }
- 
- static void mtdoops_notify_add(struct mtd_info *mtd)
 -- 
 2.25.1
 
