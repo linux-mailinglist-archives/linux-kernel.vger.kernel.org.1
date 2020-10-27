@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D597829A545
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E62D29A548
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507347AbgJ0HJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 03:09:46 -0400
-Received: from jax4mhob24.registeredsite.com ([64.69.218.112]:52890 "EHLO
-        jax4mhob24.registeredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390904AbgJ0HJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 03:09:46 -0400
-Received: from mailpod.hostingplatform.com ([10.30.71.206])
-        by jax4mhob24.registeredsite.com (8.14.4/8.14.4) with ESMTP id 09R79hjD090954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:09:43 -0400
-Received: (qmail 7355 invoked by uid 0); 27 Oct 2020 07:09:43 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 27 Oct 2020 07:09:42 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sre@kernel.org, robh+dt@kernel.org,
-        Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v2] dt-bindings: power/supply: Add ltc4162-l-charger
-Date:   Tue, 27 Oct 2020 08:09:38 +0100
-Message-Id: <20201027070938.10157-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        id S2507361AbgJ0HLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 03:11:17 -0400
+Received: from mga11.intel.com ([192.55.52.93]:1077 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390835AbgJ0HLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 03:11:16 -0400
+IronPort-SDR: bHTFB4LiCz3fGH6e3b2LSe6mKCDgTCOvaCqFDV+G6jZoAuE8E8MUWl570i+9W+9q6V7eDYw1Mf
+ xSZgrD4FjcWw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="164537400"
+X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
+   d="scan'208";a="164537400"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 00:11:15 -0700
+IronPort-SDR: yxpbvNXqR2ZH8VELzLKdveHPiLfaOg4FP6eotaVuipb+Li1gAU22E4WQmw0d7T2iCHSawR5QAw
+ LXDe2LDQzbVA==
+X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
+   d="scan'208";a="535680174"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 00:11:15 -0700
+Date:   Tue, 27 Oct 2020 00:11:14 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 07/10] x86/entry: Pass irqentry_state_t by reference
+Message-ID: <20201027071114.GN534324@iweiny-DESK2.sc.intel.com>
+References: <20201022222701.887660-1-ira.weiny@intel.com>
+ <20201022222701.887660-8-ira.weiny@intel.com>
+ <87y2jw4ne6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2jw4ne6.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the LTC4162-L Li-Ion battery charger. The driver allows
-reading back telemetry and to set some charging options like the input
-current limit.
+On Fri, Oct 23, 2020 at 11:56:33PM +0200, Thomas Gleixner wrote:
+> On Thu, Oct 22 2020 at 15:26, ira weiny wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> >
+> > In preparation for adding PKS information to struct irqentry_state_t
+> > change all call sites and usages to pass the struct by reference
+> > instead of by value.
+> 
+> This still does not explain WHY you need to do that. 'Preparation' is a
+> pretty useless information.
+> 
+> What is the actual reason for this? Just because PKS information feels
+> better that way?
+> 
+> Also what is PKS information? Changelogs have to make sense on their own
+> and not only in the context of a larger series of changes.
 
-This adds the devicetree bindings.
+I've reworded this to explain the addition of new members which would make
+passing by value less efficient with additional structure changes being added
+later in the series.
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
-v2: Use microohms, add lltc,cell-count
+> 
+> > While we are editing the call sites it is a good time to standardize on
+> > the name 'irq_state'.
+> 
+>   While at it change all usage sites to consistently use the variable
+>   name 'irq_state'.
+> 
+> Or something like that. See Documentation/process/...
 
- .../bindings/power/supply/ltc4162-l.yaml      | 68 +++++++++++++++++++
- 1 file changed, 68 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
+Sorry, bad habit.
 
-diff --git a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-new file mode 100644
-index 000000000000..42622ac54e28
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (C) 2020 Topic Embedded Products
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/supply/ltc4162-l.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Linear Technology (Analog Devices) LTC4162-L Charger
-+
-+maintainers:
-+  - Mike Looijmans <mike.looijmans@topic.nl>
-+
-+description: |
-+  The LTC ® 4162-L is an advanced monolithic synchronous step-down switching
-+  battery charger and PowerPath (TM) manager that seamlessly manages power
-+  distribution between input sources such as wall adapters, backplanes, solar
-+  panels, etc., and a rechargeable Lithium-Ion/Polymer battery.
-+
-+  Specifications about the charger can be found at:
-+    https://www.analog.com/en/products/ltc4162-s.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - lltc,ltc4162-l
-+
-+  reg:
-+    maxItems: 1
-+    description: I2C address of the charger.
-+
-+  lltc,rsnsb-micro-ohms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Battery sense resistor in microohm.
-+    minimum: 1000
-+
-+  lltc,rsnsi-micro-ohms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Input current sense resistor in microohm.
-+    minimum: 1000
-+
-+  lltc,cell-count:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Number of battery cells. If not provided, will be obtained from the chip
-+      once the external power is applied. Omit this when the number of cells
-+      is somewhat dynamic. Without it, several measurements will return 0 until
-+      the charger is connected to an external supply.
-+
-+required:
-+  - compatible
-+  - reg
-+  - lltc,rsnsb
-+  - lltc,rsnsi
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      charger: battery-charger@68 {
-+              compatible = "lltc,ltc4162-l";
-+              reg =  <0x68>;
-+              lltc,rsnsb = <10>;
-+              lltc,rsnsi = <16>;
-+      };
-+    };
--- 
-2.17.1
+Fixed.
 
+Thanks,
+Ira
+
+> 
+> Thanks,
+> 
+>         tglx
+> 
