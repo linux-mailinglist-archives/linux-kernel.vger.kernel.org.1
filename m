@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9015A29B1AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6738829B2CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902348AbgJ0Oct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54778 "EHLO mail.kernel.org"
+        id S1763982AbgJ0Ops (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:45:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759232AbgJ0O2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:28:25 -0400
+        id S1763892AbgJ0Op1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 185F620754;
-        Tue, 27 Oct 2020 14:28:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35F342225E;
+        Tue, 27 Oct 2020 14:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808904;
-        bh=jkJLQI7d2108cS11HL9Xo2Bn62RBEW9CUm/9Tt2JW4M=;
+        s=default; t=1603809926;
+        bh=f+GTbl0pKb9hkZ+SMutdzDj8ZJsIrhD8MfsYjapkD1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DxGF9CtR5FOHqSsmlQfZGGGDTzt59Lznm5T8KvT4uqmpDU32rqI5DbwWBs3muGRbo
-         /BNtG7eQbB8vP1NBXWU5GiIy9ON0x4IxyFm1TpN8+GJzICK6xyR7nZ6d1H4ed5hnbV
-         ZGXf4w5eOwz6/wDv/wBnoGc6uqEWTcIN7mj1iXb4=
+        b=o5FYV/xR8x5AT4xZS27b83TLqDoGR/H5M2xIZiW2NYoZPziHWR+E6wK0LLTsqmOHy
+         F5g3R1C/yiWUJicOIG5lPSua30VhLRDx++9OAWFfrO5BsFzAbbAfVjCSIsQZjh58UM
+         G4MBNyuh28P0AfzinhzOTboLNCUhi7d+XLhZf6kI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Horn <doughorn@google.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
+        stable@vger.kernel.org,
+        syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com,
+        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 248/264] Fix use after free in get_capset_info callback.
+Subject: [PATCH 5.4 368/408] reiserfs: only call unlock_new_inode() if I_NEW
 Date:   Tue, 27 Oct 2020 14:55:06 +0100
-Message-Id: <20201027135442.297213360@linuxfoundation.org>
+Message-Id: <20201027135512.082929769@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Horn <doughorn@google.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit e219688fc5c3d0d9136f8d29d7e0498388f01440 ]
+[ Upstream commit 8859bf2b1278d064a139e3031451524a49a56bd0 ]
 
-If a response to virtio_gpu_cmd_get_capset_info takes longer than
-five seconds to return, the callback will access freed kernel memory
-in vg->capsets.
+unlock_new_inode() is only meant to be called after a new inode has
+already been inserted into the hash table.  But reiserfs_new_inode() can
+call it even before it has inserted the inode, triggering the WARNING in
+unlock_new_inode().  Fix this by only calling unlock_new_inode() if the
+inode has the I_NEW flag set, indicating that it's in the table.
 
-Signed-off-by: Doug Horn <doughorn@google.com>
-Link: http://patchwork.freedesktop.org/patch/msgid/20200902210847.2689-2-gurchetansingh@chromium.org
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+This addresses the syzbot report "WARNING in unlock_new_inode"
+(https://syzkaller.appspot.com/bug?extid=187510916eb6a14598f7).
+
+Link: https://lore.kernel.org/r/20200628070057.820213-1-ebiggers@kernel.org
+Reported-by: syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_kms.c |  2 ++
- drivers/gpu/drm/virtio/virtgpu_vq.c  | 10 +++++++---
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ fs/reiserfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index 65060c08522d7..22397a23780c0 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -113,8 +113,10 @@ static void virtio_gpu_get_capsets(struct virtio_gpu_device *vgdev,
- 					 vgdev->capsets[i].id > 0, 5 * HZ);
- 		if (ret == 0) {
- 			DRM_ERROR("timed out waiting for cap set %d\n", i);
-+			spin_lock(&vgdev->display_info_lock);
- 			kfree(vgdev->capsets);
- 			vgdev->capsets = NULL;
-+			spin_unlock(&vgdev->display_info_lock);
- 			return;
- 		}
- 		DRM_INFO("cap set %d: id %d, max-version %d, max-size %d\n",
-diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
-index 608906f06cedd..3e72c6dac0ffe 100644
---- a/drivers/gpu/drm/virtio/virtgpu_vq.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
-@@ -566,9 +566,13 @@ static void virtio_gpu_cmd_get_capset_info_cb(struct virtio_gpu_device *vgdev,
- 	int i = le32_to_cpu(cmd->capset_index);
- 
- 	spin_lock(&vgdev->display_info_lock);
--	vgdev->capsets[i].id = le32_to_cpu(resp->capset_id);
--	vgdev->capsets[i].max_version = le32_to_cpu(resp->capset_max_version);
--	vgdev->capsets[i].max_size = le32_to_cpu(resp->capset_max_size);
-+	if (vgdev->capsets) {
-+		vgdev->capsets[i].id = le32_to_cpu(resp->capset_id);
-+		vgdev->capsets[i].max_version = le32_to_cpu(resp->capset_max_version);
-+		vgdev->capsets[i].max_size = le32_to_cpu(resp->capset_max_size);
-+	} else {
-+		DRM_ERROR("invalid capset memory.");
-+	}
- 	spin_unlock(&vgdev->display_info_lock);
- 	wake_up(&vgdev->resp_wq);
+diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+index 70387650436cf..ac35ddf0dd603 100644
+--- a/fs/reiserfs/inode.c
++++ b/fs/reiserfs/inode.c
+@@ -2161,7 +2161,8 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
+ out_inserted_sd:
+ 	clear_nlink(inode);
+ 	th->t_trans_id = 0;	/* so the caller can't use this handle later */
+-	unlock_new_inode(inode); /* OK to do even if we hadn't locked it */
++	if (inode->i_state & I_NEW)
++		unlock_new_inode(inode);
+ 	iput(inode);
+ 	return err;
  }
 -- 
 2.25.1
