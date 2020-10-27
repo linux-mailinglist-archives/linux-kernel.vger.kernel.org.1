@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739A129B654
+	by mail.lfdr.de (Postfix) with ESMTP id E39FC29B655
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797357AbgJ0PXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:23:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35374 "EHLO mail.kernel.org"
+        id S1797368AbgJ0PXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796970AbgJ0PUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:20:53 -0400
+        id S1796976AbgJ0PU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:20:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8157121527;
-        Tue, 27 Oct 2020 15:20:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54DE420728;
+        Tue, 27 Oct 2020 15:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812052;
-        bh=SDI7Zs8yVn9f+DJW/cqVTaPPvA7pBlO9lOOD5Mmkk+8=;
+        s=default; t=1603812054;
+        bh=OfHh6nhWWArbokHqlxxtz0cg0SoxDgOag/ODKgJdD8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aJpy8Vi8HfKvhmPyP3az28KX8TefLhGF95xqdL19ds3Ixv3hX3ZhJxE5tBVEY5m3B
-         lJSL8AijiyiuoB0cWgnvVFDC1Ylae+e//u2brBRa/fM8MCche1Gxw/hGfwAGxJ2bp7
-         cKOLxw/hQI14qqZBnT3beIXMfuyZC556P8oZIaKU=
+        b=laUtxQ98Ntwec2VaLU1BZywpPxkbWzwrgJgj/ckEABNYZNGRYb29Tpb6a6vgRTnMi
+         56WQdet5+OizgQ7sFIPcVaLM3G2haVhr+CkbYg+lULaIn5HtDB1Hk75CRAXMvx6esY
+         td6NxIgPS3PE9GN8wdtxbwF1HMIIJFsj0Y8KqgXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 045/757] net/sched: act_tunnel_key: fix OOB write in case of IPv6 ERSPAN tunnels
-Date:   Tue, 27 Oct 2020 14:44:55 +0100
-Message-Id: <20201027135452.647472704@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 046/757] netsec: ignore phy-mode device property on ACPI systems
+Date:   Tue, 27 Oct 2020 14:44:56 +0100
+Message-Id: <20201027135452.696109373@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,121 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit a7a12b5a0f950bc6b9f7153390634ea798738db9 ]
+[ Upstream commit acd7aaf51b20263a7e62d2a26569988c63bdd3d8 ]
 
-the following command
+Since commit bbc4d71d63549bc ("net: phy: realtek: fix rtl8211e rx/tx
+delay config"), the Realtek PHY driver will override any TX/RX delay
+set by hardware straps if the phy-mode device property does not match.
 
- # tc action add action tunnel_key \
- > set src_ip 2001:db8::1 dst_ip 2001:db8::2 id 10 erspan_opts 1:6789:0:0
+This is causing problems on SynQuacer based platforms (the only SoC
+that incorporates the netsec hardware), since many were built with
+this Realtek PHY, and shipped with firmware that defines the phy-mode
+as 'rgmii', even though the PHY is configured for TX and RX delay using
+pull-ups.
 
-generates the following splat:
+>From the driver's perspective, we should not make any assumptions in
+the general case that the PHY hardware does not require any initial
+configuration. However, the situation is slightly different for ACPI
+boot, since it implies rich firmware with AML abstractions to handle
+hardware details that are not exposed to the OS. So in the ACPI case,
+it is reasonable to assume that the PHY comes up in the right mode,
+regardless of whether the mode is set by straps, by boot time firmware
+or by AML executed by the ACPI interpreter.
 
- BUG: KASAN: slab-out-of-bounds in tunnel_key_copy_opts+0xcc9/0x1010 [act_tunnel_key]
- Write of size 4 at addr ffff88813f5f1cc8 by task tc/873
+So let's ignore the 'phy-mode' device property when probing the netsec
+driver in ACPI mode, and hardcode the mode to PHY_INTERFACE_MODE_NA,
+which should work with any PHY provided that it is configured by the
+time the driver attaches to it. While at it, document that omitting
+the mode is permitted for DT probing as well, by setting the phy-mode
+DT property to the empty string.
 
- CPU: 2 PID: 873 Comm: tc Not tainted 5.9.0+ #282
- Hardware name: Red Hat KVM, BIOS 1.11.1-4.module+el8.1.0+4066+0f1aadab 04/01/2014
- Call Trace:
-  dump_stack+0x99/0xcb
-  print_address_description.constprop.7+0x1e/0x230
-  kasan_report.cold.13+0x37/0x7c
-  tunnel_key_copy_opts+0xcc9/0x1010 [act_tunnel_key]
-  tunnel_key_init+0x160c/0x1f40 [act_tunnel_key]
-  tcf_action_init_1+0x5b5/0x850
-  tcf_action_init+0x15d/0x370
-  tcf_action_add+0xd9/0x2f0
-  tc_ctl_action+0x29b/0x3a0
-  rtnetlink_rcv_msg+0x341/0x8d0
-  netlink_rcv_skb+0x120/0x380
-  netlink_unicast+0x439/0x630
-  netlink_sendmsg+0x719/0xbf0
-  sock_sendmsg+0xe2/0x110
-  ____sys_sendmsg+0x5ba/0x890
-  ___sys_sendmsg+0xe9/0x160
-  __sys_sendmsg+0xd3/0x170
-  do_syscall_64+0x33/0x40
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7f872a96b338
- Code: 89 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 8d 05 25 43 2c 00 8b 00 85 c0 75 17 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 41 89 d4 55
- RSP: 002b:00007ffffe367518 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
- RAX: ffffffffffffffda RBX: 000000005f8f5aed RCX: 00007f872a96b338
- RDX: 0000000000000000 RSI: 00007ffffe367580 RDI: 0000000000000003
- RBP: 0000000000000000 R08: 0000000000000001 R09: 000000000000001c
- R10: 000000000000000b R11: 0000000000000246 R12: 0000000000000001
- R13: 0000000000686760 R14: 0000000000000601 R15: 0000000000000000
-
- Allocated by task 873:
-  kasan_save_stack+0x19/0x40
-  __kasan_kmalloc.constprop.7+0xc1/0xd0
-  __kmalloc+0x151/0x310
-  metadata_dst_alloc+0x20/0x40
-  tunnel_key_init+0xfff/0x1f40 [act_tunnel_key]
-  tcf_action_init_1+0x5b5/0x850
-  tcf_action_init+0x15d/0x370
-  tcf_action_add+0xd9/0x2f0
-  tc_ctl_action+0x29b/0x3a0
-  rtnetlink_rcv_msg+0x341/0x8d0
-  netlink_rcv_skb+0x120/0x380
-  netlink_unicast+0x439/0x630
-  netlink_sendmsg+0x719/0xbf0
-  sock_sendmsg+0xe2/0x110
-  ____sys_sendmsg+0x5ba/0x890
-  ___sys_sendmsg+0xe9/0x160
-  __sys_sendmsg+0xd3/0x170
-  do_syscall_64+0x33/0x40
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- The buggy address belongs to the object at ffff88813f5f1c00
-  which belongs to the cache kmalloc-256 of size 256
- The buggy address is located 200 bytes inside of
-  256-byte region [ffff88813f5f1c00, ffff88813f5f1d00)
- The buggy address belongs to the page:
- page:0000000011b48a19 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13f5f0
- head:0000000011b48a19 order:1 compound_mapcount:0
- flags: 0x17ffffc0010200(slab|head)
- raw: 0017ffffc0010200 0000000000000000 0000000d00000001 ffff888107c43400
- raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
- page dumped because: kasan: bad access detected
-
- Memory state around the buggy address:
-  ffff88813f5f1b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88813f5f1c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- >ffff88813f5f1c80: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
-                                               ^
-  ffff88813f5f1d00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88813f5f1d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-using IPv6 tunnels, act_tunnel_key allocates a fixed amount of memory for
-the tunnel metadata, but then it expects additional bytes to store tunnel
-specific metadata with tunnel_key_copy_opts().
-
-Fix the arguments of __ipv6_tun_set_dst(), so that 'md_size' contains the
-size previously computed by tunnel_key_get_opts_len(), like it's done for
-IPv4 tunnels.
-
-Fixes: 0ed5269f9e41 ("net/sched: add tunnel option support to act_tunnel_key")
-Reported-by: Shuang Li <shuali@redhat.com>
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
-Link: https://lore.kernel.org/r/36ebe969f6d13ff59912d6464a4356fe6f103766.1603231100.git.dcaratti@redhat.com
+Fixes: 533dd11a12f6 ("net: socionext: Add Synquacer NetSec driver")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20201018163625.2392-1-ardb@kernel.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/act_tunnel_key.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/net/socionext-netsec.txt |    4 +-
+ drivers/net/ethernet/socionext/netsec.c                    |   24 +++++++++----
+ 2 files changed, 20 insertions(+), 8 deletions(-)
 
---- a/net/sched/act_tunnel_key.c
-+++ b/net/sched/act_tunnel_key.c
-@@ -459,7 +459,7 @@ static int tunnel_key_init(struct net *n
+--- a/Documentation/devicetree/bindings/net/socionext-netsec.txt
++++ b/Documentation/devicetree/bindings/net/socionext-netsec.txt
+@@ -30,7 +30,9 @@ Optional properties: (See ethernet.txt f
+ - max-frame-size: See ethernet.txt in the same directory.
  
- 			metadata = __ipv6_tun_set_dst(&saddr, &daddr, tos, ttl, dst_port,
- 						      0, flags,
--						      key_id, 0);
-+						      key_id, opts_len);
- 		} else {
- 			NL_SET_ERR_MSG(extack, "Missing either ipv4 or ipv6 src and dst");
- 			ret = -EINVAL;
+ The MAC address will be determined using the optional properties
+-defined in ethernet.txt.
++defined in ethernet.txt. The 'phy-mode' property is required, but may
++be set to the empty string if the PHY configuration is programmed by
++the firmware or set by hardware straps, and needs to be preserved.
+ 
+ Example:
+ 	eth0: ethernet@522d0000 {
+--- a/drivers/net/ethernet/socionext/netsec.c
++++ b/drivers/net/ethernet/socionext/netsec.c
+@@ -6,6 +6,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/acpi.h>
+ #include <linux/of_mdio.h>
++#include <linux/of_net.h>
+ #include <linux/etherdevice.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+@@ -1833,6 +1834,14 @@ static const struct net_device_ops netse
+ static int netsec_of_probe(struct platform_device *pdev,
+ 			   struct netsec_priv *priv, u32 *phy_addr)
+ {
++	int err;
++
++	err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
++	if (err) {
++		dev_err(&pdev->dev, "missing required property 'phy-mode'\n");
++		return err;
++	}
++
+ 	priv->phy_np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
+ 	if (!priv->phy_np) {
+ 		dev_err(&pdev->dev, "missing required property 'phy-handle'\n");
+@@ -1859,6 +1868,14 @@ static int netsec_acpi_probe(struct plat
+ 	if (!IS_ENABLED(CONFIG_ACPI))
+ 		return -ENODEV;
+ 
++	/* ACPI systems are assumed to configure the PHY in firmware, so
++	 * there is really no need to discover the PHY mode from the DSDT.
++	 * Since firmware is known to exist in the field that configures the
++	 * PHY correctly but passes the wrong mode string in the phy-mode
++	 * device property, we have no choice but to ignore it.
++	 */
++	priv->phy_interface = PHY_INTERFACE_MODE_NA;
++
+ 	ret = device_property_read_u32(&pdev->dev, "phy-channel", phy_addr);
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+@@ -1995,13 +2012,6 @@ static int netsec_probe(struct platform_
+ 	priv->msg_enable = NETIF_MSG_TX_ERR | NETIF_MSG_HW | NETIF_MSG_DRV |
+ 			   NETIF_MSG_LINK | NETIF_MSG_PROBE;
+ 
+-	priv->phy_interface = device_get_phy_mode(&pdev->dev);
+-	if ((int)priv->phy_interface < 0) {
+-		dev_err(&pdev->dev, "missing required property 'phy-mode'\n");
+-		ret = -ENODEV;
+-		goto free_ndev;
+-	}
+-
+ 	priv->ioaddr = devm_ioremap(&pdev->dev, mmio_res->start,
+ 				    resource_size(mmio_res));
+ 	if (!priv->ioaddr) {
 
 
