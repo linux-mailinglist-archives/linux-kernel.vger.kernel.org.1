@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698DA29B739
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E835029B773
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799253AbgJ0Pae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40662 "EHLO mail.kernel.org"
+        id S1799780AbgJ0PdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798125AbgJ0PZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:36 -0400
+        id S1798198AbgJ0P0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:26:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52B6A20657;
-        Tue, 27 Oct 2020 15:25:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 044C820657;
+        Tue, 27 Oct 2020 15:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812335;
-        bh=Na/WB06l9+5WQGM9h0OItoVo9iXMenCHdbY2qGSqiGQ=;
+        s=default; t=1603812390;
+        bh=mGVoD2VcHSgQ3Z9sdrnPiUekRcAb3+4creFyTeT8P0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZXij2ADxyV43iPifWUhLQMfwRbDwa/4sMwN+DvfoJMULP9rfFFcAGSZvuFebDmbm
-         afZ9dn6eTyt50FfHmYi3CABYTfaEvb6KxIYGeBviXOcZ59riwlmvC8+XPfqJVUsu67
-         7dWoEMa8zfN3O2Wr77Ah+hQZyDui0XdwJbb84SgM=
+        b=YEnDWqqkzWKc6eq8MkgCs4mf7eRwPWR7H554HCLjyHMBR4FSPwhWElHTq/X7ywfMT
+         03P493jvGCTWaTLnYhHzqZqciyy3qtFX3r94zra9DJIm3tmxBWWKs2/4m5MDhx8eZr
+         AhgELyzaS1v7TLoV82iQwwIGjTCs70s8wIh7DuGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 172/757] media: ti-vpe: Fix a missing check and reference count leak
-Date:   Tue, 27 Oct 2020 14:47:02 +0100
-Message-Id: <20201027135458.661500252@linuxfoundation.org>
+Subject: [PATCH 5.9 175/757] spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and s3c64xx_enable_datapath()
+Date:   Tue, 27 Oct 2020 14:47:05 +0100
+Message-Id: <20201027135458.803095375@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,40 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Łukasz Stelmach <l.stelmach@samsung.com>
 
-[ Upstream commit 7dae2aaaf432767ca7aa11fa84643a7c2600dbdd ]
+[ Upstream commit 581e2b41977dfc2d4c26c8e976f89c43bb92f9bf ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code, causing incorrect ref count if
-pm_runtime_put_noidle() is not called in error handling paths.
-And also, when the call of function vpe_runtime_get() failed,
-we won't call vpe_runtime_put().
-Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails
-inside vpe_runtime_get().
+Fix issues with DMA transfers bigger than 512 bytes on Exynos3250. Without
+the patches such transfers fail to complete. This solution to the problem
+is found in the vendor kernel for ARTIK5 boards based on Exynos3250.
 
-Fixes: 4571912743ac ("[media] v4l: ti-vpe: Add VPE mem to mem driver")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Link: https://lore.kernel.org/r/20201002122243.26849-2-l.stelmach@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/ti-vpe/vpe.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi-s3c64xx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/ti-vpe/vpe.c b/drivers/media/platform/ti-vpe/vpe.c
-index 346f8212791cf..779dd74b82d01 100644
---- a/drivers/media/platform/ti-vpe/vpe.c
-+++ b/drivers/media/platform/ti-vpe/vpe.c
-@@ -2475,6 +2475,8 @@ static int vpe_runtime_get(struct platform_device *pdev)
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index 924b24441789a..26c7cb79cd784 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -685,11 +685,11 @@ static int s3c64xx_spi_transfer_one(struct spi_master *master,
+ 		sdd->state &= ~RXBUSY;
+ 		sdd->state &= ~TXBUSY;
  
- 	r = pm_runtime_get_sync(&pdev->dev);
- 	WARN_ON(r < 0);
-+	if (r)
-+		pm_runtime_put_noidle(&pdev->dev);
- 	return r < 0 ? r : 0;
- }
+-		s3c64xx_enable_datapath(sdd, xfer, use_dma);
+-
+ 		/* Start the signals */
+ 		s3c64xx_spi_set_cs(spi, true);
  
++		s3c64xx_enable_datapath(sdd, xfer, use_dma);
++
+ 		spin_unlock_irqrestore(&sdd->lock, flags);
+ 
+ 		if (use_dma)
 -- 
 2.25.1
 
