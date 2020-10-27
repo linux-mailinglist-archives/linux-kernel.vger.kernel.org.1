@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295BA29CC80
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 00:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7C429CC86
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 00:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507040AbgJ0XBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 19:01:21 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:44234 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730065AbgJ0XBU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:01:20 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b1so4430548lfp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GG3UaJZA/uUQLU7mHf7NS9ozeUye78z/dtgMxwLZVbs=;
-        b=gU0Y5uUXQhQkIq+clUzPRx+OUaLu+gAx3DRCwuq4B1OZDcn/cuQxE8TzHGnKx7/dod
-         zgh0xGGvb69g40s1CSn25n90CNvks07IBlDy8ep9rycwxiqDOVX5PA7bxY8FerXY1bHW
-         xkxt6DPh37axWXb/3QCqWiIKiegiVSHyg0LNc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GG3UaJZA/uUQLU7mHf7NS9ozeUye78z/dtgMxwLZVbs=;
-        b=a8fEF2CTy9s5YRnvLIl7+9BfxueB6o+RZIYh+ZFVixbUjTXf8Gdsh1TEi2JKPFJ6BF
-         qz5lktAeJJrn6WDR8TdFrVWwr5JTXHIUPNQnG8d0n7o5CwozcSLyrOV0OUEOJEsTTzsT
-         nVhA24DZdj+okyRu70kXtHRI7ipPcjkTwPTRijmoFDyUP3OaxYT6OiVbrS5QS0ziphgY
-         +MPWq6WfmKgZ4CEDXM8AAqNl3UCCKWaHxj9Zyg+QyukS1SaJt78CWpOsYjX8lZcT1h9K
-         nrEXKBd8XthoGbyuZY5S0W3iD/OrZPYXEryMVqgRhUw5aC8m/plLGMA/QjbCKdueYEyX
-         1PPw==
-X-Gm-Message-State: AOAM531iPjZ+roH6g2BcdhxipITVQN73QxNKJXjg4+Uw1u5s/6pxZ9jP
-        dVwmMsFKMcjoqcETThDJtfo55UpDI0KgnQ==
-X-Google-Smtp-Source: ABdhPJzr/BTFLHIeXuMjtKswHK7MdWopdMU67zSfmmQB/g4mmnLltre12pnC0DatDzTmVDsPZSbDhw==
-X-Received: by 2002:a19:7719:: with SMTP id s25mr1553586lfc.521.1603839676415;
-        Tue, 27 Oct 2020 16:01:16 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id x14sm353737ljm.126.2020.10.27.16.01.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 16:01:15 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id h20so3663464lji.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:01:15 -0700 (PDT)
-X-Received: by 2002:a05:651c:207:: with SMTP id y7mr1891014ljn.99.1603839674753;
- Tue, 27 Oct 2020 16:01:14 -0700 (PDT)
+        id S2507629AbgJ0XD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 19:03:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:1277 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2507603AbgJ0XD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 19:03:27 -0400
+IronPort-SDR: Fq+uNb5LRdBRwsmT1ix9+lIgI9+ZgxTAss6a0gFPf7HTslf9Wxjzzrvvp0w6+rOFxE+zpTZwnZ
+ s/6U8Ccy7k8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="185926627"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="185926627"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 16:03:11 -0700
+IronPort-SDR: nWivGKt7mr8FknP9Bw0UC726cpQlPoD7qwD0O4Xr8/Ir528rZSeQu7tNjLXYh5pvIBztJNXCy8
+ /N4+a3Gl9QjQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="524909663"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Oct 2020 16:03:09 -0700
+Date:   Wed, 28 Oct 2020 07:00:39 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     kernel test robot <lkp@intel.com>,
+        Geliang Tang <geliangtang@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, mptcp@lists.01.org,
+        lkp@lists.01.org
+Subject: Re: [MPTCP] Re: [selftests] f2ff7f11f9: WARNING:suspicious_RCU_usage
+Message-ID: <20201027230039.GA25647@intel.com>
+References: <20201027131624.GO31092@shao2-debian>
+ <c971b9f8-fd4a-292f-a7d8-8f6ef43c347e@tessares.net>
 MIME-Version: 1.0
-References: <20201016222523.364218-1-evgreen@chromium.org> <20201016152454.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
- <CAHp75VfsM+ysz_tr_h0rJpspcZAToiV+H5KDCi7J=LCEO0sFxQ@mail.gmail.com> <CAE=gft5cd4v=THHuBPAeB5ApgH+TAPiEukZiG0pC33RsZ4AriQ@mail.gmail.com>
-In-Reply-To: <CAE=gft5cd4v=THHuBPAeB5ApgH+TAPiEukZiG0pC33RsZ4AriQ@mail.gmail.com>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Tue, 27 Oct 2020 16:00:37 -0700
-X-Gmail-Original-Message-ID: <CAE=gft4hrvHm=ofmF_-hc3UQczqV_GSDQ9hL906bKW4WfbWHSg@mail.gmail.com>
-Message-ID: <CAE=gft4hrvHm=ofmF_-hc3UQczqV_GSDQ9hL906bKW4WfbWHSg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in ACPI land
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c971b9f8-fd4a-292f-a7d8-8f6ef43c347e@tessares.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 9:53 AM Evan Green <evgreen@chromium.org> wrote:
->
-> On Sun, Oct 18, 2020 at 11:58 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Sat, Oct 17, 2020 at 8:30 AM Evan Green <evgreen@chromium.org> wrote:
-> > >
-> > > Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
-> > > property translates directly to a fwnode_property_*() call. The child
-> > > reg property translates naturally into _ADR in ACPI.
-> > >
-> > > The i2c-parent binding is a relic from the days when the bindings
-> > > dictated that all direct children of an I2C controller had to be I2C
-> > > devices. These days that's no longer required. The i2c-mux can sit as a
-> > > direct child of its parent controller, which is where it makes the most
-> > > sense from a hardware description perspective. For the ACPI
-> > > implementation we'll assume that's always how the i2c-mux-gpio is
-> > > instantiated.
-> >
-> > Can you tell me if the following is relevant to what you are looking for?
-> > https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-mux.c#L393
->
-> I don't think so, but let me know if I'm reading between the lines incorrectly.
->
-> The code you pointed to links the newly-minted fake i2c controller
-> back together with its ACPI node. This is important, since I think
-> that's how child I2C devices underneath the fake busses get populated
-> in ACPI land. But the paragraph above is discussing how to identify
-> the parent adapter (ie the real hardware) for an i2c-mux-gpio device.
->
-> In DT-land, the i2c-mux-gpio floats at the top of the tree directly
-> under /, and then uses a phandle to point to where transactions should
-> be forwarded. I'm told the reason for this is historical limitations
-> with the DT bindings. Rather than trying to translate the phandle over
-> 1:1 into ACPI-land, I'm asserting that the mux device should live
-> underneath the adapter it wants to forward traffic to.
+On Tue, Oct 27, 2020 at 04:07:28PM +0100, Matthieu Baerts wrote:
+> Hi all,
+> 
+> On 27/10/2020 14:16, kernel test robot wrote:
+> > Greeting,
+> > 
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: f2ff7f11f9a74842245db52d685bf9bc7ac2c4b1 ("selftests: mptcp: add ADD_ADDR IPv6 test cases")
+> > https://github.com/multipath-tcp/mptcp_net-next.git export
+> 
+> Thanks for the maintainer of the kernel test robot at Intel for this bug
+> report!
+thanks, you are welcome!
 
-Andy or Peter, Any other thoughts on this series?
--Evan
+> 
+> FYI, this was already reported earlier:
+> 
+>   https://github.com/multipath-tcp/mptcp_net-next/issues/102
+Thanks for the info, we didn't notice this. We will take a look
+of reported issues in future to avoid duplicated report.
+
+> 
+> And Geliang is working on a fix (a v2 is available).
+> 
+> Cheers,
+> Matt
+> -- 
+> Tessares | Belgium | Hybrid Access Solutions
+> www.tessares.net
+> _______________________________________________
+> mptcp mailing list -- mptcp@lists.01.org
+> To unsubscribe send an email to mptcp-leave@lists.01.org
