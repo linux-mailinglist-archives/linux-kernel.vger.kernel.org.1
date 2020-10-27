@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6586329C000
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8554E29C16B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786655AbgJ0O7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:59:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49624 "EHLO mail.kernel.org"
+        id S1771303AbgJ0Owc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1766984AbgJ0Otb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:49:31 -0400
+        id S1767017AbgJ0Ote (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:49:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3818F206E5;
-        Tue, 27 Oct 2020 14:49:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9C3720709;
+        Tue, 27 Oct 2020 14:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810170;
-        bh=IW4OFwaG+5rdIXjJz8in1yOtpnQYPsFvls9z1sfKUzk=;
+        s=default; t=1603810173;
+        bh=5a+DCJKtBG8G1Ol7P11ykdRfcDzfQXtZ8zNxZhg3XCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1V700P0mNzGggQT3Irx4tpM7asSGsmwaqxmFHCW4JOq6V42dxVN0H2YgLabsIB7V2
-         KaEZwOox40u6ReHuU/mb0firIiMWJkh7oupHdtLKibABmCs/Wc8QAUrB4P5Hs5MXHA
-         aNnEvX86trM4ukxPoTcV5iddpnV17GHYkyputszU=
+        b=Cvg6JHtBky1SkZDu+7c+mEox5Wii17z5EEAVpoKgIzhmlMPKVL06rvRuwYA9Fh2OT
+         3mdAoOILL1kTsd9Dxx4eM4CN4L+uEY+MnCRawoIN8Ye4RkTRjybIdG6FyJEARq7k8a
+         lTjt4uqPQ93Ebf0u3Aru99mwivlDzII3lFAfHVFs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
+        stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.8 014/633] net/smc: fix valid DMBE buffer sizes
-Date:   Tue, 27 Oct 2020 14:45:57 +0100
-Message-Id: <20201027135523.356422937@linuxfoundation.org>
+Subject: [PATCH 5.8 015/633] net/tls: sendfile fails with ktls offload
+Date:   Tue, 27 Oct 2020 14:45:58 +0100
+Message-Id: <20201027135523.406194216@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -42,33 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Karsten Graul <kgraul@linux.ibm.com>
+From: Rohit Maheshwari <rohitm@chelsio.com>
 
-[ Upstream commit ef12ad45880b696eb993d86c481ca891836ab593 ]
+[ Upstream commit ea1dd3e9d080c961b9a451130b61c72dc9a5397b ]
 
-The SMCD_DMBE_SIZES should include all valid DMBE buffer sizes, so the
-correct value is 6 which means 1MB. With 7 the registration of an ISM
-buffer would always fail because of the invalid size requested.
-Fix that and set the value to 6.
+At first when sendpage gets called, if there is more data, 'more' in
+tls_push_data() gets set which later sets pending_open_record_frags, but
+when there is no more data in file left, and last time tls_push_data()
+gets called, pending_open_record_frags doesn't get reset. And later when
+2 bytes of encrypted alert comes as sendmsg, it first checks for
+pending_open_record_frags, and since this is set, it creates a record with
+0 data bytes to encrypt, meaning record length is prepend_size + tag_size
+only, which causes problem.
+ We should set/reset pending_open_record_frags based on more bit.
 
-Fixes: c6ba7c9ba43d ("net/smc: add base infrastructure for SMC-D and ISM")
-Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
+Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
+Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/smc/smc_core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/tls/tls_device.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -1595,7 +1595,7 @@ out:
- 	return rc;
- }
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -418,14 +418,14 @@ static int tls_push_data(struct sock *sk
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+ 	struct tls_prot_info *prot = &tls_ctx->prot_info;
+ 	struct tls_offload_context_tx *ctx = tls_offload_ctx_tx(tls_ctx);
+-	int more = flags & (MSG_SENDPAGE_NOTLAST | MSG_MORE);
+ 	struct tls_record_info *record = ctx->open_record;
+ 	int tls_push_record_flags;
+ 	struct page_frag *pfrag;
+ 	size_t orig_size = size;
+ 	u32 max_open_record_len;
+-	int copy, rc = 0;
++	bool more = false;
+ 	bool done = false;
++	int copy, rc = 0;
+ 	long timeo;
  
--#define SMCD_DMBE_SIZES		7 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
-+#define SMCD_DMBE_SIZES		6 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
+ 	if (flags &
+@@ -492,9 +492,8 @@ handle_error:
+ 		if (!size) {
+ last_record:
+ 			tls_push_record_flags = flags;
+-			if (more) {
+-				tls_ctx->pending_open_record_frags =
+-						!!record->num_frags;
++			if (flags & (MSG_SENDPAGE_NOTLAST | MSG_MORE)) {
++				more = true;
+ 				break;
+ 			}
  
- static struct smc_buf_desc *smcd_new_buf_create(struct smc_link_group *lgr,
- 						bool is_dmb, int bufsize)
+@@ -526,6 +525,8 @@ last_record:
+ 		}
+ 	} while (!done);
+ 
++	tls_ctx->pending_open_record_frags = more;
++
+ 	if (orig_size - size > 0)
+ 		rc = orig_size - size;
+ 
 
 
