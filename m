@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D828629B721
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A6129B709
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1798637AbgJ0P3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:29:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40136 "EHLO mail.kernel.org"
+        id S1798543AbgJ0P2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797666AbgJ0PYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:24:46 -0400
+        id S1797693AbgJ0PYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:24:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7D8820728;
-        Tue, 27 Oct 2020 15:24:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF08C2064B;
+        Tue, 27 Oct 2020 15:24:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812285;
-        bh=FcZ9oAcLnJ3iHNV2wOlJDe85UXwQ0TyY6NTBbu+Fz8I=;
+        s=default; t=1603812288;
+        bh=9CLILCPVgTaUt4VkfpGYMDGq5kPlOrV2Y9UK5QuXMk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qPkuWvjU/gBowCWhAFZ22AM+2OVNcId71JebcIs9DNckTIyVv27PvyxLlUu1HgIls
-         KcENL+kbW98wtL3WpYo0YQhZ5Pkj0tf5Zk3endAcHfg/sIxmzuDMPg1ckxi8FIQKK/
-         XM5zpSMw1rRxBYoe+x7iyDpZqTtxSO7O6To8Sh2c=
+        b=IuQ2aw6hsuKQvYRu6GKyn3l1K1nqAflO+JDsVmm9ale6syLXFQjCwvTRQIlTNWC8K
+         20i+nNDF3ua/wt5DrJJH4AWuRfenk9hIHorUp7rpx/xruqzUiYvn04R3BNXk797CX2
+         zzMrt6YZZe4jBY0x/F8seHZBhvYJd7kWbvjb/Y4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve Foreman <foremans@google.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Dr. David Alan Gilbert" <linux@treblig.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 156/757] hwmon: (pmbus/max34440) Fix status register reads for MAX344{51,60,61}
-Date:   Tue, 27 Oct 2020 14:46:46 +0100
-Message-Id: <20201027135457.921503752@linuxfoundation.org>
+Subject: [PATCH 5.9 157/757] hwmon: (w83627ehf) Fix a resource leak in probe
+Date:   Tue, 27 Oct 2020 14:46:47 +0100
+Message-Id: <20201027135457.968737032@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,52 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 6c094b31ea2ad773824362ba0fccb88d36f8d32d ]
+[ Upstream commit 18360b33a071e5883250fd1e04bfdeff8c3887a3 ]
 
-Starting with MAX34451, the chips of this series support STATUS_IOUT and
-STATUS_TEMPERATURE commands, and no longer report over-current and
-over-temperature status with STATUS_MFR_SPECIFIC.
+Smatch has a new check for resource leaks which found a bug in probe:
 
-Fixes: 7a001dbab4ade ("hwmon: (pmbus/max34440) Add support for MAX34451.")
-Fixes: 50115ac9b6f35 ("hwmon: (pmbus/max34440) Add support for MAX34460 and MAX34461")
-Reported-by: Steve Foreman <foremans@google.com>
-Cc: Steve Foreman <foremans@google.com>
+    drivers/hwmon/w83627ehf.c:2417 w83627ehf_probe()
+    warn: 'res->start' not released on lines: 2412.
+
+We need to clean up if devm_hwmon_device_register_with_info() fails.
+
+Fixes: 266cd5835947 ("hwmon: (w83627ehf) convert to with_info interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Dr. David Alan Gilbert <linux@treblig.org>
+Link: https://lore.kernel.org/r/20200921125212.GA1128194@mwanda
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pmbus/max34440.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/hwmon/w83627ehf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/pmbus/max34440.c b/drivers/hwmon/pmbus/max34440.c
-index 18b4e071067f7..de04dff28945b 100644
---- a/drivers/hwmon/pmbus/max34440.c
-+++ b/drivers/hwmon/pmbus/max34440.c
-@@ -388,7 +388,6 @@ static struct pmbus_driver_info max34440_info[] = {
- 		.func[18] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
- 		.func[19] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
- 		.func[20] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
--		.read_byte_data = max34440_read_byte_data,
- 		.read_word_data = max34440_read_word_data,
- 		.write_word_data = max34440_write_word_data,
- 	},
-@@ -419,7 +418,6 @@ static struct pmbus_driver_info max34440_info[] = {
- 		.func[15] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
- 		.func[16] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
- 		.func[17] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
--		.read_byte_data = max34440_read_byte_data,
- 		.read_word_data = max34440_read_word_data,
- 		.write_word_data = max34440_write_word_data,
- 	},
-@@ -455,7 +453,6 @@ static struct pmbus_driver_info max34440_info[] = {
- 		.func[19] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
- 		.func[20] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
- 		.func[21] = PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
--		.read_byte_data = max34440_read_byte_data,
- 		.read_word_data = max34440_read_word_data,
- 		.write_word_data = max34440_write_word_data,
- 	},
+diff --git a/drivers/hwmon/w83627ehf.c b/drivers/hwmon/w83627ehf.c
+index 5a5120121e507..3964ceab2817c 100644
+--- a/drivers/hwmon/w83627ehf.c
++++ b/drivers/hwmon/w83627ehf.c
+@@ -1951,8 +1951,12 @@ static int w83627ehf_probe(struct platform_device *pdev)
+ 							 data,
+ 							 &w83627ehf_chip_info,
+ 							 w83627ehf_groups);
++	if (IS_ERR(hwmon_dev)) {
++		err = PTR_ERR(hwmon_dev);
++		goto exit_release;
++	}
+ 
+-	return PTR_ERR_OR_ZERO(hwmon_dev);
++	return 0;
+ 
+ exit_release:
+ 	release_region(res->start, IOREGION_LENGTH);
 -- 
 2.25.1
 
