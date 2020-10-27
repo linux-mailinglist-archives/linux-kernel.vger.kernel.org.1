@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747FB29C4AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E8329C534
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757670AbgJ0OTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40812 "EHLO mail.kernel.org"
+        id S1824803AbgJ0SF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757288AbgJ0ORl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:17:41 -0400
+        id S2900926AbgJ0ORo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65CC3206F7;
-        Tue, 27 Oct 2020 14:17:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B4BA206FA;
+        Tue, 27 Oct 2020 14:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808260;
-        bh=bcfvIJmKlabq9204cn8GO6rrhDD6gspxG6dLQKMkS5E=;
+        s=default; t=1603808263;
+        bh=rAvq0Zyk5uPLyzBFxTose0j+nEKTFbcBX230Mo0KuOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u5MS3zAlAGkQnK4NdL0L/hnMTzzYFA5qQ7S9Bhc3VWIHg+75iGMynICW57Dl1ic7v
-         x7myF0dP/CJm+IW3qyYThklGi+vQtcdcrSHvyD9bE7tzjk1LTwG4eS04T6Hdx82w+f
-         hfgG4fBUM0Ny+eVq+aNYZBmbTK0988tDQymBZ/Co=
+        b=Aw0ZhFQ44JHO8nuwWExLXVF3eCoodIx4/pgTKJEGr8hsMxBJYSYpVv4irMakxGs83
+         22uqKEFIgOyNH+LOvchq9tOmdEES4FBwdbgOZHrUOkHd+BnOOpiA77L2Zso6EtsqZQ
+         1mmwDp4Psx7YxZpPIzPgN0E4gVY8fJbAp1FGHxpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 025/264] icmp: randomize the global rate limiter
-Date:   Tue, 27 Oct 2020 14:51:23 +0100
-Message-Id: <20201027135431.836248747@linuxfoundation.org>
+        stable@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
+        Kailang Yang <kailang@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 026/264] ALSA: hda/realtek: Enable audio jacks of ASUS D700SA with ALC887
+Date:   Tue, 27 Oct 2020 14:51:24 +0100
+Message-Id: <20201027135431.883991249@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -42,67 +43,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jian-Hong Pan <jhp@endlessos.org>
 
-[ Upstream commit b38e7819cae946e2edf869e604af1e65a5d241c5 ]
+commit ca184355db8e60290fa34bf61c13308e6f4f50d3 upstream.
 
-Keyu Man reported that the ICMP rate limiter could be used
-by attackers to get useful signal. Details will be provided
-in an upcoming academic publication.
+The ASUS D700SA desktop's audio (1043:2390) with ALC887 cannot detect
+the headset microphone and another headphone jack until
+ALC887_FIXUP_ASUS_HMIC and ALC887_FIXUP_ASUS_AUDIO quirks are applied.
+The NID 0x15 maps as the headset microphone and NID 0x19 maps as another
+headphone jack. Also need the function like alc887_fixup_asus_jack to
+enable the audio jacks.
 
-Our solution is to add some noise, so that the attackers
-no longer can get help from the predictable token bucket limiter.
-
-Fixes: 4cdf507d5452 ("icmp: add a global rate limitation")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201007052224.22611-1-jhp@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- Documentation/networking/ip-sysctl.txt |    4 +++-
- net/ipv4/icmp.c                        |    7 +++++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
 
---- a/Documentation/networking/ip-sysctl.txt
-+++ b/Documentation/networking/ip-sysctl.txt
-@@ -934,12 +934,14 @@ icmp_ratelimit - INTEGER
- icmp_msgs_per_sec - INTEGER
- 	Limit maximal number of ICMP packets sent per second from this host.
- 	Only messages whose type matches icmp_ratemask (see below) are
--	controlled by this limit.
-+	controlled by this limit. For security reasons, the precise count
-+	of messages per second is randomized.
- 	Default: 1000
+---
+ sound/pci/hda/patch_realtek.c |   42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1906,6 +1906,8 @@ enum {
+ 	ALC1220_FIXUP_CLEVO_P950,
+ 	ALC1220_FIXUP_CLEVO_PB51ED,
+ 	ALC1220_FIXUP_CLEVO_PB51ED_PINS,
++	ALC887_FIXUP_ASUS_AUDIO,
++	ALC887_FIXUP_ASUS_HMIC,
+ };
  
- icmp_msgs_burst - INTEGER
- 	icmp_msgs_per_sec controls number of ICMP packets sent per second,
- 	while icmp_msgs_burst controls the burst size of these packets.
-+	For security reasons, the precise burst size is randomized.
- 	Default: 50
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -2118,6 +2120,31 @@ static void alc1220_fixup_clevo_pb51ed(s
+ 	alc_fixup_headset_mode_no_hp_mic(codec, fix, action);
+ }
  
- icmp_ratemask - INTEGER
---- a/net/ipv4/icmp.c
-+++ b/net/ipv4/icmp.c
-@@ -244,7 +244,7 @@ static struct {
- /**
-  * icmp_global_allow - Are we allowed to send one more ICMP message ?
-  *
-- * Uses a token bucket to limit our ICMP messages to sysctl_icmp_msgs_per_sec.
-+ * Uses a token bucket to limit our ICMP messages to ~sysctl_icmp_msgs_per_sec.
-  * Returns false if we reached the limit and can not send another packet.
-  * Note: called with BH disabled
-  */
-@@ -272,7 +272,10 @@ bool icmp_global_allow(void)
- 	}
- 	credit = min_t(u32, icmp_global.credit + incr, sysctl_icmp_msgs_burst);
- 	if (credit) {
--		credit--;
-+		/* We want to use a credit of one in average, but need to randomize
-+		 * it for security reasons.
-+		 */
-+		credit = max_t(int, credit - prandom_u32_max(3), 0);
- 		rc = true;
- 	}
- 	WRITE_ONCE(icmp_global.credit, credit);
++static void alc887_asus_hp_automute_hook(struct hda_codec *codec,
++					 struct hda_jack_callback *jack)
++{
++	struct alc_spec *spec = codec->spec;
++	unsigned int vref;
++
++	snd_hda_gen_hp_automute(codec, jack);
++
++	if (spec->gen.hp_jack_present)
++		vref = AC_PINCTL_VREF_80;
++	else
++		vref = AC_PINCTL_VREF_HIZ;
++	snd_hda_set_pin_ctl(codec, 0x19, PIN_HP | vref);
++}
++
++static void alc887_fixup_asus_jack(struct hda_codec *codec,
++				     const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	if (action != HDA_FIXUP_ACT_PROBE)
++		return;
++	snd_hda_set_pin_ctl_cache(codec, 0x1b, PIN_HP);
++	spec->gen.hp_automute_hook = alc887_asus_hp_automute_hook;
++}
++
+ static const struct hda_fixup alc882_fixups[] = {
+ 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -2375,6 +2402,20 @@ static const struct hda_fixup alc882_fix
+ 		.chained = true,
+ 		.chain_id = ALC1220_FIXUP_CLEVO_PB51ED,
+ 	},
++	[ALC887_FIXUP_ASUS_AUDIO] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x15, 0x02a14150 }, /* use as headset mic, without its own jack detect */
++			{ 0x19, 0x22219420 },
++			{}
++		},
++	},
++	[ALC887_FIXUP_ASUS_HMIC] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc887_fixup_asus_jack,
++		.chained = true,
++		.chain_id = ALC887_FIXUP_ASUS_AUDIO,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+@@ -2408,6 +2449,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1043, 0x13c2, "Asus A7M", ALC882_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x1043, 0x1873, "ASUS W90V", ALC882_FIXUP_ASUS_W90V),
+ 	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
++	SND_PCI_QUIRK(0x1043, 0x2390, "Asus D700SA", ALC887_FIXUP_ASUS_HMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
+ 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
+ 	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
 
 
