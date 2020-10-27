@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A34129AA6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218C129AA69
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899087AbgJ0LS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:18:26 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37886 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437238AbgJ0LS0 (ORCPT
+        id S2899082AbgJ0LRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:17:51 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:35044 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509884AbgJ0LRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:18:26 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RBI84V022554;
-        Tue, 27 Oct 2020 06:18:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603797488;
-        bh=n2ru3Mr0iMYemHjwDfq5SA03dYGNMsfunxIAIX/C4X8=;
-        h=Date:From:To:Subject:References:In-Reply-To;
-        b=OBohc5nkMosV1XoUEV2HaULUopaZmqCJnwMKQMlfNbrK9MLppABUZ58d9bjFYAuLa
-         9RhhaanS1g1te6K1MQWu+qbuwwiSKYrdQZGo1rnmCEi+FAAhu0FAvg/fI486RA3tvn
-         U8h/UDquKGOup5A21Nb2jq/FUdIZqbhRF7WDJu/I=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RBI89S047065
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 06:18:08 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
- Oct 2020 06:18:07 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 27 Oct 2020 06:18:07 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RBI7U1106738;
-        Tue, 27 Oct 2020 06:18:07 -0500
-Date:   Tue, 27 Oct 2020 16:48:06 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] mtd: Make sure UBIFS does not do multi-pass page
- programming on flashes that don't support it
-Message-ID: <20201027111804.e27pyvf62eksngmp@ti.com>
-References: <20201012180404.6476-1-p.yadav@ti.com>
+        Tue, 27 Oct 2020 07:17:49 -0400
+Received: by mail-pj1-f65.google.com with SMTP id h4so583975pjk.0;
+        Tue, 27 Oct 2020 04:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mPsSkKDfaYHYfZBMKhJgybL5r71P6I8MibUMxERzTQ0=;
+        b=IjeI9wdSOHdNc1yJ+yQQEI6wi5W7ACIoqnOkxIjXwJdz21jcRAdbTO2C3k5w2dV9AD
+         UuDbDNBdswF/czL3PDU0F3BwEW27/g8X48UjNfvOqSoTS7CQR0GRKCPN9EwYKa7Csukb
+         fOcx2V/P40DWZFct3dt8b4UOeYXrt+SOJyeCTZ7g1QzGVdj3Dwi7eBD73RoVdmtGUzT6
+         Om/pERqY0bVtgZ0IkE2+uJnB6nEHG2oJpp4Z4wDW0gBbUKdfuvCwqYRcJC99FJzoejjt
+         H4TzH4y/FMMSUvp1hJxZBj9Da53Lqb2Z6ZgwMQu8RXRVwJjDPKm9xcxTZq1+pnHChwng
+         JbQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mPsSkKDfaYHYfZBMKhJgybL5r71P6I8MibUMxERzTQ0=;
+        b=Muj8vHbsmFSGY1PnGe6+4fg/tNNODWriqldszdExZ/whwgmxFP6eW1TcjTB2GCZWRZ
+         guN9zsfwiRnoQ3xsPafyUBlRwdgDe8z7/SQmxoCjkrEgdlFuBjKa1gC/GDOb6qZeb4We
+         +PF9Ya1xqGELk9Svus8PinfpOsBUyoqVWnG+Qx1ipS9jSagBButk/JswRnPV2u4aL1Mj
+         /ciewKl1IL4UR6j3u56sNw/9YNi8Atod9811Vb2ym4K7IcCIGd3XIpA1Yeh/gwSFHxZb
+         kELWJAndatrTA8ibvWBheamxkLZ535Xv+fH82j1inN8yiENDjNeeyf6Oxz+/Swh8UajG
+         ca5g==
+X-Gm-Message-State: AOAM5315rnim4uPggiiN7zqZpAVFG+sKFUQmTwhAx0wX/WqkG7hTUGlb
+        VSZL9fp/WcvlE/AUeDXAmvDrenljDy7KrNitnKU=
+X-Google-Smtp-Source: ABdhPJyroNUwaMIcTAOLJFPp8bE5Q8OYeTqKBQxXSNbq1Ok9V3p7okmgEQA+o6lvxznO+OvXgnnvEQvgHfk4eVRfhNk=
+X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id
+ m8-20020a1709026bc8b02900d60d9df28cmr1095224plt.17.1603797467528; Tue, 27 Oct
+ 2020 04:17:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201012180404.6476-1-p.yadav@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201026133609.24262-1-brgl@bgdev.pl> <20201026133609.24262-3-brgl@bgdev.pl>
+ <CAHp75VfeBXszvhrz_YgtX6=HY=TJJXhWdTSTC1=S4UV2cOkJvA@mail.gmail.com>
+ <CAMRc=Mf33JMNMT1vcrHx33QK7wj_gPY-CPaPUsqtON8X8S-JtQ@mail.gmail.com>
+ <CAHp75Vf-z8yba-QX4G51PRkMV9VKAczd_79sma96zHRf+bMD2w@mail.gmail.com> <CAMpxmJUPsz3o8pDAU9e5x1gD-yGf5Fym2DgYnfpCKEFTj9DSYw@mail.gmail.com>
+In-Reply-To: <CAMpxmJUPsz3o8pDAU9e5x1gD-yGf5Fym2DgYnfpCKEFTj9DSYw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Oct 2020 13:18:36 +0200
+Message-ID: <CAHp75VdKXJgn3ZNDit6Drz8xyTatLeg8M9+gkmtBFeaLFTn51w@mail.gmail.com>
+Subject: Re: [PATCH 2/5] iio: adc: xilinx: use devm_krealloc() instead of
+ kfree() + kcalloc()
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/20 11:34PM, Pratyush Yadav wrote:
-> Hi,
-> 
-> The Cypress Semper S28 flash family uses 2-bit ECC by default. Under
-> this ECC scheme, multi-pass page programs result in a program error.
-> This means that unlike many other SPI NOR flashes, bit-walking cannot be
-> done. In other words, once a page is programmed, its bits cannot then be
-> flipped to 0 without an erase in between.
-> 
-> This causes problems with UBIFS because it uses bit-walking to clear EC
-> and VID magic numbers from a PEB before issuing an erase to preserve the
-> file system correctness in case of power cuts.
-> 
-> This series fixes that problem by introducing a flag
-> MTD_NO_MULTI_PASS_WRITE that tells the file system layer that it can't
-> do multi-pass writes. It also sets the writesize to the page size for
-> such flashes to make sure file systems know that they should write the
-> entire page in one go.
-> 
-> It is based on the xSPI/8D series that adds support for Cypress S28
-> flash [0]. The patches themselves are independent of that series in the
-> sense that they don't rely on 8D support. But since S28 flash is not
-> supported without that series, these patches don't make much sense
-> without it.
-> 
-> Tested on Cypress S28HS512T and MT35XU512ABA on J7200 and J721E
-> respectively.
-> 
-> [0] https://lore.kernel.org/linux-mtd/20201005153138.6437-1-p.yadav@ti.com/
+On Tue, Oct 27, 2020 at 12:40 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+> On Tue, Oct 27, 2020 at 11:29 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Tue, Oct 27, 2020 at 12:04 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > > On Tue, Oct 27, 2020 at 10:33 AM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
 
-Ping. Any comments on the series?
- 
-> Pratyush Yadav (3):
->   mtd: abi: Introduce MTD_NO_MULTI_PASS_WRITE
->   UBI: Do not zero out EC and VID when multi-pass writes are not
->     supported
->   mtd: spi-nor: core: Introduce SPI_NOR_NO_MULTI_PASS_PP
-> 
->  drivers/mtd/spi-nor/core.c     | 5 +++++
->  drivers/mtd/spi-nor/core.h     | 6 ++++++
->  drivers/mtd/spi-nor/spansion.c | 2 +-
->  drivers/mtd/ubi/io.c           | 2 +-
->  include/uapi/mtd/mtd-abi.h     | 1 +
->  5 files changed, 14 insertions(+), 2 deletions(-)
-> 
+...
+
+> > I meant devm_krealloc(). It should work in this case without your
+> > additional "fix" patch.
+
+> I know, this is why I sent the fix separately. The fix is still
+> correct on its own.
+
+My point is it's not needed. At all.
+It will actually make a regression. But this is for discussion in that thread.
+
+...
+
+> > > Or maybe add devm_krealloc_array() which would perform the checks
+> > > behind the scenes?
+> >
+> > Maybe. But what to do in the cases when you have struct with flexible
+> > arrays, like
+> > struct foo {
+> > ...
+> >  type bar[];
+> > };
+> >
+> > ?
+>
+> Just use regular devm_krealloc() with struct_size()?
+>
+> >
+> > And you do kzalloc(sizeof(foo)) followed by krealloc(). The above name
+> > (krealloc_array) may be a bit ambiguous.
+>
+> But devm_krealloc_array() would only be useful for memory allocated by
+> kmalloc_array() or kcalloc(). I don't see what's your point.
+
+Naming ambiguity.
+Here I'm not against it. If you think it's a good idea, go for it!
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+With Best Regards,
+Andy Shevchenko
