@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8B729A8D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E5729A8C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896854AbgJ0KBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42704 "EHLO mail.kernel.org"
+        id S2896760AbgJ0KBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896047AbgJ0Jvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2896053AbgJ0Jvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 27 Oct 2020 05:51:43 -0400
 Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A473024181;
+        by mail.kernel.org (Postfix) with ESMTPSA id BA9F424199;
         Tue, 27 Oct 2020 09:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603792301;
-        bh=8mKeoT70W2C80dpgS/0uhSrxkN5L//sEcSOYWAnufuI=;
+        bh=nmVlHJl4ky1onYW7Dq+mrJQd7XAD9Hsjyr0pZ7lcwnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dcj+iBLDefcsZCffQDyU6g6cxqytgEQrWkycRYBjFTWCqdB/FMkkbU3mMweCLPsQF
-         N9u+dtnGjkheIafRCLhlzG67s122eo1WpCO57iTWYttcVLnkcrQWId/HxXTZ2yw/XA
-         aLH1B0GN7fSFOALlAhNLsPzap3r36Ebaz9E8FJow=
+        b=gfA4ech+UxL7gl/KMolyJ45N5ZQ5YTWHlr0nl6u/lRLKHTorLbFYfForbQXrl1JpC
+         P/egqjtOJ+mjvCPGko4KCwjbgMVTgINy0wvgLWUMZu6OgJuK1/ceLnjnuA/zGWGAJi
+         WsubpSveoltMGUAGQjNzhN/6XOQ6f6YBwKJpn36Q=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kXLdj-003FFO-Lg; Tue, 27 Oct 2020 10:51:39 +0100
+        id 1kXLdj-003FFT-OF; Tue, 27 Oct 2020 10:51:39 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 21/32] docs: fs: api-summary.rst: get rid of kernel-doc include
-Date:   Tue, 27 Oct 2020 10:51:25 +0100
-Message-Id: <d0a9fffedca102633c168adaf157f34288a4ea67.1603791716.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 23/32] jbd2: fix a kernel-doc markup
+Date:   Tue, 27 Oct 2020 10:51:27 +0100
+Message-Id: <6055927ada2015b55b413cdd2670533bdc9a8da2.1603791716.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
 References: <cover.1603791716.git.mchehab+huawei@kernel.org>
@@ -49,41 +47,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The direct-io.c file used to have just two exported symbols:
+The kernel-doc markup that documents _fc_replay_callback is
+missing an asterisk, causing this warning:
 
-	- dio_end_io()
-	- __blockdev_direct_IO()
+	../include/linux/jbd2.h:1271: warning: Function parameter or member 'j_fc_replay_callback' not described in 'journal_s'
 
-The first one was removed by changeset
-c33fe275b530 ("fs: remove no longer used dio_end_io()")
+When building the docs.
 
-And the last one is used on most places indirectly, via
-the inline macro blockdev_direct_IO() provided by fs.h.
-Yet, neither the macro or the function have kernel-doc
-markups.
-
-So, drop the inclusion of fs/direct-io.c at the docs.
-
-Fixes: c33fe275b530 ("fs: remove no longer used dio_end_io()")
+Fixes: 609f928af48f ("jbd2: fast commit recovery path")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/filesystems/api-summary.rst | 3 ---
- 1 file changed, 3 deletions(-)
+ include/linux/jbd2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/api-summary.rst b/Documentation/filesystems/api-summary.rst
-index bbb0c1c0e5cf..a94f17d9b836 100644
---- a/Documentation/filesystems/api-summary.rst
-+++ b/Documentation/filesystems/api-summary.rst
-@@ -86,9 +86,6 @@ Other Functions
- .. kernel-doc:: fs/dax.c
-    :export:
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index fb3d71ad6eea..3c5f76ce88f1 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1253,7 +1253,7 @@ struct journal_s
+ 	 */
+ 	void (*j_fc_cleanup_callback)(struct journal_s *journal, int);
  
--.. kernel-doc:: fs/direct-io.c
--   :export:
--
- .. kernel-doc:: fs/libfs.c
-    :export:
- 
+-	/*
++	/**
+ 	 * @j_fc_replay_callback:
+ 	 *
+ 	 * File-system specific function that performs replay of a fast
 -- 
 2.26.2
 
