@@ -2,212 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADF229BAC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E7429BADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807629AbgJ0QMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:12:22 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:30236 "EHLO z5.mailgun.us"
+        id S1807751AbgJ0QOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:14:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1806865AbgJ0QJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:09:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603814953; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=dT90kWWroS9dLwKtujk+UCNmypgH2HW5a8TnSckeDH4=;
- b=X8Mf6YWHvON3vam+xOGDgXSsh6Wf1ZUTtYaPw5WsUyQL1TwdiMKj6ikV1Ef736q+re6BznKV
- 2CuiSMrrQEbLluhZBhHQTKVHMCOJgHd9h1j3DxVBoIWxMv7rBFHbT/IDX6Cpe9xb38JqtnfE
- dxk7znH88pVTs8q5y7/AWXWiCyk=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f98461b83cdcf4c2fe1c716 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 16:08:59
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71CC5C3854A; Tue, 27 Oct 2020 16:08:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1806884AbgJ0QJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:09:38 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DEA62C43459;
-        Tue, 27 Oct 2020 16:08:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F299207C4;
+        Tue, 27 Oct 2020 16:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603814977;
+        bh=NgpoWJZg0ipijvq8gAtM0Btu5zbvVUy7tiszdUv4swQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=du48mibxy4onfRpTVylWClPccKz68p73ssqZOlbnec26Gr7oeGF6OeGXjXoVaps4f
+         c86BuytTuI+SBre61pOdBYE7VXtJ0T5DV2sCYvNnlIOBeH1EFs2RdQAfWBBAKAiiEa
+         HuPzVlV9KgglLvre7YHZGQYvgL8m5lWAL619j0hg=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kXRXS-004neu-Pw; Tue, 27 Oct 2020 16:09:35 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Oct 2020 21:38:55 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/a6xx: Add support for using system cache on
- MMU500 based targets
-In-Reply-To: <20201027143949.GC23509@jcrouse1-lnx.qualcomm.com>
-References: <20201026185428.101443-1-jcrouse@codeaurora.org>
- <d5050762b88d5d0d957ad5057f165b21@codeaurora.org>
- <20201027143949.GC23509@jcrouse1-lnx.qualcomm.com>
-Message-ID: <5fc20190e3d2c642f7e8820ae89a7057@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Date:   Tue, 27 Oct 2020 16:09:34 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, Qian Cai <cai@lca.pw>,
+        Rob Herring <robh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Subject: Re: [RFC PATCH kernel 1/2] irq: Add reference counting to IRQ
+ mappings
+In-Reply-To: <20201027090655.14118-2-aik@ozlabs.ru>
+References: <20201027090655.14118-1-aik@ozlabs.ru>
+ <20201027090655.14118-2-aik@ozlabs.ru>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <415025f93a2b93e8ae62cba57ca1a8a7@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: aik@ozlabs.ru, linuxppc-dev@lists.ozlabs.org, clg@kaod.org, oohall@gmail.com, mpe@ellerman.id.au, cai@lca.pw, robh@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, fbarrat@linux.ibm.com, msuchanek@suse.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 20:09, Jordan Crouse wrote:
-> On Tue, Oct 27, 2020 at 12:38:02PM +0530, Sai Prakash Ranjan wrote:
->> On 2020-10-27 00:24, Jordan Crouse wrote:
->> >This is an extension to the series [1] to enable the System Cache (LLC)
->> >for
->> >Adreno a6xx targets.
->> >
->> >GPU targets with an MMU-500 attached have a slightly different process for
->> >enabling system cache. Use the compatible string on the IOMMU phandle
->> >to see if an MMU-500 is attached and modify the programming sequence
->> >accordingly.
->> >
->> >[1] https://patchwork.freedesktop.org/series/83037/
->> >
->> >Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
->> >---
->> >
->> > drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 46 +++++++++++++++++++++------
->> > drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
->> > 2 files changed, 37 insertions(+), 10 deletions(-)
->> >
->> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> >b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> >index 95c98c642876..b7737732fbb6 100644
->> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->> >@@ -1042,6 +1042,8 @@ static void a6xx_llc_deactivate(struct a6xx_gpu
->> >*a6xx_gpu)
->> >
->> > static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
->> > {
->> >+	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
->> >+	struct msm_gpu *gpu = &adreno_gpu->base;
->> > 	u32 cntl1_regval = 0;
->> >
->> > 	if (IS_ERR(a6xx_gpu->llc_mmio))
->> >@@ -1055,11 +1057,17 @@ static void a6xx_llc_activate(struct a6xx_gpu
->> >*a6xx_gpu)
->> > 			       (gpu_scid << 15) | (gpu_scid << 20);
->> > 	}
->> >
->> >+	/*
->> >+	 * For targets with a MMU500, activate the slice but don't program the
->> >+	 * register.  The XBL will take care of that.
->> >+	 */
->> > 	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
->> >-		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
->> >+		if (!a6xx_gpu->have_mmu500) {
->> >+			u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
->> >
->> >-		gpuhtw_scid &= 0x1f;
->> >-		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
->> >+			gpuhtw_scid &= 0x1f;
->> >+			cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
->> >+		}
->> > 	}
->> >
->> > 	if (cntl1_regval) {
->> >@@ -1067,13 +1075,20 @@ static void a6xx_llc_activate(struct a6xx_gpu
->> >*a6xx_gpu)
->> > 		 * Program the slice IDs for the various GPU blocks and GPU MMU
->> > 		 * pagetables
->> > 		 */
->> >-		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1,
->> >cntl1_regval);
->> >-
->> >-		/*
->> >-		 * Program cacheability overrides to not allocate cache lines on
->> >-		 * a write miss
->> >-		 */
->> >-		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF,
->> >0x03);
->> >+		if (a6xx_gpu->have_mmu500)
->> >+			gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0),
->> >+				cntl1_regval);
->> >+		else {
->> >+			a6xx_llc_write(a6xx_gpu,
->> >+				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
->> >+
->> >+			/*
->> >+			 * Program cacheability overrides to not allocate cache
->> >+			 * lines on a write miss
->> >+			 */
->> >+			a6xx_llc_rmw(a6xx_gpu,
->> >+				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
->> >+		}
->> > 	}
->> > }
->> >
->> >@@ -1086,10 +1101,21 @@ static void a6xx_llc_slices_destroy(struct
->> >a6xx_gpu *a6xx_gpu)
->> > static void a6xx_llc_slices_init(struct platform_device *pdev,
->> > 		struct a6xx_gpu *a6xx_gpu)
->> > {
->> >+	struct device_node *phandle;
->> >+
->> > 	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
->> > 	if (IS_ERR(a6xx_gpu->llc_mmio))
->> > 		return;
->> >
->> >+	/*
->> >+	 * There is a different programming path for targets with an mmu500
->> >+	 * attached, so detect if that is the case
->> >+	 */
->> >+	phandle = of_parse_phandle(pdev->dev.of_node, "iommus", 0);
->> >+	a6xx_gpu->have_mmu500 = (phandle &&
->> >+		of_device_is_compatible(phandle, "arm,mmu500"));
->> >+	of_node_put(phandle);
->> >+
->> > 	a6xx_gpu->llc_slice = llcc_slice_getd(LLCC_GPU);
->> > 	a6xx_gpu->htw_llc_slice = llcc_slice_getd(LLCC_GPUHTW);
->> >
->> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
->> >b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
->> >index 9e6079af679c..e793d329e77b 100644
->> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
->> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
->> >@@ -32,6 +32,7 @@ struct a6xx_gpu {
->> > 	void __iomem *llc_mmio;
->> > 	void *llc_slice;
->> > 	void *htw_llc_slice;
->> >+	bool have_mmu500;
->> > };
->> >
->> > #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
->> 
->> Thanks Jordan for the patch.
-> 
-> If it makes your life or Rob's life easier, please feel free to squash 
-> them.
-> 
+Hi Alexey,
 
-Sure, I will squash them in the next version with a change
-which Robin pointed out.
+On 2020-10-27 09:06, Alexey Kardashevskiy wrote:
+> PCI devices share 4 legacy INTx interrupts from the same PCI host 
+> bridge.
+> Device drivers map/unmap hardware interrupts via irq_create_mapping()/
+> irq_dispose_mapping(). The problem with that these interrupts are
+> shared and when performing hot unplug, we need to unmap the interrupt
+> only when the last device is released.
+> 
+> This reuses already existing irq_desc::kobj for this purpose.
+> The refcounter is naturally 1 when the descriptor is allocated already;
+> this adds kobject_get() in places where already existing mapped virq
+> is returned.
+
+That's quite interesting, as I was about to revive a patch series that
+rework the irqdomain subsystem to directly cache irq_desc instead of
+raw interrupt numbers. And for that, I needed some form of 
+refcounting...
+
+> 
+> This reorganizes irq_dispose_mapping() to release the kobj and let
+> the release callback do the cleanup.
+> 
+> If some driver or platform does its own reference counting, this 
+> expects
+> those parties to call irq_find_mapping() and call irq_dispose_mapping()
+> for every irq_create_fwspec_mapping()/irq_create_mapping().
+> 
+> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> ---
+>  kernel/irq/irqdesc.c   | 35 +++++++++++++++++++++++------------
+>  kernel/irq/irqdomain.c | 27 +++++++++++++--------------
+>  2 files changed, 36 insertions(+), 26 deletions(-)
+> 
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index 1a7723604399..dae096238500 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -419,20 +419,39 @@ static struct irq_desc *alloc_desc(int irq, int
+> node, unsigned int flags,
+>  	return NULL;
+>  }
+> 
+> +static void delayed_free_desc(struct rcu_head *rhp);
+>  static void irq_kobj_release(struct kobject *kobj)
+>  {
+>  	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
+> +	struct irq_domain *domain;
+> +	unsigned int virq = desc->irq_data.irq;
+> 
+> -	free_masks(desc);
+> -	free_percpu(desc->kstat_irqs);
+> -	kfree(desc);
+> +	domain = desc->irq_data.domain;
+> +	if (domain) {
+> +		if (irq_domain_is_hierarchy(domain)) {
+> +			irq_domain_free_irqs(virq, 1);
+
+How does this work with hierarchical domains? Each domain should
+contribute as a reference on the irq_desc. But if you got here,
+it means the refcount has already dropped to 0.
+
+So either there is nothing to free here, or you don't track the
+references implied by the hierarchy. I suspect the latter.
+
+> +		} else {
+> +			irq_domain_disassociate(domain, virq);
+> +			irq_free_desc(virq);
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * We free the descriptor, masks and stat fields via RCU. That
+> +	 * allows demultiplex interrupts to do rcu based management of
+> +	 * the child interrupts.
+> +	 * This also allows us to use rcu in kstat_irqs_usr().
+> +	 */
+> +	call_rcu(&desc->rcu, delayed_free_desc);
+>  }
+> 
+>  static void delayed_free_desc(struct rcu_head *rhp)
+>  {
+>  	struct irq_desc *desc = container_of(rhp, struct irq_desc, rcu);
+> 
+> -	kobject_put(&desc->kobj);
+> +	free_masks(desc);
+> +	free_percpu(desc->kstat_irqs);
+> +	kfree(desc);
+>  }
+> 
+>  static void free_desc(unsigned int irq)
+> @@ -453,14 +472,6 @@ static void free_desc(unsigned int irq)
+>  	 */
+>  	irq_sysfs_del(desc);
+>  	delete_irq_desc(irq);
+> -
+> -	/*
+> -	 * We free the descriptor, masks and stat fields via RCU. That
+> -	 * allows demultiplex interrupts to do rcu based management of
+> -	 * the child interrupts.
+> -	 * This also allows us to use rcu in kstat_irqs_usr().
+> -	 */
+> -	call_rcu(&desc->rcu, delayed_free_desc);
+>  }
+> 
+>  static int alloc_descs(unsigned int start, unsigned int cnt, int node,
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index cf8b374b892d..02733ddc321f 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -638,6 +638,7 @@ unsigned int irq_create_mapping(struct irq_domain 
+> *domain,
+>  {
+>  	struct device_node *of_node;
+>  	int virq;
+> +	struct irq_desc *desc;
+> 
+>  	pr_debug("irq_create_mapping(0x%p, 0x%lx)\n", domain, hwirq);
+> 
+> @@ -655,7 +656,9 @@ unsigned int irq_create_mapping(struct irq_domain 
+> *domain,
+>  	/* Check if mapping already exists */
+>  	virq = irq_find_mapping(domain, hwirq);
+>  	if (virq) {
+> +		desc = irq_to_desc(virq);
+>  		pr_debug("-> existing mapping on virq %d\n", virq);
+> +		kobject_get(&desc->kobj);
+
+My worry with this is that there is probably a significant amount of
+code out there that relies on multiple calls to irq_create_mapping()
+with the same parameters not to have any side effects. They would
+expect a subsequent irq_dispose_mapping() to drop the translation
+altogether, and that's obviously not the case here.
+
+Have you audited the various call sites to see what could break?
+
+>  		return virq;
+>  	}
+> 
+> @@ -751,6 +754,7 @@ unsigned int irq_create_fwspec_mapping(struct
+> irq_fwspec *fwspec)
+>  	irq_hw_number_t hwirq;
+>  	unsigned int type = IRQ_TYPE_NONE;
+>  	int virq;
+> +	struct irq_desc *desc;
+> 
+>  	if (fwspec->fwnode) {
+>  		domain = irq_find_matching_fwspec(fwspec, DOMAIN_BUS_WIRED);
+> @@ -787,8 +791,11 @@ unsigned int irq_create_fwspec_mapping(struct
+> irq_fwspec *fwspec)
+>  		 * current trigger type then we are done so return the
+>  		 * interrupt number.
+>  		 */
+> -		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq))
+> +		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq)) {
+> +			desc = irq_to_desc(virq);
+> +			kobject_get(&desc->kobj);
+>  			return virq;
+> +		}
+> 
+>  		/*
+>  		 * If the trigger type has not been set yet, then set
+> @@ -800,6 +807,8 @@ unsigned int irq_create_fwspec_mapping(struct
+> irq_fwspec *fwspec)
+>  				return 0;
+> 
+>  			irqd_set_trigger_type(irq_data, type);
+> +			desc = irq_to_desc(virq);
+> +			kobject_get(&desc->kobj);
+>  			return virq;
+>  		}
+> 
+> @@ -852,22 +861,12 @@ EXPORT_SYMBOL_GPL(irq_create_of_mapping);
+>   */
+>  void irq_dispose_mapping(unsigned int virq)
+>  {
+> -	struct irq_data *irq_data = irq_get_irq_data(virq);
+> -	struct irq_domain *domain;
+> +	struct irq_desc *desc = irq_to_desc(virq);
+> 
+> -	if (!virq || !irq_data)
+> +	if (!virq || !desc)
+>  		return;
+> 
+> -	domain = irq_data->domain;
+> -	if (WARN_ON(domain == NULL))
+> -		return;
+> -
+> -	if (irq_domain_is_hierarchy(domain)) {
+> -		irq_domain_free_irqs(virq, 1);
+> -	} else {
+> -		irq_domain_disassociate(domain, virq);
+> -		irq_free_desc(virq);
+> -	}
+> +	kobject_put(&desc->kobj);
+>  }
+>  EXPORT_SYMBOL_GPL(irq_dispose_mapping);
 
 Thanks,
-Sai
 
+         M.
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Jazz is not dead. It just smells funny...
