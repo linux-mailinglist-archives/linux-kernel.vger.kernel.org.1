@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1CB29B7AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0447329BA80
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795409AbgJ0PPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46772 "EHLO mail.kernel.org"
+        id S1806036AbgJ0QF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:05:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794288AbgJ0PK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:10:59 -0400
+        id S1802205AbgJ0PqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:46:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFE6C21D24;
-        Tue, 27 Oct 2020 15:10:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 578092231B;
+        Tue, 27 Oct 2020 15:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811459;
-        bh=b6xTm3LVmIjh+LuDnzjD1HzlJ7Infz157Bmi9C7X6wY=;
+        s=default; t=1603813558;
+        bh=8q1iBLBaIebp3wRZiThfQ1xCp7msHz/VyOF2lfbaHrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PwlWRg11oD8oUnYiOCcNMs9Z5nXyGxl1aB5BEW89X+OgQgqTO+XmswP6AuIVMX388
-         qInBfooEp9bInLesNAVEcxMBOF8ZAxplJJiGZ5kSZNX6ciRlPCeZthoWsQpepmIesk
-         tUA6Ld/vIWW+Jy5p1FJ0dpcmUDYUzYqSG056v36I=
+        b=HjkfIwzo4AKxCgeaFdyfIajiZBp8q0HkoXQwkiOCbXA0HrZ+VD6FlN3IKs6TSz4B+
+         M1Zvc711NiZj3FTlcHa0py8OWyQ+Y70qlzJsUmUrZibpsabwAFvrMU24O5AjIi1/Dt
+         LqMEtnHNdmrnYTvQeBfQ7tJ/h7TTnyjtW8hzovOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 500/633] arm64: dts: renesas: r8a77990: Fix MSIOF1 DMA channels
+Subject: [PATCH 5.9 593/757] arm64: dts: qcom: sdm845-db845c: Fix hdmi nodes
 Date:   Tue, 27 Oct 2020 14:54:03 +0100
-Message-Id: <20201027135546.183947753@linuxfoundation.org>
+Message-Id: <20201027135518.349329167@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 453802c463abd003a7c38ffbc90b67ba162335b6 ]
+[ Upstream commit bca4339bda0989e49189c164795b120eb261970c ]
 
-According to Technical Update TN-RCT-S0352A/E, MSIOF1 DMA can only be
-used with SYS-DMAC0 on R-Car E3.
+As per binding documentation, we should have dsi as node 0 and hdmi
+audio as node 1, so fix it
 
-Fixes: 8517042060b55a37 ("arm64: dts: renesas: r8a77990: Add DMA properties to MSIOF nodes")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200917132117.8515-2-geert+renesas@glider.be
+Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: aef9a119dfb9 ("arm64: dts: qcom: sdm845-db845c: Add hdmi bridge nodes")
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20200828074347.3788518-1-vkoul@kernel.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r8a77990.dtsi | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a77990.dtsi b/arch/arm64/boot/dts/renesas/r8a77990.dtsi
-index 1991bdc36792f..27f74df8efbde 100644
---- a/arch/arm64/boot/dts/renesas/r8a77990.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a77990.dtsi
-@@ -1192,9 +1192,8 @@ msiof1: spi@e6ea0000 {
- 			reg = <0 0xe6ea0000 0 0x0064>;
- 			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&cpg CPG_MOD 210>;
--			dmas = <&dmac1 0x43>, <&dmac1 0x42>,
--			       <&dmac2 0x43>, <&dmac2 0x42>;
--			dma-names = "tx", "rx", "tx", "rx";
-+			dmas = <&dmac0 0x43>, <&dmac0 0x42>;
-+			dma-names = "tx", "rx";
- 			power-domains = <&sysc R8A77990_PD_ALWAYS_ON>;
- 			resets = <&cpg 210>;
- 			#address-cells = <1>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index a2a98680ccf53..99d33955270ec 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -451,16 +451,16 @@ ports {
+ 			port@0 {
+ 				reg = <0>;
+ 
+-				lt9611_out: endpoint {
+-					remote-endpoint = <&hdmi_con>;
++				lt9611_a: endpoint {
++					remote-endpoint = <&dsi0_out>;
+ 				};
+ 			};
+ 
+-			port@1 {
+-				reg = <1>;
++			port@2 {
++				reg = <2>;
+ 
+-				lt9611_a: endpoint {
+-					remote-endpoint = <&dsi0_out>;
++				lt9611_out: endpoint {
++					remote-endpoint = <&hdmi_con>;
+ 				};
+ 			};
+ 		};
 -- 
 2.25.1
 
