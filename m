@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843A529C52C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBD529C51B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824766AbgJ0SFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:05:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41626 "EHLO mail.kernel.org"
+        id S1824194AbgJ0SD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:03:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901042AbgJ0OSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:15 -0400
+        id S1757355AbgJ0OSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:18:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAF63206F7;
-        Tue, 27 Oct 2020 14:18:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB612206FA;
+        Tue, 27 Oct 2020 14:18:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808294;
-        bh=IXOSn4SG6/O7xsGjg+6VMa/vhOSpRitqQMnAN563lyg=;
+        s=default; t=1603808331;
+        bh=xjI0/qaFra9wN704axgQOlYHLOg73a6tBTMXSHmDYyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ap0LDx5LJ4Lb13VHu0KH7g3KF71+6gIb6FJ4LmQqNOWlhSnjI5CtIZrXAoc++GldI
-         PUFN7WeZ91iMUP4+H8VX2vEG7+q3XZ9joX8vVXPhW3czhSDWIeWDx44Muds3SAD5xj
-         5+7TXDb/GRbw4cXXhzorKHvvxLoAVf13Ry1nCre8=
+        b=wcxWhhDRGAC0R6TSZdXvN1GhRz9pKxe+6aKOTh7ztxSr0iBLQpK7ODeu5e13iF2/I
+         HyC6sFD5zeOBLCF3L7u2UbQr/4GJq+VQGmbjyRQcT98IG46o0oWvK7/uBD6rpIVhFd
+         t/DLbiXPwmyYPzQTdZECN+oUnlA6B6+bJXyOmsog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Libing Zhou <libing.zhou@nokia-sbell.com>,
-        Borislav Petkov <bp@suse.de>,
-        Changbin Du <changbin.du@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 037/264] x86/nmi: Fix nmi_handle() duration miscalculation
-Date:   Tue, 27 Oct 2020 14:51:35 +0100
-Message-Id: <20201027135432.407472057@linuxfoundation.org>
+Subject: [PATCH 4.19 044/264] media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+Date:   Tue, 27 Oct 2020 14:51:42 +0100
+Message-Id: <20201027135432.745491231@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -46,55 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Libing Zhou <libing.zhou@nokia-sbell.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit f94c91f7ba3ba7de2bc8aa31be28e1abb22f849e ]
+[ Upstream commit 00d21f325d58567d81d9172096692d0a9ea7f725 ]
 
-When nmi_check_duration() is checking the time an NMI handler took to
-execute, the whole_msecs value used should be read from the @duration
-argument, not from the ->max_duration, the latter being used to store
-the current maximal duration.
+The "idle" pinctrl state is optional as documented in the DT binding.
+The change introduced by the commit being reverted makes that pinctrl state
+mandatory and breaks initialization of the whole media driver, since the
+"idle" state is not specified in any mainline dts.
 
- [ bp: Rewrite commit message. ]
+This reverts commit 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+to fix the regression.
 
-Fixes: 248ed51048c4 ("x86/nmi: Remove irq_work from the long duration NMI handler")
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Libing Zhou <libing.zhou@nokia-sbell.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: Changbin Du <changbin.du@gmail.com>
-Link: https://lkml.kernel.org/r/20200820025641.44075-1-libing.zhou@nokia-sbell.com
+Fixes: 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/nmi.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/media/platform/exynos4-is/media-dev.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index 0f8b9b900b0e7..996eb53f8eb75 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -104,7 +104,6 @@ fs_initcall(nmi_warning_debugfs);
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index 2d25a197dc657..f5fca01f3248e 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1257,11 +1257,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+ 	if (IS_ERR(pctl->state_default))
+ 		return PTR_ERR(pctl->state_default);
  
- static void nmi_check_duration(struct nmiaction *action, u64 duration)
- {
--	u64 whole_msecs = READ_ONCE(action->max_duration);
- 	int remainder_ns, decimal_msecs;
- 
- 	if (duration < nmi_longest_ns || duration < action->max_duration)
-@@ -112,12 +111,12 @@ static void nmi_check_duration(struct nmiaction *action, u64 duration)
- 
- 	action->max_duration = duration;
- 
--	remainder_ns = do_div(whole_msecs, (1000 * 1000));
-+	remainder_ns = do_div(duration, (1000 * 1000));
- 	decimal_msecs = remainder_ns / 1000;
- 
- 	printk_ratelimited(KERN_INFO
- 		"INFO: NMI handler (%ps) took too long to run: %lld.%03d msecs\n",
--		action->handler, whole_msecs, decimal_msecs);
-+		action->handler, duration, decimal_msecs);
++	/* PINCTRL_STATE_IDLE is optional */
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
+-	if (IS_ERR(pctl->state_idle))
+-		return PTR_ERR(pctl->state_idle);
+-
+ 	return 0;
  }
  
- static int nmi_handle(unsigned int type, struct pt_regs *regs)
 -- 
 2.25.1
 
