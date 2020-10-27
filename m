@@ -2,146 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27CE29AA05
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E2129AA0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1420605AbgJ0Kux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:50:53 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35623 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437103AbgJ0Kuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:50:52 -0400
-Received: by mail-lj1-f196.google.com with SMTP id x16so1227734ljh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rX192+5/GCOl6ncQVEemrlnBsQN0DVPaoj5gLLoEIgQ=;
-        b=F1ySWpC6wzldOCJDsNatsgn3qsOUclEhK7WZ2iQXkXRJaGCUmA/bdOAzcGrKw6QdAC
-         SrQ6s7UHxXORMQkD8dcJsgK7KQBgG0IVG3ymymnYsCZCTMh/PkJOL+dajovJsooztPhD
-         Y73sURTACyjS6XZwAWRy1X+hkdbXO9pdiiBZW9GLRXdsA+xI71n6YPKjybi5BALltQzf
-         35XdvXFlDli1zQDAJ7deBl2yeuhjs4OJZJPT+cF85GASo4B+6uuW1mbUcxJLi2ojnDnd
-         Rjjjj/alX/Ru/6a7maRNgDNcoWev4H+mo0qlCvzp2C8yaQ7t2o7G41brSoTi0NFxC4tA
-         HOXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rX192+5/GCOl6ncQVEemrlnBsQN0DVPaoj5gLLoEIgQ=;
-        b=SyXYtW/4eLMTl6zsZiCBp57eyOpaMZlsLYTFEH7p5+nswNDEOfB9Zj7DbUDuENeNJw
-         +4AaQDhx/G8DN/oh2GQujvTAQVfSUfhHLPprDWSUP2Wqe1ts5uOhCyFfyq2fvJjBsGRy
-         MrVapPcbIIpZ9manu+QRvPlLyAEKVH0SXveRrdMtqhExivaId0Dp/DEeSiAeBHxKlZsZ
-         5iqIvEPnq7zedv9FfBf+wQ4bMPvfLj0ylkPoTi8oGxj03gTzqhGZId6v/IYCklJIOFfY
-         GQCC6k8O6KDbkdXx30ltwivSc4FYatnhCJJ3I2BV7R0JyJ979lj49Zwp0Tj2f3TfNddF
-         NK4w==
-X-Gm-Message-State: AOAM530HSL9fiDWe2U24935oCM065MPt4q/S93QBIL8bcARnOGM/Glam
-        WN2/r3etHErxyHerO2BHpMhAHhG37FoA/jihqj0WF4uYGQM=
-X-Google-Smtp-Source: ABdhPJxIWQ8Y6D6pkmW3tMpR9kxLFdxtj74oDzkLgSFgugIxQfpqchIxNmM7P0zq0hp144C0tWd3+ad0nKpphiD+TaI=
-X-Received: by 2002:a2e:9a43:: with SMTP id k3mr850315ljj.69.1603795850701;
- Tue, 27 Oct 2020 03:50:50 -0700 (PDT)
+        id S1421354AbgJ0Kwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:52:34 -0400
+Received: from mail.monom.org ([188.138.9.77]:54546 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1421168AbgJ0Kwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 06:52:31 -0400
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id A69EE50046C;
+        Tue, 27 Oct 2020 11:52:26 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id 6250E500299;
+        Tue, 27 Oct 2020 11:52:26 +0100 (CET)
+Date:   Tue, 27 Oct 2020 11:52:26 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [ANNOUNCE] v5.9.1-rt19
+Message-ID: <20201027105226.pzqqgeni572juhje@beryllium.lan>
+References: <20201024091838.gzhn2dlx2j7xnixg@linutronix.de>
+ <20201027093616.5vn6xinmthxulhvx@beryllium.lan>
+ <20201027100049.xtkmjqdwkn7zec2f@linutronix.de>
+ <20201027102547.y6wop7j2ovzg2tyx@beryllium.lan>
+ <20201027102851.gizepjlu4opensqb@linutronix.de>
+ <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
 MIME-Version: 1.0
-References: <20200901144324.1071694-1-maz@kernel.org> <20200901144324.1071694-4-maz@kernel.org>
- <CAKfTPtDjPpri5Gt6kLeFp_B_zJUZ5DYXEqtJ+0VKohU-y9bFEQ@mail.gmail.com>
- <353f13b0dcc6c7ea1b44012d9632a0cc@kernel.org> <CAKfTPtBjw5ay_BcPmEXpHOHbNxNZuYmdCoHQM53u3c+RXnKONg@mail.gmail.com>
- <CAKfTPtBURraZh8E8p3PmncoDRVV5N42yTyJcpPf0OROciM2+xg@mail.gmail.com> <7b754dfe579044902d3468b9f864bd37@kernel.org>
-In-Reply-To: <7b754dfe579044902d3468b9f864bd37@kernel.org>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 27 Oct 2020 11:50:39 +0100
-Message-ID: <CAKfTPtBQd8LcXAq_TkUx6uY3NGu72RAAftawtHxEqB=18C3D8A@mail.gmail.com>
-Subject: Re: [PATCH v3 03/16] arm64: Allow IPIs to be handled as normal interrupts
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Saravana Kannan <saravanak@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 11:37, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-10-27 10:12, Vincent Guittot wrote:
-> > HI Marc,
-> >
-> > On Mon, 19 Oct 2020 at 17:43, Vincent Guittot
-> > <vincent.guittot@linaro.org> wrote:
-> >>
-> >> On Mon, 19 Oct 2020 at 15:04, Marc Zyngier <maz@kernel.org> wrote:
-> >> >
-> >
-> > ...
-> >
-> >> > >>
-> >> > >> One of the major difference is that we end up, in some cases
-> >> > >> (such as when performing IRQ time accounting on the scheduler
-> >> > >> IPI), end up with nested irq_enter()/irq_exit() pairs.
-> >> > >> Other than the (relatively small) overhead, there should be
-> >> > >> no consequences to it (these pairs are designed to nest
-> >> > >> correctly, and the accounting shouldn't be off).
-> >> > >
-> >> > > While rebasing on mainline, I have faced a performance regression for
-> >> > > the benchmark:
-> >> > > perf bench sched pipe
-> >> > > on my arm64 dual quad core (hikey) and my 2 nodes x 112 CPUS (thx2)
-> >> > >
-> >> > > The regression comes from:
-> >> > > commit: d3afc7f12987 ("arm64: Allow IPIs to be handled as normal
-> >> > > interrupts")
-> >> >
-> >> > That's interesting, as this patch doesn't really change anything (most
-> >> > of the potential overhead comes in later). The only potential overhead
-> >> > I can see is that the scheduler_ipi() call is now wrapped around
-> >> > irq_enter()/irq_exit().
-> >> >
-> >> > >
-> >> > >           v5.9              + this patch
-> >> > > hikey :   48818(+/- 0.31)   37503(+/- 0.15%)  -23.2%
-> >> > > thx2  :  132410(+/- 1.72)  122646(+/- 1.92%)   -7.4%
-> >> > >
-> >> > > By + this patch,  I mean merging branch from this patch. Whereas
-> >> > > merging the previous:
-> >> > > commit: 83cfac95c018 ("genirq: Allow interrupts to be excluded from
-> >> > > /proc/interrupts")
-> >> > >  It doesn't show any regression
-> >> >
-> >> > Since you are running perf, can you spot where the overhead occurs?
-> >
-> > Any idea about the root cause of the regression ?
-> > I have faced it on more arm64 platforms in the meantime
->
-> two possible causes:
->
-> (1) irq_enter/exit on the rescheduling IPI means we reschedule much more
-> often
-> (2) irq_domain lookups add some overhead.
->
-> For (1), I have this series[1] which is ugly as sin and needs much more
-> testing.
+On Tue, Oct 27, 2020 at 11:34:11AM +0100, Daniel Wagner wrote:
+> It says so, let me double check if those task really run with SCHED_FIFO.
 
-Ok, I'm going to test this series to see if it fixes the perf regression
+I just got an RCU stall without any background load. Anyway, just for
+completeness here is the ps output:
 
->
-> For (2), I have some ideas which need more work (let the irq domain
-> resolve to
-> an irq_desc instead of an interrupt number, avoiding another radix-tree
-> lookup).
->
->          M.
->
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/ipi-fixes
-> --
-> Jazz is not dead. It just smells funny...
+root@c2d:~# ps -eLo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wchan:14,comm
+  PID   TID CLS RTPRIO  NI PRI PSR %CPU STAT WCHAN          COMMAND
+    1     1 TS       -   0  19   0  0.0 Ss   -              systemd
+    2     2 TS       -   0  19   0  0.0 S    -              kthreadd
+    3     3 TS       - -20  39   0  0.0 I<   -              rcu_gp
+    4     4 TS       - -20  39   0  0.0 I<   -              rcu_par_gp
+    6     6 TS       - -20  39   0  0.0 I<   -              kworker/0:0H-events_highpri
+    8     8 TS       - -20  39   0  0.0 I<   -              mm_percpu_wq
+    9     9 TS       -   0  19   0  0.0 S    -              ksoftirqd/0
+   10    10 FF       1   -  41   0  0.0 S    -              rcuc/0
+   11    11 FF       1   -  41   0  0.0 I    -              rcu_preempt
+   12    12 FF       1   -  41   0  0.0 S    -              rcub/0
+   13    13 FF      99   - 139   0  0.0 S    -              migration/0
+   14    14 TS       -   0  19   0  0.0 S    -              cpuhp/0
+   15    15 TS       -   0  19   1  0.0 S    -              cpuhp/1
+   16    16 FF      99   - 139   1  0.0 S    -              migration/1
+   17    17 FF       1   -  41   1  0.0 R    -              rcuc/1
+   18    18 TS       -   0  19   1  0.0 R    -              ksoftirqd/1
+   19    19 TS       -   0  19   1  0.0 I    -              kworker/1:0-events_freezable_power_
+   20    20 TS       - -20  39   1  0.0 I<   -              kworker/1:0H-kblockd
+   21    21 TS       -   0  19   1  0.0 S    -              kdevtmpfs
+   22    22 TS       - -20  39   0  0.0 I<   -              netns
+   23    23 TS       -   0  19   1  0.0 S    -              rcu_tasks_kthre
+   24    24 TS       -   0  19   1  0.0 S    -              rcu_tasks_rude_
+   25    25 TS       -   0  19   0  0.0 S    -              kauditd
+   26    26 TS       -   0  19   1  0.0 I    -              kworker/1:1-events_freezable_power_
+   27    27 TS       -   0  19   0  0.0 I    -              kworker/0:1-ata_sff
+   28    28 TS       -   0  19   1  0.0 S    -              oom_reaper
+   29    29 TS       - -20  39   1  0.0 I<   -              writeback
+   30    30 TS       -   0  19   0  0.0 S    -              kcompactd0
+   50    50 TS       - -20  39   1  0.0 I<   -              kblockd
+   51    51 FF      50   -  90   1  0.0 S    -              irq/9-acpi
+   52    52 TS       - -20  39   1  0.0 I<   -              ata_sff
+   53    53 TS       - -20  39   0  0.0 I<   -              md
+   54    54 TS       - -20  39   0  0.0 I<   -              rpciod
+   55    55 TS       - -20  39   0  0.0 I<   -              kworker/u9:0-xprtiod
+   56    56 TS       - -20  39   0  0.0 I<   -              xprtiod
+   57    57 TS       - -20  39   1  0.0 I<   -              cfg80211
+   58    58 TS       -   0  19   0  0.0 S    -              kswapd0
+   59    59 TS       - -20  39   1  0.0 I<   -              nfsiod
+   61    61 TS       - -20  39   1  0.0 I<   -              acpi_thermal_pm
+   63    63 FF      50   -  90   0  0.0 S    -              card0-crtc0
+   64    64 FF      50   -  90   0  0.0 S    -              card0-crtc1
+   65    65 FF      50   -  90   0  0.0 S    -              irq/16-i915
+   66    66 TS       - -20  39   0  0.0 I<   -              kworker/0:1H-kblockd
+   67    67 FF      50   -  90   1  0.0 S    -              irq/14-ata_piix
+   68    68 FF      50   -  90   0  0.0 S    -              irq/15-ata_piix
+   69    69 TS       -   0  19   1  0.0 S    -              scsi_eh_0
+   70    70 TS       - -20  39   1  0.0 I<   -              scsi_tmf_0
+   71    71 TS       -   0  19   1  0.0 S    -              scsi_eh_1
+   72    72 TS       - -20  39   0  0.0 I<   -              scsi_tmf_1
+   78    78 FF      50   -  90   1  0.0 S    -              irq/23-ehci_hcd
+   79    79 FF      50   -  90   1  0.0 S    -              irq/23-uhci_hcd
+   80    80 FF      50   -  90   0  0.0 S    -              irq/19-uhci_hcd
+   81    81 FF      50   -  90   1  0.0 S    -              irq/18-uhci_hcd
+   82    82 FF      50   -  90   0  0.0 S    -              irq/16-uhci_hcd
+   83    83 FF      50   -  90   0  0.0 S    -              irq/1-i8042
+   84    84 FF      50   -  90   1  0.0 S    -              irq/8-rtc0
+   85    85 FF      50   -  90   0  0.0 S    -              irq/19-i801_smb
+   86    86 TS       - -20  39   1  0.0 I<   -              ipv6_addrconf
+   88    88 TS       -   0  19   0  0.2 S    -              pr/ttyS0
+   89    89 TS       -   0  19   0  0.0 S    -              pr/netcon0
+   93    93 TS       - -20  39   1  0.0 I<   -              kworker/1:1H-kblockd
+   94    94 FF      50   -  90   0  0.0 S    -              irq/26-eth0
+   95    95 TS       -   0  19   1  0.0 S    -              scsi_eh_2
+   96    96 TS       - -20  39   1  0.0 I<   -              scsi_tmf_2
+   97    97 TS       -   0  19   0  0.0 S    -              usb-storage
+  105   105 TS       - -20  39   1  0.0 I<   -              kworker/u9:1-xprtiod
+  106   106 TS       -   0  19   0  0.0 S    -              NFSv4 callback
+  114   114 TS       -   0  19   0  0.0 I    -              kworker/u8:8-events_unbound
+  158   158 TS       -   0  19   0  0.0 Ss   -              systemd-journal
+  167   167 TS       -   0  19   0  0.0 Ss   -              systemd-udevd
+  175   175 TS       -   0  19   0  0.0 Ss   -              systemd-network
+  195   195 TS       -   0  19   0  0.0 Ssl  -              systemd-timesyn
+  195   200 TS       -   0  19   0  0.0 Ssl  -              sd-resolve
+  224   224 TS       -   0  19   0  0.0 Ss   -              sshd
+  226   226 TS       -   0  19   1  0.0 Ss+  -              agetty
+  227   227 TS       -   0  19   0  0.0 Ss+  -              agetty
+  228   228 TS       -   0  19   1  0.0 Ss+  -              agetty
+  232   232 TS       -   0  19   0  0.0 Ss+  -              agetty
+  233   233 TS       -   0  19   1  0.0 Ss+  -              agetty
+  234   234 TS       -   0  19   0  0.0 Ss+  -              agetty
+  236   236 TS       -   0  19   1  0.0 Ss+  -              agetty
+  241   241 FF      50   -  90   1  0.0 S    -              irq/4-ttyS0
+  263   263 TS       -   0  19   0  0.0 I    -              kworker/u8:47-rpciod
+  266   266 TS       -   0  19   1  0.0 R    -              kworker/1:2+events_freezable_power_
+  267   267 TS       -   0  19   0  0.0 I    -              kworker/0:0-events_power_efficient
+  269   269 TS       -   0  19   0  0.0 Ss   -              sshd
+  275   275 TS       -   0  19   0  0.0 Ss   -              bash
+  282   282 FF       4   -  44   0  0.0 Sl+  -              pi_stress
+  282   283 FF       1   -  41   1 42.0 Rl+  -              pi_stress
+  282   284 FF       2   -  42   1 22.1 Sl+  -              pi_stress
+  282   285 FF       3   -  43   1 35.7 Rl+  -              pi_stress
+  297   297 TS       -   0  19   1  0.0 R    -              kworker/1:3
+  303   303 TS       -   0  19   0  0.0 I    -              kworker/0:2-ata_sff
+  308   308 TS       -   0  19   1  0.0 R    -              kworker/1:4
+  312   312 TS       -   0  19   0  0.0 I    -              kworker/0:3-ata_sff
+  316   316 TS       -   0  19   0  0.0 I    -              kworker/u8:0-rpciod
+  317   317 TS       -   0  19   0  0.0 I    -              kworker/u8:1-rpciod
+  320   320 TS       -   0  19   0  1.0 Ss   -              sshd
+  326   326 TS       -   0  19   0  0.0 Ss   -              bash
+  329   329 TS       -   0  19   0  0.0 R+   -              ps
