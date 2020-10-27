@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE6629AAD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD0729AABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750109AbgJ0Lbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2899178AbgJ0Lbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:31:35 -0400
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78A2622283;
-        Tue, 27 Oct 2020 11:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603798294;
-        bh=Chq+OW8jPYeS0x1/w/NuhbNqJg7T410wGKW7Vwcmmh0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AC/jQYaY123wRTdPEyISNQSkrk6fK6qDgIgZMnbaYj/xrL1krmjOm1LUo+gXLR4O/
-         tvpoLxCRFDQgp+0/HxwTDihCaFuJJPQpjNci9DHja12IL0KC4fU5Ba+WHbgEJL1Jgn
-         IrewywqVQYbPHxnQr4exw1rwLPXvUWiSB9GpQpzY=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: [PATCH 13/13] m68k: deprecate DISCONTIGMEM
-Date:   Tue, 27 Oct 2020 13:29:55 +0200
-Message-Id: <20201027112955.14157-14-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201027112955.14157-1-rppt@kernel.org>
-References: <20201027112955.14157-1-rppt@kernel.org>
+        id S1750032AbgJ0Lap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:30:45 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:55564 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750001AbgJ0Lae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:30:34 -0400
+Received: by mail-pj1-f65.google.com with SMTP id c17so618616pjo.5;
+        Tue, 27 Oct 2020 04:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mgmaXaSSxDiV1b+vN33kB7/M7evqK+m/IRdQHJNh9jk=;
+        b=pFRPSL+GSCzBQDKauwbGT6fQCTggPxcs6myOc39+QrHiAEc6OuJx36gjiOuDt6wAmc
+         oLgBdbCAMFPK315jRpNz5EpcvNVfgX1MBVloYI1s1Pdr51JyqVRQx9ee1F94TNlYb8Bx
+         ErXcZ1iUTwVyFIas59jyygcX+hXBjHq07yvxpnkB9drXLXIOUG1YEjHe2Yng5c32szOE
+         gThDTkEcGAenGz4hq7uC3LREMabLk1fUJYMk5i/ceAUNlUsv5hoeXbk2Rc1S+0YSSvek
+         zEU11/PBq4nJtK6D2qlrSPF8DzvMNKDAt7NEYvGfVKjqncdUSIuh91klphYhGj0nsdt4
+         iVBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mgmaXaSSxDiV1b+vN33kB7/M7evqK+m/IRdQHJNh9jk=;
+        b=VJhVIDQAxNRx8Fgg0Qkb5J7fkv14aPDxYrsIzFKCqouFR4Tv5ama5KHZ4C45m4OpTw
+         LLh2DqmzoSOghDXTpTp6oUiZYl6JW1OmgvyVg5oGVUrN/I0XJd3vk1qULW5pE+E6Gpcw
+         +DpelvoY7hPrtsnDPXB1Lyf69zc9W8E9GRp26/IuGo3wMmQfpZyVnCkGG+s7PRBaRqtz
+         xuGgSoXDJdwQyJ3RX40h5zeiokXX+2g/l9y7s+JV0NQTuOcH/Xa3XwZIxCfsjNFEs2eq
+         6kKYTFW1pa+/nkg4dsPk8qktXS29CiLxFiPNzllAAed7Z6Na4GGsDxUtxIx5GVZsg313
+         GOKw==
+X-Gm-Message-State: AOAM531vgRpEQiryKfJJj4NsvRN1t0EnoCQgPLsD77stss/TCwz/+4A8
+        3CZizK5XpzaCyy1czgNtQuQ=
+X-Google-Smtp-Source: ABdhPJwsqWSwXmygTrmntcqynMZDWqdNru0B16qHE/XYS3+TXU2exIp7TDeoTYcfbjfH8CjS6AuBQA==
+X-Received: by 2002:a17:902:7046:b029:d5:a5e3:4701 with SMTP id h6-20020a1709027046b02900d5a5e34701mr1819449plt.57.1603798233456;
+        Tue, 27 Oct 2020 04:30:33 -0700 (PDT)
+Received: from lte-devbox.localdomain (KD106154081201.au-net.ne.jp. [106.154.81.201])
+        by smtp.googlemail.com with ESMTPSA id v1sm1536951pjt.2.2020.10.27.04.30.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 04:30:32 -0700 (PDT)
+From:   Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Harald Welte <laforge@gnumonks.org>
+Cc:     fujiwara.masahiro@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Schultz <aschultz@tpip.net>,
+        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] gtp: fix an use-before-init in gtp_newlink()
+Date:   Tue, 27 Oct 2020 20:30:21 +0900
+Message-Id: <20201027113021.3581-1-fujiwara.masahiro@gmail.com>
+X-Mailer: git-send-email 2.24.3
+In-Reply-To: <20201026114633.1b2628ae@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20201026114633.1b2628ae@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+*_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
+sends GTP packets while creating new GTP device.
 
-DISCONTIGMEM was intended to provide more efficient support for systems
-with holes in their physical address space that FLATMEM did.
+RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
+<SNIP>
+Call Trace:
+ <IRQ>
+ gtp_encap_recv+0xc2/0x2e0 [gtp]
+ ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
+ udp_queue_rcv_one_skb+0x1fe/0x530
+ udp_queue_rcv_skb+0x40/0x1b0
+ udp_unicast_rcv_skb.isra.0+0x78/0x90
+ __udp4_lib_rcv+0x5af/0xc70
+ udp_rcv+0x1a/0x20
+ ip_protocol_deliver_rcu+0xc5/0x1b0
+ ip_local_deliver_finish+0x48/0x50
+ ip_local_deliver+0xe5/0xf0
+ ? ip_protocol_deliver_rcu+0x1b0/0x1b0
 
-Yet, it's overhead in terms of the memory consumption seems to overweight
-the savings on the unused memory map.
+gtp_encap_enable() should be called after gtp_hastable_new() otherwise
+*_pdp_find() will access the uninitialized hash table.
 
-For a ARAnyM system with 16 MBytes of FastRAM configured, the memory usage
-reported after page allocator initialization is
+v2:
+ - Leave out_hashtable: label for clarity (Jakub).
+ - Fix code and comment styles.
 
-Memory: 23828K/30720K available (3206K kernel code, 535K rwdata, 936K rodata, 768K init, 193K bss, 6892K reserved, 0K cma-reserved)
-
-and with DISCONTIGMEM disabled and with relatively large hole in the memory
-map it is:
-
-Memory: 23864K/30720K available (3197K kernel code, 516K rwdata, 936K rodata, 764K init, 179K bss, 6856K reserved, 0K cma-reserved)
-
-Moreover, since m68k already has custom pfn_valid() it is possible to
-define HAVE_ARCH_PFN_VALID to enable freeing of unused memory map. The
-minimal size of a hole that can be freed should not be less than
-MAX_ORDER_NR_PAGES so to achieve more substantial memory savings let m68k
-also define custom FORCE_MAX_ZONEORDER.
-
-With FORCE_MAX_ZONEORDER set to 9 memory usage becomes:
-
-Memory: 23880K/30720K available (3197K kernel code, 516K rwdata, 936K rodata, 764K init, 179K bss, 6840K reserved, 0K cma-reserved)
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Fixes: 1e3a3abd8b28 ("gtp: make GTP sockets in gtp_newlink optional")
+Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
 ---
- arch/m68k/Kconfig.cpu | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+v3:
+ - Fix goto err label.
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 3af0fca03803..763bc80a27aa 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -21,6 +21,7 @@ choice
- config M68KCLASSIC
- 	bool "Classic M68K CPU family support"
- 	select NEED_MULTIPLE_NODES if DISCONTIGMEM
-+	select HAVE_ARCH_PFN_VALID if FLATMEM && !SINGLE_MEMORY_CHUNK
+ drivers/net/gtp.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index 8e47d0112e5d..10f910f8cbe5 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -663,10 +663,6 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
  
- config COLDFIRE
- 	bool "Coldfire CPU family support"
-@@ -378,11 +379,34 @@ config SINGLE_MEMORY_CHUNK
- 	help
- 	  Ignore all but the first contiguous chunk of physical memory for VM
- 	  purposes.  This will save a few bytes kernel size and may speed up
--	  some operations.  Say N if not sure.
-+	  some operations.
-+	  When this option os set to N, you may want to lower "Maximum zone
-+	  order" to save memory that could be wasted for unused memory map.
-+	  Say N if not sure.
+ 	gtp = netdev_priv(dev);
  
- config ARCH_DISCONTIGMEM_ENABLE
-+	depends on BROKEN
- 	def_bool MMU && !SINGLE_MEMORY_CHUNK
+-	err = gtp_encap_enable(gtp, data);
+-	if (err < 0)
+-		return err;
+-
+ 	if (!data[IFLA_GTP_PDP_HASHSIZE]) {
+ 		hashsize = 1024;
+ 	} else {
+@@ -677,12 +673,16 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
  
-+config FORCE_MAX_ZONEORDER
-+	int "Maximum zone order" if ADVANCED
-+	depends on !SINGLE_MEMORY_CHUNK
-+	default "11"
-+	help
-+	  The kernel memory allocator divides physically contiguous memory
-+	  blocks into "zones", where each zone is a power of two number of
-+	  pages.  This option selects the largest power of two that the kernel
-+	  keeps in the memory allocator.  If you need to allocate very large
-+	  blocks of physically contiguous memory, then you may need to
-+	  increase this value.
+ 	err = gtp_hashtable_new(gtp, hashsize);
+ 	if (err < 0)
+-		goto out_encap;
++		return err;
 +
-+	  For systems that have holes in their physical address space this
-+	  value also defines the minimal size of the hole that allows
-+	  freeing unused memory map.
-+
-+	  This config option is actually maximum order plus one. For example,
-+	  a value of 11 means that the largest free memory block is 2^10 pages.
-+
- config 060_WRITETHROUGH
- 	bool "Use write-through caching for 68060 supervisor accesses"
- 	depends on ADVANCED && M68060
++	err = gtp_encap_enable(gtp, data);
++	if (err < 0)
++		goto out_hashtable;
+ 
+ 	err = register_netdevice(dev);
+ 	if (err < 0) {
+ 		netdev_dbg(dev, "failed to register new netdev %d\n", err);
+-		goto out_hashtable;
++		goto out_encap;
+ 	}
+ 
+ 	gn = net_generic(dev_net(dev), gtp_net_id);
+@@ -693,11 +693,11 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+ 
+ 	return 0;
+ 
++out_encap:
++	gtp_encap_disable(gtp);
+ out_hashtable:
+ 	kfree(gtp->addr_hash);
+ 	kfree(gtp->tid_hash);
+-out_encap:
+-	gtp_encap_disable(gtp);
+ 	return err;
+ }
+ 
 -- 
-2.28.0
+2.24.3
 
