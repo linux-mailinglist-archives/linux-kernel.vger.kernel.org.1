@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F83B29A2CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DEE29A2D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408514AbgJ0Cy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 22:54:57 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:44656 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389238AbgJ0Cy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 22:54:57 -0400
-Received: by mail-pg1-f194.google.com with SMTP id o3so7180800pgr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QZF0W4dH550EVE0uGKIEMc2tMXwcFBBpVdPSQqA2FHM=;
-        b=2MAHbHx0ohuPXh5dfEpWBJ1Wo1XpSybr0ZIK4nZml41vCIF1vUACcWxDhu7y1Ip5o3
-         m0rAzVo+jdRzscmsBgtSK5F2nx6US1AxlWhQAtnUMWANCNouKFShn7mkLrXt07PIt+29
-         Ae5VD9TY9vxoo8dkcC9NTOiEL8Jr88c0iFX8/xL9Pn+lGm23m5Rz1+DzuC8XTfFkVtKJ
-         6fUnFqiZ1EIcmk31nj/CL5qhZHrS0vi1keWT7Yy464+gAY9EObA83xx5sJFakBU8kQHf
-         18UOHryCI9Z/tLR3iV4lE1PlMYz1Txi+ifXGpBBrSLRLHYt0eNPb+u2WnrovgJpikVhS
-         0R+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QZF0W4dH550EVE0uGKIEMc2tMXwcFBBpVdPSQqA2FHM=;
-        b=WwfshQWt78/gdoUazxFyW0lnE3tOERu+o05mD8BOp0rK6fU4AgAC/gLlUaOKeTh8pO
-         CtwgobQDelJ/GMM7YBgIthj9zu+Uyl6Ye6px2DA026gpM1ee8DNoBVqltvsdp3+r0pHR
-         J8UARBdUCW73y41Lp1xDGiJ3FgD5Eo2gr8Fw0vXbwoZKhAfrwGOb0d+iHVm0VunhURW4
-         r6cYhAqo6GWTjNDXRadVCcJ5lJtzAXIi+M2DItghlQWaD3B6lS5cCWn0fJYW6ISX5UWk
-         2jLKAiT8G1/ommsrHK2zfWsUxALbbxh4IxjFE9VKbqyJu6PGalstlq6pggaMahOHykh7
-         45cw==
-X-Gm-Message-State: AOAM5306VqlN/0h0giC528N1BqQCTWYMQjY4SdMhyJ3cPsd4Iwo7zxDd
-        Jz3o172Othlb5TV/tOreWvSOYp4G9bf1sfR/N79gow==
-X-Google-Smtp-Source: ABdhPJyUXYA2QbO5JVQ8aPVZ/qUZFKpo5APz2TO+UBNlY/I1gMKpDxJkGfjqKKIr9iRX+x23PthAvtxpgrmzfwJVtsM=
-X-Received: by 2002:a63:c851:: with SMTP id l17mr21924pgi.31.1603767295050;
- Mon, 26 Oct 2020 19:54:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201026145114.59424-1-songmuchun@bytedance.com> <20201026155351.GS20115@casper.infradead.org>
-In-Reply-To: <20201026155351.GS20115@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 27 Oct 2020 10:54:18 +0800
-Message-ID: <CAMZfGtU4VQ08dnxNBsFfxVEnuOZauOhGSLQpi++3fngc_qNqXQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 00/19] Free some vmemmap pages of
- hugetlb page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2408843AbgJ0C5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 22:57:18 -0400
+Received: from mga01.intel.com ([192.55.52.88]:23076 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408598AbgJ0C5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 22:57:16 -0400
+IronPort-SDR: mpiP+4fqWBb9OVTFv6dwPfuWK7qQF/w4mjckbNUA/rRrGYQFb7RX5yw4CY6A3j4zasv+PuK3eT
+ p40ivEZGmEGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="185753252"
+X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
+   d="scan'208";a="185753252"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 19:57:15 -0700
+IronPort-SDR: XEDrDogb+1+OgN5uwZqPSSDBO/QpjW/LZMhiJ40xeng5Wff2RVlF6QC841Lwml3mGRwB0gBIDl
+ 2LlYvxJc4/jg==
+X-IronPort-AV: E=Sophos;i="5.77,422,1596524400"; 
+   d="scan'208";a="322772466"
+Received: from dhrubajy-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.53])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 19:57:15 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        knsathya@kernel.org
+Subject: [PATCH v11 0/5] Simplify PCIe native ownership detection logic
+Date:   Mon, 26 Oct 2020 19:57:03 -0700
+Message-Id: <cover.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:53 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Oct 26, 2020 at 10:50:55PM +0800, Muchun Song wrote:
-> > For tail pages, the value of compound_dtor is the same. So we can reuse
->
-> compound_dtor is only set on the first tail page.  compound_head is
-> what you mean here, I think.
->
+Currently, PCIe capabilities ownership status is detected by
+verifying the status of pcie_ports_native, pcie_ports_dpc_native
+and _OSC negotiated results (cached in  struct pci_host_bridge
+->native_* members). But this logic can be simplified, and we can
+use only struct pci_host_bridge ->native_* members to detect it. 
 
-Yes, that's right.  Sorry for the confusion. Thanks.
+This patchset removes the distributed checks for pcie_ports_native,
+pcie_ports_dpc_native parameters.
+
+Changes since v10:
+ * Addressed format issue reported by lkp test.
+
+Changes since v9:
+ * Rebased on top of v5.10-rc1
+
+Changes since v8:
+ * Simplified setting _OSC ownwership logic
+ * Moved bridge->native_ltr out of #ifdef CONFIG_PCIEPORTBUS.
+
+Changes since v7:
+ * Fixed "fix array_size.cocci warnings".
+
+Changes since v6:
+ * Created new patch for CONFIG_PCIEPORTBUS check in
+   pci_init_host_bridge().
+ * Added warning message for a case when pcie_ports_native
+   overrides _OSC negotiation result.
+
+Changes since v5:
+ * Rebased on top of v5.8-rc1
+
+Changes since v4:
+ * Changed the patch set title (Original link: https://lkml.org/lkml/2020/5/26/1710)
+ * Added AER/DPC dependency logic cleanup fixes.
+ 
+
+Kuppuswamy Sathyanarayanan (5):
+  PCI: Conditionally initialize host bridge native_* members
+  ACPI/PCI: Ignore _OSC negotiation result if pcie_ports_native is set.
+  ACPI/PCI: Ignore _OSC DPC negotiation result if pcie_ports_dpc_native
+    is set.
+  PCI/portdrv: Remove redundant pci_aer_available() check in DPC enable
+    logic
+  PCI/DPC: Move AER/DPC dependency checks out of DPC driver
+
+ drivers/acpi/pci_root.c           | 39 +++++++++++++++++++++++--------
+ drivers/pci/hotplug/pciehp_core.c |  2 +-
+ drivers/pci/pci-acpi.c            |  3 ---
+ drivers/pci/pcie/aer.c            |  2 +-
+ drivers/pci/pcie/dpc.c            |  3 ---
+ drivers/pci/pcie/portdrv.h        |  2 --
+ drivers/pci/pcie/portdrv_core.c   | 13 ++++-------
+ drivers/pci/probe.c               |  6 +++--
+ include/linux/acpi.h              |  2 ++
+ include/linux/pci.h               |  2 ++
+ 10 files changed, 44 insertions(+), 30 deletions(-)
 
 -- 
-Yours,
-Muchun
+2.17.1
+
