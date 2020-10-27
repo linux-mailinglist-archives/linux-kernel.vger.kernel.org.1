@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863E229AFDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2C829AEA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507450AbgJ0ONk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:13:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59194 "EHLO mail.kernel.org"
+        id S1753838AbgJ0OCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755486AbgJ0OKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:10:08 -0400
+        id S1753756AbgJ0OCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:02:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9260C218AC;
-        Tue, 27 Oct 2020 14:10:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BF2B2224A;
+        Tue, 27 Oct 2020 14:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807808;
-        bh=UWAPA+UqCncHrG25SZ/XtZ0sRzW4RMkMNLEVjFK1YFU=;
+        s=default; t=1603807319;
+        bh=/WsUa2OOojRGBDJy0pe3KbdMoZWkhv7tK3wKYYFBhBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sxXFJyN2ghAKBgDBAO/91YiynwOj1Cdv9wSZYc7Kn47a65hTggkEJMlGe1kpvEI5u
-         MYJvbO4iOHDW40DJdr/ZZCLONSa3Apg0gQuPJd0xEW6/LdTAWoV8wNGLEF0up1e0B/
-         ITGSaoyi+H1jk5wtz+59kgoASt/p0kAKpdscWiZw=
+        b=eDPjjOXLq0UtexBSTMfZCWrqUIPEtLdUifr/UIFEIeNrf+JvtJwHCN0Uh0MDFq480
+         jQgd2t2hV7yEoSUIRnkXjxfGgb1NwI1uw2TADTecCWsleURJuTJ0dd2Dqd8cwqe3Sh
+         SITsAWMnrldNMrD2M/acWON43UxVYH2bzO5aYvUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 049/191] mwifiex: Do not use GFP_KERNEL in atomic context
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 010/139] icmp: randomize the global rate limiter
 Date:   Tue, 27 Oct 2020 14:48:24 +0100
-Message-Id: <20201027134912.095044557@linuxfoundation.org>
+Message-Id: <20201027134902.630158041@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit d2ab7f00f4321370a8ee14e5630d4349fdacc42e ]
+[ Upstream commit b38e7819cae946e2edf869e604af1e65a5d241c5 ]
 
-A possible call chain is as follow:
-  mwifiex_sdio_interrupt                            (sdio.c)
-    --> mwifiex_main_process                        (main.c)
-      --> mwifiex_process_cmdresp                   (cmdevt.c)
-        --> mwifiex_process_sta_cmdresp             (sta_cmdresp.c)
-          --> mwifiex_ret_802_11_scan               (scan.c)
-            --> mwifiex_parse_single_response_buf   (scan.c)
+Keyu Man reported that the ICMP rate limiter could be used
+by attackers to get useful signal. Details will be provided
+in an upcoming academic publication.
 
-'mwifiex_sdio_interrupt()' is an interrupt function.
+Our solution is to add some noise, so that the attackers
+no longer can get help from the predictable token bucket limiter.
 
-Also note that 'mwifiex_ret_802_11_scan()' already uses GFP_ATOMIC.
-
-So use GFP_ATOMIC instead of GFP_KERNEL when memory is allocated in
-'mwifiex_parse_single_response_buf()'.
-
-Fixes: 7c6fa2a843c5 ("mwifiex: use cfg80211 dynamic scan table and cfg80211_get_bss API")
-or
-Fixes: 601216e12c65e ("mwifiex: process RX packets in SDIO IRQ thread directly")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200809092906.744621-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4cdf507d5452 ("icmp: add a global rate limitation")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/marvell/mwifiex/scan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/networking/ip-sysctl.txt |    4 +++-
+ net/ipv4/icmp.c                        |    7 +++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
-index 0071c40afe81b..a95b1368dad71 100644
---- a/drivers/net/wireless/marvell/mwifiex/scan.c
-+++ b/drivers/net/wireless/marvell/mwifiex/scan.c
-@@ -1890,7 +1890,7 @@ mwifiex_parse_single_response_buf(struct mwifiex_private *priv, u8 **bss_info,
- 					    chan, CFG80211_BSS_FTYPE_UNKNOWN,
- 					    bssid, timestamp,
- 					    cap_info_bitmap, beacon_period,
--					    ie_buf, ie_len, rssi, GFP_KERNEL);
-+					    ie_buf, ie_len, rssi, GFP_ATOMIC);
- 			if (bss) {
- 				bss_priv = (struct mwifiex_bss_priv *)bss->priv;
- 				bss_priv->band = band;
--- 
-2.25.1
-
+--- a/Documentation/networking/ip-sysctl.txt
++++ b/Documentation/networking/ip-sysctl.txt
+@@ -887,12 +887,14 @@ icmp_ratelimit - INTEGER
+ icmp_msgs_per_sec - INTEGER
+ 	Limit maximal number of ICMP packets sent per second from this host.
+ 	Only messages whose type matches icmp_ratemask (see below) are
+-	controlled by this limit.
++	controlled by this limit. For security reasons, the precise count
++	of messages per second is randomized.
+ 	Default: 1000
+ 
+ icmp_msgs_burst - INTEGER
+ 	icmp_msgs_per_sec controls number of ICMP packets sent per second,
+ 	while icmp_msgs_burst controls the burst size of these packets.
++	For security reasons, the precise burst size is randomized.
+ 	Default: 50
+ 
+ icmp_ratemask - INTEGER
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -246,7 +246,7 @@ static struct {
+ /**
+  * icmp_global_allow - Are we allowed to send one more ICMP message ?
+  *
+- * Uses a token bucket to limit our ICMP messages to sysctl_icmp_msgs_per_sec.
++ * Uses a token bucket to limit our ICMP messages to ~sysctl_icmp_msgs_per_sec.
+  * Returns false if we reached the limit and can not send another packet.
+  * Note: called with BH disabled
+  */
+@@ -274,7 +274,10 @@ bool icmp_global_allow(void)
+ 	}
+ 	credit = min_t(u32, icmp_global.credit + incr, sysctl_icmp_msgs_burst);
+ 	if (credit) {
+-		credit--;
++		/* We want to use a credit of one in average, but need to randomize
++		 * it for security reasons.
++		 */
++		credit = max_t(int, credit - prandom_u32_max(3), 0);
+ 		rc = true;
+ 	}
+ 	WRITE_ONCE(icmp_global.credit, credit);
 
 
