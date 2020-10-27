@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B8129C660
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A385B29C68C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826123AbgJ0SQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:16:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60746 "EHLO mail.kernel.org"
+        id S1826331AbgJ0STI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:19:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756211AbgJ0OMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:12:01 -0400
+        id S2439545AbgJ0OD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:03:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B67562072D;
-        Tue, 27 Oct 2020 14:12:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2E1C2222C;
+        Tue, 27 Oct 2020 14:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807921;
-        bh=uMXb6/m+AQXzQhdqLTUARmYIEE71vugfO30/rbr9xVg=;
+        s=default; t=1603807436;
+        bh=Qd/wKYO2gcVa6caZ3XArfydHWdwoJZScAHZ6m7bB77U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J3rVq5ehxlEEipwbNTmxn9C/68M56bewdRTVZ1KJhAsj9IN3Oz433lPrYlWOQIj27
-         pF81kCMHqpOZcfe3patspsF8s08JNS4yQdwIDt73VlSy46886Do3IRaf80l8qEe0so
-         NOcjvYzCZir7dj4oMAWBZRjE71oc/yUQqj7FmANI=
+        b=xOmIKmqj4q22IccsPt5XY7jsEulDfAz9cY+6pB40T2nDzHmNVS62f3tLKuq5MaVMF
+         508M8MNQ15rQCBtZeAeNqvAnWiD3HPlicxXAaMsXJi2/NxVkXQQ+zN25olctKDyVcz
+         q0s6Z4D+mg91VkI4cz9w2cy8lM5N+Xl1xxgag6HQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 090/191] mtd: mtdoops: Dont write panic data twice
-Date:   Tue, 27 Oct 2020 14:49:05 +0100
-Message-Id: <20201027134914.016548859@linuxfoundation.org>
+Subject: [PATCH 4.9 052/139] nl80211: fix non-split wiphy information
+Date:   Tue, 27 Oct 2020 14:49:06 +0100
+Message-Id: <20201027134904.600750387@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit c1cf1d57d1492235309111ea6a900940213a9166 ]
+[ Upstream commit ab10c22bc3b2024f0c9eafa463899a071eac8d97 ]
 
-If calling mtdoops_write, don't also schedule work to be done later.
+When dumping wiphy information, we try to split the data into
+many submessages, but for old userspace we still support the
+old mode where this doesn't happen.
 
-Although this appears to not be causing an issue, possibly because the
-scheduled work will never get done, it is confusing.
+However, in this case we were not resetting our state correctly
+and dumping multiple messages for each wiphy, which would have
+broken such older userspace.
 
-Fixes: 016c1291ce70 ("mtd: mtdoops: do not use mtd->panic_write directly")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200903034217.23079-1-mark.tomlinson@alliedtelesis.co.nz
+This was broken pretty much immediately afterwards because it
+only worked in the original commit where non-split dumps didn't
+have any more data than split dumps...
+
+Fixes: fe1abafd942f ("nl80211: re-add channel width and extended capa advertising")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://lore.kernel.org/r/20200928130717.3e6d9c6bada2.Ie0f151a8d0d00a8e1e18f6a8c9244dd02496af67@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/mtdoops.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/wireless/nl80211.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 97bb8f6304d4f..09165eaac7a15 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -313,12 +313,13 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
- 	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
- 			     record_size - MTDOOPS_HEADER_SIZE, NULL);
- 
--	/* Panics must be written immediately */
--	if (reason != KMSG_DUMP_OOPS)
-+	if (reason != KMSG_DUMP_OOPS) {
-+		/* Panics must be written immediately */
- 		mtdoops_write(cxt, 1);
--
--	/* For other cases, schedule work to write it "nicely" */
--	schedule_work(&cxt->work_write);
-+	} else {
-+		/* For other cases, schedule work to write it "nicely" */
-+		schedule_work(&cxt->work_write);
-+	}
- }
- 
- static void mtdoops_notify_add(struct mtd_info *mtd)
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 1eb77161d5e64..5bd89f536720d 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -1749,7 +1749,10 @@ static int nl80211_send_wiphy(struct cfg80211_registered_device *rdev,
+ 		 * case we'll continue with more data in the next round,
+ 		 * but break unconditionally so unsplit data stops here.
+ 		 */
+-		state->split_start++;
++		if (state->split)
++			state->split_start++;
++		else
++			state->split_start = 0;
+ 		break;
+ 	case 9:
+ 		if (rdev->wiphy.extended_capabilities &&
 -- 
 2.25.1
 
