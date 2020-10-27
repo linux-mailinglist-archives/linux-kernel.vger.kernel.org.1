@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAA129AA3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4082629AA40
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898913AbgJ0LFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:05:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41825 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2898906AbgJ0LFy (ORCPT
+        id S2898928AbgJ0LGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:06:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46364 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2898906AbgJ0LGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:05:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603796753;
+        Tue, 27 Oct 2020 07:06:14 -0400
+Date:   Tue, 27 Oct 2020 12:06:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603796772;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FrjeCAan5jwNXoKxJoHy3Krr60faw0rldSpx6L/g/YM=;
-        b=QAHatsGNIWsbbpQY/mVJnieTBypB02TkZxDleKxk9wi5CIxfeCaeWH1UpRNQCyjPH1Mhez
-        2xknsRNKLyNrjr7z/HDRXeefNeHEPaGp1+tT2bowZpXGOUGKa+iulydcMNjuVit33dBoKP
-        3xbg2/RRcV/EvzvztsjsVmb9TC9Gmzg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-Hb0IV2mzMM6PWJegTkv_9w-1; Tue, 27 Oct 2020 07:05:49 -0400
-X-MC-Unique: Hb0IV2mzMM6PWJegTkv_9w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9201D101F7A6;
-        Tue, 27 Oct 2020 11:05:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 899275D9F3;
-        Tue, 27 Oct 2020 11:05:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201021131133.128016-1-colin.king@canonical.com>
-References: <20201021131133.128016-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] afs: fix a dereference on pointer cell before cell is null checked
+        bh=LKwuG3DrXp6m8nanJYzu9PsZbU1coOD6Mg4vjT7V584=;
+        b=OoSWB6+OPmLBNFX7jYpbKVjOXMcsyTBsllZQL9hO9HQqFikKi/u9bprFBiIpApxMQ6KYmv
+        Tp343NhP4piJR9uvrCIQVf3H6DzUE9hZK1HdcoICuI3QnohV94efZf3enX1gCmWwLKFVR0
+        qQYvxNnn9G/po7OU+y3woby/vxZRYwuOfcT5THXkGfEOkZYjApPNyRnSJ5U9QojtNUnewK
+        zPfOnfMbHDyVH1qR7K/nLt8E7inLbhSjYDMU43Y/HxNcA2Q6Y9kzPtLjJPys62LFuZbM/6
+        JDyEGbiVyM6FaPFvQBKrKTarX/OixUTZV12PsBhpG3YcfAlKfRXgvaOH+FztoQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603796772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LKwuG3DrXp6m8nanJYzu9PsZbU1coOD6Mg4vjT7V584=;
+        b=JG48Rzr4Mypqi2QL/MZcWUKHzZsH/RXuYm/cPJ3ZnKq6s4F2MgMUALvxnwBkqRSu3F8+Iw
+        uwd29UWLG7KR8HCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Daniel Wagner <wagi@monom.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [ANNOUNCE] v5.9.1-rt19
+Message-ID: <20201027110611.5hvuhsp3sjtcshsl@linutronix.de>
+References: <20201024091838.gzhn2dlx2j7xnixg@linutronix.de>
+ <20201027093616.5vn6xinmthxulhvx@beryllium.lan>
+ <20201027100049.xtkmjqdwkn7zec2f@linutronix.de>
+ <20201027102547.y6wop7j2ovzg2tyx@beryllium.lan>
+ <20201027102851.gizepjlu4opensqb@linutronix.de>
+ <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3189276.1603796746.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 27 Oct 2020 11:05:46 +0000
-Message-ID: <3189277.1603796746@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201027103411.h5ushvwsrovxls5u@beryllium.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> wrote:
+On 2020-10-27 11:34:11 [+0100], Daniel Wagner wrote:
+> On Tue, Oct 27, 2020 at 11:28:51AM +0100, Sebastian Andrzej Siewior wrote:
+> > Is it running as a RT task?
+> 
+> root@c2d:~/rt-tests# ./pi_stress
+> Starting PI Stress Test
+> Number of thread groups: 1
+> Duration of test run: infinite
+> Number of inversions per group: unlimited
+>      Admin thread SCHED_FIFO priority 4
+> 1 groups of 3 threads will be created
+>       High thread SCHED_FIFO priority 3
+>        Med thread SCHED_FIFO priority 2
+>        Low thread SCHED_FIFO priority 1
+> 
+> It says so, let me double check if those task really run with SCHED_FIFO.
 
-> @@ -606,7 +605,7 @@ void afs_unuse_cell(struct afs_net *net, struct afs_=
-cell *cell, enum afs_cell_tr
->  =
+urgh. You wrote pi_stress and I read stress-ng. Okay this explains it.
 
->  	u =3D atomic_read(&cell->ref);
->  	a =3D atomic_dec_return(&cell->active);
-> -	trace_afs_cell(debug_id, u, a, reason);
-> +	trace_afs_cell(cell->debug_id, u, a, reason);
+> > Otherwise it looks that if you throw enough non-RT load on the system,
+> > RCU can not catch up which does not sound good.
+> 
+> I think this is what Clark tried to tell me. If I understood him
+> correctly the test tool is not correct though.
 
-It's probably better to read cell->debug_id before calling
-atomic_dec_return().
+a dummy RCU section might help. But otherwise it is correct :/
 
-I have a patch for this based on a report by Dan Carpenter, so no need to =
-send
-a revised patch.
-
-Thanks,
-David
-
+Sebastian
