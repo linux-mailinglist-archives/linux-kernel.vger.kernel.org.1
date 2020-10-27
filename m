@@ -2,202 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAEA29A90B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B11C29A91C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897339AbgJ0KGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:06:38 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35585 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897330AbgJ0KGi (ORCPT
+        id S2897354AbgJ0KIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:08:01 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:36333 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438676AbgJ0KIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:06:38 -0400
-Received: by mail-lj1-f196.google.com with SMTP id x16so1086970ljh.2;
-        Tue, 27 Oct 2020 03:06:34 -0700 (PDT)
+        Tue, 27 Oct 2020 06:08:00 -0400
+Received: by mail-wr1-f67.google.com with SMTP id x7so1200470wrl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eyVyvzmEHK63Q//bnH9rZE2nEJFh8CSVrmNWz1XpH3s=;
-        b=hPclqYObaWFUknOArAbmWETI3lYJ/CcTjgJo5Nlm5H0WmQLxJyVAuNyfQkbkGHOq+Y
-         Y86IPCzuE5tu4I7d0BjcKk3YnSk/r9gJ2RDdO1B3QEr/1Q1f9q4QmwlOJzngmsgu7Dqf
-         skLJkVJlgxLLS6MuVq23AytKFDfg+FGu004gk00P77afQ73bzuPE4MFxF53tpiTKDqvR
-         LrStk6ekahhIXDmpzY2hXLdHI8GojtU2qa3kFVx09Mx4RTnU+jOA6Ot/IQDsXF3L4e5G
-         4XacKEJ7Ip/RFGRSIHrMXiyABLZvG7uBfyc0u8t8uzd3ZyIxZtYxuk59OJNb62011PIj
-         1PXA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ei3u24rIHuUlXFN659f6wxEdLp7W3x7O+DS6Q5fs7ws=;
+        b=vwX17LkFQN9VmSk/zsSEQ9SxEJQDJ1JMaJs+RIlkwFQEf8BtkIDogxkC8/t6kyWU0v
+         /CwB8tyGJ6i4O6Xem4VotrXV/uNJawEstv4Yn2RYmspGd7zL1sf1sbngmLvxDXxB8GQ1
+         dtrfpW8+AzdqfUXI4E/LTFGw1dQmg0GgzOeWnygoEs3Sdoom7CGu3hxhcghgadqPNvwD
+         jeyx1ag8UrJgIFlbvVhaX9CYZgHMI92OB1w/7xtexYykY6E4+pPFpPqjD9ej1lPlinLJ
+         rmzy62ttsrCoHyo/5DD84nM7F2/B/ApC/Vpu3uB8JuY3ziXSFdGxLSlaUqTUmHq19ESa
+         FcMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eyVyvzmEHK63Q//bnH9rZE2nEJFh8CSVrmNWz1XpH3s=;
-        b=DfFt5VwmCtBtpEbk3CylVxAf9bKPWK+aDDCnPN7mqwzczegyHWbJ34Rirwv1PGxxis
-         DB8Ut4tO9sAWDbjZKA9VnN5Dumz8jZwr5V1BNXz+TgJOvkmLzoOXeyTeOI8jGZC4KFcj
-         5K0/9KEa1HtRnoInToOZtu1WzsUGPwZeIw/2jS716tLR4S2GBVBkAJnAgtSRnjFLkRNz
-         8IBFidh/Zfnq7mKFmP1WlF0VyM7jIjjJcweq/5whyDcJW+8x+8g4021497oHCRwFN5sE
-         jleYcQfRciJHhY8L3/K8te+VNkT2Rb8BrELbT5wn4+kQICR7xj0wydHikwPWesmmReew
-         1ErQ==
-X-Gm-Message-State: AOAM533N9z/gZhAVNZEvUSUXeNdDzdxNOHI/410TSzQzNpR51T6EtKdZ
-        Uo4Iu1GsqXDWWvIWbGJdAXZYkHRu6MWxAfyv6IU4c5pMk0AFo20D
-X-Google-Smtp-Source: ABdhPJzo7KvLCXkTK6bR2S8X6XdVkbrYOm1xzEJ/Sm1tPfIkTe1EYjus1V/2GF1jcf+O1ySwwMtDi6dkOXtTmDXXK2k=
-X-Received: by 2002:a2e:8e96:: with SMTP id z22mr725989ljk.154.1603793193039;
- Tue, 27 Oct 2020 03:06:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ei3u24rIHuUlXFN659f6wxEdLp7W3x7O+DS6Q5fs7ws=;
+        b=NnH4y6ACoXiEV+xd2uWFcpvtHz9WZ3bBRyThAzdbHOB0g/u/hbqIpxFUnrDOuHJdhC
+         y36mcGNnrzWCiy+fYXP5D508CWJLRXFLWAVXVZwVoLhbKc9kd3ydsFGruUfjlZQeh9m/
+         dU1nGOKTDh9JwMm0sN2oGWZ2NJSgDnAIt1Z7oRxn5fVhZ0TinHjba92nOFzijWNI3zcO
+         cFwPfNQPOUTd6/OGjrvxn1C65KMAAYYYPRHN8ph7Uo2pV0kdLLafteTiqaezZ8AsPUCw
+         PbF/3m+iFwfStAc1h8u7FxJoGLEyjWggDEyCId/XdRikG4Tgh7jKu0ohi4bG8EFLTOG/
+         KwAQ==
+X-Gm-Message-State: AOAM53214X/ko76I+JbPI2JnfWalL53qtMHcqVDymgL3b3YBpUbWdzBw
+        /L/AxvUR2hJzUCQUUSC3G8bKFw==
+X-Google-Smtp-Source: ABdhPJzc7V2HgcIEkvba+6199zd1BCJe8hFyMd14K8tTvw55Goq1lfkLy50L41t3mH0cpHB5Sr7eWQ==
+X-Received: by 2002:adf:e751:: with SMTP id c17mr1229850wrn.345.1603793277117;
+        Tue, 27 Oct 2020 03:07:57 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id i33sm1463259wri.79.2020.10.27.03.07.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 03:07:56 -0700 (PDT)
+Subject: Re: [PATCH v12 1/2] ASoC: google: dt-bindings: Add sc7180-trogdor
+ machine bindings
+To:     Cheng-Yi Chiang <cychiang@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        xuyuqing@huaqin.corp-partner.google.com, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20201027032234.1705835-1-cychiang@chromium.org>
+ <20201027032234.1705835-2-cychiang@chromium.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <1f5f9ee9-f77c-7142-efe4-7e845fe54953@linaro.org>
+Date:   Tue, 27 Oct 2020 10:07:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
- <20201027082900.GA21354@amd> <CADiBU3915nyB2OE_bqPy8kVqPhKbdTpBe8ay_ZAoFwuJoL-BfQ@mail.gmail.com>
-In-Reply-To: <CADiBU3915nyB2OE_bqPy8kVqPhKbdTpBe8ay_ZAoFwuJoL-BfQ@mail.gmail.com>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 27 Oct 2020 18:06:21 +0800
-Message-ID: <CADiBU3_HBVa5hNv8VZcdS+pQJYBH6od-8Q7st2126AeBt1zThg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
- led controller
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201027032234.1705835-2-cychiang@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Parvel:
-  Continue the last mail, I'm confused about the rule 80-characters-per-lin=
-e.
-I check some information about submitting changes.
-https://www.phoronix.com/scan.php?page=3Dnews_item&px=3DLinux-Kernel-Deprec=
-ates-80-Col
-Could you help to explain the current rule about this limit? still 80
-characters per line? or it has been changed to 100.
+Thanks for doing this!
 
-ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8827=E6=
-=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=885:27=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Pavel Machek <pavel@ucw.cz> =E6=96=BC 2020=E5=B9=B410=E6=9C=8827=E6=97=A5=
- =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:29=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > Hi!
-> >
-> > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > >
-> > > Add support for RT4505 flash led controller. It can support up to 1.5=
-A
-> > > flash current with hardware timeout and low input voltage
-> > > protection.
-> >
-> > Please use upper-case "LED" everywhere.
-> >
-> > This should be 2nd in the series, after DT changes.
-> Sure, will ack in next series patch.
-> >
-> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > ---
-> > >  drivers/leds/Kconfig       |  11 ++
-> > >  drivers/leds/Makefile      |   1 +
-> > >  drivers/leds/leds-rt4505.c | 397 +++++++++++++++++++++++++++++++++++=
-++++++++++
-> > >  3 files changed, 409 insertions(+)
-> > >  create mode 100644 drivers/leds/leds-rt4505.c
-> >
-> > Lets put this into drivers/leds/flash/. (Yes, you'll have to create
-> > it).
-> OK
-> >
-> >
-> > > +     help
-> > > +       This option enables support for the RT4505 flash led controll=
-er.
-> >
-> > Information where it is used would be welcome here.
-> How about to add the below line for the extra information?
-> Usually used to company with the camera device on smartphone/tablet produ=
-cts
-> >
-> > > +       It can support up to 1.5A flash strobe current with hardware =
-timeout
-> > > +       and low input voltage protection.
-> >
-> > This does not / should not be here.
-> OK
-> > > +
-> > > +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, e=
-num led_brightness level)
-> > > +{
-> >
-> > 80 columns, where easy.
-> I'll review all source code to meet the 80 column limit.
-> >
-> > > +     struct rt4505_priv *priv =3D container_of(lcdev, struct rt4505_=
-priv, flash.led_cdev);
-> > > +     u32 val =3D 0;
-> > > +     int ret;
-> > > +
-> > > +     mutex_lock(&priv->lock);
-> > > +
-> > > +     if (level !=3D LED_OFF) {
-> > > +             ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ILE=
-D, RT4505_ITORCH_MASK,
-> > > +                                      (level - 1) << RT4505_ITORCH_S=
-HIFT);
-> > > +             if (ret)
-> > > +                     goto unlock;
-> > > +
-> > > +             val =3D RT4505_TORCH_SET;
-> > > +     }
-> > > +
-> > > +     ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4=
-505_ENABLE_MASK, val);
-> > > +
-> > > +unlock:
-> > > +     mutex_unlock(&priv->lock);
-> > > +     return ret;
-> > > +}
-> >
-> > Why is the locking needed? What will the /sys/class/leds interface
-> > look like on system with your flash?
->
-> The original thought is because there's still another way to control
-> flash like as v4l2.
-> But after reviewing the source code, led sysfs node will be protected
-> by led_cdev->led_access.
-> And V4L2 flash will also be protected by v4l2_fh_is_singular API.
-> I think the whole locking in the source code code may be removed. Right?
-> >
-> > > +static int rt4505_flash_strobe_get(struct led_classdev_flash *fled_c=
-dev, bool *state)
-> > > +{
-> > > +     struct rt4505_priv *priv =3D container_of(fled_cdev, struct rt4=
-505_priv, flash);
-> > > +     u32 val;
-> > > +     int ret;
-> > > +
-> > > +     mutex_lock(&priv->lock);
-> > > +
-> > > +     ret =3D regmap_read(priv->regmap, RT4505_REG_ENABLE, &val);
-> > > +     if (ret)
-> > > +             goto unlock;
-> > > +
-> > > +     *state =3D ((val & RT4505_FLASH_GET) =3D=3D RT4505_FLASH_GET) ?=
- true : false;
-> >
-> > No need for ? ... part.
-> Do you mean this function is not needed? If yes, it can be removed.
-> But if it removed, led sysfs flash_strobe show will be not supported.
-> >
-> > > +static bool rt4505_is_accessible_reg(struct device *dev, unsigned in=
-t reg)
-> > > +{
-> > > +     if (reg =3D=3D RT4505_REG_RESET || (reg >=3D RT4505_REG_CONFIG =
- && reg <=3D RT4505_REG_FLAGS))
-> > > +             return true;
-> >
-> > Make this two stagements.
-> Like as the below one?? Or separate it into two if case.
-> if (reg =3D=3D RT4505_REG_RESET ||
->        reg >=3D RT4505_REG_CONFIG  && reg <=3D RT4505_REG_FLAGS))
-> >
-> > Otherwise... looks like easy simple driver, thanks.
-> >
-> > Best regards,
-> >                                                                 Pavel
-> > --
-> > http://www.livejournal.com/~pavelmachek
+
+
+
+On 27/10/2020 03:22, Cheng-Yi Chiang wrote:
+> Add devicetree bindings documentation file for sc7180 sound card.
+> 
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+
+Looks good to me!
+
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+
+> ---
+> Changes from v11 to v12
+> - Documentation:
+>   - Change the file and title name for new compatible string google,sc7180-trogdor.
+>   - Change the example of model name.
+> 
+>   .../bindings/sound/google,sc7180-trogdor.yaml | 130 ++++++++++++++++++
+>   1 file changed, 130 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> new file mode 100644
+> index 000000000000..efc34689d6b5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/google,sc7180-trogdor.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Google SC7180-Trogdor ASoC sound card driver
+> +
+> +maintainers:
+> +  - Rohit kumar <rohitkr@codeaurora.org>
+> +  - Cheng-Yi Chiang <cychiang@chromium.org>
+> +
+> +description:
+> +  This binding describes the SC7180 sound card which uses LPASS for audio.
+> +
+> +properties:
+> +  compatible:
+> +    const: google,sc7180-trogdor
+> +
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source.
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: User specified audio sound card name
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^dai-link(@[0-9])?$":
+> +    description:
+> +      Each subnode represents a dai link. Subnodes of each dai links would be
+> +      cpu/codec dais.
+> +
+> +    type: object
+> +
+> +    properties:
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        maxItems: 1
+> +
+> +      reg:
+> +        description: dai link address.
+> +
+> +      cpu:
+> +        description: Holds subnode which indicates cpu dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
+> +
+> +      codec:
+> +        description: Holds subnode which indicates codec dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
+> +
+> +    required:
+> +      - link-name
+> +      - cpu
+> +      - codec
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - model
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +
+> +  - |
+> +    sound {
+> +        compatible = "google,sc7180-trogdor";
+> +        model = "sc7180-rt5682-max98357a-1mic";
+> +
+> +        audio-routing =
+> +                    "Headphone Jack", "HPOL",
+> +                    "Headphone Jack", "HPOR";
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        dai-link@0 {
+> +            link-name = "MultiMedia0";
+> +            reg = <0>;
+> +            cpu {
+> +                sound-dai = <&lpass_cpu 0>;
+> +            };
+> +
+> +            codec {
+> +                sound-dai = <&alc5682 0>;
+> +            };
+> +        };
+> +
+> +        dai-link@1 {
+> +            link-name = "MultiMedia1";
+> +            reg = <1>;
+> +            cpu {
+> +                sound-dai = <&lpass_cpu 1>;
+> +            };
+> +
+> +            codec {
+> +                sound-dai = <&max98357a>;
+> +            };
+> +        };
+> +
+> +        dai-link@2 {
+> +            link-name = "MultiMedia2";
+> +            reg = <2>;
+> +            cpu {
+> +                sound-dai = <&lpass_hdmi 0>;
+> +            };
+> +
+> +            codec {
+> +                sound-dai = <&msm_dp>;
+> +            };
+> +        };
+> +    };
+> 
