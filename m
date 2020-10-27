@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B512929B417
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B25129B5E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783307AbgJ0O6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45004 "EHLO mail.kernel.org"
+        id S1796340AbgJ0PRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763843AbgJ0OpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:45:04 -0400
+        id S1794789AbgJ0PNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:13:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03D2A206B2;
-        Tue, 27 Oct 2020 14:45:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63C4420657;
+        Tue, 27 Oct 2020 15:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809903;
-        bh=qAnh+vrLGPL7KCrI1zAkhrziG/CFv+LUFxKOfyozpLw=;
+        s=default; t=1603811614;
+        bh=uMiewmmEqIP9o+WBAyBsct7iMPd6w8XJY4CYwUbB3zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v5wArRXeymzeST0V4a3vQBaMq4I1b0UUDeFqqQIJdeH6AYyXQD97OThphwniovEbn
-         DWySeng6KTZw8jPJHlX5ppGPSWZgAp2tX+v279AtXEkvdMF9paiM+3NaqPMuO9u3O9
-         0IdaW6milTSydAElKUpg9cKbldfokQUd3jeSGT50=
+        b=xkfUcsiOz/v35cNqQlkVZyBE26KiOg7Zi3419DN9DYMLOb3ctyw6li3nQ2xjS7WcI
+         kdqMQNpWOFsPKgkvgLwtHMXuN7Xb7Rbzb7leIwVBdeuqE4RWpOF4x+JdfqrtKjXY5J
+         IJqQzlqf05DG3f8ePMjHoPmoh+8vDiyIpcv0B7SA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 361/408] USB: cdc-acm: handle broken union descriptors
+Subject: [PATCH 5.8 556/633] media: venus: core: Fix runtime PM imbalance in venus_probe
 Date:   Tue, 27 Oct 2020 14:54:59 +0100
-Message-Id: <20201027135511.763429862@linuxfoundation.org>
+Message-Id: <20201027135548.895140297@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 960c7339de27c6d6fec13b54880501c3576bb08d ]
+[ Upstream commit bbe516e976fce538db96bd2b7287df942faa14a3 ]
 
-Handle broken union functional descriptors where the master-interface
-doesn't exist or where its class is of neither Communication or Data
-type (as required by the specification) by falling back to
-"combined-interface" probing.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced. For other error
+paths after this call, things are the same.
 
-Note that this still allows for handling union descriptors with switched
-interfaces.
+Fix this by adding pm_runtime_put_noidle() after 'err_runtime_disable'
+label. But in this case, the error path after pm_runtime_put_sync()
+will decrease PM usage counter twice. Thus add an extra
+pm_runtime_get_noresume() in this path to balance PM counter.
 
-This specifically makes the Whistler radio scanners TRX series devices
-work with the driver without adding further quirks to the device-id
-table.
-
-Reported-by: Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
-Tested-by: Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
-Acked-by: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20200921135951.24045-3-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/media/platform/qcom/venus/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 7499ba118665a..c02488d469185 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1243,9 +1243,21 @@ static int acm_probe(struct usb_interface *intf,
- 			}
- 		}
- 	} else {
-+		int class = -1;
-+
- 		data_intf_num = union_header->bSlaveInterface0;
- 		control_interface = usb_ifnum_to_if(usb_dev, union_header->bMasterInterface0);
- 		data_interface = usb_ifnum_to_if(usb_dev, data_intf_num);
-+
-+		if (control_interface)
-+			class = control_interface->cur_altsetting->desc.bInterfaceClass;
-+
-+		if (class != USB_CLASS_COMM && class != USB_CLASS_CDC_DATA) {
-+			dev_dbg(&intf->dev, "Broken union descriptor, assuming single interface\n");
-+			combined_interfaces = 1;
-+			control_interface = data_interface = intf;
-+			goto look_for_collapsed_interface;
-+		}
- 	}
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index bfcaba37d60fe..321ad77cb6cf4 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -289,8 +289,10 @@ static int venus_probe(struct platform_device *pdev)
+ 		goto err_core_deinit;
  
- 	if (!control_interface || !data_interface) {
+ 	ret = pm_runtime_put_sync(dev);
+-	if (ret)
++	if (ret) {
++		pm_runtime_get_noresume(dev);
+ 		goto err_dev_unregister;
++	}
+ 
+ 	return 0;
+ 
+@@ -301,6 +303,7 @@ static int venus_probe(struct platform_device *pdev)
+ err_venus_shutdown:
+ 	venus_shutdown(core);
+ err_runtime_disable:
++	pm_runtime_put_noidle(dev);
+ 	pm_runtime_set_suspended(dev);
+ 	pm_runtime_disable(dev);
+ 	hfi_destroy(core);
 -- 
 2.25.1
 
