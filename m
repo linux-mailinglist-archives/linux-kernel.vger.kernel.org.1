@@ -2,100 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D55929CB10
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9A929CB19
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373706AbgJ0VQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:16:38 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:45150 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373557AbgJ0VQe (ORCPT
+        id S373742AbgJ0VUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:20:13 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:47089 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504989AbgJ0VUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:16:34 -0400
-Received: by mail-io1-f68.google.com with SMTP id s7so2144650iol.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 14:16:34 -0700 (PDT)
+        Tue, 27 Oct 2020 17:20:12 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n16so1501081pgv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 14:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pGFs6C8VYOAYY3Cv4pHG5uzsWG4Q+pilWSuMe/kuTqg=;
-        b=rVk4X0PMSBLtGuVsOVwaWzLHzbDTC5xNxTrme35jwZ8Yiej919jXchGq3YVEdtyP/V
-         Wn4BEj+svXNHms2mqc4wKbc20X1jeaixX+z/9RhBHGHPQE/mNqdI40hTqbx1iEPIHKqs
-         GxmdzbroYWUjbdE+JUBT8AuJr45tH/GCVtxb7MFwowcyBKvkZqMLfuBcaT18Gy1mEIH3
-         omt8PVhbk3ncIDDqHJ0/UcFTvWCf9AAn/nWDGkweeGmjRhCZOMQ/h882GXmLrHjG+66Q
-         yiASH2wZNHPGHBiISbBbDPDuv2Yu5h7WzyQKJUIT8Zr/zTVX+nD2yFlCsuz7F3T+Ske3
-         Lalw==
+        bh=KiW0Es6GhZG0mD0vaT0CFwu3U3DQdlwHqN8ZFRjOohU=;
+        b=OnoFJ4LXia3k2waYWJDZV1WhNFTdh1HpJbZ+YQBNuJXR6UWaBQtQJs016gXMZrLUL4
+         jeXFlYBEiJQsj0CoDdF3gLflYJTepQKJW7oMQsE3c7KjZbkwXmtVVwoLv5y6F4Lifw+v
+         u+qHc3gWVNlre0nvgEj5IZ85/tRiTy8piIrIPVQr8ucoi0C/7qAZ2F3+wF5aZ0kV0HpS
+         XwZL7/JRi3HUgjySOjVrUMob6wDz11/dTXtx4muODCn2lpg4LqVVOAYpPOP8dxXYMBDW
+         mnBPDFZAyqxNDTlSlt8eVzLRkuz5+Vlzdw2FHWiOdLJawSjLhXYtAMN9j5LLfQ7/rDyy
+         F2ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pGFs6C8VYOAYY3Cv4pHG5uzsWG4Q+pilWSuMe/kuTqg=;
-        b=prIyEyBu53m5Y4F+Sj1JrQ6g/A348jzF/JZbpiXX8wvJ6ug46eUa1d8hCIsSJ22eHI
-         YBzBJR3GiVwOtNOn9jY/ze/AP9t4g7C0lWgp/1r6eotI35F/W379hkTjfAQTP1XWkuIf
-         LuZXiEPN+VGYL4EaXJEO8f33odsXPDe15vLITFhyfQJfMxDqXgK5TLc0DYmLX4j3a8j4
-         TuEqiR6V+nTDrIbyqHDtCBiQLF0NYQa6ruxYx0DuhG6SffvAFTE3Pyi6iaMmZQHbRXa2
-         WMzD41CKIPyUVUP66W9YMj+TiYQ53ShPzEj+wGQXWWUTt15wPkhPa2gXAWM+h1H8pBeI
-         mqDQ==
-X-Gm-Message-State: AOAM532lCXcGilI0DrRI69UkSaK5EZzizXITZQME4OaSfNCmCeDruDPq
-        O41AHfexh/XSR2fSQkhMNd4dNeoKAk4aooL5mNpq+A==
-X-Google-Smtp-Source: ABdhPJxT0OuVK6OChsnkhKxzrZFXZ6la8BdEkzmBSfiVmcTz1t7A9wQFzJesS9grhn1hO/tuEA2ogczM8pFNFQTQ8Hg=
-X-Received: by 2002:a02:b786:: with SMTP id f6mr4336431jam.75.1603833393648;
- Tue, 27 Oct 2020 14:16:33 -0700 (PDT)
+        bh=KiW0Es6GhZG0mD0vaT0CFwu3U3DQdlwHqN8ZFRjOohU=;
+        b=R7G/oozujnqgoO/3NUlCQgQldP4vpmeKw2lIjXNAjsEa0I86SR2ArUAuXcrC3SQFXc
+         SoXvmEprzyiOMZpm+yioWT5WieAsaXf2BfsEi+c+PVqD9uM7jL0mUSqiM/6GIhP/Lbqn
+         mugV63YfhKWzeTpnDYvy2+LQ6LsWV07uSdxJM6Xi37UmXXylpUiaBpJzqwomhshIr8Ut
+         QGlN9/ClbV26fB2NgEFpq8KdBuNy7zZSYV3sax/cZR2SuY6tuESSAXYArKtRTvHtP98/
+         oYVU2wCfYcWZ5WfKgZF/h4mWqgwy/WShE+AsAEy+NrjCV/qS2vfnzRv4e5Y+k87Q9vbP
+         EdxA==
+X-Gm-Message-State: AOAM5309/t8UaoiRYA7CMCxV709z+q1nd9VFvNVJqpz6Un5IKeO03iLQ
+        LqbDyPdPYoL0/ef+GcFRJVkOfIPr9Q3V1pAmiWajnA==
+X-Google-Smtp-Source: ABdhPJy2bgzhrBS3UAviMtO7C3ycgCdE0U1ri7hFPUBj6N7N+rvohC6x0I9f3zi75CQozxkWmwaHN9K2xUiYtYG1NGg=
+X-Received: by 2002:a63:5152:: with SMTP id r18mr3339543pgl.381.1603833611528;
+ Tue, 27 Oct 2020 14:20:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201024200304.1427864-1-fparent@baylibre.com>
- <20201026121316.GB7402@sirena.org.uk> <CAOwMV_w5N0_Qgg3MFph1147cbvFP1Y=mUtNjGbcr-Tca4ZJ3yA@mail.gmail.com>
- <20201026172431.GI7402@sirena.org.uk> <CAOwMV_xt=OV6cKqQTZUUSAvYKxUUQZAUywAHtFFHL=E5xVu-Zg@mail.gmail.com>
- <20201026203608.GJ7402@sirena.org.uk>
-In-Reply-To: <20201026203608.GJ7402@sirena.org.uk>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Tue, 27 Oct 2020 22:16:22 +0100
-Message-ID: <CAOwMV_xUWea81rKFE=zD4xWL3rZ5G8cpWm5xJHT_AX=_frLDRQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: regulator: add support for MT6392
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Rob Herring <robh@kernel.org>
+References: <20201027205723.12514-1-ardb@kernel.org>
+In-Reply-To: <20201027205723.12514-1-ardb@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 27 Oct 2020 14:20:00 -0700
+Message-ID: <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
+ disable GCSE
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Tue, Oct 27, 2020 at 1:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
+> ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
+> function scope __attribute__((optimize("-fno-gcse"))), to disable a
+> GCC specific optimization that was causing trouble on x86 builds, and
+> was not expected to have any positive effect in the first place.
+>
+> However, as the GCC manual documents, __attribute__((optimize))
+> is not for production use, and results in all other optimization
+> options to be forgotten for the function in question. This can
+> cause all kinds of trouble, but in one particular reported case,
+> it causes -fno-asynchronous-unwind-tables to be disregarded,
+> resulting in .eh_frame info to be emitted for the function
+> inadvertently.
+>
+> This reverts commit 3193c0836f203, and instead, it disables the -fgcse
+> optimization for the entire source file, but only when building for
+> X86.
+>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  include/linux/compiler-gcc.h   | 2 --
+>  include/linux/compiler_types.h | 4 ----
+>  kernel/bpf/Makefile            | 4 +++-
+>  kernel/bpf/core.c              | 2 +-
+>  4 files changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> index d1e3c6896b71..5deb37024574 100644
+> --- a/include/linux/compiler-gcc.h
+> +++ b/include/linux/compiler-gcc.h
+> @@ -175,5 +175,3 @@
+>  #else
+>  #define __diag_GCC_8(s)
+>  #endif
+> -
+> -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 6e390d58a9f8..ac3fa37a84f9 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -247,10 +247,6 @@ struct ftrace_likely_data {
+>  #define asm_inline asm
+>  #endif
+>
+> -#ifndef __no_fgcse
+> -# define __no_fgcse
+> -#endif
+> -
+>  /* Are two types/vars the same type (ignoring qualifiers)? */
+>  #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+>
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index bdc8cd1b6767..02b58f44c479 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -1,6 +1,8 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-y := core.o
+> -CFLAGS_core.o += $(call cc-disable-warning, override-init)
+> +# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
+> +cflags-core-$(CONFIG_X86) := -fno-gcse
 
-On Mon, Oct 26, 2020 at 9:36 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Oct 26, 2020 at 07:38:14PM +0100, Fabien Parent wrote:
-> > On Mon, Oct 26, 2020 at 6:24 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > >         .name = "mt6392-regulator",
-> > > >         .of_compatible = "mediatek,mt6392-regulator"
->
-> > > This is still unneeded, it's just a reflection of Linux implementation
-> > > details and should be removed.   The MFD can just register the child
-> > > without supplying a compatible and things will continue to work just as
-> > > well.
->
-> > I'm not exactly sure how it is supposed to work. mfd_add_devices seems
-> > to register devices based on of_compatible or acpi_match from the
-> > mfd_cell. This platform does not have ACPI so I don't understand how
->
-> It should also support unconditionally registering devices, if it no
-> longer does so that's a regression in the framework which should be
-> fixed.  Looking at mfd_add_devices() I can't see an issue though, both
-> ACPI and DT information is optional - the entire DT section in
-> mfd_add_device() will be skipped if no of_compatible is specified in the
-> cell.  Are you *sure* that the regulator driver isn't running?
+-fno-gcse is not recognized by clang and will produce
+-Wignored-optimization-argument.  It should at least be wrapped in
+cc-option, though since it's unlikely to ever not be compiler
+specific, I think it might be ok to guard with `ifdef
+CONFIG_CC_IS_GCC`.  Also, might we want to only do this for `ifndef
+CONFIG_RETPOLINE`, based on 3193c0836f203?
 
-You are correct, the regulator driver is running and probes
-successfully. From my investigation it seems the failure when removing
-the compatible string from the MFD and the DTS is because the
-regulator driver does not have a of_node matched since the compatible
-is gone. Because of that all the regulators registered by the driver
-are not linked to the regulator definitions in the device tree. And
-all the drivers that tries to acquire a regulator get -EPROBE_DEFER
-because of it.
+Finally, this is going to disable GCSE for the whole translation unit,
+which may be overkill.   Previously it was isolated to one function
+definition.  You could lower the definition of the preprocessor define
+into kernel/bpf/core.c to keep its use isolated as far as possible.
+
+I'm fine with either approach, but we should avoid new warnings for
+clang.  Thanks for the patch!
+
+> +CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
+>
+>  obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
+>  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 9268d77898b7..55454d2278b1 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+>   *
+>   * Decode and execute eBPF instructions.
+>   */
+> -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+>  {
+>  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
+>  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
+> --
+> 2.17.1
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
