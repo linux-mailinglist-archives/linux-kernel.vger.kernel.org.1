@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3789529B06F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EAA29B082
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407443AbgJ0OTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38648 "EHLO mail.kernel.org"
+        id S1758270AbgJ0OUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:20:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757158AbgJ0OQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:16:32 -0400
+        id S1757342AbgJ0OSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:18:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D0E2223B0;
-        Tue, 27 Oct 2020 14:16:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49EE8206D4;
+        Tue, 27 Oct 2020 14:18:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808192;
-        bh=LBnUMiWJHWRV4YeY+H4Jo2sueEeXj3vrLl2lM4eVAEk=;
+        s=default; t=1603808328;
+        bh=LqVkzf69qubHUf5cgRzQHh9MSUlF8AQiryzmyhdvoSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iTV/rwRNAAXLYaN6rBIrAFW28tI4L/B0Q/K6zPUKBq0cZvJZ7BdGqI97Tj7iDi7wg
-         qz258NYk9Q0NJD4g9tBdBhE4O16h55bVy+ixONAMZiF64q6d9scQFMKgknyQwzBmoN
-         EoVV9j+wxjQ3q5DxRaxattt+0Briz9ntyQ7Dp0Yk=
+        b=nuke7cK93ZVzIqQUsM290L2HT6WJgzBErNkvwSxHY6VUHZurhZfAqecouIRjjARp0
+         BftJEnZDaWz18/rqE9AMRzrvL21rTMiMl9/XNeXYxcNqrvzyEn3YIgVKLJy9cJ3Dkg
+         D3dTWTglYZ3XgSN2VZLiAIXZfLXdqWdkA6Xt8dzM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>
-Subject: [PATCH 4.14 190/191] eeprom: at25: set minimum read/write access stride to 1
-Date:   Tue, 27 Oct 2020 14:50:45 +0100
-Message-Id: <20201027134918.862221045@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 009/264] net: usb: qmi_wwan: add Cellient MPL200 card
+Date:   Tue, 27 Oct 2020 14:51:07 +0100
+Message-Id: <20201027135431.095642089@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,31 +44,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 
-commit 284f52ac1c6cfa1b2e5c11b84653dd90e4e91de7 upstream.
+[ Upstream commit 28802e7c0c9954218d1830f7507edc9d49b03a00 ]
 
-SPI eeproms are addressed by byte.
+Add usb ids of the Cellient MPL200 card.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200728092959.24600-1-ceggers@arri.de
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Acked-by: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/misc/eeprom/at25.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -355,7 +355,7 @@ static int at25_probe(struct spi_device
- 	at25->nvmem_config.reg_read = at25_ee_read;
- 	at25->nvmem_config.reg_write = at25_ee_write;
- 	at25->nvmem_config.priv = at25;
--	at25->nvmem_config.stride = 4;
-+	at25->nvmem_config.stride = 1;
- 	at25->nvmem_config.word_size = 1;
- 	at25->nvmem_config.size = chip.byte_len;
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1312,6 +1312,7 @@ static const struct usb_device_id produc
+ 	{QMI_QUIRK_SET_DTR(0x2cb7, 0x0104, 4)},	/* Fibocom NL678 series */
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b4, 0)},	/* Foxconn T77W968 LTE */
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
++	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},    /* Cellient MPL200 (rebranded Qualcomm 05c6:9025) */
  
+ 	/* 4. Gobi 1000 devices */
+ 	{QMI_GOBI1K_DEVICE(0x05c6, 0x9212)},	/* Acer Gobi Modem Device */
 
 
