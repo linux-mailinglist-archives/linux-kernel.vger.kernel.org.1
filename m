@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7244729C3E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120EB29C241
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901560AbgJ0OYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49452 "EHLO mail.kernel.org"
+        id S1820221AbgJ0Rd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901538AbgJ0OYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:14 -0400
+        id S1749895AbgJ0Okn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:40:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAEAA2072D;
-        Tue, 27 Oct 2020 14:24:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31703207BB;
+        Tue, 27 Oct 2020 14:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808654;
-        bh=R5PbW+sXDK7226DchEgeE2gG3rKu+u6XKrP7QE2j8nw=;
+        s=default; t=1603809642;
+        bh=L37jF1pQXJyx4qM5+JP2pFqFz3sAMDilyqYOXV7D4E4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W/6jZfMmdIHE98anbyIeU6FVPb08DPfmJ24etg0PljJtfVAHxsZEPN28fftFQr5w0
-         zxyitdp23ftEy65WdiYN3THKNSha1I2xABHjuHmO6hqCoDO/fEeixcA9GG/kuZZn0R
-         V/NWzslcQaLkNzD0mazWEkEUWxeHY+b1zFXDmrUk=
+        b=OgLr1xUmfUswpUXfSihBBRWxrm50OxsMuxf9BrAtB8WVMOu7EgyyFQhaVySnnxkuO
+         7wLqPlItUYUdAfV6cfuuabokP4DQ8WbZn9SfizBATz++CFNPyyly6QE/EhaXv7aJK4
+         hfY24BRusXIk5+xAwsEuZaHoDXKcAT5Gyu4Fk+n8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
-        Stan Johnson <userm57@yahoo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 146/264] powerpc/tau: Remove duplicated set_thresholds() call
-Date:   Tue, 27 Oct 2020 14:53:24 +0100
-Message-Id: <20201027135437.542154161@linuxfoundation.org>
+Subject: [PATCH 5.4 268/408] clk: keystone: sci-clk: fix parsing assigned-clock data during probe
+Date:   Tue, 27 Oct 2020 14:53:26 +0100
+Message-Id: <20201027135507.478883148@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
+[ Upstream commit 2f05cced7307489faab873367fb20cd212e1d890 ]
 
-The commentary at the call site seems to disagree with the code. The
-conditional prevents calling set_thresholds() via the exception handler,
-which appears to crash. Perhaps that's because it immediately triggers
-another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
-is redundant because tau_timeout() does so.
+The DT clock probe loop incorrectly terminates after processing "clocks"
+only, fix this by re-starting the loop when all entries for current
+DT property have been parsed.
 
-Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
+Fixes: 8e48b33f9def ("clk: keystone: sci-clk: probe clocks from DT instead of firmware")
+Reported-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Link: https://lore.kernel.org/r/20200907085740.1083-2-t-kristo@ti.com
+Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/tau_6xx.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/clk/keystone/sci-clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
-index 268205cc347da..b8d7e7d498e0a 100644
---- a/arch/powerpc/kernel/tau_6xx.c
-+++ b/arch/powerpc/kernel/tau_6xx.c
-@@ -110,11 +110,6 @@ static void TAUupdate(int cpu)
- #ifdef DEBUG
- 	printk("grew = %d\n", tau[cpu].grew);
- #endif
--
--#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
--	set_thresholds(cpu);
--#endif
--
- }
+diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+index 7edf8c8432b67..64ea895f1a7df 100644
+--- a/drivers/clk/keystone/sci-clk.c
++++ b/drivers/clk/keystone/sci-clk.c
+@@ -522,7 +522,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+ 		np = of_find_node_with_property(np, *clk_name);
+ 		if (!np) {
+ 			clk_name++;
+-			break;
++			continue;
+ 		}
  
- #ifdef CONFIG_TAU_INT
+ 		if (!of_device_is_available(np))
 -- 
 2.25.1
 
