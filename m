@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAB329B2B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156A829B2B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762732AbgJ0OoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
+        id S1762745AbgJ0OoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762393AbgJ0Ome (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:34 -0400
+        id S1750100AbgJ0Omn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34302207E8;
-        Tue, 27 Oct 2020 14:42:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89DB220773;
+        Tue, 27 Oct 2020 14:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809753;
-        bh=KA2qBBQUGV/Eckw4PWaFKhexLlItTlAN2uGUeOoJyvU=;
+        s=default; t=1603809762;
+        bh=w62jf25ORWdzQ4ot+18VYIiu8KkmtKUVA961TCbBAWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kFvyaNN9XPiisCEjwRaZE/msfj8VppaOVrdFOxLoli5vsiC4tjb3Jb9JM8e67/kC3
-         roEaQLt2FOJlcvPnFTnRI8eP0SmPX9rcfE0u3ZhzHtQmj/DHhwO/blN2+PdBw6bR1y
-         h/YNDl0UMItRUY/DGtxnWuqjVPw5ykY1iBiXVyq4=
+        b=O5PpXVfQ/fzQPIFUdcPkUXd8QbRNo3MLCzjdS+zFzO+TTxcZxjRAqKGAGwBYGHXCZ
+         JX4eTQEWwftcOw5efDuo+Csf+OIVZdMa/G7NBGbKO0BoqUDGkAVSUBFEXvJRXbf1c1
+         S23vxcVFaihsah4tjhEJzgao4MqBhFuDWR5tf7hI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 307/408] arm64: dts: qcom: msm8916: Fix MDP/DSI interrupts
-Date:   Tue, 27 Oct 2020 14:54:05 +0100
-Message-Id: <20201027135509.274527333@linuxfoundation.org>
+Subject: [PATCH 5.4 309/408] arm64: dts: renesas: r8a774c0: Fix MSIOF1 DMA channels
+Date:   Tue, 27 Oct 2020 14:54:07 +0100
+Message-Id: <20201027135509.363181511@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,52 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 027cca9eb5b450c3f6bb916ba999144c2ec23cb7 ]
+[ Upstream commit c91dfc9818df5f43c10c727f1cecaebdb5e2fa92 ]
 
-The mdss node sets #interrupt-cells = <1>, so its interrupts
-should be referenced using a single cell (in this case: only the
-interrupt number).
+According to Technical Update TN-RCT-S0352A/E, MSIOF1 DMA can only be
+used with SYS-DMAC0 on R-Car E3.
 
-However, right now the mdp/dsi node both have two interrupt cells
-set, e.g. interrupts = <4 0>. The 0 is probably meant to say
-IRQ_TYPE_NONE (= 0), but with #interrupt-cells = <1> this is
-actually interpreted as a second interrupt line.
-
-Remove the IRQ flags from both interrupts to fix this.
-
-Fixes: 305410ffd1b2 ("arm64: dts: msm8916: Add display support")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200915071221.72895-5-stephan@gerhold.net
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 62c0056f1c3eb15d ("arm64: dts: renesas: r8a774c0: Add MSIOF nodes")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20200917132117.8515-3-geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a774c0.dtsi | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index ade2eb1781e37..d95273af9f1e4 100644
---- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -934,7 +934,7 @@ mdp: mdp@1a01000 {
- 				reg-names = "mdp_phys";
- 
- 				interrupt-parent = <&mdss>;
--				interrupts = <0 0>;
-+				interrupts = <0>;
- 
- 				clocks = <&gcc GCC_MDSS_AHB_CLK>,
- 					 <&gcc GCC_MDSS_AXI_CLK>,
-@@ -966,7 +966,7 @@ dsi0: dsi@1a98000 {
- 				reg-names = "dsi_ctrl";
- 
- 				interrupt-parent = <&mdss>;
--				interrupts = <4 0>;
-+				interrupts = <4>;
- 
- 				assigned-clocks = <&gcc BYTE0_CLK_SRC>,
- 						  <&gcc PCLK0_CLK_SRC>;
+diff --git a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
+index a1c2de90e4706..73ded80a79ba0 100644
+--- a/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a774c0.dtsi
+@@ -1212,9 +1212,8 @@ msiof1: spi@e6ea0000 {
+ 			reg = <0 0xe6ea0000 0 0x0064>;
+ 			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cpg CPG_MOD 210>;
+-			dmas = <&dmac1 0x43>, <&dmac1 0x42>,
+-			       <&dmac2 0x43>, <&dmac2 0x42>;
+-			dma-names = "tx", "rx", "tx", "rx";
++			dmas = <&dmac0 0x43>, <&dmac0 0x42>;
++			dma-names = "tx", "rx";
+ 			power-domains = <&sysc R8A774C0_PD_ALWAYS_ON>;
+ 			resets = <&cpg 210>;
+ 			#address-cells = <1>;
 -- 
 2.25.1
 
