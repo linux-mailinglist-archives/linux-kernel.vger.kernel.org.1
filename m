@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA6729CBE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E10C29CBEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832303AbgJ0WT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 18:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1832259AbgJ0WTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:19:25 -0400
-Received: from localhost.localdomain (unknown [192.30.34.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14B4E221FB;
-        Tue, 27 Oct 2020 22:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603837164;
-        bh=n7UpbqZyTI9aIsplmRkzVU0w4yzLRfwO05aNiS3AsM0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=R+yq+59vcUy0GqZTDoz7lEjf9VLWUQtvLsbbN67XhkkSGUemJu7lccWxE85YogQjg
-         AawX/Q4bqluHj2XJSkZzkACoWIuF3mUhY5inCqy/pTlE02I+3xHxfMVpUAPdhttJQv
-         roSSIsl0ld4nBSNaKLtjhb6lGf5L3MrCxaLzKj9c=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v3] seq_file: fix clang warning for NULL pointer arithmetic
-Date:   Tue, 27 Oct 2020 23:18:24 +0100
-Message-Id: <20201027221916.463235-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1832295AbgJ0WT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 18:19:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49638 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1832258AbgJ0WTN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 18:19:13 -0400
+Date:   Tue, 27 Oct 2020 22:19:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603837150;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vZ0OLvclMcvOEQbqjGZ6fphpjVgWDNxajVwLhiJ2hHE=;
+        b=P3kPCBr0DlZ6EhdhHZiWcrvtdTnBXuDa5UccgEKx0TF7tRGjnMSr/tSCVlUKbsXN5cRlkD
+        ORJfKMx5zC5IvHNk7EeAjrU+SWRjB7KGqo0kexlljmVbcnMHYM+zAdlCwVM+3gW/VJy1H5
+        06KhCs4mZrlJ4LNofEzyFY7XRPJelKvV6nRQmU31KwcwytHqNVPOddP6VVVB4gS/AX+M1h
+        UsZvxSl1CX/BbQ2f9Pd+bpHH7oxjjYWV/80YO40aY1OqLFbpmD6wwwliFlhBzUgjHCOrLU
+        iT6wiRvCGKgEbEncD7WUNC1bF0RzI4Q1cF5QFzvrqwVSPUfmOdB/GX3IKr/DCA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603837150;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vZ0OLvclMcvOEQbqjGZ6fphpjVgWDNxajVwLhiJ2hHE=;
+        b=VBHUeBAx18ZLSUggKCZb26ZV6f5Cv1S7I48UNdHilvSfL1GOAGPF43yPN5Lx5iJdjBNDgb
+        ai1bA4KLuHXcedDQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/debug: Fix DR_STEP vs ptrace_get_debugreg(6)
+Cc:     Kyle Huey <me@kylehuey.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201027183330.GM2628@hirez.programming.kicks-ass.net>
+References: <20201027183330.GM2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <160383714941.397.12811023630821434314.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Clang points out that adding something to NULL is notallowed
-in standard C:
+Commit-ID:     cb05143bdf428f280a5d519c82abf196d7871c11
+Gitweb:        https://git.kernel.org/tip/cb05143bdf428f280a5d519c82abf196d7871c11
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 27 Oct 2020 19:33:30 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 27 Oct 2020 23:15:24 +01:00
 
-fs/kernfs/file.c:127:15: warning: performing pointer arithmetic on a
-null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-                return NULL + !*ppos;
-                       ~~~~ ^
-fs/seq_file.c:529:14: warning: performing pointer arithmetic on a
-null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-        return NULL + (*pos == 0);
+x86/debug: Fix DR_STEP vs ptrace_get_debugreg(6)
 
-Rephrase the code to be extra explicit about the valid, giving
-them named SEQ_OPEN_EOF and SEQ_OPEN_SINGLE definitions.
-The instance in kernfs was copied from single_start, so fix both
-at once.
+Commit d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to
+thread.virtual_dr6") changed the semantics of the variable from random
+collection of bits, to exactly only those bits that ptrace() needs.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: c2b19daf6760 ("sysfs, kernfs: prepare read path for kernfs")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Unfortunately this lost DR_STEP for PTRACE_{BLOCK,SINGLE}STEP.
+
+Furthermore, it turns out that userspace expects DR_STEP to be
+unconditionally available, even for manual TF usage outside of
+PTRACE_{BLOCK,SINGLE}_STEP.
+
+Fixes: d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
+Reported-by: Kyle Huey <me@kylehuey.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Kyle Huey <me@kylehuey.com> 
+Link: https://lore.kernel.org/r/20201027183330.GM2628@hirez.programming.kicks-ass.net
+
 ---
-v2: add the named macros after Christoph Hellwig pointed out
-that my original logic was too ugly.
-Suggestions for better names welcome
+ arch/x86/kernel/traps.c |  9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-v3: don't overload the NULL return, avoid ?: operator
----
- fs/kernfs/file.c         | 9 ++++++---
- fs/seq_file.c            | 5 ++++-
- include/linux/seq_file.h | 2 ++
- 3 files changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-index f277d023ebcd..5a5adb03c6df 100644
---- a/fs/kernfs/file.c
-+++ b/fs/kernfs/file.c
-@@ -121,10 +121,13 @@ static void *kernfs_seq_start(struct seq_file *sf, loff_t *ppos)
- 		return next;
- 	} else {
- 		/*
--		 * The same behavior and code as single_open().  Returns
--		 * !NULL if pos is at the beginning; otherwise, NULL.
-+		 * The same behavior and code as single_open().  Continues
-+		 * if pos is at the beginning; otherwise, NULL.
- 		 */
--		return NULL + !*ppos;
-+		if (*ppos)
-+			return NULL;
-+
-+		return SEQ_OPEN_SINGLE;
- 	}
- }
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 32b2d39..e19df6c 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -937,10 +937,13 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ 	instrumentation_begin();
  
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index 31219c1db17d..6b467d769501 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -526,7 +526,10 @@ EXPORT_SYMBOL(seq_dentry);
+ 	/*
+-	 * Clear the virtual DR6 value, ptrace() routines will set bits here
+-	 * for things it wants signals for.
++	 * Start the virtual/ptrace DR6 value with just the DR_STEP mask
++	 * of the real DR6. ptrace_triggered() will set the DR_TRAPn bits.
++	 *
++	 * Userspace expects DR_STEP to be visible in ptrace_get_debugreg(6)
++	 * even if it is not the result of PTRACE_SINGLESTEP.
+ 	 */
+-	current->thread.virtual_dr6 = 0;
++	current->thread.virtual_dr6 = (dr6 & DR_STEP);
  
- static void *single_start(struct seq_file *p, loff_t *pos)
- {
--	return NULL + (*pos == 0);
-+	if (*pos)
-+	       return NULL;
-+
-+	return SEQ_OPEN_SINGLE;
- }
- 
- static void *single_next(struct seq_file *p, void *v, loff_t *pos)
-diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-index 813614d4b71f..eb344448d4da 100644
---- a/include/linux/seq_file.h
-+++ b/include/linux/seq_file.h
-@@ -37,6 +37,8 @@ struct seq_operations {
- 
- #define SEQ_SKIP 1
- 
-+#define SEQ_OPEN_SINGLE	(void *)1
-+
- /**
-  * seq_has_overflowed - check if the buffer has overflowed
-  * @m: the seq_file handle
--- 
-2.27.0
-
+ 	/*
+ 	 * The SDM says "The processor clears the BTF flag when it
