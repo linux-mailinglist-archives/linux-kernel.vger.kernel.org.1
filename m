@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295D429AB06
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E5829AB08
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899201AbgJ0Lkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:40:39 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:35249 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899403AbgJ0Lkj (ORCPT
+        id S2899425AbgJ0Lk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:40:59 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47458 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2899415AbgJ0Lk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:40:39 -0400
-Received: by mail-lf1-f68.google.com with SMTP id f9so1070252lfq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:40:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6hf+Yr5OHguGnitODZ40FBDMEpRJ9+vItxU02ipIbvU=;
-        b=e9AOgaMlXzBNM73A0tEOsY1hJGMsqjFJ0Y6HkyTPBhdvmV89NeLE26BFhMyMW+nuNa
-         qFY811lxm94aKLyF5cXrJt1JjptmyUMkxrlNQEWS06aR3uenMy0wgs74/u37CmYdiP/a
-         s8Aq6Zuu8ZbUHolPn6ack/Xh9KJpk9X/E5BqC7B3bmVlwZqewoDqjczhItSAEE2SaPIo
-         n4LBh4X8YjQdwrdQSTx4yXmmStwIKzMRQ4AwUE5dvr/OfsdiK/ogW1Aj0zRNTm5mslN0
-         PH+gqcRvEeqD++daGzb9Q9v4OBvrcGolyoyyl44PJMTbNyArxUEnmi75Q3ppnR7E6Gr7
-         6/Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6hf+Yr5OHguGnitODZ40FBDMEpRJ9+vItxU02ipIbvU=;
-        b=ofa8CU3rSLu6DgGXCfnApfdjUCIPxoTJHJz26X2CG7Sf/tPi0UmmKyeb2o/EmfVdW+
-         XHS55z0R1RZ4B8NJDos/a1XI/hPvLwlGeZfYKIHu7Q20pn0xO1qQsahaf6RGx7hHwmQe
-         1My+rSStWbYc5rpTEakKzncgc9jMXEa3q6OdSe/iaGkeNqdnBreUoLzGQWpWsgwmTe1G
-         MGyVImpgY/2+Jlt/kmTIUNn+d+YdoVWFaY3gPUX/cshb8KXmTIqXUVMDmope1STymwPC
-         sOmQqTsF3RuXNk6AE2oegjiZfkLvD6VByWx7VEVlpZP08i3p3ETMNkUf0p1deHy4b/wf
-         dDiA==
-X-Gm-Message-State: AOAM530x3TRH+TCQyjwr0AI0S5aHmgpPF4djc9/8nWVp+4WSJgG1VrY+
-        b+5txLlagZHIB9Nq/UPJUUUg8M2yDpPYgA/L4nndqg==
-X-Google-Smtp-Source: ABdhPJwaOnp/Lo+JGFouNl/RVd5VGDvf0iTytnqnj8gaxA5yzh+1YgFyiPmb9Moa4RATKhrNVMi6LS/xQobxsl1irC4=
-X-Received: by 2002:a19:e308:: with SMTP id a8mr672404lfh.573.1603798836426;
- Tue, 27 Oct 2020 04:40:36 -0700 (PDT)
+        Tue, 27 Oct 2020 07:40:58 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RBeHX6030879;
+        Tue, 27 Oct 2020 06:40:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603798817;
+        bh=nfRhkoLnLUOvgtAdlZjcju3oync9ao17Pky8vmQ0ce0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=G2vHeSaaJ99cw7lLwkzmt4NkeB67wjH9bEkc+L/wIOU7E7ysCeKEoqS/8hh7JTOyR
+         XHLyZ2m4SFnP4dKCAMA7+kx8rO0UV/ve/FQoIC18ji/96rq+oYqnMqXKynWz+vXzdB
+         OUeABjeohJWDelXBqIXu9Q/Wn+0BceMgukJrMPCc=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RBeHD7078112
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 06:40:17 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
+ Oct 2020 06:40:16 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 27 Oct 2020 06:40:16 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RBeDIb126547;
+        Tue, 27 Oct 2020 06:40:13 -0500
+Subject: Re: [PATCH] drm: bridge: cdns: Kconfig: Switch over dependency to
+ ARCH_K3
+To:     Nishanth Menon <nm@ti.com>, Swapnil Jakhade <sjakhade@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+CC:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>, <ssantosh@kernel.org>
+References: <20201026165441.22894-1-nm@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <82d5e520-e223-71c3-b6e0-22b8e1eda8bf@ti.com>
+Date:   Tue, 27 Oct 2020 13:40:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201026235205.1023962-1-sashal@kernel.org> <20201026235205.1023962-100-sashal@kernel.org>
-In-Reply-To: <20201026235205.1023962-100-sashal@kernel.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 27 Oct 2020 12:40:10 +0100
-Message-ID: <CAG48ez1GefwfXUBaFXWDmgsfQxVzNSUsYntgbG763C59eP+4uQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.8 100/132] binfmt_elf: take the mmap lock around find_extend_vma()
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201026165441.22894-1-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:54 AM Sasha Levin <sashal@kernel.org> wrote:
-> [ Upstream commit b2767d97f5ff758250cf28684aaa48bbfd34145f ]
->
-> create_elf_tables() runs after setup_new_exec(), so other tasks can
-> already access our new mm and do things like process_madvise() on it.  (At
-> the time I'm writing this commit, process_madvise() is not in mainline
-> yet, but has been in akpm's tree for some time.)
->
-> While I believe that there are currently no APIs that would actually allow
-> another process to mess up our VMA tree (process_madvise() is limited to
-> MADV_COLD and MADV_PAGEOUT, and uring and userfaultfd cannot reach an mm
-> under which no syscalls have been executed yet), this seems like an
-> accident waiting to happen.
->
-> Let's make sure that we always take the mmap lock around GUP paths as long
-> as another process might be able to see the mm.
+On 26/10/2020 18:54, Nishanth Menon wrote:
+> With the integration of chip-id detection scheme in kernel[1], there
+> is no specific need to maintain multitudes of SoC specific config
+> options, discussed as per [2], we have deprecated the usage in other
+> places for v5.10-rc1. Fix the missing user so that we can clean up the
+> configs in v5.11.
+> 
+> [1] drivers/soc/ti/k3-socinfo.c commit 907a2b7e2fc7 ("soc: ti: add k3 platforms chipid module driver")
+> [2] https://lore.kernel.org/linux-arm-kernel/20200908112534.t5bgrjf7y3a6l2ss@akan/
+> 
+> Fixes: afba7e6c5fc1 ("rm: bridge: cdns-mhdp8546: Add TI J721E wrapper")
+> Cc: Swapnil Jakhade <sjakhade@cadence.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Yuti Amonkar <yamonkar@cadence.com>
+> Cc: Jyri Sarha <jsarha@ti.com>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+>  drivers/gpu/drm/bridge/cadence/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig b/drivers/gpu/drm/bridge/cadence/Kconfig
+> index 511d67b16d14..ef8c230e0f62 100644
+> --- a/drivers/gpu/drm/bridge/cadence/Kconfig
+> +++ b/drivers/gpu/drm/bridge/cadence/Kconfig
+> @@ -13,7 +13,7 @@ config DRM_CDNS_MHDP8546
+>  if DRM_CDNS_MHDP8546
+>  
+>  config DRM_CDNS_MHDP8546_J721E
+> -	depends on ARCH_K3_J721E_SOC || COMPILE_TEST
+> +	depends on ARCH_K3 || COMPILE_TEST
+>  	bool "J721E Cadence DPI/DP wrapper support"
+>  	default y
+>  	help
+> 
 
-While this commit makes the kernel less prone to future accidents, and
-it is arguably fixing locking misbehavior, I don't think it belongs
-into stable trees? As far as I know, it is not fixing any bugs that
-can actually materialize in current or past kernels.
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+
+ Tomi
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
