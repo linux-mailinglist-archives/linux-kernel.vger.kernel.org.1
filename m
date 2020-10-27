@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C8C29B315
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F1229B31F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762568AbgJ0On2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:43:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39876 "EHLO mail.kernel.org"
+        id S1762829AbgJ0Oob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:44:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387822AbgJ0Oks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:40:48 -0400
+        id S1762487AbgJ0OnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:43:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3A2D21D7B;
-        Tue, 27 Oct 2020 14:40:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC1AE20773;
+        Tue, 27 Oct 2020 14:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809648;
-        bh=Cx0OInTLJUkoZEKgnryxjtDkxgX4JVSHcSMcLYj6UTY=;
+        s=default; t=1603809787;
+        bh=qoRhQuQEV4CKlz3qaWNl7/xqZX+AF2ooIstYglQn92E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UqySKs8eZCaznAnvs74HWuKSvN06Xwa3PkBFcCtu7OD+ZpRs1UHR+cJ/Smip7vLk0
-         wnAp6tFHpwdS2OlCmQglU3L/FFwUnslIpIJcypnP+L5pPWRclF45+CU+9WBkOilfoE
-         tiRcL8DdJOGYUHAtuGJO0hA4G6PAm0xE6ByajcBE=
+        b=yIOCiarOh+gzzBKLQb23NKqyhN93uemxSRDH80XrqIeMP48oPEs5TaY74HQUz33OI
+         dktbyr52aIc1JYVyVTGkirXTpVltMnVGH7os0hVtB0XgBZmrbp6YzGuZv/h+xR6hol
+         d6WMnG3rQBsBpOqbt6J/pdGu6kDXjhLCrIKL5+J4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 270/408] clk: rockchip: Initialize hw to error to avoid undefined behavior
-Date:   Tue, 27 Oct 2020 14:53:28 +0100
-Message-Id: <20201027135507.570926404@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 279/408] ext4: limit entries returned when counting fsmap records
+Date:   Tue, 27 Oct 2020 14:53:37 +0100
+Message-Id: <20201027135507.983936925@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,42 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <sboyd@kernel.org>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit b608f11d49ec671739604cc763248d8e8fadbbeb ]
+[ Upstream commit af8c53c8bc087459b1aadd4c94805d8272358d79 ]
 
-We can get down to this return value from ERR_CAST() without
-initializing hw. Set it to -ENOMEM so that we always return something
-sane.
+If userspace asked fsmap to try to count the number of entries, we cannot
+return more than UINT_MAX entries because fmh_entries is u32.
+Therefore, stop counting if we hit this limit or else we will waste time
+to return truncated results.
 
-Fixes the following smatch warning:
-
-drivers/clk/rockchip/clk-half-divider.c:228 rockchip_clk_register_halfdiv() error: uninitialized symbol 'hw'.
-drivers/clk/rockchip/clk-half-divider.c:228 rockchip_clk_register_halfdiv() warn: passing zero to 'ERR_CAST'
-
-Cc: Elaine Zhang <zhangqing@rock-chips.com>
-Cc: Heiko Stuebner <heiko@sntech.de>
-Fixes: 956060a52795 ("clk: rockchip: add support for half divider")
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 0c9ec4beecac ("ext4: support GETFSMAP ioctls")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lore.kernel.org/r/20201001222148.GA49520@magnolia
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/rockchip/clk-half-divider.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/fsmap.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/clk/rockchip/clk-half-divider.c b/drivers/clk/rockchip/clk-half-divider.c
-index ba9f00dc9740c..7dd2e0b1a5866 100644
---- a/drivers/clk/rockchip/clk-half-divider.c
-+++ b/drivers/clk/rockchip/clk-half-divider.c
-@@ -167,7 +167,7 @@ struct clk *rockchip_clk_register_halfdiv(const char *name,
- 					  unsigned long flags,
- 					  spinlock_t *lock)
- {
--	struct clk *clk;
-+	struct clk *clk = ERR_PTR(-ENOMEM);
- 	struct clk_mux *mux = NULL;
- 	struct clk_gate *gate = NULL;
- 	struct clk_divider *div = NULL;
+diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+index dbccf46f17709..37347ba868b70 100644
+--- a/fs/ext4/fsmap.c
++++ b/fs/ext4/fsmap.c
+@@ -108,6 +108,9 @@ static int ext4_getfsmap_helper(struct super_block *sb,
+ 
+ 	/* Are we just counting mappings? */
+ 	if (info->gfi_head->fmh_count == 0) {
++		if (info->gfi_head->fmh_entries == UINT_MAX)
++			return EXT4_QUERY_RANGE_ABORT;
++
+ 		if (rec_fsblk > info->gfi_next_fsblk)
+ 			info->gfi_head->fmh_entries++;
+ 
 -- 
 2.25.1
 
