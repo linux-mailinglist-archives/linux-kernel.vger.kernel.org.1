@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31F329C8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8957629C8BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829867AbgJ0TW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:22:28 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:38023 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1829830AbgJ0TWY (ORCPT
+        id S1829888AbgJ0TWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:22:41 -0400
+Received: from casper.infradead.org ([90.155.50.34]:54138 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1829872AbgJ0TWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:22:24 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m20so3088185ljj.5;
-        Tue, 27 Oct 2020 12:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0LPNweG+gfW0E+7Iib5GUjlD2JP5EWxruAvLHtaU8XE=;
-        b=aSkqnm7gx7xKIhmazlcPViUAMX7Tp2uHkbyBVUdCFkMxeMIdX2Xi9DW0855SI7bMdv
-         tt3tR49WUXa/WWNOl4DlYA2JKR7vFmksRbGmg2jV+mgwfSwCbadlTlsOLBppruycITi+
-         w/f3rCWA79Y1t0HlgyIgmO8rYYe3U4b7weHWVvqF4IGkLGVoHUJ6eWTPmeGG/2KRAbBH
-         buCK0HYDr4Hks/1ccaSZLA28nFhWBDswpv7UohY7LK8b5pZ1eSSDBs31G6e+JpGJ9Snf
-         m51ztOLcJsIfX8SexWXZxkrhoV0FehIPopeR7Jttn8qdjCi+XaVcvjBJR9Ht1d/7wscE
-         0skQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0LPNweG+gfW0E+7Iib5GUjlD2JP5EWxruAvLHtaU8XE=;
-        b=ET06IVWTLLt81Xf4eQov47e6jj6kHAO+gDYOnQLzniR3ZB3/tY0jgxNpo30QyPUCcg
-         2urWJG+ObLCyTTj1+kszxmEgOMT/pjZ2ta3Zn2R5LBCibBWdEq/m0O1TGfPGmFJyBdvF
-         Sx6QOxIthvBP2vwmsUmKpV922NQAec1j8f6mjJ7R6JD6EbsuIhLoU48Qv3VPrjYFhxsI
-         UspJZEKcUpDZtSEioBtR9wqfMHCzX0JF+VIjFO/plDUPAd3slVRZzipQzOZIpdcoXuVv
-         6LA7go6B5tuA2lw5gZkdUp70HPIz6kJYYTU9yt3zyxHz9sEfoFGSXdOPjvORfj/bHOq/
-         S+2w==
-X-Gm-Message-State: AOAM532FZpIqvtGc1FAkBC7XlaVI3ujHRLPgSl9kIJ9tl8+H9sJhMdzt
-        3A0V27RIl9yCIp0GT4ZvVh4NEbprmC0=
-X-Google-Smtp-Source: ABdhPJwzYHdGLKWirtJJS8W/Sx8MXsyFr0CXQVIbEPKIdICpwTjspH3wnE4roG7cjpHTIAuDhoBLnw==
-X-Received: by 2002:a2e:87c6:: with SMTP id v6mr1808964ljj.233.1603826541677;
-        Tue, 27 Oct 2020 12:22:21 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id m14sm285483ljo.76.2020.10.27.12.22.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:22:21 -0700 (PDT)
-Subject: Re: [PATCH v6 08/52] dt-bindings: memory: tegra20: emc: Document
- mfd-simple compatible and statistics sub-device
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-9-digetx@gmail.com> <20201027090212.GG4244@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1cce314a-1eab-61c9-099d-54f987b03761@gmail.com>
-Date:   Tue, 27 Oct 2020 22:22:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 15:22:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NzpIIqIcA9kIWM1rNUUZAYccak4Xft/KknnnsnaUpi4=; b=l7T3pkfrU3ho6RbaY04z7OeCLr
+        O5tJw40wPa9EsoPPSoQrngTZTI3WH/t3Hb2ok1rc0GNfwTjkd9Fb5OMt9FerK1uucghKU8FSiQb+D
+        Sc91dBMQ/iwMARdogGWpadgk/doN2a/otSdxXfUw43vvy4Kc6/I5HXAGNXwtVpq2cickx8qn6kHvk
+        lltjtXCAMVQDqijYvAfX7+YLk8HRvJrhhQpzYi2zk7UjyfBNQGGHpCnUlRY3RXatsOnUjyZ9mb5zJ
+        IWx209SdHBtu6U55Z/9zdeaXHLUA2AMpOlBh0FHa+VJYAWEgk3ndkR8Dr3HdXzJS0SADUlajRrbEg
+        gQi6cv8g==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXUY9-0006DW-WE; Tue, 27 Oct 2020 19:22:30 +0000
+Date:   Tue, 27 Oct 2020 19:22:29 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] seq_file: fix clang warning for NULL pointer
+ arithmetic
+Message-ID: <20201027192229.GA22829@infradead.org>
+References: <20201027145252.3976138-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201027090212.GG4244@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027145252.3976138-1-arnd@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 12:02, Krzysztof Kozlowski пишет:
->> @@ -31,17 +32,34 @@ Example:
->>  		...
->>  	};
->>  
->> +	emc_bw_dfs_opp_table: emc_opp_table1 {
-> Hyphens for node name.
+> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> index f277d023ebcd..eafeb8bf4fe4 100644
+> --- a/fs/kernfs/file.c
+> +++ b/fs/kernfs/file.c
+> @@ -121,10 +121,10 @@ static void *kernfs_seq_start(struct seq_file *sf, loff_t *ppos)
+>  		return next;
+>  	} else {
+>  		/*
+> -		 * The same behavior and code as single_open().  Returns
+> -		 * !NULL if pos is at the beginning; otherwise, NULL.
+> +		 * The same behavior and code as single_open().  Continues
+> +		 * if pos is at the beginning; otherwise, EOF.
+>  		 */
+> -		return NULL + !*ppos;
+> +		return *ppos ? SEQ_OPEN_SINGLE : SEQ_OPEN_EOF;
 
-We already use underscores for the Tegra CPU OPP table.
+Why the somewhat obsfucating unary expression instead of a good
+old if?
 
-https://elixir.bootlin.com/linux/v5.10-rc1/source/arch/arm/boot/dts/tegra20-cpu-opp.dtsi#L4
+e.g.
 
-What makes you think that hyphens will be a better choice? Is it a
-documented naming convention?
+		return next;
+	}
+	if (*ppos)
+		retun SEQ_OPEN_SINGLE;
+	return NULL;
+
+
+>  		++*ppos;
+> -		return NULL;
+> +		return SEQ_OPEN_EOF;
+
+I don't think SEQ_OPEN_EOF is all that useful.  NULL is the documented
+end case already.
+
+> diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+> index 813614d4b71f..26f0758b6551 100644
+> --- a/include/linux/seq_file.h
+> +++ b/include/linux/seq_file.h
+> @@ -37,6 +37,9 @@ struct seq_operations {
+>  
+>  #define SEQ_SKIP 1
+>  
+> +#define SEQ_OPEN_EOF	(void *)0
+> +#define SEQ_OPEN_SINGLE	(void *)1
+
+I think SEQ_OPEN_SINGLE also wants a comment documenting it.
+AFAICS the reason for it is that ->start needs to return something
+non-NULL for the seq_file code to make progress, and there is nothing
+better for the single_open case.
