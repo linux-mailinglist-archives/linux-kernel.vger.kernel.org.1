@@ -2,150 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6330229A38A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEEE29A391
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505331AbgJ0EFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 00:05:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46586 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2505325AbgJ0EFE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 00:05:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603771502;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z63apBRGyy3e8g8mUKeHgVcKfFAFQyjLMsXxTptfmGQ=;
-        b=Rs3XZl91hNY3sS0uVzqVw12L+3RYHC2vyEB9kDkKjYO+i3IZGPZzlMWLHPl96qFRD93ohM
-        k9sfsLvsnBOd0U9XVhhOjCiWTOXvEdDEyHeoBYO9mUPuzTUpKUO4an6nUbWvLioecJzPU3
-        31QDK6htolXblg7339XEhXybDv/hJxw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-B0_6d6n2MFWoKYU7dRmPiA-1; Tue, 27 Oct 2020 00:04:59 -0400
-X-MC-Unique: B0_6d6n2MFWoKYU7dRmPiA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2442390AbgJ0EOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 00:14:21 -0400
+Received: from ozlabs.org ([203.11.71.1]:38317 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409144AbgJ0EOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 00:14:21 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CAF8E9000;
-        Tue, 27 Oct 2020 04:04:57 +0000 (UTC)
-Received: from [10.64.54.78] (vpn2-54-78.bne.redhat.com [10.64.54.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79FBC5D9E8;
-        Tue, 27 Oct 2020 04:04:54 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v2 1/1] KVM: arm64: Correctly handle the mmio faulting
-To:     Santosh Shukla <sashukla@nvidia.com>, maz@kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     mcrossley@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        will@kernel.org, linux-arm-kernel@lists.infradead.org
-References: <1603711447-11998-1-git-send-email-sashukla@nvidia.com>
- <1603711447-11998-2-git-send-email-sashukla@nvidia.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <b86a29e1-1e25-d3e7-5718-77f4a37da575@redhat.com>
-Date:   Tue, 27 Oct 2020 15:04:51 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKyyK6cPvz9sSf;
+        Tue, 27 Oct 2020 15:14:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603772058;
+        bh=rsrwykZOm6mK2oNlLyZNUlllqMRFmVln36Mi00ayYEU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DT5410Jt+hmUPVWQ3hjE2gnzniPLfY09LbthC9VJjjLZS1BJPGMOPLLf323rmdzEN
+         sWHmqL+829EgsKsYe/2LGsWc/46L9ePj+bADrkcaz25HpAO/fQQHeHSn1yz3ZcUoqf
+         ts1wnBZeHlDgrwlj7FHXXhCDKgpob6UV2MmeCXJdWlqxjh7C8GyJXUR6hczh+my+F8
+         PSUm69QB4B6yrb34HuqBrTD+lBjvtZ+dIaInxmoXqLeXwkED6dYk6AHgZxkdsaopG+
+         Od25on3dwCreiLMTaVsoEATUG5327G6p4s+i0lj2kmE7OQq0JouryZdu88qzoW4LNU
+         940jFgCHsLUXg==
+Date:   Tue, 27 Oct 2020 15:14:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the vfs tree
+Message-ID: <20201027151414.2018d5fd@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <1603711447-11998-2-git-send-email-sashukla@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; boundary="Sig_/QoF3YFnjo6+B0lit25a/DUH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Santosh,
+--Sig_/QoF3YFnjo6+B0lit25a/DUH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 10/26/20 10:24 PM, Santosh Shukla wrote:
-> The Commit:6d674e28 introduces a notion to detect and handle the
-> device mapping. The commit checks for the VM_PFNMAP flag is set
-> in vma->flags and if set then marks force_pte to true such that
-> if force_pte is true then ignore the THP function check
-> (/transparent_hugepage_adjust()).
-> 
-> There could be an issue with the VM_PFNMAP flag setting and checking.
-> For example consider a case where the mdev vendor driver register's
-> the vma_fault handler named vma_mmio_fault(), which maps the
-> host MMIO region in-turn calls remap_pfn_range() and maps
-> the MMIO's vma space. Where, remap_pfn_range implicitly sets
-> the VM_PFNMAP flag into vma->flags.
-> 
-> Now lets assume a mmio fault handing flow where guest first access
-> the MMIO region whose 2nd stage translation is not present.
-> So that results to arm64-kvm hypervisor executing guest abort handler,
-> like below:
-> 
-> kvm_handle_guest_abort() -->
->   user_mem_abort()--> {
-> 
->      ...
->      0. checks the vma->flags for the VM_PFNMAP.
->      1. Since VM_PFNMAP flag is not yet set so force_pte _is_ false;
->      2. gfn_to_pfn_prot() -->
->          __gfn_to_pfn_memslot() -->
->              fixup_user_fault() -->
->                  handle_mm_fault()-->
->                      __do_fault() -->
->                         vma_mmio_fault() --> // vendor's mdev fault handler
->                          remap_pfn_range()--> // Here sets the VM_PFNMAP
->                                                  flag into vma->flags.
->      3. Now that force_pte is set to false in step-2),
->         will execute transparent_hugepage_adjust() func and
->         that lead to Oops [4].
->   }
-> 
-> The proposition is to set force_pte=true if kvm_is_device_pfn is true.
-> 
-> [4] THP Oops:
->> pc: kvm_is_transparent_hugepage+0x18/0xb0
->> ...
->> ...
->> user_mem_abort+0x340/0x9b8
->> kvm_handle_guest_abort+0x248/0x468
->> handle_exit+0x150/0x1b0
->> kvm_arch_vcpu_ioctl_run+0x4d4/0x778
->> kvm_vcpu_ioctl+0x3c0/0x858
->> ksys_ioctl+0x84/0xb8
->> __arm64_sys_ioctl+0x28/0x38
-> 
-> Tested on Huawei Kunpeng Taishan-200 arm64 server, Using VFIO-mdev device.
-> Linux-5.10-rc1 tip: 3650b228
-> 
-> Fixes: 6d674e28 ("KVM: arm/arm64: Properly handle faulting of device mappings")
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Santosh Shukla <sashukla@nvidia.com>
-> ---
-> v2:
-> - Per Marc's suggestion - setting force_pte=true.
-> - Rebased and tested for 5.10-rc1 commit: 3650b228
-> 
-> v1: https://lkml.org/lkml/2020/10/21/460
-> 
-> arch/arm64/kvm/mmu.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
+Hi all,
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+After merging the vfs tree, today's linux-next build (sparc_defconfig)
+failed like this:
 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 19aacc7..d4cd253 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -839,6 +839,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->   
->   	if (kvm_is_device_pfn(pfn)) {
->   		device = true;
-> +		force_pte = true;
->   	} else if (logging_active && !write_fault) {
->   		/*
->   		 * Only actually map the page as writable if this was a write
-> 
+arch/sparc/lib/memset.S: Assembler messages:
+arch/sparc/lib/memset.S:149: Error: Unknown opcode: `ext(12b, 13b,21f)'
 
+Caused by commit
+
+  0e0bbae08a6e ("sparc32: switch __bzero() away from range exception table =
+entries")
+
+merging badly with commit
+
+  7780918b3648 ("sparc32: fix a user-triggerable oops in clear_user()")
+
+from the sparc tree.
+
+The sparc tree commit above appears as commit
+
+  80537bbf19d6 ("sparc32: fix a user-triggerable oops in clear_user()")
+
+in the vfs tree as well.  The patch adds one line which is later removed
+by commit
+
+  0e0bbae08a6e ("sparc32: switch __bzero() away from range exception table =
+entries")
+
+in the vfs tree, but the git merge puts the line back again :-(
+
+I have added the following fix to the vfs tree merge
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 27 Oct 2020 15:05:28 +1100
+Subject: [PATCH] fix up for merge of arch/sparc/lib/memset.S
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/sparc/lib/memset.S | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/sparc/lib/memset.S b/arch/sparc/lib/memset.S
+index 522f45a952a0..eaff68213fdf 100644
+--- a/arch/sparc/lib/memset.S
++++ b/arch/sparc/lib/memset.S
+@@ -146,7 +146,6 @@ __bzero:
+ 	ZERO_LAST_BLOCKS(%o0, 0x48, %g2)
+ 	ZERO_LAST_BLOCKS(%o0, 0x08, %g2)
+ 13:
+-	EXT(12b, 13b, 21f)
+ 	be	8f
+ 	 andcc	%o1, 4, %g0
+=20
+--=20
+2.28.0
+
+--=20
 Cheers,
-Gavin
+Stephen Rothwell
 
+--Sig_/QoF3YFnjo6+B0lit25a/DUH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XnpYACgkQAVBC80lX
+0GwlDggAoQj7uYZQaJ/tHfcYI1weowF4kSPPbGOEEWNwYTuJGeF7mkdZaor+Gaza
+h7ns0yQVFEAElx0QV488clX/qDRmIfdVPkSkiS4Y1HQaPGBvyZ9hB+DUIAH1bFrZ
+TZjc1gg+2/b+I+27MkaeJPBn3TKxDJSIEs5cDRMfVxAM2Ljeb25cF3FWn0LZGhe+
+8QZ4Y3q4BJv95YFVwVDZQoadHTG6Pp+UAcQD2egwRFQHEesn4LAwFYv1LqSuxIv9
+MkMiN/fz7S+abtCCR/lN8IbSDmog97tnjZBxLBuSbF+Jj/lcweuC6kSn0/wp13Rz
+1/WQDiH3cOPr7KPZpT+IqBwV7gJReA==
+=oYP/
+-----END PGP SIGNATURE-----
+
+--Sig_/QoF3YFnjo6+B0lit25a/DUH--
