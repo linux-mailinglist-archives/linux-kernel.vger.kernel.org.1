@@ -2,980 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBA729A54E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0019829A553
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507387AbgJ0HMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 03:12:21 -0400
-Received: from jax4mhob22.registeredsite.com ([64.69.218.110]:34450 "EHLO
-        jax4mhob22.registeredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2507378AbgJ0HMU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 03:12:20 -0400
-Received: from mailpod.hostingplatform.com ([10.30.71.205])
-        by jax4mhob22.registeredsite.com (8.14.4/8.14.4) with ESMTP id 09R7CDv8009012
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:12:15 -0400
-Received: (qmail 31565 invoked by uid 0); 27 Oct 2020 07:12:13 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 27 Oct 2020 07:12:13 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sre@kernel.org,
-        Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v2] power/supply: Add ltc4162-l-charger
-Date:   Tue, 27 Oct 2020 08:12:10 +0100
-Message-Id: <20201027071210.10231-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        id S2507459AbgJ0HO5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 03:14:57 -0400
+Received: from mail-eopbgr1300129.outbound.protection.outlook.com ([40.107.130.129]:36736
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2507444AbgJ0HOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 03:14:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O4zxP9WMs73sJ00O63ZoSbKg74AnN/isZX65Iv4ssZRQd/Q8e8+/yPV0oNE8iC3+N4yq7AzFi4vPJbb6b1wG+bSo8mymWl0q+OJfRnOmbdTQYx3GknvfJBzOEDUCCR1lS9sIQfV9c9YJPUQHZ1UTMQq5wOfIDiML1QhrDNag3czqXx8cVjGvWTy0awZUMlQkhQI6YsWT93+zgsBmY3ysFQXRPNAgBIbZJi0CC8HmjcCTuW2cF40EmZx7dhyg29ltZx8McoN/irdm/xOVJYjybSwBc247qrplRwTXy8YzhmL5SVpovVe1QHjbREFLWc8NW8gvJd88mPgPFxy1g5vcHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=95NAs4HG+5XDgsuWMl5KdAUIJ9hrokM8jDZvoQJaF/Q=;
+ b=EF5h9tLLamU1s/1/EsV4OVrFd7Zm0LzUq5JqeUDk2BwsqIvXTKQi+0+3Nr+UaKZgzcd7Ukh53kj+E6wDcoCLpOlucXCjGai770xZ5Cdiisu9QK7Lbgq1FMlIvwm8SgG9hgLICtapQkCIp7I5BHQv0U3zRAujIMQHZ6n75lF3YW1yzZoAZOjGArgSLQdlNNsXZ2XJsYu9dloJT/w9iLddZWRrQ02pQM3Z+0ouIc5C9AIYB4gT+1w2mdVo7NTeZtMmlzXev6/V7C+aCp2xNNXOXnmFUHzbvQqkdAbCuICHUERUPxo2teFEzXMM/0+D/56602P5xMbw0bPSM0Rg9qW9Dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
+ by HK2PR06MB3460.apcprd06.prod.outlook.com (2603:1096:202:37::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24; Tue, 27 Oct
+ 2020 07:14:48 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::a1a1:8859:d07a:2473]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::a1a1:8859:d07a:2473%3]) with mapi id 15.20.3477.029; Tue, 27 Oct 2020
+ 07:14:48 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>
+CC:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>,
+        Cyril Bur <cyrilbur@gmail.com>,
+        Robert Lippert <rlippert@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: RE: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Thread-Topic: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Thread-Index: AQHWq0XpiGvCIQ3se0K0W53Se1w+kamrCV1w
+Date:   Tue, 27 Oct 2020 07:14:47 +0000
+Message-ID: <HK0PR06MB3779F21A233D4B02824E5FB091160@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
+ <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
+ <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
+In-Reply-To: <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3db91d96-549c-4be9-93e2-08d87a47fd1b
+x-ms-traffictypediagnostic: HK2PR06MB3460:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR06MB34604503F506DE7F37214E1291160@HK2PR06MB3460.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AaBI1Z+XzRSCvK4BbI8X10pzmkInhjw7reyLQW7QFXj4vQT3sYQV+tMgMiz5zYekWx2RH2iRv4c7UZ3pcGv2HOhnG/Wd4rsQHVa8dvGc/Ut2eu4zUVF0njzgkga9eTN4GPaekyVItnGQUGNPV2zJy/liJ9EqRhxXVsnRBLJtRoLYH2Sv5cJG6BdFLbbPGfgaomqZ13d7bvevevoA9rg7Jw10PQ2cWTfjis8AzK6MJvhOnGRGbC84fSatwk6/8idQ3U5NaR7v1uG6ndAfRikxp090hD0OCr95qHkkZ3T4vAiBTlPRjL0zMajTseDG9WM6xyydYhnPubcLpeehiXY+rOm78wA5lSeosUvqIWwqb+4n+Rnl+bZxim8DZ3toBGodVwZMKNIkkj7GtFsWI3f5tA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(376002)(346002)(136003)(366004)(8936002)(478600001)(186003)(8676002)(2906002)(33656002)(66556008)(64756008)(83380400001)(7696005)(53546011)(86362001)(26005)(6506007)(71200400001)(55236004)(110136005)(52536014)(66446008)(76116006)(316002)(54906003)(966005)(7416002)(5660300002)(66476007)(66946007)(55016002)(9686003)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Ej0D9qoz8Jq9upQsVa5U0Z1vrmeMKtYD3Fm5XbiKqiVOmc/99o8S90Afyj8ZgZlxNf8Z1t8mtF/FSFgmZNJjDRaECkc46l64zd3/FSWOOaWlIkQSH3q8OXOUv02fJYuC3Y6PXjAQs4iudTVzklvfOdB1EabfkieR1Fhv1ppFOwobq2CyNLngramlgLt89szTP9w6Rl/rBIfhffW4Mncsa2NrbNTzi20bXRjria+mcNK2mwxv3dbTNmSNGKoDHqsGShj2DAp2luzhkMARi9FCXgpfWa5aKmQ+71YgnOu1n/w16fDU9pEzZ0x8Em61qxusrlwNBYzwmUiN0BW7SejJ1EvQEwA53sGTDBCfAkA0lJhe5H3tDacEHCaSBNYseCs0oUkjWvUAl3Of0sb7u0OlXySBm0sFPO37VJ+UrNhuCZCFf1mneFbGmktqd5BWhTWBi0vVAJZB9iB/hIY6FzQxAU0cNnCIR7HYd6stOvfnys1lE30RVqBfA/Hfa3R5XRIkW0EmID/nx2aIHXyIxAFEen8l+1I+c6KbeVTq5a6H0JQQ/UM/cUe8vyijjSdcqRSBlYDwlpzBOJQLPuTvuyxDtEyuJD611hyyIH+uIJavZipaxKHV3yFvgLT3EMBGmOLwiRhA9jdfD7uyoCwu7pWZMg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3db91d96-549c-4be9-93e2-08d87a47fd1b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2020 07:14:47.6037
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: p595TC1aMsPHMgFf4/ivBUyAoFek4Whqk20+eIm65jy53+jBppRAuKw2jwV5d6Kk16Ptz6DptMWfkyotquZJ8zpTw5WDnzHhoUaq/fEUDiE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the LTC4162-L Li-Ion battery charger. The driver allows
-reading back telemetry and to set some charging options like the input
-current limit.
+Hi Andrew,
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
-v2: Use microohm units instead of milliohm
-    Add interrupt support using smbalert
-    Support obtaining cell-count from devicetree
+> -----Original Message-----
+> From: Andrew Jeffery <andrew@aj.id.au>
+> Sent: Monday, October 26, 2020 11:12 AM
+> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>; Rob Herring
+> <robh+dt@kernel.org>; Joel Stanley <joel@jms.id.au>
+> Subject: Re: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+> 
+> Hi Wang Chia-Wei,
+> 
+> On Mon, 5 Oct 2020, at 18:58, Chia-Wei, Wang wrote:
+> > The LPC controller has no concept of the BMC and the Host partitions.
+> > This patch fixes the documentation by removing the description on LPC
+> > partitions. The register offsets illustrated in the DTS node examples
+> > are also fixed to adapt to the LPC DTS change.
+> >
+> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> 
+> The documentation at [1] suggests this should probably be patch 1/5 rather
+> than 5/5, so if you send the series again I'd probably rearrange it. Following the
+> steps outlined in [1] helps catch Rob's attention in the right way :)
+> 
+> [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Docume
+> ntation/devicetree/bindings/submitting-patches.rst?h=v5.9
 
- drivers/power/supply/Kconfig             |   8 +
- drivers/power/supply/Makefile            |   1 +
- drivers/power/supply/ltc4162-l-charger.c | 887 +++++++++++++++++++++++
- 3 files changed, 896 insertions(+)
- create mode 100644 drivers/power/supply/ltc4162-l-charger.c
+Thanks for pointing out the guideline.
+I will rearrange the commits if v3 change is requested.
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index eec646c568b7..23000976cb42 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -513,6 +513,14 @@ config CHARGER_LT3651
- 	  Say Y to include support for the Analog Devices (Linear Technology)
- 	  LT3651 battery charger which reports its status via GPIO lines.
- 
-+config CHARGER_LTC4162L
-+	tristate "LTC4162-L charger"
-+	depends on I2C
-+	select REGMAP_I2C
-+	help
-+	  Say Y to include support for the Analog Devices (Linear Technology)
-+	  LTC4162-L battery charger connected to I2C.
-+
- config CHARGER_MAX14577
- 	tristate "Maxim MAX14577/77836 battery charger driver"
- 	depends on MFD_MAX14577
-diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index dd4b86318cd9..17b1cf921c44 100644
---- a/drivers/power/supply/Makefile
-+++ b/drivers/power/supply/Makefile
-@@ -70,6 +70,7 @@ obj-$(CONFIG_CHARGER_LP8788)	+= lp8788-charger.o
- obj-$(CONFIG_CHARGER_GPIO)	+= gpio-charger.o
- obj-$(CONFIG_CHARGER_MANAGER)	+= charger-manager.o
- obj-$(CONFIG_CHARGER_LT3651)	+= lt3651-charger.o
-+obj-$(CONFIG_CHARGER_LTC4162L)	+= ltc4162-l-charger.o
- obj-$(CONFIG_CHARGER_MAX14577)	+= max14577_charger.o
- obj-$(CONFIG_CHARGER_DETECTOR_MAX14656)	+= max14656_charger_detector.o
- obj-$(CONFIG_CHARGER_MAX77650)	+= max77650-charger.o
-diff --git a/drivers/power/supply/ltc4162-l-charger.c b/drivers/power/supply/ltc4162-l-charger.c
-new file mode 100644
-index 000000000000..bea9e5130b07
---- /dev/null
-+++ b/drivers/power/supply/ltc4162-l-charger.c
-@@ -0,0 +1,887 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  Driver for Analog Devices (Linear Technology) LTC4162-L charger IC.
-+ *  Copyright (C) 2020, Topic Embedded Products
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/delay.h>
-+#include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/power_supply.h>
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+
-+/* Registers (names based on what datasheet uses) */
-+#define LTC4162L_EN_LIMIT_ALERTS_REG		0x0D
-+#define LTC4162L_EN_CHARGER_STATE_ALERTS_REG	0x0E
-+#define LTC4162L_EN_CHARGE_STATUS_ALERTS_REG	0x0F
-+#define LTC4162L_CONFIG_BITS_REG		0x14
-+#define LTC4162L_IIN_LIMIT_TARGET		0x15
-+#define LTC4162L_ARM_SHIP_MODE			0x19
-+#define LTC4162L_CHARGE_CURRENT_SETTING		0X1A
-+#define LTC4162L_VCHARGE_SETTING		0X1B
-+#define LTC4162L_C_OVER_X_THRESHOLD		0x1C
-+#define LTC4162L_MAX_CV_TIME			0X1D
-+#define LTC4162L_MAX_CHARGE_TIME		0X1E
-+#define LTC4162L_CHARGER_CONFIG_BITS		0x29
-+#define LTC4162L_CHARGER_STATE			0x34
-+#define LTC4162L_CHARGE_STATUS			0x35
-+#define LTC4162L_LIMIT_ALERTS_REG		0x36
-+#define LTC4162L_CHARGER_STATE_ALERTS_REG	0x37
-+#define LTC4162L_CHARGE_STATUS_ALERTS_REG	0x38
-+#define LTC4162L_SYSTEM_STATUS_REG		0x39
-+#define LTC4162L_VBAT				0x3A
-+#define LTC4162L_VIN				0x3B
-+#define LTC4162L_VOUT				0x3C
-+#define LTC4162L_IBAT				0x3D
-+#define LTC4162L_IIN				0x3E
-+#define LTC4162L_DIE_TEMPERATURE		0x3F
-+#define LTC4162L_THERMISTOR_VOLTAGE		0x40
-+#define LTC4162L_BSR				0x41
-+#define LTC4162L_JEITA_REGION			0x42
-+#define LTC4162L_CHEM_CELLS_REG			0x43
-+#define LTC4162L_ICHARGE_DAC			0x44
-+#define LTC4162L_VCHARGE_DAC			0x45
-+#define LTC4162L_IIN_LIMIT_DAC			0x46
-+#define LTC4162L_VBAT_FILT			0x47
-+#define LTC4162L_INPUT_UNDERVOLTAGE_DAC		0x4B
-+
-+/* Enumeration as in datasheet. Individual bits are mutually exclusive. */
-+enum ltc4162l_state {
-+	battery_detection = 2048,
-+	charger_suspended = 256,
-+	precharge = 128,   /* trickle on low bat voltage */
-+	cc_cv_charge = 64, /* normal charge */
-+	ntc_pause = 32,
-+	timer_term = 16,
-+	c_over_x_term = 8, /* battery is full */
-+	max_charge_time_fault = 4,
-+	bat_missing_fault = 2,
-+	bat_short_fault = 1
-+};
-+
-+/* Individual bits are mutually exclusive. Only active in charging states.*/
-+enum ltc4162l_charge_status {
-+	ilim_reg_active = 32,
-+	thermal_reg_active = 16,
-+	vin_uvcl_active = 8,
-+	iin_limit_active = 4,
-+	constant_current = 2,
-+	constant_voltage = 1,
-+	charger_off = 0
-+};
-+
-+/* Magic number to write to ARM_SHIP_MODE register */
-+#define LTC4162L_ARM_SHIP_MODE_MAGIC 21325
-+
-+struct ltc4162l_info {
-+	struct i2c_client	*client;
-+	struct regmap		*regmap;
-+	struct power_supply	*charger;
-+	u32 rsnsb;	/* Series resistor that sets charge current, microOhm */
-+	u32 rsnsi;	/* Series resistor to measure input current, microOhm */
-+	u8 cell_count;	/* Number of connected cells, 0 while unknown */
-+};
-+
-+static u8 ltc4162l_get_cell_count(struct ltc4162l_info *info)
-+{
-+	int ret;
-+	unsigned int val;
-+
-+	/* Once read successfully */
-+	if (info->cell_count)
-+		return info->cell_count;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CHEM_CELLS_REG, &val);
-+	if (ret)
-+		return 0;
-+
-+	/* Lower 4 bits is the cell count, or 0 if the chip doesn't know yet */
-+	val &= 0x0f;
-+	if (!val)
-+		return 0;
-+
-+	/* Once determined, keep the value */
-+	info->cell_count = val;
-+
-+	return val;
-+};
-+
-+/* Convert enum value to POWER_SUPPLY_STATUS value */
-+static int ltc4162l_state_decode(enum ltc4162l_state value)
-+{
-+	switch (value) {
-+	case precharge:
-+	case cc_cv_charge:
-+		return POWER_SUPPLY_STATUS_CHARGING;
-+	case c_over_x_term:
-+		return POWER_SUPPLY_STATUS_FULL;
-+	case bat_missing_fault:
-+	case bat_short_fault:
-+		return POWER_SUPPLY_STATUS_UNKNOWN;
-+	default:
-+		return POWER_SUPPLY_STATUS_NOT_CHARGING;
-+	}
-+};
-+
-+static int ltc4162l_get_status(struct ltc4162l_info *info,
-+			       union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CHARGER_STATE, &regval);
-+	if (ret) {
-+		dev_err(&info->client->dev, "Failed to read CHARGER_STATE\n");
-+		return ret;
-+	}
-+
-+	val->intval = ltc4162l_state_decode(regval);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_charge_status_decode(enum ltc4162l_charge_status value)
-+{
-+	if (!value)
-+		return POWER_SUPPLY_CHARGE_TYPE_NONE;
-+
-+	/* constant voltage/current and input_current limit are "fast" modes */
-+	if (value <= iin_limit_active)
-+		return POWER_SUPPLY_CHARGE_TYPE_FAST;
-+
-+	/* Anything that's not fast we'll return as trickle */
-+	return POWER_SUPPLY_CHARGE_TYPE_TRICKLE;
-+}
-+
-+static int ltc4162l_get_charge_type(struct ltc4162l_info *info,
-+				    union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CHARGE_STATUS, &regval);
-+	if (ret)
-+		return ret;
-+
-+	val->intval = ltc4162l_charge_status_decode(regval);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_state_to_health(enum ltc4162l_state value)
-+{
-+	switch (value) {
-+	case ntc_pause:
-+		return POWER_SUPPLY_HEALTH_OVERHEAT;
-+	case timer_term:
-+		return POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE;
-+	case max_charge_time_fault:
-+		return POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE;
-+	case bat_missing_fault:
-+		return POWER_SUPPLY_HEALTH_UNSPEC_FAILURE;
-+	case bat_short_fault:
-+		return POWER_SUPPLY_HEALTH_DEAD;
-+	default:
-+		return POWER_SUPPLY_HEALTH_GOOD;
-+	}
-+}
-+
-+static int ltc4162l_get_health(struct ltc4162l_info *info,
-+			       union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CHARGER_STATE, &regval);
-+	if (ret)
-+		return ret;
-+
-+	val->intval = ltc4162l_state_to_health(regval);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_get_online(struct ltc4162l_info *info,
-+			       union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_SYSTEM_STATUS_REG, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* BIT(2) indicates if input voltage is sufficient to charge */
-+	val->intval = !!(regval & BIT(2));
-+
-+	return 0;
-+}
-+
-+
-+static int ltc4162l_get_vbat(struct ltc4162l_info *info,
-+				  unsigned int reg,
-+				  union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, reg, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* cell_count × 192.4μV/LSB */
-+	regval *= 1924;
-+	regval *= ltc4162l_get_cell_count(info);
-+	regval /= 10;
-+	val->intval = regval;
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_get_ibat(struct ltc4162l_info *info,
-+			     union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_IBAT, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* Signed 16-bit number, 1.466μV / RSNSB amperes/LSB. */
-+	ret = (s16)(regval & 0xFFFF);
-+	val->intval = mult_frac(ret, 1466000, (int)info->rsnsb);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_get_icharge(struct ltc4162l_info *info,
-+				unsigned int reg,
-+				union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, reg, &regval);
-+	if (ret)
-+		return ret;
-+
-+	regval &= BIT(6) - 1; /* Only the lower 5 bits */
-+
-+	/* The charge current servo level: (icharge_dac + 1) × 1mV/RSNSB */
-+	++regval;
-+	val->intval = mult_frac(regval, 1000000000u, info->rsnsb);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_set_icharge(struct ltc4162l_info *info,
-+				unsigned int reg,
-+				unsigned int value)
-+{
-+	value = mult_frac(value, info->rsnsb, 1000000000u);
-+
-+	/* Round to lowest possible */
-+	if (value)
-+		--value;
-+
-+	if (value > 31)
-+		return -EINVAL;
-+
-+	return regmap_write(info->regmap, reg, value);
-+}
-+
-+
-+static int ltc4162l_get_vcharge(struct ltc4162l_info *info,
-+				unsigned int reg,
-+				union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+	u32 voltage;
-+
-+	ret = regmap_read(info->regmap, reg, &regval);
-+	if (ret)
-+		return ret;
-+
-+	regval &= BIT(6) - 1; /* Only the lower 5 bits */
-+
-+	/*
-+	 * charge voltage setting can be computed from
-+	 * cell_count × (vcharge_setting × 12.5mV + 3.8125V)
-+	 * where vcharge_setting ranges from 0 to 31 (4.2V max).
-+	 */
-+	voltage = 3812500 + (regval * 12500);
-+	voltage *= ltc4162l_get_cell_count(info);
-+	val->intval = voltage;
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_set_vcharge(struct ltc4162l_info *info,
-+				unsigned int reg,
-+				unsigned int value)
-+{
-+	u8 cell_count = ltc4162l_get_cell_count(info);
-+
-+	if (!cell_count)
-+		return -EBUSY; /* Not available yet, try again later */
-+
-+	value /= cell_count;
-+
-+	if (value < 3812500)
-+		return -EINVAL;
-+
-+	value -= 3812500;
-+	value /= 12500;
-+
-+	if (value > 31)
-+		return -EINVAL;
-+
-+	return regmap_write(info->regmap, reg, value);
-+}
-+
-+static int ltc4162l_get_iin_limit_dac(struct ltc4162l_info *info,
-+				     union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_IIN_LIMIT_DAC, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* (iin_limit_dac + 1) × 500μV / RSNSI */
-+	++regval;
-+	val->intval = mult_frac(regval, 500000000u, info->rsnsi);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_set_iin_limit(struct ltc4162l_info *info,
-+				  unsigned int value)
-+{
-+	unsigned int regval;
-+
-+	regval = mult_frac(value, info->rsnsi, 500000000u);
-+	if (regval)
-+		--regval;
-+	if (regval > 63)
-+		regval = 63;
-+
-+	return regmap_write(info->regmap, LTC4162L_IIN_LIMIT_TARGET, regval);
-+}
-+
-+static int ltc4162l_get_die_temp(struct ltc4162l_info *info,
-+				 union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_DIE_TEMPERATURE, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* die_temp × 0.0215°C/LSB - 264.4°C */
-+	ret = (s16)(regval & 0xFFFF);
-+	ret *= 215;
-+	ret /= 100; /* Centidegrees scale */
-+	ret -= 26440;
-+	val->intval = ret;
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_get_term_current(struct ltc4162l_info *info,
-+				     union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CHARGER_CONFIG_BITS, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* Check if C_OVER_X_THRESHOLD is enabled */
-+	if (!(regval & BIT(2))) {
-+		val->intval = 0;
-+		return 0;
-+	}
-+
-+	ret = regmap_read(info->regmap, LTC4162L_C_OVER_X_THRESHOLD, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* 1.466μV / RSNSB amperes/LSB */
-+	val->intval = mult_frac(regval, 1466000u, info->rsnsb);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_set_term_current(struct ltc4162l_info *info,
-+				     unsigned int value)
-+{
-+	int ret;
-+	unsigned int regval;
-+
-+	if (!value) {
-+		/* Disable en_c_over_x_term when set to zero */
-+		return regmap_update_bits(info->regmap,
-+					  LTC4162L_CHARGER_CONFIG_BITS,
-+					  BIT(2), 0);
-+	}
-+
-+	regval = mult_frac(value, info->rsnsb, 1466000u);
-+
-+	ret =  regmap_write(info->regmap, LTC4162L_C_OVER_X_THRESHOLD, regval);
-+	if (ret)
-+		return ret;
-+
-+	/* Set en_c_over_x_term after changing the threshold value */
-+	return regmap_update_bits(info->regmap, LTC4162L_CHARGER_CONFIG_BITS,
-+				  BIT(2), BIT(2));
-+}
-+
-+/* Custom properties */
-+static const char * const ltc4162l_charge_status_name[] = {
-+	"ilim_reg_active", /* 32 */
-+	"thermal_reg_active",
-+	"vin_uvcl_active",
-+	"iin_limit_active",
-+	"constant_current",
-+	"constant_voltage",
-+	"charger_off" /* 0 */
-+};
-+
-+static ssize_t charge_status_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	const char *result = ltc4162l_charge_status_name[
-+				ARRAY_SIZE(ltc4162l_charge_status_name) - 1];
-+	unsigned int regval;
-+	unsigned int mask;
-+	unsigned int index;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CHARGE_STATUS, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* Only one bit is set according to datasheet, let's be safe here */
-+	for (mask = 32, index = 0; mask != 0; mask >>= 1, ++index) {
-+		if (regval & mask) {
-+			result = ltc4162l_charge_status_name[index];
-+			break;
-+		}
-+	}
-+
-+	return sprintf(buf, "%s\n", result);
-+}
-+static DEVICE_ATTR_RO(charge_status);
-+
-+static ssize_t input_voltage_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_VIN, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* 1.649mV/LSB */
-+	regval *= 1694;
-+
-+	return sprintf(buf, "%u\n", regval);
-+}
-+static DEVICE_ATTR_RO(input_voltage);
-+
-+static ssize_t input_current_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_IIN, &regval);
-+	if (ret)
-+		return ret;
-+
-+	/* Signed 16-bit number, 1.466μV / RSNSI amperes/LSB. */
-+	ret = (s16)(regval & 0xFFFF);
-+	ret = mult_frac(ret, 1466000, (int)info->rsnsi);
-+
-+	return sprintf(buf, "%d\n", ret);
-+}
-+static DEVICE_ATTR_RO(input_current);
-+
-+static ssize_t force_telemetry_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_CONFIG_BITS_REG, &regval);
-+	if (ret)
-+		return ret;
-+
-+	return sprintf(buf, "%u\n", regval & BIT(2) ? 1 : 0);
-+}
-+
-+static ssize_t force_telemetry_store(struct device *dev,
-+	struct device_attribute *attr,
-+	const char *buf,
-+	size_t count)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	int ret;
-+	unsigned int value;
-+
-+	ret = kstrtouint(buf, 0, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = regmap_update_bits(info->regmap, LTC4162L_CONFIG_BITS_REG,
-+				 BIT(2), value ? BIT(2) : 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(force_telemetry);
-+
-+static ssize_t arm_ship_mode_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, LTC4162L_ARM_SHIP_MODE, &regval);
-+	if (ret)
-+		return ret;
-+
-+	return sprintf(buf, "%u\n",
-+		regval == LTC4162L_ARM_SHIP_MODE_MAGIC ? 1 : 0);
-+}
-+
-+static ssize_t arm_ship_mode_store(struct device *dev,
-+	struct device_attribute *attr,
-+	const char *buf,
-+	size_t count)
-+{
-+	struct power_supply *psy = to_power_supply(dev);
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+	int ret;
-+	unsigned int value;
-+
-+	ret = kstrtouint(buf, 0, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = regmap_write(info->regmap, LTC4162L_ARM_SHIP_MODE,
-+				value ? LTC4162L_ARM_SHIP_MODE_MAGIC : 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(arm_ship_mode);
-+
-+static struct attribute *ltc4162l_sysfs_entries[] = {
-+	&dev_attr_charge_status.attr,
-+	&dev_attr_input_voltage.attr,
-+	&dev_attr_input_current.attr,
-+	&dev_attr_force_telemetry.attr,
-+	&dev_attr_arm_ship_mode.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group ltc4162l_attr_group = {
-+	.name	= NULL,	/* put in device directory */
-+	.attrs	= ltc4162l_sysfs_entries,
-+};
-+
-+static int ltc4162l_get_property(struct power_supply *psy,
-+				 enum power_supply_property psp,
-+				 union power_supply_propval *val)
-+{
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_STATUS:
-+		return ltc4162l_get_status(info, val);
-+	case POWER_SUPPLY_PROP_CHARGE_TYPE:
-+		return ltc4162l_get_charge_type(info, val);
-+	case POWER_SUPPLY_PROP_HEALTH:
-+		return ltc4162l_get_health(info, val);
-+	case POWER_SUPPLY_PROP_ONLINE:
-+		return ltc4162l_get_online(info, val);
-+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-+		return ltc4162l_get_vbat(info, LTC4162L_VBAT, val);
-+	case POWER_SUPPLY_PROP_VOLTAGE_AVG:
-+		return ltc4162l_get_vbat(info, LTC4162L_VBAT_FILT, val);
-+	case POWER_SUPPLY_PROP_CURRENT_NOW:
-+		return ltc4162l_get_ibat(info, val);
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-+		return ltc4162l_get_icharge(info,
-+				LTC4162L_ICHARGE_DAC, val);
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-+		return ltc4162l_get_icharge(info,
-+				LTC4162L_CHARGE_CURRENT_SETTING, val);
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
-+		return ltc4162l_get_vcharge(info,
-+				LTC4162L_VCHARGE_DAC, val);
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-+		return ltc4162l_get_vcharge(info,
-+				LTC4162L_VCHARGE_SETTING, val);
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		return ltc4162l_get_iin_limit_dac(info, val);
-+	case POWER_SUPPLY_PROP_TEMP:
-+		return ltc4162l_get_die_temp(info, val);
-+	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-+		return ltc4162l_get_term_current(info, val);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ltc4162l_set_property(struct power_supply *psy,
-+					 enum power_supply_property psp,
-+					 const union power_supply_propval *val)
-+{
-+	struct ltc4162l_info *info = power_supply_get_drvdata(psy);
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-+		return ltc4162l_set_icharge(info,
-+				LTC4162L_CHARGE_CURRENT_SETTING, val->intval);
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-+		return ltc4162l_set_vcharge(info,
-+				LTC4162L_VCHARGE_SETTING, val->intval);
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		return ltc4162l_set_iin_limit(info, val->intval);
-+	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-+		return ltc4162l_set_term_current(info, val->intval);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ltc4162l_property_is_writeable(struct power_supply *psy,
-+						enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+/* Charger power supply property routines */
-+static enum power_supply_property ltc4162l_properties[] = {
-+	POWER_SUPPLY_PROP_STATUS,
-+	POWER_SUPPLY_PROP_CHARGE_TYPE,
-+	POWER_SUPPLY_PROP_HEALTH,
-+	POWER_SUPPLY_PROP_ONLINE,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW, /* Reports battery voltage */
-+	POWER_SUPPLY_PROP_VOLTAGE_AVG,
-+	POWER_SUPPLY_PROP_CURRENT_NOW, /* Reports battery current */
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
-+	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
-+	POWER_SUPPLY_PROP_TEMP,
-+	POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT,
-+};
-+
-+static const struct power_supply_desc ltc4162l_desc = {
-+	.name		= "ltc4162-l",
-+	.type		= POWER_SUPPLY_TYPE_MAINS,
-+	.properties	= ltc4162l_properties,
-+	.num_properties	= ARRAY_SIZE(ltc4162l_properties),
-+	.get_property	= ltc4162l_get_property,
-+	.set_property	= ltc4162l_set_property,
-+	.property_is_writeable = ltc4162l_property_is_writeable,
-+};
-+
-+static bool ltc4162l_is_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	/* all registers up to this one are writeable */
-+	if (reg <= LTC4162L_CHARGER_CONFIG_BITS)
-+		return true;
-+
-+	/* The ALERTS registers can be written to clear alerts */
-+	if (reg >= LTC4162L_LIMIT_ALERTS_REG &&
-+	    reg <= LTC4162L_CHARGE_STATUS_ALERTS_REG)
-+		return true;
-+
-+	return false;
-+}
-+
-+static bool ltc4162l_is_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	/* all registers after this one are read-only status registers */
-+	return reg > LTC4162L_CHARGER_CONFIG_BITS;
-+}
-+
-+static const struct regmap_config ltc4162l_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 16,
-+	.val_format_endian = REGMAP_ENDIAN_LITTLE,
-+	.writeable_reg	= ltc4162l_is_writeable_reg,
-+	.volatile_reg	= ltc4162l_is_volatile_reg,
-+	.max_register	= LTC4162L_INPUT_UNDERVOLTAGE_DAC,
-+	.cache_type	= REGCACHE_RBTREE,
-+};
-+
-+static void ltc4162l_clear_interrupts(struct ltc4162l_info *info)
-+{
-+	/* Acknowledge interrupt to chip by clearing all events */
-+	regmap_write(info->regmap, LTC4162L_LIMIT_ALERTS_REG, 0);
-+	regmap_write(info->regmap, LTC4162L_CHARGER_STATE_ALERTS_REG, 0);
-+	regmap_write(info->regmap, LTC4162L_CHARGE_STATUS_ALERTS_REG, 0);
-+}
-+
-+static int ltc4162l_probe(struct i2c_client *client,
-+			const struct i2c_device_id *id)
-+{
-+	struct i2c_adapter *adapter = client->adapter;
-+	struct device *dev = &client->dev;
-+	struct ltc4162l_info *info;
-+	struct power_supply_config ltc4162l_config = {};
-+	u32 value;
-+	int ret;
-+
-+	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_WORD_DATA)) {
-+		dev_err(dev, "No support for SMBUS_WORD_DATA\n");
-+		return -ENODEV;
-+	}
-+	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	info->client = client;
-+	i2c_set_clientdata(client, info);
-+
-+	info->regmap = devm_regmap_init_i2c(client, &ltc4162l_regmap_config);
-+	if (IS_ERR(info->regmap)) {
-+		dev_err(dev, "Failed to initialize register map\n");
-+		return PTR_ERR(info->regmap);
-+	}
-+
-+	ret = device_property_read_u32(dev, "lltc,rsnsb-micro-ohms",
-+				       &info->rsnsb);
-+	if (ret) {
-+		dev_err(dev, "Missing lltc,rsnsb-micro-ohms property\n");
-+		return ret;
-+	}
-+	if (!info->rsnsb)
-+		return -EINVAL;
-+
-+	ret = device_property_read_u32(dev, "lltc,rsnsi-micro-ohms",
-+				       &info->rsnsi);
-+	if (ret) {
-+		dev_err(dev, "Missing lltc,rsnsi-micro-ohms property\n");
-+		return ret;
-+	}
-+	if (!info->rsnsi)
-+		return -EINVAL;
-+
-+	if (!device_property_read_u32(dev, "lltc,cell-count", &value))
-+		info->cell_count = value;
-+
-+	ltc4162l_config.of_node = dev->of_node;
-+	ltc4162l_config.drv_data = info;
-+
-+	info->charger = devm_power_supply_register(dev, &ltc4162l_desc,
-+						   &ltc4162l_config);
-+	if (IS_ERR(info->charger)) {
-+		dev_err(dev, "Failed to register charger\n");
-+		return PTR_ERR(info->charger);
-+	}
-+
-+	ret = sysfs_create_group(&info->charger->dev.kobj,
-+				 &ltc4162l_attr_group);
-+	if (ret)
-+		dev_err(dev, "failed to create extra sysfs entries\n");
-+
-+	/* Disable the threshold alerts, we're not using them */
-+	regmap_write(info->regmap, LTC4162L_EN_LIMIT_ALERTS_REG, 0);
-+
-+	/* Enable interrupts on all status changes */
-+	regmap_write(info->regmap, LTC4162L_EN_CHARGER_STATE_ALERTS_REG,
-+		     0x1fff);
-+	regmap_write(info->regmap, LTC4162L_EN_CHARGE_STATUS_ALERTS_REG, 0x1f);
-+
-+	ltc4162l_clear_interrupts(info);
-+
-+	return 0;
-+}
-+
-+static int ltc4162l_remove(struct i2c_client *client)
-+{
-+	struct ltc4162l_info *info = i2c_get_clientdata(client);
-+
-+	sysfs_remove_group(&info->charger->dev.kobj, &ltc4162l_attr_group);
-+
-+	return 0;
-+}
-+
-+static void ltc4162l_alert(struct i2c_client *client,
-+			   enum i2c_alert_protocol type, unsigned int flag)
-+{
-+	struct ltc4162l_info *info = i2c_get_clientdata(client);
-+
-+	if (type != I2C_PROTOCOL_SMBUS_ALERT)
-+		return;
-+
-+	ltc4162l_clear_interrupts(info);
-+	power_supply_changed(info->charger);
-+}
-+
-+static const struct i2c_device_id ltc4162l_i2c_id_table[] = {
-+	{ "ltc4162-l", 0 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(i2c, ltc4162l_i2c_id_table);
-+
-+static const struct of_device_id ltc4162l_of_match[] = {
-+	{ .compatible = "lltc,ltc4162-l", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, ltc4162l_of_match);
-+
-+static struct i2c_driver ltc4162l_driver = {
-+	.probe		= ltc4162l_probe,
-+	.remove		= ltc4162l_remove,
-+	.alert		= ltc4162l_alert,
-+	.id_table	= ltc4162l_i2c_id_table,
-+	.driver = {
-+		.name		= "ltc4162-l-charger",
-+		.of_match_table	= of_match_ptr(ltc4162l_of_match),
-+	},
-+};
-+module_i2c_driver(ltc4162l_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Mike Looijmans <mike.looijmans@topic.nl>");
-+MODULE_DESCRIPTION("LTC4162-L charger driver");
--- 
-2.17.1
-
+> 
+> Rob:
+> 
+> The changes here go some way towards cleaning up mistakes I made in the
+> Aspeed LPC controller binding. The proposed change is very much not
+> backwards compatible, but Joel and I don't want to live with the resulting mess
+> in the drivers of catering to both layouts. Another way we could avoid the
+> driver mess is to rev all the bindings and immediately drop support for the old
+> compatibles in the drivers. This creates a bit more churn in the bindings. What
+> are you willing to accommodate?
+> 
+> All consumers I'm aware of ship the Aspeed BMC dtb in FIT images alongside
+> the kernel, so while backwards-incompatible changes are rightly frowned upon
+> I feel we probably wouldn't cause too much damage if we went that path.
+> 
+> Andrew
+> 
+> > ---
+> >  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 85 +++----------------
+> >  1 file changed, 14 insertions(+), 71 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> > b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> > index a92acf1dd491..866f54a09e09 100644
+> > --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> > +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> > @@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a
+> > slave on the bus  conditions it can also take the role of bus master.
+> >
+> >  The LPC controller is represented as a multi-function device to
+> > account for the -mix of functionality it provides. The principle split
+> > is between the register -layout at the start of the I/O space which
+> > is, to quote the Aspeed datasheet, -"basically compatible with the
+> > [LPC registers from the] popular BMC controller -H8S/2168[1]", and
+> > everything else, where everything else is an eclectic -collection of
+> > functions with a esoteric register layout. "Everything else", -here
+> > labeled the "host" portion of the controller, includes, but is not
+> > limited
+> > -to:
+> > +mix of functionality, which includes, but is not limited to:
+> >
+> >  * An IPMI Block Transfer[2] Controller
+> >
+> > @@ -44,8 +38,8 @@ Required properties
+> >  ===================
+> >
+> >  - compatible:	One of:
+> > -		"aspeed,ast2400-lpc", "simple-mfd"
+> > -		"aspeed,ast2500-lpc", "simple-mfd"
+> > +		"aspeed,ast2400-lpc", "simple-mfd", "syscon"
+> > +		"aspeed,ast2500-lpc", "simple-mfd", "syscon"
+> >
+> >  - reg:		contains the physical address and length values of the Aspeed
+> >                  LPC memory region.
+> > @@ -55,66 +49,17 @@ Required properties
+> >  - ranges: 	Maps 0 to the physical address and length of the LPC memory
+> >                  region
+> >
+> > -Required LPC Child nodes
+> > -========================
+> > -
+> > -BMC Node
+> > ---------
+> > -
+> > -- compatible:	One of:
+> > -		"aspeed,ast2400-lpc-bmc"
+> > -		"aspeed,ast2500-lpc-bmc"
+> > -
+> > -- reg:		contains the physical address and length values of the
+> > -                H8S/2168-compatible LPC controller memory region
+> > -
+> > -Host Node
+> > ----------
+> > -
+> > -- compatible:   One of:
+> > -		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
+> > -		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
+> > -
+> > -- reg:		contains the address and length values of the host-related
+> > -                register space for the Aspeed LPC controller
+> > -
+> > -- #address-cells: <1>
+> > -- #size-cells:	<1>
+> > -- ranges: 	Maps 0 to the address and length of the host-related LPC
+> memory
+> > -                region
+> > -
+> >  Example:
+> >
+> >  lpc: lpc@1e789000 {
+> > -	compatible = "aspeed,ast2500-lpc", "simple-mfd";
+> > +	compatible = "aspeed,ast2500-lpc", "simple-mfd", "syscon";
+> >  	reg = <0x1e789000 0x1000>;
+> >
+> >  	#address-cells = <1>;
+> >  	#size-cells = <1>;
+> >  	ranges = <0x0 0x1e789000 0x1000>;
+> > -
+> > -	lpc_bmc: lpc-bmc@0 {
+> > -		compatible = "aspeed,ast2500-lpc-bmc";
+> > -		reg = <0x0 0x80>;
+> > -	};
+> > -
+> > -	lpc_host: lpc-host@80 {
+> > -		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
+> > -		reg = <0x80 0x1e0>;
+> > -		reg-io-width = <4>;
+> > -
+> > -		#address-cells = <1>;
+> > -		#size-cells = <1>;
+> > -		ranges = <0x0 0x80 0x1e0>;
+> > -	};
+> >  };
+> >
+> > -BMC Node Children
+> > -==================
+> > -
+> > -
+> > -Host Node Children
+> > -==================
+> >
+> >  LPC Host Interface Controller
+> >  -------------------
+> > @@ -145,14 +90,12 @@ Optional properties:
+> >
+> >  Example:
+> >
+> > -lpc-host@80 {
+> > -	lpc_ctrl: lpc-ctrl@0 {
+> > -		compatible = "aspeed,ast2500-lpc-ctrl";
+> > -		reg = <0x0 0x80>;
+> > -		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> > -		memory-region = <&flash_memory>;
+> > -		flash = <&spi>;
+> > -	};
+> > +lpc_ctrl: lpc-ctrl@80 {
+> > +	compatible = "aspeed,ast2500-lpc-ctrl";
+> > +	reg = <0x80 0x80>;
+> > +	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> > +	memory-region = <&flash_memory>;
+> > +	flash = <&spi>;
+> >  };
+> >
+> >  LPC Host Controller
+> > @@ -174,9 +117,9 @@ Required properties:
+> >
+> >  Example:
+> >
+> > -lhc: lhc@20 {
+> > +lhc: lhc@a0 {
+> >  	compatible = "aspeed,ast2500-lhc";
+> > -	reg = <0x20 0x24 0x48 0x8>;
+> > +	reg = <0xa0 0x24 0xc8 0x8>;
+> >  };
+> >
+> >  LPC reset control
+> > @@ -194,8 +137,8 @@ Required properties:
+> >
+> >  Example:
+> >
+> > -lpc_reset: reset-controller@18 {
+> > +lpc_reset: reset-controller@98 {
+> >          compatible = "aspeed,ast2500-lpc-reset";
+> > -        reg = <0x18 0x4>;
+> > +        reg = <0x98 0x4>;
+> >          #reset-cells = <1>;
+> >  };
+> > --
+> > 2.17.1
+> >
+> >
