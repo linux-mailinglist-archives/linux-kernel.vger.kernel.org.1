@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C6929BFB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6136629BFC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1816486AbgJ0RHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:07:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41594 "EHLO mail.kernel.org"
+        id S1816596AbgJ0RHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:07:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901506AbgJ0PHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:07:05 -0400
+        id S1793522AbgJ0PGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:06:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 724F822384;
-        Tue, 27 Oct 2020 15:07:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BF6322283;
+        Tue, 27 Oct 2020 15:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811224;
-        bh=9s1qdOmjR+jrD5pOZPQMERR3Zz2YW50y6c6r4G9sf5Y=;
+        s=default; t=1603811188;
+        bh=YGUiDGe90sp5TgqgA7b8ROVDTLh9eKBhKne9K8iMjEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z8RkZVU1AvOS509RF3lv1NBlK0mUbfgzGqWQobJc2vOuk7v16fZwC2O3t4Ev/NEfy
-         rI6pXRufsw00ye2T7vphvVr+QqNWziVDijRoNU7wjhTIlEGlDAekfFigupVXYhLJOJ
-         1FzblVwRSz6LuefUU3hTX8CK6yVFuA9MIuZcmoeU=
+        b=kSYX9q7667r39IOYe09+FT5OQV7jr6Guo3arIaIyK9hc2jmjZ7V1So/ZrIQNu2rz0
+         ruSDdZVf8nv+wm8ffquKYX1nuc1lhc81B4eMukPAT8WStjlj9299ZEojvQAH7Xb3jY
+         WtfbBp9YIRS3llZppzGlix7jau0M6gJlKX2nNDBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 386/633] RDMA/hns: Fix configuration of ack_req_freq in QPC
-Date:   Tue, 27 Oct 2020 14:52:09 +0100
-Message-Id: <20201027135540.814043176@linuxfoundation.org>
+Subject: [PATCH 5.8 404/633] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
+Date:   Tue, 27 Oct 2020 14:52:27 +0100
+Message-Id: <20201027135541.671099017@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,71 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Weihang Li <liweihang@huawei.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit fbed9d2be292504e04caa2057e3a9477a1e1d040 ]
+[ Upstream commit a2d0230b91f7e23ceb5d8fb6a9799f30517ec33a ]
 
-The hardware will add AckReq flag in BTH header according to the value of
-ack_req_freq to request ACK from responder for the packets with this flag.
-It should be greater than or equal to lp_pktn_ini instead of using a fixed
-value.
+The patch avoids allocating cpufreq_policy on stack hence fixing frame
+size overflow in 'powernv_cpufreq_reboot_notifier':
 
-Fixes: 7b9bd73ed13d ("RDMA/hns: Fix wrong assignment of lp_pktn_ini in QPC")
-Link: https://lore.kernel.org/r/1600509802-44382-8-git-send-email-liweihang@huawei.com
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+  drivers/cpufreq/powernv-cpufreq.c: In function powernv_cpufreq_reboot_notifier:
+  drivers/cpufreq/powernv-cpufreq.c:906:1: error: the frame size of 2064 bytes is larger than 2048 bytes
+
+Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency during reboot/kexec")
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200922080254.41497-1-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/cpufreq/powernv-cpufreq.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index a55a850a8b997..d3b983d9f757b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -3640,9 +3640,6 @@ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
- 			     V2_QPC_BYTE_76_SRQ_EN_S, 1);
+diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
+index 8646eb197cd96..31f5c4ebbac9f 100644
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -884,12 +884,15 @@ static int powernv_cpufreq_reboot_notifier(struct notifier_block *nb,
+ 				unsigned long action, void *unused)
+ {
+ 	int cpu;
+-	struct cpufreq_policy cpu_policy;
++	struct cpufreq_policy *cpu_policy;
+ 
+ 	rebooting = true;
+ 	for_each_online_cpu(cpu) {
+-		cpufreq_get_policy(&cpu_policy, cpu);
+-		powernv_cpufreq_target_index(&cpu_policy, get_nominal_index());
++		cpu_policy = cpufreq_cpu_get(cpu);
++		if (!cpu_policy)
++			continue;
++		powernv_cpufreq_target_index(cpu_policy, get_nominal_index());
++		cpufreq_cpu_put(cpu_policy);
  	}
  
--	roce_set_field(context->byte_172_sq_psn, V2_QPC_BYTE_172_ACK_REQ_FREQ_M,
--		       V2_QPC_BYTE_172_ACK_REQ_FREQ_S, 4);
--
- 	roce_set_bit(context->byte_172_sq_psn, V2_QPC_BYTE_172_FRE_S, 1);
- 
- 	hr_qp->access_flags = attr->qp_access_flags;
-@@ -3983,6 +3980,7 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 	dma_addr_t trrl_ba;
- 	dma_addr_t irrl_ba;
- 	enum ib_mtu mtu;
-+	u8 lp_pktn_ini;
- 	u8 port_num;
- 	u64 *mtts;
- 	u8 *dmac;
-@@ -4090,13 +4088,21 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 	}
- 
- #define MAX_LP_MSG_LEN 65536
--	/* MTU*(2^LP_PKTN_INI) shouldn't be bigger than 64kb */
-+	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 64KB */
-+	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / ib_mtu_enum_to_int(mtu));
-+
- 	roce_set_field(context->byte_56_dqpn_err, V2_QPC_BYTE_56_LP_PKTN_INI_M,
--		       V2_QPC_BYTE_56_LP_PKTN_INI_S,
--		       ilog2(MAX_LP_MSG_LEN / ib_mtu_enum_to_int(mtu)));
-+		       V2_QPC_BYTE_56_LP_PKTN_INI_S, lp_pktn_ini);
- 	roce_set_field(qpc_mask->byte_56_dqpn_err, V2_QPC_BYTE_56_LP_PKTN_INI_M,
- 		       V2_QPC_BYTE_56_LP_PKTN_INI_S, 0);
- 
-+	/* ACK_REQ_FREQ should be larger than or equal to LP_PKTN_INI */
-+	roce_set_field(context->byte_172_sq_psn, V2_QPC_BYTE_172_ACK_REQ_FREQ_M,
-+		       V2_QPC_BYTE_172_ACK_REQ_FREQ_S, lp_pktn_ini);
-+	roce_set_field(qpc_mask->byte_172_sq_psn,
-+		       V2_QPC_BYTE_172_ACK_REQ_FREQ_M,
-+		       V2_QPC_BYTE_172_ACK_REQ_FREQ_S, 0);
-+
- 	roce_set_bit(qpc_mask->byte_108_rx_reqepsn,
- 		     V2_QPC_BYTE_108_RX_REQ_PSN_ERR_S, 0);
- 	roce_set_field(qpc_mask->byte_96_rx_reqmsn, V2_QPC_BYTE_96_RX_REQ_MSN_M,
+ 	return NOTIFY_DONE;
 -- 
 2.25.1
 
