@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB02D29C2A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9E829C2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820799AbgJ0Ri0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
+        id S1820789AbgJ0RiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760354AbgJ0Oep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:34:45 -0400
+        id S1760530AbgJ0Oe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:34:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC426207BB;
-        Tue, 27 Oct 2020 14:34:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 516ED20709;
+        Tue, 27 Oct 2020 14:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809284;
-        bh=U1/EQmUCs1K3RWAhVipzsNc8+B3ohnd64s0zlhr9toY=;
+        s=default; t=1603809296;
+        bh=R/EIdN1dhjZmrIxGGM/69pEOsMpWAkuHLRWJuZBtzB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BgVhXoVjIwQ8dqQBbNgjKAJ4SsxM3QnhVm7712byXtCYujBYLGiPg4D/00zQ4+iCr
-         RoFt8nohpxYGhWzBavS0OyaA1bNfDNSS+pzT9wpQEvNb+UP2yhdOcgulDOi+Iy45Us
-         RvsBpJ14zTMzrmKu8kk+sc0JfEOcpal4fH40srhc=
+        b=XJgdmon7vAHF8UQDSF9QICZ0p6qCMjFD+s1Tjgn6QGydxr5AG48WvgQVz1F+ddEkJ
+         W6Bu6Wd2AelujR8fSFs9IefjsYVqaGiuLnxas69ZwefkQT3fEFIw8VDCCa6i61UueG
+         E1U6J6t7zK4V1488fm/Vag3K/sy9hTWvgwtNt1UY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        stable@vger.kernel.org,
+        Thomas Preston <thomas.preston@codethink.co.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 141/408] drm/panfrost: Ensure GPU quirks are always initialised
-Date:   Tue, 27 Oct 2020 14:51:19 +0100
-Message-Id: <20201027135501.637067196@linuxfoundation.org>
+Subject: [PATCH 5.4 144/408] pinctrl: mcp23s08: Fix mcp23x17 precious range
+Date:   Tue, 27 Oct 2020 14:51:22 +0100
+Message-Id: <20201027135501.782000290@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,48 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Price <steven.price@arm.com>
+From: Thomas Preston <thomas.preston@codethink.co.uk>
 
-[ Upstream commit 8c3c818c23a5bbce6ff180dd2ee04415241df77c ]
+[ Upstream commit b9b7fb29433b906635231d0a111224efa009198c ]
 
-The GPU 'CONFIG' registers used to work around hardware issues are
-cleared on reset so need to be programmed every time the GPU is reset.
-However panfrost_device_reset() failed to do this.
+On page 23 of the datasheet [0] it says "The register remains unchanged
+until the interrupt is cleared via a read of INTCAP or GPIO." Include
+INTCAPA and INTCAPB registers in precious range, so that they aren't
+accidentally cleared when we read via debugfs.
 
-To avoid this in future instead move the call to
-panfrost_gpu_init_quirks() to panfrost_gpu_power_on() so that the
-regsiters are always programmed just before the cores are powered.
+[0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
 
-Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
-Signed-off-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200909122957.51667-1-steven.price@arm.com
+Fixes: 8f38910ba4f6 ("pinctrl: mcp23s08: switch to regmap caching")
+Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20200828213226.1734264-3-thomas.preston@codethink.co.uk
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panfrost/panfrost_gpu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-mcp23s08.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index 8822ec13a0d61..1431db13ec788 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -304,6 +304,8 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
- 	int ret;
- 	u32 val;
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
+index 676ff9a4459e3..d8bcbefcba890 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08.c
+@@ -144,7 +144,7 @@ static const struct regmap_access_table mcp23x17_volatile_table = {
+ };
  
-+	panfrost_gpu_init_quirks(pfdev);
-+
- 	/* Just turn on everything for now */
- 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present);
- 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
-@@ -357,7 +359,6 @@ int panfrost_gpu_init(struct panfrost_device *pfdev)
- 		return err;
- 	}
+ static const struct regmap_range mcp23x17_precious_range = {
+-	.range_min = MCP_GPIO << 1,
++	.range_min = MCP_INTCAP << 1,
+ 	.range_max = MCP_GPIO << 1,
+ };
  
--	panfrost_gpu_init_quirks(pfdev);
- 	panfrost_gpu_power_on(pfdev);
- 
- 	return 0;
 -- 
 2.25.1
 
