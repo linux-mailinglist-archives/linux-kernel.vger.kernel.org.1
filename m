@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6607E29BC30
+	by mail.lfdr.de (Postfix) with ESMTP id D374529BC31
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801746AbgJ0PnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53956 "EHLO mail.kernel.org"
+        id S1801759AbgJ0PnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:43:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1800260AbgJ0Pf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:35:29 -0400
+        id S1800262AbgJ0Pfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:35:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F6DA22264;
-        Tue, 27 Oct 2020 15:35:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DE502225E;
+        Tue, 27 Oct 2020 15:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812928;
-        bh=hee3vS4xuxMewJIgjLMyatYaNaxjQVs7SmePoBuLgQc=;
+        s=default; t=1603812930;
+        bh=iIPeypKGuBiTZuxOXSusBcE8SBSXvwlqkpPk4sIc56U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E7qLdukslXruOfsZLy8eOH6/4mxSa8YedMyku59ZDcSbTbB3C8ErJilU4/u1iM0lh
-         YkcLaLhm9NGG2rLqjTNDG7KYxxjEQ2HRaaaNPaDqXlikVEgR/5geo+m/f2jWDLSJSh
-         R3bFfa0f7vGPoYwvllbwwmzvY+Fs6M38VXTbv2O0=
+        b=fmi9K4miG6hXEOhhP5bzPr4DYORh9461ZF8MNdTdf9WlfEv/fVvAUg/xjaQyAROt4
+         Rb8gzDZnA9JAv96Fhse8BxMO/TgpMGoiQZDrqN9I+uD5blVsoNKHOjbIkwPEXh0YRs
+         EBGfR+HGeuaXWkbEDc5Vj+m6lOcdsS5VgYoAgkLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 348/757] iio: adc: stm32-adc: fix runtime autosuspend delay when slow polling
-Date:   Tue, 27 Oct 2020 14:49:58 +0100
-Message-Id: <20201027135506.890447783@linuxfoundation.org>
+Subject: [PATCH 5.9 349/757] net: enic: Cure the enic api locking trainwreck
+Date:   Tue, 27 Oct 2020 14:49:59 +0100
+Message-Id: <20201027135506.939237237@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,70 +43,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@st.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit c537d3457542a398caa1fe58e0976c5f83cf7281 ]
+[ Upstream commit a53b59ece86c86d16d12ccdaa1ad0c78250a9d96 ]
 
-When the ADC is runtime suspended and starting a conversion, the stm32-adc
-driver calls pm_runtime_get_sync() that gets cascaded to the parent
-(e.g. runtime resume of stm32-adc-core driver). This also kicks the
-autosuspend delay (e.g. 2s) of the parent.
-Once the ADC is active, calling pm_runtime_get_sync() again (upon a new
-capture) won't kick the autosuspend delay for the parent (stm32-adc-core
-driver) as already active.
+enic_dev_wait() has a BUG_ON(in_interrupt()).
 
-Currently, this makes the stm32-adc-core driver go in suspend state
-every 2s when doing slow polling. As an example, doing a capture, e.g.
-cat in_voltageY_raw at a 0.2s rate, the auto suspend delay for the parent
-isn't refreshed. Once it expires, the parent immediately falls into
-runtime suspended state, in between two captures, as soon as the child
-driver falls into runtime suspend state:
-- e.g. after 2s, + child calls pm_runtime_put_autosuspend() + 100ms
-  autosuspend delay of the child.
-- stm32-adc-core switches off regulators, clocks and so on.
-- They get switched on back again 100ms later in this example (at 2.2s).
+Chasing the callers of enic_dev_wait() revealed the gems of enic_reset()
+and enic_tx_hang_reset() which are both invoked through work queues in
+order to be able to call rtnl_lock(). So far so good.
 
-So, use runtime_idle() callback in stm32-adc-core driver to call
-pm_runtime_mark_last_busy() for the parent driver (stm32-adc-core),
-to avoid this.
+After locking rtnl both functions acquire enic::enic_api_lock which
+serializes against the (ab)use from infiniband. This is where the
+trainwreck starts.
 
-Fixes: 9bdbb1139ca1 ("iio: adc: stm32-adc: add power management support")
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Link: https://lore.kernel.org/r/1593615328-5180-1-git-send-email-fabrice.gasnier@st.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+enic::enic_api_lock is a spin_lock() which implicitly disables preemption,
+but both functions invoke a ton of functions under that lock which can
+sleep. The BUG_ON(in_interrupt()) does not trigger in that case because it
+can't detect the preempt disabled condition.
+
+This clearly has never been tested with any of the mandatory debug options
+for 7+ years, which would have caught that for sure.
+
+Cure it by adding a enic_api_busy member to struct enic, which is modified
+and evaluated with enic::enic_api_lock held.
+
+If enic_api_devcmd_proxy_by_index() observes enic::enic_api_busy as true,
+it drops enic::enic_api_lock and busy waits for enic::enic_api_busy to
+become false.
+
+It would be smarter to wait for a completion of that busy period, but
+enic_api_devcmd_proxy_by_index() is called with other spin locks held which
+obviously can't sleep.
+
+Remove the BUG_ON(in_interrupt()) check as well because it's incomplete and
+with proper debugging enabled the problem would have been caught from the
+debug checks in schedule_timeout().
+
+Fixes: 0b038566c0ea ("drivers/net: enic: Add an interface for USNIC to interact with firmware")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/stm32-adc-core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/cisco/enic/enic.h      |  1 +
+ drivers/net/ethernet/cisco/enic/enic_api.c  |  6 +++++
+ drivers/net/ethernet/cisco/enic/enic_main.c | 27 ++++++++++++++++-----
+ 3 files changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-index 0e2068ec068b8..358636954619d 100644
---- a/drivers/iio/adc/stm32-adc-core.c
-+++ b/drivers/iio/adc/stm32-adc-core.c
-@@ -794,6 +794,13 @@ static int stm32_adc_core_runtime_resume(struct device *dev)
- {
- 	return stm32_adc_core_hw_start(dev);
- }
-+
-+static int stm32_adc_core_runtime_idle(struct device *dev)
-+{
-+	pm_runtime_mark_last_busy(dev);
-+
-+	return 0;
-+}
+diff --git a/drivers/net/ethernet/cisco/enic/enic.h b/drivers/net/ethernet/cisco/enic/enic.h
+index 18f3aeb88f22a..c67a16a48d624 100644
+--- a/drivers/net/ethernet/cisco/enic/enic.h
++++ b/drivers/net/ethernet/cisco/enic/enic.h
+@@ -169,6 +169,7 @@ struct enic {
+ 	u16 num_vfs;
  #endif
+ 	spinlock_t enic_api_lock;
++	bool enic_api_busy;
+ 	struct enic_port_profile *pp;
  
- static const struct dev_pm_ops stm32_adc_core_pm_ops = {
-@@ -801,7 +808,7 @@ static const struct dev_pm_ops stm32_adc_core_pm_ops = {
- 				pm_runtime_force_resume)
- 	SET_RUNTIME_PM_OPS(stm32_adc_core_runtime_suspend,
- 			   stm32_adc_core_runtime_resume,
--			   NULL)
-+			   stm32_adc_core_runtime_idle)
- };
+ 	/* work queue cache line section */
+diff --git a/drivers/net/ethernet/cisco/enic/enic_api.c b/drivers/net/ethernet/cisco/enic/enic_api.c
+index b161f24522b87..b028ea2dec2b9 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_api.c
++++ b/drivers/net/ethernet/cisco/enic/enic_api.c
+@@ -34,6 +34,12 @@ int enic_api_devcmd_proxy_by_index(struct net_device *netdev, int vf,
+ 	struct vnic_dev *vdev = enic->vdev;
  
- static const struct stm32_adc_priv_cfg stm32f4_adc_priv_cfg = {
+ 	spin_lock(&enic->enic_api_lock);
++	while (enic->enic_api_busy) {
++		spin_unlock(&enic->enic_api_lock);
++		cpu_relax();
++		spin_lock(&enic->enic_api_lock);
++	}
++
+ 	spin_lock_bh(&enic->devcmd_lock);
+ 
+ 	vnic_dev_cmd_proxy_by_index_start(vdev, vf);
+diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
+index 552d89fdf54a5..988c0a72e6836 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_main.c
++++ b/drivers/net/ethernet/cisco/enic/enic_main.c
+@@ -2106,8 +2106,6 @@ static int enic_dev_wait(struct vnic_dev *vdev,
+ 	int done;
+ 	int err;
+ 
+-	BUG_ON(in_interrupt());
+-
+ 	err = start(vdev, arg);
+ 	if (err)
+ 		return err;
+@@ -2295,6 +2293,13 @@ static int enic_set_rss_nic_cfg(struct enic *enic)
+ 		rss_hash_bits, rss_base_cpu, rss_enable);
+ }
+ 
++static void enic_set_api_busy(struct enic *enic, bool busy)
++{
++	spin_lock(&enic->enic_api_lock);
++	enic->enic_api_busy = busy;
++	spin_unlock(&enic->enic_api_lock);
++}
++
+ static void enic_reset(struct work_struct *work)
+ {
+ 	struct enic *enic = container_of(work, struct enic, reset);
+@@ -2304,7 +2309,9 @@ static void enic_reset(struct work_struct *work)
+ 
+ 	rtnl_lock();
+ 
+-	spin_lock(&enic->enic_api_lock);
++	/* Stop any activity from infiniband */
++	enic_set_api_busy(enic, true);
++
+ 	enic_stop(enic->netdev);
+ 	enic_dev_soft_reset(enic);
+ 	enic_reset_addr_lists(enic);
+@@ -2312,7 +2319,10 @@ static void enic_reset(struct work_struct *work)
+ 	enic_set_rss_nic_cfg(enic);
+ 	enic_dev_set_ig_vlan_rewrite_mode(enic);
+ 	enic_open(enic->netdev);
+-	spin_unlock(&enic->enic_api_lock);
++
++	/* Allow infiniband to fiddle with the device again */
++	enic_set_api_busy(enic, false);
++
+ 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
+ 
+ 	rtnl_unlock();
+@@ -2324,7 +2334,9 @@ static void enic_tx_hang_reset(struct work_struct *work)
+ 
+ 	rtnl_lock();
+ 
+-	spin_lock(&enic->enic_api_lock);
++	/* Stop any activity from infiniband */
++	enic_set_api_busy(enic, true);
++
+ 	enic_dev_hang_notify(enic);
+ 	enic_stop(enic->netdev);
+ 	enic_dev_hang_reset(enic);
+@@ -2333,7 +2345,10 @@ static void enic_tx_hang_reset(struct work_struct *work)
+ 	enic_set_rss_nic_cfg(enic);
+ 	enic_dev_set_ig_vlan_rewrite_mode(enic);
+ 	enic_open(enic->netdev);
+-	spin_unlock(&enic->enic_api_lock);
++
++	/* Allow infiniband to fiddle with the device again */
++	enic_set_api_busy(enic, false);
++
+ 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
+ 
+ 	rtnl_unlock();
 -- 
 2.25.1
 
