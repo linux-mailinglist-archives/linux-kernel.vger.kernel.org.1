@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F090329A7EC
+	by mail.lfdr.de (Postfix) with ESMTP id 08AEF29A7EA
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409148AbgJ0JdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:33:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36866 "EHLO mail.kernel.org"
+        id S2409041AbgJ0JdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:33:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732268AbgJ0JdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:33:04 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46C512224E;
-        Tue, 27 Oct 2020 09:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603791183;
-        bh=z5CM28156VEXnHyu1Yja2r3drQA5pjsZ18ZLWjM1vEs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dLGUfGuBMR/YH5n22GfjQ93X7kYrSkLIpZiby/SnOVR5a2i8HFOuO5jnuKueouoS1
-         stG/FjiW5z2UdszeJaJTa92sialDUlalKvJNu1Jw1pwwBevnvW0+3cik0HB5wBMJNO
-         JXrgfhyWVFiWLauTEylgTdpwCRJZtvY/51iIE8PA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kXLLh-004dI0-7g; Tue, 27 Oct 2020 09:33:01 +0000
+        id S1732268AbgJ0JdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:33:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F2CC5AD6B;
+        Tue, 27 Oct 2020 09:33:01 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6742D1E10F5; Tue, 27 Oct 2020 10:33:01 +0100 (CET)
+Date:   Tue, 27 Oct 2020 10:33:01 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
+Message-ID: <20201027093301.GA16090@quack2.suse.cz>
+References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
+ <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Oct 2020 09:33:01 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Biwen Li <biwen.li@oss.nxp.com>
-Cc:     linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, leoyang.li@nxp.com, zhiqiang.hou@nxp.com,
-        tglx@linutronix.de, jason@lakedaemon.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
-        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
-Subject: Re: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
- interrupt
-In-Reply-To: <20201027044619.41879-1-biwen.li@oss.nxp.com>
-References: <20201027044619.41879-1-biwen.li@oss.nxp.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d5d6deb90b4b3d086024fcf01b737da9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: biwen.li@oss.nxp.com, linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, leoyang.li@nxp.com, zhiqiang.hou@nxp.com, tglx@linutronix.de, jason@lakedaemon.net, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, jiafei.pan@nxp.com, xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org, biwen.li@nxp.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 04:46, Biwen Li wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Fri 23-10-20 21:44:17, John Hubbard wrote:
+> On 10/23/20 5:19 PM, Jason Gunthorpe wrote:
+> > +	start += (unsigned long)nr_pinned << PAGE_SHIFT;
+> > +	pages += nr_pinned;
+> > +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
+> > +				      pages);
+> > +	if (ret < 0) {
+> >   		/* Have to be a bit careful with return values */
 > 
-> Add an new IRQ chip declaration for LS1043A and LS1088A
-> - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A. 
-> SCFG_INTPCR[31:0]
->   of these SoCs is stored/read as SCFG_INTPCR[0:31] defaultly(bit
->   reverse)
-> - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
+> ...and can we move that comment up one level, so that it reads:
 > 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Signed-off-by: Biwen Li <biwen.li@nxp.com>
-
-You clearly couldn't be bothered to read what I wrote in my earlier
-replies. I'm thus ignoring this series...
-
-> ---
-> Change in v2:
-> 	- add despcription of bit reverse
-> 	- update copyright
+> 	/* Have to be a bit careful with return values */
+> 	if (ret < 0) {
+> 		if (nr_pinned)
+> 			return nr_pinned;
+> 		return ret;
+> 	}
+> 	return ret + nr_pinned;
 > 
->  drivers/irqchip/irq-ls-extirq.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-ls-extirq.c 
-> b/drivers/irqchip/irq-ls-extirq.c
-> index 4d1179fed77c..9587bc2607fc 100644
-> --- a/drivers/irqchip/irq-ls-extirq.c
-> +++ b/drivers/irqchip/irq-ls-extirq.c
-> @@ -1,5 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -
-> +/*
-> + * Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> + * Copyright 2020 NXP
+> Thinking about this longer term, it would be nice if the whole gup/pup API
+> set just stopped pretending that anyone cares about partial success, because
+> they *don't*. If we had return values of "0 or -ERRNO" throughout, and an
+> additional set of API wrappers that did some sort of limited retry just like
+> some of the callers do, that would be a happier story.
 
-... specially when you keep attributing someone else's copyright to NXP.
+Actually there are callers that care about partial success. See e.g.
+iov_iter_get_pages() usage in fs/direct_io.c:dio_refill_pages() or
+bio_iov_iter_get_pages(). These places handle partial success just fine and
+not allowing partial success from GUP could regress things...
 
-         M.
+								Honza
 -- 
-Jazz is not dead. It just smells funny...
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
