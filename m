@@ -2,190 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C966829AB1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672A029AB1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750207AbgJ0LsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:48:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1750193AbgJ0LsW (ORCPT
+        id S2899550AbgJ0Ls2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:48:28 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:39535 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897227AbgJ0Ls0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:48:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603799299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/AgwzcCTvrWgzyfiV85FVL0zRQS/mR6Y//U0UAucMk=;
-        b=cHHBGpY06Vgtaj9wBGF/kI8H1b3ne+OW2EdaKaEuAAATWiYtMkDTp7YKmAdYykSbPzr50E
-        8EXUHi300pGrd2Jw7u6EfO5EMdqEtPXuUo42v2QZdQFM01nIW2/cCgS/1yszNKZ7pOS1mq
-        tPsfLuQAMOxNtAM0QWv1r12Klb0vspw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-i2czznU2M7Ou11EETDUbFw-1; Tue, 27 Oct 2020 07:48:15 -0400
-X-MC-Unique: i2czznU2M7Ou11EETDUbFw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C121186DD41;
-        Tue, 27 Oct 2020 11:48:12 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D65D55C1BB;
-        Tue, 27 Oct 2020 11:48:04 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 59ADC416C894; Tue, 27 Oct 2020 08:47:39 -0300 (-03)
-Date:   Tue, 27 Oct 2020 08:47:39 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20201027114739.GA11336@fuller.cnet>
-References: <20201023085826.GP2611@hirez.programming.kicks-ass.net>
- <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
- <87ft6464jf.fsf@nanos.tec.linutronix.de>
- <20201026173012.GA377978@fuller.cnet>
- <875z6w4xt4.fsf@nanos.tec.linutronix.de>
- <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
- <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
- <85b5f53e-5be2-beea-269a-f70029bea298@intel.com>
- <87lffs3bd6.fsf@nanos.tec.linutronix.de>
- <959997ee-f393-bab0-45c0-4144c37b9185@redhat.com>
+        Tue, 27 Oct 2020 07:48:26 -0400
+Received: by mail-pl1-f175.google.com with SMTP id x23so617569plr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UFoX/nPlMdfVA5ftTW+3xAKSzT05mQ8RbVahvp6lNY0=;
+        b=qCyUwwqt7rpSBuYVKF4yqy7bF1pi3AV7jHWr1VCycFqyW3QNWqkoS0EOBuo2rkXwpm
+         Py166u7NDG+jFS2hrFZccsCfo9UigarNhMBh7fp73DqvJrPCK6mVGDsA1+Y5VgI1X7JM
+         XiWKzOifUlrhbUqqbT/G3iJ+75IWo752Ww5X1V7Zb5LYvzUxQKsTuJIfnkJWv2QUlL/Y
+         XoEFMQe3OBHH8vprDnZUD0BrpOOBbJPanrFrw/NXmcGkswduyfi03rrhVYYOfMwS06qI
+         bL6Wd7qrgRtXYHreqpHFJ5UXWHzQC0V8yPfkPYdvz7E8u/NHMjrlXrXVQehsP+BmFUDa
+         y9fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UFoX/nPlMdfVA5ftTW+3xAKSzT05mQ8RbVahvp6lNY0=;
+        b=I2pfqtSYhIC0aMKy7Ox1IPAJwbS/nk02U7n3dNJG67LerSJcojYsNrjdwaI6rW/L04
+         v96OVVP36UzfcJNmAMgYrxX07CD09OaVpI7aD7RT58weP+rHo5ClHAIuITlgbiNPBXdU
+         1It8CXu6lpIuVFx1SI+yFeeBQUFkDNpPkeToyEgU9YviS0wGiHjqLOmWdLV22PSAMxrN
+         HEaxAGsE2f/kwnhND+3n5oMe1rwLh8TqY0x5CDwcD1Wmzb97Lto/gTE8ZPOrL6TX6PNC
+         O1Lo76CuAFwBqLc6a5AP8LpWVGsP/Rvgg3/Ej48Z94/EZdN3JwPZ6BahgHVa8VqAFCqF
+         2mMg==
+X-Gm-Message-State: AOAM530pu6a61y4k7A77x0h/tkxm2Zh2kqjYamtFV5Ooe7b4cowNfppI
+        hAsuxp1cDjuXYmxnptLJ17m7jQ==
+X-Google-Smtp-Source: ABdhPJx+Rt0FrtY6sTkGXCX1xWUhXXmPLg/IT6YgUlkLQi0vVWpxEgVrwjp7rdpD1IamJ+344Bfq5g==
+X-Received: by 2002:a17:90a:e697:: with SMTP id s23mr1627362pjy.16.1603799305891;
+        Tue, 27 Oct 2020 04:48:25 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id f5sm1867196pgi.86.2020.10.27.04.48.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 04:48:24 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 17:18:22 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201027114822.vsh7vpwfnh2tvmpz@vireshk-i7>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201022071145.GM2628@hirez.programming.kicks-ass.net>
+ <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <20201027111133.ajlxn5lbnfeocfgb@e107158-lin>
+ <jhjlffrq58y.mognet@arm.com>
+ <20201027114214.irsgdlfvyo46jpww@e107158-lin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <959997ee-f393-bab0-45c0-4144c37b9185@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201027114214.irsgdlfvyo46jpww@e107158-lin>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 06:22:29PM -0400, Nitesh Narayan Lal wrote:
+On 27-10-20, 11:42, Qais Yousef wrote:
+> On 10/27/20 11:26, Valentin Schneider wrote:
+> > 
+> > On 27/10/20 11:11, Qais Yousef wrote:
+> > > On 10/22/20 14:02, Peter Zijlstra wrote:
+> > >> However I do want to retire ondemand, conservative and also very much
+> > >> intel_pstate/active mode. I also have very little sympathy for
+> > >> userspace.
+> > >
+> > > Userspace is useful for testing and sanity checking. Not sure if people use it
+> > > to measure voltage/current at each frequency to generate
+> > > dynamic-power-coefficient for their platform. Lukasz, Dietmar?
+> > >
+> > 
+> > It's valuable even just for cpufreq sanity checking - we have that test
+> > that goes through increasing frequencies and asserts the work done is
+> > monotonically increasing. This has been quite useful in the past to detect
+> > broken bits.
+> > 
+> > That *should* still be totally doable with any other governor by using the
+> > scaling_{min, max}_freq sysfs interface.
 > 
-> On 10/26/20 5:50 PM, Thomas Gleixner wrote:
-> > On Mon, Oct 26 2020 at 14:11, Jacob Keller wrote:
-> >> On 10/26/2020 1:11 PM, Thomas Gleixner wrote:
-> >>> On Mon, Oct 26 2020 at 12:21, Jacob Keller wrote:
-> >>>> Are there drivers which use more than one interrupt per queue? I know
-> >>>> drivers have multiple management interrupts.. and I guess some drivers
-> >>>> do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
-> >>>> have multiple queues for one interrupt .. I'm not sure how a single
-> >>>> queue with multiple interrupts would work though.
-> >>> For block there is always one interrupt per queue. Some Network drivers
-> >>> seem to have seperate RX and TX interrupts per queue.
-> >> That's true when thinking of Tx and Rx as a single queue. Another way to
-> >> think about it is "one rx queue" and "one tx queue" each with their own
-> >> interrupt...
-> >>
-> >> Even if there are devices which force there to be exactly queue pairs,
-> >> you could still think of them as separate entities?
-> > Interesting thought.
-> >
-> > But as Jakub explained networking queues are fundamentally different
-> > from block queues on the RX side. For block the request issued on queue
-> > X will raise the complete interrupt on queue X.
-> >
-> > For networking the TX side will raise the TX interrupt on the queue on
-> > which the packet was queued obviously or should I say hopefully. :)
+> True. This effectively makes every governor a potential user space governor.
 > 
-> This is my impression as well.
-> 
-> > But incoming packets will be directed to some receive queue based on a
-> > hash or whatever crystallball logic the firmware decided to implement.
-> >
-> > Which makes this not really suitable for the managed interrupt and
-> > spreading approach which is used by block-mq. Hrm...
-> >
-> > But I still think that for curing that isolation stuff we want at least
-> > some information from the driver. Alternative solution would be to grant
-> > the allocation of interrupts and queues and have some sysfs knob to shut
-> > down queues at runtime. If that shutdown results in releasing the queue
-> > interrupt (via free_irq()) then the vector exhaustion problem goes away.
-> 
-> I think this is close to what I and Marcelo were discussing earlier today
-> privately.
-> 
-> I don't think there is currently a way to control the enablement/disablement of
-> interrupts from the userspace.
+> /me not sure to be happy or grumpy about it
 
-As long as the interrupt obeys the "trigger when request has been
-performed by local CPU" rule (#1) (for MSI type interrupts, where driver allocates
-one I/O interrupt per CPU), don't see a need for the interface.
+Userspace governor should be kept as is, it is very effective to get
+unnecessary governor code out of the path when testing basic
+functioning of the hardware/driver. It is quite useful when things
+don't work as expected.
 
-For other types of interrupts, interrupt controller should be programmed
-to not include the isolated CPU on its "destination CPU list".
-
-About the block VS network discussion, what we are trying to do at skb
-level (Paolo Abeni CC'ed, author of the suggestion) is to use RPS to
-avoid skbs from being queued to a CPU (on RX), and to queue skbs
-on housekeeping CPUs for processing (TX).
-
-However, if per-CPU interrupts are not disabled, then the (for example)
-network device is free to include the CPU in its list of destinations.
-Which would require one to say, configure RPS (or whatever mechanism
-is distributing interrupts).
-
-Hum, it would feel safer (rather than trust the #1 rule to be valid
-in all cases) to ask the driver to disable the interrupt (after shutting
-down queue) for that particular CPU.
-
-BTW, Thomas, software is free to configure a particular MSI-X interrupt
-to point to any CPU:
-
-10.11 MESSAGE SIGNALLED INTERRUPTS
-The PCI Local Bus Specification, Rev 2.2 (www.pcisig.com) introduces the concept of message signalled interrupts.
-As the specification indicates:
-“Message signalled interrupts (MSI) is an optional feature that enables PCI devices to request
-service by writing a system-specified message to a system-specified address (PCI DWORD memory
-write transaction). The transaction address specifies the message destination while the transaction
-data specifies the message. System software is expected to initialize the message destination and
-message during device configuration, allocating one or more non-shared messages to each MSI
-capable function.”
-
-Fields in the Message Address Register are as follows:
-1. Bits 31-20 — These bits contain a fixed value for interrupt messages (0FEEH). This value locates interrupts at
-the 1-MByte area with a base address of 4G – 18M. All accesses to this region are directed as interrupt
-messages. Care must to be taken to ensure that no other device claims the region as I/O space.
-2. Destination ID — This field contains an 8-bit destination ID. It identifies the message’s target processor(s).
-The destination ID corresponds to bits 63:56 of the I/O APIC Redirection Table Entry if the IOAPIC is used to
-dispatch the interrupt to the processor(s).
-
----
-
-So taking the example where computation happens while isolated and later
-stored via block interface, aren't we restricting the usage scenarios
-by enforcing the "per-CPU queue has interrupt pointing to owner CPU" rule?
-
-> I think in terms of the idea we need something similar to what i40e does,
-> that is shutdown all IRQs when CPU is suspended and restores the interrupt
-> schema when the CPU is back online.
-> 
-> The two key difference will be that this API needs to be generic and also
-> needs to be exposed to the userspace through something like sysfs as you
-> have mentioned.
-
-
-> 
-> -- 
-> Thanks
-> Nitesh
-> 
-
-
-
+-- 
+viresh
