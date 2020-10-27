@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6748629C4A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1445729C539
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757563AbgJ0OTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40274 "EHLO mail.kernel.org"
+        id S1824831AbgJ0SGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:06:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900893AbgJ0ORP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:17:15 -0400
+        id S1757270AbgJ0ORR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 482D02076A;
-        Tue, 27 Oct 2020 14:17:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA26E2072D;
+        Tue, 27 Oct 2020 14:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808234;
-        bh=U6o2dg07eIMKaLwgIP31/h+VUJoIv+q7JlaXVIgaJcM=;
+        s=default; t=1603808237;
+        bh=nya+DzPfGCgen7n8gz7XXNnfG1S3MiBW7FmTdewTuYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k2Cbnv9cR6qB20NZe9Gmj8V7HFsugLHES6xssbmoZwaoT8hw/vPW/VxaVtjyn/0PE
-         tOqKmqQqXj8l3f9Pn7Kkg9MN4v+ocisM4nGSK6Kh8GDNJjhmN7MRZM8G/90+4Ms+N1
-         l+wZ2gUnHWsqzP7PHguon/zmrREmiBdAlVRxaKBY=
+        b=u+SHuCUoBCXLUNTcBaKYuBCaXx+T1iC7tPr/6LEGLP7LKhhxxNqn44oGnxCvnzZF0
+         JyS/5yAN3GbFEVC6kV1XeS3XNdlwkKM5Z9TCbIh0Ypmb3WNtqM69Otp2DVPjwVsnUq
+         Ww8dpyszh4lA3ROJUnxtjt0lvPpX1Y/ahe3L0SA8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Vasily Averin <vvs@virtuozzo.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 007/264] net: fix pos incrementment in ipv6_route_seq_next
-Date:   Tue, 27 Oct 2020 14:51:05 +0100
-Message-Id: <20201027135431.000640968@linuxfoundation.org>
+Subject: [PATCH 4.19 008/264] net/smc: fix valid DMBE buffer sizes
+Date:   Tue, 27 Oct 2020 14:51:06 +0100
+Message-Id: <20201027135431.048873832@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -45,90 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Karsten Graul <kgraul@linux.ibm.com>
 
-[ Upstream commit 6617dfd440149e42ce4d2be615eb31a4755f4d30 ]
+[ Upstream commit ef12ad45880b696eb993d86c481ca891836ab593 ]
 
-Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-tried to fix the issue where seq_file pos is not increased
-if a NULL element is returned with seq_ops->next(). See bug
-  https://bugzilla.kernel.org/show_bug.cgi?id=206283
-The commit effectively does:
-  - increase pos for all seq_ops->start()
-  - increase pos for all seq_ops->next()
+The SMCD_DMBE_SIZES should include all valid DMBE buffer sizes, so the
+correct value is 6 which means 1MB. With 7 the registration of an ISM
+buffer would always fail because of the invalid size requested.
+Fix that and set the value to 6.
 
-For ipv6_route, increasing pos for all seq_ops->next() is correct.
-But increasing pos for seq_ops->start() is not correct
-since pos is used to determine how many items to skip during
-seq_ops->start():
-  iter->skip = *pos;
-seq_ops->start() just fetches the *current* pos item.
-The item can be skipped only after seq_ops->show() which essentially
-is the beginning of seq_ops->next().
-
-For example, I have 7 ipv6 route entries,
-  root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=4096
-  00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
-  fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-  00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
-  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
-  ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000004 00000000 00000001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-  0+1 records in
-  0+1 records out
-  1050 bytes (1.0 kB, 1.0 KiB) copied, 0.00707908 s, 148 kB/s
-  root@arch-fb-vm1:~/net-next
-
-In the above, I specify buffer size 4096, so all records can be returned
-to user space with a single trip to the kernel.
-
-If I use buffer size 128, since each record size is 149, internally
-kernel seq_read() will read 149 into its internal buffer and return the data
-to user space in two read() syscalls. Then user read() syscall will trigger
-next seq_ops->start(). Since the current implementation increased pos even
-for seq_ops->start(), it will skip record #2, #4 and #6, assuming the first
-record is #1.
-
-  root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=128
-  00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-4+1 records in
-4+1 records out
-600 bytes copied, 0.00127758 s, 470 kB/s
-
-To fix the problem, create a fake pos pointer so seq_ops->start()
-won't actually increase seq_file pos. With this fix, the
-above `dd` command with `bs=128` will show correct result.
-
-Fixes: 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-Cc: Alexei Starovoitov <ast@kernel.org>
-Suggested-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: c6ba7c9ba43d ("net/smc: add base infrastructure for SMC-D and ISM")
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/ip6_fib.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/smc/smc_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -2417,8 +2417,10 @@ static void *ipv6_route_seq_start(struct
- 	iter->skip = *pos;
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -770,7 +770,7 @@ static struct smc_buf_desc *smcr_new_buf
+ 	return buf_desc;
+ }
  
- 	if (iter->tbl) {
-+		loff_t p = 0;
-+
- 		ipv6_route_seq_setup_walk(iter, net);
--		return ipv6_route_seq_next(seq, NULL, pos);
-+		return ipv6_route_seq_next(seq, NULL, &p);
- 	} else {
- 		return NULL;
- 	}
+-#define SMCD_DMBE_SIZES		7 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
++#define SMCD_DMBE_SIZES		6 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
+ 
+ static struct smc_buf_desc *smcd_new_buf_create(struct smc_link_group *lgr,
+ 						bool is_dmb, int bufsize)
 
 
