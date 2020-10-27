@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B2C29AEE7
+	by mail.lfdr.de (Postfix) with ESMTP id E177529AEE8
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754409AbgJ0OFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:05:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53380 "EHLO mail.kernel.org"
+        id S2508831AbgJ0OF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754317AbgJ0OFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:05:05 -0400
+        id S1754331AbgJ0OFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:05:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB28322258;
-        Tue, 27 Oct 2020 14:05:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07B7C22264;
+        Tue, 27 Oct 2020 14:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807503;
-        bh=4z7Fe17YjFjR3zhcJKMFY4Z714wZSdwB1XoYaG+SsSA=;
+        s=default; t=1603807506;
+        bh=MwScFoHCrD1FTWEgOOql8sERHWVfpoxY/zlARsLFSh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rlq0B+qQoTRLAv5pP21H+bDIEEOTHPoI09AJepAlP4s9X2IV0C7rDjLeHnKOoNE4z
-         ySxTWe7yEs2PJURlVoaS0enJiRYKpq+jzH7VT8vvAXUHOEXZl1kxpa/J9nX2z6op05
-         m2KSL36bYFO5EVewv4rw3ik0JNy2sJf7b4uSBsOQ=
+        b=OjW66NyH2L2TTTIQBUZvAtGyJQSpiIQwfxZTi4iuW8aIQ7UrBteQpnObA/nv+53nT
+         XHGugXtFe0pFi8dhj+4/w6pFgmRRElOKI9/bfYY1dPH6WW7GX6XtQagXiJeoB3LHeR
+         glMRel3dJuMqrEQrv7CfxwTr1jnw+5qUdibALSxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Alexandre Bounine <alex.bou9@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 077/139] rapidio: fix the missed put_device() for rio_mport_add_riodev
-Date:   Tue, 27 Oct 2020 14:49:31 +0100
-Message-Id: <20201027134905.785695736@linuxfoundation.org>
+Subject: [PATCH 4.9 078/139] clk: at91: clk-main: update key before writing AT91_CKGR_MOR
+Date:   Tue, 27 Oct 2020 14:49:32 +0100
+Message-Id: <20201027134905.835798683@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
 References: <20201027134902.130312227@linuxfoundation.org>
@@ -51,54 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 85094c05eeb47d195a74a25366a2db066f1c9d47 ]
+[ Upstream commit 85d071e7f19a6a9abf30476b90b3819642568756 ]
 
-rio_mport_add_riodev() misses to call put_device() when the device already
-exists.  Add the missed function call to fix it.
+SAMA5D2 datasheet specifies on chapter 33.22.8 (PMC Clock Generator
+Main Oscillator Register) that writing any value other than
+0x37 on KEY field aborts the write operation. Use the key when
+selecting main clock parent.
 
-Fixes: e8de370188d0 ("rapidio: add mport char device driver")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Matt Porter <mporter@kernel.crashing.org>
-Cc: Alexandre Bounine <alex.bou9@gmail.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Link: https://lkml.kernel.org/r/20200922072525.42330-1-jingxiangfeng@huawei.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 27cb1c2083373 ("clk: at91: rework main clk implementation")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/1598338751-20607-3-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rapidio/devices/rio_mport_cdev.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/clk/at91/clk-main.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index 21d0dd1617e27..c246d3a2fc5f6 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -1740,6 +1740,7 @@ static int rio_mport_add_riodev(struct mport_cdev_priv *priv,
- 	struct rio_dev *rdev;
- 	struct rio_switch *rswitch = NULL;
- 	struct rio_mport *mport;
-+	struct device *dev;
- 	size_t size;
- 	u32 rval;
- 	u32 swpinfo = 0;
-@@ -1754,8 +1755,10 @@ static int rio_mport_add_riodev(struct mport_cdev_priv *priv,
- 	rmcd_debug(RDEV, "name:%s ct:0x%x did:0x%x hc:0x%x", dev_info.name,
- 		   dev_info.comptag, dev_info.destid, dev_info.hopcount);
+diff --git a/drivers/clk/at91/clk-main.c b/drivers/clk/at91/clk-main.c
+index 90988e7a5b47f..2e7da9b379d48 100644
+--- a/drivers/clk/at91/clk-main.c
++++ b/drivers/clk/at91/clk-main.c
+@@ -517,12 +517,17 @@ static int clk_sam9x5_main_set_parent(struct clk_hw *hw, u8 index)
+ 		return -EINVAL;
  
--	if (bus_find_device_by_name(&rio_bus_type, NULL, dev_info.name)) {
-+	dev = bus_find_device_by_name(&rio_bus_type, NULL, dev_info.name);
-+	if (dev) {
- 		rmcd_debug(RDEV, "device %s already exists", dev_info.name);
-+		put_device(dev);
- 		return -EEXIST;
- 	}
+ 	regmap_read(regmap, AT91_CKGR_MOR, &tmp);
+-	tmp &= ~MOR_KEY_MASK;
  
+ 	if (index && !(tmp & AT91_PMC_MOSCSEL))
+-		regmap_write(regmap, AT91_CKGR_MOR, tmp | AT91_PMC_MOSCSEL);
++		tmp = AT91_PMC_MOSCSEL;
+ 	else if (!index && (tmp & AT91_PMC_MOSCSEL))
+-		regmap_write(regmap, AT91_CKGR_MOR, tmp & ~AT91_PMC_MOSCSEL);
++		tmp = 0;
++	else
++		return 0;
++
++	regmap_update_bits(regmap, AT91_CKGR_MOR,
++			   AT91_PMC_MOSCSEL | MOR_KEY_MASK,
++			   tmp | AT91_PMC_KEY);
+ 
+ 	while (!clk_sam9x5_main_ready(regmap))
+ 		cpu_relax();
 -- 
 2.25.1
 
