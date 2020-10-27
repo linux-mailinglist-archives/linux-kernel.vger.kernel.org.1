@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367FC29BC43
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6086529BE43
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801903AbgJ0PpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54342 "EHLO mail.kernel.org"
+        id S1794460AbgJ0PL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1800351AbgJ0Pfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:35:46 -0400
+        id S1788920AbgJ0PBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:01:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF73A22275;
-        Tue, 27 Oct 2020 15:35:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D55B520714;
+        Tue, 27 Oct 2020 15:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812945;
-        bh=+GNDN30lOh/MdJAAIorz11RsKrk08cYro+JV5n0Oz88=;
+        s=default; t=1603810874;
+        bh=J9kcf2DzKRspPP0olRjb8LFpJR0H5RWUkpY0w+xDZr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=juv0OIJUu89X7Zan0fcCk15QynfP2BJwi4+mZd9yRhDZcxa2hHij8JOYSFnt0AvuK
-         OVk9Q0dL8oW7artsCSZNuUTIecXNE0MnmuUSmTfsGdjBLAMJVIQd0n0XHkELecJOxs
-         dOmyjGXN+qr0SvBhyAGCqoJbWaE6CV7VBd1m1Pks=
+        b=O16gcX/SAwLwUQbRSXR1y+qhj2ZuBiSJPQeEliskcGRDJ3drJhZvzEcf/TH2oWEyt
+         sXY4ud8KQDQjExyexTUfg640yawXBH8AZWWtXor9+H2G53bhkb/g5YuuIywi8NuZla
+         NEd/pgDnUetBOaKgBsXaNydc4Y06RzOtf3GPmbiE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny B <abt-admin@mail.ru>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Julian Anastasov <ja@ssi.bg>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 385/757] ipvs: clear skb->tstamp in forwarding path
-Date:   Tue, 27 Oct 2020 14:50:35 +0100
-Message-Id: <20201027135508.610022601@linuxfoundation.org>
+Subject: [PATCH 5.8 294/633] iwlwifi: mvm: split a print to avoid a WARNING in ROC
+Date:   Tue, 27 Oct 2020 14:50:37 +0100
+Message-Id: <20201027135536.463031859@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,57 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Anastasov <ja@ssi.bg>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit 7980d2eabde82be86c5be18aa3d07e88ec13c6a1 ]
+[ Upstream commit 903b3f9badf1d54f77b468b96706dab679b45b14 ]
 
-fq qdisc requires tstamp to be cleared in forwarding path
+A print in the remain on channel code was too long and caused
+a WARNING, split it.
 
-Reported-by: Evgeny B <abt-admin@mail.ru>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209427
-Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
-Fixes: 8203e2d844d3 ("net: clear skb->tstamp in forwarding paths")
-Fixes: fb420d5d91c1 ("tcp/fq: move back to CLOCK_MONOTONIC")
-Fixes: 80b14dee2bea ("net: Add a new socket option for a future transmit time.")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
-Reviewed-by: Simon Horman <horms@verge.net.au>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Fixes: dc28e12f2125 ("iwlwifi: mvm: ROC: Extend the ROC max delay duration & limit ROC duration")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200930102759.58d57c0bdc68.Ib06008665e7bf1199c360aa92691d9c74fb84990@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipvs/ip_vs_xmit.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_xmit.c b/net/netfilter/ipvs/ip_vs_xmit.c
-index b00866d777fe0..d2e5a8f644b80 100644
---- a/net/netfilter/ipvs/ip_vs_xmit.c
-+++ b/net/netfilter/ipvs/ip_vs_xmit.c
-@@ -609,6 +609,8 @@ static inline int ip_vs_tunnel_xmit_prepare(struct sk_buff *skb,
- 	if (ret == NF_ACCEPT) {
- 		nf_reset_ct(skb);
- 		skb_forward_csum(skb);
-+		if (skb->dev)
-+			skb->tstamp = 0;
- 	}
- 	return ret;
- }
-@@ -649,6 +651,8 @@ static inline int ip_vs_nat_send_or_cont(int pf, struct sk_buff *skb,
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 77916231ff7d3..03b73003b0095 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3685,9 +3685,12 @@ static int iwl_mvm_send_aux_roc_cmd(struct iwl_mvm *mvm,
+ 	tail->apply_time_max_delay = cpu_to_le32(delay);
  
- 	if (!local) {
- 		skb_forward_csum(skb);
-+		if (skb->dev)
-+			skb->tstamp = 0;
- 		NF_HOOK(pf, NF_INET_LOCAL_OUT, cp->ipvs->net, NULL, skb,
- 			NULL, skb_dst(skb)->dev, dst_output);
- 	} else
-@@ -669,6 +673,8 @@ static inline int ip_vs_send_or_cont(int pf, struct sk_buff *skb,
- 	if (!local) {
- 		ip_vs_drop_early_demux_sk(skb);
- 		skb_forward_csum(skb);
-+		if (skb->dev)
-+			skb->tstamp = 0;
- 		NF_HOOK(pf, NF_INET_LOCAL_OUT, cp->ipvs->net, NULL, skb,
- 			NULL, skb_dst(skb)->dev, dst_output);
- 	} else
+ 	IWL_DEBUG_TE(mvm,
+-		     "ROC: Requesting to remain on channel %u for %ums (requested = %ums, max_delay = %ums, dtim_interval = %ums)\n",
+-		     channel->hw_value, req_dur, duration, delay,
+-		     dtim_interval);
++		     "ROC: Requesting to remain on channel %u for %ums\n",
++		     channel->hw_value, req_dur);
++	IWL_DEBUG_TE(mvm,
++		     "\t(requested = %ums, max_delay = %ums, dtim_interval = %ums)\n",
++		     duration, delay, dtim_interval);
++
+ 	/* Set the node address */
+ 	memcpy(tail->node_addr, vif->addr, ETH_ALEN);
+ 
 -- 
 2.25.1
 
