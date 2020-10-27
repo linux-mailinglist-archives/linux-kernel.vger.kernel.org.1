@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4785C29C6AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104D129C5C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827157AbgJ0SVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51302 "EHLO mail.kernel.org"
+        id S2507289AbgJ0ONM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:13:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753947AbgJ0ODK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:10 -0400
+        id S1755459AbgJ0OKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBC8B2222C;
-        Tue, 27 Oct 2020 14:03:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 954EE218AC;
+        Tue, 27 Oct 2020 14:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807390;
-        bh=sfL6G2Y/z9x8rEL+SjrEfC/mODkBAD3Iysx7cVHV0YQ=;
+        s=default; t=1603807800;
+        bh=hXVLOCpHKSmP207RFocDtRG8LYZvrjMUhbwrFcuq9ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ongHX3xi5VLiGoTrCrmeQ82u/W97HRkrMXP4kGH2dweE8z0uShTnfhWU7I8Tko/dL
-         WX1Wvd+GEZPA+kwcsdgA2vRVqW15KR/aZ8Kuba+JIhEAacX9Ehe8f7ndxeW76agPI6
-         Mve/zWCtr0RkaFwAjhO+b8JdJuozrCMx/BK77TtI=
+        b=o0O/WKF9vZqbtggOpOBrBwi/U1shoIF7oN5bYWp1/GSFpp6NJg01T97FztAY1Y/2G
+         2syvL8QP9yIV0BzX8BI15Qdt9TZLq8O9skWzjmUheqw/P5lSOUvbthhKn4qLyr4rQB
+         bk3Md053K7UyalfeLnVrA46ZHQmq3j4ACTFIHLqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 006/139] net: hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
-Date:   Tue, 27 Oct 2020 14:48:20 +0100
-Message-Id: <20201027134902.454609983@linuxfoundation.org>
+        stable@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 046/191] ASoC: qcom: lpass-platform: fix memory leak
+Date:   Tue, 27 Oct 2020 14:48:21 +0100
+Message-Id: <20201027134911.948090496@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Rohit kumar <rohitkr@codeaurora.org>
 
-[ Upstream commit 01c4ceae0a38a0bdbfea6896f41efcd985a9c064 ]
+[ Upstream commit 5fd188215d4eb52703600d8986b22311099a5940 ]
 
-The hdlc_rcv function is used as hdlc_packet_type.func to process any
-skb received in the kernel with skb->protocol == htons(ETH_P_HDLC).
-The purpose of this function is to provide second-stage processing for
-skbs not assigned a "real" L3 skb->protocol value in the first stage.
+lpass_pcm_data is never freed. Free it in close
+ops to avoid memory leak.
 
-This function assumes the device from which the skb is received is an
-HDLC device (a device created by this module). It assumes that
-netdev_priv(dev) returns a pointer to "struct hdlc_device".
-
-However, it is possible that some driver in the kernel (not necessarily
-in our control) submits a received skb with skb->protocol ==
-htons(ETH_P_HDLC), from a non-HDLC device. In this case, the skb would
-still be received by hdlc_rcv. This will cause problems.
-
-hdlc_rcv should be able to recognize and drop invalid skbs. It should
-first make sure "dev" is actually an HDLC device, before starting its
-processing. This patch adds this check to hdlc_rcv.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Link: https://lore.kernel.org/r/20201020013152.89259-1-xie.he.0141@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/1597402388-14112-5-git-send-email-rohitkr@codeaurora.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/qcom/lpass-platform.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wan/hdlc.c
-+++ b/drivers/net/wan/hdlc.c
-@@ -57,7 +57,15 @@ int hdlc_change_mtu(struct net_device *d
- static int hdlc_rcv(struct sk_buff *skb, struct net_device *dev,
- 		    struct packet_type *p, struct net_device *orig_dev)
- {
--	struct hdlc_device *hdlc = dev_to_hdlc(dev);
-+	struct hdlc_device *hdlc;
-+
-+	/* First make sure "dev" is an HDLC device */
-+	if (!(dev->priv_flags & IFF_WAN_HDLC)) {
-+		kfree_skb(skb);
-+		return NET_RX_SUCCESS;
-+	}
-+
-+	hdlc = dev_to_hdlc(dev);
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index e1945e1772cda..b8f8cb906d805 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -67,7 +67,7 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	int ret, dma_ch, dir = substream->stream;
+ 	struct lpass_pcm_data *data;
  
- 	if (!net_eq(dev_net(dev), &init_net)) {
- 		kfree_skb(skb);
+-	data = devm_kzalloc(soc_runtime->dev, sizeof(*data), GFP_KERNEL);
++	data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+@@ -127,6 +127,7 @@ static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
+ 	if (v->free_dma_channel)
+ 		v->free_dma_channel(drvdata, data->dma_ch);
+ 
++	kfree(data);
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
+
 
 
