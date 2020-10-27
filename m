@@ -2,80 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB8A29A6FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7928F29A701
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895092AbgJ0IwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895085AbgJ0IwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:52:12 -0400
-Received: from localhost.localdomain (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DAA822281;
-        Tue, 27 Oct 2020 08:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603788731;
-        bh=0nzyOPvgFX02ZXg1XJA1HS6XgUF6vw89iu8MTd8YMtk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XT81wAgp80B2PWJvEd5TMFsh7BOdbg3t9B2u9HQOTyuZRMN5bu72KjTvaJzC1slVm
-         Tg1feUt3aBkhxQyb88Ec01sa2WP059DoBZY809qnGqy398YAmdSAbs/5U7X7IVhVtX
-         JU8u0RF5+wYhXrxHuRx2THEOxKCIxxIxhbYRSN1g=
-From:   balbi@kernel.org
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 2/2] irqchip: bcm2836: fix section mismatch warning
-Date:   Tue, 27 Oct 2020 10:51:57 +0200
-Message-Id: <20201027085157.1964906-3-balbi@kernel.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027085157.1964906-1-balbi@kernel.org>
-References: <20201027085157.1964906-1-balbi@kernel.org>
+        id S2895126AbgJ0Iw7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 04:52:59 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:40599 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895116AbgJ0Iw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:52:59 -0400
+Received: by mail-ed1-f68.google.com with SMTP id p93so576841edd.7;
+        Tue, 27 Oct 2020 01:52:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=miK2E28wkgKpBF1Fb19w02StT2/a3W+EFB25jg9SneM=;
+        b=Hb8Uuy7WFlcCsoIAS0qHGUuWg/TSfyWokYWQWRHBg0No6zSu+t3giURfdXdtiD+8KP
+         VM6BrJBUrAqFpa9AdN9CH4QPSOHNNCtZx/uu2pJ5Q8mcpTAdUmPRRzhtmvJM1GdhPKKK
+         VdAHIaxuF+oxOy5OTuv1E/kpwt6U7bEHKUmxfjnHrhJNgDp1n3EtTHvLX2VsFPwMxcfF
+         Jp84pvpmKwfG8pzUYcY+9Q/BxwARdmYk+4qRZpBn3K5dRPyknujn4aB2JtZRwnQFDKgj
+         0pzppMv1bkGeKNdbpph1FGIROF0Z2p5VWbSFOJK+nDU2RZw7S4mLDCbPyR2NJr8Q19b2
+         20zA==
+X-Gm-Message-State: AOAM530Z7RhqsvzAjmBYEjZLy65is8zY4j8pqvMc4K4weZFfdJ0F0MtY
+        HAotwad2mJQhFP3mvAgaNzY=
+X-Google-Smtp-Source: ABdhPJx3r/Ivqz3bC6fK7Dk3U50yBK7Yqy4j7oDemcQ7xJqnXXJr2+AP4pt/yaUfzlPS/UM2jTnfbg==
+X-Received: by 2002:a05:6402:135a:: with SMTP id y26mr1113530edw.114.1603788776652;
+        Tue, 27 Oct 2020 01:52:56 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id m25sm503543edp.36.2020.10.27.01.52.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 01:52:55 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 09:52:53 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 00/52] Introduce memory interconnect for NVIDIA Tegra
+ SoCs
+Message-ID: <20201027085253.GC4244@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201026150845.GA87050@kozik-lap>
+ <48a5cfdd-c170-f6d3-001a-2d343ecb2c5e@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <48a5cfdd-c170-f6d3-001a-2d343ecb2c5e@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felipe Balbi <balbi@kernel.org>
+On Mon, Oct 26, 2020 at 10:14:10PM +0300, Dmitry Osipenko wrote:
+> 26.10.2020 18:08, Krzysztof Kozlowski пишет:
+> > On Mon, Oct 26, 2020 at 01:16:43AM +0300, Dmitry Osipenko wrote:
+> >> Hello,
+> >>
+> >> This series brings initial support for memory interconnect to Tegra20,
+> >> Tegra30 and Tegra124 SoCs.
+> >>
+> >> For the starter only display controllers and devfreq devices are getting
+> >> interconnect API support, others could be supported later on. The display
+> >> controllers have the biggest demand for interconnect API right now because
+> >> dynamic memory frequency scaling can't be done safely without taking into
+> >> account bandwidth requirement from the displays. In particular this series
+> >> fixes distorted display output on T30 Ouya and T124 TK1 devices.
+> > 
+> > Hi,
+> > 
+> > You introduced in v6 multiple new patches. Could you describe the
+> > dependencies, if any?
+> 
+> Hello,
+> 
+> The v6 dropped some older patches and replaced them with the new
+> patches. Previously I wanted to postpone the more complex changes for
+> later times, like supporting OPP tables and DVFS, but then the review
+> started to take more time than was expected and there was enough time to
+> complete those features.
+> 
+> There are five basic sets of patches:
+> 
+> 	1. DT bindings
+> 	2. DT changes
+> 	3. SoC, clk and memory
+> 	4. devfreq
+> 	5. DRM
+> 
+> Each set could be applied separately.
+> 
+> Memory patches have a build dependency on the SoC and clk patches.
+> 
+> The "tegra-mc: Add interconnect framework" and "Add and use
+> devm_tegra_get_memory_controller()" are the root build dependencies for
+> all memory/ patches. Other patches are grouped per SoC generation
+> (Tegra20/30/124), patches within a SoC-gen group are interdependent.
+> 
+> I suppose the best variant would be to merge the whole series via
+> tegra-tree in order to preserve logical order of the patches. Although,
+> merging each set of patches separately also should be okay to do.
 
-Fix the following warning:
+Thanks for explanation. I already have three patches for Tegra MC (and
+probably two more will be respun) so this might be conflict-prone. The
+easiest in such case is to provide me soc and clk patches on the branch,
+so I could keep all Tegra MC together.
 
-WARNING: modpost: vmlinux.o(.text.unlikely+0x17b2c): Section mismatch in reference from the function bcm2836_arm_irqchip_smp_init() to the function .init.text:set_smp_ipi_range()
-The function bcm2836_arm_irqchip_smp_init() references
-the function __init set_smp_ipi_range().
-This is often because bcm2836_arm_irqchip_smp_init lacks a __init
-annotation or the annotation of set_smp_ipi_range is wrong.
-
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
----
- drivers/irqchip/irq-bcm2836.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-bcm2836.c b/drivers/irqchip/irq-bcm2836.c
-index 97838eb705f9..cbc7c740e4dc 100644
---- a/drivers/irqchip/irq-bcm2836.c
-+++ b/drivers/irqchip/irq-bcm2836.c
-@@ -244,7 +244,7 @@ static int bcm2836_cpu_dying(unsigned int cpu)
- 
- #define BITS_PER_MBOX	32
- 
--static void bcm2836_arm_irqchip_smp_init(void)
-+static void __init bcm2836_arm_irqchip_smp_init(void)
- {
- 	struct irq_fwspec ipi_fwspec = {
- 		.fwnode		= intc.domain->fwnode,
--- 
-2.29.1
+Best regards,
+Krzysztof
 
