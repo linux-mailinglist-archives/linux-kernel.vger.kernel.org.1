@@ -2,127 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AAA29AC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C94029AC69
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900218AbgJ0MoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:44:16 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38488 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440519AbgJ0MoN (ORCPT
+        id S2900227AbgJ0Mof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:44:35 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:46268 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440617AbgJ0Mof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:44:13 -0400
-Received: by mail-wr1-f66.google.com with SMTP id n18so1752092wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:44:12 -0700 (PDT)
+        Tue, 27 Oct 2020 08:44:35 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a23so916446qkg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=HBFttdYAiRM1KfFacsdZju3R8FEz52UG6psn2mn812k=;
-        b=Ck9y9jNdJH1H9KVu2owJyTBu42rV4XSWLdMUbByrEIQhakBN7YO3viBNE7ywGE3yJV
-         21nxkfIOqKJYmVR7phi6Mzl7xabBrqCSHVDvC6wQjQdXQwgh7fpBlxLd0spJm6TD1f/z
-         i8rfkkdL3rv1kNNzjwl5ccwoTqDMuUQz+sXBzzY6oWTJcr7pbtuUho/VDBaGCbA+JUFy
-         8rFIc0Mph/wTGNCdJiEdu+j+TUPeGOqq7vp55s9RrKz7oPhApmbGbRXD5yrp3Ko8tRiS
-         uvrWHwR+8dFXWShuf4c5KsxIDyJiXxw78K3ZGM/ChFHu1dDwpDKmBilfGofXcucVgkOj
-         pjKQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MOEEMcwz+wOCi9BVmbcGJ1vQkzTsdFXXOfPV2diYyTk=;
+        b=SZkHXu8h3EbHH8VtHFgHa8YSVtI8rlRYExnbQhnfyyYBCthfOoGxvqz0E/yMDoUuRW
+         VapDNHEwmX/cOcZIM5C7y3L6erFugKiVAz9wtT/PhTrugbUwhbR35OZ2ypo8omGUgiRk
+         8k6HtGR6KVlnsnMUwKciKJGsRRJjdaRj6HroxhUneaEHvHsENGd6Fji5L8jCbR2xRKgq
+         HWhqI7MvIZH3GfnP9uXJvh+PjfXojYFr/su3BR89abRB62VPPFofWza27Fyy500xhBTp
+         0AAPshb5YzZNlPaD9suuA6x8hSDtp/oZP5RTRlKFyDk2sQRXwyv5asGHXi2pSY/Zqf8h
+         laqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=HBFttdYAiRM1KfFacsdZju3R8FEz52UG6psn2mn812k=;
-        b=Zx4CY++WUb9x21s9nT8fYieh6e1tV0Zu8xnHR19dPh9iE0MYji3T7lcSUS5nAEMbwq
-         9fpVjgew/bL68sh+JMKmFzivsKgmzkHN4QnNN1hgKH5mGTsXnNovyRSo9xZDauvPHD1+
-         mp6boWx1sTLlm6dM3VgEnYu7PUxnknZjQ36SDbW8RJg7luVomQdeZI4pEYEfumXG1LKd
-         KrIurJnXS02H+KIney1QqN3K2dex1p3sSo1Tc88OS2UwL3ZZTS7t1cEA26ofclR90fXG
-         /WYvtZYFukT5wGKpXDPtC32mK9LQ9+616zySvtHzdlGTueB9nB7S862VcweeufZ4cMGK
-         2x+w==
-X-Gm-Message-State: AOAM532BKwdgyHc3JNOLIJnZtUNASopqUtMlFaYF6o5nHl1g3zCyZHyl
-        yV3NRmnQ7CM5NyEVO2QXROEkyshZqCX8zxlE
-X-Google-Smtp-Source: ABdhPJxGIvXpfpZxv774x6oG+TdKSVGildynsy97gcSuNQ0khyKnhSHNQjEj6Ais+Xmhl4PIo0XW7A==
-X-Received: by 2002:adf:84a5:: with SMTP id 34mr2855003wrg.152.1603802651408;
-        Tue, 27 Oct 2020 05:44:11 -0700 (PDT)
-Received: from localhost ([2a01:cb19:8ae7:9d00:68a3:7a03:6c11:8947])
-        by smtp.gmail.com with ESMTPSA id m14sm1891082wro.43.2020.10.27.05.44.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 05:44:10 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Yong Mao <yong.mao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-mmc\@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "moderated list\:ARM\/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] mmc: host: mtk-sd: enable recheck_sdio_irq for MT8516 SoC
-In-Reply-To: <CAPDyKFrMwLeuQoFDgXYo_-T_e2AzfqM-rgp3-SgeuC6Qn6rxMA@mail.gmail.com>
-References: <20201023122950.60903-1-fparent@baylibre.com> <CAPDyKFrMwLeuQoFDgXYo_-T_e2AzfqM-rgp3-SgeuC6Qn6rxMA@mail.gmail.com>
-Date:   Tue, 27 Oct 2020 13:44:08 +0100
-Message-ID: <87wnzbg7on.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MOEEMcwz+wOCi9BVmbcGJ1vQkzTsdFXXOfPV2diYyTk=;
+        b=ZoEPc72HkruoRG4IU+3S41goyd3oevIhmEP3kZ1mGmMFJxQsU21o2IQdEcLl5/QSol
+         0uynPAJ/yL7L7Z2umK5gAVczN60/wGI7Cx+9ExPj9hC2TFXoIjmzneDt3BW3EQA5QtnX
+         2lxNjr3RF3/m0FvyUSWTxGtgrVPgJJO2L1pWzZe2e3Wj/cm7/U/JnOKPCWcX3vP/YXOG
+         68wWHPGpgJT6a1PKMb7BQQ15K7hiy4nOLZIVV84s3mxQUR3s2sKDHx3llweccNJDRkY0
+         H/0XDA4BKUI96MeihPhqfH3i8Do1DNI4stx+ngN0YLYNi7w6wmUdm4qZfklwdg2ywUQ3
+         o0tQ==
+X-Gm-Message-State: AOAM533jXo1exfVZ1VYwpv6RirAiCaa8Iq4gtEDdH9mpzY56O2kvytE0
+        0nlDdKD/q4OWdn+JDosiUEVRTScjlCnVl0qEJidB4w==
+X-Google-Smtp-Source: ABdhPJx+Lvo6IRixu35Gi+oFg35TIGbuidBJCx4l+BJ8meN9LeiD7vrHedNkPakIK35QGEFDWRTJcE6aA1GSTNBOUHA=
+X-Received: by 2002:a05:620a:1657:: with SMTP id c23mr1953011qko.231.1603802673106;
+ Tue, 27 Oct 2020 05:44:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <cover.1603372719.git.andreyknvl@google.com> <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 27 Oct 2020 13:44:22 +0100
+Message-ID: <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with CONFIG_KASAN_STACK
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
+On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> There's a config option CONFIG_KASAN_STACK that has to be enabled for
+> KASAN to use stack instrumentation and perform validity checks for
+> stack variables.
+>
+> There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+> Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+> enabled.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+> ---
+>  arch/arm64/kernel/sleep.S        |  2 +-
+>  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+>  include/linux/kasan.h            | 10 ++++++----
+>  mm/kasan/common.c                |  2 ++
+>  4 files changed, 10 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+> index ba40d57757d6..bdadfa56b40e 100644
+> --- a/arch/arm64/kernel/sleep.S
+> +++ b/arch/arm64/kernel/sleep.S
+> @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+>          */
+>         bl      cpu_do_resume
+>
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>         mov     x0, sp
+>         bl      kasan_unpoison_task_stack_below
+>  #endif
+> diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+> index c8daa92f38dc..5d3a0b8fd379 100644
+> --- a/arch/x86/kernel/acpi/wakeup_64.S
+> +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+>         movq    pt_regs_r14(%rax), %r14
+>         movq    pt_regs_r15(%rax), %r15
+>
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>         /*
+>          * The suspend path may have poisoned some areas deeper in the stack,
+>          * which we now need to unpoison.
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 3f3f541e5d5f..7be9fb9146ac 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
+>
+>  void kasan_unpoison_memory(const void *address, size_t size);
+>
+> -void kasan_unpoison_task_stack(struct task_struct *task);
+> -
+>  void kasan_alloc_pages(struct page *page, unsigned int order);
+>  void kasan_free_pages(struct page *page, unsigned int order);
+>
+> @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
+>
+>  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+>
+> -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> -
+>  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+>  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+>
+> @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>
+>  #endif /* CONFIG_KASAN */
+>
+> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
 
-Ulf Hansson <ulf.hansson@linaro.org> writes:
+&& defined(CONFIG_KASAN_STACK) for consistency
 
-> + Yong Mao, Chaotian Jing
+> +void kasan_unpoison_task_stack(struct task_struct *task);
+> +#else
+> +static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> +#endif
+> +
+>  #ifdef CONFIG_KASAN_GENERIC
 >
-> On Fri, 23 Oct 2020 at 14:29, Fabien Parent <fparent@baylibre.com> wrote:
->>
->> MT8516 SoC suffers from sometimes losing SDIO IRQs, this makes SDIO
->> devices sometimes unstable. Make use of the new property
->> recheck_sdio_irq to fix the SDIO stability issues on MT8516.
->>
->> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+>  void kasan_cache_shrink(struct kmem_cache *cache);
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index a880e5a547ed..a3e67d49b893 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -58,6 +58,7 @@ void kasan_disable_current(void)
+>  }
+>  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
 >
-> Maybe this is a common problem, thus I am thinking that potentially we
-> should enable the workaround for all variants?
-Not sure if this is of any help, but: we use the btmtksdio driver on a
-MT8183 soc with an Android kernel based on upstream.
+> +#if CONFIG_KASAN_STACK
 
-With that kernel, we did not to apply this work-around in order to
-have a stable bluetooth experience (pairing with a remote controller)
+#ifdef CONFIG_ is the form used toughout the kernel code
 
-However, on the MT8516 SoC, it's impossible for us to use btmtksdio
-without Fabien's fix.
-
+>  static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
+>  {
+>         void *base = task_stack_page(task);
+> @@ -84,6 +85,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
 >
-> I have looped in Yong Mao (who invented the workaround) and Chaotian
-> Jing, to see if they can advise us how to proceed.
+>         kasan_unpoison_memory(base, watermark - base);
+>  }
+> +#endif /* CONFIG_KASAN_STACK */
 >
-> In any case, I think we should add a stable tag and a fixes tag.
+>  void kasan_alloc_pages(struct page *page, unsigned int order)
+>  {
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
 >
-> Kind regards
-> Uffe
->
->> ---
->>  drivers/mmc/host/mtk-sd.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
->> index a704745e5882..3dc102eefe49 100644
->> --- a/drivers/mmc/host/mtk-sd.c
->> +++ b/drivers/mmc/host/mtk-sd.c
->> @@ -524,7 +524,7 @@ static const struct mtk_mmc_compatible mt7622_compat = {
->>
->>  static const struct mtk_mmc_compatible mt8516_compat = {
->>         .clk_div_bits = 12,
->> -       .recheck_sdio_irq = false,
->> +       .recheck_sdio_irq = true,
->>         .hs400_tune = false,
->>         .pad_tune_reg = MSDC_PAD_TUNE0,
->>         .async_fifo = true,
->> --
->> 2.28.0
->>
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
