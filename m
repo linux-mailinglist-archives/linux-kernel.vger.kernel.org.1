@@ -2,65 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C5B29CA14
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D6E29CA18
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831342AbgJ0UXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:23:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1831335AbgJ0UXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:23:38 -0400
-Received: from dhcp-10-100-145-180.wdc.com (unknown [199.255.45.60])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0172020719;
-        Tue, 27 Oct 2020 20:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603830217;
-        bh=3emz6UQhpY4UW+3j5aomFK7x1AuiURETZZxGwVy/TZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vKFXJkJMwVpGxzCd/Nc/P9I90wffuBoPzvKvYQdoogX9+xnFsxShG0XBCmxlqGgzA
-         BV+vT0OTrLxXtczLxwLEBPeiqOAaudyrmpWonO80WiVQn78QtBCZERXUd+rpTcZ3jW
-         +SnauYBe9GDb0iwfCPj8FZ2PPinN/8qkw/BIXKlM=
-Date:   Tue, 27 Oct 2020 13:23:34 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Jongpil Jung <jongpuls@gmail.com>
-Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jongpil19.jung@samsung.com, gloria.tsai@ssstc.com
-Subject: Re: [PATCH 1/1] nvme: Add quirk for LiteON CL1 devices running FW
- 220TQ,22001
-Message-ID: <20201027202334.GA1942708@dhcp-10-100-145-180.wdc.com>
-References: <20201027155438.GA111754@jongpil-desktop>
+        id S372758AbgJ0UZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:25:37 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:36482 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372747AbgJ0UZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:25:36 -0400
+Received: by mail-lf1-f66.google.com with SMTP id h6so4047319lfj.3;
+        Tue, 27 Oct 2020 13:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VTXQrHTGLs/knVunju7s+4jC1elCcsEm6LiqWGczAOI=;
+        b=IDlcxJUUO1ignMzHcKScWArX+JLa0B/wtkjwa+XqNZfVCgFQ+q//5075QoHnaqEmSN
+         4Zgtxq3XetCP3KE9RukHxI2+GlnV+hVTkJxBs3DD8Pwr060BgQxWvF4+IMbUfNtWkswJ
+         t8KNrMGfRdjxKIoJD2tMbH0bn8weWLtnEr1HBu1NDPcvHUNDmsAvUPpWb4LamG6b0vBv
+         5jBxGWiJ3FVAbZRfcVCjcJuNMTCz9fHBvn3FAMH1rSFVCl+8hKk31loDa3OOX1BGIzYx
+         UWX6aHGFi3DUccCqz9OY8dLShO/A2aDfG+k8xCRF2lkGW1wZroeeAywT1/IgVcUNaALb
+         W0LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VTXQrHTGLs/knVunju7s+4jC1elCcsEm6LiqWGczAOI=;
+        b=UYil4Mim+SRRiyDuR7VFacXdfvkqmFGME07fHYYu+EsYy0xz3UCC/QiHldLmz26nxX
+         Nb0MZTBwC+fW/Tb7vHttwhWUVRGMYzv5SqVTVhrE/HQ2BAwo0LooDnhZD81zprIlz90t
+         18csrH+bbD9pJCqxJH9J/XhoIiZNBnPLqA+JGK2ZSj6FnSmzvDstq20vI5j8OoCrcV0/
+         LO5KRnMfmsXl7pV+fVfz1BwAUAQZHsCrSLPJouLfeIMBHd1puklv0W3c0q7i+TvO3zCP
+         bLJFuZzXe2AYFdR3epTA/zgzUVatm3UUKhLM/MV5y9etaGmHWRCsbchzbRCbL8wWd8et
+         A95A==
+X-Gm-Message-State: AOAM530PY6bCAuBE1AW91u5Rl6FlkIlk1xYotn+XVYPGjrFELIQhlRWK
+        MMWrrs+D1Ps9MOqgvh7wwIsMssOeXtY=
+X-Google-Smtp-Source: ABdhPJyW7vkaNh0PaEpaOoYYagFca4oW2bsF5xEK54yv6TkubEGC09bzXNErjsukUFxfN3ye8lLohw==
+X-Received: by 2002:a19:bed7:: with SMTP id o206mr1351034lff.360.1603830332966;
+        Tue, 27 Oct 2020 13:25:32 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id j23sm137806lfm.16.2020.10.27.13.25.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 13:25:32 -0700 (PDT)
+Subject: Re: [PATCH v6 33/52] memory: tegra20: Support interconnect framework
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-34-digetx@gmail.com> <20201027100951.GA17089@kozik-lap>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2eee94bc-10a7-acef-3b50-7b6fd7ceba70@gmail.com>
+Date:   Tue, 27 Oct 2020 23:25:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027155438.GA111754@jongpil-desktop>
+In-Reply-To: <20201027100951.GA17089@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:54:38AM +0900, Jongpil Jung wrote:
-> suspend.
+27.10.2020 13:09, Krzysztof Kozlowski пишет:
+...
+>> +err_msg:
+>> +	dev_err(emc->dev, "failed to initialize ICC: %d\n", err);
 > 
-> When NVMe device receive D3hot from host, NVMe firmware will do
-> garbage collection. While NVMe device do Garbage collection,
-> firmware has chance to going incorrect address.
-> In that case, NVMe storage device goes to no device available state.
-> Finally, host can't access the device any more.
-> 
-> Quirk devices will not use simple suspend even if HMB is enabled.
-> In case of poweroff scenario, NVMe receive "PME turn off".
-> So garbage collection will not be happening.
-> 
-> Liteon(SSSTC) will fix the issue, that's why quirk apply on specific
-> vendor id and firmware version.
+> You will print such errors on all existing DTBs. Since it is not a
+> failure of probe (it is actually quite expected, normal situation when
+> booting with older DTB), let's change it to warning (here and in all
+> other places and drivers).
 
-This is a concerning quirk. We use the simple suspend when HMB is
-enabled because at least some platforms disable device DMA access in the
-runtime suspend state. Many devices continue to access their HMB while
-in low power, so we can't let both conditions occur concurrently.
-Unless you know for sure this device doesn't access host memory in
-low-power, there will be at least some platform combinations where this
-quirk will fail.
+The existing DTBs will be stopped on the error message below.
+
+>> +
+>> +	return err;
+>> +}
+>> +
+>> +static int tegra_emc_opp_table_init(struct tegra_emc *emc)
+>> +{
+>> +	const char *rname = "core";
+>> +	int err;
+>> +
+>> +	/*
+>> +	 * Legacy device-trees don't have OPP table and EMC driver isn't
+>> +	 * useful in this case.
+>> +	 */
+>> +	if (!device_property_present(emc->dev, "operating-points-v2")) {
+>> +		dev_err(emc->dev, "OPP table not found\n");
+>> +		dev_err(emc->dev, "please update your device tree\n");
+>> +		return -ENODEV;
+>> +	}
+
+The existing DTBs are stopped here.
+
+...
+>> +	err = tegra_emc_opp_table_init(emc);
+>> +	if (err)
+>> +		goto unreg_notifier;
+> 
+> This looks like the ABI break I mentioned around DT bindings. Are the
+> bindings marked as unstable?
+
+This T20 EMC driver wasn't ever used so far at all and this series makes
+it useful. Hence I think it should be fine to assume that the T20 EMC
+ABI is unstable.
