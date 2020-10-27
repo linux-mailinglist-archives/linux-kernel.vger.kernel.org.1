@@ -2,149 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A6229AB42
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC42929AB49
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750220AbgJ0Lyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:54:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:39148 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404720AbgJ0Lyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:54:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63217139F;
-        Tue, 27 Oct 2020 04:54:31 -0700 (PDT)
-Received: from [10.57.50.191] (unknown [10.57.50.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38C533F66E;
-        Tue, 27 Oct 2020 04:54:30 -0700 (PDT)
-Subject: Re: [PATCH v4] driver/perf: Add PMU driver for the ARM DMC-620 memory
- controller
-To:     Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
-Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
-        patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1603235425-29442-1-git-send-email-tuanphan@os.amperecomputing.com>
- <5c24da3f-4fa3-79ad-0c0d-9b4828ebf684@arm.com>
- <1EC85DEF-8E0C-42B9-9B01-DA897147B1F7@amperemail.onmicrosoft.com>
- <c4b8a58e-ca55-21ec-5a0d-50ab995a1d68@arm.com>
- <6BC59870-087B-40AB-ABAB-06BFD013EA22@amperemail.onmicrosoft.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7d105b5a-1960-f8d0-4a71-f7fa006c209b@arm.com>
-Date:   Tue, 27 Oct 2020 11:54:28 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <6BC59870-087B-40AB-ABAB-06BFD013EA22@amperemail.onmicrosoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        id S1750354AbgJ0Lze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:55:34 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:53228 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750346AbgJ0Lzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:55:33 -0400
+Received: by mail-pj1-f66.google.com with SMTP id o1so655280pjt.2;
+        Tue, 27 Oct 2020 04:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=HeJY28BQR39ubPE3upvvJihsd+e9UZsRU1A1Q1vQAqE=;
+        b=XQ5Yyk7eg7PeAalKutARz4YDUL3b+aZEi9S3fTfeEq6ymjlXCQw5bf7d0wkkpBqmSz
+         wLO+safY+a17yx21fzXVSDUmYz93UA7RV1pqYekvJu2ZZBZuXlxCC+TeQ3zNz/VJFdPs
+         tXafPgmipGZCwpWWqm1YVTqR6j1xtclaT5vDCQR/KbYmG593i1Odw3jMXCrP0ZN4BNzZ
+         HAldtsJnaNrD/Fd90HZX+GxA9aajvABcO/k6TVLAfHVAiNwZz75kCCuzAoxW2sxyGY+m
+         v7iXrGW8PO6wITfrDhlCkLgi1pL7xC0QcK5PozQqMXDD5H8IOLocntnJ3VryQhzxMWQr
+         RTEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HeJY28BQR39ubPE3upvvJihsd+e9UZsRU1A1Q1vQAqE=;
+        b=TYY7BWRC2uWjhOG4n1o8RGA1hfGjH62wqYBYCA/rROjlhOSkECXJ0dLiWV8pIYrX4a
+         lxPIwE6+aRhKzNKmmKiRr5Pi3WDGix0ugWEetpXuDBfJsqbOnrR79qdqAgUcUZndQ9T3
+         qaVRRsOmr4y26Aw4oG8OTQEO7vWmpS0LbUoXHx4bDdZBhFFIoCUBSWB9bm7jXkgnt+sI
+         cM2IvKy6HZw2UCuZbAv69C95n0ynV1PV+e1Ymosis7itOY3OtiMGKJWTcZNgTvVTBVvI
+         lE7E72Qm2I1YTBqT38RmqPFcTK4YARijj74RnnGidP2R47cJRFbpOLzAc4er+DfCuoBg
+         aRXA==
+X-Gm-Message-State: AOAM533R9fp6/y+YBjKUJYqZMrXv8QPIGA3/3ZHsZykU3q6qxzNKDG/5
+        qIg6QaqhhhQ6vKTNl5pEDWM=
+X-Google-Smtp-Source: ABdhPJxl5OtHcTzQDhtTMNxCcuwVAeUGerrHzZBfFoUfZ261kBXXX1sRcWR8t1gKZTRGjw+0YgK2qw==
+X-Received: by 2002:a17:90a:aa90:: with SMTP id l16mr1697874pjq.0.1603799732527;
+        Tue, 27 Oct 2020 04:55:32 -0700 (PDT)
+Received: from mi-OptiPlex-7060.mioffice.cn ([209.9.72.215])
+        by smtp.gmail.com with ESMTPSA id bx24sm1932897pjb.20.2020.10.27.04.55.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 04:55:31 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     viresh.kumar@linaro.org, rjw@rjwysocki.net, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhuguangqing <zhuguangqing@xiaomi.com>
+Subject: [PATCH] cpufreq: schedutil: set sg_policy->next_freq to the final cpufreq
+Date:   Tue, 27 Oct 2020 19:54:59 +0800
+Message-Id: <20201027115459.19318-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-23 19:23, Tuan Phan wrote:
-> 
-> 
->> On Oct 23, 2020, at 6:43 AM, Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2020-10-22 22:46, Tuan Phan wrote:
->> [...]
->>>>> +#define _ATTR_CFG_GET_FLD(attr, cfg, lo, hi)			\
->>>>> +	((((attr)->cfg) >> lo) & GENMASK(hi - lo, 0))
->>>>
->>>> As per the buildbot report, GENMASK_ULL() would be appropriate when the other side is a u64 (although either way this does look a lot like reinventing FIELD_GET()...)
->>> I will add (COMPILE_TEST && 64BIT) to Kconfig so it should fix the buildbot report.
->>
->> Huh? The left-hand side of the "&" expression will always be a u64 here, which is unsigned long long. Regardless of whether an unsigned long on the right-hand side happens to be the same size, you have a semantic type mismatch, which is trivial to put right. I can't comprehend why introducing a fake build dependency to hide this would seem like a better idea than making a tiny change to make the code 100% correct and robust with zero practical impact :/
->>
->> Sure, you only copied this from the SPE driver; that doesn't mean it was ever correct, simply that the mismatch was hidden since that driver *is* tightly coupled to one particular CPU ISA.
-> 
-> Got it. Actually after seeing your CMN driver which has (COMPILE_TEST && 64BIT), I thought the driver should be only tested under 64BIT platform. Any reason why CMN need 64BIT with COMPILE_TEST?
+From: zhuguangqing <zhuguangqing@xiaomi.com>
 
-The CMN driver relies heavily on 64-bit I/O accessors (readq() etc.) 
-which by default aren't defined on 32-bit architectures. Thus even 
-though its type usage should be clean now (it definitely wasn't back 
-when that was first added!) it would still require *functional* changes 
-to even pretend to have 32-bit support.
+In the following code path, next_freq is clamped between policy->min
+and policy->max twice in functions cpufreq_driver_resolve_freq() and
+cpufreq_driver_fast_switch(). For there is no update_lock in the code
+path, policy->min and policy->max may be modified (one or more times),
+so sg_policy->next_freq updated in function sugov_update_next_freq()
+may be not the final cpufreq. Next time when we use
+"if (sg_policy->next_freq == next_freq)" to judge whether to update
+next_freq, we may get a wrong result.
 
-Robin.
+-> sugov_update_single()
+  -> get_next_freq()
+    -> cpufreq_driver_resolve_freq()
+  -> sugov_fast_switch()
+    -> sugov_update_next_freq()
+    -> cpufreq_driver_fast_switch()
 
->> [...]
->>>>> +static irqreturn_t dmc620_pmu_handle_irq(int irq_num, void *data)
->>>>> +{
->>>>> +	struct dmc620_pmu_irq *irq = data;
->>>>> +	struct dmc620_pmu *dmc620_pmu;
->>>>> +	irqreturn_t ret = IRQ_NONE;
->>>>> +
->>>>> +	rcu_read_lock();
->>>>> +	list_for_each_entry_rcu(dmc620_pmu, &irq->pmus_node, pmus_node) {
->>>>> +		unsigned long status;
->>>>> +		struct perf_event *event;
->>>>> +		unsigned int idx;
->>>>> +
->>>>> +		/*
->>>>> +		 * HW doesn't provide a control to atomically disable all counters.
->>>>> +		 * To prevent race condition, disable all events before continuing
->>>>> +		 */
->>>>
->>>> I'm still doubtful that this doesn't introduce more inaccuracy overall than whatever it's trying to avoid... :/
->>> It think it does. By disabling all counters, you make sure overflow status not change at the same time you are clearing
->>> it(by writing zero) after reading all counters.
->>
->> Urgh, *now* I get what the race is - we don't have a proper write-1-to-clear interrupt status register, so however much care we take in writing back to the overflow register there's always *some* risk of wiping out a new event when writing back, unless we ensure that no new overflows can occur *before* reading the status. What a horrible piece of hardware design... :(
->>
->> Perhaps it's worth expanding the comment a little more, since apparently it's not super-obvious.
-> 
-> I will expand the common more to explain the race condition.
->>
->> [...]
->>>>> +	/*
->>>>> +	 * We must NOT create groups containing mixed PMUs, although software
->>>>> +	 * events are acceptable.
->>>>> +	 */
->>>>> +	if (event->group_leader->pmu != event->pmu &&
->>>>> +			!is_software_event(event->group_leader))
->>>>> +		return -EINVAL;
->>>>> +
->>>>> +	for_each_sibling_event(sibling, event->group_leader) {
->>>>> +		if (sibling->pmu != event->pmu &&
->>>>> +				!is_software_event(sibling))
->>>>> +			return -EINVAL;
->>>>> +	}
->>>>
->>>> As before, if you can't start, stop, or read multiple counters atomically, you can't really support groups of events for this PMU either. It's impossible to measure accurate ratios with a variable amount of skew between individual counters.
->>> Can you elaborate more? The only issue I know is we can’t stop all counters of same PMU atomically in IRQ handler to prevent race condition.  But it can be fixed by manually disable each counter. Other than that, every counters are working independently.
->>
->> The point of groups is to be able to count two or more events for the exact same time period, in order to measure ratios between them accurately. ->add, ->del, ->read, etc. are still called one at a time for each event in the group, but those calls are made as part of a transaction, which for most drivers is achieved by perf core calling ->pmu_disable and ->pmu_enable around the other calls. Since this driver doesn't have enable/disable functionality, the individual events will count for different lengths of time depending on what order those calls are made in (which is not necessarily constant), and how long each one takes. Thus you'll end up with an indeterminate amount of error between what each count represents, and the group is not really any more accurate than if the events were simply scheduled independently, which is not how it's supposed to work.
->>
->> Come to think of it, you're also not validating that groups are even schedulable - try something like:
->>
->>   perf stat -e '{arm_dmc620_10008c000/clk_cycle_count/,arm_dmc620_10008c000/clk_request/,arm_dmc620_10008c000/clk_upload_stall/}' sleep 5
->>
->> and observe perf core being very confused and unhappy when ->add starts failing for a group that ->event_init said was OK, since 3 events won't actually fit into the 2 available counters.
->>
->> As I said before, I think you probably would be able to make groups work with some careful hooking up of snapshot functionality to ->start_txn and ->commit_txn, but to start with it'll be an awful lot simpler to just be honest and reject them.
-> 
-> Got it. Thanks for educating me. I will allow only one HW event then.
->>
->> [...]
->>>>> +	name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->>>>> +				  "%s_%llx", DMC620_PMUNAME,
->>>>> +				  (res->start) >> DMC620_PA_SHIFT);
->>>>
->>>> res->start doesn't need parentheses, however I guess it might need casting to u64 to solve the build warning (I'm not sure there's any nicer way, unfortunately).
->>> I will remove those parentheses, we don’t need u64 as build warning only applies when it runs compiling test with 32bit.
->>
->> As above, deliberately hacking the build for the sake of not fixing clearly dodgy code is crazy. The only correct format specifier for an expression of type phys_addr_t/resource_size_t is "%pa"; if you want to use a different format then explicitly converting the argument to a type appropriate for that format (either via a simple cast or an intermediate variable) is indisputably correct, regardless of whether you might happen to get away with an implicit conversion sometimes.
->>
->> The whole point of maximising COMPILE_TEST coverage is to improve code quality in order to avoid this exact situation, wherein someone copies a pattern from an existing driver only to discover that it's not actually as robust as it should be.
-> 
-> Got it. Will fix it
-> 
-> Thanks,
-> Tuan.
-> 
->>
->> Robin.
-> 
+For example, at first sg_policy->next_freq is 1 GHz, but the final
+cpufreq is 1.2 GHz because policy->min is modified to 1.2 GHz when
+we reached cpufreq_driver_fast_switch(). Then next time, policy->min
+is changed before we reached cpufreq_driver_resolve_freq() and (assume)
+next_freq is 1 GHz, we find "if (sg_policy->next_freq == next_freq)" is
+satisfied so we don't change the cpufreq. Actually we should change
+the cpufreq to 1.0 GHz this time.
+
+Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+---
+ drivers/cpufreq/cpufreq.c        |  6 +++---
+ include/linux/cpufreq.h          |  2 +-
+ kernel/sched/cpufreq_schedutil.c | 21 ++++++++++-----------
+ 3 files changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index f4b60663efe6..7e8e03c7506b 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -2057,13 +2057,13 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
+  * error condition, the hardware configuration must be preserved.
+  */
+ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+-					unsigned int target_freq)
++					unsigned int *target_freq)
+ {
+ 	unsigned int freq;
+ 	int cpu;
+ 
+-	target_freq = clamp_val(target_freq, policy->min, policy->max);
+-	freq = cpufreq_driver->fast_switch(policy, target_freq);
++	*target_freq = clamp_val(*target_freq, policy->min, policy->max);
++	freq = cpufreq_driver->fast_switch(policy, *target_freq);
+ 
+ 	if (!freq)
+ 		return 0;
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index fa37b1c66443..790df38d48de 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -569,7 +569,7 @@ struct cpufreq_governor {
+ 
+ /* Pass a target to the cpufreq driver */
+ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+-					unsigned int target_freq);
++					unsigned int *target_freq);
+ int cpufreq_driver_target(struct cpufreq_policy *policy,
+ 				 unsigned int target_freq,
+ 				 unsigned int relation);
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index e254745a82cb..38d2dc55dd95 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -99,31 +99,30 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
+ 	return delta_ns >= sg_policy->freq_update_delay_ns;
+ }
+ 
+-static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
++static inline bool sugov_update_next_freq(struct sugov_policy *sg_policy,
+ 				   unsigned int next_freq)
+ {
+-	if (sg_policy->next_freq == next_freq)
+-		return false;
+-
+-	sg_policy->next_freq = next_freq;
+-	sg_policy->last_freq_update_time = time;
+-
+-	return true;
++	return sg_policy->next_freq == next_freq ? false : true;
+ }
+ 
+ static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
+ 			      unsigned int next_freq)
+ {
+-	if (sugov_update_next_freq(sg_policy, time, next_freq))
+-		cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
++	if (sugov_update_next_freq(sg_policy, next_freq)) {
++		cpufreq_driver_fast_switch(sg_policy->policy, &next_freq);
++		sg_policy->next_freq = next_freq;
++		sg_policy->last_freq_update_time = time;
++	}
+ }
+ 
+ static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
+ 				  unsigned int next_freq)
+ {
+-	if (!sugov_update_next_freq(sg_policy, time, next_freq))
++	if (!sugov_update_next_freq(sg_policy, next_freq))
+ 		return;
+ 
++	sg_policy->next_freq = next_freq;
++	sg_policy->last_freq_update_time = time;
+ 	if (!sg_policy->work_in_progress) {
+ 		sg_policy->work_in_progress = true;
+ 		irq_work_queue(&sg_policy->irq_work);
+-- 
+2.17.1
+
