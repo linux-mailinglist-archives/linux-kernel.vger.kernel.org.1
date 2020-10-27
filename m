@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452D029C638
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB15029C637
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901754AbgJ0SOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34658 "EHLO mail.kernel.org"
+        id S2901174AbgJ0SO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:14:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507508AbgJ0ONS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:13:18 -0400
+        id S2507085AbgJ0ONU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:13:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E5C722264;
-        Tue, 27 Oct 2020 14:13:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F7EF2076A;
+        Tue, 27 Oct 2020 14:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807997;
-        bh=IhAHUeQv3iGIi5lX21gGYYHdMiD64DRAne2mqC1o/oE=;
+        s=default; t=1603808000;
+        bh=uccbjVnIjVgigrqIjbS79OPTjDa+TLQTDs3MNrwqrh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rwSUjHFmlSU0udF9qBlLJ8s17YQdV1sWDcuqujU+lGUKaoX10BnakhgutZCwt8RGM
-         KEHDlccFgeTaCkPYU0yBjTpI5k4uTJEkOMUndUi8IPWz3ZPR3Hud3p94dFO8nK8it6
-         1upFgetL7ayGs+G9j3SdgtFrpzJzhfPA0MY5MEdE=
+        b=y1Nz1281jASlx8BEPLncQZmjPl+GGAaiVc99ykdoiOR+lrrYTa6E/1gEX7egUjAXw
+         pYOiXYeB3zSNMtTNFNnPJY42olpCtg/Uy9q6BwL1sWSGg6SjqOD3tmzxO+ipWeCswM
+         Z0py3bzqHVqVEB4elPGyVZQ5k2IMCyta3jfUWPLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 119/191] Input: imx6ul_tsc - clean up some errors in imx6ul_tsc_resume()
-Date:   Tue, 27 Oct 2020 14:49:34 +0100
-Message-Id: <20201027134915.421721907@linuxfoundation.org>
+Subject: [PATCH 4.14 120/191] Input: stmfts - fix a & vs && typo
+Date:   Tue, 27 Oct 2020 14:49:35 +0100
+Message-Id: <20201027134915.470663205@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -43,65 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 30df23c5ecdfb8da5b0bc17ceef67eff9e1b0957 ]
+[ Upstream commit d04afe14b23651e7a8bc89727a759e982a8458e4 ]
 
-If imx6ul_tsc_init() fails then we need to clean up the clocks.
+In stmfts_sysfs_hover_enable_write(), we should check value and
+sdata->hover_enabled is all true.
 
-I reversed the "if (input_dev->users) {" condition to make the code a
-bit simpler.
-
-Fixes: 6cc527b05847 ("Input: imx6ul_tsc - propagate the errors")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200905124942.GC183976@mwanda
+Fixes: 78bcac7b2ae1 ("Input: add support for the STMicroelectronics FingerTip touchscreen")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20200916141941.16684-1-yuehaibing@huawei.com
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/imx6ul_tsc.c | 27 +++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ drivers/input/touchscreen/stmfts.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/imx6ul_tsc.c b/drivers/input/touchscreen/imx6ul_tsc.c
-index ee82a975bfd29..5759c1592a456 100644
---- a/drivers/input/touchscreen/imx6ul_tsc.c
-+++ b/drivers/input/touchscreen/imx6ul_tsc.c
-@@ -542,20 +542,25 @@ static int __maybe_unused imx6ul_tsc_resume(struct device *dev)
+diff --git a/drivers/input/touchscreen/stmfts.c b/drivers/input/touchscreen/stmfts.c
+index c72662c979e79..d9e93dabbca21 100644
+--- a/drivers/input/touchscreen/stmfts.c
++++ b/drivers/input/touchscreen/stmfts.c
+@@ -484,7 +484,7 @@ static ssize_t stmfts_sysfs_hover_enable_write(struct device *dev,
  
- 	mutex_lock(&input_dev->mutex);
+ 	mutex_lock(&sdata->mutex);
  
--	if (input_dev->users) {
--		retval = clk_prepare_enable(tsc->adc_clk);
--		if (retval)
--			goto out;
--
--		retval = clk_prepare_enable(tsc->tsc_clk);
--		if (retval) {
--			clk_disable_unprepare(tsc->adc_clk);
--			goto out;
--		}
-+	if (!input_dev->users)
-+		goto out;
+-	if (value & sdata->hover_enabled)
++	if (value && sdata->hover_enabled)
+ 		goto out;
  
--		retval = imx6ul_tsc_init(tsc);
-+	retval = clk_prepare_enable(tsc->adc_clk);
-+	if (retval)
-+		goto out;
-+
-+	retval = clk_prepare_enable(tsc->tsc_clk);
-+	if (retval) {
-+		clk_disable_unprepare(tsc->adc_clk);
-+		goto out;
- 	}
- 
-+	retval = imx6ul_tsc_init(tsc);
-+	if (retval) {
-+		clk_disable_unprepare(tsc->tsc_clk);
-+		clk_disable_unprepare(tsc->adc_clk);
-+		goto out;
-+	}
- out:
- 	mutex_unlock(&input_dev->mutex);
- 	return retval;
+ 	if (sdata->running)
 -- 
 2.25.1
 
