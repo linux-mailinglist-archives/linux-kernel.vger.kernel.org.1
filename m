@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DF329B5F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1363229B40D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757615AbgJ0PSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:18:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51086 "EHLO mail.kernel.org"
+        id S1782904AbgJ0O5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794874AbgJ0POF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:14:05 -0400
+        id S1763936AbgJ0Opg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 077F220728;
-        Tue, 27 Oct 2020 15:14:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC6FD22258;
+        Tue, 27 Oct 2020 14:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811644;
-        bh=MkgMDcccSHwun46vYipogs2oopYDY7nk+d6mYmDSuyM=;
+        s=default; t=1603809935;
+        bh=dy7ftH6y5kVPYuS6ZtwHYPyI9K3wQUX2VPiC+MhEtEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qPnc7k9yDUaG/xhN/bcmri4qs0T15DOgf15AVqUQf1XB18xU6p04tt/PBXI8IRil6
-         SykzCIU/4o8wt8dsfbI8ATdp+/88bqJQepj/QuAwior1vrj0pQwPLdkNtWmjnHraxU
-         TI7eMIXhK8N3G6xYebokk64u2efGh/FHIzfC65f4=
+        b=Q5rCcO8REA/YKPmsyt/1MiQylo34dSnfVxgEZQjvQCfsFmFSfO8W5dbTWfUiHp59F
+         VUPrBKEbdkL54xZmBRgZA5sSEleK+tKMY1e4xZE8CA933EGY03ip/OmLszvdLFY5Zi
+         uCT1iegtJRwl0hdsLFWkpi4oI7S39cAEH1OjBb2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 566/633] mic: vop: copy data to kernel space then write to io memory
+Subject: [PATCH 5.4 371/408] usb: ohci: Default to per-port over-current protection
 Date:   Tue, 27 Oct 2020 14:55:09 +0100
-Message-Id: <20201027135549.354705053@linuxfoundation.org>
+Message-Id: <20201027135512.214322728@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +43,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sherry Sun <sherry.sun@nxp.com>
+From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 
-[ Upstream commit 675f0ad4046946e80412896436164d172cd92238 ]
+[ Upstream commit b77d2a0a223bc139ee8904991b2922d215d02636 ]
 
-Read and write io memory should address align on ARCH ARM. Change to use
-memcpy_toio to avoid kernel panic caused by the address un-align issue.
+Some integrated OHCI controller hubs do not expose all ports of the hub
+to pins on the SoC. In some cases the unconnected ports generate
+spurious over-current events. For example the Broadcom 56060/Ranger 2 SoC
+contains a nominally 3 port hub but only the first port is wired.
 
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20200929091106.24624-5-sherry.sun@nxp.com
+Default behaviour for ohci-platform driver is to use global over-current
+protection mode (AKA "ganged"). This leads to the spurious over-current
+events affecting all ports in the hub.
+
+We now alter the default to use per-port over-current protection.
+
+This patch results in the following configuration changes depending
+on quirks:
+- For quirk OHCI_QUIRK_SUPERIO no changes. These systems remain set up
+  for ganged power switching and no over-current protection.
+- For quirk OHCI_QUIRK_AMD756 or OHCI_QUIRK_HUB_POWER power switching
+  remains at none, while over-current protection is now guaranteed to be
+  set to per-port rather than the previous behaviour where it was either
+  none or global over-current protection depending on the value at
+  function entry.
+
+Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20200910212512.16670-1-hamish.martin@alliedtelesis.co.nz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/mic/vop/vop_vringh.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ drivers/usb/host/ohci-hcd.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
-index 30eac172f0170..d069947b09345 100644
---- a/drivers/misc/mic/vop/vop_vringh.c
-+++ b/drivers/misc/mic/vop/vop_vringh.c
-@@ -602,6 +602,7 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
- 	size_t partlen;
- 	bool dma = VOP_USE_DMA && vi->dma_ch;
- 	int err = 0;
-+	size_t offset = 0;
+diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+index 4de91653a2c7b..5eb62240c7f87 100644
+--- a/drivers/usb/host/ohci-hcd.c
++++ b/drivers/usb/host/ohci-hcd.c
+@@ -673,20 +673,24 @@ static int ohci_run (struct ohci_hcd *ohci)
  
- 	if (dma) {
- 		dma_alignment = 1 << vi->dma_ch->device->copy_align;
-@@ -655,13 +656,20 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
- 	 * We are copying to IO below and should ideally use something
- 	 * like copy_from_user_toio(..) if it existed.
- 	 */
--	if (copy_from_user((void __force *)dbuf, ubuf, len)) {
--		err = -EFAULT;
--		dev_err(vop_dev(vdev), "%s %d err %d\n",
--			__func__, __LINE__, err);
--		goto err;
-+	while (len) {
-+		partlen = min_t(size_t, len, VOP_INT_DMA_BUF_SIZE);
-+
-+		if (copy_from_user(vvr->buf, ubuf + offset, partlen)) {
-+			err = -EFAULT;
-+			dev_err(vop_dev(vdev), "%s %d err %d\n",
-+				__func__, __LINE__, err);
-+			goto err;
-+		}
-+		memcpy_toio(dbuf + offset, vvr->buf, partlen);
-+		offset += partlen;
-+		vdev->out_bytes += partlen;
-+		len -= partlen;
+ 	/* handle root hub init quirks ... */
+ 	val = roothub_a (ohci);
+-	val &= ~(RH_A_PSM | RH_A_OCPM);
++	/* Configure for per-port over-current protection by default */
++	val &= ~RH_A_NOCP;
++	val |= RH_A_OCPM;
+ 	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
+-		/* NSC 87560 and maybe others */
++		/* NSC 87560 and maybe others.
++		 * Ganged power switching, no over-current protection.
++		 */
+ 		val |= RH_A_NOCP;
+-		val &= ~(RH_A_POTPGT | RH_A_NPS);
+-		ohci_writel (ohci, val, &ohci->regs->roothub.a);
++		val &= ~(RH_A_POTPGT | RH_A_NPS | RH_A_PSM | RH_A_OCPM);
+ 	} else if ((ohci->flags & OHCI_QUIRK_AMD756) ||
+ 			(ohci->flags & OHCI_QUIRK_HUB_POWER)) {
+ 		/* hub power always on; required for AMD-756 and some
+-		 * Mac platforms.  ganged overcurrent reporting, if any.
++		 * Mac platforms.
+ 		 */
+ 		val |= RH_A_NPS;
+-		ohci_writel (ohci, val, &ohci->regs->roothub.a);
  	}
--	vdev->out_bytes += len;
- 	err = 0;
- err:
- 	vpdev->hw_ops->unmap(vpdev, dbuf);
++	ohci_writel(ohci, val, &ohci->regs->roothub.a);
++
+ 	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
+ 	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
+ 						&ohci->regs->roothub.b);
 -- 
 2.25.1
 
