@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6BF29AE24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9375729AE23
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368174AbgJ0N5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43608 "EHLO mail.kernel.org"
+        id S368163AbgJ0N5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:57:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368145AbgJ0N5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:07 -0400
+        id S368149AbgJ0N5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:57:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7654C21D41;
-        Tue, 27 Oct 2020 13:57:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E270218AC;
+        Tue, 27 Oct 2020 13:57:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807027;
-        bh=CQll37AdCLVTuqHDIp/Pd7pWl6MS3xUNi9cmgfRPQeI=;
+        s=default; t=1603807029;
+        bh=/NlU0/3d84vVPG+nHAIZydHM6HSVzfZ3j8P+/gBXXl8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=obKqgNDAAVuJIqhqb4pSjLlSxzdyVhQlpWQX3SbIi/B4OpueX/oLmOW1BUvHEfHXN
-         v3GhYrU4dRvCGHHq06TrT04HAMEDkN2kZMvPkm2O+p+0Z35K7hSP6cB/J7iGXeTD32
-         c+eCksaOX/CWfQGmi8BW4jCVs8iu8VfwQToEBhdw=
+        b=wnhG7WPwYO8DvWjTcM5ZOVVSRD47HfeWALeoDsieyeafb4aiXIcT2nw4KOIKrPYig
+         eiBzt2H/3m8MdGM/CA4W5KLL5PuldpHzDzkI3PwJ/2maHFBqf7CXQzvGD54ZD/Gq7y
+         hiZrcGrcE/qj6gCnJkrUj7eivozwymzKn4/4vtY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 016/112] icmp: randomize the global rate limiter
-Date:   Tue, 27 Oct 2020 14:48:46 +0100
-Message-Id: <20201027134901.334203595@linuxfoundation.org>
+        stable@vger.kernel.org, Dominik Maier <dmaier@sect.tu-berlin.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.4 017/112] cifs: remove bogus debug code
+Date:   Tue, 27 Oct 2020 14:48:47 +0100
+Message-Id: <20201027134901.383747842@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -42,67 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit b38e7819cae946e2edf869e604af1e65a5d241c5 ]
+commit d367cb960ce88914898cbfa43645c2e43ede9465 upstream.
 
-Keyu Man reported that the ICMP rate limiter could be used
-by attackers to get useful signal. Details will be provided
-in an upcoming academic publication.
+The "end" pointer is either NULL or it points to the next byte to parse.
+If there isn't a next byte then dereferencing "end" is an off-by-one out
+of bounds error.  And, of course, if it's NULL that leads to an Oops.
+Printing "*end" doesn't seem very useful so let's delete this code.
 
-Our solution is to add some noise, so that the attackers
-no longer can get help from the predictable token bucket limiter.
+Also for the last debug statement, I noticed that it should be printing
+"sequence_end" instead of "end" so fix that as well.
 
-Fixes: 4cdf507d5452 ("icmp: add a global rate limitation")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Dominik Maier <dmaier@sect.tu-berlin.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- Documentation/networking/ip-sysctl.txt |    4 +++-
- net/ipv4/icmp.c                        |    7 +++++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
 
---- a/Documentation/networking/ip-sysctl.txt
-+++ b/Documentation/networking/ip-sysctl.txt
-@@ -868,12 +868,14 @@ icmp_ratelimit - INTEGER
- icmp_msgs_per_sec - INTEGER
- 	Limit maximal number of ICMP packets sent per second from this host.
- 	Only messages whose type matches icmp_ratemask (see below) are
--	controlled by this limit.
-+	controlled by this limit. For security reasons, the precise count
-+	of messages per second is randomized.
- 	Default: 1000
- 
- icmp_msgs_burst - INTEGER
- 	icmp_msgs_per_sec controls number of ICMP packets sent per second,
- 	while icmp_msgs_burst controls the burst size of these packets.
-+	For security reasons, the precise burst size is randomized.
- 	Default: 50
- 
- icmp_ratemask - INTEGER
---- a/net/ipv4/icmp.c
-+++ b/net/ipv4/icmp.c
-@@ -246,7 +246,7 @@ static struct {
- /**
-  * icmp_global_allow - Are we allowed to send one more ICMP message ?
-  *
-- * Uses a token bucket to limit our ICMP messages to sysctl_icmp_msgs_per_sec.
-+ * Uses a token bucket to limit our ICMP messages to ~sysctl_icmp_msgs_per_sec.
-  * Returns false if we reached the limit and can not send another packet.
-  * Note: called with BH disabled
-  */
-@@ -274,7 +274,10 @@ bool icmp_global_allow(void)
+---
+ fs/cifs/asn1.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+--- a/fs/cifs/asn1.c
++++ b/fs/cifs/asn1.c
+@@ -541,8 +541,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
+ 		   || (tag != ASN1_EOC)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
++			 cls, con, tag, end);
+ 		return 0;
  	}
- 	credit = min_t(u32, icmp_global.credit + incr, sysctl_icmp_msgs_burst);
- 	if (credit) {
--		credit--;
-+		/* We want to use a credit of one in average, but need to randomize
-+		 * it for security reasons.
-+		 */
-+		credit = max_t(int, credit - prandom_u32_max(3), 0);
- 		rc = true;
+ 
+@@ -552,8 +552,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
+ 		   || (tag != ASN1_SEQ)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 1\n",
++			 cls, con, tag, end);
+ 		return 0;
  	}
- 	WRITE_ONCE(icmp_global.credit, credit);
+ 
+@@ -563,8 +563,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
+ 		   || (tag != ASN1_EOC)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
++			 cls, con, tag, end);
+ 		return 0;
+ 	}
+ 
+@@ -575,8 +575,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
+ 		   || (tag != ASN1_SEQ)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d sequence_end = %p exit 1\n",
++			 cls, con, tag, sequence_end);
+ 		return 0;
+ 	}
+ 
 
 
