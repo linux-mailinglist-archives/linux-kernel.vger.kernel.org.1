@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F25929B5ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A37A29B412
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796382AbgJ0PSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50626 "EHLO mail.kernel.org"
+        id S1783081AbgJ0O5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794813AbgJ0PNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:13:45 -0400
+        id S1763865AbgJ0OpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E04920657;
-        Tue, 27 Oct 2020 15:13:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C969120773;
+        Tue, 27 Oct 2020 14:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811625;
-        bh=b3yn/e1fuNGB/nSvT2z3p0aLOFj4I7+dDr6hA0bzlTk=;
+        s=default; t=1603809915;
+        bh=Iu1YP6eCiWUIKbD7nThDJFmPelMCRWTadzoB+GonbXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hADSSXFoRezmmvgQzvyYlWi00/M+2N4jK8GPC1fV2CcZw4B1rT78bwyvwLDps8T+W
-         VW9DXteYwgRCbNms/hZ5q7eiXpoj310KdT/YdIGk6MjUZgi6sxL0xLb6NvFdF8hsuG
-         PkjBXGosfNkj7yYioCRMJdrH0IstxA6OO4fbkG70=
+        b=TCQArO8oWWxrY074jHKa1YmnYOcdUmafzfyCFMWWphXW14RkEBbcXX5DmaJfor9kN
+         yMWrBEC1x9RObCAsqeFiOOyLyLMkpsU7uJV2U3zA3thLUTWk1huw8QmSa5RDfZoqYw
+         Nlf4jfd0HuWPsdyBKORf9Dim5oJAtOUdDvljQNT0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 560/633] staging: wfx: fix handling of MMIC error
+        stable@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 365/408] drm/panfrost: add amlogic reset quirk callback
 Date:   Tue, 27 Oct 2020 14:55:03 +0100
-Message-Id: <20201027135549.077722164@linuxfoundation.org>
+Message-Id: <20201027135511.967718762@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-[ Upstream commit 8d350c14ee5eb62ecd40b0991248bfbce511954d ]
+[ Upstream commit 110003002291525bb209f47e6dbf121a63249a97 ]
 
-As expected, when the device detect a MMIC error, it returns a specific
-status. However, it also strip IV from the frame (don't ask me why).
+The T820, G31 & G52 GPUs integrated by Amlogic in the respective GXM,
+G12A/SM1 & G12B SoCs needs a quirk in the PWR registers at the GPU reset
+time.
 
-So, with the current code, mac80211 detects a corrupted frame and it
-drops it before it handle the MMIC error. The expected behavior would be
-to detect MMIC error then to renegotiate the EAP session.
+Since the Amlogic's integration of the GPU cores with the SoC is not
+publicly documented we do not know what does these values, but they
+permit having a fully functional GPU running with Panfrost.
 
-So, this patch correctly informs mac80211 that IV is not available. So,
-mac80211 correctly takes into account the MMIC error.
-
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Link: https://lore.kernel.org/r/20201007101943.749898-2-Jerome.Pouiller@silabs.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+[Steven: Fix typo in commit log]
+Reviewed-by: Steven Price <steven.price@arm.com>
+Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200916150147.25753-3-narmstrong@baylibre.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wfx/data_rx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/panfrost/panfrost_gpu.c  | 11 +++++++++++
+ drivers/gpu/drm/panfrost/panfrost_gpu.h  |  2 ++
+ drivers/gpu/drm/panfrost/panfrost_regs.h |  4 ++++
+ 3 files changed, 17 insertions(+)
 
-diff --git a/drivers/staging/wfx/data_rx.c b/drivers/staging/wfx/data_rx.c
-index 0e959ebc38b56..a9fb5165b33d9 100644
---- a/drivers/staging/wfx/data_rx.c
-+++ b/drivers/staging/wfx/data_rx.c
-@@ -80,7 +80,7 @@ void wfx_rx_cb(struct wfx_vif *wvif,
- 		goto drop;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 1431db13ec788..0d39a201c7591 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -75,6 +75,17 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+ 	return 0;
+ }
  
- 	if (arg->status == HIF_STATUS_RX_FAIL_MIC)
--		hdr->flag |= RX_FLAG_MMIC_ERROR;
-+		hdr->flag |= RX_FLAG_MMIC_ERROR | RX_FLAG_IV_STRIPPED;
- 	else if (arg->status)
- 		goto drop;
++void panfrost_gpu_amlogic_quirk(struct panfrost_device *pfdev)
++{
++	/*
++	 * The Amlogic integrated Mali-T820, Mali-G31 & Mali-G52 needs
++	 * these undocumented bits in GPU_PWR_OVERRIDE1 to be set in order
++	 * to operate correctly.
++	 */
++	gpu_write(pfdev, GPU_PWR_KEY, GPU_PWR_KEY_UNLOCK);
++	gpu_write(pfdev, GPU_PWR_OVERRIDE1, 0xfff | (0x20 << 16));
++}
++
+ static void panfrost_gpu_init_quirks(struct panfrost_device *pfdev)
+ {
+ 	u32 quirks = 0;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+index 4112412087b27..468c51e7e46db 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+@@ -16,4 +16,6 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+ void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev);
  
++void panfrost_gpu_amlogic_quirk(struct panfrost_device *pfdev);
++
+ #endif
+diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
+index ea38ac60581c6..eddaa62ad8b0e 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_regs.h
++++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
+@@ -51,6 +51,10 @@
+ #define GPU_STATUS			0x34
+ #define   GPU_STATUS_PRFCNT_ACTIVE	BIT(2)
+ #define GPU_LATEST_FLUSH_ID		0x38
++#define GPU_PWR_KEY			0x50	/* (WO) Power manager key register */
++#define  GPU_PWR_KEY_UNLOCK		0x2968A819
++#define GPU_PWR_OVERRIDE0		0x54	/* (RW) Power manager override settings */
++#define GPU_PWR_OVERRIDE1		0x58	/* (RW) Power manager override settings */
+ #define GPU_FAULT_STATUS		0x3C
+ #define GPU_FAULT_ADDRESS_LO		0x40
+ #define GPU_FAULT_ADDRESS_HI		0x44
 -- 
 2.25.1
 
