@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFFB29B691
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016D229B695
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797097AbgJ0PVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56566 "EHLO mail.kernel.org"
+        id S1797175AbgJ0PWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796491AbgJ0PTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:19:01 -0400
+        id S1758669AbgJ0PTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:19:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC85A2064B;
-        Tue, 27 Oct 2020 15:18:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7087821527;
+        Tue, 27 Oct 2020 15:19:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811940;
-        bh=8e0KLTFeI2WkNdLJIotItsFVR3JYYKl61qFB5qUwZqc=;
+        s=default; t=1603811972;
+        bh=N2OKTnmbyuBCrU4Q1Ih2/CK7lfVvfVFuoKzhQQcI/Gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IxY4w59ZpKyGZg57Z931VUwOhYJc9wdFNgjrx/tzzN3S84OFT1X3CHEsIfLUReJ8b
-         W9ajEwyrxBRZKBRDfJXRjh1q+EFbIbIxm1GI+QDO1YXJB5f+pgVCEvBpLcvuDvwpvP
-         qupmQRofzPcaZWbx0uaSG3sFo48U8zcFICHflrb0=
+        b=LX7Flxv3/SBYvpgACQYJVmaloebpqnlBJh//MWVC1gdEazmtAJZ4CxcQjwcJ2yPRL
+         LtfgfPRs0PfXFqJETdCx66eqVXDrTjHghvtIuU/4i46DMvDDSlCd5Sjdt4wRtIYrCR
+         lnbkUpkM5XzUgo57YzfOxhrlRmiEGV3/4ptJb/0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 035/757] chelsio/chtls: correct function return and return type
-Date:   Tue, 27 Oct 2020 14:44:45 +0100
-Message-Id: <20201027135452.172113304@linuxfoundation.org>
+        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 040/757] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
+Date:   Tue, 27 Oct 2020 14:44:50 +0100
+Message-Id: <20201027135452.402824267@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,34 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+From: Dylan Hung <dylan_hung@aspeedtech.com>
 
-[ Upstream commit 8580a61aede28d441e1c80588803411ee86aa299 ]
+[ Upstream commit 137d23cea1c044b2d4853ac71bc68126b25fdbb2 ]
 
-csk_mem_free() should return true if send buffer is available,
-false otherwise.
+The new HW arbitration feature on Aspeed ast2600 will cause MAC TX to
+hang when handling scatter-gather DMA.  Disable the problematic feature
+by setting MAC register 0x58 bit28 and bit27.
 
-Fixes: 3b8305f5c844 ("crypto: chtls - wait for memory sendmsg, sendpage")
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Fixes: 39bfab8844a0 ("net: ftgmac100: Add support for DT phy-handle property")
+Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/chelsio/chtls/chtls_io.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/faraday/ftgmac100.c |    5 +++++
+ drivers/net/ethernet/faraday/ftgmac100.h |    8 ++++++++
+ 2 files changed, 13 insertions(+)
 
---- a/drivers/crypto/chelsio/chtls/chtls_io.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_io.c
-@@ -902,9 +902,9 @@ static int chtls_skb_copy_to_page_nocach
- 	return 0;
- }
+--- a/drivers/net/ethernet/faraday/ftgmac100.c
++++ b/drivers/net/ethernet/faraday/ftgmac100.c
+@@ -1817,6 +1817,11 @@ static int ftgmac100_probe(struct platfo
+ 		priv->rxdes0_edorr_mask = BIT(30);
+ 		priv->txdes0_edotr_mask = BIT(30);
+ 		priv->is_aspeed = true;
++		/* Disable ast2600 problematic HW arbitration */
++		if (of_device_is_compatible(np, "aspeed,ast2600-mac")) {
++			iowrite32(FTGMAC100_TM_DEFAULT,
++				  priv->base + FTGMAC100_OFFSET_TM);
++		}
+ 	} else {
+ 		priv->rxdes0_edorr_mask = BIT(15);
+ 		priv->txdes0_edotr_mask = BIT(15);
+--- a/drivers/net/ethernet/faraday/ftgmac100.h
++++ b/drivers/net/ethernet/faraday/ftgmac100.h
+@@ -170,6 +170,14 @@
+ #define FTGMAC100_MACCR_SW_RST		(1 << 31)
  
--static int csk_mem_free(struct chtls_dev *cdev, struct sock *sk)
-+static bool csk_mem_free(struct chtls_dev *cdev, struct sock *sk)
- {
--	return (cdev->max_host_sndbuf - sk->sk_wmem_queued);
-+	return (cdev->max_host_sndbuf - sk->sk_wmem_queued > 0);
- }
- 
- static int csk_wait_memory(struct chtls_dev *cdev,
+ /*
++ * test mode control register
++ */
++#define FTGMAC100_TM_RQ_TX_VALID_DIS (1 << 28)
++#define FTGMAC100_TM_RQ_RR_IDLE_PREV (1 << 27)
++#define FTGMAC100_TM_DEFAULT                                                   \
++	(FTGMAC100_TM_RQ_TX_VALID_DIS | FTGMAC100_TM_RQ_RR_IDLE_PREV)
++
++/*
+  * PHY control register
+  */
+ #define FTGMAC100_PHYCR_MDC_CYCTHR_MASK	0x3f
 
 
