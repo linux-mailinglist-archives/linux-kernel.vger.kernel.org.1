@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B37B29A693
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6754F29A696
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894788AbgJ0I1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:27:02 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:43261 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403961AbgJ0I1B (ORCPT
+        id S2894808AbgJ0I3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:29:05 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35672 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894797AbgJ0I3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:27:01 -0400
-Received: by mail-lf1-f65.google.com with SMTP id l28so1164470lfp.10;
-        Tue, 27 Oct 2020 01:26:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XIPWi+l0jdtwe7a/vFhBWIkkHZTxV2Bo329Aduuqz0Y=;
-        b=N1RgbNLj1IGPtDBFi2WyRr67FzoIphdsntAJ05OtLwq5ClTtAT1fmLAqYVBNOarETG
-         zxVqZBxr+SbMU1zuj1WZZaseHIK/KHqXsSYVLvMBQD97WW8uemL8cubOJaL8G9dnZXFo
-         0O1FKm97AFbKJbmKv9q35d+kaYN1GFm8Fbkzo7Z2zK1vSsxRMe67m2rM4EEkyTDtzHV1
-         xWTaMERSuFYTdCwOH0S7Lm6rYTe+JTS0rXdBNCl8aCu54qG9kXNGN0JbmxmRCGjtFloz
-         5iUHqLxw2u5L2ntyZv3ZM8sDuqDFQPJk9Xv2SBR11FWJLM64yFzb2iHGBtxgoJDMGOZI
-         UYSA==
-X-Gm-Message-State: AOAM532QXhkwSyXYtREQ3eymXAClzCvCihPNEjkroLPp+t2kUxO2IyX9
-        d4B4vfSzS72+WoC2qJ/SjSg=
-X-Google-Smtp-Source: ABdhPJxZdvyff6NTZCNh5cgP4gqVTZlusJs7rkzYrG60oCea8SrZ4rbaJhyafEM+9WgvZzCHgo7GvQ==
-X-Received: by 2002:a19:c690:: with SMTP id w138mr416756lff.409.1603787218626;
-        Tue, 27 Oct 2020 01:26:58 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id n19sm95060lfe.142.2020.10.27.01.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 01:26:57 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kXKJk-0001LL-9S; Tue, 27 Oct 2020 09:26:57 +0100
-Date:   Tue, 27 Oct 2020 09:26:56 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-omap@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Duncan Sands <duncan.sands@free.fr>
-Subject: Re: [PATCH v3 04/13 ] USB: serial: digi_acceleport: Remove
- in_interrupt() usage
-Message-ID: <20201027082656.GD4085@localhost>
-References: <20201019100629.419020859@linutronix.de>
- <20201019101110.019266389@linutronix.de>
- <20201025171613.GT26280@localhost>
- <20201026140313.dpg3hkhkje2os4hw@linutronix.de>
+        Tue, 27 Oct 2020 04:29:04 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 68AFD1C0B7F; Tue, 27 Oct 2020 09:29:01 +0100 (CET)
+Date:   Tue, 27 Oct 2020 09:29:00 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505
+ flash led controller
+Message-ID: <20201027082900.GA21354@amd>
+References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201026140313.dpg3hkhkje2os4hw@linutronix.de>
+In-Reply-To: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 03:03:13PM +0100, Sebastian Andrzej Siewior wrote:
-> From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
-> 
-> The usage of in_interrupt() in drivers is phased out and Linus clearly
-> requested that code which changes behaviour depending on context should
-> either be separated or the context be conveyed in an argument passed by the
-> caller, which usually knows the context.
-> 
-> The debug printk() in digi_write() prints in_interrupt() as context
-> information. This information is imprecisely as it does not distinguish
-> between hard-IRQ or disabled botton half and it does consider disabled
-> interrupts or preemption. It is not really helpful.
 
-I fixed up a couple of typos and added the missing negation above so
-that it reads:
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  The debug printk() in digi_write() prints in_interrupt() as context
-  information. This information is imprecise as it does not distinguish
-  between hard-IRQ or disabled bottom half and it does not consider
-  disabled interrupts or preemption. It is not really helpful.
-	
-> Remove the in_interrupt() printout.
-> 
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-usb@vger.kernel.org
+Hi!
+
+> From: ChiYuan Huang <cy_huang@richtek.com>
+>=20
+> Add support for RT4505 flash led controller. It can support up to 1.5A
+> flash current with hardware timeout and low input voltage
+> protection.
+
+Please use upper-case "LED" everywhere.
+
+This should be 2nd in the series, after DT changes.
+
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 > ---
-> v2…v3:
->   - Don't make dev_dbg() conditional on `tty'
->   - Remove the part "tty happens always in process context" from the
->     commit message. Johan pointed out that for PPP it may happen in
->     bottom half.
+>  drivers/leds/Kconfig       |  11 ++
+>  drivers/leds/Makefile      |   1 +
+>  drivers/leds/leds-rt4505.c | 397 +++++++++++++++++++++++++++++++++++++++=
+++++++
+>  3 files changed, 409 insertions(+)
+>  create mode 100644 drivers/leds/leds-rt4505.c
 
-Now applied for -next, thanks.
+Lets put this into drivers/leds/flash/. (Yes, you'll have to create
+it).
 
-Johan
+
+> +	help
+> +	  This option enables support for the RT4505 flash led controller.
+
+Information where it is used would be welcome here.
+
+> +	  It can support up to 1.5A flash strobe current with hardware timeout
+> +	  and low input voltage protection.
+
+This does not / should not be here.
+> +
+> +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, enum =
+led_brightness level)
+> +{
+
+80 columns, where easy.
+
+> +	struct rt4505_priv *priv =3D container_of(lcdev, struct rt4505_priv, fl=
+ash.led_cdev);
+> +	u32 val =3D 0;
+> +	int ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +
+> +	if (level !=3D LED_OFF) {
+> +		ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ILED, RT4505_ITORC=
+H_MASK,
+> +					 (level - 1) << RT4505_ITORCH_SHIFT);
+> +		if (ret)
+> +			goto unlock;
+> +
+> +		val =3D RT4505_TORCH_SET;
+> +	}
+> +
+> +	ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4505_ENAB=
+LE_MASK, val);
+> +
+> +unlock:
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+
+Why is the locking needed? What will the /sys/class/leds interface
+look like on system with your flash?
+
+> +static int rt4505_flash_strobe_get(struct led_classdev_flash *fled_cdev,=
+ bool *state)
+> +{
+> +	struct rt4505_priv *priv =3D container_of(fled_cdev, struct rt4505_priv=
+, flash);
+> +	u32 val;
+> +	int ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +
+> +	ret =3D regmap_read(priv->regmap, RT4505_REG_ENABLE, &val);
+> +	if (ret)
+> +		goto unlock;
+> +
+> +	*state =3D ((val & RT4505_FLASH_GET) =3D=3D RT4505_FLASH_GET) ? true : =
+false;
+
+No need for ? ... part.
+
+> +static bool rt4505_is_accessible_reg(struct device *dev, unsigned int re=
+g)
+> +{
+> +	if (reg =3D=3D RT4505_REG_RESET || (reg >=3D RT4505_REG_CONFIG  && reg =
+<=3D RT4505_REG_FLAGS))
+> +		return true;
+
+Make this two stagements.
+
+Otherwise... looks like easy simple driver, thanks.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--J/dobhs11T7y2rNN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+X2kwACgkQMOfwapXb+vLQ7ACfdRhgoq+ELbs1YrC/k4qEE376
+hWcAn2qLD+x2DD1zEWNh12yTPEPIOMgB
+=lwCH
+-----END PGP SIGNATURE-----
+
+--J/dobhs11T7y2rNN--
