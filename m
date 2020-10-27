@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B59429A3AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A39729A3B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505422AbgJ0Ep4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 00:45:56 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44622 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2501914AbgJ0Epz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 00:45:55 -0400
-Received: by mail-wr1-f67.google.com with SMTP id t9so326519wrq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 21:45:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xmAyLEcR2tdPTiT4aGYBK9tERH8lFFNxrJCHCsIMZek=;
-        b=Oa4mAtCh715j6TkUy+/uY+u2lK3mewQqLVECqIWZiBXDVmSf757P+GmD9J1qKjPbPF
-         hAZNWj3DalSNuczA2DxQ1L6RwHUyF11hFSU/Mm7nGUuuHn9A2HmXPbxg9c5jRjQaJPmK
-         9hfMSYT9MHu8vLNVpyRU9rHCZYMHRDZ/ujvzN/kSx9l6HhN4tNltim5V4rK0rXwjtSl9
-         VwU7qFvQc8u23nO1Qt1WLuoRMvBdX06wcn5c3gz4OCVXniG2Msj7Po+udSmHPWdfxs2t
-         zf+rjYxt1TLTaOVMS8cU6qCKQFDO8cqoc1FkIkSgnQ/OmEyd0XGdCDW52czLctadHCKG
-         QhkA==
-X-Gm-Message-State: AOAM531QufFh8XViyLP+/MS+rpCGtEfMuC6AObuBjpU9BIFF7ypqt2Ai
-        iSgi6JGsw/Z805ozWl+O1FzCsJFAUAZDFZdbid4=
-X-Google-Smtp-Source: ABdhPJxAQf8Nl74/sZxMQmMOdkTaAtYeEmjkfSzoMVvkslghe1kVaC81YPCig8k5QTtK47JIcC4pcIwa759VafbAPxY=
-X-Received: by 2002:adf:a553:: with SMTP id j19mr417267wrb.349.1603773953952;
- Mon, 26 Oct 2020 21:45:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201026141937.582087-1-namhyung@kernel.org> <20201026152108.GW466880@tassilo.jf.intel.com>
- <87y2jtq970.fsf@ashishki-desk.ger.corp.intel.com>
-In-Reply-To: <87y2jtq970.fsf@ashishki-desk.ger.corp.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 27 Oct 2020 13:45:43 +0900
-Message-ID: <CAM9d7cizsTGrQKDaJnFFXUXmTHCQSzj=+mK2P_ek0Hw1JrF2TQ@mail.gmail.com>
-Subject: Re: [RFC] perf evlist: Warn if event group has mixed sw/hw events
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2505447AbgJ0Ezm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 00:55:42 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:59426 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505437AbgJ0Ezm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 00:55:42 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 036D7200C86;
+        Tue, 27 Oct 2020 05:55:40 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CB27F200CA8;
+        Tue, 27 Oct 2020 05:55:33 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 4D60A40291;
+        Tue, 27 Oct 2020 05:55:26 +0100 (CET)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     linux@rasmusvillemoes.dk, shawnguo@kernel.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, leoyang.li@nxp.com, zhiqiang.hou@nxp.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Biwen Li <biwen.li@nxp.com>
+Subject: [v2 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external interrupt
+Date:   Tue, 27 Oct 2020 12:46:09 +0800
+Message-Id: <20201027044619.41879-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-On Tue, Oct 27, 2020 at 12:49 AM Alexander Shishkin
-<alexander.shishkin@linux.intel.com> wrote:
->
-> Andi Kleen <ak@linux.intel.com> writes:
->
-> > On Mon, Oct 26, 2020 at 11:19:37PM +0900, Namhyung Kim wrote:
-> >> This patch just added a warning before running it.  I'd really want to
-> >> fix the kernel if possible but don't have a good idea.  Thoughts?
-> >
-> > The easiest fix would be some multi threading in perf stat opening, then then
-> > extra latencies could be mostly hidden. One thread per group would probably
-> > be overkill, but just a few threads would lower the penalty significantly.
-> >
-> > I think that would be better than this patch and it's likely not that much
-> > more complicated, as this is already a lot of code.
-> >
-> >> +{
-> >> +    const char *known_sw_pmu[] = {
-> >> +            "software", "tracepoint", "breakpoint", "kprobe", "uprobe", "msr"
-> >
-> > That's a non scalable approach. New pmus get added regularly. It would be better to
-> > indicate this in a generic way from the kernel.
->
-> That, and also, intel_pt is a software PMU and a few of its features
-> depend on intel_pt/.../ being a group leader.
+Add an new IRQ chip declaration for LS1043A and LS1088A
+- compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A. SCFG_INTPCR[31:0]
+  of these SoCs is stored/read as SCFG_INTPCR[0:31] defaultly(bit
+  reverse)
+- compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
 
-Thanks for the info, that's good to know.
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+Change in v2:
+	- add despcription of bit reverse
+	- update copyright
 
-So do you mean intel_pt requires other HW events in the same group?
+ drivers/irqchip/irq-ls-extirq.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Thanks
-Namhyung
+diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+index 4d1179fed77c..9587bc2607fc 100644
+--- a/drivers/irqchip/irq-ls-extirq.c
++++ b/drivers/irqchip/irq-ls-extirq.c
+@@ -1,5 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+-
++/*
++ * Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
++ * Copyright 2020 NXP
++ */
+ #define pr_fmt(fmt) "irq-ls-extirq: " fmt
+ 
+ #include <linux/irq.h>
+@@ -183,6 +186,9 @@ ls_extirq_of_init(struct device_node *node, struct device_node *parent)
+ 		priv->bit_reverse = (revcr != 0);
+ 	}
+ 
++	if (of_device_is_compatible(node, "fsl,ls1043a-extirq"))
++		priv->bit_reverse = true;
++
+ 	domain = irq_domain_add_hierarchy(parent_domain, 0, priv->nirq, node,
+ 					  &extirq_domain_ops, priv);
+ 	if (!domain)
+@@ -195,3 +201,5 @@ ls_extirq_of_init(struct device_node *node, struct device_node *parent)
+ }
+ 
+ IRQCHIP_DECLARE(ls1021a_extirq, "fsl,ls1021a-extirq", ls_extirq_of_init);
++IRQCHIP_DECLARE(ls1043a_extirq, "fsl,ls1043a-extirq", ls_extirq_of_init);
++IRQCHIP_DECLARE(ls1088a_extirq, "fsl,ls1088a-extirq", ls_extirq_of_init);
+-- 
+2.17.1
+
