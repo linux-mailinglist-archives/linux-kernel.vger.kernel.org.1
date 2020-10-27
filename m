@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E61729B27C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C9729B27E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762247AbgJ0Oli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:41:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39144 "EHLO mail.kernel.org"
+        id S1762269AbgJ0Oll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:41:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761454AbgJ0Ojw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:39:52 -0400
+        id S1761466AbgJ0Ojz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:39:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3287121D7B;
-        Tue, 27 Oct 2020 14:39:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E25D2206B2;
+        Tue, 27 Oct 2020 14:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809591;
-        bh=C1kyShctg4m/uugNKHHDmF5dIsTk9/2TrhpunOxgmag=;
+        s=default; t=1603809594;
+        bh=1BcVye8HRxyDPFVEqpme3Hjykoavb1YY5uMUVusMe8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yKimP26wVTPYFU7o4jPz/XDxoZgLSL7hCYKsVLsGTKHP+sI4XWdEwk2DWGbfBL/Q2
-         uYe7lmjG2ZnpoimHViLkP/BQ32ORdaqdBRnx9IJb6+H/o3UAjA5pG892Ay1wQpii9Y
-         0fwf6oIdJxr71nNfHdkk7EtjmruYaKCW+spv/zYU=
+        b=zEXaTHX9R2SujslLq0fkYzZmc9/QtYYQT82u/DbFNuQzL/bTCg+Wg7SRrIg2FiOxW
+         IAjbdefD8zRn0uvLS/hZcxYA7SToEIwf40Lwf3mhZ7bsdo7o8CP2uQx05COPRtdLx3
+         x7jVAZxWU64OXQtMFecCgSox3dGOA7+UP/aijg/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Cameron Berkenpas <cam@neo-zeon.de>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 221/408] RDMA/qedr: Fix inline size returned for iWARP
-Date:   Tue, 27 Oct 2020 14:52:39 +0100
-Message-Id: <20201027135505.337900488@linuxfoundation.org>
+Subject: [PATCH 5.4 222/408] powerpc/book3s64/hash/4k: Support large linear mapping range with 4K
+Date:   Tue, 27 Oct 2020 14:52:40 +0100
+Message-Id: <20201027135505.379479621@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,38 +44,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit fbf58026b2256e9cd5f241a4801d79d3b2b7b89d ]
+[ Upstream commit 7746406baa3bc9e23fdd7b7da2f04d86e25ab837 ]
 
-commit 59e8970b3798 ("RDMA/qedr: Return max inline data in QP query
-result") changed query_qp max_inline size to return the max roce inline
-size.  When iwarp was introduced, this should have been modified to return
-the max inline size based on protocol.  This size is cached in the device
-attributes
+With commit: 0034d395f89d ("powerpc/mm/hash64: Map all the kernel
+regions in the same 0xc range"), we now split the 64TB address range
+into 4 contexts each of 16TB. That implies we can do only 16TB linear
+mapping.
 
-Fixes: 69ad0e7fe845 ("RDMA/qedr: Add support for iWARP in user space")
-Link: https://lore.kernel.org/r/20200902165741.8355-8-michal.kalderon@marvell.com
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+On some systems, eg. Power9, memory attached to nodes > 0 will appear
+above 16TB in the linear mapping. This resulted in kernel crash when
+we boot such systems in hash translation mode with 4K PAGE_SIZE.
+
+This patch updates the kernel mapping such that we now start supporting upto
+61TB of memory with 4K. The kernel mapping now looks like below 4K PAGE_SIZE
+and hash translation.
+
+    vmalloc start     = 0xc0003d0000000000
+    IO start          = 0xc0003e0000000000
+    vmemmap start     = 0xc0003f0000000000
+
+Our MAX_PHYSMEM_BITS for 4K is still 64TB even though we can only map 61TB.
+We prevent bolt mapping anything outside 61TB range by checking against
+H_VMALLOC_START.
+
+Fixes: 0034d395f89d ("powerpc/mm/hash64: Map all the kernel regions in the same 0xc range")
+Reported-by: Cameron Berkenpas <cam@neo-zeon.de>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200608070904.387440-3-aneesh.kumar@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/book3s/64/hash-4k.h | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 682329789d00d..4408d33646647 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -2405,7 +2405,7 @@ int qedr_query_qp(struct ib_qp *ibqp,
- 	qp_attr->cap.max_recv_wr = qp->rq.max_wr;
- 	qp_attr->cap.max_send_sge = qp->sq.max_sges;
- 	qp_attr->cap.max_recv_sge = qp->rq.max_sges;
--	qp_attr->cap.max_inline_data = ROCE_REQ_MAX_INLINE_DATA_SIZE;
-+	qp_attr->cap.max_inline_data = dev->attr.max_inline;
- 	qp_init_attr->cap = qp_attr->cap;
+diff --git a/arch/powerpc/include/asm/book3s/64/hash-4k.h b/arch/powerpc/include/asm/book3s/64/hash-4k.h
+index 3f9ae3585ab98..80c9534148821 100644
+--- a/arch/powerpc/include/asm/book3s/64/hash-4k.h
++++ b/arch/powerpc/include/asm/book3s/64/hash-4k.h
+@@ -13,20 +13,19 @@
+  */
+ #define MAX_EA_BITS_PER_CONTEXT		46
  
- 	qp_attr->ah_attr.type = RDMA_AH_ATTR_TYPE_ROCE;
+-#define REGION_SHIFT		(MAX_EA_BITS_PER_CONTEXT - 2)
+ 
+ /*
+- * Our page table limit us to 64TB. Hence for the kernel mapping,
+- * each MAP area is limited to 16 TB.
+- * The four map areas are:  linear mapping, vmap, IO and vmemmap
++ * Our page table limit us to 64TB. For 64TB physical memory, we only need 64GB
++ * of vmemmap space. To better support sparse memory layout, we use 61TB
++ * linear map range, 1TB of vmalloc, 1TB of I/O and 1TB of vmememmap.
+  */
++#define REGION_SHIFT		(40)
+ #define H_KERN_MAP_SIZE		(ASM_CONST(1) << REGION_SHIFT)
+ 
+ /*
+- * Define the address range of the kernel non-linear virtual area
+- * 16TB
++ * Define the address range of the kernel non-linear virtual area (61TB)
+  */
+-#define H_KERN_VIRT_START	ASM_CONST(0xc000100000000000)
++#define H_KERN_VIRT_START	ASM_CONST(0xc0003d0000000000)
+ 
+ #ifndef __ASSEMBLY__
+ #define H_PTE_TABLE_SIZE	(sizeof(pte_t) << H_PTE_INDEX_SIZE)
 -- 
 2.25.1
 
