@@ -2,145 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DF329C9BF
+	by mail.lfdr.de (Postfix) with ESMTP id D052629C9C0
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830928AbgJ0UIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:08:36 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:38909 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1830920AbgJ0UIe (ORCPT
+        id S1830935AbgJ0UJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:09:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2439401AbgJ0UJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:08:34 -0400
-Received: by mail-io1-f65.google.com with SMTP id y20so2945296iod.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=4HIc/0MR2zHvdieD9zh6vgSLY8pbQbGIFImMryqW80s=;
-        b=PPPa3tmp2ks9hMD+/SvUol0Jx+R7oBCr+e32JI5nCuiG5v1h2ucr/FqTIkj9xsqVMk
-         82ZR0Ou9cOuG1rkvlK/33AXrWcAmuXcDoj7+Ax3tfPhEd4XOPHUE2JgiVGcHG2kAVp07
-         zvMESFRR7oZiOKXo8KvZpW4q9iZ9AgHen6rdI=
+        Tue, 27 Oct 2020 16:09:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603829341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=z/P9Z9C4PZYkgeQZNMgEmbQXDB2+FuX6dF3cY8iv250=;
+        b=evyKLhS1evX0Jz06yLQ/v7sktAatJeWnhSlFblXH16LlJZwkVe6qua5ITlNutM3i5/1sv7
+        0Kxx5cN5Lhln25tLJ4YQrFHpqNxHoZoQo6/l15v0S26ac1jjoPe+fNGbZ8EadLPjHqmSOk
+        UJVvgHJBsBHkn1l625w1tOdGa3gsaTs=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-qRPMa94IMs-dsDAD5HX_gA-1; Tue, 27 Oct 2020 16:08:59 -0400
+X-MC-Unique: qRPMa94IMs-dsDAD5HX_gA-1
+Received: by mail-oi1-f198.google.com with SMTP id y8so1185830oie.22
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:08:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4HIc/0MR2zHvdieD9zh6vgSLY8pbQbGIFImMryqW80s=;
-        b=ErrHCiqJrJRiKRcIJH5bOdp7WyB0zjGnQbwnZ8+Wps28kbp8iDA5yQ93csXn+gvTJj
-         ByoM3kmbTnI+aa3VfvG+SDCvr4Lz7cRcvjNxJGgEz6OBKpXowToL24v3YKrBpcoVl6TS
-         hxcu1ee8T08gW8TylGpD6lk0ERF27WiBwjxdd7SdRbwknGOU1VHGWJxe+mzFP2ltEGcs
-         N60UCBegLTdXIQrI1CPUVh0oaejfJriTnH/YXUxQ7VDXs/km6Fi11+rfKe20DWwbC5+4
-         +aDS5uoDvjhwuUzQZsO+uM+/pDyNueSoTBcqPjpUrWUWZ8RbkgNbbX2SE/qGUQkDASvo
-         EnKg==
-X-Gm-Message-State: AOAM532/lD9K6fAneqWiisDDvWRHlQqH55HQkORN3RSN1KhwsSHn71tI
-        Sr+DGjxFcy/XaKLOUrMxEK16ZA==
-X-Google-Smtp-Source: ABdhPJxEnhHXp/fd89iC17rp6whQwz7mY2Q1l1AjQHbSPGMfQBiuPwlJgoZQ8cCXi+zUMR++RBiyyw==
-X-Received: by 2002:a6b:cf18:: with SMTP id o24mr3595316ioa.57.1603829313981;
-        Tue, 27 Oct 2020 13:08:33 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r14sm1456512ilc.78.2020.10.27.13.08.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 13:08:33 -0700 (PDT)
-Subject: Re: [PATCH] selftests: intel_pstate: ftime() is deprecated
-To:     Tommi Rantala <tommi.t.rantala@nokia.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201016132245.73378-1-tommi.t.rantala@nokia.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d315994a-3398-be41-1b26-e78f8359aa5c@linuxfoundation.org>
-Date:   Tue, 27 Oct 2020 14:08:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201016132245.73378-1-tommi.t.rantala@nokia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=z/P9Z9C4PZYkgeQZNMgEmbQXDB2+FuX6dF3cY8iv250=;
+        b=QVvvwolRZatravUL+Jvjf5gI4vFy+6VZjbUaoHp7xky55ZJ1j9PZUj+nEUxroS9U3l
+         VUFGp9doRRS1DQ8b1Cp5Y/+g2+Z8LFAnaCpo1pUsu6VIzSkpUChyjXHL32W7Lfwdoz8k
+         pU43U3S6W1p3+/NAu8LCuxx52nW7ztKBHPpg4gn453hIqUSA+jwRfnZukMFyzZ3xqcmC
+         zN4WYJO+NdIBdUPzdMNvEx5XYsA/Lti19HgKj0o2PZKEdevNC6/0OYDAZVnqHvpElGFw
+         c77iWg84rnlqprVDLxc4Ad2dXDPigYQ12vy0vwjiWKll3a+jMIuVeQ+DOS1ntzHL3Jgw
+         Ds9Q==
+X-Gm-Message-State: AOAM530QVywGBZFRzH2ARTNjcaqqQjBh+yKJUnNtvuxwR0asAErwmtds
+        ZeErsSf1I6iJw9dnvQhMJSysiPyv4FYeKD4W+4nm4JYEQqhSOWjzF3xUbw9u8YNer1BOkhYxD6r
+        WeuDTutgZtcbMaNPn3ldXn1eK
+X-Received: by 2002:aca:f203:: with SMTP id q3mr2607474oih.148.1603829339028;
+        Tue, 27 Oct 2020 13:08:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmZlAqkfP+7v4p/ymWn6FF+T+HagSo905aTYq4mMxXC7QSKxlykrccxT4DOK0XZZxlvlgsig==
+X-Received: by 2002:aca:f203:: with SMTP id q3mr2607462oih.148.1603829338877;
+        Tue, 27 Oct 2020 13:08:58 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u186sm1921539oia.30.2020.10.27.13.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 13:08:58 -0700 (PDT)
+From:   trix@redhat.com
+To:     eugen.hristev@microchip.com, jic23@kernel.org, lars@metafoo.de,
+        pmeerw@pmeerw.net, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com
+Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] iio: adc: at91-sama5d2_adc: remove unneeded semicolon
+Date:   Tue, 27 Oct 2020 13:08:53 -0700
+Message-Id: <20201027200853.1596699-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommi,
+From: Tom Rix <trix@redhat.com>
 
-On 10/16/20 7:22 AM, Tommi Rantala wrote:
-> Use clock_gettime() instead of deprecated ftime().
-> 
->    aperf.c: In function ‘main’:
->    aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-declarations]
->       58 |  ftime(&before);
->          |  ^~~~~
->    In file included from aperf.c:9:
->    /usr/include/sys/timeb.h:39:12: note: declared here
->       39 | extern int ftime (struct timeb *__timebuf)
->          |            ^~~~~
-> 
+A semicolon is not needed after a switch statement.
 
-Thanks for the fix. One comment below
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/iio/adc/at91-sama5d2_adc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-> ---
->   tools/testing/selftests/intel_pstate/aperf.c | 17 ++++++++++++-----
->   1 file changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/intel_pstate/aperf.c b/tools/testing/selftests/intel_pstate/aperf.c
-> index f6cd03a87493..eea9dbab459b 100644
-> --- a/tools/testing/selftests/intel_pstate/aperf.c
-> +++ b/tools/testing/selftests/intel_pstate/aperf.c
-> @@ -10,6 +10,7 @@
->   #include <sched.h>
->   #include <errno.h>
->   #include <string.h>
-> +#include <time.h>
->   #include "../kselftest.h"
->   
->   void usage(char *name) {
-> @@ -22,7 +23,7 @@ int main(int argc, char **argv) {
->   	long long tsc, old_tsc, new_tsc;
->   	long long aperf, old_aperf, new_aperf;
->   	long long mperf, old_mperf, new_mperf;
-> -	struct timeb before, after;
-> +	struct timespec before, after;
->   	long long int start, finish, total;
->   	cpu_set_t cpuset;
->   
-> @@ -55,7 +56,10 @@ int main(int argc, char **argv) {
->   		return 1;
->   	}
->   
-> -	ftime(&before);
-> +	if (clock_gettime(CLOCK_MONOTONIC, &before) < 0) {
-> +		perror("clock_gettime");
-> +		return 1;
-> +	}
->   	pread(fd, &old_tsc,  sizeof(old_tsc), 0x10);
->   	pread(fd, &old_aperf,  sizeof(old_mperf), 0xe7);
->   	pread(fd, &old_mperf,  sizeof(old_aperf), 0xe8);
-> @@ -64,7 +68,10 @@ int main(int argc, char **argv) {
->   		sqrt(i);
->   	}
->   
-> -	ftime(&after);
-> +	if (clock_gettime(CLOCK_MONOTONIC, &after) < 0) {
-> +		perror("clock_gettime");
-> +		return 1;
-> +	}
->   	pread(fd, &new_tsc,  sizeof(new_tsc), 0x10);
->   	pread(fd, &new_aperf,  sizeof(new_mperf), 0xe7);
->   	pread(fd, &new_mperf,  sizeof(new_aperf), 0xe8);
-> @@ -73,8 +80,8 @@ int main(int argc, char **argv) {
->   	aperf = new_aperf-old_aperf;
->   	mperf = new_mperf-old_mperf;
->   
-> -	start = before.time*1000 + before.millitm;
-> -	finish = after.time*1000 + after.millitm;
-> +	start = before.tv_sec*1000 + before.tv_nsec/1000000L;
-> +	finish = after.tv_sec*1000 + after.tv_nsec/1000000L;
-
-Why not use timespec dNSEC_PER_MSEC define from  include/vdso/time64.h?
-
-thanks,
--- Shuah
+diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+index b917a4714a9c..56cb9a8521be 100644
+--- a/drivers/iio/adc/at91-sama5d2_adc.c
++++ b/drivers/iio/adc/at91-sama5d2_adc.c
+@@ -1472,7 +1472,7 @@ static int at91_adc_write_raw(struct iio_dev *indio_dev,
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+-	};
++	}
+ }
+ 
+ static void at91_adc_dma_init(struct platform_device *pdev)
+-- 
+2.18.1
 
