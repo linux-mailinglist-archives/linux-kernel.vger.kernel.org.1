@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407E829AF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B967429B002
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754762AbgJ0OG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
+        id S1756945AbgJ0OPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:15:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753287AbgJ0N7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:59:39 -0400
+        id S1754474AbgJ0OFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:05:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B976D2068D;
-        Tue, 27 Oct 2020 13:59:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 918632222C;
+        Tue, 27 Oct 2020 14:05:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807179;
-        bh=Cy42EPoULeSZsZ8sVYky8mByMq1EuOgF4SNBc7BbvB0=;
+        s=default; t=1603807539;
+        bh=vdRF+n8FPKystMTO0J2qTG77A+2/Gqa6IqVIF3sU2Bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQvZF+P6dKf13OCYJrPbDdI977Wpgbad1NXTNkapD2zTXVM0jqjkcMqkteR6EUkpQ
-         aK5du1Jb9qGnruVFi0x+R6mRCP3jY+EU4cbedXEZmKOz/DBvaCoA43PBDVKhy3nz3E
-         4NgR24/OTb5r/MboDxJtFm9qJ9jUVJA+TVjbrJ8I=
+        b=NtEfSQjY31dtisnGTZC/kxiSO28Zg+QwnxGnknYV435RflxqYuIFh98dJhHgU1WiZ
+         aS2bnrlGZpuXc7eM40bjXJkvSko0asnNR04Q9dnPYVca5AdgVElJBQ4QZeaOeI1m8t
+         BG0VI7mVVYlxZySgK2cN9zLnYrXzTqhQHJ2GQ94g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hoo <robert.hu@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 072/112] KVM: x86: emulating RDPID failure shall return #UD rather than #GP
-Date:   Tue, 27 Oct 2020 14:49:42 +0100
-Message-Id: <20201027134903.965222809@linuxfoundation.org>
+Subject: [PATCH 4.9 089/139] arm64: dts: qcom: msm8916: Fix MDP/DSI interrupts
+Date:   Tue, 27 Oct 2020 14:49:43 +0100
+Message-Id: <20201027134906.357795645@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hoo <robert.hu@linux.intel.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit a9e2e0ae686094571378c72d8146b5a1a92d0652 ]
+[ Upstream commit 027cca9eb5b450c3f6bb916ba999144c2ec23cb7 ]
 
-Per Intel's SDM, RDPID takes a #UD if it is unsupported, which is more or
-less what KVM is emulating when MSR_TSC_AUX is not available.  In fact,
-there are no scenarios in which RDPID is supposed to #GP.
+The mdss node sets #interrupt-cells = <1>, so its interrupts
+should be referenced using a single cell (in this case: only the
+interrupt number).
 
-Fixes: fb6d4d340e ("KVM: x86: emulate RDPID")
-Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
-Message-Id: <1598581422-76264-1-git-send-email-robert.hu@linux.intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+However, right now the mdp/dsi node both have two interrupt cells
+set, e.g. interrupts = <4 0>. The 0 is probably meant to say
+IRQ_TYPE_NONE (= 0), but with #interrupt-cells = <1> this is
+actually interpreted as a second interrupt line.
+
+Remove the IRQ flags from both interrupts to fix this.
+
+Fixes: 305410ffd1b2 ("arm64: dts: msm8916: Add display support")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20200915071221.72895-5-stephan@gerhold.net
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/emulate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 466028623e1a0..0c1e249a7ab69 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3524,7 +3524,7 @@ static int em_rdpid(struct x86_emulate_ctxt *ctxt)
- 	u64 tsc_aux = 0;
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 08b88f6791beb..fb5001a6879c7 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -715,7 +715,7 @@ mdp: mdp@1a01000 {
+ 				reg-names = "mdp_phys";
  
- 	if (ctxt->ops->get_msr(ctxt, MSR_TSC_AUX, &tsc_aux))
--		return emulate_gp(ctxt, 0);
-+		return emulate_ud(ctxt);
- 	ctxt->dst.val = tsc_aux;
- 	return X86EMUL_CONTINUE;
- }
+ 				interrupt-parent = <&mdss>;
+-				interrupts = <0 0>;
++				interrupts = <0>;
+ 
+ 				clocks = <&gcc GCC_MDSS_AHB_CLK>,
+ 					 <&gcc GCC_MDSS_AXI_CLK>,
+@@ -745,7 +745,7 @@ dsi0: dsi@1a98000 {
+ 				reg-names = "dsi_ctrl";
+ 
+ 				interrupt-parent = <&mdss>;
+-				interrupts = <4 0>;
++				interrupts = <4>;
+ 
+ 				assigned-clocks = <&gcc BYTE0_CLK_SRC>,
+ 						  <&gcc PCLK0_CLK_SRC>;
 -- 
 2.25.1
 
