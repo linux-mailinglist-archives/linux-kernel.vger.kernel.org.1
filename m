@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C3529B202
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1556829B204
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760931AbgJ0OhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35918 "EHLO mail.kernel.org"
+        id S1760952AbgJ0OhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:37:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758649AbgJ0OhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:37:03 -0400
+        id S1760930AbgJ0OhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:37:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33F5A2225E;
-        Tue, 27 Oct 2020 14:37:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03D4522265;
+        Tue, 27 Oct 2020 14:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809422;
-        bh=PahXq6/N5/uraeLROJKcnKZLcuVN559gvYkSccDVgWk=;
+        s=default; t=1603809425;
+        bh=EZzu66es/pTQEHuhCK9SUv5b0SRQUZ6IXXn4dca0ef4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jlvOnQ7k2F37+GvlUeOYw1ExLxSpmjj6wgc0icTJ1vK7BQTmq9v3u0jPkHh1TD/yW
-         ZJuo+BOPZFNhbDxth/3CY+5YoH2qmVbwD7W3pU+54qAsMAk1+cTvFyP2NiSL7dq6gb
-         6ks5xAtDkqvccIA5T4U0LjndoQoEnicK3i1itzNo=
+        b=KjaEs4aDFOH1rpUfeyI3/TXy26en1LbTWyk0gbKBP8Kqh0ynSeS4BlWMI1afi5sbS
+         1SGwT3xEwQBAjFPL6lZ0cwZB20r4h9G53dGtXYarhEooR6RFKGagnH3vnYxklDi8Le
+         kmHpwCFiCh/veaZNgV4J+NKqQzoUdEtHU33vSBsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        stable@vger.kernel.org, Ralph Campbell <rcampbell@nvidia.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Ira Weiny <ira.weiny@intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 191/408] mm/swapfile.c: fix potential memory leak in sys_swapon
-Date:   Tue, 27 Oct 2020 14:52:09 +0100
-Message-Id: <20201027135503.952005751@linuxfoundation.org>
+Subject: [PATCH 5.4 192/408] mm/memcg: fix device private memcg accounting
+Date:   Tue, 27 Oct 2020 14:52:10 +0100
+Message-Id: <20201027135503.992728913@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,46 +50,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Ralph Campbell <rcampbell@nvidia.com>
 
-[ Upstream commit 822bca52ee7eb279acfba261a423ed7ac47d6f73 ]
+[ Upstream commit 9a137153fc8798a89d8fce895cd0a06ea5b8e37c ]
 
-If we failed to drain inode, we would forget to free the swap address
-space allocated by init_swap_address_space() above.
+The code in mc_handle_swap_pte() checks for non_swap_entry() and returns
+NULL before checking is_device_private_entry() so device private pages are
+never handled.  Fix this by checking for non_swap_entry() after handling
+device private swap PTEs.
 
-Fixes: dc617f29dbe5 ("vfs: don't allow writes to swap files")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+I assume the memory cgroup accounting would be off somehow when moving
+a process to another memory cgroup.  Currently, the device private page
+is charged like a normal anonymous page when allocated and is uncharged
+when the page is freed so I think that path is OK.
+
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Link: https://lkml.kernel.org/r/20200930101803.53884-1-linmiaohe@huawei.com
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: Balbir Singh <bsingharora@gmail.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Link: https://lkml.kernel.org/r/20201009215952.2726-1-rcampbell@nvidia.com
+xFixes: c733a82874a7 ("mm/memcontrol: support MEMORY_DEVICE_PRIVATE")
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/swapfile.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index cf62bdb7b3045..ff83ffe7a9108 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3284,7 +3284,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	error = inode_drain_writes(inode);
- 	if (error) {
- 		inode->i_flags &= ~S_SWAPFILE;
--		goto bad_swap_unlock_inode;
-+		goto free_swap_address_space;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ca1632850fb76..edf98f8588eeb 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5398,7 +5398,7 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
+ 	struct page *page = NULL;
+ 	swp_entry_t ent = pte_to_swp_entry(ptent);
+ 
+-	if (!(mc.flags & MOVE_ANON) || non_swap_entry(ent))
++	if (!(mc.flags & MOVE_ANON))
+ 		return NULL;
+ 
+ 	/*
+@@ -5417,6 +5417,9 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
+ 		return page;
  	}
  
- 	mutex_lock(&swapon_mutex);
-@@ -3309,6 +3309,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 
- 	error = 0;
- 	goto out;
-+free_swap_address_space:
-+	exit_swap_address_space(p->type);
- bad_swap_unlock_inode:
- 	inode_unlock(inode);
- bad_swap:
++	if (non_swap_entry(ent))
++		return NULL;
++
+ 	/*
+ 	 * Because lookup_swap_cache() updates some statistics counter,
+ 	 * we call find_get_page() with swapper_space directly.
 -- 
 2.25.1
 
