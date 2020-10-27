@@ -2,250 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E145629ADF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E320E29ADFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502058AbgJ0NvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:51:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52104 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2502321AbgJ0NvO (ORCPT
+        id S2502394AbgJ0Nwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:52:51 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:33459 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502073AbgJ0Nwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:51:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603806673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3AiLl1eB6pu6nkS4S8/HRk5466oI9SjgvcO/Y14HF40=;
-        b=K/pCg8Q33eUQuRsFQtGJGOfnRb3eWRnUnJizXyMBXbqo+rvxYaLQkWJTLKfOEskBZ6cj15
-        P/TqAwIlUs91PuSjb898SutJ7fZqHel+R0cOBxwHoiaetwp3Gee1+xBggga9Ce7ksbbwzu
-        Yhde/dsTAa7EsGk014gNXM0oagaMF00=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-04png136NkuYy9KXzprDbw-1; Tue, 27 Oct 2020 09:51:11 -0400
-X-MC-Unique: 04png136NkuYy9KXzprDbw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6680809DD5;
-        Tue, 27 Oct 2020 13:51:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 026146EF55;
-        Tue, 27 Oct 2020 13:51:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 10/10] afs: Fix afs_invalidatepage to adjust the dirty region
-From:   David Howells <dhowells@redhat.com>
-To:     linux-afs@lists.infradead.org
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 27 Oct 2020 13:51:08 +0000
-Message-ID: <160380666821.3467511.7028989455667789924.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
-References: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 27 Oct 2020 09:52:50 -0400
+Received: by mail-ej1-f65.google.com with SMTP id c15so2379359ejs.0;
+        Tue, 27 Oct 2020 06:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4TbXysDqnndpTRF/Rd6isqCmc40s+e6qp/SrBCZya6s=;
+        b=lwyXkbi/gj/HS/sa5ZvZZHWv3isYpIbQNCIWPd3kHp+iv2FtJXwPzAWNcRkUkXvTR8
+         44f1TqgS3Bs2rpkI/0wLJ2Hk71+L3Ar+JX0euHhazOZZfsbBQ0jh4qOrYqZ/IYKprYMR
+         7okL77/0uwXZTkRMwLFRhEHaeE4cEimNfoZ9ZS7H4rHZ5JsJPCXkilBuRfW52+VM3PNz
+         J1cjxhhE3KHS/kc2JF9LiI3m5pFs/I1nntfqvyb8FZOpg/Wn4MwGD/eevDCR7ofLKqo2
+         FY65HzvyUMidkVgJ7hv67tNZM4C41gC/ZJABYJOtFp+NDZvtzNotneRZEPMNdKEaw6wc
+         HRYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4TbXysDqnndpTRF/Rd6isqCmc40s+e6qp/SrBCZya6s=;
+        b=eusKnF3RfVzOdDZEdQy/47MbFChfMi16kwh+A/mZVcnRFQ/AZucH7vWwebN4eeXYce
+         dzg1yUQ3nonBXRlw6g2vgLa0mBAXPAGWeV4mgRxS7WA74Q7XsF4pYbirJx+HmI5qNLZf
+         WPC3cPrWzDzQEe4LbEbvSo7GrBRwF8cRqGx35GKAkbx9se/TGiASbTTDtd930yfKJ8DI
+         +HnIpTLXwJfkO6KkpuihrC+cSuxQFyrUrknaR+zU1BrdrSZOUcE5c0pNJpSaI5rU3qWS
+         lZEr+4gT+Jk8gztjJWy3SFaRiXwGZilI2UretY19MObxcfbXQZcuVW2PyzgfnxE3D9MP
+         kV0A==
+X-Gm-Message-State: AOAM530GiXgN4DKptb3RpB+vIiN5PoiwfeDFbh8blWpwacaMHEDOZ2iu
+        PhQNK1JEBvjSE1HRAKcHTZI=
+X-Google-Smtp-Source: ABdhPJw+wS4M5IdvdBE+C5XCShNKfDZ8hVzHzxdKtDgQPwv8S1CiMKIe82JbF1rjlL+EXlOuu+VahA==
+X-Received: by 2002:a17:906:f8d2:: with SMTP id lh18mr2599173ejb.457.1603806767898;
+        Tue, 27 Oct 2020 06:52:47 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id rs18sm1096635ejb.69.2020.10.27.06.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 06:52:46 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 14:52:44 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 32/52] memory: tegra20-emc: Continue probing if
+ timings are missing in device-tree
+Message-ID: <20201027135244.GM1822510@ulmo>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-33-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OQhbRXNHSL5w/5po"
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-33-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix afs_invalidatepage() to adjust the dirty region recorded in
-page->private when truncating a page.  If the dirty region is entirely
-removed, then the private data is cleared and the page dirty state is
-cleared.
 
-Without this, if the page is truncated and then expanded again by truncate,
-zeros from the expanded, but no-longer dirty region may get written back to
-the server if the page gets laundered due to a conflicting 3rd-party write.
+--OQhbRXNHSL5w/5po
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It mustn't, however, shorten the dirty region of the page if that page is
-still mmapped and has been marked dirty by afs_page_mkwrite(), so a flag is
-stored in page->private to record this.
+On Mon, Oct 26, 2020 at 01:17:15AM +0300, Dmitry Osipenko wrote:
+> EMC driver will become mandatory after turning it into interconnect
+> provider because interconnect users, like display controller driver, will
+> fail to probe using newer device-trees that have interconnect properties.
+> Thus make EMC driver to probe even if timings are missing in device-tree.
 
-Fixes: 4343d00872e1 ("afs: Get rid of the afs_writeback record")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+Does it really have to be mandatory? Sounds like that's going to make it
+unnecessarily complicated to merge all of this. Is it complicated to
+make interconnect support optional in consumer drivers?
 
- fs/afs/file.c              |   74 +++++++++++++++++++++++++++++++++++++-------
- fs/afs/internal.h          |   16 ++++++++--
- fs/afs/write.c             |    1 +
- include/trace/events/afs.h |    5 ++-
- 4 files changed, 80 insertions(+), 16 deletions(-)
+Thierry
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 7dafa2266048..e3cec86cc6ef 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -601,6 +601,65 @@ static int afs_readpages(struct file *file, struct address_space *mapping,
- 	return ret;
- }
- 
-+/*
-+ * Adjust the dirty region of the page on truncation or full invalidation,
-+ * getting rid of the markers altogether if the region is entirely invalidated.
-+ */
-+static void afs_invalidate_dirty(struct page *page, unsigned int offset,
-+				 unsigned int length)
-+{
-+	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
-+	unsigned long priv;
-+	unsigned int f, t, end = offset + length;
-+
-+	priv = page_private(page);
-+
-+	/* we clean up only if the entire page is being invalidated */
-+	if (offset == 0 && length == thp_size(page))
-+		goto full_invalidate;
-+
-+	 /* If the page was dirtied by page_mkwrite(), the PTE stays writable
-+	  * and we don't get another notification to tell us to expand it
-+	  * again.
-+	  */
-+	if (afs_is_page_dirty_mmapped(priv))
-+		return;
-+
-+	/* We may need to shorten the dirty region */
-+	f = afs_page_dirty_from(priv);
-+	t = afs_page_dirty_to(priv);
-+
-+	if (t <= offset || f >= end)
-+		return; /* Doesn't overlap */
-+
-+	if (f < offset && t > end)
-+		return; /* Splits the dirty region - just absorb it */
-+
-+	if (f >= offset && t <= end)
-+		goto undirty;
-+
-+	if (f < offset)
-+		t = offset;
-+	else
-+		f = end;
-+	if (f == t)
-+		goto undirty;
-+
-+	priv = afs_page_dirty(f, t);
-+	set_page_private(page, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page->index, priv);
-+	return;
-+
-+undirty:
-+	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page->index, priv);
-+	clear_page_dirty_for_io(page);
-+full_invalidate:
-+	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page->index, priv);
-+	set_page_private(page, 0);
-+	ClearPagePrivate(page);
-+	put_page(page);
-+}
-+
- /*
-  * invalidate part or all of a page
-  * - release a page and clean up its private data if offset is 0 (indicating
-@@ -609,9 +668,6 @@ static int afs_readpages(struct file *file, struct address_space *mapping,
- static void afs_invalidatepage(struct page *page, unsigned int offset,
- 			       unsigned int length)
- {
--	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
--	unsigned long priv;
--
- 	_enter("{%lu},%u,%u", page->index, offset, length);
- 
- 	BUG_ON(!PageLocked(page));
-@@ -625,17 +681,11 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
- 			fscache_uncache_page(vnode->cache, page);
- 		}
- #endif
--
--		if (PagePrivate(page)) {
--			priv = page_private(page);
--			trace_afs_page_dirty(vnode, tracepoint_string("inval"),
--					     page->index, priv);
--			set_page_private(page, 0);
--			ClearPagePrivate(page);
--			put_page(page);
--		}
- 	}
- 
-+	if (PagePrivate(page))
-+		afs_invalidate_dirty(page, offset, length);
-+
- 	_leave("");
- }
- 
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 0ff1088a7c87..bf8fb9863b0e 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -864,11 +864,13 @@ struct afs_vnode_cache_aux {
-  * 0...PAGE_SIZE inclusive, so we can't support 64K pages on a 32-bit system.
-  */
- #if PAGE_SIZE > 32768
--#define __AFS_PAGE_PRIV_MASK	0xffffffff
-+#define __AFS_PAGE_PRIV_MASK	0x7fffffff
- #define __AFS_PAGE_PRIV_SHIFT	32
-+#define __AFS_PRIV_MMAPPED	0x80000000
- #else
--#define __AFS_PAGE_PRIV_MASK	0xffff
-+#define __AFS_PAGE_PRIV_MASK	0x7fff
- #define __AFS_PAGE_PRIV_SHIFT	16
-+#define __AFS_PRIV_MMAPPED	0x8000
- #endif
- 
- static inline unsigned int afs_page_dirty_from(unsigned long priv)
-@@ -886,6 +888,16 @@ static inline unsigned long afs_page_dirty(unsigned int from, unsigned int to)
- 	return ((unsigned long)(to - 1) << __AFS_PAGE_PRIV_SHIFT) | from;
- }
- 
-+static inline unsigned long afs_page_dirty_mmapped(unsigned long priv)
-+{
-+	return priv | __AFS_PRIV_MMAPPED;
-+}
-+
-+static inline bool afs_is_page_dirty_mmapped(unsigned long priv)
-+{
-+	return priv & __AFS_PRIV_MMAPPED;
-+}
-+
- #include <trace/events/afs.h>
- 
- /*****************************************************************************/
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 91bc2cb2cad1..057d02fd4d02 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -871,6 +871,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	wait_on_page_writeback(vmf->page);
- 
- 	priv = afs_page_dirty(0, PAGE_SIZE);
-+	priv = afs_page_dirty_mmapped(priv);
- 	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
- 			     vmf->page->index, priv);
- 	if (!TestSetPagePrivate(vmf->page))
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index e718ae17ad91..91d515cb3aed 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -986,10 +986,11 @@ TRACE_EVENT(afs_page_dirty,
- 		    __entry->priv = priv;
- 			   ),
- 
--	    TP_printk("vn=%p %lx %s %x-%x",
-+	    TP_printk("vn=%p %lx %s %x-%x%s",
- 		      __entry->vnode, __entry->page, __entry->where,
- 		      afs_page_dirty_from(__entry->priv),
--		      afs_page_dirty_to(__entry->priv))
-+		      afs_page_dirty_to(__entry->priv),
-+		      afs_is_page_dirty_mmapped(__entry->priv) ? " M" : "")
- 	    );
- 
- TRACE_EVENT(afs_call_state,
+--OQhbRXNHSL5w/5po
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YJiwACgkQ3SOs138+
+s6H3wA/9G28Ray4Bi6twkE9N7+h/sNEt+7YPAHJDE7CAIf9/VJ6pbfqyZFWHTH++
+/R5TsxsZlomEwSgf41l2E82KzNVLiJ0uRA2aKSS7J+S7navlOQHB2iHA4Mt2L+wm
+z2l48XHXTeN8HT/RZoaPK+ud5dShtzJkyrQ7Iuije9XY2f7EaSogO1be3P6lQTpJ
+L5tf04hyF0l9obliNMBD1kip6SHt/XLVo/Vdkl95GZz4Utu9XNGOBdkQ0jib8DGB
+VTc/qWdeJUlxQBABfFXBGYXoS5x8xkOe0C1ftx+i1fiJpQ4z7QAaHKb6i/h5E4t3
+D1iTraACToaw2f5Rcidkjandfmw2UxeNh1i3Q9eLDFwZhNTnBsXKez2oajbgDDHJ
+3RQZXzm57261eInfCxv1NTLk1TwefZdC6fHMFya/1d71uxpxrKaZOiqI9R/2V35c
+Qu3Bxgktem+U8dVHrsNZwfaXPIafdyPU+SCczsLFNaIerh4HVFan9Pf3ygTb5835
+WMms77JprRuy8oDnApuK2Tx5tRBf1ETy7ATUxIs40dNTQuVj7VT5biBr97LwRyKM
+4O1+PPLbS256d9z7komAWyF1q/gJUCdQRLtaD3HL6WQdFZmZZABv8S5tclu71lPn
+o8htSjXOmi7ZPGn/ipBe0RMBK42ehXK0f2gysAj+YhzVWqva1JU=
+=XJw5
+-----END PGP SIGNATURE-----
+
+--OQhbRXNHSL5w/5po--
