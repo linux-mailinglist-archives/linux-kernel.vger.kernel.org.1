@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF4F29C56A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD56E29C68A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757096AbgJ0OQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
+        id S1826321AbgJ0STC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:19:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756269AbgJ0OMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:12:17 -0400
+        id S1754092AbgJ0OEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:04:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2684218AC;
-        Tue, 27 Oct 2020 14:12:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F2B622258;
+        Tue, 27 Oct 2020 14:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807937;
-        bh=1uoyyZBa7a9RsIJ2llUpY36WmAMbNoNaAGHNDn5lHhk=;
+        s=default; t=1603807449;
+        bh=+jtZlyJvi3nEmWK4CY+5CuE/tPR+kSen5eO4hy8agZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wB9ye4noe3i9i9fy/wAllN/zvafzP60aD7Rbe2DR7trMEnyliasTyJkck/pgtUmyW
-         x58RR09qPMRl+eEYqiXj+mRct/TtFBRxUfLsqNvsAw7QVvK7H7E4FZElPS2D8Pnp9/
-         8GIom2cQkubJdtIQSwx9pU0dsXYwSIlcN6bzEpsE=
+        b=ZoMSWwTkRjtOEb9ta2N7bkZr9lNGaeIkDeEYG8WgzK8xrv6f1/XAVhoWdci99llDj
+         tn4MQSnzCSjUNpLfWstBzCUvlHHMkOWW2luEze6IZEVvEf8HkZ4ebU/xqQcTHvnaN9
+         k9wTCWqEXW3jfLpqP7s/H+d5JKgSN/nN2tIUmFPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
-        Stan Johnson <userm57@yahoo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 096/191] powerpc/tau: Remove duplicated set_thresholds() call
+Subject: [PATCH 4.9 057/139] IB/mlx4: Adjust delayed work when a dup is observed
 Date:   Tue, 27 Oct 2020 14:49:11 +0100
-Message-Id: <20201027134914.313153176@linuxfoundation.org>
+Message-Id: <20201027134904.829929887@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Håkon Bugge <haakon.bugge@oracle.com>
 
-[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
+[ Upstream commit 785167a114855c5aa75efca97000e405c2cc85bf ]
 
-The commentary at the call site seems to disagree with the code. The
-conditional prevents calling set_thresholds() via the exception handler,
-which appears to crash. Perhaps that's because it immediately triggers
-another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
-is redundant because tau_timeout() does so.
+When scheduling delayed work to clean up the cache, if the entry already
+has been scheduled for deletion, we adjust the delay.
 
-Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
+Fixes: 3cf69cc8dbeb ("IB/mlx4: Add CM paravirtualization")
+Link: https://lore.kernel.org/r/20200803061941.1139994-7-haakon.bugge@oracle.com
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/tau_6xx.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/infiniband/hw/mlx4/cm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
-index 64a27b20cf55e..9e8b709a2aae4 100644
---- a/arch/powerpc/kernel/tau_6xx.c
-+++ b/arch/powerpc/kernel/tau_6xx.c
-@@ -108,11 +108,6 @@ void TAUupdate(int cpu)
- #ifdef DEBUG
- 	printk("grew = %d\n", tau[cpu].grew);
- #endif
--
--#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
--	set_thresholds(cpu);
--#endif
--
- }
- 
- #ifdef CONFIG_TAU_INT
+diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
+index 5dc920fe13269..c8c586c78d071 100644
+--- a/drivers/infiniband/hw/mlx4/cm.c
++++ b/drivers/infiniband/hw/mlx4/cm.c
+@@ -309,6 +309,9 @@ static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id)
+ 	if (!sriov->is_going_down) {
+ 		id->scheduled_delete = 1;
+ 		schedule_delayed_work(&id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
++	} else if (id->scheduled_delete) {
++		/* Adjust timeout if already scheduled */
++		mod_delayed_work(system_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
+ 	}
+ 	spin_unlock_irqrestore(&sriov->going_down_lock, flags);
+ 	spin_unlock(&sriov->id_map_lock);
 -- 
 2.25.1
 
