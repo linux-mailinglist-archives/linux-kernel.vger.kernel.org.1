@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8627929B5F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AB329B404
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796435AbgJ0PSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:18:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51282 "EHLO mail.kernel.org"
+        id S1782499AbgJ0O5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:57:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794899AbgJ0POQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:14:16 -0400
+        id S1763977AbgJ0Ops (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 799ED20728;
-        Tue, 27 Oct 2020 15:14:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5088D21D7B;
+        Tue, 27 Oct 2020 14:45:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811656;
-        bh=v2Irryi3FqaIFDpBaCx1TpdVuR2A4FadIVt8z2gYIKo=;
+        s=default; t=1603809946;
+        bh=aVN0XD+W72zWAq8WIH6dVuf20bTx+EfECv4rGISoK9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MfJxqpe3aDgtldOYMpLNQvNbwfrXLDfss5RLsTVG+kNvAqedSw6rzPdibQRUkoGcL
-         BeT47eGtEUODzuCMNRrMzG4PqR4XaY8wujb46/4b9a+dr/0HjSlbvQwdBPFy4yyJfT
-         DplbOpvUfo4fpZQ8IWBexdrteuKv6YsQHTv30zCQ=
+        b=1ZogO4r/NsVCS+Cy2xTaESxIdj6d3ILc3ubbwUozbNvsfAdKtW5Od1VVisQq0hDEc
+         tqBhNdnIUD1arEcbzLjMuF93V9p/lf+Wrd23C0o0GO79t+wNL4pe6NubBESVaA7c1s
+         HThj6wIg6Vgjbrck5cN6AerFPjj9aGmbWJckJCYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 570/633] rtw88: pci: Power cycle device during shutdown
+Subject: [PATCH 5.4 375/408] scsi: ibmvfc: Fix error return in ibmvfc_probe()
 Date:   Tue, 27 Oct 2020 14:55:13 +0100
-Message-Id: <20201027135549.543042753@linuxfoundation.org>
+Message-Id: <20201027135512.402786374@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 44492e70adc8086c42d3745d21d591657a427f04 ]
+[ Upstream commit 5e48a084f4e824e1b624d3fd7ddcf53d2ba69e53 ]
 
-There are reports that 8822CE fails to work rtw88 with "failed to read DBI
-register" error. Also I have a system with 8723DE which freezes the whole
-system when the rtw88 is probing the device.
+Fix to return error code PTR_ERR() from the error handling case instead of
+0.
 
-According to [1], platform firmware may not properly power manage the
-device during shutdown. I did some expirements and putting the device to
-D3 can workaround the issue.
-
-So let's power cycle the device by putting the device to D3 at shutdown
-to prevent the issue from happening.
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=206411#c9
-
-BugLink: https://bugs.launchpad.net/bugs/1872984
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200928165508.20775-1-kai.heng.feng@canonical.com
+Link: https://lore.kernel.org/r/20200907083949.154251-1-jingxiangfeng@huawei.com
+Acked-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
-index 3413973bc4750..7f1f5073b9f4d 100644
---- a/drivers/net/wireless/realtek/rtw88/pci.c
-+++ b/drivers/net/wireless/realtek/rtw88/pci.c
-@@ -1599,6 +1599,8 @@ void rtw_pci_shutdown(struct pci_dev *pdev)
- 
- 	if (chip->ops->shutdown)
- 		chip->ops->shutdown(rtwdev);
-+
-+	pci_set_power_state(pdev, PCI_D3hot);
- }
- EXPORT_SYMBOL(rtw_pci_shutdown);
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index df897df5cafee..8a76284b59b08 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -4788,6 +4788,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	if (IS_ERR(vhost->work_thread)) {
+ 		dev_err(dev, "Couldn't create kernel thread: %ld\n",
+ 			PTR_ERR(vhost->work_thread));
++		rc = PTR_ERR(vhost->work_thread);
+ 		goto free_host_mem;
+ 	}
  
 -- 
 2.25.1
