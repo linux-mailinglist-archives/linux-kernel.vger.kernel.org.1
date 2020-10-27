@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D1F299E26
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32200299E27
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408198AbgJ0AMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:12:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33956 "EHLO mail.kernel.org"
+        id S2439400AbgJ0AMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:12:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:35651 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411860AbgJ0AL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:11:57 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2439323AbgJ0AMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:12:22 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7092721D41;
-        Tue, 27 Oct 2020 00:11:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603757516;
-        bh=4Q2MBkzkoKupQMmBB15VN7NevCKvT2bqlA+t7ZTUkuo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TztkSBx0UHpOKDB8HC+9alFrp9ZpQKoVbSEjwZnu7OvUTTmEs4Qpxt5Rb6tPMn0J/
-         UlDMSdxDniNIhFvEffOBDDKGywrat448EvTrRyXdEUEA4HozxhI5+9Aggf6pLFPhzT
-         MwO0apamgqwawdtXhNlsxDrngTpj89EgNeIjOeSc=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 25/25] ARM: dts: s5pv210: remove dedicated 'audio-subsystem' node
-Date:   Mon, 26 Oct 2020 20:11:23 -0400
-Message-Id: <20201027001123.1027642-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201027001123.1027642-1-sashal@kernel.org>
-References: <20201027001123.1027642-1-sashal@kernel.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKsb753RSz9sVT;
+        Tue, 27 Oct 2020 11:12:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603757540;
+        bh=2uQWtpk1d3w4NLAVkJ1dfEy1vrn1+0wRhtKeMeY3fVE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gTchjeLcs/0nvT6PN6T4727Ea8NvoZIt/lxD/4WNkLxSCgf9SY2d4yNBcJqajPwxp
+         ZkjkjdzTitSokqIyWeU2PqxHG9PrAar2D1LGUqYArmVqJgDdbWtc9KZd14HxPXuRti
+         K9bVc71hU9bUK/rkhEtL0iDzu9/LgK1TG+4dXOG9k6TSk1rgjJ1yTALjtIOfgQ6mu9
+         if4fUQNy+TtiIUqyfb+WNICaFWEI+8IjHXw9eXOK9n+xxEsiaox1YN6gL2e+kUkGUW
+         ltulcfn3UxEIFIEGOsaDky/mcqCLebMDW8pf8cACT7xqTwy3lE7H7mcDa8Dt2ZLjHU
+         /QudTY0srN2Ug==
+Date:   Tue, 27 Oct 2020 11:12:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: linux-next: manual merge of the v4l-dvb-next tree with the
+ kunit-fixes tree
+Message-ID: <20201027111218.7c34f762@canb.auug.org.au>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/.zF+VO=Br7nGQJf4Vft05Rw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+--Sig_/.zF+VO=Br7nGQJf4Vft05Rw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[ Upstream commit 6c17a2974abf68a58517f75741b15c4aba42b4b8 ]
+Hi all,
 
-The 'audio-subsystem' node is an artificial creation, not representing
-real hardware.  The hardware is described by its nodes - AUDSS clock
-controller and I2S0.
+Today's linux-next merge of the v4l-dvb-next tree got a conflict in:
 
-Remove the 'audio-subsystem' node along with its undocumented compatible
-to fix dtbs_check warnings like:
+  include/kunit/test.h
 
-  audio-subsystem: $nodename:0: 'audio-subsystem' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+between commit:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Jonathan Bakker <xc-racer2@live.ca>
-Link: https://lore.kernel.org/r/20200907161141.31034-9-krzk@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/arm/boot/dts/s5pv210.dtsi | 65 +++++++++++++++-------------------
- 1 file changed, 29 insertions(+), 36 deletions(-)
+  7f32b10c6b46 ("kunit: test: fix remaining kernel-doc warnings")
 
-diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
-index b78346d9c319e..48bcab25720a5 100644
---- a/arch/arm/boot/dts/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/s5pv210.dtsi
-@@ -225,43 +225,36 @@ i2c2: i2c@e1a00000 {
- 			status = "disabled";
- 		};
- 
--		audio-subsystem {
--			compatible = "samsung,s5pv210-audss", "simple-bus";
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges;
--
--			clk_audss: clock-controller@eee10000 {
--				compatible = "samsung,s5pv210-audss-clock";
--				reg = <0xeee10000 0x1000>;
--				clock-names = "hclk", "xxti",
--						"fout_epll",
--						"sclk_audio0";
--				clocks = <&clocks DOUT_HCLKP>, <&xxti>,
--						<&clocks FOUT_EPLL>,
--						<&clocks SCLK_AUDIO0>;
--				#clock-cells = <1>;
--			};
-+		clk_audss: clock-controller@eee10000 {
-+			compatible = "samsung,s5pv210-audss-clock";
-+			reg = <0xeee10000 0x1000>;
-+			clock-names = "hclk", "xxti",
-+				      "fout_epll",
-+				      "sclk_audio0";
-+			clocks = <&clocks DOUT_HCLKP>, <&xxti>,
-+				 <&clocks FOUT_EPLL>,
-+				 <&clocks SCLK_AUDIO0>;
-+			#clock-cells = <1>;
-+		};
- 
--			i2s0: i2s@eee30000 {
--				compatible = "samsung,s5pv210-i2s";
--				reg = <0xeee30000 0x1000>;
--				interrupt-parent = <&vic2>;
--				interrupts = <16>;
--				dma-names = "rx", "tx", "tx-sec";
--				dmas = <&pdma1 9>, <&pdma1 10>, <&pdma1 11>;
--				clock-names = "iis",
--						"i2s_opclk0",
--						"i2s_opclk1";
--				clocks = <&clk_audss CLK_I2S>,
--						<&clk_audss CLK_I2S>,
--						<&clk_audss CLK_DOUT_AUD_BUS>;
--				samsung,idma-addr = <0xc0010000>;
--				pinctrl-names = "default";
--				pinctrl-0 = <&i2s0_bus>;
--				#sound-dai-cells = <0>;
--				status = "disabled";
--			};
-+		i2s0: i2s@eee30000 {
-+			compatible = "samsung,s5pv210-i2s";
-+			reg = <0xeee30000 0x1000>;
-+			interrupt-parent = <&vic2>;
-+			interrupts = <16>;
-+			dma-names = "rx", "tx", "tx-sec";
-+			dmas = <&pdma1 9>, <&pdma1 10>, <&pdma1 11>;
-+			clock-names = "iis",
-+				      "i2s_opclk0",
-+				      "i2s_opclk1";
-+			clocks = <&clk_audss CLK_I2S>,
-+				 <&clk_audss CLK_I2S>,
-+				 <&clk_audss CLK_DOUT_AUD_BUS>;
-+			samsung,idma-addr = <0xc0010000>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&i2s0_bus>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
- 		};
- 
- 		i2s1: i2s@e2100000 {
--- 
-2.25.1
+from the kunit-fixes tree and commit:
 
+  21f4ea01b15d ("kunit: test: fix remaining kernel-doc warnings")
+
+from the v4l-dvb-next tree.
+
+I fixed it up (I used the former one since it did not have an extra space
+before a tab) and can carry the fix as necessary. This is now fixed as
+far as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.zF+VO=Br7nGQJf4Vft05Rw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XZeIACgkQAVBC80lX
+0Gz9Zgf9H6J0UeExGeY/6P6g9mpQwvYrYfex/y58UiwWotCF0DjMmWTM4G2q3peo
+LW83k4nwWb2XQRFWzPbOcVFzTYMRpbgBNfaFQkbEFeMLsPInKBruMxM9oUK3ZLPm
+u9Gj2lzy8hNnvB/efUQXG5iwR8KZuE3vg1ZcN0JEPh/d7re09Cl+/TUnBORyxwtL
+uAnG/S6dt2NsyKbwo/5kVubF2xua5byqmHKAuTyZICj4YJwlDM8MMlPU0S304nKO
+UMSCGsaidqkusFRsSrVup3ymAQacgts0JnjOr3rq3tJp3slycV/kF6Y+ax53Bk7g
+83DaVqg6Nr/AwJ3/E82ExEXs6RofTA==
+=BhFz
+-----END PGP SIGNATURE-----
+
+--Sig_/.zF+VO=Br7nGQJf4Vft05Rw--
