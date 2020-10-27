@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD6B29B9B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4E129BAF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802726AbgJ0PvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56608 "EHLO mail.kernel.org"
+        id S1802772AbgJ0PvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:51:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801044AbgJ0Phd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:37:33 -0400
+        id S1801046AbgJ0Phf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:37:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9C00204EF;
-        Tue, 27 Oct 2020 15:37:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA8F8204EF;
+        Tue, 27 Oct 2020 15:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813052;
-        bh=pgU48Lf+PiMP7v6usSDcWLCT0cPhAWdBgvnWQMGxPRw=;
+        s=default; t=1603813055;
+        bh=rWw9RkoFgO3Ri4zBEHYMMKs2RmKVtMv8GA4rU0uTgK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xsSp5BiSEhBlT4KXtoMKeqafNtYEWA55DuJDyVQhtUKlV4lJzVx7cFluSnTo05XWG
-         nXLcxy7QynvRKzNEM6IwkGnbvViLM+5sszQyn4QHJZipJ5yA5Cr/tbvia4vcU79Tdb
-         2O3GTmhWJSq8NlwAE1G1OGxkcFNfLHgrbofhYVJA=
+        b=sK+oOKMPFi+qkaB32e2c3QDkZuAcSl1q+tj5Z1lOX6SvY52eRIhvKRYtWsClhb25N
+         Z/zVqO0B8g9G2327kcyrbCBUYCWvRuJQsxppM9C1guMkp/TxJ1h4dInhUBKOznI0wO
+         BgYFp8twESq5w9SbPLHL8G4q+0H0VoW/uiY18Y3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        coverity-bot <keescook+coverity-bot@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 422/757] ida: Free allocated bitmap in error path
-Date:   Tue, 27 Oct 2020 14:51:12 +0100
-Message-Id: <20201027135510.359998751@linuxfoundation.org>
+Subject: [PATCH 5.9 423/757] xfs: limit entries returned when counting fsmap records
+Date:   Tue, 27 Oct 2020 14:51:13 +0100
+Message-Id: <20201027135510.408144789@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,86 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit a219b856a2b993da234108307be772448f22b0ce ]
+[ Upstream commit acd1ac3aa22fd58803a12d26b1ab7f70232f8d8d ]
 
-If a bitmap needs to be allocated, and then by the time the thread
-is scheduled to be run again all the indices which would satisfy the
-allocation have been allocated then we would leak the allocation.  Almost
-impossible to hit in practice, but a trivial fix.  Found by Coverity.
+If userspace asked fsmap to count the number of entries, we cannot
+return more than UINT_MAX entries because fmh_entries is u32.
+Therefore, stop counting if we hit this limit or else we will waste time
+to return truncated results.
 
-Fixes: f32f004cddf8 ("ida: Convert to XArray")
-Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fixes: e89c041338ed ("xfs: implement the GETFSMAP ioctl")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Chandan Babu R <chandanrlinux@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/idr.c                           |  1 +
- tools/testing/radix-tree/idr-test.c | 29 +++++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ fs/xfs/xfs_fsmap.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/lib/idr.c b/lib/idr.c
-index c2cf2c52bbde5..4d2eef0259d2c 100644
---- a/lib/idr.c
-+++ b/lib/idr.c
-@@ -470,6 +470,7 @@ int ida_alloc_range(struct ida *ida, unsigned int min, unsigned int max,
- 	goto retry;
- nospc:
- 	xas_unlock_irqrestore(&xas, flags);
-+	kfree(alloc);
- 	return -ENOSPC;
- }
- EXPORT_SYMBOL(ida_alloc_range);
-diff --git a/tools/testing/radix-tree/idr-test.c b/tools/testing/radix-tree/idr-test.c
-index 8995092d541ec..3b796dd5e5772 100644
---- a/tools/testing/radix-tree/idr-test.c
-+++ b/tools/testing/radix-tree/idr-test.c
-@@ -523,8 +523,27 @@ static void *ida_random_fn(void *arg)
- 	return NULL;
- }
+diff --git a/fs/xfs/xfs_fsmap.c b/fs/xfs/xfs_fsmap.c
+index 4eebcec4aae6c..aa36e7daf82c4 100644
+--- a/fs/xfs/xfs_fsmap.c
++++ b/fs/xfs/xfs_fsmap.c
+@@ -256,6 +256,9 @@ xfs_getfsmap_helper(
  
-+static void *ida_leak_fn(void *arg)
-+{
-+	struct ida *ida = arg;
-+	time_t s = time(NULL);
-+	int i, ret;
+ 	/* Are we just counting mappings? */
+ 	if (info->head->fmh_count == 0) {
++		if (info->head->fmh_entries == UINT_MAX)
++			return -ECANCELED;
 +
-+	rcu_register_thread();
-+
-+	do for (i = 0; i < 1000; i++) {
-+		ret = ida_alloc_range(ida, 128, 128, GFP_KERNEL);
-+		if (ret >= 0)
-+			ida_free(ida, 128);
-+	} while (time(NULL) < s + 2);
-+
-+	rcu_unregister_thread();
-+	return NULL;
-+}
-+
- void ida_thread_tests(void)
- {
-+	DEFINE_IDA(ida);
- 	pthread_t threads[20];
- 	int i;
+ 		if (rec_daddr > info->next_daddr)
+ 			info->head->fmh_entries++;
  
-@@ -536,6 +555,16 @@ void ida_thread_tests(void)
- 
- 	while (i--)
- 		pthread_join(threads[i], NULL);
-+
-+	for (i = 0; i < ARRAY_SIZE(threads); i++)
-+		if (pthread_create(&threads[i], NULL, ida_leak_fn, &ida)) {
-+			perror("creating ida thread");
-+			exit(1);
-+		}
-+
-+	while (i--)
-+		pthread_join(threads[i], NULL);
-+	assert(ida_is_empty(&ida));
- }
- 
- void ida_tests(void)
 -- 
 2.25.1
 
