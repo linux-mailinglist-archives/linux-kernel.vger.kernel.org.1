@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFC629CA33
+	by mail.lfdr.de (Postfix) with ESMTP id DEBAF29CA34
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372916AbgJ0Uah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:30:37 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:34400 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436921AbgJ0Uag (ORCPT
+        id S372932AbgJ0UbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:31:04 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:60486 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372920AbgJ0UbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:30:36 -0400
-Received: by mail-lj1-f195.google.com with SMTP id y16so3315158ljk.1;
-        Tue, 27 Oct 2020 13:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xIMfAXFiMN14kIOtEDp4rVS1/lZfGWxB0FToCxiOcv0=;
-        b=fLeCZRoi/NbdluOH9GChFb9hVKMiWXbyUnQsUyk4GeXxzi5Gz+jkyx1ECk6IFfsOHJ
-         Z4hQ7h1ZCFVpZvWUoZyJIlMHwpbUhkydyYIyAlw3pHU57KvDJl4ziqS7CepyQTpUcj3k
-         x2Yb0Gm6P3GQR4jt2PqI3/IojM63m8I7EOV6+/TML7imF4UJHfrI3kWAVF6LQtfW+KFw
-         8dUTsRjnZMTD/Rrr0e1CW4Fbl1aVOiJoFnjj+LV4ELb5qi7QYLvINWmJ6XwLT68CZUt5
-         W7e0OHQxvw4T94TBYncahUslEv6sdK2+WBuJ/6ao9GB3tkYLWqBRJVA3sC5BCmm5I2gH
-         8/BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xIMfAXFiMN14kIOtEDp4rVS1/lZfGWxB0FToCxiOcv0=;
-        b=srxVcD4FuhuLWCzvm4kj7miw6VFHaY+Ax9SMMqaoRWiZDtpt+PlBH7GVtcePqdFK3f
-         8AS2EtbPsKUFaUBRwBLaLmh2JQfnM+RivVU/obCncW3BZMGxApObbXtZG0L2iWWJ5ach
-         TwhBzgHjpnv9u6VkapfGf5XWzErswmNfv+J5Q92TXInE+imZsrVUd0UxZSTIEerFC7RR
-         ucMO/vqbZOK5CEkTwV+rYqnF73t29hPKFZsAg2mM3J1Um6TAbTfknqTjVbRC5DlZLa63
-         R75Ti/sbJVQ3wDkDe95/Em/k0gNic0gW3p6iUU0ekqs2VQlC8ZftGWzOb/4U9DsExFeH
-         +ELA==
-X-Gm-Message-State: AOAM5318d4eGvwxxlaI1oL10DVk6YOmvNuPsIU2Un4QanADKRYn4O4Mm
-        NiQq+Pfldig5MOde/CesgdmuBq9NyNM=
-X-Google-Smtp-Source: ABdhPJxKa4m/gbvwQbmxgMvINe+bK5H6koZp7YuoStfXjrjjYtRl7Hc+aAnh0WptiQo+vFNmFcvw/Q==
-X-Received: by 2002:a2e:b04a:: with SMTP id d10mr1947668ljl.81.1603830633050;
-        Tue, 27 Oct 2020 13:30:33 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id e140sm284016lfd.218.2020.10.27.13.30.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 13:30:32 -0700 (PDT)
-Subject: Re: [PATCH v6 41/52] memory: tegra124-emc: Use
- devm_platform_ioremap_resource()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-42-digetx@gmail.com> <20201027102707.GC17089@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d79e4972-acf9-f889-50b8-f0829a0e8e08@gmail.com>
-Date:   Tue, 27 Oct 2020 23:30:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 16:31:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=137mCpEB0hOOtQ/3RTr3rm5+WNlXz/CS75p2YxOAgxk=; b=Ej/5Tw0LddYjI33JHic/eybIFz
+        OmNwO6zfN8JOnkap/hbC90EY8OjQxj5+EKTIv3VoUmKckhOyomQhehjNLaJBD4ELr5m8qDgtkvl69
+        1ewQss6VuJw9UrgSIGjhx0ylL3rLrz2srK1cfdBsPa7lmOvI35mUl4w0XsXAWnsV2KkETw4RR6Veb
+        NUWLvUAd7zZMM9pd65l5YbMaXGEKX4Iq5+bi5IlYV8SZ2z0eDwA45wHazAVyEfqW+1NFiwBaLk31r
+        gsFdpe0+VlGm7O+9Gx2uYRvgKyiADxpJ6bNFRUqll1Nw+Mg/L8WcD92aznyPbKSJmYlYj94S/BY8R
+        QfEKkuSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXVcC-0002kG-Mh; Tue, 27 Oct 2020 20:30:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3A7C030411F;
+        Tue, 27 Oct 2020 21:30:42 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F36A1203D0A43; Tue, 27 Oct 2020 21:30:41 +0100 (CET)
+Date:   Tue, 27 Oct 2020 21:30:41 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v2 1/2] sched/wait: Add add_wait_queue_priority()
+Message-ID: <20201027203041.GS2628@hirez.programming.kicks-ass.net>
+References: <20201026175325.585623-1-dwmw2@infradead.org>
+ <20201027143944.648769-1-dwmw2@infradead.org>
+ <20201027143944.648769-2-dwmw2@infradead.org>
+ <20201027190919.GO2628@hirez.programming.kicks-ass.net>
+ <220a7b090d27ffc8f3d00253c289ddd964a8462b.camel@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20201027102707.GC17089@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <220a7b090d27ffc8f3d00253c289ddd964a8462b.camel@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 13:27, Krzysztof Kozlowski пишет:
-> On Mon, Oct 26, 2020 at 01:17:24AM +0300, Dmitry Osipenko wrote:
->> Use devm_platform_ioremap_resource() helper which makes code a bit
->> cleaner.
-> 
-> Such cleanups (and few other in this patchset) should be at beginning of
-> patchset or even as part of a separate one.  I think there is not much
-> stopping anyone from applying these... except that you put them in the
-> middle of big dependency.
+On Tue, Oct 27, 2020 at 07:27:59PM +0000, David Woodhouse wrote:
 
-Some of these cleanup patches can't be applied separately without a need
-to make a rebase. I think it should be more preferred to have all the
-patches within a single series.
+> > While looking at this I found that weird __add_wait_queue_exclusive()
+> > which is used by fs/eventpoll.c and does something similar, except it
+> > doesn't keep the FIFO order.
+>=20
+> It does, doesn't it? Except those so-called "exclusive" entries end up
+> in FIFO order amongst themselves at the *tail* of the queue, to be
+> woken up only after all the other entries before them *haven't* been
+> excluded.
 
-I'll try to reorder the patches in v7 if this will ease the review, thanks.
+__add_wait_queue_exclusive() uses __add_wait_queue() which does
+list_add(). It does _not_ add at the tail like normal exclusive users,
+and there is exactly _1_ user in tree that does this.
+
+I'm not exactly sure how this happened, but:
+
+  add_wait_queue_exclusive()
+
+and
+
+  __add_wait_queue_exclusive()
+
+are not related :-(
+
+> > The Changelog doesn't state how important this property is to you.
+>=20
+> Because it isn't :)
+>=20
+> The ordering is:
+>=20
+>  { PRIORITY }*  { NON-EXCLUSIVE }* { EXCLUSIVE(sic) }*
+>=20
+> I care that PRIORITY comes before the others, because I want to
+> actually exclude the others. Especially the "non-exclusive" ones, which
+> the 'exclusive' ones don't actually exclude.
+>=20
+> I absolutely don't care about ordering *within* the set of PRIORITY
+> entries, since as I said I expect there to be only one.
+
+Then you could arguably do something like:
+
+	spin_lock_irqsave(&wq_head->lock, flags);
+	__add_wait_queue_exclusive(wq_head, wq_entry);
+	spin_unlock_irqrestore(&wq_head->lock, flags);
+
+and leave it at that.
+
+But now I'm itching to fix that horrible naming... tomorrow perhaps.
+
