@@ -2,164 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E113929BACD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B74D629BAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807545AbgJ0QLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:11:35 -0400
-Received: from m12-11.163.com ([220.181.12.11]:37755 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1803440AbgJ0Pwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:52:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=YYpUG
-        dUMMNE62WLI9s0VZ/tsFR2Kqi6GdpgbpCnW7qs=; b=eSndI+BDybmz8RRQYC3yi
-        K20qlXNMNOKoAiTI/GL811AqKGIJLZku5u19h54zpNNNdcqi0lXNGhlJI4fnf4i/
-        MxqWLDBpZWeXkSQxay6RPq6qTfiuBhSdr9WMvzDfQC5ByV5AKJG/uEw+3bqhj4fk
-        RMd/korSzwj4xLRuFMUdV0=
-Received: from localhost (unknown [101.86.209.121])
-        by smtp7 (Coremail) with SMTP id C8CowADX1cb8QZhf0AiDFg--.18689S2;
-        Tue, 27 Oct 2020 23:51:24 +0800 (CST)
-Date:   Tue, 27 Oct 2020 23:51:24 +0800
-From:   Hui Su <sh_def@163.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/group_sched: add task_group_is_root() api
-Message-ID: <20201027155124.GA57486@rlk>
+        id S1807435AbgJ0QKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:10:36 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43026 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1804333AbgJ0Pyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:54:44 -0400
+Received: by mail-pf1-f196.google.com with SMTP id a200so1142208pfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=/dJcq9QxKtdJNhx+nsVsOcHkLZ97Ve8VpsG6zN36Ipk=;
+        b=C/S7PhtNmV1VV1Buz0pxqAyvprR9/Ls4erwM4MRF9n8KpZAEi/mLwb/86fwREdEu4s
+         z/W5AS4Co+D9EwVOnm1Zi52qThoB/mWxHIiSrqujKGzwCE2jkEpsTdFLqrKYKNbqpXpK
+         A4XWshQNqcVuwWH05AY6/UJflMn/V/qRH+r7TlYmDqawiulhrv4FlKOmUIkSbg4whLxj
+         yX37UWUK96D8xi3tP/1tGJs3Cs3fdKU350v3sm1jwQ2cyUNLnXfwVulIwYgvqjZ5+fDJ
+         Q980dOc+cnWzCj/xzH76Wd0rQdRyfu+BzXqnmKznpZJ58PipZ8k4AdO/ep5a9cygsptF
+         2n8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=/dJcq9QxKtdJNhx+nsVsOcHkLZ97Ve8VpsG6zN36Ipk=;
+        b=q1wV/50MP++O0jI95lGTPFmfexN22MtjOJ3XSP+OT5jZuDPwLC2wsYahI/xzT6hoLa
+         DkzUzABojlncAy5wLzzhD7pCNUmPHaCbYbd2UG4a6t8tUlroW5sGuNkqPTFP0CfF/nbi
+         GH6Cv7XcMNy+wiBTajmukHKwp7DqxH19N521YpzS56R78QkcZ2hg662l8QFADNpIp9hr
+         O8g579+hkIfaxUfVjxdThn9zqm+pwewuQWuavpeWBUgYlv6QjM3uWxd1puJF87YVTFxr
+         amwj4Wj8PD2FXl7b1yfTeRhjP/PdIWp8Alo1x/XdlCYpSbmRjINdDe+CzKg6dEZtzQvF
+         dT7Q==
+X-Gm-Message-State: AOAM532RmglIwj23pJaB0pMp6pu6Hd4GB+Lho4d9oheZdEENTKwH/Toj
+        zlujHHXfnuYo/a4g3lzcdubb27PvKHqWC0cl
+X-Google-Smtp-Source: ABdhPJyHYznHpvc+E8BSBlMuIUcC1nlcg9Aq3NhIkbVP3ZvsTbtcrs7iw0iWnaW/iuROZu55nPrrdg==
+X-Received: by 2002:aa7:8652:0:b029:164:1346:7fe4 with SMTP id a18-20020aa786520000b029016413467fe4mr3050522pfo.65.1603814083876;
+        Tue, 27 Oct 2020 08:54:43 -0700 (PDT)
+Received: from jongpil-desktop ([39.117.32.248])
+        by smtp.gmail.com with ESMTPSA id y3sm2527759pfn.167.2020.10.27.08.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 08:54:42 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 00:54:38 +0900
+From:   Jongpil Jung <jongpuls@gmail.com>
+To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jongpil19.jung@samsung.com, gloria.tsai@ssstc.com,
+        jongpuls@gmail.com
+Subject: [PATCH 1/1] nvme: Add quirk for LiteON CL1 devices running FW
+ 220TQ,22001
+Message-ID: <20201027155438.GA111754@jongpil-desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-CM-TRANSID: C8CowADX1cb8QZhf0AiDFg--.18689S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCr4rAFWrAFyftF4kZF4rGrg_yoWrAF18pa
-        yDAayUJr4rJ3Wvgr97C3yv9ryrWwn3W39F9ryvyw4fJr4Igr1Fvr1qvr129F1YgFs0kF13
-        tan0y3y2kw4UKF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j5YFAUUUUU=
-X-Originating-IP: [101.86.209.121]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbifxzKX1r6mVew1QAAs9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use task_group_is_root() instead of '!tg->se[0]'
-and 'tg == &root_task_group' to judge whether a
-task_group is root_task_group.
+LiteON(SSSTC) CL1 device running FW 220TQ,22001 has bugs with simple
+suspend.
 
-Signed-off-by: Hui Su <sh_def@163.com>
+When NVMe device receive D3hot from host, NVMe firmware will do
+garbage collection. While NVMe device do Garbage collection,
+firmware has chance to going incorrect address.
+In that case, NVMe storage device goes to no device available state.
+Finally, host can't access the device any more.
+
+Quirk devices will not use simple suspend even if HMB is enabled.
+In case of poweroff scenario, NVMe receive "PME turn off".
+So garbage collection will not be happening.
+
+Liteon(SSSTC) will fix the issue, that's why quirk apply on specific
+vendor id and firmware version.
+
+Signed-off-by: Jongpil Jung <jongpuls@gmail.com>
 ---
- kernel/sched/autogroup.c |  2 +-
- kernel/sched/core.c      | 11 ++++++++---
- kernel/sched/fair.c      |  4 ++--
- kernel/sched/rt.c        |  2 +-
- kernel/sched/sched.h     |  2 ++
- 5 files changed, 14 insertions(+), 7 deletions(-)
+ drivers/nvme/host/core.c | 30 ++++++++++++++++++++++++++++++
+ drivers/nvme/host/nvme.h |  4 ++++
+ drivers/nvme/host/pci.c  |  6 +++++-
+ 3 files changed, 39 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
-index 2067080bb235..2673ef7b50e2 100644
---- a/kernel/sched/autogroup.c
-+++ b/kernel/sched/autogroup.c
-@@ -106,7 +106,7 @@ static inline struct autogroup *autogroup_create(void)
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 95ef4943d8bd..9ee520aa0100 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2637,6 +2637,36 @@ static const struct nvme_core_quirk_entry core_quirks[] = {
+ 		.vid = 0x14a4,
+ 		.fr = "22301111",
+ 		.quirks = NVME_QUIRK_SIMPLE_SUSPEND,
++	},
++	{
++		/*
++		 * This LiteON CL1-3D256 CR22001 firmware version has some
++		 * issue in simple suspend.
++		 * Simple Suspend issue will be fixed in future firmware
++		 */
++		.vid = 0x14a4,
++		.fr = "CR22001",
++		.quirks = NVME_QUIRK_NORMAL_SUSPEND_HMB,
++	},
++		{
++		/*
++		 * This LiteON CL1-3D256 CR220TQ firmware version has some
++		 * issue in simple suspend.
++		 * Simple Suspend issue will be fixed in future firmware
++		 */
++		.vid = 0x14a4,
++		.fr = "CR220TQ",
++		.quirks = NVME_QUIRK_NORMAL_SUSPEND_HMB,
++	},
++	{
++		/*
++		 * This SSSTC CL1-3D256 CR22001 firmware version has some
++		 * issue in simple suspend.
++		 * Simple Suspend issue will be fixed in future firmware
++		 */
++		.vid = 0x1e95,
++		.fr = "CR22001",
++		.quirks = NVME_QUIRK_NORMAL_SUSPEND_HMB,
+ 	}
+ };
  
- bool task_wants_autogroup(struct task_struct *p, struct task_group *tg)
- {
--	if (tg != &root_task_group)
-+	if (!task_group_is_root(tg))
- 		return false;
- 	/*
- 	 * If we race with autogroup_move_group() the caller can use the old
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d2003a7d5ab5..6002f9b67f07 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1075,7 +1075,7 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index cc111136a981..2fde019dad8e 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -144,6 +144,10 @@ enum nvme_quirks {
+ 	 * NVMe 1.3 compliance.
  	 */
- 	if (task_group_is_autogroup(task_group(p)))
- 		return uc_req;
--	if (task_group(p) == &root_task_group)
-+	if (task_group_is_root(task_group(p)))
- 		return uc_req;
+ 	NVME_QUIRK_NO_NS_DESC_LIST		= (1 << 15),
++	/*
++	 * Force noraml suspend/resume path for HMB enabled devices.
++	 */
++	NVME_QUIRK_NORMAL_SUSPEND_HMB		= (1 << 16),
+ };
  
- 	uc_max = task_group(p)->uclamp[clamp_id];
-@@ -7574,6 +7574,11 @@ void sched_move_task(struct task_struct *tsk)
- 	task_rq_unlock(rq, tsk, &rf);
- }
- 
-+bool task_group_is_root(struct task_group *tg)
-+{
-+	return tg == &root_task_group;
-+}
-+
- static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
- {
- 	return css ? container_of(css, struct task_group, css) : NULL;
-@@ -7894,7 +7899,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
- 	int i, ret = 0, runtime_enabled, runtime_was_enabled;
- 	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
- 
--	if (tg == &root_task_group)
-+	if (task_group_is_root(tg))
- 		return -EINVAL;
- 
- 	/*
-@@ -8138,7 +8143,7 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
- 	seq_printf(sf, "nr_throttled %d\n", cfs_b->nr_throttled);
- 	seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
- 
--	if (schedstat_enabled() && tg != &root_task_group) {
-+	if (schedstat_enabled() && !task_group_is_root(tg)) {
- 		u64 ws = 0;
- 		int i;
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 290f9e38378c..fa1a07d74e6a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3311,7 +3311,7 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
- 	/*
- 	 * No need to update load_avg for root_task_group as it is not used.
+ /*
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index df8f3612107f..1b1221cfb257 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3014,10 +3014,14 @@ static int nvme_suspend(struct device *dev)
+ 	 * specification allows the device to access the host memory buffer in
+ 	 * host DRAM from all power states, but hosts will fail access to DRAM
+ 	 * during S3.
++	 *
++	 * If NVME_QUIRK_NORMAL_SUSPEND_HMB is enabled,
++	 * do not use SIMPLE_SUSPEND for HMB device.
  	 */
--	if (cfs_rq->tg == &root_task_group)
-+	if (task_group_is_root(cfs_rq->tg))
- 		return;
- 
- 	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
-@@ -11095,7 +11095,7 @@ int sched_group_set_shares(struct task_group *tg, unsigned long shares)
- 	/*
- 	 * We can't change the weight of the root cgroup.
- 	 */
--	if (!tg->se[0])
-+	if (task_group_is_root(tg))
- 		return -EINVAL;
- 
- 	shares = clamp(shares, scale_load(MIN_SHARES), scale_load(MAX_SHARES));
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 49ec096a8aa1..a7987564d5da 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -2580,7 +2580,7 @@ static int tg_set_rt_bandwidth(struct task_group *tg,
- 	 * Disallowing the root group RT runtime is BAD, it would disallow the
- 	 * kernel creating (and or operating) RT threads.
- 	 */
--	if (tg == &root_task_group && rt_runtime == 0)
-+	if (task_group_is_root(tg) && rt_runtime == 0)
- 		return -EINVAL;
- 
- 	/* No period doesn't make any sense. */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index df80bfcea92e..8758fbf0fa2a 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -497,6 +497,8 @@ extern void sched_offline_group(struct task_group *tg);
- 
- extern void sched_move_task(struct task_struct *tsk);
- 
-+extern bool task_group_is_root(struct task_group *tg);
-+
- #ifdef CONFIG_FAIR_GROUP_SCHED
- extern int sched_group_set_shares(struct task_group *tg, unsigned long shares);
+ 	if (pm_suspend_via_firmware() || !ctrl->npss ||
+ 	    !pcie_aspm_enabled(pdev) ||
+-	    ndev->nr_host_mem_descs ||
++	    (ndev->nr_host_mem_descs &&
++	     !(ndev->ctrl.quirks & NVME_QUIRK_NORMAL_SUSPEND_HMB)) ||
+ 	    (ndev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND))
+ 		return nvme_disable_prepare_reset(ndev, true);
  
 -- 
 2.25.1
-
 
