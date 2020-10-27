@@ -2,118 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DC829A21B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DEC29A21E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503714AbgJ0BQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:16:59 -0400
-Received: from ozlabs.org ([203.11.71.1]:56145 "EHLO ozlabs.org"
+        id S2503730AbgJ0BTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:19:07 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:55206 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409107AbgJ0BQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:16:58 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2411311AbgJ0BTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 21:19:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603761545; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ykRa/SRdEbudabccJMxxWepehMTr63NuIg68ElZPYA8=; b=L/0DPWpjBRb1u6CfUkpf9iK0Se2CCl9Cxg//ZJAsUn2lValpRARsy42bwYPcVREk+8RsoPhu
+ 7KUaMngC0P5myhMTo0f39ZAZUe38UnB6g9/JT9R6RghXfqf1WngGxxLQf1Pri3nveIzJQYJQ
+ WBe25A0Jgh0SIFqBNVl7b4NsBL0=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f97758401bdd11b7948caaf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 01:19:00
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3DB17C433CB; Tue, 27 Oct 2020 01:18:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKv1g2Cbwz9sRK;
-        Tue, 27 Oct 2020 12:16:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603761416;
-        bh=h8xyjrpuSTlQCEVJbKMBITShYWl4W1pNpWMa5O4i5Kg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kpPRu+qimF40ShKPvebpKGUO5QP6pBgqjCyigKJ/qAt3xWd79haEEqbDd8ICDyUGh
-         PCZc7+vQ9NvH6kDrzONHogQHh8Ygh3A7awKODXGAJZjPQOCg8pxHfNoNV8ksRUBAZI
-         NWH63TBNsObJjdkqclHpQFz8roHV4/h9R1DuWE/0RMxLgwc7Ec276+KbCMqIjk8Q5U
-         LcuxhZEvASx0qit6td/YjvtyCzn938yJpxVH/Q5FqnWWLAY8Sok++ZUoE15bPVW6jd
-         DIp07GWpNom8Wph4d+E1Vw8Dee67EjTuIUOR1ea6vDR05hWm++jygOnpqG0rfJSZ0C
-         wISHl8/C60gAg==
-Date:   Tue, 27 Oct 2020 12:16:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Dave Airlie <airlied@linux.ie>
-Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
-Message-ID: <20201027121653.02108274@canb.auug.org.au>
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 30096C433C9;
+        Tue, 27 Oct 2020 01:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 30096C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v9 4/4] bus: mhi: Add userspace client interface driver
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>, netdev@vger.kernel.org
+References: <1603495075-11462-1-git-send-email-hemantk@codeaurora.org>
+ <1603495075-11462-5-git-send-email-hemantk@codeaurora.org>
+ <CAMZdPi_MQ0SqK7s6h_1_9yEDD0vuAOpCTjSHTd1PBsGjvXukiA@mail.gmail.com>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <aefee6d1-da2c-d081-6bda-b9bd49e8c12f@codeaurora.org>
+Date:   Mon, 26 Oct 2020 18:18:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/eyURcSdGIGG_KJ/feEncUOg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAMZdPi_MQ0SqK7s6h_1_9yEDD0vuAOpCTjSHTd1PBsGjvXukiA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/eyURcSdGIGG_KJ/feEncUOg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Loic,
 
-Hi all,
+On 10/26/20 10:34 AM, Loic Poulain wrote:
+> Hi Hemant,
+> 
+> That looks better IMHO, just small comments on locking.
+> 
+[..]
+>     +static ssize_t mhi_uci_write(struct file *file,
+>     +                            const char __user *buf,
+>     +                            size_t count,
+>     +                            loff_t *offp)
+>     +{
+>     +       struct uci_dev *udev = file->private_data;
+>     +       struct mhi_device *mhi_dev = udev->mhi_dev;
+>     +       struct device *dev = &mhi_dev->dev;
+>     +       struct uci_chan *uchan = udev->uchan;
+>     +       size_t bytes_xfered = 0;
+>     +       int ret, nr_avail = 0;
+>     +
+>     +       /* if ul channel is not supported return error */
+>     +       if (!buf || !count || !mhi_dev->ul_chan)
+>     +               return -EINVAL;
+>     +
+>     +       dev_dbg(dev, "%s: to xfer: %zu bytes\n", __func__, count);
+>     +
+>     +       mutex_lock(&uchan->write_lock);
+> 
+> 
+> Maybe mutex_lock_interruptible is more appropriate here (same in read fops).
+i agree, will return -EINTR if mutex_lock_interruptible returns < 0.
+> 
+[..]
+>     +static ssize_t mhi_uci_read(struct file *file,
+>     +                           char __user *buf,
+>     +                           size_t count,
+>     +                           loff_t *ppos)
+>     +{
+>     +       struct uci_dev *udev = file->private_data;
+>     +       struct mhi_device *mhi_dev = udev->mhi_dev;
+>     +       struct uci_chan *uchan = udev->uchan;
+>     +       struct device *dev = &mhi_dev->dev;
+>     +       struct uci_buf *ubuf;
+>     +       size_t rx_buf_size;
+>     +       char *ptr;
+>     +       size_t to_copy;
+>     +       int ret = 0;
+>     +
+>     +       /* if dl channel is not supported return error */
+>     +       if (!buf || !mhi_dev->dl_chan)
+>     +               return -EINVAL;
+>     +
+>     +       mutex_lock(&uchan->read_lock);
+>     +       spin_lock_bh(&uchan->dl_pending_lock);
+>     +       /* No data available to read, wait */
+>     +       if (!uchan->cur_buf && list_empty(&uchan->dl_pending)) {
+>     +               dev_dbg(dev, "No data available to read, waiting\n");
+>     +
+>     +               spin_unlock_bh(&uchan->dl_pending_lock);
+>     +               ret = wait_event_interruptible(uchan->dl_wq,
+>     +                                              (!udev->enabled ||
+>     +                                           
+>       !list_empty(&uchan->dl_pending)));
+> 
+> 
+> If you need to protect dl_pending list against concurent access, you 
+> need to do it in wait_event as well. I would suggest to lookg at 
+> `wait_event_interruptible_lock_irq` function, that allows to pass a 
+> locked spinlock as parameter. That would be safer and prevent this 
+> lock/unlock dance.
+When using this API difference is, first we take spin_lock_bh() and then 
+wait API is using spin_unlock_irq()/spin_lock_irq(). I am getting
+"BUG: scheduling while atomic" when i use this way. When i changed 
+spin_lock_bh to spin_lock_irq then we got rid of the kernel BUG.
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
+Thanks,
+Hemant
 
-  include/drm/drm_dp_helper.h
-
-between commit:
-
-  a77ed90da6bb ("drm/dp: Define protocol converter DPCD registers")
-
-from Linus' tree and commit:
-
-  6e5702980b14 ("drm/dp: add subheadings to DPCD address definitions")
-
-from the drm-misc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/drm/drm_dp_helper.h
-index da53aebb7230,ae4e20245ba3..000000000000
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@@ -1003,16 -1035,7 +1054,17 @@@ struct drm_device
-  #define DP_CEC_TX_MESSAGE_BUFFER               0x3020
-  #define DP_CEC_MESSAGE_BUFFER_LENGTH             0x10
- =20
- +#define DP_PROTOCOL_CONVERTER_CONTROL_0		0x3050 /* DP 1.3 */
- +# define DP_HDMI_DVI_OUTPUT_CONFIG		(1 << 0) /* DP 1.3 */
- +#define DP_PROTOCOL_CONVERTER_CONTROL_1		0x3051 /* DP 1.3 */
- +# define DP_CONVERSION_TO_YCBCR420_ENABLE	(1 << 0) /* DP 1.3 */
- +# define DP_HDMI_EDID_PROCESSING_DISABLE	(1 << 1) /* DP 1.4 */
- +# define DP_HDMI_AUTONOMOUS_SCRAMBLING_DISABLE	(1 << 2) /* DP 1.4 */
- +# define DP_HDMI_FORCE_SCRAMBLING		(1 << 3) /* DP 1.4 */
- +#define DP_PROTOCOL_CONVERTER_CONTROL_2		0x3052 /* DP 1.3 */
- +# define DP_CONVERSION_TO_YCBCR422_ENABLE	(1 << 0) /* DP 1.3 */
- +
-+ /* HDCP 1.3 and HDCP 2.2 */
-  #define DP_AUX_HDCP_BKSV		0x68000
-  #define DP_AUX_HDCP_RI_PRIME		0x68005
-  #define DP_AUX_HDCP_AKSV		0x68007
-
---Sig_/eyURcSdGIGG_KJ/feEncUOg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XdQUACgkQAVBC80lX
-0GxM8Af7BpAFcF31vfAklBSUUuavpTugxLNrHkyzhVSF0q3yEmm324CMIgYGT0YY
-7k9q0sdsqTa8CXYxkvuLFjhIS/ZkvwbMgzphXe23hMnhXs+mHvqcFAd8dXuVVxwH
-iu0SzprR/qt1MJc0ILXJBO02K8YgFOxFmiUqDdtb+viBxzgRg/ZD1UhqaOFrj57m
-7QaH4Kl75PYpLLKHCQFTI/ZwWRspR4/52wt1T8PIYCIPYo1quMTQJGk67OS3ytFO
-kTXa6xoGfeproe/qyMM/ENnzanc33CZHXOZltFOkhwTO3VxOxfVebZMqfhJn7HvB
-TAEdcAivWJ4JKXE6rNg9aGXYGGKaxA==
-=wfcx
------END PGP SIGNATURE-----
-
---Sig_/eyURcSdGIGG_KJ/feEncUOg--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
