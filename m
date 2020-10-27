@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF0029C34E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7574229C32A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1821535AbgJ0Rol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:44:41 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:36781 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896213AbgJ0ObC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:31:02 -0400
-Received: by mail-lj1-f196.google.com with SMTP id x6so2018473ljd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9yAnJkcJq8fJ842gCRIxyhnneLlwmBgpRa2BY7duk18=;
-        b=JIM8871i1dAY6MSJz2tnV/FaZI+lJY9QwJ+/gDWCvRVezbv2K7KuEkac0kz9L4TnP+
-         up9BbSX57/v+XFqrwe9Nk6H3tY8lSWitihitPvKIbv/oYdwnx9UbEhaTF7lwTVSiWIgD
-         ilkRy+vADEKZklPaM92sf7U2ZDEvt4vyQe17Hxsa1D9yAAFqXvrXeAG2Sryk8l69zJde
-         pqvLQX2h+a+SXWzUCKBuRQLJgq79yjMzdWMayJKWo9486eawdqlCCvRGx82m7o4ryXkg
-         Z8XiUFO+bNowsVwe89aLNK8ALBpx8ImxxN9i0ZU5L8514D85RUZwUUjty5eqn4+jgs2n
-         dH+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9yAnJkcJq8fJ842gCRIxyhnneLlwmBgpRa2BY7duk18=;
-        b=URGDJwy3zNNDC974+U7B3JEdMLKypMuCzQGGxvuFXKfu6K4cA037fdgZkMVIilKv9w
-         IM56LrgKfAVSY8WlLaRMC4cHwMOEjhMfsHag2f1UsEcKrBLx7Lv5T8kLwv/6QlW07Gd7
-         qNcxvDOW6WBVfjqFQM09OQRmdlfE7twarYhrCByUje6rDpFzIGpoNoxjLNqT8XLbG62b
-         xUmHKf5RgjvTizzsIjOaNI/RnDM/X2+Fw4RbioTOg+hyV0G0lEV/2i4QTLoc63JbhI7+
-         +GMB5WjKdgklRwpIz8+VZC+ZON1pb1lSvbx26a2wipgLamDdASYoc952JTKR2BD1RgjC
-         CI3A==
-X-Gm-Message-State: AOAM533LwKT1HXXgvw2ql0Aypm8Jl3S0J0Nqw0cCE0z1TBHIGj2p5vwQ
-        qZsHi/9QZsm13DEpDVTS8EvKZx55aKxk6A==
-X-Google-Smtp-Source: ABdhPJxE9wm01oT28amSRCIGKy3EHdyNrPGPuB+JBcPp7uz1dYSw974Isdqrkp2wPm37df4UQ++3rA==
-X-Received: by 2002:a2e:6a19:: with SMTP id f25mr1306896ljc.386.1603809060636;
-        Tue, 27 Oct 2020 07:31:00 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id b10sm191716lfd.263.2020.10.27.07.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 07:31:00 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 54474103677; Tue, 27 Oct 2020 17:31:02 +0300 (+03)
-Date:   Tue, 27 Oct 2020 17:31:02 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        id S1821444AbgJ0Rns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:43:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45002 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437229AbgJ0Obs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:31:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603809106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuw37CmdGgaUF2rTsLXZIxdwBi56keqYJAASysIsH4U=;
+        b=QScZCtVJ88Ft10nSiaAM31z9hd30tvg7sm0uLaSV0xvsBBwNiIAiXthx+uw5HdJDHCO2gL
+        /LScYs8N/+/Y/g1sEzi3bViteDVWpDr9u5cLVN927E+Y2dug78ERP+RSXwlnzu8X2JnfZ0
+        dPK7a+yMSWEJqpmUm9TGElUUj2fhHV4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1F098AC1F;
+        Tue, 27 Oct 2020 14:31:46 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 15:31:41 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, laoar.shao@gmail.com,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: RFC x86/boot/64: BOOT_PGT_SIZE definition for compressed kernel
-Message-ID: <20201027143102.ugco5dmixu66fjsc@box>
-References: <20201025004158.GA767345@rani.riverdale.lan>
- <20201027124007.xkkseswwgerlzlsl@box>
- <20201027131617.GA1743199@rani.riverdale.lan>
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [External] Re: [PATCH 5/5] mm: memcontrol: Simplify the
+ mem_cgroup_page_lruvec
+Message-ID: <20201027143141.GX20500@dhcp22.suse.cz>
+References: <20201027080256.76497-1-songmuchun@bytedance.com>
+ <20201027080256.76497-6-songmuchun@bytedance.com>
+ <20201027133639.GT20500@dhcp22.suse.cz>
+ <CAMZfGtUDguQkO0nF8Vt5qUVmmu4rCQcXx4nOhqUBSLnMYs2_BA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201027131617.GA1743199@rani.riverdale.lan>
+In-Reply-To: <CAMZfGtUDguQkO0nF8Vt5qUVmmu4rCQcXx4nOhqUBSLnMYs2_BA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:16:17AM -0400, Arvind Sankar wrote:
-> The #PF handler is already there now with the SEV-ES series, but I agree
-> it would still complicate things. It's simpler to just increase
-> BOOT_PGT_SIZE and make it unconditional (i.e. bump it to say 32 or 64
-> even if !KASLR). It's @nobits anyway so it would not increase the size
-> of the bzImage, just require a slightly larger memory allocation by the
-> bootloader.
+On Tue 27-10-20 22:15:16, Muchun Song wrote:
+> On Tue, Oct 27, 2020 at 9:36 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 27-10-20 16:02:56, Muchun Song wrote:
+> > > We can reuse the code of mem_cgroup_lruvec() to simplify the code
+> > > of the mem_cgroup_page_lruvec().
+> >
+> > yes, removing the code duplication is reasonable. But ...
+> >
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> > >  include/linux/memcontrol.h | 44 +++++++++++++++++++++++++++-----------
+> > >  mm/memcontrol.c            | 40 ----------------------------------
+> > >  2 files changed, 32 insertions(+), 52 deletions(-)
+> > >
+> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > index 95807bf6be64..5e8480e54cd8 100644
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@ -451,16 +451,9 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+> > >       return memcg->nodeinfo[nid];
+> > >  }
+> > >
+> > > -/**
+> > > - * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+> > > - * @memcg: memcg of the wanted lruvec
+> > > - *
+> > > - * Returns the lru list vector holding pages for a given @memcg &
+> > > - * @node combination. This can be the node lruvec, if the memory
+> > > - * controller is disabled.
+> > > - */
+> > > -static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+> > > -                                            struct pglist_data *pgdat)
+> > > +static inline struct lruvec *mem_cgroup_node_lruvec(struct mem_cgroup *memcg,
+> > > +                                                 struct pglist_data *pgdat,
+> > > +                                                 int nid)
+> >
+> > This is just wrong interface. Either take nid or pgdat. You do not want
+> > both because that just begs for wrong usage.
+> 
+> If we want to avoid abuse of mem_cgroup_node_lruvec. We can move
+> those functions to the memcontrol.c. And add the "static" attribute to the
+> mem_cgroup_node_lruvec. Just export mem_cgroup_lruvec and
+> mem_cgroup_page_lruvec. Is this OK?
 
-I guess it's fine. But I'm worried we leave the picture in the same
-fragile state. We still rely on the magic number.
-
+Sorry, I was probably not clear enough. I am not against the function
+per se. I just do not think we want to make it trickier to use than
+necessary. That means either use pgdat or nid argument. Not both because
+they should always be in sync and you can trivially get from one to the
+other and vice versa.
 -- 
- Kirill A. Shutemov
+Michal Hocko
+SUSE Labs
