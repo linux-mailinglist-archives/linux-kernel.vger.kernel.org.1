@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B848C29C66F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890B029C5A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826197AbgJ0SRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:17:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60858 "EHLO mail.kernel.org"
+        id S1754028AbgJ0ODs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756148AbgJ0OLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:11:36 -0400
+        id S1753991AbgJ0ODa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:03:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24E182072D;
-        Tue, 27 Oct 2020 14:11:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B760022281;
+        Tue, 27 Oct 2020 14:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807896;
-        bh=+uVjqd8EewbGxslAp/7jN1hEYDFE9SY/OTvdMeaZc5A=;
+        s=default; t=1603807409;
+        bh=f4YZVHOnGeB8cfdsL5YN2dHUcL5Q42ZvKZ/bAevmYA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wx8oFbRncCCgP/LfgiG4aeIrWC16BhCw1/NUsIpcXaCQk8e+csezkZbs0b99YkUUb
-         4r0z7Xk84YlSVBlqds1B+DQlEuQsQVJxNpAIUbfm2f+5PpHnxI5mnEMSywCB9hAEpl
-         5x31zXB4K0cXsVzgp0m08fYLd5dlYK+kkg3GSFB8=
+        b=hUf+/fb6YIYQaRNxoJp+fM1XJAawSqGS0f81EmRQLMNNKYtZRa6MEaJZ+GXK6SqRV
+         qZCvinDIKON+vWVaksOhQ2BJQKQKKhGcBIS53YrogMhRQlnw1CRVDS3X6WDcWwAOjZ
+         XkPliJG8o3v+f8Ukl3LRes9Cq1New8v37R6LPdlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 082/191] net: korina: fix kfree of rx/tx descriptor array
+Subject: [PATCH 4.9 043/139] ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
 Date:   Tue, 27 Oct 2020 14:48:57 +0100
-Message-Id: <20201027134913.628106689@linuxfoundation.org>
+Message-Id: <20201027134904.182319621@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 3af5f0f5c74ecbaf757ef06c3f80d56751277637 ]
+[ Upstream commit 6a950755cec1a90ddaaff3e4acb5333617441c32 ]
 
-kmalloc returns KSEG0 addresses so convert back from KSEG1
-in kfree. Also make sure array is freed when the driver is
-unloaded from the kernel.
+The "tsid" is a user controlled u8 which comes from debugfs.  Values
+more than 15 are invalid because "active_tsids" is a 16 bit variable.
+If the value of "tsid" is more than 31 then that leads to a shift
+wrapping bug.
 
-Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 8fffd9e5ec9e ("ath6kl: Implement support for QOS-enable and QOS-disable from userspace")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200918142732.GA909725@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/korina.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath6kl/wmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 3c0a6451273df..1357d464e8c43 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1188,7 +1188,7 @@ static int korina_probe(struct platform_device *pdev)
- 	return rc;
+diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
+index 55609fc4e50e6..73eab12cb3bda 100644
+--- a/drivers/net/wireless/ath/ath6kl/wmi.c
++++ b/drivers/net/wireless/ath/ath6kl/wmi.c
+@@ -2648,6 +2648,11 @@ int ath6kl_wmi_delete_pstream_cmd(struct wmi *wmi, u8 if_idx, u8 traffic_class,
+ 		return -EINVAL;
+ 	}
  
- probe_err_register:
--	kfree(lp->td_ring);
-+	kfree(KSEG0ADDR(lp->td_ring));
- probe_err_td_ring:
- 	iounmap(lp->tx_dma_regs);
- probe_err_dma_tx:
-@@ -1208,6 +1208,7 @@ static int korina_remove(struct platform_device *pdev)
- 	iounmap(lp->eth_regs);
- 	iounmap(lp->rx_dma_regs);
- 	iounmap(lp->tx_dma_regs);
-+	kfree(KSEG0ADDR(lp->td_ring));
- 
- 	unregister_netdev(bif->dev);
- 	free_netdev(bif->dev);
++	if (tsid >= 16) {
++		ath6kl_err("invalid tsid: %d\n", tsid);
++		return -EINVAL;
++	}
++
+ 	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd));
+ 	if (!skb)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
