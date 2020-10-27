@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBC929B04A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA8B29AEF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900948AbgJ0ORt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:17:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35684 "EHLO mail.kernel.org"
+        id S1754601AbgJ0OGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756560AbgJ0OOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:14:11 -0400
+        id S1754586AbgJ0OGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:06:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB3B3206F7;
-        Tue, 27 Oct 2020 14:14:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C04AC2222C;
+        Tue, 27 Oct 2020 14:06:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808051;
-        bh=iZg1V3NDOlvTjIe2MqAcQePSQynr7q9fc+cbf3+vKUI=;
+        s=default; t=1603807564;
+        bh=9Dev9nROaX/NYcBY9A88AS44zW8/ElrLqeyi6KnfADI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EFgBMJnHKzSgln0HnziWp0zBZ/E1WpgzW1hPLiaaoQ1CTl6AfMN9Az8I35Wyhd8ve
-         ge4haHKpTYP8DPr8ZsDBAkylXvZOA7C/mLOCNebB4ikeZGqsUvG4dn0yPOoA1xxSSd
-         MKmK+71NwAiMDnCnZIQ+OYXUuP/O0/3/44XMoflA=
+        b=WL2mp+Zc4ad02duTZemPQ2DgWI7X7Of9MAGjWHhFnxKPwTHgeDQLz0JKc/OYwSwqo
+         qnikly3cDhEienFqH1PTibfZOVZYO0apEzC7AYyxxYrVOX2/3lO8SXhs/Vj/fq55xD
+         TZ75PNWeKVUJNW/lE+OFniUCEKBHSv2CbVPl3PGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Jordan <kernel@cdqe.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Lijun Ou <oulijun@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 107/191] lib/crc32.c: fix trivial typo in preprocessor condition
+Subject: [PATCH 4.9 068/139] RDMA/hns: Set the unsupported wr opcode
 Date:   Tue, 27 Oct 2020 14:49:22 +0100
-Message-Id: <20201027134914.844295810@linuxfoundation.org>
+Message-Id: <20201027134905.347564384@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,43 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobias Jordan <kernel@cdqe.de>
+From: Lijun Ou <oulijun@huawei.com>
 
-[ Upstream commit 904542dc56524f921a6bab0639ff6249c01e775f ]
+[ Upstream commit 22d3e1ed2cc837af87f76c3c8a4ccf4455e225c5 ]
 
-Whether crc32_be needs a lookup table is chosen based on CRC_LE_BITS.
-Obviously, the _be function should be governed by the _BE_ define.
+hip06 does not support IB_WR_LOCAL_INV, so the ps_opcode should be set to
+an invalid value instead of being left uninitialized.
 
-This probably never pops up as it's hard to come up with a configuration
-where CRC_BE_BITS isn't the same as CRC_LE_BITS and as nobody is using
-bitwise CRC anyway.
-
-Fixes: 46c5801eaf86 ("crc32: bolt on crc32c")
-Signed-off-by: Tobias Jordan <kernel@cdqe.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Link: https://lkml.kernel.org/r/20200923182122.GA3338@agrajag.zerfleddert.de
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Fixes: a2f3d4479fe9 ("RDMA/hns: Avoid unncessary initialization")
+Link: https://lore.kernel.org/r/1600350615-115217-1-git-send-email-oulijun@huawei.com
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/crc32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/lib/crc32.c b/lib/crc32.c
-index 6ddc92bc14609..a1ccb4a8a9950 100644
---- a/lib/crc32.c
-+++ b/lib/crc32.c
-@@ -327,7 +327,7 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
- 	return crc;
- }
- 
--#if CRC_LE_BITS == 1
-+#if CRC_BE_BITS == 1
- u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
- {
- 	return crc32_be_generic(crc, p, len, NULL, CRCPOLY_BE);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 20ec34761b39b..29cd059c01f1c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -231,7 +231,6 @@ int hns_roce_v1_post_send(struct ib_qp *ibqp, struct ib_send_wr *wr,
+ 				ps_opcode = HNS_ROCE_WQE_OPCODE_SEND;
+ 				break;
+ 			case IB_WR_LOCAL_INV:
+-				break;
+ 			case IB_WR_ATOMIC_CMP_AND_SWP:
+ 			case IB_WR_ATOMIC_FETCH_AND_ADD:
+ 			case IB_WR_LSO:
 -- 
 2.25.1
 
