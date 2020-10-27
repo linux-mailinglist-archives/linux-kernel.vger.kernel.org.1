@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF8E29A78E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE82B29A79B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504602AbgJ0JQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441288AbgJ0JQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:16:31 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3375620735;
-        Tue, 27 Oct 2020 09:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603790190;
-        bh=eEHOPCuNozZIKxc0vTi6+l0h/9VUmEu/YqIPSDDy4OI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LwdOnZFy3TBZCOBJ37B8QDVxTuLy6whcbgNz+KoOSgIvBdsWlffJ/+1obPwjwGVrb
-         SG3dRidDhNcI8l9kQ0b19w4rRm6+Kz84GAdCcPZC6R0CbKPHllx8nkmIeA4A9MC3hj
-         E8Lcm3G0WxYRXSRRPgxXyaHAHI5JYFMoCc0kRaNI=
-Date:   Tue, 27 Oct 2020 10:17:25 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: problems with splice from /proc (was Linux 5.10-rc1)
-Message-ID: <20201027091725.GA42707@kroah.com>
-References: <CAHk-=whcRFYSm0jj3Xh3xCyBaxCHA1ZMNO0h_gZso_WZFDUtiQ@mail.gmail.com>
- <20201027064832.GA209538@kroah.com>
- <20201027074911.GB29565@infradead.org>
- <20201027075541.GA24429@kroah.com>
- <20201027080745.GA31045@infradead.org>
- <20201027081420.GA30177@kroah.com>
+        id S2505496AbgJ0JSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:18:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31664 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404675AbgJ0JSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:18:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603790290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PP9XfWWYs/ZL8eWntPMtO6Zbh5hoxUuR0KDIP5S05yQ=;
+        b=iL1e1B1YBFAgIn+M8SLjs5oBL1jF1xLpp+UMRwAjMWBu83weKYyJF6BGMixi0Bbb6WgcZ1
+        3eLbTHHw1HerMN1qlPNy67NZC3c/xEuCOvTvKh4Hn+6DIcMZoGcBfYnSi9o+qFRaEHnxrP
+        h984oQxqy0mU+8fZxq76UXbKMSN0lKY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-jP-GUqW7Mqi8cqOxFCzmvw-1; Tue, 27 Oct 2020 05:18:09 -0400
+X-MC-Unique: jP-GUqW7Mqi8cqOxFCzmvw-1
+Received: by mail-wr1-f72.google.com with SMTP id n14so514974wrp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:18:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PP9XfWWYs/ZL8eWntPMtO6Zbh5hoxUuR0KDIP5S05yQ=;
+        b=OhZruHBb0HZwPVSDtzyCaNYopbx46uvqDChoiYIT6u3voU8iYwGE4zImcRf0/Tye5B
+         oaF6Wm2fZfq2UFXw6TxmGm4MZzCqSgTeTONpVwiXMnzOIU4qdbQv2vpDqq/JpGkpIReW
+         mk3zXez4UhLZolE7I/6zHb2QIn4UT1cTiiGd8MO549uJTW33FZz8TH6I9J0fCk1vfKFX
+         khS3bWhfeAfG3m/N9hhaYP0Mwlow7VRT+gre6KCw2tLWKnlio+iCPz4HJj6twuDZAgC+
+         EsZjNecjjcThZmz9cau+HntdMFFOXSNYKwZAlS3c7p34RYRzLmGnvQrVumXMJMVCBgzK
+         QcpQ==
+X-Gm-Message-State: AOAM533EMvt2mhI4GRLr++w0qbq0R0RMu2tBLhua3xBLe3OquYaPPRef
+        HKuUqurQ3C/RCQ0TSPP3+JKru/QSO3nL5/knGq6HJfdZw6KdDoQQqGGhhui4VcYY/wRe2uY7bNh
+        THxw44jJ8xocxOE4xRwOz+JIu
+X-Received: by 2002:a1c:28d4:: with SMTP id o203mr1612044wmo.143.1603790287167;
+        Tue, 27 Oct 2020 02:18:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIilyoqRxGaUl7p9JKTfBssuH7mohx3h+nf+wqghU8Ac68i7Wh1Yp/SFLOvnj3tU5GpJwc5Q==
+X-Received: by 2002:a1c:28d4:: with SMTP id o203mr1612024wmo.143.1603790286960;
+        Tue, 27 Oct 2020 02:18:06 -0700 (PDT)
+Received: from steredhat (host-79-17-248-215.retail.telecomitalia.it. [79.17.248.215])
+        by smtp.gmail.com with ESMTPSA id x64sm1166853wmg.33.2020.10.27.02.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 02:18:06 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 10:18:04 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] vsock: fix the error return when an invalid ioctl
+ command is used
+Message-ID: <20201027091804.7mpad5yaxzfmbva6@steredhat>
+References: <20201027090942.14916-1-colin.king@canonical.com>
+ <20201027090942.14916-3-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201027081420.GA30177@kroah.com>
+In-Reply-To: <20201027090942.14916-3-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:14:20AM +0100, Greg KH wrote:
-> On Tue, Oct 27, 2020 at 08:07:45AM +0000, Christoph Hellwig wrote:
-> > On Tue, Oct 27, 2020 at 08:55:41AM +0100, Greg KH wrote:
-> > > This is just a test, part of the bionic test suite to verify that bionic
-> > > is working properly, and is run on new kernels as a verification that
-> > > nothing functional broke in the kernel update.
-> > > 
-> > > I don't know about "real applications" yet.
-> > > 
-> > > Do you have to implement this on a per-proc-file-basis, or will it work
-> > > for the whole filesystem?
-> > > 
-> > > And are the patches public anywhere that I could test them out?
-> > 
-> > This all branch has the last posted version:
-> > 
-> > http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/set_fs-rw.2
-> > 
-> > with tthe proc:, sysctl: and seq_file: patches related to it.  It did
-> > switch over all seq_file instances, but non-seq_file instances and write
-> > operations will need manual per-instance work.
-> 
-> Luckily /proc/cpuinfo seems to use the seq_file interface, so this
-> series would work for that.
-> 
-> What's the odds of this series getting into 5.10-final?  I'll go run it
-> through the Android build system right now to see if it fixes the issue
-> or not...
+On Tue, Oct 27, 2020 at 09:09:42AM +0000, Colin King wrote:
+>From: Colin Ian King <colin.king@canonical.com>
+>
+>Currently when an invalid ioctl command is used the error return
+>is -EINVAL.  Fix this by returning the correct error -ENOIOCTLCMD.
+>
+>Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>---
+> net/vmw_vsock/af_vsock.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ok, I couldn't get a clean merge of that old branch on top of your
-5.10-rc1 tree, so I can't give it a run-through.  If you have an updated
-series you want me to test, I'll be glad to do so.
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-thanks,
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 865331b809e4..597c86413089 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -2072,7 +2072,7 @@ static long vsock_dev_do_ioctl(struct file *filp,
+> 		break;
+>
+> 	default:
+>-		retval = -EINVAL;
+>+		retval = -ENOIOCTLCMD;
+> 	}
+>
+> 	return retval;
+>-- 
+>2.27.0
+>
 
-greg k-h
