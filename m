@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75EC29C952
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992E629C958
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829164AbgJ0T7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:59:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39286 "EHLO mail.kernel.org"
+        id S1830611AbgJ0UAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:00:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1795822AbgJ0T7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:59:18 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1823131AbgJ0UAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:00:19 -0400
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAD262076B;
-        Tue, 27 Oct 2020 19:59:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 094C422275;
+        Tue, 27 Oct 2020 20:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603828756;
-        bh=cA0iuWfjAUg+glshXTaaW3nSPKlAqfZmxvdoguoYc20=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=2ZNBcb61IpUkeHc8vjL1cEPuU3P8vpbevyaHWMy472Qe2QQQ19lWUgsayZsXaMjEe
-         4X4cJe8d4jZ4xDg3iXN/grcW+jVsEIs7VrF0GH9IqHatbku4spnp8ljkLoPbuOt7kB
-         mZwErNP3jX1uqo1on01WoVXL9neIOvt2ZuHqGBSU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7D313352285C; Tue, 27 Oct 2020 12:59:16 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 12:59:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: Recording allocation location for blocks of memory?
-Message-ID: <20201027195916.GA3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201027175810.GA26121@paulmck-ThinkPad-P72>
- <CACT4Y+bB4sZjLx6tL6F5XzxGk5iG7j=SPbDkX_bwRXmXB=JxXA@mail.gmail.com>
- <CANpmjNNxAvembOetv15FfZ=04mpj0Qwx+1tnn22tABaHHRRv=Q@mail.gmail.com>
+        s=default; t=1603828818;
+        bh=C8PNoOCxuRcL/lFBVvomssyBtYmkskLNwoLcNzkR5Vs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cr5dQW59BNWBgEYpuBUIA3s72exOWsAd2OlWLReIcgzgSLrsfzxKE6zRunMVogLSo
+         LmLWxc91RWzKoB9Gtxr0K+7VZgOkVaEb1SX9mezXGBUD14dcZV5hoSGvg08ZXdRTIi
+         Q2GtouUNf8HeaT0ihrJwnCWe294AqcVTE17F6Ukc=
+Received: by mail-qt1-f174.google.com with SMTP id s39so1505434qtb.2;
+        Tue, 27 Oct 2020 13:00:17 -0700 (PDT)
+X-Gm-Message-State: AOAM5306FoGTk+eVqcHBkhvSwb+lUjyJXsQI3cjrAsjjWCCZm9UrtGHk
+        B84bs5//iXhzsNL5UBwnihycIhwz/jUlTauMn04=
+X-Google-Smtp-Source: ABdhPJzHE+3FGUR6Vtj4ilGlCmvzRyNA4JBb/mYGM6PUyhS1g31Nk7geVbcH3sKFxz1efLAyb/D51bCAVaCcEQFLiYw=
+X-Received: by 2002:ac8:4808:: with SMTP id g8mr3798666qtq.18.1603828817040;
+ Tue, 27 Oct 2020 13:00:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNxAvembOetv15FfZ=04mpj0Qwx+1tnn22tABaHHRRv=Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201027145252.3976138-1-arnd@kernel.org> <20201027192229.GA22829@infradead.org>
+In-Reply-To: <20201027192229.GA22829@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 21:00:00 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1V5aaEw213rNecYxhDB3s9Lrhbm=ueBPPXbW4Bua0n6A@mail.gmail.com>
+Message-ID: <CAK8P3a1V5aaEw213rNecYxhDB3s9Lrhbm=ueBPPXbW4Bua0n6A@mail.gmail.com>
+Subject: Re: [PATCH v2] seq_file: fix clang warning for NULL pointer arithmetic
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 08:45:43PM +0100, Marco Elver wrote:
-> Hi Paul,
-> 
-> Let me add another option below, as an alternative to KASAN that
-> Dmitry mentioned.
-> 
-> On Tue, 27 Oct 2020 at 19:40, Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Tue, Oct 27, 2020 at 6:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > Hello!
-> > >
-> > > I have vague memories of some facility some time some where that recorded
-> > > who allocated a given block of memory, but am not seeing anything that
-> > > does this at present.  The problem is rare enough and the situation
-> > > sufficiently performance-sensitive that things like ftrace need not apply,
-> > > and the BPF guys suggest that BPF might not be the best tool for this job.
-> 
-> Since you mention "performance-sensitive" and you say that "ftrace
-> need not apply", I have a suspicion that KASAN also need not apply.
-> KASAN itself uses lib/stackdepot.c to store stacktraces, which
-> deduplicates stack traces by hashing them; but over time its usage
-> grows significantly and may also not be suitable for production even
-> if you manage to use it without KASAN somehow.
-> 
-> If you want something for production that more or less works
-> out-of-the-box, KFENCE might work. :-)
-> v5 here: https://lkml.kernel.org/r/20201027141606.426816-1-elver@google.com
-> 
-> You can just get KFENCE to print the allocation stack (and free stack
-> if the object has been freed) by calling
-> kfence_handle_page_fault(obj_addr), which should generate a
-> use-after-free report if the object was allocated via KFENCE. You
-> could check if the object was allocated with KFENCE with
-> is_kfence_address(), but kfence_handle_page_fault() will just return
-> if the object wasn't allocated via KFENCE.
-> 
-> If you do have the benefit of whatever you're hunting being deployed
-> across lots of machines in production, it might work.
-> 
-> If it's not deployed across lots of machines, you might get lucky if
-> you set kfence.sample_interval=1 and CONFIG_KFENCE_NUM_OBJECTS=4095
-> (will use 32 MiB for the KFENCE pool; but you can make it larger to be
-> sure it won't be exhausted too soon).
+On Tue, Oct 27, 2020 at 8:22 PM Christoph Hellwig <hch@infradead.org> wrote:
+> > diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> > index f277d023ebcd..eafeb8bf4fe4 100644
+> > --- a/fs/kernfs/file.c
+> > +++ b/fs/kernfs/file.c
+> > @@ -121,10 +121,10 @@ static void *kernfs_seq_start(struct seq_file *sf, loff_t *ppos)
+> >               return next;
+> >       } else {
+> >               /*
+> > -              * The same behavior and code as single_open().  Returns
+> > -              * !NULL if pos is at the beginning; otherwise, NULL.
+> > +              * The same behavior and code as single_open().  Continues
+> > +              * if pos is at the beginning; otherwise, EOF.
+> >                */
+> > -             return NULL + !*ppos;
+> > +             return *ppos ? SEQ_OPEN_SINGLE : SEQ_OPEN_EOF;
+>
+> Why the somewhat obsfucating unary expression instead of a good
+> old if?
+>
+> e.g.
+>
+>                 return next;
+>         }
+>         if (*ppos)
+>                 retun SEQ_OPEN_SINGLE;
+>         return NULL;
+>
+>
+> >               ++*ppos;
+> > -             return NULL;
+> > +             return SEQ_OPEN_EOF;
+>
+> I don't think SEQ_OPEN_EOF is all that useful.  NULL is the documented
+> end case already.
 
-Thank you!  I will look into this as well!
+Right, Al already pointed out the same thing on IRC.
 
-							Thanx, Paul
+> > diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+> > index 813614d4b71f..26f0758b6551 100644
+> > --- a/include/linux/seq_file.h
+> > +++ b/include/linux/seq_file.h
+> > @@ -37,6 +37,9 @@ struct seq_operations {
+> >
+> >  #define SEQ_SKIP 1
+> >
+> > +#define SEQ_OPEN_EOF (void *)0
+> > +#define SEQ_OPEN_SINGLE      (void *)1
+>
+> I think SEQ_OPEN_SINGLE also wants a comment documenting it.
+> AFAICS the reason for it is that ->start needs to return something
+> non-NULL for the seq_file code to make progress, and there is nothing
+> better for the single_open case.
 
-> > > The problem I am trying to solve is that a generic function that detects
-> > > reference count underflow that was passed to call_rcu(), and there are
-> > > a lot of places where the underlying problem might lie, and pretty much
-> > > no information.  One thing that could help is something that identifies
-> > > which use case the underflow corresponds to.
-> > >
-> > > So, is there something out there (including old patches) that, given a
-> > > pointer to allocated memory, gives some information about who allocated
-> > > it?  Or should I risk further inflaming the MM guys by creating one?  ;-)
-> >
-> > Hi Paul,
-> >
-> > KASAN can do this. However (1) it has non-trivial overhead on its own
-> > (but why would you want to debug something without KASAN anyway :))
-> > (2) there is no support for doing just stack collection without the
-> > rest of KASAN (they are integrated at the moment) (3) there is no
-> > public interface function that does what you want, though, it should
-> > be easy to add it. The code is around here:
-> > https://github.com/torvalds/linux/blob/master/mm/kasan/report.c#L111-L128
-> >
-> > Since KASAN already bears all overheads of stack collection/storing I
-> > was thinking that lots of other debugging tools could indeed piggy
-> > back on that and print much more informative errors message when
-> > enabled with KASAN.
-> >
-> > Since recently KASAN also memorizes up to 2 "other" stacks per
-> > objects. This is currently used to memorize call_rcu stacks, since
-> > they are frequently more useful than actual free stacks for
-> > rcu-managed objects.
-> > That mechanism could also memorize last refcount stacks, however I
-> > afraid that they will evict everything else, since we have only 2
-> > slots, and frequently there are lots of refcount operations.
+Ok.
+
+     Arnd
