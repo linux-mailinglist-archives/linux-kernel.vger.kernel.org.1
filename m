@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62091299F1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A179299ED1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436732AbgJ0AU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:20:26 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45654 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441040AbgJ0AUN (ORCPT
+        id S2440791AbgJ0ARb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:17:31 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7138 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2439249AbgJ0ARR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:20:13 -0400
-Received: by mail-lf1-f66.google.com with SMTP id r127so14787660lff.12
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8pq1ZiLJCFcmgBv0JcKGMbgbJxC9bbLjRkNwBgcJh0Q=;
-        b=Kka79kbJMSIegb0otW5XpEZGBA5SvJVApuOIDNwAYEJudE5IEDU8uS9xOVp8VPCJd7
-         b6SXjLkGUDOsdUxN6GxdMaer4vbcu+m0lMCl4yUVEtnWOLc2Gy49/vh4f/10qgVdNAuy
-         U7v/pMBYIdx1aSuJTLPA4PxgXktFn6T53RTT0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8pq1ZiLJCFcmgBv0JcKGMbgbJxC9bbLjRkNwBgcJh0Q=;
-        b=cuZY/fELqiGk1pW4g367wK/+/XvbPXOC0L9qgFtaPFlEWc6ims1kcbLVBV033erMGd
-         tZYpG7zB/YdlHjaim8nOTzQHmgrw3IuT0wrgykauEQ6x7oACXq99kkXtoNUOoZrJaXhl
-         BUqWw8IIBVK7BGBJaHP+sjC5lh6Rw8Y6wCefQsi5Y9+wyfGnn/IzgMcbfG0rE0iJ9ALK
-         93ihoXtB8xLNdY/3shdk57vhC7U5G/B5dddxvtxRlLlrx+/8C3OME+8LjkFAfUdTBPMM
-         xzH/cioR8FtN41O4UzEIwMmv+TGwiMu7DtDe8kje4ma/o2rxJcDpg6kl8+AaTYxNDlCh
-         pLEg==
-X-Gm-Message-State: AOAM531pZ9MKt//qrWm0LVlJhuIyrJXFdgmg0dWf3bHNuXoYDlpkme9e
-        T3RUnGROCrynSg4coK08rqU1MVkX2W92wg==
-X-Google-Smtp-Source: ABdhPJz6IOKPnwkUBuYBkLwzgyyU+qPT+xUyUZPuiBpv4NrNNNk0d9bszEoPtv+Ai79mMaDSd7D7LQ==
-X-Received: by 2002:a19:a12:: with SMTP id 18mr6695272lfk.345.1603758009977;
-        Mon, 26 Oct 2020 17:20:09 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id v70sm1199981lfa.93.2020.10.26.17.20.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 17:20:09 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id i2so12627062ljg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:20:09 -0700 (PDT)
-X-Received: by 2002:a19:cbcb:: with SMTP id b194mr6627878lfg.133.1603757691217;
- Mon, 26 Oct 2020 17:14:51 -0700 (PDT)
+        Mon, 26 Oct 2020 20:17:17 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09R0CrgJ002883
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:17:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=41NXwfOK69YLdJBmqXAfvRcowfw7CrS/L8kIz565Jvg=;
+ b=hfO9HlAsFioDdoA2P1f8QfIHhJJlVlAhYPIvjhmVw0qZusMykNZsgXM/cc7Tij5Gwi5h
+ kQCslzPEF2KshEqYxKpLzNESdiNrzmA9KZixMq2dh3JTAO2uqtCWTlCHX1EHkjnRJ1TA
+ wjREkZIby3p/Cve5JSSlOvYKZms9tA8FL3E= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 34cfxn3tkw-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:17:16 -0700
+Received: from intmgw001.06.prn3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 26 Oct 2020 17:17:14 -0700
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id 710721C56453; Mon, 26 Oct 2020 17:17:04 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH v6 0/4] mm: allow mapping accounted kernel pages to userspace
+Date:   Mon, 26 Oct 2020 17:16:53 -0700
+Message-ID: <20201027001657.3398190-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <2-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
- <a9f05c88-acdb-7b48-6f54-4c973a87aaeb@nvidia.com> <32a38d92-6ecc-243b-77be-8f1ea0792334@nvidia.com>
- <20201026234952.GD1523783@nvidia.com>
-In-Reply-To: <20201026234952.GD1523783@nvidia.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 26 Oct 2020 17:14:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whEL2B-PSGzhQxyC3VR1XpUee6nKw6YiJG6w7hRL1f9Lg@mail.gmail.com>
-Message-ID: <CAHk-=whEL2B-PSGzhQxyC3VR1XpUee6nKw6YiJG6w7hRL1f9Lg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: prevent gup_fast from racing with COW during fork
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-26_17:2020-10-26,2020-10-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ suspectscore=0 malwarescore=0 priorityscore=1501 spamscore=0 mlxscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=742
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 4:50 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> Right, it isn't a "seqcount" because the read side doesn't spin.
+Currently a non-slab kernel page which has been charged to a memory
+cgroup can't be mapped to userspace. The underlying reason is simple:
+PageKmemcg flag is defined as a page type (like buddy, offline, etc),
+so it takes a bit from a page->mapped counter. Pages with a type set
+can't be mapped to userspace.
 
-Not all readers spin for seqcount either.
+But in general the kmemcg flag has nothing to do with mapping to
+userspace. It only means that the page has been accounted by the page
+allocator, so it has to be properly uncharged on release.
 
-Sure, it's the *common* case, but look at name resolution - it will
-basically fail on a seqcount failure in RCU mode, and go to the "slow
-and safe" version:
+Some bpf maps are mapping the vmalloc-based memory to userspace, and
+their memory can't be accounted because of this implementation detail.
 
-                if (unlikely(read_seqcount_retry(&d->d_seq, nd->seq)))
-                        return -ECHILD;
+This patchset removes this limitation by moving the PageKmemcg flag
+into one of the free bits of the page->mem_cgroup pointer. Also it
+formalizes accesses to the page->mem_cgroup and page->obj_cgroups
+using new helpers, adds several checks and removes a couple of obsolete
+functions. As the result the code became more robust with fewer
+open-coded bit tricks.
 
-Exactly like gup_fast vs fork, in fact.
+v6:
+  - removed a bogus change in the last commit
+  - rebased to the current head with a minor fix
 
-So no, you don't need to retry for seqcount failures, doing
+v5:
+  - added ~MEMCG_DATA_FLAGS_MASK to page_memcg_rcu(), by Michal
+  - more cosmetic changes, by Johannes
 
-     seq = seqcount_begin(..);
-     ... optimistic fast case ...
-     if (!read_seqcount_retry(.., seq))
-          return 0; // success
-       .. do slow case ...
+v4:
+  - more cosmetic changes, by Johannes
 
-is valid and happens.
+v3:
+  - READ_ONCE() in page_memcg_rcu() and page_objcgs*(), by Johannes
+  - many cosmetic changes and renamings, by Johannes
 
-              Linus
+v2:
+  - fixed a bug in page_obj_cgroups_check()
+  - moved some definitions between patches, by Shakeel
+  - dropped the memcg flags mutual exclusion requirement, by Shakeel
+
+v1:
+  - added and fixed comments, by Shakeel
+  - added some VM_BUG_ON() checks
+  - fixed the debug output format of page->memcg_data
+
+
+Roman Gushchin (4):
+  mm: memcontrol: use helpers to read page's memcg data
+  mm: memcontrol/slab: use helpers to access slab page's memcg_data
+  mm: introduce page memcg flags
+  mm: convert page kmemcg type to a page memcg flag
+
+ fs/buffer.c                      |   2 +-
+ fs/iomap/buffered-io.c           |   2 +-
+ include/linux/memcontrol.h       | 215 +++++++++++++++++++++++++++++--
+ include/linux/mm.h               |  22 ----
+ include/linux/mm_types.h         |   5 +-
+ include/linux/page-flags.h       |  11 +-
+ include/trace/events/writeback.h |   2 +-
+ kernel/fork.c                    |   7 +-
+ mm/debug.c                       |   4 +-
+ mm/huge_memory.c                 |   4 +-
+ mm/memcontrol.c                  | 139 +++++++++-----------
+ mm/page_alloc.c                  |   8 +-
+ mm/page_io.c                     |   6 +-
+ mm/slab.h                        |  38 ++----
+ mm/workingset.c                  |   2 +-
+ 15 files changed, 300 insertions(+), 167 deletions(-)
+
+--=20
+2.26.2
+
