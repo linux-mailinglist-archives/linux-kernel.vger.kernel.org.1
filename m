@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBF029B755
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF4E29B6A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799509AbgJ0Pbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36140 "EHLO mail.kernel.org"
+        id S1797472AbgJ0PXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797082AbgJ0PVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:21:33 -0400
+        id S1797114AbgJ0PVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:21:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D9E020657;
-        Tue, 27 Oct 2020 15:21:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADE382224A;
+        Tue, 27 Oct 2020 15:21:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812091;
-        bh=6M83Bp7CN6q9gAdkscBTEoyTQP1NK/STJR2yLE6JlhU=;
+        s=default; t=1603812100;
+        bh=RqoNtxLvZDXjwWq65NRmbyJOPlcrRK3br0R+j9qvFIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gfAZDFd6mI+Ic1e/EDS/+7Dtef7EU+u0j29N6xdtsktFBvijrP0R2Neu6DA0Ao/Jr
-         9ZWYeSZXkoZ/o04Jfpjzr+fud0tvQVUURa+YiQE9cw9nMwEU4MCzQicRUkmzu8YJSZ
-         OjFnqLcAdhQGlXHLQF1nAL/Y/BMpXvo1oskE3l3c=
+        b=oANSa0DJioqUIqQBiPiDOZz8pkoyFFEUjEn6V9viQ4XAPJ44TBA/gIShhX4plrdaw
+         5qJEyxhiz83W28NhD6xdrv98P1gKbJtDzUT/s/B7ai/xI3I0JM6R8lb9mBrq/zyxmX
+         WjZUKMTKjQeog1jgKCgr9nCZDeNDuQpVNy3q9ks8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Stefan Schaeckeler <schaecsn@gmx.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 090/757] microblaze: fix kbuild redundant file warning
-Date:   Tue, 27 Oct 2020 14:45:40 +0100
-Message-Id: <20201027135454.774235152@linuxfoundation.org>
+Subject: [PATCH 5.9 092/757] EDAC/aspeed: Fix handling of platform_get_irq() error
+Date:   Tue, 27 Oct 2020 14:45:42 +0100
+Message-Id: <20201027135454.866323816@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,40 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 4a17e8513376bb23f814d3e340a5692a12c69369 ]
+[ Upstream commit afce6996943be265fa39240b67025cfcb1bcdfb1 ]
 
-Fix build warning since this file is already listed in
-include/asm-generic/Kbuild.
+platform_get_irq() returns a negative error number on error. In such a
+case, comparison to 0 would pass the check therefore check the return
+value properly, whether it is negative.
 
-../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/microblaze/include/asm/Kbuild: hw_irq.h
+ [ bp: Massage commit message. ]
 
-Fixes: 630f289b7114 ("asm-generic: make more kernel-space headers mandatory")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-Link: https://lore.kernel.org/r/4d992aee-8a69-1769-e622-8d6d6e316346@infradead.org
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Fixes: 9b7e6242ee4e ("EDAC, aspeed: Add an Aspeed AST2500 EDAC driver")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Stefan Schaeckeler <schaecsn@gmx.net>
+Link: https://lkml.kernel.org/r/20200827070743.26628-1-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/microblaze/include/asm/Kbuild | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/edac/aspeed_edac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
-index 2e87a9b6d312f..63bce836b9f10 100644
---- a/arch/microblaze/include/asm/Kbuild
-+++ b/arch/microblaze/include/asm/Kbuild
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generated-y += syscall_table.h
- generic-y += extable.h
--generic-y += hw_irq.h
- generic-y += kvm_para.h
- generic-y += local64.h
- generic-y += mcs_spinlock.h
+diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
+index b194658b8b5c9..fbec28dc661d7 100644
+--- a/drivers/edac/aspeed_edac.c
++++ b/drivers/edac/aspeed_edac.c
+@@ -209,8 +209,8 @@ static int config_irq(void *ctx, struct platform_device *pdev)
+ 	/* register interrupt handler */
+ 	irq = platform_get_irq(pdev, 0);
+ 	dev_dbg(&pdev->dev, "got irq %d\n", irq);
+-	if (!irq)
+-		return -ENODEV;
++	if (irq < 0)
++		return irq;
+ 
+ 	rc = devm_request_irq(&pdev->dev, irq, mcr_isr, IRQF_TRIGGER_HIGH,
+ 			      DRV_NAME, ctx);
 -- 
 2.25.1
 
