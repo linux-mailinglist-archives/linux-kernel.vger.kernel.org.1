@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898F829C335
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A3B29C33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902174AbgJ0ObM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:31:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        id S2902203AbgJ0Ob0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:31:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902120AbgJ0O37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:29:59 -0400
+        id S1759399AbgJ0OaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:30:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FF0620780;
-        Tue, 27 Oct 2020 14:29:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4778C2222C;
+        Tue, 27 Oct 2020 14:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808999;
-        bh=hX2WUAyvCksc83K2AAtiZEm+2c35fX3H9SIA3/IBEp0=;
+        s=default; t=1603809004;
+        bh=2a3GaRg/1mZcjzKwatJvKpgvdIBg4XTamIAfKyGDtAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXhQQa3WahjmkZxH4rHJlfHo/YlH2Kq78nwEjVaOr0pPi7a6g2WWi6BWJi2xLE5/c
-         TjGzo7EXzbu4sGzQ1n0mhMkmXjNGojjKsgOrOmXyKB+cJypR0vE4Awmp2KieLJ38rU
-         YvuaB+Z4JbeJpXt3ywl2gxkMINDOpBn+w4m2aZQs=
+        b=cquI9WiOkEjL+BE21PKAw1XpPnyUBYMwASL5/1oz8dTqSxIxZG5JqwrruiAKtmpci
+         zvKWREBNRm8ywFqHxrQxtyhWG/zlD/g210SZNHhzhq+lGWJURybbPRkszzlNnC3ukE
+         +mfLTSpchbqSpNY3x9M/ittEl1tlJ0muLAvbDUAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 038/408] selftests: rtnetlink: load fou module for kci_test_encap_fou() test
-Date:   Tue, 27 Oct 2020 14:49:36 +0100
-Message-Id: <20201027135456.849351447@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 040/408] icmp: randomize the global rate limiter
+Date:   Tue, 27 Oct 2020 14:49:38 +0100
+Message-Id: <20201027135456.938693240@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -42,50 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 26ebd6fed9bb3aa480c7c0f147ac0e7b11000f65 ]
+[ Upstream commit b38e7819cae946e2edf869e604af1e65a5d241c5 ]
 
-The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
-needs the fou module to work. Otherwise it will fail with:
+Keyu Man reported that the ICMP rate limiter could be used
+by attackers to get useful signal. Details will be provided
+in an upcoming academic publication.
 
-  $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
-  RTNETLINK answers: No such file or directory
-  Error talking to the kernel
+Our solution is to add some noise, so that the attackers
+no longer can get help from the predictable token bucket limiter.
 
-Add the CONFIG_NET_FOU into the config file as well. Which needs at
-least to be set as a loadable module.
-
-Fixes: 6227efc1a20b ("selftests: rtnetlink.sh: add vxlan and fou test cases")
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Link: https://lore.kernel.org/r/20201019030928.9859-1-po-hsu.lin@canonical.com
+Fixes: 4cdf507d5452 ("icmp: add a global rate limitation")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/net/config       |    1 +
- tools/testing/selftests/net/rtnetlink.sh |    5 +++++
- 2 files changed, 6 insertions(+)
+ Documentation/networking/ip-sysctl.txt |    4 +++-
+ net/ipv4/icmp.c                        |    7 +++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
---- a/tools/testing/selftests/net/config
-+++ b/tools/testing/selftests/net/config
-@@ -29,3 +29,4 @@ CONFIG_NET_SCH_FQ=m
- CONFIG_NET_SCH_ETF=m
- CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_KALLSYMS=y
-+CONFIG_NET_FOU=m
---- a/tools/testing/selftests/net/rtnetlink.sh
-+++ b/tools/testing/selftests/net/rtnetlink.sh
-@@ -521,6 +521,11 @@ kci_test_encap_fou()
- 		return $ksft_skip
- 	fi
+--- a/Documentation/networking/ip-sysctl.txt
++++ b/Documentation/networking/ip-sysctl.txt
+@@ -1000,12 +1000,14 @@ icmp_ratelimit - INTEGER
+ icmp_msgs_per_sec - INTEGER
+ 	Limit maximal number of ICMP packets sent per second from this host.
+ 	Only messages whose type matches icmp_ratemask (see below) are
+-	controlled by this limit.
++	controlled by this limit. For security reasons, the precise count
++	of messages per second is randomized.
+ 	Default: 1000
  
-+	if ! /sbin/modprobe -q -n fou; then
-+		echo "SKIP: module fou is not found"
-+		return $ksft_skip
-+	fi
-+	/sbin/modprobe -q fou
- 	ip -netns "$testns" fou add port 7777 ipproto 47 2>/dev/null
- 	if [ $? -ne 0 ];then
- 		echo "FAIL: can't add fou port 7777, skipping test"
+ icmp_msgs_burst - INTEGER
+ 	icmp_msgs_per_sec controls number of ICMP packets sent per second,
+ 	while icmp_msgs_burst controls the burst size of these packets.
++	For security reasons, the precise burst size is randomized.
+ 	Default: 50
+ 
+ icmp_ratemask - INTEGER
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -239,7 +239,7 @@ static struct {
+ /**
+  * icmp_global_allow - Are we allowed to send one more ICMP message ?
+  *
+- * Uses a token bucket to limit our ICMP messages to sysctl_icmp_msgs_per_sec.
++ * Uses a token bucket to limit our ICMP messages to ~sysctl_icmp_msgs_per_sec.
+  * Returns false if we reached the limit and can not send another packet.
+  * Note: called with BH disabled
+  */
+@@ -267,7 +267,10 @@ bool icmp_global_allow(void)
+ 	}
+ 	credit = min_t(u32, icmp_global.credit + incr, sysctl_icmp_msgs_burst);
+ 	if (credit) {
+-		credit--;
++		/* We want to use a credit of one in average, but need to randomize
++		 * it for security reasons.
++		 */
++		credit = max_t(int, credit - prandom_u32_max(3), 0);
+ 		rc = true;
+ 	}
+ 	WRITE_ONCE(icmp_global.credit, credit);
 
 
