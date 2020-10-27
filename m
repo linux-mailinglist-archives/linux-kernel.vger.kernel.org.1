@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA7D29B877
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6962129B878
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800366AbgJ0Pfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49066 "EHLO mail.kernel.org"
+        id S1800374AbgJ0Pfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799538AbgJ0PcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:32:01 -0400
+        id S1799548AbgJ0PcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:32:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 825BE22264;
-        Tue, 27 Oct 2020 15:32:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5163720728;
+        Tue, 27 Oct 2020 15:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812721;
-        bh=2UMKEJpcRMbJDqOdjSe02zcZS1wM0vySrxh045L1LNc=;
+        s=default; t=1603812724;
+        bh=Msvdcne/xZ0nSlVSwUTZFpyOwRPQUR/vGlbQhsVJiKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Raz3uA/dPF3KZLuGKoKJj/6f3rcjV9Z9l6HwGafE9UPV9xIcrougZSFKw+6ZJzaMa
-         iFK1fx92r+AwgsbprUGca1BjLPrQ7AObvyW69SSqNp9osvfCwZgrqgZeA2LLB5KCIS
-         e9XQxZa2kihT4goGqB0hyI/JUSb5Te6ta82soIbk=
+        b=b3w1Ehgf7ChK8Zl3v8+vNcPhdtV59j2Nvq7S1sUUcXKBRRhN7hpkqpefJNSajbr1k
+         Y6KvmWEFtjSndLpxHOOI23AZvexR8c2F0bn5Q/PAZIGBHidJmAyfGVIEV+co/3kauv
+         Q9gUsWbiyPViigX30CqFgX3hbDSTqXxXYltLg2bg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tingwei Zhang <tingwei@codeaurora.org>,
+        stable@vger.kernel.org,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 277/757] coresight: cti: Write regsiters directly in cti_enable_hw()
-Date:   Tue, 27 Oct 2020 14:48:47 +0100
-Message-Id: <20201027135503.569651123@linuxfoundation.org>
+Subject: [PATCH 5.9 278/757] coresight: etm4x: Handle unreachable sink in perf mode
+Date:   Tue, 27 Oct 2020 14:48:48 +0100
+Message-Id: <20201027135503.620727914@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,115 +46,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tingwei Zhang <tingwei@codeaurora.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-[ Upstream commit 984f37efa3857dcefa649fbdf64abb94591935c3 ]
+[ Upstream commit 859d510e58dac94f0b204b7b5cccafbc130d2291 ]
 
-Deadlock as below is triggered by one CPU holds drvdata->spinlock
-and calls cti_enable_hw(). Smp_call_function_single() is called
-in cti_enable_hw() and tries to let another CPU write CTI registers.
-That CPU is trying to get drvdata->spinlock in cti_cpu_pm_notify()
-and doesn't response to IPI from smp_call_function_single().
+If the specified/hinted sink is not reachable from a subset of the CPUs,
+we could end up unable to trace the event on those CPUs. This
+is the best effort we could do until we support 1:1 configurations.
+Fail gracefully in such cases avoiding a WARN_ON, which can be easily
+triggered by the user on certain platforms (Arm N1SDP), with the following
+trace paths :
 
-[  988.335937] CPU: 6 PID: 10258 Comm: sh Tainted: G        W    L
-5.8.0-rc6-mainline-16783-gc38daa79b26b-dirty #1
-[  988.346364] Hardware name: Thundercomm Dragonboard 845c (DT)
-[  988.352073] pstate: 20400005 (nzCv daif +PAN -UAO BTYPE=--)
-[  988.357689] pc : smp_call_function_single+0x158/0x1b8
-[  988.362782] lr : smp_call_function_single+0x124/0x1b8
+ CPU0
+      \
+       -- Funnel0 --> ETF0 -->
+      /                        \
+ CPU1                           \
+                                  MainFunnel
+ CPU2                           /
+      \                        /
+       -- Funnel1 --> ETF1 -->
+      /
+ CPU1
+
+$ perf record --per-thread -e cs_etm/@ETF0/u -- <app>
+
+could trigger the following WARNING, when the event is scheduled
+on CPU2.
+
+[10919.513250] ------------[ cut here ]------------
+[10919.517861] WARNING: CPU: 2 PID: 24021 at
+drivers/hwtracing/coresight/coresight-etm-perf.c:316 etm_event_start+0xf8/0x100
 ...
-[  988.451638] Call trace:
-[  988.454119]  smp_call_function_single+0x158/0x1b8
-[  988.458866]  cti_enable+0xb4/0xf8 [coresight_cti]
-[  988.463618]  coresight_control_assoc_ectdev+0x6c/0x128 [coresight]
-[  988.469855]  coresight_enable+0x1f0/0x364 [coresight]
-[  988.474957]  enable_source_store+0x5c/0x9c [coresight]
-[  988.480140]  dev_attr_store+0x14/0x28
-[  988.483839]  sysfs_kf_write+0x38/0x4c
-[  988.487532]  kernfs_fop_write+0x1c0/0x2b0
-[  988.491585]  vfs_write+0xfc/0x300
-[  988.494931]  ksys_write+0x78/0xe0
-[  988.498283]  __arm64_sys_write+0x18/0x20
-[  988.502240]  el0_svc_common+0x98/0x160
-[  988.506024]  do_el0_svc+0x78/0x80
-[  988.509377]  el0_sync_handler+0xd4/0x270
-[  988.513337]  el0_sync+0x164/0x180
 
-This change write CTI registers directly in cti_enable_hw().
-Config->hw_powered has been checked to be true with spinlock holded.
-CTI is powered and can be programmed until spinlock is released.
+[10919.564403] CPU: 2 PID: 24021 Comm: perf Not tainted 5.8.0+ #24
+[10919.570308] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+[10919.575865] pc : etm_event_start+0xf8/0x100
+[10919.580034] lr : etm_event_start+0x80/0x100
+[10919.584202] sp : fffffe001932f940
+[10919.587502] x29: fffffe001932f940 x28: fffffc834995f800
+[10919.592799] x27: 0000000000000000 x26: fffffe0011f3ced0
+[10919.598095] x25: fffffc837fce244c x24: fffffc837fce2448
+[10919.603391] x23: 0000000000000002 x22: fffffc8353529c00
+[10919.608688] x21: fffffc835bb31000 x20: 0000000000000000
+[10919.613984] x19: fffffc837fcdcc70 x18: 0000000000000000
+[10919.619281] x17: 0000000000000000 x16: 0000000000000000
+[10919.624577] x15: 0000000000000000 x14: 00000000000009f8
+[10919.629874] x13: 00000000000009f8 x12: 0000000000000018
+[10919.635170] x11: 0000000000000000 x10: 0000000000000000
+[10919.640467] x9 : fffffe00108cd168 x8 : 0000000000000000
+[10919.645763] x7 : 0000000000000020 x6 : 0000000000000001
+[10919.651059] x5 : 0000000000000002 x4 : 0000000000000001
+[10919.656356] x3 : 0000000000000000 x2 : 0000000000000000
+[10919.661652] x1 : fffffe836eb40000 x0 : 0000000000000000
+[10919.666949] Call trace:
+[10919.669382]  etm_event_start+0xf8/0x100
+[10919.673203]  etm_event_add+0x40/0x60
+[10919.676765]  event_sched_in.isra.134+0xcc/0x210
+[10919.681281]  merge_sched_in+0xb0/0x2a8
+[10919.685017]  visit_groups_merge.constprop.140+0x15c/0x4b8
+[10919.690400]  ctx_sched_in+0x15c/0x170
+[10919.694048]  perf_event_sched_in+0x6c/0xa0
+[10919.698130]  ctx_resched+0x60/0xa0
+[10919.701517]  perf_event_exec+0x288/0x2f0
+[10919.705425]  begin_new_exec+0x4c8/0xf58
+[10919.709247]  load_elf_binary+0x66c/0xf30
+[10919.713155]  exec_binprm+0x15c/0x450
+[10919.716716]  __do_execve_file+0x508/0x748
+[10919.720711]  __arm64_sys_execve+0x40/0x50
+[10919.724707]  do_el0_svc+0xf4/0x1b8
+[10919.728095]  el0_sync_handler+0xf8/0x124
+[10919.732003]  el0_sync+0x140/0x180
 
-Fixes: 6a0953ce7de9 ("coresight: cti: Add CPU idle pm notifer to CTI devices")
-Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-[Re-ordered variable declaration]
+Even though we don't support using separate sinks for the ETMs yet (e.g,
+for 1:1 configurations), we should at least honor the user's choice and
+handle the limitations gracefully, by simply skipping the tracing on ETMs
+which can't reach the requested sink.
+
+Fixes: f9d81a657bb8 ("coresight: perf: Allow tracing on hotplugged CPUs")
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
+Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+Tested-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200916191737.4001561-10-mathieu.poirier@linaro.org
+Link: https://lore.kernel.org/r/20200916191737.4001561-11-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-cti.c | 24 +++++----------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm-perf.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
-index c4e9cc7034ab7..47f3c9abae303 100644
---- a/drivers/hwtracing/coresight/coresight-cti.c
-+++ b/drivers/hwtracing/coresight/coresight-cti.c
-@@ -86,22 +86,16 @@ void cti_write_all_hw_regs(struct cti_drvdata *drvdata)
- 	CS_LOCK(drvdata->base);
- }
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index 1a3169e69bb19..9d61a71da96f7 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -321,6 +321,16 @@ static void etm_event_start(struct perf_event *event, int flags)
+ 	if (!event_data)
+ 		goto fail;
  
--static void cti_enable_hw_smp_call(void *info)
--{
--	struct cti_drvdata *drvdata = info;
--
--	cti_write_all_hw_regs(drvdata);
--}
--
- /* write regs to hardware and enable */
- static int cti_enable_hw(struct cti_drvdata *drvdata)
- {
- 	struct cti_config *config = &drvdata->config;
- 	struct device *dev = &drvdata->csdev->dev;
-+	unsigned long flags;
- 	int rc = 0;
- 
- 	pm_runtime_get_sync(dev->parent);
--	spin_lock(&drvdata->spinlock);
-+	spin_lock_irqsave(&drvdata->spinlock, flags);
- 
- 	/* no need to do anything if enabled or unpowered*/
- 	if (config->hw_enabled || !config->hw_powered)
-@@ -112,19 +106,11 @@ static int cti_enable_hw(struct cti_drvdata *drvdata)
- 	if (rc)
- 		goto cti_err_not_enabled;
- 
--	if (drvdata->ctidev.cpu >= 0) {
--		rc = smp_call_function_single(drvdata->ctidev.cpu,
--					      cti_enable_hw_smp_call,
--					      drvdata, 1);
--		if (rc)
--			goto cti_err_not_enabled;
--	} else {
--		cti_write_all_hw_regs(drvdata);
--	}
-+	cti_write_all_hw_regs(drvdata);
- 
- 	config->hw_enabled = true;
- 	atomic_inc(&drvdata->config.enable_req_count);
--	spin_unlock(&drvdata->spinlock);
-+	spin_unlock_irqrestore(&drvdata->spinlock, flags);
- 	return rc;
- 
- cti_state_unchanged:
-@@ -132,7 +118,7 @@ static int cti_enable_hw(struct cti_drvdata *drvdata)
- 
- 	/* cannot enable due to error */
- cti_err_not_enabled:
--	spin_unlock(&drvdata->spinlock);
-+	spin_unlock_irqrestore(&drvdata->spinlock, flags);
- 	pm_runtime_put(dev->parent);
- 	return rc;
- }
++	/*
++	 * Check if this ETM is allowed to trace, as decided
++	 * at etm_setup_aux(). This could be due to an unreachable
++	 * sink from this ETM. We can't do much in this case if
++	 * the sink was specified or hinted to the driver. For
++	 * now, simply don't record anything on this ETM.
++	 */
++	if (!cpumask_test_cpu(cpu, &event_data->mask))
++		goto fail_end_stop;
++
+ 	path = etm_event_cpu_path(event_data, cpu);
+ 	/* We need a sink, no need to continue without one */
+ 	sink = coresight_get_sink(path);
 -- 
 2.25.1
 
