@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A10229B8AF
+	by mail.lfdr.de (Postfix) with ESMTP id A7B3529B8B0
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801594AbgJ0Pmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
+        id S1801632AbgJ0PnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799957AbgJ0PeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:34:21 -0400
+        id S1800000AbgJ0Pef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:34:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 083FD2225E;
-        Tue, 27 Oct 2020 15:34:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D25FC22275;
+        Tue, 27 Oct 2020 15:34:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812860;
-        bh=IlmMQPUl3NAQ4hpgJ5ham64MFJLiMFF5AA3MqQoe3QM=;
+        s=default; t=1603812874;
+        bh=b/C4lllXJjGS1GFK3sZBG0HqndHL2ZzbzHRAvd5JtJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjSEkcgfvnmWMbhjJNVDbhdf5e0SE6uDyBDvOhcC6FK0feGQhEMFmzAQqMqLBjhTZ
-         PmPqYS7Sv1xZ5AFfDG9X3LHu5lv5S0GusAhlWRygRhriPQ/XMlokaDw2y06JUzi4uU
-         A/L3+EGHfbXl2iTRih8hvuA2FYEKPzvzs4Ur3znw=
+        b=C3JI2IbEx05WHY16emV507EwkjAtuwBAFw5G/JS6YVrPlSzRjIyNRyEwWKsvmvwnd
+         HIKXmDIP3TN7Yn/rLoU8jxigdTipBOIIJ6kVV0mNJUZwGyP9CtPuTmz8GFjc146oub
+         3NK0EganbrqRb1ML7buDD1vFwJc6FX85l+Ymnp1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 356/757] mfd: sm501: Fix leaks in probe()
-Date:   Tue, 27 Oct 2020 14:50:06 +0100
-Message-Id: <20201027135507.271049905@linuxfoundation.org>
+Subject: [PATCH 5.9 360/757] staging: rtl8712: Fix enqueue_reorder_recvframe()
+Date:   Tue, 27 Oct 2020 14:50:10 +0100
+Message-Id: <20201027135507.460350820@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,38 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8ce24f8967df2836b4557a23e74dc4bb098249f1 ]
+[ Upstream commit 29838144f280fc03ca06a621568f34e1d0a65a4f ]
 
-This code should clean up if sm501_init_dev() fails.
+The logic of this function was accidentally broken by a checkpatch
+inspired cleanup.  I've modified the code to restore the original
+behavior and also make checkpatch happy.
 
-Fixes: b6d6454fdb66 ("[PATCH] mfd: SM501 core driver")
+Fixes: 98fe05e21a6e ("staging: rtl8712: Remove unnecesary else after return statement.")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20200929103548.GA493135@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/sm501.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/staging/rtl8712/rtl8712_recv.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/sm501.c b/drivers/mfd/sm501.c
-index ccd62b9639528..6d2f4a0a901dc 100644
---- a/drivers/mfd/sm501.c
-+++ b/drivers/mfd/sm501.c
-@@ -1415,8 +1415,14 @@ static int sm501_plat_probe(struct platform_device *dev)
- 		goto err_claim;
- 	}
- 
--	return sm501_init_dev(sm);
-+	ret = sm501_init_dev(sm);
-+	if (ret)
-+		goto err_unmap;
+diff --git a/drivers/staging/rtl8712/rtl8712_recv.c b/drivers/staging/rtl8712/rtl8712_recv.c
+index d83f421acfc1e..a397dc6231f13 100644
+--- a/drivers/staging/rtl8712/rtl8712_recv.c
++++ b/drivers/staging/rtl8712/rtl8712_recv.c
+@@ -477,11 +477,14 @@ static int enqueue_reorder_recvframe(struct recv_reorder_ctrl *preorder_ctrl,
+ 	while (!end_of_queue_search(phead, plist)) {
+ 		pnextrframe = container_of(plist, union recv_frame, u.list);
+ 		pnextattrib = &pnextrframe->u.hdr.attrib;
 +
-+	return 0;
- 
-+ err_unmap:
-+	iounmap(sm->regs);
-  err_claim:
- 	release_mem_region(sm->io_res->start, 0x100);
-  err_res:
++		if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
++			return false;
++
+ 		if (SN_LESS(pnextattrib->seq_num, pattrib->seq_num))
+ 			plist = plist->next;
+-		else if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
+-			return false;
+-		break;
++		else
++			break;
+ 	}
+ 	list_del_init(&(prframe->u.hdr.list));
+ 	list_add_tail(&(prframe->u.hdr.list), plist);
 -- 
 2.25.1
 
