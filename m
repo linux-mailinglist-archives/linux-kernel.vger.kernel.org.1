@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E8D29B3DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388D529B3E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752772AbgJ0O4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:56:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50226 "EHLO mail.kernel.org"
+        id S1781936AbgJ0O4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:56:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772913AbgJ0Ouf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:35 -0400
+        id S1772941AbgJ0Oui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:50:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37CAC20709;
-        Tue, 27 Oct 2020 14:50:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E8F8207DE;
+        Tue, 27 Oct 2020 14:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810233;
-        bh=fkpBxmfNOcwEsEY2B5f6l5JmMKKxZmeXpAnX27yXbj8=;
+        s=default; t=1603810236;
+        bh=WehOnmvMEltJu9ZF5Z1xoC8xUIS8r926y7Ds5a440hM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kYBJYLoLgEJfSgGN4bURswh5vz0nmCFKgNpgQqwLYcr3LuwOPw42euP17rf2nk44t
-         cSZwoDuxO+gkw1Dtqu4U7R5C2I7UrKQV0sTPOMbyiYNECwBy0ZfoOK/T5xPH8XDJmT
-         9htP5Ct7UUHEszEt0B7QAWN3lbX+v4zFdSlMbejQ=
+        b=qLjfGubCDErUfw/ZE9vFoiTIrj+ytUPQbt46VbxIGXNJwWqvmTUiDoiorDHf47O9P
+         kqOMNCeKinDuCzsWsmioHP/xgJBlRdtgzBV0afILYkFNxO/GS7xeIWlx8OaytZ9z+g
+         vX8ymJwKmLkOL1eNdtuCk0Ye2BtEAoUecJrvjS1Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>
-Subject: [PATCH 5.8 067/633] smb3: fix stat when special device file and mounted with modefromsid
-Date:   Tue, 27 Oct 2020 14:46:50 +0100
-Message-Id: <20201027135525.839372809@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.8 068/633] arm64: Make use of ARCH_WORKAROUND_1 even when KVM is not enabled
+Date:   Tue, 27 Oct 2020 14:46:51 +0100
+Message-Id: <20201027135525.888705944@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,45 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 3c3317daef0afa0cd541fc9c1bfd6ce8bbf1129a upstream.
+commit b11483ef5a502663732c6ca1b58d14ff9eedd6f7 upstream.
 
-When mounting with modefromsid mount option, it was possible to
-get the error on stat of a fifo or char or block device:
-        "cannot stat <filename>: Operation not supported"
+We seem to be pretending that we don't have any firmware mitigation
+when KVM is not compiled in, which is not quite expected.
 
-Special devices can be stored as reparse points by some servers
-(e.g. Windows NFS server and when using the SMB3.1.1 POSIX
-Extensions) but when the modefromsid mount option is used
-the client attempts to get the ACL for the file which requires
-opening with OPEN_REPARSE_POINT create option.
+Bring back the mitigation in this case.
 
-Signed-off-by: Steve French <stfrench@microsoft.com>
-CC: Stable <stable@vger.kernel.org>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Fixes: 4db61fef16a1 ("arm64: kvm: Modernize __smccc_workaround_1_smc_start annotations")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2ops.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/cpu_errata.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3072,7 +3072,12 @@ get_smb2_acl_by_path(struct cifs_sb_info
- 	oparms.tcon = tcon;
- 	oparms.desired_access = READ_CONTROL;
- 	oparms.disposition = FILE_OPEN;
--	oparms.create_options = cifs_create_options(cifs_sb, 0);
-+	/*
-+	 * When querying an ACL, even if the file is a symlink we want to open
-+	 * the source not the target, and so the protocol requires that the
-+	 * client specify this flag when opening a reparse point
-+	 */
-+	oparms.create_options = cifs_create_options(cifs_sb, 0) | OPEN_REPARSE_POINT;
- 	oparms.fid = &fid;
- 	oparms.reconnect = false;
+--- a/arch/arm64/kernel/cpu_errata.c
++++ b/arch/arm64/kernel/cpu_errata.c
+@@ -234,14 +234,17 @@ static int detect_harden_bp_fw(void)
+ 		smccc_end = NULL;
+ 		break;
  
+-#if IS_ENABLED(CONFIG_KVM)
+ 	case SMCCC_CONDUIT_SMC:
+ 		cb = call_smc_arch_workaround_1;
++#if IS_ENABLED(CONFIG_KVM)
+ 		smccc_start = __smccc_workaround_1_smc;
+ 		smccc_end = __smccc_workaround_1_smc +
+ 			__SMCCC_WORKAROUND_1_SMC_SZ;
+-		break;
++#else
++		smccc_start = NULL;
++		smccc_end = NULL;
+ #endif
++		break;
+ 
+ 	default:
+ 		return -1;
 
 
