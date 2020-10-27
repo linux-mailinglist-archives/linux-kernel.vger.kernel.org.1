@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2265A29C5E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FAC29C645
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756832AbgJ0OOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
+        id S1826024AbgJ0SPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756089AbgJ0OK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:10:59 -0400
+        id S1756361AbgJ0OMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:12:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02C4E22202;
-        Tue, 27 Oct 2020 14:10:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B644A2076A;
+        Tue, 27 Oct 2020 14:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807859;
-        bh=WId7CC7UAsFQd6UFXl7R7iT2RWemnXX3GytAhRUz8Ko=;
+        s=default; t=1603807970;
+        bh=2J6mySmFY3XBdGmC07zXWF/0AmGr+PLeMDMLR5N7YJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3SJKNS1TJCFqbu3KZSfWmTrN5OKEPU+lUJxBhDfAydLc2CacuUgPMjUfAeHnsdJV
-         B4fIQSwbJ/LR6EcJtRsxtbl+jNZKm4KlxmSJMKRL7gAHTERBSMt/04L8KguBsxRPuz
-         5eX3EGN4j0H7ilzpegpRT5MLFyoj8y2qSjBXd9Ao=
+        b=Iaq7u8Ni5bMbqsW/6B1wV6sGjLpS8PhYG43q6aY2xOvK8+jV3c0ZygYGKTzT/qNuE
+         +XwlkrQMyrUH6FfM0LAt9W9Yd9qPjMCx16uolTffLgnFmJyUw04pKw7Snuu2GxJ/62
+         tuO+9i6NXzgE441n6MC75g204+FwNxLAgOWNMgs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 066/191] ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
-Date:   Tue, 27 Oct 2020 14:48:41 +0100
-Message-Id: <20201027134912.915613145@linuxfoundation.org>
+Subject: [PATCH 4.14 067/191] misc: mic: scif: Fix error handling path
+Date:   Tue, 27 Oct 2020 14:48:42 +0100
+Message-Id: <20201027134912.964916740@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -43,40 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit 6a950755cec1a90ddaaff3e4acb5333617441c32 ]
+[ Upstream commit a81072a9c0ae734b7889929b0bc070fe3f353f0e ]
 
-The "tsid" is a user controlled u8 which comes from debugfs.  Values
-more than 15 are invalid because "active_tsids" is a 16 bit variable.
-If the value of "tsid" is more than 31 then that leads to a shift
-wrapping bug.
+Inside __scif_pin_pages(), when map_flags != SCIF_MAP_KERNEL it
+will call pin_user_pages_fast() to map nr_pages. However,
+pin_user_pages_fast() might fail with a return value -ERRNO.
 
-Fixes: 8fffd9e5ec9e ("ath6kl: Implement support for QOS-enable and QOS-disable from userspace")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200918142732.GA909725@mwanda
+The return value is stored in pinned_pages->nr_pages. which in
+turn is passed to unpin_user_pages(), which expects
+pinned_pages->nr_pages >=0, else disaster.
+
+Fix this by assigning pinned_pages->nr_pages to 0 if
+pin_user_pages_fast() returns -ERRNO.
+
+Fixes: ba612aa8b487 ("misc: mic: SCIF memory registration and unregistration")
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Link: https://lore.kernel.org/r/1600570295-29546-1-git-send-email-jrdr.linux@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/misc/mic/scif/scif_rma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index d79c2bccf5822..f80f1757b58fc 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -2648,6 +2648,11 @@ int ath6kl_wmi_delete_pstream_cmd(struct wmi *wmi, u8 if_idx, u8 traffic_class,
- 		return -EINVAL;
+diff --git a/drivers/misc/mic/scif/scif_rma.c b/drivers/misc/mic/scif/scif_rma.c
+index 95745dc4e0ecf..f282c2eaab29b 100644
+--- a/drivers/misc/mic/scif/scif_rma.c
++++ b/drivers/misc/mic/scif/scif_rma.c
+@@ -1404,6 +1404,8 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 				NULL);
+ 		up_write(&mm->mmap_sem);
+ 		if (nr_pages != pinned_pages->nr_pages) {
++			if (pinned_pages->nr_pages < 0)
++				pinned_pages->nr_pages = 0;
+ 			if (try_upgrade) {
+ 				if (ulimit)
+ 					__scif_dec_pinned_vm_lock(mm,
+@@ -1424,7 +1426,6 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 
+ 	if (pinned_pages->nr_pages < nr_pages) {
+ 		err = -EFAULT;
+-		pinned_pages->nr_pages = nr_pages;
+ 		goto dec_pinned;
  	}
  
-+	if (tsid >= 16) {
-+		ath6kl_err("invalid tsid: %d\n", tsid);
-+		return -EINVAL;
-+	}
-+
- 	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd));
- 	if (!skb)
- 		return -ENOMEM;
+@@ -1437,7 +1438,6 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 		__scif_dec_pinned_vm_lock(mm, nr_pages, 0);
+ 	/* Something went wrong! Rollback */
+ error_unmap:
+-	pinned_pages->nr_pages = nr_pages;
+ 	scif_destroy_pinned_pages(pinned_pages);
+ 	*pages = NULL;
+ 	dev_dbg(scif_info.mdev.this_device,
 -- 
 2.25.1
 
