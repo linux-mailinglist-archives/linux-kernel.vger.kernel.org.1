@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDFB29BF6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ED029BFB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793811AbgJ0PI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37656 "EHLO mail.kernel.org"
+        id S1816458AbgJ0RGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:06:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789852AbgJ0PDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:03:15 -0400
+        id S1793558AbgJ0PHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:07:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1F222071A;
-        Tue, 27 Oct 2020 15:03:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D346223C6;
+        Tue, 27 Oct 2020 15:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810995;
-        bh=1mpyp45N6F5kRx70Nov6eK+6CCCCm3FCVlgALSJrbgo=;
+        s=default; t=1603811226;
+        bh=+MXlKvQ5dwR5QkS7hH6CI+dCskxgVnDhGiB+S22hy40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hn5x0xlLONk1nAcYPlRB5zQZcZFl5x3sqOGhWrCerSLpJxZBR9uMXbZ7rn3Ic3/3T
-         Hye7eDkkEo1bO7qG+RFrTEQ0JMSmAzIztbMbd/uxEX32H55yleBC3yfzh996xo5rpK
-         OLOnFWTsb2zR8HD6ZLj/tGpjXcsy+hAAy5DFErco=
+        b=nUTMnCTKDvvYv2aoR5sMkMvGgJWsRNefryhYPryQYUe94gA8lozphRp8cdSKIil63
+         PMZAAYgr6GJBjcNw52khHJa8KQGJvkFtx/hTdUgu6D8LSD4tMnh6SPSTDg+C5JQK39
+         BuqGkIk6sbw8L4UkCOhyDJiikD+UgcEs4dZeHt6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        stable@vger.kernel.org, Lijun Ou <oulijun@huawei.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 336/633] RDMA/mlx5: Fix potential race between destroy and CQE poll
-Date:   Tue, 27 Oct 2020 14:51:19 +0100
-Message-Id: <20201027135538.446538443@linuxfoundation.org>
+Subject: [PATCH 5.8 377/633] RDMA/hns: Set the unsupported wr opcode
+Date:   Tue, 27 Oct 2020 14:52:00 +0100
+Message-Id: <20201027135540.390323318@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,45 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Lijun Ou <oulijun@huawei.com>
 
-[ Upstream commit 4b916ed9f9e85f705213ca8d69771d3c1cd6ee5a ]
+[ Upstream commit 22d3e1ed2cc837af87f76c3c8a4ccf4455e225c5 ]
 
-The SRQ can be destroyed right before mlx5_cmd_get_srq is called.
-In such case the latter will return NULL instead of expected SRQ.
+hip06 does not support IB_WR_LOCAL_INV, so the ps_opcode should be set to
+an invalid value instead of being left uninitialized.
 
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Link: https://lore.kernel.org/r/20200830084010.102381-5-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Fixes: a2f3d4479fe9 ("RDMA/hns: Avoid unncessary initialization")
+Link: https://lore.kernel.org/r/1600350615-115217-1-git-send-email-oulijun@huawei.com
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/cq.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 0c18cb6a2f148..3ca379513d0e6 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -168,7 +168,7 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
- {
- 	enum rdma_link_layer ll = rdma_port_get_link_layer(qp->ibqp.device, 1);
- 	struct mlx5_ib_dev *dev = to_mdev(qp->ibqp.device);
--	struct mlx5_ib_srq *srq;
-+	struct mlx5_ib_srq *srq = NULL;
- 	struct mlx5_ib_wq *wq;
- 	u16 wqe_ctr;
- 	u8  roce_packet_type;
-@@ -180,7 +180,8 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
- 
- 		if (qp->ibqp.xrcd) {
- 			msrq = mlx5_cmd_get_srq(dev, be32_to_cpu(cqe->srqn));
--			srq = to_mibsrq(msrq);
-+			if (msrq)
-+				srq = to_mibsrq(msrq);
- 		} else {
- 			srq = to_msrq(qp->ibqp.srq);
- 		}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 87c93f303b9a8..5a0c90e0b367b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -271,7 +271,6 @@ static int hns_roce_v1_post_send(struct ib_qp *ibqp,
+ 				ps_opcode = HNS_ROCE_WQE_OPCODE_SEND;
+ 				break;
+ 			case IB_WR_LOCAL_INV:
+-				break;
+ 			case IB_WR_ATOMIC_CMP_AND_SWP:
+ 			case IB_WR_ATOMIC_FETCH_AND_ADD:
+ 			case IB_WR_LSO:
 -- 
 2.25.1
 
