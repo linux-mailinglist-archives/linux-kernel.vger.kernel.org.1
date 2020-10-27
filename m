@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042F229A836
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCCF29A858
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895977AbgJ0JtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:49:22 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:43600 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895968AbgJ0JtV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:49:21 -0400
-Received: by mail-yb1-f194.google.com with SMTP id d15so692605ybl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EoN33UgcFziWWiQ4PnBVNhZP5pXbQCgzUb9zsOxzaek=;
-        b=m3oiTCTdji6IvQxnLYvCHd8m57mQNKKf1qrsXcP2EKUZis+8+nzcNkX1bzdpt9/pnn
-         EsDh2YrPJ4+53nJ6bjkecTfDxu/7jcHJVGwMHjsSUBql7MasdHoFGjOJqRfya3MalFNT
-         Se2zF1NimiKx8R1NPMFAmsgLiDp1d/0rsm9H+YyDoTlgvk6LUcqCcUmTir5lAcgUrxAt
-         ylbtlPW0s6DyDiUYvIntKsQUtUAA6GswRsb0XPwwQw1QnM+SzFNkT1n+E4NIOrUVq3Ip
-         M6G2jE3WabJs078e/c5lGJJoJF24KLMQHxnzCkBNvMVP+TFfzW7Z4mKeEE5IrxoDn5Bq
-         nhPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EoN33UgcFziWWiQ4PnBVNhZP5pXbQCgzUb9zsOxzaek=;
-        b=jen5A+HkxkJ4zEdy6SqRHh0gUT1uqyRtdJb/tP+eHa92wQvfSOOw2hB/0pGpaNBF3H
-         mg1pedSpGHvRz19eXkHxYOHQzbjNdHbHBQIEdROft48V4lJY0Wf8n+6TtDpDKOPaR/Kc
-         UOQRSgktq9KXZx+uicdQmiLuDY/namr6o50YT+ZdRydcxDYHd7DR4qz3rBU14Zrx0x2p
-         yFNNVedTHT0XtfFg7nVQ7w1o7z9NhvDaLIpKwBO1qzQAWHOfKrQLHzUcfxsFgbR5tSi3
-         4mAfpPytzlVMAgSFmsiGwoQcrwrMamLrjUAxQC9ul7xaycwtehMQPoC405YyEkEp5kST
-         338A==
-X-Gm-Message-State: AOAM531aDHrP9cOzcqvNkhsvY+n4ZLD7y70FYgdDW2BzwIhOFML1nBYn
-        CSAgZJSw6F3zedLq8tV++AMgqRRSvU9oXPTUbe0=
-X-Google-Smtp-Source: ABdhPJz7IpNwgeFvWmWqXmQak5tvQ2tRy5W9xPtR2zzyv04QtOqgE4wuIY+OzY9pI+QnJ5d6dA8Fx2KMQIKYB2DAooM=
-X-Received: by 2002:a25:2389:: with SMTP id j131mr1833294ybj.25.1603792159885;
- Tue, 27 Oct 2020 02:49:19 -0700 (PDT)
+        id S2896093AbgJ0Jvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:51:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896013AbgJ0Jvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:51:41 -0400
+Received: from mail.kernel.org (ip5f5ad5af.dynamic.kabel-deutschland.de [95.90.213.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 004D221D24;
+        Tue, 27 Oct 2020 09:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603792301;
+        bh=XWcvmaBJsNdx4pEkNGAT9OQ81e8rghcsnajzjBknoUI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KJLT/uy1T94y3wg8bf3PjlgiAOayEMq/vGRI2I54lecUe5K+iXox81/oYj/RUxqTt
+         7GOBIjBvUvl38vt6jG6/9y1CUrvF8atDoxx025hiOWIrr+7Ci8FmUN8Lo9R6u5v/Ig
+         To1MLWKa7Bz2Yo4hn1uSK+rWjkYZ79au3DYDDsCg=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kXLdi-003FEV-Ta; Tue, 27 Oct 2020 10:51:38 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 01/32] scripts: kernel-doc: use :c:union when needed
+Date:   Tue, 27 Oct 2020 10:51:05 +0100
+Message-Id: <6e4ec3eec914df62389a299797a3880ae4490f35.1603791716.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1603791716.git.mchehab+huawei@kernel.org>
+References: <cover.1603791716.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
- <20201026114009.GN2594@hirez.programming.kicks-ass.net> <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
- <20201026125524.GP2594@hirez.programming.kicks-ass.net> <20201026152256.GB2651@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201026152256.GB2651@hirez.programming.kicks-ass.net>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Tue, 27 Oct 2020 12:49:10 +0300
-Message-ID: <CADxRZqxjw7wdfQw8DoD2DvQyhJKaW0C01wWYGMD-+L2au_jGBw@mail.gmail.com>
-Subject: Re: possible lockdep regression introduced by 4d004099a668 ("lockdep:
- Fix lockdep recursion")
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        David Sterba <dsterba@suse.com>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 6:23 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> On Mon, Oct 26, 2020 at 01:55:24PM +0100, Peter Zijlstra wrote:
-> > On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
-> > > > That smells like the same issue reported here:
-> > > >
-> > > >   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
-> > > >
-> > > > Make sure you have commit:
-> > > >
-> > > >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
-> > > >
-> > > > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
-> > >
-> > > Yes, CONFIG_DEBUG_PREEMPT is enabled.
-> >
-> > Bummer :/
-> >
-> > > I'll try with that commit and let you know, however it's gonna take a
-> > > few hours to build a kernel and run all fstests (on that test box it
-> > > takes over 3 hours) to confirm that fixes the issue.
-> >
-> > *ouch*, 3 hours is painful. How long to make it sick with the current
-> > kernel? quicker I would hope?
-> >
-> > > Thanks for the quick reply!
-> >
-> > Anyway, I don't think that commit can actually explain the issue :/
-> >
-> > The false positive on lockdep_assert_held() happens when the recursion
-> > count is !0, however we _should_ be having IRQs disabled when
-> > lockdep_recursion > 0, so that should never be observable.
-> >
-> > My hope was that DEBUG_PREEMPT would trigger on one of the
-> > __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
-> > then be a clear violation.
-> >
-> > And you're seeing this on x86, right?
-> >
-> > Let me puzzle moar..
->
-> So I might have an explanation for the Sparc64 fail, but that can't
-> explain x86 :/
->
-> I initially thought raw_cpu_read() was OK, since if it is !0 we have
-> IRQs disabled and can't get migrated, so if we get migrated both CPUs
-> must have 0 and it doesn't matter which 0 we read.
->
-> And while that is true; it isn't the whole store, on pretty much all
-> architectures (except x86) this can result in computing the address for
-> one CPU, getting migrated, the old CPU continuing execution with another
-> task (possibly setting recursion) and then the new CPU reading the value
-> of the old CPU, which is no longer 0.
->
-> I already fixed a bunch of that in:
->
->   baffd723e44d ("lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"")
->
-> but clearly this one got crossed.
->
-> Still, that leaves me puzzled over you seeing this on x86 :/
->
-> Anatoly, could you try linus+tip/locking/urgent and the below on your
-> Sparc, please?
+Sphinx C domain code after 3.2.1 will start complaning if :c:struct
+would be used for an union type:
 
-Peter,
-let me test first. Thanks.
+	.../Documentation/gpu/drm-kms-helpers:352: ../drivers/video/hdmi.c:851: WARNING: C 'identifier' cross-reference uses wrong tag: reference name is 'union hdmi_infoframe' but found name is 'struct hdmi_infoframe'. Full reference name is 'union hdmi_infoframe'. Full found name is 'struct hdmi_infoframe'.
 
-PS: sorry for the delay, a weekend and got ill a bit ...
+So, let's address this issue too in advance, in order to
+avoid future issues.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ scripts/kernel-doc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index c8f6b11d5da1..99cd8418ff8a 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1092,7 +1092,11 @@ sub output_struct_rst(%) {
+ 	print "\n\n.. c:type:: " . $name . "\n\n";
+     } else {
+ 	my $name = $args{'struct'};
+-	print "\n\n.. c:struct:: " . $name . "\n\n";
++	if ($args{'type'} eq 'union') {
++	    print "\n\n.. c:union:: " . $name . "\n\n";
++	} else {
++	    print "\n\n.. c:struct:: " . $name . "\n\n";
++	}
+     }
+     print_lineno($declaration_start_line);
+     $lineprefix = "   ";
+-- 
+2.26.2
+
