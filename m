@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED36529B7FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DA029B800
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1798654AbgJ0P3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40374 "EHLO mail.kernel.org"
+        id S1798695AbgJ0P3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:29:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797736AbgJ0PZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:06 -0400
+        id S1797739AbgJ0PZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:25:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E233720657;
-        Tue, 27 Oct 2020 15:25:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8898820728;
+        Tue, 27 Oct 2020 15:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812305;
-        bh=m+odc6bByxiS7JmhuxasmegY8lDNDblVD6/fnP35xMY=;
+        s=default; t=1603812311;
+        bh=6LFXPfRjaXr/B6QXua9ug/OO8Xomm+86NfxiDEDLi6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eWOY3Az2NByUMisfvOjMC0tvc3KCF6H2XmSakznRAdKEwDAfWTklaiN7uDlrXEn5v
-         fylPjJLKW8y1CoTvDKueYif5tsbG3+6E1NMrcEYOsb5fsIRBmsRR4E2p+T7Pp+MMKK
-         H2HvSQ1jbOv1S6m6PSxT/2raSjwR8SA33Tthsfs4=
+        b=Iq0+qAkAp5RMPzbXNwpGmPiJ5obhe87PT588vcJ4/X9gEue5BoDJX03+1lNaB2v8X
+         aTxfeXm/8q1jkpY3D0veMlnh/0qEirVf0mHoPYm0mrDl9YHmeXUg8TOYmvYXnR6WY0
+         WCbdh/6RElSZpX1/nbibMJTRtPclqev2CbYVGEmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 162/757] media: mtk-mdp: Fix Null pointer dereference when calling list_add
-Date:   Tue, 27 Oct 2020 14:46:52 +0100
-Message-Id: <20201027135458.193599715@linuxfoundation.org>
+Subject: [PATCH 5.9 164/757] media: tc358743: cleanup tc358743_cec_isr
+Date:   Tue, 27 Oct 2020 14:46:54 +0100
+Message-Id: <20201027135458.287102730@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -47,100 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 0ca9454740b05eec199c5ffdb23a79eb44437917 ]
+[ Upstream commit 877cb8a444dad2304e891294afb0915fe3c278d6 ]
 
-In list_add, the first variable is the new node and the second
-is the list head. The function is called with a wrong order causing
-NULL dereference:
+tc358743_cec_isr is misnammed, it is not the main isr.
+So rename it to be consistent with its siblings,
+tc358743_cec_handler.
 
-[   15.527030] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-[   15.542317] Mem abort info:
-[   15.545152]   ESR = 0x96000044
-[   15.548248]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   15.553624]   SET = 0, FnV = 0
-[   15.556715]   EA = 0, S1PTW = 0
-[   15.559892] Data abort info:
-[   15.562799]   ISV = 0, ISS = 0x00000044
-[   15.566678]   CM = 0, WnR = 1
-[   15.569683] user pgtable: 4k pages, 48-bit VAs, pgdp=00000001373f0000
-[   15.576196] [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
-[   15.583101] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-[   15.588747] Modules linked in: mtk_mdp(+) cfg80211 v4l2_mem2mem videobuf2_vmalloc videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common vide
-odev mt8173_rt5650 smsc95xx usbnet ecdh_generic ecc snd_soc_rt5645 mc mt8173_afe_pcm rfkill cros_ec_sensors snd_soc_mtk_common elan_i2c crct10dif_ce cros_ec_se
-nsors_core snd_soc_rl6231 elants_i2c industrialio_triggered_buffer kfifo_buf mtk_vpu cros_ec_chardev cros_usbpd_charger cros_usbpd_logger sbs_battery display_c
-onnector pwm_bl ip_tables x_tables ipv6
-[   15.634295] CPU: 0 PID: 188 Comm: systemd-udevd Not tainted 5.9.0-rc2+ #69
-[   15.641242] Hardware name: Google Elm (DT)
-[   15.645381] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[   15.651022] pc : mtk_mdp_probe+0x134/0x3a8 [mtk_mdp]
-[   15.656041] lr : mtk_mdp_probe+0x128/0x3a8 [mtk_mdp]
-[   15.661055] sp : ffff80001255b910
-[   15.669548] x29: ffff80001255b910 x28: 0000000000000000
-[   15.679973] x27: ffff800009089bf8 x26: ffff0000fafde800
-[   15.690347] x25: ffff0000ff7d2768 x24: ffff800009089010
-[   15.700670] x23: ffff0000f01a7cd8 x22: ffff0000fafde810
-[   15.710940] x21: ffff0000f01a7c80 x20: ffff0000f0c3c180
-[   15.721148] x19: ffff0000ff7f1618 x18: 0000000000000010
-[   15.731289] x17: 0000000000000000 x16: 0000000000000000
-[   15.741375] x15: 0000000000aaaaaa x14: 0000000000000020
-[   15.751399] x13: 00000000ffffffff x12: 0000000000000020
-[   15.761363] x11: 0000000000000028 x10: 0101010101010101
-[   15.771279] x9 : 0000000000000004 x8 : 7f7f7f7f7f7f7f7f
-[   15.781148] x7 : 646bff6171606b2b x6 : 0000000000806d65
-[   15.790981] x5 : ffff0000ff7f8360 x4 : 0000000000000000
-[   15.800767] x3 : 0000000000000004 x2 : 0000000000000001
-[   15.810501] x1 : 0000000000000005 x0 : 0000000000000000
-[   15.820171] Call trace:
-[   15.826944]  mtk_mdp_probe+0x134/0x3a8 [mtk_mdp]
-[   15.835908]  platform_drv_probe+0x54/0xa8
-[   15.844247]  really_probe+0xe4/0x3b0
-[   15.852104]  driver_probe_device+0x58/0xb8
-[   15.860457]  device_driver_attach+0x74/0x80
-[   15.868854]  __driver_attach+0x58/0xe0
-[   15.876770]  bus_for_each_dev+0x70/0xc0
-[   15.884726]  driver_attach+0x24/0x30
-[   15.892374]  bus_add_driver+0x14c/0x1f0
-[   15.900295]  driver_register+0x64/0x120
-[   15.908168]  __platform_driver_register+0x48/0x58
-[   15.916864]  mtk_mdp_driver_init+0x20/0x1000 [mtk_mdp]
-[   15.925943]  do_one_initcall+0x54/0x1b4
-[   15.933662]  do_init_module+0x54/0x200
-[   15.941246]  load_module+0x1cf8/0x22d0
-[   15.948798]  __do_sys_finit_module+0xd8/0xf0
-[   15.956829]  __arm64_sys_finit_module+0x20/0x30
-[   15.965082]  el0_svc_common.constprop.0+0x6c/0x168
-[   15.973527]  do_el0_svc+0x24/0x90
-[   15.980403]  el0_sync_handler+0x90/0x198
-[   15.987867]  el0_sync+0x158/0x180
-[   15.994653] Code: 9400014b 2a0003fc 35000920 f9400280 (f9000417)
-[   16.004299] ---[ end trace 76fee0203f9898e5 ]---
+It also does not check if its input parameter 'handled' is
+is non NULL like its siblings, so add a check.
 
-Fixes: 86698b9505bbc ("media: mtk-mdp: convert mtk_mdp_dev.comp array to list")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Fixes: a0ec8d1dc42e ("media: tc358743: add CEC support")
+Signed-off-by: Tom Rix <trix@redhat.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/i2c/tc358743.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-index f96c8b3bf8618..976aa1f4829b8 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-@@ -94,7 +94,7 @@ static void mtk_mdp_reset_handler(void *priv)
- void mtk_mdp_register_component(struct mtk_mdp_dev *mdp,
- 				struct mtk_mdp_comp *comp)
- {
--	list_add(&mdp->comp_list, &comp->node);
-+	list_add(&comp->node, &mdp->comp_list);
- }
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 211caade9f998..cff99cf61ed4d 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -919,8 +919,8 @@ static const struct cec_adap_ops tc358743_cec_adap_ops = {
+ 	.adap_monitor_all_enable = tc358743_cec_adap_monitor_all_enable,
+ };
  
- void mtk_mdp_unregister_component(struct mtk_mdp_dev *mdp,
+-static void tc358743_cec_isr(struct v4l2_subdev *sd, u16 intstatus,
+-			     bool *handled)
++static void tc358743_cec_handler(struct v4l2_subdev *sd, u16 intstatus,
++				 bool *handled)
+ {
+ 	struct tc358743_state *state = to_state(sd);
+ 	unsigned int cec_rxint, cec_txint;
+@@ -953,7 +953,8 @@ static void tc358743_cec_isr(struct v4l2_subdev *sd, u16 intstatus,
+ 			cec_transmit_attempt_done(state->cec_adap,
+ 						  CEC_TX_STATUS_ERROR);
+ 		}
+-		*handled = true;
++		if (handled)
++			*handled = true;
+ 	}
+ 	if ((intstatus & MASK_CEC_RINT) &&
+ 	    (cec_rxint & MASK_CECRIEND)) {
+@@ -968,7 +969,8 @@ static void tc358743_cec_isr(struct v4l2_subdev *sd, u16 intstatus,
+ 			msg.msg[i] = v & 0xff;
+ 		}
+ 		cec_received_msg(state->cec_adap, &msg);
+-		*handled = true;
++		if (handled)
++			*handled = true;
+ 	}
+ 	i2c_wr16(sd, INTSTATUS,
+ 		 intstatus & (MASK_CEC_RINT | MASK_CEC_TINT));
+@@ -1432,7 +1434,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
+ 
+ #ifdef CONFIG_VIDEO_TC358743_CEC
+ 	if (intstatus & (MASK_CEC_RINT | MASK_CEC_TINT)) {
+-		tc358743_cec_isr(sd, intstatus, handled);
++		tc358743_cec_handler(sd, intstatus, handled);
+ 		i2c_wr16(sd, INTSTATUS,
+ 			 intstatus & (MASK_CEC_RINT | MASK_CEC_TINT));
+ 		intstatus &= ~(MASK_CEC_RINT | MASK_CEC_TINT);
 -- 
 2.25.1
 
