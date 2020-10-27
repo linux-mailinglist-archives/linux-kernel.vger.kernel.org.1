@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE4629BD5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE83929BBDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801577AbgJ0Pmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52264 "EHLO mail.kernel.org"
+        id S1802712AbgJ0PvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:51:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799944AbgJ0PeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:34:15 -0400
+        id S1799967AbgJ0PeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:34:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBD4622264;
-        Tue, 27 Oct 2020 15:34:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADFC122202;
+        Tue, 27 Oct 2020 15:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812854;
-        bh=/DJbkGWZe5025wo5u4bMwrhCrwpohauIKQ6UXOkJg/M=;
+        s=default; t=1603812863;
+        bh=76kdpGoWy43gNIh6VEjUCOyF0dmmkr5cmldvPVhRa8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DRLBsHKp6RT1lYEZz61NiMqv2dtV1e0SFCmaYOfqhIZmCcIuDkQ+8Y4x3BiRsk1K4
-         5K0uO6hHaiGKwQzoF9OzP65b7sI9YUSxhp/E6cXpfyeBuLX/4YTqNEoAId8WGur38g
-         WMP+swHYSUmoxBXHY+4hQK+RnNsgbkUCdyAzhTmU=
+        b=pDytOAtRFxHkGiO8j09jVGD8mjoK/WDRurF7adWA6ZeWYXYmUnh+3jH0m/1G6rO+f
+         8gy7lSgkqnH+Zmj5+lLyci3SOmrTc4CJ4NxrBE3QOmso9yMqf7KqU7YfVm+kow/dH3
+         cyflSz1o6gb9+MS6jMu0QUamccvH4GltU/N0pGDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 354/757] serial: 8250_dw: Fix clk-notifier/port suspend deadlock
-Date:   Tue, 27 Oct 2020 14:50:04 +0100
-Message-Id: <20201027135507.180954087@linuxfoundation.org>
+Subject: [PATCH 5.9 357/757] dm: fix missing imposition of queue_limits from dm_wq_work() thread
+Date:   Tue, 27 Oct 2020 14:50:07 +0100
+Message-Id: <20201027135507.312793690@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,127 +44,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Mike Snitzer <snitzer@redhat.com>
 
-[ Upstream commit 85985a3dcd7415dd849cf62ec14f931cd905099a ]
+[ Upstream commit 0c2915b8c6db108b1dfb240391cc5a175f97f15b ]
 
-It has been discovered that there is a potential deadlock between
-the clock-change-notifier thread and the UART port suspending one:
+If a DM device was suspended when bios were issued to it, those bios
+would be deferred using queue_io(). Once the DM device was resumed
+dm_process_bio() could be called by dm_wq_work() for original bio that
+still needs splitting. dm_process_bio()'s check for current->bio_list
+(meaning call chain is within ->submit_bio) as a prerequisite for
+calling blk_queue_split() for "abnormal IO" would result in
+dm_process_bio() never imposing corresponding queue_limits
+(e.g. discard_granularity, discard_max_bytes, etc).
 
-   CPU0 (suspend CPU/UART)   CPU1 (update clock)
-            ----                    ----
-   lock(&port->mutex);
-                             lock((work_completion)(&data->clk_work));
-                             lock(&port->mutex);
-   lock((work_completion)(&data->clk_work));
+Fix this by always having dm_wq_work() resubmit deferred bios using
+submit_bio_noacct().
 
-   *** DEADLOCK ***
+Side-effect is blk_queue_split() is always called for "abnormal IO" from
+->submit_bio, be it from application thread or dm_wq_work() workqueue,
+so proper bio splitting and depth-first bio submission is performed.
+For sake of clarity, remove current->bio_list check before call to
+blk_queue_split().
 
-The best way to fix this is to eliminate the CPU0
-port->mutex/work-completion scenario. So we suggest to register and
-unregister the clock-notifier during the DW APB UART port probe/remove
-procedures, instead of doing that at the points of the port
-startup/shutdown.
+Also, remove dm_wq_work()'s use of dm_{get,put}_live_table() -- no
+longer needed since IO will be reissued in terms of ->submit_bio.
+And rename bio variable from 'c' to 'bio'.
 
-Link: https://lore.kernel.org/linux-serial/f1cd5c75-9cda-6896-a4e2-42c5bfc3f5c3@redhat.com
-
-Fixes: cc816969d7b5 ("serial: 8250_dw: Fix common clocks usage race condition")
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Tested-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Link: https://lore.kernel.org/r/20200923161950.6237-4-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: cf9c37865557 ("dm: fix comment in dm_process_bio()")
+Reported-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+Reviewed-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_dw.c | 54 +++++++++++--------------------
- 1 file changed, 19 insertions(+), 35 deletions(-)
+ drivers/md/dm.c | 34 +++++++++-------------------------
+ 1 file changed, 9 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 87f450b7c1779..9e204f9b799a1 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -373,39 +373,6 @@ static void dw8250_set_ldisc(struct uart_port *p, struct ktermios *termios)
- 	serial8250_do_set_ldisc(p, termios);
- }
- 
--static int dw8250_startup(struct uart_port *p)
--{
--	struct dw8250_data *d = to_dw8250_data(p->private_data);
--	int ret;
--
--	/*
--	 * Some platforms may provide a reference clock shared between several
--	 * devices. In this case before using the serial port first we have to
--	 * make sure that any clock state change is known to the UART port at
--	 * least post factum.
--	 */
--	if (d->clk) {
--		ret = clk_notifier_register(d->clk, &d->clk_notifier);
--		if (ret)
--			dev_warn(p->dev, "Failed to set the clock notifier\n");
--	}
--
--	return serial8250_do_startup(p);
--}
--
--static void dw8250_shutdown(struct uart_port *p)
--{
--	struct dw8250_data *d = to_dw8250_data(p->private_data);
--
--	serial8250_do_shutdown(p);
--
--	if (d->clk) {
--		clk_notifier_unregister(d->clk, &d->clk_notifier);
--
--		flush_work(&d->clk_work);
--	}
--}
--
- /*
-  * dw8250_fallback_dma_filter will prevent the UART from getting just any free
-  * channel on platforms that have DMA engines, but don't have any channels
-@@ -501,8 +468,6 @@ static int dw8250_probe(struct platform_device *pdev)
- 	p->serial_out	= dw8250_serial_out;
- 	p->set_ldisc	= dw8250_set_ldisc;
- 	p->set_termios	= dw8250_set_termios;
--	p->startup	= dw8250_startup;
--	p->shutdown	= dw8250_shutdown;
- 
- 	p->membase = devm_ioremap(dev, regs->start, resource_size(regs));
- 	if (!p->membase)
-@@ -622,6 +587,19 @@ static int dw8250_probe(struct platform_device *pdev)
- 		goto err_reset;
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 6ed05ca65a0f8..b060a28ff1c6d 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1744,17 +1744,11 @@ static blk_qc_t dm_process_bio(struct mapped_device *md,
  	}
  
-+	/*
-+	 * Some platforms may provide a reference clock shared between several
-+	 * devices. In this case any clock state change must be known to the
-+	 * UART port at least post factum.
-+	 */
-+	if (data->clk) {
-+		err = clk_notifier_register(data->clk, &data->clk_notifier);
-+		if (err)
-+			dev_warn(p->dev, "Failed to set the clock notifier\n");
-+		else
-+			queue_work(system_unbound_wq, &data->clk_work);
-+	}
-+
- 	platform_set_drvdata(pdev, data);
+ 	/*
+-	 * If in ->submit_bio we need to use blk_queue_split(), otherwise
+-	 * queue_limits for abnormal requests (e.g. discard, writesame, etc)
+-	 * won't be imposed.
+-	 * If called from dm_wq_work() for deferred bio processing, bio
+-	 * was already handled by following code with previous ->submit_bio.
++	 * Use blk_queue_split() for abnormal IO (e.g. discard, writesame, etc)
++	 * otherwise associated queue_limits won't be imposed.
+ 	 */
+-	if (current->bio_list) {
+-		if (is_abnormal_io(bio))
+-			blk_queue_split(&bio);
+-		/* regular IO is split by __split_and_process_bio */
+-	}
++	if (is_abnormal_io(bio))
++		blk_queue_split(&bio);
  
- 	pm_runtime_set_active(dev);
-@@ -648,6 +626,12 @@ static int dw8250_remove(struct platform_device *pdev)
+ 	if (dm_get_md_type(md) == DM_TYPE_NVME_BIO_BASED)
+ 		return __process_bio(md, map, bio, ti);
+@@ -2461,29 +2455,19 @@ static int dm_wait_for_completion(struct mapped_device *md, long task_state)
+  */
+ static void dm_wq_work(struct work_struct *work)
+ {
+-	struct mapped_device *md = container_of(work, struct mapped_device,
+-						work);
+-	struct bio *c;
+-	int srcu_idx;
+-	struct dm_table *map;
+-
+-	map = dm_get_live_table(md, &srcu_idx);
++	struct mapped_device *md = container_of(work, struct mapped_device, work);
++	struct bio *bio;
  
- 	pm_runtime_get_sync(dev);
+ 	while (!test_bit(DMF_BLOCK_IO_FOR_SUSPEND, &md->flags)) {
+ 		spin_lock_irq(&md->deferred_lock);
+-		c = bio_list_pop(&md->deferred);
++		bio = bio_list_pop(&md->deferred);
+ 		spin_unlock_irq(&md->deferred_lock);
  
-+	if (data->clk) {
-+		clk_notifier_unregister(data->clk, &data->clk_notifier);
-+
-+		flush_work(&data->clk_work);
-+	}
-+
- 	serial8250_unregister_port(data->data.line);
+-		if (!c)
++		if (!bio)
+ 			break;
  
- 	reset_control_assert(data->rst);
+-		if (dm_request_based(md))
+-			(void) submit_bio_noacct(c);
+-		else
+-			(void) dm_process_bio(md, map, c);
++		submit_bio_noacct(bio);
+ 	}
+-
+-	dm_put_live_table(md, srcu_idx);
+ }
+ 
+ static void dm_queue_flush(struct mapped_device *md)
 -- 
 2.25.1
 
