@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C2929CA15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C5B29CA14
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831355AbgJ0UXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:23:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39236 "EHLO mail.kernel.org"
+        id S1831342AbgJ0UXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:23:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1831346AbgJ0UXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:23:50 -0400
-Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
+        id S1831335AbgJ0UXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:23:38 -0400
+Received: from dhcp-10-100-145-180.wdc.com (unknown [199.255.45.60])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23E8220719;
-        Tue, 27 Oct 2020 20:23:50 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.202-rt97
-Date:   Tue, 27 Oct 2020 20:22:58 -0000
-Message-ID: <160383017862.452531.12788303951108967689@puck.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 0172020719;
+        Tue, 27 Oct 2020 20:23:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603830217;
+        bh=3emz6UQhpY4UW+3j5aomFK7x1AuiURETZZxGwVy/TZA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vKFXJkJMwVpGxzCd/Nc/P9I90wffuBoPzvKvYQdoogX9+xnFsxShG0XBCmxlqGgzA
+         BV+vT0OTrLxXtczLxwLEBPeiqOAaudyrmpWonO80WiVQn78QtBCZERXUd+rpTcZ3jW
+         +SnauYBe9GDb0iwfCPj8FZ2PPinN/8qkw/BIXKlM=
+Date:   Tue, 27 Oct 2020 13:23:34 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Jongpil Jung <jongpuls@gmail.com>
+Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jongpil19.jung@samsung.com, gloria.tsai@ssstc.com
+Subject: Re: [PATCH 1/1] nvme: Add quirk for LiteON CL1 devices running FW
+ 220TQ,22001
+Message-ID: <20201027202334.GA1942708@dhcp-10-100-145-180.wdc.com>
+References: <20201027155438.GA111754@jongpil-desktop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027155438.GA111754@jongpil-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Wed, Oct 28, 2020 at 12:54:38AM +0900, Jongpil Jung wrote:
+> suspend.
+> 
+> When NVMe device receive D3hot from host, NVMe firmware will do
+> garbage collection. While NVMe device do Garbage collection,
+> firmware has chance to going incorrect address.
+> In that case, NVMe storage device goes to no device available state.
+> Finally, host can't access the device any more.
+> 
+> Quirk devices will not use simple suspend even if HMB is enabled.
+> In case of poweroff scenario, NVMe receive "PME turn off".
+> So garbage collection will not be happening.
+> 
+> Liteon(SSSTC) will fix the issue, that's why quirk apply on specific
+> vendor id and firmware version.
 
-I'm pleased to announce the 4.14.202-rt97 stable release.
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.14-rt
-  Head SHA1: 55b07213576aa053c62507c97f194df13c25c155
-
-Or to build 4.14.202-rt97 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.202.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.202-rt97.patch.xz
-
-
-You can also build from 4.14.198-rt96 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.198-rt96-rt97.patch.xz
-
-Enjoy!
-Clark
+This is a concerning quirk. We use the simple suspend when HMB is
+enabled because at least some platforms disable device DMA access in the
+runtime suspend state. Many devices continue to access their HMB while
+in low power, so we can't let both conditions occur concurrently.
+Unless you know for sure this device doesn't access host memory in
+low-power, there will be at least some platform combinations where this
+quirk will fail.
