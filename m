@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43DE29C48F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D00E29C490
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901034AbgJ0OSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:18:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36316 "EHLO mail.kernel.org"
+        id S2901043AbgJ0OSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:18:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756631AbgJ0OOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:14:41 -0400
+        id S1756643AbgJ0OOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:14:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 950562072D;
-        Tue, 27 Oct 2020 14:14:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57D3022263;
+        Tue, 27 Oct 2020 14:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808081;
-        bh=JQh2fpdPo7hQptUNAeVejo7y6ygRohzYnpAbQwiUe4w=;
+        s=default; t=1603808083;
+        bh=IM4R2jkcH/ab5xP+juABRDNyOLsIs9Nn0nnzMjGRMvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mzxT8WQl9/N4/uVegSw6D2Jt8VRAfoWwQdKgHvIuJDxXtgdwpEc+9/FA9l/jWuQtJ
-         y3xeCIu2vTLKoVRB931WUtQrOZwobo3x+JY83fKOu6cp9oX9RHZwr5VlXbzd2hiLz+
-         9XmHE5k2OqpDieBtggKNFE00V0s3C8z4KeMo+DFU=
+        b=PuJA81XYSwd3GPRN+dEarGopJPGdNwGWTA3g5rWyIOQWZz3yBGPhu+47Ih08k8SVE
+         /FoyoLzyhQk1O5snnzC2LECdvTsPgSPn0io3elKQFRgFlGzgGi4Gfkf1DouCYo1DnW
+         simTHTnrty7dfPsKzW2pNbmuqvNzIWvXy5LEjceI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 150/191] mmc: sdio: Check for CISTPL_VERS_1 buffer size
-Date:   Tue, 27 Oct 2020 14:50:05 +0100
-Message-Id: <20201027134916.930575556@linuxfoundation.org>
+Subject: [PATCH 4.14 151/191] media: saa7134: avoid a shift overflow
+Date:   Tue, 27 Oct 2020 14:50:06 +0100
+Message-Id: <20201027134916.970431909@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -44,35 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 8ebe2607965d3e2dc02029e8c7dd35fbe508ffd0 ]
+[ Upstream commit 15a36aae1ec1c1f17149b6113b92631791830740 ]
 
-Before parsing CISTPL_VERS_1 structure check that its size is at least two
-bytes to prevent buffer overflow.
+As reported by smatch:
+	drivers/media/pci/saa7134//saa7134-tvaudio.c:686 saa_dsp_writel() warn: should 'reg << 2' be a 64 bit type?
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Link: https://lore.kernel.org/r/20200727133837.19086-2-pali@kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+On a 64-bits Kernel, the shift might be bigger than 32 bits.
+
+In real, this should never happen, but let's shut up the warning.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/core/sdio_cis.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/pci/saa7134/saa7134-tvaudio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/core/sdio_cis.c b/drivers/mmc/core/sdio_cis.c
-index f8c372839d244..2ca5cd79018b4 100644
---- a/drivers/mmc/core/sdio_cis.c
-+++ b/drivers/mmc/core/sdio_cis.c
-@@ -30,6 +30,9 @@ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
- 	unsigned i, nr_strings;
- 	char **buffer, *string;
+diff --git a/drivers/media/pci/saa7134/saa7134-tvaudio.c b/drivers/media/pci/saa7134/saa7134-tvaudio.c
+index 68d400e1e240e..8c3da6f7a60f1 100644
+--- a/drivers/media/pci/saa7134/saa7134-tvaudio.c
++++ b/drivers/media/pci/saa7134/saa7134-tvaudio.c
+@@ -693,7 +693,8 @@ int saa_dsp_writel(struct saa7134_dev *dev, int reg, u32 value)
+ {
+ 	int err;
  
-+	if (size < 2)
-+		return 0;
-+
- 	/* Find all null-terminated (including zero length) strings in
- 	   the TPLLV1_INFO field. Trailing garbage is ignored. */
- 	buf += 2;
+-	audio_dbg(2, "dsp write reg 0x%x = 0x%06x\n", reg << 2, value);
++	audio_dbg(2, "dsp write reg 0x%x = 0x%06x\n",
++		  (reg << 2) & 0xffffffff, value);
+ 	err = saa_dsp_wait_bit(dev,SAA7135_DSP_RWSTATE_WRR);
+ 	if (err < 0)
+ 		return err;
 -- 
 2.25.1
 
