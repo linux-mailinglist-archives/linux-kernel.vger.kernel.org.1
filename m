@@ -2,48 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDB529A87C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F6E29A896
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896489AbgJ0J4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:56:19 -0400
-Received: from verein.lst.de ([213.95.11.211]:38240 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410126AbgJ0Jzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:55:48 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D8C2068B02; Tue, 27 Oct 2020 10:55:45 +0100 (CET)
-Date:   Tue, 27 Oct 2020 10:55:45 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jan Kara <jack@suse.cz>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
-Message-ID: <20201027095545.GA30382@lst.de>
-References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com> <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com> <20201027093301.GA16090@quack2.suse.cz>
+        id S2896619AbgJ0J6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:58:43 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:60205 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410402AbgJ0J5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:57:30 -0400
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kXLjK-0004UK-D8; Tue, 27 Oct 2020 10:57:26 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kXLjJ-0004rp-Ow; Tue, 27 Oct 2020 10:57:25 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-spi@vger.kernel.org, David Jander <david@protonic.nl>
+Subject: [PATCH v2 0/2] SPI/ Input: ads7846: properly handle spi->mode flags
+Date:   Tue, 27 Oct 2020 10:57:22 +0100
+Message-Id: <20201027095724.18654-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027093301.GA16090@quack2.suse.cz>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 10:33:01AM +0100, Jan Kara wrote:
-> Actually there are callers that care about partial success. See e.g.
-> iov_iter_get_pages() usage in fs/direct_io.c:dio_refill_pages() or
-> bio_iov_iter_get_pages(). These places handle partial success just fine and
-> not allowing partial success from GUP could regress things...
+changes v2:
+- add SPI_MODE_X_MASK macro
+- ads7846: clear SPI_MODE_X_MASK bits to set driver specific mode.
 
-But most users do indeed not care.  Maybe an explicit FOLL_PARTIAL to
-opt into partial handling could clean up a lot of the mess.  Maybe just
-for pin_user_pages for now.
+Oleksij Rempel (2):
+  spi: introduce SPI_MODE_X_MASK macro
+  Input: ads7846: do not overwrite spi->mode flags set by spi framework
+
+ drivers/input/touchscreen/ads7846.c | 3 ++-
+ include/linux/spi/spi.h             | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+-- 
+2.28.0
+
