@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB21D29C5D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3A529C5D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756538AbgJ0OOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:14:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59238 "EHLO mail.kernel.org"
+        id S1756603AbgJ0OOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:14:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755502AbgJ0OKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:10:13 -0400
+        id S1755510AbgJ0OKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FC112072D;
-        Tue, 27 Oct 2020 14:10:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0243D2072D;
+        Tue, 27 Oct 2020 14:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807813;
-        bh=E4QCxjw7AIRait7zcO6CDapApQNcx69yccefz4ogoKs=;
+        s=default; t=1603807821;
+        bh=TqZIMtcPRGxicGhzsyZKtIsWlsRediNHd8EMURjpfJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=id7/ovQ5TeSNVGZFUNheXhwBxO/9iF8aOzKq3teHLlBlmteATJy2j1LWUvyqaf5wQ
-         cMWaHPr+hpkxBKV8SKkzYQD5EaJMUBa5TSh4KCI4oYhQMbfdTKgndj2n4VoIx8yz6g
-         yZ9P8HihGwj4NkTIxqy8KU07wW2vGSrK5LfG+ujM=
+        b=Slnvo02bYSI0kF7FXVUtdeAhPLNEQI7zlxhqZtEZlQBiyte0RBV9/4NM5ign4zhg3
+         Cz+HYDQLM8gUAQtYyTZ5GB4VymE03JiWuvIjX3kr4r+cP1wCwkEuLlD9dTBMWq8hen
+         9ZZ5jSk4nJRS8wj0IUoRsolpfJiaj6JiNoFWVdkw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 051/191] scsi: qla4xxx: Fix an error handling path in qla4xxx_get_host_stats()
-Date:   Tue, 27 Oct 2020 14:48:26 +0100
-Message-Id: <20201027134912.183115176@linuxfoundation.org>
+Subject: [PATCH 4.14 053/191] backlight: sky81452-backlight: Fix refcount imbalance on error
+Date:   Tue, 27 Oct 2020 14:48:28 +0100
+Message-Id: <20201027134912.287693433@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -44,35 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: dinghao.liu@zju.edu.cn <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 574918e69720fe62ab3eb42ec3750230c8d16b06 ]
+[ Upstream commit b7a4f80bc316a56d6ec8750e93e66f42431ed960 ]
 
-Update the size used in 'dma_free_coherent()' in order to match the one
-used in the corresponding 'dma_alloc_coherent()'.
+When of_property_read_u32_array() returns an error code, a
+pairing refcount decrement is needed to keep np's refcount
+balanced.
 
-Link: https://lore.kernel.org/r/20200802101527.676054-1-christophe.jaillet@wanadoo.fr
-Fixes: 4161cee52df8 ("[SCSI] qla4xxx: Add host statistics support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: f705806c9f355 ("backlight: Add support Skyworks SKY81452 backlight driver")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla4xxx/ql4_os.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/video/backlight/sky81452-backlight.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index fb3abaf817a35..62022a66e9ee2 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -1223,7 +1223,7 @@ static int qla4xxx_get_host_stats(struct Scsi_Host *shost, char *buf, int len)
- 			le64_to_cpu(ql_iscsi_stats->iscsi_sequence_error);
- exit_host_stats:
- 	if (ql_iscsi_stats)
--		dma_free_coherent(&ha->pdev->dev, host_stats_size,
-+		dma_free_coherent(&ha->pdev->dev, stats_size,
- 				  ql_iscsi_stats, iscsi_stats_dma);
+diff --git a/drivers/video/backlight/sky81452-backlight.c b/drivers/video/backlight/sky81452-backlight.c
+index d414c7a3acf5a..a2f77625b7170 100644
+--- a/drivers/video/backlight/sky81452-backlight.c
++++ b/drivers/video/backlight/sky81452-backlight.c
+@@ -207,6 +207,7 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 					num_entry);
+ 		if (ret < 0) {
+ 			dev_err(dev, "led-sources node is invalid.\n");
++			of_node_put(np);
+ 			return ERR_PTR(-EINVAL);
+ 		}
  
- 	ql4_printk(KERN_INFO, ha, "%s: Get host stats done\n",
 -- 
 2.25.1
 
