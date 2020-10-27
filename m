@@ -2,104 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC6129AB33
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2785929AB3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899619AbgJ0LvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:51:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394050AbgJ0LvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:51:24 -0400
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6104207C3;
-        Tue, 27 Oct 2020 11:51:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603799483;
-        bh=Jkm9KTP2d4FaPkRwRtL8+peWn2RqI0SjRbGNKFX9l24=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dCosEtnAGgQAyhH9LGV1mSx7fyOoQg67erOLZ5nhJ9pAl4C/m5CDPgZST/+vZ9adV
-         K8M2M/90d09rfYz+GXQD7YY9GUxSDV2xiBMYpUJRXvkBLqXVAEgyJ8NfoqfDg/vHCI
-         5NjvzJW3bIoPfH5zZTyVx4T/HyWn+zxjxGHRR6Yk=
-Received: by mail-qk1-f182.google.com with SMTP id z6so796595qkz.4;
-        Tue, 27 Oct 2020 04:51:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530z7ZQ1ghPUuZZfCacrvX5ttM7MQ2KSPPqVJh8XLTWHVIfMQ0Ak
-        RtxA7X/rJJq+HG13mqBWyW2nzGMa3hXYw9HyQd0=
-X-Google-Smtp-Source: ABdhPJzcfllDuvkPvTZe2bxMZp9RKsNVH6ol/ilVbFi7E0XaIe77KwQyB3aloZk6orShkn3HWJevON2FAhvigxbmtHw=
-X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr1552663qkg.3.1603799482840;
- Tue, 27 Oct 2020 04:51:22 -0700 (PDT)
+        id S2899627AbgJ0Lxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:53:30 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:35673 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411499AbgJ0Lx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:53:29 -0400
+Received: by mail-io1-f67.google.com with SMTP id k6so1191056ior.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=s+UBJg6LO9Rf1v1keW2mwB44PjQMVZlghePfQtTq54M=;
+        b=iqYh9kcc313LqLNQ1u4THo/DppeQEGGrWD4aOGxMar3Y2DW1ZASEPI1TZCajzyWbQ6
+         b3CrL66dJSqwP/YWR2lmAnp1wMHm9kQQL4ut04qtHRuAlsyqNt1/VrX5prOagxLSjBDV
+         NL9l0nm97nL0V22EvKatUVRHCfiiwfrfSTBdxnKXmbkqn1ESdtWKtbWnBVFHj5UISPUJ
+         IyEiVjg6EOSfRB4EHcgmXN30WxDSUzM4nv1wcaHIrWdBup/7owLVh51sLUksKQeKrLF0
+         xUbBrOOpUlxxVHFZNsO7YdJ2ECy2kwRJ1hJqDjDdTSRiagBlFn0ecRg03JUEYoAkA27h
+         3Mrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=s+UBJg6LO9Rf1v1keW2mwB44PjQMVZlghePfQtTq54M=;
+        b=nO40GXQcap6IHLkwEKxztakPpEnhvGzgFj/6HiUP456Hj0AGY/qpZY6czEd8ldsd2a
+         kfBhE68MHrEAYqg8s/c8qjyeItNCic2+ZKv18engiWDha3aXn7odp2hknHB2fN2W33gn
+         /dvryDJhJ0p+AVfQ3S8vSBIzItoOtSpgx+323hYVAdczQoaFF5jGXTbj5GUZho1hn9Qq
+         uhHWuN5YbnWrYYdFUixWvxiE8NbipO5ed1hUdpTZrNFHOf4eXDr0dPhAnY0tQjU7BjPG
+         TSezb7uPt8t10k0rqouv0OwTQQPidL2PD5g6D3NDi4mylRGsu/OpUBNbu7x23kd2kBgb
+         zoNQ==
+X-Gm-Message-State: AOAM53169ClAb9qsUt5eTktqEyLl0sMQVs6P0KUGChzgpzn6ZdQlWeVU
+        sKB4qMfeN58DjDXfGNTPFgwXQ5sFtBkwmiTLxch0ng==
+X-Google-Smtp-Source: ABdhPJyvSct9JJTg273eAAF5FKtW1ItmWMUxF+cbtvl+7ovbBPYn79lxWvcnBziQwfg/eNxTx6jWn9QkHK0mkwDGp34=
+X-Received: by 2002:a02:234a:: with SMTP id u71mr1925579jau.3.1603799607846;
+ Tue, 27 Oct 2020 04:53:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026213040.3889546-1-arnd@kernel.org> <20201026213040.3889546-4-arnd@kernel.org>
- <03c5bc171594c884c903994ef82d703776bfcbc0.camel@sipsolutions.net>
-In-Reply-To: <03c5bc171594c884c903994ef82d703776bfcbc0.camel@sipsolutions.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 27 Oct 2020 12:51:06 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
-Message-ID: <CAK8P3a30T5o=EEnp3sdNM5iqsSaL6DKZONGBs+3S6g+36uHVzQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 04/11] wimax: fix duplicate initializer warning
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
-        linux-wimax@intel.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200821194310.3089815-1-keescook@chromium.org>
+ <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
+ <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
+ <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
+ <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
+ <20201027100844.GA1514990@myrica> <CAMuHMdVkLXmJEiV-uwOqKnfGQZX65tMFMTjs0O8q5BJsAhCGzg@mail.gmail.com>
+ <CAMj1kXEdgOkH6VFa5_J6yqaJheToHUSM8jYXyGfA9JS5xwyLGQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXEdgOkH6VFa5_J6yqaJheToHUSM8jYXyGfA9JS5xwyLGQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Oct 2020 17:23:16 +0530
+Message-ID: <CA+G9fYsvr-Yjh4mxuVD8ZD+XpUSkh0475zpgHcf4LhV=b+P5Pg@mail.gmail.com>
+Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 8:22 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+On Tue, 27 Oct 2020 at 17:00, Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> On Mon, 2020-10-26 at 22:29 +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
+> On Tue, 27 Oct 2020 at 11:20, Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
 > >
-> > gcc -Wextra points out multiple fields that use the same index '1'
-> > in the wimax_gnl_policy definition:
+> > Hi Jean-Philippe,
 > >
-> > net/wimax/stack.c:393:29: warning: initialized field overwritten [-Woverride-init]
-> > net/wimax/stack.c:397:28: warning: initialized field overwritten [-Woverride-init]
-> > net/wimax/stack.c:398:26: warning: initialized field overwritten [-Woverride-init]
-> >
-> > This seems to work since all four use the same NLA_U32 value, but it
-> > still appears to be wrong. In addition, there is no intializer for
-> > WIMAX_GNL_MSG_PIPE_NAME, which uses the same index '2' as
-> > WIMAX_GNL_RFKILL_STATE.
->
-> That's funny. This means that WIMAX_GNL_MSG_PIPE_NAME was never used,
-> since it is meant to be a string, and that won't (usually) fit into 4
-> bytes...
->
-> I suppose that's all an artifact of wimax being completely and utterly
-> dead anyway. We should probably just remove it.
+> > On Tue, Oct 27, 2020 at 11:09 AM Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> > > On Mon, Oct 26, 2020 at 06:38:46PM +0100, Ard Biesheuvel wrote:
+> > > > > > > Note that even on plain be2881824ae9eb92, I get:
+> > > > > > >
+> > > > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected=
+!
+> > > > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linka=
+ges detected!
+> > > > > > >
+> > > > > > > The parent commit obviously doesn't show that (but probably s=
+till has
+> > > > > > > the problem).
+> > > > >
+> > > > > Reverting both
+> > > > > b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section placement"=
+)
+> > > > > be2881824ae9eb92 ("arm64/build: Assert for unwanted sections")
+> > > > > seems to solve my problems, without any ill effects?
+> > > > >
+> > > >
+> > > > I cannot reproduce the issue here with my distro GCC+binutils (Debi=
+an 8.3.0)
+> > >
+> > > I have the same problem with one of my debug configs and Linux v5.10-=
+rc1,
+> > > and can reproduce with the Debian 8.3.0 toolchain, by using the arm64
+> > > defconfig and disabling CONFIG_MODULES:
+> > >
+> > > ld -EL -maarch64elf --no-undefined -X -z norelro -shared -Bsymbolic -=
+z notext --no-apply-dynamic-relocs --fix-cortex-a53-843419 --orphan-handlin=
+g=3Dwarn --build-id=3Dsha1 --strip-debug -o .tmp_vmlinux.kallsyms1 -T ./arc=
+h/arm64/kernel/vmlinux.lds --whole-archive arch/arm64/kernel/head.o init/bu=
+ilt-in.a usr/built-in.a arch/arm64/built-in.a kernel/built-in.a certs/built=
+-in.a mm/built-in.a fs/built-in.a ipc/built-in.a security/built-in.a crypto=
+/built-in.a block/built-in.a arch/arm64/lib/built-in.a lib/built-in.a drive=
+rs/built-in.a sound/built-in.a net/built-in.a virt/built-in.a --no-whole-ar=
+chive --start-group arch/arm64/lib/lib.a lib/lib.a ./drivers/firmware/efi/l=
+ibstub/lib.a --end-group
+> > > ld: Unexpected GOT/PLT entries detected!
+> > > ld: Unexpected run-time procedure linkages detected!
 
-Makes sense. I checked
-https://en.wikipedia.org/wiki/List_of_WiMAX_networks, and it appears
-that these entries are all stale, after everyone has migrated to LTE
-or discontinued their service altogether.
+ ld: Unexpected GOT/PLT entries detected!
+ ld: Unexpected run-time procedure linkages detected!
 
-NetworkManager appears to have dropped userspace support in 2015
-https://bugzilla.gnome.org/show_bug.cgi?id=747846, the
-www.linuxwimax.org site had already shut down earlier.
+The arm64 build error fixed by (I have tested defconfig)
 
-WiMax is apparently still being deployed on airport campus
-networks ("AeroMACS"), but in a frequency band that was not
-supported by the old Intel 2400m (used in Sandy Bridge laptops
-and earlier), which is the only driver using the kernel's wimax
-stack.
+[PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
+https://lore.kernel.org/linux-arm-msm/20201027111422.4008114-1-anders.roxel=
+l@linaro.org/
+---
 
-Inaky, do you have any additional information about possible
-users? If we are sure there are none, then I'd suggest removing
-all the wimax code directly, otherwise it could go through
-drivers/staging/ for a release or two (and move it back in case
-there are users after all). I can send a patch if you like.
+When building allmodconfig leading to the following link error with
+CONFIG_QCOM_RPMH=3Dy and CONFIG_QCOM_COMMAND_DB=3Dm:
 
-> So as far as the warning fix is concerned:
->
-> Acked-by: Johannes Berg <johannes@sipsolutions.net>
->
+aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_pr=
+obe':
+  drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr=
+'
+  drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated
+to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
 
-Thanks!
+Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
+module when QCOM_COMMAND_DB is a module. Also removing the dependency on
+'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
+QCOM_COMMAND_DB.
 
-        Arnd
+Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ drivers/soc/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+index 9b4ae9c16ba7..3bdd1604f78f 100644
+--- a/drivers/soc/qcom/Kconfig
++++ b/drivers/soc/qcom/Kconfig
+@@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
+
+ config QCOM_RPMH
+  tristate "Qualcomm RPM-Hardened (RPMH) Communication"
+- depends on ARCH_QCOM || COMPILE_TEST
++ depends on QCOM_COMMAND_DB
+  help
+   Support for communication with the hardened-RPM blocks in
+   Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
+--=20
+2.28.0
+
+
+- Naresh
