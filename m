@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746CA29C55A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EAF29C5F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1825055AbgJ0SHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:07:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:49586 "EHLO foss.arm.com"
+        id S1825225AbgJ0SJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:09:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:9203 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1825042AbgJ0SHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:07:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C45815AB;
-        Tue, 27 Oct 2020 11:07:50 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (e108754-lin.cambridge.arm.com [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 64E6D3F66E;
-        Tue, 27 Oct 2020 11:07:48 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org
-Cc:     dietmar.eggemann@arm.com, qperret@google.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com
-Subject: [PATCH RESEND v2 3/3] sched/topology: condition EAS enablement on FIE support
-Date:   Tue, 27 Oct 2020 18:07:13 +0000
-Message-Id: <20201027180713.7642-4-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027180713.7642-1-ionela.voinescu@arm.com>
-References: <20201027180713.7642-1-ionela.voinescu@arm.com>
+        id S1825217AbgJ0SJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 14:09:42 -0400
+IronPort-SDR: JEnLh9ZEtsHb6ewntRzv3SXPUJIfU/kRNhz9nQnzYvURZeOJF5Q4p0wMbWFPulUF7ufsMqbsNF
+ pU2LLLPGUOUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="147421441"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="147421441"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 11:09:40 -0700
+IronPort-SDR: VYjX1uZC3X25G35xyDKTk8SZYsNb9fPK8zadQ1Uckle7gf0h1ulU6LoxujXXLmCan0Ubs1gZZZ
+ Xh16kgEnAMoA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="334484334"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 27 Oct 2020 11:09:38 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9AD6E179; Tue, 27 Oct 2020 20:09:37 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] bitmap: Convert bitmap_empty() / bitmap_full() to return boolean
+Date:   Tue, 27 Oct 2020 20:09:36 +0200
+Message-Id: <20201027180936.20806-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to make accurate predictions across CPUs and for all performance
-states, Energy Aware Scheduling (EAS) needs frequency-invariant load
-tracking signals.
+There is no need to return int type out of boolean expression.
 
-EAS task placement aims to minimize energy consumption, and does so in
-part by limiting the search space to only CPUs with the highest spare
-capacity (CPU capacity - CPU utilization) in their performance domain.
-Those candidates are the placement choices that will keep frequency at
-its lowest possible and therefore save the most energy.
-
-But without frequency invariance, a CPU's utilization is relative to the
-CPU's current performance level, and not relative to its maximum
-performance level, which determines its capacity. As a result, it will
-fail to correctly indicate any potential spare capacity obtained by an
-increase in a CPU's performance level. Therefore, a non-invariant
-utilization signal would render the EAS task placement logic invalid.
-
-Now that we properly report support for the Frequency Invariance Engine
-(FIE) through arch_scale_freq_invariant() for arm and arm64 systems,
-while also ensuring a re-evaluation of the EAS use conditions for
-possible invariance status change, we can assert this is the case when
-initializing EAS. Warn and bail out otherwise.
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Suggested-by: Quentin Perret <qperret@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- kernel/sched/topology.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/linux/bitmap.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 270bafb73506..5a1580ef1264 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -328,6 +328,7 @@ static void sched_energy_set(bool has_eas)
-  *    3. no SMT is detected.
-  *    4. the EM complexity is low enough to keep scheduling overheads low;
-  *    5. schedutil is driving the frequency of all CPUs of the rd;
-+ *    6. frequency invariance support is present;
-  *
-  * The complexity of the Energy Model is defined as:
-  *
-@@ -376,6 +377,14 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
- 		goto free;
- 	}
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 2ee934484532..8f2689e73675 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -383,7 +383,7 @@ static inline int bitmap_subset(const unsigned long *src1,
+ 		return __bitmap_subset(src1, src2, nbits);
+ }
  
-+	if (!arch_scale_freq_invariant()) {
-+		if (sched_debug()) {
-+			pr_warn("rd %*pbl: Disabling EAS: frequency-invariant load tracking not yet supported",
-+				cpumask_pr_args(cpu_map));
-+		}
-+		goto free;
-+	}
-+
- 	for_each_cpu(i, cpu_map) {
- 		/* Skip already covered CPUs. */
- 		if (find_pd(pd, i))
+-static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
++static inline bool bitmap_empty(const unsigned long *src, unsigned nbits)
+ {
+ 	if (small_const_nbits(nbits))
+ 		return ! (*src & BITMAP_LAST_WORD_MASK(nbits));
+@@ -391,7 +391,7 @@ static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
+ 	return find_first_bit(src, nbits) == nbits;
+ }
+ 
+-static inline int bitmap_full(const unsigned long *src, unsigned int nbits)
++static inline bool bitmap_full(const unsigned long *src, unsigned int nbits)
+ {
+ 	if (small_const_nbits(nbits))
+ 		return ! (~(*src) & BITMAP_LAST_WORD_MASK(nbits));
 -- 
-2.17.1
+2.28.0
 
