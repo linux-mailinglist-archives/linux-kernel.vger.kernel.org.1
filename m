@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E138229B884
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5BD29B885
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800510AbgJ0Pfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50468 "EHLO mail.kernel.org"
+        id S1800518AbgJ0Pf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799740AbgJ0PdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:33:08 -0400
+        id S1799744AbgJ0PdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE85122202;
-        Tue, 27 Oct 2020 15:33:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E778420728;
+        Tue, 27 Oct 2020 15:33:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812785;
-        bh=cxuiL3mnDWULZ60LSzmIyrobP5TNhgzpVdTON2kYVoE=;
+        s=default; t=1603812788;
+        bh=13/GnTzYZUjhQrBNwuGyIgOcatlNf1iVHcRvGtwo36s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AjdWkJ3RtVjCQkbXFm0O1iuLcog6pmHTbtbcCGk0ryTABM0lYF6Oc2QCrVVYeJqOd
-         kmRENUUab/Hv8YhOKO0rYY9HtG9WmvAz2FIRrFC6iHPLQwS6aemDKZbpQmm8VJMgjK
-         O6EtQ8ZBljLGnm0F9BKgx/mVeKV5tUYmC/NoTAjc=
+        b=d7W0Ne6mcxdIoUV83AEj97/lAcvcO3blrl1K1a2HkJbG4pDt0/tBEE0ILLwuNoruj
+         kyTnTpMlTNQWWtKbFgqgOaPu4kvc0tPzuEZBeb60i45O+eDLMZAb6QZ8ehreTEH7Pc
+         mSbD9ALgiOpS/qQpPipKqb+42X63Z7cgUDmhry+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 329/757] drm/vc4: crtc: Rework a bit the CRTC state code
-Date:   Tue, 27 Oct 2020 14:49:39 +0100
-Message-Id: <20201027135505.978020673@linuxfoundation.org>
+Subject: [PATCH 5.9 330/757] ASoC: fsl_sai: Instantiate snd_soc_dai_driver
+Date:   Tue, 27 Oct 2020 14:49:40 +0100
+Message-Id: <20201027135506.026727180@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,55 +43,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 427c4a0680a28f87bb9c7bbfeac26b39ef8682ad ]
+[ Upstream commit 22a16145af824f91014d07f8664114859900b9e6 ]
 
-The current CRTC state reset hook in vc4 allocates a vc4_crtc_state
-structure as a drm_crtc_state, and relies on the fact that vc4_crtc_state
-embeds drm_crtc_state as its first member, and therefore can be safely
-cast.
+Instantiate snd_soc_dai_driver for independent symmetric control.
+Otherwise the symmetric setting may be overwritten by other
+instance.
 
-However, this is pretty fragile especially since there's no check for this
-in place, and we're going to need to access vc4_crtc_state member at reset
-so this looks like a good occasion to make it more robust.
-
-Fixes: 6d6e50039187 ("drm/vc4: Allocate the right amount of space for boot-time CRTC state.")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Tested-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200923084032.218619-1-maxime@cerno.tech
+Fixes: 08fdf65e37d5 ("ASoC: fsl_sai: Add asynchronous mode support")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1600424760-32071-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 19 +++++++++++--------
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 6d8fa6118fc1a..eaad187c41f07 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -723,11 +723,18 @@ void vc4_crtc_destroy_state(struct drm_crtc *crtc,
- 
- void vc4_crtc_reset(struct drm_crtc *crtc)
- {
-+	struct vc4_crtc_state *vc4_crtc_state;
-+
- 	if (crtc->state)
- 		vc4_crtc_destroy_state(crtc, crtc->state);
--	crtc->state = kzalloc(sizeof(struct vc4_crtc_state), GFP_KERNEL);
--	if (crtc->state)
--		__drm_atomic_helper_crtc_reset(crtc, crtc->state);
-+
-+	vc4_crtc_state = kzalloc(sizeof(*vc4_crtc_state), GFP_KERNEL);
-+	if (!vc4_crtc_state) {
-+		crtc->state = NULL;
-+		return;
-+	}
-+
-+	__drm_atomic_helper_crtc_reset(crtc, &vc4_crtc_state->base);
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index cdff739924e2e..2ea354dd5434f 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -694,7 +694,7 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	return 0;
  }
  
- static const struct drm_crtc_funcs vc4_crtc_funcs = {
+-static struct snd_soc_dai_driver fsl_sai_dai = {
++static struct snd_soc_dai_driver fsl_sai_dai_template = {
+ 	.probe = fsl_sai_dai_probe,
+ 	.playback = {
+ 		.stream_name = "CPU-Playback",
+@@ -966,12 +966,15 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	memcpy(&sai->cpu_dai_drv, &fsl_sai_dai_template,
++	       sizeof(fsl_sai_dai_template));
++
+ 	/* Sync Tx with Rx as default by following old DT binding */
+ 	sai->synchronous[RX] = true;
+ 	sai->synchronous[TX] = false;
+-	fsl_sai_dai.symmetric_rates = 1;
+-	fsl_sai_dai.symmetric_channels = 1;
+-	fsl_sai_dai.symmetric_samplebits = 1;
++	sai->cpu_dai_drv.symmetric_rates = 1;
++	sai->cpu_dai_drv.symmetric_channels = 1;
++	sai->cpu_dai_drv.symmetric_samplebits = 1;
+ 
+ 	if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
+ 	    of_find_property(np, "fsl,sai-asynchronous", NULL)) {
+@@ -988,9 +991,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		/* Discard all settings for asynchronous mode */
+ 		sai->synchronous[RX] = false;
+ 		sai->synchronous[TX] = false;
+-		fsl_sai_dai.symmetric_rates = 0;
+-		fsl_sai_dai.symmetric_channels = 0;
+-		fsl_sai_dai.symmetric_samplebits = 0;
++		sai->cpu_dai_drv.symmetric_rates = 0;
++		sai->cpu_dai_drv.symmetric_channels = 0;
++		sai->cpu_dai_drv.symmetric_samplebits = 0;
+ 	}
+ 
+ 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
+@@ -1020,7 +1023,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	regcache_cache_only(sai->regmap, true);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
+-			&fsl_sai_dai, 1);
++					      &sai->cpu_dai_drv, 1);
+ 	if (ret)
+ 		goto err_pm_disable;
+ 
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 6aba7d28f5f34..677ecfc1ec68f 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -180,6 +180,7 @@ struct fsl_sai {
+ 	unsigned int bclk_ratio;
+ 
+ 	const struct fsl_sai_soc_data *soc_data;
++	struct snd_soc_dai_driver cpu_dai_drv;
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ };
 -- 
 2.25.1
 
