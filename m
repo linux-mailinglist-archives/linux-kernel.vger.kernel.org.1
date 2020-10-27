@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6B429C00A
+	by mail.lfdr.de (Postfix) with ESMTP id B9E3B29C00B
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1816902AbgJ0RK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:10:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38474 "EHLO mail.kernel.org"
+        id S1816909AbgJ0RK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:10:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1816884AbgJ0RKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:10:21 -0400
+        id S1816893AbgJ0RKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:10:24 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D523A22202;
-        Tue, 27 Oct 2020 17:10:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A581C20809;
+        Tue, 27 Oct 2020 17:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603818620;
-        bh=P3GI9LWe497sjdA4d4F0jRX0TDKcgI7enO1f0pii/NE=;
+        s=default; t=1603818623;
+        bh=XtjcBS5Lhouk1GGD4YuSoH6o1G1EH4KbfzX4ov7qSDQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2BhYLErzqeYsJ5YOl6E9MG1l6D11/lW7n7yoAEOXk7UY+Ya1ROXoX6BcwWpVN9MOg
-         2wIjhruRfVv/f2rvyKjXLSwerrmpaOsCjga5vf8NrZWW3hbNmhvjFngkvbxV1mcXFY
-         qNObRRlowOQUB6FsC9AQnIzljF+nFvyZhGtg73+I=
+        b=si90TyutPPFBBmhwNFhNSdt3Y75/YlI5Uzdw9Bv9Vg2mzhGgnr4vgMWuDsvJ2fJGW
+         E+irD8gO0zGT5JFv9hPr5Zw6jqExBSH/MrcfaMT+sANJKSdpgl2ylTbd+nWpWseVaw
+         h6k7eRwFqj8Zx0/OqpcEEaZH+U9jpvCLhEXvoIec=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>,
         Alim Akhtar <alim.akhtar@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH v2 08/12] ARM: dts: exynos: adjust node names to DT spec in Exynos542x boards
-Date:   Tue, 27 Oct 2020 18:09:43 +0100
-Message-Id: <20201027170947.132725-9-krzk@kernel.org>
+Subject: [PATCH v2 09/12] ARM: dts: s5pv210: adjust node names to DT spec
+Date:   Tue, 27 Oct 2020 18:09:44 +0100
+Message-Id: <20201027170947.132725-10-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201027170947.132725-1-krzk@kernel.org>
 References: <20201027170947.132725-1-krzk@kernel.org>
@@ -53,186 +53,215 @@ No functional changes.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/exynos5420-arndale-octa.dts      | 4 ++--
- arch/arm/boot/dts/exynos5420-peach-pit.dts         | 6 +++---
- arch/arm/boot/dts/exynos5420-smdk5420.dts          | 2 +-
- arch/arm/boot/dts/exynos5422-odroid-core.dtsi      | 2 +-
- arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi  | 2 +-
- arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi | 4 ++--
- arch/arm/boot/dts/exynos5422-odroidxu3.dts         | 8 ++++----
- arch/arm/boot/dts/exynos5800-peach-pi.dts          | 4 ++--
- 8 files changed, 16 insertions(+), 16 deletions(-)
+ arch/arm/boot/dts/s5pv210-aquila.dts   | 12 ++++++------
+ arch/arm/boot/dts/s5pv210-aries.dtsi   |  4 ++--
+ arch/arm/boot/dts/s5pv210-goni.dts     | 14 +++++++-------
+ arch/arm/boot/dts/s5pv210-smdkv210.dts | 20 ++++++++++----------
+ 4 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos5420-arndale-octa.dts b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-index dd7f8385d81e..bf457d0c02eb 100644
---- a/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-+++ b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-@@ -39,7 +39,7 @@ oscclk {
- 		};
+diff --git a/arch/arm/boot/dts/s5pv210-aquila.dts b/arch/arm/boot/dts/s5pv210-aquila.dts
+index 8e57e5a1f0c5..6423348034b6 100644
+--- a/arch/arm/boot/dts/s5pv210-aquila.dts
++++ b/arch/arm/boot/dts/s5pv210-aquila.dts
+@@ -277,37 +277,37 @@ &keypad {
+ 			<&keypad_col0>, <&keypad_col1>, <&keypad_col2>;
+ 	status = "okay";
+ 
+-	key_1 {
++	key-1 {
+ 		keypad,row = <0>;
+ 		keypad,column = <1>;
+ 		linux,code = <KEY_CONNECT>;
  	};
  
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
- 
- 		wakeup {
-@@ -344,7 +344,7 @@ &hdmi {
- &hsi2c_4 {
- 	status = "okay";
- 
--	s2mps11_pmic@66 {
-+	pmic@66 {
- 		compatible = "samsung,s2mps11-pmic";
- 		reg = <0x66>;
- 
-diff --git a/arch/arm/boot/dts/exynos5420-peach-pit.dts b/arch/arm/boot/dts/exynos5420-peach-pit.dts
-index 2bcbdf8a39bf..315b3dc9c017 100644
---- a/arch/arm/boot/dts/exynos5420-peach-pit.dts
-+++ b/arch/arm/boot/dts/exynos5420-peach-pit.dts
-@@ -138,7 +138,7 @@ panel_in: endpoint {
- 		};
+-	key_2 {
++	key-2 {
+ 		keypad,row = <0>;
+ 		keypad,column = <2>;
+ 		linux,code = <KEY_BACK>;
  	};
  
--	mmc1_pwrseq: mmc1_pwrseq {
-+	mmc1_pwrseq: mmc1-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		reset-gpios = <&gpx0 0 GPIO_ACTIVE_LOW>; /* WIFI_EN */
- 		clocks = <&max77802 MAX77802_CLK_32K_CP>;
-@@ -205,7 +205,7 @@ &hsi2c_4 {
- 	status = "okay";
- 	clock-frequency = <400000>;
+-	key_3 {
++	key-3 {
+ 		keypad,row = <1>;
+ 		keypad,column = <1>;
+ 		linux,code = <KEY_CAMERA_FOCUS>;
+ 	};
  
--	max77802: max77802-pmic@9 {
-+	max77802: pmic@9 {
- 		compatible = "maxim,max77802";
- 		interrupt-parent = <&gpx3>;
- 		interrupts = <1 IRQ_TYPE_NONE>;
-@@ -615,7 +615,7 @@ &hsi2c_7 {
- 	status = "okay";
- 	clock-frequency = <400000>;
+-	key_4 {
++	key-4 {
+ 		keypad,row = <1>;
+ 		keypad,column = <2>;
+ 		linux,code = <KEY_VOLUMEUP>;
+ 	};
  
--	max98090: codec@10 {
-+	max98090: audio-codec@10 {
- 		compatible = "maxim,max98090";
- 		reg = <0x10>;
- 		interrupts = <2 IRQ_TYPE_NONE>;
-diff --git a/arch/arm/boot/dts/exynos5420-smdk5420.dts b/arch/arm/boot/dts/exynos5420-smdk5420.dts
-index 4e49d8095b29..d506da9fa661 100644
---- a/arch/arm/boot/dts/exynos5420-smdk5420.dts
-+++ b/arch/arm/boot/dts/exynos5420-smdk5420.dts
-@@ -129,7 +129,7 @@ &hdmi {
- &hsi2c_4 {
- 	status = "okay";
+-	key_5 {
++	key-5 {
+ 		keypad,row = <2>;
+ 		keypad,column = <1>;
+ 		linux,code = <KEY_CAMERA>;
+ 	};
  
--	s2mps11_pmic@66 {
-+	pmic@66 {
- 		compatible = "samsung,s2mps11-pmic";
- 		reg = <0x66>;
+-	key_6 {
++	key-6 {
+ 		keypad,row = <2>;
+ 		keypad,column = <2>;
+ 		linux,code = <KEY_VOLUMEDOWN>;
+diff --git a/arch/arm/boot/dts/s5pv210-aries.dtsi b/arch/arm/boot/dts/s5pv210-aries.dtsi
+index bd4450dbdcb6..91ecad85abfc 100644
+--- a/arch/arm/boot/dts/s5pv210-aries.dtsi
++++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
+@@ -54,7 +54,7 @@ pmic_ap_clk: clock-0 {
+ 		clock-frequency = <32768>;
+ 	};
  
-diff --git a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-index b1cf9414ce17..25fb6331c75e 100644
---- a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-+++ b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-@@ -503,7 +503,7 @@ &dmc {
- &hsi2c_4 {
- 	status = "okay";
- 
--	s2mps11_pmic@66 {
-+	pmic@66 {
- 		compatible = "samsung,s2mps11-pmic";
- 		reg = <0x66>;
- 		samsung,s2mps11-acokb-ground;
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-index b5ec4f47eb3a..86b96f9706db 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3-audio.dtsi
-@@ -40,7 +40,7 @@ codec {
- 
- &hsi2c_5 {
- 	status = "okay";
--	max98090: max98090@10 {
-+	max98090: audio-codec@10 {
- 		compatible = "maxim,max98090";
- 		reg = <0x10>;
- 		interrupt-parent = <&gpx3>;
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
-index 5da2d81e3be2..e35af40a55cb 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
-@@ -13,12 +13,12 @@
- #include "exynos5422-odroid-core.dtsi"
- 
- / {
--	gpio_keys {
-+	gpio-keys {
- 		compatible = "gpio-keys";
+-	bt_codec: bt_sco {
++	bt_codec: bt-sco {
+ 		compatible = "linux,bt-sco";
+ 		#sound-dai-cells = <0>;
+ 	};
+@@ -113,7 +113,7 @@ i2c_sound: i2c-gpio-0 {
  		pinctrl-names = "default";
- 		pinctrl-0 = <&power_key>;
+ 		pinctrl-0 = <&sound_i2c_pins>;
  
--		power_key {
-+		power-key {
- 			/*
- 			 * The power button (SW2) is connected to the PWRON
- 			 * pin (active high) of the S2MPS11 PMIC, which acts
-diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-index d0f6ac5fa79d..53aee3d56f6a 100644
---- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-+++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-@@ -21,28 +21,28 @@ &i2c_0 {
+-		wm8994: wm8994@1a {
++		wm8994: audio-codec@1a {
+ 			compatible = "wlf,wm8994";
+ 			reg = <0x1a>;
+ 
+diff --git a/arch/arm/boot/dts/s5pv210-goni.dts b/arch/arm/boot/dts/s5pv210-goni.dts
+index ad8d5d2fa32d..5c1e12d39747 100644
+--- a/arch/arm/boot/dts/s5pv210-goni.dts
++++ b/arch/arm/boot/dts/s5pv210-goni.dts
+@@ -259,37 +259,37 @@ &keypad {
+ 			<&keypad_col0>, <&keypad_col1>, <&keypad_col2>;
  	status = "okay";
  
- 	/* A15 cluster: VDD_ARM */
--	ina231@40 {
-+	power-sensor@40 {
- 		compatible = "ti,ina231";
- 		reg = <0x40>;
- 		shunt-resistor = <10000>;
+-	key_1 {
++	key-1 {
+ 		keypad,row = <0>;
+ 		keypad,column = <1>;
+ 		linux,code = <KEY_CONNECT>;
  	};
  
- 	/* memory: VDD_MEM */
--	ina231@41 {
-+	power-sensor@41 {
- 		compatible = "ti,ina231";
- 		reg = <0x41>;
- 		shunt-resistor = <10000>;
+-	key_2 {
++	key-2 {
+ 		keypad,row = <0>;
+ 		keypad,column = <2>;
+ 		linux,code = <KEY_BACK>;
  	};
  
- 	/* GPU: VDD_G3D */
--	ina231@44 {
-+	power-sensor@44 {
- 		compatible = "ti,ina231";
- 		reg = <0x44>;
- 		shunt-resistor = <10000>;
+-	key_3 {
++	key-3 {
+ 		keypad,row = <1>;
+ 		keypad,column = <1>;
+ 		linux,code = <KEY_CAMERA_FOCUS>;
  	};
  
- 	/* A7 cluster: VDD_KFC */
--	ina231@45 {
-+	power-sensor@45 {
- 		compatible = "ti,ina231";
- 		reg = <0x45>;
- 		shunt-resistor = <10000>;
-diff --git a/arch/arm/boot/dts/exynos5800-peach-pi.dts b/arch/arm/boot/dts/exynos5800-peach-pi.dts
-index 60ab0effe474..0ce3443d39a8 100644
---- a/arch/arm/boot/dts/exynos5800-peach-pi.dts
-+++ b/arch/arm/boot/dts/exynos5800-peach-pi.dts
-@@ -138,7 +138,7 @@ panel_in: endpoint {
- 		};
+-	key_4 {
++	key-4 {
+ 		keypad,row = <1>;
+ 		keypad,column = <2>;
+ 		linux,code = <KEY_VOLUMEUP>;
  	};
  
--	mmc1_pwrseq: mmc1_pwrseq {
-+	mmc1_pwrseq: mmc1-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		reset-gpios = <&gpx0 0 GPIO_ACTIVE_LOW>; /* WIFI_EN */
- 		clocks = <&max77802 MAX77802_CLK_32K_CP>;
-@@ -214,7 +214,7 @@ &hsi2c_4 {
+-	key_5 {
++	key-5 {
+ 		keypad,row = <2>;
+ 		keypad,column = <1>;
+ 		linux,code = <KEY_CAMERA>;
+ 	};
+ 
+-	key_6 {
++	key-6 {
+ 		keypad,row = <2>;
+ 		keypad,column = <2>;
+ 		linux,code = <KEY_VOLUMEDOWN>;
+@@ -353,7 +353,7 @@ &i2c2 {
+ 	samsung,i2c-slave-addr = <0x10>;
  	status = "okay";
- 	clock-frequency = <400000>;
  
--	max77802: max77802-pmic@9 {
-+	max77802: pmic@9 {
- 		compatible = "maxim,max77802";
- 		interrupt-parent = <&gpx3>;
- 		interrupts = <1 IRQ_TYPE_NONE>;
+-	tsp@4a {
++	touchscreen@4a {
+ 		compatible = "atmel,maxtouch";
+ 		reg = <0x4a>;
+ 		interrupt-parent = <&gpj0>;
+diff --git a/arch/arm/boot/dts/s5pv210-smdkv210.dts b/arch/arm/boot/dts/s5pv210-smdkv210.dts
+index 7459e41e8ef1..fbae768d65e2 100644
+--- a/arch/arm/boot/dts/s5pv210-smdkv210.dts
++++ b/arch/arm/boot/dts/s5pv210-smdkv210.dts
+@@ -76,61 +76,61 @@ &keypad {
+ 			<&keypad_col6>, <&keypad_col7>;
+ 	status = "okay";
+ 
+-	key_1 {
++	key-1 {
+ 		keypad,row = <0>;
+ 		keypad,column = <3>;
+ 		linux,code = <KEY_1>;
+ 	};
+ 
+-	key_2 {
++	key-2 {
+ 		keypad,row = <0>;
+ 		keypad,column = <4>;
+ 		linux,code = <KEY_2>;
+ 	};
+ 
+-	key_3 {
++	key-3 {
+ 		keypad,row = <0>;
+ 		keypad,column = <5>;
+ 		linux,code = <KEY_3>;
+ 	};
+ 
+-	key_4 {
++	key-4 {
+ 		keypad,row = <0>;
+ 		keypad,column = <6>;
+ 		linux,code = <KEY_4>;
+ 	};
+ 
+-	key_5 {
++	key-5 {
+ 		keypad,row = <0
+ 		>;
+ 		keypad,column = <7>;
+ 		linux,code = <KEY_5>;
+ 	};
+ 
+-	key_6 {
++	key-6 {
+ 		keypad,row = <1>;
+ 		keypad,column = <3>;
+ 		linux,code = <KEY_A>;
+ 	};
+-	key_7 {
++	key-7 {
+ 		keypad,row = <1>;
+ 		keypad,column = <4>;
+ 		linux,code = <KEY_B>;
+ 	};
+ 
+-	key_8 {
++	key-8 {
+ 		keypad,row = <1>;
+ 		keypad,column = <5>;
+ 		linux,code = <KEY_C>;
+ 	};
+ 
+-	key_9 {
++	key-9 {
+ 		keypad,row = <1>;
+ 		keypad,column = <6>;
+ 		linux,code = <KEY_D>;
+ 	};
+ 
+-	key_10 {
++	key-10 {
+ 		keypad,row = <1>;
+ 		keypad,column = <7>;
+ 		linux,code = <KEY_E>;
 -- 
 2.25.1
 
