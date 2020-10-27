@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3962B29BEC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE06429BEC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1814555AbgJ0Q51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:57:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46848 "EHLO mail.kernel.org"
+        id S1814536AbgJ0Q46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:56:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794303AbgJ0PLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:11:05 -0400
+        id S1794353AbgJ0PLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:11:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 808C821D24;
-        Tue, 27 Oct 2020 15:11:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 457AF20657;
+        Tue, 27 Oct 2020 15:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811465;
-        bh=kFM+WIo7lDsxmB2iJDyzMHfljOEKa+lhPZ2S+U6ZxQo=;
+        s=default; t=1603811484;
+        bh=INZga2ZUpoVs+ZrcWWqAdpisOiUGM/5WS6wpVM+ZhA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A36VeEStMBzuMSVUr03PHjN6gK2JCzaGz4WiWScLjNg4EoqHU70ouxp0Q0/V2h7Gd
-         y5TB1PxBNeFlWqU1nbTsiqqLHWhNmsIQKCZWPrdLcYKkIcTtPdDGrRxbQigSREHeUr
-         zmwomb1NcpyLo2ObQ5UwUoNggXIoYsv9em+85uDM=
+        b=ZwemQyh+rLWqpSDvkmLY6oT3CaKgun0EzGqno6OZnAbsoiF4uR2C5ADaqjtXMT5Ek
+         dMuccQi32bSeuVxNAymKhcgX1A3zpIa78JbDbmcLTWttVDudmTiZ45k+LmyJ5dLLqG
+         xtzk/QEULYjndIxWGY5zFViUwxVq/KYtIB6fY81w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org, Holger Assmann <h.assmann@pengutronix.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 502/633] arm64: dts: mt8173: elm: Fix nor_flash node property
-Date:   Tue, 27 Oct 2020 14:54:05 +0100
-Message-Id: <20201027135546.276251149@linuxfoundation.org>
+Subject: [PATCH 5.8 508/633] ARM: dts: stm32: lxa-mc1: Fix kernel warning about PHY delays
+Date:   Tue, 27 Oct 2020 14:54:11 +0100
+Message-Id: <20201027135546.566236413@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,43 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Holger Assmann <h.assmann@pengutronix.de>
 
-[ Upstream commit 1276be23fd53e1c4e752966d0eab42aa54a343da ]
+[ Upstream commit 42a31ac6698681363363d48335559d212a26a7ca ]
 
-bus-width and non-removable is not used by the driver.
-max-frequency should be spi-max-frequency for flash node.
+The KSZ9031 PHY skew timings for rxc/txc, originally set to achieve
+the desired phase shift between clock- and data-signal, now trigger a
+kernel warning when used in rgmii-id mode:
 
-Fixes: 689b937bedde ("arm64: dts: mediatek: add mt8173 elm and hana board")
-Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Link: https://lore.kernel.org/r/20200727074124.3779237-1-hsinyi@chromium.org
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+ *-skew-ps values should be used only with phy-mode = "rgmii"
+
+This is because commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode
+support for the KSZ9031 PHY") now configures own timings when
+phy-mode = "rgmii-id". Device trees wanting to set their own delays
+should use phy-mode "rgmii" instead as the warning prescribes.
+
+The "standard" timings now used with "rgmii-id" work fine on this
+board, so drop the explicit timings in the device tree and thereby
+silence the warning.
+
+Fixes: 666b5ca85cd3 ("ARM: dts: stm32: add STM32MP1-based Linux Automation MC-1 board")
+Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
+Acked-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-index a5a12b2599a4a..01522dd10603e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-@@ -431,12 +431,11 @@ &nor_flash {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&nor_gpio1_pins>;
--	bus-width = <8>;
--	max-frequency = <50000000>;
--	non-removable;
-+
- 	flash@0 {
- 		compatible = "jedec,spi-nor";
- 		reg = <0>;
-+		spi-max-frequency = <50000000>;
- 	};
- };
- 
+diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+index 5700e6b700d36..b85025d009437 100644
+--- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
++++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+@@ -121,8 +121,6 @@ ethphy: ethernet-phy@3 { /* KSZ9031RN */
+ 			reset-gpios = <&gpiog 0 GPIO_ACTIVE_LOW>; /* ETH_RST# */
+ 			interrupt-parent = <&gpioa>;
+ 			interrupts = <6 IRQ_TYPE_EDGE_FALLING>; /* ETH_MDINT# */
+-			rxc-skew-ps = <1860>;
+-			txc-skew-ps = <1860>;
+ 			reset-assert-us = <10000>;
+ 			reset-deassert-us = <300>;
+ 			micrel,force-master;
 -- 
 2.25.1
 
