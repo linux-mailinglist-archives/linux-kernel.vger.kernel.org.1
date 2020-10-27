@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B446929AE1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C3029AE1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368099AbgJ0N44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:56:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43294 "EHLO mail.kernel.org"
+        id S368114AbgJ0N47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:56:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368092AbgJ0N4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:56:54 -0400
+        id S368092AbgJ0N44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:56:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B488F2074B;
-        Tue, 27 Oct 2020 13:56:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A969B21655;
+        Tue, 27 Oct 2020 13:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807013;
-        bh=vYqHa6lv0tcd1MlRaQ+jJjgy7UFuZEKXGYbCMNvfk1E=;
+        s=default; t=1603807016;
+        bh=sfL6G2Y/z9x8rEL+SjrEfC/mODkBAD3Iysx7cVHV0YQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uNXAfI3u+ce9dZPVwJP/PwrbNLH7wCt+nkC2Jh4YaXpR67ZBH5oTdTurA7KXHXJk0
-         /3god1EIQc9SpvYhvrbzvpZ/Bjm1Hra7cCrpNJajmsh/hRg0g/WxSMt0KCy+QUBuHq
-         FTL/990ZcMg4xgQVoxSCHWDlAdSiit6lOBzytmho=
+        b=rlD4DIkWgX4wpEk5/ZqVqrX/zMlWOaQ+E0VOe4IA8M9vPEQWIAXYnmAdCfA8ka96x
+         K6voVgufpyiAVTdIpcnCe5c4FvB7CnS41vSF+Yy/RbSLL2TRLeRlofwBrh/6nGFxct
+         vuc/i1WZeAU+ZtwOKuhmbnyclv3iUWLN/kABMqBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Regnery <tobias.regnery@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        kasan-dev@googlegroups.com,
-        Alexander Potapenko <glider@google.com>,
-        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.4 011/112] x86/mm/ptdump: Fix soft lockup in page table walker
-Date:   Tue, 27 Oct 2020 14:48:41 +0100
-Message-Id: <20201027134901.090009773@linuxfoundation.org>
+        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 012/112] net: hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
+Date:   Tue, 27 Oct 2020 14:48:42 +0100
+Message-Id: <20201027134901.139013070@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -48,62 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Ryabinin <aryabinin@virtuozzo.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-commit 146fbb766934dc003fcbf755b519acef683576bf upstream.
+[ Upstream commit 01c4ceae0a38a0bdbfea6896f41efcd985a9c064 ]
 
-CONFIG_KASAN=y needs a lot of virtual memory mapped for its shadow.
-In that case ptdump_walk_pgd_level_core() takes a lot of time to
-walk across all page tables and doing this without
-a rescheduling causes soft lockups:
+The hdlc_rcv function is used as hdlc_packet_type.func to process any
+skb received in the kernel with skb->protocol == htons(ETH_P_HDLC).
+The purpose of this function is to provide second-stage processing for
+skbs not assigned a "real" L3 skb->protocol value in the first stage.
 
- NMI watchdog: BUG: soft lockup - CPU#3 stuck for 23s! [swapper/0:1]
- ...
- Call Trace:
-  ptdump_walk_pgd_level_core+0x40c/0x550
-  ptdump_walk_pgd_level_checkwx+0x17/0x20
-  mark_rodata_ro+0x13b/0x150
-  kernel_init+0x2f/0x120
-  ret_from_fork+0x2c/0x40
+This function assumes the device from which the skb is received is an
+HDLC device (a device created by this module). It assumes that
+netdev_priv(dev) returns a pointer to "struct hdlc_device".
 
-I guess that this issue might arise even without KASAN on huge machines
-with several terabytes of RAM.
+However, it is possible that some driver in the kernel (not necessarily
+in our control) submits a received skb with skb->protocol ==
+htons(ETH_P_HDLC), from a non-HDLC device. In this case, the skb would
+still be received by hdlc_rcv. This will cause problems.
 
-Stick cond_resched() in pgd loop to fix this.
+hdlc_rcv should be able to recognize and drop invalid skbs. It should
+first make sure "dev" is actually an HDLC device, before starting its
+processing. This patch adds this check to hdlc_rcv.
 
-Reported-by: Tobias Regnery <tobias.regnery@gmail.com>
-Signed-off-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: kasan-dev@googlegroups.com
-Cc: Alexander Potapenko <glider@google.com>
-Cc: "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: stable@vger.kernel.org
-Link: http://lkml.kernel.org/r/20170210095405.31802-1-aryabinin@virtuozzo.com
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-[bwh: Backported to 4.4: adjust context]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201020013152.89259-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/mm/dump_pagetables.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wan/hdlc.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/arch/x86/mm/dump_pagetables.c
-+++ b/arch/x86/mm/dump_pagetables.c
-@@ -15,6 +15,7 @@
- #include <linux/debugfs.h>
- #include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/sched.h>
- #include <linux/seq_file.h>
+--- a/drivers/net/wan/hdlc.c
++++ b/drivers/net/wan/hdlc.c
+@@ -57,7 +57,15 @@ int hdlc_change_mtu(struct net_device *d
+ static int hdlc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		    struct packet_type *p, struct net_device *orig_dev)
+ {
+-	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct hdlc_device *hdlc;
++
++	/* First make sure "dev" is an HDLC device */
++	if (!(dev->priv_flags & IFF_WAN_HDLC)) {
++		kfree_skb(skb);
++		return NET_RX_SUCCESS;
++	}
++
++	hdlc = dev_to_hdlc(dev);
  
- #include <asm/pgtable.h>
-@@ -407,6 +408,7 @@ static void ptdump_walk_pgd_level_core(s
- 		} else
- 			note_page(m, &st, __pgprot(0), 1);
- 
-+		cond_resched();
- 		start++;
- 	}
- 
+ 	if (!net_eq(dev_net(dev), &init_net)) {
+ 		kfree_skb(skb);
 
 
