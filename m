@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BFB29B0C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ECE29B0C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901418AbgJ0OXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46870 "EHLO mail.kernel.org"
+        id S1753979AbgJ0OXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758701AbgJ0OWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:22:20 -0400
+        id S2901316AbgJ0OWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:22:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86C1E206D4;
-        Tue, 27 Oct 2020 14:22:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19179206ED;
+        Tue, 27 Oct 2020 14:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808540;
-        bh=XJf9VMU+5vhlCRLTZv/L7ZaAPvTxzT6R+7fdEzE52QQ=;
+        s=default; t=1603808550;
+        bh=l0wlXzmt+brcohvnlZxCG4gHv9jy0GRR2wA79AH6/NI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jH6pTnAkGZ7kCDgQTw6KQgWNDGCKywoF6ufCnABKm0fzf+xYB+OhB5CZbWwvokmQn
-         n2JRjX/7kk1ySo6YdWRj67g6M1xOooB3bdYGcvq8veY9kz6zEdMQOcszzR5Q6KdrTk
-         ARq4J7WNyJyWTRPHEi1j3GpyehqxE6YdcMPyWdu4=
+        b=0TLNFqg6mo+xqc4fTeq5yY3D7azZ3Y6l1yVPEkyq6Td9OFu/hB4NNCpnB0A8cvQHD
+         NM2t1wfGklilmrew2lssg8VsjpVhviPxEiy4ex99BkRrIUpCay4nlx6H8wi8lDeGyy
+         82OZEXkQ8iiaZHGtiaaIVqjunppEZNDmft/YolTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 130/264] IB/mlx4: Adjust delayed work when a dup is observed
-Date:   Tue, 27 Oct 2020 14:53:08 +0100
-Message-Id: <20201027135436.788839177@linuxfoundation.org>
+Subject: [PATCH 4.19 134/264] RDMA/ucma: Add missing locking around rdma_leave_multicast()
+Date:   Tue, 27 Oct 2020 14:53:12 +0100
+Message-Id: <20201027135436.980324055@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -44,36 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Håkon Bugge <haakon.bugge@oracle.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-[ Upstream commit 785167a114855c5aa75efca97000e405c2cc85bf ]
+[ Upstream commit 38e03d092699891c3237b5aee9e8029d4ede0956 ]
 
-When scheduling delayed work to clean up the cache, if the entry already
-has been scheduled for deletion, we adjust the delay.
+All entry points to the rdma_cm from a ULP must be single threaded,
+even this error unwinds. Add the missing locking.
 
-Fixes: 3cf69cc8dbeb ("IB/mlx4: Add CM paravirtualization")
-Link: https://lore.kernel.org/r/20200803061941.1139994-7-haakon.bugge@oracle.com
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Fixes: 7c11910783a1 ("RDMA/ucma: Put a lock around every call to the rdma_cm layer")
+Link: https://lore.kernel.org/r/20200818120526.702120-11-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/cm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/core/ucma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
-index 8c79a480f2b76..d3e11503e67ca 100644
---- a/drivers/infiniband/hw/mlx4/cm.c
-+++ b/drivers/infiniband/hw/mlx4/cm.c
-@@ -307,6 +307,9 @@ static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id)
- 	if (!sriov->is_going_down) {
- 		id->scheduled_delete = 1;
- 		schedule_delayed_work(&id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+	} else if (id->scheduled_delete) {
-+		/* Adjust timeout if already scheduled */
-+		mod_delayed_work(system_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
- 	}
- 	spin_unlock_irqrestore(&sriov->going_down_lock, flags);
- 	spin_unlock(&sriov->id_map_lock);
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 0c095c8c0ac5b..01052de6bedbf 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1476,7 +1476,9 @@ static ssize_t ucma_process_join(struct ucma_file *file,
+ 	return 0;
+ 
+ err3:
++	mutex_lock(&ctx->mutex);
+ 	rdma_leave_multicast(ctx->cm_id, (struct sockaddr *) &mc->addr);
++	mutex_unlock(&ctx->mutex);
+ 	ucma_cleanup_mc_events(mc);
+ err2:
+ 	mutex_lock(&mut);
 -- 
 2.25.1
 
