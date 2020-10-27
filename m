@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE74929B05A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE8D29AF24
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756583AbgJ0OSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36926 "EHLO mail.kernel.org"
+        id S1754897AbgJ0OHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:07:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756902AbgJ0OPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:15:08 -0400
+        id S1754795AbgJ0OHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:07:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72DD92072D;
-        Tue, 27 Oct 2020 14:15:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B24F422258;
+        Tue, 27 Oct 2020 14:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808108;
-        bh=QWMvPqkn4Zv3OynYGV21SYqtVsu7u/KB6Eu+sCemUms=;
+        s=default; t=1603807626;
+        bh=KDEjwspJyIH0+HO6uIy5jM5u5QAk6OY+cIrgJ+2DZJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WjOJa6L180Gk84kuZ7RnwvKhxiBTR942W49G3Agy47Wo8ifGf7gyD2MAgn9+Xh0Ro
-         wlO6YafFMSyVckqh489hmhDrYatmYH7Sla6d5hw7erE6jZi96U7RU6Wn2XYcDV/vSd
-         RdYOzrcCQPuXhq8vzr3zoJtY7O65V44Fr9OtAWkI=
+        b=UPpvmWZFhu43YNbbykguJth0aAojtGcf/9YMjHzuRNqi/XtwiP1t66IW0fhSlIj0t
+         3XW1sUtqqSEv2E1GlnsZq9AGphYvpBOoMc8Gmgd0d81pGWz0ZKwHHFaGzOXEB1CkeP
+         PAKvajXmWZUC0gY304No5SETj8t7LYCz2nBMN0+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        stable@vger.kernel.org,
+        syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com,
+        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 159/191] mic: vop: copy data to kernel space then write to io memory
-Date:   Tue, 27 Oct 2020 14:50:14 +0100
-Message-Id: <20201027134917.363114258@linuxfoundation.org>
+Subject: [PATCH 4.9 121/139] reiserfs: only call unlock_new_inode() if I_NEW
+Date:   Tue, 27 Oct 2020 14:50:15 +0100
+Message-Id: <20201027134907.890094564@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sherry Sun <sherry.sun@nxp.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit 675f0ad4046946e80412896436164d172cd92238 ]
+[ Upstream commit 8859bf2b1278d064a139e3031451524a49a56bd0 ]
 
-Read and write io memory should address align on ARCH ARM. Change to use
-memcpy_toio to avoid kernel panic caused by the address un-align issue.
+unlock_new_inode() is only meant to be called after a new inode has
+already been inserted into the hash table.  But reiserfs_new_inode() can
+call it even before it has inserted the inode, triggering the WARNING in
+unlock_new_inode().  Fix this by only calling unlock_new_inode() if the
+inode has the I_NEW flag set, indicating that it's in the table.
 
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20200929091106.24624-5-sherry.sun@nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This addresses the syzbot report "WARNING in unlock_new_inode"
+(https://syzkaller.appspot.com/bug?extid=187510916eb6a14598f7).
+
+Link: https://lore.kernel.org/r/20200628070057.820213-1-ebiggers@kernel.org
+Reported-by: syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/mic/vop/vop_vringh.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ fs/reiserfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
-index fed992e2c2583..99bde52a3a256 100644
---- a/drivers/misc/mic/vop/vop_vringh.c
-+++ b/drivers/misc/mic/vop/vop_vringh.c
-@@ -611,6 +611,7 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
- 	size_t partlen;
- 	bool dma = VOP_USE_DMA;
- 	int err = 0;
-+	size_t offset = 0;
- 
- 	if (daddr & (dma_alignment - 1)) {
- 		vdev->tx_dst_unaligned += len;
-@@ -659,13 +660,20 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
- 	 * We are copying to IO below and should ideally use something
- 	 * like copy_from_user_toio(..) if it existed.
- 	 */
--	if (copy_from_user((void __force *)dbuf, ubuf, len)) {
--		err = -EFAULT;
--		dev_err(vop_dev(vdev), "%s %d err %d\n",
--			__func__, __LINE__, err);
--		goto err;
-+	while (len) {
-+		partlen = min_t(size_t, len, VOP_INT_DMA_BUF_SIZE);
-+
-+		if (copy_from_user(vvr->buf, ubuf + offset, partlen)) {
-+			err = -EFAULT;
-+			dev_err(vop_dev(vdev), "%s %d err %d\n",
-+				__func__, __LINE__, err);
-+			goto err;
-+		}
-+		memcpy_toio(dbuf + offset, vvr->buf, partlen);
-+		offset += partlen;
-+		vdev->out_bytes += partlen;
-+		len -= partlen;
- 	}
--	vdev->out_bytes += len;
- 	err = 0;
- err:
- 	vpdev->hw_ops->iounmap(vpdev, dbuf);
+diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+index 897154e993800..f28999f717761 100644
+--- a/fs/reiserfs/inode.c
++++ b/fs/reiserfs/inode.c
+@@ -2166,7 +2166,8 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
+ out_inserted_sd:
+ 	clear_nlink(inode);
+ 	th->t_trans_id = 0;	/* so the caller can't use this handle later */
+-	unlock_new_inode(inode); /* OK to do even if we hadn't locked it */
++	if (inode->i_state & I_NEW)
++		unlock_new_inode(inode);
+ 	iput(inode);
+ 	return err;
+ }
 -- 
 2.25.1
 
