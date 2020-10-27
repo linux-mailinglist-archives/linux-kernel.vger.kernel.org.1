@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9174329C6C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AB529C6D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827317AbgJ0SW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50046 "EHLO mail.kernel.org"
+        id S1823095AbgJ0SXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442688AbgJ0OCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:02:11 -0400
+        id S1753809AbgJ0OCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:02:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1F0A221F8;
-        Tue, 27 Oct 2020 14:02:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C0A522258;
+        Tue, 27 Oct 2020 14:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807331;
-        bh=Wk+aSI7U0jXX/ygkhc1AR8h7iyiQ+5au4OFs/6FHIJM=;
+        s=default; t=1603807339;
+        bh=LadrM0FUgeQh3k7uu+j5YvhtIlbW1p6r2NgCKs2WKoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DiCbnKjfpAOwfRwNsVQp6wxefKw6lfAJGk041nvAdAFafK5JHhZTMDatrNc5E4QTk
-         m6Rzpy8PF0hsTf/ITKKVos08dsF6dBew3jnqiGRrh3rJHtBE9QABi7w6qd+2dPxDic
-         QOZNV5Pk/Vqb546FePrZdUjy498GUR9eTP2KA7So=
+        b=L8Na+XUaFNhEr4qIj7uESumx1XJEO5c/wCOL8PE76Qt28ZojYqErU8IRY7wH/yNej
+         /5aPPExVqOPrV9JuKHEx++NrOy7a470ua9IYU06ae02TROEEBDDjInHKVVNaDp48jp
+         FybgqMCbVNyqugthlzj9n9Lbre8JqaOA02I0bSkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.9 014/139] crypto: algif_aead - Do not set MAY_BACKLOG on the async path
-Date:   Tue, 27 Oct 2020 14:48:28 +0100
-Message-Id: <20201027134902.824334213@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 017/139] media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+Date:   Tue, 27 Oct 2020 14:48:31 +0100
+Message-Id: <20201027134902.960314348@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
 References: <20201027134902.130312227@linuxfoundation.org>
@@ -41,42 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-commit cbdad1f246dd98e6c9c32a6e5212337f542aa7e0 upstream.
+[ Upstream commit 00d21f325d58567d81d9172096692d0a9ea7f725 ]
 
-The async path cannot use MAY_BACKLOG because it is not meant to
-block, which is what MAY_BACKLOG does.  On the other hand, both
-the sync and async paths can make use of MAY_SLEEP.
+The "idle" pinctrl state is optional as documented in the DT binding.
+The change introduced by the commit being reverted makes that pinctrl state
+mandatory and breaks initialization of the whole media driver, since the
+"idle" state is not specified in any mainline dts.
 
-Fixes: 83094e5e9e49 ("crypto: af_alg - add async support to...")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This reverts commit 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+to fix the regression.
 
+Fixes: 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/algif_aead.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/exynos4-is/media-dev.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -455,7 +455,7 @@ static int aead_recvmsg_async(struct soc
- 	memcpy(areq->iv, ctx->iv, crypto_aead_ivsize(tfm));
- 	aead_request_set_tfm(req, tfm);
- 	aead_request_set_ad(req, ctx->aead_assoclen);
--	aead_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
-+	aead_request_set_callback(req, CRYPTO_TFM_REQ_MAY_SLEEP,
- 				  aead_async_cb, req);
- 	used -= ctx->aead_assoclen;
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index cdaf3a8e2555e..532b7cd361dc8 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1255,11 +1255,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+ 	if (IS_ERR(pctl->state_default))
+ 		return PTR_ERR(pctl->state_default);
  
-@@ -925,7 +925,7 @@ static int aead_accept_parent_nokey(void
- 	ask->private = ctx;
++	/* PINCTRL_STATE_IDLE is optional */
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
+-	if (IS_ERR(pctl->state_idle))
+-		return PTR_ERR(pctl->state_idle);
+-
+ 	return 0;
+ }
  
- 	aead_request_set_tfm(&ctx->aead_req, aead);
--	aead_request_set_callback(&ctx->aead_req, CRYPTO_TFM_REQ_MAY_BACKLOG,
-+	aead_request_set_callback(&ctx->aead_req, CRYPTO_TFM_REQ_MAY_SLEEP,
- 				  af_alg_complete, &ctx->completion);
- 
- 	sk->sk_destruct = aead_sock_destruct;
+-- 
+2.25.1
+
 
 
