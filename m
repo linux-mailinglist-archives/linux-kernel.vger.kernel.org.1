@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9E629A74E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D5629A752
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408701AbgJ0JHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:07:23 -0400
-Received: from ozlabs.ru ([107.174.27.60]:42938 "EHLO ozlabs.ru"
+        id S2895358AbgJ0JH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:07:58 -0400
+Received: from ozlabs.ru ([107.174.27.60]:43022 "EHLO ozlabs.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408546AbgJ0JHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:07:22 -0400
+        id S2895351AbgJ0JH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:07:58 -0400
 Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id 088B8AE8025F;
-        Tue, 27 Oct 2020 05:06:36 -0400 (EDT)
+        by ozlabs.ru (Postfix) with ESMTP id D4AB2AE80274;
+        Tue, 27 Oct 2020 05:06:42 -0400 (EDT)
 From:   Alexey Kardashevskiy <aik@ozlabs.ru>
 To:     linuxppc-dev@lists.ozlabs.org
 Cc:     =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
@@ -26,181 +26,74 @@ Cc:     =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
         Frederic Barrat <fbarrat@linux.ibm.com>,
         =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
         Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [RFC PATCH kernel 1/2] irq: Add reference counting to IRQ mappings
-Date:   Tue, 27 Oct 2020 20:06:54 +1100
-Message-Id: <20201027090655.14118-2-aik@ozlabs.ru>
+Subject: [RFC PATCH kernel 2/2] powerpc/pci: Remove LSI mappings on device teardown
+Date:   Tue, 27 Oct 2020 20:06:55 +1100
+Message-Id: <20201027090655.14118-3-aik@ozlabs.ru>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201027090655.14118-1-aik@ozlabs.ru>
 References: <20201027090655.14118-1-aik@ozlabs.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCI devices share 4 legacy INTx interrupts from the same PCI host bridge.
-Device drivers map/unmap hardware interrupts via irq_create_mapping()/
-irq_dispose_mapping(). The problem with that these interrupts are
-shared and when performing hot unplug, we need to unmap the interrupt
-only when the last device is released.
+From: Oliver O'Halloran <oohall@gmail.com>
 
-This reuses already existing irq_desc::kobj for this purpose.
-The refcounter is naturally 1 when the descriptor is allocated already;
-this adds kobject_get() in places where already existing mapped virq
-is returned.
+When a passthrough IO adapter is removed from a pseries machine using hash
+MMU and the XIVE interrupt mode, the POWER hypervisor expects the guest OS
+to clear all page table entries related to the adapter. If some are still
+present, the RTAS call which isolates the PCI slot returns error 9001
+"valid outstanding translations" and the removal of the IO adapter fails.
+This is because when the PHBs are scanned, Linux maps automatically the
+INTx interrupts in the Linux interrupt number space but these are never
+removed.
 
-This reorganizes irq_dispose_mapping() to release the kobj and let
-the release callback do the cleanup.
+This problem can be fixed by adding the corresponding unmap operation when
+the device is removed. There's no pcibios_* hook for the remove case, but
+the same effect can be achieved using a bus notifier.
 
-If some driver or platform does its own reference counting, this expects
-those parties to call irq_find_mapping() and call irq_dispose_mapping()
-for every irq_create_fwspec_mapping()/irq_create_mapping().
-
+Cc: Cédric Le Goater <clg@kaod.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
 Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
 ---
- kernel/irq/irqdesc.c   | 35 +++++++++++++++++++++++------------
- kernel/irq/irqdomain.c | 27 +++++++++++++--------------
- 2 files changed, 36 insertions(+), 26 deletions(-)
+ arch/powerpc/kernel/pci-common.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 1a7723604399..dae096238500 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -419,20 +419,39 @@ static struct irq_desc *alloc_desc(int irq, int node, unsigned int flags,
- 	return NULL;
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index be108616a721..95f4e173368a 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -404,6 +404,27 @@ static int pci_read_irq_line(struct pci_dev *pci_dev)
+ 	return 0;
  }
  
-+static void delayed_free_desc(struct rcu_head *rhp);
- static void irq_kobj_release(struct kobject *kobj)
- {
- 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
-+	struct irq_domain *domain;
-+	unsigned int virq = desc->irq_data.irq;
- 
--	free_masks(desc);
--	free_percpu(desc->kstat_irqs);
--	kfree(desc);
-+	domain = desc->irq_data.domain;
-+	if (domain) {
-+		if (irq_domain_is_hierarchy(domain)) {
-+			irq_domain_free_irqs(virq, 1);
-+		} else {
-+			irq_domain_disassociate(domain, virq);
-+			irq_free_desc(virq);
-+		}
-+	}
++static int ppc_pci_unmap_irq_line(struct notifier_block *nb,
++			       unsigned long action, void *data)
++{
++	struct pci_dev *pdev = to_pci_dev(data);
 +
-+	/*
-+	 * We free the descriptor, masks and stat fields via RCU. That
-+	 * allows demultiplex interrupts to do rcu based management of
-+	 * the child interrupts.
-+	 * This also allows us to use rcu in kstat_irqs_usr().
-+	 */
-+	call_rcu(&desc->rcu, delayed_free_desc);
- }
- 
- static void delayed_free_desc(struct rcu_head *rhp)
- {
- 	struct irq_desc *desc = container_of(rhp, struct irq_desc, rcu);
- 
--	kobject_put(&desc->kobj);
-+	free_masks(desc);
-+	free_percpu(desc->kstat_irqs);
-+	kfree(desc);
- }
- 
- static void free_desc(unsigned int irq)
-@@ -453,14 +472,6 @@ static void free_desc(unsigned int irq)
- 	 */
- 	irq_sysfs_del(desc);
- 	delete_irq_desc(irq);
--
--	/*
--	 * We free the descriptor, masks and stat fields via RCU. That
--	 * allows demultiplex interrupts to do rcu based management of
--	 * the child interrupts.
--	 * This also allows us to use rcu in kstat_irqs_usr().
--	 */
--	call_rcu(&desc->rcu, delayed_free_desc);
- }
- 
- static int alloc_descs(unsigned int start, unsigned int cnt, int node,
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index cf8b374b892d..02733ddc321f 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -638,6 +638,7 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
- {
- 	struct device_node *of_node;
- 	int virq;
-+	struct irq_desc *desc;
- 
- 	pr_debug("irq_create_mapping(0x%p, 0x%lx)\n", domain, hwirq);
- 
-@@ -655,7 +656,9 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
- 	/* Check if mapping already exists */
- 	virq = irq_find_mapping(domain, hwirq);
- 	if (virq) {
-+		desc = irq_to_desc(virq);
- 		pr_debug("-> existing mapping on virq %d\n", virq);
-+		kobject_get(&desc->kobj);
- 		return virq;
- 	}
- 
-@@ -751,6 +754,7 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
- 	irq_hw_number_t hwirq;
- 	unsigned int type = IRQ_TYPE_NONE;
- 	int virq;
-+	struct irq_desc *desc;
- 
- 	if (fwspec->fwnode) {
- 		domain = irq_find_matching_fwspec(fwspec, DOMAIN_BUS_WIRED);
-@@ -787,8 +791,11 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
- 		 * current trigger type then we are done so return the
- 		 * interrupt number.
- 		 */
--		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq))
-+		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq)) {
-+			desc = irq_to_desc(virq);
-+			kobject_get(&desc->kobj);
- 			return virq;
-+		}
- 
- 		/*
- 		 * If the trigger type has not been set yet, then set
-@@ -800,6 +807,8 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
- 				return 0;
- 
- 			irqd_set_trigger_type(irq_data, type);
-+			desc = irq_to_desc(virq);
-+			kobject_get(&desc->kobj);
- 			return virq;
- 		}
- 
-@@ -852,22 +861,12 @@ EXPORT_SYMBOL_GPL(irq_create_of_mapping);
-  */
- void irq_dispose_mapping(unsigned int virq)
- {
--	struct irq_data *irq_data = irq_get_irq_data(virq);
--	struct irq_domain *domain;
-+	struct irq_desc *desc = irq_to_desc(virq);
- 
--	if (!virq || !irq_data)
-+	if (!virq || !desc)
- 		return;
- 
--	domain = irq_data->domain;
--	if (WARN_ON(domain == NULL))
--		return;
--
--	if (irq_domain_is_hierarchy(domain)) {
--		irq_domain_free_irqs(virq, 1);
--	} else {
--		irq_domain_disassociate(domain, virq);
--		irq_free_desc(virq);
--	}
-+	kobject_put(&desc->kobj);
- }
- EXPORT_SYMBOL_GPL(irq_dispose_mapping);
- 
++	if (action == BUS_NOTIFY_DEL_DEVICE)
++		irq_dispose_mapping(pdev->irq);
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block ppc_pci_unmap_irq_notifier = {
++	.notifier_call = ppc_pci_unmap_irq_line,
++};
++
++static int ppc_pci_register_irq_notifier(void)
++{
++	return bus_register_notifier(&pci_bus_type, &ppc_pci_unmap_irq_notifier);
++}
++arch_initcall(ppc_pci_register_irq_notifier);
++
+ /*
+  * Platform support for /proc/bus/pci/X/Y mmap()s.
+  *  -- paulus.
 -- 
 2.17.1
 
