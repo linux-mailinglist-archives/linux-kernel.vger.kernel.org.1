@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF8429A963
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA1D29A967
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897777AbgJ0KT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:19:27 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55879 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897233AbgJ0KTZ (ORCPT
+        id S2897796AbgJ0KUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:20:01 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:54218 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897798AbgJ0KTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:19:25 -0400
-Received: by mail-wm1-f66.google.com with SMTP id a72so801361wme.5;
-        Tue, 27 Oct 2020 03:19:22 -0700 (PDT)
+        Tue, 27 Oct 2020 06:19:51 -0400
+Received: by mail-wm1-f67.google.com with SMTP id d78so810610wmd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 03:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dkwbI/0H97SZJixhQJH8dswlbjBm943gYERZ83AMoLY=;
-        b=hgwBPyAwrmX4gfhR16//+HwE/aO/mjjEpeDp9bXYGGvxR27aJkVXE9ZcKeBAcja9+s
-         hRwuJMyXDtLHzeW/+SBYpX3D0WQiiFP0tokRsDKAUmKIKLh/NainCGQvYP1PfEjbYhRo
-         nl9yI/xz53C1OXFvwiYN+Kk66xL+N+hPA4nzRYVK1DQ6IxM8o1To/1o2wxt77Y9kJrqs
-         /IXjY8qJONoNEoHojlr0UnHijYIMlWE0NrA0i7bn9nhPLAQKcXUtapjXk0BT1gPe0UoX
-         xSQZx8QU6hXImlu6ohqnHkjEXlg6fVkAi93H7bm6rFRb1TBWmkxeGbs/ZLw1y9j1oUNH
-         AEyg==
+        bh=pZ4tF9Q35IB/PKnNsjsCcJxf1aDEpdznaVzDYuv50v0=;
+        b=C/n8t7qiHHIkKH6qBlW/WOBQPU58wfsvqwRg3TcTxZVnfjMweZXACSUeQ2Yr0SJona
+         bdgxQpS37set3XzGvi8D9HYTSw1RmWWModldxM0e+cGehXYXRU3K1mTjOK4kL6y6nXo5
+         /axUIi8EVPPR1jt57T2cmyeoVG/atnjZdaO6/010kCwExM5C4qTg8Gv2OwtoRDRI/Wxn
+         BmXfJXcLVV6OgliOWyqFM9J+HmGm+kg7QrCtLylTtWhX7bp2PpYVCEtkQbYr2pOTj/vX
+         hOgbmlhiz1rrdO/0zg6f1qwltCzISSTi3Q6IV68wglD4tuMZOCdDa7vWfcS9uy2c4oGG
+         wz9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dkwbI/0H97SZJixhQJH8dswlbjBm943gYERZ83AMoLY=;
-        b=JXgvNCt5BOP/m2Yi+APs89Z0wKzxAPn8X28ZWJ0SwaNaDnniDZ5ygjtgKZljqc1h+T
-         skEBO6/DAUQI1uZ/7UpVSzZdGG01QZ63vNjuExpP+oRvpcXNdj/5z1wB7EjRpuNpdtCS
-         COHjXnQc2w210zAojZmqU4bwbckFtbZOccotVQWZ/UFiN4zw1xwwyVrD5O1Remfw1iII
-         53lGPxIHkxQ1ZL/z/6NKl+8brBTigTqQL5SsF3c2p24I97pzt8Z/ToFSW1nV5/trQ8OD
-         rxMKTDGUMwSR1qD6s75aRFBlnlzijmP+vfCDS0L8ts4R37qrbrUjr6MUZ2GHM//VKrJN
-         Lj3Q==
-X-Gm-Message-State: AOAM533dKi719t979VcylAcP876M4JogOkpfQgaO8lCn66KLBJOFVQop
-        tCyuGiYqoEZTt47w5ovqqq0=
-X-Google-Smtp-Source: ABdhPJxeO0DzMU+707HyJRwnPTQmDLgKCotn1ndnwrMruc4M8djY+myKe0PoeIdnRJJaD54MCVb9NQ==
-X-Received: by 2002:a1c:9dcc:: with SMTP id g195mr1820127wme.113.1603793962048;
-        Tue, 27 Oct 2020 03:19:22 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.117.206])
-        by smtp.gmail.com with ESMTPSA id t7sm1367711wrx.42.2020.10.27.03.19.20
+        bh=pZ4tF9Q35IB/PKnNsjsCcJxf1aDEpdznaVzDYuv50v0=;
+        b=GduZe0MPD7/llQzk7RtRQfZch54wkEx3s2Kl63gK/RC9jpUKWnk/4CfWvyBZGmWWqn
+         wzkmWfJvoXvuFQvmadCVTBxVRn4lWxmQ/9reh7gmjFEx43zUIgITMtbSBn1bFcxs5lfW
+         tyj6XIFHs96uldcxsgwq6FTSd7Ss4FnhGUAR1InZfQXAjdm7y22g7mDYbtkxnAleGnOX
+         uO39HHXSC40aASewjOuxv2DprYke0fiwbJTU6ZP+tFoI/cFB8PdWrjo4+8ZyQKyGKW+R
+         XCl3QmCdvrm7OgHFm/QGMW489vQJRB7BsYbrYm/juGdWvDiESb2n35rX1VqhiceqZjhe
+         mnTQ==
+X-Gm-Message-State: AOAM530tXVqaPYLLnbkqMQ0mkR01WJ+Kme57nuUPn64tFBMOCBTfrm1e
+        e5rDUkSq8Fk36Aa1htzNXjU/Cg==
+X-Google-Smtp-Source: ABdhPJzce/1cq7vO5et/wMCpGxoUY58Gq/wHtjsAUhmiTgM1W35aRGvgZYGxLwfJWRUAVClAG3qCoA==
+X-Received: by 2002:a7b:c8da:: with SMTP id f26mr1911316wml.178.1603793987905;
+        Tue, 27 Oct 2020 03:19:47 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451? ([2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451])
+        by smtp.googlemail.com with ESMTPSA id l16sm1472264wrx.5.2020.10.27.03.19.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 03:19:21 -0700 (PDT)
-Subject: Re: [PATCH] mmc: host: mtk-sd: enable recheck_sdio_irq for MT8516 SoC
-To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
+        Tue, 27 Oct 2020 03:19:47 -0700 (PDT)
+Subject: Re: [PATCH 1/3] dt-bindings: thermal: mediatek: make resets property
+ optional
+To:     Fabien Parent <fparent@baylibre.com>,
         linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org, chaotian.jing@mediatek.com
-References: <20201023122950.60903-1-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <7820dbe9-ff62-7cc3-1e60-8d5c0a069abb@gmail.com>
-Date:   Tue, 27 Oct 2020 11:19:19 +0100
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, amitk@kernel.org,
+        rui.zhang@intel.com
+References: <20201021164231.3029956-1-fparent@baylibre.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <d8a5ce64-04da-7a4a-bcb9-1cc25cea42db@linaro.org>
+Date:   Tue, 27 Oct 2020 11:19:44 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201023122950.60903-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201021164231.3029956-1-fparent@baylibre.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/10/2020 14:29, Fabien Parent wrote:
-> MT8516 SoC suffers from sometimes losing SDIO IRQs, this makes SDIO
-> devices sometimes unstable. Make use of the new property
-> recheck_sdio_irq to fix the SDIO stability issues on MT8516.
+On 21/10/2020 18:42, Fabien Parent wrote:
+> MT8516 Thermal IP does not support reset. Make the resets property
+> optional in order to be able to support MT8516 SoC.
 > 
 > Signed-off-by: Fabien Parent <fparent@baylibre.com>
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
 > ---
->   drivers/mmc/host/mtk-sd.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index a704745e5882..3dc102eefe49 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -524,7 +524,7 @@ static const struct mtk_mmc_compatible mt7622_compat = {
->   
->   static const struct mtk_mmc_compatible mt8516_compat = {
->   	.clk_div_bits = 12,
-> -	.recheck_sdio_irq = false,
-> +	.recheck_sdio_irq = true,
->   	.hs400_tune = false,
->   	.pad_tune_reg = MSDC_PAD_TUNE0,
->   	.async_fifo = true,
-> 
+
+Applied, thanks
+
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
