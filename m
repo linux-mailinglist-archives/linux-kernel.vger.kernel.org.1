@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C05529B53C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B4729B535
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368621AbgJ0PJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39066 "EHLO mail.kernel.org"
+        id S1793973AbgJ0PJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790420AbgJ0PE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:04:29 -0400
+        id S1790473AbgJ0PEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:04:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EACB521707;
-        Tue, 27 Oct 2020 15:04:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0C4E206E5;
+        Tue, 27 Oct 2020 15:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811069;
-        bh=1BcVye8HRxyDPFVEqpme3Hjykoavb1YY5uMUVusMe8A=;
+        s=default; t=1603811081;
+        bh=R5PbW+sXDK7226DchEgeE2gG3rKu+u6XKrP7QE2j8nw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aXy1I7M9bHjvhYDejAzPUmTGLMd+DEI47xyP5V+vrVOHFc35Yq/2vwC220XafDm4Q
-         5J1zhwuTgJVv5weoQi1M1jkcTVVf4aFpMdCc/Q0FZs077gqBynn3W0Lp8AAOiaJiKe
-         DB3eKLxDHq+qY3ofFissRj/L8AjPeVqDdFSmRrQc=
+        b=MTT9jb/Lc+/nc4+SxTnkqbmvbQSE/b13Cd0Hs84NMKAygjeBtURLOUHSw4wgGiMby
+         M8jEIjOgx51GQgO2jhFs5MwI/HyoVqJtGZRBpDVrBCxzqkDNU2ncrcnuuSUiz6t0qY
+         zQCWArslQwLnhQgSyJRKfvqV6Oob5d3KQNWWz4Uk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cameron Berkenpas <cam@neo-zeon.de>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 363/633] powerpc/book3s64/hash/4k: Support large linear mapping range with 4K
-Date:   Tue, 27 Oct 2020 14:51:46 +0100
-Message-Id: <20201027135539.724283921@linuxfoundation.org>
+Subject: [PATCH 5.8 366/633] powerpc/tau: Remove duplicated set_thresholds() call
+Date:   Tue, 27 Oct 2020 14:51:49 +0100
+Message-Id: <20201027135539.868953175@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,72 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 7746406baa3bc9e23fdd7b7da2f04d86e25ab837 ]
+[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
 
-With commit: 0034d395f89d ("powerpc/mm/hash64: Map all the kernel
-regions in the same 0xc range"), we now split the 64TB address range
-into 4 contexts each of 16TB. That implies we can do only 16TB linear
-mapping.
+The commentary at the call site seems to disagree with the code. The
+conditional prevents calling set_thresholds() via the exception handler,
+which appears to crash. Perhaps that's because it immediately triggers
+another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
+is redundant because tau_timeout() does so.
 
-On some systems, eg. Power9, memory attached to nodes > 0 will appear
-above 16TB in the linear mapping. This resulted in kernel crash when
-we boot such systems in hash translation mode with 4K PAGE_SIZE.
-
-This patch updates the kernel mapping such that we now start supporting upto
-61TB of memory with 4K. The kernel mapping now looks like below 4K PAGE_SIZE
-and hash translation.
-
-    vmalloc start     = 0xc0003d0000000000
-    IO start          = 0xc0003e0000000000
-    vmemmap start     = 0xc0003f0000000000
-
-Our MAX_PHYSMEM_BITS for 4K is still 64TB even though we can only map 61TB.
-We prevent bolt mapping anything outside 61TB range by checking against
-H_VMALLOC_START.
-
-Fixes: 0034d395f89d ("powerpc/mm/hash64: Map all the kernel regions in the same 0xc range")
-Reported-by: Cameron Berkenpas <cam@neo-zeon.de>
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200608070904.387440-3-aneesh.kumar@linux.ibm.com
+Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/book3s/64/hash-4k.h | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ arch/powerpc/kernel/tau_6xx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/hash-4k.h b/arch/powerpc/include/asm/book3s/64/hash-4k.h
-index 3f9ae3585ab98..80c9534148821 100644
---- a/arch/powerpc/include/asm/book3s/64/hash-4k.h
-+++ b/arch/powerpc/include/asm/book3s/64/hash-4k.h
-@@ -13,20 +13,19 @@
-  */
- #define MAX_EA_BITS_PER_CONTEXT		46
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index 268205cc347da..b8d7e7d498e0a 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -110,11 +110,6 @@ static void TAUupdate(int cpu)
+ #ifdef DEBUG
+ 	printk("grew = %d\n", tau[cpu].grew);
+ #endif
+-
+-#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
+-	set_thresholds(cpu);
+-#endif
+-
+ }
  
--#define REGION_SHIFT		(MAX_EA_BITS_PER_CONTEXT - 2)
- 
- /*
-- * Our page table limit us to 64TB. Hence for the kernel mapping,
-- * each MAP area is limited to 16 TB.
-- * The four map areas are:  linear mapping, vmap, IO and vmemmap
-+ * Our page table limit us to 64TB. For 64TB physical memory, we only need 64GB
-+ * of vmemmap space. To better support sparse memory layout, we use 61TB
-+ * linear map range, 1TB of vmalloc, 1TB of I/O and 1TB of vmememmap.
-  */
-+#define REGION_SHIFT		(40)
- #define H_KERN_MAP_SIZE		(ASM_CONST(1) << REGION_SHIFT)
- 
- /*
-- * Define the address range of the kernel non-linear virtual area
-- * 16TB
-+ * Define the address range of the kernel non-linear virtual area (61TB)
-  */
--#define H_KERN_VIRT_START	ASM_CONST(0xc000100000000000)
-+#define H_KERN_VIRT_START	ASM_CONST(0xc0003d0000000000)
- 
- #ifndef __ASSEMBLY__
- #define H_PTE_TABLE_SIZE	(sizeof(pte_t) << H_PTE_INDEX_SIZE)
+ #ifdef CONFIG_TAU_INT
 -- 
 2.25.1
 
