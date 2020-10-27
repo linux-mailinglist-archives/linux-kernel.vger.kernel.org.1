@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38BA29BAB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5751129BA99
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807480AbgJ0QLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:11:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54910 "EHLO mail.kernel.org"
+        id S1806810AbgJ0QIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1803626AbgJ0PxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:53:12 -0400
+        id S1803794AbgJ0Px0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:53:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24D2A20678;
-        Tue, 27 Oct 2020 15:53:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BE0620829;
+        Tue, 27 Oct 2020 15:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813991;
-        bh=Gk7Dcdr3qIZh/Hz9V0vphAF3SJqzWma+xLXxVQyVqmE=;
+        s=default; t=1603814006;
+        bh=ETVr0lXfJErsdZGRkJuxNwedCRH+8kc1TkFmD2CqYQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+CY9DywEIP0lUmlJCFF/kbBvEjEbFocrAdx3QweAvBL2fqF9C+OY0sPGS5LGk1tW
-         1w27L2ZuJYaP7oydKsnRt8jMEjpiaAx0GkIMGFeKc/WHYVlh0ljbODvyvFBMYJApzI
-         naIGLIGn0aGebMUDSfY+qpP2I0pj6KwH+OvaXziI=
+        b=oZ+2pzE+TiTQkmfih8CG2S+OOTfuNwmrRVcD2/k7MzYmi06v6qEro/Da1IM482bm4
+         hv4C4H447yIadEI6Z42WQX/LhhpEJh8b15s+8FdlRbMBblC8dGbr0LMPaZwoUeOV8w
+         1k5dL2/qJJKPBIQs5ghMaQ27ftPoBgyJ/EkkHmSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 712/757] iomap: fix WARN_ON_ONCE() from unprivileged users
-Date:   Tue, 27 Oct 2020 14:56:02 +0100
-Message-Id: <20201027135523.898400792@linuxfoundation.org>
+Subject: [PATCH 5.9 713/757] scsi: ibmvfc: Fix error return in ibmvfc_probe()
+Date:   Tue, 27 Oct 2020 14:56:03 +0100
+Message-Id: <20201027135523.948597897@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,46 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit a805c111650cdba6ee880f528abdd03c1af82089 ]
+[ Upstream commit 5e48a084f4e824e1b624d3fd7ddcf53d2ba69e53 ]
 
-It is trivial to trigger a WARN_ON_ONCE(1) in iomap_dio_actor() by
-unprivileged users which would taint the kernel, or worse - panic if
-panic_on_warn or panic_on_taint is set. Hence, just convert it to
-pr_warn_ratelimited() to let users know their workloads are racing.
-Thank Dave Chinner for the initial analysis of the racing reproducers.
+Fix to return error code PTR_ERR() from the error handling case instead of
+0.
 
-Signed-off-by: Qian Cai <cai@lca.pw>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lore.kernel.org/r/20200907083949.154251-1-jingxiangfeng@huawei.com
+Acked-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/direct-io.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index c1aafb2ab9907..9519113ebc352 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -388,6 +388,16 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
- 		return iomap_dio_bio_actor(inode, pos, length, dio, iomap);
- 	case IOMAP_INLINE:
- 		return iomap_dio_inline_actor(inode, pos, length, dio, iomap);
-+	case IOMAP_DELALLOC:
-+		/*
-+		 * DIO is not serialised against mmap() access at all, and so
-+		 * if the page_mkwrite occurs between the writeback and the
-+		 * iomap_apply() call in the DIO path, then it will see the
-+		 * DELALLOC block that the page-mkwrite allocated.
-+		 */
-+		pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %pD4 Comm: %.20s\n",
-+				    dio->iocb->ki_filp, current->comm);
-+		return -EIO;
- 	default:
- 		WARN_ON_ONCE(1);
- 		return -EIO;
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index ea7c8930592dc..70daa0605082d 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -4928,6 +4928,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	if (IS_ERR(vhost->work_thread)) {
+ 		dev_err(dev, "Couldn't create kernel thread: %ld\n",
+ 			PTR_ERR(vhost->work_thread));
++		rc = PTR_ERR(vhost->work_thread);
+ 		goto free_host_mem;
+ 	}
+ 
 -- 
 2.25.1
 
