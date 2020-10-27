@@ -2,79 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891C029BBDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69F829BC01
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1809811AbgJ0Q2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:28:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1809624AbgJ0Q1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:27:01 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 385F121655;
-        Tue, 27 Oct 2020 16:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603816020;
-        bh=kM+q5a/4CSozUbBt556ksVRBHVXOCmkxyQA/MctuzVE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J0pkkZf0nkd5hT9kQnPgSGqY293gEZG5Qc5BHBXrcbnsjmpn7NKuFW75bGu28c4a/
-         EeqnOK5o8KAPYd5pBFQmUXT4YcTrGa19RXW64meYpoXNSnooTYR5sgm17RtcwuREzK
-         bdrStVPco0ZHfBJlJZTfCPNBx1yXpBkD0ZP8f7/o=
-Date:   Tue, 27 Oct 2020 16:26:55 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH] drm/vc4: hdmi: Avoid sleeping in atomic context
-Message-ID: <20201027162655.GB4895@sirena.org.uk>
-References: <20201027101558.427256-1-maxime@cerno.tech>
+        id S368514AbgJ0Qai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:30:38 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:35632 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1760746AbgJ0Qa0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:30:26 -0400
+Received: by mail-pg1-f194.google.com with SMTP id f38so1098621pgm.2;
+        Tue, 27 Oct 2020 09:30:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYpVVa2HzoWSN3SBz42ImmD/sC2oukyTEj/vYph3n2U=;
+        b=JGGtiwD26RZLnpx6yWtGjSdavx4m1/lbKn4+xZtXTR+oITifCFyWksbePNwPRLAo/K
+         OuSem10v8zs01o5RNoD+4DIOB088wIP1aI49EGK+RwqFfaxrK9hGEAy7NPjTyPi1/gdu
+         lZI+jjZt9yHOrOF7KYdNWzBa15UO87BPiEG+PilCwBVqmav9TWSGzeWd3Hd2FOBx6blq
+         IM8kUIcF/MRnJkDsa6Hu66w6w5ZWVi1dJGct8syt5hOl1co2CHOEnBzQ4AwfuYHRK/1I
+         lD6plgXtirHy9lyijxWmzciSgQrPffGU0bbf/xRJ1Fmq+i7HoJLtXlrn3Yu1Z1lCB78e
+         P0Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYpVVa2HzoWSN3SBz42ImmD/sC2oukyTEj/vYph3n2U=;
+        b=HPy0BcGxgFLZsIFW2hWuT0KoTd2Ss1BcmEU/VO1L2099kyU4/F78cdTgIb5Ed7Izdx
+         AwT3d8waMk0YCZ+Jz1xp6xjpMvXxG2AZBWl/n5SMM6PXiduOH4yte0KC78bFn9oyjK++
+         tl/D8XlK7G2egeBQPz+fPLFyo/Ml/obL7GSXqUZ6Pe342x0BQnZ+aaxihBggYeaDIbZ9
+         PJ/K6wO0jTq9jpflgmb82tlNOZ+TfcORdArFQKzsDDKU4K7CJVu0VRMmaLtA2435ECPv
+         K+y4fbMbOqPW8qL/sJIN377edcblaGDam0V4y+Rh1mhRid2UtGacCqYbFK0mBd6Mf7WL
+         A5Uw==
+X-Gm-Message-State: AOAM5320p9Q2wlLX1oF5FrV1jzn4BctHmTnjtKrXN8Ozjnp4oVJq1WW0
+        vtrn8I1RUlBTmTs2RAF5g6QqYTXZ4jt2
+X-Google-Smtp-Source: ABdhPJxeA+021hwLATilKLFtU3OwkB+EWBm1+Dk6H+nqoB1yaSG1CZvZPmQrqiRgmGwnQJ99kemqtw==
+X-Received: by 2002:a63:354c:: with SMTP id c73mr2722208pga.315.1603816226234;
+        Tue, 27 Oct 2020 09:30:26 -0700 (PDT)
+Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id e23sm2773147pfi.191.2020.10.27.09.30.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 09:30:25 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH 0/5] Preparation work for using font_desc in vc_data
+Date:   Tue, 27 Oct 2020 12:27:35 -0400
+Message-Id: <cover.1603788511.git.yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7iMSBzlTiPOCCT2k"
-Content-Disposition: inline
-In-Reply-To: <20201027101558.427256-1-maxime@cerno.tech>
-X-Cookie: That's no moon...
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel, Hi Greg, Hi all,
 
---7iMSBzlTiPOCCT2k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We are planning to use `font_desc` instead of `console_font` in `vc_data`,
+and this is just some prep work for it. It doesn't do much, but at least
+it removes two "FIXME"s in fbcon.c :)
 
-On Tue, Oct 27, 2020 at 11:15:58AM +0100, Maxime Ripard wrote:
-> When running the trigger hook, ALSA by default will take a spinlock, and
-> thus will run the trigger hook in atomic context.
+Peilin Ye (5):
+[1/5] fbdev/atafb: Remove unused extern variables
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+  Searching for `fontdata` gave me this in fbdev/atafb.c:
 
---7iMSBzlTiPOCCT2k
-Content-Type: application/pgp-signature; name="signature.asc"
+  extern unsigned char fontdata_8x8[];
+  extern unsigned char fontdata_8x16[];
 
------BEGIN PGP SIGNATURE-----
+  ...which freaked me out, since in 6735b4632def ("Fonts: Support
+  FONT_EXTRA_WORDS macros for built-in fonts") I changed them from char
+  arrays to structures, in lib/fonts/. Fortunately it turns out these
+  extern variables have nothing to do with lib/fonts/, and are not being
+  used anywhere, so remove them for less confusion.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+YSk4ACgkQJNaLcl1U
-h9Cr7AgAhRoOc4Gjttyj+tM4Dayl68xyuva+089cuxgC2SZpu4kBZCMfygj42A1b
-XyU1mHn4CDblQ9xUZWdn5nhjNlxwhFLswRxz/f42ZiwsKk/GmYkiPEUM8gi31jBh
-VyoWXXcDVeb+sUZi6wo7Oqca3PBC6xhUsdIVUh+zAksbJ6nTPKv5H+x3JnSY+l1A
-Uk8k8xz9k00PdUJ08F6yLDFgWOIpurIRfrgcoSw69XXlcc2EOn55rf5k6ahS2jox
-xw4p3amLaWmdna+zkFZEgorUskjjxO5tfcZenKZMTgXqvEjYo0h0Hl1d9qYwTxM0
-P6XTxa6tghfpUovKg2IG87FZ1BZV2g==
-=DS6+
------END PGP SIGNATURE-----
+  m68k cross-compiled.
 
---7iMSBzlTiPOCCT2k--
+[2/5] Fonts: Make font size unsigned in font_desc
+
+  Our goal is to use `font_desc` "everywhere" in the kernel, and signed
+  `width` and `height` is inappropriate.
+
+  Also, change some printk() format identifiers in console/sticore.c from
+  `%d` to `%u`. parisc cross-compiled.
+
+[3/5] Fonts: Add charcount field to font_desc
+
+  Add `unsigned int charcount` to `font_desc`, and update each of our 13
+  built-in fonts.
+
+[4/5] fbcon: Avoid hard-coding built-in font charcount
+[5/5] parisc/sticore: Avoid hard-coding built-in font charcount
+
+  Everyone (tty, fbcon, sticore, etc.) is assuming that all built-in fonts
+  have 256 characters, and is using hard-coded 256 or 255 everywhere.
+  These two patches removes some of them. [5/5] is parisc cross-compiled.
+
+  Now is a good time to review all find_font() and get_default_font()
+  callers:
+
+  drivers/media/pci/solo6x10/solo6x10-enc.c      133 const struct font_desc *vga = find_font("VGA8x16");
+  drivers/media/test-drivers/vimc/vimc-core.c    268 const struct font_desc *font = find_font("VGA8x16");
+  drivers/media/test-drivers/vivid/vivid-core.c 1928 const struct font_desc *font = find_font("VGA8x16");
+  drivers/usb/misc/sisusbvga/sisusb.c           2285 myfont = find_font("VGA8x16");
+    * These 4 only care about font VGA8x16, so let them be for now;
+
+  drivers/video/console/sticore.c                499 fbfont = find_font(fbfont_name);
+  drivers/video/console/sticore.c                501 fbfont = get_default_font(1024,768, ~(u32)0, ~(u32)0);
+    * Uses 255 and 256, (hopefully) cleaned up by [5/5];
+
+  drivers/video/fbdev/core/fbcon.c               999 if (!fontname[0] || !(font = find_font(fontname)))
+  drivers/video/fbdev/core/fbcon.c              1000 font = get_default_font(info->var.xres,
+  drivers/video/fbdev/core/fbcon.c              1078 if (!fontname[0] || !(font = find_font(fontname)))
+  drivers/video/fbdev/core/fbcon.c              1079 font = get_default_font(info->var.xres,
+    * Use 256, cleaned up by [4/5];
+
+  drivers/video/fbdev/core/fbcon.c              2548 else if (!(f = find_font(name)))
+  drivers/video/fbdev/core/fbcon.c              2546 f = get_default_font(info->var.xres, info->var.yres,
+    * Uses 256 but no easy fix. I'll clean this up after making
+      fbcon_do_set_font() pass a `font_desc` as parameter;
+
+  drivers/firmware/efi/earlycon.c               234 font = get_default_font(xres, yres, -1, -1);
+    * Does not care about charcount.
+
+Thank you!
+Peilin Ye
+
+ drivers/video/console/sticore.c  | 10 +++++-----
+ drivers/video/fbdev/atafb.c      |  8 --------
+ drivers/video/fbdev/core/fbcon.c |  5 ++---
+ include/linux/font.h             |  3 ++-
+ lib/fonts/font_10x18.c           |  1 +
+ lib/fonts/font_6x10.c            |  1 +
+ lib/fonts/font_6x11.c            |  1 +
+ lib/fonts/font_6x8.c             |  1 +
+ lib/fonts/font_7x14.c            |  1 +
+ lib/fonts/font_8x16.c            |  1 +
+ lib/fonts/font_8x8.c             |  1 +
+ lib/fonts/font_acorn_8x8.c       |  1 +
+ lib/fonts/font_mini_4x6.c        |  1 +
+ lib/fonts/font_pearl_8x8.c       |  1 +
+ lib/fonts/font_sun12x22.c        |  1 +
+ lib/fonts/font_sun8x16.c         |  1 +
+ lib/fonts/font_ter16x32.c        |  1 +
+ 17 files changed, 22 insertions(+), 17 deletions(-)
+
+-- 
+2.25.1
+
