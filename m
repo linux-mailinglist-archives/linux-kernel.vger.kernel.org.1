@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71DD29C0FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482AC29C040
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818012AbgJ0RQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:16:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52474 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2899694AbgJ0O6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:58:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603810695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QHfC50u4+qYFKShn9vmVFysfcHnRXhgSobOLpg9p0W8=;
-        b=YmmqkqV0zXjnwZ/n/we8egpCPIWoJQ40xIiaz72oAbg1N9ZYj1HNm3osroivK/OGnF/b5Z
-        uClP6ikE0YuEZg/hQbgUXTPOFyDo/qVedZdPyp+gs59yeRufDMFViY3kby3riztNmgorP9
-        IOhcFQ9z5x8D27pj9l+4X7eFpdFAGnE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1CFFAE7B;
-        Tue, 27 Oct 2020 14:58:15 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 15:58:14 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Hui Su <sh_def@163.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/oom_kill.c: remove the unmatched comments
-Message-ID: <20201027145814.GY20500@dhcp22.suse.cz>
-References: <20201027144529.GA3558@rlk>
+        id S1817101AbgJ0RNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:13:13 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:32819 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1784684AbgJ0O7b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:59:31 -0400
+Received: by mail-pg1-f195.google.com with SMTP id r186so950231pgr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:59:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fp9DOIG89yQphhVtnUaB6Uhgg6cfJ/f6CEZSpcBxAQ4=;
+        b=UYbkYuZz+V4mrSNGV9sOj772Km/E4ZB7bT64Rbq2OmBMBkMYpC/7uQ71Ta7B2pS0a2
+         WLcDodpDC1YTDYaBRw1CbZbZOSp5ejCOMFhRTSm3DDK3rUHnvIQVXpUAP7h/bavtyd9B
+         AffszAuFp9L/C2x3u4KNpH126oHbtsOE0aVWv7t3FTD3lS67vj/zsohznzCAa6YABlL2
+         3edS17Pwz9ME/qPhAlc7lKiLmqmxq9d8kGG0ADppn1UWSKP1c9YqopZqB7918qfr+ep/
+         r2T39MEnfS2D3B9VQosD2qQEohJjelHEvQu8vgQdqqd5Z/sg+A0mgpmrBvaNIuXBQI0p
+         YG4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fp9DOIG89yQphhVtnUaB6Uhgg6cfJ/f6CEZSpcBxAQ4=;
+        b=kojG8eTeSiRzm40bCPJzeL3tL/9djAZZH9FMSSn63HUZrxWJM62FkqQ4KSbY1tFq82
+         CO9IAbVWjirvmvrcK+gRAo6Ewpx00U6wM87+O8erAaAZveXjruRL+QspHdsEfBWUuocr
+         p6DLkUW+4eklINJ8TZDvzG4mv8wHFmso1DHjs8xrQVAbblii6Hl+/5FkGWpW01XINup9
+         f9RbXKSaS8IVDjtMaMj2VRAaeRoZ5F+IrHXi5KxzRnXxvMcIQ85AI+EmKBuQFgAPgdp4
+         ZyuyzwShTrK0nPFoKSvgZG/V41d/7Dqg7Wv7aXqgrAam2V8im6Pag78TzJQclbUAVKBC
+         ZMrQ==
+X-Gm-Message-State: AOAM530b8NvZkF9D6mrqLUI0tXmbo4ltqNXPKDW6U+9pSUMykX3wm9f6
+        AhSWtJLBeL/fWWTl2V+WrquL7g==
+X-Google-Smtp-Source: ABdhPJw8wLAWDU2hwTitO+GzNGBx1HZNCIcF13OgdjBXdNjI95nxmzgizBezFv/ZOrXBhMUNoGXivA==
+X-Received: by 2002:a63:3202:: with SMTP id y2mr2189277pgy.97.1603810770619;
+        Tue, 27 Oct 2020 07:59:30 -0700 (PDT)
+Received: from hermes.local (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id u4sm2340541pjy.19.2020.10.27.07.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 07:59:30 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 07:59:21 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Henrik Bjoernlund via Bridge <bridge@lists.linux-foundation.org>
+Cc:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <roopa@nvidia.com>,
+        <nikolay@nvidia.com>, <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <UNGLinuxDriver@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [Bridge] [PATCH net-next v7 01/10] net: bridge: extend the
+ process of special frames
+Message-ID: <20201027075921.69976131@hermes.local>
+In-Reply-To: <20201027100251.3241719-2-henrik.bjoernlund@microchip.com>
+References: <20201027100251.3241719-1-henrik.bjoernlund@microchip.com>
+        <20201027100251.3241719-2-henrik.bjoernlund@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027144529.GA3558@rlk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 27-10-20 22:45:29, Hui Su wrote:
-> is_dump_unreclaim_slabs() just check whether nr_unreclaimable
-> slabs amount is greater than user memory, not match witch comment.
+On Tue, 27 Oct 2020 10:02:42 +0000
+Henrik Bjoernlund via Bridge <bridge@lists.linux-foundation.org> wrote:
 
-As I've tried to explain, the comment is not explaining what the
-function does but how it should be used. It is not a kerneldoc afterall.
-So it is a good match. I can see how that might confuse somebody so I am
-not against changing this but the changelog shouldn't really be
-confusing on its own. What do you think about the following instead.
+> +/* Return 0 if the frame was not processed otherwise 1
+> + * note: already called with rcu_read_lock
+> + */
+> +static int br_process_frame_type(struct net_bridge_port *p,
+> +				 struct sk_buff *skb)
+> +{
+> +	struct br_frame_type *tmp;
+> +
+> +	hlist_for_each_entry_rcu(tmp, &p->br->frame_type_list, list)
+> +		if (unlikely(tmp->type == skb->protocol))
+> +			return tmp->frame_handler(p, skb);
+> +
+> +	return 0;
+> +}
 
-"
-Comment for is_dump_unreclaim_slabs is not really clear whether it is
-meant to instruct how to use the function or whether it is an outdated
-information of the past implementation of the function. it doesn't realy
-help that is_dump_unreclaim_slabs is hard to grasp on its own.
-Rename the helper to should_dump_unreclaim_slabs which should make it
-clear what it is meant to do and drop the comment as the purpose should
-be pretty evident now.
-"
-
-> So delete the comment, and rename it to should_dump_unreclaim_slabs().
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
-> ---
->  mm/oom_kill.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 8b84661a6410..d181e24d7193 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -170,11 +170,7 @@ static bool oom_unkillable_task(struct task_struct *p)
->  	return false;
->  }
->  
-> -/*
-> - * Print out unreclaimble slabs info when unreclaimable slabs amount is greater
-> - * than all user memory (LRU pages)
-> - */
-> -static bool is_dump_unreclaim_slabs(void)
-> +static bool should_dump_unreclaim_slabs(void)
->  {
->  	unsigned long nr_lru;
->  
-> @@ -463,7 +459,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
->  		mem_cgroup_print_oom_meminfo(oc->memcg);
->  	else {
->  		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
-> -		if (is_dump_unreclaim_slabs())
-> +		if (should_dump_unreclaim_slabs())
->  			dump_unreclaimable_slab();
->  	}
->  	if (sysctl_oom_dump_tasks)
-> -- 
-> 2.25.1
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+Does the linear search of frame types have noticable impact on performance?
+Hint: maybe a bitmap or something would be faster.
