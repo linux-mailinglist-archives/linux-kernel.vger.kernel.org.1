@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F1B29BEAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7443529BD28
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813732AbgJ0QyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48386 "EHLO mail.kernel.org"
+        id S1811417AbgJ0Qjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794513AbgJ0PMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:12:12 -0400
+        id S2899697AbgJ0PrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:47:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E58C721D41;
-        Tue, 27 Oct 2020 15:12:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E15182242B;
+        Tue, 27 Oct 2020 15:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811531;
-        bh=s0/RFL6KuD/rXT5ExrOUu6B75yi54Z7D0EtZWLZhuRQ=;
+        s=default; t=1603813640;
+        bh=U38pIinAUzj6lUxBuxFi6yjG8fqQCzz+IqPvS2YnehE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U2a74ZUa0QoYZ7z0r3VRHSxKDsNrXiXxhIcscff5zgA8rsEWhxHL0WoJOdhoi0ryD
-         Ev2MyNKfnCmFg7wBdbQsaoFAK69wO2Le8GnqU+Kqw/+br2anh+Yu8TCZooDXQVZU1G
-         oYStnrJEKmTdIyyg17omcJaG688OufaU7U5FTJag=
+        b=1U0mbuHVkZpJhvd3BKZVt4odxHzqE0FcxAagjFZAv5nKhNAxNc455fGCf51DvmQp2
+         bxwZrnXHV1NcBYPfpfkiwunL4o3npq/ReW8Z31KDI/DoFdWrlGDnLPzIbZgAa6D4bq
+         jFbUtCkAoGDQ7lNEIzZHpWQn980xWHGGsJ8i4b6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Zhao Heming <heming.zhao@suse.com>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 527/633] md/bitmap: fix memory leak of temporary bitmap
-Date:   Tue, 27 Oct 2020 14:54:30 +0100
-Message-Id: <20201027135547.500226562@linuxfoundation.org>
+Subject: [PATCH 5.9 621/757] ARM: dts: stm32: Swap PHY reset GPIO and TSC2004 IRQ on DHCOM SOM
+Date:   Tue, 27 Oct 2020 14:54:31 +0100
+Message-Id: <20201027135519.673571241@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +47,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Heming <heming.zhao@suse.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 1383b347a8ae4a69c04ae3746e6cb5c8d38e2585 ]
+[ Upstream commit 9ad98319e95263469d8ca2cb543c37c5a2f40980 ]
 
-Callers of get_bitmap_from_slot() are responsible to free the bitmap.
+On the production revision of the SoM, 587-200, the PHY reset GPIO and
+touchscreen IRQs are swapped to prevent collision between EXTi IRQs,
+reflect that in DT.
 
-Suggested-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Signed-off-by: Zhao Heming <heming.zhao@suse.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Fixes: 34e0c7847dcf ("ARM: dts: stm32: Add DH Electronics DHCOM STM32MP1 SoM and PDK2 board")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md-bitmap.c  | 3 ++-
- drivers/md/md-cluster.c | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index 95a5f3757fa30..19b2601be3c5e 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -1949,6 +1949,7 @@ int md_bitmap_load(struct mddev *mddev)
- }
- EXPORT_SYMBOL_GPL(md_bitmap_load);
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index d30a3c60da9b0..a87ebc4843963 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -117,7 +117,7 @@ &ethernet0 {
+ 	max-speed = <100>;
+ 	phy-handle = <&phy0>;
+ 	st,eth-ref-clk-sel;
+-	phy-reset-gpios = <&gpioh 15 GPIO_ACTIVE_LOW>;
++	phy-reset-gpios = <&gpioh 3 GPIO_ACTIVE_LOW>;
  
-+/* caller need to free returned bitmap with md_bitmap_free() */
- struct bitmap *get_bitmap_from_slot(struct mddev *mddev, int slot)
- {
- 	int rv = 0;
-@@ -2012,6 +2013,7 @@ int md_bitmap_copy_from_slot(struct mddev *mddev, int slot,
- 	md_bitmap_unplug(mddev->bitmap);
- 	*low = lo;
- 	*high = hi;
-+	md_bitmap_free(bitmap);
+ 	mdio0 {
+ 		#address-cells = <1>;
+@@ -285,7 +285,7 @@ touchscreen@49 {
+ 		compatible = "ti,tsc2004";
+ 		reg = <0x49>;
+ 		vio-supply = <&v3v3>;
+-		interrupts-extended = <&gpioh 3 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&gpioh 15 IRQ_TYPE_EDGE_FALLING>;
+ 	};
  
- 	return rv;
- }
-@@ -2615,4 +2617,3 @@ struct attribute_group md_bitmap_group = {
- 	.name = "bitmap",
- 	.attrs = md_bitmap_attrs,
- };
--
-diff --git a/drivers/md/md-cluster.c b/drivers/md/md-cluster.c
-index d50737ec40394..afbbc552c3275 100644
---- a/drivers/md/md-cluster.c
-+++ b/drivers/md/md-cluster.c
-@@ -1166,6 +1166,7 @@ static int resize_bitmaps(struct mddev *mddev, sector_t newsize, sector_t oldsiz
- 			 * can't resize bitmap
- 			 */
- 			goto out;
-+		md_bitmap_free(bitmap);
- 	}
- 
- 	return 0;
+ 	eeprom@50 {
 -- 
 2.25.1
 
