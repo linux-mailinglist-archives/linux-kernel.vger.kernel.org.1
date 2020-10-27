@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1871629B45C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 077BC29B45E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782878AbgJ0PBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58892 "EHLO mail.kernel.org"
+        id S1788926AbgJ0PBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1783041AbgJ0O5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:57:47 -0400
+        id S1783122AbgJ0O5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:57:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01805206F4;
-        Tue, 27 Oct 2020 14:57:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F33120714;
+        Tue, 27 Oct 2020 14:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810666;
-        bh=DjhRzW5XfOtwP0yQSjpNXslIJWOVWBT27b+JKCQ4Jd0=;
+        s=default; t=1603810674;
+        bh=Hpmimh0nSaGwfbdxGmIyGDDXwA4oR24ywM7o1Oez3LE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n46HHXvVwNvWwEsCSTYxL2OmKhifduJ0whDca8hE3tVzsn3rlnadOfArWyA9Jtawq
-         m4wC6oxcJCakTnXnDlxuZ9DTW/t1zwlyUwU8t2sLp/zNEo0OPgy1q4CxSAt7rlt0pi
-         GbL1YVGz+klXy887N6qVV/IVlDfpVwAKtG0/XxJo=
+        b=AdYWeq65Yj7mQQnCi8DspXgu1nnDAEnCiPgmPkvKecSkYKLLKHojQcb05CivKGmhG
+         BPrqaft6tc7ZmbLpSNR8jh6jFVa0YofOIgrUlhzVOwjaxppIGh638W1ld+HyqU1qkr
+         Qf4n7DdnzuHIGQi8fCkzECbxV5DhWk6WTd9gWluI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 221/633] net: stmmac: use netif_tx_start|stop_all_queues() function
-Date:   Tue, 27 Oct 2020 14:49:24 +0100
-Message-Id: <20201027135533.050586518@linuxfoundation.org>
+Subject: [PATCH 5.8 224/633] drm: mxsfb: check framebuffer pitch
+Date:   Tue, 27 Oct 2020 14:49:27 +0100
+Message-Id: <20201027135533.191516014@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,99 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit 9f19306d166688a73356aa636c62e698bf2063cc ]
+[ Upstream commit d5a0c816900419105a12e7471bf074319dfa34be ]
 
-The current implementation of stmmac_stop_all_queues() and
-stmmac_start_all_queues() will not work correctly when the value of
-tx_queues_to_use is changed through ethtool -L DEVNAME rx N tx M command.
+The lcdif IP does not support a framebuffer pitch (stride) other than
+framebuffer width. Check for equality and reject the framebuffer
+otherwise.
 
-Also, netif_tx_start|stop_all_queues() are only needed in driver open()
-and close() only.
+This prevents a distorted picture when using 640x800 and running the
+Mesa graphics stack. Mesa tries to use a cache aligned stride, which
+leads at that particular resolution to width != stride. Currently
+Mesa has no fallback behavior, but rejecting this configuration allows
+userspace to handle the issue correctly.
 
-Fixes: c22a3f48 net: stmmac: adding multiple napi mechanism
-
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 45d59d704080 ("drm: Add new driver for MXSFB controller")
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200908141654.266836-1-stefan@agner.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 33 +------------------
- 1 file changed, 1 insertion(+), 32 deletions(-)
+ drivers/gpu/drm/mxsfb/mxsfb_drv.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 44ceba8ceae1a..d4be2559bb73d 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -176,32 +176,6 @@ static void stmmac_enable_all_queues(struct stmmac_priv *priv)
- 	}
+diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
+index 497cf443a9afa..0b02e65a89e79 100644
+--- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
++++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
+@@ -26,6 +26,7 @@
+ #include <drm/drm_drv.h>
+ #include <drm/drm_fb_cma_helper.h>
+ #include <drm/drm_fb_helper.h>
++#include <drm/drm_fourcc.h>
+ #include <drm/drm_gem_cma_helper.h>
+ #include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_irq.h>
+@@ -87,8 +88,26 @@ void mxsfb_disable_axi_clk(struct mxsfb_drm_private *mxsfb)
+ 		clk_disable_unprepare(mxsfb->clk_axi);
  }
  
--/**
-- * stmmac_stop_all_queues - Stop all queues
-- * @priv: driver private structure
-- */
--static void stmmac_stop_all_queues(struct stmmac_priv *priv)
--{
--	u32 tx_queues_cnt = priv->plat->tx_queues_to_use;
--	u32 queue;
--
--	for (queue = 0; queue < tx_queues_cnt; queue++)
--		netif_tx_stop_queue(netdev_get_tx_queue(priv->dev, queue));
--}
--
--/**
-- * stmmac_start_all_queues - Start all queues
-- * @priv: driver private structure
-- */
--static void stmmac_start_all_queues(struct stmmac_priv *priv)
--{
--	u32 tx_queues_cnt = priv->plat->tx_queues_to_use;
--	u32 queue;
--
--	for (queue = 0; queue < tx_queues_cnt; queue++)
--		netif_tx_start_queue(netdev_get_tx_queue(priv->dev, queue));
--}
--
- static void stmmac_service_event_schedule(struct stmmac_priv *priv)
- {
- 	if (!test_bit(STMMAC_DOWN, &priv->state) &&
-@@ -2866,7 +2840,7 @@ static int stmmac_open(struct net_device *dev)
- 	}
- 
- 	stmmac_enable_all_queues(priv);
--	stmmac_start_all_queues(priv);
-+	netif_tx_start_all_queues(priv->dev);
- 
- 	return 0;
- 
-@@ -2907,8 +2881,6 @@ static int stmmac_release(struct net_device *dev)
- 	phylink_stop(priv->phylink);
- 	phylink_disconnect_phy(priv->phylink);
- 
--	stmmac_stop_all_queues(priv);
--
- 	stmmac_disable_all_queues(priv);
- 
- 	for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++)
-@@ -5078,7 +5050,6 @@ int stmmac_suspend(struct device *dev)
- 	mutex_lock(&priv->lock);
- 
- 	netif_device_detach(ndev);
--	stmmac_stop_all_queues(priv);
- 
- 	stmmac_disable_all_queues(priv);
- 
-@@ -5203,8 +5174,6 @@ int stmmac_resume(struct device *dev)
- 
- 	stmmac_enable_all_queues(priv);
- 
--	stmmac_start_all_queues(priv);
--
- 	mutex_unlock(&priv->lock);
- 
- 	if (!device_may_wakeup(priv->device)) {
++static struct drm_framebuffer *
++mxsfb_fb_create(struct drm_device *dev, struct drm_file *file_priv,
++		const struct drm_mode_fb_cmd2 *mode_cmd)
++{
++	const struct drm_format_info *info;
++
++	info = drm_get_format_info(dev, mode_cmd);
++	if (!info)
++		return ERR_PTR(-EINVAL);
++
++	if (mode_cmd->width * info->cpp[0] != mode_cmd->pitches[0]) {
++		dev_dbg(dev->dev, "Invalid pitch: fb width must match pitch\n");
++		return ERR_PTR(-EINVAL);
++	}
++
++	return drm_gem_fb_create(dev, file_priv, mode_cmd);
++}
++
+ static const struct drm_mode_config_funcs mxsfb_mode_config_funcs = {
+-	.fb_create		= drm_gem_fb_create,
++	.fb_create		= mxsfb_fb_create,
+ 	.atomic_check		= drm_atomic_helper_check,
+ 	.atomic_commit		= drm_atomic_helper_commit,
+ };
 -- 
 2.25.1
 
