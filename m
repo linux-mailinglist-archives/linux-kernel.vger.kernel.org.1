@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19D529A22D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC35D29A231
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503852AbgJ0BYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:24:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:50539 "EHLO mga04.intel.com"
+        id S2503950AbgJ0B0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503842AbgJ0BYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:24:37 -0400
-IronPort-SDR: lG2OCie9uMcdM5BnP7/krBB1D1/q7Ffu2Dy5Ap0aTA/VlbSi63psk7kdQkl82fA5aofMKCi0ok
- n06kphYu2Qiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="165421119"
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="165421119"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 18:24:36 -0700
-IronPort-SDR: 6NmLwTBEWfrCpL1SxpFnfrcWRhcyVnrqQR3aGmAH2QtYp0AKqSGFTdzE7kLcYB5BBCTImMdMOq
- iCwemuy/LOnA==
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="535587383"
-Received: from ksprzacz-mobl1.ger.corp.intel.com (HELO linux.intel.com) ([10.252.59.214])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 18:24:30 -0700
-Date:   Tue, 27 Oct 2020 03:24:25 +0200
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     trix@redhat.com
-Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, jejb@linux.ibm.com, dhowells@redhat.com,
-        mortonm@chromium.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
-Subject: Re: [PATCH] security: remove unneeded break
-Message-ID: <20201027012425.GA20485@linux.intel.com>
-References: <20201019173653.527-1-trix@redhat.com>
+        id S2503939AbgJ0BZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 21:25:59 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E3B32080A;
+        Tue, 27 Oct 2020 01:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603761958;
+        bh=eRxg91Vif7Hr1e9AN7SedTexl2F5jN3mSWEmfAproKU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1KY0t2ntYJ3C5zqSePGezBS83g1RvdMkdcL4lpFB5yIHlx1twpHVGAgCsrqgGFjoA
+         VN+/v/m69y+0B3fFCREfR5JUdoQnJLhhULBWnFgaev5F+fnaNuvNzpRvXy4U3EESZ1
+         lPLrYcx6KE4g984ykHIbpUy1v30E+p1+ChFGV7/8=
+Date:   Mon, 26 Oct 2020 18:25:57 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Zenghui Yu <yuzenghui@huawei.com>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wanghaibin.wang@huawei.com>, <tanhuazhong@huawei.com>
+Subject: Re: [PATCH net] net: hns3: Clear the CMDQ registers before
+ unmapping BAR region
+Message-ID: <20201026182557.43dcb486@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <bca7fb17-2390-7ff3-d62d-fe279af6a225@huawei.com>
+References: <20201023051550.793-1-yuzenghui@huawei.com>
+        <3c5c98f9-b4a0-69a2-d58d-bfef977c68ad@huawei.com>
+        <e74f0a72-92d1-2ac9-1f4b-191477d673ef@huawei.com>
+        <20201026161325.6f33d9c8@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <bca7fb17-2390-7ff3-d62d-fe279af6a225@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019173653.527-1-trix@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 10:36:53AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Tue, 27 Oct 2020 09:24:10 +0800 Yunsheng Lin wrote:
+> > Fixes: 862d969a3a4d ("net: hns3: do VF's pci re-initialization while PF doing FLR")  
 > 
-> A break is not needed if it is preceded by a return
+> The correct Fixes tag should be:
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Fixes: e3338205f0c7 ("net: hns3: uninitialize pci in the hclgevf_uninit")
 
-Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Why is that?
 
-/Jarkko
+Isn't the issue the order of cmd vs pci calls? e3338205f0c7 only takes
+the pci call from under an if, the order was wrong before.
