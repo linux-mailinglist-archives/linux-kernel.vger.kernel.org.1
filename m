@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AA429C1E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F41229C465
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761096AbgJ0Oh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:37:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        id S1758704AbgJ0OWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761079AbgJ0Ohy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:37:54 -0400
+        id S2901094AbgJ0OUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:20:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08B1621D7B;
-        Tue, 27 Oct 2020 14:37:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81C0D206FA;
+        Tue, 27 Oct 2020 14:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809473;
-        bh=Bxe45CP/geLEHgOI0YBVSgpaBrjGzm0SJAl+YrQK1tQ=;
+        s=default; t=1603808446;
+        bh=xa/nQKjTLiG7xBe9S/pJJZW3EXF4GkL5VBXNjkCiHOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pOOaMGAkxXoUiFsZpewRJ2wX+IuO1FImRTyZsc8XbfYMuBNVGFnfLtL3wE3Mp/ECB
-         mavGuV18bBuahFBEGVODpti0mPuSFGzcMcxJIiP0eCw4qtnbvgCEUaHk6lh0r9Q6M1
-         gn/1BSj4jFJHK7dRnP8lwE0+bHkU+792SHOpBtC4=
+        b=Mx0OV3sd0aN9N0UYCd7m2YDbFEiet1qkQS1iIapm9N9lwfnH6IpF2GUv5NiF3lJre
+         DeGzmn31bfzNGZwFLgJdrrmc02ye+gVQuC3DoihySN1WXHoNiJJnlu56ALl/PdrOcq
+         9Hqi7JTUGJ4RKaci+Qj2am0+N+HsdCJsvZdoiv/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Eran Ben Elisha <eranbe@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 208/408] RDMA/mlx5: Fix potential race between destroy and CQE poll
-Date:   Tue, 27 Oct 2020 14:52:26 +0100
-Message-Id: <20201027135504.745327553@linuxfoundation.org>
+Subject: [PATCH 4.19 095/264] net/mlx5: Dont call timecounter cyc2time directly from 1PPS flow
+Date:   Tue, 27 Oct 2020 14:52:33 +0100
+Message-Id: <20201027135435.156703770@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Eran Ben Elisha <eranbe@mellanox.com>
 
-[ Upstream commit 4b916ed9f9e85f705213ca8d69771d3c1cd6ee5a ]
+[ Upstream commit 0d2ffdc8d4002a62de31ff7aa3bef28c843c3cbe ]
 
-The SRQ can be destroyed right before mlx5_cmd_get_srq is called.
-In such case the latter will return NULL instead of expected SRQ.
+Before calling timecounter_cyc2time(), clock->lock must be taken.
+Use mlx5_timecounter_cyc2time instead which guarantees a safe access.
 
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Link: https://lore.kernel.org/r/20200830084010.102381-5-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: afc98a0b46d8 ("net/mlx5: Update ptp_clock_event foreach PPS event")
+Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/cq.c | 5 +++--
+ drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index ff664355de550..73d5b8dc74d86 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -167,7 +167,7 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
- {
- 	enum rdma_link_layer ll = rdma_port_get_link_layer(qp->ibqp.device, 1);
- 	struct mlx5_ib_dev *dev = to_mdev(qp->ibqp.device);
--	struct mlx5_ib_srq *srq;
-+	struct mlx5_ib_srq *srq = NULL;
- 	struct mlx5_ib_wq *wq;
- 	u16 wqe_ctr;
- 	u8  roce_packet_type;
-@@ -179,7 +179,8 @@ static void handle_responder(struct ib_wc *wc, struct mlx5_cqe64 *cqe,
- 
- 		if (qp->ibqp.xrcd) {
- 			msrq = mlx5_cmd_get_srq(dev, be32_to_cpu(cqe->srqn));
--			srq = to_mibsrq(msrq);
-+			if (msrq)
-+				srq = to_mibsrq(msrq);
- 		} else {
- 			srq = to_msrq(qp->ibqp.srq);
- 		}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index d359e850dbf07..0fd62510fb277 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -475,8 +475,9 @@ void mlx5_pps_event(struct mlx5_core_dev *mdev,
+ 	switch (clock->ptp_info.pin_config[pin].func) {
+ 	case PTP_PF_EXTTS:
+ 		ptp_event.index = pin;
+-		ptp_event.timestamp = timecounter_cyc2time(&clock->tc,
+-					be64_to_cpu(eqe->data.pps.time_stamp));
++		ptp_event.timestamp =
++			mlx5_timecounter_cyc2time(clock,
++						  be64_to_cpu(eqe->data.pps.time_stamp));
+ 		if (clock->pps_info.enabled) {
+ 			ptp_event.type = PTP_CLOCK_PPSUSR;
+ 			ptp_event.pps_times.ts_real =
 -- 
 2.25.1
 
