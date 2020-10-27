@@ -2,198 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3AD29AE66
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FB729ADCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753141AbgJ0N6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:58:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753084AbgJ0N6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:58:34 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 033FB2072D;
-        Tue, 27 Oct 2020 13:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807113;
-        bh=IX2d2SxGPTenesbgtUY1o15LkCFjmE32LFqtIj318rk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w9A1vgEIiTZGy0FFe1PFuY6rC6P98Tpk8aVXM5li7fXCez895GH71oGi0S9fzEbci
-         cB4wJ4THqRHsgcaK+QVVj643cIMh8Bjy2AQJH7ptRb9jzVC5HksWdQU5qXeWQ/YaVf
-         NvXakcn5mYgAc1sYTz7CnK9ndjq9C8t3iLwuf2W4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 047/112] net: enic: Cure the enic api locking trainwreck
+        id S1752552AbgJ0NtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:49:23 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:36688 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752540AbgJ0NtW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:49:22 -0400
+Received: by mail-ed1-f66.google.com with SMTP id l16so1511200eds.3;
+        Tue, 27 Oct 2020 06:49:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZnQkxwgJ6i77+EDy7ii9SL2QSN3TsUPUF8gJzK7Sz2A=;
+        b=C7L5ldZS0nW165WCgAWiA78F1DltzHr7uZvwIfgu1OR/PFMoHIvrDUhqmqdm91jLrr
+         Uj5J7Ya4bD9GzRepdajFDKjbOzaAl75KTAaDA0T5oEZTcVIty8EFB+b7SDRB8xBBnsIz
+         zaDtz8ScVAj9CunFwLuFXIgxuIav8MLQcKF7gmthk+m5ng3sRxXv3ibUiYPnpC3x2/rk
+         Mzhejt14ZLAl6FDU6uZ2odTOGyT6W0C9aa1BsDTWo0lmDCu/S2itQoIy0cHBf/R2Pzow
+         akVuSt4RXLEuo1VaifHUoWeN/aMhccy8yExyntXeCZAaQia1BtsQdTfFxfQ1JTpsvgZu
+         71CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZnQkxwgJ6i77+EDy7ii9SL2QSN3TsUPUF8gJzK7Sz2A=;
+        b=HYTA1ZWQrz/nO/BP6BcADM2+gKVDE9okUK2t9mnnYFBwKo655OSs1bPMWYRz/Khha7
+         BUPbm5D2VRcl/ftPl4qQawk2vKpurSRGfg73YKSWayifhAJ6CHr7hAd31vyfxMmPDmQ6
+         c5SNX67CsgfnDTBMNcoAT60Hh+BK/2mmG/ABRqaEgCLA2cHU4kyesxqmHNN8RXqFtfYX
+         KLr6Yn6fReBc3ik1pNymJtYpJayz9HVYNJLQdPqki1GMgfwH/J+DhntC88zOuCJLJ4JF
+         ReBm9VADelUFDPPeAYPvU9yLRb2uvCRdTdOatR1vhuKaVg0/9CUu/ueWyoQoo58qKwzh
+         Ammw==
+X-Gm-Message-State: AOAM530IbLKrATwrx+1OJfTDdnkrjJ7H2RzsKeOdYhwvAkgaCWAx277I
+        LLnAUrJkCoMX31zf5SvArMNn5/Dh184=
+X-Google-Smtp-Source: ABdhPJyLImSrLnd0UnDtq1WDozpOz5Rbs7Y3xGZeJh9Wqk/YZ8OSbRrxILNooHJBec1dYS8bHABScQ==
+X-Received: by 2002:a50:ab5b:: with SMTP id t27mr2314325edc.281.1603806559858;
+        Tue, 27 Oct 2020 06:49:19 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id k18sm1012491eds.93.2020.10.27.06.49.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 06:49:18 -0700 (PDT)
 Date:   Tue, 27 Oct 2020 14:49:17 +0100
-Message-Id: <20201027134902.781869222@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
-User-Agent: quilt/0.66
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 30/52] memory: tegra20-emc: Make driver modular
+Message-ID: <20201027134917.GK1822510@ulmo>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-31-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yiup30KVCQiHUZFC"
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-31-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit a53b59ece86c86d16d12ccdaa1ad0c78250a9d96 ]
+--yiup30KVCQiHUZFC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-enic_dev_wait() has a BUG_ON(in_interrupt()).
+On Mon, Oct 26, 2020 at 01:17:13AM +0300, Dmitry Osipenko wrote:
+> This patch adds modularization support to the Tegra20 EMC driver. Driver
+> now can be compiled as a loadable kernel module.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/Kconfig       |  2 +-
+>  drivers/memory/tegra/tegra20-emc.c | 17 ++++++++++++-----
+>  2 files changed, 13 insertions(+), 6 deletions(-)
 
-Chasing the callers of enic_dev_wait() revealed the gems of enic_reset()
-and enic_tx_hang_reset() which are both invoked through work queues in
-order to be able to call rtnl_lock(). So far so good.
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-After locking rtnl both functions acquire enic::enic_api_lock which
-serializes against the (ab)use from infiniband. This is where the
-trainwreck starts.
+--yiup30KVCQiHUZFC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-enic::enic_api_lock is a spin_lock() which implicitly disables preemption,
-but both functions invoke a ton of functions under that lock which can
-sleep. The BUG_ON(in_interrupt()) does not trigger in that case because it
-can't detect the preempt disabled condition.
+-----BEGIN PGP SIGNATURE-----
 
-This clearly has never been tested with any of the mandatory debug options
-for 7+ years, which would have caught that for sure.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YJV0ACgkQ3SOs138+
+s6EUag/+OjWxEB4buJmoqYw0Rv+8ij1VT1G6Sh9iz75VISwmL6uRFeB3kAECbmpO
+HY3HsZImaMg9qrDj+FRpXO+1mdKNUB3Bj0nhX3r39Ng6kfj+JQ1LB5p0zjGMXGpj
+JECXzD7KIS21xiMZQDZKWF+FJQeJNwNZiBtQlpR1+CNtdLOL8kb3nwRfV1u/fwmG
+v835gDSON0zLC5xgNpSchOvuf2SUze90N65hb9S7C8eo0U9fsBa64quS8+kzi/qn
+h6rQVPUoElFh+rtthgslcgN/a7eiiKRfjxXfgX3yEcmEPwP6p2uCvZakf98y5stC
+33H0Okyq1HynFA60lvAiArx+1U5iv6BFuMtQZelKAqMyZTiEMAUNYHWdSlEdNYp2
+92HoBL98MkYM8fD1RHEhx95HFNEWnalA+45HKKLSU75YMkNSad4eQofRjFMr8+f9
+45ewjoYSiPmWBsiIJ5SQrI5N7E/UWG1Stg25xAIBqBscCQXLMgv+3rkbxLe4oW/O
+babLseIhIVNtYzP1bIcewYmSig/tmYG00RzBpQIddXESAzppjc4VtXRTk0mPWMJy
+uk4aIKZHeher/uKxvDincboDjZvvyIqEV+Gt4NDnuDPubtdA/hQjwLXZaxNOWEhB
+lFBJkwdhiry9LprfiUKk7GxygvRAd0qYjFM/SRB0cLyb/g7aR6E=
+=TBNL
+-----END PGP SIGNATURE-----
 
-Cure it by adding a enic_api_busy member to struct enic, which is modified
-and evaluated with enic::enic_api_lock held.
-
-If enic_api_devcmd_proxy_by_index() observes enic::enic_api_busy as true,
-it drops enic::enic_api_lock and busy waits for enic::enic_api_busy to
-become false.
-
-It would be smarter to wait for a completion of that busy period, but
-enic_api_devcmd_proxy_by_index() is called with other spin locks held which
-obviously can't sleep.
-
-Remove the BUG_ON(in_interrupt()) check as well because it's incomplete and
-with proper debugging enabled the problem would have been caught from the
-debug checks in schedule_timeout().
-
-Fixes: 0b038566c0ea ("drivers/net: enic: Add an interface for USNIC to interact with firmware")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/cisco/enic/enic.h      |  1 +
- drivers/net/ethernet/cisco/enic/enic_api.c  |  6 +++++
- drivers/net/ethernet/cisco/enic/enic_main.c | 27 ++++++++++++++++-----
- 3 files changed, 28 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/cisco/enic/enic.h b/drivers/net/ethernet/cisco/enic/enic.h
-index 7ba6d530b0c0a..230a4157ae9d0 100644
---- a/drivers/net/ethernet/cisco/enic/enic.h
-+++ b/drivers/net/ethernet/cisco/enic/enic.h
-@@ -163,6 +163,7 @@ struct enic {
- 	u16 num_vfs;
- #endif
- 	spinlock_t enic_api_lock;
-+	bool enic_api_busy;
- 	struct enic_port_profile *pp;
- 
- 	/* work queue cache line section */
-diff --git a/drivers/net/ethernet/cisco/enic/enic_api.c b/drivers/net/ethernet/cisco/enic/enic_api.c
-index b161f24522b87..b028ea2dec2b9 100644
---- a/drivers/net/ethernet/cisco/enic/enic_api.c
-+++ b/drivers/net/ethernet/cisco/enic/enic_api.c
-@@ -34,6 +34,12 @@ int enic_api_devcmd_proxy_by_index(struct net_device *netdev, int vf,
- 	struct vnic_dev *vdev = enic->vdev;
- 
- 	spin_lock(&enic->enic_api_lock);
-+	while (enic->enic_api_busy) {
-+		spin_unlock(&enic->enic_api_lock);
-+		cpu_relax();
-+		spin_lock(&enic->enic_api_lock);
-+	}
-+
- 	spin_lock_bh(&enic->devcmd_lock);
- 
- 	vnic_dev_cmd_proxy_by_index_start(vdev, vf);
-diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
-index 3fd1cba0c7ec3..5c74e55b75e52 100644
---- a/drivers/net/ethernet/cisco/enic/enic_main.c
-+++ b/drivers/net/ethernet/cisco/enic/enic_main.c
-@@ -1938,8 +1938,6 @@ static int enic_dev_wait(struct vnic_dev *vdev,
- 	int done;
- 	int err;
- 
--	BUG_ON(in_interrupt());
--
- 	err = start(vdev, arg);
- 	if (err)
- 		return err;
-@@ -2116,6 +2114,13 @@ static int enic_set_rss_nic_cfg(struct enic *enic)
- 		rss_hash_bits, rss_base_cpu, rss_enable);
- }
- 
-+static void enic_set_api_busy(struct enic *enic, bool busy)
-+{
-+	spin_lock(&enic->enic_api_lock);
-+	enic->enic_api_busy = busy;
-+	spin_unlock(&enic->enic_api_lock);
-+}
-+
- static void enic_reset(struct work_struct *work)
- {
- 	struct enic *enic = container_of(work, struct enic, reset);
-@@ -2125,7 +2130,9 @@ static void enic_reset(struct work_struct *work)
- 
- 	rtnl_lock();
- 
--	spin_lock(&enic->enic_api_lock);
-+	/* Stop any activity from infiniband */
-+	enic_set_api_busy(enic, true);
-+
- 	enic_stop(enic->netdev);
- 	enic_dev_soft_reset(enic);
- 	enic_reset_addr_lists(enic);
-@@ -2133,7 +2140,10 @@ static void enic_reset(struct work_struct *work)
- 	enic_set_rss_nic_cfg(enic);
- 	enic_dev_set_ig_vlan_rewrite_mode(enic);
- 	enic_open(enic->netdev);
--	spin_unlock(&enic->enic_api_lock);
-+
-+	/* Allow infiniband to fiddle with the device again */
-+	enic_set_api_busy(enic, false);
-+
- 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
- 
- 	rtnl_unlock();
-@@ -2145,7 +2155,9 @@ static void enic_tx_hang_reset(struct work_struct *work)
- 
- 	rtnl_lock();
- 
--	spin_lock(&enic->enic_api_lock);
-+	/* Stop any activity from infiniband */
-+	enic_set_api_busy(enic, true);
-+
- 	enic_dev_hang_notify(enic);
- 	enic_stop(enic->netdev);
- 	enic_dev_hang_reset(enic);
-@@ -2154,7 +2166,10 @@ static void enic_tx_hang_reset(struct work_struct *work)
- 	enic_set_rss_nic_cfg(enic);
- 	enic_dev_set_ig_vlan_rewrite_mode(enic);
- 	enic_open(enic->netdev);
--	spin_unlock(&enic->enic_api_lock);
-+
-+	/* Allow infiniband to fiddle with the device again */
-+	enic_set_api_busy(enic, false);
-+
- 	call_netdevice_notifiers(NETDEV_REBOOT, enic->netdev);
- 
- 	rtnl_unlock();
--- 
-2.25.1
-
-
-
+--yiup30KVCQiHUZFC--
