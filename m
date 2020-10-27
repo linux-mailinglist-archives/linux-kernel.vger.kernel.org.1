@@ -2,219 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B4229A30B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA30F29A2F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444467AbgJ0DMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 23:12:02 -0400
-Received: from mail-pj1-f48.google.com ([209.85.216.48]:33221 "EHLO
-        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443814AbgJ0DMB (ORCPT
+        id S2439059AbgJ0DKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:10:19 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:44527 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2438881AbgJ0DKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 23:12:01 -0400
-Received: by mail-pj1-f48.google.com with SMTP id k8so112152pjd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 20:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2S0mOj32dSJ0rHgj2cZGve+B+fdp3orG+yrp5sDE9x4=;
-        b=esU8WF7tSbNZHIQRr3glm2pEvYrh8qll9RAeuoQtI8dd9P0H6ug7k0PSkq0enBi4wh
-         Yea7UkEIEGD7DWsH7yNmeLUlatBc2OUi8im6FIi5Xj3tocrFAXgo0J1zwaejsx4u+I8D
-         B4Iot2QhfO9hoBFe25fXc40fsttCWYpfxtpYVOJOk3loRa29s48EXtDz+xIG8TPhHNgt
-         pYpozj2fjUZfQGN9iCaI1MYgVvtvs+2HRFsmQf0QxsGtDS+XXNwSpvQUgI7e19tOhnGh
-         SnYvIZLI9lh8uGDEC8cQxHlwl/HdCfQ+Aedx0gctBq+9r11eCJjiaZWFOBktkd42WtRt
-         FNsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=2S0mOj32dSJ0rHgj2cZGve+B+fdp3orG+yrp5sDE9x4=;
-        b=fPOtV2YqoBB6+GxW1iKbrRg+l7yZ+7hfQlmFC9aaxWTOBGGVTRT9fMRj2pZSjX+LiC
-         NoyKNa3Q+R1eRFS5yS2PcMnMFr9gbEbKDItAbg7P9r/hF4n5CgM2YaSKB7OwXropx1hb
-         LxkymIzLEIb8H+R6RvUEpzuCOljbnrBBgS8FIwsjih4OpA6xUbC/mp9sJXQ17FNxMiTx
-         b9VmGF3oNQcZ05KIQg/ydqedFEDKFlotbDUc2xXHaEvIThe9qxDHQL1CgWnEkUJS753+
-         730tMLTjUv+0C2a03KY+ZUYsGxIujEJKy/+x8vXkq0yVaxu1zScHDEPc1dR1ZDI4j7Ms
-         nc7w==
-X-Gm-Message-State: AOAM532Vbj61T5/I2vVug08SePLWt908hfCC68wllPvy1W9WbWraj9pZ
-        Z37Hb6P97SKjKNS7ZLixlvJa8A==
-X-Google-Smtp-Source: ABdhPJzbb1rk0tcfPyS1TCLn1arXgKD92QMNZ5Sjy/6X4ao3OJ77WTyKkahm93EDJ+NkZQD61jqfWg==
-X-Received: by 2002:a17:90a:4f0f:: with SMTP id p15mr107924pjh.10.1603768320151;
-        Mon, 26 Oct 2020 20:12:00 -0700 (PDT)
-Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id 17sm10750pgv.58.2020.10.26.20.11.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 20:11:59 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 21/21] perf arm-spe: Add support for ARMv8.3-SPE
-Date:   Tue, 27 Oct 2020 11:09:17 +0800
-Message-Id: <20201027030917.15404-22-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027030917.15404-1-leo.yan@linaro.org>
-References: <20201027030917.15404-1-leo.yan@linaro.org>
+        Mon, 26 Oct 2020 23:10:16 -0400
+X-UUID: 521303167da64ede86a4c148edf69fe4-20201027
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=EzDD5L9RbFsFk8w8HPKQxkvcZEHqE3qGEfd/0qTNB1U=;
+        b=PoB8GIibTnjJUf40dj++V2uAWuySkjJlwgJxiMLERIhfeHKONaDsFMEhfQYI5sMJ1CxBlVR8bRfBkrq8lJya1ABJSu6xydR8KB1Dl0I427XgKffN2705COZh2VIY9h7ulGROBHKzL/2eyMWc1kHdnB9aEkfR2LyAAxmnxALCGro=;
+X-UUID: 521303167da64ede86a4c148edf69fe4-20201027
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1939621523; Tue, 27 Oct 2020 11:10:13 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 27 Oct 2020 11:10:11 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by mtkcas08.mediatek.inc
+ (172.21.101.126) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Oct
+ 2020 11:10:11 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 27 Oct 2020 11:10:11 +0800
+Message-ID: <1603768211.2104.8.camel@mtkswgap22>
+Subject: Re: [PATCH] scsi: ufs: Make sure clk scaling happens only when hba
+ is runtime ACTIVE
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        <saravanak@google.com>, <salyzyn@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Tue, 27 Oct 2020 11:10:11 +0800
+In-Reply-To: <67c4ae5998765daa674a4df696d8d673@codeaurora.org>
+References: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
+         <67c4ae5998765daa674a4df696d8d673@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
-
-This patch is to support Armv8.3 extension for SPE, it adds alignment
-field in the Events packet and it supports the Scalable Vector Extension
-(SVE) for Operation packet and Events packet with two additions:
-
-  - The vector length for SVE operations in the Operation Type packet;
-  - The incomplete predicate and empty predicate fields in the Events
-    packet.
-
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 72 ++++++++++++++++++-
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 +++++
- 2 files changed, 86 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 5195ec3b1ec4..40b12d6893f9 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -332,6 +332,21 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
- 		if (ret < 0)
- 			return ret;
- 	}
-+	if (payload & BIT(EV_ALIGNMENT)) {
-+		ret = arm_spe_pkt_snprintf(&buf, &blen, " ALIGNMENT");
-+		if (ret < 0)
-+			return ret;
-+	}
-+	if (payload & BIT(EV_PARTIAL_PREDICATE)) {
-+		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-PARTIAL-PRED");
-+		if (ret < 0)
-+			return ret;
-+	}
-+	if (payload & BIT(EV_EMPTY_PREDICATE)) {
-+		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-EMPTY-PRED");
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	return buf_len - blen;
- }
-@@ -345,8 +360,42 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 
- 	switch (class) {
- 	case SPE_OP_PKT_HDR_CLASS_OTHER:
--		return arm_spe_pkt_snprintf(&buf, &blen,
--			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
-+		if (SPE_OP_PKT_IS_OTHER_SVE_OP(payload)) {
-+
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, "SVE-OTHER");
-+			if (ret < 0)
-+				return ret;
-+
-+			/* SVE effective vector length */
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
-+						   SPE_OP_PKG_SVE_EVL(payload));
-+			if (ret < 0)
-+				return ret;
-+
-+			if (payload & SPE_OP_PKT_SVE_FP) {
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " FP");
-+				if (ret < 0)
-+					return ret;
-+			}
-+			if (payload & SPE_OP_PKT_SVE_PRED) {
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
-+				if (ret < 0)
-+					return ret;
-+			}
-+		} else {
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, "OTHER");
-+			if (ret < 0)
-+				return ret;
-+
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " %s",
-+					payload & SPE_OP_PKT_COND ?
-+					"COND-SELECT" : "INSN-OTHER");
-+			if (ret < 0)
-+				return ret;
-+		}
-+
-+		return buf_len - blen;
-+
- 	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
- 		ret = arm_spe_pkt_snprintf(&buf, &blen,
- 					   payload & SPE_OP_PKT_ST ? "ST" : "LD");
-@@ -400,6 +449,25 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 			break;
- 		}
- 
-+		if (SPE_OP_PKT_IS_LDST_SVE(payload)) {
-+			/* SVE effective vector length */
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
-+						   SPE_OP_PKG_SVE_EVL(payload));
-+			if (ret < 0)
-+				return ret;
-+
-+			if (payload & SPE_OP_PKT_SVE_PRED) {
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
-+				if (ret < 0)
-+					return ret;
-+			}
-+			if (payload & SPE_OP_PKT_SVE_SG) {
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " SG");
-+				if (ret < 0)
-+					return ret;
-+			}
-+		}
-+
- 		return buf_len - blen;
- 
- 	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 1ad14885c2a1..9b970e7bf1e2 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -113,6 +113,8 @@ enum arm_spe_events {
- #define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
- #define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
- 
-+#define SPE_OP_PKT_IS_OTHER_SVE_OP(v)		(((v) & (BIT(7) | BIT(3) | BIT(0))) == 0x8)
-+
- #define SPE_OP_PKT_COND				BIT(0)
- 
- #define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
-@@ -128,6 +130,20 @@ enum arm_spe_events {
- #define SPE_OP_PKT_AT				BIT(2)
- #define SPE_OP_PKT_ST				BIT(0)
- 
-+#define SPE_OP_PKT_IS_LDST_SVE(v)		(((v) & (BIT(3) | BIT(1))) == 0x8)
-+
-+#define SPE_OP_PKT_SVE_SG			BIT(7)
-+/*
-+ * SVE effective vector length (EVL) is stored in byte 0 bits [6:4];
-+ * the length is rounded up to a power of two and use 32 as one step,
-+ * so EVL calculation is:
-+ *
-+ *   32 * (2 ^ bits [6:4]) = 32 << (bits [6:4])
-+ */
-+#define SPE_OP_PKG_SVE_EVL(v)			(32 << (((v) & GENMASK_ULL(6, 4)) >> 4))
-+#define SPE_OP_PKT_SVE_PRED			BIT(2)
-+#define SPE_OP_PKT_SVE_FP			BIT(1)
-+
- #define SPE_OP_PKT_IS_INDIRECT_BRANCH(v)	(((v) & GENMASK_ULL(7, 1)) == 0x2)
- 
- const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
--- 
-2.17.1
+SGkgQ2FuLA0KDQpPbiBUdWUsIDIwMjAtMTAtMjAgYXQgMTA6MzUgKzA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IEhpIFN0YW5sZXksDQo+IA0KPiBPbiAyMDIwLTA5LTIyIDE1OjA5LCBDYW4gR3VvIHdy
+b3RlOg0KPiA+IElmIHNvbWVvbmUgcGxheXMgd2l0aCB0aGUgVUZTIGNsayBzY2FsaW5nIGRldmZy
+ZXEgZ292ZXJub3IgdGhyb3VnaCANCj4gPiBzeXNmcywNCj4gPiB1ZnNoY2RfZGV2ZnJlcV9zY2Fs
+ZSBtYXkgYmUgY2FsbGVkIGV2ZW4gd2hlbiBoYmEgaXMgbm90IHJ1bnRpbWUgQUNUSVZFLA0KPiA+
+IHdoaWNoIGNhbiBsZWFkIHRvIHVuZXhwZWN0ZWQgZXJyb3IuIFdlIGNhbm5vdCBqdXN0IHByb3Rl
+Y3QgaXQgYnkgDQo+ID4gY2FsbGluZw0KPiA+IHBtX3J1bnRpbWVfZ2V0X3N5bmMsIGJlY2F1c2Ug
+dGhhdCBtYXkgY2F1c2UgcmFjaW5nIHByb2JsZW0gc2luY2UgaGJhDQo+ID4gcnVudGltZSBzdXNw
+ZW5kIG9wcyBuZWVkcyB0byBzdXNwZW5kIGNsayBzY2FsaW5nLiBJbiBvcmRlciB0byBmaXggaXQs
+IA0KPiA+IGNhbGwNCj4gPiBwbV9ydW50aW1lX2dldF9ub3Jlc3VtZSBhbmQgY2hlY2sgaGJhJ3Mg
+cnVudGltZSBzdGF0dXMsIHRoZW4gb25seSANCj4gPiBwcm9jZWVkDQo+ID4gaWYgaGJhIGlzIHJ1
+bnRpbWUgQUNUSVZFLCBvdGhlcndpc2UganVzdCBiYWlsLg0KPiA+IA0KPiA+IGdvdmVybm9yX3N0
+b3JlDQo+ID4gIGRldmZyZXFfcGVyZm9ybWFuY2VfaGFuZGxlcg0KPiA+ICAgdXBkYXRlX2RldmZy
+ZXENCj4gPiAgICBkZXZmcmVxX3NldF90YXJnZXQNCj4gPiAgICAgdWZzaGNkX2RldmZyZXFfdGFy
+Z2V0DQo+ID4gICAgICB1ZnNoY2RfZGV2ZnJlcV9zY2FsZQ0KPiA+IA0KPiA+IFNpZ25lZC1vZmYt
+Ynk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+
+ID4gaW5kZXggZTRjYjk5NC4uODQ3ZjM1NSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Njc2kv
+dWZzL3Vmc2hjZC5jDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiA+IEBA
+IC0xMjk0LDggKzEyOTQsMTUgQEAgc3RhdGljIGludCB1ZnNoY2RfZGV2ZnJlcV90YXJnZXQoc3Ry
+dWN0IGRldmljZSANCj4gPiAqZGV2LA0KPiA+ICAJfQ0KPiA+ICAJc3Bpbl91bmxvY2tfaXJxcmVz
+dG9yZShoYmEtPmhvc3QtPmhvc3RfbG9jaywgaXJxX2ZsYWdzKTsNCj4gPiANCj4gPiArCXBtX3J1
+bnRpbWVfZ2V0X25vcmVzdW1lKGhiYS0+ZGV2KTsNCj4gPiArCWlmICghcG1fcnVudGltZV9hY3Rp
+dmUoaGJhLT5kZXYpKSB7DQo+ID4gKwkJcG1fcnVudGltZV9wdXRfbm9pZGxlKGhiYS0+ZGV2KTsN
+Cj4gPiArCQlyZXQgPSAtRUFHQUlOOw0KPiA+ICsJCWdvdG8gb3V0Ow0KPiA+ICsJfQ0KPiA+ICAJ
+c3RhcnQgPSBrdGltZV9nZXQoKTsNCj4gPiAgCXJldCA9IHVmc2hjZF9kZXZmcmVxX3NjYWxlKGhi
+YSwgc2NhbGVfdXApOw0KPiA+ICsJcG1fcnVudGltZV9wdXQoaGJhLT5kZXYpOw0KPiA+IA0KPiA+
+ICAJdHJhY2VfdWZzaGNkX3Byb2ZpbGVfY2xrX3NjYWxpbmcoZGV2X25hbWUoaGJhLT5kZXYpLA0K
+PiA+ICAJCShzY2FsZV91cCA/ICJ1cCIgOiAiZG93biIpLA0KPiANCj4gQ291bGQgeW91IHBsZWFz
+ZSByZXZpZXcgdGhpcyBvbmUgc2luY2Ugd2UgbWF5IGJlIHRoZSBvbmx5IHR3bw0KPiB1c2VycyBv
+ZiBjbGsgc2NhbGluZz8NCj4gDQoNCkxvb2tzIGdvb2QgdG8gbWUuDQoNClJldmlld2VkLWJ5OiBT
+dGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoNCg==
 
