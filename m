@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24CA29C700
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDA929C48C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827705AbgJ0S0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47996 "EHLO mail.kernel.org"
+        id S2900996AbgJ0OSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:18:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389214AbgJ0OAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:00:31 -0400
+        id S1756601AbgJ0OO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:14:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74E8822258;
-        Tue, 27 Oct 2020 14:00:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 132562076A;
+        Tue, 27 Oct 2020 14:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807231;
-        bh=K1cOy7GnGWxE5vzIESe07CVhqy2mhR1U79X/UZxUqgI=;
+        s=default; t=1603808067;
+        bh=ESmYsFwdjMvGzq6UJYwPaDKEGd2RRZovAo1COkQR6ZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDKYm0G3oMtRQMnHVT3kwmxBdPxN71BLGsMN3VQBpu03O7Vi+qH/lpSWzxjgZnwIy
-         ULyQP7ZaaIlMhoYsvd50pfJBNTvYEQIR2l+SE3zk+TYPJAxHDQRB1jOi2X8D5SdH/5
-         X4kM6Nl8xmLGAIc0OzoSJhXd/soW6xy3g2SjYtkw=
+        b=aK0+tm7pf0jhMBkSe/JrKooaVpYKS/u4owzpVx36OAL3dehP49I2Tw8b24PcU8f6P
+         7LO4GQdWkvh0JYaQ3Eq/FslKLmiQoCwVsQPKd9Jy2l7KmF61T8uJaiR9kVAecp8KI+
+         nr1qV6EVhE0vKqChmjG1E/AuPhY2Qn4Q+9yVLiS0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 089/112] scsi: mvumi: Fix error return in mvumi_io_attach()
-Date:   Tue, 27 Oct 2020 14:49:59 +0100
-Message-Id: <20201027134904.758468194@linuxfoundation.org>
+Subject: [PATCH 4.14 145/191] media: platform: s3c-camif: Fix runtime PM imbalance on error
+Date:   Tue, 27 Oct 2020 14:50:00 +0100
+Message-Id: <20201027134916.679483561@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,32 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 055f15ab2cb4a5cbc4c0a775ef3d0066e0fa9b34 ]
+[ Upstream commit dafa3605fe60d5a61239d670919b2a36e712481e ]
 
-Return PTR_ERR() from the error handling case instead of 0.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-Link: https://lore.kernel.org/r/20200910123848.93649-1-jingxiangfeng@huawei.com
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Also, call pm_runtime_disable() when pm_runtime_get_sync() returns
+an error code.
+
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mvumi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/platform/s3c-camif/camif-core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/mvumi.c b/drivers/scsi/mvumi.c
-index 39285070f3b51..17ec51f9d9880 100644
---- a/drivers/scsi/mvumi.c
-+++ b/drivers/scsi/mvumi.c
-@@ -2476,6 +2476,7 @@ static int mvumi_io_attach(struct mvumi_hba *mhba)
- 	if (IS_ERR(mhba->dm_thread)) {
- 		dev_err(&mhba->pdev->dev,
- 			"failed to create device scan thread\n");
-+		ret = PTR_ERR(mhba->dm_thread);
- 		mutex_unlock(&mhba->sas_discovery_mutex);
- 		goto fail_create_thread;
- 	}
+diff --git a/drivers/media/platform/s3c-camif/camif-core.c b/drivers/media/platform/s3c-camif/camif-core.c
+index c4ab63986c8f0..95b11f69555c3 100644
+--- a/drivers/media/platform/s3c-camif/camif-core.c
++++ b/drivers/media/platform/s3c-camif/camif-core.c
+@@ -475,7 +475,7 @@ static int s3c_camif_probe(struct platform_device *pdev)
+ 
+ 	ret = camif_media_dev_init(camif);
+ 	if (ret < 0)
+-		goto err_alloc;
++		goto err_pm;
+ 
+ 	ret = camif_register_sensor(camif);
+ 	if (ret < 0)
+@@ -509,10 +509,9 @@ static int s3c_camif_probe(struct platform_device *pdev)
+ 	media_device_unregister(&camif->media_dev);
+ 	media_device_cleanup(&camif->media_dev);
+ 	camif_unregister_media_entities(camif);
+-err_alloc:
++err_pm:
+ 	pm_runtime_put(dev);
+ 	pm_runtime_disable(dev);
+-err_pm:
+ 	camif_clk_put(camif);
+ err_clk:
+ 	s3c_camif_unregister_subdev(camif);
 -- 
 2.25.1
 
