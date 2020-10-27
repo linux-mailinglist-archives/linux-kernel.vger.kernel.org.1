@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094F629AEB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A8F29AFDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441702AbgJ0ODU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:03:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51416 "EHLO mail.kernel.org"
+        id S1756470AbgJ0ONa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753960AbgJ0ODP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:15 -0400
+        id S1755485AbgJ0OKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB1792225E;
-        Tue, 27 Oct 2020 14:03:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E41302072D;
+        Tue, 27 Oct 2020 14:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807395;
-        bh=3DTtBYBgfjBc7f9S5LvleGG+ozlG7AfNf8E7m8+EibM=;
+        s=default; t=1603807805;
+        bh=3FSq1EhZdfDup8CjiAUD2ypmmOkblGi6RFdoaTOmGyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dBmrMsIYMrwFcz5SnE+mfO+zte22mXL9LLM/gU34glp+bJrooCMMwBek0djyFVuVF
-         B8v10zwRvROoCAv0K/kZC2F1y8lhLFvDIc17CSmcKaPvuAMTuDCeaCV+GpB0p6j0eT
-         yAeDYjlf9aWFTTGDcwW7Uv5hwAJ94Ue60h7dHaug=
+        b=fVLOyPAX1QD4DQB3rmcbPB1kFa+hlaoZp+bJpJgIL3pFUmFFyhFP3ETQqRBiW/M2y
+         aIY1ERWLCmRK0ACytq7yJSM1pfq1GmPNK25E9emAbo6pPpzThKIR5nUvjsMOsmeUy+
+         AMM4+6unMx3TdIV4J5FmIuWZB/Jlw8dnhqcOqy3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Defang Bo <bodefang@126.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 008/139] nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME attribute in nfc_genl_fw_download()
-Date:   Tue, 27 Oct 2020 14:48:22 +0100
-Message-Id: <20201027134902.542760479@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 048/191] brcmfmac: check ndev pointer
+Date:   Tue, 27 Oct 2020 14:48:23 +0100
+Message-Id: <20201027134912.046558842@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Defang Bo <bodefang@126.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 280e3ebdafb863b3cb50d5842f056267e15bf40c ]
+[ Upstream commit 9c9f015bc9f8839831c7ba0a6d731a3853c464e2 ]
 
-Check that the NFC_ATTR_FIRMWARE_NAME attributes are provided by
-the netlink client prior to accessing them.This prevents potential
-unhandled NULL pointer dereference exceptions which can be triggered
-by malicious user-mode programs, if they omit one or both of these
-attributes.
+Clang static analysis reports this error
 
-Similar to commit a0323b979f81 ("nfc: Ensure presence of required attributes in the activate_target handler").
+brcmfmac/core.c:490:4: warning: Dereference of null pointer
+        (*ifp)->ndev->stats.rx_errors++;
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 9674da8759df ("NFC: Add firmware upload netlink command")
-Signed-off-by: Defang Bo <bodefang@126.com>
-Link: https://lore.kernel.org/r/1603107538-4744-1-git-send-email-bodefang@126.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In this block of code
+
+	if (ret || !(*ifp) || !(*ifp)->ndev) {
+		if (ret != -ENODATA && *ifp)
+			(*ifp)->ndev->stats.rx_errors++;
+		brcmu_pkt_buf_free_skb(skb);
+		return -ENODATA;
+	}
+
+(*ifp)->ndev being NULL is caught as an error
+But then it is used to report the error.
+
+So add a check before using it.
+
+Fixes: 91b632803ee4 ("brcmfmac: Use net_device_stats from struct net_device")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200802161804.6126-1-trix@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/netlink.c |    2 +-
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/nfc/netlink.c
-+++ b/net/nfc/netlink.c
-@@ -1227,7 +1227,7 @@ static int nfc_genl_fw_download(struct s
- 	u32 idx;
- 	char firmware_name[NFC_FIRMWARE_NAME_MAXSIZE + 1];
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+index bfc0e37b7f344..590bef2defb94 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+@@ -318,7 +318,7 @@ static int brcmf_rx_hdrpull(struct brcmf_pub *drvr, struct sk_buff *skb,
+ 	ret = brcmf_proto_hdrpull(drvr, true, skb, ifp);
  
--	if (!info->attrs[NFC_ATTR_DEVICE_INDEX])
-+	if (!info->attrs[NFC_ATTR_DEVICE_INDEX] || !info->attrs[NFC_ATTR_FIRMWARE_NAME])
- 		return -EINVAL;
- 
- 	idx = nla_get_u32(info->attrs[NFC_ATTR_DEVICE_INDEX]);
+ 	if (ret || !(*ifp) || !(*ifp)->ndev) {
+-		if (ret != -ENODATA && *ifp)
++		if (ret != -ENODATA && *ifp && (*ifp)->ndev)
+ 			(*ifp)->ndev->stats.rx_errors++;
+ 		brcmu_pkt_buf_free_skb(skb);
+ 		return -ENODATA;
+-- 
+2.25.1
+
 
 
