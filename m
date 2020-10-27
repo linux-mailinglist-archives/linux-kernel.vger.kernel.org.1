@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C973E29B948
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39B929B94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802326AbgJ0PqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:46:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55596 "EHLO mail.kernel.org"
+        id S1802335AbgJ0PqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1800592AbgJ0Pgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:36:45 -0400
+        id S1800621AbgJ0Pgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:36:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56E372064B;
-        Tue, 27 Oct 2020 15:36:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 882AA2225E;
+        Tue, 27 Oct 2020 15:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813003;
-        bh=j8sycDWh7wTs5cS/7e+OSsDH8CYam9rdxktbp1y7oco=;
+        s=default; t=1603813006;
+        bh=2AgKnr0UrfMFZh5rOTq7UlJqxdO6ePG47xrXyI5Z3CY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i3p3LokKp8beafogzL0nOvYdLK3fCzOQUpCv/1hLXYPN+WvfmnQrfmt9R+pDVMLq6
-         uwzqlUC38Llf8JTbO1N2z/AjhFiWnmJbb63GPZq1cwfYc2OXediTof0GQoSykNY2Ru
-         szXtIVR4zr1YIYT3CE2JAQ2TFmhFnuua0Up/KXak=
+        b=O9CJUGFLcEgJtuzyY3qXBDhBDQ+Jf5N01E85bv+lrfs2ZnWEN95cgLuOF285mxb72
+         TK7INFqMqYf7zIGF/xFGS9gbRxKqU9OHRlHXcVycfukKEZwil98Kjjw+R8bbI3xt+5
+         voh9R2yk3unVLBTZl9ZVrhq8YAxuq0SVhtdg9HfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 403/757] rcu/tree: Force quiescent state on callback overload
-Date:   Tue, 27 Oct 2020 14:50:53 +0100
-Message-Id: <20201027135509.484474750@linuxfoundation.org>
+Subject: [PATCH 5.9 404/757] rcutorture: Properly set rcu_fwds for OOM handling
+Date:   Tue, 27 Oct 2020 14:50:54 +0100
+Message-Id: <20201027135509.534792859@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,42 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit 9c39245382de4d52a122641952900709d4a9950b ]
+[ Upstream commit c8fa63714763b7795a3f5fb7ed6d000763e6dccc ]
 
-On callback overload, it is necessary to quickly detect idle CPUs,
-and rcu_gp_fqs_check_wake() checks for this condition.  Unfortunately,
-the code following the call to this function does not repeat this check,
-which means that in reality no actual quiescent-state forcing, instead
-only a couple of quick and pointless wakeups at the beginning of the
-grace period.
+The conversion of rcu_fwds to dynamic allocation failed to actually
+allocate the required structure.  This commit therefore allocates it,
+frees it, and updates rcu_fwds accordingly.  While in the area, it
+abstracts the cleanup actions into rcu_torture_fwd_prog_cleanup().
 
-This commit therefore adds a check for the RCU_GP_FLAG_OVLD flag in
-the post-wakeup "if" statement in rcu_gp_fqs_loop().
-
-Fixes: 1fca4d12f4637 ("rcu: Expedite first two FQS scans under callback-overload conditions")
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Fixes: 5155be9994e5 ("rcutorture: Dynamically allocate rcu_fwds structure")
+Reported-by: kernel test robot <rong.a.chen@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f78ee759af9cb..388a2ad292bf4 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1898,7 +1898,7 @@ static void rcu_gp_fqs_loop(void)
- 			break;
- 		/* If time for quiescent-state forcing, do it. */
- 		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
--		    (gf & RCU_GP_FLAG_FQS)) {
-+		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
- 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("fqsstart"));
- 			rcu_gp_fqs(first_gp_fqs);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index f453bf8d2f1ef..49202099692be 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2160,9 +2160,20 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 		return -ENOMEM;
+ 	spin_lock_init(&rfp->rcu_fwd_lock);
+ 	rfp->rcu_fwd_cb_tail = &rfp->rcu_fwd_cb_head;
++	rcu_fwds = rfp;
+ 	return torture_create_kthread(rcu_torture_fwd_prog, rfp, fwd_prog_task);
+ }
+ 
++static void rcu_torture_fwd_prog_cleanup(void)
++{
++	struct rcu_fwd *rfp;
++
++	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
++	rfp = rcu_fwds;
++	rcu_fwds = NULL;
++	kfree(rfp);
++}
++
+ /* Callback function for RCU barrier testing. */
+ static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
+ {
+@@ -2460,7 +2471,7 @@ rcu_torture_cleanup(void)
+ 	show_rcu_gp_kthreads();
+ 	rcu_torture_read_exit_cleanup();
+ 	rcu_torture_barrier_cleanup();
+-	torture_stop_kthread(rcu_torture_fwd_prog, fwd_prog_task);
++	rcu_torture_fwd_prog_cleanup();
+ 	torture_stop_kthread(rcu_torture_stall, stall_task);
+ 	torture_stop_kthread(rcu_torture_writer, writer_task);
+ 
 -- 
 2.25.1
 
