@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B434E29B289
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB8C29B28C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762380AbgJ0Oma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39524 "EHLO mail.kernel.org"
+        id S1762404AbgJ0Omi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:42:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761931AbgJ0OkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:40:24 -0400
+        id S1762005AbgJ0Ok3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:40:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F753207BB;
-        Tue, 27 Oct 2020 14:40:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3271206B2;
+        Tue, 27 Oct 2020 14:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809622;
-        bh=Pkodcc0QYTb16u6wZo6rczQdApgVsy1vL1dCe8RTyis=;
+        s=default; t=1603809628;
+        bh=NS9e1vNo5Vgao+ywJ79TgVFEtYV3FeufPRb98X6SoaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3KGW1rXzKIOOvNjqG1T6++qLNzGck+dp8B/hJAtp3xoVu6iEe9HKajbSZoTtzNOv
-         NVYaBryiBgwss+0+EEzed5mkKfWTE4/0gIJRfVxY+V7R+GRrawELl+InrgV3UbCyZx
-         EgQm3ZfUuhKwQI31krrVamlzowc0Ftb67ZG3Krq0=
+        b=XSH3colKW9labzP0HKPQjU04zewV87Du3bGZ2kuxWAz0t7JLkSl1hE8VKsECxuq80
+         kx4Yfs3r3JvFn8nC97vKE99iKEEklUyuSOpn7KBYXYGykFjJXV9CwgBzGLgeA37anX
+         3YYRcXMv4smvBDEsF7FHWOhjuXxUWhpVfJmcex/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 262/408] PCI: aardvark: Check for errors from pci_bridge_emul_init() call
-Date:   Tue, 27 Oct 2020 14:53:20 +0100
-Message-Id: <20201027135507.201240352@linuxfoundation.org>
+Subject: [PATCH 5.4 264/408] rpmsg: smd: Fix a kobj leak in in qcom_smd_parse_edge()
+Date:   Tue, 27 Oct 2020 14:53:22 +0100
+Message-Id: <20201027135507.291640547@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,58 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7862a6134456c8b4f8c39e8c94aa97e5c2f7f2b7 ]
+[ Upstream commit e69ee0cf655e8e0c4a80f4319e36019b74f17639 ]
 
-Function pci_bridge_emul_init() may fail so correctly check for errors.
+We need to call of_node_put(node) on the error paths for this function.
 
-Link: https://lore.kernel.org/r/20200907111038.5811-3-pali@kernel.org
-Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <marek.behun@nic.cz>
+Fixes: 53e2822e56c7 ("rpmsg: Introduce Qualcomm SMD backend")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20200908071841.GA294938@mwanda
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/rpmsg/qcom_smd.c | 32 ++++++++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index f2481e80e2723..d0e60441dc8f2 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -503,7 +503,7 @@ static struct pci_bridge_emul_ops advk_pci_bridge_emul_ops = {
-  * Initialize the configuration space of the PCI-to-PCI bridge
-  * associated with the given PCIe interface.
-  */
--static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)
-+static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
- {
- 	struct pci_bridge_emul *bridge = &pcie->bridge;
+diff --git a/drivers/rpmsg/qcom_smd.c b/drivers/rpmsg/qcom_smd.c
+index 4abbeea782fa4..19903de6268db 100644
+--- a/drivers/rpmsg/qcom_smd.c
++++ b/drivers/rpmsg/qcom_smd.c
+@@ -1338,7 +1338,7 @@ static int qcom_smd_parse_edge(struct device *dev,
+ 	ret = of_property_read_u32(node, key, &edge->edge_id);
+ 	if (ret) {
+ 		dev_err(dev, "edge missing %s property\n", key);
+-		return -EINVAL;
++		goto put_node;
+ 	}
  
-@@ -527,8 +527,7 @@ static void advk_sw_pci_bridge_init(struct advk_pcie *pcie)
- 	bridge->data = pcie;
- 	bridge->ops = &advk_pci_bridge_emul_ops;
+ 	edge->remote_pid = QCOM_SMEM_HOST_ANY;
+@@ -1349,32 +1349,37 @@ static int qcom_smd_parse_edge(struct device *dev,
+ 	edge->mbox_client.knows_txdone = true;
+ 	edge->mbox_chan = mbox_request_channel(&edge->mbox_client, 0);
+ 	if (IS_ERR(edge->mbox_chan)) {
+-		if (PTR_ERR(edge->mbox_chan) != -ENODEV)
+-			return PTR_ERR(edge->mbox_chan);
++		if (PTR_ERR(edge->mbox_chan) != -ENODEV) {
++			ret = PTR_ERR(edge->mbox_chan);
++			goto put_node;
++		}
  
--	pci_bridge_emul_init(bridge, 0);
--
-+	return pci_bridge_emul_init(bridge, 0);
+ 		edge->mbox_chan = NULL;
+ 
+ 		syscon_np = of_parse_phandle(node, "qcom,ipc", 0);
+ 		if (!syscon_np) {
+ 			dev_err(dev, "no qcom,ipc node\n");
+-			return -ENODEV;
++			ret = -ENODEV;
++			goto put_node;
+ 		}
+ 
+ 		edge->ipc_regmap = syscon_node_to_regmap(syscon_np);
+-		if (IS_ERR(edge->ipc_regmap))
+-			return PTR_ERR(edge->ipc_regmap);
++		if (IS_ERR(edge->ipc_regmap)) {
++			ret = PTR_ERR(edge->ipc_regmap);
++			goto put_node;
++		}
+ 
+ 		key = "qcom,ipc";
+ 		ret = of_property_read_u32_index(node, key, 1, &edge->ipc_offset);
+ 		if (ret < 0) {
+ 			dev_err(dev, "no offset in %s\n", key);
+-			return -EINVAL;
++			goto put_node;
+ 		}
+ 
+ 		ret = of_property_read_u32_index(node, key, 2, &edge->ipc_bit);
+ 		if (ret < 0) {
+ 			dev_err(dev, "no bit in %s\n", key);
+-			return -EINVAL;
++			goto put_node;
+ 		}
+ 	}
+ 
+@@ -1385,7 +1390,8 @@ static int qcom_smd_parse_edge(struct device *dev,
+ 	irq = irq_of_parse_and_map(node, 0);
+ 	if (irq < 0) {
+ 		dev_err(dev, "required smd interrupt missing\n");
+-		return -EINVAL;
++		ret = irq;
++		goto put_node;
+ 	}
+ 
+ 	ret = devm_request_irq(dev, irq,
+@@ -1393,12 +1399,18 @@ static int qcom_smd_parse_edge(struct device *dev,
+ 			       node->name, edge);
+ 	if (ret) {
+ 		dev_err(dev, "failed to request smd irq\n");
+-		return ret;
++		goto put_node;
+ 	}
+ 
+ 	edge->irq = irq;
+ 
+ 	return 0;
++
++put_node:
++	of_node_put(node);
++	edge->of_node = NULL;
++
++	return ret;
  }
  
- static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
-@@ -1027,7 +1026,11 @@ static int advk_pcie_probe(struct platform_device *pdev)
- 
- 	advk_pcie_setup_hw(pcie);
- 
--	advk_sw_pci_bridge_init(pcie);
-+	ret = advk_sw_pci_bridge_init(pcie);
-+	if (ret) {
-+		dev_err(dev, "Failed to register emulated root PCI bridge\n");
-+		return ret;
-+	}
- 
- 	ret = advk_pcie_init_irq_domain(pcie);
- 	if (ret) {
+ /*
 -- 
 2.25.1
 
