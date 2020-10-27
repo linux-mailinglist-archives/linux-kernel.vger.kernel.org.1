@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D9129AA48
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D58029AA4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898971AbgJ0LH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:07:59 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52128 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2898962AbgJ0LH6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:07:58 -0400
-X-UUID: 1349bd094b584d02bfb9335d02997bf2-20201027
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=020CNiTHl98xYZMrYZF/KvDTIxGluBAqBjzqknM+bd4=;
-        b=XGqPV0XkKJ0utFm3fxlg/ylE8nL7XnJB6nTBGgMTJyJuv1g79IBfpMCzXFubDdzX+dYwxG8MnIqwskL2eKqYx0rXvRnsdMEosWOBeEvxZZmhGfSI6GAOWaDRONA+9x0jeFF8rz1akA0sovY5hnT35qrRB8ZJfygfgV28/VGSPpo=;
-X-UUID: 1349bd094b584d02bfb9335d02997bf2-20201027
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 977184522; Tue, 27 Oct 2020 19:07:50 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS09N1.mediatek.inc (172.21.101.35) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 27 Oct 2020 19:07:48 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 27 Oct 2020 19:07:48 +0800
-Message-ID: <1603796869.16422.2.camel@mtksdaap41>
-Subject: Re: [PATCH v3 04/16] soc: mediatek: pm-domains: Add bus protection
- protocol
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-CC:     <linux-kernel@vger.kernel.org>, <matthias.bgg@gmail.com>,
-        <drinkcat@chromium.org>, <hsinyi@chromium.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        <fparent@baylibre.com>, Matthias Brugger <mbrugger@suse.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Tue, 27 Oct 2020 19:07:49 +0800
-In-Reply-To: <20201026175526.2915399-5-enric.balletbo@collabora.com>
-References: <20201026175526.2915399-1-enric.balletbo@collabora.com>
-         <20201026175526.2915399-5-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S2898993AbgJ0LIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:08:23 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50500 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2898975AbgJ0LIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:08:21 -0400
+Received: from zn.tnic (p200300ec2f0dae00bd0b3d5f265e51fe.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:bd0b:3d5f:265e:51fe])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D5DF81EC0434;
+        Tue, 27 Oct 2020 12:08:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603796900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DnyVgLQB3wEQsPQikbDwd8/lw4ODrYHKFa5CtrZsgNE=;
+        b=Jn0FrpMLLYZoZ6WkywIwgtMn1yQB+HRIaeI2qElF6F3m7znwuPJGFNjkl5EcHCKje7Ojb/
+        /1OE4xVAzVkzmDtIWDdfW3DYMmSbXfld5cfSTrQqMbEj5l46J+GJDrsbK0I2MvoVgCNSiB
+        nCuVXOEBu47m071KlrUWOzg9cNsSfas=
+Date:   Tue, 27 Oct 2020 12:08:12 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] x86/boot/compressed/64: Check SEV encryption in
+ 64-bit boot-path
+Message-ID: <20201027110812.GC15580@zn.tnic>
+References: <20201021123938.3696-1-joro@8bytes.org>
+ <20201021123938.3696-4-joro@8bytes.org>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201021123938.3696-4-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTEwLTI2IGF0IDE4OjU1ICswMTAwLCBFbnJpYyBCYWxsZXRibyBpIFNlcnJh
-IHdyb3RlOg0KPiBGcm9tOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYnJ1Z2dlckBzdXNlLmNvbT4NCj4g
-DQo+IEJ1cyBwcm90ZWN0aW9uIHdpbGwgbmVlZCB0byB1cGRhdGUgbW9yZSB0aGVuIG9uZSByZWdp
-c3Rlcg0KPiBpbiBpbmZyYWNmZy4gQWRkIHN1cHBvcnQgZm9yIHNldmVyYWwgb3BlcmF0aW9ucy4N
-Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRoaWFzIEJydWdnZXIgPG1icnVnZ2VyQHN1c2UuY29t
-Pg0KPiBTaWduZWQtb2ZmLWJ5OiBFbnJpYyBCYWxsZXRibyBpIFNlcnJhIDxlbnJpYy5iYWxsZXRi
-b0Bjb2xsYWJvcmEuY29tPg0KPiAtLS0NCj4gDQo+IENoYW5nZXMgaW4gdjM6IE5vbmUNCj4gQ2hh
-bmdlcyBpbiB2MjogTm9uZQ0KPiANCj4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ODE3My1wbS1k
-b21haW5zLmggfCAgNCArLS0NCj4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbS1kb21haW5z
-LmMgICAgfCAzNiArKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gIGRyaXZlcnMvc29jL21lZGlh
-dGVrL210ay1wbS1kb21haW5zLmggICAgfCAgNCArKy0NCj4gIDMgZmlsZXMgY2hhbmdlZCwgMzEg
-aW5zZXJ0aW9ucygrKSwgMTMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9zb2MvbWVkaWF0ZWsvbXQ4MTczLXBtLWRvbWFpbnMuaCBiL2RyaXZlcnMvc29jL21lZGlhdGVr
-L210ODE3My1wbS1kb21haW5zLmgNCj4gaW5kZXggYTJhNjI0YmJkOGI4Li4zNDFjYzI4N2M4Y2Ug
-MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ODE3My1wbS1kb21haW5zLmgN
-Cj4gKysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXQ4MTczLXBtLWRvbWFpbnMuaA0KPiBAQCAt
-MzQsNyArMzQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNjcHN5c19kb21haW5fZGF0YSBzY3Bz
-eXNfZG9tYWluX2RhdGFfbXQ4MTczW10gPSB7DQo+ICAJCS5jdGxfb2ZmcyA9IFNQTV9ESVNfUFdS
-X0NPTiwNCj4gIAkJLnNyYW1fcGRuX2JpdHMgPSBHRU5NQVNLKDExLCA4KSwNCj4gIAkJLnNyYW1f
-cGRuX2Fja19iaXRzID0gR0VOTUFTSygxMiwgMTIpLA0KPiAtCQkuYnBfaW5mcmFjZmcgPSB7DQo+
-ICsJCS5icF9pbmZyYWNmZ1swXSA9IHsNCj4gIAkJCS5idXNfcHJvdF9yZWdfdXBkYXRlID0gdHJ1
-ZSwNCj4gIAkJCS5idXNfcHJvdF9tYXNrID0gTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NTV9NMCB8
-DQo+ICAJCQkJTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NTV9NMSwNCj4gQEAgLTc2LDcgKzc2LDcg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzY3BzeXNfZG9tYWluX2RhdGEgc2Nwc3lzX2RvbWFpbl9k
-YXRhX210ODE3M1tdID0gew0KPiAgCQkuY3RsX29mZnMgPSBTUE1fTUZHX1BXUl9DT04sDQo+ICAJ
-CS5zcmFtX3Bkbl9iaXRzID0gR0VOTUFTSygxMywgOCksDQo+ICAJCS5zcmFtX3Bkbl9hY2tfYml0
-cyA9IEdFTk1BU0soMjEsIDE2KSwNCj4gLQkJLmJwX2luZnJhY2ZnID0gew0KPiArCQkuYnBfaW5m
-cmFjZmdbMF0gPSB7DQo+ICAJCQkuYnVzX3Byb3RfcmVnX3VwZGF0ZSA9IHRydWUsDQo+ICAJCQku
-YnVzX3Byb3RfbWFzayA9IE1UODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX1MgfA0KPiAgCQkJCU1U
-ODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX00wIHwNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29j
-L21lZGlhdGVrL210ay1wbS1kb21haW5zLmMgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0t
-ZG9tYWlucy5jDQo+IGluZGV4IDE2NTAzZDZkYjZhOC4uMjEyMWUwNWNiOWE0IDEwMDY0NA0KPiAt
-LS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5jDQo+ICsrKyBiL2RyaXZl
-cnMvc29jL21lZGlhdGVrL210ay1wbS1kb21haW5zLmMNCj4gQEAgLTg5LDI0ICs4OSw0MCBAQCBz
-dGF0aWMgaW50IHNjcHN5c19zcmFtX2Rpc2FibGUoc3RydWN0IHNjcHN5c19kb21haW4gKnBkKQ0K
-PiAgDQo+ICBzdGF0aWMgaW50IHNjcHN5c19idXNfcHJvdGVjdF9lbmFibGUoc3RydWN0IHNjcHN5
-c19kb21haW4gKnBkKQ0KPiAgew0KPiAtCWNvbnN0IHN0cnVjdCBzY3BzeXNfYnVzX3Byb3RfZGF0
-YSAqYnBfZGF0YSA9ICZwZC0+ZGF0YS0+YnBfaW5mcmFjZmc7DQo+ICsJY29uc3Qgc3RydWN0IHNj
-cHN5c19idXNfcHJvdF9kYXRhICpicGQgPSBwZC0+ZGF0YS0+YnBfaW5mcmFjZmc7DQo+ICsJaW50
-IGksIHJldDsNCj4gIA0KPiAtCWlmICghYnBfZGF0YS0+YnVzX3Byb3RfbWFzaykNCj4gLQkJcmV0
-dXJuIDA7DQo+ICsJZm9yIChpID0gMDsgaSA8IFNQTV9NQVhfQlVTX1BST1RfREFUQTsgaSsrKSB7
-DQo+ICsJCWlmICghYnBkW2ldLmJ1c19wcm90X21hc2spDQo+ICsJCQlicmVhazsNCj4gIA0KPiAt
-CXJldHVybiBtdGtfaW5mcmFjZmdfc2V0X2J1c19wcm90ZWN0aW9uKHBkLT5pbmZyYWNmZywgYnBf
-ZGF0YS0+YnVzX3Byb3RfbWFzaywNCj4gLQkJCQkJICAgICAgIGJwX2RhdGEtPmJ1c19wcm90X3Jl
-Z191cGRhdGUpOw0KPiArCQlyZXQgPSBtdGtfaW5mcmFjZmdfc2V0X2J1c19wcm90ZWN0aW9uKHBk
-LT5pbmZyYWNmZywNCj4gKwkJCQkJCSAgICAgIGJwZFtpXS5idXNfcHJvdF9tYXNrLA0KPiArCQkJ
-CQkJICAgICAgYnBkW2ldLmJ1c19wcm90X3JlZ191cGRhdGUpOw0KPiArCQlpZiAocmV0KQ0KPiAr
-CQkJcmV0dXJuIHJldDsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gIH0NCj4gIA0KPiAg
-c3RhdGljIGludCBzY3BzeXNfYnVzX3Byb3RlY3RfZGlzYWJsZShzdHJ1Y3Qgc2Nwc3lzX2RvbWFp
-biAqcGQpDQo+ICB7DQo+IC0JY29uc3Qgc3RydWN0IHNjcHN5c19idXNfcHJvdF9kYXRhICpicF9k
-YXRhID0gJnBkLT5kYXRhLT5icF9pbmZyYWNmZzsNCj4gKwljb25zdCBzdHJ1Y3Qgc2Nwc3lzX2J1
-c19wcm90X2RhdGEgKmJwZCA9IHBkLT5kYXRhLT5icF9pbmZyYWNmZzsNCj4gKwlpbnQgaSwgcmV0
-Ow0KPiAgDQo+IC0JaWYgKCFicF9kYXRhLT5idXNfcHJvdF9tYXNrKQ0KPiAtCQlyZXR1cm4gMDsN
-Cj4gKwlmb3IgKGkgPSAwOyBpIDwgU1BNX01BWF9CVVNfUFJPVF9EQVRBOyBpKyspIHsNCg0KSSB0
-aG91Z2h0IGl0IHNob3VsZCBiZQ0KDQpmb3IgKGkgPSBTUE1fTUFYX0JVU19QUk9UX0RBVEEgLSAx
-OyBpID4gMDsgaS0tKSB7DQoJaWYgKCFicGRbaV0uYnVzX3Byb3RfbWFzaykNCgkJY29udGludWU7
-DQoNCi4uLg0KDQo+ICsJCWlmICghYnBkW2ldLmJ1c19wcm90X21hc2spDQo+ICsJCQlyZXR1cm4g
-MDsNCj4gIA0KPiAtCXJldHVybiBtdGtfaW5mcmFjZmdfY2xlYXJfYnVzX3Byb3RlY3Rpb24ocGQt
-PmluZnJhY2ZnLCBicF9kYXRhLT5idXNfcHJvdF9tYXNrLA0KPiAtCQkJCQkJIGJwX2RhdGEtPmJ1
-c19wcm90X3JlZ191cGRhdGUpOw0KPiArCQlyZXQgPSBtdGtfaW5mcmFjZmdfY2xlYXJfYnVzX3By
-b3RlY3Rpb24ocGQtPmluZnJhY2ZnLA0KPiArCQkJCQkJCWJwZFtpXS5idXNfcHJvdF9tYXNrLA0K
-PiArCQkJCQkJCWJwZFtpXS5idXNfcHJvdF9yZWdfdXBkYXRlKTsNCj4gKwkJaWYgKHJldCkNCj4g
-KwkJCXJldHVybiByZXQ7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICB9DQo+ICANCj4g
-IHN0YXRpYyBpbnQgc2Nwc3lzX3Bvd2VyX29uKHN0cnVjdCBnZW5lcmljX3BtX2RvbWFpbiAqZ2Vu
-cGQpDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5o
-IGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuaA0KPiBpbmRleCA3YzhlZmNi
-M2NlZjIuLmU0MjhmZTIzYTdlMyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsv
-bXRrLXBtLWRvbWFpbnMuaA0KPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9t
-YWlucy5oDQo+IEBAIC0zMiw2ICszMiw4IEBADQo+ICAjZGVmaW5lIFBXUl9TVEFUVVNfQVVESU8J
-CUJJVCgyNCkNCj4gICNkZWZpbmUgUFdSX1NUQVRVU19VU0IJCQlCSVQoMjUpDQo+ICANCj4gKyNk
-ZWZpbmUgU1BNX01BWF9CVVNfUFJPVF9EQVRBCQkzDQo+ICsNCg0KI2RlZmluZSBTUE1fTUFYX0JV
-U19QUk9UX0RBVEEJCTUNCg0KdG8gYmUgY29tcGF0aWJsZSB3aXRoIE1UODE5Mg0KDQo+ICBzdHJ1
-Y3Qgc2Nwc3lzX2J1c19wcm90X2RhdGEgew0KPiAgCXUzMiBidXNfcHJvdF9tYXNrOw0KPiAgCWJv
-b2wgYnVzX3Byb3RfcmVnX3VwZGF0ZTsNCj4gQEAgLTUyLDcgKzU0LDcgQEAgc3RydWN0IHNjcHN5
-c19kb21haW5fZGF0YSB7DQo+ICAJdTMyIHNyYW1fcGRuX2JpdHM7DQo+ICAJdTMyIHNyYW1fcGRu
-X2Fja19iaXRzOw0KPiAgCXU4IGNhcHM7DQo+IC0JY29uc3Qgc3RydWN0IHNjcHN5c19idXNfcHJv
-dF9kYXRhIGJwX2luZnJhY2ZnOw0KPiArCWNvbnN0IHN0cnVjdCBzY3BzeXNfYnVzX3Byb3RfZGF0
-YSBicF9pbmZyYWNmZ1tTUE1fTUFYX0JVU19QUk9UX0RBVEFdOw0KPiAgfTsNCj4gIA0KPiAgc3Ry
-dWN0IHNjcHN5c19zb2NfZGF0YSB7DQoNCg==
+On Wed, Oct 21, 2020 at 02:39:36PM +0200, Joerg Roedel wrote:
+> diff --git a/arch/x86/kernel/sev_verify_cbit.S b/arch/x86/kernel/sev_verify_cbit.S
+> new file mode 100644
+> index 000000000000..5075458ecad0
+> --- /dev/null
+> +++ b/arch/x86/kernel/sev_verify_cbit.S
 
+Why a separate file? You're using it just like verify_cpu.S and this is
+kinda verifying CPU so you could simply add the functionality there...
+
+> @@ -0,0 +1,90 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + *	sev_verify_cbit.S - Code for verification of the C-bit position reported
+> + *			    by the Hypervisor when running with SEV enabled.
+> + *
+> + *	Copyright (c) 2020  Joerg Roedel (jroedel@suse.de)
+> + *
+> + * Implements sev_verify_cbit() which is called before switching to a new
+> + * long-mode page-table at boot.
+> + *
+> + * It verifies that the C-bit position is correct by writing a random value to
+> + * an encrypted memory location while on the current page-table. Then it
+> + * switches to the new page-table to verify the memory content is still the
+> + * same. After that it switches back to the current page-table and when the
+> + * check succeeded it returns. If the check failed the code invalidates the
+> + * stack pointer and goes into a hlt loop. The stack-pointer is invalidated to
+> + * make sure no interrupt or exception can get the CPU out of the hlt loop.
+> + *
+> + * New page-table pointer is expected in %rdi (first parameter)
+> + *
+> + */
+> +SYM_FUNC_START(sev_verify_cbit)
+> +#ifdef CONFIG_AMD_MEM_ENCRYPT
+
+Yeah, can you please use the callee-clobbered registers in the order as
+they're used by the ABI, see arch/x86/entry/calling.h.
+
+Because I'm looking at this and wondering are rsi, rdx and rcx somehow
+live here and you're avoiding them...
+
+Otherwise nice commenting - I like when it is properly explained what
+the asm does and what it expects as input, cool.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
