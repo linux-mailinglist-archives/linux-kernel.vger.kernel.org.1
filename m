@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1315A29C7E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE8929C7E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371307AbgJ0S6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:58:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28070 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S371299AbgJ0S6I (ORCPT
+        id S371316AbgJ0S6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:58:15 -0400
+Received: from casper.infradead.org ([90.155.50.34]:53356 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S371306AbgJ0S6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:58:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603825085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=/w7n3wo/ogMNJSBrl9q8TgkOqP0Cfiwxz1gfe/57UsA=;
-        b=WymB0rXzUiXBR+OG2luMf5g0CDve48dfDjLaGNEaX0o1TPZT9V+RItECqIIXNTjpAjrstr
-        jLIz4c6LNPzurW1AGlaqvKj4A8q6MlNH7Qig2hlPE9TFDZmw8r8GP2gHM3+hMbe5fIoPmt
-        IKtGQR+0vB2Kw63ms6/n2M8iSnWLGnw=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-287-JwF5X0JeOleBYKHWvTCJyg-1; Tue, 27 Oct 2020 14:58:03 -0400
-X-MC-Unique: JwF5X0JeOleBYKHWvTCJyg-1
-Received: by mail-oi1-f200.google.com with SMTP id c198so1114262oig.7
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:58:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/w7n3wo/ogMNJSBrl9q8TgkOqP0Cfiwxz1gfe/57UsA=;
-        b=gMvGFMRJEA2whO7fnZX/eotP+DAnD0LUeSXXowziewnuPPJ/KvU1qIigcrXgimA2B2
-         YyZGy20rH4E/CstqWuvfAYPkSIDQOnRWC3AWEnDycbjF+LIRFhvwgZ06j7xOss6Wyuru
-         zItP8R3N+52DHIdDYGoqLp611wOXn4GNd4RDH+AV8ltWGxkXkMKhrCQTwF4WH+oH9jwV
-         8/jBI5Nc0IotISZXllMOJIlPvCmGW+2GhEOge7+5Dx5h0ViWkBzCey/c6a0aNhcZBmiL
-         u9Voet/FQb3rVx+z3HQ2lc9AQlizn2Hjz2cZUcqAHpuBQKUIFJL9v5xIHAuxys4gzqcs
-         RlBQ==
-X-Gm-Message-State: AOAM530m6pIhueZKw6XmAR+WAd5KlDZF/nljrjV5QXX+aMyluwJmkRdf
-        Ko6NJJ2Sl/Y6WTHp3m7Hj8ekrdOCljgUF7JqiAeW0rn/r0fiRkO9G3nF6e3hY+cukXcvjQiAW5q
-        RxwP5E5A7F/ppseRvneIraX3z
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr2320848oto.41.1603825082557;
-        Tue, 27 Oct 2020 11:58:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYGhvIxX/WWpgZFdD22OWQEZoC9GCiKRCLyoHJyIbNVn7keqIqMsFXtqbWyOFnR+FdTTxhYA==
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr2320838oto.41.1603825082332;
-        Tue, 27 Oct 2020 11:58:02 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j97sm1433795otj.37.2020.10.27.11.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 11:58:01 -0700 (PDT)
-From:   trix@redhat.com
-To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, Anson.Huang@nxp.com, abel.vesa@nxp.com,
-        peng.fan@nxp.com, leonard.crestez@nxp.com
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] clk: imx: remove unneeded semicolon
-Date:   Tue, 27 Oct 2020 11:57:56 -0700
-Message-Id: <20201027185756.1586607-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Tue, 27 Oct 2020 14:58:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mE1cwDDEmEjCnd5IdzIeq1L8rwr+K0PfUJkE+ZW/YUw=; b=b4/4PvdY33liOR8x2ruSgiRKg8
+        DgfQufrKwk4krix3uddSCJ90fBypGZ5jqxEthiA8wLgWHvzVTiqmOBmF7DGw1F+U1cxZ+hgfy/sci
+        rG0R8W79qM7PiMSGqnInGAblwFDSpSkQLUe9l+WseAHcFHUpQoJ0wDuq9bNxpekgx3QbFUp4Dp+BE
+        H3xM1AeFVBnHKz3lj7tnOByIKWtXF2+4h2MAuMbQyv4oZQLAUY5UYjOKjqlA8kk4rTDH3YPhPQhPt
+        kyUJLBdkS1DzIGvNv6BSM8KwUMNazSO+lB6joRAQLrkmpfMsF3oMkUW5GxmcohVj12mAVXgLe55TD
+        WT+Dd5FA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXUAb-0004F1-Qa; Tue, 27 Oct 2020 18:58:09 +0000
+Date:   Tue, 27 Oct 2020 18:58:09 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v3 04/12] mm/filemap: Add mapping_seek_hole_data
+Message-ID: <20201027185809.GB15201@infradead.org>
+References: <20201026041408.25230-1-willy@infradead.org>
+ <20201026041408.25230-5-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026041408.25230-5-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+> +/**
+> + * mapping_seek_hole_data - Seek for SEEK_DATA / SEEK_HOLE in the page cache.
+> + * @mapping: Address space to search.
+> + * @start: First byte to consider.
+> + * @end: Limit of search (exclusive).
+> + * @whence: Either SEEK_HOLE or SEEK_DATA.
+> + *
+> + * If the page cache knows which blocks contain holes and which blocks
+> + * contain data, your filesystem can use this function to implement
+> + * SEEK_HOLE and SEEK_DATA.  This is useful for filesystems which are
+> + * entirely memory-based such as tmpfs, and filesystems which support
+> + * unwritten extents.
+> + *
+> + * Return: The requested offset on successs, or -ENXIO if @whence specifies
+> + * SEEK_DATA and there is no data after @start.  There is an implicit hole
+> + * after @end - 1, so SEEK_HOLE returns @end if all the bytes between @start
+> + * and @end contain data.
+> + */
 
-A semicolon is not needed after a switch statement.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/clk/imx/clk-pll14xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index aba36e4217d2..2b5ed86b9dbb 100644
---- a/drivers/clk/imx/clk-pll14xx.c
-+++ b/drivers/clk/imx/clk-pll14xx.c
-@@ -416,7 +416,7 @@ struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
- 		       __func__, name);
- 		kfree(pll);
- 		return ERR_PTR(-EINVAL);
--	};
-+	}
- 
- 	pll->base = base;
- 	pll->hw.init = &init;
--- 
-2.18.1
-
+This seems to just lift the tmpfs one to common code.  If it really
+is supposed to be generic it should be able to replace
+page_cache_seek_hole_data as well.  So I don't think moving this without
+removing the other common one is an all that good idea.
