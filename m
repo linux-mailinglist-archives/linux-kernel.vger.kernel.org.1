@@ -2,110 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C6329A749
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4452029A750
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408619AbgJ0JF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:05:57 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:39612 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408402AbgJ0JF5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:05:57 -0400
-Received: by mail-ej1-f68.google.com with SMTP id bn26so1117382ejb.6;
-        Tue, 27 Oct 2020 02:05:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FSlOTo+zGWamBX2WAxzQkPjeyrJMzym+nDUb6jRYhTI=;
-        b=ReGQNk7KoODhfmu8y7uzrwlYNO2tUuavVfYHiAiFcSJAE1erX40yYg+ogZeWNOWkzt
-         mzNMu0ELXDnP4nR/8t/b7BZxDRaa6SNLtqW2TwRZOBrxTgCi3SsRamZildSqg4GW3R0u
-         FJugDTWRRgQ/Xne8q/exhJ+iBT6X5gNPIGGRq45su+VKPXg5BxAHHLjV5pRWMpNBDO1z
-         OJx2x6F+sjLb0ksJ6dDGOcBVnDG+7CnAzxnHDFKFPQ1OtXbsY31c+I2opClwL/GUW9Cg
-         6ca7FP4z+NCfT7j/e7Qg8Ru8sZ9Eby4r1Ces01dbseXfY2kCq8Gfy7kcV5obRpPonLeN
-         jfzg==
-X-Gm-Message-State: AOAM532ng5cJAnu0CqT960jT4cbWE8WlzHFHfJa++iwPDlHabbJSeEMU
-        fidyzpTrh20M8osdOPnrumA=
-X-Google-Smtp-Source: ABdhPJwpB7zlslYYqry/Tn76sD9QhQfOP3c+c7xncdpzGfAK9wt/B+FS8uKYdnkUGHJeI6sHYSxQSg==
-X-Received: by 2002:a17:906:aed9:: with SMTP id me25mr1447133ejb.52.1603789555092;
-        Tue, 27 Oct 2020 02:05:55 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id o11sm608711ejd.60.2020.10.27.02.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 02:05:53 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 10:05:50 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 09/52] dt-bindings: memory: tegra30: mc: Document new
- interconnect property
-Message-ID: <20201027090550.GI4244@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-10-digetx@gmail.com>
+        id S2895338AbgJ0JHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:07:42 -0400
+Received: from ozlabs.ru ([107.174.27.60]:42990 "EHLO ozlabs.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408749AbgJ0JHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:07:42 -0400
+Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
+        by ozlabs.ru (Postfix) with ESMTP id F3461AE80024;
+        Tue, 27 Oct 2020 05:06:27 -0400 (EDT)
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, Qian Cai <cai@lca.pw>,
+        Rob Herring <robh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: [RFC PATCH kernel 0/2] irq: Add reference counting to IRQ mappings
+Date:   Tue, 27 Oct 2020 20:06:53 +1100
+Message-Id: <20201027090655.14118-1-aik@ozlabs.ru>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-10-digetx@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:16:52AM +0300, Dmitry Osipenko wrote:
-> Memory controller is interconnected with memory clients and with the
-> External Memory Controller. Document new interconnect property which
-> turns memory controller into interconnect provider.
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/memory-controllers/nvidia,tegra30-mc.yaml       | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
-> index 84fd57bcf0dc..5436e6d420bc 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
-> @@ -57,6 +57,9 @@ properties:
->    "#iommu-cells":
->      const: 1
->  
-> +  "#interconnect-cells":
-> +    const: 1
-> +
->  patternProperties:
->    "^emc-timings-[0-9]+$":
->      type: object
-> @@ -120,6 +123,7 @@ required:
->    - clock-names
->    - "#reset-cells"
->    - "#iommu-cells"
-> +  - "#interconnect-cells"
 
-Rob,
+This is an attempt to fix a bug with PCI hot unplug with
+a bunch of PCIe bridges and devices sharing INTx.
 
-You were fine with adding a new required property which breaks all
-existing DTBs?
+This did not hit us before as even if we did not
+call irq_domain_ops::unmap, the platform (PowerVM) would not
+produce an error but with POWER9's XIVE interrupt controller
+there is an error if unmap is not called at all (2/2 fixes that)
+or an error if we unmapped an interrupt which is still in use
+by another device (1/2 fixes that).
 
-Were these bindings marked as unstable? The patchset does not even
-say/scream that it breaks the ABI, so this might be quite a surprise for
-someone...
+One way of fixing that is doing reference counting in
+the POWERPC code but since there is a kobj in irq_desc
+already, I thought I'll give it a try first.
 
-Best regards,
-Krzysztof
+
+This is based on sha1
+4525c8781ec0 Linus Torvalds "scsi: qla2xxx: remove incorrect sparse #ifdef".
+
+Please comment. Thanks.
+
+
+
+Alexey Kardashevskiy (1):
+  irq: Add reference counting to IRQ mappings
+
+Oliver O'Halloran (1):
+  powerpc/pci: Remove LSI mappings on device teardown
+
+ arch/powerpc/kernel/pci-common.c | 21 +++++++++++++++++++
+ kernel/irq/irqdesc.c             | 35 +++++++++++++++++++++-----------
+ kernel/irq/irqdomain.c           | 27 ++++++++++++------------
+ 3 files changed, 57 insertions(+), 26 deletions(-)
+
+-- 
+2.17.1
+
