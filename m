@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FCF29C3CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44E629C205
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901615AbgJ0OZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
+        id S1813546AbgJ0R3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:29:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368336AbgJ0OY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:57 -0400
+        id S1762427AbgJ0Omr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C4B82072D;
-        Tue, 27 Oct 2020 14:24:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E305206B2;
+        Tue, 27 Oct 2020 14:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808697;
-        bh=UC1q3kDNRZBss0V/M47wkAQAkEjiHoGZBjWNlr76+Do=;
+        s=default; t=1603809765;
+        bh=Gkf0mJ3r7spa1QV4ABLuN60Go8LUNy1D5m08OzBbltA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IWPtjaf4DLQQV9a8SDwzzJxWNi4WlgtXigkc1wfjm/IslsHOmyt4z6aX+L+sL2zTw
-         tdYcrYLXopn3mK3BU5UfFfHJdagS7OLa1qkA/nBusDF8b5C4Ng0ky6XgTN1C+795eg
-         jrQjJWzu+KTlvSOJGLEyQzfVpY81TUgRA98+FgPE=
+        b=u04c7TA0tfURsOVdIqxeFPi5IhNN1nzz2zSbregcN76z7O/Iokf4LeXbZf8L2PJ/W
+         T/PNJxaf/ZQtpcunuajBNtWNrryA+uDefmt3AwjDLl53DNuG/DzqFZB9WLjDVzrEBj
+         vmnPPXLx3zYqI6JktAYG9g5uTVrFDaahYa2a1/ys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Amit Singh Tomar <amittomer25@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 190/264] netfilter: nf_fwd_netdev: clear timestamp in forwarding path
+Subject: [PATCH 5.4 310/408] arm64: dts: actions: limit address range for pinctrl node
 Date:   Tue, 27 Oct 2020 14:54:08 +0100
-Message-Id: <20201027135439.583643640@linuxfoundation.org>
+Message-Id: <20201027135509.411828320@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Amit Singh Tomar <amittomer25@gmail.com>
 
-[ Upstream commit c77761c8a59405cb7aa44188b30fffe13fbdd02d ]
+[ Upstream commit 4bb1eb3cd4bd6241d5e5f99bbfd801ea5a007b6c ]
 
-Similar to 7980d2eabde8 ("ipvs: clear skb->tstamp in forwarding path").
-fq qdisc requires tstamp to be cleared in forwarding path.
+After commit 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for
+Actions Semi S700") following error has been observed while booting
+Linux on Cubieboard7-lite(based on S700 SoC).
 
-Fixes: 8203e2d844d3 ("net: clear skb->tstamp in forwarding paths")
-Fixes: fb420d5d91c1 ("tcp/fq: move back to CLOCK_MONOTONIC")
-Fixes: 80b14dee2bea ("net: Add a new socket option for a future transmit time.")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+[    0.257415] pinctrl-s700 e01b0000.pinctrl: can't request region for
+resource [mem 0xe01b0000-0xe01b0fff]
+[    0.266902] pinctrl-s700: probe of e01b0000.pinctrl failed with error -16
+
+This is due to the fact that memory range for "sps" power domain controller
+clashes with pinctrl.
+
+One way to fix it, is to limit pinctrl address range which is safe
+to do as current pinctrl driver uses address range only up to 0x100.
+
+This commit limits the pinctrl address range to 0x100 so that it doesn't
+conflict with sps range.
+
+Fixes: 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for Actions
+Semi S700")
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Suggested-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_dup_netdev.c  | 1 +
- net/netfilter/nft_fwd_netdev.c | 1 +
- 2 files changed, 2 insertions(+)
+ arch/arm64/boot/dts/actions/s700.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
-index f4a566e672135..98d117f3340ce 100644
---- a/net/netfilter/nf_dup_netdev.c
-+++ b/net/netfilter/nf_dup_netdev.c
-@@ -21,6 +21,7 @@ static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev)
- 		skb_push(skb, skb->mac_len);
+diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
+index 2006ad5424fa6..f8eb72bb41254 100644
+--- a/arch/arm64/boot/dts/actions/s700.dtsi
++++ b/arch/arm64/boot/dts/actions/s700.dtsi
+@@ -231,7 +231,7 @@ timer: timer@e024c000 {
  
- 	skb->dev = dev;
-+	skb->tstamp = 0;
- 	dev_queue_xmit(skb);
- }
- 
-diff --git a/net/netfilter/nft_fwd_netdev.c b/net/netfilter/nft_fwd_netdev.c
-index 649edbe77a205..10a12e0949299 100644
---- a/net/netfilter/nft_fwd_netdev.c
-+++ b/net/netfilter/nft_fwd_netdev.c
-@@ -129,6 +129,7 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
- 		return;
- 
- 	skb->dev = dev;
-+	skb->tstamp = 0;
- 	neigh_xmit(neigh_table, dev, addr, skb);
- out:
- 	regs->verdict.code = verdict;
+ 		pinctrl: pinctrl@e01b0000 {
+ 			compatible = "actions,s700-pinctrl";
+-			reg = <0x0 0xe01b0000 0x0 0x1000>;
++			reg = <0x0 0xe01b0000 0x0 0x100>;
+ 			clocks = <&cmu CLK_GPIO>;
+ 			gpio-controller;
+ 			gpio-ranges = <&pinctrl 0 0 136>;
 -- 
 2.25.1
 
