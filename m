@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB52C29C705
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C53329C5CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827721AbgJ0S1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:27:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
+        id S2507480AbgJ0ONg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408966AbgJ0OA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:00:28 -0400
+        id S1754933AbgJ0OHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:07:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C66882068D;
-        Tue, 27 Oct 2020 14:00:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66ACA206D4;
+        Tue, 27 Oct 2020 14:07:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807228;
-        bh=LtKe44qQioHt8IPmm8+2jd8eqgBOO6gQuZGX4rvL82I=;
+        s=default; t=1603807664;
+        bh=63W6OqwjTEPrCBDyKkGZqgpiKh0yhLfSDAgaipfF8kY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lq1uxUaEJGq+D2lD9hFAnQ1ztH8kFzLroZTmEks4LEmaPtyc7cQt2RCnSHxmNpvAE
-         In9gWdBuvsmkyCldBxQ289yQ3njpsFiXBGYpUD7arWbD8OxOQri4vXOmfe1lSgwLal
-         LPY7nGrqiRQAfxBdo3otIHDjAYwxW/KkS+1WEGPI=
+        b=y2FraASDtK3UArU+c9NHEDjLfjhqCNnwp6QRNPUgoIpBuoWrxyL3pjJJibhzqcKfV
+         PLxlVGVuZatYeTNdF7+E+g8UDRByU6wQ9QJbSWo9awUVUrPWl7i5lIBLRsibm3U3L1
+         OpKrWiILkgMMcZ5yemSCaE2l2ikK2qrmg0biwNok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Adam Goode <agoode@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 088/112] PM: hibernate: remove the bogus call to get_gendisk() in software_resume()
-Date:   Tue, 27 Oct 2020 14:49:58 +0100
-Message-Id: <20201027134904.709441898@linuxfoundation.org>
+Subject: [PATCH 4.9 105/139] media: uvcvideo: Ensure all probed info is returned to v4l2
+Date:   Tue, 27 Oct 2020 14:49:59 +0100
+Message-Id: <20201027134907.124787049@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Adam Goode <agoode@google.com>
 
-[ Upstream commit 428805c0c5e76ef643b1fbc893edfb636b3d8aef ]
+[ Upstream commit 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe ]
 
-get_gendisk grabs a reference on the disk and file operation, so this
-code will leak both of them while having absolutely no use for the
-gendisk itself.
+bFrameIndex and bFormatIndex can be negotiated by the camera during
+probing, resulting in the camera choosing a different format than
+expected. v4l2 can already accommodate such changes, but the code was
+not updating the proper fields.
 
-This effectively reverts commit 2df83fa4bce421f ("PM / Hibernate: Use
-get_gendisk to verify partition if resume_file is integer format")
+Without such a change, v4l2 would potentially interpret the payload
+incorrectly, causing corrupted output. This was happening on the
+Elgato HD60 S+, which currently always renegotiates to format 1.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+As an aside, the Elgato firmware is buggy and should not be renegotating,
+but it is still a valid thing for the camera to do. Both macOS and Windows
+will properly probe and read uncorrupted images from this camera.
+
+With this change, both qv4l2 and chromium can now read uncorrupted video
+from the Elgato HD60 S+.
+
+[Add blank lines, remove periods at the of messages]
+
+Signed-off-by: Adam Goode <agoode@google.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/power/hibernate.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 3124cebaec31e..7d73b30c55ccd 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -779,17 +779,6 @@ static int software_resume(void)
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 05eed4be25df2..5156c971c241c 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -257,11 +257,41 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 	if (ret < 0)
+ 		goto done;
  
- 	/* Check if the device is there */
- 	swsusp_resume_device = name_to_dev_t(resume_file);
--
--	/*
--	 * name_to_dev_t is ineffective to verify parition if resume_file is in
--	 * integer format. (e.g. major:minor)
--	 */
--	if (isdigit(resume_file[0]) && resume_wait) {
--		int partno;
--		while (!get_gendisk(swsusp_resume_device, &partno))
--			msleep(10);
--	}
--
- 	if (!swsusp_resume_device) {
- 		/*
- 		 * Some device discovery might still be in progress; we need
++	/* After the probe, update fmt with the values returned from
++	 * negotiation with the device.
++	 */
++	for (i = 0; i < stream->nformats; ++i) {
++		if (probe->bFormatIndex == stream->format[i].index) {
++			format = &stream->format[i];
++			break;
++		}
++	}
++
++	if (i == stream->nformats) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
++			  probe->bFormatIndex);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < format->nframes; ++i) {
++		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
++			frame = &format->frame[i];
++			break;
++		}
++	}
++
++	if (i == format->nframes) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
++			  probe->bFrameIndex);
++		return -EINVAL;
++	}
++
+ 	fmt->fmt.pix.width = frame->wWidth;
+ 	fmt->fmt.pix.height = frame->wHeight;
+ 	fmt->fmt.pix.field = V4L2_FIELD_NONE;
+ 	fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(format, frame);
+ 	fmt->fmt.pix.sizeimage = probe->dwMaxVideoFrameSize;
++	fmt->fmt.pix.pixelformat = format->fcc;
+ 	fmt->fmt.pix.colorspace = format->colorspace;
+ 	fmt->fmt.pix.priv = 0;
+ 
 -- 
 2.25.1
 
