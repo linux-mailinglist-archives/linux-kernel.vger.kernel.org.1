@@ -2,212 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413B729B423
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2880029B438
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783596AbgJ0O63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:58:29 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:16876 "EHLO m42-4.mailgun.net"
+        id S1784664AbgJ0O70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:59:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:14268 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773097AbgJ0OvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:51:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603810269; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=BNq5Q872iIhaMxxogOGA+BIR4CjeK4IuQKh6PxLrTdg=; b=MfNTKvhP/NwMf1TCd/khRShxedmtIEOpUHUq32Z7cmrLB80HXXCITA86BUq7uZu/IzhZieKs
- +yZAcl/T5zZgT2M997t0Cer5h0F/ez/6bcua6GXEteLTUQeJBN7Nfom0vixtWFHE9zLWaONz
- Ar8MWDEaYx6ildBfoJaQxTrxkn4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f98313e6eac53e525a22d5f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 14:39:57
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF836C384EB; Tue, 27 Oct 2020 14:39:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6C7BC4345D;
-        Tue, 27 Oct 2020 14:39:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6C7BC4345D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Tue, 27 Oct 2020 08:39:49 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/a6xx: Add support for using system cache on
- MMU500 based targets
-Message-ID: <20201027143949.GC23509@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Jonathan Marek <jonathan@marek.ca>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20201026185428.101443-1-jcrouse@codeaurora.org>
- <d5050762b88d5d0d957ad5057f165b21@codeaurora.org>
+        id S1750352AbgJ0Oo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:44:28 -0400
+IronPort-SDR: mOtLsr6ZgZE6OuXm230X0/qBx4w1PPYsKFt3Rr5tWiy/XVOMyCuE7apv8BFc9KhBGsxdPsgXtE
+ QL2x7mNkmwYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="168190518"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="168190518"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:44:27 -0700
+IronPort-SDR: hsoRYjJQyVtX1UKR/2PZR1k3Sbc/yfQbywyRP1Uc+KKF8hPUdlN/oIqXvXOsOZAywJmqZA9DDn
+ Udp72D9/Z8tw==
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="535819778"
+Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.194]) ([10.249.227.194])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:44:25 -0700
+Subject: Re: [PATCH v2 03/15] perf data: open data directory in read access
+ mode
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <dc78ce8b-664c-45b9-ad44-4faaeb5d544f@linux.intel.com>
+ <20201024154317.GB2589351@krava>
+ <a368355b-4bf3-05b8-9fa0-ee3feb58f8bf@linux.intel.com>
+ <20201027115907.GC2900849@krava>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <4cec05bd-039a-7a27-04b9-81cd046f2675@linux.intel.com>
+Date:   Tue, 27 Oct 2020 17:44:22 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5050762b88d5d0d957ad5057f165b21@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201027115907.GC2900849@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:38:02PM +0530, Sai Prakash Ranjan wrote:
-> On 2020-10-27 00:24, Jordan Crouse wrote:
-> >This is an extension to the series [1] to enable the System Cache (LLC)
-> >for
-> >Adreno a6xx targets.
-> >
-> >GPU targets with an MMU-500 attached have a slightly different process for
-> >enabling system cache. Use the compatible string on the IOMMU phandle
-> >to see if an MMU-500 is attached and modify the programming sequence
-> >accordingly.
-> >
-> >[1] https://patchwork.freedesktop.org/series/83037/
-> >
-> >Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> >---
-> >
-> > drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 46 +++++++++++++++++++++------
-> > drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
-> > 2 files changed, 37 insertions(+), 10 deletions(-)
-> >
-> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >index 95c98c642876..b7737732fbb6 100644
-> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >@@ -1042,6 +1042,8 @@ static void a6xx_llc_deactivate(struct a6xx_gpu
-> >*a6xx_gpu)
-> >
-> > static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
-> > {
-> >+	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
-> >+	struct msm_gpu *gpu = &adreno_gpu->base;
-> > 	u32 cntl1_regval = 0;
-> >
-> > 	if (IS_ERR(a6xx_gpu->llc_mmio))
-> >@@ -1055,11 +1057,17 @@ static void a6xx_llc_activate(struct a6xx_gpu
-> >*a6xx_gpu)
-> > 			       (gpu_scid << 15) | (gpu_scid << 20);
-> > 	}
-> >
-> >+	/*
-> >+	 * For targets with a MMU500, activate the slice but don't program the
-> >+	 * register.  The XBL will take care of that.
-> >+	 */
-> > 	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
-> >-		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
-> >+		if (!a6xx_gpu->have_mmu500) {
-> >+			u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
-> >
-> >-		gpuhtw_scid &= 0x1f;
-> >-		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
-> >+			gpuhtw_scid &= 0x1f;
-> >+			cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
-> >+		}
-> > 	}
-> >
-> > 	if (cntl1_regval) {
-> >@@ -1067,13 +1075,20 @@ static void a6xx_llc_activate(struct a6xx_gpu
-> >*a6xx_gpu)
-> > 		 * Program the slice IDs for the various GPU blocks and GPU MMU
-> > 		 * pagetables
-> > 		 */
-> >-		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1,
-> >cntl1_regval);
-> >-
-> >-		/*
-> >-		 * Program cacheability overrides to not allocate cache lines on
-> >-		 * a write miss
-> >-		 */
-> >-		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF,
-> >0x03);
-> >+		if (a6xx_gpu->have_mmu500)
-> >+			gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0),
-> >+				cntl1_regval);
-> >+		else {
-> >+			a6xx_llc_write(a6xx_gpu,
-> >+				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
-> >+
-> >+			/*
-> >+			 * Program cacheability overrides to not allocate cache
-> >+			 * lines on a write miss
-> >+			 */
-> >+			a6xx_llc_rmw(a6xx_gpu,
-> >+				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
-> >+		}
-> > 	}
-> > }
-> >
-> >@@ -1086,10 +1101,21 @@ static void a6xx_llc_slices_destroy(struct
-> >a6xx_gpu *a6xx_gpu)
-> > static void a6xx_llc_slices_init(struct platform_device *pdev,
-> > 		struct a6xx_gpu *a6xx_gpu)
-> > {
-> >+	struct device_node *phandle;
-> >+
-> > 	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
-> > 	if (IS_ERR(a6xx_gpu->llc_mmio))
-> > 		return;
-> >
-> >+	/*
-> >+	 * There is a different programming path for targets with an mmu500
-> >+	 * attached, so detect if that is the case
-> >+	 */
-> >+	phandle = of_parse_phandle(pdev->dev.of_node, "iommus", 0);
-> >+	a6xx_gpu->have_mmu500 = (phandle &&
-> >+		of_device_is_compatible(phandle, "arm,mmu500"));
-> >+	of_node_put(phandle);
-> >+
-> > 	a6xx_gpu->llc_slice = llcc_slice_getd(LLCC_GPU);
-> > 	a6xx_gpu->htw_llc_slice = llcc_slice_getd(LLCC_GPUHTW);
-> >
-> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> >b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> >index 9e6079af679c..e793d329e77b 100644
-> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> >@@ -32,6 +32,7 @@ struct a6xx_gpu {
-> > 	void __iomem *llc_mmio;
-> > 	void *llc_slice;
-> > 	void *htw_llc_slice;
-> >+	bool have_mmu500;
-> > };
-> >
-> > #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
+
+On 27.10.2020 14:59, Jiri Olsa wrote:
+> On Mon, Oct 26, 2020 at 08:47:06PM +0300, Alexey Budankov wrote:
+>>
+>> On 24.10.2020 18:43, Jiri Olsa wrote:
+>>> On Wed, Oct 21, 2020 at 06:57:53PM +0300, Alexey Budankov wrote:
+>>>>
+>>>> Open files located at trace data directory in case read access
+>>>> mode is requested. File are opened and its fds assigned to
+>>>> perf_data dir files especially for loading data directories
+>>>> content in perf report mode.
+>>>>
+>>>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>>>> ---
+>>>>  tools/perf/util/data.c | 4 ++++
+>>>>  1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+>>>> index c47aa34fdc0a..6ad61ac6ba67 100644
+>>>> --- a/tools/perf/util/data.c
+>>>> +++ b/tools/perf/util/data.c
+>>>> @@ -321,6 +321,10 @@ static int open_dir(struct perf_data *data)
+>>>>  		return -1;
+>>>>  
+>>>>  	ret = open_file(data);
+>>>> +	if (!ret && perf_data__is_dir(data)) {
+>>>> +		if (perf_data__is_read(data))
+>>>> +			ret = perf_data__open_dir(data);
+>>>> +	}
+>>>
+>>> perf_data__open_dir is also called from perf_session__new
+>>> is it called twice?
+>>
+>> It is not called twice. It is in different branches.
+>> This one is for write and the other one is for read.
 > 
-> Thanks Jordan for the patch.
+> hum, is that right?
+> 
+> 	# ./perf record --threads 
+> 	^C[ perf record: Woken up 15 times to write data ]
+> 	[ perf record: Captured and wrote 1.421 MB perf.data (515 samples) ]
+> 
+> 	# gdb ./perf
+> 	GNU gdb (GDB) Fedora 9.1-6.fc32
+> 
+> 	(gdb) b perf_data__open_dir
+> 	Breakpoint 1 at 0x5b4753: file util/data.c, line 72.
+> 
+> 	(gdb) r --no-pager report --stdio
+> 	Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf --no-pager report --stdio
+> 
+> 	Breakpoint 1, perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+> 	72      {
+> 	(gdb) bt
+> 	#0  perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+> 	#1  0x00000000005b538d in open_dir (data=0x7fffffffb0e0) at util/data.c:326
+> 	#2  0x00000000005b546d in perf_data__open (data=0x7fffffffb0e0) at util/data.c:351
+> 	#3  0x00000000005627e8 in perf_session__new (data=0x7fffffffb0e0, repipe=false, tool=0x7fffffffb220) at util/session.c:210
+> 	#4  0x000000000045a572 in cmd_report (argc=0, argv=0x7fffffffd7a8) at builtin-report.c:1372
+> 	#5  0x00000000004f49ec in run_builtin (p=0xaadab0 <commands+240>, argc=2, argv=0x7fffffffd7a8) at perf.c:312
+> 	#6  0x00000000004f4c59 in handle_internal_command (argc=2, argv=0x7fffffffd7a8) at perf.c:364
+> 	#7  0x00000000004f4da0 in run_argv (argcp=0x7fffffffd5ec, argv=0x7fffffffd5e0) at perf.c:408
+> 	#8  0x00000000004f516c in main (argc=2, argv=0x7fffffffd7a8) at perf.c:538
+> 
+> 	(gdb) c
+> 	Continuing.
+> 
+> 	Breakpoint 1, perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+> 	72      {
+> 	(gdb) bt
+> 	#0  perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+> 	#1  0x0000000000562883 in perf_session__new (data=0x7fffffffb0e0, repipe=false, tool=0x7fffffffb220) at util/session.c:234
+> 	#2  0x000000000045a572 in cmd_report (argc=0, argv=0x7fffffffd7a8) at builtin-report.c:1372
+> 	#3  0x00000000004f49ec in run_builtin (p=0xaadab0 <commands+240>, argc=2, argv=0x7fffffffd7a8) at perf.c:312
+> 	#4  0x00000000004f4c59 in handle_internal_command (argc=2, argv=0x7fffffffd7a8) at perf.c:364
+> 	#5  0x00000000004f4da0 in run_argv (argcp=0x7fffffffd5ec, argv=0x7fffffffd5e0) at perf.c:408
+> 	#6  0x00000000004f516c in main (argc=2, argv=0x7fffffffd7a8) at perf.c:538
+> 
+> 
+> AFAICS the second (current) call to perf_data__open_dir will
+> do the job, because the call you added still does not see
+> directory with proper version and will bail out on call to
+>   perf_data__is_single_file
+> 
+> perf_session__open call will read headers and update dir version
+> so the current perf_data__open_dir will open the directory
 
-If it makes your life or Rob's life easier, please feel free to squash them.
+Tested once again. Now it looks like this patch is redundant
+since dir is already opened by the existing code.
+Thanks for pointing this out!
 
-Jordan
+Alexei
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> 
+> jirka
+> 
