@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2204429BB45
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7987D29BB48
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805317AbgJ0QAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59856 "EHLO mail.kernel.org"
+        id S1805336AbgJ0QAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:00:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801334AbgJ0PkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:40:18 -0400
+        id S1801337AbgJ0PkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:40:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70497222C8;
-        Tue, 27 Oct 2020 15:40:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C2A5222E9;
+        Tue, 27 Oct 2020 15:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813218;
-        bh=R5PbW+sXDK7226DchEgeE2gG3rKu+u6XKrP7QE2j8nw=;
+        s=default; t=1603813221;
+        bh=pCPyCNJa3dAYR68aECJ9MIhOe3ty3GeEkbkNbeEb/5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wHV94ltyl9KV2x7hT/7EJVnxYBGDaZ2Gg6nGwiR78Hq5LnwNLwXJkHk6mPSLF0e0I
-         RU6kI9Ju+cVs+Yxixf4S6PPEiRISNaGRRG9czRrB3rkoCyt6H2Ji5dusXB9VzM16fU
-         oTVD4Il4EVln34xWl3HP67iE2EZTb6jms5DAv5Rg=
+        b=pYdmBqLHOMIxW8aDWQEtXDfR7/lHc1N7NRPKwpaKjzEO4e2YSJl33hLkXzADGjgkZ
+         GDpbFQEjXQZA+a4tMgqIhh/XZYzUqjkTMnywzGlLQplcC8oIHKs5I/7hdydj9z9pEe
+         nNd8jzb+x2lTPoRITLg/PVUS4bra2K8SjtyCiLi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Stan Johnson <userm57@yahoo.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 446/757] powerpc/tau: Remove duplicated set_thresholds() call
-Date:   Tue, 27 Oct 2020 14:51:36 +0100
-Message-Id: <20201027135511.469769790@linuxfoundation.org>
+Subject: [PATCH 5.9 447/757] powerpc/tau: Check processor type before enabling TAU interrupt
+Date:   Tue, 27 Oct 2020 14:51:37 +0100
+Message-Id: <20201027135511.517250541@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -46,40 +46,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
+[ Upstream commit 5e3119e15fed5b9a9a7e528665ff098a4a8dbdbc ]
 
-The commentary at the call site seems to disagree with the code. The
-conditional prevents calling set_thresholds() via the exception handler,
-which appears to crash. Perhaps that's because it immediately triggers
-another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
-is redundant because tau_timeout() does so.
+According to Freescale's documentation, MPC74XX processors have an
+erratum that prevents the TAU interrupt from working, so don't try to
+use it when running on those processors.
 
 Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
+Link: https://lore.kernel.org/r/c281611544768e758bd58fe812cf702a5bd2d042.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/tau_6xx.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/powerpc/kernel/tau_6xx.c  | 33 ++++++++++++++-------------------
+ arch/powerpc/platforms/Kconfig |  5 ++---
+ 2 files changed, 16 insertions(+), 22 deletions(-)
 
 diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
-index 268205cc347da..b8d7e7d498e0a 100644
+index b8d7e7d498e0a..614b5b272d9c6 100644
 --- a/arch/powerpc/kernel/tau_6xx.c
 +++ b/arch/powerpc/kernel/tau_6xx.c
-@@ -110,11 +110,6 @@ static void TAUupdate(int cpu)
- #ifdef DEBUG
- 	printk("grew = %d\n", tau[cpu].grew);
- #endif
--
--#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
--	set_thresholds(cpu);
+@@ -40,6 +40,8 @@ static struct tau_temp
+ 	unsigned char grew;
+ } tau[NR_CPUS];
+ 
++static bool tau_int_enable;
++
+ #undef DEBUG
+ 
+ /* TODO: put these in a /proc interface, with some sanity checks, and maybe
+@@ -54,22 +56,13 @@ static struct tau_temp
+ 
+ static void set_thresholds(unsigned long cpu)
+ {
+-#ifdef CONFIG_TAU_INT
+-	/*
+-	 * setup THRM1,
+-	 * threshold, valid bit, enable interrupts, interrupt when below threshold
+-	 */
+-	mtspr(SPRN_THRM1, THRM1_THRES(tau[cpu].low) | THRM1_V | THRM1_TIE | THRM1_TID);
++	u32 maybe_tie = tau_int_enable ? THRM1_TIE : 0;
+ 
+-	/* setup THRM2,
+-	 * threshold, valid bit, enable interrupts, interrupt when above threshold
+-	 */
+-	mtspr (SPRN_THRM2, THRM1_THRES(tau[cpu].high) | THRM1_V | THRM1_TIE);
+-#else
+-	/* same thing but don't enable interrupts */
+-	mtspr(SPRN_THRM1, THRM1_THRES(tau[cpu].low) | THRM1_V | THRM1_TID);
+-	mtspr(SPRN_THRM2, THRM1_THRES(tau[cpu].high) | THRM1_V);
 -#endif
--
++	/* setup THRM1, threshold, valid bit, interrupt when below threshold */
++	mtspr(SPRN_THRM1, THRM1_THRES(tau[cpu].low) | THRM1_V | maybe_tie | THRM1_TID);
++
++	/* setup THRM2, threshold, valid bit, interrupt when above threshold */
++	mtspr(SPRN_THRM2, THRM1_THRES(tau[cpu].high) | THRM1_V | maybe_tie);
  }
  
- #ifdef CONFIG_TAU_INT
+ static void TAUupdate(int cpu)
+@@ -142,9 +135,8 @@ static void tau_timeout(void * info)
+ 	local_irq_save(flags);
+ 	cpu = smp_processor_id();
+ 
+-#ifndef CONFIG_TAU_INT
+-	TAUupdate(cpu);
+-#endif
++	if (!tau_int_enable)
++		TAUupdate(cpu);
+ 
+ 	size = tau[cpu].high - tau[cpu].low;
+ 	if (size > min_window && ! tau[cpu].grew) {
+@@ -225,6 +217,9 @@ static int __init TAU_init(void)
+ 		return 1;
+ 	}
+ 
++	tau_int_enable = IS_ENABLED(CONFIG_TAU_INT) &&
++			 !strcmp(cur_cpu_spec->platform, "ppc750");
++
+ 	tau_workq = alloc_workqueue("tau", WQ_UNBOUND, 1, 0);
+ 	if (!tau_workq)
+ 		return -ENOMEM;
+@@ -234,7 +229,7 @@ static int __init TAU_init(void)
+ 	queue_work(tau_workq, &tau_work);
+ 
+ 	pr_info("Thermal assist unit using %s, shrink_timer: %d ms\n",
+-		IS_ENABLED(CONFIG_TAU_INT) ? "interrupts" : "workqueue", shrink_timer);
++		tau_int_enable ? "interrupts" : "workqueue", shrink_timer);
+ 	tau_initialized = 1;
+ 
+ 	return 0;
+diff --git a/arch/powerpc/platforms/Kconfig b/arch/powerpc/platforms/Kconfig
+index fb7515b4fa9c6..9fe36f0b54c1a 100644
+--- a/arch/powerpc/platforms/Kconfig
++++ b/arch/powerpc/platforms/Kconfig
+@@ -223,9 +223,8 @@ config TAU
+ 	  temperature within 2-4 degrees Celsius. This option shows the current
+ 	  on-die temperature in /proc/cpuinfo if the cpu supports it.
+ 
+-	  Unfortunately, on some chip revisions, this sensor is very inaccurate
+-	  and in many cases, does not work at all, so don't assume the cpu
+-	  temp is actually what /proc/cpuinfo says it is.
++	  Unfortunately, this sensor is very inaccurate when uncalibrated, so
++	  don't assume the cpu temp is actually what /proc/cpuinfo says it is.
+ 
+ config TAU_INT
+ 	bool "Interrupt driven TAU driver (DANGEROUS)"
 -- 
 2.25.1
 
