@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA0229BCF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB2F29BD0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811345AbgJ0QjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:39:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
+        id S1811701AbgJ0Qkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:40:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799944AbgJ0Pn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:43:27 -0400
+        id S1801837AbgJ0Pob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:44:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79C6322409;
-        Tue, 27 Oct 2020 15:43:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57294223FB;
+        Tue, 27 Oct 2020 15:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813405;
-        bh=mcHk6piw7br4qc/6ajvRIGsdzwYRhDh1bfnKcN2vjPM=;
+        s=default; t=1603813428;
+        bh=fr+6Lke2mKREuYi9GNCWd72EKLJJPIiTKDYb85KvyZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DekM1coz5mOZEq0X08NmxeVvTfm0I7DQYIcqj4tR0ldh71BZenzoJWj4bP+VEuXE8
-         pk6Ltk9oD0RsnBOHyp7P+ZB4XDtpEjo+KUK/GqC/hiAQ0XeFfaZGWmpgu6av5fB/Jn
-         oDCQLJ3vENs7hrMxsV7uxsSuURrnpPsVAA3B2hjw=
+        b=HefQqxja2TSQLX6zRhSMVzYnPpSoRWuUKOdgAkKEZ2Kl/V95kWMfGqwJTwyXzFx0W
+         BIRR4NatG7QAfT5NQhPjRl5ETkzyl1QcQbSLmQLhIpdQsXqy5WQSRuW4Bd3BXFmjMS
+         0n/AhGPpkw7UHvVsDqkuLw0gzVKEwiAo2CoLsdUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 539/757] clk: rockchip: Initialize hw to error to avoid undefined behavior
-Date:   Tue, 27 Oct 2020 14:53:09 +0100
-Message-Id: <20201027135515.768201818@linuxfoundation.org>
+        stable@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 541/757] module: statically initialize init section freeing data
+Date:   Tue, 27 Oct 2020 14:53:11 +0100
+Message-Id: <20201027135515.869037729@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,42 +44,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <sboyd@kernel.org>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-[ Upstream commit b608f11d49ec671739604cc763248d8e8fadbbeb ]
+[ Upstream commit fdf09ab887829cd1b671e45d9549f8ec1ffda0fa ]
 
-We can get down to this return value from ERR_CAST() without
-initializing hw. Set it to -ENOMEM so that we always return something
-sane.
+Corentin hit the following workqueue warning when running with
+CRYPTO_MANAGER_EXTRA_TESTS:
 
-Fixes the following smatch warning:
+  WARNING: CPU: 2 PID: 147 at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+  Modules linked in: ghash_generic
+  CPU: 2 PID: 147 Comm: modprobe Not tainted
+      5.6.0-rc1-next-20200214-00068-g166c9264f0b1-dirty #545
+  Hardware name: Pine H64 model A (DT)
+  pc : __queue_work+0x3b8/0x3d0
+  Call trace:
+   __queue_work+0x3b8/0x3d0
+   queue_work_on+0x6c/0x90
+   do_init_module+0x188/0x1f0
+   load_module+0x1d00/0x22b0
 
-drivers/clk/rockchip/clk-half-divider.c:228 rockchip_clk_register_halfdiv() error: uninitialized symbol 'hw'.
-drivers/clk/rockchip/clk-half-divider.c:228 rockchip_clk_register_halfdiv() warn: passing zero to 'ERR_CAST'
+I wasn't able to reproduce on x86 or rpi 3b+.
 
-Cc: Elaine Zhang <zhangqing@rock-chips.com>
-Cc: Heiko Stuebner <heiko@sntech.de>
-Fixes: 956060a52795 ("clk: rockchip: add support for half divider")
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+This is
+
+  WARN_ON(!list_empty(&work->entry))
+
+from __queue_work(), and it happens because the init_free_wq work item
+isn't initialized in time for a crypto test that requests the gcm
+module.  Some crypto tests were recently moved earlier in boot as
+explained in commit c4741b230597 ("crypto: run initcalls for generic
+implementations earlier"), which went into mainline less than two weeks
+before the Fixes commit.
+
+Avoid the warning by statically initializing init_free_wq and the
+corresponding llist.
+
+Link: https://lore.kernel.org/lkml/20200217204803.GA13479@Red/
+Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
+Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Tested-on: sun50i-h6-pine-h64
+Tested-on: imx8mn-ddr4-evk
+Tested-on: sun50i-a64-bananapi-m64
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/rockchip/clk-half-divider.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/module.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/clk/rockchip/clk-half-divider.c b/drivers/clk/rockchip/clk-half-divider.c
-index b333fc28c94b6..37c858d689e0d 100644
---- a/drivers/clk/rockchip/clk-half-divider.c
-+++ b/drivers/clk/rockchip/clk-half-divider.c
-@@ -166,7 +166,7 @@ struct clk *rockchip_clk_register_halfdiv(const char *name,
- 					  unsigned long flags,
- 					  spinlock_t *lock)
- {
--	struct clk *clk;
-+	struct clk *clk = ERR_PTR(-ENOMEM);
- 	struct clk_mux *mux = NULL;
- 	struct clk_gate *gate = NULL;
- 	struct clk_divider *div = NULL;
+diff --git a/kernel/module.c b/kernel/module.c
+index 1c5cff34d9f28..8486123ffd7af 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -91,8 +91,9 @@ EXPORT_SYMBOL_GPL(module_mutex);
+ static LIST_HEAD(modules);
+ 
+ /* Work queue for freeing init sections in success case */
+-static struct work_struct init_free_wq;
+-static struct llist_head init_free_list;
++static void do_free_init(struct work_struct *w);
++static DECLARE_WORK(init_free_wq, do_free_init);
++static LLIST_HEAD(init_free_list);
+ 
+ #ifdef CONFIG_MODULES_TREE_LOOKUP
+ 
+@@ -3579,14 +3580,6 @@ static void do_free_init(struct work_struct *w)
+ 	}
+ }
+ 
+-static int __init modules_wq_init(void)
+-{
+-	INIT_WORK(&init_free_wq, do_free_init);
+-	init_llist_head(&init_free_list);
+-	return 0;
+-}
+-module_init(modules_wq_init);
+-
+ /*
+  * This is where the real work happens.
+  *
 -- 
 2.25.1
 
