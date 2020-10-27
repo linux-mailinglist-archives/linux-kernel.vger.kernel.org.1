@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9E629B6A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBF029B755
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797449AbgJ0PXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:23:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36104 "EHLO mail.kernel.org"
+        id S1799509AbgJ0Pbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:31:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797074AbgJ0PV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:21:29 -0400
+        id S1797082AbgJ0PVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:21:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B816B22275;
-        Tue, 27 Oct 2020 15:21:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D9E020657;
+        Tue, 27 Oct 2020 15:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812089;
-        bh=sLuJdl4lodoqFsG4UXG02/750QkLsgLur3NhU0yisbI=;
+        s=default; t=1603812091;
+        bh=6M83Bp7CN6q9gAdkscBTEoyTQP1NK/STJR2yLE6JlhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ETBrtVPyk6VJZs/NbVyRzvfvvzDMGPkYLan0XiWNfCO4tj6OMpMZiuDSNKTlXq5We
-         50UwITlZVbFvngCJQm1alzzzN7M5f9G/uBk0fsnAt7ELbX2AKJuHnJ3ng8VCVmgc5K
-         /r+Xz7G1TrAfyP2oqcJ+/I4MTHWimm8relmUuxZc=
+        b=gfAZDFd6mI+Ic1e/EDS/+7Dtef7EU+u0j29N6xdtsktFBvijrP0R2Neu6DA0Ao/Jr
+         9ZWYeSZXkoZ/o04Jfpjzr+fud0tvQVUURa+YiQE9cw9nMwEU4MCzQicRUkmzu8YJSZ
+         OjFnqLcAdhQGlXHLQF1nAL/Y/BMpXvo1oskE3l3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 089/757] sched/fair: Fix wrong negative conversion in find_energy_efficient_cpu()
-Date:   Tue, 27 Oct 2020 14:45:39 +0100
-Message-Id: <20201027135454.727876389@linuxfoundation.org>
+Subject: [PATCH 5.9 090/757] microblaze: fix kbuild redundant file warning
+Date:   Tue, 27 Oct 2020 14:45:40 +0100
+Message-Id: <20201027135454.774235152@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,44 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukasz Luba <lukasz.luba@arm.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit da0777d35f47892f359c3f73ea155870bb595700 ]
+[ Upstream commit 4a17e8513376bb23f814d3e340a5692a12c69369 ]
 
-In find_energy_efficient_cpu() 'cpu_cap' could be less that 'util'.
-It might be because of RT, DL (so higher sched class than CFS), irq or
-thermal pressure signal, which reduce the capacity value.
-In such situation the result of 'cpu_cap - util' might be negative but
-stored in the unsigned long. Then it might be compared with other unsigned
-long when uclamp_rq_util_with() reduced the 'util' such that is passes the
-fits_capacity() check.
+Fix build warning since this file is already listed in
+include/asm-generic/Kbuild.
 
-Prevent this situation and make the arithmetic more safe.
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/microblaze/include/asm/Kbuild: hw_irq.h
 
-Fixes: 1d42509e475cd ("sched/fair: Make EAS wakeup placement consider uclamp restrictions")
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20200810083004.26420-1-lukasz.luba@arm.com
+Fixes: 630f289b7114 ("asm-generic: make more kernel-space headers mandatory")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Link: https://lore.kernel.org/r/4d992aee-8a69-1769-e622-8d6d6e316346@infradead.org
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/microblaze/include/asm/Kbuild | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1a68a0536adda..51408ebd76c27 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6594,7 +6594,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 
- 			util = cpu_util_next(cpu, p, cpu);
- 			cpu_cap = capacity_of(cpu);
--			spare_cap = cpu_cap - util;
-+			spare_cap = cpu_cap;
-+			lsub_positive(&spare_cap, util);
- 
- 			/*
- 			 * Skip CPUs that cannot satisfy the capacity request.
+diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
+index 2e87a9b6d312f..63bce836b9f10 100644
+--- a/arch/microblaze/include/asm/Kbuild
++++ b/arch/microblaze/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table.h
+ generic-y += extable.h
+-generic-y += hw_irq.h
+ generic-y += kvm_para.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
 -- 
 2.25.1
 
