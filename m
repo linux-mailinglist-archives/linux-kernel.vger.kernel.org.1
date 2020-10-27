@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16D029AE4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F8729AE50
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752730AbgJ0N6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:58:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46158 "EHLO mail.kernel.org"
+        id S1752817AbgJ0N66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:58:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753150AbgJ0N6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:58:47 -0400
+        id S1733580AbgJ0N6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:58:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B52A3206D4;
-        Tue, 27 Oct 2020 13:58:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 297212068D;
+        Tue, 27 Oct 2020 13:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807127;
-        bh=8B3owS/e2tltkU8ks4r/tsVhfXZQXWtNInk5utamHEw=;
+        s=default; t=1603807132;
+        bh=gAnXIdKLsqUvOJAAyBxNNufl+z8q4nno/Dh7BsCrLTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ftoi4rDWKkZvI3H2Tj9bg1hjkPKTolfpd6ipBLEXQE4j6Lc3iv/W6nfdwbGc4vMX3
-         QMN5j9rOpQwVqAMROxsTW8bE2kbAN9n8H58rEbhqbzoWURTjHEmM488t5UC13fZBSv
-         O7vXY/2IUVCKaVw7NqoAiHjLxVbBZgobeigh90V8=
+        b=y7uGJlls4rXB0mC9WmaGAhmKsAeW2BQ+gkjPAyB/Jadij/Rqkw5ciOP27402L6GtE
+         qMrPU6IxiGFklqegbe5wqlgTzcYC+jT04rkeCaD6+C4KBobLkVRsEpWVbCBHpMTB6m
+         dBdizCfi8k9LiiSgWKzA/+Tq/yL2pgMvGkg9r4oU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 052/112] net: korina: fix kfree of rx/tx descriptor array
-Date:   Tue, 27 Oct 2020 14:49:22 +0100
-Message-Id: <20201027134903.030935110@linuxfoundation.org>
+Subject: [PATCH 4.4 054/112] powerpc/pseries: Fix missing of_node_put() in rng_init()
+Date:   Tue, 27 Oct 2020 14:49:24 +0100
+Message-Id: <20201027134903.128807758@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -45,44 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+From: Nicholas Mc Guire <hofrat@osadl.org>
 
-[ Upstream commit 3af5f0f5c74ecbaf757ef06c3f80d56751277637 ]
+[ Upstream commit 67c3e59443f5fc77be39e2ce0db75fbfa78c7965 ]
 
-kmalloc returns KSEG0 addresses so convert back from KSEG1
-in kfree. Also make sure array is freed when the driver is
-unloaded from the kernel.
+The call to of_find_compatible_node() returns a node pointer with
+refcount incremented thus it must be explicitly decremented here
+before returning.
 
-Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: a489043f4626 ("powerpc/pseries: Implement arch_get_random_long() based on H_RANDOM")
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1530522496-14816-1-git-send-email-hofrat@osadl.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/korina.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/rng.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 07eabf72c480c..3954c80f70fcb 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1188,7 +1188,7 @@ static int korina_probe(struct platform_device *pdev)
- 	return rc;
+diff --git a/arch/powerpc/platforms/pseries/rng.c b/arch/powerpc/platforms/pseries/rng.c
+index 31ca557af60bc..262b8c5e1b9d0 100644
+--- a/arch/powerpc/platforms/pseries/rng.c
++++ b/arch/powerpc/platforms/pseries/rng.c
+@@ -40,6 +40,7 @@ static __init int rng_init(void)
  
- probe_err_register:
--	kfree(lp->td_ring);
-+	kfree(KSEG0ADDR(lp->td_ring));
- probe_err_td_ring:
- 	iounmap(lp->tx_dma_regs);
- probe_err_dma_tx:
-@@ -1208,6 +1208,7 @@ static int korina_remove(struct platform_device *pdev)
- 	iounmap(lp->eth_regs);
- 	iounmap(lp->rx_dma_regs);
- 	iounmap(lp->tx_dma_regs);
-+	kfree(KSEG0ADDR(lp->td_ring));
+ 	ppc_md.get_random_seed = pseries_get_random_long;
  
- 	unregister_netdev(bif->dev);
- 	free_netdev(bif->dev);
++	of_node_put(dn);
+ 	return 0;
+ }
+ machine_subsys_initcall(pseries, rng_init);
 -- 
 2.25.1
 
