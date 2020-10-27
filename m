@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E142F29B270
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2A329B27A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762185AbgJ0OlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:41:23 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:52100 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368410AbgJ0Ojs (ORCPT
+        id S1762227AbgJ0Olc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:41:32 -0400
+Received: from casper.infradead.org ([90.155.50.34]:43764 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368457AbgJ0Oju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:39:48 -0400
+        Tue, 27 Oct 2020 10:39:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Sender:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-        To:From:Reply-To:Content-ID:Content-Description;
-        bh=riMlzuoiOwtXb9I5iFqaHvZGEHPZQcMx6cCtaeKRBNE=; b=u19M+t1bEapEPy3W0cEebkIA2d
-        kaHsPHlZs82IGon33mgFlwwE1ezk+LhT8ZdnHS3N6MsQZVCJl0rSpGPNnjIREn3KqUGCiptVubZxF
-        lR5It3MxUkUyFqKhccGg6MSfwrbI0zoi0msSVkQyP1gfeboYOvC2/IbEcO1H068s5ufXIngVkkT0p
-        07MnqTR5pDT5qG6shE0eTkT1KB26GVonAYPf8+bYVqb/qsoYvixM+ztl+g9w2r0ver1alwK8yfxOE
-        oQhHqZ83FaWRUSuyYVcKoGo/eegaGlwz0cRKhiszMiz3osAQqYfYQ235uSacZPkE4OEu/nsomfeNv
-        EyTYWGzw==;
+        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=tbOYj5t0+tvCkSDg3zSqNJaUCRlXrtQoNZf64wI8RcI=; b=wA7xeMSpDfKI2x3RCUXsWrZ+tx
+        x5PE0v2FwERIRcZVCXTLumHTQ80DtcQcYmNCJi0cnnjZtIVIKeylA74z1Lnn/kz9SaMcxnq+dZ0s9
+        aaSktn1KpMSYG9lwZ5UtvG9u/VimZbqXFX1KPGKzOTFfC9lCfdqJjeed3vvIvn8bZCo0adFXCs6Df
+        0y4nrGHWoB8vImeBWmN0nvFjqsHfHEwY6Jjb6Zp8LPjhpqr48v9PU/2dYy5hTuxTPC+bUYgyo0auv
+        l+m+wBJ1fspkW1dbODaolSzoy1GeASoyB5rtLZ0ObBzrHCAnXZHJCgs1U+6/pC4vlSOamcDMfaj1u
+        +8Tgg2yQ==;
 Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXQ8Z-0000bX-Fy; Tue, 27 Oct 2020 14:39:47 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXQ8Z-0005C5-1A; Tue, 27 Oct 2020 14:39:47 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.93 #3 (Red Hat Linux))
-        id 1kXQ8Y-002iqc-Dq; Tue, 27 Oct 2020 14:39:46 +0000
+        id 1kXQ8Y-002iqk-Fl; Tue, 27 Oct 2020 14:39:46 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@redhat.com>,
@@ -38,47 +38,76 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Subject: [PATCH v2 0/2] Allow KVM IRQFD to consistently intercept events
-Date:   Tue, 27 Oct 2020 14:39:42 +0000
-Message-Id: <20201027143944.648769-1-dwmw2@infradead.org>
+Subject: [PATCH v2 2/2] kvm/eventfd: Use priority waitqueue to catch events before userspace
+Date:   Tue, 27 Oct 2020 14:39:44 +0000
+Message-Id: <20201027143944.648769-3-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201026175325.585623-1-dwmw2@infradead.org>
+In-Reply-To: <20201027143944.648769-1-dwmw2@infradead.org>
 References: <20201026175325.585623-1-dwmw2@infradead.org>
+ <20201027143944.648769-1-dwmw2@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When posted interrupts are in use, KVM fully bypasses the eventfd and
-delivers events directly to the appropriate vCPU. Without posted
-interrupts, it still uses the eventfd but it doesn't actually stop
-userspace from receiving the events too. This leaves userspace having
-to carefully avoid seeing the same events and injecting duplicate
-interrupts to the guest.
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-Fix it by adding a 'priority' mode for exclusive waiters which puts them 
-at the head of the list, where they can consume events before the 
-non-exclusive waiters are woken.
+When posted interrupts are available, the IRTE is modified to deliver
+interrupts direclty to the vCPU and nothing ever reaches userspace, if
+it's listening on the same eventfd that feeds the irqfd.
 
-v2: 
- • Drop [RFC]. This seems to be working nicely, and userspace is a lot
-   cleaner without having to mess around with adding/removing the eventfd
-   to its poll set. And nobody yelled at me. Yet.
- • Reword commit comments, update comment above __wake_up_common()
- • Rebase to be applied after the (only vaguely related) fix to make
-   irqfd actually consume the eventfd counter too.
+I like that behaviour. Let's do it all the time, even without posted
+interrupts. It makes it much easier to handle IRQ remapping invalidation
+without having to constantly add/remove the fd from the userspace poll
+set. We can just leave userspace polling on it, and the bypass will...
+well... bypass it.
 
-David Woodhouse (2):
-      sched/wait: Add add_wait_queue_priority()
-      kvm/eventfd: Use priority waitqueue to catch events before userspace
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+ virt/kvm/eventfd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- include/linux/wait.h | 12 +++++++++++-
- kernel/sched/wait.c  | 17 ++++++++++++++++-
- virt/kvm/eventfd.c   |  6 ++++--
-
-
+diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
+index 87fe94355350..09cbdf2ded70 100644
+--- a/virt/kvm/eventfd.c
++++ b/virt/kvm/eventfd.c
+@@ -191,6 +191,7 @@ irqfd_wakeup(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+ 	struct kvm *kvm = irqfd->kvm;
+ 	unsigned seq;
+ 	int idx;
++	int ret = 0;
+ 
+ 	if (flags & EPOLLIN) {
+ 		u64 cnt;
+@@ -207,6 +208,7 @@ irqfd_wakeup(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+ 					      false) == -EWOULDBLOCK)
+ 			schedule_work(&irqfd->inject);
+ 		srcu_read_unlock(&kvm->irq_srcu, idx);
++		ret = 1;
+ 	}
+ 
+ 	if (flags & EPOLLHUP) {
+@@ -230,7 +232,7 @@ irqfd_wakeup(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+ 		spin_unlock_irqrestore(&kvm->irqfds.lock, iflags);
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static void
+@@ -239,7 +241,7 @@ irqfd_ptable_queue_proc(struct file *file, wait_queue_head_t *wqh,
+ {
+ 	struct kvm_kernel_irqfd *irqfd =
+ 		container_of(pt, struct kvm_kernel_irqfd, pt);
+-	add_wait_queue(wqh, &irqfd->wait);
++	add_wait_queue_priority(wqh, &irqfd->wait);
+ }
+ 
+ /* Must be called under irqfds.lock */
+-- 
+2.26.2
 
