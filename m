@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDC029C4C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B1229C4B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823058AbgJ0R5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:57:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46356 "EHLO mail.kernel.org"
+        id S1823044AbgJ0R5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:57:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758665AbgJ0OV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:21:57 -0400
+        id S1758616AbgJ0OV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:21:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CAA0206D4;
-        Tue, 27 Oct 2020 14:21:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FBBC206F7;
+        Tue, 27 Oct 2020 14:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808516;
-        bh=goybjDFJY6FMNUg+TahfCdh/Kjyc3fqSfNUu6LgGr/I=;
+        s=default; t=1603808519;
+        bh=uVlj2QS4ZmYStc0bNFiuZVa0mCI5AwUF7VFU9+emLAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPchextTdkJMclGMCTz1eFbmhJHw+mJ7AD2d+bUqJ1yZ2Zckw14S1r55HPSb2VLOl
-         8UioIXuah1NI4zAiJG9R2Ap360JVZebY8Nx5qfqGdI1jQ5B1EX0iOn914Vnf+s11J7
-         J7rlRvCr1qgD0OreOc6TvR3bUh6eFUJCCOAa9H3c=
+        b=LG1jZEZm5wTYStjzAP0rygS8zyxQI4YMirfmLZ/ifoqCO2LOon63rImGsxRhc4jMr
+         u/zBzj+ADdzssKjMJaKpxUNOBIv3HZcZMjIdowcqjYjL3232lP0j1JE/9VWazNrUTG
+         UHATklycDFfFOybaaW63mhlr9f7NyA+HwiCArV5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 122/264] platform/x86: mlx-platform: Remove PSU EEPROM configuration
-Date:   Tue, 27 Oct 2020 14:53:00 +0100
-Message-Id: <20201027135436.421892318@linuxfoundation.org>
+Subject: [PATCH 4.19 123/264] mwifiex: fix double free
+Date:   Tue, 27 Oct 2020 14:53:01 +0100
+Message-Id: <20201027135436.466209712@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,69 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit c071afcea6ecf24a3c119f25ce9f71ffd55b5dc2 ]
+[ Upstream commit 53708f4fd9cfe389beab5c8daa763bcd0e0b4aef ]
 
-Remove PSU EEPROM configuration for systems class equipped with
-Mellanox chip Spectrume-2. Till now all the systems from this class
-used few types of power units, all equipped with EEPROM device with
-address space two bytes. Thus, all these devices have been handled by
-EEPROM driver "24c32".
-There is a new requirement is to support power unit replacement by "off
-the shelf" device, matching electrical required parameters. Such device
-could be equipped with different EEPROM type, which could be one byte
-address space addressing or even could be not equipped with EEPROM.
-In such case "24c32" will not work.
+clang static analysis reports this problem:
 
-Fixes: 1bd42d94ccab ("platform/x86: mlx-platform: Add support for new 200G IB and Ethernet systems")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200923172053.26296-2-vadimp@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+sdio.c:2403:3: warning: Attempt to free released memory
+        kfree(card->mpa_rx.buf);
+        ^~~~~~~~~~~~~~~~~~~~~~~
+
+When mwifiex_init_sdio() fails in its first call to
+mwifiex_alloc_sdio_mpa_buffer, it falls back to calling it
+again.  If the second alloc of mpa_tx.buf fails, the error
+handler will try to free the old, previously freed mpa_rx.buf.
+Reviewing the code, it looks like a second double free would
+happen with mwifiex_cleanup_sdio().
+
+So set both pointers to NULL when they are freed.
+
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201004131931.29782-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/mlx-platform.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/sdio.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
-index 69e28c12d5915..0c72de95b5ccd 100644
---- a/drivers/platform/x86/mlx-platform.c
-+++ b/drivers/platform/x86/mlx-platform.c
-@@ -221,15 +221,6 @@ static struct i2c_board_info mlxplat_mlxcpld_psu[] = {
- 	},
- };
+diff --git a/drivers/net/wireless/marvell/mwifiex/sdio.c b/drivers/net/wireless/marvell/mwifiex/sdio.c
+index bfbe3aa058d93..0773d81072aa1 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sdio.c
++++ b/drivers/net/wireless/marvell/mwifiex/sdio.c
+@@ -1985,6 +1985,8 @@ static int mwifiex_alloc_sdio_mpa_buffers(struct mwifiex_adapter *adapter,
+ 		kfree(card->mpa_rx.buf);
+ 		card->mpa_tx.buf_size = 0;
+ 		card->mpa_rx.buf_size = 0;
++		card->mpa_tx.buf = NULL;
++		card->mpa_rx.buf = NULL;
+ 	}
  
--static struct i2c_board_info mlxplat_mlxcpld_ng_psu[] = {
--	{
--		I2C_BOARD_INFO("24c32", 0x51),
--	},
--	{
--		I2C_BOARD_INFO("24c32", 0x50),
--	},
--};
--
- static struct i2c_board_info mlxplat_mlxcpld_pwr[] = {
- 	{
- 		I2C_BOARD_INFO("dps460", 0x59),
-@@ -589,15 +580,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_default_ng_psu_items_data[] = {
- 		.label = "psu1",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(0),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_ng_psu[0],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- 	{
- 		.label = "psu2",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(1),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_ng_psu[1],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- };
- 
+ 	return ret;
 -- 
 2.25.1
 
