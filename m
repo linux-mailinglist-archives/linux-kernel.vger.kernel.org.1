@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8164C29C467
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4049829C290
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758019AbgJ0OT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41862 "EHLO mail.kernel.org"
+        id S1820718AbgJ0Rh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:37:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901069AbgJ0OSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:18:22 -0400
+        id S1760632AbgJ0Off (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:35:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9A85207BB;
-        Tue, 27 Oct 2020 14:18:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9239522202;
+        Tue, 27 Oct 2020 14:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808302;
-        bh=sIo/7h7FIC8sGsld5TmAz7NDlpLp7pCjHOFMUHYBtbc=;
+        s=default; t=1603809335;
+        bh=t9MUxy/rvnVfzKKnd3MZ5V2Z0P31u7O5/ODZCAwCwuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tNdEdYm2xwwO4YRk9h0MSKITClAEvrEcrPeOJ/ePBZXNSu9a/JGprcMKr2BnuSLFs
-         H9vtptr8Zvu+k6WNdHWBCKatv/ICXPzjgVxctZiJ3UuVojaEY5wGwVedfOTUfG4UTN
-         4NGczN0Nf2FxRV/K0++1LAZKUUYaOxapvUDeo590=
+        b=jkqKPEH9MWiMDVDOgVdZslfD5TpKOAgZRMKEWNUI5nF9YDq1Ah/Q2DbojOIlcBHk3
+         60CW+EyfywMPkqvUb4heaIUpxF1m53U+9awvfX0FVLMyphQH2Nzk0sl5cxcaY6kaLI
+         miYWdQ+2FFx6TVGpkpSBFu5rnf3kd3pLD3L4r/Lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 039/264] crypto: algif_skcipher - EBUSY on aio should be an error
-Date:   Tue, 27 Oct 2020 14:51:37 +0100
-Message-Id: <20201027135432.503013249@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 160/408] dmaengine: dmatest: Check list for emptiness before access its last entry
+Date:   Tue, 27 Oct 2020 14:51:38 +0100
+Message-Id: <20201027135502.516950261@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2a05b029c1ee045b886ebf9efef9985ca23450de ]
+[ Upstream commit b28de385b71abf31ce68ec0387638bee26ae9024 ]
 
-I removed the MAY_BACKLOG flag on the aio path a while ago but
-the error check still incorrectly interpreted EBUSY as success.
-This may cause the submitter to wait for a request that will never
-complete.
+After writing a garbage to the channel we get an Oops in dmatest_chan_set()
+due to access to last entry in the empty list.
 
-Fixes: dad419970637 ("crypto: algif_skcipher - Do not set...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+[  212.670672] BUG: unable to handle page fault for address: fffffff000000020
+[  212.677562] #PF: supervisor read access in kernel mode
+[  212.682702] #PF: error_code(0x0000) - not-present page
+...
+[  212.710074] RIP: 0010:dmatest_chan_set+0x149/0x2d0 [dmatest]
+[  212.715739] Code: e8 cc f9 ff ff 48 8b 1d 0d 55 00 00 48 83 7b 10 00 0f 84 63 01 00 00 48 c7 c7 d0 65 4d c0 e8 ee 4a f5 e1 48 89 c6 48 8b 43 10 <48> 8b 40 20 48 8b 78 58 48 85 ff 0f 84 f5 00 00 00 e8 b1 41 f5 e1
+
+Fix this by checking list for emptiness before accessing its last entry.
+
+Fixes: d53513d5dc28 ("dmaengine: dmatest: Add support for multi channel testing")
+Cc: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20200922115847.30100-2-andriy.shevchenko@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/algif_skcipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/dmatest.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index 1cb106c46043d..9d2e9783c0d4e 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -127,7 +127,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 			crypto_skcipher_decrypt(&areq->cra_u.skcipher_req);
+diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+index 62d9825a49e9d..238936e2dfe2d 100644
+--- a/drivers/dma/dmatest.c
++++ b/drivers/dma/dmatest.c
+@@ -1218,15 +1218,14 @@ static int dmatest_chan_set(const char *val, const struct kernel_param *kp)
+ 	add_threaded_test(info);
  
- 		/* AIO operation in progress */
--		if (err == -EINPROGRESS || err == -EBUSY)
-+		if (err == -EINPROGRESS)
- 			return -EIOCBQUEUED;
- 
- 		sock_put(sk);
+ 	/* Check if channel was added successfully */
+-	dtc = list_last_entry(&info->channels, struct dmatest_chan, node);
+-
+-	if (dtc->chan) {
++	if (!list_empty(&info->channels)) {
+ 		/*
+ 		 * if new channel was not successfully added, revert the
+ 		 * "test_channel" string to the name of the last successfully
+ 		 * added channel. exception for when users issues empty string
+ 		 * to channel parameter.
+ 		 */
++		dtc = list_last_entry(&info->channels, struct dmatest_chan, node);
+ 		if ((strcmp(dma_chan_name(dtc->chan), strim(test_channel)) != 0)
+ 		    && (strcmp("", strim(test_channel)) != 0)) {
+ 			ret = -EINVAL;
 -- 
 2.25.1
 
