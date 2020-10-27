@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D952C29C439
+	by mail.lfdr.de (Postfix) with ESMTP id 6C41A29C438
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1822933AbgJ0RyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:54:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47478 "EHLO mail.kernel.org"
+        id S1822927AbgJ0RyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:54:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443825AbgJ0OWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:22:49 -0400
+        id S2901358AbgJ0OWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:22:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E61A206ED;
-        Tue, 27 Oct 2020 14:22:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C703B22265;
+        Tue, 27 Oct 2020 14:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808568;
-        bh=4jgBDNDDLCYTROeaIBS1cIReG+r24LTtVq0TEdijb8s=;
+        s=default; t=1603808571;
+        bh=lTGcW0BQ92xe9tImYfeQuOQMIKd+1ytc5hmzA+7w6Fk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TIt/BmcH3lOBiWdEdeITestt29tQX6GOQGcWeoeC9mnERwR5RTHSNumwTwgfct3nn
-         niGjwdypII5wsaLP+vzbc9nj9JeJ9ENjyV5mXJFJnQ7mKVxKhhJ2HO3RK6CGAbOw4k
-         9CGzxVOH0TxlomlXu6LrMwCliHqE/TH2A6oS9Mcs=
+        b=s8NVbXXmoI/iB6XHRaZN0a6AJL461sf6wx7XkKKTBKNOJzo6ex/Mmp199GJQwWT/d
+         6Oz75yOoRKdgYmnj/FPLtzY5ENb22FvHOQSiKxWb6erI+OtYJtsO3hj8EySO9C6rxD
+         VWStQR+URUJrK9AGFz9iQo7kXvxTp9RQRGf40UEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
         Chandan Babu R <chandanrlinux@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 140/264] xfs: limit entries returned when counting fsmap records
-Date:   Tue, 27 Oct 2020 14:53:18 +0100
-Message-Id: <20201027135437.262433510@linuxfoundation.org>
+Subject: [PATCH 4.19 141/264] xfs: fix high key handling in the rt allocators query_range function
+Date:   Tue, 27 Oct 2020 14:53:19 +0100
+Message-Id: <20201027135437.312233689@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -47,35 +46,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit acd1ac3aa22fd58803a12d26b1ab7f70232f8d8d ]
+[ Upstream commit d88850bd5516a77c6f727e8b6cefb64e0cc929c7 ]
 
-If userspace asked fsmap to count the number of entries, we cannot
-return more than UINT_MAX entries because fmh_entries is u32.
-Therefore, stop counting if we hit this limit or else we will waste time
-to return truncated results.
+Fix some off-by-one errors in xfs_rtalloc_query_range.  The highest key
+in the realtime bitmap is always one less than the number of rt extents,
+which means that the key clamp at the start of the function is wrong.
+The 4th argument to xfs_rtfind_forw is the highest rt extent that we
+want to probe, which means that passing 1 less than the high key is
+wrong.  Finally, drop the rem variable that controls the loop because we
+can compare the iteration point (rtstart) against the high key directly.
 
-Fixes: e89c041338ed ("xfs: implement the GETFSMAP ioctl")
+The sordid history of this function is that the original commit (fb3c3)
+incorrectly passed (high_rec->ar_startblock - 1) as the 'limit' parameter
+to xfs_rtfind_forw.  This was wrong because the "high key" is supposed
+to be the largest key for which the caller wants result rows, not the
+key for the first row that could possibly be outside the range that the
+caller wants to see.
+
+A subsequent attempt (8ad56) to strengthen the parameter checking added
+incorrect clamping of the parameters to the number of rt blocks in the
+system (despite the bitmap functions all taking units of rt extents) to
+avoid querying ranges past the end of rt bitmap file but failed to fix
+the incorrect _rtfind_forw parameter.  The original _rtfind_forw
+parameter error then survived the conversion of the startblock and
+blockcount fields to rt extents (a0e5c), and the most recent off-by-one
+fix (a3a37) thought it was patching a problem when the end of the rt
+volume is not in use, but none of these fixes actually solved the
+original problem that the author was confused about the "limit" argument
+to xfs_rtfind_forw.
+
+Sadly, all four of these patches were written by this author and even
+his own usage of this function and rt testing were inadequate to get
+this fixed quickly.
+
+Original-problem: fb3c3de2f65c ("xfs: add a couple of queries to iterate free extents in the rtbitmap")
+Not-fixed-by: 8ad560d2565e ("xfs: strengthen rtalloc query range checks")
+Not-fixed-by: a0e5c435babd ("xfs: fix xfs_rtalloc_rec units")
+Fixes: a3a374bf1889 ("xfs: fix off-by-one error in xfs_rtalloc_query_range")
 Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Chandan Babu R <chandanrlinux@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_fsmap.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/xfs/libxfs/xfs_rtbitmap.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/fs/xfs/xfs_fsmap.c b/fs/xfs/xfs_fsmap.c
-index 3d76a9e35870a..75b57b683d3e6 100644
---- a/fs/xfs/xfs_fsmap.c
-+++ b/fs/xfs/xfs_fsmap.c
-@@ -259,6 +259,9 @@ xfs_getfsmap_helper(
+diff --git a/fs/xfs/libxfs/xfs_rtbitmap.c b/fs/xfs/libxfs/xfs_rtbitmap.c
+index b228c821bae68..fe7323032e785 100644
+--- a/fs/xfs/libxfs/xfs_rtbitmap.c
++++ b/fs/xfs/libxfs/xfs_rtbitmap.c
+@@ -1020,7 +1020,6 @@ xfs_rtalloc_query_range(
+ 	struct xfs_mount		*mp = tp->t_mountp;
+ 	xfs_rtblock_t			rtstart;
+ 	xfs_rtblock_t			rtend;
+-	xfs_rtblock_t			rem;
+ 	int				is_free;
+ 	int				error = 0;
  
- 	/* Are we just counting mappings? */
- 	if (info->head->fmh_count == 0) {
-+		if (info->head->fmh_entries == UINT_MAX)
-+			return -ECANCELED;
-+
- 		if (rec_daddr > info->next_daddr)
- 			info->head->fmh_entries++;
+@@ -1029,13 +1028,12 @@ xfs_rtalloc_query_range(
+ 	if (low_rec->ar_startext >= mp->m_sb.sb_rextents ||
+ 	    low_rec->ar_startext == high_rec->ar_startext)
+ 		return 0;
+-	if (high_rec->ar_startext > mp->m_sb.sb_rextents)
+-		high_rec->ar_startext = mp->m_sb.sb_rextents;
++	high_rec->ar_startext = min(high_rec->ar_startext,
++			mp->m_sb.sb_rextents - 1);
+ 
+ 	/* Iterate the bitmap, looking for discrepancies. */
+ 	rtstart = low_rec->ar_startext;
+-	rem = high_rec->ar_startext - rtstart;
+-	while (rem) {
++	while (rtstart <= high_rec->ar_startext) {
+ 		/* Is the first block free? */
+ 		error = xfs_rtcheck_range(mp, tp, rtstart, 1, 1, &rtend,
+ 				&is_free);
+@@ -1044,7 +1042,7 @@ xfs_rtalloc_query_range(
+ 
+ 		/* How long does the extent go for? */
+ 		error = xfs_rtfind_forw(mp, tp, rtstart,
+-				high_rec->ar_startext - 1, &rtend);
++				high_rec->ar_startext, &rtend);
+ 		if (error)
+ 			break;
+ 
+@@ -1057,7 +1055,6 @@ xfs_rtalloc_query_range(
+ 				break;
+ 		}
+ 
+-		rem -= rtend - rtstart + 1;
+ 		rtstart = rtend + 1;
+ 	}
  
 -- 
 2.25.1
