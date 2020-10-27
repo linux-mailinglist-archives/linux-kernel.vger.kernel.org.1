@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C5B29AFCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFCB29B005
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507390AbgJ0OMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59004 "EHLO mail.kernel.org"
+        id S2507800AbgJ0OP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:15:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1745903AbgJ0OJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:09:49 -0400
+        id S1755825AbgJ0OKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8E15218AC;
-        Tue, 27 Oct 2020 14:09:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E62EE2072D;
+        Tue, 27 Oct 2020 14:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807789;
-        bh=LSq8WwJojx+v4KgOO426L8FbXeewwDobjNH5CXrlVLE=;
+        s=default; t=1603807848;
+        bh=vrrp1g/fcF4z5Qn14TN4QwzJcq2Iguk/mQAsVXevETw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=koxridY6ZxK/L+m3cGXfjlBCmCZnTd1It+Yq0Z/kEzrJQhi2z8wTWxgymLWJvbJlt
-         KvfcAdO4fw2J1MzRntHkORZORRMNUGbscpxTMdWH8nKn6WyDaLFPNC2Ok/DSX5BLu+
-         zRs//BDqCvVLK6YWdgGuddzehyH29fhN3J6jIAZE=
+        b=cWcgqP0rg6Si1HEfHvLo5hVyq/H39AgXBbPvquXVczwhDuP/ETdNZy+8fdCn5bJkn
+         uFxWC9D3+TDvad6pu1uXC+FhbhRE+nPBtdMjI6iBHPjqShi+pVCFkZWfKmP4o/EUau
+         k+aeZfZU8XEWHOB7+HHuWeKotlhMu+7nNl3YK5EE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Xiaoliang Pang <dawning.pang@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 034/191] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
-Date:   Tue, 27 Oct 2020 14:48:09 +0100
-Message-Id: <20201027134911.383143540@linuxfoundation.org>
+Subject: [PATCH 4.14 036/191] media: tc358743: initialize variable
+Date:   Tue, 27 Oct 2020 14:48:11 +0100
+Message-Id: <20201027134911.479583000@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -44,43 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoliang Pang <dawning.pang@gmail.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 228d284aac61283cde508a925d666f854b57af63 ]
+[ Upstream commit 274cf92d5dff5c2fec1a518078542ffe70d07646 ]
 
-In the init loop, if an error occurs in function 'dma_alloc_coherent',
-then goto the err_cleanup section, after run i--,
-in the array ring, the struct mtk_ring with index i will not be released,
-causing memory leaks
+clang static analysis flags this error
 
-Fixes: 785e5c616c849 ("crypto: mediatek - Add crypto driver support for some MediaTek chips")
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+tc358743.c:1468:9: warning: Branch condition evaluates
+  to a garbage value
+        return handled ? IRQ_HANDLED : IRQ_NONE;
+               ^~~~~~~
+handled should be initialized to false.
+
+Fixes: d747b806abf4 ("[media] tc358743: add direct interrupt handling")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/i2c/tc358743.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index c58e708d30395..b2b1e90a3079d 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -472,13 +472,13 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 	return 0;
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index c9647e24a4a3a..f74c4f6814ebb 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -1318,7 +1318,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
+ static irqreturn_t tc358743_irq_handler(int irq, void *dev_id)
+ {
+ 	struct tc358743_state *state = dev_id;
+-	bool handled;
++	bool handled = false;
  
- err_cleanup:
--	for (; i--; ) {
-+	do {
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->res_base, ring[i]->res_dma);
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
--	}
-+	} while (i--);
- 	return -ENOMEM;
- }
+ 	tc358743_isr(&state->sd, 0, &handled);
  
 -- 
 2.25.1
