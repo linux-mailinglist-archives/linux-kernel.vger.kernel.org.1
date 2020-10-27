@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EA629B416
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC9D29B605
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783249AbgJ0O6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:58:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44860 "EHLO mail.kernel.org"
+        id S1796528AbgJ0PTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:19:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762827AbgJ0Oo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:44:58 -0400
+        id S1795071AbgJ0PPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:15:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D86F20773;
-        Tue, 27 Oct 2020 14:44:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25EA22224A;
+        Tue, 27 Oct 2020 15:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809898;
-        bh=n4m9dSikzU+zygSZcCDw8o3mQ54FGsAky9zfTGYN9HA=;
+        s=default; t=1603811701;
+        bh=+8n3zIMFKJL0z8oTl5RIgi6vXA1uqJNn2INj3/z1hNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XPn06jb2NGLuZ6aLKkKZRQ0i58LxBFYPcTqOsJFgc0ILedKxh9Sp3DYtbGkhAKzpM
-         zNBeD3DZ6iz308HuWNidrHUap4+jXptzIsHZzvig0s79JUjfoeri+gR4BOYxM8SghZ
-         J52vzhW05S/00Y7avcAgLwFPxHjuzYqX03vNOHMw=
+        b=pZ+6bvcoZpkunqYPYDITzejR3i2QHOmaGQowsRMV8CcUVwxPxtaO0amFOz7kvgRw4
+         ueTYVFhQ86aIhzwbtxBe/x1Vr0NaTbBlbVR8KQ0RjpDWl4BI6ko4kHUdeWeJqx16oF
+         p6zCAucUpHz60KhmH9MGyzBItqSjyC4UAGN1Cuwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+91f02b28f9bb5f5f1341@syzkaller.appspotmail.com,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 359/408] udf: Avoid accessing uninitialized data on failed inode read
-Date:   Tue, 27 Oct 2020 14:54:57 +0100
-Message-Id: <20201027135511.673640225@linuxfoundation.org>
+        stable@vger.kernel.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 555/633] media: venus: core: Fix error handling in probe
+Date:   Tue, 27 Oct 2020 14:54:58 +0100
+Message-Id: <20201027135548.844764280@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Rajendra Nayak <rnayak@codeaurora.org>
 
-[ Upstream commit 044e2e26f214e5ab26af85faffd8d1e4ec066931 ]
+[ Upstream commit 98cd831088c64aa8fe7e1d2a8bb94b6faba0462b ]
 
-When we fail to read inode, some data accessed in udf_evict_inode() may
-be uninitialized. Move the accesses to !is_bad_inode() branch.
+Post a successful pm_ops->core_get, an error in probe
+should exit by doing a pm_ops->core_put which seems
+to be missing. So fix it.
 
-Reported-by: syzbot+91f02b28f9bb5f5f1341@syzkaller.appspotmail.com
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/udf/inode.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ drivers/media/platform/qcom/venus/core.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/fs/udf/inode.c b/fs/udf/inode.c
-index ea80036d7897b..97a192eb9949c 100644
---- a/fs/udf/inode.c
-+++ b/fs/udf/inode.c
-@@ -139,21 +139,24 @@ void udf_evict_inode(struct inode *inode)
- 	struct udf_inode_info *iinfo = UDF_I(inode);
- 	int want_delete = 0;
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 203c6538044fb..bfcaba37d60fe 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -224,13 +224,15 @@ static int venus_probe(struct platform_device *pdev)
  
--	if (!inode->i_nlink && !is_bad_inode(inode)) {
--		want_delete = 1;
--		udf_setsize(inode, 0);
--		udf_update_inode(inode, IS_SYNC(inode));
-+	if (!is_bad_inode(inode)) {
-+		if (!inode->i_nlink) {
-+			want_delete = 1;
-+			udf_setsize(inode, 0);
-+			udf_update_inode(inode, IS_SYNC(inode));
-+		}
-+		if (iinfo->i_alloc_type != ICBTAG_FLAG_AD_IN_ICB &&
-+		    inode->i_size != iinfo->i_lenExtents) {
-+			udf_warn(inode->i_sb,
-+				 "Inode %lu (mode %o) has inode size %llu different from extent length %llu. Filesystem need not be standards compliant.\n",
-+				 inode->i_ino, inode->i_mode,
-+				 (unsigned long long)inode->i_size,
-+				 (unsigned long long)iinfo->i_lenExtents);
+ 	ret = dma_set_mask_and_coherent(dev, core->res->dma_mask);
+ 	if (ret)
+-		return ret;
++		goto err_core_put;
+ 
+ 	if (!dev->dma_parms) {
+ 		dev->dma_parms = devm_kzalloc(dev, sizeof(*dev->dma_parms),
+ 					      GFP_KERNEL);
+-		if (!dev->dma_parms)
+-			return -ENOMEM;
++		if (!dev->dma_parms) {
++			ret = -ENOMEM;
++			goto err_core_put;
 +		}
  	}
- 	truncate_inode_pages_final(&inode->i_data);
- 	invalidate_inode_buffers(inode);
- 	clear_inode(inode);
--	if (iinfo->i_alloc_type != ICBTAG_FLAG_AD_IN_ICB &&
--	    inode->i_size != iinfo->i_lenExtents) {
--		udf_warn(inode->i_sb, "Inode %lu (mode %o) has inode size %llu different from extent length %llu. Filesystem need not be standards compliant.\n",
--			 inode->i_ino, inode->i_mode,
--			 (unsigned long long)inode->i_size,
--			 (unsigned long long)iinfo->i_lenExtents);
--	}
- 	kfree(iinfo->i_ext.i_data);
- 	iinfo->i_ext.i_data = NULL;
- 	udf_clear_extent_cache(inode);
+ 	dma_set_max_seg_size(dev, DMA_BIT_MASK(32));
+ 
+@@ -242,11 +244,11 @@ static int venus_probe(struct platform_device *pdev)
+ 					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+ 					"venus", core);
+ 	if (ret)
+-		return ret;
++		goto err_core_put;
+ 
+ 	ret = hfi_create(core, &venus_core_ops);
+ 	if (ret)
+-		return ret;
++		goto err_core_put;
+ 
+ 	pm_runtime_enable(dev);
+ 
+@@ -302,6 +304,9 @@ static int venus_probe(struct platform_device *pdev)
+ 	pm_runtime_set_suspended(dev);
+ 	pm_runtime_disable(dev);
+ 	hfi_destroy(core);
++err_core_put:
++	if (core->pm_ops->core_put)
++		core->pm_ops->core_put(dev);
+ 	return ret;
+ }
+ 
 -- 
 2.25.1
 
