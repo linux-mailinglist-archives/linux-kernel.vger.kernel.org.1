@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3069429BA7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94D329B7B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805978AbgJ0QE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43852 "EHLO mail.kernel.org"
+        id S1795558AbgJ0PPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802361AbgJ0Pqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:46:38 -0400
+        id S1794380AbgJ0PLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:11:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B49122202;
-        Tue, 27 Oct 2020 15:46:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 111EC21D24;
+        Tue, 27 Oct 2020 15:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813597;
-        bh=oYSZus/JJ0ACWFzC7GzWMIs67BB8KVQMnupWo0wxdYk=;
+        s=default; t=1603811492;
+        bh=aGWb6TazCrp4N4kSL+nv/YnlpLXLLZSBY2kRmolS5IY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ErXaHp5qei7wf5bGugh4y8BKtNCOzk7LCnyczaevIP2UAIB6LWWlQjOjZtFk2CBds
-         wYk3tFpMGpf4MZaUeujaftEoLB5x38fdJBUl+rU6wifBwToA4yk7aKbw/hSmywmsOE
-         lSit002roV9GIHZEC3LFSMCEBksmY8UT3GS3jOOQ=
+        b=F0uIgmuvhP3ujVm9OtjyDzxq/e9nWVkWVj+mBFbezA7wREoLI4yMdpUZeT+8Cqv8h
+         kBLIDY43inOg0t00zb7YV4EXXiMmAzXGpWBkaTsbg5csndlhpyqU2bhSHyj9Sm6vFP
+         a5rqTSfPCJ0veg3QB8hIDCm8MzBfaQfvXytDzxG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 604/757] soc: qcom: pdr: Fixup array type of get_domain_list_resp message
+Subject: [PATCH 5.8 511/633] ARM: dts: stm32: Fix DH PDK2 display PWM channel
 Date:   Tue, 27 Oct 2020 14:54:14 +0100
-Message-Id: <20201027135518.877154890@linuxfoundation.org>
+Message-Id: <20201027135546.713585700@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +47,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sibi Sankar <sibis@codeaurora.org>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 7a366707bb6a93baeb1a9ef46c4b9c875e0132d6 ]
+[ Upstream commit 57592d2a98dbc3bde3ddc062e91a8486bdcb211e ]
 
-The array type of get_domain_list_resp is incorrectly marked as NO_ARRAY.
-Due to which the following error was observed when using pdr helpers with
-the downstream proprietary pd-mapper. Fix this up by marking it as
-VAR_LEN_ARRAY instead.
+The display PWM channel is number 3 (PWM2 CH4), make it so.
 
-Err logs:
-qmi_decode_struct_elem: Fault in decoding: dl(2), db(27), tl(160), i(1), el(1)
-failed to decode incoming message
-PDR: tms/servreg get domain list txn wait failed: -14
-PDR: service lookup for tms/servreg failed: -14
-
-Tested-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Fixes: fbe639b44a82 ("soc: qcom: Introduce Protection Domain Restart helpers")
-Reported-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Link: https://lore.kernel.org/r/20200914145807.1224-1-sibis@codeaurora.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 34e0c7847dcf ("ARM: dts: stm32: Add DH Electronics DHCOM STM32MP1 SoM and PDK2 board")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/pdr_internal.h | 2 +-
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/pdr_internal.h b/drivers/soc/qcom/pdr_internal.h
-index 15b5002e4127b..ab9ae8cdfa54c 100644
---- a/drivers/soc/qcom/pdr_internal.h
-+++ b/drivers/soc/qcom/pdr_internal.h
-@@ -185,7 +185,7 @@ struct qmi_elem_info servreg_get_domain_list_resp_ei[] = {
- 		.data_type      = QMI_STRUCT,
- 		.elem_len       = SERVREG_DOMAIN_LIST_LENGTH,
- 		.elem_size      = sizeof(struct servreg_location_entry),
--		.array_type	= NO_ARRAY,
-+		.array_type	= VAR_LEN_ARRAY,
- 		.tlv_type       = 0x12,
- 		.offset         = offsetof(struct servreg_get_domain_list_resp,
- 					   domain_list),
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index 9cf6d90fbf69f..e4e3c92eb30d3 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -25,7 +25,7 @@ clk_ext_audio_codec: clock-codec {
+ 
+ 	display_bl: display-bl {
+ 		compatible = "pwm-backlight";
+-		pwms = <&pwm2 0 500000 PWM_POLARITY_INVERTED>;
++		pwms = <&pwm2 3 500000 PWM_POLARITY_INVERTED>;
+ 		brightness-levels = <0 16 22 30 40 55 75 102 138 188 255>;
+ 		default-brightness-level = <8>;
+ 		enable-gpios = <&gpioi 0 GPIO_ACTIVE_HIGH>;
 -- 
 2.25.1
 
