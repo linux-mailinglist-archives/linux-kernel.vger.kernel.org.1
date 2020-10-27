@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE4729A71D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB7E29A722
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895160AbgJ0I50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:57:26 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:46986 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403964AbgJ0I5Z (ORCPT
+        id S2895235AbgJ0JAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:00:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45734 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406413AbgJ0JAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:57:25 -0400
-Received: by mail-ed1-f67.google.com with SMTP id 33so566859edq.13;
-        Tue, 27 Oct 2020 01:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lUl+o/7xg/oQWEkHSv+Sd9NIOES//4+6SIoc9etOZOE=;
-        b=ewjrfUK42fl1cMbQSWi+3pykGSpcsDzHOq1JNmfQeLsw4yidi0UyZdaEpkorQ/4aqg
-         2fyJbYFLmTNbhBlE9t6Z1r7fzBlkPu+qbcUG5090Uq6cGOEu1t3juHMVzPdJwl5z2EgC
-         01fcj6ScqxKKDkOTGXrsJ/15ACgURLRkOhRT4qLaznkusl3CPLhbdeeEccRS+iRauPSY
-         Ste/mQQ/yClkY9LBEafq6XkaPNke5Snl0Np4TSQC3fG0S3jbuvwmI6itq1ecOjnLmvHM
-         BciNg0D84cDI4YI/lmtsFZl+ioBTT6omHtC9smHfb7qKSCXISBlWWmnbCC+mLadkEK/9
-         x2iw==
-X-Gm-Message-State: AOAM530k1lezHR2/Erib0YNzQaXG6St5gPt/S9xpI/0KmW9dOLzWOUkm
-        XTZpHVV9JoWntSBWvQCNL5M=
-X-Google-Smtp-Source: ABdhPJz1HXUDOFZ/JUJ/wbYV21cxZO30liKh11vnxTXHeeuT2qryjv96syz//4EvKya3F2LDe8npww==
-X-Received: by 2002:aa7:c792:: with SMTP id n18mr1099285eds.209.1603789041727;
-        Tue, 27 Oct 2020 01:57:21 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id hb6sm591383ejb.65.2020.10.27.01.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 01:57:20 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 09:57:18 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 07/52] dt-bindings: memory: tegra20: emc: Document OPP
- table and voltage regulator
-Message-ID: <20201027085718.GF4244@kozik-lap>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-8-digetx@gmail.com>
+        Tue, 27 Oct 2020 05:00:23 -0400
+Date:   Tue, 27 Oct 2020 10:00:19 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603789221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhFXv1BRUKRnsS9ExGJBDAdxNamEG0cPUveqq9dD0aQ=;
+        b=2d+JeKFmrjaKpZBSJEHmG2kCauwy3OgCERQ1hpndwsYke2PmzCfR4pPbwcH+IeJj7B5bE8
+        Hbbo5sODvHRyaqtMM4be11LjmOzNN+Jou/slTP8Sb5EUz3vAL4Qfb1ZRcPVfFKMBqxZX1Z
+        haLHmB1KEMQBpOD2mxHAoj3UKKYZsUD/s9hEZwvAbk4Wkm2NLAopZciYCeaYYI3KhfhP8T
+        9Vj+fVYsDKGKjYtTpWWLvp63PyvMMdXzblors7Scx6bnbkouFA+wjLSD9khZAW6CU98DVZ
+        Ulw+O79TmwzjyHIq4kwCGqq0u1sBeQuZC1EUwxKoe1Nptcv++eeQdn8FITPmWw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603789221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhFXv1BRUKRnsS9ExGJBDAdxNamEG0cPUveqq9dD0aQ=;
+        b=Al+1deZf1TJ9yM8BZB1nWmTwGerGXKo3tMU81KhDWg+V/rfJ0VkuEmVB49EHuG4s6eDdmj
+        rEuAPwBb+6f2k1Bw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: kvm+nouveau induced lockdep  gripe
+Message-ID: <20201027090019.3vteojm43ljqqe33@linutronix.de>
+References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
+ <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+ <20201023090108.5lunh4vqfpkllmap@linutronix.de>
+ <20201024022236.19608-1-hdanton@sina.com>
+ <20201024050000.8104-1-hdanton@sina.com>
+ <20201026173107.quylcy6fgjvrqat6@linutronix.de>
+ <431e81699f2310eabfe5af0a3de400ab99d9323b.camel@gmx.de>
+ <20201026195308.wsbk7xy57wuzfbao@linutronix.de>
+ <0dfae65db2f0d3ef603c1db34f37cee63f7f41f4.camel@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-8-digetx@gmail.com>
+In-Reply-To: <0dfae65db2f0d3ef603c1db34f37cee63f7f41f4.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:16:50AM +0300, Dmitry Osipenko wrote:
-> The SoC core voltage can't be changed without taking into account the
-> clock rate of External Memory Controller. Document OPP table that will
-> be used for dynamic voltage frequency scaling, taking into account EMC
-> voltage requirement. Document optional core voltage regulator, which is
-> optional because some boards may have a fixed core regulator and still
-> frequency scaling may be desired to have.
-
-You need to document that property is optional in the binding.
-
-Best regards,
-Krzysztof
-
+On 2020-10-27 07:03:38 [+0100], Mike Galbraith wrote:
+> On Mon, 2020-10-26 at 20:53 +0100, Sebastian Andrzej Siewior wrote:
+> >
+> > Could you try this, please?
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../memory-controllers/nvidia,tegra20-emc.txt      | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> index 0a53adc6ccba..8d09b228ac42 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
-> @@ -14,11 +14,23 @@ Properties:
->  - clocks : Should contain EMC clock.
->  - nvidia,memory-controller : Phandle of the Memory Controller node.
->  - #interconnect-cells : Should be 0.
-> +- core-supply: Phandle of voltage regulator of the SoC "core" power domain.
-> +- operating-points-v2: See ../bindings/opp/opp.txt for details.
->  
->  Child device nodes describe the memory settings for different configurations and clock rates.
->  
->  Example:
->  
-> +	emc_icc_dvfs_opp_table: emc_opp_table0 {
-> +		compatible = "operating-points-v2";
-> +
-> +		opp@36000000 {
-> +			opp-microvolt = <950000 950000 1300000>;
-> +			opp-hz = /bits/ 64 <36000000>;
-> +		};
-> +		...
-> +	};
-> +
->  	memory-controller@7000f400 {
->  		#address-cells = < 1 >;
->  		#size-cells = < 0 >;
-> @@ -28,6 +40,8 @@ Example:
->  		interrupts = <0 78 0x04>;
->  		clocks = <&tegra_car TEGRA20_CLK_EMC>;
->  		nvidia,memory-controller = <&mc>;
-> +		core-supply = <&core_vdd_reg>;
-> +		operating-points-v2 = <&emc_icc_dvfs_opp_table>;
->  	}
->  
->  
-> -- 
-> 2.27.0
-> 
+> Nogo, first call of sched_setscheduler() is via kthread_create().  I
+> confirmed that nuking that (gratuitous user foot saving override) call
+> on top of moving sched_set_fifo() does shut it up, but that won't fly.
+
+mkay. but this then, too. Let me try if I can figure out when this
+broke.
+
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 3edaa380dc7b4..64d6afb127239 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -244,6 +244,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
+ static int kthread(void *_create)
+ {
+ 	/* Copy data: it's on kthread's stack */
++	static const struct sched_param param = { .sched_priority = 0 };
+ 	struct kthread_create_info *create = _create;
+ 	int (*threadfn)(void *data) = create->threadfn;
+ 	void *data = create->data;
+@@ -273,6 +274,13 @@ static int kthread(void *_create)
+ 	init_completion(&self->parked);
+ 	current->vfork_done = &self->exited;
+ 
++	/*
++	 * root may have changed our (kthreadd's) priority or CPU mask.
++	 * The kernel thread should not inherit these properties.
++	 */
++	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
++	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
++
+ 	/* OK, tell user we're spawned, wait for stop or wakeup */
+ 	__set_current_state(TASK_UNINTERRUPTIBLE);
+ 	create->result = current;
+@@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 	}
+ 	task = create->result;
+ 	if (!IS_ERR(task)) {
+-		static const struct sched_param param = { .sched_priority = 0 };
+ 		char name[TASK_COMM_LEN];
+ 
+ 		/*
+@@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 		 */
+ 		vsnprintf(name, sizeof(name), namefmt, args);
+ 		set_task_comm(task, name);
+-		/*
+-		 * root may have changed our (kthreadd's) priority or CPU mask.
+-		 * The kernel thread should not inherit these properties.
+-		 */
+-		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
+-		set_cpus_allowed_ptr(task,
+-				     housekeeping_cpumask(HK_FLAG_KTHREAD));
+ 	}
+ 	kfree(create);
+ 	return task;
+
+Sebastian
