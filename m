@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE8029A820
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C14429A823
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409525AbgJ0JqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:46:01 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:36126 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408836AbgJ0JqA (ORCPT
+        id S2895914AbgJ0JqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:46:03 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:36883 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2408836AbgJ0JqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:46:00 -0400
-Received: by mail-wr1-f65.google.com with SMTP id x7so1123393wrl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:45:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=VYa/0M9CM+BFisp0qH8kfuZ9SqVMtB0gZkYPNI1LHUU=;
-        b=LhwMfe8w6zLfJePcO71XK8ee5zI6g7hCE/+/Iv80FqeoYy8S9+GElomDGzzytfo39Q
-         2bJ1yAOuAmnVikJKD/7z19CmjhO4va2e6Rlp4ZTxhjWpV0uvTy3AO3G9LYuDTMF26lmg
-         UKJPPgs1OEadT8weo63Ekv/JXNjO8jym8S7zYRkmRr24jFhOQhQTlWa5KzhLt+e5KN2a
-         PK645FT3m5ueILODfTBsE3KC3zhymiuHpIksxb7uVQfo/eiC+nn+ZM2TkCZXX5x2Q+BD
-         Ciged51VnfWoZRt+kfav00GdfBjjZYrUT13fBnMonVnqBF+VUuzocc9x2NxJyrBbLPrG
-         Umgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VYa/0M9CM+BFisp0qH8kfuZ9SqVMtB0gZkYPNI1LHUU=;
-        b=uj9Wp+/IVcdySvW9qEhkP7mG8OUFzr+DDwPO+PwDJEAiMYKh4mQTYTHSKyP9vTPHfa
-         LfYzhcz2NDVtOtBwGomUyRzJJlomoVbwncFCZvx1vyuiyp5rI3TC8nQ4Xb5fkXFhMgYP
-         dqb/cwquRPUw16TAqt+TbOKJwopvXR0LHcrF5F5Bfy2+KzXS+Q3EqqxLp3BSh6wGwxTt
-         ghzPs/diLHBou0aO8oVFhJV9hWahkdsHL4UGH5JG8vkBkLh06cUrSbbPG7RpS4mJMEeK
-         FT1zElx7uqjd4rLoVPK3npUNP8POD/xdShya2jBBCkiDwbzSPGtnXQYwmzjXK/WmUMJE
-         VR2A==
-X-Gm-Message-State: AOAM5321xdj0shBS2/qhsIOk/lMW7hm+CFrXbiB2LeqSDh6LUsg1Iooj
-        bWwdZ8jCCAENbJ7xtDp5RGlKwcaBKrwFbw==
-X-Google-Smtp-Source: ABdhPJwi1n98cnvdQ4wWt7HHvJ6RTxLPMC9CSUIOBLuZQdN6syw6ubyoZ6lhMUyNR1z5RFzQ5I/kyw==
-X-Received: by 2002:adf:edcf:: with SMTP id v15mr1671184wro.291.1603791958130;
-        Tue, 27 Oct 2020 02:45:58 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451? ([2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451])
-        by smtp.googlemail.com with ESMTPSA id o3sm1321735wru.15.2020.10.27.02.45.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 02:45:57 -0700 (PDT)
-Subject: Re: [PATCH] thermal: rcar: replace spin_lock_irqsave by spin_lock in
- hard IRQ
-To:     Tian Tao <tiantao6@hisilicon.com>, niklas.soderlund@ragnatech.se,
-        rui.zhang@intel.com, amitk@kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1603760790-37748-1-git-send-email-tiantao6@hisilicon.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <72412b5a-fd9a-a23e-aaf8-1a7b6eaa16c5@linaro.org>
-Date:   Tue, 27 Oct 2020 10:45:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 05:46:02 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2B5805C013E;
+        Tue, 27 Oct 2020 05:46:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 27 Oct 2020 05:46:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=y6xuqD2fN8qDYQ3D3WMwzpwtvON
+        lcVIjs7y8oq/0uPU=; b=tOVGOBjC2csEMKnKOks0oPKcD9L2nzYyXmwClImaoyc
+        Ld8jPjVaeH8f+FroATWDCekAMfaBYMzy4/GTP94fHpO1wFW3mjKcL9gHBWiFJFmN
+        3rXjc10hy1G76kr8/etfLbDNMmYIa0HF19akrWO/gkRZ+Y4J6kKD5hcH8lM+pQsU
+        JwnYC5rZJE0zJX4HzZ5y/4h5Wh1a+/mus+e67zJjWdFNnfOJQN4SVdhecYyrObrx
+        ZGUaj6snUeezz9kyIe+FWwPMzzwsrGK0qvhPipy73hYfEcU/8H70TbiiDwChWzWq
+        MUa4IpR14kq91Pfz53yXUL7UxaMlDhgwmODkDInG10Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=y6xuqD
+        2fN8qDYQ3D3WMwzpwtvONlcVIjs7y8oq/0uPU=; b=jT/3lTZ4FHSmju3OGN0NP0
+        i4lMFjRsGD1eAT7QQRnmw0pBDpj5j5zn4aEiJPzC48WZiSc6mVsiWE9sDvXexqEw
+        38TSSOzvg7kpDLM3lZvvjc5OBuVHKE4tbY8csLqqhZY8PkOIwX3O2SH2udz/Aicb
+        7Ht5t4hbCkKmKnpJsjnakmrmzo7OCRsf4LhKxMHlr5L8aX/8TgSfyg2AoiK8La60
+        IwFsbJF1eygAuJQqdZwxDcFrmunuTHjtkSwPu/gq8zjy64s5yyFTlcKa5fUNoETz
+        LXcFLAOGokJMRVkHncHqGNiT94amzhoS4xuK0xIf4HGX85hyH7xCisx0r4UAq5+w
+        ==
+X-ME-Sender: <xms:WOyXXwFur6fabTSJcKQuhjlJCBWgTXAjnifbHaPeSvjoKZUzCPGmGA>
+    <xme:WOyXX5XYaJEZY6EkoalZVWuWbQ9GnpBP0TfH2_dkSh7akORQIqjjea6zPfX1nX28N
+    A4i1sgk-cYW9Hb9on4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehgtderre
+    dttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghr
+    nhhordhtvggthheqnecuggftrfgrthhtvghrnhepveevfeffudeviedtgeethffhteeuff
+    etfeffvdehvedvheetteehvdelfffgjedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhr
+    ghenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:WOyXX6Jt9vKtT_0RfTBdpXfm0HZA_NZxfUD-0x9dHlu252D6Ds_e1w>
+    <xmx:WOyXXyGmp6vrukzie6skkTYVDSj4KQ0uBAvapOuDsHDhZx11E60IRA>
+    <xmx:WOyXX2UmU7YsO4ot7kVz-Ik48L0m7MWwKRflPAg4_c2Ej9AEpp1_mg>
+    <xmx:WeyXX1QQB_T5e6un9jOtsx2PUP3ynkI51765PBZGatXLHliu4_2fVA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 414593280059;
+        Tue, 27 Oct 2020 05:46:00 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 10:45:58 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Yu-Tung Chang <mtwget@gmail.com>
+Cc:     robh+dt@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] ARM: dts: sun8i: add FriendlyArm ZeroPi support
+Message-ID: <20201027094558.3fommxxa64k73ep7@gilmour.lan>
+References: <20201027071648.15988-1-mtwget@gmail.com>
+ <20201027071648.15988-2-mtwget@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1603760790-37748-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sdw4wzhyt4exhtdb"
+Content-Disposition: inline
+In-Reply-To: <20201027071648.15988-2-mtwget@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2020 02:06, Tian Tao wrote:
-> On RT or even on mainline with 'threadirqs' on the command line all
-> interrupts which are not explicitly requested with IRQF_NO_THREAD
-> run their handlers in thread context. The same applies to soft interrupts.
-> That means they are subject to the normal scheduler rules and no other
-> code is going to acquire that lock from hard interrupt context either,
-> so the irqsave() here is pointless in all cases.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Applied, thanks
+--sdw4wzhyt4exhtdb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Oct 27, 2020 at 03:16:48PM +0800, Yu-Tung Chang wrote:
+> The ZeroPi is another fun board developed
+> by FriendlyELEC for makers,
+> hobbyists and fans.
+>=20
+> ZeroPi key features
+> - Allwinner H3, Quad-core Cortex-A7@1.2GHz
+> - 256MB/512MB DDR3 RAM
+> - microsd slot
+> - 10/100/1000Mbps Ethernet
+> - Debug Serial Port
+> - DC 5V/2A power-supply
+>=20
+> Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> Link: https://lore.kernel.org/r/20201026073536.13617-2-mtwget@gmail.com
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Isn't it the patch that you sent and I merged yesterday? If you have
+some changes to it, please send those changes in a patch, not the full
+thing again.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Maxime
+
+--sdw4wzhyt4exhtdb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5fsQgAKCRDj7w1vZxhR
+xcL2AP47S5foec/f3EVHolKb3XTDigiUiXgqy6puGZ+JrJaFMAD/Tgdk1uK1Z+N+
+ATRI6nkQkGa7UsxN3Iyr1SI13B2TRwg=
+=uR4O
+-----END PGP SIGNATURE-----
+
+--sdw4wzhyt4exhtdb--
