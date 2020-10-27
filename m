@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B6A29B251
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7979229B297
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1749964AbgJ0OjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:39:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38462 "EHLO mail.kernel.org"
+        id S1762504AbgJ0OnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:43:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761371AbgJ0OjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:39:12 -0400
+        id S1761372AbgJ0OjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:39:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49A16207BB;
-        Tue, 27 Oct 2020 14:39:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30E77206B2;
+        Tue, 27 Oct 2020 14:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809551;
-        bh=TD40MBMZ2sX+lcUHuoTWd/myMM6oP2GIizb978InVx4=;
+        s=default; t=1603809554;
+        bh=WvaZZsQ6AHJAROazEoz53LMspT6PT8dbz8rpt9JsBEg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q2CRSiY1+7CgxgPhPcw/zEgGIJ2kaXvDC6XWQPp6I7L/XaALCB4LX6/IjdtWz+/sE
-         ymkLhqM3w7lgAXdpIoKFWhrTg8NrYbHvba95dVdYnc6L/7xfsZqKtIBoK0QebkQzEm
-         NdQRpekMfRQAun5KdlHmDsmRfZwFYDpTi8WpXCoc=
+        b=lIvIYmCkpJA4ulp2isxrN1c6ucE2YkZGHWY99BMX7mK8K/2g8kiIDuyOdVDmwxd7n
+         LLzgwP21T+AJdtJRyDztv9KKjPxX1gWwtFlh/r45e5mPNoil8CWMy6UhF2AcLy9g3F
+         s/2LrcBH8259EWkDTYr45FjTRQeIQKi9/VyhOQmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenpeng Liang <liangwenpeng@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
+        stable@vger.kernel.org, Weihang Li <liweihang@huawei.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 236/408] RDMA/hns: Fix the wrong value of rnr_retry when querying qp
-Date:   Tue, 27 Oct 2020 14:52:54 +0100
-Message-Id: <20201027135506.001607909@linuxfoundation.org>
+Subject: [PATCH 5.4 237/408] RDMA/hns: Fix missing sq_sig_type when querying QP
+Date:   Tue, 27 Oct 2020 14:52:55 +0100
+Message-Id: <20201027135506.049243924@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,38 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+From: Weihang Li <liweihang@huawei.com>
 
-[ Upstream commit 99fcf82521d91468ee6115a3c253aa032dc63cbc ]
+[ Upstream commit 05df49279f8926178ecb3ce88e61b63104cd6293 ]
 
-The rnr_retry returned to the user is not correct, it should be got from
-another fields in QPC.
+The sq_sig_type field should be filled when querying QP, or the users may
+get a wrong value.
 
-Fixes: bfe860351e31 ("RDMA/hns: Fix cast from or to restricted __le32 for driver")
-Link: https://lore.kernel.org/r/1600509802-44382-7-git-send-email-liweihang@huawei.com
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
+Link: https://lore.kernel.org/r/1600509802-44382-9-git-send-email-liweihang@huawei.com
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 0502c90c83edd..def266626223a 100644
+index def266626223a..bb75328193957 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4616,7 +4616,9 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 	qp_attr->retry_cnt = roce_get_field(context.byte_212_lsn,
- 					    V2_QPC_BYTE_212_RETRY_CNT_M,
- 					    V2_QPC_BYTE_212_RETRY_CNT_S);
--	qp_attr->rnr_retry = le32_to_cpu(context.rq_rnr_timer);
-+	qp_attr->rnr_retry = roce_get_field(context.byte_244_rnr_rxack,
-+					    V2_QPC_BYTE_244_RNR_CNT_M,
-+					    V2_QPC_BYTE_244_RNR_CNT_S);
+@@ -4634,6 +4634,7 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 	}
  
- done:
- 	qp_attr->cur_qp_state = qp_attr->qp_state;
+ 	qp_init_attr->cap = qp_attr->cap;
++	qp_init_attr->sq_sig_type = hr_qp->sq_signal_bits;
+ 
+ out:
+ 	mutex_unlock(&hr_qp->mutex);
 -- 
 2.25.1
 
