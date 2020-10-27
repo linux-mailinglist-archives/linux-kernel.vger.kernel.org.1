@@ -2,81 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AF629AE76
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDAF29ADD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504397AbgJ0OAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:00:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753292AbgJ0N7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:59:54 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1752703AbgJ0NuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:50:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57727 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752687AbgJ0NuI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:50:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603806607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=//LtHd6CvNv5qv2m438GA0CjgkNWP7Ju4OnPnshJeQQ=;
+        b=ZpvPrWDqVnjMQx3YRVjISDexrdcvfc+Jp8EDNexsjkIyymCf44yj8PEpjBnsjc1Ws2XpPP
+        VXYXUd58PJGyrMNf988I0TljfF+polF43RNlCmsqLbP6CwFVjE3hkkvGUvbQRtuJ8AywQw
+        AMdZfrfDgOCx8XAHmtk/zZpV9+LgxCE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-HtCGJkVmN_e2gnWMuaOyow-1; Tue, 27 Oct 2020 09:50:03 -0400
+X-MC-Unique: HtCGJkVmN_e2gnWMuaOyow-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E530221F8;
-        Tue, 27 Oct 2020 13:59:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807193;
-        bh=3BpnqO3HAOZZuIA352xBin6HwuuJeAgKkuyK8XOP52w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zjOM+NE1Yot2LEIkBWLPLrijQVNhqge3tPg9AXuqPOgFUovw+3bt5w53bMNMI7oXg
-         2hIMucEFoEW5kF7zjB5bu2BWS9w0rVPiq1x1BnVdJ/wFFRQKTqo9x+0Lf9+tybCd+z
-         15wC2d7bfzLRTOQHqgWSvGprMoDpd5TH55fI/VNs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 077/112] media: firewire: fix memory leak
-Date:   Tue, 27 Oct 2020 14:49:47 +0100
-Message-Id: <20201027134904.193320956@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
-User-Agent: quilt/0.66
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F08368070F2;
+        Tue, 27 Oct 2020 13:49:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6D4B41C4;
+        Tue, 27 Oct 2020 13:49:56 +0000 (UTC)
+Subject: [PATCH 00/10] AFS fixes
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Nick Piggin <npiggin@gmain.com>, dhowells@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 27 Oct 2020 13:49:55 +0000
+Message-ID: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek <pavel@ucw.cz>
 
-[ Upstream commit b28e32798c78a346788d412f1958f36bb760ec03 ]
+Here's a set of fixes for AFS:
 
-Fix memory leak in node_probe.
+ (1) Fix copy_file_range() to an afs file now returning EINVAL if the
+     splice_write file op isn't supplied.
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ (2) Fix a deref-before-check in afs_unuse_cell().
+
+ (3) Fix a use-after-free in afs_xattr_get_acl().
+
+ (4) Fix afs to not try to clear PG_writeback when laundering a page.
+
+ (5) Fix afs to take a ref on a page that it sets PG_private on and to drop
+     that ref when clearing PG_private.
+
+ (6) Fix a page leak if write_begin() fails.
+
+ (7) Fix afs_write_begin() to not alter the dirty region info stored in
+     page->private, but rather do this in afs_write_end() instead when we
+     know what we actually changed.
+
+ (8) Fix afs_invalidatepage() to alter the dirty region info on a page when
+     partial page invalidation occurs so that we don't inadvertantly
+     include a span of zeros that will get written back if a page gets
+     laundered due to a remote 3rd-party induced invalidation.
+
+     We mustn't, however, reduce the dirty region if the page has been seen
+     to be mapped (ie. we got called through the page_mkwrite vector) as
+     the page might still be mapped and we might lose data if the file is
+     extended again.
+
+To aid (8), two additional patches are included:
+
+ (*) Wrap the manipulations of the dirty region info stored in
+     page->private into helper functions.
+
+ (*) Alter the encoding of the dirty region so that the region bounds can
+     be stored with one fewer bit, making a bit available for the
+     indication of mappedness.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
 ---
- drivers/media/firewire/firedtv-fw.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Dan Carpenter (1):
+      afs: Fix a use after free in afs_xattr_get_acl()
 
-diff --git a/drivers/media/firewire/firedtv-fw.c b/drivers/media/firewire/firedtv-fw.c
-index 5d634706a7eaa..382f290c3f4d5 100644
---- a/drivers/media/firewire/firedtv-fw.c
-+++ b/drivers/media/firewire/firedtv-fw.c
-@@ -271,8 +271,10 @@ static int node_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 
- 	name_len = fw_csr_string(unit->directory, CSR_MODEL,
- 				 name, sizeof(name));
--	if (name_len < 0)
--		return name_len;
-+	if (name_len < 0) {
-+		err = name_len;
-+		goto fail_free;
-+	}
- 	for (i = ARRAY_SIZE(model_names); --i; )
- 		if (strlen(model_names[i]) <= name_len &&
- 		    strncmp(name, model_names[i], name_len) == 0)
--- 
-2.25.1
+David Howells (9):
+      afs: Fix copy_file_range()
+      afs: Fix tracing deref-before-check
+      afs: Fix afs_launder_page to not clear PG_writeback
+      afs: Fix to take ref on page when PG_private is set
+      afs: Fix page leak on afs_write_begin() failure
+      afs: Fix where page->private is set during write
+      afs: Wrap page->private manipulations in inline functions
+      afs: Alter dirty range encoding in page->private
+      afs: Fix afs_invalidatepage to adjust the dirty region
 
+
+ fs/afs/cell.c              |  3 +-
+ fs/afs/dir.c               |  3 ++
+ fs/afs/dir_edit.c          |  1 +
+ fs/afs/file.c              | 74 ++++++++++++++++++++++++-----
+ fs/afs/internal.h          | 41 ++++++++++++++++
+ fs/afs/write.c             | 95 ++++++++++++++++++++++----------------
+ fs/afs/xattr.c             |  2 +-
+ include/linux/page-flags.h |  1 +
+ include/trace/events/afs.h | 20 ++------
+ 9 files changed, 171 insertions(+), 69 deletions(-)
 
 
