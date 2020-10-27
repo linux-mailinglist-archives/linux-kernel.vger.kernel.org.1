@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCCC29AF68
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E451229AE86
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754688AbgJ0OGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
+        id S1753659AbgJ0OBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754656AbgJ0OGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:06:24 -0400
+        id S2411651AbgJ0OAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:00:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E334922263;
-        Tue, 27 Oct 2020 14:06:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F7392068D;
+        Tue, 27 Oct 2020 14:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807583;
-        bh=YeQjeH3b9F8vLj6Aufdb8iLXHW9AtAaW5xapCFoZass=;
+        s=default; t=1603807212;
+        bh=48/ROL0ZxjWmq5FTb8/M9d7rMnjGK4fTPh4kuFxn3Mo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MrtazzhK1aFv0mPGmHkBva4dX9fyQCOCSZQ6ipPKa0Vt5oP1ReqaYPJhf1b3vaVd8
-         1oiDSuqV9ETS4RbbMVOlyoFh/C/NR7G0OISf2/b6Hy6McrLV0hjaODBa6w0tgLziGZ
-         WaGS/8JoJtWe2mQ2Q3PR0nROqef/v4C0OAT2hROI=
+        b=R3+JHsIwN17hp3MyAniRAHkheCEx2WgxrTfBTIEKFKzNMP2e6s5doqHzmqbf1msZO
+         aoXBeZUxhXy1dmD54FCSwWfV0X2WW5N0+ah2c7vfTzN+TjZkYyeNfBknHqVtVdmgoC
+         1m6BEcNqMDIgU/JVcXnaXyOjCaQwDNBX4u06eRlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        stable@vger.kernel.org,
+        Xiaolong Huang <butterflyhuangxx@gmail.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 098/139] media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync
-Date:   Tue, 27 Oct 2020 14:49:52 +0100
-Message-Id: <20201027134906.790973564@linuxfoundation.org>
+Subject: [PATCH 4.4 083/112] media: media/pci: prevent memory leak in bttv_probe
+Date:   Tue, 27 Oct 2020 14:49:53 +0100
+Message-Id: <20201027134904.474055851@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Xiaolong Huang <butterflyhuangxx@gmail.com>
 
-[ Upstream commit c47f7c779ef0458a58583f00c9ed71b7f5a4d0a2 ]
+[ Upstream commit 7b817585b730665126b45df5508dd69526448bc8 ]
 
-On calling pm_runtime_get_sync() the reference count of the device
-is incremented. In case of failure, decrement the
-reference count before returning the error.
+In bttv_probe if some functions such as pci_enable_device,
+pci_set_dma_mask and request_mem_region fails the allocated
+ memory for btv should be released.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/media-dev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/pci/bt8xx/bttv-driver.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-index 532b7cd361dc8..a1599659b88ba 100644
---- a/drivers/media/platform/exynos4-is/media-dev.c
-+++ b/drivers/media/platform/exynos4-is/media-dev.c
-@@ -477,8 +477,10 @@ static int fimc_md_register_sensor_entities(struct fimc_md *fmd)
- 		return -ENXIO;
- 
- 	ret = pm_runtime_get_sync(fmd->pmf);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put(fmd->pmf);
- 		return ret;
-+	}
- 
- 	fmd->num_sensors = 0;
+diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
+index 51dbef2f9a489..10c9c078af014 100644
+--- a/drivers/media/pci/bt8xx/bttv-driver.c
++++ b/drivers/media/pci/bt8xx/bttv-driver.c
+@@ -4053,11 +4053,13 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 	btv->id  = dev->device;
+ 	if (pci_enable_device(dev)) {
+ 		pr_warn("%d: Can't enable device\n", btv->c.nr);
+-		return -EIO;
++		result = -EIO;
++		goto free_mem;
+ 	}
+ 	if (pci_set_dma_mask(dev, DMA_BIT_MASK(32))) {
+ 		pr_warn("%d: No suitable DMA available\n", btv->c.nr);
+-		return -EIO;
++		result = -EIO;
++		goto free_mem;
+ 	}
+ 	if (!request_mem_region(pci_resource_start(dev,0),
+ 				pci_resource_len(dev,0),
+@@ -4065,7 +4067,8 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 		pr_warn("%d: can't request iomem (0x%llx)\n",
+ 			btv->c.nr,
+ 			(unsigned long long)pci_resource_start(dev, 0));
+-		return -EBUSY;
++		result = -EBUSY;
++		goto free_mem;
+ 	}
+ 	pci_set_master(dev);
+ 	pci_set_command(dev);
+@@ -4251,6 +4254,10 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
+ 	release_mem_region(pci_resource_start(btv->c.pci,0),
+ 			   pci_resource_len(btv->c.pci,0));
+ 	pci_disable_device(btv->c.pci);
++
++free_mem:
++	bttvs[btv->c.nr] = NULL;
++	kfree(btv);
+ 	return result;
+ }
  
 -- 
 2.25.1
