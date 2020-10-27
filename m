@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B173329B056
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFE429AFEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901079AbgJ0OSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:18:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36734 "EHLO mail.kernel.org"
+        id S2507792AbgJ0OOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:14:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755536AbgJ0OPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:15:00 -0400
+        id S1754761AbgJ0OG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:06:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21FDB206F7;
-        Tue, 27 Oct 2020 14:14:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8570A22258;
+        Tue, 27 Oct 2020 14:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808099;
-        bh=4eFD7TwZnawJg4Hi1+00/SCKX7MXlqWJUocga77l13Q=;
+        s=default; t=1603807618;
+        bh=Jg8VYre6EXuZXTV3oHLDBy04t8AZqpUOPB3jyiDGBEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZcrPOdiyNnZnrq2qxlTzB7rTqYqfF0FA4V/cfgTjT4ENSPnoMN+yn0bw4XsU9vWtq
-         WJqtkI/xyRKXuENT008EApBAHMY/3rgi4VqMTboYOQwe7pv/TyKc/j3LuPX7a+YVof
-         Gu5npiSnRSm1Fjjdx4y7GEpYMCyy/UCTNLiHHYhA=
+        b=YG/y+JXRezpWa7hwyscSIZCiJfa6NOsJrRxnoqKbaXIPiif6qJq8mpYYs32OgMecC
+         edU1OqNtwR67z9ETrMCP8gZOtiky40CMCT/K+eEIHvve1F+LGgpZH8uxw9+yGFMjd0
+         P7BvrjBb/YScDWmBjNrVZi/eSs1Qv70p/w/dNv84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org,
+        Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 156/191] PM: hibernate: remove the bogus call to get_gendisk() in software_resume()
-Date:   Tue, 27 Oct 2020 14:50:11 +0100
-Message-Id: <20201027134917.214050842@linuxfoundation.org>
+Subject: [PATCH 4.9 118/139] USB: cdc-acm: handle broken union descriptors
+Date:   Tue, 27 Oct 2020 14:50:12 +0100
+Message-Id: <20201027134907.745287735@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 428805c0c5e76ef643b1fbc893edfb636b3d8aef ]
+[ Upstream commit 960c7339de27c6d6fec13b54880501c3576bb08d ]
 
-get_gendisk grabs a reference on the disk and file operation, so this
-code will leak both of them while having absolutely no use for the
-gendisk itself.
+Handle broken union functional descriptors where the master-interface
+doesn't exist or where its class is of neither Communication or Data
+type (as required by the specification) by falling back to
+"combined-interface" probing.
 
-This effectively reverts commit 2df83fa4bce421f ("PM / Hibernate: Use
-get_gendisk to verify partition if resume_file is integer format")
+Note that this still allows for handling union descriptors with switched
+interfaces.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This specifically makes the Whistler radio scanners TRX series devices
+work with the driver without adding further quirks to the device-id
+table.
+
+Reported-by: Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
+Tested-by: Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20200921135951.24045-3-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/power/hibernate.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/usb/class/cdc-acm.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 2e65aacfa1162..02df69a8ee3c0 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -833,17 +833,6 @@ static int software_resume(void)
+diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
+index 2dc563b61b88a..d46f683beccdd 100644
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1178,9 +1178,21 @@ static int acm_probe(struct usb_interface *intf,
+ 			}
+ 		}
+ 	} else {
++		int class = -1;
++
+ 		data_intf_num = union_header->bSlaveInterface0;
+ 		control_interface = usb_ifnum_to_if(usb_dev, union_header->bMasterInterface0);
+ 		data_interface = usb_ifnum_to_if(usb_dev, data_intf_num);
++
++		if (control_interface)
++			class = control_interface->cur_altsetting->desc.bInterfaceClass;
++
++		if (class != USB_CLASS_COMM && class != USB_CLASS_CDC_DATA) {
++			dev_dbg(&intf->dev, "Broken union descriptor, assuming single interface\n");
++			combined_interfaces = 1;
++			control_interface = data_interface = intf;
++			goto look_for_collapsed_interface;
++		}
+ 	}
  
- 	/* Check if the device is there */
- 	swsusp_resume_device = name_to_dev_t(resume_file);
--
--	/*
--	 * name_to_dev_t is ineffective to verify parition if resume_file is in
--	 * integer format. (e.g. major:minor)
--	 */
--	if (isdigit(resume_file[0]) && resume_wait) {
--		int partno;
--		while (!get_gendisk(swsusp_resume_device, &partno))
--			msleep(10);
--	}
--
- 	if (!swsusp_resume_device) {
- 		/*
- 		 * Some device discovery might still be in progress; we need
+ 	if (!control_interface || !data_interface) {
 -- 
 2.25.1
 
