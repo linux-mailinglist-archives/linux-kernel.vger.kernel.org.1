@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E97C29ACBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BA029ACC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751799AbgJ0NFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:05:17 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:50995 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751781AbgJ0NFQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:05:16 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 13so1315158wmf.0;
-        Tue, 27 Oct 2020 06:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=myy/l02Rm8F+X0fdWIlyuf1JwB3VU/GU2tmaR4vsSCk=;
-        b=L0tzrZHmCG5QHwZNJaYIFcqmN0Bh3prvAa8X7BcRmDT8OjcUU7g/d2Rmu8z2Lff+JW
-         VmCufz/BrOr9plfiItsFEzzCySrBaYylFjqjHfODbtIBIndtvnFvyl65j6AHwppGGscm
-         NHYFXfURWElG2ZdBVn5WKT99TrtWvrdbfFiDMvoTepQRGiQocDMDNAv7tuvH7Qcs0QfG
-         bzsnP3XqnkmX3oGsHF/xG7pco8j/mfwCIBoNrfbWLh5QBA9XAeDB7aI3MydveTV5rxD3
-         7AvxG+r5eX2fHtaxKdzTH/4dU7MhOGNb5trmpdX1gEIxojpRqs87LHa2o+CkT/m56nSd
-         uuYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=myy/l02Rm8F+X0fdWIlyuf1JwB3VU/GU2tmaR4vsSCk=;
-        b=fCIgtL4n5aEbekgqaZ19H1tkJ3poOCDnQgZY4IXbHOQDO2oZeDTrN4+P/3G2uU+OqY
-         qJ/BGPZGjUQE9HCuxfHBqZOqaJ9u0m8ECJJAVjnNpdizovYKiL+a1kgZ36/1LsD/Kvxh
-         ksTNekgskzh38mBPiLXD2iygiPrwU54FhZqGQo0fEHsv3tDf1qHCJEVpUyS6N0EkeQCH
-         TVcA8S/fxgNd+osw/jyX2WToK0DC6ArkQ3fweHDPlMlFU/bX2tq5GmJo5eYoTZxjbMTT
-         K7ry3kmgSSzHYu3R/emZKSMZWAIoq/Yb8jsFcbrW5b26Uo7O1KueVIXi0Z6X1KAbXys9
-         e3Qg==
-X-Gm-Message-State: AOAM532uMky4DOtQ++RDpn341z2ncFcvvNR+MzVrNK4t1YzbNBpC1PZZ
-        6rteqKS7vxrTJzY4fqKLDEZnYYnqwdQcTA==
-X-Google-Smtp-Source: ABdhPJw2WkckDLSI9JGvq3GUMLI8ZV6nTEuB/GOGNsDV91M7d1D0A1mFL4txXw9pl279LalTttu+tQ==
-X-Received: by 2002:a1c:6643:: with SMTP id a64mr2744990wmc.142.1603803911919;
-        Tue, 27 Oct 2020 06:05:11 -0700 (PDT)
-Received: from [192.168.2.27] (39.35.broadband4.iol.cz. [85.71.35.39])
-        by smtp.gmail.com with ESMTPSA id o3sm1971923wru.15.2020.10.27.06.05.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 06:05:11 -0700 (PDT)
-Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-raid@vger.kernel.org
-References: <20201026130450.6947-1-gilad@benyossef.com>
- <20201026130450.6947-4-gilad@benyossef.com>
- <20201026175231.GG858@sol.localdomain>
- <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
- <20201026183936.GJ858@sol.localdomain>
- <fd5e46ce-a4bf-8025-05ea-e20d35485446@gmail.com>
- <CAOtvUMdatUOnffg90aEGanD0y1LtKc7EeKQ=E+N+W-wpo8Zo3A@mail.gmail.com>
-From:   Milan Broz <gmazyland@gmail.com>
-Message-ID: <7c8c1453-94b2-23ec-1c93-7674fc8a413b@gmail.com>
-Date:   Tue, 27 Oct 2020 14:05:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1751825AbgJ0NHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:07:06 -0400
+Received: from muru.com ([72.249.23.125]:46866 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441395AbgJ0NHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:07:06 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 17D1F807E;
+        Tue, 27 Oct 2020 13:07:09 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 15:07:01 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>, t-kristo@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: ti: k3-j7200-main: Add McASP nodes
+Message-ID: <20201027130701.GE5639@atomide.com>
+References: <20201005074850.11247-1-peter.ujfalusi@ti.com>
+ <20201005115805.d6yhykn7oc6x2tbu@charm>
+ <5a9ed7d3-fcfd-edbf-fc34-112a7e55aa1c@ti.com>
+ <20201005120837.75cwdmcpvzbvayq7@kinfolk>
+ <d0e05389-9bd1-92a9-9624-4e9ac02a6a52@ti.com>
+ <20201026145031.ggfugctq65zvgwp2@dismiss>
 MIME-Version: 1.0
-In-Reply-To: <CAOtvUMdatUOnffg90aEGanD0y1LtKc7EeKQ=E+N+W-wpo8Zo3A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026145031.ggfugctq65zvgwp2@dismiss>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2020 07:59, Gilad Ben-Yossef wrote:
-> On Mon, Oct 26, 2020 at 9:04 PM Milan Broz <gmazyland@gmail.com> wrote:
-...
->> We had all of disk-IV inside dmcrypt before - but once it is partially moved into crypto API
->> (ESSIV, EBOIV for now), it becomes much more complicated for user to select what he needs.
->>
->> I think we have no way to check that IV is available from userspace - it
->> will report the same error as if block cipher is not available, not helping user much
->> with the error.
->>
->> But then I also think we should add abstract dm-crypt options here (Legacy TrueCrypt modes,
->> Bitlocker modes) that will select these crypto API configuration switches.
->> Otherwise it will be only a complicated matrix of crypto API options...
+* Nishanth Menon <nm@ti.com> [201026 14:58]:
+> On 13:38-20201007, Peter Ujfalusi wrote:
+> [...]
+> > >>>> +		status = "disabled";
+> > >>>
+> > >>> I see that there is inconsistent usage of "disabled" in our SoC.dts
+> > >>>
+> > >>> Our generic rule has been set them to disabled in board.dtsi
+> > >>> McASP and DSS for existing SoC dts do not follow this.. which is a tad
+> > >>> confusing.. (considering that not even all uarts come out on every board
+> > >>> and every uart needs pinmux to function..)
+> > >>
+> > >> "keep them disabled because several required properties are not present
+> > >> as they are board specific."
+> > >>
+> > >> In board file the enabled mcasp must be updated with options that is
+> > >> required for operation. Without those option the McASP can not be
+> > >> initialized.
+> > >>
+> > >> I think we have been revisiting the very same discussion every time we
+> > >> have a new SoC with McASP...
+> > >>
+> > > 
+> > > Yep.. This doe'snt really follow the rest of the SoC definition. [1]
+> > > came to mind. The McASP discussion is a variation in the debate of the
+> > > same.
+> > 
+> > Right, saying status = "okay" to a node which is missing required
+> > properties (which can only be added by boards when the McASP is
+> > connected up) does not sound a good solution.
+> > How should the SW handle that? Fail the device probe and return with
+> > -EINVAL or eat up the error and just probe with broken configuration.
+> > Since the peripheral is not used, the broken configuration will not
+> > cause much runtime errors as there will be no runtime use of the peripheral.
+> > 
+> > status of fail or fail-sss is not a good one either, their definition is:
+> > "Indicates that the device is not operational. A serious error was
+> > detected in the device, and it is unlikely to become operational without
+> > repair."
+> > 
+> > The peripheral is fine, we are just trying to enable it without
+> > providing the needed properties.
+> > 
+> > > I'd argue Serdes, or for that matter any IP that has a link to
+> > > outside-the-SoC world has the same discussion point.
+> > 
+> > status = "disabled" is still the closest thing for everything which have
+> > external dependencies. There is not much point to enable an i2c bus
+> > without making sure that the signals are actually routed to the pins
+> > where they supposed to go.
+
+There is one reason to keep using the default status = "okay", for
+i2c Linux can properly idle the device on boot without dependencies
+to a certain boot loader version.
+
+> > Or from other pow: a board design is not based on what is _not_
+> > connected to outside world, but you actually _connect_ or _enable_
+> > certain peripherals to external components, connectors.
 > 
-> hm... just thinking out loud, but maybe the right say to go is to not
-> have a build dependency,
-> but add some user assistance code in cryptosetup that parses
-> /proc/crypto after failures to
-> try and suggest the user with a way forward?
+> OK, I will buy the argument that the current status thingy is a bit
+> overloaded and does'nt imply the correct state we need it to imply with
+> "fail-sss" either - I remember an argument for "fail-incomplete", but
+> that never happened anyways.
 > 
-> e.g. if eboiv mapping initiation fails, scan /proc/crypto and either
-> warn of a lack of AES
-> or, assuming some instance of AES is found, warn of lack of EBOIV.
-> It's a little messy
-> and heuristic code for sure, but it lives in a user space utility.
-> 
-> Does that sound sane?
+> Lets add this argument to the commit message and repost after testing
+> on 5.10-rc1 please?
 
-Such an idea (try to parse /proc/crypto) is on my TODO list since 2009 :)
-I expected userspace kernel crypto API could help here, but it seems it is not the case.
+We should use status = "disabled" when the hardware is not accessible
+to the SoC. That goes for things like secure world devices, and hardware
+that relies on a missing external clock for example. For other things
+we should just stick to the default which "okay" :)
 
-So yes, I think we need to add something like this in userspace. In combination with
-the kernel and dmcrypt target version, we could have a pretty good hint matrix for the user,
-instead of (literally) cryptic errors.
+Regards,
 
-(There is also a problem that device-mapper targets are losing detailed error state.
-We often end just with -EINVAL during table create ... and no descriptive log entry.
-And leaking info about encrypted devices activation failures to syslog is not a good idea either.)
-
-Anyway, this will not fix existing userspace that is not prepared for this kind
-of EBOIV missing fail, so Herbert's solution seems like the solution for this particular
-problem for now. (But I agree we should perhaps remove these build dependences in future completely...)
-
-Milan
+Tony
