@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B2129B5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7347E29B5AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794827AbgJ0PNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40978 "EHLO mail.kernel.org"
+        id S1794939AbgJ0PO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:14:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790932AbgJ0PGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:06:45 -0400
+        id S1793856AbgJ0PIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:08:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D41F122284;
-        Tue, 27 Oct 2020 15:06:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F89B206E5;
+        Tue, 27 Oct 2020 15:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811202;
-        bh=NSVsy1EO6niZi1vmCGr1HIWgFPlrK2jIIgNuW2XxwCA=;
+        s=default; t=1603811320;
+        bh=7FQEsk05nrktPxevnQuGLlkEVqLXai2JYnx/z19yd3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N2XF2JRqPgkEqXToRtAGPaFSNNlEqcY7zuNMVrnH801kjFquvZd4+DcIIc+m61IQs
-         JQXtyaYd5k0oF6grbyBNJni7yp1lcoigygrHvkN3XZdxChdTJuw6Czio6CJfawmFrH
-         neYl6gT+yeZUfyrg2fhCdGVeMYLxfRfJC1X4BlWY=
+        b=zCcEuC+TvKKlnoh7JZL5z9gr3vuOjDP3/M6fikiz9SSFZshC6AlZZg9hLaSZ85W8M
+         ooeQbXczqaJVf6Im53DV9hNf2hK+zZQaK3mqmOc/7Y3j1/YTRyv8f+6YA45GOvYLEp
+         1fgYf7UJZkIqoFvKqoYq0P9PYJ+IC51VlJSDy5ng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Tobias Jordan <kernel@cdqe.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 408/633] um: vector: Use GFP_ATOMIC under spin lock
-Date:   Tue, 27 Oct 2020 14:52:31 +0100
-Message-Id: <20201027135541.863484713@linuxfoundation.org>
+Subject: [PATCH 5.8 420/633] lib/crc32.c: fix trivial typo in preprocessor condition
+Date:   Tue, 27 Oct 2020 14:52:43 +0100
+Message-Id: <20201027135542.425026229@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,44 +47,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Tobias Jordan <kernel@cdqe.de>
 
-[ Upstream commit e4e721fe4ccb504a29d1e8d4047667557281d932 ]
+[ Upstream commit 904542dc56524f921a6bab0639ff6249c01e775f ]
 
-Use GFP_ATOMIC instead of GFP_KERNEL under spin lock to fix possible
-sleep-in-atomic-context bugs.
+Whether crc32_be needs a lookup table is chosen based on CRC_LE_BITS.
+Obviously, the _be function should be governed by the _BE_ define.
 
-Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+This probably never pops up as it's hard to come up with a configuration
+where CRC_BE_BITS isn't the same as CRC_LE_BITS and as nobody is using
+bitwise CRC anyway.
+
+Fixes: 46c5801eaf86 ("crc32: bolt on crc32c")
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lkml.kernel.org/r/20200923182122.GA3338@agrajag.zerfleddert.de
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/vector_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/crc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 8735c468230a5..555203e3e7b45 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1403,7 +1403,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 		kfree(vp->bpf->filter);
- 		vp->bpf->filter = NULL;
- 	} else {
--		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
-+		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
- 		if (vp->bpf == NULL) {
- 			netdev_err(dev, "failed to allocate memory for firmware\n");
- 			goto flash_fail;
-@@ -1415,7 +1415,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
- 		goto flash_fail;
+diff --git a/lib/crc32.c b/lib/crc32.c
+index 4a20455d1f61e..bf60ef26a45c2 100644
+--- a/lib/crc32.c
++++ b/lib/crc32.c
+@@ -331,7 +331,7 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
+ 	return crc;
+ }
  
--	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
-+	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_ATOMIC);
- 	if (!vp->bpf->filter)
- 		goto free_buffer;
- 
+-#if CRC_LE_BITS == 1
++#if CRC_BE_BITS == 1
+ u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
+ {
+ 	return crc32_be_generic(crc, p, len, NULL, CRC32_POLY_BE);
 -- 
 2.25.1
 
