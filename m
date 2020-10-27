@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8956029A6FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97B429A6EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895113AbgJ0Iwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:52:45 -0400
-Received: from casper.infradead.org ([90.155.50.34]:34970 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895105AbgJ0Iwo (ORCPT
+        id S2509462AbgJ0Iul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:50:41 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43228 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509349AbgJ0IuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:52:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Aakq5ONajagRQRWUZGCHnMSkynNLLZQ4DCSJugWWUH0=; b=KVvc9euKLp49L1tVLI9ZMxp2Wz
-        biMq3A2nuCumBvuYlInpMqo5NWa7xCVsMUhrpANCh6VA5CJ0cnJw/WkERnXhDqnefnWKbWuRRUPnl
-        nalwnOxRxJ43N4GEUIuh9mekPijAFin6CBxZUmlYx97sL2Y8g6AJfYS6ifvnjLAQRZNnsX1Yshh+i
-        VU9HassfXOpSVmxOCYd2ERk2Xqu1yK3S1Qud85PsS6FvYCL1/Q3MPE8bkuBbBPfRl3bw9JZM5h1gp
-        JT8mCtLu1uwhWF3gN6PKBn/a4oeWlq9nhs3gKQ7+eCZi+nGWL+ehFT9BNSwnjvqnAApByr2IINZz+
-        Km8bzm2g==;
-Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXKiV-0003bR-Hq; Tue, 27 Oct 2020 08:52:35 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     arnd@arndb.de
-Cc:     palmerdabbelt@google.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH] asm-generic: mark __{get,put}_user_fn as __always_inline
-Date:   Tue, 27 Oct 2020 09:50:17 +0100
-Message-Id: <20201027085017.3705228-1-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
+        Tue, 27 Oct 2020 04:50:25 -0400
+Received: by mail-wr1-f65.google.com with SMTP id g12so887550wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7To5fR7Q9UAxOnsymTWEk2T2/isEIEenNe0vcod1MTQ=;
+        b=FrVGJAASwgGOHLjXsVS+TDlkp2LPHGEzVqVnlxcTjSD/cr6nN5p7or5UypZO6DinI6
+         A8By5nb9orQHmknCoIS7/rVHrTn1/1O/TCZxGA15rZ3drA8crrQEd5Y7MP5XcOF9A6i7
+         13+dhBlEA4TVsjMhCjwNYEmfMaXJSuHVHqmbuRplFQ8b5qDI+ffJ+AaGoGHLYUFuXWkW
+         asWgirT7AhBXnV59TcXJJ8EHqi2N7OydsrDG1qmkPgsbfD3pkXGHepUiUowN8PUqthat
+         +GYZwye0qXh/u1xBzGoTbXMLrOQYiJP1EXlMpQChn9MUAfxETVk+Jlu84RJh84528TW5
+         sxmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7To5fR7Q9UAxOnsymTWEk2T2/isEIEenNe0vcod1MTQ=;
+        b=C0d0X26L4oWWOAxtWSI1oGCwKsPUNvGq9PCuJXJ5L3w4vLa64xryLtk2w62PN8RDKI
+         RH6tvvhIGHaHvNQVfSPXT7mPchloMYnsbBtdMUEnNCIo23xr3k2/AEavY0pe2vXaWQnF
+         APbsG6RjMfrOzKlGbT0AYYyAvOQJxnOmNfAveNrqzbkGUIEyugl41aAvEGRepEdqK7dM
+         SNc/QduNqfJ2Gumi0Ep1Oyljkb5l4B2/aICCqv0+pt3gVHS0J56UR9IC77hxILP5TazY
+         VcLlq41htn+MsR2Cc1QhB+AxJ1g8suErJoVPSdGjpm0oZL+dKLuh2s3zJj6YTEurCKfK
+         72gA==
+X-Gm-Message-State: AOAM5336P9AwbgTUYonWScQv/Xay80ca/boCi/JwBAcOlt50IpzB4pGd
+        ckLruj5PwoBe4Dy0ymYSbV03kQ==
+X-Google-Smtp-Source: ABdhPJzPfN26xhtrp7ZCg5xkLG2vH8Zt33AKBxdQuOt3lywV6PI43r3anfW88dN/8XCOlUjPjlvJ3w==
+X-Received: by 2002:adf:81e5:: with SMTP id 92mr1469248wra.411.1603788623417;
+        Tue, 27 Oct 2020 01:50:23 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451? ([2a01:e34:ed2f:f020:6cbc:1a3:aabd:d451])
+        by smtp.googlemail.com with ESMTPSA id 71sm1124828wrm.20.2020.10.27.01.50.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 01:50:22 -0700 (PDT)
+Subject: Re: [PATCH v2] drivers/thermal: optimize the for circle to run a bit
+ fast
+To:     Bernard Zhao <bernard@vivo.com>, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20201027013743.62392-1-bernard@vivo.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <15cc88a3-9a96-c7a8-a9e0-375578de4305@linaro.org>
+Date:   Tue, 27 Oct 2020 09:50:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201027013743.62392-1-bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without the explicit __always_inline, some RISC-V configs place the
-functions out of line, triggering the BUILD_BUG_ON checks in the
-function.
+On 27/10/2020 02:37, Bernard Zhao wrote:
+> Function thermal_zone_device_register, in the for circle, if the
+> first if branch set the count bit in tz->trips_disabled, there is
+> no need to set in the other if branch again.
+> This change is to make the code run a bit fast and readable.
+> 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> 
+> Changes since V1:
+> *make the code more clear and readable
+> 
+> Link for V1:
+> *https://lore.kernel.org/patchwork/patch/1324507/
 
-Fixes: 11129e8ed4d9 ("riscv: use memcpy based uaccess for nommu again")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/asm-generic/uaccess.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+When adding a changelog, add it after the signed off separated with a
+'---' symbol. So when commiting the patch, the changelog is discarded.
 
-diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
-index 45f9872fd74759..4973328f3c6e75 100644
---- a/include/asm-generic/uaccess.h
-+++ b/include/asm-generic/uaccess.h
-@@ -12,7 +12,8 @@
- #ifdef CONFIG_UACCESS_MEMCPY
- #include <asm/unaligned.h>
- 
--static inline int __get_user_fn(size_t size, const void __user *from, void *to)
-+static __always_inline int
-+__get_user_fn(size_t size, const void __user *from, void *to)
- {
- 	BUILD_BUG_ON(!__builtin_constant_p(size));
- 
-@@ -37,7 +38,8 @@ static inline int __get_user_fn(size_t size, const void __user *from, void *to)
- }
- #define __get_user_fn(sz, u, k)	__get_user_fn(sz, u, k)
- 
--static inline int __put_user_fn(size_t size, void __user *to, void *from)
-+static __always_inline int
-+__put_user_fn(size_t size, void __user *to, void *from)
- {
- 	BUILD_BUG_ON(!__builtin_constant_p(size));
- 
+
 -- 
-2.28.0
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
