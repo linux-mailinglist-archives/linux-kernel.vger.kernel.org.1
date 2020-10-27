@@ -2,60 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD3429A7A5
+	by mail.lfdr.de (Postfix) with ESMTP id E5A5F29A7A7
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506155AbgJ0JTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:19:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32796 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505970AbgJ0JTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:19:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9C6B4B02D;
-        Tue, 27 Oct 2020 09:19:39 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 09:19:36 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        id S2508858AbgJ0JT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:19:56 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:36455 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508741AbgJ0JT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:19:56 -0400
+Received: by mail-wr1-f67.google.com with SMTP id x7so1031331wrl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/wDjT/SlZ3lKVqpNwVDGAcf/aKgztmBHkRCUdNnZ+aw=;
+        b=vdYfDY/TYNYCUgUHMhh+fIs/CSYiFFsyY+p6u4EvFhFraYVRB+9sfXxFgmnQVpjFFZ
+         t7TQqqEObuDsMpVky/Lm1YJg3RVAG7ox13tpuFg0HgAPOKGsarXP2yD96nkoRJLMhdLT
+         2D8UFmfF5BasOtQ+lnsgCxv2oqSiriPcMkUOzFmi6GPFZLdT+kkUrwT5gWOYUCdNUuTu
+         z4i4xMc8jIu1Bb+eaE6fywlbRpVL5oe6C9YF7l/qXlAHl8i70CxhvxxdaGWAaJzHqsh7
+         BvJkLbs/KDLQxns65ayk2DILD8HJfNGy6Bp/nFg2MUuCy85dzAV03YWyhPzx59Wc3tO5
+         W5ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/wDjT/SlZ3lKVqpNwVDGAcf/aKgztmBHkRCUdNnZ+aw=;
+        b=r9vxrMjyLXxPaYqZ18R2l2+EyNXFwbgV4ZYeCPPpiCEhN/oFeAALJId9MelhW+W2N6
+         8p29H/10tMv2OP5ufK8cDGfEGO8GqotNgHVdOJAYN0nNIAs4+uo8xsGTiuPjq12TRWPe
+         w4TUk9rim30XLOC/r/elmROHcB199tUNtW6KYLvDzebe2fv7WhDfqVEpAGgi8TC83stF
+         aMCVDIdoE700xdm4YH2qUr8t3N1c2hGRj2Z6gDa1Sg0r/0U6VweXZigChAp+w/0ihVwC
+         iHkJTXhqDYX4fDqzRMd6w769wtyL1sipXBQOR5CdTaq4fm5KrXP0vvrO9jlucXXmkk1w
+         zqLA==
+X-Gm-Message-State: AOAM531ZCd+D9mBb54s2mbQN+lvXceijVHmQhbD6y62hQAkB6AGr5tI0
+        /QcI9hna+0weLHI9FzNCKvtq+A==
+X-Google-Smtp-Source: ABdhPJwUKSYbFKqHrh9OmKMvhBJbJjb9tAmt/GvrtiqiTXS0wl6hQDRJ4luJ1lpqYuHMfpo6VttNog==
+X-Received: by 2002:a5d:4001:: with SMTP id n1mr1680682wrp.426.1603790393873;
+        Tue, 27 Oct 2020 02:19:53 -0700 (PDT)
+Received: from localhost.localdomain ([84.238.208.210])
+        by smtp.gmail.com with ESMTPSA id i10sm1292902wrq.27.2020.10.27.02.19.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 02:19:53 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/fair: check for idle core
-Message-ID: <20201027091936.GS32041@suse.de>
-References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v2] venus: venc: Fix setting of profile and level
+Date:   Tue, 27 Oct 2020 11:19:36 +0200
+Message-Id: <20201027091936.14478-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
-> Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
-> 
+The profile and level in op_set_ctrl was recently changed but during
+v4l2_ctrl_handler_setup profile and level control values are mangled.
 
-While not a universal win, it was mostly a win or neutral. In few cases
-where there was a problem, one benchmark I'm a bit suspicious of generally
-as occasionally it generates bad results for unknown and unpredictable
-reasons. In another, it was very machine specific and the differences
-were small in absolte time rather than relative time. Other tests on the
-same machine were fine so overall;
+Fixes: 435c53c3698f ("media: venus: venc: Use helper to set profile and level")
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+v2: Fixed kernel test robot WARNING
 
-Thanks.
+ drivers/media/platform/qcom/venus/core.h      | 15 +++++++--
+ drivers/media/platform/qcom/venus/venc.c      | 31 ++++++++++++++++++-
+ .../media/platform/qcom/venus/venc_ctrls.c    | 14 +++++++--
+ 3 files changed, 55 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 7b79a33dc9d6..05c9fbd51f0c 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -243,8 +243,19 @@ struct venc_controls {
+ 
+ 	u32 header_mode;
+ 
+-	u32 profile;
+-	u32 level;
++	struct {
++		u32 h264;
++		u32 mpeg4;
++		u32 hevc;
++		u32 vp8;
++		u32 vp9;
++	} profile;
++	struct {
++		u32 h264;
++		u32 mpeg4;
++		u32 hevc;
++		u32 vp9;
++	} level;
+ };
+ 
+ struct venus_buffer {
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index f8b1484e7dcd..47246528ac7e 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -537,6 +537,7 @@ static int venc_set_properties(struct venus_inst *inst)
+ 	struct hfi_quantization quant;
+ 	struct hfi_quantization_range quant_range;
+ 	u32 ptype, rate_control, bitrate;
++	u32 profile, level;
+ 	int ret;
+ 
+ 	ret = venus_helper_set_work_mode(inst, VIDC_WORK_MODE_2);
+@@ -684,7 +685,35 @@ static int venc_set_properties(struct venus_inst *inst)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = venus_helper_set_profile_level(inst, ctr->profile, ctr->level);
++	switch (inst->hfi_codec) {
++	case HFI_VIDEO_CODEC_H264:
++		profile = ctr->profile.h264;
++		level = ctr->level.h264;
++		break;
++	case HFI_VIDEO_CODEC_MPEG4:
++		profile = ctr->profile.mpeg4;
++		level = ctr->level.mpeg4;
++		break;
++	case HFI_VIDEO_CODEC_VP8:
++		profile = ctr->profile.vp8;
++		level = 0;
++		break;
++	case HFI_VIDEO_CODEC_VP9:
++		profile = ctr->profile.vp9;
++		level = ctr->level.vp9;
++		break;
++	case HFI_VIDEO_CODEC_HEVC:
++		profile = ctr->profile.hevc;
++		level = ctr->level.hevc;
++		break;
++	case HFI_VIDEO_CODEC_MPEG2:
++	default:
++		profile = 0;
++		level = 0;
++		break;
++	}
++
++	ret = venus_helper_set_profile_level(inst, profile, level);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+index 0708b3b89d0c..cf860e6446c0 100644
+--- a/drivers/media/platform/qcom/venus/venc_ctrls.c
++++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+@@ -103,15 +103,25 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		ctr->h264_entropy_mode = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
++		ctr->profile.mpeg4 = ctrl->val;
++		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
++		ctr->profile.h264 = ctrl->val;
++		break;
+ 	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
++		ctr->profile.hevc = ctrl->val;
++		break;
+ 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
+-		ctr->profile = ctrl->val;
++		ctr->profile.vp8 = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
++		ctr->level.mpeg4 = ctrl->val;
++		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
++		ctr->level.h264 = ctrl->val;
++		break;
+ 	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
+-		ctr->level = ctrl->val;
++		ctr->level.hevc = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP:
+ 		ctr->h264_i_qp = ctrl->val;
 -- 
-Mel Gorman
-SUSE Labs
+2.17.1
+
