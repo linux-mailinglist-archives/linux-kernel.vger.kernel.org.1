@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425FF29BB5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F63A29BB5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805719AbgJ0QBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32820 "EHLO mail.kernel.org"
+        id S1805746AbgJ0QBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801429AbgJ0PlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:41:21 -0400
+        id S1801431AbgJ0PlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:41:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A826222E9;
-        Tue, 27 Oct 2020 15:41:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B65FC222E9;
+        Tue, 27 Oct 2020 15:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813280;
-        bh=tX+LMavpIXXGBbS4jlBY4UMKgcgST85nNpBWCqLEs3c=;
+        s=default; t=1603813283;
+        bh=KBUREtmmo+3uvcLL72+r3TUoaWFydzczI+bhCK82yWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b7Qk0Besl3/q8ASRKUdsBwe/arwhAyadnwA1kO6mDPtjqrexA/5jWnj/OZ28+VX+F
-         3ulb2ExorEQot2UUrnqqZIHQz0IZxwAceLJ9pH0HALiaIDjP9+VsnJE3oMppWaOIBu
-         Q8Q7/E2wCfCq7m3MiwjhEMERaPwVCik9BUJ2ad0o=
+        b=0pEqv2nayBPI2et7T6JNnAP1/Zx93coePTO8j3CtnfsStlGjSqvq+pAA/mWltd9iD
+         EW4+WzkyyuYcru2Q3s4Oq/Enab4bMInTcgYY2zI/s835x1irhmrHDSQTLLV9H6pCMq
+         Hr8Q2N5R1yl+/f8/OgHmLU4yAiHHtHADXEuOwsAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 498/757] maiblox: mediatek: Fix handling of platform_get_irq() error
-Date:   Tue, 27 Oct 2020 14:52:28 +0100
-Message-Id: <20201027135513.819516369@linuxfoundation.org>
+Subject: [PATCH 5.9 499/757] perf trace: Fix off by ones in memset() after realloc() in arches using libaudit
+Date:   Tue, 27 Oct 2020 14:52:29 +0100
+Message-Id: <20201027135513.859324304@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,47 +47,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 558e4c36ec9f2722af4fe8ef84dc812bcdb5c43a ]
+[ Upstream commit f3013f7ed465479e60c1ab1921a5718fc541cc3b ]
 
-platform_get_irq() returns -ERRNO on error.  In such case casting to u32
-and comparing to 0 would pass the check.
+'perf trace ls' started crashing after commit d21cb73a9025 on
+!HAVE_SYSCALL_TABLE_SUPPORT configs (armv7l here) like this:
 
-Fixes: 623a6143a845 ("mailbox: mediatek: Add Mediatek CMDQ driver")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+  0  strlen () at ../sysdeps/arm/armv6t2/strlen.S:126
+  1  0xb6800780 in __vfprintf_internal (s=0xbeff9908, s@entry=0xbeff9900, format=0xa27160 "]: %s()", ap=..., mode_flags=<optimized out>) at vfprintf-internal.c:1688
+  ...
+  5  0x0056ecdc in fprintf (__fmt=0xa27160 "]: %s()", __stream=<optimized out>) at /usr/include/bits/stdio2.h:100
+  6  trace__sys_exit (trace=trace@entry=0xbeffc710, evsel=evsel@entry=0xd968d0, event=<optimized out>, sample=sample@entry=0xbeffc3e8) at builtin-trace.c:2475
+  7  0x00566d40 in trace__handle_event (sample=0xbeffc3e8, event=<optimized out>, trace=0xbeffc710) at builtin-trace.c:3122
+  ...
+  15 main (argc=2, argv=0xbefff6e8) at perf.c:538
+
+It is because memset in trace__read_syscall_info zeroes wrong memory:
+
+1) when initializing for the first time, it does not reset the last id.
+
+2) in other cases, it resets the last id of previous buffer.
+
+ad 1) it causes the crash above as sc->name used in the fprintf above
+      contains garbage.
+
+ad 2) it sets nonexistent from true back to false for id 11 here. Not
+      sure, what the consequences are.
+
+So fix it by introducing a special case for the initial initialization
+and do the right +1 in both cases.
+
+Fixes: d21cb73a9025 ("perf trace: Grow the syscall table as needed when using libaudit")
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20201001093419.15761-1-jslaby@suse.cz
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/mtk-cmdq-mailbox.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ tools/perf/builtin-trace.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index 484d4438cd835..5665b6ea8119f 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -69,7 +69,7 @@ struct cmdq_task {
- struct cmdq {
- 	struct mbox_controller	mbox;
- 	void __iomem		*base;
--	u32			irq;
-+	int			irq;
- 	u32			thread_nr;
- 	u32			irq_mask;
- 	struct cmdq_thread	*thread;
-@@ -525,10 +525,8 @@ static int cmdq_probe(struct platform_device *pdev)
- 	}
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index bea461b6f937b..44a75f234db17 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -1762,7 +1762,11 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+ 		if (table == NULL)
+ 			return -ENOMEM;
  
- 	cmdq->irq = platform_get_irq(pdev, 0);
--	if (!cmdq->irq) {
--		dev_err(dev, "failed to get irq\n");
--		return -EINVAL;
--	}
-+	if (cmdq->irq < 0)
-+		return cmdq->irq;
+-		memset(table + trace->sctbl->syscalls.max_id, 0, (id - trace->sctbl->syscalls.max_id) * sizeof(*sc));
++		// Need to memset from offset 0 and +1 members if brand new
++		if (trace->syscalls.table == NULL)
++			memset(table, 0, (id + 1) * sizeof(*sc));
++		else
++			memset(table + trace->sctbl->syscalls.max_id + 1, 0, (id - trace->sctbl->syscalls.max_id) * sizeof(*sc));
  
- 	plat_data = (struct gce_plat *)of_device_get_match_data(dev);
- 	if (!plat_data) {
+ 		trace->syscalls.table	      = table;
+ 		trace->sctbl->syscalls.max_id = id;
 -- 
 2.25.1
 
