@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE66929B4B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 141DE29B472
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789373AbgJ0PCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:02:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60248 "EHLO mail.kernel.org"
+        id S1789394AbgJ0PCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:02:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773109AbgJ0O6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:58:45 -0400
+        id S1783999AbgJ0O6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:58:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A79BE22264;
-        Tue, 27 Oct 2020 14:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 779A921527;
+        Tue, 27 Oct 2020 14:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810725;
-        bh=1O3HA3EBzE4msZhuBrHkLy8BBzalcw41zC2njxyqYX4=;
+        s=default; t=1603810728;
+        bh=FATNVHPm99rro3GZKMTnOMG8Mf/AxyHQl51ekFCM3vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msURf4irBuI7TlX8z45n4G0Z97jjgvHYu2LlhZSnWUnV/LsjQ4q3BYEbQrE1aHSdg
-         F4abSeyfKLZb8gmk6JP/R0MMLG9FYmJ6k5P0ThLYVBmgiRgKv5j6vVHt4o4W4piQT0
-         n9nBX2CyhzFfWJ4uVHbGGrKy0pVw5bWWqJ0B6jAs=
+        b=TMoTMpd4ozuuRC/ZkutY2ylWI9uhYenkzz7FCujJ/ErO+LR40aPcVd7k62Msk4tK8
+         RSui2GpFkXiUNgcYBZs+fp+RxWWSkQUFdVsVKp7pBxSpOj9R0X8pyBhx2hJhXlQjd6
+         Oh4yavjPc+vrold/XruY9E/S3xPctaulO2KKLkaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 240/633] selftests/bpf: Fix endianness issue in test_sockopt_sk
-Date:   Tue, 27 Oct 2020 14:49:43 +0100
-Message-Id: <20201027135533.930959765@linuxfoundation.org>
+Subject: [PATCH 5.8 241/633] xhci: dont create endpoint debugfs entry before ring buffer is set.
+Date:   Tue, 27 Oct 2020 14:49:44 +0100
+Message-Id: <20201027135533.979231528@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,41 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit fec47bbc10b243690f5d0ee484a0bbdee273e71b ]
+[ Upstream commit 167657a1bb5fcde53ac304ce6c564bd90a2f9185 ]
 
-getsetsockopt() calls getsockopt() with optlen == 1, but then checks
-the resulting int. It is ok on little endian, but not on big endian.
+Make sure xHC completes the configure endpoint command and xhci driver
+sets the ring pointers correctly before we create the user readable
+debugfs file.
 
-Fix by checking char instead.
+In theory there was a small gap where a user could have read the
+debugfs file and cause a NULL pointer dereference error as ring
+pointer was not yet set, in practise we want this change to simplify
+the upcoming streams debugfs support.
 
-Fixes: 8a027dc0d8f5 ("selftests/bpf: add sockopt test that exercises sk helpers")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200915113928.3768496-1-iii@linux.ibm.com
+Fixes: 02b6fdc2a153 ("usb: xhci: Add debugfs interface for xHCI driver")
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200918131752.16488-10-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/sockopt_sk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-index 5f54c6aec7f07..b25c9c45c1484 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-@@ -45,9 +45,9 @@ static int getsetsockopt(void)
- 		goto err;
- 	}
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 113ab5d3cbfe5..f665da34a8f73 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1915,8 +1915,6 @@ static int xhci_add_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
+ 	ep_ctx = xhci_get_ep_ctx(xhci, virt_dev->in_ctx, ep_index);
+ 	trace_xhci_add_endpoint(ep_ctx);
  
--	if (*(int *)big_buf != 0x08) {
-+	if (*big_buf != 0x08) {
- 		log_err("Unexpected getsockopt(IP_TOS) optval 0x%x != 0x08",
--			*(int *)big_buf);
-+			(int)*big_buf);
- 		goto err;
+-	xhci_debugfs_create_endpoint(xhci, virt_dev, ep_index);
+-
+ 	xhci_dbg(xhci, "add ep 0x%x, slot id %d, new drop flags = %#x, new add flags = %#x\n",
+ 			(unsigned int) ep->desc.bEndpointAddress,
+ 			udev->slot_id,
+@@ -2949,6 +2947,7 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 		xhci_check_bw_drop_ep_streams(xhci, virt_dev, i);
+ 		virt_dev->eps[i].ring = virt_dev->eps[i].new_ring;
+ 		virt_dev->eps[i].new_ring = NULL;
++		xhci_debugfs_create_endpoint(xhci, virt_dev, i);
  	}
- 
+ command_cleanup:
+ 	kfree(command->completion);
 -- 
 2.25.1
 
