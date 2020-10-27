@@ -2,137 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9A629ACF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5921929ACF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900549AbgJ0NOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:14:35 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:46553 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900528AbgJ0NOd (ORCPT
+        id S2900592AbgJ0NPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:15:15 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:45577 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894469AbgJ0NPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:14:33 -0400
-Received: by mail-oi1-f193.google.com with SMTP id x1so1185871oic.13;
-        Tue, 27 Oct 2020 06:14:33 -0700 (PDT)
+        Tue, 27 Oct 2020 09:15:14 -0400
+Received: by mail-qv1-f66.google.com with SMTP id w5so585935qvn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 06:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sHmAyUwVAC1RZfyUSoKpUkH6mD5+QpMZcYlVXmkgxH0=;
+        b=mU2kPOv7szjJ5zW+bQ6BFR26C8Luax041L0av4G8wiZg4RTt8WNFJsqiiTJVSSUqn9
+         DHwUggweGomAj/XPHnVfixfeNqULEl7kOQL+gEtxw8gSHqAAGqRarmuFp6/OT9KwDIvP
+         GGYaNHMMUmlxrP/xza5phRgRZy9Oa2piX7dSUZYvRhMdSue49g/k0v780Ak5zN0ywqxh
+         eCskrH3/sbI1vLTBjZfm+xCXRPYYn5WaCj1/REItIr+voVRDHHRh3IE++6xUs7yX7EA2
+         Zc3LtdzPASeNU/iXrWyyakPOamzq772fSyEjnZ3wjkAh5ZvgBeLpOsFzeeZf/DVa2z4y
+         Go7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4FVHw0e9SUzKx9pLi7k3pNny5RbxCRXgmoDZK2DUReA=;
-        b=ASyKqCCKA1Qh+/NJtSoW1fi/BSJCjZRLwjikgqECfyJ8MKEqLBEz85EbC0gjOGObdT
-         941Hbxb8wfNoEjIbF+8BZXu+TNWyjOySb9U6N1JYFYkawto1YoXBWGbMayj5+ZZRZAnb
-         OYiAUMmRCeJd3lU2xYvF2/ovZKocoifxvsiCL3ywMCIsdAgQmtk4YoFpaZu756VEg28i
-         xKnE12Hn4bSYpnzCHt1VGkC4fc1kwG2S7wspJGparbCOyvdo+J6gItbteaUyL2dgbD3y
-         LjxOAL4V7vodo8US/aWcm9tts3HZeVoQPvhM3nah/KV92gMNlKWodTNXKDVM1QtzKH5O
-         Rg9g==
-X-Gm-Message-State: AOAM531AJHs+tIJ2z1kQn7gA3pQwEEj1PlvfAjSGbJGtrh6svdx1e6vF
-        VskzML663UQa7r/HVkBifD13B35Zb7B+eUVMC3Q=
-X-Google-Smtp-Source: ABdhPJwD4C1/jaI/5vT56agxdm0f1gpngWQwcmS6thmFWt5tFyd4CTpBOkR88Eixl835iArv3dnhS2YofqvLiskuPL8=
-X-Received: by 2002:aca:30d7:: with SMTP id w206mr1417593oiw.69.1603804472465;
- Tue, 27 Oct 2020 06:14:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sHmAyUwVAC1RZfyUSoKpUkH6mD5+QpMZcYlVXmkgxH0=;
+        b=SfVLKuAcjPVlQ1yJSsR2si+PJqb7jM2uoDUNjyvgrW+i+6f5xdOd4WGG/HP4NIw3R3
+         bGm43UxxVTKBFx105BD0xTuRBOfBp8OsR4Jsos9oAFZWWZGBEiW3Iw+2iX/RptKbnOPp
+         bTEDCfU+j0GVFF3CDn/PGNoz4umjrzLF+5KHoIbQU+Tb2mBJ1XtwrpOMdrWhKNbTDNCX
+         0kE7uDk3q7IockytJZ9ojyzrD1yf81SMGEIvr1i1voPeBjck/vMeyn/RUgZhF/kyuz8N
+         R4tmUXwFa1kz+d1XlS7DUj//ZvQB7nZjMaUjwdF3HeBZsXgdHQ1YG8LfCURLIRW5bQ1l
+         Wtvw==
+X-Gm-Message-State: AOAM533I7q2dP7+k+c9MYD7ZP2tU+N6eYeD5VTSEcavHrd+lr177q3Sz
+        b9lgQ4twpArUc8TI7yfCDSJDwg==
+X-Google-Smtp-Source: ABdhPJydTjKeY2w5KSD1T7IK56kSvz3ZZH+klUlmJHUCotvf185qdWyac85cxoit/yL6SaHTP/PABw==
+X-Received: by 2002:a0c:e70d:: with SMTP id d13mr2017645qvn.45.1603804511081;
+        Tue, 27 Oct 2020 06:15:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id v14sm702222qta.44.2020.10.27.06.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 06:15:10 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kXOof-009JYh-D0; Tue, 27 Oct 2020 10:15:09 -0300
+Date:   Tue, 27 Oct 2020 10:15:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
+Message-ID: <20201027131509.GU36674@ziepe.ca>
+References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
+ <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
+ <20201027093301.GA16090@quack2.suse.cz>
 MIME-Version: 1.0
-References: <2183878.gTFULuzKx9@kreacher> <1905098.zDJocX6404@kreacher> <20201027042559.hang4fnpyfd6yqu4@vireshk-i7>
-In-Reply-To: <20201027042559.hang4fnpyfd6yqu4@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 27 Oct 2020 14:14:20 +0100
-Message-ID: <CAJZ5v0iBr7naLmAHV7_jq1=wVqXPMOQaFQ-M_D6j_x3zRH7L-A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] cpufreq: schedutil: Always call drvier if
- need_freq_update is set
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027093301.GA16090@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 5:26 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> Spelling mistake in $subject (driver)
->
-> On 23-10-20, 17:36, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Because sugov_update_next_freq() may skip a frequency update even if
-> > the need_freq_update flag has been set for the policy at hand, policy
-> > limits updates may not take effect as expected.
-> >
-> > For example, if the intel_pstate driver operates in the passive mode
-> > with HWP enabled, it needs to update the HWP min and max limits when
-> > the policy min and max limits change, respectively, but that may not
-> > happen if the target frequency does not change along with the limit
-> > at hand.  In particular, if the policy min is changed first, causing
-> > the target frequency to be adjusted to it, and the policy max limit
-> > is changed later to the same value, the HWP max limit will not be
-> > updated to follow it as expected, because the target frequency is
-> > still equal to the policy min limit and it will not change until
-> > that limit is updated.
-> >
-> > To address this issue, modify get_next_freq() to clear
-> > need_freq_update only if the CPUFREQ_NEED_UPDATE_LIMITS flag is
-> > not set for the cpufreq driver in use (and it should be set for all
-> > potentially affected drivers) and make sugov_update_next_freq()
-> > check need_freq_update and continue when it is set regardless of
-> > whether or not the new target frequency is equal to the old one.
-> >
-> > Fixes: f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive mode with HWP enabled")
-> > Reported-by: Zhang Rui <rui.zhang@intel.com>
-> > Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > New patch in v2.
-> >
-> > ---
-> >  kernel/sched/cpufreq_schedutil.c |    8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-> > ===================================================================
-> > --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-> > +++ linux-pm/kernel/sched/cpufreq_schedutil.c
-> > @@ -102,11 +102,12 @@ static bool sugov_should_update_freq(str
-> >  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
-> >                                  unsigned int next_freq)
-> >  {
-> > -     if (sg_policy->next_freq == next_freq)
-> > +     if (sg_policy->next_freq == next_freq && !sg_policy->need_freq_update)
-> >               return false;
-> >
-> >       sg_policy->next_freq = next_freq;
-> >       sg_policy->last_freq_update_time = time;
-> > +     sg_policy->need_freq_update = false;
-> >
-> >       return true;
-> >  }
-> > @@ -164,7 +165,10 @@ static unsigned int get_next_freq(struct
-> >       if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> >               return sg_policy->next_freq;
-> >
-> > -     sg_policy->need_freq_update = false;
-> > +     if (sg_policy->need_freq_update)
-> > +             sg_policy->need_freq_update =
-> > +                     cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
-> > +
->
-> The behavior here is a bit different from what we did in cpufreq.c. In cpufreq
-> core we are _always_ allowing the call to reach the driver's target() routine,
-> but here we do it only if limits have changed. Wonder if we should have similar
-> behavior here as well ?
+On Tue, Oct 27, 2020 at 10:33:01AM +0100, Jan Kara wrote:
+> On Fri 23-10-20 21:44:17, John Hubbard wrote:
+> > On 10/23/20 5:19 PM, Jason Gunthorpe wrote:
+> > > +	start += (unsigned long)nr_pinned << PAGE_SHIFT;
+> > > +	pages += nr_pinned;
+> > > +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
+> > > +				      pages);
+> > > +	if (ret < 0) {
+> > >   		/* Have to be a bit careful with return values */
+> > 
+> > ...and can we move that comment up one level, so that it reads:
+> > 
+> > 	/* Have to be a bit careful with return values */
+> > 	if (ret < 0) {
+> > 		if (nr_pinned)
+> > 			return nr_pinned;
+> > 		return ret;
+> > 	}
+> > 	return ret + nr_pinned;
+> > 
+> > Thinking about this longer term, it would be nice if the whole gup/pup API
+> > set just stopped pretending that anyone cares about partial success, because
+> > they *don't*. If we had return values of "0 or -ERRNO" throughout, and an
+> > additional set of API wrappers that did some sort of limited retry just like
+> > some of the callers do, that would be a happier story.
+> 
+> Actually there are callers that care about partial success. See e.g.
+> iov_iter_get_pages() usage in fs/direct_io.c:dio_refill_pages() or
+> bio_iov_iter_get_pages(). These places handle partial success just fine and
+> not allowing partial success from GUP could regress things...
 
-I didn't think about that, but now that you mentioned it, I think that
-this is a good idea.
+I looked through a bunch of call sites, and there are a wack that
+actually do only want a complete return and are carrying a bunch of
+code to fix it:
 
-Will send an updated patch with that implemented shortly.
+	pvec = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+	if (!pvec)
+		return -ENOMEM;
 
-> Over that the code here can be rewritten a bit like:
->
->         if (sg_policy->need_freq_update)
->                 sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
->         else if (freq == sg_policy->cached_raw_freq)
->                 return sg_policy->next_freq;
+	do {
+		unsigned num_pages = npages - pinned;
+		uint64_t ptr = userptr->ptr + pinned * PAGE_SIZE;
+		struct page **pages = pvec + pinned;
 
-Right, but it will be somewhat different anyway. :-)
+		ret = pin_user_pages_fast(ptr, num_pages,
+					  !userptr->ro ? FOLL_WRITE : 0, pages);
+		if (ret < 0) {
+			unpin_user_pages(pvec, pinned);
+			kvfree(pvec);
+			return ret;
+		}
+
+		pinned += ret;
+
+	} while (pinned < npages);
+
+Is really a lot better if written as:
+
+   	pvec = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+	if (!pvec)
+		return -ENOMEM;
+	ret = pin_user_pages_fast(userptr->ptr, npages, FOLL_COMPLETE |
+	                          (!userptr->ro ? FOLL_WRITE : 0),
+				  pvec);
+        if (ret) {
+              kvfree(pvec);
+	      return ret;
+        }
+
+(eg FOLL_COMPLETE says to return exactly npages or fail)
+
+Some code assumes things work that way already anyhow:
+
+	/* Pin user pages for DMA Xfer */
+	err = pin_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
+			dma->map, FOLL_FORCE);
+
+	if (user_dma.page_count != err) {
+		IVTV_DEBUG_WARN("failed to map user pages, returned %d instead of %d\n",
+			   err, user_dma.page_count);
+		if (err >= 0) {
+			unpin_user_pages(dma->map, err);
+			return -EINVAL;
+		}
+		return err;
+	}
+
+Actually I'm quite surprised I didn't find too many missing the tricky
+unpin_user_pages() on the error path - eg
+videobuf_dma_init_user_locked() is wrong.
+
+Jason
