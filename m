@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9375729AE23
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0362E29AE26
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368163AbgJ0N5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43680 "EHLO mail.kernel.org"
+        id S368196AbgJ0N50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:57:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368149AbgJ0N5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:10 -0400
+        id S368183AbgJ0N5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:57:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E270218AC;
-        Tue, 27 Oct 2020 13:57:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B91921D41;
+        Tue, 27 Oct 2020 13:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807029;
-        bh=/NlU0/3d84vVPG+nHAIZydHM6HSVzfZ3j8P+/gBXXl8=;
+        s=default; t=1603807042;
+        bh=FUWGOvcgF8CxKp2eOI162AUHqIMLMtEWwU9BRJDzHgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wnhG7WPwYO8DvWjTcM5ZOVVSRD47HfeWALeoDsieyeafb4aiXIcT2nw4KOIKrPYig
-         eiBzt2H/3m8MdGM/CA4W5KLL5PuldpHzDzkI3PwJ/2maHFBqf7CXQzvGD54ZD/Gq7y
-         hiZrcGrcE/qj6gCnJkrUj7eivozwymzKn4/4vtY4=
+        b=eyaQgfL8erqWbuWZRA2Vv8RNYouvShrt6i9esLeeFKlmuo9QWc97iH2G92f2pU5Nc
+         qrfLJ+0mBxS1djAjQ7YAjTcgAqOIvxb4EoPD9tGoho2G+GSdDEMMzLQSmPq0mTm97y
+         Am7epBMm6+d3rMvXuk+YqfwFYm4ZP9CjVbvVIaPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dominik Maier <dmaier@sect.tu-berlin.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.4 017/112] cifs: remove bogus debug code
-Date:   Tue, 27 Oct 2020 14:48:47 +0100
-Message-Id: <20201027134901.383747842@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 021/112] media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
+Date:   Tue, 27 Oct 2020 14:48:51 +0100
+Message-Id: <20201027134901.578412367@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -43,72 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-commit d367cb960ce88914898cbfa43645c2e43ede9465 upstream.
+[ Upstream commit 00d21f325d58567d81d9172096692d0a9ea7f725 ]
 
-The "end" pointer is either NULL or it points to the next byte to parse.
-If there isn't a next byte then dereferencing "end" is an off-by-one out
-of bounds error.  And, of course, if it's NULL that leads to an Oops.
-Printing "*end" doesn't seem very useful so let's delete this code.
+The "idle" pinctrl state is optional as documented in the DT binding.
+The change introduced by the commit being reverted makes that pinctrl state
+mandatory and breaks initialization of the whole media driver, since the
+"idle" state is not specified in any mainline dts.
 
-Also for the last debug statement, I noticed that it should be printing
-"sequence_end" instead of "end" so fix that as well.
+This reverts commit 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+to fix the regression.
 
-Reported-by: Dominik Maier <dmaier@sect.tu-berlin.de>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/asn1.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/media/platform/exynos4-is/media-dev.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/fs/cifs/asn1.c
-+++ b/fs/cifs/asn1.c
-@@ -541,8 +541,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
- 		   || (tag != ASN1_EOC)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
-+			 cls, con, tag, end);
- 		return 0;
- 	}
+diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+index 31cc7d94064e3..6bc3c8a2e1443 100644
+--- a/drivers/media/platform/exynos4-is/media-dev.c
++++ b/drivers/media/platform/exynos4-is/media-dev.c
+@@ -1170,11 +1170,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
+ 	if (IS_ERR(pctl->state_default))
+ 		return PTR_ERR(pctl->state_default);
  
-@@ -552,8 +552,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
- 		   || (tag != ASN1_SEQ)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 1\n",
-+			 cls, con, tag, end);
- 		return 0;
- 	}
++	/* PINCTRL_STATE_IDLE is optional */
+ 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
+ 					PINCTRL_STATE_IDLE);
+-	if (IS_ERR(pctl->state_idle))
+-		return PTR_ERR(pctl->state_idle);
+-
+ 	return 0;
+ }
  
-@@ -563,8 +563,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
- 		   || (tag != ASN1_EOC)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
-+			 cls, con, tag, end);
- 		return 0;
- 	}
- 
-@@ -575,8 +575,8 @@ decode_negTokenInit(unsigned char *secur
- 		return 0;
- 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
- 		   || (tag != ASN1_SEQ)) {
--		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
--			 cls, con, tag, end, *end);
-+		cifs_dbg(FYI, "cls = %d con = %d tag = %d sequence_end = %p exit 1\n",
-+			 cls, con, tag, sequence_end);
- 		return 0;
- 	}
- 
+-- 
+2.25.1
+
 
 
