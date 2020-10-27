@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C00029C129
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E15229BFCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780375AbgJ0Oyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49990 "EHLO mail.kernel.org"
+        id S1787074AbgJ0O76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1771553AbgJ0OuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:04 -0400
+        id S1772020AbgJ0OuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:50:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9EF821556;
-        Tue, 27 Oct 2020 14:50:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D52E20709;
+        Tue, 27 Oct 2020 14:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810204;
-        bh=vfGKcFV6CWjlkagNRj/GsX0Qrmnfykf7ODgL9t7Js8w=;
+        s=default; t=1603810210;
+        bh=XQCWAfE6ln7p6SKCp4VKD/q4KHKwVU9LfjNPy2wbA80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wc4S4tCVgUQ4tyP1QM9ihCRIO7l2zFWwvN7oZqkcKItdT9bB/AviMko9rY7Zsl/qB
-         WqkwsQu2ZWfN/ejJ5U9RC4WlGV4V1IKOz5VYCGjC7oWyR2brjhRRpQmNSvii/kn1+b
-         8B7CAvwNAXCp0Db/8B7oBID700OF2GSqCWIMOHXg=
+        b=YKbdyopkZu/MUm+7qNVgvhGpj7fPJHyqmat1JkcicVzR9CSmToM/VQfiHbWZCdMr7
+         1XmCNtH09DiTDwzxOHEEMicdAIvaLPemvhbeAsUb0/5Nkz5zT6TJBsjZuhC638372T
+         bf5Q0QzzoyokP1s7jJrlwm1NRtHr1MNfLxRt8eIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
+        stable@vger.kernel.org, Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.8 058/633] ALSA: hda/realtek - The front Mic on a HP machine doesnt work
-Date:   Tue, 27 Oct 2020 14:46:41 +0100
-Message-Id: <20201027135525.416949955@linuxfoundation.org>
+Subject: [PATCH 5.8 060/633] ALSA: hda/realtek - Add mute Led support for HP Elitebook 845 G7
+Date:   Tue, 27 Oct 2020 14:46:43 +0100
+Message-Id: <20201027135525.512329831@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -42,18 +42,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Szu <jeremy.szu@canonical.com>
+From: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
 
-commit 148ebf548a1af366fc797fcc7d03f0bb92b12a79 upstream.
+commit 08befca40026136c14c3cd84f9e36c4cd20a358e upstream.
 
-On a HP ZCentral, the front Mic could not be detected.
+After installing archlinux, the mute led and micmute led are not working
+at all. This patch fix this issue by applying a fixup from similar
+model. These mute leds are confirmed working on HP Elitebook 845 G7.
 
-The codec of the HP ZCentrol is alc671 and it needs to override the pin
-configuration to enable the headset mic.
-
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+Signed-off-by: Qiu Wenbo <qiuwenbo@kylinos.com.cn>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201008105645.65505-1-jeremy.szu@canonical.com
+Link: https://lore.kernel.org/r/20201002124454.7240-1-qiuwenbo@kylinos.com.cn
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
@@ -63,13 +62,13 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -9635,6 +9635,7 @@ static const struct snd_pci_quirk alc662
- 	SND_PCI_QUIRK(0x1028, 0x0698, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x069f, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
-+	SND_PCI_QUIRK(0x103c, 0x873e, "HP", ALC671_FIXUP_HP_HEADSET_MIC2),
- 	SND_PCI_QUIRK(0x1043, 0x1080, "Asus UX501VW", ALC668_FIXUP_HEADSET_MODE),
- 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_ASUS_Nx50),
- 	SND_PCI_QUIRK(0x1043, 0x13df, "Asus N550JX", ALC662_FIXUP_BASS_1A),
+@@ -7786,6 +7786,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x874e, "HP", ALC274_FIXUP_HP_MIC),
++	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
 
 
