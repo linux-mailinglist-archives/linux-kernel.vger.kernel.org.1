@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B6429AEB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863E229AFDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753990AbgJ0OD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:03:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51470 "EHLO mail.kernel.org"
+        id S2507450AbgJ0ONk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:13:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753967AbgJ0ODT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:03:19 -0400
+        id S1755486AbgJ0OKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A80AE2222C;
-        Tue, 27 Oct 2020 14:03:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9260C218AC;
+        Tue, 27 Oct 2020 14:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807398;
-        bh=pOcBVd12JvXVaMyayHwf6XKXc6qvqsXaYmFZ6nMZF8c=;
+        s=default; t=1603807808;
+        bh=UWAPA+UqCncHrG25SZ/XtZ0sRzW4RMkMNLEVjFK1YFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UfBbSXU6sWdm4kaZFseC3x+EVvBphpflmMUpisfU0VYXDyIPSx8vV+dyS+34q5rWc
-         Dud5/vVQp+V6ZhRdbOhqDb1pBtoJmjnRPrZfATYtGSPfelbKKJfUufMLo6TUpgjEpo
-         yJmhUOAUFm8S2gktYUXMq8sU1rV/2ffCXjA0lErQ=
+        b=sxXFJyN2ghAKBgDBAO/91YiynwOj1Cdv9wSZYc7Kn47a65hTggkEJMlGe1kpvEI5u
+         MYJvbO4iOHDW40DJdr/ZZCLONSa3Apg0gQuPJd0xEW6/LdTAWoV8wNGLEF0up1e0B/
+         ITGSaoyi+H1jk5wtz+59kgoASt/p0kAKpdscWiZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
-        Apollon Oikonomopoulos <apoikos@dmesg.gr>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 009/139] tcp: fix to update snd_wl1 in bulk receiver fast path
-Date:   Tue, 27 Oct 2020 14:48:23 +0100
-Message-Id: <20201027134902.591675828@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 049/191] mwifiex: Do not use GFP_KERNEL in atomic context
+Date:   Tue, 27 Oct 2020 14:48:24 +0100
+Message-Id: <20201027134912.095044557@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neal Cardwell <ncardwell@google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 18ded910b589839e38a51623a179837ab4cc3789 ]
+[ Upstream commit d2ab7f00f4321370a8ee14e5630d4349fdacc42e ]
 
-In the header prediction fast path for a bulk data receiver, if no
-data is newly acknowledged then we do not call tcp_ack() and do not
-call tcp_ack_update_window(). This means that a bulk receiver that
-receives large amounts of data can have the incoming sequence numbers
-wrap, so that the check in tcp_may_update_window fails:
-   after(ack_seq, tp->snd_wl1)
+A possible call chain is as follow:
+  mwifiex_sdio_interrupt                            (sdio.c)
+    --> mwifiex_main_process                        (main.c)
+      --> mwifiex_process_cmdresp                   (cmdevt.c)
+        --> mwifiex_process_sta_cmdresp             (sta_cmdresp.c)
+          --> mwifiex_ret_802_11_scan               (scan.c)
+            --> mwifiex_parse_single_response_buf   (scan.c)
 
-If the incoming receive windows are zero in this state, and then the
-connection that was a bulk data receiver later wants to send data,
-that connection can find itself persistently rejecting the window
-updates in incoming ACKs. This means the connection can persistently
-fail to discover that the receive window has opened, which in turn
-means that the connection is unable to send anything, and the
-connection's sending process can get permanently "stuck".
+'mwifiex_sdio_interrupt()' is an interrupt function.
 
-The fix is to update snd_wl1 in the header prediction fast path for a
-bulk data receiver, so that it keeps up and does not see wrapping
-problems.
+Also note that 'mwifiex_ret_802_11_scan()' already uses GFP_ATOMIC.
 
-This fix is based on a very nice and thorough analysis and diagnosis
-by Apollon Oikonomopoulos (see link below).
+So use GFP_ATOMIC instead of GFP_KERNEL when memory is allocated in
+'mwifiex_parse_single_response_buf()'.
 
-This is a stable candidate but there is no Fixes tag here since the
-bug predates current git history. Just for fun: looks like the bug
-dates back to when header prediction was added in Linux v2.1.8 in Nov
-1996. In that version tcp_rcv_established() was added, and the code
-only updates snd_wl1 in tcp_ack(), and in the new "Bulk data transfer:
-receiver" code path it does not call tcp_ack(). This fix seems to
-apply cleanly at least as far back as v3.2.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Reported-by: Apollon Oikonomopoulos <apoikos@dmesg.gr>
-Tested-by: Apollon Oikonomopoulos <apoikos@dmesg.gr>
-Link: https://www.spinics.net/lists/netdev/msg692430.html
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20201022143331.1887495-1-ncardwell.kernel@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7c6fa2a843c5 ("mwifiex: use cfg80211 dynamic scan table and cfg80211_get_bss API")
+or
+Fixes: 601216e12c65e ("mwifiex: process RX packets in SDIO IRQ thread directly")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200809092906.744621-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_input.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/marvell/mwifiex/scan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -5598,6 +5598,8 @@ void tcp_rcv_established(struct sock *sk
- 				tcp_data_snd_check(sk);
- 				if (!inet_csk_ack_scheduled(sk))
- 					goto no_ack;
-+			} else {
-+				tcp_update_wl(tp, TCP_SKB_CB(skb)->seq);
- 			}
- 
- 			__tcp_ack_snd_check(sk, 0);
+diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
+index 0071c40afe81b..a95b1368dad71 100644
+--- a/drivers/net/wireless/marvell/mwifiex/scan.c
++++ b/drivers/net/wireless/marvell/mwifiex/scan.c
+@@ -1890,7 +1890,7 @@ mwifiex_parse_single_response_buf(struct mwifiex_private *priv, u8 **bss_info,
+ 					    chan, CFG80211_BSS_FTYPE_UNKNOWN,
+ 					    bssid, timestamp,
+ 					    cap_info_bitmap, beacon_period,
+-					    ie_buf, ie_len, rssi, GFP_KERNEL);
++					    ie_buf, ie_len, rssi, GFP_ATOMIC);
+ 			if (bss) {
+ 				bss_priv = (struct mwifiex_bss_priv *)bss->priv;
+ 				bss_priv->band = band;
+-- 
+2.25.1
+
 
 
