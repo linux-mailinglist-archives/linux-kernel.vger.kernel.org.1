@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5098929C42E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B5D29C460
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1817997AbgJ0Rxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48040 "EHLO mail.kernel.org"
+        id S1822990AbgJ0R4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:56:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758727AbgJ0OXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:23:13 -0400
+        id S1758689AbgJ0OWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:22:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1582F2072D;
-        Tue, 27 Oct 2020 14:23:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CE16206D4;
+        Tue, 27 Oct 2020 14:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808592;
-        bh=uxJ1QdAWxDbMIHxhewgDfCQiWKlqPHFtwOv6YL4Wve0=;
+        s=default; t=1603808535;
+        bh=fb4ISqxzpluhxqTom6ZW6OuCMjI2eWFtxJrCwA7bLks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SwFsXc++8ZROgztQiB7/nXaVW7jwbEPk/Q/V6lkcIMesa0MPpDD9wHBz77PBRfQdq
-         Gm7r9Oms4CkBWiEcmgNAIhqTscP7pLvMj9LV62ce4cU5m2fATFrDP2VvBUno/05G8C
-         PVsfX3D8JKbi1xmExmbIeqfXltWEx1094KcM0GY8=
+        b=vTU1rppPcVGtsFRAbL9NG3G8sA5RRycGA9eOgcNn3R80W34GmFRlX/f1LuT7x0VQi
+         s6hVm+63OD2PDmX6Zg7WYOt8r4OF6G4ZaYnxoctKKeZMzIZnVoAe87/o5XkgA3788n
+         GLNe1MYNU/uI+AeraxhT0EP6M/0OvQQTN6L7rD44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 109/264] slimbus: qcom-ngd-ctrl: disable ngd in qmi server down callback
-Date:   Tue, 27 Oct 2020 14:52:47 +0100
-Message-Id: <20201027135435.794691012@linuxfoundation.org>
+Subject: [PATCH 4.19 111/264] nvmem: core: fix possibly memleak when use nvmem_cell_info_to_nvmem_cell()
+Date:   Tue, 27 Oct 2020 14:52:49 +0100
+Message-Id: <20201027135435.887735842@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -43,43 +44,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Vadym Kochan <vadym.kochan@plvision.eu>
 
-[ Upstream commit 709ec3f7fc5773ac4aa6fb22c3f0ac8103c674db ]
+[ Upstream commit fc9eec4d643597cf4cb2fef17d48110e677610da ]
 
-In QMI new server notification we enable the NGD however during
-delete server notification we do not disable the NGD.
+Fix missing 'kfree_const(cell->name)' when call to
+nvmem_cell_info_to_nvmem_cell() in several places:
 
-This can lead to multiple instances of NGD being enabled, so make
-sure that we disable NGD in delete server callback to fix this issue!
+     * after nvmem_cell_info_to_nvmem_cell() failed during
+       nvmem_add_cells()
 
-Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200925095520.27316-4-srinivas.kandagatla@linaro.org
+     * during nvmem_device_cell_{read,write} when cell->name is
+       kstrdup'ed() without calling kfree_const() at the end, but
+       really there is no reason to do that 'dup, because the cell
+       instance is allocated on the stack for some short period to be
+       read/write without exposing it to the caller.
+
+So the new nvmem_cell_info_to_nvmem_cell_nodup() helper is introduced
+which is used to convert cell_info -> cell without name duplication as
+a lighweight version of nvmem_cell_info_to_nvmem_cell().
+
+Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Link: https://lore.kernel.org/r/20200923204456.14032-1-vadym.kochan@plvision.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/nvmem/core.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index f40ac8dcb0817..522a87fc573a6 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1272,9 +1272,13 @@ static void qcom_slim_ngd_qmi_del_server(struct qmi_handle *hdl,
- {
- 	struct qcom_slim_ngd_qmi *qmi =
- 		container_of(hdl, struct qcom_slim_ngd_qmi, svc_event_hdl);
-+	struct qcom_slim_ngd_ctrl *ctrl =
-+		container_of(qmi, struct qcom_slim_ngd_ctrl, qmi);
- 
- 	qmi->svc_info.sq_node = 0;
- 	qmi->svc_info.sq_port = 0;
-+
-+	qcom_slim_ngd_enable(ctrl, false);
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 30c040786fde2..54204d550fc22 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -326,9 +326,9 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
+ 	mutex_unlock(&nvmem_cells_mutex);
  }
  
- static struct qmi_ops qcom_slim_ngd_qmi_svc_event_ops = {
+-static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+-				   const struct nvmem_cell_info *info,
+-				   struct nvmem_cell *cell)
++static int nvmem_cell_info_to_nvmem_cell_nodup(struct nvmem_device *nvmem,
++					const struct nvmem_cell_info *info,
++					struct nvmem_cell *cell)
+ {
+ 	cell->nvmem = nvmem;
+ 	cell->offset = info->offset;
+@@ -345,13 +345,30 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+ 	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
+ 		dev_err(&nvmem->dev,
+ 			"cell %s unaligned to nvmem stride %d\n",
+-			cell->name, nvmem->stride);
++			cell->name ?: "<unknown>", nvmem->stride);
+ 		return -EINVAL;
+ 	}
+ 
+ 	return 0;
+ }
+ 
++static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
++				const struct nvmem_cell_info *info,
++				struct nvmem_cell *cell)
++{
++	int err;
++
++	err = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, cell);
++	if (err)
++		return err;
++
++	cell->name = kstrdup_const(info->name, GFP_KERNEL);
++	if (!cell->name)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ /**
+  * nvmem_add_cells() - Add cell information to an nvmem device
+  *
+@@ -1265,7 +1282,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
+ 	if (!nvmem)
+ 		return -EINVAL;
+ 
+-	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
++	rc = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, &cell);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -1295,7 +1312,7 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
+ 	if (!nvmem)
+ 		return -EINVAL;
+ 
+-	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
++	rc = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, &cell);
+ 	if (rc)
+ 		return rc;
+ 
 -- 
 2.25.1
 
