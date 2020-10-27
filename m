@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15EE29C272
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F2429C45B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820358AbgJ0RgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:36:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35804 "EHLO mail.kernel.org"
+        id S1757695AbgJ0OTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760875AbgJ0Ogy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:36:54 -0400
+        id S2900932AbgJ0ORq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CFED2222C;
-        Tue, 27 Oct 2020 14:36:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4C9E207BB;
+        Tue, 27 Oct 2020 14:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809414;
-        bh=v4Faxe2oFWT9FGrJ/a98D50w3xZNO2pxrwsgAbFuMII=;
+        s=default; t=1603808266;
+        bh=/NlU0/3d84vVPG+nHAIZydHM6HSVzfZ3j8P+/gBXXl8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NsQepco3o2IL0i3S2y9Fceeja1wpa87rUg26T0wryQeFwZwf+BtfgY2KqUEH7JDTS
-         g1sjYQ/WUOPjLMaznd0w+TSl3mgpmQRHG00Smtgp5bO6lMnFmstvjQqVl3VxvXgkP2
-         qb18bDhQB39UyzY4OiubQp1GSE9ruvXDO1buWbKY=
+        b=oFGA/vKEqlwiYULBqR/TShSGq0fZMHcMfluEfhcxy+zLDcnUJ3ER+hcOhaCROxr6E
+         JMloaqlIHaHS6KmUygocLt4xFCzsukEBTnk6hFtKB6g2Lqz0kJI9gTOhPuYq8me1Lw
+         pRce4x2aRaF/cDYmdCOuqfYcNVBzezCCzaBphmpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 146/408] scsi: mpt3sas: Fix sync irqs
-Date:   Tue, 27 Oct 2020 14:51:24 +0100
-Message-Id: <20201027135501.871004885@linuxfoundation.org>
+        stable@vger.kernel.org, Dominik Maier <dmaier@sect.tu-berlin.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.19 027/264] cifs: remove bogus debug code
+Date:   Tue, 27 Oct 2020 14:51:25 +0100
+Message-Id: <20201027135431.930518544@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Henzl <thenzl@redhat.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 45181eab8ba79ed7a41b549f00500c0093828521 ]
+commit d367cb960ce88914898cbfa43645c2e43ede9465 upstream.
 
-_base_process_reply_queue() called from _base_interrupt() may schedule a
-new irq poll. Fix this by calling synchronize_irq() first.
+The "end" pointer is either NULL or it points to the next byte to parse.
+If there isn't a next byte then dereferencing "end" is an off-by-one out
+of bounds error.  And, of course, if it's NULL that leads to an Oops.
+Printing "*end" doesn't seem very useful so let's delete this code.
 
-Also ensure that enable_irq() is called only when necessary to avoid
-"Unbalanced enable for IRQ..." errors.
+Also for the last debug statement, I noticed that it should be printing
+"sequence_end" instead of "end" so fix that as well.
 
-Link: https://lore.kernel.org/r/20200910142126.8147-1-thenzl@redhat.com
-Fixes: 320e77acb327 ("scsi: mpt3sas: Irq poll to avoid CPU hard lockups")
-Acked-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Tomas Henzl <thenzl@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Dominik Maier <dmaier@sect.tu-berlin.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ fs/cifs/asn1.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index b7e44634d0dc2..3d58d24de6b61 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -1708,18 +1708,22 @@ mpt3sas_base_sync_reply_irqs(struct MPT3SAS_ADAPTER *ioc)
- 		/* TMs are on msix_index == 0 */
- 		if (reply_q->msix_index == 0)
- 			continue;
-+		synchronize_irq(pci_irq_vector(ioc->pdev, reply_q->msix_index));
- 		if (reply_q->irq_poll_scheduled) {
- 			/* Calling irq_poll_disable will wait for any pending
- 			 * callbacks to have completed.
- 			 */
- 			irq_poll_disable(&reply_q->irqpoll);
- 			irq_poll_enable(&reply_q->irqpoll);
--			reply_q->irq_poll_scheduled = false;
--			reply_q->irq_line_enable = true;
--			enable_irq(reply_q->os_irq);
--			continue;
-+			/* check how the scheduled poll has ended,
-+			 * clean up only if necessary
-+			 */
-+			if (reply_q->irq_poll_scheduled) {
-+				reply_q->irq_poll_scheduled = false;
-+				reply_q->irq_line_enable = true;
-+				enable_irq(reply_q->os_irq);
-+			}
- 		}
--		synchronize_irq(pci_irq_vector(ioc->pdev, reply_q->msix_index));
+--- a/fs/cifs/asn1.c
++++ b/fs/cifs/asn1.c
+@@ -541,8 +541,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
+ 		   || (tag != ASN1_EOC)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
++			 cls, con, tag, end);
+ 		return 0;
  	}
- }
  
--- 
-2.25.1
-
+@@ -552,8 +552,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
+ 		   || (tag != ASN1_SEQ)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 1\n",
++			 cls, con, tag, end);
+ 		return 0;
+ 	}
+ 
+@@ -563,8 +563,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_CTX) || (con != ASN1_CON)
+ 		   || (tag != ASN1_EOC)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 0\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p exit 0\n",
++			 cls, con, tag, end);
+ 		return 0;
+ 	}
+ 
+@@ -575,8 +575,8 @@ decode_negTokenInit(unsigned char *secur
+ 		return 0;
+ 	} else if ((cls != ASN1_UNI) || (con != ASN1_CON)
+ 		   || (tag != ASN1_SEQ)) {
+-		cifs_dbg(FYI, "cls = %d con = %d tag = %d end = %p (%d) exit 1\n",
+-			 cls, con, tag, end, *end);
++		cifs_dbg(FYI, "cls = %d con = %d tag = %d sequence_end = %p exit 1\n",
++			 cls, con, tag, sequence_end);
+ 		return 0;
+ 	}
+ 
 
 
