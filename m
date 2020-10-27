@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FBE29B0E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FF129B0DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368338AbgJ0OY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49994 "EHLO mail.kernel.org"
+        id S1758842AbgJ0OYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:24:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758871AbgJ0OYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:42 -0400
+        id S1754048AbgJ0OY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:24:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79FF12072D;
-        Tue, 27 Oct 2020 14:24:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A1E2207BB;
+        Tue, 27 Oct 2020 14:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808681;
-        bh=WEf79vf/0nc9xYlODIVbqu8QMJq+zP7Kk1w0QgPmCVg=;
+        s=default; t=1603808665;
+        bh=enGR59jdD9P/ESIJGxRfdylK/+zWp+mCJu7RYxCAwmQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZArsfe/1Mp6/EjKNnVU/CMrds3STVRaC3tVWSvo5/1jHvq3S5st38YSz3UQ1UKTP
-         iK5kxu+i0LzPo6K4nshIahcga2UMYrwyAXeVz91BCL8MJ0QTXbIIDHgMwsT1pJJPB6
-         m7KoBQCUCm9n01oVf1N82kU0iWnaO5ABNTYAgbz4=
+        b=OtRaCM6Ay6Go0RZzktBbEKnpF1y+ow7K2JgXs0nE0J0gXSnxpzhmdmXO9cT0civpA
+         zIgcLd4JquIq5txZutBVfFCNntP/+zqZxT7Yu0feXBArnHco1UrTbLMQX/cZCjIZ7d
+         7Mi0Ad6KLTkt+sIB6al839Pa2KNsNeSSrGym+rts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 143/264] RDMA/qedr: Fix inline size returned for iWARP
-Date:   Tue, 27 Oct 2020 14:53:21 +0100
-Message-Id: <20201027135437.406645330@linuxfoundation.org>
+Subject: [PATCH 4.19 147/264] powerpc/tau: Check processor type before enabling TAU interrupt
+Date:   Tue, 27 Oct 2020 14:53:25 +0100
+Message-Id: <20201027135437.581780203@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -44,38 +44,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit fbf58026b2256e9cd5f241a4801d79d3b2b7b89d ]
+[ Upstream commit 5e3119e15fed5b9a9a7e528665ff098a4a8dbdbc ]
 
-commit 59e8970b3798 ("RDMA/qedr: Return max inline data in QP query
-result") changed query_qp max_inline size to return the max roce inline
-size.  When iwarp was introduced, this should have been modified to return
-the max inline size based on protocol.  This size is cached in the device
-attributes
+According to Freescale's documentation, MPC74XX processors have an
+erratum that prevents the TAU interrupt from working, so don't try to
+use it when running on those processors.
 
-Fixes: 69ad0e7fe845 ("RDMA/qedr: Add support for iWARP in user space")
-Link: https://lore.kernel.org/r/20200902165741.8355-8-michal.kalderon@marvell.com
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c281611544768e758bd58fe812cf702a5bd2d042.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/tau_6xx.c  | 33 ++++++++++++++-------------------
+ arch/powerpc/platforms/Kconfig |  5 ++---
+ 2 files changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 7b26afc7fef35..f847f0a9f204d 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -2522,7 +2522,7 @@ int qedr_query_qp(struct ib_qp *ibqp,
- 	qp_attr->cap.max_recv_wr = qp->rq.max_wr;
- 	qp_attr->cap.max_send_sge = qp->sq.max_sges;
- 	qp_attr->cap.max_recv_sge = qp->rq.max_sges;
--	qp_attr->cap.max_inline_data = ROCE_REQ_MAX_INLINE_DATA_SIZE;
-+	qp_attr->cap.max_inline_data = dev->attr.max_inline;
- 	qp_init_attr->cap = qp_attr->cap;
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index b8d7e7d498e0a..614b5b272d9c6 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -40,6 +40,8 @@ static struct tau_temp
+ 	unsigned char grew;
+ } tau[NR_CPUS];
  
- 	qp_attr->ah_attr.type = RDMA_AH_ATTR_TYPE_ROCE;
++static bool tau_int_enable;
++
+ #undef DEBUG
+ 
+ /* TODO: put these in a /proc interface, with some sanity checks, and maybe
+@@ -54,22 +56,13 @@ static struct tau_temp
+ 
+ static void set_thresholds(unsigned long cpu)
+ {
+-#ifdef CONFIG_TAU_INT
+-	/*
+-	 * setup THRM1,
+-	 * threshold, valid bit, enable interrupts, interrupt when below threshold
+-	 */
+-	mtspr(SPRN_THRM1, THRM1_THRES(tau[cpu].low) | THRM1_V | THRM1_TIE | THRM1_TID);
++	u32 maybe_tie = tau_int_enable ? THRM1_TIE : 0;
+ 
+-	/* setup THRM2,
+-	 * threshold, valid bit, enable interrupts, interrupt when above threshold
+-	 */
+-	mtspr (SPRN_THRM2, THRM1_THRES(tau[cpu].high) | THRM1_V | THRM1_TIE);
+-#else
+-	/* same thing but don't enable interrupts */
+-	mtspr(SPRN_THRM1, THRM1_THRES(tau[cpu].low) | THRM1_V | THRM1_TID);
+-	mtspr(SPRN_THRM2, THRM1_THRES(tau[cpu].high) | THRM1_V);
+-#endif
++	/* setup THRM1, threshold, valid bit, interrupt when below threshold */
++	mtspr(SPRN_THRM1, THRM1_THRES(tau[cpu].low) | THRM1_V | maybe_tie | THRM1_TID);
++
++	/* setup THRM2, threshold, valid bit, interrupt when above threshold */
++	mtspr(SPRN_THRM2, THRM1_THRES(tau[cpu].high) | THRM1_V | maybe_tie);
+ }
+ 
+ static void TAUupdate(int cpu)
+@@ -142,9 +135,8 @@ static void tau_timeout(void * info)
+ 	local_irq_save(flags);
+ 	cpu = smp_processor_id();
+ 
+-#ifndef CONFIG_TAU_INT
+-	TAUupdate(cpu);
+-#endif
++	if (!tau_int_enable)
++		TAUupdate(cpu);
+ 
+ 	size = tau[cpu].high - tau[cpu].low;
+ 	if (size > min_window && ! tau[cpu].grew) {
+@@ -225,6 +217,9 @@ static int __init TAU_init(void)
+ 		return 1;
+ 	}
+ 
++	tau_int_enable = IS_ENABLED(CONFIG_TAU_INT) &&
++			 !strcmp(cur_cpu_spec->platform, "ppc750");
++
+ 	tau_workq = alloc_workqueue("tau", WQ_UNBOUND, 1, 0);
+ 	if (!tau_workq)
+ 		return -ENOMEM;
+@@ -234,7 +229,7 @@ static int __init TAU_init(void)
+ 	queue_work(tau_workq, &tau_work);
+ 
+ 	pr_info("Thermal assist unit using %s, shrink_timer: %d ms\n",
+-		IS_ENABLED(CONFIG_TAU_INT) ? "interrupts" : "workqueue", shrink_timer);
++		tau_int_enable ? "interrupts" : "workqueue", shrink_timer);
+ 	tau_initialized = 1;
+ 
+ 	return 0;
+diff --git a/arch/powerpc/platforms/Kconfig b/arch/powerpc/platforms/Kconfig
+index 14ef17e10ec9a..e094211c7206b 100644
+--- a/arch/powerpc/platforms/Kconfig
++++ b/arch/powerpc/platforms/Kconfig
+@@ -238,9 +238,8 @@ config TAU
+ 	  temperature within 2-4 degrees Celsius. This option shows the current
+ 	  on-die temperature in /proc/cpuinfo if the cpu supports it.
+ 
+-	  Unfortunately, on some chip revisions, this sensor is very inaccurate
+-	  and in many cases, does not work at all, so don't assume the cpu
+-	  temp is actually what /proc/cpuinfo says it is.
++	  Unfortunately, this sensor is very inaccurate when uncalibrated, so
++	  don't assume the cpu temp is actually what /proc/cpuinfo says it is.
+ 
+ config TAU_INT
+ 	bool "Interrupt driven TAU driver (DANGEROUS)"
 -- 
 2.25.1
 
