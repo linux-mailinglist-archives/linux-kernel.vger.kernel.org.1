@@ -2,141 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD8A29C719
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C9329C72A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827772AbgJ0S1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:27:50 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:46617 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1827761AbgJ0S1q (ORCPT
+        id S1827825AbgJ0S2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:28:22 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48515 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1827811AbgJ0S2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:27:46 -0400
-Received: by mail-pl1-f194.google.com with SMTP id x10so1194432plm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3xxssZMfhcCk5+/sXgaGkrrOB6SC6L3pBY/sM5t9/hU=;
-        b=DUlvCZgvOlE2JXI6215/PWcvhsm/BX8x0gJmDYHkZwkqKqqgv8ieOlVqgyCGn7MaYe
-         7rIvU10iiKp3zsgVe+3d2UTsgAFlaB1veQ/o39487VlJPdsuGZIwQbrx22POJ+rPzYUy
-         CYWBfegTk/3LOt2QvHnDBa9W7zzbr5m7BX2NA0Ivgyg+alhFHJFJaytY/lmEphy9rk+q
-         I4A06b4SIgOl2zm4QLF4tR7Po5IG949e4c2nYJX7SEQ7zHnmUI39G+WVj/7EIskOFzPB
-         4bNuQWBfrfqCLkHp3kGQgXmiL2OUOq/nnjOyAPtWdDScU4iiW7y6zh7qYmugJQ+SQNRh
-         9C+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3xxssZMfhcCk5+/sXgaGkrrOB6SC6L3pBY/sM5t9/hU=;
-        b=kIKKNHkxudYHIIP7qGQ/FriYl0WosPwqsyGHQXPemcG4oJHHGNOsqq9m5pzwktA7rz
-         np4fq0MWzadruLNIu0OCU8mnss6XhWYZFBRkbazXRxDIHNkLZf+CrVGStG3jIor5Seis
-         NBXIwe/Nx/jLl1Iz/MsmItykAzreMJPBiQFtGxUFhPZ25K7u+JkCSlls/qVXyDo/DPNe
-         bjL4duuqT/AYB+VBT6GJCFYtOd/Mm9f0qQZfhMXMYpsiDxr0rGo3DtNrZBNQS0lPkcs1
-         QiMvAAg4x06w5fUPXY8f3it+KURihqHIpj++R3dmdZC8Fxzi42INCETUrh6EjXkN0YuF
-         m8Xg==
-X-Gm-Message-State: AOAM533dviRMxFuy7K+EeS17+P3iqrSaVnp38RmilgM3BfVp0EMhLVqI
-        uLlEb60YY8+26zYw61DNc4LpqePIpB/NGRR7ZQ1XqlaEAcI=
-X-Google-Smtp-Source: ABdhPJzC7lPS4CDr/XrgaZ4QYZCCMIjayh78IPDH2di0tIpfUVl36VnlDIq97AtganVTDcHdK/jf/1Rak3d5JhBGCbc=
-X-Received: by 2002:a17:902:c24b:b029:d3:f3e6:1915 with SMTP id
- 11-20020a170902c24bb02900d3f3e61915mr3731085plg.56.1603823264821; Tue, 27 Oct
- 2020 11:27:44 -0700 (PDT)
+        Tue, 27 Oct 2020 14:28:18 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2A9F25803DD;
+        Tue, 27 Oct 2020 14:28:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 27 Oct 2020 14:28:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=dSgnQIa3tA1J3WQvwUkryDJy17/
+        cH7uUtmKx14vRB74=; b=XUmOhwucqRqwCMBBJ5y53w/bh0MvJJmlNvX3vSsqwMI
+        qeEcHNVJ3rB7rfqcict3X+E3gqDjDvKhDcTS6tlKTVvrolSfRmXLVvl67z/3+Sr2
+        24kdLLi8flG6sqlsxonszl63zyQ+ISrb82gG4+0iro95IjGI6FdT2b69DnTk3SA5
+        ku+o8UbKvVyK85gF1z2AyM7ujnVAd0r1bnm9LwQu+rWzpYeraHObxiImqoSixZmw
+        wwru3O5JhbezMWnS4njh2PUEzVhcfWOPic2H0mPuIkaNYjkhImGLupHVb6j/kIsS
+        HA1QmZmKTaXkcUChdV7/Tkz9XU6/Hwk7IoMM6Ef+0OQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=dSgnQI
+        a3tA1J3WQvwUkryDJy17/cH7uUtmKx14vRB74=; b=dVg5tdUTdLWWDtOyTUFtBn
+        OYQeP2fmPeQJLXBsZgySH0cjE8fjTZArR3+woJpzcdhJcZMrzxX5i9x8687Ssk2V
+        C1SEhEAWVfuK4XiO/cGEcAGUP2/1ODuzL/2aevPhnM3rzy3+CpptIzWbiroAPN3j
+        nCjL3a+9iR6cAHLle/VlOAVZdnzWgbfV5euJquIfE2rjyC7iuCNa1iy2Yo28GXyh
+        h18aMjgxI6gwt1PLEWlhXSHP33McwFU5udoahj+dc2equNrMhSxa0qdD7xeLrE8I
+        +dGqU9bGEhhjU7ml8arlOwKGcnNymqkOpbMLaxKHMq49FoxP5xSqaXUPrrFjT65g
+        ==
+X-ME-Sender: <xms:vWaYX-pssDg_l0Bp5o_BD_020W7obaCpS33U-SOfjrgLDey2xIVcJQ>
+    <xme:vWaYX8q3pkDyJ21ahQD5QcZxShwRp3frYkZTvlbOYrVF7c1-V4lrnbcB6fe2h2WEK
+    Yk0iyFD5wuwfvzFsAk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnheptdfggfelgeehieeuieegfefgueduudefheffhfejleekheefjeevveegueel
+    ueefnecuffhomhgrihhnpehlihhnuhigqdhsuhhngihirdhorhhgnecukfhppeeltddrke
+    elrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:vWaYXzMVtOHfPSziFsp7l0nRhHMO_WiGp-EkSFV-VpaLtauKj95w4Q>
+    <xmx:vWaYX95EoO5Jc5m248cqkLuS8bkcduV82yQ21IEcRDVTlDVGGVv9ag>
+    <xmx:vWaYX96KCNUbXVAmysj-8ek_NHL1sWd2Ac4oSjp5Z29JXRGbkY60FQ>
+    <xmx:wGaYX6xrrSUc7PUFjfVYgzxB0GVeKfWyF-ReVj64MM0GyCFfW6mQAA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 20FBB3280067;
+        Tue, 27 Oct 2020 14:28:13 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 19:28:11 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 02/14] phy: allwinner: phy-sun6i-mipi-dphy: Support D-PHY
+ Rx mode for MIPI CSI-2
+Message-ID: <20201027182811.j6372vdmls5yvhri@gilmour.lan>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-3-paul.kocialkowski@bootlin.com>
+ <20201026153857.iwkn4iusi2jy2yf4@gilmour.lan>
+ <20201027092326.GB168350@aptenodytes>
 MIME-Version: 1.0
-References: <20201027151132.14066-1-ardb@kernel.org>
-In-Reply-To: <20201027151132.14066-1-ardb@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Oct 2020 11:27:33 -0700
-Message-ID: <CAKwvOd=XHAGotJ38o=hZTwi89XvCyshaUtWezZQ-k6aRT20xwQ@mail.gmail.com>
-Subject: Re: [PATCH] module: use hidden visibility for weak symbol references
-To:     Ard Biesheuvel <ardb@kernel.org>, Fangrui Song <maskray@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uqnhruvnsc2qrfvt"
+Content-Disposition: inline
+In-Reply-To: <20201027092326.GB168350@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Fangrui
 
-On Tue, Oct 27, 2020 at 8:11 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
-> unwanted sections") results in build errors on arm64 for configurations
-> that have CONFIG_MODULES disabled.
->
-> The commit in question added ASSERT()s to the arm64 linker script to
-> ensure that linker generated sections such as .got, .plt etc are empty,
-> but as it turns out, there are corner cases where the linker does emit
-> content into those sections. More specifically, weak references to
-> function symbols (which can remain unsatisfied, and can therefore not
-> be emitted as relative references) will be emitted as GOT and PLT
-> entries when linking the kernel in PIE mode (which is the case when
-> CONFIG_RELOCATABLE is enabled, which is on by default).
->
-> What happens is that code such as
->
->         struct device *(*fn)(struct device *dev);
->         struct device *iommu_device;
->
->         fn = symbol_get(mdev_get_iommu_device);
->         if (fn) {
->                 iommu_device = fn(dev);
->
-> essentially gets converted into the following when CONFIG_MODULES is off:
->
->         struct device *iommu_device;
->
->         if (&mdev_get_iommu_device) {
->                 iommu_device = mdev_get_iommu_device(dev);
->
-> where mdev_get_iommu_device is emitted as a weak symbol reference into
-> the object file. The first reference is decorated with an ordinary
-> ABS64 data relocation (which yields 0x0 if the reference remains
-> unsatisfied). However, the indirect call is turned into a direct call
-> covered by a R_AARCH64_CALL26 relocation, which is converted into a
-> call via a PLT entry taking the target address from the associated
-> GOT entry.
->
-> Given that such GOT and PLT entries are unnecessary for fully linked
-> binaries such as the kernel, let's give these weak symbol references
-> hidden visibility, so that the linker knows that the weak reference
-> via R_AARCH64_CALL26 can simply remain unsatisfied.
->
-> Cc: Jessica Yu <jeyu@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  include/linux/module.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 7ccdf87f376f..6264617bab4d 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -740,7 +740,7 @@ static inline bool within_module(unsigned long addr, const struct module *mod)
->  }
->
->  /* Get/put a kernel symbol (calls should be symmetric) */
-> -#define symbol_get(x) ({ extern typeof(x) x __attribute__((weak)); &(x); })
-> +#define symbol_get(x) ({ extern typeof(x) x __attribute__((weak,visibility("hidden"))); &(x); })
->  #define symbol_put(x) do { } while (0)
->  #define symbol_put_addr(x) do { } while (0)
->
-> --
-> 2.17.1
->
+--uqnhruvnsc2qrfvt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
--- 
-Thanks,
-~Nick Desaulniers
+Hi,
+
+On Tue, Oct 27, 2020 at 10:23:26AM +0100, Paul Kocialkowski wrote:
+> On Mon 26 Oct 20, 16:38, Maxime Ripard wrote:
+> > On Fri, Oct 23, 2020 at 07:45:34PM +0200, Paul Kocialkowski wrote:
+> > > The Allwinner A31 D-PHY supports both Rx and Tx modes. While the latt=
+er
+> > > is already supported and used for MIPI DSI this adds support for the
+> > > former, to be used with MIPI CSI-2.
+> > >=20
+> > > This implementation is inspired by the Allwinner BSP implementation.
+> >=20
+> > Mentionning which BSP you took this from would be helpful
+>=20
+> Sure! It's from the Github repo linked from https://linux-sunxi.org/V3s.
+> Would you like that I mention this URL explicitly or would it be enough to
+> mention "Allwinner's V3s Linux SDK" as they seem to call it?
+
+Yeah, that would be great
+> > > +static int sun6i_dphy_rx_power_on(struct sun6i_dphy *dphy)
+> > > +{
+> > > +	/* Physical clock rate is actually half of symbol rate with DDR. */
+> > > +	unsigned long mipi_symbol_rate =3D dphy->config.hs_clk_rate;
+> > > +	unsigned long dphy_clk_rate;
+> > > +	unsigned int rx_dly;
+> > > +	unsigned int lprst_dly;
+> > > +	u32 value;
+> > > +
+> > > +	dphy_clk_rate =3D clk_get_rate(dphy->mod_clk);
+> > > +	if (!dphy_clk_rate)
+> > > +		return -1;
+> >=20
+> > Returning -1 is weird here?
+>=20
+> What do you think would be a more appropriate error code to return?
+> It looks like some other drivers return -EINVAL when that happens (but ma=
+ny
+> don't do the check).
+
+Yeah, EINVAL at least is better than ENOPERM=20
+
+> > > +
+> > > +	/* Hardcoded timing parameters from the Allwinner BSP. */
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME0_REG,
+> > > +		     SUN6I_DPHY_RX_TIME0_HS_RX_SYNC(255) |
+> > > +		     SUN6I_DPHY_RX_TIME0_HS_RX_CLK_MISS(255) |
+> > > +		     SUN6I_DPHY_RX_TIME0_LP_RX(255));
+> > > +
+> > > +	/*
+> > > +	 * Formula from the Allwinner BSP, with hardcoded coefficients
+> > > +	 * (probably internal divider/multiplier).
+> > > +	 */
+> > > +	rx_dly =3D 8 * (unsigned int)(dphy_clk_rate / (mipi_symbol_rate / 8=
+));
+> > > +
+> > > +	/*
+> > > +	 * The Allwinner BSP has an alternative formula for LP_RX_ULPS_WP:
+> > > +	 * lp_ulps_wp_cnt =3D lp_ulps_wp_ms * lp_clk / 1000
+> > > +	 * but does not use it and hardcodes 255 instead.
+> > > +	 */
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME1_REG,
+> > > +		     SUN6I_DPHY_RX_TIME1_RX_DLY(rx_dly) |
+> > > +		     SUN6I_DPHY_RX_TIME1_LP_RX_ULPS_WP(255));
+> > > +
+> > > +	/* HS_RX_ANA0 value is hardcoded in the Allwinner BSP. */
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME2_REG,
+> > > +		     SUN6I_DPHY_RX_TIME2_HS_RX_ANA0(4));
+> > > +
+> > > +	/*
+> > > +	 * Formula from the Allwinner BSP, with hardcoded coefficients
+> > > +	 * (probably internal divider/multiplier).
+> > > +	 */
+> > > +	lprst_dly =3D 4 * (unsigned int)(dphy_clk_rate / (mipi_symbol_rate =
+/ 2));
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_TIME3_REG,
+> > > +		     SUN6I_DPHY_RX_TIME3_LPRST_DLY(lprst_dly));
+> > > +
+> > > +	/* Analog parameters are hardcoded in the Allwinner BSP. */
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA0_REG,
+> > > +		     SUN6I_DPHY_ANA0_REG_PWS |
+> > > +		     SUN6I_DPHY_ANA0_REG_SLV(7) |
+> > > +		     SUN6I_DPHY_ANA0_REG_SFB(2));
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA1_REG,
+> > > +		     SUN6I_DPHY_ANA1_REG_SVTT(4));
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA4_REG,
+> > > +		     SUN6I_DPHY_ANA4_REG_DMPLVC |
+> > > +		     SUN6I_DPHY_ANA4_REG_DMPLVD(1));
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA2_REG,
+> > > +		     SUN6I_DPHY_ANA2_REG_ENIB);
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_ANA3_REG,
+> > > +		     SUN6I_DPHY_ANA3_EN_LDOR |
+> > > +		     SUN6I_DPHY_ANA3_EN_LDOC |
+> > > +		     SUN6I_DPHY_ANA3_EN_LDOD);
+> > > +
+> > > +	/*
+> > > +	 * Delay comes from the Allwinner BSP, likely for internal regulator
+> > > +	 * ramp-up.
+> > > +	 */
+> > > +	udelay(3);
+> > > +
+> > > +	value =3D SUN6I_DPHY_RX_CTL_EN_DBC | SUN6I_DPHY_RX_CTL_RX_CLK_FORCE;
+> > > +
+> > > +	/*
+> > > +	 * Rx data lane force-enable bits are used as regular RX enable by =
+the
+> > > +	 * Allwinner BSP.
+> > > +	 */
+> > > +	if (dphy->config.lanes >=3D 1)
+> > > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D0_FORCE;
+> > > +	if (dphy->config.lanes >=3D 2)
+> > > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D1_FORCE;
+> > > +	if (dphy->config.lanes >=3D 3)
+> > > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D2_FORCE;
+> > > +	if (dphy->config.lanes =3D=3D 4)
+> > > +		value |=3D SUN6I_DPHY_RX_CTL_RX_D3_FORCE;
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_RX_CTL_REG, value);
+> > > +
+> > > +	regmap_write(dphy->regs, SUN6I_DPHY_GCTL_REG,
+> > > +		     SUN6I_DPHY_GCTL_LANE_NUM(dphy->config.lanes) |
+> > > +		     SUN6I_DPHY_GCTL_EN);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int sun6i_dphy_power_on(struct phy *phy)
+> > > +{
+> > > +	struct sun6i_dphy *dphy =3D phy_get_drvdata(phy);
+> > > +
+> > > +	switch (dphy->submode) {
+> > > +	case PHY_MIPI_DPHY_SUBMODE_TX:
+> > > +		return sun6i_dphy_tx_power_on(dphy);
+> > > +	case PHY_MIPI_DPHY_SUBMODE_RX:
+> > > +		return sun6i_dphy_rx_power_on(dphy);
+> > > +	default:
+> > > +		return -EINVAL;
+> > > +	}
+> > > +}
+> > > +
+> >=20
+> > Can one call power_on before set_mode?
+>=20
+> I didn't find anything indicating this is illegal. What would happen here=
+ is
+> that the D-PHY would be configured to PHY_MIPI_DPHY_SUBMODE_TX (submode =
+=3D=3D 0)
+> at power-on if set_mode is not called before.
+>=20
+> I think it's fair to expect that it's too late to change the mode once th=
+e PHY
+> was powered on. Maybe we should return -EBUSY on set_mode when power on w=
+as
+> already requested?
+
+Or maybe we can just clarify it in the framework/function documentation
+
+Maxime
+
+--uqnhruvnsc2qrfvt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5hmuwAKCRDj7w1vZxhR
+xeyQAQD8UUtAF93oDhvysOz/Nj17EEhOoBwmmzBNGTtdCLRtUgD9EsftZeY/+IOA
+Kzp6yDaCvfPfojb2leh+z+S5NCYPxQ4=
+=HLIM
+-----END PGP SIGNATURE-----
+
+--uqnhruvnsc2qrfvt--
