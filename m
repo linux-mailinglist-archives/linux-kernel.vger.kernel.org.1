@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F90929B157
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9643F29B014
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901916AbgJ0O3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:29:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55484 "EHLO mail.kernel.org"
+        id S1757075AbgJ0OQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759304AbgJ0O25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:28:57 -0400
+        id S1756205AbgJ0OMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:12:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B29220780;
-        Tue, 27 Oct 2020 14:28:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A51B223AB;
+        Tue, 27 Oct 2020 14:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808936;
-        bh=n0JLA2S52Mf6UHB8vzRPwyVL5pgBEFi1fmjP7u1WtjI=;
+        s=default; t=1603807917;
+        bh=oj5HLCgTap0UE8B9NbqNauRQX8CuLpo1hR0Pot0m9Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IcQtDvk9RKyZmpaWNv9d9bVAm6yEaZjdEyFenkmeSnZUMnLEYDpqgGALSO//k/4bS
-         VJFcQrPo+zmmQgWr7DkUKigG3PUAPbXqKN04HyRvp+Q9V1FsDdlTp3TxVYvul/KNWD
-         oV0nbEyEqawbQD4Wg66nif+sWSUMwpbOfabxT80o=
+        b=P3peQ0gkQfRFxce51n28KAZX/B7+L3JgJ7pt/MZUP5EQLDwVtcomjCi4y36pQVU3P
+         ccyOco3rdcC+ZeNF3J/aZ+AUrjkhXRdw5+QrIbst2gSu+LZ7jzzGDuDqhlCf4k3xpa
+         n5ngiggnfp9ED6fHVHPnbKWzFn4RybAPUcKrAxRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Richard Leitner <richard.leitner@skidata.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 005/408] net: fec: Fix phy_device lookup for phy_reset_after_clk_enable()
-Date:   Tue, 27 Oct 2020 14:49:03 +0100
-Message-Id: <20201027135455.295571826@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 089/191] mtd: lpddr: fix excessive stack usage with clang
+Date:   Tue, 27 Oct 2020 14:49:04 +0100
+Message-Id: <20201027134913.976351668@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,83 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 64a632da538a6827fad0ea461925cedb9899ebe2 ]
+[ Upstream commit 3e1b6469f8324bee5927b063e2aca30d3e56b907 ]
 
-The phy_reset_after_clk_enable() is always called with ndev->phydev,
-however that pointer may be NULL even though the PHY device instance
-already exists and is sufficient to perform the PHY reset.
+Building lpddr2_nvm with clang can result in a giant stack usage
+in one function:
 
-This condition happens in fec_open(), where the clock must be enabled
-first, then the PHY must be reset, and then the PHY IDs can be read
-out of the PHY.
+drivers/mtd/lpddr/lpddr2_nvm.c:399:12: error: stack frame size of 1144 bytes in function 'lpddr2_nvm_probe' [-Werror,-Wframe-larger-than=]
 
-If the PHY still is not bound to the MAC, but there is OF PHY node
-and a matching PHY device instance already, use the OF PHY node to
-obtain the PHY device instance, and then use that PHY device instance
-when triggering the PHY reset.
+The problem is that clang decides to build a copy of the mtd_info
+structure on the stack and then do a memcpy() into the actual version. It
+shouldn't really do it that way, but it's not strictly a bug either.
 
-Fixes: 1b0a83ac04e3 ("net: fec: add phy_reset_after_clk_enable() support")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: Richard Leitner <richard.leitner@skidata.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As a workaround, use a static const version of the structure to assign
+most of the members upfront and then only set the few members that
+require runtime knowledge at probe time.
+
+Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200505140136.263461-1-arnd@arndb.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec_main.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ drivers/mtd/lpddr/lpddr2_nvm.c | 35 ++++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
 
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1945,6 +1945,27 @@ out:
- 	return ret;
+diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
+index 2342277c9bcb0..5e36366d9b36d 100644
+--- a/drivers/mtd/lpddr/lpddr2_nvm.c
++++ b/drivers/mtd/lpddr/lpddr2_nvm.c
+@@ -408,6 +408,17 @@ static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
+ 	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
  }
  
-+static void fec_enet_phy_reset_after_clk_enable(struct net_device *ndev)
-+{
-+	struct fec_enet_private *fep = netdev_priv(ndev);
-+	struct phy_device *phy_dev = ndev->phydev;
++static const struct mtd_info lpddr2_nvm_mtd_info = {
++	.type		= MTD_RAM,
++	.writesize	= 1,
++	.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
++	._read		= lpddr2_nvm_read,
++	._write		= lpddr2_nvm_write,
++	._erase		= lpddr2_nvm_erase,
++	._unlock	= lpddr2_nvm_unlock,
++	._lock		= lpddr2_nvm_lock,
++};
 +
-+	if (phy_dev) {
-+		phy_reset_after_clk_enable(phy_dev);
-+	} else if (fep->phy_node) {
-+		/*
-+		 * If the PHY still is not bound to the MAC, but there is
-+		 * OF PHY node and a matching PHY device instance already,
-+		 * use the OF PHY node to obtain the PHY device instance,
-+		 * and then use that PHY device instance when triggering
-+		 * the PHY reset.
-+		 */
-+		phy_dev = of_phy_find_device(fep->phy_node);
-+		phy_reset_after_clk_enable(phy_dev);
-+		put_device(&phy_dev->mdio.dev);
-+	}
-+}
+ /*
+  * lpddr2_nvm driver probe method
+  */
+@@ -448,6 +459,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+ 		.pfow_base	= OW_BASE_ADDRESS,
+ 		.fldrv_priv	= pcm_data,
+ 	};
 +
- static int fec_enet_clk_enable(struct net_device *ndev, bool enable)
- {
- 	struct fec_enet_private *fep = netdev_priv(ndev);
-@@ -1971,7 +1992,7 @@ static int fec_enet_clk_enable(struct ne
- 		if (ret)
- 			goto failed_clk_ref;
+ 	if (IS_ERR(map->virt))
+ 		return PTR_ERR(map->virt);
  
--		phy_reset_after_clk_enable(ndev->phydev);
-+		fec_enet_phy_reset_after_clk_enable(ndev);
- 	} else {
- 		clk_disable_unprepare(fep->clk_enet_out);
- 		if (fep->clk_ptp) {
-@@ -2991,7 +3012,7 @@ fec_enet_open(struct net_device *ndev)
- 	 * phy_reset_after_clk_enable() before because the PHY wasn't probed.
- 	 */
- 	if (reset_again)
--		phy_reset_after_clk_enable(ndev->phydev);
-+		fec_enet_phy_reset_after_clk_enable(ndev);
+@@ -459,22 +471,13 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+ 		return PTR_ERR(pcm_data->ctl_regs);
  
- 	if (fep->quirks & FEC_QUIRK_ERR006687)
- 		imx6q_cpuidle_fec_irqs_used();
+ 	/* Populate mtd_info data structure */
+-	*mtd = (struct mtd_info) {
+-		.dev		= { .parent = &pdev->dev },
+-		.name		= pdev->dev.init_name,
+-		.type		= MTD_RAM,
+-		.priv		= map,
+-		.size		= resource_size(add_range),
+-		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
+-		.writesize	= 1,
+-		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
+-		.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
+-		._read		= lpddr2_nvm_read,
+-		._write		= lpddr2_nvm_write,
+-		._erase		= lpddr2_nvm_erase,
+-		._unlock	= lpddr2_nvm_unlock,
+-		._lock		= lpddr2_nvm_lock,
+-	};
++	*mtd = lpddr2_nvm_mtd_info;
++	mtd->dev.parent		= &pdev->dev;
++	mtd->name		= pdev->dev.init_name;
++	mtd->priv		= map;
++	mtd->size		= resource_size(add_range);
++	mtd->erasesize		= ERASE_BLOCKSIZE * pcm_data->bus_width;
++	mtd->writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width;
+ 
+ 	/* Verify the presence of the device looking for PFOW string */
+ 	if (!lpddr2_nvm_pfow_present(map)) {
+-- 
+2.25.1
+
 
 
