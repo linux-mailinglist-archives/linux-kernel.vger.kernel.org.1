@@ -2,75 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A1F29A517
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4617329A519
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732445AbgJ0G7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:59:00 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:34999 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732187AbgJ0G67 (ORCPT
+        id S2389088AbgJ0G7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:59:36 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:39851 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729477AbgJ0G7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:58:59 -0400
-Received: by mail-pg1-f193.google.com with SMTP id f38so242929pgm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:58:59 -0700 (PDT)
+        Tue, 27 Oct 2020 02:59:35 -0400
+Received: by mail-yb1-f194.google.com with SMTP id 67so360081ybt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vrqVVfhctAm90TmcSmxrbQen+I/TiJgHQEw5zqTYzUM=;
-        b=oxs0t45VQpTxF3zF0JLqE61T9LBcIIeNsb28no8PHnv+MpIG/QuDMic4kfwt9wzdMn
-         dI/m5QM9e6mMAFS1k55q4LLi0qF4d7Zdis4jVPb57BVR/kFufzJ/JWjCDK/8CNGPQsDf
-         6gqpfHTCl9fFMrmfYxq4ho48y4IM+0AY1C4jaFS0nZXyHvgV1rW8SALAfBB3V5o6JqJI
-         z8q0mxZxz+9Cbd9/MKb++3uW+i3TXyRuEZya5QvpbXSmGY3dE04MhQl0XR8Ti8LVRWQL
-         n4kAzRko4DhgF2pnP4P54ZnSPiSlobxcl6RLqqpm5+R5IDueppkcBQP5JSqWhdUF/lzr
-         5OPQ==
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/MJ+UTfnuNYWSl6F6YSIZ4D2DyAhRF8y858D6tasEvw=;
+        b=Ojl6JlAN3zbm1LbCOHvpxKHmr3L5vs2pku5A2tc4RvlhiU4fWtenEdLlujKmeaGUC7
+         aqlL3W3bCv/Dt56pp+AZ5AHOyb7JkxXmw6wbM1XwxiZgb/6/C2gsf5XhDEdQuyGMHu1u
+         vhfblhEok3wrb0k+5LrnzzO5GPKgypY8HiDrJaGyWfMz3TY5NFWjIWSp3eUOIS2NoSCI
+         TyVuaIjNkYUNTkRvu0tIoctrY2MqgImQWSBodF8ZPCITXRf2L+EUXZQ05EdgP43jUAUM
+         1KmSuO3DQjCsHBlYwfkzB2mWMxmkgeFELaBURyuXFadqBG0mtb3jPz+KAzp/EriNXiEE
+         Pnmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vrqVVfhctAm90TmcSmxrbQen+I/TiJgHQEw5zqTYzUM=;
-        b=tRaqfTyYqotRhTFihCPe6BOJ6XZRniCWsmSMgeEwKCPCgbBuuNxZRLcZo1CNMALM48
-         6Mp2mlLeWvqzwBSJLa7nGUOGhhqd68xrmFr213SGIgXEYICb4rihOBWiADcUT/k4IF57
-         XCQsCvcx3xy4Se70cD7e5BGDZf640qFOUyfMbj/lBXJfJvSA8gdeoVhqx28mfXFf+fmG
-         k1fT8NHpa8WjHIDdBGzyrEPWa9EZiMuLRxymLI4el4J8fLOySzd7c0o//r1z5RcQsWW4
-         1C0zTynhXHU8IQlr63t9+wHqMgbYh3BNfQLpyT8AIbI0SKZGhe/LYKH+xi4RTIIo8QVI
-         FoPg==
-X-Gm-Message-State: AOAM533CgSGONDpiyJ8SCi0ZWWhf1Um5+qxCtF3aRE1lOF6g5e3njTDV
-        F/MAD69bMHjmmxORKy6rdbbyjQ==
-X-Google-Smtp-Source: ABdhPJybhTDt9uRrv0v3mYRBmPTY3jLttubPj+vxstZi1cEO1D3AugaGrgff+OxFDIwkCrX8wrcRNA==
-X-Received: by 2002:a62:7657:0:b029:152:4d66:dcb with SMTP id r84-20020a6276570000b02901524d660dcbmr733122pfc.74.1603781939046;
-        Mon, 26 Oct 2020 23:58:59 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id c12sm924917pgi.14.2020.10.26.23.58.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Oct 2020 23:58:58 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 12:28:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rjw@rjwysocki.net, sudeep.holla@arm.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, bbasu@nvidia.com,
-        ksitaraman@nvidia.com
-Subject: Re: [PATCH v3] cpufreq: tegra194: get consistent cpuinfo_cur_freq
-Message-ID: <20201027065855.ghekpybjwtaufwgy@vireshk-i7>
-References: <1602668171-30104-1-git-send-email-sumitg@nvidia.com>
- <c56983dc-dc45-3e8c-a67c-14d7d09464ae@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/MJ+UTfnuNYWSl6F6YSIZ4D2DyAhRF8y858D6tasEvw=;
+        b=NayJy2ls+YCyo2IZfY3T/ENOKeITz6m6bTEPcuxPpJ4cSy2qIsbZU3Kk/muYYXhHRX
+         aJlVZP5+A2cfG9WU74EkU+pEtfBtrDEXpapaLDySHWk3dx7BvYbr7KinvHLdnxUgNTmf
+         wPkRa7YxVwlyIuJbFZhKPTbpS25tTF9CPpGoc5NVnNEh8S8MqsWB/H4V3IMy+TjuLU+h
+         A9Ue5Jdmhs16yIVZrbghgi8PwxaneI9G+nJPF0J/RHUEqzhF1JxWsEFA+F4/M0dnHgoP
+         oPgZ3n2H2SvS7NmqYEp0wGH0FIbBn1/NSd7aZzxvq1RcLJabMGJxotckJMxLPfpc6yLS
+         Awng==
+X-Gm-Message-State: AOAM530VeAD55jl/wl6Dp4/nU4g8LVbfvZds/cFqUgNRKIZFAj6W9jJ3
+        j6cSVl2ROwBNYXXyXUB7SqYlNsy3L6pv+zQJ+FYDuQ==
+X-Google-Smtp-Source: ABdhPJz+9qYgc6z6pEq4anawMnwD8UgeJFA5p9U95SlGuQbt5EuEgoDjkIODeWkTxrO6zuIhQ9mwwY+zQLKSY3uumOg=
+X-Received: by 2002:a25:6609:: with SMTP id a9mr1102464ybc.375.1603781973236;
+ Mon, 26 Oct 2020 23:59:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c56983dc-dc45-3e8c-a67c-14d7d09464ae@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201026130450.6947-1-gilad@benyossef.com> <20201026130450.6947-4-gilad@benyossef.com>
+ <20201026175231.GG858@sol.localdomain> <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
+ <20201026183936.GJ858@sol.localdomain> <fd5e46ce-a4bf-8025-05ea-e20d35485446@gmail.com>
+In-Reply-To: <fd5e46ce-a4bf-8025-05ea-e20d35485446@gmail.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Tue, 27 Oct 2020 08:59:27 +0200
+Message-ID: <CAOtvUMdatUOnffg90aEGanD0y1LtKc7EeKQ=E+N+W-wpo8Zo3A@mail.gmail.com>
+Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
+To:     Milan Broz <gmazyland@gmail.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linux-raid@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-20, 11:46, Sumit Gupta wrote:
-> Ping.
+On Mon, Oct 26, 2020 at 9:04 PM Milan Broz <gmazyland@gmail.com> wrote:
+>
+>
+>
+> On 26/10/2020 19:39, Eric Biggers wrote:
+> > On Mon, Oct 26, 2020 at 07:29:57PM +0100, Milan Broz wrote:
+> >> On 26/10/2020 18:52, Eric Biggers wrote:
+> >>> On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
+> >>>> Replace the explicit EBOIV handling in the dm-crypt driver with call=
+s
+> >>>> into the crypto API, which now possesses the capability to perform
+> >>>> this processing within the crypto subsystem.
+> >>>>
+> >>>> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+> >>>>
+> >>>> ---
+> >>>>  drivers/md/Kconfig    |  1 +
+> >>>>  drivers/md/dm-crypt.c | 61 ++++++++++++++--------------------------=
+---
+> >>>>  2 files changed, 20 insertions(+), 42 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> >>>> index 30ba3573626c..ca6e56a72281 100644
+> >>>> --- a/drivers/md/Kconfig
+> >>>> +++ b/drivers/md/Kconfig
+> >>>> @@ -273,6 +273,7 @@ config DM_CRYPT
+> >>>>    select CRYPTO
+> >>>>    select CRYPTO_CBC
+> >>>>    select CRYPTO_ESSIV
+> >>>> +  select CRYPTO_EBOIV
+> >>>>    help
+> >>>>      This device-mapper target allows you to create a device that
+> >>>>      transparently encrypts the data on it. You'll need to activate
+> >>>
+> >>> Can CRYPTO_EBOIV please not be selected by default?  If someone reall=
+y wants
+> >>> Bitlocker compatibility support, they can select this option themselv=
+es.
+> >>
+> >> Please no! Until this move of IV to crypto API, we can rely on
+> >> support in dm-crypt (if it is not supported, it is just a very old ker=
+nel).
+> >> (Actually, this was the first thing I checked in this patchset - if it=
+ is
+> >> unconditionally enabled for compatibility once dmcrypt is selected.)
+> >>
+> >> People already use removable devices with BitLocker.
+> >> It was the whole point that it works out-of-the-box without enabling a=
+nything.
+> >>
+> >> If you insist on this to be optional, please better keep this IV insid=
+e dmcrypt.
+> >> (EBOIV has no other use than for disk encryption anyway.)
+> >>
+> >> Or maybe another option would be to introduce option under dm-crypt Kc=
+onfig that
+> >> defaults to enabled (like support for foreign/legacy disk encryption s=
+chemes) and that
+> >> selects these IVs/modes.
+> >> But requiring some random switch in crypto API will only confuse users=
+.
+> >
+> > CONFIG_DM_CRYPT can either select every weird combination of algorithms=
+ anyone
+> > can ever be using, or it can select some defaults and require any other=
+ needed
+> > algorithms to be explicitly selected.
+> >
+> > In reality, dm-crypt has never even selected any particular block ciphe=
+rs, even
+> > AES.  Nor has it ever selected XTS.  So it's actually always made users=
+ (or
+> > kernel distributors) explicitly select algorithms.  Why the Bitlocker s=
+upport
+> > suddenly different?
+> >
+> > I'd think a lot of dm-crypt users don't want to bloat their kernels wit=
+h random
+> > legacy algorithms.
+>
+> Yes, but IV is in reality not a cryptographic algorithm, it is kind-of a =
+configuration
+> "option" of sector encryption mode here.
+>
+> We had all of disk-IV inside dmcrypt before - but once it is partially mo=
+ved into crypto API
+> (ESSIV, EBOIV for now), it becomes much more complicated for user to sele=
+ct what he needs.
+>
+> I think we have no way to check that IV is available from userspace - it
+> will report the same error as if block cipher is not available, not helpi=
+ng user much
+> with the error.
+>
+> But then I also think we should add abstract dm-crypt options here (Legac=
+y TrueCrypt modes,
+> Bitlocker modes) that will select these crypto API configuration switches=
+.
+> Otherwise it will be only a complicated matrix of crypto API options...
 
-I was waiting for 5.10-rc1 to be released before I can start applying stuff for
-5.11. Now that it is released, I will apply this.
+hm... just thinking out loud, but maybe the right say to go is to not
+have a build dependency,
+but add some user assistance code in cryptosetup that parses
+/proc/crypto after failures to
+try and suggest the user with a way forward?
 
--- 
-viresh
+e.g. if eboiv mapping initiation fails, scan /proc/crypto and either
+warn of a lack of AES
+or, assuming some instance of AES is found, warn of lack of EBOIV.
+It's a little messy
+and heuristic code for sure, but it lives in a user space utility.
+
+Does that sound sane?
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
