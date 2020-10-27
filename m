@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AF029B870
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FB229B871
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800308AbgJ0Pfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48638 "EHLO mail.kernel.org"
+        id S1800316AbgJ0Pfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799458AbgJ0Pbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:31:37 -0400
+        id S1799474AbgJ0Pbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:31:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5C6720728;
-        Tue, 27 Oct 2020 15:31:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDBA422264;
+        Tue, 27 Oct 2020 15:31:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812697;
-        bh=XnCnx6CsSnCY43B8y6o8tDH/ubtil2Rlwzm36j+7UkY=;
+        s=default; t=1603812700;
+        bh=e9SVoFbq5ETpwePvF57nUUU5bTuA6KMHrIicaCLdtNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7MtBDd0uwMV08x2Pvdsr+On3jNadNB1Lnm8uiLE3oyRyzkOWaWEvt4UFWTzpcGwX
-         nJerUSWjB1bDmdIcimhrr36RZNFEA179LGSthX6Us4TNmp0b/R0bTUIt7ZPjHNh+uu
-         EF1lMIkoLwPAh03RoawFVnUF7IGwdDu2g6DIzsio=
+        b=0cQM3huzdORRZXktEG6TwnAd+JLaUn2cPj+Fkm3pqKb+uUxup1gPdMCgbI9gAPdS4
+         quDkkHOoV9OiORbJXNLPmvl6B/JB5yi1h7YMUKj3x1kkmJJ3SK3zill5F8bXddb0/0
+         9VNQEGCXqPzTwErmG+PZinpVZrndvzBzui23dnCo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 299/757] ASoC: tas2770: Fix unbalanced calls to pm_runtime
-Date:   Tue, 27 Oct 2020 14:49:09 +0100
-Message-Id: <20201027135504.584392432@linuxfoundation.org>
+Subject: [PATCH 5.9 300/757] spi: omap2-mcspi: Improve performance waiting for CHSTAT
+Date:   Tue, 27 Oct 2020 14:49:10 +0100
+Message-Id: <20201027135504.631695169@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,57 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit d3d71c99b541040da198f43da3bbd85d8e9598cb ]
+[ Upstream commit 7b1d96813317358312440d0d07abbfbeb0ef8d22 ]
 
-Fix the unbalanced call to the pm_runtime_disable when removing the
-module.  pm_runtime_enable is not called nor is the pm_runtime setup in
-the code.  Remove the i2c_remove function and the pm_runtime_disable.
+This reverts commit 13d515c796 (spi: omap2-mcspi: Switch to
+readl_poll_timeout()).
 
-Fixes: 1a476abc723e6 ("tas2770: add tas2770 smart PA kernel driver")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20200918190548.12598-5-dmurphy@ti.com
+The amount of time spent polling for the MCSPI_CHSTAT bits to be set on
+AM335x-icev2 platform is less than 1us (about 0.6us) in most cases, with
+or without using DMA. So, in most cases the function need not sleep.
+Also, setting the sleep_usecs to zero would not be optimal here because
+ktime_add_us() used in readl_poll_timeout() is slower compared to the
+direct addition used after the revert. So, it is sub-optimal to use
+readl_poll_timeout in this case.
+
+When DMA is not enabled, this revert results in an increase of about 27%
+in throughput and decrease of about 20% in CPU usage. However, the CPU
+usage and throughput are almost the same when used with DMA.
+
+Therefore, fix this by reverting the commit which switched to using
+readl_poll_timeout().
+
+Fixes: 13d515c796ad ("spi: omap2-mcspi: Switch to readl_poll_timeout()")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20200910122624.8769-1-a-govindraju@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/tas2770.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/spi/spi-omap2-mcspi.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 15cdd8b11a67a..3226c6d4493eb 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -16,7 +16,6 @@
- #include <linux/i2c.h>
- #include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
--#include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- #include <linux/firmware.h>
- #include <linux/regmap.h>
-@@ -781,13 +780,6 @@ static int tas2770_i2c_probe(struct i2c_client *client,
- 	return result;
+diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
+index 1c9478e6e5d99..d4c9510af3931 100644
+--- a/drivers/spi/spi-omap2-mcspi.c
++++ b/drivers/spi/spi-omap2-mcspi.c
+@@ -24,7 +24,6 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/gcd.h>
+-#include <linux/iopoll.h>
+ 
+ #include <linux/spi/spi.h>
+ 
+@@ -348,9 +347,19 @@ static void omap2_mcspi_set_fifo(const struct spi_device *spi,
+ 
+ static int mcspi_wait_for_reg_bit(void __iomem *reg, unsigned long bit)
+ {
+-	u32 val;
+-
+-	return readl_poll_timeout(reg, val, val & bit, 1, MSEC_PER_SEC);
++	unsigned long timeout;
++
++	timeout = jiffies + msecs_to_jiffies(1000);
++	while (!(readl_relaxed(reg) & bit)) {
++		if (time_after(jiffies, timeout)) {
++			if (!(readl_relaxed(reg) & bit))
++				return -ETIMEDOUT;
++			else
++				return 0;
++		}
++		cpu_relax();
++	}
++	return 0;
  }
  
--static int tas2770_i2c_remove(struct i2c_client *client)
--{
--	pm_runtime_disable(&client->dev);
--	return 0;
--}
--
--
- static const struct i2c_device_id tas2770_i2c_id[] = {
- 	{ "tas2770", 0},
- 	{ }
-@@ -808,7 +800,6 @@ static struct i2c_driver tas2770_i2c_driver = {
- 		.of_match_table = of_match_ptr(tas2770_of_match),
- 	},
- 	.probe      = tas2770_i2c_probe,
--	.remove     = tas2770_i2c_remove,
- 	.id_table   = tas2770_i2c_id,
- };
- 
+ static int mcspi_wait_for_completion(struct  omap2_mcspi *mcspi,
 -- 
 2.25.1
 
