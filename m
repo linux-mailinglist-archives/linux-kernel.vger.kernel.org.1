@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A127E29B2DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BA029B333
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764200AbgJ0Oqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:46:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46306 "EHLO mail.kernel.org"
+        id S1764208AbgJ0Oqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1764148AbgJ0OqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:46:25 -0400
+        id S1764172AbgJ0Oqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:46:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE6C02222C;
-        Tue, 27 Oct 2020 14:46:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84E6921D7B;
+        Tue, 27 Oct 2020 14:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809984;
-        bh=TfWJq0F+eNJwR3zuDSJhyRJNiFATVZ7YZaKoLVaSsv4=;
+        s=default; t=1603809990;
+        bh=4zGNFbY7pK8FGmT7frVAZEUTM45DB33dNb1+3mENHIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ewdnT8WeVRXq+fD/XQu5qY2njonhRIVTvZS2kkuK+AQR32Lu1/wQwz9qC417b5ReJ
-         MF0V3BaGq5pW3orzotUgRP9RWmzvWkJrsY8brRUJ6C8fMQWNSDmvdd0cK6udEaOc0J
-         F3DdyEu+ppRrLmCtXxKFXk/ktODNy5jiOmHzI1Bs=
+        b=QcZjOTIszg6VSgLNDWMfg84rbtUcuQjFjXGrLJdAY7tIyVRjLOP8r1pBtIcnFS86k
+         3dn05gC7ukm+pF4gyGWI+BkyZfl984na0FgepsML+HpJqZapRYE3wMnNc65sbX+IdL
+         gum9fzxhUdbY8OprhlGV9lm05uxGqhabQEWUdzYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+c9e294bbe0333a6b7640@syzkaller.appspotmail.com,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 389/408] reiserfs: Fix memory leak in reiserfs_parse_options()
-Date:   Tue, 27 Oct 2020 14:55:27 +0100
-Message-Id: <20201027135513.023148695@linuxfoundation.org>
+        stable@vger.kernel.org, Connor McAdams <conmanx360@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 391/408] ALSA: hda/ca0132 - Add AE-7 microphone selection commands.
+Date:   Tue, 27 Oct 2020 14:55:29 +0100
+Message-Id: <20201027135513.113162444@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,47 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Connor McAdams <conmanx360@gmail.com>
 
-[ Upstream commit e9d4709fcc26353df12070566970f080e651f0c9 ]
+[ Upstream commit ed93f9750c6c2ed371347d0aac3dcd31cb9cf256 ]
 
-When a usrjquota or grpjquota mount option is used multiple times, we
-will leak memory allocated for the file name. Make sure the last setting
-is used and all the previous ones are properly freed.
+Add AE-7 quirk data for setting of microphone. The AE-7 has no front
+panel connector, so only rear-mic/line-in have new commands.
 
-Reported-by: syzbot+c9e294bbe0333a6b7640@syzkaller.appspotmail.com
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+Link: https://lore.kernel.org/r/20200825201040.30339-19-conmanx360@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/super.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
-index a6bce5b1fb1dc..1b9c7a387dc71 100644
---- a/fs/reiserfs/super.c
-+++ b/fs/reiserfs/super.c
-@@ -1258,6 +1258,10 @@ static int reiserfs_parse_options(struct super_block *s,
- 						 "turned on.");
- 				return 0;
- 			}
-+			if (qf_names[qtype] !=
-+			    REISERFS_SB(s)->s_qf_names[qtype])
-+				kfree(qf_names[qtype]);
-+			qf_names[qtype] = NULL;
- 			if (*arg) {	/* Some filename specified? */
- 				if (REISERFS_SB(s)->s_qf_names[qtype]
- 				    && strcmp(REISERFS_SB(s)->s_qf_names[qtype],
-@@ -1287,10 +1291,6 @@ static int reiserfs_parse_options(struct super_block *s,
- 				else
- 					*mount_options |= 1 << REISERFS_GRPQUOTA;
- 			} else {
--				if (qf_names[qtype] !=
--				    REISERFS_SB(s)->s_qf_names[qtype])
--					kfree(qf_names[qtype]);
--				qf_names[qtype] = NULL;
- 				if (qtype == USRQUOTA)
- 					*mount_options &= ~(1 << REISERFS_USRQUOTA);
- 				else
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 6aa39339db0ab..98a11c38e7a8e 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -4674,6 +4674,15 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
+ 			tmp = FLOAT_THREE;
+ 			break;
++		case QUIRK_AE7:
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
++			tmp = FLOAT_THREE;
++			chipio_set_conn_rate(codec, MEM_CONNID_MICIN2,
++					SR_96_000);
++			chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2,
++					SR_96_000);
++			dspio_set_uint_param(codec, 0x80, 0x01, FLOAT_ZERO);
++			break;
+ 		default:
+ 			tmp = FLOAT_ONE;
+ 			break;
+@@ -4719,6 +4728,14 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		case QUIRK_AE5:
+ 			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x00);
+ 			break;
++		case QUIRK_AE7:
++			ca0113_mmio_command_set(codec, 0x30, 0x28, 0x3f);
++			chipio_set_conn_rate(codec, MEM_CONNID_MICIN2,
++					SR_96_000);
++			chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2,
++					SR_96_000);
++			dspio_set_uint_param(codec, 0x80, 0x01, FLOAT_ZERO);
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -4728,7 +4745,10 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		if (ca0132_quirk(spec) == QUIRK_R3DI)
+ 			chipio_set_conn_rate(codec, 0x0F, SR_96_000);
+ 
+-		tmp = FLOAT_ZERO;
++		if (ca0132_quirk(spec) == QUIRK_AE7)
++			tmp = FLOAT_THREE;
++		else
++			tmp = FLOAT_ZERO;
+ 		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
+ 
+ 		switch (ca0132_quirk(spec)) {
 -- 
 2.25.1
 
