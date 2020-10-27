@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3976829C648
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5E929C678
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826035AbgJ0SPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
+        id S1826244AbgJ0SRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:17:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1745903AbgJ0OMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:12:49 -0400
+        id S1756115AbgJ0OLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:11:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 081FB2072D;
-        Tue, 27 Oct 2020 14:12:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 256D922202;
+        Tue, 27 Oct 2020 14:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807967;
-        bh=d2vJnqc1igUd41tys1yFYhtr2g3demjzRaBzwvy58dc=;
+        s=default; t=1603807883;
+        bh=PM2dthYK7xifipoivOqETOraQQVTdcywJXTnIu7RzPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JEVWYGsMgtGDiQ7Sp5TDJAzVXhg4fls32r6XfQBmDPSl63UIY90yc6F1Ge6GK4PjE
-         yxNzZwLq2COjgKcFTEDYBR3qVkRdQQurQqhGLVTyNueDQBvruYyyZWwvaaVJi2UvdI
-         Pk7VH0uz12ZtVA39Nca1E0tYZGMGtNe8Ml5yIkKg=
+        b=SAQJpaheH50hrofvmKX0+yTxshdd+neMudzXZFybgtRrbS/IyoiKsI99kfOHnIqG3
+         hEjsZo+/rwXHVQSjoLXqE2/Lw7f4RYHsQF0+WbzB3B9B59b1ZgnPG1H/s1vEH5wQ4C
+         kt8WzYzjWDauz7pbVqq+HN9DQbeapb1GttfyB/x8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,9 +31,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lorenzo Colitti <lorenzo@google.com>,
         Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 076/191] usb: gadget: f_ncm: fix ncm_bitrate for SuperSpeed and above.
-Date:   Tue, 27 Oct 2020 14:48:51 +0100
-Message-Id: <20201027134913.365590192@linuxfoundation.org>
+Subject: [PATCH 4.14 077/191] usb: gadget: u_ether: enable qmult on SuperSpeed Plus as well
+Date:   Tue, 27 Oct 2020 14:48:52 +0100
+Message-Id: <20201027134913.404821399@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -47,63 +47,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lorenzo Colitti <lorenzo@google.com>
 
-[ Upstream commit 986499b1569af980a819817f17238015b27793f6 ]
+[ Upstream commit 4eea21dc67b0c6ba15ae41b1defa113a680a858e ]
 
-Currently, SuperSpeed NCM gadgets report a speed of 851 Mbps
-in USB_CDC_NOTIFY_SPEED_CHANGE. But the calculation appears to
-assume 16 packets per microframe, and USB 3 and above no longer
-use microframes.
+The u_ether driver has a qmult setting that multiplies the
+transmit queue length (which by default is 2).
 
-Maximum speed is actually much higher. On a direct connection,
-theoretical throughput is at most 3.86 Gbps for gen1x1 and
-9.36 Gbps for gen2x1, and I have seen gadget->host iperf
-throughput of >2 Gbps for gen1x1 and >4 Gbps for gen2x1.
+The intent is that it should be enabled at high/super speed, but
+because the code does not explicitly check for USB_SUPER_PLUS,
+it is disabled at that speed.
 
-Unfortunately the ConnectionSpeedChange defined in the CDC spec
-only uses 32-bit values, so we can't report accurate numbers for
-10Gbps and above. So, report 3.75Gbps for SuperSpeed (which is
-roughly maximum theoretical performance) and 4.25Gbps for
-SuperSpeed Plus (which is close to the maximum that we can report
-in a 32-bit unsigned integer).
+Fix this by ensuring that the queue multiplier is enabled for any
+wired link at high speed or above. Using >= for USB_SPEED_*
+constants seems correct because it is what the gadget_is_xxxspeed
+functions do.
 
-This results in:
+The queue multiplier substantially helps performance at higher
+speeds. On a direct SuperSpeed Plus link to a Linux laptop,
+iperf3 single TCP stream:
 
-[50879.191272] cdc_ncm 2-2:1.0 enx228b127e050c: renamed from usb0
-[50879.234778] cdc_ncm 2-2:1.0 enx228b127e050c: 3750 mbit/s downlink 3750 mbit/s uplink
+Before (qmult=1): 1.3 Gbps
+After  (qmult=5): 3.2 Gbps
 
-on SuperSpeed and:
-
-[50798.434527] cdc_ncm 8-2:1.0 enx228b127e050c: renamed from usb0
-[50798.524278] cdc_ncm 8-2:1.0 enx228b127e050c: 4250 mbit/s downlink 4250 mbit/s uplink
-
-on SuperSpeed Plus.
-
-Fixes: 1650113888fe ("usb: gadget: f_ncm: add SuperSpeed descriptors for CDC NCM")
+Fixes: 04617db7aa68 ("usb: gadget: add SS descriptors to Ethernet gadget")
 Reviewed-by: Maciej Żenczykowski <maze@google.com>
 Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
 Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_ncm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/u_ether.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
-index f62cdf1238d77..fbf15ab700f49 100644
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -92,8 +92,10 @@ static inline struct f_ncm *func_to_ncm(struct usb_function *f)
- /* peak (theoretical) bulk transfer rate in bits-per-second */
- static inline unsigned ncm_bitrate(struct usb_gadget *g)
+diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+index 81d84e0c3c6cd..716edd593a994 100644
+--- a/drivers/usb/gadget/function/u_ether.c
++++ b/drivers/usb/gadget/function/u_ether.c
+@@ -97,7 +97,7 @@ struct eth_dev {
+ static inline int qlen(struct usb_gadget *gadget, unsigned qmult)
  {
--	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
--		return 13 * 1024 * 8 * 1000 * 8;
-+	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
-+		return 4250000000U;
-+	else if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
-+		return 3750000000U;
- 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
- 		return 13 * 512 * 8 * 1000 * 8;
+ 	if (gadget_is_dualspeed(gadget) && (gadget->speed == USB_SPEED_HIGH ||
+-					    gadget->speed == USB_SPEED_SUPER))
++					    gadget->speed >= USB_SPEED_SUPER))
+ 		return qmult * DEFAULT_QLEN;
  	else
+ 		return DEFAULT_QLEN;
 -- 
 2.25.1
 
