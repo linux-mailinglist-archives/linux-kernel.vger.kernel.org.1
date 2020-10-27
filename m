@@ -2,60 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A62E29C668
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640B129C66A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826170AbgJ0SQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:16:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32938 "EHLO mail.kernel.org"
+        id S1826177AbgJ0SQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:16:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507378AbgJ0OLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:11:54 -0400
+        id S2507282AbgJ0OLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:11:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61AE52231B;
-        Tue, 27 Oct 2020 14:11:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAC03222C8;
+        Tue, 27 Oct 2020 14:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807901;
-        bh=ZQGLz47Jh/72iG3C4qM/e5cbQr4iLLTZjWzhri5XSuU=;
+        s=default; t=1603807904;
+        bh=4/xdcCUDhuxtXptoKkH/FTVVOeKUwYTCuNrTpyrsvxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jwq7/R5InvX8DmtB5hMUFGNF2gv0DBTHjsXNYQkoN/MRqXDdv7ZClzQw/lqfO7P2S
-         8r2X/NPX0zyljAavvbukDYN4Ww88Bjd6Mggi8RiuGZ8uJOCyfzd/8hE2qa15oShxXG
-         mathDE3wsk/1ocuZQ47CbaGWkZt8rhBYWwNe9YlE=
+        b=gRso5rKtIHFXjiOYw9mXWwcriI41DSoozGx7FnVGIN5/szocgM6XLGrdOGzk9zkpN
+         /Ukmkciy74zItCEhtqhPUvQ93spmhN6VQL+/eDG9I7I30fMHZzQhs8qmwQskc7whU5
+         zbH0egQYaRjUrWxh4JShhA8hzLuxJLPiB9Zhb2eI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Murray <timmurray@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Christian Kellner <christian@kellner.me>,
-        Adrian Reber <areber@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        John Johansen <john.johansen@canonical.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH 4.14 084/191] mm, oom_adj: dont loop through tasks in __set_oom_adj when not necessary
-Date:   Tue, 27 Oct 2020 14:48:59 +0100
-Message-Id: <20201027134913.728164449@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 085/191] IB/mlx4: Fix starvation in paravirt mux/demux
+Date:   Tue, 27 Oct 2020 14:49:00 +0100
+Message-Id: <20201027134913.780284233@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -67,184 +44,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suren Baghdasaryan <surenb@google.com>
+From: Håkon Bugge <haakon.bugge@oracle.com>
 
-[ Upstream commit 67197a4f28d28d0b073ab0427b03cb2ee5382578 ]
+[ Upstream commit 7fd1507df7cee9c533f38152fcd1dd769fcac6ce ]
 
-Currently __set_oom_adj loops through all processes in the system to keep
-oom_score_adj and oom_score_adj_min in sync between processes sharing
-their mm.  This is done for any task with more that one mm_users, which
-includes processes with multiple threads (sharing mm and signals).
-However for such processes the loop is unnecessary because their signal
-structure is shared as well.
+The mlx4 driver will proxy MAD packets through the PF driver. A VM or an
+instantiated VF will send its MAD packets to the PF driver using
+loop-back. The PF driver will be informed by an interrupt, but defer the
+handling and polling of CQEs to a worker thread running on an ordered
+work-queue.
 
-Android updates oom_score_adj whenever a tasks changes its role
-(background/foreground/...) or binds to/unbinds from a service, making it
-more/less important.  Such operation can happen frequently.  We noticed
-that updates to oom_score_adj became more expensive and after further
-investigation found out that the patch mentioned in "Fixes" introduced a
-regression.  Using Pixel 4 with a typical Android workload, write time to
-oom_score_adj increased from ~3.57us to ~362us.  Moreover this regression
-linearly depends on the number of multi-threaded processes running on the
-system.
+Consider the following scenario: the VMs will in short proximity in time,
+for example due to a network event, send many MAD packets to the PF
+driver. Lets say there are K VMs, each sending N packets.
 
-Mark the mm with a new MMF_MULTIPROCESS flag bit when task is created with
-(CLONE_VM && !CLONE_THREAD && !CLONE_VFORK).  Change __set_oom_adj to use
-MMF_MULTIPROCESS instead of mm_users to decide whether oom_score_adj
-update should be synchronized between multiple processes.  To prevent
-races between clone() and __set_oom_adj(), when oom_score_adj of the
-process being cloned might be modified from userspace, we use
-oom_adj_mutex.  Its scope is changed to global.
+The interrupt from the first VM will start the worker thread, which will
+poll N CQEs. A common case here is where the PF driver will multiplex the
+packets received from the VMs out on the wire QP.
 
-The combination of (CLONE_VM && !CLONE_THREAD) is rarely used except for
-the case of vfork().  To prevent performance regressions of vfork(), we
-skip taking oom_adj_mutex and setting MMF_MULTIPROCESS when CLONE_VFORK is
-specified.  Clearing the MMF_MULTIPROCESS flag (when the last process
-sharing the mm exits) is left out of this patch to keep it simple and
-because it is believed that this threading model is rare.  Should there
-ever be a need for optimizing that case as well, it can be done by hooking
-into the exit path, likely following the mm_update_next_owner pattern.
+But before the wire QP has returned a send CQE and associated interrupt,
+the other K - 1 VMs have sent their N packets as well.
 
-With the combination of (CLONE_VM && !CLONE_THREAD && !CLONE_VFORK) being
-quite rare, the regression is gone after the change is applied.
+The PF driver has to multiplex K * N packets out on the wire QP. But the
+send-queue on the wire QP has a finite capacity.
 
-[surenb@google.com: v3]
-  Link: https://lkml.kernel.org/r/20200902012558.2335613-1-surenb@google.com
+So, in this scenario, if K * N is larger than the send-queue capacity of
+the wire QP, we will get MAD packets dropped on the floor with this
+dynamic debug message:
 
-Fixes: 44a70adec910 ("mm, oom_adj: make sure processes sharing mm have same view of oom_score_adj")
-Reported-by: Tim Murray <timmurray@google.com>
-Suggested-by: Michal Hocko <mhocko@kernel.org>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Eugene Syromiatnikov <esyr@redhat.com>
-Cc: Christian Kellner <christian@kellner.me>
-Cc: Adrian Reber <areber@redhat.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Aleksa Sarai <cyphar@cyphar.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Andrei Vagin <avagin@gmail.com>
-Cc: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc: John Johansen <john.johansen@canonical.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>
-Link: https://lkml.kernel.org/r/20200824153036.3201505-1-surenb@google.com
-Debugged-by: Minchan Kim <minchan@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+mlx4_ib_multiplex_mad: failed sending GSI to wire on behalf of slave 2 (-11)
+
+and this despite the fact that the wire send-queue could have capacity,
+but the PF driver isn't aware, because the wire send CQEs have not yet
+been polled.
+
+We can also have a similar scenario inbound, with a wire recv-queue larger
+than the tunnel QP's send-queue. If many remote peers send MAD packets to
+the very same VM, the tunnel send-queue destined to the VM could allegedly
+be construed to be full by the PF driver.
+
+This starvation is fixed by introducing separate work queues for the wire
+QPs vs. the tunnel QPs.
+
+With this fix, using a dual ported HCA, 8 VFs instantiated, we could run
+cmtime on each of the 18 interfaces towards a similar configured peer,
+each cmtime instance with 800 QPs (all in all 14400 QPs) without a single
+CM packet getting lost.
+
+Fixes: 3cf69cc8dbeb ("IB/mlx4: Add CM paravirtualization")
+Link: https://lore.kernel.org/r/20200803061941.1139994-5-haakon.bugge@oracle.com
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/base.c                 |  3 +--
- include/linux/oom.h            |  1 +
- include/linux/sched/coredump.h |  1 +
- kernel/fork.c                  | 21 +++++++++++++++++++++
- mm/oom_kill.c                  |  2 ++
- 5 files changed, 26 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx4/mad.c     | 34 +++++++++++++++++++++++++---
+ drivers/infiniband/hw/mlx4/mlx4_ib.h |  2 ++
+ 2 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 64695dcf89f3b..eeb81d9648c67 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1041,7 +1041,6 @@ static ssize_t oom_adj_read(struct file *file, char __user *buf, size_t count,
- 
- static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
- {
--	static DEFINE_MUTEX(oom_adj_mutex);
- 	struct mm_struct *mm = NULL;
- 	struct task_struct *task;
- 	int err = 0;
-@@ -1081,7 +1080,7 @@ static int __set_oom_adj(struct file *file, int oom_adj, bool legacy)
- 		struct task_struct *p = find_lock_task_mm(task);
- 
- 		if (p) {
--			if (atomic_read(&p->mm->mm_users) > 1) {
-+			if (test_bit(MMF_MULTIPROCESS, &p->mm->flags)) {
- 				mm = p->mm;
- 				mmgrab(mm);
- 			}
-diff --git a/include/linux/oom.h b/include/linux/oom.h
-index 6adac113e96d2..c84597595cb41 100644
---- a/include/linux/oom.h
-+++ b/include/linux/oom.h
-@@ -45,6 +45,7 @@ struct oom_control {
- };
- 
- extern struct mutex oom_lock;
-+extern struct mutex oom_adj_mutex;
- 
- static inline void set_current_oom_origin(void)
- {
-diff --git a/include/linux/sched/coredump.h b/include/linux/sched/coredump.h
-index ecdc6542070f1..dfd82eab29025 100644
---- a/include/linux/sched/coredump.h
-+++ b/include/linux/sched/coredump.h
-@@ -72,6 +72,7 @@ static inline int get_dumpable(struct mm_struct *mm)
- #define MMF_DISABLE_THP		24	/* disable THP for all VMAs */
- #define MMF_OOM_VICTIM		25	/* mm is the oom victim */
- #define MMF_OOM_REAP_QUEUED	26	/* mm was queued for oom_reaper */
-+#define MMF_MULTIPROCESS	27	/* mm is shared between processes */
- #define MMF_DISABLE_THP_MASK	(1 << MMF_DISABLE_THP)
- 
- #define MMF_INIT_MASK		(MMF_DUMPABLE_MASK | MMF_DUMP_FILTER_MASK |\
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 0a328cf0cb136..535aeb7ca145c 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1544,6 +1544,25 @@ static __always_inline void delayed_free_task(struct task_struct *tsk)
- 		free_task(tsk);
+diff --git a/drivers/infiniband/hw/mlx4/mad.c b/drivers/infiniband/hw/mlx4/mad.c
+index c69158ccab822..60d4f2c9c24d8 100644
+--- a/drivers/infiniband/hw/mlx4/mad.c
++++ b/drivers/infiniband/hw/mlx4/mad.c
+@@ -1305,6 +1305,18 @@ static void mlx4_ib_tunnel_comp_handler(struct ib_cq *cq, void *arg)
+ 	spin_unlock_irqrestore(&dev->sriov.going_down_lock, flags);
  }
  
-+static void copy_oom_score_adj(u64 clone_flags, struct task_struct *tsk)
++static void mlx4_ib_wire_comp_handler(struct ib_cq *cq, void *arg)
 +{
-+	/* Skip if kernel thread */
-+	if (!tsk->mm)
-+		return;
++	unsigned long flags;
++	struct mlx4_ib_demux_pv_ctx *ctx = cq->cq_context;
++	struct mlx4_ib_dev *dev = to_mdev(ctx->ib_dev);
 +
-+	/* Skip if spawning a thread or using vfork */
-+	if ((clone_flags & (CLONE_VM | CLONE_THREAD | CLONE_VFORK)) != CLONE_VM)
-+		return;
-+
-+	/* We need to synchronize with __set_oom_adj */
-+	mutex_lock(&oom_adj_mutex);
-+	set_bit(MMF_MULTIPROCESS, &tsk->mm->flags);
-+	/* Update the values in case they were changed after copy_signal */
-+	tsk->signal->oom_score_adj = current->signal->oom_score_adj;
-+	tsk->signal->oom_score_adj_min = current->signal->oom_score_adj_min;
-+	mutex_unlock(&oom_adj_mutex);
++	spin_lock_irqsave(&dev->sriov.going_down_lock, flags);
++	if (!dev->sriov.is_going_down && ctx->state == DEMUX_PV_STATE_ACTIVE)
++		queue_work(ctx->wi_wq, &ctx->work);
++	spin_unlock_irqrestore(&dev->sriov.going_down_lock, flags);
 +}
 +
- /*
-  * This creates a new process as a copy of the old one,
-  * but does not actually start it yet.
-@@ -1952,6 +1971,8 @@ static __latent_entropy struct task_struct *copy_process(
- 	trace_task_newtask(p, clone_flags);
- 	uprobe_copy_process(p, clone_flags);
+ static int mlx4_ib_post_pv_qp_buf(struct mlx4_ib_demux_pv_ctx *ctx,
+ 				  struct mlx4_ib_demux_pv_qp *tun_qp,
+ 				  int index)
+@@ -2012,7 +2024,8 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
+ 		cq_size *= 2;
  
-+	copy_oom_score_adj(clone_flags, p);
+ 	cq_attr.cqe = cq_size;
+-	ctx->cq = ib_create_cq(ctx->ib_dev, mlx4_ib_tunnel_comp_handler,
++	ctx->cq = ib_create_cq(ctx->ib_dev,
++			       create_tun ? mlx4_ib_tunnel_comp_handler : mlx4_ib_wire_comp_handler,
+ 			       NULL, ctx, &cq_attr);
+ 	if (IS_ERR(ctx->cq)) {
+ 		ret = PTR_ERR(ctx->cq);
+@@ -2049,6 +2062,7 @@ static int create_pv_resources(struct ib_device *ibdev, int slave, int port,
+ 		INIT_WORK(&ctx->work, mlx4_ib_sqp_comp_worker);
+ 
+ 	ctx->wq = to_mdev(ibdev)->sriov.demux[port - 1].wq;
++	ctx->wi_wq = to_mdev(ibdev)->sriov.demux[port - 1].wi_wq;
+ 
+ 	ret = ib_req_notify_cq(ctx->cq, IB_CQ_NEXT_COMP);
+ 	if (ret) {
+@@ -2192,7 +2206,7 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
+ 		goto err_mcg;
+ 	}
+ 
+-	snprintf(name, sizeof name, "mlx4_ibt%d", port);
++	snprintf(name, sizeof(name), "mlx4_ibt%d", port);
+ 	ctx->wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
+ 	if (!ctx->wq) {
+ 		pr_err("Failed to create tunnelling WQ for port %d\n", port);
+@@ -2200,7 +2214,15 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
+ 		goto err_wq;
+ 	}
+ 
+-	snprintf(name, sizeof name, "mlx4_ibud%d", port);
++	snprintf(name, sizeof(name), "mlx4_ibwi%d", port);
++	ctx->wi_wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
++	if (!ctx->wi_wq) {
++		pr_err("Failed to create wire WQ for port %d\n", port);
++		ret = -ENOMEM;
++		goto err_wiwq;
++	}
 +
- 	return p;
++	snprintf(name, sizeof(name), "mlx4_ibud%d", port);
+ 	ctx->ud_wq = alloc_ordered_workqueue(name, WQ_MEM_RECLAIM);
+ 	if (!ctx->ud_wq) {
+ 		pr_err("Failed to create up/down WQ for port %d\n", port);
+@@ -2211,6 +2233,10 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
+ 	return 0;
  
- bad_fork_cancel_cgroup:
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 7a5c0b229c6ae..6482d743c5c88 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -53,6 +53,8 @@ int sysctl_oom_kill_allocating_task;
- int sysctl_oom_dump_tasks = 1;
+ err_udwq:
++	destroy_workqueue(ctx->wi_wq);
++	ctx->wi_wq = NULL;
++
++err_wiwq:
+ 	destroy_workqueue(ctx->wq);
+ 	ctx->wq = NULL;
  
- DEFINE_MUTEX(oom_lock);
-+/* Serializes oom_score_adj and oom_score_adj_min updates */
-+DEFINE_MUTEX(oom_adj_mutex);
+@@ -2258,12 +2284,14 @@ static void mlx4_ib_free_demux_ctx(struct mlx4_ib_demux_ctx *ctx)
+ 				ctx->tun[i]->state = DEMUX_PV_STATE_DOWNING;
+ 		}
+ 		flush_workqueue(ctx->wq);
++		flush_workqueue(ctx->wi_wq);
+ 		for (i = 0; i < dev->dev->caps.sqp_demux; i++) {
+ 			destroy_pv_resources(dev, i, ctx->port, ctx->tun[i], 0);
+ 			free_pv_object(dev, i, ctx->port);
+ 		}
+ 		kfree(ctx->tun);
+ 		destroy_workqueue(ctx->ud_wq);
++		destroy_workqueue(ctx->wi_wq);
+ 		destroy_workqueue(ctx->wq);
+ 	}
+ }
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index 1fa19820355af..ed72c09080c1d 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -463,6 +463,7 @@ struct mlx4_ib_demux_pv_ctx {
+ 	struct ib_pd *pd;
+ 	struct work_struct work;
+ 	struct workqueue_struct *wq;
++	struct workqueue_struct *wi_wq;
+ 	struct mlx4_ib_demux_pv_qp qp[2];
+ };
  
- #ifdef CONFIG_NUMA
- /**
+@@ -470,6 +471,7 @@ struct mlx4_ib_demux_ctx {
+ 	struct ib_device *ib_dev;
+ 	int port;
+ 	struct workqueue_struct *wq;
++	struct workqueue_struct *wi_wq;
+ 	struct workqueue_struct *ud_wq;
+ 	spinlock_t ud_lock;
+ 	atomic64_t subnet_prefix;
 -- 
 2.25.1
 
