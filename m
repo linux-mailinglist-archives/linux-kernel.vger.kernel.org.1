@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE9F29B94C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B9D29B95E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802351AbgJ0PqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:46:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55880 "EHLO mail.kernel.org"
+        id S1763375AbgJ0PsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1800851AbgJ0Pg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:36:58 -0400
+        id S1800873AbgJ0PhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:37:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2BCF22264;
-        Tue, 27 Oct 2020 15:36:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A561F2225E;
+        Tue, 27 Oct 2020 15:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813017;
-        bh=l7550WL8V7HrHeDV9MOX337k1Jz9qcvopLUQ/QNR858=;
+        s=default; t=1603813020;
+        bh=cw36azWx0DvlAnzzwKoD8TwBn0PYqZjxEEFYAMPY4ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=14B0cFA1eIPRWVbVCBk9QVtcqi9SCLWMnYqyqXR6zegLSrm25X4A1VXLamaxF9sol
-         XTefYrl9Bp6WFM12dRqJ4E+cIvNMPn5n9TEdcsyAT+qqBmq3A46jjduSPpeYIIT+mw
-         OWlUmyxNiMLNR1t06xiLmv0IMP3JBCuq5piarOhM=
+        b=YUalkGxoni486KyKmh1XEN2X1VD4KeUkfmcCbFrd19uLEP1KQZP7gr5r1Gk1jXCLU
+         VV7B4MDWxtMkb7CSrvWNjQhBcgZo5X6sRmV6FYuLXll27tDBBlrbsPKp+/0Iy3w7Xr
+         0bJZxIPXl9Nej8qNZyOaRloGuHm4R18ZSoNyWr1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 379/757] staging: wfx: fix BA sessions for older firmwares
-Date:   Tue, 27 Oct 2020 14:50:29 +0100
-Message-Id: <20201027135508.330298911@linuxfoundation.org>
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 380/757] platform/x86: mlx-platform: Remove PSU EEPROM configuration
+Date:   Tue, 27 Oct 2020 14:50:30 +0100
+Message-Id: <20201027135508.378598643@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,44 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-[ Upstream commit 4fd1241778b08129f196605c62636a4d6d71c2c7 ]
+[ Upstream commit c071afcea6ecf24a3c119f25ce9f71ffd55b5dc2 ]
 
-Firmwares with API < 3.6 do not forward DELBA requests. Thus, when a
-Block Ack session is restarted, the reordering buffer is not flushed and
-the received sequence number is not contiguous. Therefore, mac80211
-starts to wait some missing frames that it will never receive.
+Remove PSU EEPROM configuration for systems class equipped with
+Mellanox chip Spectrume-2. Till now all the systems from this class
+used few types of power units, all equipped with EEPROM device with
+address space two bytes. Thus, all these devices have been handled by
+EEPROM driver "24c32".
+There is a new requirement is to support power unit replacement by "off
+the shelf" device, matching electrical required parameters. Such device
+could be equipped with different EEPROM type, which could be one byte
+address space addressing or even could be not equipped with EEPROM.
+In such case "24c32" will not work.
 
-This patch disables the reordering buffer for old firmware. It is
-harmless when the network is unencrypted. When the network is encrypted,
-the non-contiguous frames will be thrown away by the TKIP/CCMP replay
-protection. So, the user will observe some packet loss with UDP and
-performance drop with TCP.
-
-Fixes: e5da5fbd7741 ("staging: wfx: fix CCMP/TKIP replay protection")
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Link: https://lore.kernel.org/r/20201007101943.749898-4-Jerome.Pouiller@silabs.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1bd42d94ccab ("platform/x86: mlx-platform: Add support for new 200G IB and Ethernet systems")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20200923172053.26296-2-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wfx/data_rx.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/platform/x86/mlx-platform.c | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/staging/wfx/data_rx.c b/drivers/staging/wfx/data_rx.c
-index 6fb0788807426..33b715b7b94bb 100644
---- a/drivers/staging/wfx/data_rx.c
-+++ b/drivers/staging/wfx/data_rx.c
-@@ -17,6 +17,9 @@ static void wfx_rx_handle_ba(struct wfx_vif *wvif, struct ieee80211_mgmt *mgmt)
- {
- 	int params, tid;
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index 1506ec0a47771..04a745095c379 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -328,15 +328,6 @@ static struct i2c_board_info mlxplat_mlxcpld_psu[] = {
+ 	},
+ };
  
-+	if (wfx_api_older_than(wvif->wdev, 3, 6))
-+		return;
-+
- 	switch (mgmt->u.action.u.addba_req.action_code) {
- 	case WLAN_ACTION_ADDBA_REQ:
- 		params = le16_to_cpu(mgmt->u.action.u.addba_req.capab);
+-static struct i2c_board_info mlxplat_mlxcpld_ng_psu[] = {
+-	{
+-		I2C_BOARD_INFO("24c32", 0x51),
+-	},
+-	{
+-		I2C_BOARD_INFO("24c32", 0x50),
+-	},
+-};
+-
+ static struct i2c_board_info mlxplat_mlxcpld_pwr[] = {
+ 	{
+ 		I2C_BOARD_INFO("dps460", 0x59),
+@@ -770,15 +761,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_default_ng_psu_items_data[] = {
+ 		.label = "psu1",
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+ 		.mask = BIT(0),
+-		.hpdev.brdinfo = &mlxplat_mlxcpld_ng_psu[0],
+-		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
++		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+ 	},
+ 	{
+ 		.label = "psu2",
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+ 		.mask = BIT(1),
+-		.hpdev.brdinfo = &mlxplat_mlxcpld_ng_psu[1],
+-		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
++		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+ 	},
+ };
+ 
 -- 
 2.25.1
 
