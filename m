@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E470E299E3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62091299F1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408047AbgJ0AN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:13:26 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:45025 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2439449AbgJ0ANX (ORCPT
+        id S2436732AbgJ0AU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:20:26 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:45654 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441040AbgJ0AUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:13:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id F118AD19;
-        Mon, 26 Oct 2020 20:13:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 26 Oct 2020 20:13:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=Y
-        dzpjo4+CjMidbb3ZaFBGf7udcVDCw4IXMh46gqxR0E=; b=FbMHnddjGE9NxsVMV
-        D6j+5cjsIREXDwCMjL8VYg22hgNlezpkWkaUoeaWEK6XZxRIJc6vQRqGrfBDVIkv
-        IzN8WuAzalljvB9CHvmbLc49S3GYwFMkePK0yA+uHbzSe1TnySOidI034cJ3mccm
-        azgi6t4hfju2tA8MoCGCzkQOfuYZq8F+2owQ/0N15vyBwb4asUV2ZChXWnLwIFI9
-        /oVLoWYQ+aYkkkgAw0RhHsygFZYdC6aF2aKrWlXeBuCsVvSqTgcP1/MVZaoct98u
-        rVUl2skJ5SLMBdMdACcXFWcQFHyrolg6BGGCpdntR/lZNULQCkwLnBJ/FmCfno2K
-        5WPaw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=Ydzpjo4+CjMidbb3ZaFBGf7udcVDCw4IXMh46gqxR
-        0E=; b=gnePpegTnRvg/vl+tOST0PmNckjjwMVtcCcz89ewjDLqZc9Xd9hZDNPil
-        rtatCMW/wk/erN/wDVabxs9UkuEF5zyheEN8mKiKRidigp9wKqBvt2adbIOAAi5K
-        5G/X4oE1iUPGiEpz/2AnTvpvy7NMC00ogUFznc+PqzMHH3aWECpoSQ0TZV4LKgeB
-        mHGGB1B+ShOfwjQcHZoWAjr1kHSGq21VHyxHAvSDJdE1zN+shTwmpeakzyKpfoEW
-        6W00Ov3ujbhDMt8XkD9v7HFXp4FQOM7Mg7ab6bAbyp+fj3OSvZ550CVVIbT4taW1
-        O28x9ppVo19yMRxd3trwHtKFNONBQ==
-X-ME-Sender: <xms:IGaXX6XA0QwMN6QIhFqjPY7odFX6DF0XF5WGyfKn1R9Sb-OqsPtydw>
-    <xme:IGaXX2lgdd43B-0K9TYQTElm0ptBkA9bIWtbtGGAdBl-dq_zE4BZhKnlnfhrf0JNP
-    h_Ta_7B1tytbP3SkmM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeekgddujecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeeggeegjeejleehvdfhteevffeuheeiiefftedvteet
-    tdeuieefgeehveekteeufeenucffohhmrghinhepshhouhhrtggvfhhorhhgvgdrnhgvth
-    enucfkphepudegrdefrdeigedrvddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hp
-X-ME-Proxy: <xmx:IGaXX-a6xBJJrFeWEdUKmJam_eBkUfBl6BeCHEKvT4zSaiDxlBrbEw>
-    <xmx:IGaXXxWkmcJG8uRAENx7eRJseWQ76mCDIkcI0-DM6-ayzO5CoMVX8A>
-    <xmx:IGaXX0l_dZoagJXHs963sSE_Nqld1p_lRBXLdgA2HCodGzgHy5rUbw>
-    <xmx:IWaXX1AV1XnJFFES3lT3AbCkEbuu26wOx8NnLN_a4S6XgMeDyHSmAw>
-Received: from workstation (ae064207.dynamic.ppp.asahi-net.or.jp [14.3.64.207])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BDE41328005A;
-        Mon, 26 Oct 2020 20:13:18 -0400 (EDT)
-Date:   Tue, 27 Oct 2020 09:13:16 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        oscar.carter@gmail.com
-Subject: Re: [PATCH] firewire: fix function type cast warning
-Message-ID: <20201027001316.GA27589@workstation>
-Mail-Followup-To: Arnd Bergmann <arnd@kernel.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        oscar.carter@gmail.com
-References: <20201026215138.3893732-1-arnd@kernel.org>
+        Mon, 26 Oct 2020 20:20:13 -0400
+Received: by mail-lf1-f66.google.com with SMTP id r127so14787660lff.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8pq1ZiLJCFcmgBv0JcKGMbgbJxC9bbLjRkNwBgcJh0Q=;
+        b=Kka79kbJMSIegb0otW5XpEZGBA5SvJVApuOIDNwAYEJudE5IEDU8uS9xOVp8VPCJd7
+         b6SXjLkGUDOsdUxN6GxdMaer4vbcu+m0lMCl4yUVEtnWOLc2Gy49/vh4f/10qgVdNAuy
+         U7v/pMBYIdx1aSuJTLPA4PxgXktFn6T53RTT0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8pq1ZiLJCFcmgBv0JcKGMbgbJxC9bbLjRkNwBgcJh0Q=;
+        b=cuZY/fELqiGk1pW4g367wK/+/XvbPXOC0L9qgFtaPFlEWc6ims1kcbLVBV033erMGd
+         tZYpG7zB/YdlHjaim8nOTzQHmgrw3IuT0wrgykauEQ6x7oACXq99kkXtoNUOoZrJaXhl
+         BUqWw8IIBVK7BGBJaHP+sjC5lh6Rw8Y6wCefQsi5Y9+wyfGnn/IzgMcbfG0rE0iJ9ALK
+         93ihoXtB8xLNdY/3shdk57vhC7U5G/B5dddxvtxRlLlrx+/8C3OME+8LjkFAfUdTBPMM
+         xzH/cioR8FtN41O4UzEIwMmv+TGwiMu7DtDe8kje4ma/o2rxJcDpg6kl8+AaTYxNDlCh
+         pLEg==
+X-Gm-Message-State: AOAM531pZ9MKt//qrWm0LVlJhuIyrJXFdgmg0dWf3bHNuXoYDlpkme9e
+        T3RUnGROCrynSg4coK08rqU1MVkX2W92wg==
+X-Google-Smtp-Source: ABdhPJz6IOKPnwkUBuYBkLwzgyyU+qPT+xUyUZPuiBpv4NrNNNk0d9bszEoPtv+Ai79mMaDSd7D7LQ==
+X-Received: by 2002:a19:a12:: with SMTP id 18mr6695272lfk.345.1603758009977;
+        Mon, 26 Oct 2020 17:20:09 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id v70sm1199981lfa.93.2020.10.26.17.20.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 17:20:09 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id i2so12627062ljg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:20:09 -0700 (PDT)
+X-Received: by 2002:a19:cbcb:: with SMTP id b194mr6627878lfg.133.1603757691217;
+ Mon, 26 Oct 2020 17:14:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201026215138.3893732-1-arnd@kernel.org>
+References: <2-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
+ <a9f05c88-acdb-7b48-6f54-4c973a87aaeb@nvidia.com> <32a38d92-6ecc-243b-77be-8f1ea0792334@nvidia.com>
+ <20201026234952.GD1523783@nvidia.com>
+In-Reply-To: <20201026234952.GD1523783@nvidia.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 26 Oct 2020 17:14:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whEL2B-PSGzhQxyC3VR1XpUee6nKw6YiJG6w7hRL1f9Lg@mail.gmail.com>
+Message-ID: <CAHk-=whEL2B-PSGzhQxyC3VR1XpUee6nKw6YiJG6w7hRL1f9Lg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: prevent gup_fast from racing with COW during fork
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Mon, Oct 26, 2020 at 4:50 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> Right, it isn't a "seqcount" because the read side doesn't spin.
 
-On Mon, Oct 26, 2020 at 10:51:27PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc -Wextra complains about a suspicious cast:
-> 
-> rivers/firewire/core-cdev.c:985:8: warning: cast between incompatible function types from ‘void (*)(struct fw_iso_context *, dma_addr_t,  void *)’ {aka ‘void (*)(struct fw_iso_context *, long long unsigned int,  void *)’} to ‘void (*)(struct fw_iso_context *, u32,  size_t,  void *, void *)’ {aka ‘void (*)(struct fw_iso_context *, unsigned int,  long unsigned int,  void *, void *)’} [-Wcast-function-type]
-> 
-> The behavior is correct in the end, but this is more clearly
-> expressed using a transparent union.
-> 
-> Fixes: 872e330e3880 ("firewire: add isochronous multichannel reception")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/firewire/core-cdev.c |  6 +++---
->  drivers/firewire/core-iso.c  |  2 +-
->  include/linux/firewire.h     | 17 ++++++++---------
->  3 files changed, 12 insertions(+), 13 deletions(-)
+Not all readers spin for seqcount either.
 
-Oscar Carter has posted a patch to fix it.
-https://sourceforge.net/p/linux1394/mailman/message/37024966/
+Sure, it's the *common* case, but look at name resolution - it will
+basically fail on a seqcount failure in RCU mode, and go to the "slow
+and safe" version:
 
-I don't know exactly but maintainers seems to overlook it...
+                if (unlikely(read_seqcount_retry(&d->d_seq, nd->seq)))
+                        return -ECHILD;
 
+Exactly like gup_fast vs fork, in fact.
 
-Thanks
+So no, you don't need to retry for seqcount failures, doing
 
-Takashi Sakamoto
+     seq = seqcount_begin(..);
+     ... optimistic fast case ...
+     if (!read_seqcount_retry(.., seq))
+          return 0; // success
+       .. do slow case ...
+
+is valid and happens.
+
+              Linus
