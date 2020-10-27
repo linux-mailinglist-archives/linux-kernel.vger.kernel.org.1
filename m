@@ -2,119 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E320E29ADFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E6929AE01
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502394AbgJ0Nwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:52:51 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:33459 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502073AbgJ0Nwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:52:50 -0400
-Received: by mail-ej1-f65.google.com with SMTP id c15so2379359ejs.0;
-        Tue, 27 Oct 2020 06:52:48 -0700 (PDT)
+        id S1752863AbgJ0NyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:54:16 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:13595 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409294AbgJ0NyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:54:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4TbXysDqnndpTRF/Rd6isqCmc40s+e6qp/SrBCZya6s=;
-        b=lwyXkbi/gj/HS/sa5ZvZZHWv3isYpIbQNCIWPd3kHp+iv2FtJXwPzAWNcRkUkXvTR8
-         44f1TqgS3Bs2rpkI/0wLJ2Hk71+L3Ar+JX0euHhazOZZfsbBQ0jh4qOrYqZ/IYKprYMR
-         7okL77/0uwXZTkRMwLFRhEHaeE4cEimNfoZ9ZS7H4rHZ5JsJPCXkilBuRfW52+VM3PNz
-         J1cjxhhE3KHS/kc2JF9LiI3m5pFs/I1nntfqvyb8FZOpg/Wn4MwGD/eevDCR7ofLKqo2
-         FY65HzvyUMidkVgJ7hv67tNZM4C41gC/ZJABYJOtFp+NDZvtzNotneRZEPMNdKEaw6wc
-         HRYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4TbXysDqnndpTRF/Rd6isqCmc40s+e6qp/SrBCZya6s=;
-        b=eusKnF3RfVzOdDZEdQy/47MbFChfMi16kwh+A/mZVcnRFQ/AZucH7vWwebN4eeXYce
-         dzg1yUQ3nonBXRlw6g2vgLa0mBAXPAGWeV4mgRxS7WA74Q7XsF4pYbirJx+HmI5qNLZf
-         WPC3cPrWzDzQEe4LbEbvSo7GrBRwF8cRqGx35GKAkbx9se/TGiASbTTDtd930yfKJ8DI
-         +HnIpTLXwJfkO6KkpuihrC+cSuxQFyrUrknaR+zU1BrdrSZOUcE5c0pNJpSaI5rU3qWS
-         lZEr+4gT+Jk8gztjJWy3SFaRiXwGZilI2UretY19MObxcfbXQZcuVW2PyzgfnxE3D9MP
-         kV0A==
-X-Gm-Message-State: AOAM530GiXgN4DKptb3RpB+vIiN5PoiwfeDFbh8blWpwacaMHEDOZ2iu
-        PhQNK1JEBvjSE1HRAKcHTZI=
-X-Google-Smtp-Source: ABdhPJw+wS4M5IdvdBE+C5XCShNKfDZ8hVzHzxdKtDgQPwv8S1CiMKIe82JbF1rjlL+EXlOuu+VahA==
-X-Received: by 2002:a17:906:f8d2:: with SMTP id lh18mr2599173ejb.457.1603806767898;
-        Tue, 27 Oct 2020 06:52:47 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id rs18sm1096635ejb.69.2020.10.27.06.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:52:46 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 14:52:44 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 32/52] memory: tegra20-emc: Continue probing if
- timings are missing in device-tree
-Message-ID: <20201027135244.GM1822510@ulmo>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-33-digetx@gmail.com>
+  d=axis.com; l=1841; q=dns/txt; s=axis-central1;
+  t=1603806855; x=1635342855;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uAN2e5G3WcdT+cTOp4JBtFE0vznyZLRyeShhV3oIqGM=;
+  b=WMOkygJmoeoU1f4qsJ/LdcbypQR+Y0FFFsAcZgZ9d064tB7vsbvfBrdZ
+   /1sRd3wrPnx5LPR0dDktQ8OE8uFpiIJcR0vQrlVKOkRs3rXXw5j5jSXpy
+   cfMCO0nFcqaKH8aRpul00YosFBk0uvijxzhWncd7hJ2YIsqPxWwkuV0E2
+   LgIqZUjCfEwVgHE46WFc2laef1kuv0FJW0wqSyOfgbXFP1Rha092IBJ+h
+   YcLUAudTw6gu57nx54iPOAsWgYgru5JvHpSYTjdhrmsQXhQQdz8+fcYB+
+   VWvsH6A82hs1Am3GeaBpk2tJy/kSwY1qf3N9y/GVQz+ZRYEC3EdstSUyF
+   A==;
+IronPort-SDR: DP5SbzFMLwpxHViDs5672DnOGm8eyiW076asrV0u1HrOdGhEEEMRbgkt7x9oRSHvcFdy304U5Z
+ OjR4Py+c/8JVxKZnB3mOD3c9dWpUSTESWXPiyCboT+fBme8oJTHv9XP0gLI+kW/BkugQJe+uAe
+ ChElU+jL2wPfu5DrO0IdiEkTxk+uztJoJkh9k8yNHkQIHLRpjHU/Ba5Z6g74COAGk40nToM8WN
+ etWljz/RjGR4hA/VMwFYQVR0qVvKsvQI7S10e7UzfipJQi/xkGPGCEU1q2PUA4rykCDzsGxDQo
+ pS0=
+X-IronPort-AV: E=Sophos;i="5.77,424,1596492000"; 
+   d="scan'208";a="13956774"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] gpio: mockup: Allow probing from device tree
+Date:   Tue, 27 Oct 2020 14:53:25 +0100
+Message-ID: <20201027135325.22235-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OQhbRXNHSL5w/5po"
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-33-digetx@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow the mockup driver to be probed via the device tree without any
+module parameters, allowing it to be used to configure and test higher
+level drivers like the leds-gpio driver and corresponding userspace
+before actual hardware is available.
 
---OQhbRXNHSL5w/5po
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+v2: Remove most of the added code, since the latest driver doesn't need it.
+    Drop DT binding document, since Rob Herring was OK with not documenting
+    this:
+    https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
 
-On Mon, Oct 26, 2020 at 01:17:15AM +0300, Dmitry Osipenko wrote:
-> EMC driver will become mandatory after turning it into interconnect
-> provider because interconnect users, like display controller driver, will
-> fail to probe using newer device-trees that have interconnect properties.
-> Thus make EMC driver to probe even if timings are missing in device-tree.
+ drivers/gpio/gpio-mockup.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Does it really have to be mandatory? Sounds like that's going to make it
-unnecessarily complicated to merge all of this. Is it complicated to
-make interconnect support optional in consumer drivers?
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index 67ed4f238d43..c93892a6936a 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -13,6 +13,7 @@
+ #include <linux/gpio/driver.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
++#include <linux/of.h>
+ #include <linux/irq_sim.h>
+ #include <linux/irqdomain.h>
+ #include <linux/module.h>
+@@ -460,9 +461,18 @@ static int gpio_mockup_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id gpio_mockup_of_match[] = {
++	{ .compatible = "gpio-mockup", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
++#endif
++
+ static struct platform_driver gpio_mockup_driver = {
+ 	.driver = {
+ 		.name = "gpio-mockup",
++		.of_match_table = of_match_ptr(gpio_mockup_of_match),
+ 	},
+ 	.probe = gpio_mockup_probe,
+ };
+@@ -556,8 +566,7 @@ static int __init gpio_mockup_init(void)
+ {
+ 	int i, num_chips, err;
+ 
+-	if ((gpio_mockup_num_ranges < 2) ||
+-	    (gpio_mockup_num_ranges % 2) ||
++	if ((gpio_mockup_num_ranges % 2) ||
+ 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
+ 		return -EINVAL;
+ 
+-- 
+2.28.0
 
-Thierry
-
---OQhbRXNHSL5w/5po
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YJiwACgkQ3SOs138+
-s6H3wA/9G28Ray4Bi6twkE9N7+h/sNEt+7YPAHJDE7CAIf9/VJ6pbfqyZFWHTH++
-/R5TsxsZlomEwSgf41l2E82KzNVLiJ0uRA2aKSS7J+S7navlOQHB2iHA4Mt2L+wm
-z2l48XHXTeN8HT/RZoaPK+ud5dShtzJkyrQ7Iuije9XY2f7EaSogO1be3P6lQTpJ
-L5tf04hyF0l9obliNMBD1kip6SHt/XLVo/Vdkl95GZz4Utu9XNGOBdkQ0jib8DGB
-VTc/qWdeJUlxQBABfFXBGYXoS5x8xkOe0C1ftx+i1fiJpQ4z7QAaHKb6i/h5E4t3
-D1iTraACToaw2f5Rcidkjandfmw2UxeNh1i3Q9eLDFwZhNTnBsXKez2oajbgDDHJ
-3RQZXzm57261eInfCxv1NTLk1TwefZdC6fHMFya/1d71uxpxrKaZOiqI9R/2V35c
-Qu3Bxgktem+U8dVHrsNZwfaXPIafdyPU+SCczsLFNaIerh4HVFan9Pf3ygTb5835
-WMms77JprRuy8oDnApuK2Tx5tRBf1ETy7ATUxIs40dNTQuVj7VT5biBr97LwRyKM
-4O1+PPLbS256d9z7komAWyF1q/gJUCdQRLtaD3HL6WQdFZmZZABv8S5tclu71lPn
-o8htSjXOmi7ZPGn/ipBe0RMBK42ehXK0f2gysAj+YhzVWqva1JU=
-=XJw5
------END PGP SIGNATURE-----
-
---OQhbRXNHSL5w/5po--
