@@ -2,119 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B927029ACB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F41B29ACB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751679AbgJ0NEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:04:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24897 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2441196AbgJ0NEU (ORCPT
+        id S1751696AbgJ0NEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:04:31 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:37450 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437290AbgJ0NEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:04:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603803859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXXpUz3VnsL2Xy70mrZp5D4eUU9pHEsl4U/A+ZeUZVA=;
-        b=JtzFUvgD/7PMTyTnmFOLk2ht294hO5sX5SC4obWhVytheCAvFBdaWTW3bMgZ+j6wtIx0Ex
-        EqpE2HLPajy9Yc3iEwvAzQ25WXexKMYywtqsZs8ytruWa7eDGzLSs9I2SmNc9FI6NEsoGC
-        K/+3E4A80KJkzuzV9n7DjjO/McTl6vI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-6ACk6zq5PEK2TZ_Z7S-pwA-1; Tue, 27 Oct 2020 09:04:15 -0400
-X-MC-Unique: 6ACk6zq5PEK2TZ_Z7S-pwA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D744FEC505;
-        Tue, 27 Oct 2020 13:04:12 +0000 (UTC)
-Received: from [10.36.112.194] (ovpn-112-194.ams2.redhat.com [10.36.112.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3446F5B4A4;
-        Tue, 27 Oct 2020 13:04:06 +0000 (UTC)
-Subject: Re: [PATCH v10 01/11] vfio: VFIO_IOMMU_SET_PASID_TABLE
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-References: <20200320161911.27494-1-eric.auger@redhat.com>
- <20200320161911.27494-2-eric.auger@redhat.com>
- <2fba23af-9cd7-147d-6202-01c13fff92e5@huawei.com>
- <d3a302bb-34e8-762f-a11f-717b3bc83a2b@redhat.com>
- <cb5835e79b474e30af6702dbee0d46df@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <cde28d6d-c6cf-ef23-b293-f9959aba0a18@redhat.com>
-Date:   Tue, 27 Oct 2020 14:04:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 27 Oct 2020 09:04:31 -0400
+Received: by mail-ej1-f68.google.com with SMTP id p9so2124754eji.4;
+        Tue, 27 Oct 2020 06:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+uRUeR/hNBQddSgcO166WdWvgbjFImRejeVy9hATgyc=;
+        b=EyA65ZmKIDgbELTunD6eswJw1OFdRTjqZkMMGk12M6zES+zDeaMqPelQX6kKcExW2J
+         sQ8iFJZ9CWPIcrwJS8rtR54Sg2fRDNkjrxoAEr2F1hm2JzunOtnzqJXzvju2QG05bUtV
+         GuETLblQo1JSSU9vVy/dnvp27xbPNFmE++fSxgqQqtJwgTDg0nEX7xkz2kZxT8cNtoFf
+         N+7EJrKUC7Hr8h7m6TKxpVuFKYzjMV9ahPo4r5KCApNmevtp8OuYA43HNmRv3OGOMAuO
+         B5qGrDa1ZA+fd6HNw9RLW4ZSf4OcVGvPVwN3gKJ4mXxFGyJ/PwIf2DVv5+7qtKg3dWC7
+         n5LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+uRUeR/hNBQddSgcO166WdWvgbjFImRejeVy9hATgyc=;
+        b=hbzdb1nZtenQ3QxE7VW+wUoUtPSBM1cZJvb35zIutlLab0w2oic98COBE3lejppJRI
+         whoQQvsW8hFF/Nth0MxdwB4fk5GL6V8wUOwmbCAdBPcGO9oEMNCeOA4gZRbd77JHraNo
+         Tudmk99Ul4087CGvCTQW6IlP/Hint4OQY66GfoezP9QhYNW9kvz4ZNgpHaVEg/FOYnTs
+         XkKSdpyxJKCY9OZ9cZnxPgpilRx7DpVkpjLQ7DrC2DVAnCP7ZWTFO8y0ozc9jIUt9FRs
+         Ko9JIBFZQGsw4Eva4yR+H6rxUHigzUNc1c1ZVFZnxCCvgItivdXSfxmZLNNzYd3fHjJJ
+         zV1A==
+X-Gm-Message-State: AOAM533CVkNNzs6RTKP3GulXuB16Gd/JeUhChSaPaFV+XnzbPyvuVpLr
+        9yOzRder0TyvtmocW53jwhtFRLrJwoU=
+X-Google-Smtp-Source: ABdhPJyN7OogsAv0LGMxmo8LCCXIRgHg56DytYueYZCsWNSDc01Fl6Cqpqd9fSVylgF/Cd9IrYWOuw==
+X-Received: by 2002:a17:906:76d5:: with SMTP id q21mr2401953ejn.415.1603803868036;
+        Tue, 27 Oct 2020 06:04:28 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id p20sm1047296ejd.78.2020.10.27.06.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 06:04:26 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 14:04:24 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 01/52] clk: tegra: Export Tegra20 EMC kernel symbols
+Message-ID: <20201027130424.GD1822510@ulmo>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-2-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cb5835e79b474e30af6702dbee0d46df@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pQhZXvAqiZgbeUkD"
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-2-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shameer,
 
-On 10/27/20 1:20 PM, Shameerali Kolothum Thodi wrote:
-> Hi Eric,
-> 
->> -----Original Message-----
->> From: iommu [mailto:iommu-bounces@lists.linux-foundation.org] On Behalf Of
->> Auger Eric
->> Sent: 23 September 2020 12:47
->> To: yuzenghui <yuzenghui@huawei.com>; eric.auger.pro@gmail.com;
->> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
->> kvm@vger.kernel.org; kvmarm@lists.cs.columbia.edu; joro@8bytes.org;
->> alex.williamson@redhat.com; jacob.jun.pan@linux.intel.com;
->> yi.l.liu@intel.com; robin.murphy@arm.com
->> Subject: Re: [PATCH v10 01/11] vfio: VFIO_IOMMU_SET_PASID_TABLE
-> 
-> ...
-> 
->>> Besides, before going through the whole series [1][2], I'd like to
->>> know if this is the latest version of your Nested-Stage-Setup work in
->>> case I had missed something.
->>>
->>> [1]
->>> https://lore.kernel.org/r/20200320161911.27494-1-eric.auger@redhat.com
->>> [2]
->>> https://lore.kernel.org/r/20200414150607.28488-1-eric.auger@redhat.com
->>
->> yes those 2 series are the last ones. Thank you for reviewing.
->>
->> FYI, I intend to respin within a week or 2 on top of Jacob's  [PATCH v10 0/7]
->> IOMMU user API enhancement. 
-> 
-> Thanks for that. Also is there any plan to respin the related Qemu series as well?
-> I know dual stage interface proposals are still under discussion, but it would be
-> nice to have a testable solution based on new interfaces for ARM64 as well.
-> Happy to help with any tests or verifications.
+--pQhZXvAqiZgbeUkD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes the QEMU series will be respinned as well. That's on the top of my
-todo list right now.
+On Mon, Oct 26, 2020 at 01:16:44AM +0300, Dmitry Osipenko wrote:
+> We're going to modularize Tegra EMC drivers and some of the EMC clk driver
+> symbols need to be exported, let's export them.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/clk/tegra/clk-tegra20-emc.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Thanks
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Eric
-> 
-> Please let me know.
-> 
-> Thanks,
-> Shameer
->   
-> 
+--pQhZXvAqiZgbeUkD
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YGtgACgkQ3SOs138+
+s6FhaQ//XAnzBLQ57FAARJLAiQ/+/J7Z6eHOKF54sUk1tMNp3gRDg1hMQU8FJuhj
+GyqgQyr00w43RXQxTjb3hi27kHTfnRexwVLYwh24TloeOYix2+FYm6IT+eSfOPRJ
+SnjM9Y/ZMWnq914HhBQoy05aOcz1Gy2nS643L68h3yyVlxPWtUBvw/S0YuPbO8MO
+c0R5cXOTwN0RP/HQhnBjFlvP+ICC0yB3vq9q0UQBiZqQfEzXvneIpGPJUpjEMX/u
+uICY++vfNgf+sX4VzvIUegPscYHIziI38tRQ6LkCO4gCfyMluZHPIF4Ko+te3nbs
+eJP2LzTiGrVwaCNT5CY5JCQEtq6HgEDEcJLa/8hUgRGHaiEIOlcZ6MyrO1PXf1/u
+HO7gyh1m/+OVsgA1TJuabKMinojW2y+hdD24FfE8Y8LUOEd+oopV/id+z3Ew/iOi
+61Dk/ZzYyMFvoBTet9W+W9+O0B+j0RIeiaxPZcHrREfn2+kCdrNAadjXUVpOTHpf
+glXrDyEcxHAKtxamXlgqmRFTzt6YTNUDtcqdfXcjGPMwy94un0Tyuff4b15IjEX3
+83y19f9svCLYnPghUhd4/WOHA94lgfZztFs6z+2zM8FHXl/eSwZq7jytrWIWP2Qc
+55r/DZspHda6fZOvFsYkvVDJaiRdZxy8OkfcedC6FWHQJGuhrKs=
+=MO9E
+-----END PGP SIGNATURE-----
+
+--pQhZXvAqiZgbeUkD--
