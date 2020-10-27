@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C96D29AC95
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C413529AC9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900368AbgJ0M5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:57:37 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:43828 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900360AbgJ0M5h (ORCPT
+        id S2900394AbgJ0NAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:00:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58592 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2900387AbgJ0NAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:57:37 -0400
-Received: by mail-io1-f68.google.com with SMTP id h21so1369135iob.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iFiKV/id+bhp/OGyzJyPrVgrZf8FoY0fdLp5S5yqHuk=;
-        b=we/SNQIky5YrQh0PzXP6Tgc1eIaMm9E+w9wS9WP1wIMyhXLi3Qc00UqUJ/rWulxl4X
-         S0JMd/4I7MEy/gjBu/RmJEcSkF2lNMRaW5JzUPodhWNlaZb0uE9J8JtBsqctVxmW9IVO
-         U2xNQ12PzyVLQYGwQ/dPySIq6lOjMsSQZpy1iMxR7rqztopW9wJvIZTcihhNHq7gUD4Z
-         PB8BoQcOle680zaF9ywOl0YyvTcQoThDF7oTv0LWEsxHIb3q3cKxsT97yu5gM8Jcnt49
-         ALDxk41xIvjj9e5eSaDMrHteCxC8C1h8wF9vVBR+H/FbrvTnfX5bU9Sfn2K9m9x+Alx1
-         vHxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iFiKV/id+bhp/OGyzJyPrVgrZf8FoY0fdLp5S5yqHuk=;
-        b=RoLAiq1u4rx41iGddtIVaFMgqw1SoDoIQcbCmVMbkXKiAcBVyOBNa1qNBpLwIVE7Ez
-         E6b/x0VUfmQBOfmRzPFMksBWpfKCEQo0Jzn+rnYOR5PSlpBs9KwkwSbSOtED1+VOoWQq
-         uZRO5QaZ/Urat7JAnAKtLObqlbtgJxHpEQ6jecHmsbG1tidtxn20oDh8j9svkckmLb6S
-         +b4c0MMGTBxr6tpSONwHZ9C4nEMvjbS4l8a/v7k8tXqWYUNTCFKjHiWnyfkbHfW8rLZQ
-         5N0r8DWoLbpHN6eTtAXpWIAHQzjHlonmpqrz49hHVCwEffRYmoCvqAXFd6SQgC41MveP
-         pYVw==
-X-Gm-Message-State: AOAM533LN5WI9uOO4afSES+km8CuX/qcCPtJrUK9FbeQdfGH6hWM9Yr1
-        rJu+pI3Jv35Jzk/NRG4XsxnoLSiKGM1qxKpBHLaTCg==
-X-Google-Smtp-Source: ABdhPJw80+MpzHK/ilur7RHbshltPyxr4dvaxh10InBIwhnvQNFGY94xAJejcWr/D8nBiTS/x4L28Z23strGJkwwj8s=
-X-Received: by 2002:a02:b812:: with SMTP id o18mr2137454jam.55.1603803456107;
- Tue, 27 Oct 2020 05:57:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201026175526.2915399-1-enric.balletbo@collabora.com> <20201026175526.2915399-6-enric.balletbo@collabora.com>
-In-Reply-To: <20201026175526.2915399-6-enric.balletbo@collabora.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Tue, 27 Oct 2020 13:57:25 +0100
-Message-ID: <CAOwMV_xJez8WB=XjBSWfRmQ7x6265+2iJ+nLN4BR5YjoQzingQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/16] soc: mediatek: pm_domains: Make bus protection generic
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        weiyi.lu@mediatek.com, Matthias Brugger <mbrugger@suse.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 27 Oct 2020 09:00:54 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kXOah-0007gc-MD; Tue, 27 Oct 2020 13:00:44 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     perex@perex.cz, hui.wang@canonical.com,
+        kai.vehmanen@linux.intel.com, mwolf@adiumentum.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH v3 0/3] HDA controller PM and codec PM cleanups
+Date:   Tue, 27 Oct 2020 21:00:35 +0800
+Message-Id: <20201027130038.16463-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -               ret = mtk_infracfg_set_bus_protection(pd->infracfg,
-> -                                                     bpd[i].bus_prot_mask,
-> -                                                     bpd[i].bus_prot_reg_update);
+While working on the issue "ALSA: hda: fix jack detection with Realtek
+codecs when in D3", I've found using pm_runtime_force_{suspend,resume}()
+have surprising behavior, specifically, pm_runtime_need_not_resume()
+uses pm_runtime_need_not_resume() to avoid calling resume callback, so
+jackpoll was used to really power up the codec.
 
-[snip]
+We can use direct-complete to do the keep the codec suspended throughout
+the system PM flow, namely, keep the codec suspended all the way, unless
+the codec needs to be woken up after resume.
 
-> -               ret = mtk_infracfg_clear_bus_protection(pd->infracfg,
-> -                                                       bpd[i].bus_prot_mask,
-> -                                                       bpd[i].bus_prot_reg_update);
+For HDA controller, PCI core may enable direct-complete for it if
+conditions are met. So make runtime and system PM distinctive to always
+apply correct wake up setting.
 
-Since you got rid of all the dependencies to mtk-infracfg.c, maybe you
-can also remove the "depends on MTK_INFRACFG" in the Kconfig.
+At least point, hopefully all runtime PM issues are solved, let's enable
+runtime PM by default again.
+
+v3:
+ - Drop "ALSA: hda: Stop mangling PCI IRQ"
+
+Kai-Heng Feng (3):
+  ALSA: hda: Refactor codec PM to use direct-complete optimization
+  ALSA: hda: Separate runtime and system suspend
+  ALSA: hda: Reinstate runtime_allow() for all hda controllers
+
+ sound/pci/hda/hda_codec.c      | 45 +++++++++++++++---------
+ sound/pci/hda/hda_controller.h |  3 +-
+ sound/pci/hda/hda_intel.c      | 63 +++++++++++++++++++---------------
+ 3 files changed, 66 insertions(+), 45 deletions(-)
+
+-- 
+2.17.1
+
