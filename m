@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A114B29C0B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D1729BF3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818200AbgJ0RSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:18:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56584 "EHLO mail.kernel.org"
+        id S1787622AbgJ0PAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781667AbgJ0O4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:56:02 -0400
+        id S1752048AbgJ0Oy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:54:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF87722202;
-        Tue, 27 Oct 2020 14:56:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA46B22202;
+        Tue, 27 Oct 2020 14:54:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810561;
-        bh=8dWP46Q/wDUBmxbTdzmA+KEgGq9L6z/3idnfwPc+sEM=;
+        s=default; t=1603810468;
+        bh=P4a75jnVXDWT0V3ovpmOnRfZTRnN5zdieUF7mNfbbWY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vIXCDEBdIX9WdaJGysGm9aH9lxNrz7OReqY8nbIw0Cyog0kuIvdfPVGCls7me008S
-         zUItHnkuRCUd2yHglaP39MZg7/Z2LYyUEGt24Ni87oZi7v7gragpS559puMDUBKXU/
-         I6l/8UtlfqWDQQJQTCIDLPzgVDMpWCSXq/2X53EQ=
+        b=iS9LmdygOpc/g/kA/kUuVBwnRerZVAyfwiViRYfKZ3ZyfuaP6k9YUcGhUnVkkCYzQ
+         4kdoqGsDLRRkauWRhj2bpgACjZj+H6NCkFtmajI+nwmxUP3H7Y9YFZutIphkh5LG8R
+         1DPHR8t92khEhnmjJnmz02BMAfRQK0SuJmNvHa0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 141/633] media: camss: Fix a reference count leak.
-Date:   Tue, 27 Oct 2020 14:48:04 +0100
-Message-Id: <20201027135529.301708465@linuxfoundation.org>
+Subject: [PATCH 5.8 142/633] media: s5p-mfc: Fix a reference count leak
+Date:   Tue, 27 Oct 2020 14:48:05 +0100
+Message-Id: <20201027135529.346906817@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -46,38 +46,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit d0675b67b42eb4f1a840d1513b5b00f78312f833 ]
+[ Upstream commit 78741ce98c2e36188e2343434406b0e0bc50b0e7 ]
 
 pm_runtime_get_sync() increments the runtime PM usage counter even
 when it returns an error code, causing incorrect ref count if
-PM runtime put is not called in error handling paths.
-Thus call pm_runtime_put_sync() if pm_runtime_get_sync() fails.
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-Fixes: 02afa816dbbf ("media: camss: Add basic runtime PM support")
+Fixes: c5086f130a77 ("[media] s5p-mfc: Use clock gating only on MFC v5 hardware")
 Signed-off-by: Qiushi Wu <wu000273@umn.edu>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/camss/camss-csiphy.c | 4 +++-
+ drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-index 008afb85023be..3c5b9082ad723 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-@@ -176,8 +176,10 @@ static int csiphy_set_power(struct v4l2_subdev *sd, int on)
- 		int ret;
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c b/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
+index 7d52431c2c837..62d2320a72186 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
+@@ -79,8 +79,10 @@ int s5p_mfc_power_on(void)
+ 	int i, ret = 0;
  
- 		ret = pm_runtime_get_sync(dev);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_sync(dev);
- 			return ret;
-+		}
+ 	ret = pm_runtime_get_sync(pm->device);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(pm->device);
+ 		return ret;
++	}
  
- 		ret = csiphy_set_clock_rates(csiphy);
- 		if (ret < 0) {
+ 	/* clock control */
+ 	for (i = 0; i < pm->num_clocks; i++) {
 -- 
 2.25.1
 
