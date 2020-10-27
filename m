@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC9729BD17
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A683A29BD24
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811747AbgJ0QlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:41:09 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:43616 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1811706AbgJ0Qkv (ORCPT
+        id S1811777AbgJ0QmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:42:01 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:51663 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1811767AbgJ0Qlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:40:51 -0400
-Received: by mail-ej1-f68.google.com with SMTP id k3so3134302ejj.10;
-        Tue, 27 Oct 2020 09:40:49 -0700 (PDT)
+        Tue, 27 Oct 2020 12:41:55 -0400
+Received: by mail-pj1-f65.google.com with SMTP id a17so1075010pju.1;
+        Tue, 27 Oct 2020 09:41:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=whgiE5mkniKGwNlADQ4aF2iRZstl2eVAqQyrroOhp7I=;
-        b=ouxnTOZqdyiymOCtooGaHR1k5LkYLpUX/UawsmhwKB8H1inu1JvjXQH7JCFxzfAJ8b
-         uxSwd/kxhxFSHOUAKKrooIjxaBUhXMlc7Zx77067JCZcdk1P13Z+b3ctWxZJShJqyFQz
-         gEFjuLEO1+2iqNZHcQrUF85/yQBTLpPEf8eEem16ie+4TU0VZ8Sh4zM8ssRTDNsg4yu6
-         HS5vvvI3l/GkRhvewvzew5lBtH3IkL4drrYzU+zleLr5KgCyMHGDcbaYl7rHTtbln0tm
-         sBLZXG7hga+QEXKnPIG9QUFWYd6r5qPmPkvNrZA19LwZdkyBznZvt/GDyVIGwoGhbLTC
-         oSgQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ebBfe6g+xIwA0Tw7T7ptAhswGHI+h9atRQ+wtk5eLJM=;
+        b=vFw9A52vUPt+Z6azESaiWaj6f6RnK6WmgcZfmCdqg30ygptQfXqoaWHeScuoNsMUcL
+         LFBrxcc3UK6ZrcRlK5yMWQydC4uSY8bXOQANfqwRP1eXlykw3jV58ZyR58sIXBm+HRfy
+         vYQZ8hSojiimEwm6a2/Jpl+5twHC88GdAmxu3wHGuRHWue5fVcJY1DPUHhnpeRigSGZc
+         VrPVUTeS6NGaTlPe7onOvCg10lX1FXx8QdW4QCJZ8DwsAcTcxh7dq+42zHm6DOHOPN6X
+         Fkze0CaGWSHSGRhOa+UQSIkAV+OUv4T06N/Yptxodpi2pNzEzDFOn+8yW6ly7Lth7XwK
+         QnvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=whgiE5mkniKGwNlADQ4aF2iRZstl2eVAqQyrroOhp7I=;
-        b=SinYjZ8VatrNEggUJzOcGYz3tmRVlHBvG/pplXyuzhvYaA66I2vjUcxhB8UPd/Wo7z
-         dVm370eaNiPNac0cQtsFMJO+c+6Ht2yMqlqKw7pYJjjGb1iCxyEqMiBhD45iJ5cweo0N
-         kdnSLSkOnyAXbMiaMAo5sj8XkfIU3QCWiOhy5qUBOSKhViF/6nqpoEp+iT7J8chy0nvC
-         LYYuCM25b2ghucIeupiR8KU2tbmnvgAB9DomLyGhG+WyHkI6pnp3v/CB0Pj2UfgSOpxH
-         5iFAm3C6ZfC0HC5lfX9MtH6oxK8zH/kTubOoegMFn82+p18sOp8LD5BiOBUcs2C+vh6X
-         MGUA==
-X-Gm-Message-State: AOAM532KtQ+iSPrSaQEpRn6JOhMLIfNMm4p3v9V507uBjjJ6kU7YktWo
-        EYWfcEl9saqeaavyzXaPOj4jCOeIS/8=
-X-Google-Smtp-Source: ABdhPJziJBh4R8Lb8wVZR6jDy/SW8hlkuj/6Q45kiU19NRiXBgFuGFkfYROxwksv9OquKfS2d/h/tQ==
-X-Received: by 2002:a17:906:7e43:: with SMTP id z3mr3380288ejr.143.1603816848730;
-        Tue, 27 Oct 2020 09:40:48 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:659b:3847:24e3:b881? ([2a01:110f:b59:fd00:659b:3847:24e3:b881])
-        by smtp.gmail.com with ESMTPSA id ss7sm1372379ejb.28.2020.10.27.09.40.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 09:40:47 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505 flash
- led controller
-To:     Pavel Machek <pavel@ucw.cz>, cy_huang <u0084500@gmail.com>
-Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
-        devicetree@vger.kernel.org
-References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
- <20201027082900.GA21354@amd>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <b0f5b3c8-bebd-eeb6-20b2-15529816720c@gmail.com>
-Date:   Tue, 27 Oct 2020 17:40:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ebBfe6g+xIwA0Tw7T7ptAhswGHI+h9atRQ+wtk5eLJM=;
+        b=Q8Kd+sN7HomaenbnTvvS5gUMFf3tlKOGVrAj40SqMC7e70n0cqQTfR2BUuiiHo0L69
+         lJ0U9/Ihse+Z4ivQZ4NPKRnkLPG8lj6d+cuZQkrPQzSsF+kQWujy1BBF3dWxJcn553o+
+         nKJQl9i0GhEC5et+Gc6aokZw2iJy/0EkkAjSu5vZFELyOur9yNnqTRRX8uO+HQ5PMXgQ
+         CDwZIFPmvdT9Gpn+V5QhL3fTvkTfZraqWNL64sJrA3+tpFdpFGZ6KWw0VxQUjo/au9Om
+         ILXf4yQ008zZG5ixEld+98QLLrkbRyh0FTH+5nEmhq61twoKkaU3GhB2r0n/BbStA3b+
+         NHXQ==
+X-Gm-Message-State: AOAM531wWCmECJyFETBJcDAeOI/1Rlj8kKPVmVXRdAWrhRvZcbCiY2FN
+        T1m7BAvWi5qL5Zerw0s4wQ==
+X-Google-Smtp-Source: ABdhPJxLkLvUsLuiUeeggrviMsdPesWsRrw2oB2fz/mRoiv9z7/Da38zY8teYsS2tEKx7sc/DwEgDg==
+X-Received: by 2002:a17:902:b488:b029:d4:dbdf:c6a5 with SMTP id y8-20020a170902b488b02900d4dbdfc6a5mr3312027plr.42.1603816915108;
+        Tue, 27 Oct 2020 09:41:55 -0700 (PDT)
+Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id gx20sm2459230pjb.1.2020.10.27.09.41.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 09:41:54 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH 5/5] parisc/sticore: Avoid hard-coding built-in font charcount
+Date:   Tue, 27 Oct 2020 12:41:02 -0400
+Message-Id: <c38042bbf5c9777c84900d56c09f3c156b32af48.1603788512.git.yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com> <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com> <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com> <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com> <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201027082900.GA21354@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel, ChiYuan,
+sti_select_fbfont() and sti_cook_fonts() are hard-coding the number of
+characters of our built-in fonts as 256. Recently, we included that
+information in our kernel font descriptor `struct font_desc`, so use
+`fbfont->charcount` instead of hard-coded values.
 
-On 10/27/20 9:29 AM, Pavel Machek wrote:
-> Hi!
-> 
->> From: ChiYuan Huang <cy_huang@richtek.com>
->>
->> Add support for RT4505 flash led controller. It can support up to 1.5A
->> flash current with hardware timeout and low input voltage
->> protection.
-> 
-> Please use upper-case "LED" everywhere.
-> 
-> This should be 2nd in the series, after DT changes.
-> 
->> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
->> ---
->>   drivers/leds/Kconfig       |  11 ++
->>   drivers/leds/Makefile      |   1 +
->>   drivers/leds/leds-rt4505.c | 397 +++++++++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 409 insertions(+)
->>   create mode 100644 drivers/leds/leds-rt4505.c
-[...]
->> +static int rt4505_torch_brightness_set(struct led_classdev *lcdev, enum led_brightness level)
->> +{
-> 
-> 80 columns, where easy.
-> 
->> +	struct rt4505_priv *priv = container_of(lcdev, struct rt4505_priv, flash.led_cdev);
->> +	u32 val = 0;
->> +	int ret;
->> +
->> +	mutex_lock(&priv->lock);
->> +
->> +	if (level != LED_OFF) {
->> +		ret = regmap_update_bits(priv->regmap, RT4505_REG_ILED, RT4505_ITORCH_MASK,
->> +					 (level - 1) << RT4505_ITORCH_SHIFT);
->> +		if (ret)
->> +			goto unlock;
->> +
->> +		val = RT4505_TORCH_SET;
->> +	}
->> +
->> +	ret = regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4505_ENABLE_MASK, val);
->> +
->> +unlock:
->> +	mutex_unlock(&priv->lock);
->> +	return ret;
->> +}
-> 
-> Why is the locking needed? What will the /sys/class/leds interface
-> look like on system with your flash?
+This patch depends on patch "Fonts: Add charcount field to font_desc".
 
-The locking is needed since this can be called via led_set_brightness()
-from any place in the kernel, and especially from triggers.
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+$ # Build-tested (Ubuntu 20.04)
+$ sudo apt-get install binutils-hppa64-linux-gnu gcc-7-hppa64-linux-gnu
+$ cp arch/parisc/configs/generic-64bit_defconfig .config
+$ make -j`nproc` ARCH=parisc CROSS_COMPILE=hppa64-linux-gnu- all
 
+ drivers/video/console/sticore.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
+index d1bb5915082b..f869b723494f 100644
+--- a/drivers/video/console/sticore.c
++++ b/drivers/video/console/sticore.c
+@@ -506,7 +506,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
+ 			fbfont->width, fbfont->height, fbfont->name);
+ 			
+ 	bpc = ((fbfont->width+7)/8) * fbfont->height; 
+-	size = bpc * 256;
++	size = bpc * fbfont->charcount;
+ 	size += sizeof(struct sti_rom_font);
+ 
+ 	nf = kzalloc(size, STI_LOWMEM);
+@@ -514,7 +514,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
+ 		return NULL;
+ 
+ 	nf->first_char = 0;
+-	nf->last_char = 255;
++	nf->last_char = fbfont->charcount - 1;
+ 	nf->width = fbfont->width;
+ 	nf->height = fbfont->height;
+ 	nf->font_type = STI_FONT_HPROMAN8;
+@@ -525,7 +525,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
+ 
+ 	dest = nf;
+ 	dest += sizeof(struct sti_rom_font);
+-	memcpy(dest, fbfont->data, bpc*256);
++	memcpy(dest, fbfont->data, bpc * fbfont->charcount);
+ 
+ 	cooked_font = kzalloc(sizeof(*cooked_font), GFP_KERNEL);
+ 	if (!cooked_font) {
+@@ -660,7 +660,7 @@ static int sti_cook_fonts(struct sti_cooked_rom *cooked_rom,
+ void sti_font_convert_bytemode(struct sti_struct *sti, struct sti_cooked_font *f)
+ {
+ 	unsigned char *n, *p, *q;
+-	int size = f->raw->bytes_per_char * 256 + sizeof(struct sti_rom_font);
++	int size = f->raw->bytes_per_char * (f->raw->last_char + 1) + sizeof(struct sti_rom_font);
+ 	struct sti_rom_font *old_font;
+ 
+ 	if (sti->wordmode)
 -- 
-Best regards,
-Jacek Anaszewski
+2.25.1
+
