@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9330629CAFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AB829CB06
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832100AbgJ0VKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:10:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442629AbgJ0VKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:10:24 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC3C020738;
-        Tue, 27 Oct 2020 21:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603833024;
-        bh=NjdeQ+vCUNaMff+Zj42NKK898b5WXU5E7ZwpLNsxI24=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vZUHLyoqYeo0kxq3pzrosakhNdPQ3Fssqmxudvr8kQ3krHs179HqCqjRiwBbrtpxa
-         yuuAz0t3lZxaUb2bVblS7bzjX7lmbstyjrKyhHH17IvwRiA1ma6ciIhTBRPsQcfEO8
-         Z9swqO32NXuPft1Cpj70BOYVrMSId1wpSGqRfVCc=
-Date:   Tue, 27 Oct 2020 14:10:22 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH v2 4/4] dm: enable may_passthrough_inline_crypto on some
- targets
-Message-ID: <20201027211022.GB2416412@gmail.com>
-References: <20201015214632.41951-1-satyat@google.com>
- <20201015214632.41951-5-satyat@google.com>
+        id S1832124AbgJ0VMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:12:03 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49000 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2501973AbgJ0VMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:12:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 4402A1F44C26
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH] mfd: syscon: Add syscon_regmap_lookup_by_phandle_optional() function.
+Date:   Tue, 27 Oct 2020 22:11:54 +0100
+Message-Id: <20201027211154.3371691-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015214632.41951-5-satyat@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 09:46:32PM +0000, Satya Tangirala wrote:
-> dm-linear and dm-flakey obviously can pass through inline crypto support.
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  drivers/md/dm-flakey.c | 1 +
->  drivers/md/dm-linear.c | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/md/dm-flakey.c b/drivers/md/dm-flakey.c
-> index a2cc9e45cbba..655286dacc35 100644
-> --- a/drivers/md/dm-flakey.c
-> +++ b/drivers/md/dm-flakey.c
-> @@ -253,6 +253,7 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
->  	ti->num_discard_bios = 1;
->  	ti->per_io_data_size = sizeof(struct per_bio_data);
->  	ti->private = fc;
-> +	ti->may_passthrough_inline_crypto = true;
->  	return 0;
->  
->  bad:
-> diff --git a/drivers/md/dm-linear.c b/drivers/md/dm-linear.c
-> index 00774b5d7668..345e22b9be5d 100644
-> --- a/drivers/md/dm-linear.c
-> +++ b/drivers/md/dm-linear.c
-> @@ -62,6 +62,7 @@ static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
->  	ti->num_secure_erase_bios = 1;
->  	ti->num_write_same_bios = 1;
->  	ti->num_write_zeroes_bios = 1;
-> +	ti->may_passthrough_inline_crypto = true;
->  	ti->private = lc;
->  	return 0;
+This adds syscon_regmap_lookup_by_phandle_optional() function to get an
+optional regmap.
 
-How about instead using a flag DM_TARGET_PASSES_CRYPTO in target_type::features,
-analogous to DM_TARGET_PASSES_INTEGRITY?
+It behaves the same as syscon_regmap_lookup_by_phandle() except where
+there is no regmap phandle. In this case, instead of returning -ENODEV,
+the function returns NULL. This makes error checking simpler when the
+regmap phandle is optional.
 
-- Eric
+Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+
+ drivers/mfd/syscon.c       | 13 +++++++++++++
+ include/linux/mfd/syscon.h | 11 +++++++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index ca465794ea9c..60c5c2b194cc 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -255,6 +255,19 @@ struct regmap *syscon_regmap_lookup_by_phandle_args(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_args);
+ 
++struct regmap *syscon_regmap_lookup_by_phandle_optional(struct device_node *np,
++					const char *property)
++{
++	struct regmap *regmap;
++
++	regmap = syscon_regmap_lookup_by_phandle(np, property);
++	if (IS_ERR(regmap) && PTR_ERR(regmap) == -ENODEV)
++		return NULL;
++
++	return regmap;
++}
++EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_optional);
++
+ static int syscon_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
+index 7f20e9b502a5..a1fe8aedced2 100644
+--- a/include/linux/mfd/syscon.h
++++ b/include/linux/mfd/syscon.h
+@@ -28,6 +28,9 @@ extern struct regmap *syscon_regmap_lookup_by_phandle_args(
+ 					const char *property,
+ 					int arg_count,
+ 					unsigned int *out_args);
++extern struct regmap *syscon_regmap_lookup_by_phandle_optional(
++					struct device_node *np,
++					const char *property);
+ #else
+ static inline struct regmap *device_node_to_regmap(struct device_node *np)
+ {
+@@ -59,6 +62,14 @@ static inline struct regmap *syscon_regmap_lookup_by_phandle_args(
+ {
+ 	return ERR_PTR(-ENOTSUPP);
+ }
++
++static inline struct regmap *syscon_regmap_lookup_by_phandle_optional(
++					struct device_node *np,
++					const char *property)
++{
++	return ERR_PTR(-ENOTSUPP);
++}
++
+ #endif
+ 
+ #endif /* __LINUX_MFD_SYSCON_H__ */
+-- 
+2.28.0
+
