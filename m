@@ -2,166 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1396129BA66
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1BC29BB6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805657AbgJ0QBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:01:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:44288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801410AbgJ0PlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:41:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43CD413D5;
-        Tue, 27 Oct 2020 08:41:11 -0700 (PDT)
-Received: from [10.57.50.191] (unknown [10.57.50.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFB213F719;
-        Tue, 27 Oct 2020 08:40:55 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm/a6xx: Add support for using system cache on
- MMU500 based targets
-To:     Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        freedreno@lists.freedesktop.org,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sean Paul <sean@poorly.run>
-References: <20201026185428.101443-1-jcrouse@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <dd760230-813a-31d1-799e-4be96148e560@arm.com>
-Date:   Tue, 27 Oct 2020 15:40:54 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1806108AbgJ0QFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:05:53 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:51744 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1802140AbgJ0Ppp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:45:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vS0WQyA1FoopoJORMaYRyN4NqXEhBztCAPdnx7wzKRQ=; b=V4L7qO2R2JS6pfVWkQymVaWMwj
+        RmjAu/+KnCywtjZeZK9NVh+x0yEmTW0fFmGJ/vI4GFgqyf1KSr4f4DnxLB6XcnZRVvcFTZBE1pU2K
+        PkpcGgFuFuA50BHrE/3PQijXYUPUEo65svNy/X64ptCQF1jsNXjZFOGiJpJo0P34Ms67tBGRFzanp
+        8qhK0j5vR3gFi3+q5LWdy7qxPPxKMOxw9OuGi9x3Uh3hnFTPSIBHGlcTteCxRDjNRr4QqtZuBgLyt
+        TlcrZhtGUH8hkI1+fqVOmwRdJxetpEJy1Y//hMblbW0QhMYESRv5WcJcwRT6M+E5U/IcQq39HAh3i
+        VVMxcvKw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXRAH-0004XO-B2; Tue, 27 Oct 2020 15:45:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D08993060F2;
+        Tue, 27 Oct 2020 16:45:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A7876203CF3A9; Tue, 27 Oct 2020 16:45:33 +0100 (CET)
+Date:   Tue, 27 Oct 2020 16:45:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        tip-bot2 for Peter Zijlstra <tip-bot2@linutronix.de>,
+        Qian Cai <cai@redhat.com>, x86 <x86@kernel.org>
+Subject: Re: [tip: locking/core] lockdep: Fix usage_traceoverflow
+Message-ID: <20201027154533.GB2611@hirez.programming.kicks-ass.net>
+References: <20200930094937.GE2651@hirez.programming.kicks-ass.net>
+ <160208761332.7002.17400661713288945222.tip-bot2@tip-bot2>
+ <160379817513.29534.880306651053124370@build.alporthouse.com>
+ <20201027115955.GA2611@hirez.programming.kicks-ass.net>
+ <20201027123056.GE2651@hirez.programming.kicks-ass.net>
+ <160380535006.10461.1259632375207276085@build.alporthouse.com>
 MIME-Version: 1.0
-In-Reply-To: <20201026185428.101443-1-jcrouse@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160380535006.10461.1259632375207276085@build.alporthouse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 18:54, Jordan Crouse wrote:
-> This is an extension to the series [1] to enable the System Cache (LLC) for
-> Adreno a6xx targets.
-> 
-> GPU targets with an MMU-500 attached have a slightly different process for
-> enabling system cache. Use the compatible string on the IOMMU phandle
-> to see if an MMU-500 is attached and modify the programming sequence
-> accordingly.
-> 
-> [1] https://patchwork.freedesktop.org/series/83037/
-> 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
-> 
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 46 +++++++++++++++++++++------
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
->   2 files changed, 37 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 95c98c642876..b7737732fbb6 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1042,6 +1042,8 @@ static void a6xx_llc_deactivate(struct a6xx_gpu *a6xx_gpu)
->   
->   static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
->   {
-> +	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
-> +	struct msm_gpu *gpu = &adreno_gpu->base;
->   	u32 cntl1_regval = 0;
->   
->   	if (IS_ERR(a6xx_gpu->llc_mmio))
-> @@ -1055,11 +1057,17 @@ static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
->   			       (gpu_scid << 15) | (gpu_scid << 20);
->   	}
->   
-> +	/*
-> +	 * For targets with a MMU500, activate the slice but don't program the
-> +	 * register.  The XBL will take care of that.
-> +	 */
->   	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
-> -		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
-> +		if (!a6xx_gpu->have_mmu500) {
-> +			u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
->   
-> -		gpuhtw_scid &= 0x1f;
-> -		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
-> +			gpuhtw_scid &= 0x1f;
-> +			cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
-> +		}
->   	}
->   
->   	if (cntl1_regval) {
-> @@ -1067,13 +1075,20 @@ static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
->   		 * Program the slice IDs for the various GPU blocks and GPU MMU
->   		 * pagetables
->   		 */
-> -		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
-> -
-> -		/*
-> -		 * Program cacheability overrides to not allocate cache lines on
-> -		 * a write miss
-> -		 */
-> -		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
-> +		if (a6xx_gpu->have_mmu500)
-> +			gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0),
-> +				cntl1_regval);
-> +		else {
-> +			a6xx_llc_write(a6xx_gpu,
-> +				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
-> +
-> +			/*
-> +			 * Program cacheability overrides to not allocate cache
-> +			 * lines on a write miss
-> +			 */
-> +			a6xx_llc_rmw(a6xx_gpu,
-> +				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
-> +		}
->   	}
->   }
->   
-> @@ -1086,10 +1101,21 @@ static void a6xx_llc_slices_destroy(struct a6xx_gpu *a6xx_gpu)
->   static void a6xx_llc_slices_init(struct platform_device *pdev,
->   		struct a6xx_gpu *a6xx_gpu)
->   {
-> +	struct device_node *phandle;
-> +
->   	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
->   	if (IS_ERR(a6xx_gpu->llc_mmio))
->   		return;
->   
-> +	/*
-> +	 * There is a different programming path for targets with an mmu500
-> +	 * attached, so detect if that is the case
-> +	 */
-> +	phandle = of_parse_phandle(pdev->dev.of_node, "iommus", 0);
-> +	a6xx_gpu->have_mmu500 = (phandle &&
-> +		of_device_is_compatible(phandle, "arm,mmu500"));
+On Tue, Oct 27, 2020 at 01:29:10PM +0000, Chris Wilson wrote:
 
-Note that this should never match, since the compatible string defined 
-by the binding is "arm,mmu-500" ;)
+> <4> [304.908891] hm#2, depth: 6 [6], 3425cfea6ff31f7f != 547d92e9ec2ab9af
+> <4> [304.908897] WARNING: CPU: 0 PID: 5658 at kernel/locking/lockdep.c:3679 check_chain_key+0x1a4/0x1f0
 
-Robin.
+Urgh, I don't think I've _ever_ seen that warning trigger.
 
-> +	of_node_put(phandle);
-> +
->   	a6xx_gpu->llc_slice = llcc_slice_getd(LLCC_GPU);
->   	a6xx_gpu->htw_llc_slice = llcc_slice_getd(LLCC_GPUHTW);
->   
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> index 9e6079af679c..e793d329e77b 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
-> @@ -32,6 +32,7 @@ struct a6xx_gpu {
->   	void __iomem *llc_mmio;
->   	void *llc_slice;
->   	void *htw_llc_slice;
-> +	bool have_mmu500;
->   };
->   
->   #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
-> 
+The comments that go with it suggest memory corruption is the most
+likely trigger of it. Is it easy to trigger?
