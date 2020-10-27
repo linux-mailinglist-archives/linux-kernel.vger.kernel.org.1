@@ -2,92 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A46129A89C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A339929A899
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896694AbgJ0KAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:00:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43053 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2896568AbgJ0J7I (ORCPT
+        id S2896683AbgJ0KAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:00:36 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:34025 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896656AbgJ0J7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:59:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603792747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tLtSmreGZ8ivBs0p74ioOfMSZEASbgeofS5XUTejfho=;
-        b=TB834nodNCTfsqAEgotY3j5TlPWF0zO6828DwP+NItZLsyHg7wUnKCG7Wa5NFPFrUACC4L
-        5GBs5VTWAKkKC9yhfYOvd1V34SC4qSc4lqgAyvfRdgrUV5Rpp68KKwwzEIH2tLktdC4izm
-        MIpnX4Ow3pnktvoAJwV2/Cwrqu9+4+w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-mluE0FvaPgadKX6t8AC3zg-1; Tue, 27 Oct 2020 05:59:05 -0400
-X-MC-Unique: mluE0FvaPgadKX6t8AC3zg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 853901009636;
-        Tue, 27 Oct 2020 09:59:00 +0000 (UTC)
-Received: from [10.36.113.185] (ovpn-113-185.ams2.redhat.com [10.36.113.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD79C610F3;
-        Tue, 27 Oct 2020 09:58:58 +0000 (UTC)
-Subject: Re: [PATCH 1/3] mm, page_alloc: do not rely on the order of
- page_poison and init_on_alloc/free parameters
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mateusz Nosek <mateusznosek0@gmail.com>
-References: <20201026173358.14704-1-vbabka@suse.cz>
- <20201026173358.14704-2-vbabka@suse.cz>
- <3784dac7-49cb-006b-7b9d-1244d5c59935@redhat.com>
- <9a2b88de-3c01-21d0-69ff-08643f7c4b68@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c14170b8-9705-f9ac-bcb0-aaa623de903d@redhat.com>
-Date:   Tue, 27 Oct 2020 10:58:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 27 Oct 2020 05:59:47 -0400
+Received: by mail-il1-f196.google.com with SMTP id v18so962034ilg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=usfplqa+qJQAziOe1mo6w6IfKhsrwJJj00MeXYg7IhA=;
+        b=SvptCW0h3KqyWUTvUvXBMtFiEBk6j6OpalEJoZylz2xyXcj5kZmUTFVVLFJfSHJjDF
+         JbIfNqzq2EujC9158/ZYxRmo0aG+Hndm39nz68uAAFn1yEkXBo0G925CUp/NSSUacDN2
+         utMN1gWJDQwzy99ypoFeRr1l+QpnSLJFzdynRaayIHPcUToy0m6vmIh7sCyF1sBMoTn2
+         ud5J5CJmUMsvm0RgumUbXEdTg+qxD0XJwVkksBJhLJDQkhpuEt69/+ofHZs4bx5Tro2I
+         WJvD4AGKeU6cpdTCE7uNyN134l6aFL3Ok63AoohakPmseNRCvzqZrSPme5zi2IlGFkqT
+         B2NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=usfplqa+qJQAziOe1mo6w6IfKhsrwJJj00MeXYg7IhA=;
+        b=FKrDzAmtbUm8lhqX+P7Z0d8bMVRvE81x8lmjZgaWp+f6Npb1w7gQZ/WWOiqxF/+AIZ
+         GdUjXrygAXcJCvRsy0pAPyk8jPI72FRrA8ACLRDFzedJFEI8AONTGhZeh5Eh9f24/sJ2
+         ZwVGbDSeVOOjiHf1ICnyIKGyGSuAnCRjsiwr+VRClDjq+uTE/O0g7ydb6RXvFCK/P1ui
+         2clj0vChcqVvbcUsdNIEO6L9YxIPr1bLPyEepAhshh6X2ug6rovM28STkSUedmEfXDFy
+         75xHLr4/RnQM1WhNFGbFGIKjoHMHI+29cltTkMI9ugWIRgOi3VGRntW7ePHOrynDpV6X
+         EzyQ==
+X-Gm-Message-State: AOAM532jXSsq2zyScQT5kWWAM+n4samsaCWN9wCIDdzrzhEgvzfeSftg
+        LqkbjZ/UTZLpbiwfnM60CJFZySVeiAtuAUDdtKFlfw==
+X-Google-Smtp-Source: ABdhPJx0OWukHLrAYRuR0iUMopMDG1i2ka1ksbrqEfNxUTFAw6vjeqAtMwNdohBWK2MqZk+rPW64KGdBzSPJIPTEH+U=
+X-Received: by 2002:a92:d20e:: with SMTP id y14mr418095ily.252.1603792785654;
+ Tue, 27 Oct 2020 02:59:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9a2b88de-3c01-21d0-69ff-08643f7c4b68@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20200826145249.745432-1-npiggin@gmail.com> <20200826145249.745432-6-npiggin@gmail.com>
+ <20200826152510.GB24545@gaia> <1598458759.6wa1mql9py.astroid@bobo.none>
+In-Reply-To: <1598458759.6wa1mql9py.astroid@bobo.none>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Oct 2020 15:29:34 +0530
+Message-ID: <CA+G9fYvejffDjf5JVymq1mfbyCUOKTqbCPE0fSM8_5CXaXCm8A@mail.gmail.com>
+Subject: Re: [PATCH v2 05/23] arm64: use asm-generic/mmu_context.h for no-op implementations
+To:     Nicholas Piggin <npiggin@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arch@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Will Deacon <will@kernel.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.10.20 10:58, Vlastimil Babka wrote:
-> On 10/27/20 10:03 AM, David Hildenbrand wrote:
->> On 26.10.20 18:33, Vlastimil Babka wrote:
->>> Enabling page_poison=1 together with init_on_alloc=1 or init_on_free=1 produces
->>> a warning in dmesg that page_poison takes precendence. However, as these
->>> warnings are printed in early_param handlers for init_on_alloc/free, they are
->>> not printed if page_poison is enabled later on the command line (handlers are
->>> called in the order of their parameters), or when init_on_alloc/free is always
->>> enabled by the respective config option - before the page_poison early param
->>> handler is called, it is not considered to be enabled. This is inconsistent.
->>>
->>> We can remove the dependency on order by making the init_on_* parameters only
->>> set a boolean variable, and postponing the evaluation after all early params
->>> have been processed. Introduce a new init_mem_debugging() function for that,
->>> and move the related debug_pagealloc processing there as well.
->>
->> init_mem_debugging() is somewhat sub-optimal - init_on_alloc=1 or
->> init_on_free=1 are rather security hardening mechanisms.
-> 
-> Well yeah, init_mem_debugging_and_hardening()?
+On Wed, 26 Aug 2020 at 21:50, Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> Excerpts from Catalin Marinas's message of August 27, 2020 1:25 am:
+> > On Thu, Aug 27, 2020 at 12:52:31AM +1000, Nicholas Piggin wrote:
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: linux-arm-kernel@lists.infradead.org
+> >> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> >
+> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> >
+>
+> Thank you, I see I stupidly mis-rebased this patch too :( Sorry
+> I'll fix that.
 
-Would work for me.
+arm64 build error caused due to this patch on linux next 20201027 tag.
 
--- 
-Thanks,
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux ARCH=3Darm64
+CROSS_COMPILE=3Daarch64-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
+aarch64-linux-gnu-gcc" O=3Dbuild defconfig
+#
+#
+#
+set -e
+cd /linux
+export ARCH=3Darm64
+export HOSTCC=3Dgcc
+export CC=3Dgcc
+export CROSS_COMPILE=3Daarch64-linux-gnu-
+scripts/kconfig/merge_config.sh -O build 'build/.config' 'build/frag.config=
+'
+#
+#
+# make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Darm64
+CROSS_COMPILE=3Daarch64-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
+aarch64-linux-gnu-gcc" O=3Dbuild Image
+#
+In file included from ../arch/arm64/include/asm/mmu_context.h:257,
+                 from ../arch/arm64/include/asm/efi.h:10,
+                 from ../arch/arm64/xen/../../arm/xen/enlighten.c:19:
+../include/asm-generic/mmu_context.h:34:19: error: redefinition of
+=E2=80=98init_new_context=E2=80=99
+   34 | static inline int init_new_context(struct task_struct *tsk,
+      |                   ^~~~~~~~~~~~~~~~
+In file included from ../arch/arm64/include/asm/efi.h:10,
+                 from ../arch/arm64/xen/../../arm/xen/enlighten.c:19:
+../arch/arm64/include/asm/mmu_context.h:180:1: note: previous
+definition of =E2=80=98init_new_context=E2=80=99 was here
+  180 | init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+      | ^~~~~~~~~~~~~~~~
+make[3]: *** [../scripts/Makefile.build:283:
+arch/arm64/xen/../../arm/xen/enlighten.o] Error 1
+In file included from ../arch/arm64/include/asm/mmu_context.h:257,
+                 from ../include/linux/mmu_context.h:5,
+                 from ../kernel/sched/sched.h:54,
+                 from ../kernel/sched/core.c:13:
+../include/asm-generic/mmu_context.h:34:19: error: redefinition of
+=E2=80=98init_new_context=E2=80=99
+   34 | static inline int init_new_context(struct task_struct *tsk,
+      |                   ^~~~~~~~~~~~~~~~
+In file included from ../include/linux/mmu_context.h:5,
+                 from ../kernel/sched/sched.h:54,
+                 from ../kernel/sched/core.c:13:
+../arch/arm64/include/asm/mmu_context.h:180:1: note: previous
+definition of =E2=80=98init_new_context=E2=80=99 was here
+  180 | init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+      | ^~~~~~~~~~~~~~~~
+make[3]: *** [../scripts/Makefile.build:283: kernel/sched/core.o] Error 1
 
-David / dhildenb
 
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+full build log link,
+https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/813497297
+
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
