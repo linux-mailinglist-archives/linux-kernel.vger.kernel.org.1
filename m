@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C00629C043
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB5C29C042
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1817115AbgJ0RNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:13:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32806 "EHLO mail.kernel.org"
+        id S1817108AbgJ0RNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784656AbgJ0O7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:59:24 -0400
+        id S1784677AbgJ0O7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:59:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCDE220714;
-        Tue, 27 Oct 2020 14:59:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4196022264;
+        Tue, 27 Oct 2020 14:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810764;
-        bh=2d3ZzZ/EUdE2+fi3ZQV9ZRcJDLaO+xaswgkAm27EqP0=;
+        s=default; t=1603810769;
+        bh=MSR8+hBBmwzzLfkA+yXP4tLBqp//Lam2NCpEv1oPmWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TDP0OoZzch1eQ/0j+lErrnXHoUKGHV0IUcxBJvODh3PsVgKEp1iJ7uHsUPCCOqIfi
-         MWThEt5Ys2L+90x5fRiNoTaRHfePLDNoPwvP14AN4S8EloJnE4RFt6Rlv1hjOAdRQO
-         TjDy2rVYD3dTnR0/8tTGDRSLj8IXHdyKsT8MNQdQ=
+        b=b5xelj+Yt9Ts49xIUFgJyYsz3fHYGm7uj13nuTXpsOdevv24Jidj4JfznO02i6YrF
+         sua2Mn/N5AMdCYYB3Y0/CLh0B43wnenryaaqDRNMGuWEfbkBjvaIf+arRjnqlR7wBa
+         jaFeLS43p486JwvxRmjDfPr6rmnWVCxtPKFwgrZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 256/633] ath6kl: wmi: prevent a shift wrapping bug in ath6kl_wmi_delete_pstream_cmd()
-Date:   Tue, 27 Oct 2020 14:49:59 +0100
-Message-Id: <20201027135534.669300665@linuxfoundation.org>
+        stable@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 258/633] phy: rockchip-dphy-rx0: Include linux/delay.h
+Date:   Tue, 27 Oct 2020 14:50:01 +0100
+Message-Id: <20201027135534.763567521@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,40 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Tomasz Figa <tfiga@chromium.org>
 
-[ Upstream commit 6a950755cec1a90ddaaff3e4acb5333617441c32 ]
+[ Upstream commit 488e3f52a82775bf9a4826a9eb59f10336c3f012 ]
 
-The "tsid" is a user controlled u8 which comes from debugfs.  Values
-more than 15 are invalid because "active_tsids" is a 16 bit variable.
-If the value of "tsid" is more than 31 then that leads to a shift
-wrapping bug.
+Fix an implicit declaration of usleep_range():
 
-Fixes: 8fffd9e5ec9e ("ath6kl: Implement support for QOS-enable and QOS-disable from userspace")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200918142732.GA909725@mwanda
+drivers/phy/rockchip/phy-rockchip-dphy-rx0.c: In function 'rk_dphy_enable':
+drivers/phy/rockchip/phy-rockchip-dphy-rx0.c:203:2: error: implicit declaration of function 'usleep_range' [-Werror=implicit-function-declaration]
+
+Fixes: 32abcc4491c62 ("media: staging: phy-rockchip-dphy-rx0: add Rockchip MIPI Synopsys DPHY RX0 driver")
+Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://lore.kernel.org/r/20200921225618.52529-1-tfiga@chromium.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../staging/media/phy-rockchip-dphy-rx0/phy-rockchip-dphy-rx0.c  | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index 6885d2ded53a8..3d5db84d64650 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -2645,6 +2645,11 @@ int ath6kl_wmi_delete_pstream_cmd(struct wmi *wmi, u8 if_idx, u8 traffic_class,
- 		return -EINVAL;
- 	}
+diff --git a/drivers/staging/media/phy-rockchip-dphy-rx0/phy-rockchip-dphy-rx0.c b/drivers/staging/media/phy-rockchip-dphy-rx0/phy-rockchip-dphy-rx0.c
+index 7c4df6d48c43d..4df9476ef2a9b 100644
+--- a/drivers/staging/media/phy-rockchip-dphy-rx0/phy-rockchip-dphy-rx0.c
++++ b/drivers/staging/media/phy-rockchip-dphy-rx0/phy-rockchip-dphy-rx0.c
+@@ -16,6 +16,7 @@
+  */
  
-+	if (tsid >= 16) {
-+		ath6kl_err("invalid tsid: %d\n", tsid);
-+		return -EINVAL;
-+	}
-+
- 	skb = ath6kl_wmi_get_new_buf(sizeof(*cmd));
- 	if (!skb)
- 		return -ENOMEM;
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/io.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
 -- 
 2.25.1
 
