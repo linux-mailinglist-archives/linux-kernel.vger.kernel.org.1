@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4248E29C763
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9486E29C766
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1828401AbgJ0Sb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:31:56 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40837 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1828382AbgJ0Sbz (ORCPT
+        id S1828412AbgJ0Sb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:31:59 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:55245 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1828392AbgJ0Sb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:31:55 -0400
-Received: by mail-wr1-f67.google.com with SMTP id h5so3035586wrv.7;
-        Tue, 27 Oct 2020 11:31:53 -0700 (PDT)
+        Tue, 27 Oct 2020 14:31:56 -0400
+Received: by mail-wm1-f67.google.com with SMTP id w23so2318555wmi.4;
+        Tue, 27 Oct 2020 11:31:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7u9KlF+y0OyiuKU/hfbRmYFsG2pmwDPw+7/oznvGoCI=;
-        b=m0U8E4Wp1elMN898vGRbZYUMLzVIvaqipR8nK3gm1Rhe0PoQYdzIdFKES2aKPmfomS
-         g1mQok3PsCL3QHSxuRwKpkT0FMcH2a8HZ1N+DPa3HSi6uVLfDJHTKPB53xgIUPcsONep
-         iTzqk3VldAw85kFIAt8iVoees6SdZJ13xVwerq87YuQzjYRs/4vSQ77M6yLBKeLoiAOm
-         T7foIBbIpnyG8kyud3+wyK23iK1GE7CmdvcKUOtO2bYNxiu7klW0tpkDNHj12HUCP1rh
-         sopLKCf2vcZ9CGYegRdvT+8QQwfAYVy54vk/TMZ581Q/1nOufN13nkh6wHriNx8lVQ2P
-         cKHg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HWW+ZfyCHyBaIjHVek844VU+H74q8wumivr8pDBz3+c=;
+        b=Xa3aRlWC9ljsRrq+ZxZgYJULHxsgPA0ckHAQ19+tNrf10j+9QY8DA/WYBZS1fMKzl5
+         8GYE10EvUT32mxJHeLCKJ/Mcqp6ZYITrS/Lw6JWjGM0JoUXfwC0OZCPBrbXH4lYllfHL
+         7Nsu8vWTkAFdyvMqwm7YbggvoUv+zhP08zPknzg/lVE+UkS5kOPLMSWdsJaaN8rVqPi/
+         hJPJyDbwvwA6ZzCHRnjE1TpbnXlFcdUJDy5IsJd0h4KZ5bcDHZ0fZZ97gbUuCkvsIaym
+         gI+NtTldqxulAoFlhrBoVALDkSpwyrdNhozI7M8Cq7gEpbZZPrBVwjNcTQDmY1ao8fQS
+         +JEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7u9KlF+y0OyiuKU/hfbRmYFsG2pmwDPw+7/oznvGoCI=;
-        b=AR6pXeDQsCxNXRUGysV5XktY3EDOC92BbD/iPoFkEHOhz5WUJjdVCNt0PYaHUMKIZ8
-         Q4pifXHJFia8vJyCMpo6V0DSyiXAIFk4bKVM0Mlgs4JJNGosaGuKk9ysaZPmUMLqWahu
-         AaLfEduB07PWbWYZGWSacXaf0HaVRbGIXByVSbwmbhqwgbJc/KLsS54CZV8K5YpoglBa
-         MTqCC7/bwOsqpzZewBiTOFZOxMi933S9++jsAkyU3PELVswGMPZCVTu0OYeqQHNOMGOn
-         CHWg5Kq7SZucC+LqEzhxHZXq/5WTxZoEJw2nXgNY0CO8gqOIZEbHnUX5zNlomRjnHAaV
-         6ndA==
-X-Gm-Message-State: AOAM531smM5BeK0rje+ggDOSI1z3TNFCYm2/lxCO1LwAITwlhSsd+m93
-        QQxAERoKLGDPFUmkgQtFArMZrELnKSIzQg==
-X-Google-Smtp-Source: ABdhPJxxBZ5wxOSwsnJUso/K1iFZaRYt3LJplJOMEmFBsSSBdqL+CoSH3Oj8ijg4eFnWClC5F5RUcg==
-X-Received: by 2002:a5d:46cf:: with SMTP id g15mr4630755wrs.342.1603823512576;
-        Tue, 27 Oct 2020 11:31:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HWW+ZfyCHyBaIjHVek844VU+H74q8wumivr8pDBz3+c=;
+        b=EZoaCBBu8c/1CmHbk4h+0I4Ttj0bMlaL5QZn23JiVVylHBmkqmYRKAY2u1qifBSsR8
+         gewJMy9CcMEjea0Tsz5Ql+rggEBnIqkCogbJuDyPDmUoYtNbHpPz8pLycixq7/g21LPX
+         XFavXgpdGJqPMN5d8Bg6QqU/+tNFbdbtFH4p6wHEpJHDMNYW6+EG1sJzobbWYQ47r16f
+         nHWrDbks4KZiQWOA1bigIhCACkhMZMhfm0Mu57TRC6DBgP8DdfMFo6jWI3PTJg6qUqQv
+         v0TZHJPu9YRk71IU0+7iRlAXolfhBxiYon+dSX/h4GN4vdr/EAnfQ1nUn1ei9bbUVv6u
+         OxzA==
+X-Gm-Message-State: AOAM532fhs4l2GrT0A7g7ZekauFuhUAyTO21v+JgrP02NUnbLahcN04S
+        +Z2tAAuuf0mVN/CAiuwj17U=
+X-Google-Smtp-Source: ABdhPJw5odAjh3G76+qql0JT4kD/cXQYlrTOXEYaGxulwmcWowGzECtkFMHPjpCXF16eHf3suW/ukQ==
+X-Received: by 2002:a1c:4d05:: with SMTP id o5mr4002368wmh.94.1603823513610;
+        Tue, 27 Oct 2020 11:31:53 -0700 (PDT)
 Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
-        by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.31.51
+        by smtp.gmail.com with ESMTPSA id m9sm2864148wmc.31.2020.10.27.11.31.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 11:31:51 -0700 (PDT)
+        Tue, 27 Oct 2020 11:31:52 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,11 +56,14 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v9 00/14] Add Allwinner H3/H5/H6/A64 HDMI audio
-Date:   Tue, 27 Oct 2020 19:31:35 +0100
-Message-Id: <20201027183149.145165-1-peron.clem@gmail.com>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
+Date:   Tue, 27 Oct 2020 19:31:36 +0100
+Message-Id: <20201027183149.145165-2-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201027183149.145165-1-peron.clem@gmail.com>
+References: <20201027183149.145165-1-peron.clem@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -68,93 +71,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+As slots and slot_width can be set manually using set_tdm().
+These values are then kept in sun4i_i2s struct.
+So we need to check if these values are set or not.
 
-This series add H6 I2S support and the I2S node missing to support
-HDMI audio in different Allwinner SoC.
+This is not done actually and will trigger a bug.
+For example, if we set to the simple soundcard in the device-tree
+dai-tdm-slot-width = <32> and then start a stream using S16_LE,
+currently we would calculate BCLK for 32-bit slots, but program
+lrck_period for 16-bit slots, making the sample rate double what we
+expected.
 
-As we first use some TDM property to make the I2S working we the
-simple soundcard. We have now drop this simple sound card and a
-proper dedicated soundcard will be introduce later.
+To fix this, we need to check if these values are set or not but as
+this logic is already done by the caller. Avoid duplicating this
+logic and just pass the required values as params to set_chan_cfg().
 
-This make the title of this series wrong now :/.
+Suggested-by: Samuel Holland <samuel@sholland.org>
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-Regards,
-Clement
-
-Change since v8:
-- move the comment near the function prototype
-- collect Maxime Ripard tags
-
-Change since v7:
-- rebase on next-20201026
-- comment about slots and slot_width
-
-Change since v6:
-- move set_channel_cfg() in first position
-- convert return value to decimal
-
-Change since v5:
-- Drop HDMI simple soundcard
-- Collect Chen-Yu Tsai tags
-- Configure channels from 9 to 15.
-- Remove DMA RX for H3/H5
-- Fix Documentation for H3/H5
-
-Change since v4:
-- add more comment on get_wss() and set_channel_cfg() patch
-- merge soundcard and DAI HDMI patches
-
-Change since v3:
-- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
-- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
-- Fix get_wss() for sun4i
-- Add a commit to fix checkpatch warning
-
-Change since v2:
-- rebase on next-20200918
-- drop revert LRCK polarity patch
-- readd simple-audio-card,frame-inversion in dts
-- Add patch for changing set_chan_cfg params
-
-Change since v1:
-- rebase on next-20200828
-- add revert LRCK polarity
-- remove all simple-audio-card,frame-inversion in dts
-- add Ondrej patches for Orange Pi board
-- Add arm64 defconfig patch
-
-Clément Péron (6):
-  ASoC: sun4i-i2s: Change set_chan_cfg() params
-  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
-  ASoC: sun4i-i2s: Fix sun8i volatile regs
-  ASoC: sun4i-i2s: fix coding-style for callback definition
-  arm64: defconfig: Enable Allwinner i2s driver
-  dt-bindings: sound: sun4i-i2s: Document H3 with missing RX channel
-    possibility
-
-Jernej Skrabec (3):
-  ASoC: sun4i-i2s: Add support for H6 I2S
-  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
-  arm64: dts: allwinner: h6: Add I2S1 node
-
-Marcus Cooper (4):
-  ASoC: sun4i-i2s: Set sign extend sample
-  ASoc: sun4i-i2s: Add 20 and 24 bit support
-  arm64: dts: allwinner: a64: Add I2S2 node
-  arm: dts: sunxi: h3/h5: Add I2S2 node
-
-Samuel Holland (1):
-  ASoC: sun4i-i2s: Fix setting of FIFO modes
-
- .../sound/allwinner,sun4i-a10-i2s.yaml        |   6 +-
- arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  13 +
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  14 +
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  13 +
- arch/arm64/configs/defconfig                  |   1 +
- sound/soc/sunxi/sun4i-i2s.c                   | 384 +++++++++++++++---
- 6 files changed, 376 insertions(+), 55 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index f23ff29e7c1d..7c1f57eb2462 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -162,8 +162,15 @@ struct sun4i_i2s_quirks {
+ 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
+ 	s8	(*get_sr)(const struct sun4i_i2s *, int);
+ 	s8	(*get_wss)(const struct sun4i_i2s *, int);
+-	int	(*set_chan_cfg)(const struct sun4i_i2s *,
+-				const struct snd_pcm_hw_params *);
++
++	/*
++	 * In the set_chan_cfg() function pointer:
++	 * @slots: channels per frame + padding slots, regardless of format
++	 * @slot_width: bits per sample + padding bits, regardless of format
++	 */
++	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
++				unsigned int channels,	unsigned int slots,
++				unsigned int slot_width);
+ 	int	(*set_fmt)(const struct sun4i_i2s *, unsigned int);
+ };
+ 
+@@ -399,10 +406,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
+ }
+ 
+ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+-				  const struct snd_pcm_hw_params *params)
++				  unsigned int channels, unsigned int slots,
++				  unsigned int slot_width)
+ {
+-	unsigned int channels = params_channels(params);
+-
+ 	/* Map the channels for playback and capture */
+ 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+ 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
+@@ -419,15 +425,11 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ }
+ 
+ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+-				  const struct snd_pcm_hw_params *params)
++				  unsigned int channels, unsigned int slots,
++				  unsigned int slot_width)
+ {
+-	unsigned int channels = params_channels(params);
+-	unsigned int slots = channels;
+ 	unsigned int lrck_period;
+ 
+-	if (i2s->slots)
+-		slots = i2s->slots;
+-
+ 	/* Map the channels for playback and capture */
+ 	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
+ 	regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
+@@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+-		lrck_period = params_physical_width(params) * slots;
++		lrck_period = slot_width * slots;
+ 		break;
+ 
+ 	case SND_SOC_DAIFMT_I2S:
+-		lrck_period = params_physical_width(params);
++		lrck_period = slot_width;
+ 		break;
+ 
+ 	default:
+@@ -482,7 +484,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int word_size = params_width(params);
+ 	unsigned int slot_width = params_physical_width(params);
+ 	unsigned int channels = params_channels(params);
++
+ 	unsigned int slots = channels;
++
+ 	int ret, sr, wss;
+ 	u32 width;
+ 
+@@ -492,7 +496,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	if (i2s->slot_width)
+ 		slot_width = i2s->slot_width;
+ 
+-	ret = i2s->variant->set_chan_cfg(i2s, params);
++	ret = i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
+ 	if (ret < 0) {
+ 		dev_err(dai->dev, "Invalid channel configuration\n");
+ 		return ret;
 -- 
 2.25.1
 
