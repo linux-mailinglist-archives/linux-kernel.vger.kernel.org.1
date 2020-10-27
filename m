@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C92929A6CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A74629A6CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509208AbgJ0InW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:43:22 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43553 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509198AbgJ0InU (ORCPT
+        id S2444611AbgJ0IoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:44:24 -0400
+Received: from casper.infradead.org ([90.155.50.34]:34702 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443713AbgJ0IoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:43:20 -0400
-Received: by mail-lj1-f196.google.com with SMTP id d24so788470ljg.10;
-        Tue, 27 Oct 2020 01:43:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IDGEgmFavpKO4fp7M3bkMj6x/TJd1CMCX/SREqDS2mM=;
-        b=Jhv5r3gXXI1gG/b5EmJ9P4BxODNc1pN/990DMFojBNjvZqEJHHUmY0LUiG+l4RXJ2t
-         waIzDNrYU3H4MRnIIllTPLp5cM6KCJ3DfYj/nNKFQwwNxE1Z+pN8IegZ9H9zWiJzNPgB
-         ZSStgBWAiYUKBdeVdn/W94x+YEfgnya2g/OZbL8K8U/UN8cc2DAzIWvZXMjHR2yawcgk
-         Z2yQ9yVuN9VWDS87VE2vTdPO2hPUMWLVmMQZTDs48BuaGu65WBXmQRr04iloKlaCd2Pv
-         BYt96GRBqGkLf6zg0prL1XmPD7n/Z6Ke4n53xNvmRxn439e83g97Gki6MVxS0zWZb+RI
-         Hjqw==
-X-Gm-Message-State: AOAM531Wc9UzHh3t75+qiCKKN5sax5tkgyfsx39TkejjPqL+tU0F/TqG
-        7pqdGLYiF+CJ/mJaJskiM904Nn0eghY3xA==
-X-Google-Smtp-Source: ABdhPJx8PIV6r0X1nC7Ris/OSi6eqnU1e6uJSJQkT+2XugtfL6xEn0af0F+zj7O/brQCgwdiHZCASQ==
-X-Received: by 2002:a2e:b619:: with SMTP id r25mr631316ljn.465.1603788198601;
-        Tue, 27 Oct 2020 01:43:18 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id x18sm95794ljx.2.2020.10.27.01.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 01:43:17 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kXKZZ-0002C1-3B; Tue, 27 Oct 2020 09:43:17 +0100
-Date:   Tue, 27 Oct 2020 09:43:17 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Ziyi Cao <kernel@septs.pw>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] usb: serial: option: add Quectel EC200T module
- support
-Message-ID: <20201027084317.GF4085@localhost>
-References: <17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com>
+        Tue, 27 Oct 2020 04:44:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jmNJLBRCFdFXQCPDsbgJxCeg7OTT63Ved9ZS239LUkg=; b=uwVkm9dZG6qemWi1SUFtrghO8y
+        U61seC3CjXBZ7FVApPCnMiEXJCSFrO9lQKMTHYIfUr9Y15LQGLCcbwOtZCWWC+SkmG8RD3nregZlH
+        kiitudLOmiKoSMDkcfFvPQb6jgNt7RT75k+oQZNyu0kdR4f2Y5/Vde5PI0ld2a3pmmW/WyqruPh2z
+        T8hXR7Pv6ajnvlYC45xSGFziuYv/skTWwThqP5D7d4RiekvuZst5EbXOyMB9/C6jF5mLzW6eym5ay
+        +pvcFFcjgZ3QmJBlfJk+JydPksRC3QWLCdZGY6t3YUAhA1biP76jRuDxsqf5e10JjDNtZKhKTEWJw
+        sXCX+sHg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXKaD-0002zC-6S; Tue, 27 Oct 2020 08:43:57 +0000
+Date:   Tue, 27 Oct 2020 08:43:57 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, kvm@vger.kernel.org,
+        Radim Kr??m???? <rkrcmar@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Rik van Riel <riel@redhat.com>,
+        Larry Woodman <lwoodman@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Toshimitsu Kani <toshi.kani@hpe.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: AMD SME encrpytion and PCI BAR pages to user space
+Message-ID: <20201027084357.GA10053@infradead.org>
+References: <20201019152556.GA560082@nvidia.com>
+ <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
+ <20201021115933.GS6219@nvidia.com>
+ <f9c50e3a-c5de-8c85-4d6c-0e8a90729420@amd.com>
+ <20201021160322.GT6219@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com>
+In-Reply-To: <20201021160322.GT6219@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 12:08:06AM +0800, Ziyi Cao wrote:
-> Add usb product id of the Quectel EC200T module.
+On Wed, Oct 21, 2020 at 01:03:22PM -0300, Jason Gunthorpe wrote:
+> Oh, interesting.. Yes the issue is no userspace DMA stuff uses the DMA
+> API correctly (because it is in userspace)
 > 
-> Signed-off-by: Ziyi Cao <kernel@septs.pw>
-> ---
+> So SWIOTLB tricks don't work, I wish the dma_map could fail for these
+> situations
 
-For reference, can you provide the output of "lsusb -v" for this device?
-
-Johan
+Userspace DMA by definition also does not use dma_map..
