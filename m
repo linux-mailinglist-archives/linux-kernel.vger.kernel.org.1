@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922E729C0A7
+	by mail.lfdr.de (Postfix) with ESMTP id 2205D29C0A5
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818123AbgJ0RRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:17:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59020 "EHLO mail.kernel.org"
+        id S1818087AbgJ0RRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:17:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1783095AbgJ0O5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:57:52 -0400
+        id S1783176AbgJ0O56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:57:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68D3B20714;
-        Tue, 27 Oct 2020 14:57:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAD2E206F4;
+        Tue, 27 Oct 2020 14:57:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810672;
-        bh=/VwmD1Zgho6r0gxvEmXLjOl1yLHfntqI3FFJRejA3vA=;
+        s=default; t=1603810677;
+        bh=UnlBI+gDGXaX3+z9SxabEFOzl99bud+KBkDUDoIRtFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BiNmDh1Stmzxmx66SqD2Bp76cSQFWkP5lWge5b9r5Yp+bb2HpwuSCTNbYvXOuVt5T
-         jU5EiTIo8e3nACnc3EROoV+nDxA9wu0qsct0Jh14RF6VwlnoLJ5BY3BzypxuUDb324
-         fi3Ke1imwhXt9TA0aocKwg9JepD+EZL0JscERZew=
+        b=D+TRTMvEsjekrrbXqV8FQMfmU6hYSO1XZL760I2JtkfNvYOYxHX0x05102FRs8VAX
+         fTZvvKtO2K3Z/DDEvnVnDB79IHJkpwRklT307Rqsdh0uvqLXWsdwfbZ9dvLmtBqkAH
+         5LQj+9bqcFELCbw+Kb1AkRK12DjG5b/Et7wyAv4E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, KP Singh <kpsingh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 223/633] cpufreq: armada-37xx: Add missing MODULE_DEVICE_TABLE
-Date:   Tue, 27 Oct 2020 14:49:26 +0100
-Message-Id: <20201027135533.142192260@linuxfoundation.org>
+Subject: [PATCH 5.8 225/633] ima: Fix NULL pointer dereference in ima_file_hash
+Date:   Tue, 27 Oct 2020 14:49:28 +0100
+Message-Id: <20201027135533.237888356@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,42 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: KP Singh <kpsingh@google.com>
 
-[ Upstream commit c942d1542f1bc5001216fabce9cb8ffbe515777e ]
+[ Upstream commit aa662fc04f5b290b3979332588bf8d812b189962 ]
 
-CONFIG_ARM_ARMADA_37XX_CPUFREQ is tristate option and therefore this
-cpufreq driver can be compiled as a module. This patch adds missing
-MODULE_DEVICE_TABLE which generates correct modalias for automatic
-loading of this cpufreq driver when is compiled as an external module.
+ima_file_hash can be called when there is no iint->ima_hash available
+even though the inode exists in the integrity cache. It is fairly
+common for a file to not have a hash. (e.g. an mknodat, prior to the
+file being closed).
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 92ce45fb875d7 ("cpufreq: Add DVFS support for Armada 37xx")
-[ Viresh: Added __maybe_unused ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Another example where this can happen (suggested by Jann Horn):
+
+Process A does:
+
+	while(1) {
+		unlink("/tmp/imafoo");
+		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+		if (fd == -1) {
+			perror("open");
+			continue;
+		}
+		write(fd, "A", 1);
+		close(fd);
+	}
+
+and Process B does:
+
+	while (1) {
+		int fd = open("/tmp/imafoo", O_RDONLY);
+		if (fd == -1)
+			continue;
+    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+			 	     MAP_PRIVATE, fd, 0);
+		if (mapping != MAP_FAILED)
+			munmap(mapping, 0x1000);
+		close(fd);
+  	}
+
+Due to the race to get the iint->mutex between ima_file_hash and
+process_measurement iint->ima_hash could still be NULL.
+
+Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+Signed-off-by: KP Singh <kpsingh@google.com>
+Reviewed-by: Florent Revest <revest@chromium.org>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/armada-37xx-cpufreq.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ security/integrity/ima/ima_main.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
-index df1c941260d14..b4af4094309b0 100644
---- a/drivers/cpufreq/armada-37xx-cpufreq.c
-+++ b/drivers/cpufreq/armada-37xx-cpufreq.c
-@@ -484,6 +484,12 @@ static int __init armada37xx_cpufreq_driver_init(void)
- /* late_initcall, to guarantee the driver is loaded after A37xx clock driver */
- late_initcall(armada37xx_cpufreq_driver_init);
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index c1583d98c5e50..0b8f17570f210 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 		return -EOPNOTSUPP;
  
-+static const struct of_device_id __maybe_unused armada37xx_cpufreq_of_match[] = {
-+	{ .compatible = "marvell,armada-3700-nb-pm" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, armada37xx_cpufreq_of_match);
+ 	mutex_lock(&iint->mutex);
 +
- MODULE_AUTHOR("Gregory CLEMENT <gregory.clement@free-electrons.com>");
- MODULE_DESCRIPTION("Armada 37xx cpufreq driver");
- MODULE_LICENSE("GPL");
++	/*
++	 * ima_file_hash can be called when ima_collect_measurement has still
++	 * not been called, we might not always have a hash.
++	 */
++	if (!iint->ima_hash) {
++		mutex_unlock(&iint->mutex);
++		return -EOPNOTSUPP;
++	}
++
+ 	if (buf) {
+ 		size_t copied_size;
+ 
 -- 
 2.25.1
 
