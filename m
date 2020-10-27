@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D92629C6D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDA629C60A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827400AbgJ0SXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49408 "EHLO mail.kernel.org"
+        id S1825647AbgJ0SMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753724AbgJ0OBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:01:41 -0400
+        id S1756686AbgJ0OOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:14:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEE36221F8;
-        Tue, 27 Oct 2020 14:01:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E490206F7;
+        Tue, 27 Oct 2020 14:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807300;
-        bh=q/orFT6HKF9kk09vuTE2zR8AswuXs7r+gaqvjMUXAtk=;
+        s=default; t=1603808086;
+        bh=8F3uUtHSi5y+880/nn5AXD4aT5Eiz5gbBtxIaXiatbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOhJmJsMWNYzd2DFsoIDnZj9byLJWjsRhcVjDFdXG9ud0NYIUtnNlxo7P4qKV498U
-         IEiNYTABhXJ5uzMrLRAVAUahuoBzyNJApwE/oBv7lKPv4oiIeXTJmOldzpItxnvoO9
-         hmxgVgZDGOoLJc9C4e9YkD0OWsapZY/zL2PeZ72o=
+        b=tfUvh1FecIkhnTZNnJJ0jljVRY+F1c5foN3Bqp0Ralf7ir6UXiM5l82CYf2PVtVdR
+         Fv24IsBwLy0CuNuwabBmYYPGyeJRIZJxhjyBMSjzLRj1PWN4A63iul3SS5j/xNhhpN
+         k0I5sI8DhHgON1NYGCfLof4z68HE15BoUgiJuWnc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 096/112] reiserfs: only call unlock_new_inode() if I_NEW
-Date:   Tue, 27 Oct 2020 14:50:06 +0100
-Message-Id: <20201027134905.081151837@linuxfoundation.org>
+Subject: [PATCH 4.14 152/191] fs: dlm: fix configfs memory leak
+Date:   Tue, 27 Oct 2020 14:50:07 +0100
+Message-Id: <20201027134917.014263510@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 8859bf2b1278d064a139e3031451524a49a56bd0 ]
+[ Upstream commit 3d2825c8c6105b0f36f3ff72760799fa2e71420e ]
 
-unlock_new_inode() is only meant to be called after a new inode has
-already been inserted into the hash table.  But reiserfs_new_inode() can
-call it even before it has inserted the inode, triggering the WARNING in
-unlock_new_inode().  Fix this by only calling unlock_new_inode() if the
-inode has the I_NEW flag set, indicating that it's in the table.
+This patch fixes the following memory detected by kmemleak and umount
+gfs2 filesystem which removed the last lockspace:
 
-This addresses the syzbot report "WARNING in unlock_new_inode"
-(https://syzkaller.appspot.com/bug?extid=187510916eb6a14598f7).
+unreferenced object 0xffff9264f482f600 (size 192):
+  comm "dlm_controld", pid 325, jiffies 4294690276 (age 48.136s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 6e 6f 64 65 73 00 00 00  ........nodes...
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000060481d7>] make_space+0x41/0x130
+    [<000000008d905d46>] configfs_mkdir+0x1a2/0x5f0
+    [<00000000729502cf>] vfs_mkdir+0x155/0x210
+    [<000000000369bcf1>] do_mkdirat+0x6d/0x110
+    [<00000000cc478a33>] do_syscall_64+0x33/0x40
+    [<00000000ce9ccf01>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Link: https://lore.kernel.org/r/20200628070057.820213-1-ebiggers@kernel.org
-Reported-by: syzbot+187510916eb6a14598f7@syzkaller.appspotmail.com
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+The patch just remembers the "nodes" entry pointer in space as I think
+it's created as subdirectory when parent "spaces" is created. In
+function drop_space() we will lost the pointer reference to nds because
+configfs_remove_default_groups(). However as this subdirectory is always
+available when "spaces" exists it will just be freed when "spaces" will be
+freed.
+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/reiserfs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/dlm/config.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
-index cfb4691d92741..ccbb15ab029f4 100644
---- a/fs/reiserfs/inode.c
-+++ b/fs/reiserfs/inode.c
-@@ -2157,7 +2157,8 @@ int reiserfs_new_inode(struct reiserfs_transaction_handle *th,
- out_inserted_sd:
- 	clear_nlink(inode);
- 	th->t_trans_id = 0;	/* so the caller can't use this handle later */
--	unlock_new_inode(inode); /* OK to do even if we hadn't locked it */
-+	if (inode->i_state & I_NEW)
-+		unlock_new_inode(inode);
- 	iput(inode);
- 	return err;
+diff --git a/fs/dlm/config.c b/fs/dlm/config.c
+index 7211e826d90df..472f4f835d3e1 100644
+--- a/fs/dlm/config.c
++++ b/fs/dlm/config.c
+@@ -218,6 +218,7 @@ struct dlm_space {
+ 	struct list_head members;
+ 	struct mutex members_lock;
+ 	int members_count;
++	struct dlm_nodes *nds;
+ };
+ 
+ struct dlm_comms {
+@@ -426,6 +427,7 @@ static struct config_group *make_space(struct config_group *g, const char *name)
+ 	INIT_LIST_HEAD(&sp->members);
+ 	mutex_init(&sp->members_lock);
+ 	sp->members_count = 0;
++	sp->nds = nds;
+ 	return &sp->group;
+ 
+  fail:
+@@ -447,6 +449,7 @@ static void drop_space(struct config_group *g, struct config_item *i)
+ static void release_space(struct config_item *i)
+ {
+ 	struct dlm_space *sp = config_item_to_space(i);
++	kfree(sp->nds);
+ 	kfree(sp);
  }
+ 
 -- 
 2.25.1
 
