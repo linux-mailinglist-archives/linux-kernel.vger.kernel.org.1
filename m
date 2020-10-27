@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8030729C4A6
+	by mail.lfdr.de (Postfix) with ESMTP id 133BE29C4A5
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757525AbgJ0OTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1757544AbgJ0OTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 10:19:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40166 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508846AbgJ0ORJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:17:09 -0400
+        id S2508853AbgJ0ORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 127F8206F7;
-        Tue, 27 Oct 2020 14:17:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B49052072D;
+        Tue, 27 Oct 2020 14:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808229;
-        bh=z9ilCVb1IuuWZqNMXB67AZaeT0+GB1SLAbCKRJrYdXA=;
+        s=default; t=1603808232;
+        bh=or2OV35UhjvZyIluQDe7fOIIkrvo9JmNnof9pd3f23g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q0XMkjbcv3mezNjdDDnnoSRVTziBzjdkr+XkzG1MArXHlLQbhg9ReVex5/Rh+8YNK
-         a0XVwurjuvRP81gqj1hgMTxCihFn0SLWFLiYU5irOl7tfs2VNEay73oqwCBNqRX1+4
-         ruxRCVBTB2UornNelLTSn+2FK5MH9wTILRwNbJbs=
+        b=xEPyTlUsC7qFzUNqhw6IkuTSmjl7KEZsJ/cvM+VVrnsNnJmpz/cSMI4sdcmnpjZlG
+         RyyehI/xq/IURNI3kB6LEYJ1eyPMYHCuVuv7ouBre5DsXOHkgM1gl1amXxiTwMdJ7Z
+         BuM0gP48/cLheM0S8x8/OHDQDlI/fqEfnbSzGTLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Richard Leitner <richard.leitner@skidata.com>,
+        Marek Vasut <marex@denx.de>,
         Christoph Niedermaier <cniedermaier@dh-electronics.com>,
         "David S. Miller" <davem@davemloft.net>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Richard Leitner <richard.leitner@skidata.com>,
         Shawn Guo <shawnguo@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 005/264] net: fec: Fix phy_device lookup for phy_reset_after_clk_enable()
-Date:   Tue, 27 Oct 2020 14:51:03 +0100
-Message-Id: <20201027135430.904024705@linuxfoundation.org>
+Subject: [PATCH 4.19 006/264] net: fec: Fix PHY init after phy_reset_after_clk_enable()
+Date:   Tue, 27 Oct 2020 14:51:04 +0100
+Message-Id: <20201027135430.951721388@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -49,81 +50,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 64a632da538a6827fad0ea461925cedb9899ebe2 ]
+[ Upstream commit 0da1ccbbefb662915228bc17e1c7d4ad28b3ddab ]
 
-The phy_reset_after_clk_enable() is always called with ndev->phydev,
-however that pointer may be NULL even though the PHY device instance
-already exists and is sufficient to perform the PHY reset.
-
-This condition happens in fec_open(), where the clock must be enabled
-first, then the PHY must be reset, and then the PHY IDs can be read
-out of the PHY.
-
-If the PHY still is not bound to the MAC, but there is OF PHY node
-and a matching PHY device instance already, use the OF PHY node to
-obtain the PHY device instance, and then use that PHY device instance
-when triggering the PHY reset.
+The phy_reset_after_clk_enable() does a PHY reset, which means the PHY
+loses its register settings. The fec_enet_mii_probe() starts the PHY
+and does the necessary calls to configure the PHY via PHY framework,
+and loads the correct register settings into the PHY. Therefore,
+fec_enet_mii_probe() should be called only after the PHY has been
+reset, not before as it is now.
 
 Fixes: 1b0a83ac04e3 ("net: fec: add phy_reset_after_clk_enable() support")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Tested-by: Richard Leitner <richard.leitner@skidata.com>
 Signed-off-by: Marek Vasut <marex@denx.de>
 Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
 Cc: David S. Miller <davem@davemloft.net>
 Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: Richard Leitner <richard.leitner@skidata.com>
 Cc: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/fec_main.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 --- a/drivers/net/ethernet/freescale/fec_main.c
 +++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1897,6 +1897,27 @@ static int fec_enet_mdio_write(struct mi
- 	return ret;
- }
+@@ -2950,17 +2950,17 @@ fec_enet_open(struct net_device *ndev)
+ 	/* Init MAC prior to mii bus probe */
+ 	fec_restart(ndev);
  
-+static void fec_enet_phy_reset_after_clk_enable(struct net_device *ndev)
-+{
-+	struct fec_enet_private *fep = netdev_priv(ndev);
-+	struct phy_device *phy_dev = ndev->phydev;
-+
-+	if (phy_dev) {
-+		phy_reset_after_clk_enable(phy_dev);
-+	} else if (fep->phy_node) {
-+		/*
-+		 * If the PHY still is not bound to the MAC, but there is
-+		 * OF PHY node and a matching PHY device instance already,
-+		 * use the OF PHY node to obtain the PHY device instance,
-+		 * and then use that PHY device instance when triggering
-+		 * the PHY reset.
-+		 */
-+		phy_dev = of_phy_find_device(fep->phy_node);
-+		phy_reset_after_clk_enable(phy_dev);
-+		put_device(&phy_dev->mdio.dev);
-+	}
-+}
-+
- static int fec_enet_clk_enable(struct net_device *ndev, bool enable)
- {
- 	struct fec_enet_private *fep = netdev_priv(ndev);
-@@ -1923,7 +1944,7 @@ static int fec_enet_clk_enable(struct ne
- 		if (ret)
- 			goto failed_clk_ref;
- 
--		phy_reset_after_clk_enable(ndev->phydev);
-+		fec_enet_phy_reset_after_clk_enable(ndev);
- 	} else {
- 		clk_disable_unprepare(fep->clk_enet_out);
- 		if (fep->clk_ptp) {
-@@ -2938,7 +2959,7 @@ fec_enet_open(struct net_device *ndev)
+-	/* Probe and connect to PHY when open the interface */
+-	ret = fec_enet_mii_probe(ndev);
+-	if (ret)
+-		goto err_enet_mii_probe;
+-
+ 	/* Call phy_reset_after_clk_enable() again if it failed during
  	 * phy_reset_after_clk_enable() before because the PHY wasn't probed.
  	 */
  	if (reset_again)
--		phy_reset_after_clk_enable(ndev->phydev);
-+		fec_enet_phy_reset_after_clk_enable(ndev);
+ 		fec_enet_phy_reset_after_clk_enable(ndev);
  
++	/* Probe and connect to PHY when open the interface */
++	ret = fec_enet_mii_probe(ndev);
++	if (ret)
++		goto err_enet_mii_probe;
++
  	if (fep->quirks & FEC_QUIRK_ERR006687)
  		imx6q_cpuidle_fec_irqs_used();
+ 
 
 
