@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9F229AE57
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9AD29AE59
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753231AbgJ0N7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:59:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46620 "EHLO mail.kernel.org"
+        id S1748172AbgJ0N7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:59:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753214AbgJ0N7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:59:10 -0400
+        id S1753222AbgJ0N7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:59:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7257F218AC;
-        Tue, 27 Oct 2020 13:59:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6A1D2068D;
+        Tue, 27 Oct 2020 13:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807149;
-        bh=DIAWyLHVihF92GNPMPQaTxz1zQ3y9fxWKSEVW+Le5wM=;
+        s=default; t=1603807152;
+        bh=uUsq9B0wpCBivWlFxqoUjq6XhILmMjvt1INfPDX/6cM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eAkVzu832k7lVwHkqK91mFmTbaQGcyAG7C1unjWrMg9SKIyEs8cWwGYEoS82K07PW
-         JPrlFUPoscPnPZDCE5t63HyhmUFoGij0p+gY9UhJ/3Ka2LW6LqnoKAigdvszL0Uw0J
-         PiSFv8zO7uFr/8JB/QPVX0W2DqpZwVF/s/pshoHQ=
+        b=0OadojAQqkmPb84qnrC+30V/HIu+JEH+OtPlzdoEcxNjJHElg+5aUPCmPkhtPcoP1
+         OP50WaSFjiGS1u25PlvVxk0H4kQnPVcU3K2wEr6BHDJmMaljkkZ9edIa47Kqk2xo3q
+         FR2+zxrRb6CDSEe/N9JeHEvG8WIs4J7fwv4d5wFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 030/112] mwifiex: Do not use GFP_KERNEL in atomic context
-Date:   Tue, 27 Oct 2020 14:49:00 +0100
-Message-Id: <20201027134901.987565895@linuxfoundation.org>
+Subject: [PATCH 4.4 031/112] drm/gma500: fix error check
+Date:   Tue, 27 Oct 2020 14:49:01 +0100
+Message-Id: <20201027134902.035333527@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -44,49 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit d2ab7f00f4321370a8ee14e5630d4349fdacc42e ]
+[ Upstream commit cdd296cdae1af2d27dae3fcfbdf12c5252ab78cf ]
 
-A possible call chain is as follow:
-  mwifiex_sdio_interrupt                            (sdio.c)
-    --> mwifiex_main_process                        (main.c)
-      --> mwifiex_process_cmdresp                   (cmdevt.c)
-        --> mwifiex_process_sta_cmdresp             (sta_cmdresp.c)
-          --> mwifiex_ret_802_11_scan               (scan.c)
-            --> mwifiex_parse_single_response_buf   (scan.c)
+Reviewing this block of code in cdv_intel_dp_init()
 
-'mwifiex_sdio_interrupt()' is an interrupt function.
+ret = cdv_intel_dp_aux_native_read(gma_encoder, DP_DPCD_REV, ...
 
-Also note that 'mwifiex_ret_802_11_scan()' already uses GFP_ATOMIC.
+cdv_intel_edp_panel_vdd_off(gma_encoder);
+if (ret == 0) {
+	/* if this fails, presume the device is a ghost */
+	DRM_INFO("failed to retrieve link info, disabling eDP\n");
+	drm_encoder_cleanup(encoder);
+	cdv_intel_dp_destroy(connector);
+	goto err_priv;
+} else {
 
-So use GFP_ATOMIC instead of GFP_KERNEL when memory is allocated in
-'mwifiex_parse_single_response_buf()'.
+The (ret == 0) is not strict enough.
+cdv_intel_dp_aux_native_read() returns > 0 on success
+otherwise it is failure.
 
-Fixes: 7c6fa2a843c5 ("mwifiex: use cfg80211 dynamic scan table and cfg80211_get_bss API")
-or
-Fixes: 601216e12c65e ("mwifiex: process RX packets in SDIO IRQ thread directly")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200809092906.744621-1-christophe.jaillet@wanadoo.fr
+So change to <=
+
+Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200805205911.20927-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mwifiex/scan.c | 2 +-
+ drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mwifiex/scan.c b/drivers/net/wireless/mwifiex/scan.c
-index e7c8972431d34..e54dd4b7face6 100644
---- a/drivers/net/wireless/mwifiex/scan.c
-+++ b/drivers/net/wireless/mwifiex/scan.c
-@@ -1862,7 +1862,7 @@ mwifiex_parse_single_response_buf(struct mwifiex_private *priv, u8 **bss_info,
- 					    chan, CFG80211_BSS_FTYPE_UNKNOWN,
- 					    bssid, timestamp,
- 					    cap_info_bitmap, beacon_period,
--					    ie_buf, ie_len, rssi, GFP_KERNEL);
-+					    ie_buf, ie_len, rssi, GFP_ATOMIC);
- 			if (bss) {
- 				bss_priv = (struct mwifiex_bss_priv *)bss->priv;
- 				bss_priv->band = band;
+diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+index d3de377dc857e..25c68e4dc7a53 100644
+--- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
++++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+@@ -2120,7 +2120,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+ 					       intel_dp->dpcd,
+ 					       sizeof(intel_dp->dpcd));
+ 		cdv_intel_edp_panel_vdd_off(gma_encoder);
+-		if (ret == 0) {
++		if (ret <= 0) {
+ 			/* if this fails, presume the device is a ghost */
+ 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
+ 			cdv_intel_dp_encoder_destroy(encoder);
 -- 
 2.25.1
 
