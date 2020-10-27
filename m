@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750C029C64E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B274429C623
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826060AbgJ0SPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33692 "EHLO mail.kernel.org"
+        id S1825761AbgJ0SNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:13:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507379AbgJ0OMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:12:33 -0400
+        id S1756571AbgJ0OOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:14:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86E4C2072D;
-        Tue, 27 Oct 2020 14:12:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AEA9206F7;
+        Tue, 27 Oct 2020 14:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807951;
-        bh=2RU+PsPd0o+xNPcfjaO05Gfg4PkwgqFkzVMBW53GFgk=;
+        s=default; t=1603808054;
+        bh=yZCN1zWt+EOsOEH9do1Yu25eQJ98pM3OpKqQUBzaL2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nG1v2iHMW5CDGaTjbh3siRXcuHiRtfxy9LY0YJ/ijlBeEtTE+Jh+rCazYb+5mbV9U
-         oBf/dS1bca88CM8HLOmiYGF8l7lVLEhTrgdioZ17dtUFKV3TC8K61Ofc+DQR2ZOWSL
-         TXcpeMECtf2rKr5+qNncGedXvOrB/ZGXHz7VcBmw=
+        b=2L3lmfYKfYVKKawG+x6MGXOSNvygNROuf8cRAGmAIUu6BDVOPLrb2gvO5US5VDgyG
+         i312x06d/CXeVE1ggWXEPV+POBxsyeJlls12soJ8mYjR2r5RyZ5Ya/ZT8f/pX3yolr
+         Lf+pScJAZggDynPtRrbzGCOiSmvvQ5pkvvuhe95c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 100/191] kdb: Fix pager search for multi-line strings
-Date:   Tue, 27 Oct 2020 14:49:15 +0100
-Message-Id: <20201027134914.512356487@linuxfoundation.org>
+Subject: [PATCH 4.14 108/191] ramfs: fix nommu mmap with gaps in the page cache
+Date:   Tue, 27 Oct 2020 14:49:23 +0100
+Message-Id: <20201027134914.892293732@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -43,53 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Thompson <daniel.thompson@linaro.org>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit d081a6e353168f15e63eb9e9334757f20343319f ]
+[ Upstream commit 50b7d85680086126d7bd91dae81d57d4cb1ab6b7 ]
 
-Currently using forward search doesn't handle multi-line strings correctly.
-The search routine replaces line breaks with \0 during the search and, for
-regular searches ("help | grep Common\n"), there is code after the line
-has been discarded or printed to replace the break character.
+ramfs needs to check that pages are both physically contiguous and
+contiguous in the file.  If the page cache happens to have, eg, page A for
+index 0 of the file, no page for index 1, and page A+1 for index 2, then
+an mmap of the first two pages of the file will succeed when it should
+fail.
 
-However during a pager search ("help\n" followed by "/Common\n") when the
-string is matched we will immediately return to normal output and the code
-that should restore the \n becomes unreachable. Fix this by restoring the
-replaced character when we disable the search mode and update the comment
-accordingly.
-
-Fixes: fb6daa7520f9d ("kdb: Provide forward search at more prompt")
-Link: https://lore.kernel.org/r/20200909141708.338273-1-daniel.thompson@linaro.org
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Fixes: 642fb4d1f1dd ("[PATCH] NOMMU: Provide shared-writable mmap support on ramfs")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Howells <dhowells@redhat.com>
+Link: https://lkml.kernel.org/r/20200914122239.GO6583@casper.infradead.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/debug/kdb/kdb_io.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/ramfs/file-nommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-index 6a4b41484afe6..b45576ca3b0da 100644
---- a/kernel/debug/kdb/kdb_io.c
-+++ b/kernel/debug/kdb/kdb_io.c
-@@ -679,12 +679,16 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
- 			size_avail = sizeof(kdb_buffer) - len;
- 			goto kdb_print_out;
- 		}
--		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH)
-+		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH) {
- 			/*
- 			 * This was a interactive search (using '/' at more
--			 * prompt) and it has completed. Clear the flag.
-+			 * prompt) and it has completed. Replace the \0 with
-+			 * its original value to ensure multi-line strings
-+			 * are handled properly, and return to normal mode.
- 			 */
-+			*cphold = replaced_byte;
- 			kdb_grepping_flag = 0;
-+		}
- 		/*
- 		 * at this point the string is a full line and
- 		 * should be printed, up to the null.
+diff --git a/fs/ramfs/file-nommu.c b/fs/ramfs/file-nommu.c
+index 3ac1f23870837..5e1ebbe639ebf 100644
+--- a/fs/ramfs/file-nommu.c
++++ b/fs/ramfs/file-nommu.c
+@@ -228,7 +228,7 @@ static unsigned long ramfs_nommu_get_unmapped_area(struct file *file,
+ 	if (!pages)
+ 		goto out_free;
+ 
+-	nr = find_get_pages(inode->i_mapping, &pgoff, lpages, pages);
++	nr = find_get_pages_contig(inode->i_mapping, pgoff, lpages, pages);
+ 	if (nr != lpages)
+ 		goto out_free_pages; /* leave if some pages were missing */
+ 
 -- 
 2.25.1
 
