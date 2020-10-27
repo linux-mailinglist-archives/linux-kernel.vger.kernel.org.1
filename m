@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5540429BB00
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE31E29B882
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802932AbgJ0Pv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
+        id S1800499AbgJ0Pfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799709AbgJ0Pc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:32:57 -0400
+        id S1799717AbgJ0PdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BECDA20728;
-        Tue, 27 Oct 2020 15:32:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7B1F20728;
+        Tue, 27 Oct 2020 15:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812777;
-        bh=FxsYMJh5GcWQ2EJ+/uAx3LwJ1jKoEX3seiWRCNptn3o=;
+        s=default; t=1603812780;
+        bh=1Aj6JeR182PwkxhNRcNlUtJai3evxxD9/5dvhRXyi1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GAWnh1jes57pMbEjPh8i9aou3fPUIELQTLp8DywIFBaZx36d6robeN1rOyv4eeM0T
-         5uUCu65ylHl5EfgrLvK1O2RkH6pvFMEhNrDoA+TO3//H2/x8EXthDrFtDxQsWKswoe
-         aA4fyZ8bbaTMCskyXcd1opmZpxm6sWBleiO+sgQg=
+        b=RVwO6qd7X/RaWpJA/lqzld4VE6FxuPCYmxfiZK6ExATVgMQYLRy0rXs3ESC2v/vdn
+         g0Hs5ImSmlz1UkwXCg8F6vm+BOeZia5/03vnLItCWE7i2vY9yWpJgVOcBDwn0Gd2Eu
+         M89gd+1AZObhwkSZSN8ZfKSoX5qtEddAUyNut27o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 326/757] slimbus: core: check get_addr before removing laddr ida
-Date:   Tue, 27 Oct 2020 14:49:36 +0100
-Message-Id: <20201027135505.832432063@linuxfoundation.org>
+Subject: [PATCH 5.9 327/757] slimbus: core: do not enter to clock pause mode in core
+Date:   Tue, 27 Oct 2020 14:49:37 +0100
+Message-Id: <20201027135505.880876519@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,38 +45,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit f97769fde678e111a1b7b165b380d8a3dfe54f4e ]
+[ Upstream commit df2c471c4ae07e18a0396db670dca2ef867c5153 ]
 
-logical address can be either assigned by the SLIMBus controller or the core.
-Core uses IDA in cases where get_addr callback is not provided by the
-controller.
-Core already has this check while allocating IDR, however during absence
-reporting this is not checked. This patch fixes this issue.
+Let the controller logic decide when to enter into clock pause mode!
+Entering in to pause mode during unregistration does not really make
+sense as the controller is totally going down at that point in time.
 
-Fixes: 46a2bb5a7f7e ("slimbus: core: Add slim controllers support")
+Fixes: 4b14e62ad3c9e ("slimbus: Add support for 'clock-pause' feature")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200925095520.27316-2-srinivas.kandagatla@linaro.org
+Link: https://lore.kernel.org/r/20200925095520.27316-3-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/slimbus/core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index ae1e248a8fb8a..58b63ae0e75a6 100644
+index 58b63ae0e75a6..1d2bc181da050 100644
 --- a/drivers/slimbus/core.c
 +++ b/drivers/slimbus/core.c
-@@ -326,8 +326,8 @@ void slim_report_absent(struct slim_device *sbdev)
- 	mutex_lock(&ctrl->lock);
- 	sbdev->is_laddr_valid = false;
- 	mutex_unlock(&ctrl->lock);
--
--	ida_simple_remove(&ctrl->laddr_ida, sbdev->laddr);
-+	if (!ctrl->get_laddr)
-+		ida_simple_remove(&ctrl->laddr_ida, sbdev->laddr);
- 	slim_device_update_status(sbdev, SLIM_DEVICE_STATUS_DOWN);
- }
- EXPORT_SYMBOL_GPL(slim_report_absent);
+@@ -301,8 +301,6 @@ int slim_unregister_controller(struct slim_controller *ctrl)
+ {
+ 	/* Remove all clients */
+ 	device_for_each_child(ctrl->dev, NULL, slim_ctrl_remove_device);
+-	/* Enter Clock Pause */
+-	slim_ctrl_clk_pause(ctrl, false, 0);
+ 	ida_simple_remove(&ctrl_ida, ctrl->id);
+ 
+ 	return 0;
 -- 
 2.25.1
 
