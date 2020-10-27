@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8657129BA67
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7799829BB59
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805669AbgJ0QBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60918 "EHLO mail.kernel.org"
+        id S1805684AbgJ0QBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:01:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801415AbgJ0PlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:41:14 -0400
+        id S1801427AbgJ0PlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:41:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10936223AB;
-        Tue, 27 Oct 2020 15:41:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2ECB3223B0;
+        Tue, 27 Oct 2020 15:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813273;
-        bh=ChXSg92q0KDDStYfIpuZUm65CrxV/X8/S/XpJifQi6M=;
+        s=default; t=1603813276;
+        bh=P05hMdmcCfZ6hsb/t3C3HolCK1kxPQigs2YlxUr23RU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=scyHZa2nDfHj2Yx4dau1Ku92esywswZ4/r3yqN3lsI/kpouOPputNrasb1L2ZjAPs
-         i8j2qLfJck1aGGZlb3iZYgKuhgKOqu3GiIuwGjMFH18JFT4Dc1EuMHqZnL/tn0SmAk
-         d8ZiGvwbzL3NXl2dRNHxe6TcxdqiyFwDPqcOeV30=
+        b=daKtbnfEtE2cTF86u4YN0JSpg0O8tBvE/94Z03gI6rjs/LecAcgjULlwBaFaQDnqE
+         OS24uF/VEOIqZeXmhxDfOex4O2c7vJ+7XdinuNflh5Wd92VUh+9qGce9ugIvD1rsGp
+         xkecDmWucxjOV08T+G1xwQLlfdQdX01HuidlJejg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 496/757] um: time-travel: Fix IRQ handling in time_travel_handle_message()
-Date:   Tue, 27 Oct 2020 14:52:26 +0100
-Message-Id: <20201027135513.724343723@linuxfoundation.org>
+Subject: [PATCH 5.9 497/757] thermal: core: Adding missing nlmsg_free() in thermal_genl_sampling_temp()
+Date:   Tue, 27 Oct 2020 14:52:27 +0100
+Message-Id: <20201027135513.775287511@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,55 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit ebef8ea2ba967026192a26f4529890893919bc57 ]
+[ Upstream commit 48b458591749d35c927351b4960b49e35af30fe6 ]
 
-As the comment here indicates, we need to do the polling in the
-idle loop without blocking interrupts, since interrupts can be
-vhost-user messages that we must process even while in our idle
-loop.
+thermal_genl_sampling_temp() misses to call nlmsg_free() in an error path.
 
-I don't know why I explained one thing and implemented another,
-but we have indeed observed random hangs due to this, depending
-on the timing of the messages.
+Jump to out_free to fix it.
 
-Fixes: 88ce64249233 ("um: Implement time-travel=ext")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: 1ce50e7d408ef2 ("thermal: core: genetlink support for events/cmd/sampling")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200929082652.59876-1-jingxiangfeng@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/time.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/thermal/thermal_netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 25eaa6a0c6583..c07436e89e599 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -70,13 +70,17 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
- 	 * read of the message and write of the ACK.
- 	 */
- 	if (mode != TTMH_READ) {
-+		bool disabled = irqs_disabled();
-+
-+		BUG_ON(mode == TTMH_IDLE && !disabled);
-+
-+		if (disabled)
-+			local_irq_enable();
- 		while (os_poll(1, &time_travel_ext_fd) != 0) {
--			if (mode == TTMH_IDLE) {
--				BUG_ON(!irqs_disabled());
--				local_irq_enable();
--				local_irq_disable();
--			}
-+			/* nothing */
- 		}
-+		if (disabled)
-+			local_irq_disable();
- 	}
+diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
+index af7b2383e8f6b..019f4812def6c 100644
+--- a/drivers/thermal/thermal_netlink.c
++++ b/drivers/thermal/thermal_netlink.c
+@@ -78,7 +78,7 @@ int thermal_genl_sampling_temp(int id, int temp)
+ 	hdr = genlmsg_put(skb, 0, 0, &thermal_gnl_family, 0,
+ 			  THERMAL_GENL_SAMPLING_TEMP);
+ 	if (!hdr)
+-		return -EMSGSIZE;
++		goto out_free;
  
- 	ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
+ 	if (nla_put_u32(skb, THERMAL_GENL_ATTR_TZ_ID, id))
+ 		goto out_cancel;
+@@ -93,6 +93,7 @@ int thermal_genl_sampling_temp(int id, int temp)
+ 	return 0;
+ out_cancel:
+ 	genlmsg_cancel(skb, hdr);
++out_free:
+ 	nlmsg_free(skb);
+ 
+ 	return -EMSGSIZE;
 -- 
 2.25.1
 
