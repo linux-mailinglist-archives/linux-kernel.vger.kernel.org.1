@@ -2,149 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304E929A79F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FAC29A7A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505750AbgJ0JTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407507AbgJ0JTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:19:01 -0400
-Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 690B02224E;
-        Tue, 27 Oct 2020 09:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603790340;
-        bh=APYsaGexIvLPnOo7r338WsGJoQsC/lI3MZUO2JiEcok=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZZ2JJUagdVkVauWfqh+GeLuc18v3DO49rvP6+w7LJoihNvXtPnAe+tUBCUU3KTnXH
-         YRy+D9OXJRd4BxsVel27e4bTcQvwgEULUJOxu6qWLS8SjSUdDFp7a3X2tE1AlLE4QW
-         7W4ukaneaGAY6iZ6a6dGa7Kbt0/gsju4IeyyOGW4=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        David Cohen <david.a.cohen@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH 2/3] usb: dwc3: ulpi: Replace CPU-based busyloop with
- Protocol-based one
-In-Reply-To: <20201010222351.7323-3-Sergey.Semin@baikalelectronics.ru>
-References: <20201010222351.7323-1-Sergey.Semin@baikalelectronics.ru>
- <20201010222351.7323-3-Sergey.Semin@baikalelectronics.ru>
-Date:   Tue, 27 Oct 2020 11:18:51 +0200
-Message-ID: <87h7qgc9hg.fsf@kernel.org>
+        id S2505857AbgJ0JTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:19:20 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:36849 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387859AbgJ0JTT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:19:19 -0400
+Received: by mail-wr1-f44.google.com with SMTP id x7so1029134wrl.3;
+        Tue, 27 Oct 2020 02:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+OOfjhuhTD9zQyQKa367WJYfNXLO5sju7NGsP+LncHg=;
+        b=EfibJUiWTOmw1OAgBReOF9qT+M2VDkU6Smvd2+iVxdSy8OqnMwJOpi4J107Dex99oB
+         NX2UvZ3g5Xi0/X2lDsPc6wQ1pKzR3ayklDOAebOb2Rr+v0XZR2jYXQ7Lj3pqATLIBPz+
+         +PsLmjLmuUmttB3vSWSnPpS7P9ZqNJEeww7k1LgTIFebFEEd2INV5i7BQwZNfmo5ZS+6
+         VZnsW8802co1MNN9M9da9w31SZL2bbNifHmw+3c3B47Qvd1T6zXHTe6H4ovRxygNjS2E
+         oKORkS2dRnJfhu6sG4FuGYOLym6BoQnrdzmWDuu42DCfG7q2h1PxZoz2pFm63+PhMpgQ
+         zRhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+OOfjhuhTD9zQyQKa367WJYfNXLO5sju7NGsP+LncHg=;
+        b=AY+bh08/HZeNVM9AZnXA2EUtSHn4kbZtEgoCXntERf+DKD9DzAbrcDjaK6Xd5D6cVt
+         0+xMUwko3+bpi0hCmFo3ECqHAyiQeqxa8BORWgYR2Itmw5W0Kw3rGtg10v7ecHmXlw/9
+         iygXUDSKZbr5rmBdG1YvmJjuZZ3SCPzx5KXGELL02gxAk+bsSoYmMt0L5qbXGFUzSBkd
+         Cj7CxL5kwU9pOCLTN8OCgJ6sWQoz3WxgmMO0B0HR0z9MpaP8qVZDfFH/ZEm4QN9a5dbT
+         D313XbtnfETyHXJIY31oD4TkcEiRicvcAzQ+pm8pWYAEa+4Nk7KOOnBDd8GHj5ER87wp
+         2apQ==
+X-Gm-Message-State: AOAM5333t4gFsC02AE7ZrVxCnhjFeyj5uuqowqrarYeOjnOB9iu6K/8o
+        ESKMdebICysuE9S2MVOHocw=
+X-Google-Smtp-Source: ABdhPJzelJGygDhpfTD4K7Y5hLTcBYoUOdTRtidWUuS8SAfNUXBwHVLsL+KZ9XT82ccJOtlkNRfYjg==
+X-Received: by 2002:adf:d84e:: with SMTP id k14mr1745123wrl.251.1603790355966;
+        Tue, 27 Oct 2020 02:19:15 -0700 (PDT)
+Received: from pce.localnet (host-80-117-125-178.pool80117.interbusiness.it. [80.117.125.178])
+        by smtp.gmail.com with ESMTPSA id x10sm1160524wrp.62.2020.10.27.02.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 02:19:15 -0700 (PDT)
+From:   Elia Devito <eliadevito@gmail.com>
+To:     Mark Pearson <markpearson@lenovo.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, hadess@hadess.net, bberg@redhat.com,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] [RFC] Documentation: Add documentation for new platform_profile sysfs attribute
+Date:   Tue, 27 Oct 2020 10:19:12 +0100
+Message-ID: <12633630.uLZWGnKmhe@pce>
+In-Reply-To: <1fbaf1fa-47c6-afe7-ca9e-41b3ad6a4556@redhat.com>
+References: <markpearson@lenovo.com> <ef9b93a0-636f-9b96-9d5b-fee1e5738af7@lenovo.com> <1fbaf1fa-47c6-afe7-ca9e-41b3ad6a4556@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi to all,
+
+In data marted=EC 27 ottobre 2020 08:54:44 CET, Hans de Goede ha scritto:
+> Hi,
+>=20
+> On 10/26/20 8:55 PM, Mark Pearson wrote:
+> > Thanks Hans
+> >=20
+> > On 26/10/2020 14:33, Hans de Goede wrote:
+> >> Hi Mark,
+> >>=20
+> >> Thank you for this new version.
+> >>=20
+> >> On 10/26/20 6:44 PM, Mark Pearson wrote:
+> >>> From: Hans de Goede <hdegoede@redhat.com>
+> >=20
+> > <snip>
+> >=20
+> >>> +
+> >>> +If for some reason there is no good match when mapping then a new
+> >>> profile-name +may be added. Drivers which wish to introduce new
+> >>> profile-names must: +1. Have very good reasons to do so.
+> >>> +2. Add the new profile-name to this document, so that future drivers
+> >>> which also +   have a similar problem can use the same new.
+> >>=20
+> >> s/same new/same name/
+> >=20
+> > I've read this document so many times...I'm not sure how I missed that
+> > one. Thanks.>=20
+> >>> + Usually new profile-names will
+> >>> +   be added to the "extra profile-names" section of this document. B=
+ut
+> >>> in some +   cases the set of standard profile-names may be extended.
+> >>=20
+> >> With the change from a more generic API to this new one more targeted
+> >> towards DPTF I would drop this part.
+> >=20
+> > OK - I have some questions then related to this change, below
+> >=20
+> >>> +
+> >>> +What:        /sys/firmware/acpi/platform_profile_choices
+> >>> +Date:        October 2020
+> >>> +Contact:    Hans de Goede <hdegoede@redhat.com>
+> >>> +Description:
+> >>> +        Reading this file gives a space separated list of profiles
+> >>> +        supported for this device.
+> >>> +
+> >>> +        Drivers must use the following standard profile-names whenev=
+er
+> >>> +        possible:
+> >>> +
+> >>> +        low-power:        Emphasises low power consumption
+> >>> +        quiet:            Offers quieter operation (lower fan
+> >>> +                    speed but with higher performance and
+> >>> +                    temperatures then seen in low-power
+> >>=20
+> >> I think the description here is a bit too specific, this may cause
+> >> userspace to have expectations which are not necessary true. I would
+> >> describe this as just:
+> >>=20
+> >>         quiet:            Emphasises quieter operation
+> >=20
+> > Agreed. I'll update
+> >=20
+> >>> +        balanced:        Balance between low power consumption
+> >>> +                    and performance
+> >>> +        performance:        Emphasises performance (and may lead to
+> >>> +                    higher temperatures and fan speeds)
+> >>> +
+> >>> +        Userspace may expect drivers to offer at least several of th=
+ese
+> >>> +        standard profile-names! If none of the above are a good match
+> >>> +        for some of the drivers profiles, then drivers may use one of
+> >>> +        these extra profile-names:
+> >>> +        <reserved for future use>
+> >>> +
+> >=20
+> > If we remove the extra profile-names section above then I think it shou=
+ld
+> > be removed here too. If someone wants to add a new 'mode' then it would
+> > be added to the list of 'standard names', and becomes a new option.
+> > Wanted to check I'm not missing something important.
+> You are completely right, any references to an extra profile-names section
+> should be removed here too. I did intend to add that it should be removed
+> here too, but I forgot.
+>=20
+> >>> +What:        /sys/firmware/acpi/platform_profile
+> >>> +Date:        October 2020
+> >>> +Contact:    Hans de Goede <hdegoede@redhat.com>
+> >>> +Description:
+> >>> +        Reading this file gives the current selected profile for this
+> >>> +        device. Writing this file with one of the strings from
+> >>> +        available_profiles changes the profile to the new value.
+> >>=20
+> >> The part about custom profiles below may be dropped. That was intended
+> >> for use with e.g. GPUs but since this now strictly is a system-level
+> >> profile API, the part below can be dropped now.
+> >=20
+> > Agreed
+> >=20
+> >>> +
+> >>> +        Reading this file may also return "custom". This is intended
+> >>> for
+> >>> +        drivers which have and export multiple knobs. Such drivers m=
+ay
+> >>> +        very well still want to offer a set of profiles for easy of =
+use
+> >>> +        and to be able to offer a consistent standard API (this API)=
+ to
+> >>> +        userspace for configuring their performance. The "custom" va=
+lue
+> >>> +        is intended for when ai user has directly configured the kno=
+bs
+> >>> +        (through e.g. some advanced control-panel for a GPU) and the
+> >>> +        knob values do not match any of the presets represented by t=
+he
+> >>> +        platform-profiles. In this case writing this file will
+> >>> +        override the modifications and restore the selected presets.
+> >>> +
+> >>=20
+> >> Regards,
+> >>=20
+> >> Hans
+> >=20
+> > Thanks!
+> > mark
+>=20
+> Regards,
+>=20
+> Hans
+
+This look good,
+only thing is that hp-wmi driver need a cool profile (Emphasises the comput=
+er=20
+cool to touch), if you can add it would be perfect.
+
+Regards
+Elia
 
 
-Hi,
 
-Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
-
-> Originally the procedure of the ULPI transaction finish detection has been
-> developed as a simple busy-loop with just decrementing counter and no
-> delays. It's wrong since on different systems the loop will take a
-> different time to complete. So if the system bus and CPU are fast enough
-> to overtake the ULPI bus and the companion PHY reaction, then we'll get to
-> take a false timeout error. Fix this by converting the busy-loop procedure
-> to take the standard bus speed, address value and the registers access
-> mode into account for the busy-loop delay calculation.
->
-> Here is the way the fix works. It's known that the ULPI bus is clocked
-> with 60MHz signal. In accordance with [1] the ULPI bus protocol is created
-> so to spend 5 and 6 clock periods for immediate register write and read
-> operations respectively, and 6 and 7 clock periods - for the extended
-> register writes and reads. Based on that we can easily pre-calculate the
-> time which will be needed for the controller to perform a requested IO
-> operation. Note we'll still preserve the attempts counter in case if the
-> DWC USB3 controller has got some internals delays.
->
-> [1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
->     October 20, 2004, pp. 30 - 36.
->
-> Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  drivers/usb/dwc3/ulpi.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/usb/dwc3/ulpi.c b/drivers/usb/dwc3/ulpi.c
-> index 20f5d9aba317..0dbc826355a5 100644
-> --- a/drivers/usb/dwc3/ulpi.c
-> +++ b/drivers/usb/dwc3/ulpi.c
-> @@ -7,6 +7,8 @@
->   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->   */
->=20=20
-> +#include <linux/delay.h>
-> +#include <linux/time64.h>
->  #include <linux/ulpi/regs.h>
->=20=20
->  #include "core.h"
-> @@ -17,12 +19,22 @@
->  		DWC3_GUSB2PHYACC_ADDR(ULPI_ACCESS_EXTENDED) | \
->  		DWC3_GUSB2PHYACC_EXTEND_ADDR(a) : DWC3_GUSB2PHYACC_ADDR(a))
->=20=20
-> -static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
-> +#define DWC3_ULPI_BASE_DELAY	DIV_ROUND_UP(NSEC_PER_SEC, 60000000L)
-> +
-> +static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
->  {
-> +	unsigned long ns =3D 5L * DWC3_ULPI_BASE_DELAY;
->  	unsigned count =3D 1000;
->  	u32 reg;
->=20=20
-> +	if (addr >=3D ULPI_EXT_VENDOR_SPECIFIC)
-> +		ns +=3D DWC3_ULPI_BASE_DELAY;
-> +
-> +	if (read)
-> +		ns +=3D DWC3_ULPI_BASE_DELAY;
-> +
->  	while (count--) {
-> +		ndelay(ns);
-
-could we allow for a sleep here instead of a delay? Also, I wonder if
-you need to make this so complex or should we just take the larger
-access time of 7 clock cycles.
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+X5fsRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQbFOA//RLMezPqI1XnIaQfE6WN7WFWhwAEzYoiJ
-dRa0fDLg2AsievUsW29QDN25/0FrGsZKDrQSy4u13LW41ba6H4d2J+T3vdTlm5xI
-ug1cSMaV49aKpQo1oE8KEsl2b5S4Fc1AwZXtDeY3m4phgDgszu/XUTQY0cC5/jzq
-Z+TARubUj6soFIcICM2KNZishegmu9i2jOjHdvizA+CRoiPxCAmzsqfllgE69Imj
-OZrmbgQeNg5uAD7eOS0cOLWAAggU3LNysMDTlQ5cp/An3OxotyIj0NzpdMfjptzU
-c6Gke3nXTOraV7U0xR/BPtM7v4g9xE+c9o/IoYkfbgnRE1hnvZuKIfb/ksrL6X7F
-1DZZQ2GGaZ0ThOZ0B+u3B3DEnP5PHm62E2zcni09D/b4rzJwVOWZUY2IqziXH6qO
-99sz9tnFgX3g573UB24k5MY5J5a5zynbl7YVouqCf6loCuzCBM7iuCgXKw0II5/y
-aVutZWTtOOrDn3UsEqjrM1UtwTLIUM/o3RP03SQLBdJnm7Szav8I69HQ0X3gFqFg
-mKUwadHbpx3zk8UKYNEkM3T4pQ/IF+W83QsZ1T6TojUFzLHs0xIaoZNW5EQJwEwz
-VzHt24Q9T+aAoOWunH5h5IKQk1uQmjlcZCIk8duZI8mQT5TgX+5fOucQnAFDlNSn
-dS5781fafjw=
-=Izn9
------END PGP SIGNATURE-----
---=-=-=--
