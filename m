@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0827429C361
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F89029C210
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758943AbgJ0O0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51588 "EHLO mail.kernel.org"
+        id S1819345AbgJ0R3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:29:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901690AbgJ0O0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:26:00 -0400
+        id S1762362AbgJ0Om0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E92F207C3;
-        Tue, 27 Oct 2020 14:25:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89B69206B2;
+        Tue, 27 Oct 2020 14:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808760;
-        bh=Aj3H/mllP3Z1Ndwy+73zR5D3CeWuFmetb4clh9ff4xM=;
+        s=default; t=1603809745;
+        bh=pvfAZhUa8sMAna9sDF2/As5lhFfOh6Nhp563hzNDlzw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xKxzBBcJbl+XWOWxSrW/Dk7Ep99HHof4cUq9HO1JUDHxyEYBSMtBbT3Sh77z5+C4/
-         ns3YsVWiHkNEJhUv8bE0fLyqWfP81/LQYdhnVnw4vEIPtKER5jvkZQurW5VOpEGsMj
-         wGpcmMdTiqhDlDBQXbjf7+8rAVY5yRk/rvVbidPw=
+        b=T8HzKRlJcMzwPAwNkk70CB+pp6bIMQ5g6ut5uUW0YSwzQxXuLQ4BTa6TaDqudGgv7
+         sjoK20eN6xMHuSW7bxttjU1qUy6g+D0ps2QhKpJyyEWQJkncR7TmMxFv3BgR3udqFt
+         sHyWDfS3e7OsLdEBPRpozhed9qlPi7oZvHVxRwmQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 183/264] Input: stmfts - fix a & vs && typo
-Date:   Tue, 27 Oct 2020 14:54:01 +0100
-Message-Id: <20201027135439.263930691@linuxfoundation.org>
+Subject: [PATCH 5.4 304/408] arm64: dts: imx8mq: Add missing interrupts to GPC
+Date:   Tue, 27 Oct 2020 14:54:02 +0100
+Message-Id: <20201027135509.134248062@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit d04afe14b23651e7a8bc89727a759e982a8458e4 ]
+[ Upstream commit 791619f66843a213784efb2f171be98933bad991 ]
 
-In stmfts_sysfs_hover_enable_write(), we should check value and
-sdata->hover_enabled is all true.
+The i.MX General Power Controller v2 device node was missing interrupts
+property necessary to route its interrupt to GIC.  This also fixes the
+dbts_check warnings like:
 
-Fixes: 78bcac7b2ae1 ("Input: add support for the STMicroelectronics FingerTip touchscreen")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200916141941.16684-1-yuehaibing@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+  arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: gpc@303a0000:
+    {'compatible': ... '$nodename': ['gpc@303a0000']} is not valid under any of the given schemas
+  arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: gpc@303a0000: 'interrupts' is a required property
+
+Fixes: fdbcc04da246 ("arm64: dts: imx8mq: add GPC power domains")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/stmfts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/touchscreen/stmfts.c b/drivers/input/touchscreen/stmfts.c
-index b6f95f20f9244..cd8805d71d977 100644
---- a/drivers/input/touchscreen/stmfts.c
-+++ b/drivers/input/touchscreen/stmfts.c
-@@ -479,7 +479,7 @@ static ssize_t stmfts_sysfs_hover_enable_write(struct device *dev,
- 
- 	mutex_lock(&sdata->mutex);
- 
--	if (value & sdata->hover_enabled)
-+	if (value && sdata->hover_enabled)
- 		goto out;
- 
- 	if (sdata->running)
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index bc8540f879654..f1011bcd5ed5a 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -516,6 +516,7 @@ src: reset-controller@30390000 {
+ 			gpc: gpc@303a0000 {
+ 				compatible = "fsl,imx8mq-gpc";
+ 				reg = <0x303a0000 0x10000>;
++				interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
+ 				interrupt-parent = <&gic>;
+ 				interrupt-controller;
+ 				#interrupt-cells = <3>;
 -- 
 2.25.1
 
