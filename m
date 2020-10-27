@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EA129C07F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D98229C15B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752267AbgJ0O4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50328 "EHLO mail.kernel.org"
+        id S1751889AbgJ0Oxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:53:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772985AbgJ0Oup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:45 -0400
+        id S1768928AbgJ0Otp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:49:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DA54207DE;
-        Tue, 27 Oct 2020 14:50:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A2A3206E5;
+        Tue, 27 Oct 2020 14:49:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810245;
-        bh=TOMOFqJJWaTID7t4W5xrrfYitBkfSAsctATwSlD6NFk=;
+        s=default; t=1603810184;
+        bh=ABDJk1IgEQkgZTjKItFkQe7nMQHUcwiBYX3QUIwfmrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B9z07w7zC4kcqYJrACeFK5SDFe+ZVH5BUm5wXvcBmdTg1ZmCBiUymOtJOc1pb+UKc
-         Ut4G+DCbEefO8UQaJzrehIDyN3FBZY8KP21LEmZodZWkkhYMCOhWoDoRmwviZalYZA
-         Y8H95eSrHIZtIkgyeW70sehkPk0v8D/xwrZyb3v0=
+        b=t3+BmoNSo19n1xMQO7frOV4GkuxAW9lzK9Be3AMELSfc511jASq/ZE7fRxktw/z/1
+         snIT2Gmk43eCdldSxMkz2qXpnw1woJPSPo8IN0+sLmby83BnvgpqHV7booQRXxBAq1
+         i3ZR9WcdL/CZbznK2+piW3LEnXsBpNphKPzLXBuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ji Li <jli@akamai.com>,
-        Ke Li <keli@akamai.com>, Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.8 044/633] net: Properly typecast int values to set sk_max_pacing_rate
-Date:   Tue, 27 Oct 2020 14:46:27 +0100
-Message-Id: <20201027135524.767612610@linuxfoundation.org>
+Subject: [PATCH 5.8 051/633] selftests: rtnetlink: load fou module for kci_test_encap_fou() test
+Date:   Tue, 27 Oct 2020 14:46:34 +0100
+Message-Id: <20201027135525.093652953@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,56 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ke Li <keli@akamai.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
 
-[ Upstream commit 700465fd338fe5df08a1b2e27fa16981f562547f ]
+[ Upstream commit 26ebd6fed9bb3aa480c7c0f147ac0e7b11000f65 ]
 
-In setsockopt(SO_MAX_PACING_RATE) on 64bit systems, sk_max_pacing_rate,
-after extended from 'u32' to 'unsigned long', takes unintentionally
-hiked value whenever assigned from an 'int' value with MSB=1, due to
-binary sign extension in promoting s32 to u64, e.g. 0x80000000 becomes
-0xFFFFFFFF80000000.
+The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
+needs the fou module to work. Otherwise it will fail with:
 
-Thus inflated sk_max_pacing_rate causes subsequent getsockopt to return
-~0U unexpectedly. It may also result in increased pacing rate.
+  $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
+  RTNETLINK answers: No such file or directory
+  Error talking to the kernel
 
-Fix by explicitly casting the 'int' value to 'unsigned int' before
-assigning it to sk_max_pacing_rate, for zero extension to happen.
+Add the CONFIG_NET_FOU into the config file as well. Which needs at
+least to be set as a loadable module.
 
-Fixes: 76a9ebe811fb ("net: extend sk_pacing_rate to unsigned long")
-Signed-off-by: Ji Li <jli@akamai.com>
-Signed-off-by: Ke Li <keli@akamai.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20201022064146.79873-1-keli@akamai.com
+Fixes: 6227efc1a20b ("selftests: rtnetlink.sh: add vxlan and fou test cases")
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Link: https://lore.kernel.org/r/20201019030928.9859-1-po-hsu.lin@canonical.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/filter.c |    3 ++-
- net/core/sock.c   |    2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/config       |    1 +
+ tools/testing/selftests/net/rtnetlink.sh |    5 +++++
+ 2 files changed, 6 insertions(+)
 
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4323,7 +4323,8 @@ static int _bpf_setsockopt(struct sock *
- 				cmpxchg(&sk->sk_pacing_status,
- 					SK_PACING_NONE,
- 					SK_PACING_NEEDED);
--			sk->sk_max_pacing_rate = (val == ~0U) ? ~0UL : val;
-+			sk->sk_max_pacing_rate = (val == ~0U) ?
-+						 ~0UL : (unsigned int)val;
- 			sk->sk_pacing_rate = min(sk->sk_pacing_rate,
- 						 sk->sk_max_pacing_rate);
- 			break;
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1184,7 +1184,7 @@ set_sndbuf:
+--- a/tools/testing/selftests/net/config
++++ b/tools/testing/selftests/net/config
+@@ -31,3 +31,4 @@ CONFIG_NET_SCH_ETF=m
+ CONFIG_NET_SCH_NETEM=y
+ CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_KALLSYMS=y
++CONFIG_NET_FOU=m
+--- a/tools/testing/selftests/net/rtnetlink.sh
++++ b/tools/testing/selftests/net/rtnetlink.sh
+@@ -521,6 +521,11 @@ kci_test_encap_fou()
+ 		return $ksft_skip
+ 	fi
  
- 	case SO_MAX_PACING_RATE:
- 		{
--		unsigned long ulval = (val == ~0U) ? ~0UL : val;
-+		unsigned long ulval = (val == ~0U) ? ~0UL : (unsigned int)val;
- 
- 		if (sizeof(ulval) != sizeof(val) &&
- 		    optlen >= sizeof(ulval) &&
++	if ! /sbin/modprobe -q -n fou; then
++		echo "SKIP: module fou is not found"
++		return $ksft_skip
++	fi
++	/sbin/modprobe -q fou
+ 	ip -netns "$testns" fou add port 7777 ipproto 47 2>/dev/null
+ 	if [ $? -ne 0 ];then
+ 		echo "FAIL: can't add fou port 7777, skipping test"
 
 
