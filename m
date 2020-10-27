@@ -2,177 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E6129C4F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8094B29C4F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824016AbgJ0SBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:01:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:34792 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1822989AbgJ0R4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:56:40 -0400
-IronPort-SDR: vjvgGDD0NGIX6UEjoszQzqOGx3E0qf1DChzA0NXw6cXKA8L51J6LTXqNKVzcsYaws5LVjayE5g
- 5RAZLLZiorKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="252832121"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="252832121"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 10:56:37 -0700
-IronPort-SDR: lhTXJjKMMe48W2fw2kvkLvMa4ud3oSkNemMMiUpDzw41G6iO737oAPFrG3kaxHY1ElO1pPQi2d
- Ogpi0hhlimQA==
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="350682053"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 10:56:37 -0700
-Date:   Tue, 27 Oct 2020 10:56:36 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [PATCH 3/3] sched: Add cond_resched_rwlock
-Message-ID: <20201027175634.GI1021@linux.intel.com>
-References: <20201027164950.1057601-1-bgardon@google.com>
- <20201027164950.1057601-3-bgardon@google.com>
+        id S1823999AbgJ0SB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:01:26 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47344 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1823088AbgJ0R5c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 13:57:32 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RHt2j7190304;
+        Tue, 27 Oct 2020 17:57:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=hvl3eqwvU0FU1DRhXO6+KBI9X/WA5aR0wcPHYoqQpnM=;
+ b=Uu70zH77yr+j3cQ2pXDmOqjQhqE4ITyLCqgMn6Ws6F2PZatvrTAU4RjCSHgiiu2bvq1J
+ D2uxSMjxfJmWPgsjogyheINxXiCnbRp5AwS11+dAnFYrgcV2+DDs4zmkI2/Q2KPchyPH
+ o2iHSSzrtg50xWmVxytu11L8Aa5Sdr3pKDQS5lG1Op8xASMWMatj7K5QAhb3u2CC6hcW
+ dyutIJpS68IwjhJt75jdn866u/Rd46t4x4OYPwn9nNltbhdRhh947SF8bDeqdLu8bUj+
+ 3XptD3A3MCR6/ViyaC022H67Nek+DrfiI9s9VGjpNsgMnNDzuW6ImRrmY8r5bWGDxRTX Hg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34cc7kuhsw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 17:57:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RHoS3Q077215;
+        Tue, 27 Oct 2020 17:57:27 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 34cwumpqrd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Oct 2020 17:57:27 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09RHvRlX011589;
+        Tue, 27 Oct 2020 17:57:27 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 27 Oct 2020 10:57:26 -0700
+Date:   Tue, 27 Oct 2020 20:57:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Kent Russell <kent.russell@amd.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [kbuild] drivers/gpu/drm/amd/amdkfd/kfd_crat.c:801:9: warning:
+ Either the condition '!pcrat_image' is redundant or there is possible null
+ pointer dereference: pcrat_image.
+Message-ID: <20201027175720.GO18329@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201027164950.1057601-3-bgardon@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Message-ID-Hash: TCCQ3WF4OCNME6XM5TMIXOUMYWHBCWYH
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010270107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:49:50AM -0700, Ben Gardon wrote:
-> Rescheduling while holding a spin lock is essential for keeping long
-> running kernel operations running smoothly. Add the facility to
-> cond_resched rwlocks.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+head:   4525c8781ec0701ce824e8bd379ae1b129e26568
+commit: d0e63b343e575e8b74c185565b0d79a93494bcaa drm/amdkfd: Use kvmalloc instead of kmalloc for VCRAT
+compiler: powerpc64le-linux-gcc (GCC) 9.3.0
 
-This adds two new exports and two new macros without any in-tree users, which
-is generally frowned upon.  You and I know these will be used by KVM's new
-TDP MMU, but the non-KVM folks, and more importantly the maintainers of this
-code, are undoubtedly going to ask "why".  I.e. these patches probably belong
-in the KVM series to switch to a rwlock for the TDP MMU.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Regarding the code, it's all copy-pasted from the spinlock code and darn near
-identical.  It might be worth adding builder macros for these.
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  include/linux/sched.h | 12 ++++++++++++
->  kernel/sched/core.c   | 40 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 52 insertions(+)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 77179160ec3ab..2eb0c53fce115 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1841,12 +1841,24 @@ static inline int _cond_resched(void) { return 0; }
->  })
->  
->  extern int __cond_resched_lock(spinlock_t *lock);
-> +extern int __cond_resched_rwlock_read(rwlock_t *lock);
-> +extern int __cond_resched_rwlock_write(rwlock_t *lock);
->  
->  #define cond_resched_lock(lock) ({				\
->  	___might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);\
->  	__cond_resched_lock(lock);				\
->  })
->  
-> +#define cond_resched_rwlock_read(lock) ({			\
-> +	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
-> +	__cond_resched_rwlock_read(lock);			\
-> +})
-> +
-> +#define cond_resched_rwlock_write(lock) ({			\
-> +	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
-> +	__cond_resched_rwlock_write(lock);			\
-> +})
-> +
->  static inline void cond_resched_rcu(void)
->  {
->  #if defined(CONFIG_DEBUG_ATOMIC_SLEEP) || !defined(CONFIG_PREEMPT_RCU)
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index d2003a7d5ab55..ac58e7829a063 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6152,6 +6152,46 @@ int __cond_resched_lock(spinlock_t *lock)
->  }
->  EXPORT_SYMBOL(__cond_resched_lock);
->  
-> +int __cond_resched_rwlock_read(rwlock_t *lock)
-> +{
-> +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
-> +	int ret = 0;
-> +
-> +	lockdep_assert_held(lock);
-> +
-> +	if (rwlock_needbreak(lock) || resched) {
-> +		read_unlock(lock);
-> +		if (resched)
-> +			preempt_schedule_common();
-> +		else
-> +			cpu_relax();
-> +		ret = 1;
+   In file included from drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:
+>> drivers/gpu/drm/amd/amdkfd/kfd_crat.c:801:9: warning: Either the condition '!pcrat_image' is redundant or there is possible null pointer dereference: pcrat_image. [nullPointerRedundantCheck]
+    memcpy(pcrat_image, crat_table, crat_table->length);
+           ^
+   drivers/gpu/drm/amd/amdkfd/kfd_crat.c:802:6: note: Assuming that condition '!pcrat_image' is not redundant
+    if (!pcrat_image)
+        ^
+   drivers/gpu/drm/amd/amdkfd/kfd_crat.c:801:9: note: Null pointer dereference
+    memcpy(pcrat_image, crat_table, crat_table->length);
+           ^
+   drivers/gpu/drm/amd/amdkfd/kfd_crat.c:405:32: warning: Shifting signed 32-bit value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
+    if (props && (iolink->flags & CRAT_IOLINK_FLAGS_BI_DIRECTIONAL)) {
+                                  ^
+   drivers/gpu/drm/amd/amdkfd/kfd_crat.c:1112:26: warning: Shifting signed 32-bit value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
+     sub_type_hdr->flags |= CRAT_IOLINK_FLAGS_BI_DIRECTIONAL;
+                            ^
+   drivers/gpu/drm/amd/amdkfd/kfd_crat.c:1146:11: warning: Shifting signed 32-bit value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
+             CRAT_IOLINK_FLAGS_BI_DIRECTIONAL;
+             ^
+   drivers/gpu/drm/amd/amdkfd/kfd_crat.c:941:3: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
+     sub_type_hdr++;
+     ^
 
-AFAICT, this rather odd code flow from __cond_resched_lock() is an artifact of
-code changes over the years and not intentionally weird.  IMO, it would be
-cleaner and easier to read as:
+vim +801 drivers/gpu/drm/amd/amdkfd/kfd_crat.c
 
-	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  772  int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
+174de876d6d02f7 Felix Kuehling         2017-12-08  773  {
+174de876d6d02f7 Felix Kuehling         2017-12-08  774  	struct acpi_table_header *crat_table;
+174de876d6d02f7 Felix Kuehling         2017-12-08  775  	acpi_status status;
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  776  	void *pcrat_image;
+174de876d6d02f7 Felix Kuehling         2017-12-08  777  
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  778  	if (!crat_image)
+174de876d6d02f7 Felix Kuehling         2017-12-08  779  		return -EINVAL;
+174de876d6d02f7 Felix Kuehling         2017-12-08  780  
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  781  	*crat_image = NULL;
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  782  
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  783  	/* Fetch the CRAT table from ACPI */
+174de876d6d02f7 Felix Kuehling         2017-12-08  784  	status = acpi_get_table(CRAT_SIGNATURE, 0, &crat_table);
+174de876d6d02f7 Felix Kuehling         2017-12-08  785  	if (status == AE_NOT_FOUND) {
+174de876d6d02f7 Felix Kuehling         2017-12-08  786  		pr_warn("CRAT table not found\n");
+174de876d6d02f7 Felix Kuehling         2017-12-08  787  		return -ENODATA;
+174de876d6d02f7 Felix Kuehling         2017-12-08  788  	} else if (ACPI_FAILURE(status)) {
+174de876d6d02f7 Felix Kuehling         2017-12-08  789  		const char *err = acpi_format_exception(status);
+174de876d6d02f7 Felix Kuehling         2017-12-08  790  
+174de876d6d02f7 Felix Kuehling         2017-12-08  791  		pr_err("CRAT table error: %s\n", err);
+174de876d6d02f7 Felix Kuehling         2017-12-08  792  		return -EINVAL;
+174de876d6d02f7 Felix Kuehling         2017-12-08  793  	}
+174de876d6d02f7 Felix Kuehling         2017-12-08  794  
+6127896f4a27257 Huang Rui              2020-08-18  795  	if (kfd_ignore_crat()) {
+ebcfd1e276207e4 Felix Kuehling         2017-12-08  796  		pr_info("CRAT table disabled by module option\n");
+ebcfd1e276207e4 Felix Kuehling         2017-12-08  797  		return -ENODATA;
+ebcfd1e276207e4 Felix Kuehling         2017-12-08  798  	}
+ebcfd1e276207e4 Felix Kuehling         2017-12-08  799  
+d0e63b343e575e8 Kent Russell           2020-09-18  800  	pcrat_image = kvmalloc(crat_table->length, GFP_KERNEL);
+d0e63b343e575e8 Kent Russell           2020-09-18 @801  	memcpy(pcrat_image, crat_table, crat_table->length);
+                                                                       ^^^^^^^^^^^
+Dereferenced before the check for NULL
 
-	lockdep_assert_held(lock);
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  802  	if (!pcrat_image)
+                                                                    ^^^^^^^^^^^^
+Check.
 
-	if (!rwlock_needbreak(lock) && !resched)
-		return 0;
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  803  		return -ENOMEM;
+174de876d6d02f7 Felix Kuehling         2017-12-08  804  
+8e05247d4c23ff1 Harish Kasiviswanathan 2017-12-08  805  	*crat_image = pcrat_image;
+174de876d6d02f7 Felix Kuehling         2017-12-08  806  	*size = crat_table->length;
+174de876d6d02f7 Felix Kuehling         2017-12-08  807  
+174de876d6d02f7 Felix Kuehling         2017-12-08  808  	return 0;
+174de876d6d02f7 Felix Kuehling         2017-12-08  809  }
 
-	read_unlock(lock);
-	if (resched)
-		preempt_schedule_common();
-	else
-		cpu_relax();
-	read_lock(lock)
-	return 1;
-
-
-> +		read_lock(lock);
-> +	}
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(__cond_resched_rwlock_read);
-> +
-> +int __cond_resched_rwlock_write(rwlock_t *lock)
-> +{
-> +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
-> +	int ret = 0;
-> +
-> +	lockdep_assert_held(lock);
-
-This shoulid be lockdep_assert_held_write.
-
-> +
-> +	if (rwlock_needbreak(lock) || resched) {
-> +		write_unlock(lock);
-> +		if (resched)
-> +			preempt_schedule_common();
-> +		else
-> +			cpu_relax();
-> +		ret = 1;
-> +		write_lock(lock);
-> +	}
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(__cond_resched_rwlock_write);
-> +
->  /**
->   * yield - yield the current processor to other threads.
->   *
-> -- 
-> 2.29.0.rc2.309.g374f81d7ae-goog
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
+_______________________________________________
+kbuild mailing list -- kbuild@lists.01.org
+To unsubscribe send an email to kbuild-leave@lists.01.org
