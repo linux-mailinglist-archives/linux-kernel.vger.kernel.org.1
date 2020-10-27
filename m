@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFF529B7BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0010329B7BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795768AbgJ0PPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48456 "EHLO mail.kernel.org"
+        id S1795786AbgJ0PPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794521AbgJ0PMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:12:15 -0400
+        id S1794534AbgJ0PMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:12:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CC9F22202;
-        Tue, 27 Oct 2020 15:12:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64565222C8;
+        Tue, 27 Oct 2020 15:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811534;
-        bh=gBG8HRmTkIY7Xdd2tBhde16tVJEDMwdYi/078A6T8sM=;
+        s=default; t=1603811537;
+        bh=n2DLLg6zbaRyUaW8mG7d2lE77ZgileO8u2hHMvZBvM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ktW8Dr22aO8PO5hsPTdxvP7NTJSCRnYk9+FxidTBdiXR9DdT+hS8nB2Bm9ya5+osF
-         lKsaZRQopFs3/7tWN6ytwhTSwWtLUsJ5/dYebauogXAtgxQNbZIhhc8sP5NKZBrJJO
-         peIpS3crR1KzLLQeQWMYvyiIoZFyRCFipU7Mp6lw=
+        b=Yv3S/5ApjdfHwIKz3SVBc9YxIqtZK1xDWKZ9LOoqR6t6UDDQsaroVEIbLmbEzCngK
+         zKolehTwzlO+5E9R+WJC+y+lSncKVR6bzWA3yf5cXKDuOB357N0aHm14q5F5hi5HDo
+         gaRpUFyboJPV8gYTk7vMzRnTmcGCOlKU474nkqoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 528/633] block: ratelimit handle_bad_sector() message
-Date:   Tue, 27 Oct 2020 14:54:31 +0100
-Message-Id: <20201027135547.548187986@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Mossberg <mark.mossberg@gmail.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 529/633] x86/dumpstack: Fix misleading instruction pointer error message
+Date:   Tue, 27 Oct 2020 14:54:32 +0100
+Message-Id: <20201027135547.599736951@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,45 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Mark Mossberg <mark.mossberg@gmail.com>
 
-[ Upstream commit f4ac712e4fe009635344b9af5d890fe25fcc8c0d ]
+[ Upstream commit 238c91115cd05c71447ea071624a4c9fe661f970 ]
 
-syzbot is reporting unkillable task [1], for the caller is failing to
-handle a corrupted filesystem image which attempts to access beyond
-the end of the device. While we need to fix the caller, flooding the
-console with handle_bad_sector() message is unlikely useful.
+Printing "Bad RIP value" if copy_code() fails can be misleading for
+userspace pointers, since copy_code() can fail if the instruction
+pointer is valid but the code is paged out. This is because copy_code()
+calls copy_from_user_nmi() for userspace pointers, which disables page
+fault handling.
 
-[1] https://syzkaller.appspot.com/bug?id=f1f49fb971d7a3e01bd8ab8cff2ff4572ccf3092
+This is reproducible in OOM situations, where it's plausible that the
+code may be reclaimed in the time between entry into the kernel and when
+this message is printed. This leaves a misleading log in dmesg that
+suggests instruction pointer corruption has occurred, which may alarm
+users.
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Change the message to state the error condition more precisely.
+
+ [ bp: Massage a bit. ]
+
+Signed-off-by: Mark Mossberg <mark.mossberg@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201002042915.403558-1-mark.mossberg@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-core.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/kernel/dumpstack.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 619a3dcd3f5e7..8d6435b731186 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -798,11 +798,10 @@ static void handle_bad_sector(struct bio *bio, sector_t maxsector)
- {
- 	char b[BDEVNAME_SIZE];
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 7401cc12c3ccf..42679610c9bea 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -115,7 +115,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+ 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
  
--	printk(KERN_INFO "attempt to access beyond end of device\n");
--	printk(KERN_INFO "%s: rw=%d, want=%Lu, limit=%Lu\n",
--			bio_devname(bio, b), bio->bi_opf,
--			(unsigned long long)bio_end_sector(bio),
--			(long long)maxsector);
-+	pr_info_ratelimited("attempt to access beyond end of device\n"
-+			    "%s: rw=%d, want=%llu, limit=%llu\n",
-+			    bio_devname(bio, b), bio->bi_opf,
-+			    bio_end_sector(bio), maxsector);
- }
- 
- #ifdef CONFIG_FAIL_MAKE_REQUEST
+ 	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+-		printk("%sCode: Bad RIP value.\n", loglvl);
++		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
++		       loglvl, prologue);
+ 	} else {
+ 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
+ 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
 -- 
 2.25.1
 
