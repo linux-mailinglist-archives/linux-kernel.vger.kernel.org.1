@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660BF29C2CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8E329C45A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820850AbgJ0RjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32948 "EHLO mail.kernel.org"
+        id S1757710AbgJ0OTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898420AbgJ0OeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:34:11 -0400
+        id S2900957AbgJ0ORv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3283320709;
-        Tue, 27 Oct 2020 14:34:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AAD3206FA;
+        Tue, 27 Oct 2020 14:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809250;
-        bh=oqFJHYCHJDAmonOunTiIlV9+jTO/MRQsZuPFjEx01d0=;
+        s=default; t=1603808271;
+        bh=kbOY2toJ/pvps4g8v5VPMd1SVHto7nSjTgf55VPuK3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o/YcTbGKqtDdCEfcWcsF9h8QpcxiPtJeYh76diZ3v2D3AUCkIxwHQaTdDILTC+tp4
-         RGH/ogWDP1ctK3NhsLdGyEaHs2FmJBtlX5mU+haZxncRsT8elBR1dzjTscn7dgzvSv
-         7EwIynwV+GnHi80DZz0Ar58MlvNFcqVu+hwIIh44=
+        b=rIignq3Xdx2iwanTTA9Idiau2lpL9RLWRmQr7cp4/7vLwL/7OPBoLk1pzFtAbAvWs
+         2dCdQLa3dPYLuDXiOpQixxa1RoSouAFVMnu6GCR9vOCtbpKrYNmjWMZH7JYQ34wbPP
+         upN6/EEGTJBzgbu5j+5gho7bLFlQBbf/kL+b2vUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 130/408] tty: hvcs: Dont NULL tty->driver_data until hvcs_cleanup()
-Date:   Tue, 27 Oct 2020 14:51:08 +0100
-Message-Id: <20201027135501.120893326@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        "Sunmeet Gill (Sunny)" <sgill@quicinc.com>,
+        Vinay Paradkar <vparadka@qti.qualcomm.com>,
+        Tyler Wear <twear@quicinc.com>,
+        David Ahern <dsahern@kernel.org>
+Subject: [PATCH 4.19 011/264] net/ipv4: always honour route mtu during forwarding
+Date:   Tue, 27 Oct 2020 14:51:09 +0100
+Message-Id: <20201027135431.191298926@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +49,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: "Maciej Żenczykowski" <maze@google.com>
 
-[ Upstream commit 63ffcbdad738e3d1c857027789a2273df3337624 ]
+[ Upstream commit 02a1b175b0e92d9e0fa5df3957ade8d733ceb6a0 ]
 
-The code currently NULLs tty->driver_data in hvcs_close() with the
-intent of informing the next call to hvcs_open() that device needs to be
-reconfigured. However, when hvcs_cleanup() is called we copy hvcsd from
-tty->driver_data which was previoulsy NULLed by hvcs_close() and our
-call to tty_port_put(&hvcsd->port) doesn't actually do anything since
-&hvcsd->port ends up translating to NULL by chance. This has the side
-effect that when hvcs_remove() is called we have one too many port
-references preventing hvcs_destuct_port() from ever being called. This
-also prevents us from reusing the /dev/hvcsX node in a future
-hvcs_probe() and we can eventually run out of /dev/hvcsX devices.
+Documentation/networking/ip-sysctl.txt:46 says:
+  ip_forward_use_pmtu - BOOLEAN
+    By default we don't trust protocol path MTUs while forwarding
+    because they could be easily forged and can lead to unwanted
+    fragmentation by the router.
+    You only need to enable this if you have user-space software
+    which tries to discover path mtus by itself and depends on the
+    kernel honoring this information. This is normally not the case.
+    Default: 0 (disabled)
+    Possible values:
+    0 - disabled
+    1 - enabled
 
-Fix this by waiting to NULL tty->driver_data in hvcs_cleanup().
+Which makes it pretty clear that setting it to 1 is a potential
+security/safety/DoS issue, and yet it is entirely reasonable to want
+forwarded traffic to honour explicitly administrator configured
+route mtus (instead of defaulting to device mtu).
 
-Fixes: 27bf7c43a19c ("TTY: hvcs, add tty install")
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-Link: https://lore.kernel.org/r/20200820234643.70412-1-tyreld@linux.ibm.com
+Indeed, I can't think of a single reason why you wouldn't want to.
+Since you configured a route mtu you probably know better...
+
+It is pretty common to have a higher device mtu to allow receiving
+large (jumbo) frames, while having some routes via that interface
+(potentially including the default route to the internet) specify
+a lower mtu.
+
+Note that ipv6 forwarding uses device mtu unless the route is locked
+(in which case it will use the route mtu).
+
+This approach is not usable for IPv4 where an 'mtu lock' on a route
+also has the side effect of disabling TCP path mtu discovery via
+disabling the IPv4 DF (don't frag) bit on all outgoing frames.
+
+I'm not aware of a way to lock a route from an IPv6 RA, so that also
+potentially seems wrong.
+
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Cc: Sunmeet Gill (Sunny) <sgill@quicinc.com>
+Cc: Vinay Paradkar <vparadka@qti.qualcomm.com>
+Cc: Tyler Wear <twear@quicinc.com>
+Cc: David Ahern <dsahern@kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/hvc/hvcs.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/net/ip.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
-index ee0604cd9c6b2..0c498b20d8cb5 100644
---- a/drivers/tty/hvc/hvcs.c
-+++ b/drivers/tty/hvc/hvcs.c
-@@ -1218,13 +1218,6 @@ static void hvcs_close(struct tty_struct *tty, struct file *filp)
- 
- 		tty_wait_until_sent(tty, HVCS_CLOSE_WAIT);
- 
--		/*
--		 * This line is important because it tells hvcs_open that this
--		 * device needs to be re-configured the next time hvcs_open is
--		 * called.
--		 */
--		tty->driver_data = NULL;
--
- 		free_irq(irq, hvcsd);
- 		return;
- 	} else if (hvcsd->port.count < 0) {
-@@ -1239,6 +1232,13 @@ static void hvcs_cleanup(struct tty_struct * tty)
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -399,12 +399,18 @@ static inline unsigned int ip_dst_mtu_ma
+ 						    bool forwarding)
  {
- 	struct hvcs_struct *hvcsd = tty->driver_data;
+ 	struct net *net = dev_net(dst->dev);
++	unsigned int mtu;
  
-+	/*
-+	 * This line is important because it tells hvcs_open that this
-+	 * device needs to be re-configured the next time hvcs_open is
-+	 * called.
-+	 */
-+	tty->driver_data = NULL;
+ 	if (net->ipv4.sysctl_ip_fwd_use_pmtu ||
+ 	    ip_mtu_locked(dst) ||
+ 	    !forwarding)
+ 		return dst_mtu(dst);
+ 
++	/* 'forwarding = true' case should always honour route mtu */
++	mtu = dst_metric_raw(dst, RTAX_MTU);
++	if (mtu)
++		return mtu;
 +
- 	tty_port_put(&hvcsd->port);
+ 	return min(READ_ONCE(dst->dev->mtu), IP_MAX_MTU);
  }
  
--- 
-2.25.1
-
 
 
