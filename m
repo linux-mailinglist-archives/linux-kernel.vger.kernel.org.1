@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF2229C507
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF26029C549
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824099AbgJ0SC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:02:59 -0400
-Received: from mga01.intel.com ([192.55.52.88]:40536 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1824089AbgJ0SC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:02:56 -0400
-IronPort-SDR: fG2kpTDRvhUgGQRRSL7cqEjF5wu5yUfgIKkg/Ky4iEkFurob2FK4MzRTB/OHC1RrfbrTB80vuS
- 0mnNgXc+6+iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="185881900"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="185881900"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 11:02:56 -0700
-IronPort-SDR: QB8xWuYDPJkJLrHinQCkNshLxzUHA69VnRYfRqjmBDDg1rJX8/nrDg7hrkmKbZHqhCfn4FdZ0h
- BF2Gc3fmdqxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="350685982"
-Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Oct 2020 11:02:56 -0700
-Date:   Tue, 27 Oct 2020 18:02:56 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [PATCH v3 2/2] x86/resctrl: Correct MBM total and local values
-Message-ID: <20201027180256.GA3478584@otcwcpicx6.sc.intel.com>
-References: <20201014004927.1839452-1-fenghua.yu@intel.com>
- <20201014004927.1839452-3-fenghua.yu@intel.com>
- <20201027175748.GJ15580@zn.tnic>
+        id S1824954AbgJ0SHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:07:03 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:35077 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1824820AbgJ0SGG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 14:06:06 -0400
+Received: by mail-oo1-f68.google.com with SMTP id n16so553304ooj.2;
+        Tue, 27 Oct 2020 11:06:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SuhC8loLLZ4GddGhED6vncxGC/AxylOHh4IaC5CHeek=;
+        b=NVX2eyquHohQI2QoYLCwVSA9grwNRZ7nff0vs4dWgT4YM1qjVxAmfDL7X9kxbdFAz8
+         lhL3HuZhkXIAP9Avup34wcV3U4f1mn+1UW36z8CegeOV55giib89GqR9mk0i6pj86p1E
+         s/I80HACXVyW6nz/BI0KIO4QML1QBW9MCzBIjVD8p0hNtXVtExy2qWIJkBlmlv/TfxGc
+         MLE3JAGzENgAynGk4USHMqg9xfxcM6NMGqRv8ZX4TN/EQxNx0Sq0oDy8OTXOopOa+RMf
+         2q/jtOPGmaHFT137eXmZdEeSB4UVFH2gTq9R8oKN9ucMHZ9hGRKytN3JP4Kw08eslg1A
+         gY6g==
+X-Gm-Message-State: AOAM531CjdixUD4UcH/ZCpT4pYT4qMcyjdjya5k9jmScn/aU4NZTNpv5
+        ne/XKDFChW3lBQaUruvXTuF7h5OUW6ZgJbCUJ7MrjK6K
+X-Google-Smtp-Source: ABdhPJyCdtYfVXXF9X4r2SVnKQmuBXnQPQo7IGbXfQKPqHATp8t4XBO2M0sLHcAFUi6F+L5BoAvStq8y2isg8brEt5U=
+X-Received: by 2002:a4a:d815:: with SMTP id f21mr2748244oov.44.1603821965678;
+ Tue, 27 Oct 2020 11:06:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027175748.GJ15580@zn.tnic>
+References: <20201024162953.14142-1-yu.c.chen@intel.com>
+In-Reply-To: <20201024162953.14142-1-yu.c.chen@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 27 Oct 2020 19:05:54 +0100
+Message-ID: <CAJZ5v0g6jA0zM6yVZAuXjk49ckOokd+8fdxR+ENCvNu8W6ZJuQ@mail.gmail.com>
+Subject: Re: [PATCH] intel_idle: Fix max_cstate for processor models without
+ C-state tables
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "5 . 6+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Boris,
+On Sat, Oct 24, 2020 at 6:27 PM Chen Yu <yu.c.chen@intel.com> wrote:
+>
+> Currently intel_idle driver gets the c-state information from ACPI
+> _CST if the processor model is not recognized by it. However the
+> c-state in _CST starts with index 1 which is different from the
+> index in intel_idle driver's internal c-state table. While
+> intel_idle_max_cstate_reached() was previously introduced to
+> deal with intel_idle driver's internal c-state table, re-using
+> this function directly on _CST might get wrong. Fix this by
+> subtracting the index by 1 when checking max cstate via _CST.
+> For example, append intel_idle.max_cstate=1 in boot command line,
+> Before the patch:
+> grep . /sys/devices/system/cpu/cpu0/cpuidle/state*/name
+> POLL
+> After the patch:
+> grep . /sys/devices/system/cpu/cpu0/cpuidle/state*/name
+> /sys/devices/system/cpu/cpu0/cpuidle/state0/name:POLL
+> /sys/devices/system/cpu/cpu0/cpuidle/state1/name:C1_ACPI
+>
+> Fixes: 18734958e9bf ("intel_idle: Use ACPI _CST for processor models without C-state tables")
+> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> Cc: 5.6+ <stable@vger.kernel.org> # 5.6+
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  drivers/idle/intel_idle.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index 9a810e4a7946..dbd4be1c271b 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -1236,7 +1236,7 @@ static void __init intel_idle_init_cstates_acpi(struct cpuidle_driver *drv)
+>                 struct acpi_processor_cx *cx;
+>                 struct cpuidle_state *state;
+>
+> -               if (intel_idle_max_cstate_reached(cstate))
+> +               if (intel_idle_max_cstate_reached(cstate - 1))
+>                         break;
+>
+>                 cx = &acpi_state_table.states[cstate];
+> --
 
-On Tue, Oct 27, 2020 at 06:57:48PM +0100, Borislav Petkov wrote:
-> On Wed, Oct 14, 2020 at 12:49:27AM +0000, Fenghua Yu wrote:
-> > +static const struct mbm_correction_factor_table {
-> > +	u32 rmidthreshold;
-> > +	u64 cf;
-> > +} mbm_cf_table[] = {
-> 
-> That thing wants to be __initdata, AFAICT, since the only function
-> touching it is __init.
-> 
-> Made it so.
-
-You are right. The correction value is read from this table only
-once in __init. So this table should be __initdata.
-
-Thank you very much for your review!
-
--Fenghua
+Applied as 5.10-rc material with some changelog edits, thanks!
