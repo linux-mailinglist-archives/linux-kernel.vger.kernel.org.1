@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F5829A4E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C2629A4E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408081AbgJ0Gtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:49:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729265AbgJ0Gtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:49:31 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56E3B20B1F;
-        Tue, 27 Oct 2020 06:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603781371;
-        bh=mC9vO0dxC2iwBHUgA32C+X17h0ZN7BMvlr+FQ0VVYZg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fxIWQVFrgjaP9oHckLR7UotxVbhf0uHGo5ba6h6QmPIb4dTEa+mb9Yx6VLkgmAbUG
-         +9QhhpO5oLfN2iY17IaLCbCv9LVpC1mDv2FuTu/u94/61LjPnL7szyif04a8G/Ebe3
-         1crIdCqFwu5zYmWlLW2jh/Z5FN3E6zPJOc55EW54=
-Date:   Tue, 27 Oct 2020 07:49:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN:
- slab-out-of-bounds Read in nft_flow_rule_create
-Message-ID: <20201027064927.GA211164@kroah.com>
-References: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
- <20201020115047.GA15628@salvia>
- <28C74722-8F35-4397-B567-FA5BCF525891@oracle.com>
- <3BE1A64B-7104-4220-BAD1-870338A33B15@oracle.com>
- <566D38F7-7C99-40F4-A948-03F2F0439BBB@oracle.com>
- <20201027062111.GD206502@kroah.com>
- <20201027064226.GA15770@breakpoint.cc>
+        id S2409130AbgJ0GxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:53:11 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:42475 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729999AbgJ0GxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 02:53:11 -0400
+Received: by mail-yb1-f194.google.com with SMTP id a12so339695ybg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:53:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jjdl2dhuJDpqYsWLtlxuvUmg+zpTbJsyzx07rWA+3Bc=;
+        b=YGak6vUjSqyon7HWw3AXm4yi4I+zfP8DvCyJBwe75PHcDCOAkJCopDi7Qkzicv3++3
+         bhZeOruwmqj633uMGT9Fkoz80nrswtvPrNDAvux0JVFO2jnRcAuj5Z7XNbilg3XujWIo
+         batKSd11/ypHVD8GWSGZhQYHR7Wavf75sVSpYOXYnwSdf1vhDR7oFfPjt+P9E3PM+FAx
+         u9Kd4PZgrYM3ahytNjIF1wKkzRKyIGhaFDPGvE3/Wo1ESATJy/GjEyP5wC+HfAF5LgnT
+         ZpNyFFQWCOLyU5NeAZEtULbZ6CPUPhjCp/d8UZc4tQ4YZnfyqgzf10vsX7X8E7qcLFWL
+         CO4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jjdl2dhuJDpqYsWLtlxuvUmg+zpTbJsyzx07rWA+3Bc=;
+        b=FDZAVuSuHEz6YnmfBAvuxQ6Ussn90SdyO1HQPCnFswMe5kWIstKT7MML0N843HYcW4
+         60JfUvM4NlrQlrpPMTWgPsmR9d9Ts7GPkwRKKOmg51Rlf/JiSOE8iPY7OCA7rf2Kp7qs
+         OaqJyGVwCMMOXlpDMmRoIhlY2jI0a+hRjnmEseSdsX2f1GbLbWGsTbzqbiYOPB5yCOfV
+         GcadrQkFKVq2y60VVYhb93u04Bfju0Blev6mJYONs2wFgB8Tb0QNBEkq0hxTygP1saAo
+         HuwsrBARnyvOIHDDxA4S4cNkQCumWhzLAbeIkqMVuDzf+/ZhM24vo61d+KTjjMAgJgHx
+         SbCw==
+X-Gm-Message-State: AOAM530oRlxgkw378SFttkQrNOw58RcP9PU5ZZ31F63IZVHS82kqF0Gh
+        9ZHsxXuKERiMJi3EP/OEAbGhwnWaX6FRRbZraNFoHQ==
+X-Google-Smtp-Source: ABdhPJxG5Y81UbMg7yEAt0cjolVbinIPl2JL51jHpZOjbo4cTYsOAAhcLTlsA0vigb1dxR69f3JTQzU4O+5S2/bIvPE=
+X-Received: by 2002:a25:774f:: with SMTP id s76mr1026683ybc.235.1603781589825;
+ Mon, 26 Oct 2020 23:53:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027064226.GA15770@breakpoint.cc>
+References: <20201026130450.6947-1-gilad@benyossef.com> <20201026130450.6947-2-gilad@benyossef.com>
+ <20201026182448.GH858@sol.localdomain> <20201026182628.GI858@sol.localdomain>
+In-Reply-To: <20201026182628.GI858@sol.localdomain>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Tue, 27 Oct 2020 08:53:04 +0200
+Message-ID: <CAOtvUMe=KnRahskJtEh1pgyBfGoeZw0Vsq00Hvh+A_enVFVwZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] crypto: add eboiv as a crypto API template
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        linux-raid@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 07:42:26AM +0100, Florian Westphal wrote:
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> [ Trimming CC ]
-> 
-> > On Sun, Oct 25, 2020 at 04:31:57PM -0700, Saeed Mirzamohammadi wrote:
-> > > Adding stable.
-> > 
-> > What did that do?
-> 
-> Its a request to pick up
-> 
-> commit 31cc578ae2de19c748af06d859019dced68e325d
-> Author: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Date:   Tue Oct 20 13:41:36 2020 +0200
-> 
->     netfilter: nftables_offload: KASAN slab-out-of-bounds Read in nft_flow_rule_create
-> 
-> Which lacks a Fixes tag.  Should have been:
-> 
-> Fixes: c9626a2cbdb20e2 ("netfilter: nf_tables: add hardware offload support")
-> (v5.3+)
-> 
-> Hope that makes things clearer.
+On Mon, Oct 26, 2020 at 8:26 PM Eric Biggers <ebiggers@kernel.org> wrote:
 
-That makes it much more obvious and clearer, thank you.  Saeed, please
-be more explicit in the future.
+>
+> Here's the version of eboiv_create() I recommend (untested):
+>
+> static int eboiv_create(struct crypto_template *tmpl, struct rtattr **tb)
+> {
+>         struct skcipher_instance *inst;
+>         struct eboiv_instance_ctx *ictx;
+>         struct skcipher_alg *alg;
+>         u32 mask;
+>         int err;
+...
 
-thanks,
+Thank you very much for the review and assistance. I will send out a
+revised version.
 
-greg k-h
+Thanks,
+Gilad
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
