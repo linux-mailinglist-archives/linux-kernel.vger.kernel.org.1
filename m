@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F56529BED8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11C929BE00
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793999AbgJ0PJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39428 "EHLO mail.kernel.org"
+        id S1813502AbgJ0Qub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:50:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790912AbgJ0PEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:04:48 -0400
+        id S1812771AbgJ0QqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:46:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56FF420747;
-        Tue, 27 Oct 2020 15:04:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C16C221D24;
+        Tue, 27 Oct 2020 16:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811086;
-        bh=b9c301/KJqsBkZ5oa9N70zQItTde+Ak2WbDsg/c4rxE=;
+        s=default; t=1603817161;
+        bh=AGgnT3VU0tN8PRDUNoErXd27EhQQyLJIBXAuLpLnuXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yPUPBK8rvpT9OZiqwVXbK3If9cDV7awitMPIx+ZmPequVnAdyaNFzZRYFH6wWf9YN
-         ISC/6qClcDPbXeYT3XTRBUnj4YO8ibr+MvwYT8xXNvi2612Rkzwn554RiusXMgQnbW
-         FifmQhUfzEyhM3592f9F+WyQxNBhhqIPMr865ImI=
+        b=UtP0FJAwFJhd2WnEqylf24OTAYnq4O2XsdQiUYlj3UFF3px9I5LLWMKAoV+JZrW6a
+         WnYtVltcJIfhrtDWh2DOdF3WcP6IcCPn0x1kSLYo9whE+EjQJZTwhciKTSfC+3VZ3i
+         sYrCuvRwSNvrStajfldOG1b5Gq/opQCGNS0RCeIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
-        Stan Johnson <userm57@yahoo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Kamal Heib <kheib@redhat.com>,
+        "Sindhu, Devale" <sindhu.devale@intel.com>,
+        "Shiraz, Saleem" <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 368/633] powerpc/tau: Disable TAU between measurements
-Date:   Tue, 27 Oct 2020 14:51:51 +0100
-Message-Id: <20201027135539.963901396@linuxfoundation.org>
+Subject: [PATCH 5.9 463/757] i40iw: Add support to make destroy QP synchronous
+Date:   Tue, 27 Oct 2020 14:51:53 +0100
+Message-Id: <20201027135512.231972746@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,197 +45,406 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Sindhu, Devale <sindhu.devale@intel.com>
 
-[ Upstream commit e63d6fb5637e92725cf143559672a34b706bca4f ]
+[ Upstream commit f2334964e969762e266a616acf9377f6046470a2 ]
 
-Enabling CONFIG_TAU_INT causes random crashes:
+Occasionally ib_write_bw crash is seen due to access of a pd object in
+i40iw_sc_qp_destroy after it is freed. Destroy qp is not synchronous in
+i40iw and thus the iwqp object could be referencing a pd object that is
+freed by ib core as a result of successful return from i40iw_destroy_qp.
 
-Unrecoverable exception 1700 at c0009414 (msr=1000)
-Oops: Unrecoverable exception, sig: 6 [#1]
-BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-pmac-00043-gd5f545e1a8593 #5
-NIP:  c0009414 LR: c0009414 CTR: c00116fc
-REGS: c0799eb8 TRAP: 1700   Not tainted  (5.7.0-pmac-00043-gd5f545e1a8593)
-MSR:  00001000 <ME>  CR: 22000228  XER: 00000100
+Wait in i40iw_destroy_qp till all QP references are released and destroy
+the QP and its associated resources before returning.  Switch to use the
+refcount API vs atomic API for lifetime management of the qp.
 
-GPR00: 00000000 c0799f70 c076e300 00800000 0291c0ac 00e00000 c076e300 00049032
-GPR08: 00000001 c00116fc 00000000 dfbd3200 ffffffff 007f80a8 00000000 00000000
-GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 c075ce04
-GPR24: c075ce04 dfff8880 c07b0000 c075ce04 00080000 00000001 c079ef98 c079ef5c
-NIP [c0009414] arch_cpu_idle+0x24/0x6c
-LR [c0009414] arch_cpu_idle+0x24/0x6c
-Call Trace:
-[c0799f70] [00000001] 0x1 (unreliable)
-[c0799f80] [c0060990] do_idle+0xd8/0x17c
-[c0799fa0] [c0060ba4] cpu_startup_entry+0x20/0x28
-[c0799fb0] [c072d220] start_kernel+0x434/0x44c
-[c0799ff0] [00003860] 0x3860
-Instruction dump:
-XXXXXXXX XXXXXXXX XXXXXXXX 3d20c07b XXXXXXXX XXXXXXXX XXXXXXXX 7c0802a6
-XXXXXXXX XXXXXXXX XXXXXXXX 4e800421 XXXXXXXX XXXXXXXX XXXXXXXX 7d2000a6
----[ end trace 3a0c9b5cb216db6b ]---
+ RIP: 0010:i40iw_sc_qp_destroy+0x4b/0x120 [i40iw]
+ [...]
+ RSP: 0018:ffffb4a7042e3ba8 EFLAGS: 00010002
+ RAX: 0000000000000000 RBX: 0000000000000001 RCX: dead000000000122
+ RDX: ffffb4a7042e3bac RSI: ffff8b7ef9b1e940 RDI: ffff8b7efbf09080
+ RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+ R10: 8080808080808080 R11: 0000000000000010 R12: ffff8b7efbf08050
+ R13: 0000000000000001 R14: ffff8b7f15042928 R15: ffff8b7ef9b1e940
+ FS:  0000000000000000(0000) GS:ffff8b7f2fa00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000400 CR3: 000000020d60a006 CR4: 00000000001606e0
+ Call Trace:
+  i40iw_exec_cqp_cmd+0x4d3/0x5c0 [i40iw]
+  ? try_to_wake_up+0x1ea/0x5d0
+  ? __switch_to_asm+0x40/0x70
+  i40iw_process_cqp_cmd+0x95/0xa0 [i40iw]
+  i40iw_handle_cqp_op+0x42/0x1a0 [i40iw]
+  ? cm_event_handler+0x13c/0x1f0 [iw_cm]
+  i40iw_rem_ref+0xa0/0xf0 [i40iw]
+  cm_work_handler+0x99c/0xd10 [iw_cm]
+  process_one_work+0x1a1/0x360
+  worker_thread+0x30/0x380
+  ? process_one_work+0x360/0x360
+  kthread+0x10c/0x130
+  ? kthread_park+0x80/0x80
+  ret_from_fork+0x35/0x40
 
-Resolve this problem by disabling each THRMn comparator when handling
-the associated THRMn interrupt and by disabling the TAU entirely when
-updating THRMn thresholds.
-
-Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/5a0ba3dc5612c7aac596727331284a3676c08472.1599260540.git.fthain@telegraphics.com.au
+Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+Link: https://lore.kernel.org/r/20200916131811.2077-1-shiraz.saleem@intel.com
+Reported-by: Kamal Heib <kheib@redhat.com>
+Signed-off-by: Sindhu, Devale <sindhu.devale@intel.com>
+Signed-off-by: Shiraz, Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/tau_6xx.c  | 65 +++++++++++++---------------------
- arch/powerpc/platforms/Kconfig |  9 ++---
- 2 files changed, 26 insertions(+), 48 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw.h       |  9 ++--
+ drivers/infiniband/hw/i40iw/i40iw_cm.c    | 10 ++--
+ drivers/infiniband/hw/i40iw/i40iw_hw.c    |  4 +-
+ drivers/infiniband/hw/i40iw/i40iw_utils.c | 59 ++++-------------------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c | 31 ++++++++----
+ drivers/infiniband/hw/i40iw/i40iw_verbs.h |  3 +-
+ 6 files changed, 45 insertions(+), 71 deletions(-)
 
-diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
-index 614b5b272d9c6..0b4694b8d2482 100644
---- a/arch/powerpc/kernel/tau_6xx.c
-+++ b/arch/powerpc/kernel/tau_6xx.c
-@@ -42,8 +42,6 @@ static struct tau_temp
- 
- static bool tau_int_enable;
- 
--#undef DEBUG
--
- /* TODO: put these in a /proc interface, with some sanity checks, and maybe
-  * dynamic adjustment to minimize # of interrupts */
- /* configurable values for step size and how much to expand the window when
-@@ -67,42 +65,33 @@ static void set_thresholds(unsigned long cpu)
- 
- static void TAUupdate(int cpu)
- {
--	unsigned thrm;
--
--#ifdef DEBUG
--	printk("TAUupdate ");
--#endif
-+	u32 thrm;
-+	u32 bits = THRM1_TIV | THRM1_TIN | THRM1_V;
- 
- 	/* if both thresholds are crossed, the step_sizes cancel out
- 	 * and the window winds up getting expanded twice. */
--	if((thrm = mfspr(SPRN_THRM1)) & THRM1_TIV){ /* is valid? */
--		if(thrm & THRM1_TIN){ /* crossed low threshold */
--			if (tau[cpu].low >= step_size){
--				tau[cpu].low -= step_size;
--				tau[cpu].high -= (step_size - window_expand);
--			}
--			tau[cpu].grew = 1;
--#ifdef DEBUG
--			printk("low threshold crossed ");
--#endif
-+	thrm = mfspr(SPRN_THRM1);
-+	if ((thrm & bits) == bits) {
-+		mtspr(SPRN_THRM1, 0);
-+
-+		if (tau[cpu].low >= step_size) {
-+			tau[cpu].low -= step_size;
-+			tau[cpu].high -= (step_size - window_expand);
- 		}
-+		tau[cpu].grew = 1;
-+		pr_debug("%s: low threshold crossed\n", __func__);
- 	}
--	if((thrm = mfspr(SPRN_THRM2)) & THRM1_TIV){ /* is valid? */
--		if(thrm & THRM1_TIN){ /* crossed high threshold */
--			if (tau[cpu].high <= 127-step_size){
--				tau[cpu].low += (step_size - window_expand);
--				tau[cpu].high += step_size;
--			}
--			tau[cpu].grew = 1;
--#ifdef DEBUG
--			printk("high threshold crossed ");
--#endif
-+	thrm = mfspr(SPRN_THRM2);
-+	if ((thrm & bits) == bits) {
-+		mtspr(SPRN_THRM2, 0);
-+
-+		if (tau[cpu].high <= 127 - step_size) {
-+			tau[cpu].low += (step_size - window_expand);
-+			tau[cpu].high += step_size;
- 		}
-+		tau[cpu].grew = 1;
-+		pr_debug("%s: high threshold crossed\n", __func__);
- 	}
--
--#ifdef DEBUG
--	printk("grew = %d\n", tau[cpu].grew);
--#endif
+diff --git a/drivers/infiniband/hw/i40iw/i40iw.h b/drivers/infiniband/hw/i40iw/i40iw.h
+index 25747b85a79c7..832b80de004fb 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw.h
++++ b/drivers/infiniband/hw/i40iw/i40iw.h
+@@ -409,8 +409,8 @@ static inline struct i40iw_qp *to_iwqp(struct ib_qp *ibqp)
  }
  
- #ifdef CONFIG_TAU_INT
-@@ -127,17 +116,17 @@ void TAUException(struct pt_regs * regs)
- static void tau_timeout(void * info)
- {
- 	int cpu;
--	unsigned long flags;
- 	int size;
- 	int shrink;
+ /* i40iw.c */
+-void i40iw_add_ref(struct ib_qp *);
+-void i40iw_rem_ref(struct ib_qp *);
++void i40iw_qp_add_ref(struct ib_qp *ibqp);
++void i40iw_qp_rem_ref(struct ib_qp *ibqp);
+ struct ib_qp *i40iw_get_qp(struct ib_device *, int);
  
--	/* disabling interrupts *should* be okay */
--	local_irq_save(flags);
- 	cpu = smp_processor_id();
- 
- 	if (!tau_int_enable)
- 		TAUupdate(cpu);
- 
-+	/* Stop thermal sensor comparisons and interrupts */
-+	mtspr(SPRN_THRM3, 0);
+ void i40iw_flush_wqes(struct i40iw_device *iwdev,
+@@ -554,9 +554,8 @@ enum i40iw_status_code i40iw_manage_qhash(struct i40iw_device *iwdev,
+ 					  bool wait);
+ void i40iw_receive_ilq(struct i40iw_sc_vsi *vsi, struct i40iw_puda_buf *rbuf);
+ void i40iw_free_sqbuf(struct i40iw_sc_vsi *vsi, void *bufp);
+-void i40iw_free_qp_resources(struct i40iw_device *iwdev,
+-			     struct i40iw_qp *iwqp,
+-			     u32 qp_num);
++void i40iw_free_qp_resources(struct i40iw_qp *iwqp);
 +
- 	size = tau[cpu].high - tau[cpu].low;
- 	if (size > min_window && ! tau[cpu].grew) {
- 		/* do an exponential shrink of half the amount currently over size */
-@@ -159,18 +148,12 @@ static void tau_timeout(void * info)
+ enum i40iw_status_code i40iw_obj_aligned_mem(struct i40iw_device *iwdev,
+ 					     struct i40iw_dma_mem *memptr,
+ 					     u32 size, u32 mask);
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index a3b95805c154e..3053c345a5a34 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -2322,7 +2322,7 @@ static void i40iw_rem_ref_cm_node(struct i40iw_cm_node *cm_node)
+ 	iwqp = cm_node->iwqp;
+ 	if (iwqp) {
+ 		iwqp->cm_node = NULL;
+-		i40iw_rem_ref(&iwqp->ibqp);
++		i40iw_qp_rem_ref(&iwqp->ibqp);
+ 		cm_node->iwqp = NULL;
+ 	} else if (cm_node->qhash_set) {
+ 		i40iw_get_addr_info(cm_node, &nfo);
+@@ -3452,7 +3452,7 @@ void i40iw_cm_disconn(struct i40iw_qp *iwqp)
+ 		kfree(work);
+ 		return;
+ 	}
+-	i40iw_add_ref(&iwqp->ibqp);
++	i40iw_qp_add_ref(&iwqp->ibqp);
+ 	spin_unlock_irqrestore(&iwdev->qptable_lock, flags);
  
- 	set_thresholds(cpu);
+ 	work->iwqp = iwqp;
+@@ -3623,7 +3623,7 @@ static void i40iw_disconnect_worker(struct work_struct *work)
  
--	/*
--	 * Do the enable every time, since otherwise a bunch of (relatively)
--	 * complex sleep code needs to be added. One mtspr every time
--	 * tau_timeout is called is probably not a big deal.
--	 *
-+	/* Restart thermal sensor comparisons and interrupts.
- 	 * The "PowerPC 740 and PowerPC 750 Microprocessor Datasheet"
- 	 * recommends that "the maximum value be set in THRM3 under all
- 	 * conditions."
- 	 */
- 	mtspr(SPRN_THRM3, THRM3_SITV(0x1fff) | THRM3_E);
--
--	local_irq_restore(flags);
+ 	kfree(dwork);
+ 	i40iw_cm_disconn_true(iwqp);
+-	i40iw_rem_ref(&iwqp->ibqp);
++	i40iw_qp_rem_ref(&iwqp->ibqp);
  }
  
- static struct workqueue_struct *tau_workq;
-diff --git a/arch/powerpc/platforms/Kconfig b/arch/powerpc/platforms/Kconfig
-index 9fe36f0b54c1a..b439b027a42f1 100644
---- a/arch/powerpc/platforms/Kconfig
-+++ b/arch/powerpc/platforms/Kconfig
-@@ -227,7 +227,7 @@ config TAU
- 	  don't assume the cpu temp is actually what /proc/cpuinfo says it is.
+ /**
+@@ -3745,7 +3745,7 @@ int i40iw_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+ 	cm_node->lsmm_size = accept.size + conn_param->private_data_len;
+ 	i40iw_cm_init_tsa_conn(iwqp, cm_node);
+ 	cm_id->add_ref(cm_id);
+-	i40iw_add_ref(&iwqp->ibqp);
++	i40iw_qp_add_ref(&iwqp->ibqp);
  
- config TAU_INT
--	bool "Interrupt driven TAU driver (DANGEROUS)"
-+	bool "Interrupt driven TAU driver (EXPERIMENTAL)"
- 	depends on TAU
- 	help
- 	  The TAU supports an interrupt driven mode which causes an interrupt
-@@ -235,12 +235,7 @@ config TAU_INT
- 	  to get notified the temp has exceeded a range. With this option off,
- 	  a timer is used to re-check the temperature periodically.
+ 	attr.qp_state = IB_QPS_RTS;
+ 	cm_node->qhash_set = false;
+@@ -3908,7 +3908,7 @@ int i40iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+ 	iwqp->cm_node = cm_node;
+ 	cm_node->iwqp = iwqp;
+ 	iwqp->cm_id = cm_id;
+-	i40iw_add_ref(&iwqp->ibqp);
++	i40iw_qp_add_ref(&iwqp->ibqp);
  
--	  However, on some cpus it appears that the TAU interrupt hardware
--	  is buggy and can cause a situation which would lead unexplained hard
--	  lockups.
+ 	if (cm_node->state != I40IW_CM_STATE_OFFLOADED) {
+ 		cm_node->state = I40IW_CM_STATE_SYN_SENT;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_hw.c b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+index e1085634b8d9d..56fdc161f6f8e 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_hw.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_hw.c
+@@ -313,7 +313,7 @@ void i40iw_process_aeq(struct i40iw_device *iwdev)
+ 					    __func__, info->qp_cq_id);
+ 				continue;
+ 			}
+-			i40iw_add_ref(&iwqp->ibqp);
++			i40iw_qp_add_ref(&iwqp->ibqp);
+ 			spin_unlock_irqrestore(&iwdev->qptable_lock, flags);
+ 			qp = &iwqp->sc_qp;
+ 			spin_lock_irqsave(&iwqp->lock, flags);
+@@ -426,7 +426,7 @@ void i40iw_process_aeq(struct i40iw_device *iwdev)
+ 			break;
+ 		}
+ 		if (info->qp)
+-			i40iw_rem_ref(&iwqp->ibqp);
++			i40iw_qp_rem_ref(&iwqp->ibqp);
+ 	} while (1);
+ 
+ 	if (aeqcnt)
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_utils.c b/drivers/infiniband/hw/i40iw/i40iw_utils.c
+index e07fb37af0865..5e196bd49a583 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_utils.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_utils.c
+@@ -477,25 +477,6 @@ void i40iw_cleanup_pending_cqp_op(struct i40iw_device *iwdev)
+ 	}
+ }
+ 
+-/**
+- * i40iw_free_qp - callback after destroy cqp completes
+- * @cqp_request: cqp request for destroy qp
+- * @num: not used
+- */
+-static void i40iw_free_qp(struct i40iw_cqp_request *cqp_request, u32 num)
+-{
+-	struct i40iw_sc_qp *qp = (struct i40iw_sc_qp *)cqp_request->param;
+-	struct i40iw_qp *iwqp = (struct i40iw_qp *)qp->back_qp;
+-	struct i40iw_device *iwdev;
+-	u32 qp_num = iwqp->ibqp.qp_num;
 -
--	  Unless you are extending the TAU driver, or enjoy kernel/hardware
--	  debugging, leave this option off.
-+	  If in doubt, say N here.
+-	iwdev = iwqp->iwdev;
+-
+-	i40iw_rem_pdusecount(iwqp->iwpd, iwdev);
+-	i40iw_free_qp_resources(iwdev, iwqp, qp_num);
+-	i40iw_rem_devusecount(iwdev);
+-}
+-
+ /**
+  * i40iw_wait_event - wait for completion
+  * @iwdev: iwarp device
+@@ -616,26 +597,23 @@ void i40iw_rem_pdusecount(struct i40iw_pd *iwpd, struct i40iw_device *iwdev)
+ }
  
- config TAU_AVERAGE
- 	bool "Average high and low temp"
+ /**
+- * i40iw_add_ref - add refcount for qp
++ * i40iw_qp_add_ref - add refcount for qp
+  * @ibqp: iqarp qp
+  */
+-void i40iw_add_ref(struct ib_qp *ibqp)
++void i40iw_qp_add_ref(struct ib_qp *ibqp)
+ {
+ 	struct i40iw_qp *iwqp = (struct i40iw_qp *)ibqp;
+ 
+-	atomic_inc(&iwqp->refcount);
++	refcount_inc(&iwqp->refcount);
+ }
+ 
+ /**
+- * i40iw_rem_ref - rem refcount for qp and free if 0
++ * i40iw_qp_rem_ref - rem refcount for qp and free if 0
+  * @ibqp: iqarp qp
+  */
+-void i40iw_rem_ref(struct ib_qp *ibqp)
++void i40iw_qp_rem_ref(struct ib_qp *ibqp)
+ {
+ 	struct i40iw_qp *iwqp;
+-	enum i40iw_status_code status;
+-	struct i40iw_cqp_request *cqp_request;
+-	struct cqp_commands_info *cqp_info;
+ 	struct i40iw_device *iwdev;
+ 	u32 qp_num;
+ 	unsigned long flags;
+@@ -643,7 +621,7 @@ void i40iw_rem_ref(struct ib_qp *ibqp)
+ 	iwqp = to_iwqp(ibqp);
+ 	iwdev = iwqp->iwdev;
+ 	spin_lock_irqsave(&iwdev->qptable_lock, flags);
+-	if (!atomic_dec_and_test(&iwqp->refcount)) {
++	if (!refcount_dec_and_test(&iwqp->refcount)) {
+ 		spin_unlock_irqrestore(&iwdev->qptable_lock, flags);
+ 		return;
+ 	}
+@@ -651,25 +629,8 @@ void i40iw_rem_ref(struct ib_qp *ibqp)
+ 	qp_num = iwqp->ibqp.qp_num;
+ 	iwdev->qp_table[qp_num] = NULL;
+ 	spin_unlock_irqrestore(&iwdev->qptable_lock, flags);
+-	cqp_request = i40iw_get_cqp_request(&iwdev->cqp, false);
+-	if (!cqp_request)
+-		return;
+-
+-	cqp_request->callback_fcn = i40iw_free_qp;
+-	cqp_request->param = (void *)&iwqp->sc_qp;
+-	cqp_info = &cqp_request->info;
+-	cqp_info->cqp_cmd = OP_QP_DESTROY;
+-	cqp_info->post_sq = 1;
+-	cqp_info->in.u.qp_destroy.qp = &iwqp->sc_qp;
+-	cqp_info->in.u.qp_destroy.scratch = (uintptr_t)cqp_request;
+-	cqp_info->in.u.qp_destroy.remove_hash_idx = true;
+-	status = i40iw_handle_cqp_op(iwdev, cqp_request);
+-	if (!status)
+-		return;
++	complete(&iwqp->free_qp);
+ 
+-	i40iw_rem_pdusecount(iwqp->iwpd, iwdev);
+-	i40iw_free_qp_resources(iwdev, iwqp, qp_num);
+-	i40iw_rem_devusecount(iwdev);
+ }
+ 
+ /**
+@@ -936,7 +897,7 @@ static void i40iw_terminate_timeout(struct timer_list *t)
+ 	struct i40iw_sc_qp *qp = (struct i40iw_sc_qp *)&iwqp->sc_qp;
+ 
+ 	i40iw_terminate_done(qp, 1);
+-	i40iw_rem_ref(&iwqp->ibqp);
++	i40iw_qp_rem_ref(&iwqp->ibqp);
+ }
+ 
+ /**
+@@ -948,7 +909,7 @@ void i40iw_terminate_start_timer(struct i40iw_sc_qp *qp)
+ 	struct i40iw_qp *iwqp;
+ 
+ 	iwqp = (struct i40iw_qp *)qp->back_qp;
+-	i40iw_add_ref(&iwqp->ibqp);
++	i40iw_qp_add_ref(&iwqp->ibqp);
+ 	timer_setup(&iwqp->terminate_timer, i40iw_terminate_timeout, 0);
+ 	iwqp->terminate_timer.expires = jiffies + HZ;
+ 	add_timer(&iwqp->terminate_timer);
+@@ -964,7 +925,7 @@ void i40iw_terminate_del_timer(struct i40iw_sc_qp *qp)
+ 
+ 	iwqp = (struct i40iw_qp *)qp->back_qp;
+ 	if (del_timer(&iwqp->terminate_timer))
+-		i40iw_rem_ref(&iwqp->ibqp);
++		i40iw_qp_rem_ref(&iwqp->ibqp);
+ }
+ 
+ /**
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index 1321e3a36491b..09caad228aa4f 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -363,11 +363,11 @@ static struct i40iw_pbl *i40iw_get_pbl(unsigned long va,
+  * @iwqp: qp ptr (user or kernel)
+  * @qp_num: qp number assigned
+  */
+-void i40iw_free_qp_resources(struct i40iw_device *iwdev,
+-			     struct i40iw_qp *iwqp,
+-			     u32 qp_num)
++void i40iw_free_qp_resources(struct i40iw_qp *iwqp)
+ {
+ 	struct i40iw_pbl *iwpbl = &iwqp->iwpbl;
++	struct i40iw_device *iwdev = iwqp->iwdev;
++	u32 qp_num = iwqp->ibqp.qp_num;
+ 
+ 	i40iw_ieq_cleanup_qp(iwdev->vsi.ieq, &iwqp->sc_qp);
+ 	i40iw_dealloc_push_page(iwdev, &iwqp->sc_qp);
+@@ -401,6 +401,10 @@ static void i40iw_clean_cqes(struct i40iw_qp *iwqp, struct i40iw_cq *iwcq)
+ static int i40iw_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ {
+ 	struct i40iw_qp *iwqp = to_iwqp(ibqp);
++	struct ib_qp_attr attr;
++	struct i40iw_device *iwdev = iwqp->iwdev;
++
++	memset(&attr, 0, sizeof(attr));
+ 
+ 	iwqp->destroyed = 1;
+ 
+@@ -415,7 +419,15 @@ static int i40iw_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 		}
+ 	}
+ 
+-	i40iw_rem_ref(&iwqp->ibqp);
++	attr.qp_state = IB_QPS_ERR;
++	i40iw_modify_qp(&iwqp->ibqp, &attr, IB_QP_STATE, NULL);
++	i40iw_qp_rem_ref(&iwqp->ibqp);
++	wait_for_completion(&iwqp->free_qp);
++	i40iw_cqp_qp_destroy_cmd(&iwdev->sc_dev, &iwqp->sc_qp);
++	i40iw_rem_pdusecount(iwqp->iwpd, iwdev);
++	i40iw_free_qp_resources(iwqp);
++	i40iw_rem_devusecount(iwdev);
++
+ 	return 0;
+ }
+ 
+@@ -576,6 +588,7 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+ 	qp->back_qp = (void *)iwqp;
+ 	qp->push_idx = I40IW_INVALID_PUSH_PAGE_INDEX;
+ 
++	iwqp->iwdev = iwdev;
+ 	iwqp->ctx_info.iwarp_info = &iwqp->iwarp_info;
+ 
+ 	if (i40iw_allocate_dma_mem(dev->hw,
+@@ -600,7 +613,6 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+ 		goto error;
+ 	}
+ 
+-	iwqp->iwdev = iwdev;
+ 	iwqp->iwpd = iwpd;
+ 	iwqp->ibqp.qp_num = qp_num;
+ 	qp = &iwqp->sc_qp;
+@@ -714,7 +726,7 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+ 		goto error;
+ 	}
+ 
+-	i40iw_add_ref(&iwqp->ibqp);
++	refcount_set(&iwqp->refcount, 1);
+ 	spin_lock_init(&iwqp->lock);
+ 	iwqp->sig_all = (init_attr->sq_sig_type == IB_SIGNAL_ALL_WR) ? 1 : 0;
+ 	iwdev->qp_table[qp_num] = iwqp;
+@@ -736,10 +748,11 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+ 	}
+ 	init_completion(&iwqp->sq_drained);
+ 	init_completion(&iwqp->rq_drained);
++	init_completion(&iwqp->free_qp);
+ 
+ 	return &iwqp->ibqp;
+ error:
+-	i40iw_free_qp_resources(iwdev, iwqp, qp_num);
++	i40iw_free_qp_resources(iwqp);
+ 	return ERR_PTR(err_code);
+ }
+ 
+@@ -2637,13 +2650,13 @@ static const struct ib_device_ops i40iw_dev_ops = {
+ 	.get_hw_stats = i40iw_get_hw_stats,
+ 	.get_port_immutable = i40iw_port_immutable,
+ 	.iw_accept = i40iw_accept,
+-	.iw_add_ref = i40iw_add_ref,
++	.iw_add_ref = i40iw_qp_add_ref,
+ 	.iw_connect = i40iw_connect,
+ 	.iw_create_listen = i40iw_create_listen,
+ 	.iw_destroy_listen = i40iw_destroy_listen,
+ 	.iw_get_qp = i40iw_get_qp,
+ 	.iw_reject = i40iw_reject,
+-	.iw_rem_ref = i40iw_rem_ref,
++	.iw_rem_ref = i40iw_qp_rem_ref,
+ 	.map_mr_sg = i40iw_map_mr_sg,
+ 	.mmap = i40iw_mmap,
+ 	.modify_qp = i40iw_modify_qp,
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.h b/drivers/infiniband/hw/i40iw/i40iw_verbs.h
+index 331bc21cbcc73..bab71f3e56374 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.h
+@@ -139,7 +139,7 @@ struct i40iw_qp {
+ 	struct i40iw_qp_host_ctx_info ctx_info;
+ 	struct i40iwarp_offload_info iwarp_info;
+ 	void *allocated_buffer;
+-	atomic_t refcount;
++	refcount_t refcount;
+ 	struct iw_cm_id *cm_id;
+ 	void *cm_node;
+ 	struct ib_mr *lsmm_mr;
+@@ -174,5 +174,6 @@ struct i40iw_qp {
+ 	struct i40iw_dma_mem ietf_mem;
+ 	struct completion sq_drained;
+ 	struct completion rq_drained;
++	struct completion free_qp;
+ };
+ #endif
 -- 
 2.25.1
 
