@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE7729B5BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295B829B446
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795673AbgJ0PPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        id S1787363AbgJ0PAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794445AbgJ0PLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:11:53 -0400
+        id S2899198AbgJ0Omv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E35021D24;
-        Tue, 27 Oct 2020 15:11:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30C96206B2;
+        Tue, 27 Oct 2020 14:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811512;
-        bh=h1sxDJNUepvYbFjEi5Du29K2v2j9/kl7MSSz+3Hms+g=;
+        s=default; t=1603809770;
+        bh=jCxIbtF31hd+7Wpl7D8uJl4yGO/ELNVRZ+JuCPOOouw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nZ4/TQSPqr6yW43SYdF/+fttAUpYeBh0NhiCe2I7vxQz2UzRtLWbOYPV8oShesPJV
-         HtbAvVp+C3KfJEeVxACJdSx5Or0+nNyopF6oMdOlnV8EdBZfYx/uLkKMXufDzZt4Zs
-         Iz/jzEio9FxeJLVMksPP07OGVnfngisjP7AQvztk=
+        b=B6d+z+GeIE7VLOPULxRcuV2pc6Wrx/WPzNqTqnu51q3Ig0YlCyQMFyTvhN8xC7VyI
+         VXg3Pb76Y6hZKbofaI3HZfF4/5DhO76gR5aA1rqwZN8n418+rgYw9dVYo6nWAVT4mE
+         fkGV/6kkaYA/eGm3AaiFfCjBrOCY9xFkgNXp8QC4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 478/633] netsec: ignore phy-mode device property on ACPI systems
+Subject: [PATCH 5.4 283/408] SUNRPC: fix copying of multiple pages in gss_read_proxy_verf()
 Date:   Tue, 27 Oct 2020 14:53:41 +0100
-Message-Id: <20201027135545.163310625@linuxfoundation.org>
+Message-Id: <20201027135508.179385530@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,119 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
 
-[ Upstream commit acd7aaf51b20263a7e62d2a26569988c63bdd3d8 ]
+[ Upstream commit d48c8124749c9a5081fe68680f83605e272c984b ]
 
-Since commit bbc4d71d63549bc ("net: phy: realtek: fix rtl8211e rx/tx
-delay config"), the Realtek PHY driver will override any TX/RX delay
-set by hardware straps if the phy-mode device property does not match.
+When the passed token is longer than 4032 bytes, the remaining part
+of the token must be copied from the rqstp->rq_arg.pages. But the
+copy must make sure it happens in a consecutive way.
 
-This is causing problems on SynQuacer based platforms (the only SoC
-that incorporates the netsec hardware), since many were built with
-this Realtek PHY, and shipped with firmware that defines the phy-mode
-as 'rgmii', even though the PHY is configured for TX and RX delay using
-pull-ups.
+With the existing code, the first memcpy copies 'length' bytes from
+argv->iobase, but since the header is in front, this never fills the
+whole first page of in_token->pages.
 
->From the driver's perspective, we should not make any assumptions in
-the general case that the PHY hardware does not require any initial
-configuration. However, the situation is slightly different for ACPI
-boot, since it implies rich firmware with AML abstractions to handle
-hardware details that are not exposed to the OS. So in the ACPI case,
-it is reasonable to assume that the PHY comes up in the right mode,
-regardless of whether the mode is set by straps, by boot time firmware
-or by AML executed by the ACPI interpreter.
+The mecpy in the loop copies the following bytes, but starts writing at
+the next page of in_token->pages.  This leaves the last bytes of page 0
+unwritten.
 
-So let's ignore the 'phy-mode' device property when probing the netsec
-driver in ACPI mode, and hardcode the mode to PHY_INTERFACE_MODE_NA,
-which should work with any PHY provided that it is configured by the
-time the driver attaches to it. While at it, document that omitting
-the mode is permitted for DT probing as well, by setting the phy-mode
-DT property to the empty string.
+Symptoms were that users with many groups were not able to access NFS
+exports, when using Active Directory as the KDC.
 
-Fixes: 533dd11a12f6 ("net: socionext: Add Synquacer NetSec driver")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20201018163625.2392-1-ardb@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
+Fixes: 5866efa8cbfb "SUNRPC: Fix svcauth_gss_proxy_init()"
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../bindings/net/socionext-netsec.txt         |  4 +++-
- drivers/net/ethernet/socionext/netsec.c       | 24 +++++++++++++------
- 2 files changed, 20 insertions(+), 8 deletions(-)
+ net/sunrpc/auth_gss/svcauth_gss.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/socionext-netsec.txt b/Documentation/devicetree/bindings/net/socionext-netsec.txt
-index 9d6c9feb12ff1..a3c1dffaa4bb4 100644
---- a/Documentation/devicetree/bindings/net/socionext-netsec.txt
-+++ b/Documentation/devicetree/bindings/net/socionext-netsec.txt
-@@ -30,7 +30,9 @@ Optional properties: (See ethernet.txt file in the same directory)
- - max-frame-size: See ethernet.txt in the same directory.
- 
- The MAC address will be determined using the optional properties
--defined in ethernet.txt.
-+defined in ethernet.txt. The 'phy-mode' property is required, but may
-+be set to the empty string if the PHY configuration is programmed by
-+the firmware or set by hardware straps, and needs to be preserved.
- 
- Example:
- 	eth0: ethernet@522d0000 {
-diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-index 0f366cc50b74c..7f8be61a37089 100644
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -6,6 +6,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/acpi.h>
- #include <linux/of_mdio.h>
-+#include <linux/of_net.h>
- #include <linux/etherdevice.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -1836,6 +1837,14 @@ static const struct net_device_ops netsec_netdev_ops = {
- static int netsec_of_probe(struct platform_device *pdev,
- 			   struct netsec_priv *priv, u32 *phy_addr)
+diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
+index 3645cd241d3ea..cf4d6d7e72822 100644
+--- a/net/sunrpc/auth_gss/svcauth_gss.c
++++ b/net/sunrpc/auth_gss/svcauth_gss.c
+@@ -1095,9 +1095,9 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
+ 			       struct gssp_in_token *in_token)
  {
-+	int err;
-+
-+	err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
-+	if (err) {
-+		dev_err(&pdev->dev, "missing required property 'phy-mode'\n");
-+		return err;
-+	}
-+
- 	priv->phy_np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
- 	if (!priv->phy_np) {
- 		dev_err(&pdev->dev, "missing required property 'phy-handle'\n");
-@@ -1862,6 +1871,14 @@ static int netsec_acpi_probe(struct platform_device *pdev,
- 	if (!IS_ENABLED(CONFIG_ACPI))
- 		return -ENODEV;
+ 	struct kvec *argv = &rqstp->rq_arg.head[0];
+-	unsigned int page_base, length;
+-	int pages, i, res;
+-	size_t inlen;
++	unsigned int length, pgto_offs, pgfrom_offs;
++	int pages, i, res, pgto, pgfrom;
++	size_t inlen, to_offs, from_offs;
  
-+	/* ACPI systems are assumed to configure the PHY in firmware, so
-+	 * there is really no need to discover the PHY mode from the DSDT.
-+	 * Since firmware is known to exist in the field that configures the
-+	 * PHY correctly but passes the wrong mode string in the phy-mode
-+	 * device property, we have no choice but to ignore it.
-+	 */
-+	priv->phy_interface = PHY_INTERFACE_MODE_NA;
-+
- 	ret = device_property_read_u32(&pdev->dev, "phy-channel", phy_addr);
- 	if (ret) {
- 		dev_err(&pdev->dev,
-@@ -1998,13 +2015,6 @@ static int netsec_probe(struct platform_device *pdev)
- 	priv->msg_enable = NETIF_MSG_TX_ERR | NETIF_MSG_HW | NETIF_MSG_DRV |
- 			   NETIF_MSG_LINK | NETIF_MSG_PROBE;
+ 	res = gss_read_common_verf(gc, argv, authp, in_handle);
+ 	if (res)
+@@ -1125,17 +1125,24 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
+ 	memcpy(page_address(in_token->pages[0]), argv->iov_base, length);
+ 	inlen -= length;
  
--	priv->phy_interface = device_get_phy_mode(&pdev->dev);
--	if ((int)priv->phy_interface < 0) {
--		dev_err(&pdev->dev, "missing required property 'phy-mode'\n");
--		ret = -ENODEV;
--		goto free_ndev;
--	}
--
- 	priv->ioaddr = devm_ioremap(&pdev->dev, mmio_res->start,
- 				    resource_size(mmio_res));
- 	if (!priv->ioaddr) {
+-	i = 1;
+-	page_base = rqstp->rq_arg.page_base;
++	to_offs = length;
++	from_offs = rqstp->rq_arg.page_base;
+ 	while (inlen) {
+-		length = min_t(unsigned int, inlen, PAGE_SIZE);
+-		memcpy(page_address(in_token->pages[i]),
+-		       page_address(rqstp->rq_arg.pages[i]) + page_base,
++		pgto = to_offs >> PAGE_SHIFT;
++		pgfrom = from_offs >> PAGE_SHIFT;
++		pgto_offs = to_offs & ~PAGE_MASK;
++		pgfrom_offs = from_offs & ~PAGE_MASK;
++
++		length = min_t(unsigned int, inlen,
++			 min_t(unsigned int, PAGE_SIZE - pgto_offs,
++			       PAGE_SIZE - pgfrom_offs));
++		memcpy(page_address(in_token->pages[pgto]) + pgto_offs,
++		       page_address(rqstp->rq_arg.pages[pgfrom]) + pgfrom_offs,
+ 		       length);
+ 
++		to_offs += length;
++		from_offs += length;
+ 		inlen -= length;
+-		page_base = 0;
+-		i++;
+ 	}
+ 	return 0;
+ }
 -- 
 2.25.1
 
