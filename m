@@ -2,148 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C6429CA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C2929CA15
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831331AbgJ0UW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:22:59 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39726 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1788567AbgJ0UW7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:22:59 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m16so3276997ljo.6;
-        Tue, 27 Oct 2020 13:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L50iVw7FLmT3wGVAPb+hegW9AcFLwxxQql22N1YNr3s=;
-        b=Osq7f6NjC6ISj1R2BgrpzFkaTOIKofACZRAtBSa4SrXYxI+3d+GBoKGHSIkOwNHcvB
-         UvsWbgVgQNE+3OGfNtzZF5unO04U88aePHGsjklEtbjQLFWX7553MPixlZyVN+s4+WO1
-         Vf9yVY+JWv5qYvkFhJWU7gO6QwEUVjdu2Vz8j3ok3dgunfF2kyG7hie3KTgXZ1s1/gZJ
-         gFKYb9OhRCG7w8kF+6swG4GHsuXs6dxh8UfRItF3f+lH+KRinGgI3JfKy8FJBzF0MAus
-         a0XOpOMhpHxZapOru7oVQgaMJ4s8d2MJ60b0Y9GUnYWN58OSVL1pDkJbkKd/iDjeo/wU
-         +9dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L50iVw7FLmT3wGVAPb+hegW9AcFLwxxQql22N1YNr3s=;
-        b=Jc8SCO4BjRL+seseCA5jUqK/Mz+JapeZQoqr8RgPRgiBLSIFYhrAeHxw72wK1ch2qe
-         USeJROjtKRVABmoWtHncTtYsDr+VCi4cdqXlHyP4mD35m2ACK68JO+MOF3mvfaNy6V6s
-         6HIKR+LwaUjYEiKCKI8YYf5yb/mQLf54HQbsn9XfQ8gVgnmeuWzxZ0Zy8EgN/56mLAfk
-         /+ltlZg0BxPXdNryqnVVerkt8mw0OwjVE2em4YR4Y1b01cK1vyFbUjeD5Qa5ked8LPiw
-         QzM3XFxGd4BuomF6mhhwZtF7XY6UQQ84YWbaxQmRKp8A0vRYKnlxHg6NUbjCfu0pDJQe
-         xj7A==
-X-Gm-Message-State: AOAM531EHmCxKnY6ukYgYSyREKwfi6hlzN4Lm2jv0+RhSCyxhERaVOek
-        aLpoAM6s58wd3O3CGsPaGUqmACns5q8=
-X-Google-Smtp-Source: ABdhPJwL4Q3axPQhjx8u6GfilK2mbyNcLAJMab3+6Bu/x6z8sYJBTZgcQRvvzZfAlSBhe4ovtwUq0A==
-X-Received: by 2002:a2e:b014:: with SMTP id y20mr1846339ljk.362.1603830175544;
-        Tue, 27 Oct 2020 13:22:55 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
-        by smtp.googlemail.com with ESMTPSA id w142sm281413lff.108.2020.10.27.13.22.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 13:22:55 -0700 (PDT)
-Subject: Re: [PATCH v6 33/52] memory: tegra20: Support interconnect framework
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-34-digetx@gmail.com> <20201027141152.GN1822510@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <713bf4eb-dc5b-9c4b-4ab4-23b36ba4fab1@gmail.com>
-Date:   Tue, 27 Oct 2020 23:22:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201027141152.GN1822510@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1831355AbgJ0UXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:23:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1831346AbgJ0UXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:23:50 -0400
+Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23E8220719;
+        Tue, 27 Oct 2020 20:23:50 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.14.202-rt97
+Date:   Tue, 27 Oct 2020 20:22:58 -0000
+Message-ID: <160383017862.452531.12788303951108967689@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.10.2020 17:11, Thierry Reding пишет:
-...
->> +static int emc_icc_set(struct icc_node *src, struct icc_node *dst)
->> +{
->> +	struct tegra_emc *emc = to_tegra_emc_provider(dst->provider);
->> +	unsigned long long peak_bw = icc_units_to_bps(dst->peak_bw);
->> +	unsigned long long avg_bw = icc_units_to_bps(dst->avg_bw);
->> +	unsigned long long rate = max(avg_bw, peak_bw);
->> +	unsigned int dram_data_bus_width_bytes = 4;
-> 
-> Perhaps use something shorter for this variable (like dram_bus_width)? Also,
-> since it's never modified, perhaps make it const? Or a #define?
+Hello RT-list!
 
-It actually could be 2, depending on a board configuration, but I don't
-know whether a 16bit bus was ever used in a wild. AFAIK, nv-tegra
-kernels assumes 32bit bus for all devices.
+I'm pleased to announce the 4.14.202-rt97 stable release.
 
-...
->> +err_msg:
->> +	dev_err(emc->dev, "failed to initialize ICC: %d\n", err);
-> 
-> It might be worth duplicating this error message to the failure
-> locations so that the exact failure can be identified.
+You can get this release via the git tree at:
 
-I think it should be better to extend error messages on by as-needed
-basis. It's very unlikely that we will ever see this error in practice.
-Okay?
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-...
->> +	 * of the client's FIFO buffers. Secondly, we need to take into
->> +	 * account impurities of the memory subsystem.
->> +	 */
->> +	if (tag == TEGRA_MC_ICC_TAG_ISO)
->> +		peak_bw = tegra_mc_scale_percents(peak_bw, 300);
-> 
-> 300% sounds a bit excessive. Do we really need that much?
+  branch: v4.14-rt
+  Head SHA1: 55b07213576aa053c62507c97f194df13c25c155
 
-It should be possible to drop it to 150% by tuning priority timers and
-hysteresis of the clients, but some of those configurations are placed
-within device registers range and we will need a more complicated
-bandwidth manager.
+Or to build 4.14.202-rt97 directly, the following patches should be applied:
 
-The 300% is an overestimation, but it's better to overestimate for the
-starter than have an unusable devices. This is what nv-tegra kernel does
-as well, btw.
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
 
->> +
->> +	*agg_avg += avg_bw;
->> +	*agg_peak = max(*agg_peak, peak_bw);
-> 
-> I'm not very familiar with ICC, but shouldn't the aggregated peak value
-> be the sum of the current aggregated peak and the new peak bandwidth?
-> Currently you're selecting the maximum peak bandwidth across all
-> clients, so isn't that going to be too small if for whatever reason
-> multiple clients need peak bandwidth at the same time?
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.202.xz
 
-It's up to the platform drivers to decide how to interpret and use the
-avg and peak values.
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.202-rt97.patch.xz
 
-Please see the above emc_icc_set() which selects max of (avg, peak)
-values, but maybe it also should be good to move it out from ICC set()
-to the ICC aggregate() callback:
 
-*agg_peak = max(*agg_peak, *agg_avg);
+You can also build from 4.14.198-rt96 by applying the incremental patch:
 
-I'll need to take a closer look.
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.198-rt96-rt97.patch.xz
+
+Enjoy!
+Clark
