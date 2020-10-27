@@ -2,124 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F3D29ADE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D5929ADE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752825AbgJ0NvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:51:01 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:46402 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752802AbgJ0Nu4 (ORCPT
+        id S1752839AbgJ0NvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:51:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752789AbgJ0NvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:50:56 -0400
-Received: by mail-ed1-f65.google.com with SMTP id 33so1485176edq.13;
-        Tue, 27 Oct 2020 06:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UpTv+N44qmDZNKSKOpBL1gv18cc8KZ331d2Wj1p0YQg=;
-        b=iVBDSqXPbyhMom5M/1h/9OcQTUUSnjymUB4Hbi7C7uMD/QVVeedzxVl2zLQa4ESuR9
-         gdsutuRaBNgvI0Hwfwndoil8xPNV2vDfT5jcPE8fanTz0J1XvfVP0MfF/kMdV4tH6MCn
-         iO9xdNfMEX41DdMg2t0HvKjNjBvzi1WnJubsffwjg+NyFtfH9q3ZsHw+tHAMAcaIghLH
-         VNgDS2enn8MUaA+nOhVH+mU6Map5nA6SoyNr5cAKK6hdjwr63AglMPcnhU5QbeXyUWPg
-         yzKckeFV2spRM2FHSK7C47aAfkbmRN0RgBDEDeRFY9YdYrhm/p4QVskIzctUV8UIymWS
-         GeTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UpTv+N44qmDZNKSKOpBL1gv18cc8KZ331d2Wj1p0YQg=;
-        b=m7aEw4PLKUX/737rj1WV7YjizA7/lwifh+KOSSgOFdPnG137dGyX7VjqS3BJJR1gr7
-         PIS1Ia3SlPiQwXPV22Z51QlGO9AiZGRtW5kAAMazeDZcQlu7OO4Q2q3Q4E75NAyJCNma
-         UhqrFeKRtpQj3iFPBjy+UjuUuJMNCBXyAav+ULsk332zk4YwO12z6Pk607DZ/roRQZbc
-         ZqekfgWD30oDyT9PhZHH2Xj4mWS9MbT2gfxgpj6tetMuCRM8/bNmNpbJ2aVUl6NS2KNu
-         VJyCKE/SPXNOHCa6KvfDaWyZm1UlzEnzYMNkg29kL4ewJgblN4tW2CqU/1KoCO4pSXA3
-         aaWA==
-X-Gm-Message-State: AOAM530kWhVj18wve5wthui3v7gmHuHNaXe21NR6+wDYRE8oMr+QKWMj
-        6vpaiAz5uxVeSna67AspH0o=
-X-Google-Smtp-Source: ABdhPJzoug3kqXmwuIlVZWpSCnC1WqKifa1HHV8r4AwHgTv48ReSSRME9k3xx42F9bEE4Xx6QKYLwQ==
-X-Received: by 2002:a50:9ec6:: with SMTP id a64mr2283115edf.382.1603806653958;
-        Tue, 27 Oct 2020 06:50:53 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id b8sm999899edv.20.2020.10.27.06.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:50:52 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 14:50:51 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 31/52] memory: tegra20-emc: Use
- devm_platform_ioremap_resource()
-Message-ID: <20201027135051.GL1822510@ulmo>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-32-digetx@gmail.com>
+        Tue, 27 Oct 2020 09:51:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603806660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8+jb4Uum0YDVbkpAFXhZteFm7QpAvfmGgqEE4z4q5ck=;
+        b=jBLSLXgEtetdE7JAMvWTsUDBrr9pbTke43e+I5CwrBsVrwzAO7iJioxFcNNtuzdCVg9f9n
+        7Osjbmb4GmpoYqbCijvb916Zkstzjd9IQMxtrRwNj5ONr/y1qAVhS/VWWcwBSRejNpHolr
+        12QYm2YG6OM9tiLcvQJh0NItrYAQj/E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-m7wWUJasOqSgkfC57lUcSw-1; Tue, 27 Oct 2020 09:50:57 -0400
+X-MC-Unique: m7wWUJasOqSgkfC57lUcSw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A2DA106B80D;
+        Tue, 27 Oct 2020 13:50:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5749B60C07;
+        Tue, 27 Oct 2020 13:50:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 08/10] afs: Wrap page->private manipulations in inline
+ functions
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 27 Oct 2020 13:50:54 +0000
+Message-ID: <160380665455.3467511.8273234602878423351.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
+References: <160380659566.3467511.15495463187114465303.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fDERRRNgB4on1jOB"
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-32-digetx@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The afs filesystem uses page->private to store the dirty range within a
+page such that in the event of a conflicting 3rd-party write to the server,
+we write back just the bits that got changed locally.
 
---fDERRRNgB4on1jOB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, there are a couple of problems with this:
 
-On Mon, Oct 26, 2020 at 01:17:14AM +0300, Dmitry Osipenko wrote:
-> Use devm_platform_ioremap_resource() helper which makes code a bit
-> cleaner.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/tegra20-emc.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+ (1) I need a bit to note if the page might be mapped so that partial
+     invalidation doesn't shrink the range.
 
-I'm not a fan of this helper, to be honest, because I think all the
-churn that we've seen with the conversions isn't really worth the 1 or 2
-lines that it saves, but hey, looks like this is pretty broadly
-accepted, so if Krzysztof likes it:
+ (2) There aren't necessarily sufficient bits to store the entire range of
+     data altered (say it's a 32-bit system with 64KiB pages or transparent
+     huge pages are in use).
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+So wrap the accesses in inline functions so that future commits can change
+how this works.
 
---fDERRRNgB4on1jOB
-Content-Type: application/pgp-signature; name="signature.asc"
+Also move them out of the tracing header into the in-directory header.
+There's not really any need for them to be in the tracing header.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YJbsACgkQ3SOs138+
-s6G9URAAtj7PIBjSjv1nses5GEAWNmBaiDfGSjpiLUkmRQdPi+MiY6E8ka3TCPaQ
-Ekhqca6aM48b4MSYkHBvSpuECG8SZMrpXTofBh11pu4OaydcdUUASsgySz/x6ARu
-zK+qwwSxvPvtq6a4YYcbts0aJu4y0Gk9Sw4zXjMl0mvuB03J0yTYlWgJuFGNv92K
-gGqj4cUqhkHR3WcJ9rmv7wgYo78DfNhYvM0Ux5EemnRiGpzWljNDYpTVwPaK/vlT
-D9WcDj3EZpxi/hwCZLy8IsIhamHoM+BZGtkuXh77BNqz1zpKLCj+YuC4pg4D6+ux
-UN3UmGNW5HK7HIc2eqMOXd7srzlQZc9jYyt0VSxYeukp5/KYCwVHhVT2zL1ryxfK
-lVnWEu1SMM4+pRFLRWvgHUoTsfA0QW//fFdvB8x0nH1mEO0LLKFrnY4ariB1j9/a
-wpcwTfKlSTw75KeK2sjOIQFZsVtlorIqPhRyS57fqPstxeoVfDQ8n6z+OjuZ6TWQ
-Br5RGkUloMKCM0f92oWT0oPJCFUrkNFrMrXdETQ3Y0vcHQeJaER36h8ddCxB0PJt
-fEOT+057askejUvy4Tx+xXPw4zfxPBUZcZq4b2n6VRfAojW66mC+rv7Y1FHVSAbo
-aU/pmuqSUPw4Z8eNVQe7ZHQjHvHVulA8PmLWXvCMfjlJBhErFf4=
-=ihq2
------END PGP SIGNATURE-----
+ fs/afs/internal.h          |   28 ++++++++++++++++++++++++++++
+ fs/afs/write.c             |   31 +++++++++++++------------------
+ include/trace/events/afs.h |   19 +++----------------
+ 3 files changed, 44 insertions(+), 34 deletions(-)
 
---fDERRRNgB4on1jOB--
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index 289f5dffa46f..acefa6bf0a4d 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -858,6 +858,34 @@ struct afs_vnode_cache_aux {
+ 	u64			data_version;
+ } __packed;
+ 
++/*
++ * We use page->private to hold the amount of the page that we've written to,
++ * splitting the field into two parts.  However, we need to represent a range
++ * 0...PAGE_SIZE inclusive, so we can't support 64K pages on a 32-bit system.
++ */
++#if PAGE_SIZE > 32768
++#define __AFS_PAGE_PRIV_MASK	0xffffffff
++#define __AFS_PAGE_PRIV_SHIFT	32
++#else
++#define __AFS_PAGE_PRIV_MASK	0xffff
++#define __AFS_PAGE_PRIV_SHIFT	16
++#endif
++
++static inline unsigned int afs_page_dirty_from(unsigned long priv)
++{
++	return priv & __AFS_PAGE_PRIV_MASK;
++}
++
++static inline unsigned int afs_page_dirty_to(unsigned long priv)
++{
++	return (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK;
++}
++
++static inline unsigned long afs_page_dirty(unsigned int from, unsigned int to)
++{
++	return ((unsigned long)to << __AFS_PAGE_PRIV_SHIFT) | from;
++}
++
+ #include <trace/events/afs.h>
+ 
+ /*****************************************************************************/
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 5ed5df906744..91bc2cb2cad1 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -117,8 +117,8 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 	t = f = 0;
+ 	if (PagePrivate(page)) {
+ 		priv = page_private(page);
+-		f = priv & AFS_PRIV_MAX;
+-		t = priv >> AFS_PRIV_SHIFT;
++		f = afs_page_dirty_from(priv);
++		t = afs_page_dirty_to(priv);
+ 		ASSERTCMP(f, <=, t);
+ 	}
+ 
+@@ -206,23 +206,19 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+ 
+ 	if (PagePrivate(page)) {
+ 		priv = page_private(page);
+-		f = priv & AFS_PRIV_MAX;
+-		t = priv >> AFS_PRIV_SHIFT;
++		f = afs_page_dirty_from(priv);
++		t = afs_page_dirty_to(priv);
+ 		if (from < f)
+ 			f = from;
+ 		if (to > t)
+ 			t = to;
+-		priv = (unsigned long)t << AFS_PRIV_SHIFT;
+-		priv |= f;
++		priv = afs_page_dirty(f, t);
+ 		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"),
+ 				     page->index, priv);
+ 	} else {
+ 		SetPagePrivate(page);
+ 		get_page(page);
+-		f = from;
+-		t = to;
+-		priv = (unsigned long)t << AFS_PRIV_SHIFT;
+-		priv |= f;
++		priv = afs_page_dirty(from, to);
+ 		trace_afs_page_dirty(vnode, tracepoint_string("dirty"),
+ 				     page->index, priv);
+ 	}
+@@ -526,8 +522,8 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
+ 	 */
+ 	start = primary_page->index;
+ 	priv = page_private(primary_page);
+-	offset = priv & AFS_PRIV_MAX;
+-	to = priv >> AFS_PRIV_SHIFT;
++	offset = afs_page_dirty_from(priv);
++	to = afs_page_dirty_to(priv);
+ 	trace_afs_page_dirty(vnode, tracepoint_string("store"),
+ 			     primary_page->index, priv);
+ 
+@@ -572,8 +568,8 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
+ 			}
+ 
+ 			priv = page_private(page);
+-			f = priv & AFS_PRIV_MAX;
+-			t = priv >> AFS_PRIV_SHIFT;
++			f = afs_page_dirty_from(priv);
++			t = afs_page_dirty_to(priv);
+ 			if (f != 0 &&
+ 			    !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)) {
+ 				unlock_page(page);
+@@ -874,8 +870,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+ 	 */
+ 	wait_on_page_writeback(vmf->page);
+ 
+-	priv = (unsigned long)PAGE_SIZE << AFS_PRIV_SHIFT; /* To */
+-	priv |= 0; /* From */
++	priv = afs_page_dirty(0, PAGE_SIZE);
+ 	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
+ 			     vmf->page->index, priv);
+ 	if (!TestSetPagePrivate(vmf->page))
+@@ -933,8 +928,8 @@ int afs_launder_page(struct page *page)
+ 		f = 0;
+ 		t = PAGE_SIZE;
+ 		if (PagePrivate(page)) {
+-			f = priv & AFS_PRIV_MAX;
+-			t = priv >> AFS_PRIV_SHIFT;
++			f = afs_page_dirty_from(priv);
++			t = afs_page_dirty_to(priv);
+ 		}
+ 
+ 		trace_afs_page_dirty(vnode, tracepoint_string("launder"),
+diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
+index 8eb49231c6bb..e718ae17ad91 100644
+--- a/include/trace/events/afs.h
++++ b/include/trace/events/afs.h
+@@ -966,19 +966,6 @@ TRACE_EVENT(afs_dir_check_failed,
+ 		      __entry->vnode, __entry->off, __entry->i_size)
+ 	    );
+ 
+-/*
+- * We use page->private to hold the amount of the page that we've written to,
+- * splitting the field into two parts.  However, we need to represent a range
+- * 0...PAGE_SIZE inclusive, so we can't support 64K pages on a 32-bit system.
+- */
+-#if PAGE_SIZE > 32768
+-#define AFS_PRIV_MAX	0xffffffff
+-#define AFS_PRIV_SHIFT	32
+-#else
+-#define AFS_PRIV_MAX	0xffff
+-#define AFS_PRIV_SHIFT	16
+-#endif
+-
+ TRACE_EVENT(afs_page_dirty,
+ 	    TP_PROTO(struct afs_vnode *vnode, const char *where,
+ 		     pgoff_t page, unsigned long priv),
+@@ -999,10 +986,10 @@ TRACE_EVENT(afs_page_dirty,
+ 		    __entry->priv = priv;
+ 			   ),
+ 
+-	    TP_printk("vn=%p %lx %s %lu-%lu",
++	    TP_printk("vn=%p %lx %s %x-%x",
+ 		      __entry->vnode, __entry->page, __entry->where,
+-		      __entry->priv & AFS_PRIV_MAX,
+-		      __entry->priv >> AFS_PRIV_SHIFT)
++		      afs_page_dirty_from(__entry->priv),
++		      afs_page_dirty_to(__entry->priv))
+ 	    );
+ 
+ TRACE_EVENT(afs_call_state,
+
+
