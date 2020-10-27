@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9E829C2A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15EE29C272
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820789AbgJ0RiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33726 "EHLO mail.kernel.org"
+        id S1820358AbgJ0RgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760530AbgJ0Oe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:34:56 -0400
+        id S1760875AbgJ0Ogy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:36:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 516ED20709;
-        Tue, 27 Oct 2020 14:34:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CFED2222C;
+        Tue, 27 Oct 2020 14:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809296;
-        bh=R/EIdN1dhjZmrIxGGM/69pEOsMpWAkuHLRWJuZBtzB4=;
+        s=default; t=1603809414;
+        bh=v4Faxe2oFWT9FGrJ/a98D50w3xZNO2pxrwsgAbFuMII=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJgdmon7vAHF8UQDSF9QICZ0p6qCMjFD+s1Tjgn6QGydxr5AG48WvgQVz1F+ddEkJ
-         W6Bu6Wd2AelujR8fSFs9IefjsYVqaGiuLnxas69ZwefkQT3fEFIw8VDCCa6i61UueG
-         E1U6J6t7zK4V1488fm/Vag3K/sy9hTWvgwtNt1UY=
+        b=NsQepco3o2IL0i3S2y9Fceeja1wpa87rUg26T0wryQeFwZwf+BtfgY2KqUEH7JDTS
+         g1sjYQ/WUOPjLMaznd0w+TSl3mgpmQRHG00Smtgp5bO6lMnFmstvjQqVl3VxvXgkP2
+         qb18bDhQB39UyzY4OiubQp1GSE9ruvXDO1buWbKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Thomas Preston <thomas.preston@codethink.co.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Tomas Henzl <thenzl@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 144/408] pinctrl: mcp23s08: Fix mcp23x17 precious range
-Date:   Tue, 27 Oct 2020 14:51:22 +0100
-Message-Id: <20201027135501.782000290@linuxfoundation.org>
+Subject: [PATCH 5.4 146/408] scsi: mpt3sas: Fix sync irqs
+Date:   Tue, 27 Oct 2020 14:51:24 +0100
+Message-Id: <20201027135501.871004885@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,39 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Preston <thomas.preston@codethink.co.uk>
+From: Tomas Henzl <thenzl@redhat.com>
 
-[ Upstream commit b9b7fb29433b906635231d0a111224efa009198c ]
+[ Upstream commit 45181eab8ba79ed7a41b549f00500c0093828521 ]
 
-On page 23 of the datasheet [0] it says "The register remains unchanged
-until the interrupt is cleared via a read of INTCAP or GPIO." Include
-INTCAPA and INTCAPB registers in precious range, so that they aren't
-accidentally cleared when we read via debugfs.
+_base_process_reply_queue() called from _base_interrupt() may schedule a
+new irq poll. Fix this by calling synchronize_irq() first.
 
-[0] https://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
+Also ensure that enable_irq() is called only when necessary to avoid
+"Unbalanced enable for IRQ..." errors.
 
-Fixes: 8f38910ba4f6 ("pinctrl: mcp23s08: switch to regmap caching")
-Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20200828213226.1734264-3-thomas.preston@codethink.co.uk
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20200910142126.8147-1-thenzl@redhat.com
+Fixes: 320e77acb327 ("scsi: mpt3sas: Irq poll to avoid CPU hard lockups")
+Acked-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Signed-off-by: Tomas Henzl <thenzl@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-mcp23s08.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
-index 676ff9a4459e3..d8bcbefcba890 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08.c
-@@ -144,7 +144,7 @@ static const struct regmap_access_table mcp23x17_volatile_table = {
- };
- 
- static const struct regmap_range mcp23x17_precious_range = {
--	.range_min = MCP_GPIO << 1,
-+	.range_min = MCP_INTCAP << 1,
- 	.range_max = MCP_GPIO << 1,
- };
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index b7e44634d0dc2..3d58d24de6b61 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -1708,18 +1708,22 @@ mpt3sas_base_sync_reply_irqs(struct MPT3SAS_ADAPTER *ioc)
+ 		/* TMs are on msix_index == 0 */
+ 		if (reply_q->msix_index == 0)
+ 			continue;
++		synchronize_irq(pci_irq_vector(ioc->pdev, reply_q->msix_index));
+ 		if (reply_q->irq_poll_scheduled) {
+ 			/* Calling irq_poll_disable will wait for any pending
+ 			 * callbacks to have completed.
+ 			 */
+ 			irq_poll_disable(&reply_q->irqpoll);
+ 			irq_poll_enable(&reply_q->irqpoll);
+-			reply_q->irq_poll_scheduled = false;
+-			reply_q->irq_line_enable = true;
+-			enable_irq(reply_q->os_irq);
+-			continue;
++			/* check how the scheduled poll has ended,
++			 * clean up only if necessary
++			 */
++			if (reply_q->irq_poll_scheduled) {
++				reply_q->irq_poll_scheduled = false;
++				reply_q->irq_line_enable = true;
++				enable_irq(reply_q->os_irq);
++			}
+ 		}
+-		synchronize_irq(pci_irq_vector(ioc->pdev, reply_q->msix_index));
+ 	}
+ }
  
 -- 
 2.25.1
