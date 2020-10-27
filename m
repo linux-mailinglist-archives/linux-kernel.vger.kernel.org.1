@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8388C29AFFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46C629B004
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756912AbgJ0OPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59474 "EHLO mail.kernel.org"
+        id S1756959AbgJ0OPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:15:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755632AbgJ0OKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:10:38 -0400
+        id S1755756AbgJ0OKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:10:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 385172072D;
-        Tue, 27 Oct 2020 14:10:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 440D2218AC;
+        Tue, 27 Oct 2020 14:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807837;
-        bh=DUrXUBqEKUGWvSmhyupasCCNX7qF6SAzS4l+U/G6wnI=;
+        s=default; t=1603807845;
+        bh=JZO0FMmtG4vn/Ir8BKBtAao/jx/uemYfhrNZ6ukyQ5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p4Y1C33mPxbdALWNLqXdRKHbXwd7ChGZUT2SPO7ZMREJSMHpNXHC+ytCn1+AuuJPp
-         z6stzusSH0/fSB39aBd/ikpDecVZjlBVN1sA+Sk3CXXRGTZ1qQOIj/tVSECox2u9BT
-         vaOXaGfXASBqqYOVYxKge90AAya3kW9WkbzKHId4=
+        b=Tkpkdztl/IcgUWW3UpU+yhwK/yz7BBtfixeYIJC6zs9Zn4ttekVvE3J5YbMjtozQb
+         SpavX8m5rG79tBlbMeTRWpMNVuerJlSc+MqwQZ2nLYxPIQ179FW3Db4FOpeJbNdEuR
+         fyYXdasAcSXUo0LEOhCZ9udhiBzxp+Tfi3Dk3ePQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Andrew Morton <akpm@osdl.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 059/191] pwm: lpss: Add range limit check for the base_unit register value
-Date:   Tue, 27 Oct 2020 14:48:34 +0100
-Message-Id: <20201027134912.577098378@linuxfoundation.org>
+Subject: [PATCH 4.14 062/191] video: fbdev: sis: fix null ptr dereference
+Date:   Tue, 27 Oct 2020 14:48:37 +0100
+Message-Id: <20201027134912.715225285@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
 References: <20201027134909.701581493@linuxfoundation.org>
@@ -45,65 +45,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit ef9f60daab309558c8bb3e086a9a11ee40bd6061 ]
+[ Upstream commit ad6f93e9cd56f0b10e9b22e3e137d17a1a035242 ]
 
-When the user requests a high enough period ns value, then the
-calculations in pwm_lpss_prepare() might result in a base_unit value of 0.
+Clang static analysis reports this representative error
 
-But according to the data-sheet the way the PWM controller works is that
-each input clock-cycle the base_unit gets added to a N bit counter and
-that counter overflowing determines the PWM output frequency. Adding 0
-to the counter is a no-op. The data-sheet even explicitly states that
-writing 0 to the base_unit bits will result in the PWM outputting a
-continuous 0 signal.
+init.c:2501:18: warning: Array access (from variable 'queuedata') results
+  in a null pointer dereference
+      templ |= ((queuedata[i] & 0xc0) << 3);
 
-When the user requestes a low enough period ns value, then the
-calculations in pwm_lpss_prepare() might result in a base_unit value
-which is bigger then base_unit_range - 1. Currently the codes for this
-deals with this by applying a mask:
+This is the problem block of code
 
-	base_unit &= (base_unit_range - 1);
+   if(ModeNo > 0x13) {
+      ...
+      if(SiS_Pr->ChipType == SIS_730) {
+	 queuedata = &FQBQData730[0];
+      } else {
+	 queuedata = &FQBQData[0];
+      }
+   } else {
 
-But this means that we let the value overflow the range, we throw away the
-higher bits and store whatever value is left in the lower bits into the
-register leading to a random output frequency, rather then clamping the
-output frequency to the highest frequency which the hardware can do.
+   }
 
-This commit fixes both issues by clamping the base_unit value to be
-between 1 and (base_unit_range - 1).
+queuedata is not set in the else block
 
-Fixes: 684309e5043e ("pwm: lpss: Avoid potential overflow of base_unit")
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200903112337.4113-5-hdegoede@redhat.com
+Reviewing the old code, the arrays FQBQData730 and FQBQData were
+used directly.
+
+So hoist the setting of queuedata out of the if-else block.
+
+Fixes: 544393fe584d ("[PATCH] sisfb update")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Cc: Thomas Winischhofer <thomas@winischhofer.net>
+Cc: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200805145208.17727-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-lpss.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/sis/init.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pwm/pwm-lpss.c b/drivers/pwm/pwm-lpss.c
-index da63c029aa286..69f8be065919e 100644
---- a/drivers/pwm/pwm-lpss.c
-+++ b/drivers/pwm/pwm-lpss.c
-@@ -109,6 +109,8 @@ static void pwm_lpss_prepare(struct pwm_lpss_chip *lpwm, struct pwm_device *pwm,
- 	freq *= base_unit_range;
+diff --git a/drivers/video/fbdev/sis/init.c b/drivers/video/fbdev/sis/init.c
+index dfe3eb769638b..fde27feae5d0c 100644
+--- a/drivers/video/fbdev/sis/init.c
++++ b/drivers/video/fbdev/sis/init.c
+@@ -2428,6 +2428,11 @@ SiS_SetCRT1FIFO_630(struct SiS_Private *SiS_Pr, unsigned short ModeNo,
  
- 	base_unit = DIV_ROUND_CLOSEST_ULL(freq, c);
-+	/* base_unit must not be 0 and we also want to avoid overflowing it */
-+	base_unit = clamp_val(base_unit, 1, base_unit_range - 1);
+    i = 0;
  
- 	on_time_div = 255ULL * duty_ns;
- 	do_div(on_time_div, period_ns);
-@@ -117,7 +119,6 @@ static void pwm_lpss_prepare(struct pwm_lpss_chip *lpwm, struct pwm_device *pwm,
- 	orig_ctrl = ctrl = pwm_lpss_read(pwm);
- 	ctrl &= ~PWM_ON_TIME_DIV_MASK;
- 	ctrl &= ~((base_unit_range - 1) << PWM_BASE_UNIT_SHIFT);
--	base_unit &= (base_unit_range - 1);
- 	ctrl |= (u32) base_unit << PWM_BASE_UNIT_SHIFT;
- 	ctrl |= on_time_div;
++	if (SiS_Pr->ChipType == SIS_730)
++		queuedata = &FQBQData730[0];
++	else
++		queuedata = &FQBQData[0];
++
+    if(ModeNo > 0x13) {
+ 
+       /* Get VCLK  */
+@@ -2445,12 +2450,6 @@ SiS_SetCRT1FIFO_630(struct SiS_Private *SiS_Pr, unsigned short ModeNo,
+       /* Get half colordepth */
+       colorth = colortharray[(SiS_Pr->SiS_ModeType - ModeEGA)];
+ 
+-      if(SiS_Pr->ChipType == SIS_730) {
+-	 queuedata = &FQBQData730[0];
+-      } else {
+-	 queuedata = &FQBQData[0];
+-      }
+-
+       do {
+ 	 templ = SiS_CalcDelay2(SiS_Pr, queuedata[i]) * VCLK * colorth;
  
 -- 
 2.25.1
