@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC38129C4E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C6E29C4F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823684AbgJ0R7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:59:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48178 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1823648AbgJ0R7Y (ORCPT
+        id S1823961AbgJ0SBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:01:05 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:35211 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1823705AbgJ0R7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:59:24 -0400
-Date:   Tue, 27 Oct 2020 18:59:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603821563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2YW3/NPOF7xoOmIn/XQxXTt+kGRGSQ42qcp9fBVrIJk=;
-        b=npuz5bBuIFtgaJkz2yZDJqvqxLRL2LxwJj1bT1HOHH9zo+BtG80cW47qVn/vciZrJ5p7Qq
-        1RegbSGjpMqqrID6s5D7zPyPsOyf62iW2VLvZuun0QqxkOM5MtKLZ3+ICo/G5TEj7RhcHF
-        tLVSo7VYjbFq6Y2ZTnzTzLJRSkLANVe9mGA/it/7pevqf2shFJgqWOspI37lEifmB19rKv
-        4Bs3el3Vpjv8H/2Lek6zdP+Il16Fbj6QjnKVqVe+85HiahOH5i6SGJtypiia/ZgG5WFFY+
-        ZpZCzLUnfNEyvffDKZeEtsGNg3/bB7hRc5wjPUoQGwEvc6EWIgkOVbUANNIbrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603821563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2YW3/NPOF7xoOmIn/XQxXTt+kGRGSQ42qcp9fBVrIJk=;
-        b=LcxebdN0zE4/+u9RlIK5b3xel6TFXwAj09aw3buCO7iKRwRoG1f55H2rxIBaXqNyaPtgDB
-        P1/Jy31B2lRgt/Dw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH RFC] blk-mq: Don't IPI requests on PREEMPT_RT
-Message-ID: <20201027175920.otcm2ox7vxce5k3c@linutronix.de>
-References: <20201021175059.GA4989@hmbx>
- <20201023110400.bx3uzsb7xy5jtsea@linutronix.de>
- <20201023112130.GA23790@infradead.org>
- <20201023135219.mzzl76eqqy6tqwhe@linutronix.de>
- <20201027092606.GA20805@infradead.org>
- <20201027101102.cvczdb3mkvtoguo5@linutronix.de>
- <20201027160742.GA19073@infradead.org>
- <87eelj1tx0.fsf@nanos.tec.linutronix.de>
- <20201027172309.GA15004@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201027172309.GA15004@infradead.org>
+        Tue, 27 Oct 2020 13:59:48 -0400
+Received: by mail-pf1-f201.google.com with SMTP id b139so1377174pfb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZbaL988uKrohM7H6ZS9XBC1GZUReqphtGwoVjHruBgI=;
+        b=ETkQP5HGCh/KwMlK6Oa4F6JkS2Vrb4/abSeRSBvhnNdoh7fS6XT3reiyLt2vKVEC0z
+         M9iipXbsW21hYHi4VY4x6NVg9OXjZAUZPAZnHb7jYSlaf4x1ZFfY0FUxi1xSxbrBP5f/
+         +F5/GDtp3fd8zI9NK/53rWJ6NJurivwnp9kVLRvzrui/mQTKomi0YHubwm/FCoviFIT3
+         Ozgg0HEh4WKWyKEIjr4VumLXFvyuC1skb2uVBq/lkf46H/hvZAtgFyg17x/qvSZkyUsF
+         8ZTcFNbTXGcZI883jiYK3JocvhaDa/1CI4lDm53uHpwtHEkWyzhHpBepYSwTuTlQw8uo
+         ArSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=ZbaL988uKrohM7H6ZS9XBC1GZUReqphtGwoVjHruBgI=;
+        b=Azvf9MyfjRTkEU+4OQi2G/+bbFiN1IpwcJ7w934g7VIaIlkzsoCpiCDQCNCudzbH1h
+         paRh248xiU8T/KTO1LlcTHL2nG7dHEiTCb0zPlwyJ8pd4H+cUgyNutuNteZtfqtn6/w4
+         00+MpgJMOaFq+bLN4QOlymklvDmYP8Nli90pwPtgBUHddSOkB8p6i+HICH8WY6Mpfjth
+         Stf8RYtOKdhu1QzkPcLHtdpkaRFw2NkKaUwdKpgWlDqBnXZsWw7f5FEmUaXiFssRCjbU
+         ycwp4j02LJtuAX0wlhyHjB44/U53fyD1w0utBxLepNBbgxGzAYy8wRuVP/pMprXOuOJ1
+         /Lrg==
+X-Gm-Message-State: AOAM532Jf3zq7l97QKX2kZgaxI1796TT4TfWDDCfVDeKa8Mk+FnewucO
+        oj4A/i9Pdgg2UrxtVqzBVw6nmnTaUrv2gUdyct7sqA7JvNpimnxKk3Kd/fGPZ5gEDJNhFqlm1bn
+        iJehzZItQ3CqGnT45cBrJePfGKyg6fKN63/fBuAC4fVSNM4TRNE0T7Q/nihTtG/rbpcumlDkx
+X-Google-Smtp-Source: ABdhPJxHHWvVxLU1UFqepNXpxQRVm0nystR88ugkX/J00ithmflQf37LyJF5KikOJDXp10J+BKeVZjWT3LcQ
+Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
+ (user=bgardon job=sendgmr) by 2002:a17:90b:f85:: with SMTP id
+ ft5mr266022pjb.1.1603821587576; Tue, 27 Oct 2020 10:59:47 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 10:59:43 -0700
+Message-Id: <20201027175944.1183301-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+Subject: [PATCH 1/2] kvm: x86/mmu: Add existing trace points to TDP MMU
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-27 17:23:09 [+0000], Christoph Hellwig wrote:
-> On Tue, Oct 27, 2020 at 06:05:15PM +0100, Thomas Gleixner wrote:
-> > > Is there a way to raise a softirq and preferably place it on a given
-> > > CPU without our IPI dance?  That should be a win-win situation for
-> > > everyone.
-> > 
-> > Not really. Softirq pending bits are strictly per cpu and we don't have
-> > locking or atomics to set them remotely. Even if we had that, then you'd
-> > still need a mechanism to make sure that the remote CPU actually
-> > processes them. So you'd still need an IPI of some sorts.
-> 
-> Ok.  I was hoping we could hide this in core code somehow, especially
-> a peterz didn't like the use of smp_call_function_single_async in the
-> blk-mq completion code very much.
-> 
-> Sebastian, would this solve your preempt-rt and lockdep issues?
+The TDP MMU was initially implemented without some of the usual
+tracepoints found in mmu.c. Correct this discrepancy by adding the
+missing trace points to the TDP MMU.
 
-second. I'm cooking something.
+Tested: ran the demand paging selftest on an Intel Skylake machine with
+	all the trace points used by the TDP MMU enabled and observed
+	them firing with expected values.
 
-Sebastian
+This patch can be viewed in Gerrit at:
+https://linux-review.googlesource.com/c/virt/kvm/kvm/+/3812
+
+Signed-off-by: Ben Gardon <bgardon@google.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 27e381c9da6c2..047e2d966abef 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -7,6 +7,8 @@
+ #include "tdp_mmu.h"
+ #include "spte.h"
+ 
++#include <trace/events/kvm.h>
++
+ #ifdef CONFIG_X86_64
+ static bool __read_mostly tdp_mmu_enabled = false;
+ module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
+@@ -101,6 +103,8 @@ static struct kvm_mmu_page *alloc_tdp_mmu_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ 	sp->gfn = gfn;
+ 	sp->tdp_mmu_page = true;
+ 
++	trace_kvm_mmu_get_page(sp, true);
++
+ 	return sp;
+ }
+ 
+@@ -271,6 +275,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 		pt = spte_to_child_pt(old_spte, level);
+ 		sp = sptep_to_sp(pt);
+ 
++		trace_kvm_mmu_prepare_zap_page(sp);
++
+ 		list_del(&sp->link);
+ 
+ 		if (sp->lpage_disallowed)
+@@ -473,11 +479,13 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+ 	if (unlikely(is_noslot_pfn(pfn))) {
+ 		new_spte = make_mmio_spte(vcpu, iter->gfn, ACC_ALL);
+ 		trace_mark_mmio_spte(iter->sptep, iter->gfn, new_spte);
+-	} else
++	} else {
+ 		make_spte_ret = make_spte(vcpu, ACC_ALL, iter->level, iter->gfn,
+ 					 pfn, iter->old_spte, prefault, true,
+ 					 map_writable, !shadow_accessed_mask,
+ 					 &new_spte);
++		trace_kvm_mmu_set_spte(iter->level, iter->gfn, iter->sptep);
++	}
+ 
+ 	if (new_spte == iter->old_spte)
+ 		ret = RET_PF_SPURIOUS;
+@@ -691,6 +699,8 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 
+ 		tdp_mmu_set_spte_no_acc_track(kvm, &iter, new_spte);
+ 		young = 1;
++
++		trace_kvm_age_page(iter.gfn, iter.level, slot, young);
+ 	}
+ 
+ 	return young;
+-- 
+2.29.0.rc2.309.g374f81d7ae-goog
+
