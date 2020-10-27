@@ -2,178 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8742729CB7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EB729CB8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374471AbgJ0VuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:50:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505944AbgJ0VuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:50:08 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C71D2223C;
-        Tue, 27 Oct 2020 21:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603835407;
-        bh=qyrHE/X2UJDgA/JFIaVSiVdyn53ug8ZgwnqZeFlYcjo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sCBQ+hb2yT2a/vMKInv34fxKjFlNqRuH1xbNjJTauguMgPgA8tgK5j2Rkq9l9mMEs
-         xaHZSgDYlHIIM8C4IwcZ7jt5MaKI3J04aJFSnzhs4jcMBKtKMSBbemcLJaCnfph2ZF
-         DlITmUQmkfUvgEieWvpMSGKGF6LjTGRYh3wMrBYA=
-Received: by mail-ot1-f43.google.com with SMTP id m22so2510382ots.4;
-        Tue, 27 Oct 2020 14:50:07 -0700 (PDT)
-X-Gm-Message-State: AOAM531GBRNxBaYqCfH5yNKaGVyz+73CnHte7WPCoc8FZvpCROZQ7FwL
-        IWfK9Gl0cF/EVY2SWsRpkU5d6q1QjS65cBMglSg=
-X-Google-Smtp-Source: ABdhPJzHekgXLXtoajrpDMpUUyqQH/wvmIgYRBsoBBUPZ4ObqYcRCRWDbwRtmJZ/ohl9Cueb2yI771gfRaYP04oa18E=
-X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr2875566ots.90.1603835406737;
- Tue, 27 Oct 2020 14:50:06 -0700 (PDT)
+        id S374511AbgJ0VwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:52:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5106 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2506205AbgJ0VwY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:52:24 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RLYf95097976;
+        Tue, 27 Oct 2020 17:52:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Z2oTYETLVeUyyEXJSIeR3dyBMOi2hnxHWzwwqVREkyI=;
+ b=RcKrCnQFkoOMNre1JTffqI0ApT6ghHeCTKZgIumMgWGPykSi20cuYY3d8gULdiphv686
+ alI1rfIhizEdgA+a9AxyI/MQXCl7qem0vPH32XA+LKoJTzPvZuIWhS4OLH7y0uKGiHje
+ VJW2lmMSSYcYQd/M6IBgdIH5/pbB1PtkezU71WEuKsir1kgHLgbVJrxVMZt8o3YbtReX
+ VjcFr0lLmIb9E4f0dzQdtxa5J94KJpqeQUQzLW3C5J8ZDjluirAcxZ2Q0G/Jp8A6d46O
+ XVNMNOzipXUtehEzn4yEKpbK1WPVW6NgUhOOxMI+gUMA2WkWZZEntagFASJGFB+w6kjz 6Q== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34e4jwqw8m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Oct 2020 17:52:14 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09RLpbpD009936;
+        Tue, 27 Oct 2020 21:52:13 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04wdc.us.ibm.com with ESMTP id 34cbw9b533-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Oct 2020 21:52:13 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09RLqCFC49348918
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Oct 2020 21:52:12 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11E8BC6057;
+        Tue, 27 Oct 2020 21:52:12 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E40DDC6055;
+        Tue, 27 Oct 2020 21:52:10 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.55.172])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Oct 2020 21:52:10 +0000 (GMT)
+Subject: Re: [PATCH] ibmvfc: add new fields for version 2 of several MADs
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     james.bottomley@hansenpartnership.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201026013649.10147-1-tyreld@linux.ibm.com>
+ <yq1v9ew4ekf.fsf@ca-mkp.ca.oracle.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <c94f0f87-1863-9c0a-3561-4cbc9330e011@linux.ibm.com>
+Date:   Tue, 27 Oct 2020 14:52:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org> <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 27 Oct 2020 22:49:55 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com>
-Message-ID: <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <yq1v9ew4ekf.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-27_15:2020-10-26,2020-10-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 adultscore=0 bulkscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 22:20, Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Tue, Oct 27, 2020 at 1:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
-> > ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> > function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> > GCC specific optimization that was causing trouble on x86 builds, and
-> > was not expected to have any positive effect in the first place.
-> >
-> > However, as the GCC manual documents, __attribute__((optimize))
-> > is not for production use, and results in all other optimization
-> > options to be forgotten for the function in question. This can
-> > cause all kinds of trouble, but in one particular reported case,
-> > it causes -fno-asynchronous-unwind-tables to be disregarded,
-> > resulting in .eh_frame info to be emitted for the function
-> > inadvertently.
-> >
-> > This reverts commit 3193c0836f203, and instead, it disables the -fgcse
-> > optimization for the entire source file, but only when building for
-> > X86.
-> >
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  include/linux/compiler-gcc.h   | 2 --
-> >  include/linux/compiler_types.h | 4 ----
-> >  kernel/bpf/Makefile            | 4 +++-
-> >  kernel/bpf/core.c              | 2 +-
-> >  4 files changed, 4 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> > index d1e3c6896b71..5deb37024574 100644
-> > --- a/include/linux/compiler-gcc.h
-> > +++ b/include/linux/compiler-gcc.h
-> > @@ -175,5 +175,3 @@
-> >  #else
-> >  #define __diag_GCC_8(s)
-> >  #endif
-> > -
-> > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> > index 6e390d58a9f8..ac3fa37a84f9 100644
-> > --- a/include/linux/compiler_types.h
-> > +++ b/include/linux/compiler_types.h
-> > @@ -247,10 +247,6 @@ struct ftrace_likely_data {
-> >  #define asm_inline asm
-> >  #endif
-> >
-> > -#ifndef __no_fgcse
-> > -# define __no_fgcse
-> > -#endif
-> > -
-> >  /* Are two types/vars the same type (ignoring qualifiers)? */
-> >  #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
-> >
-> > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > index bdc8cd1b6767..02b58f44c479 100644
-> > --- a/kernel/bpf/Makefile
-> > +++ b/kernel/bpf/Makefile
-> > @@ -1,6 +1,8 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  obj-y := core.o
-> > -CFLAGS_core.o += $(call cc-disable-warning, override-init)
-> > +# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
-> > +cflags-core-$(CONFIG_X86) := -fno-gcse
->
-> -fno-gcse is not recognized by clang and will produce
-> -Wignored-optimization-argument.  It should at least be wrapped in
-> cc-option, though since it's unlikely to ever not be compiler
-> specific, I think it might be ok to guard with `ifdef
-> CONFIG_CC_IS_GCC`.  Also, might we want to only do this for `ifndef
-> CONFIG_RETPOLINE`, based on 3193c0836f203?
->
-> Finally, this is going to disable GCSE for the whole translation unit,
-> which may be overkill.   Previously it was isolated to one function
-> definition.  You could lower the definition of the preprocessor define
-> into kernel/bpf/core.c to keep its use isolated as far as possible.
->
+On 10/26/20 6:56 PM, Martin K. Petersen wrote:
+> 
+> Tyrel,
+> 
+>> Introduce a targetWWPN field to several MADs. Its possible that a scsi
+>> ID of a target can change due to some fabric changes. The WWPN of the
+>> scsi target provides a better way to identify the target. Also, add
+>> flags for receiving MAD versioning information and advertising client
+>> support for targetWWPN with the VIOS. This latter capability flag will
+>> be required for future clients capable of requesting multiple hardware
+>> queues from the host adapter.
+> 
+> Applied to 5.11/scsi-staging, thanks!
+> 
 
-Which preprocessor define?
+Hi Martin,
 
-> I'm fine with either approach, but we should avoid new warnings for
-> clang.  Thanks for the patch!
->
-> > +CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
-> >
-> >  obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> >  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 9268d77898b7..55454d2278b1 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-> >   *
-> >   * Decode and execute eBPF instructions.
-> >   */
-> > -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> > +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> >  {
-> >  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
-> >  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
-> > --
-> > 2.17.1
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+I'm going to have to ask that this patch be unstaged.
+
+After some clarification from our VIOS folks I made the assumption that the MAD
+size was staying the same and new fields just used up existing reserved padding.
+Turns out they chose to keep the same amount of padding increasing the size of
+those structures. So, this patch needs to be reworked.
+
+Sorry about that,
+
+-Tyrel
