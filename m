@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D162C29A229
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D5029A22A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503827AbgJ0BWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:22:46 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:51270 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437035AbgJ0BWp (ORCPT
+        id S2503836AbgJ0BYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:24:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5169 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409216AbgJ0BYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:22:45 -0400
-Received: by mail-wm1-f68.google.com with SMTP id v5so20548wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 18:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iIJeX2Fh5ytYIob9dHSaaH2/ylmiguRy29mP6CRcfZs=;
-        b=feNTJdGsXTjsVMkZKs9iln2pR4eBAorp3CbBgbvbwtk1DlLjfk9KwaRBwPzdWJ61pz
-         7mEcI8f4oc30bQ0NVA1iPE5HQkHODfQyvkrG18GycAip4H/NEm+O69gpTrHhTuCwyBLd
-         dIINZrweFqAkGn3WBloEj7u/XBn5HP5+HzaqA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iIJeX2Fh5ytYIob9dHSaaH2/ylmiguRy29mP6CRcfZs=;
-        b=ewDntdVAeGBEsVo7/Odc90gj/QMy+OHEEymlZHW8DEs2RH0paD1aLhyjToM9kQP9iM
-         cjweUALWsnn3/ZT16fT5Ro78uZVaX26UFH4+q03il3UPlQzOiYb0Z3py0dR2gEKx7L0M
-         rG7ktZQgPTyUtHu962fmLTPExq21GLMQd15L+OjgubkoICHhPwG1j66QceWwUDwjCPI7
-         KDPFmRqhnFx9asrtPe1bOZWMZc1XAVsf3nXu0ewBY2PP4wYCl4kLBbGdakR5ij93+3HL
-         u4qj15+qqo4K7ZaHLAfChRxcBOqNuKqPUzBp9ZBwUWvdzT93f6FG9BCKqx7dWXAZLjAu
-         oFzg==
-X-Gm-Message-State: AOAM53101Skd3AnsBF4K87ONfy4/PlPwlosHEA/1aax7fLJOFJD7yOE3
-        eYHyp+K8K2fCjJvzvT4eGi3aEkVKpw2M6zDAJCkqMQ==
-X-Google-Smtp-Source: ABdhPJzgOTg9sDSj8N9OjuJdjilCzmNwktb9eWS/su5d41VkIrCCcgtFW3D2Czhyq3JKxI67Wz3PAGi3QBy1O5EWvpQ=
-X-Received: by 2002:a1c:6804:: with SMTP id d4mr57273wmc.94.1603761761836;
- Mon, 26 Oct 2020 18:22:41 -0700 (PDT)
+        Mon, 26 Oct 2020 21:24:19 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CKvBF6gphz15M7B;
+        Tue, 27 Oct 2020 09:24:21 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 27 Oct 2020 09:24:11 +0800
+Subject: Re: [PATCH net] net: hns3: Clear the CMDQ registers before unmapping
+ BAR region
+To:     Jakub Kicinski <kuba@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>
+CC:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
+        <tanhuazhong@huawei.com>
+References: <20201023051550.793-1-yuzenghui@huawei.com>
+ <3c5c98f9-b4a0-69a2-d58d-bfef977c68ad@huawei.com>
+ <e74f0a72-92d1-2ac9-1f4b-191477d673ef@huawei.com>
+ <20201026161325.6f33d9c8@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <bca7fb17-2390-7ff3-d62d-fe279af6a225@huawei.com>
+Date:   Tue, 27 Oct 2020 09:24:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20200930155100.11528-1-keitasuzuki.park@sslab.ics.keio.ac.jp> <yq1d0148xza.fsf@ca-mkp.ca.oracle.com>
-In-Reply-To: <yq1d0148xza.fsf@ca-mkp.ca.oracle.com>
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Date:   Tue, 27 Oct 2020 10:22:31 +0900
-Message-ID: <CAEYrHjmJRmcKX+F8R_wjd146FXnSHekodauG_eNQBXArE4OBeA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] scsi: hpsa: fix memory leak in hpsa_init_one
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Takafumi Kubota <takafumi@sslab.ics.keio.ac.jp>,
-        Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Kevin Barnett <kevin.barnett@microsemi.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Scott Teel <scott.teel@microsemi.com>,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201026161325.6f33d9c8@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On 2020/10/27 7:13, Jakub Kicinski wrote:
+> On Fri, 23 Oct 2020 15:01:14 +0800 Zenghui Yu wrote:
+>> On 2020/10/23 14:22, Yunsheng Lin wrote:
+>>> On 2020/10/23 13:15, Zenghui Yu wrote:  
+>>>> When unbinding the hns3 driver with the HNS3 VF, I got the following
+>>>> kernel panic:
+>>>>
+>>>> [  265.709989] Unable to handle kernel paging request at virtual address ffff800054627000
+>>>> [  265.717928] Mem abort info:
+>>>> [  265.720740]   ESR = 0x96000047
+>>>> [  265.723810]   EC = 0x25: DABT (current EL), IL = 32 bits
+>>>> [  265.729126]   SET = 0, FnV = 0
+>>>> [  265.732195]   EA = 0, S1PTW = 0
+>>>> [  265.735351] Data abort info:
+>>>> [  265.738227]   ISV = 0, ISS = 0x00000047
+>>>> [  265.742071]   CM = 0, WnR = 1
+>>>> [  265.745055] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000009b54000
+>>>> [  265.751753] [ffff800054627000] pgd=0000202ffffff003, p4d=0000202ffffff003, pud=00002020020eb003, pmd=00000020a0dfc003, pte=0000000000000000
+>>>> [  265.764314] Internal error: Oops: 96000047 [#1] SMP
+>>>> [  265.830357] CPU: 61 PID: 20319 Comm: bash Not tainted 5.9.0+ #206
+>>>> [  265.836423] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.05 09/18/2019
+>>>
+>>> Do you care to provide the testcase for above calltrace?  
+>>
+>> I noticed it with VFIO, but it's easy to reproduce it manually. Here you
+>> go:
+>>
+>>    # cat /sys/bus/pci/devices/0000\:7d\:00.2/sriov_totalvfs
+>> 3
+>>    # echo 3 > /sys/bus/pci/devices/0000\:7d\:00.2/sriov_numvfs
+>>    # lspci | grep "Virtual Function"
+>> 7d:01.6 Ethernet controller: Huawei Technologies Co., Ltd. HNS RDMA 
+>> Network Controller (Virtual Function) (rev 21)
+>> 7d:01.7 Ethernet controller: Huawei Technologies Co., Ltd. HNS RDMA 
+>> Network Controller (Virtual Function) (rev 21)
+>> 7d:02.0 Ethernet controller: Huawei Technologies Co., Ltd. HNS RDMA 
+>> Network Controller (Virtual Function) (rev 21)
+>>    # echo 0000:7d:01.6 > /sys/bus/pci/devices/0000:7d:01.6/driver/unbind
+> 
+> Do you know if the bug occurred on 5.4? Is this the correct fixes tag?
+> 
+> Fixes: 862d969a3a4d ("net: hns3: do VF's pci re-initialization while PF doing FLR")
 
-Thanks for the review.
+The correct Fixes tag should be:
 
-> I suggest you submit a fix for just the leak. And then, if the hpsa
-> maintainers agree, we can entertain a separate patch to improve the
-> naming.
+Fixes: e3338205f0c7 ("net: hns3: uninitialize pci in the hclgevf_uninit")
 
-I'll revert the labels to numbered labels and resend the patch.
+Thanks
 
-Thanks,
-Keita
-
-2020=E5=B9=B410=E6=9C=8827=E6=97=A5(=E7=81=AB) 6:49 Martin K. Petersen <mar=
-tin.petersen@oracle.com>:
->
->
-> Keita,
->
-> > When hpsa_scsi_add_host fails, h->lastlogicals is leaked since it lacks
-> > free in the error handler.
-> >
-> > Fix this by adding free when hpsa_scsi_add_host fails.
-> >
-> > This patch also renames the numbered labels to detailed names.
->
-> While I am no fan of numbered labels, these initialization stages are
-> referenced several other places in the driver. As a result, renaming the
-> labels makes the rest of the code harder to follow.
->
-> I suggest you submit a fix for just the leak. And then, if the hpsa
-> maintainers agree, we can entertain a separate patch to improve the
-> naming.
->
-> Thank you!
->
-> --
-> Martin K. Petersen      Oracle Linux Engineering
+> 
+> .
+> 
