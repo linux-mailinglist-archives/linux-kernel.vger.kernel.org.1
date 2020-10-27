@@ -2,146 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F529A955
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1934629A95F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897684AbgJ0KQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:16:06 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:44773 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2897674AbgJ0KQE (ORCPT
+        id S2897743AbgJ0KSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:18:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46118 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409760AbgJ0KSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:16:04 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5E29658026C;
-        Tue, 27 Oct 2020 06:16:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 27 Oct 2020 06:16:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=6ek8BSXlWORnKgWBP5B1QQSoz7
-        NyffqGB/miVQHie5s=; b=jd+cEYOKyqBI6Z4flqJkU0nSnJreKbFG7FEZ94JcLj
-        I4fpqUTlV6+QPT1SXZ1D9ox1NltkhHmJICAMw0TchWZ8onD/Gt8y+wgZ6sqkURP0
-        dVuo3wgTLcNNj0Zjz0u5xS/Iq25XjpOhsTVawGGHWE9P+v4ZemmM0dJyJtQF4NPO
-        e4R3pml9xa4VsMe29g8T1apsKmMG4BYw7UIDIlL6C6CRBm0i0X2kWxXhty2ZzlZD
-        RZuUyDkx7ZxoTeCWzYbaf7X+zFacisfjD3KogNMa+8AOLlGu/BkP2vaHDFSKZRjN
-        H/dYKrg0gYYvX5fRWMcpI+p10Lv73aobZx/o0arBrVhQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=6ek8BSXlWORnKgWBP
-        5B1QQSoz7NyffqGB/miVQHie5s=; b=laAL9ajaUvSvn+d2qPIfsh7b+l9hhC87+
-        dtA1GPLq9YjglxPYJR1ewC4lVdkZyxuyxig7rcVSsLyXnqAJfBBXS2dGM7V0kK3b
-        5o7n01bXo3YBf/ai7L/ayv6aBg0orgNVbMPSBbCFxJoplJf6DzCCydhjr6MjokdP
-        2xzNK5bQk1vd/3lnFUP2J4YNbldo4VP/j8FdGAwI+UICdisFVulO9O8fGT742RpA
-        sIhcUeFKdwlBtd7cus3yG22WFQaKfhuOnYYsE0lIWwWnNM0VyP/ZHq05JxtTPEj8
-        0P2rEoWgXkyONIbEdvgk8dQxBE12Cf4HIj9pt2CK1JOqdhdVdjm9A==
-X-ME-Sender: <xms:YfOXXyudBtTFTDcaWmwGap3SIvxqV7hshZJ_GphIwSsMKoMSESDwMQ>
-    <xme:YfOXX3epn63wLpbySvXh8mgbMC7WJUCQkwtzqH2QuHMygrkpkL8DE9RqC88MhJmjJ
-    QA2ImQCIvnzSNtAfcE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgddugecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucft
-    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
-    hnpeejffehuddvvddvlefhgeelleffgfeijedvhefgieejtdeiueetjeetfeeukeejgeen
-    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:YfOXX9xpUMKgAByl8QlIGHPUmhXjt1RKTO99sh0xR6QvpyE5MO_rxQ>
-    <xmx:YfOXX9MmDJ-qm7r5w91mt6-qYk5PLxAHZmcKIxyXaaZ_zh8VMREf_w>
-    <xmx:YfOXXy_e1aOcFCJs-PnpJYvc2ILdBNNF4f_qFFXyL-WIyURGEPXMpA>
-    <xmx:YvOXX1VC_02m04r_d-yiwhKt8TwnE5Jd8f6uIuEp0ffn5IQ1HJS0DQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B861D328005D;
-        Tue, 27 Oct 2020 06:16:00 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH] drm/vc4: hdmi: Avoid sleeping in atomic context
-Date:   Tue, 27 Oct 2020 11:15:58 +0100
-Message-Id: <20201027101558.427256-1-maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
+        Tue, 27 Oct 2020 06:18:13 -0400
+Date:   Tue, 27 Oct 2020 11:18:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603793891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1YmHjSKwqafIy3Vu89uB9RaJ8SF/KkvKybgYzmgth3g=;
+        b=LpRWqwR41JfItfv9uK21p/mufRc/JwNJ40B0PZBwnpRKMEWBhWTLq7EGWaXZqgxC5r5rIJ
+        x7PgQ3uJHG6Lx2GWDkZQVxUr0NXR7xeO/+OAs2i9HfA6OGahx90Vzw2bvaxdeFAfVaIriZ
+        llCEWvzoFyiiHJoSgC1rnHA7r/Ygbzk10sJ4QqSOQmiIVJpPpednu1MM+7cHZVzm0lD7d3
+        NjdmqYkJZknbcXNcpXvOESc4phJEbn/uSp/g1VaoOsUd3IyMZs1dcaCSVpDvyDCXW4Obg4
+        FPA827nmcBetxQB5SYpqjXhS1NAe7ZgCp2FlhPYoUMqV1HtOP5nMvxS4KA+zbw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603793891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1YmHjSKwqafIy3Vu89uB9RaJ8SF/KkvKybgYzmgth3g=;
+        b=Xzs7/BURSrRQCa3+4rSEmEUENzlEng5scCdPQyZs7xSa4ZHF3PS4o/8v5SOwnvhQbtizH+
+        z835W3rTaj1yJaBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: kvm+nouveau induced lockdep  gripe
+Message-ID: <20201027101810.pk5liej6xmbjcwem@linutronix.de>
+References: <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+ <20201023090108.5lunh4vqfpkllmap@linutronix.de>
+ <20201024022236.19608-1-hdanton@sina.com>
+ <20201024050000.8104-1-hdanton@sina.com>
+ <20201026173107.quylcy6fgjvrqat6@linutronix.de>
+ <431e81699f2310eabfe5af0a3de400ab99d9323b.camel@gmx.de>
+ <20201026195308.wsbk7xy57wuzfbao@linutronix.de>
+ <0dfae65db2f0d3ef603c1db34f37cee63f7f41f4.camel@gmx.de>
+ <20201027090019.3vteojm43ljqqe33@linutronix.de>
+ <7bbfce68bdd01e1d48d3d2c6f9581654e380bf2d.camel@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7bbfce68bdd01e1d48d3d2c6f9581654e380bf2d.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running the trigger hook, ALSA by default will take a spinlock, and
-thus will run the trigger hook in atomic context.
+On 2020-10-27 11:14:34 [+0100], Mike Galbraith wrote:
+> On Tue, 2020-10-27 at 10:00 +0100, Sebastian Andrzej Siewior wrote:
+> > Let me try if I can figure out when this broke.
+> 
+> My money is on...
+> 710da3c8ea7df (Juri Lelli 2019-07-19 16:00:00 +0200 5317)       if (pi)
+> 710da3c8ea7df (Juri Lelli 2019-07-19 16:00:00 +0200 5318)               cpuset_read_lock();
+> ...having just had an unnoticed consequence for nouveau.
 
-However, our HDMI driver will send the infoframes as part of the trigger
-hook, and part of that process is to wait for a bit to be cleared for up to
-100ms. To be nicer to the system, that wait has some usleep_range that
-interact poorly with the atomic context.
+but that is over a year old and should be noticed in v5.4-RT.
 
-There's several ways we can fix this, but the more obvious one is to make
-ALSA take a mutex instead by setting the nonatomic flag on the DAI link.
-That doesn't work though, since now the cyclic callback installed by the
-dmaengine helpers in ALSA will take a mutex, while that callback is run by
-dmaengine's virt-chan code in a tasklet where sleeping is not allowed
-either.
+> 	-Mike
 
-Given the delay we need to poll the bit for, changing the usleep_range for
-a udelay and keep running it from a context where interrupts are disabled
-is not really a good option either.
-
-However, we can move the infoframe setup code in the hw_params hook, like
-is usually done in other HDMI controllers, that isn't protected by a
-spinlock and thus where we can sleep. Infoframes will be sent on a regular
-basis anyway, and since hw_params is where the audio parameters that end up
-in the infoframes are setup, this also makes a bit more sense.
-
-Fixes: bb7d78568814 ("drm/vc4: Add HDMI audio support")
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 74da7c00ecd0..ec3ba3ecd32a 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1077,6 +1077,7 @@ static int vc4_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *dai)
- {
- 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
-+	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
- 	struct device *dev = &vc4_hdmi->pdev->dev;
- 	u32 audio_packet_config, channel_mask;
- 	u32 channel_map;
-@@ -1136,6 +1137,8 @@ static int vc4_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
- 	HDMI_WRITE(HDMI_AUDIO_PACKET_CONFIG, audio_packet_config);
- 	vc4_hdmi_set_n_cts(vc4_hdmi);
- 
-+	vc4_hdmi_set_audio_infoframe(encoder);
-+
- 	return 0;
- }
- 
-@@ -1143,11 +1146,9 @@ static int vc4_hdmi_audio_trigger(struct snd_pcm_substream *substream, int cmd,
- 				  struct snd_soc_dai *dai)
- {
- 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
--	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		vc4_hdmi_set_audio_infoframe(encoder);
- 		vc4_hdmi->audio.streaming = true;
- 
- 		if (vc4_hdmi->variant->phy_rng_enable)
--- 
-2.26.2
-
+Sebastian
