@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6803C29B6F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5332629B77B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368799AbgJ0P1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:27:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39520 "EHLO mail.kernel.org"
+        id S1799844AbgJ0Pdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797567AbgJ0PYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:24:17 -0400
+        id S1797570AbgJ0PYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:24:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 454C32064B;
-        Tue, 27 Oct 2020 15:24:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1868A20657;
+        Tue, 27 Oct 2020 15:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812256;
-        bh=dQEcMIBawyy0i6yBra1m7V+Gndv3cML02ItMGDJ4lDo=;
+        s=default; t=1603812259;
+        bh=MWD72lq/RX0FTsOyrs7GrNbXm2Q1C2AnImudrBnMYto=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ha6GyVfS4EXSRI/M3GFE+oD0dOG+6oW9INEKYTSxQ/o9tQBa0HH+79L8IHttW55mU
-         jg+OCsqrUr1zrAA/bIKKLyVIl5qYVXUGUR3Os6OnF4lMSvvkIu3OR4pn516ZpkzlTd
-         kHRCPro6WFn9UdHWDo9BwFkVYgTEDDSxCNCreGPk=
+        b=LBGF2KoKseP22z1T+LaL3B8LHjBLUiWV3hBm8lxGxYipAtdvh08T2CEy0YEGzrK4L
+         KJa/PIWbWlVs+fWDvBjrJiMW3OF0BZos68CWDVgFdUUhVrOppM1kBvSpDBU25NdTB/
+         OtJtU+QalZ4UV1FvD+kSha1FrsMHig+u9tweiZi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH 5.9 114/757] lockdep: Fix usage_traceoverflow
-Date:   Tue, 27 Oct 2020 14:46:04 +0100
-Message-Id: <20201027135455.917161913@linuxfoundation.org>
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 115/757] lockdep: Fix lockdep recursion
+Date:   Tue, 27 Oct 2020 14:46:05 +0100
+Message-Id: <20201027135455.965692377@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -47,154 +45,393 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 2bb8945bcc1a768f2bc402a16c9610bba8d5187d ]
+[ Upstream commit 4d004099a668c41522242aa146a38cc4eb59cb1e ]
 
-Basically print_lock_class_header()'s for loop is out of sync with the
-the size of of ->usage_traces[].
+Steve reported that lockdep_assert*irq*(), when nested inside lockdep
+itself, will trigger a false-positive.
 
-Also clean things up a bit while at it, to avoid such mishaps in the future.
+One example is the stack-trace code, as called from inside lockdep,
+triggering tracing, which in turn calls RCU, which then uses
+lockdep_assert_irqs_disabled().
 
-Fixes: 23870f122768 ("locking/lockdep: Fix "USED" <- "IN-NMI" inversions")
-Reported-by: Qian Cai <cai@redhat.com>
-Debugged-by: Boqun Feng <boqun.feng@gmail.com>
+Fixes: a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context} to per-cpu variables")
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Qian Cai <cai@redhat.com>
-Link: https://lkml.kernel.org/r/20200930094937.GE2651@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/lockdep_types.h      |  8 ++++++--
- kernel/locking/lockdep.c           | 32 ++++++++++++++----------------
- kernel/locking/lockdep_internals.h |  7 +++++--
- 3 files changed, 26 insertions(+), 21 deletions(-)
+ include/linux/lockdep.h  | 13 ++++--
+ kernel/locking/lockdep.c | 99 ++++++++++++++++++++++++----------------
+ 2 files changed, 67 insertions(+), 45 deletions(-)
 
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index bb35b449f5330..9a1fd49df17f6 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -35,8 +35,12 @@ enum lockdep_wait_type {
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 6a584b3e5c74f..b1227be47496c 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -534,6 +534,7 @@ do {									\
+ 
+ DECLARE_PER_CPU(int, hardirqs_enabled);
+ DECLARE_PER_CPU(int, hardirq_context);
++DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+ 
  /*
-  * We'd rather not expose kernel/lockdep_states.h this wide, but we do need
-  * the total number of states... :-(
-+ *
-+ * XXX_LOCK_USAGE_STATES is the number of lines in lockdep_states.h, for each
-+ * of those we generates 4 states, Additionally we report on USED and USED_READ.
+  * The below lockdep_assert_*() macros use raw_cpu_read() to access the above
+@@ -543,25 +544,27 @@ DECLARE_PER_CPU(int, hardirq_context);
+  * read the value from our previous CPU.
   */
--#define XXX_LOCK_USAGE_STATES		(1+2*4)
-+#define XXX_LOCK_USAGE_STATES		2
-+#define LOCK_TRACE_STATES		(XXX_LOCK_USAGE_STATES*4 + 2)
  
- /*
-  * NR_LOCKDEP_CACHING_CLASSES ... Number of classes
-@@ -106,7 +110,7 @@ struct lock_class {
- 	 * IRQ/softirq usage tracking bits:
- 	 */
- 	unsigned long			usage_mask;
--	const struct lock_trace		*usage_traces[XXX_LOCK_USAGE_STATES];
-+	const struct lock_trace		*usage_traces[LOCK_TRACE_STATES];
++#define __lockdep_enabled	(debug_locks && !raw_cpu_read(lockdep_recursion))
++
+ #define lockdep_assert_irqs_enabled()					\
+ do {									\
+-	WARN_ON_ONCE(debug_locks && !raw_cpu_read(hardirqs_enabled));	\
++	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirqs_enabled)); \
+ } while (0)
  
- 	/*
- 	 * Generation counter, when doing certain classes of graph walking,
+ #define lockdep_assert_irqs_disabled()					\
+ do {									\
+-	WARN_ON_ONCE(debug_locks && raw_cpu_read(hardirqs_enabled));	\
++	WARN_ON_ONCE(__lockdep_enabled && raw_cpu_read(hardirqs_enabled)); \
+ } while (0)
+ 
+ #define lockdep_assert_in_irq()						\
+ do {									\
+-	WARN_ON_ONCE(debug_locks && !raw_cpu_read(hardirq_context));	\
++	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirq_context)); \
+ } while (0)
+ 
+ #define lockdep_assert_preemption_enabled()				\
+ do {									\
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+-		     debug_locks			&&		\
++		     __lockdep_enabled			&&		\
+ 		     (preempt_count() != 0		||		\
+ 		      !raw_cpu_read(hardirqs_enabled)));		\
+ } while (0)
+@@ -569,7 +572,7 @@ do {									\
+ #define lockdep_assert_preemption_disabled()				\
+ do {									\
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+-		     debug_locks			&&		\
++		     __lockdep_enabled			&&		\
+ 		     (preempt_count() == 0		&&		\
+ 		      raw_cpu_read(hardirqs_enabled)));			\
+ } while (0)
 diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 2facbbd146ec2..a430fbb01eb16 100644
+index a430fbb01eb16..85d15f0362dc5 100644
 --- a/kernel/locking/lockdep.c
 +++ b/kernel/locking/lockdep.c
-@@ -585,6 +585,8 @@ static const char *usage_str[] =
- #include "lockdep_states.h"
- #undef LOCKDEP_STATE
- 	[LOCK_USED] = "INITIAL USE",
-+	[LOCK_USED_READ] = "INITIAL READ USE",
-+	/* abused as string storage for verify_lock_unused() */
- 	[LOCK_USAGE_STATES] = "IN-NMI",
- };
+@@ -76,6 +76,23 @@ module_param(lock_stat, int, 0644);
+ #define lock_stat 0
  #endif
-@@ -1939,7 +1941,7 @@ static void print_lock_class_header(struct lock_class *class, int depth)
- #endif
- 	printk(KERN_CONT " {\n");
  
--	for (bit = 0; bit < LOCK_USAGE_STATES; bit++) {
-+	for (bit = 0; bit < LOCK_TRACE_STATES; bit++) {
- 		if (class->usage_mask & (1 << bit)) {
- 			int len = depth;
++DEFINE_PER_CPU(unsigned int, lockdep_recursion);
++EXPORT_PER_CPU_SYMBOL_GPL(lockdep_recursion);
++
++static inline bool lockdep_enabled(void)
++{
++	if (!debug_locks)
++		return false;
++
++	if (raw_cpu_read(lockdep_recursion))
++		return false;
++
++	if (current->lockdep_recursion)
++		return false;
++
++	return true;
++}
++
+ /*
+  * lockdep_lock: protects the lockdep graph, the hashes and the
+  *               class/list/hash allocators.
+@@ -93,7 +110,7 @@ static inline void lockdep_lock(void)
  
-@@ -3969,7 +3971,7 @@ static int separate_irq_context(struct task_struct *curr,
- static int mark_lock(struct task_struct *curr, struct held_lock *this,
- 			     enum lock_usage_bit new_bit)
+ 	arch_spin_lock(&__lock);
+ 	__owner = current;
+-	current->lockdep_recursion++;
++	__this_cpu_inc(lockdep_recursion);
+ }
+ 
+ static inline void lockdep_unlock(void)
+@@ -101,7 +118,7 @@ static inline void lockdep_unlock(void)
+ 	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
+ 		return;
+ 
+-	current->lockdep_recursion--;
++	__this_cpu_dec(lockdep_recursion);
+ 	__owner = NULL;
+ 	arch_spin_unlock(&__lock);
+ }
+@@ -393,10 +410,15 @@ void lockdep_init_task(struct task_struct *task)
+ 	task->lockdep_recursion = 0;
+ }
+ 
++static __always_inline void lockdep_recursion_inc(void)
++{
++	__this_cpu_inc(lockdep_recursion);
++}
++
+ static __always_inline void lockdep_recursion_finish(void)
  {
--	unsigned int old_mask, new_mask, ret = 1;
-+	unsigned int new_mask, ret = 1;
+-	if (WARN_ON_ONCE((--current->lockdep_recursion) & LOCKDEP_RECURSION_MASK))
+-		current->lockdep_recursion = 0;
++	if (WARN_ON_ONCE(__this_cpu_dec_return(lockdep_recursion)))
++		__this_cpu_write(lockdep_recursion, 0);
+ }
  
- 	if (new_bit >= LOCK_USAGE_STATES) {
- 		DEBUG_LOCKS_WARN_ON(1);
-@@ -3996,30 +3998,26 @@ static int mark_lock(struct task_struct *curr, struct held_lock *this,
- 	if (unlikely(hlock_class(this)->usage_mask & new_mask))
- 		goto unlock;
+ void lockdep_set_selftest_task(struct task_struct *task)
+@@ -3659,7 +3681,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+ 	if (unlikely(in_nmi()))
+ 		return;
  
--	old_mask = hlock_class(this)->usage_mask;
- 	hlock_class(this)->usage_mask |= new_mask;
+-	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
++	if (unlikely(__this_cpu_read(lockdep_recursion)))
+ 		return;
  
--	/*
--	 * Save one usage_traces[] entry and map both LOCK_USED and
--	 * LOCK_USED_READ onto the same entry.
--	 */
--	if (new_bit == LOCK_USED || new_bit == LOCK_USED_READ) {
--		if (old_mask & (LOCKF_USED | LOCKF_USED_READ))
--			goto unlock;
--		new_bit = LOCK_USED;
-+	if (new_bit < LOCK_TRACE_STATES) {
-+		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
-+			return 0;
+ 	if (unlikely(lockdep_hardirqs_enabled())) {
+@@ -3695,7 +3717,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+ 
+ 	current->hardirq_chain_key = current->curr_chain_key;
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	__trace_hardirqs_on_caller();
+ 	lockdep_recursion_finish();
+ }
+@@ -3728,7 +3750,7 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
+ 		goto skip_checks;
  	}
  
--	if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
--		return 0;
+-	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
++	if (unlikely(__this_cpu_read(lockdep_recursion)))
+ 		return;
+ 
+ 	if (lockdep_hardirqs_enabled()) {
+@@ -3781,7 +3803,7 @@ void noinstr lockdep_hardirqs_off(unsigned long ip)
+ 	if (in_nmi()) {
+ 		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
+ 			return;
+-	} else if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
++	} else if (__this_cpu_read(lockdep_recursion))
+ 		return;
+ 
+ 	/*
+@@ -3814,7 +3836,7 @@ void lockdep_softirqs_on(unsigned long ip)
+ {
+ 	struct irqtrace_events *trace = &current->irqtrace;
+ 
+-	if (unlikely(!debug_locks || current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	/*
+@@ -3829,7 +3851,7 @@ void lockdep_softirqs_on(unsigned long ip)
+ 		return;
+ 	}
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	/*
+ 	 * We'll do an OFF -> ON transition:
+ 	 */
+@@ -3852,7 +3874,7 @@ void lockdep_softirqs_on(unsigned long ip)
+  */
+ void lockdep_softirqs_off(unsigned long ip)
+ {
+-	if (unlikely(!debug_locks || current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	/*
+@@ -4233,11 +4255,11 @@ void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
+ 	if (subclass) {
+ 		unsigned long flags;
+ 
+-		if (DEBUG_LOCKS_WARN_ON(current->lockdep_recursion))
++		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
+ 			return;
+ 
+ 		raw_local_irq_save(flags);
+-		current->lockdep_recursion++;
++		lockdep_recursion_inc();
+ 		register_lock_class(lock, subclass, 1);
+ 		lockdep_recursion_finish();
+ 		raw_local_irq_restore(flags);
+@@ -4920,11 +4942,11 @@ void lock_set_class(struct lockdep_map *lock, const char *name,
+ {
+ 	unsigned long flags;
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	raw_local_irq_save(flags);
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	check_flags(flags);
+ 	if (__lock_set_class(lock, name, key, subclass, ip))
+ 		check_chain_key(current);
+@@ -4937,11 +4959,11 @@ void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
+ {
+ 	unsigned long flags;
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	raw_local_irq_save(flags);
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	check_flags(flags);
+ 	if (__lock_downgrade(lock, ip))
+ 		check_chain_key(current);
+@@ -4979,7 +5001,7 @@ static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock
+ 
+ static bool lockdep_nmi(void)
+ {
+-	if (current->lockdep_recursion & LOCKDEP_RECURSION_MASK)
++	if (raw_cpu_read(lockdep_recursion))
+ 		return false;
+ 
+ 	if (!in_nmi())
+@@ -5000,7 +5022,10 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 
+ 	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
+ 
+-	if (unlikely(current->lockdep_recursion)) {
++	if (!debug_locks)
++		return;
++
++	if (unlikely(!lockdep_enabled())) {
+ 		/* XXX allow trylock from NMI ?!? */
+ 		if (lockdep_nmi() && !trylock) {
+ 			struct held_lock hlock;
+@@ -5023,7 +5048,7 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	__lock_acquire(lock, subclass, trylock, read, check,
+ 		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
+ 	lockdep_recursion_finish();
+@@ -5037,13 +5062,13 @@ void lock_release(struct lockdep_map *lock, unsigned long ip)
+ 
+ 	trace_lock_release(lock, ip);
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	if (__lock_release(lock, ip))
+ 		check_chain_key(current);
+ 	lockdep_recursion_finish();
+@@ -5056,13 +5081,13 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+ 	unsigned long flags;
+ 	int ret = 0;
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return 1; /* avoid false negative lockdep_assert_held() */
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	ret = __lock_is_held(lock, read);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5077,13 +5102,13 @@ struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
+ 	struct pin_cookie cookie = NIL_COOKIE;
+ 	unsigned long flags;
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return cookie;
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	cookie = __lock_pin_lock(lock);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5096,13 +5121,13 @@ void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+ {
+ 	unsigned long flags;
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	__lock_repin_lock(lock, cookie);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5113,13 +5138,13 @@ void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+ {
+ 	unsigned long flags;
+ 
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lockdep_enabled()))
+ 		return;
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+ 
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	__lock_unpin_lock(lock, cookie);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5249,15 +5274,12 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+ 
+ 	trace_lock_acquired(lock, ip);
+ 
+-	if (unlikely(!lock_stat || !debug_locks))
+-		return;
 -
- 	switch (new_bit) {
-+	case 0 ... LOCK_USED-1:
-+		ret = mark_lock_irq(curr, this, new_bit);
-+		if (!ret)
-+			return 0;
-+		break;
-+
- 	case LOCK_USED:
- 		debug_atomic_dec(nr_unused_locks);
- 		break;
-+
- 	default:
--		ret = mark_lock_irq(curr, this, new_bit);
--		if (!ret)
--			return 0;
-+		break;
- 	}
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lock_stat || !lockdep_enabled()))
+ 		return;
  
- unlock:
-diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
-index b0be1560ed17a..de49f9e1c11ba 100644
---- a/kernel/locking/lockdep_internals.h
-+++ b/kernel/locking/lockdep_internals.h
-@@ -20,9 +20,12 @@ enum lock_usage_bit {
- #undef LOCKDEP_STATE
- 	LOCK_USED,
- 	LOCK_USED_READ,
--	LOCK_USAGE_STATES
-+	LOCK_USAGE_STATES,
- };
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	__lock_contended(lock, ip);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
+@@ -5270,15 +5292,12 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
  
-+/* states after LOCK_USED_READ are not traced and printed */
-+static_assert(LOCK_TRACE_STATES == LOCK_USAGE_STATES);
-+
- #define LOCK_USAGE_READ_MASK 1
- #define LOCK_USAGE_DIR_MASK  2
- #define LOCK_USAGE_STATE_MASK (~(LOCK_USAGE_READ_MASK | LOCK_USAGE_DIR_MASK))
-@@ -121,7 +124,7 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
- extern struct list_head all_lock_classes;
- extern struct lock_chain lock_chains[];
+ 	trace_lock_contended(lock, ip);
  
--#define LOCK_USAGE_CHARS (1+LOCK_USAGE_STATES/2)
-+#define LOCK_USAGE_CHARS (2*XXX_LOCK_USAGE_STATES + 1)
+-	if (unlikely(!lock_stat || !debug_locks))
+-		return;
+-
+-	if (unlikely(current->lockdep_recursion))
++	if (unlikely(!lock_stat || !lockdep_enabled()))
+ 		return;
  
- extern void get_usage_chars(struct lock_class *class,
- 			    char usage[LOCK_USAGE_CHARS]);
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
+-	current->lockdep_recursion++;
++	lockdep_recursion_inc();
+ 	__lock_acquired(lock, ip);
+ 	lockdep_recursion_finish();
+ 	raw_local_irq_restore(flags);
 -- 
 2.25.1
 
