@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E2B29AF27
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537FC29AE98
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754937AbgJ0OHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:07:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55914 "EHLO mail.kernel.org"
+        id S1753778AbgJ0OCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:02:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753727AbgJ0OHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:07:15 -0400
+        id S1753649AbgJ0OBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:01:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8C8A22263;
-        Tue, 27 Oct 2020 14:07:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59CF42222C;
+        Tue, 27 Oct 2020 14:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807634;
-        bh=ZNAdmDJF+LmLzvYsWmYjtHTcQWzw7tYlotXJpmWsOEQ=;
+        s=default; t=1603807277;
+        bh=su9/pJGjPY+qEW2WVw2I4xGslHZmGrOOu2YrtpavM/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oQ1n3aqErmOdwbW4SIEZWnsP0HNYrbVeeEnawZFyPIxSAHre1fEZj3v7l0Tc+owzH
-         M13e0UBUuIfK2KhfLdzz++LRk7t4T5KHsjqfxK2o+C6WCXSfH0tDkbe6WJRqQ9UFWo
-         ihYn0U4Q//o9cZMCtjr3jZcDBWnTPKvKOg+/RziU=
+        b=RX7d3KYQg7zcxazBjsZmU5bmIF8LZL6PPKKfAaumaDfA7ULvOW/K3BNtNS3xhqAk0
+         sE49CI6oUlty5uD0qpkPjfTEYhckyRT9fxwiV+XPCuIw1lC2XOcbDSsuOtgkJ/gHBP
+         xevIt5a6abQ2oB4iDqlrf8K/4ys4oVP7vsZHqQYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Eli Billauer <eli.billauer@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 124/139] Bluetooth: Only mark socket zapped after unlocking
+Subject: [PATCH 4.4 108/112] usb: core: Solve race condition in anchor cleanup functions
 Date:   Tue, 27 Oct 2020 14:50:18 +0100
-Message-Id: <20201027134908.034868454@linuxfoundation.org>
+Message-Id: <20201027134905.657696916@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,71 +44,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+From: Eli Billauer <eli.billauer@gmail.com>
 
-[ Upstream commit 20ae4089d0afeb24e9ceb026b996bfa55c983cc2 ]
+[ Upstream commit fbc299437c06648afcc7891e6e2e6638dd48d4df ]
 
-Since l2cap_sock_teardown_cb doesn't acquire the channel lock before
-setting the socket as zapped, it could potentially race with
-l2cap_sock_release which frees the socket. Thus, wait until the cleanup
-is complete before marking the socket as zapped.
+usb_kill_anchored_urbs() is commonly used to cancel all URBs on an
+anchor just before releasing resources which the URBs rely on. By doing
+so, users of this function rely on that no completer callbacks will take
+place from any URB on the anchor after it returns.
 
-This race was reproduced on a JBL GO speaker after the remote device
-rejected L2CAP connection due to resource unavailability.
+However if this function is called in parallel with __usb_hcd_giveback_urb
+processing a URB on the anchor, the latter may call the completer
+callback after usb_kill_anchored_urbs() returns. This can lead to a
+kernel panic due to use after release of memory in interrupt context.
 
-Here is a dmesg log with debug logs from a repro of this bug:
-[ 3465.424086] Bluetooth: hci_core.c:hci_acldata_packet() hci0 len 16 handle 0x0003 flags 0x0002
-[ 3465.424090] Bluetooth: hci_conn.c:hci_conn_enter_active_mode() hcon 00000000cfedd07d mode 0
-[ 3465.424094] Bluetooth: l2cap_core.c:l2cap_recv_acldata() conn 000000007eae8952 len 16 flags 0x2
-[ 3465.424098] Bluetooth: l2cap_core.c:l2cap_recv_frame() len 12, cid 0x0001
-[ 3465.424102] Bluetooth: l2cap_core.c:l2cap_raw_recv() conn 000000007eae8952
-[ 3465.424175] Bluetooth: l2cap_core.c:l2cap_sig_channel() code 0x03 len 8 id 0x0c
-[ 3465.424180] Bluetooth: l2cap_core.c:l2cap_connect_create_rsp() dcid 0x0045 scid 0x0000 result 0x02 status 0x00
-[ 3465.424189] Bluetooth: l2cap_core.c:l2cap_chan_put() chan 000000006acf9bff orig refcnt 4
-[ 3465.424196] Bluetooth: l2cap_core.c:l2cap_chan_del() chan 000000006acf9bff, conn 000000007eae8952, err 111, state BT_CONNECT
-[ 3465.424203] Bluetooth: l2cap_sock.c:l2cap_sock_teardown_cb() chan 000000006acf9bff state BT_CONNECT
-[ 3465.424221] Bluetooth: l2cap_core.c:l2cap_chan_put() chan 000000006acf9bff orig refcnt 3
-[ 3465.424226] Bluetooth: hci_core.h:hci_conn_drop() hcon 00000000cfedd07d orig refcnt 6
-[ 3465.424234] BUG: spinlock bad magic on CPU#2, kworker/u17:0/159
-[ 3465.425626] Bluetooth: hci_sock.c:hci_sock_sendmsg() sock 000000002bb0cb64 sk 00000000a7964053
-[ 3465.430330]  lock: 0xffffff804410aac0, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-[ 3465.430332] Causing a watchdog bite!
+The race condition is that __usb_hcd_giveback_urb() first unanchors the URB
+and then makes the completer callback. Such URB is hence invisible to
+usb_kill_anchored_urbs(), allowing it to return before the completer has
+been called, since the anchor's urb_list is empty.
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reported-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
-Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Even worse, if the racing completer callback resubmits the URB, it may
+remain in the system long after usb_kill_anchored_urbs() returns.
+
+Hence list_empty(&anchor->urb_list), which is used in the existing
+while-loop, doesn't reliably ensure that all URBs of the anchor are gone.
+
+A similar problem exists with usb_poison_anchored_urbs() and
+usb_scuttle_anchored_urbs().
+
+This patch adds an external do-while loop, which ensures that all URBs
+are indeed handled before these three functions return. This change has
+no effect at all unless the race condition occurs, in which case the
+loop will busy-wait until the racing completer callback has finished.
+This is a rare condition, so the CPU waste of this spinning is
+negligible.
+
+The additional do-while loop relies on usb_anchor_check_wakeup(), which
+returns true iff the anchor list is empty, and there is no
+__usb_hcd_giveback_urb() in the system that is in the middle of the
+unanchor-before-complete phase. The @suspend_wakeups member of
+struct usb_anchor is used for this purpose, which was introduced to solve
+another problem which the same race condition causes, in commit
+6ec4147e7bdb ("usb-anchor: Delay usb_wait_anchor_empty_timeout wake up
+till completion is done").
+
+The surely_empty variable is necessary, because usb_anchor_check_wakeup()
+must be called with the lock held to prevent races. However the spinlock
+must be released and reacquired if the outer loop spins with an empty
+URB list while waiting for the unanchor-before-complete passage to finish:
+The completer callback may very well attempt to take the very same lock.
+
+To summarize, using usb_anchor_check_wakeup() means that the patched
+functions can return only when the anchor's list is empty, and there is
+no invisible URB being processed. Since the inner while loop finishes on
+the empty list condition, the new do-while loop will terminate as well,
+except for when the said race condition occurs.
+
+Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20200731054650.30644-1-eli.billauer@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_sock.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/usb/core/urb.c | 89 +++++++++++++++++++++++++-----------------
+ 1 file changed, 54 insertions(+), 35 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index ab6b1788dbfc3..f46f59129bf39 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1340,8 +1340,6 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
+diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
+index c095cde55329c..8c4bfd42f785d 100644
+--- a/drivers/usb/core/urb.c
++++ b/drivers/usb/core/urb.c
+@@ -767,11 +767,12 @@ void usb_block_urb(struct urb *urb)
+ EXPORT_SYMBOL_GPL(usb_block_urb);
  
- 	parent = bt_sk(sk)->parent;
+ /**
+- * usb_kill_anchored_urbs - cancel transfer requests en masse
++ * usb_kill_anchored_urbs - kill all URBs associated with an anchor
+  * @anchor: anchor the requests are bound to
+  *
+- * this allows all outstanding URBs to be killed starting
+- * from the back of the queue
++ * This kills all outstanding URBs starting from the back of the queue,
++ * with guarantee that no completer callbacks will take place from the
++ * anchor after this function returns.
+  *
+  * This routine should not be called by a driver after its disconnect
+  * method has returned.
+@@ -779,20 +780,26 @@ EXPORT_SYMBOL_GPL(usb_block_urb);
+ void usb_kill_anchored_urbs(struct usb_anchor *anchor)
+ {
+ 	struct urb *victim;
++	int surely_empty;
  
--	sock_set_flag(sk, SOCK_ZAPPED);
--
- 	switch (chan->state) {
- 	case BT_OPEN:
- 	case BT_BOUND:
-@@ -1368,8 +1366,11 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
- 
- 		break;
- 	}
--
- 	release_sock(sk);
+-	spin_lock_irq(&anchor->lock);
+-	while (!list_empty(&anchor->urb_list)) {
+-		victim = list_entry(anchor->urb_list.prev, struct urb,
+-				    anchor_list);
+-		/* we must make sure the URB isn't freed before we kill it*/
+-		usb_get_urb(victim);
+-		spin_unlock_irq(&anchor->lock);
+-		/* this will unanchor the URB */
+-		usb_kill_urb(victim);
+-		usb_put_urb(victim);
++	do {
+ 		spin_lock_irq(&anchor->lock);
+-	}
+-	spin_unlock_irq(&anchor->lock);
++		while (!list_empty(&anchor->urb_list)) {
++			victim = list_entry(anchor->urb_list.prev,
++					    struct urb, anchor_list);
++			/* make sure the URB isn't freed before we kill it */
++			usb_get_urb(victim);
++			spin_unlock_irq(&anchor->lock);
++			/* this will unanchor the URB */
++			usb_kill_urb(victim);
++			usb_put_urb(victim);
++			spin_lock_irq(&anchor->lock);
++		}
++		surely_empty = usb_anchor_check_wakeup(anchor);
 +
-+	/* Only zap after cleanup to avoid use after free race */
-+	sock_set_flag(sk, SOCK_ZAPPED);
++		spin_unlock_irq(&anchor->lock);
++		cpu_relax();
++	} while (!surely_empty);
+ }
+ EXPORT_SYMBOL_GPL(usb_kill_anchored_urbs);
+ 
+@@ -811,21 +818,27 @@ EXPORT_SYMBOL_GPL(usb_kill_anchored_urbs);
+ void usb_poison_anchored_urbs(struct usb_anchor *anchor)
+ {
+ 	struct urb *victim;
++	int surely_empty;
+ 
+-	spin_lock_irq(&anchor->lock);
+-	anchor->poisoned = 1;
+-	while (!list_empty(&anchor->urb_list)) {
+-		victim = list_entry(anchor->urb_list.prev, struct urb,
+-				    anchor_list);
+-		/* we must make sure the URB isn't freed before we kill it*/
+-		usb_get_urb(victim);
+-		spin_unlock_irq(&anchor->lock);
+-		/* this will unanchor the URB */
+-		usb_poison_urb(victim);
+-		usb_put_urb(victim);
++	do {
+ 		spin_lock_irq(&anchor->lock);
+-	}
+-	spin_unlock_irq(&anchor->lock);
++		anchor->poisoned = 1;
++		while (!list_empty(&anchor->urb_list)) {
++			victim = list_entry(anchor->urb_list.prev,
++					    struct urb, anchor_list);
++			/* make sure the URB isn't freed before we kill it */
++			usb_get_urb(victim);
++			spin_unlock_irq(&anchor->lock);
++			/* this will unanchor the URB */
++			usb_poison_urb(victim);
++			usb_put_urb(victim);
++			spin_lock_irq(&anchor->lock);
++		}
++		surely_empty = usb_anchor_check_wakeup(anchor);
 +
++		spin_unlock_irq(&anchor->lock);
++		cpu_relax();
++	} while (!surely_empty);
+ }
+ EXPORT_SYMBOL_GPL(usb_poison_anchored_urbs);
+ 
+@@ -965,14 +978,20 @@ void usb_scuttle_anchored_urbs(struct usb_anchor *anchor)
+ {
+ 	struct urb *victim;
+ 	unsigned long flags;
++	int surely_empty;
++
++	do {
++		spin_lock_irqsave(&anchor->lock, flags);
++		while (!list_empty(&anchor->urb_list)) {
++			victim = list_entry(anchor->urb_list.prev,
++					    struct urb, anchor_list);
++			__usb_unanchor_urb(victim, anchor);
++		}
++		surely_empty = usb_anchor_check_wakeup(anchor);
+ 
+-	spin_lock_irqsave(&anchor->lock, flags);
+-	while (!list_empty(&anchor->urb_list)) {
+-		victim = list_entry(anchor->urb_list.prev, struct urb,
+-				    anchor_list);
+-		__usb_unanchor_urb(victim, anchor);
+-	}
+-	spin_unlock_irqrestore(&anchor->lock, flags);
++		spin_unlock_irqrestore(&anchor->lock, flags);
++		cpu_relax();
++	} while (!surely_empty);
  }
  
- static void l2cap_sock_state_change_cb(struct l2cap_chan *chan, int state,
+ EXPORT_SYMBOL_GPL(usb_scuttle_anchored_urbs);
 -- 
 2.25.1
 
