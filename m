@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A86729BCF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7179829BD44
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811329AbgJ0QjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36476 "EHLO mail.kernel.org"
+        id S1794928AbgJ0POY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1800091AbgJ0Pnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:43:32 -0400
+        id S1793838AbgJ0PIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:08:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BEDB22202;
-        Tue, 27 Oct 2020 15:43:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F307D206E5;
+        Tue, 27 Oct 2020 15:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813411;
-        bh=VL6ylCSbZaXJwcapvIXH6TYP8HJ5sfg/4QUgunIUebQ=;
+        s=default; t=1603811314;
+        bh=6iNgf1jOVE5Jgq3YA/ekXFTlsyVoU1AiArcDjjJpnNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m6N26ygTFZI1ljBtRrr9AIlB7CgTiwfo9abcvoTWkVXi97whLU836EwDE7wD2fuxe
-         iTzZwBHyge1AItyBsB/Wa0dXuzbptWUhxQHmkt9COMFTQ7+38s12GR9eW0HguFA5/t
-         AHXfJOW2EWK19KqKL4TU8dTqbOXyi3XE6kAo3DeU=
+        b=NCqRBV2HPO3lZWReLe0u1j5wW2TrWTeVoNuty+XYJ2UdPC5Mn6AfUiXuymwSqj7vA
+         0fu1ZKxI5nEqwGHXwb2ei6/M3APxgh9+Iu4bq9S6fEBviQ4YUhKv6fR9Snl/IByUMQ
+         NvO9EAeAqcox5sE2h/buj43gvZq+hLaguW15MNs8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 511/757] ramfs: fix nommu mmap with gaps in the page cache
+Subject: [PATCH 5.8 418/633] RDMA/rxe: Handle skb_clone() failure in rxe_recv.c
 Date:   Tue, 27 Oct 2020 14:52:41 +0100
-Message-Id: <20201027135514.443069885@linuxfoundation.org>
+Message-Id: <20201027135542.330204572@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Bob Pearson <rpearsonhpe@gmail.com>
 
-[ Upstream commit 50b7d85680086126d7bd91dae81d57d4cb1ab6b7 ]
+[ Upstream commit 71abf20b28ff87fee6951ec2218d5ce7969c4e87 ]
 
-ramfs needs to check that pages are both physically contiguous and
-contiguous in the file.  If the page cache happens to have, eg, page A for
-index 0 of the file, no page for index 1, and page A+1 for index 2, then
-an mmap of the first two pages of the file will succeed when it should
-fail.
+If skb_clone() is unable to allocate memory for a new sk_buff this is not
+detected by the current code.
 
-Fixes: 642fb4d1f1dd ("[PATCH] NOMMU: Provide shared-writable mmap support on ramfs")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Howells <dhowells@redhat.com>
-Link: https://lkml.kernel.org/r/20200914122239.GO6583@casper.infradead.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Check for a NULL return and continue. This is similar to other errors in
+this loop over QPs attached to the multicast address and consistent with
+the unreliable UD transport.
+
+Fixes: e7ec96fc7932f ("RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()")
+Addresses-Coverity-ID: 1497804: Null pointer dereferences (NULL_RETURNS)
+Link: https://lore.kernel.org/r/20201013184236.5231-1-rpearson@hpe.com
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ramfs/file-nommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_recv.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/ramfs/file-nommu.c b/fs/ramfs/file-nommu.c
-index 4146954549560..355523f4a4bf3 100644
---- a/fs/ramfs/file-nommu.c
-+++ b/fs/ramfs/file-nommu.c
-@@ -224,7 +224,7 @@ static unsigned long ramfs_nommu_get_unmapped_area(struct file *file,
- 	if (!pages)
- 		goto out_free;
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index be6416a982c70..9bfb98056fc2a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -319,6 +319,9 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 		else
+ 			per_qp_skb = skb;
  
--	nr = find_get_pages(inode->i_mapping, &pgoff, lpages, pages);
-+	nr = find_get_pages_contig(inode->i_mapping, pgoff, lpages, pages);
- 	if (nr != lpages)
- 		goto out_free_pages; /* leave if some pages were missing */
- 
++		if (unlikely(!per_qp_skb))
++			continue;
++
+ 		per_qp_pkt = SKB_TO_PKT(per_qp_skb);
+ 		per_qp_pkt->qp = qp;
+ 		rxe_add_ref(qp);
 -- 
 2.25.1
 
