@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD48629B73C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B68F29B6BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799284AbgJ0Pam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:30:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37892 "EHLO mail.kernel.org"
+        id S1797616AbgJ0PYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797343AbgJ0PW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:59 -0400
+        id S1797361AbgJ0PXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:23:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56C3C2064B;
-        Tue, 27 Oct 2020 15:22:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F276F2076D;
+        Tue, 27 Oct 2020 15:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812179;
-        bh=ZaVjIWVv8PtuZehReE4iWCq4c9wvjvXt8JCOgG+Mj0Y=;
+        s=default; t=1603812184;
+        bh=jQOhFd0YiHCpqr5i8OVHdq8eT3h7Aw9M5qjwmy2iSio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZhSV21Vb7I6hQYx53A1c4wcE2cN5fjXs6wZI3+ZLwdBIPj1b2G3amQASzBbEYXS6
-         3FpZuzouU3An/f6jSiVpOKEg6Foc24kE6Rwh8CKmTK/8TP1pYP/l+NENwSBkIy3aeN
-         dWZmiSSIWhVxnrT0xp/0Nkd65RrAp6+p7mcNb7IQ=
+        b=aMak1tSZdr2Zb7fEVHInrJEAPAeO21xdE/ImeoCNR3oTDfua3MX/d0HGAQGYIQznD
+         MsozLJ3y0l1hZoZ85iMt1xVzflI1oJ6uhFR7o3dK0z6wdVm2+oDB1bh+JtfMEckvgn
+         h/Rl6KpGIDxUUzn7gTHq5DajFvy2C8MH/NfN8YKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        stable@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Jamie Iles <jamie@jamieiles.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 120/757] crypto: mediatek - Fix wrong return value in mtk_desc_ring_alloc()
-Date:   Tue, 27 Oct 2020 14:46:10 +0100
-Message-Id: <20201027135456.206614356@linuxfoundation.org>
+Subject: [PATCH 5.9 122/757] crypto: picoxcell - Fix potential race condition bug
+Date:   Tue, 27 Oct 2020 14:46:12 +0100
+Message-Id: <20201027135456.298440440@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,44 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-[ Upstream commit 8cbde6c6a6d2b1599ff90f932304aab7e32fce89 ]
+[ Upstream commit 64f4a62e3b17f1e473f971127c2924cae42afc82 ]
 
-In case of memory allocation failure, a negative error code should
-be returned.
+engine->stat_irq_thresh was initialized after device_create_file() in
+the probe function, the initialization may race with call to
+spacc_stat_irq_thresh_store() which updates engine->stat_irq_thresh,
+therefore initialize it before creating the file in probe function.
 
-Fixes: 785e5c616c849 ("crypto: mediatek - Add crypto driver support for some MediaTek chips")
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: ce92136843cb ("crypto: picoxcell - add support for the...")
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Acked-by: Jamie Iles <jamie@jamieiles.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/picoxcell_crypto.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index 7e3ad085b5bdd..ef4339e84d034 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -442,7 +442,7 @@ static void mtk_desc_dma_free(struct mtk_cryp *cryp)
- static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- {
- 	struct mtk_ring **ring = cryp->ring;
--	int i, err = ENOMEM;
-+	int i;
- 
- 	for (i = 0; i < MTK_RING_MAX; i++) {
- 		ring[i] = kzalloc(sizeof(**ring), GFP_KERNEL);
-@@ -476,7 +476,7 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
+diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
+index dac6eb37fff93..fb34bf92861d1 100644
+--- a/drivers/crypto/picoxcell_crypto.c
++++ b/drivers/crypto/picoxcell_crypto.c
+@@ -1685,11 +1685,6 @@ static int spacc_probe(struct platform_device *pdev)
+ 		goto err_clk_put;
  	}
--	return err;
-+	return -ENOMEM;
- }
  
- static int mtk_crypto_probe(struct platform_device *pdev)
+-	ret = device_create_file(&pdev->dev, &dev_attr_stat_irq_thresh);
+-	if (ret)
+-		goto err_clk_disable;
+-
+-
+ 	/*
+ 	 * Use an IRQ threshold of 50% as a default. This seems to be a
+ 	 * reasonable trade off of latency against throughput but can be
+@@ -1697,6 +1692,10 @@ static int spacc_probe(struct platform_device *pdev)
+ 	 */
+ 	engine->stat_irq_thresh = (engine->fifo_sz / 2);
+ 
++	ret = device_create_file(&pdev->dev, &dev_attr_stat_irq_thresh);
++	if (ret)
++		goto err_clk_disable;
++
+ 	/*
+ 	 * Configure the interrupts. We only use the STAT_CNT interrupt as we
+ 	 * only submit a new packet for processing when we complete another in
 -- 
 2.25.1
 
