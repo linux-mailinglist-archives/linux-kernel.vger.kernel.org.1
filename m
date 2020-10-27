@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2308429B156
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A1F29AEC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759332AbgJ0O3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:29:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55436 "EHLO mail.kernel.org"
+        id S1754037AbgJ0ODu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759292AbgJ0O24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:28:56 -0400
+        id S1754015AbgJ0ODq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:03:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8384120754;
-        Tue, 27 Oct 2020 14:28:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0706922264;
+        Tue, 27 Oct 2020 14:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808934;
-        bh=Cafa5nJqxJBZLsFfCnkrhB8kg0e0icCc36VpY2GV9rY=;
+        s=default; t=1603807425;
+        bh=HTNvj0LwQZKlHxGdjAqCUqIMVCVIlJ0nTrua3uHhzVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XxhuZLQFfWifc3RDsjmS/yKf88VFP67jPXuD3mwKLq2xhyg04va2/3KIxTOFRyBAp
-         /Jp9jFu2p+d2LlobuUsmsB5MbpqFbh+cT67ClDWeKxsuAUjOW08Az3spJkUqKEbHf6
-         FQnKBHOeXCWcI4h668Obs9c8XV7ZoiwQZUZmkJb0=
+        b=QRT7Cnn7n7BnbqbZXAOUr2jHt1od7yIzbMMTBKy3Cif+q+4FVMBtnOb1Vm1n0POJp
+         LNO2xXCWQrl5wYMzjObhKliqhKY3afPExlPCoNOOU9xuTSWZCwASeG6WlE11IJqpLl
+         KbwM6g9HDp+6RuT6RrfMXJy9HVna9aDC4MB7yB1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 004/408] mlx4: handle non-napi callers to napi_poll
-Date:   Tue, 27 Oct 2020 14:49:02 +0100
-Message-Id: <20201027135455.245102992@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 049/139] iwlwifi: mvm: split a print to avoid a WARNING in ROC
+Date:   Tue, 27 Oct 2020 14:49:03 +0100
+Message-Id: <20201027134904.460975829@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Lemon <bsd@fb.com>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit b2b8a92733b288128feb57ffa694758cf475106c ]
+[ Upstream commit 903b3f9badf1d54f77b468b96706dab679b45b14 ]
 
-netcons calls napi_poll with a budget of 0 to transmit packets.
-Handle this by:
- - skipping RX processing
- - do not try to recycle TX packets to the RX cache
+A print in the remain on channel code was too long and caused
+a WARNING, split it.
 
-Signed-off-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Fixes: dc28e12f2125 ("iwlwifi: mvm: ROC: Extend the ROC max delay duration & limit ROC duration")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200930102759.58d57c0bdc68.Ib06008665e7bf1199c360aa92691d9c74fb84990@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_rx.c |    3 +++
- drivers/net/ethernet/mellanox/mlx4/en_tx.c |    2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -942,6 +942,9 @@ int mlx4_en_poll_rx_cq(struct napi_struc
- 	bool clean_complete = true;
- 	int done;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index d91ab2b8d6671..d46efa8d70732 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3046,9 +3046,12 @@ static int iwl_mvm_send_aux_roc_cmd(struct iwl_mvm *mvm,
+ 	aux_roc_req.apply_time_max_delay = cpu_to_le32(delay);
  
-+	if (!budget)
-+		return 0;
+ 	IWL_DEBUG_TE(mvm,
+-		     "ROC: Requesting to remain on channel %u for %ums (requested = %ums, max_delay = %ums, dtim_interval = %ums)\n",
+-		     channel->hw_value, req_dur, duration, delay,
+-		     dtim_interval);
++		     "ROC: Requesting to remain on channel %u for %ums\n",
++		     channel->hw_value, req_dur);
++	IWL_DEBUG_TE(mvm,
++		     "\t(requested = %ums, max_delay = %ums, dtim_interval = %ums)\n",
++		     duration, delay, dtim_interval);
 +
- 	if (priv->tx_ring_num[TX_XDP]) {
- 		xdp_tx_cq = priv->tx_cq[TX_XDP][cq->ring];
- 		if (xdp_tx_cq->xdp_busy) {
---- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-@@ -350,7 +350,7 @@ u32 mlx4_en_recycle_tx_desc(struct mlx4_
- 		.dma = tx_info->map0_dma,
- 	};
+ 	/* Set the node address */
+ 	memcpy(aux_roc_req.node_addr, vif->addr, ETH_ALEN);
  
--	if (!mlx4_en_rx_recycle(ring->recycle_ring, &frame)) {
-+	if (!napi_mode || !mlx4_en_rx_recycle(ring->recycle_ring, &frame)) {
- 		dma_unmap_page(priv->ddev, tx_info->map0_dma,
- 			       PAGE_SIZE, priv->dma_dir);
- 		put_page(tx_info->page);
+-- 
+2.25.1
+
 
 
