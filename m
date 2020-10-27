@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE8929C7E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4803829C803
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371316AbgJ0S6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:58:15 -0400
-Received: from casper.infradead.org ([90.155.50.34]:53356 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S371306AbgJ0S6L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:58:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mE1cwDDEmEjCnd5IdzIeq1L8rwr+K0PfUJkE+ZW/YUw=; b=b4/4PvdY33liOR8x2ruSgiRKg8
-        DgfQufrKwk4krix3uddSCJ90fBypGZ5jqxEthiA8wLgWHvzVTiqmOBmF7DGw1F+U1cxZ+hgfy/sci
-        rG0R8W79qM7PiMSGqnInGAblwFDSpSkQLUe9l+WseAHcFHUpQoJ0wDuq9bNxpekgx3QbFUp4Dp+BE
-        H3xM1AeFVBnHKz3lj7tnOByIKWtXF2+4h2MAuMbQyv4oZQLAUY5UYjOKjqlA8kk4rTDH3YPhPQhPt
-        kyUJLBdkS1DzIGvNv6BSM8KwUMNazSO+lB6joRAQLrkmpfMsF3oMkUW5GxmcohVj12mAVXgLe55TD
-        WT+Dd5FA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXUAb-0004F1-Qa; Tue, 27 Oct 2020 18:58:09 +0000
-Date:   Tue, 27 Oct 2020 18:58:09 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v3 04/12] mm/filemap: Add mapping_seek_hole_data
-Message-ID: <20201027185809.GB15201@infradead.org>
-References: <20201026041408.25230-1-willy@infradead.org>
- <20201026041408.25230-5-willy@infradead.org>
+        id S371324AbgJ0S73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:59:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40774 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2901077AbgJ0S71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 14:59:27 -0400
+IronPort-SDR: liaQlFBgOCToAWDxOOPOmfwfpOp+OKBafkBziGDKtL3l5JsFJuDL2VpemmfyLLqy96wnAi/h8z
+ 2P848vQCJ1qQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="252843333"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="252843333"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 11:59:24 -0700
+IronPort-SDR: SFyqsuloCpBFPe0fRFFSk+S/ZWCe/xFa/AgewmFcVG01vyQXYbZBjj8wJdmMZ1FKJRtIfSVo2Z
+ xg1dmHdYpzSA==
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="524844162"
+Received: from nakabir-mobl.amr.corp.intel.com (HELO [10.212.164.122]) ([10.212.164.122])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 11:59:22 -0700
+Subject: Re: [PATCH v9 01/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, Samuel Holland <samuel@sholland.org>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
+References: <20201027183149.145165-1-peron.clem@gmail.com>
+ <20201027183149.145165-2-peron.clem@gmail.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <01e34ad3-c695-c6eb-95dd-76c2cda77c6f@linux.intel.com>
+Date:   Tue, 27 Oct 2020 13:58:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026041408.25230-5-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201027183149.145165-2-peron.clem@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/**
-> + * mapping_seek_hole_data - Seek for SEEK_DATA / SEEK_HOLE in the page cache.
-> + * @mapping: Address space to search.
-> + * @start: First byte to consider.
-> + * @end: Limit of search (exclusive).
-> + * @whence: Either SEEK_HOLE or SEEK_DATA.
-> + *
-> + * If the page cache knows which blocks contain holes and which blocks
-> + * contain data, your filesystem can use this function to implement
-> + * SEEK_HOLE and SEEK_DATA.  This is useful for filesystems which are
-> + * entirely memory-based such as tmpfs, and filesystems which support
-> + * unwritten extents.
-> + *
-> + * Return: The requested offset on successs, or -ENXIO if @whence specifies
-> + * SEEK_DATA and there is no data after @start.  There is an implicit hole
-> + * after @end - 1, so SEEK_HOLE returns @end if all the bytes between @start
-> + * and @end contain data.
-> + */
 
-This seems to just lift the tmpfs one to common code.  If it really
-is supposed to be generic it should be able to replace
-page_cache_seek_hole_data as well.  So I don't think moving this without
-removing the other common one is an all that good idea.
+> @@ -452,11 +454,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+>   	case SND_SOC_DAIFMT_DSP_B:
+>   	case SND_SOC_DAIFMT_LEFT_J:
+>   	case SND_SOC_DAIFMT_RIGHT_J:
+> -		lrck_period = params_physical_width(params) * slots;
+> +		lrck_period = slot_width * slots;
+>   		break;
+>   
+>   	case SND_SOC_DAIFMT_I2S:
+> -		lrck_period = params_physical_width(params);
+> +		lrck_period = slot_width;
+>   		break;
+
+Aren't I2S, LEFT_J and RIGHT_J pretty much the same in terms of lrclk 
+rate/period? the only thing that can change is the polarity, no?
+
+Not sure why it's handled differently here?
