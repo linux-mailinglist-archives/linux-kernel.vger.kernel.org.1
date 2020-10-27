@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF49C29B445
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0DA29B5BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787342AbgJ0PAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        id S1795598AbgJ0PPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S367976AbgJ0Om7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:59 -0400
+        id S1794422AbgJ0PLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:11:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 927C121D7B;
-        Tue, 27 Oct 2020 14:42:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69C3921D24;
+        Tue, 27 Oct 2020 15:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809779;
-        bh=t2Od6mWeBioSTjcrzJNg+IRK4kWLCIklU0gs417aVLk=;
+        s=default; t=1603811504;
+        bh=Z9uZAnmgGHJ32INYeOTMkXQS5l4BzWuMqHFivHWStm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lpd9Hr2AWcBJnJKs1j0N/KhLRTZNHbNs0tNodlzoO+8mVS7DnFZj5O7hNTGNpfSWH
-         OkA8VjfhP7Im89BbfzIVIR/hWxehDHpDgoLGOR13u7e92HXWlsvxXLhQjE9Ji+iGfx
-         ySPnuh2f3E6+9amV4ZmWUtl8OB+e1DO8jIaR4SSA=
+        b=evYlK3UMP8PvByNSirEQPeS4YiYSX4qo6kI+fe1N2U3AW2lYHMwPhjXrIOc2hIKIF
+         ParQu9FqevlR0Xylr8Ux9ovhV7ufC3TKrum4kWZOI20IwIuZB+bppBe8FCC0/Lt+N9
+         fYpr9GwlUsSBKp+1fIFnCtYVFrPiqzG9TaplsPVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 286/408] Input: ep93xx_keypad - fix handling of platform_get_irq() error
-Date:   Tue, 27 Oct 2020 14:53:44 +0100
-Message-Id: <20201027135508.307050253@linuxfoundation.org>
+Subject: [PATCH 5.8 485/633] ARM: dts: sun8i: r40: bananapi-m2-ultra: Fix dcdc1 regulator
+Date:   Tue, 27 Oct 2020 14:53:48 +0100
+Message-Id: <20201027135545.489228472@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-[ Upstream commit 7d50f6656dacf085a00beeedbc48b19a37d17881 ]
+[ Upstream commit 3658a2b7f3e16c7053eb8d70657b94bb62c5a0f4 ]
 
-platform_get_irq() returns -ERRNO on error.  In such case comparison
-to 0 would pass the check.
+DCDC1 regulator powers many different subsystems. While some of them can
+work at 3.0 V, some of them can not. For example, VCC-HDMI can only work
+between 3.24 V and 3.36 V. According to OS images provided by the board
+manufacturer this regulator should be set to 3.3 V.
 
-Fixes: 60214f058f44 ("Input: ep93xx_keypad - update driver to new core support")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20200828145744.3636-1-krzk@kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Set DCDC1 and DCDC1SW to 3.3 V in order to fix this.
+
+Fixes: da7ac948fa93 ("ARM: dts: sun8i: Add board dts file for Banana Pi M2 Ultra")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20200824193649.978197-1-jernej.skrabec@siol.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-index 7c70492d9d6b5..f831f01501d58 100644
---- a/drivers/input/keyboard/ep93xx_keypad.c
-+++ b/drivers/input/keyboard/ep93xx_keypad.c
-@@ -250,8 +250,8 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
- 	}
+diff --git a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
+index 42d62d1ba1dc7..ea15073f0c79c 100644
+--- a/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
++++ b/arch/arm/boot/dts/sun8i-r40-bananapi-m2-ultra.dts
+@@ -223,16 +223,16 @@ &reg_aldo3 {
+ };
  
- 	keypad->irq = platform_get_irq(pdev, 0);
--	if (!keypad->irq) {
--		err = -ENXIO;
-+	if (keypad->irq < 0) {
-+		err = keypad->irq;
- 		goto failed_free;
- 	}
+ &reg_dc1sw {
+-	regulator-min-microvolt = <3000000>;
+-	regulator-max-microvolt = <3000000>;
++	regulator-min-microvolt = <3300000>;
++	regulator-max-microvolt = <3300000>;
+ 	regulator-name = "vcc-gmac-phy";
+ };
  
+ &reg_dcdc1 {
+ 	regulator-always-on;
+-	regulator-min-microvolt = <3000000>;
+-	regulator-max-microvolt = <3000000>;
+-	regulator-name = "vcc-3v0";
++	regulator-min-microvolt = <3300000>;
++	regulator-max-microvolt = <3300000>;
++	regulator-name = "vcc-3v3";
+ };
+ 
+ &reg_dcdc2 {
 -- 
 2.25.1
 
