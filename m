@@ -2,137 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EC529A7F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8668C29A7F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895651AbgJ0Jd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:33:57 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34787 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409223AbgJ0Jd4 (ORCPT
+        id S2895687AbgJ0Jeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:34:44 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:35359 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409431AbgJ0Jeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:33:56 -0400
-Received: by mail-wr1-f67.google.com with SMTP id i1so1095488wro.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:33:55 -0700 (PDT)
+        Tue, 27 Oct 2020 05:34:44 -0400
+Received: by mail-wm1-f68.google.com with SMTP id h22so695667wmb.0;
+        Tue, 27 Oct 2020 02:34:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ub2OQ9S7t1kcBGYAcEMMt+aJ2+YepKfrmcjGDAX1O4g=;
-        b=IVxeO6Vr9iH8EoAazuEDyvS4Qnu8Qz5nbl4rDuw5V1brxHiOyXx6id5gwEh5ZNDrwP
-         Z+RallfzodY5UGkcDM5QsYTqT0RZskyAf+6S0BPuPpXz5GA62KzuTs0QCOmdxGHAaASA
-         +i5SgBFaQLJWfVtCh9ZgL/Ncr8LJ6Q6wImPYg=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1O6ReDftOPLuv+rKw4ASKdk+lBtaUq2pZDF0lCYQsaY=;
+        b=pNbiUAvuBMXmcIWQBwkpHxeGJ6lfMPyMfSjHPJBk7lnMR6fn907w/4tPUp92smmO+c
+         OtboQXGXVo8oSyZKaoE+ONYfHMlVL+rwTLqvqIc+fkrLR55oDG2ez59rbAAPuG12YJkB
+         zf0hOvoeLkIcctIsXOnKkbHOGSxU2I7LAyTh+sgdSLgGfgDmx3aQi3IzB9IVBhlqPVbO
+         CejlAdz0eXH8AN6WJh130ZeUqOv9N+dAHR80tqPGfUjF8hTeKkVhHS2XqDz5YwwWoDo+
+         lupNzOQj57cr88XXDchbhOUc2TF2dx+ixHS81WyEmlPIu/WHXc4Ga9S/bCj0cyNAsZ8b
+         lR5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Ub2OQ9S7t1kcBGYAcEMMt+aJ2+YepKfrmcjGDAX1O4g=;
-        b=g8qRF9iWIzSTIht4rhM6UUi2TDxDhmtu15To7qfMMDcsrtfY044rgWGcFRNpcFF+VN
-         KIowQUacajNg3Z4+dLQOfWU8AVJ3GkfFAeYprRLrbmFA+4hwcvYKVK5pRj2KhKVkkHzv
-         rLDdqVOYKvJeljHckYq6TIqK1zWfyAODCvFQZgvMy9RFadgjhxkhF8l9oqOjHqaLGhEZ
-         +NQhl+uJowzXUuza/yj8w2qFKCYVWoKwUUi/DnJhQQnlLNODRrVTILyMG0QXR09As2Zf
-         N8lgE2KauZtHHdA5n3GN1rKg0X+icmPYDKA6BtEpu/9BQ6CcLe1GvA/tIwEliNGbnEup
-         RZ7w==
-X-Gm-Message-State: AOAM5329MijY/XpAGfncbRZJazVs6dxGkIWSiPOcju5UVsVyX0/FQhUh
-        YmHTyUrq0hZupjbXr/14+HVvGg==
-X-Google-Smtp-Source: ABdhPJxgfnIDYgOvbEbTrCnvCeptzJB/xcXyPJfOrqGWQibdGcD2ePVfDRbdpz8P+44fRAsO2M4ynQ==
-X-Received: by 2002:a5d:6a86:: with SMTP id s6mr1726334wru.344.1603791234191;
-        Tue, 27 Oct 2020 02:33:54 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b5sm1218224wrs.97.2020.10.27.02.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 02:33:53 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 10:33:50 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stefan Christ <contact@stefanchrist.eu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] drm/gma500: avoid Woverride-init warning
-Message-ID: <20201027093350.GI401619@phenom.ffwll.local>
-Mail-Followup-To: Arnd Bergmann <arnd@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Stefan Christ <contact@stefanchrist.eu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20201026194110.3817470-1-arnd@kernel.org>
- <20201026194110.3817470-4-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1O6ReDftOPLuv+rKw4ASKdk+lBtaUq2pZDF0lCYQsaY=;
+        b=D9dyBaACcZto7Hgh8ti/bVvALrKrKKoQMAxFLQqv8ZWYH7oLQrLgABCun45hUW1/yH
+         /y+EUsvrLwFTvG66Jm2B4sHi1RPn4uHyzqtDShMGLokhH0H0IsDDjE6XNsygmV/gZ8UM
+         MA98vzXzcZdbRzoHXRjrEUpE+OapjvFtwzWf6l7obGJ9hbJYEd2366LSiWBBCNJMX0cj
+         8F3ksC7EQVfvHPDzR5jk+E0C3/nrUTTBEoiT5aQCYGoveoXnxTyxsbMvXi/9VrCSgSir
+         R621vwOA/lqoGq/x3T8ddfYBJ42F++Yus9rqmGc6wZtn72Nu6q7g42ys+JZZg8zlMxxJ
+         OIbw==
+X-Gm-Message-State: AOAM532ChuGn+pKWkw0C22T7b1BS54e+R1RoglXd4CzE9MOqr1jd7M9J
+        Js/113u+RXQYZzQ2hpSjZWVMPMBsJafliqDyD97dAwpI6pz5Dg==
+X-Google-Smtp-Source: ABdhPJwopd/345MJxBCHQ2u3UoN/KSlAOVDjSs698J3nx/jmQOOY9DR3A4NMAMdWhEs5uVQncfbwYD9szUXfHf3SFI0=
+X-Received: by 2002:a05:600c:2252:: with SMTP id a18mr1614048wmm.166.1603791282238;
+ Tue, 27 Oct 2020 02:34:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026194110.3817470-4-arnd@kernel.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <20201026080919.28413-1-zhang.lyra@gmail.com> <20201026080919.28413-2-zhang.lyra@gmail.com>
+ <2691dbe4-0bff-fdb4-0871-60b491d740a4@roeck-us.net>
+In-Reply-To: <2691dbe4-0bff-fdb4-0871-60b491d740a4@roeck-us.net>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 27 Oct 2020 17:34:06 +0800
+Message-ID: <CAAfSe-shio68k9twUbCxT7WuvSQ1H2U83xqs4P95nF5Ys_J_Ng@mail.gmail.com>
+Subject: Re: [PATCH 1/3] watchdog: sprd: should not disable watchdog in resume
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 08:41:04PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc -Wextra notices that one of the fields in psbfb_roll_ops has two
-> initializers:
-> 
-> drivers/gpu/drm/gma500/framebuffer.c:185:20: warning: initialized field overwritten [-Woverride-init]
-> 
-> Open-code this instead, leaving out the extraneous initializers for
-> .fb_pan_display.
-> 
-> Fixes: 3da6c2f3b730 ("drm/gma500: use DRM_FB_HELPER_DEFAULT_OPS for fb_ops")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, 26 Oct 2020 at 22:27, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 10/26/20 1:09 AM, Chunyan Zhang wrote:
+> > From: Lingling Xu <ling_ling.xu@unisoc.com>
+> >
+> > Don't disable watchdog in resume process, otherwise system would crash
+> > once kick watchdog.
+> >
+>
+> This is a bit misleading: It is only disabled if the attempt to start it
+> has failed. Was this observed in practice ? If so, it might make sense
+> to identify and fix the underlying problem instead of trying to work
+> around it (or is this addressed with the second patch of the series ?)
 
-Scrollback is dead, so I'm not sure it's even worth to keep all this. I'd
-just garbage-collect this, maybe als the entire accelerator code and just
-leave psbfb_unaccel_ops behind ...
--Daniel
+Yes, I think the root cause of this problem was like what I explained
+in the 3rd patch in this series.
+Lingling found there was something wrong in sprd_wdt_pm_resume() when
+debugging that issue, then we had this patch.
 
-> ---
->  drivers/gpu/drm/gma500/framebuffer.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/gma500/framebuffer.c b/drivers/gpu/drm/gma500/framebuffer.c
-> index 54d9876b5305..a56a6b53fac6 100644
-> --- a/drivers/gpu/drm/gma500/framebuffer.c
-> +++ b/drivers/gpu/drm/gma500/framebuffer.c
-> @@ -177,7 +177,14 @@ static const struct fb_ops psbfb_ops = {
->  
->  static const struct fb_ops psbfb_roll_ops = {
->  	.owner = THIS_MODULE,
-> -	DRM_FB_HELPER_DEFAULT_OPS,
-> +	.fb_check_var = drm_fb_helper_check_var,
-> +	.fb_set_par = drm_fb_helper_set_par,
-> +	.fb_setcmap = drm_fb_helper_setcmap,
-> +	.fb_blank = drm_fb_helper_blank,
-> +	.fb_debug_enter = drm_fb_helper_debug_enter,
-> +	.fb_debug_leave = drm_fb_helper_debug_leave,
-> +	.fb_ioctl = drm_fb_helper_ioctl,
-> +
->  	.fb_setcolreg = psbfb_setcolreg,
->  	.fb_fillrect = drm_fb_helper_cfb_fillrect,
->  	.fb_copyarea = drm_fb_helper_cfb_copyarea,
-> -- 
-> 2.27.0
-> 
+>
+> Anyway, the patch itself is fine.
+>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+Chunyan
+
+>
+> Thanks,
+> Guenter
+>
+> > Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
+> > Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> >  drivers/watchdog/sprd_wdt.c | 9 ++-------
+> >  1 file changed, 2 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
+> > index 65cb55f3916f..f3c90b4afead 100644
+> > --- a/drivers/watchdog/sprd_wdt.c
+> > +++ b/drivers/watchdog/sprd_wdt.c
+> > @@ -345,15 +345,10 @@ static int __maybe_unused sprd_wdt_pm_resume(struct device *dev)
+> >       if (ret)
+> >               return ret;
+> >
+> > -     if (watchdog_active(&wdt->wdd)) {
+> > +     if (watchdog_active(&wdt->wdd))
+> >               ret = sprd_wdt_start(&wdt->wdd);
+> > -             if (ret) {
+> > -                     sprd_wdt_disable(wdt);
+> > -                     return ret;
+> > -             }
+> > -     }
+> >
+> > -     return 0;
+> > +     return ret;
+> >  }
+> >
+> >  static const struct dev_pm_ops sprd_wdt_pm_ops = {
+> >
+>
