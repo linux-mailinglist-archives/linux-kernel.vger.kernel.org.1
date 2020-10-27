@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFD129C200
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82EF29C33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1819245AbgJ0R2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:28:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51508 "EHLO mail.kernel.org"
+        id S2902224AbgJ0Obe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:31:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900154AbgJ0OwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:52:13 -0400
+        id S2901896AbgJ0O27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:28:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B776420773;
-        Tue, 27 Oct 2020 14:52:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D416322202;
+        Tue, 27 Oct 2020 14:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810333;
-        bh=QVd6QlgNgF7Dj1ClZ5khBbnx+SNOXdYFoRqUoXUNlM8=;
+        s=default; t=1603808939;
+        bh=icR0u3f/LKjxxSFL29ZkQPAijUpINKsZ/b7eanDvc6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WPp/osE9GS1YhbemQsIj4cDRl2AgD7tSuyDUeR8jGCUrcqyyXkaGtJbknc8SNJdJY
-         VopwTu5D89L8BTZVK4n0RZG3qaEfVNamW8qpINM9NduHcDWgie6XFro8xF0Z02EqXe
-         6CxFtokuBpc7Yj2YqD2UyBx5jIq90Ox/fSFFvfzE=
+        b=atMKfBFKfS9NioIW3d6YGR1pseUG3O95ArxYr82r6D/VWU3lgXAjqR93sm3SoYAwB
+         rslOtKfHlmispRYurfgz4QQXGh/XMnQNIZhTmXXdGJsrbRMSvl4C0ZYOjJfGc0y4O9
+         mghwmLxCK9+i92r9pAySeMuz0BMyyvZ7Gge4RzVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 102/633] crypto: algif_skcipher - EBUSY on aio should be an error
-Date:   Tue, 27 Oct 2020 14:47:25 +0100
-Message-Id: <20201027135527.491125414@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Richard Leitner <richard.leitner@skidata.com>,
+        Marek Vasut <marex@denx.de>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 006/408] net: fec: Fix PHY init after phy_reset_after_clk_enable()
+Date:   Tue, 27 Oct 2020 14:49:04 +0100
+Message-Id: <20201027135455.337503286@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +48,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 2a05b029c1ee045b886ebf9efef9985ca23450de ]
+[ Upstream commit 0da1ccbbefb662915228bc17e1c7d4ad28b3ddab ]
 
-I removed the MAY_BACKLOG flag on the aio path a while ago but
-the error check still incorrectly interpreted EBUSY as success.
-This may cause the submitter to wait for a request that will never
-complete.
+The phy_reset_after_clk_enable() does a PHY reset, which means the PHY
+loses its register settings. The fec_enet_mii_probe() starts the PHY
+and does the necessary calls to configure the PHY via PHY framework,
+and loads the correct register settings into the PHY. Therefore,
+fec_enet_mii_probe() should be called only after the PHY has been
+reset, not before as it is now.
 
-Fixes: dad419970637 ("crypto: algif_skcipher - Do not set...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1b0a83ac04e3 ("net: fec: add phy_reset_after_clk_enable() support")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Tested-by: Richard Leitner <richard.leitner@skidata.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- crypto/algif_skcipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/fec_main.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index 81c4022285a7c..30069a92a9b22 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -123,7 +123,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 			crypto_skcipher_decrypt(&areq->cra_u.skcipher_req);
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -3003,17 +3003,17 @@ fec_enet_open(struct net_device *ndev)
+ 	/* Init MAC prior to mii bus probe */
+ 	fec_restart(ndev);
  
- 		/* AIO operation in progress */
--		if (err == -EINPROGRESS || err == -EBUSY)
-+		if (err == -EINPROGRESS)
- 			return -EIOCBQUEUED;
+-	/* Probe and connect to PHY when open the interface */
+-	ret = fec_enet_mii_probe(ndev);
+-	if (ret)
+-		goto err_enet_mii_probe;
+-
+ 	/* Call phy_reset_after_clk_enable() again if it failed during
+ 	 * phy_reset_after_clk_enable() before because the PHY wasn't probed.
+ 	 */
+ 	if (reset_again)
+ 		fec_enet_phy_reset_after_clk_enable(ndev);
  
- 		sock_put(sk);
--- 
-2.25.1
-
++	/* Probe and connect to PHY when open the interface */
++	ret = fec_enet_mii_probe(ndev);
++	if (ret)
++		goto err_enet_mii_probe;
++
+ 	if (fep->quirks & FEC_QUIRK_ERR006687)
+ 		imx6q_cpuidle_fec_irqs_used();
+ 
 
 
