@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3D729BE44
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D9C29BC3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794530AbgJ0PMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:12:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34716 "EHLO mail.kernel.org"
+        id S1801804AbgJ0PoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:44:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1775351AbgJ0PBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:01:01 -0400
+        id S1800302AbgJ0Pfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:35:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5A5420714;
-        Tue, 27 Oct 2020 15:00:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D773222264;
+        Tue, 27 Oct 2020 15:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810860;
-        bh=bMuu2SKQBLQ0noUW6mEQ9MKF7f84WKR0o3cblm6N2kI=;
+        s=default; t=1603812939;
+        bh=77ptOLX3KQeh/RP+VjXPKJB9yWx9VC9Ttjn6ShYvepg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WX6GDNzNfPOL5JTyQkmEC8Kt1rjybyflzLomz0g9Us6Wxhb02RNBiI1BkkjWou1nH
-         X1tPxI/cj7I2yBeVg0vw0QJ/wmav/g+GDzbLdyF37E0piWSDrJXKVWJ6iaATlVJWFI
-         3qqpNW0RQI4ST56/n6i3XxJDqIgf8mN9ZCmG+gz0=
+        b=VtcRPSif1vk18PtzcyCG/DANeZIr1l3DAOjSIRWaqMoTafdLu8KKe75qdIsqvt78M
+         mshEhj+sDNrYAF2FYxiasK9YiTd5WzNEyhGURLVMfvh5HCrhZyFTKyC7hxk1N/I3Sb
+         UwR2KqLMGB2wzEbV89dsUqlqy6SjFW2yKdiafoTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Yu Kuai <yukuai3@huawei.com>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 289/633] iommu/qcom: add missing put_device() call in qcom_iommu_of_xlate()
-Date:   Tue, 27 Oct 2020 14:50:32 +0100
-Message-Id: <20201027135536.227868014@linuxfoundation.org>
+Subject: [PATCH 5.9 383/757] drm/panfrost: increase readl_relaxed_poll_timeout values
+Date:   Tue, 27 Oct 2020 14:50:33 +0100
+Message-Id: <20201027135508.518371190@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Christian Hewitt <christianshewitt@gmail.com>
 
-[ Upstream commit e2eae09939a89e0994f7965ba3c676a5eac8b4b0 ]
+[ Upstream commit c2df75ad2a9f205820e4bc0db936d3d9af3da1ae ]
 
-if of_find_device_by_node() succeed, qcom_iommu_of_xlate() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling for this function implementation.
+Amlogic SoC devices report the following errors frequently causing excessive
+dmesg log spam and early log rotataion, although the errors appear to be
+harmless as everything works fine:
 
-Fixes: 0ae349a0f33f ("iommu/qcom: Add qcom_iommu")
-Acked-by: Rob Clark <robdclark@gmail.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20200929014037.2436663-1-yukuai3@huawei.com
-Signed-off-by: Will Deacon <will@kernel.org>
+[    7.202702] panfrost ffe40000.gpu: error powering up gpu L2
+[    7.203760] panfrost ffe40000.gpu: error powering up gpu shader
+
+ARM staff have advised increasing the timeout values to eliminate the errors
+in most normal scenarios, and testing with several different G31/G52 devices
+shows 20000 to be a reliable value.
+
+Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+Suggested-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201008141738.13560-1-christianshewitt@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/qcom_iommu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/qcom_iommu.c b/drivers/iommu/qcom_iommu.c
-index d176df569af8f..78d813bd0dcc8 100644
---- a/drivers/iommu/qcom_iommu.c
-+++ b/drivers/iommu/qcom_iommu.c
-@@ -578,8 +578,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
- 	 * index into qcom_iommu->ctxs:
- 	 */
- 	if (WARN_ON(asid < 1) ||
--	    WARN_ON(asid > qcom_iommu->num_ctxs))
-+	    WARN_ON(asid > qcom_iommu->num_ctxs)) {
-+		put_device(&iommu_pdev->dev);
- 		return -EINVAL;
-+	}
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 689b92893e0e1..dfe4c9151eaf2 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -309,13 +309,13 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 	/* Just turn on everything for now */
+ 	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
+-		val, val == pfdev->features.l2_present, 100, 1000);
++		val, val == pfdev->features.l2_present, 100, 20000);
+ 	if (ret)
+ 		dev_err(pfdev->dev, "error powering up gpu L2");
  
- 	if (!dev_iommu_priv_get(dev)) {
- 		dev_iommu_priv_set(dev, qcom_iommu);
-@@ -588,8 +590,10 @@ static int qcom_iommu_of_xlate(struct device *dev, struct of_phandle_args *args)
- 		 * multiple different iommu devices.  Multiple context
- 		 * banks are ok, but multiple devices are not:
- 		 */
--		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev)))
-+		if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev))) {
-+			put_device(&iommu_pdev->dev);
- 			return -EINVAL;
-+		}
- 	}
+ 	gpu_write(pfdev, SHADER_PWRON_LO, pfdev->features.shader_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_READY_LO,
+-		val, val == pfdev->features.shader_present, 100, 1000);
++		val, val == pfdev->features.shader_present, 100, 20000);
+ 	if (ret)
+ 		dev_err(pfdev->dev, "error powering up gpu shader");
  
- 	return iommu_fwspec_add_ids(dev, &asid, 1);
 -- 
 2.25.1
 
