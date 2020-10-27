@@ -2,80 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8C529C85A
+	by mail.lfdr.de (Postfix) with ESMTP id 9B17A29C85B
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829403AbgJ0THT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:07:19 -0400
-Received: from m12-17.163.com ([220.181.12.17]:34092 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902408AbgJ0THT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:07:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=mEweC
-        mt22E7HtZLqqnDVM3+F4KShMEJihMB8YkEVp50=; b=Aty8GcfNm5mnErMNWfpvk
-        AJpcCL/5OAwhb7uzpxUqyCPZCVlTRsu6LuCRIZOJFAVBIQCZWLLHRbsiFMGCLvIs
-        mYNAlAT8o0baSNbQUoOootlwSlAndmRyn4iQfYPDEc3xxpfA7eMur6h6shrjw8at
-        ybgHgm7vMEfleU549XOLQU=
-Received: from localhost (unknown [101.86.209.121])
-        by smtp13 (Coremail) with SMTP id EcCowACXJRLJb5hf0bLkQA--.9970S2;
-        Wed, 28 Oct 2020 03:06:49 +0800 (CST)
-Date:   Wed, 28 Oct 2020 03:06:49 +0800
-From:   Hui Su <sh_def@163.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, gustavo@embeddedor.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/list_lru: optimize condition of exiting the loop
-Message-ID: <20201027190649.GA67829@rlk>
-References: <20201027170420.GA61326@rlk>
- <ae359cb8-5bf9-c2e5-ddd0-812df81de0fb@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae359cb8-5bf9-c2e5-ddd0-812df81de0fb@suse.cz>
-X-CM-TRANSID: EcCowACXJRLJb5hf0bLkQA--.9970S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur43Aw1xuw4UKFy5Kw17KFg_yoWDArcE9r
-        9YvFn29a15CrWSgFsFgrn3ArZ5Wr48WFykJF9rJr1Dtry7Za4jg3ZxWF1DXrykWFWfXryU
-        Xw18Ar18uw1UtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8fWrJUUUUU==
-X-Originating-IP: [101.86.209.121]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiLgnKX1SIqoT7igAAsx
+        id S1829418AbgJ0THh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:07:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S369529AbgJ0THg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 15:07:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603825655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=l0PCwDa1wHGV+Q/jQHXorblfnJ1kxgpeCNddFrrP2u8=;
+        b=ZCVPrEyP9LT16VN31sd1O2kqvCX7gyq02fhyCJq77Dtv1rLtQ+bWhlH0HH8tMlaodXtClY
+        zSh7KMVNbjxDB4VRR55fJiklUaE/tKpH72ATrWgwnU8k2hzSyao/9pSioijuL5huSrqUUX
+        3vQ1NkZ71mN/QNmPF1sAOJ9ywDluuKs=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-8XsvLgJQNy-hiir8UNPWCA-1; Tue, 27 Oct 2020 15:07:33 -0400
+X-MC-Unique: 8XsvLgJQNy-hiir8UNPWCA-1
+Received: by mail-oo1-f72.google.com with SMTP id l13so1205848oot.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:07:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=l0PCwDa1wHGV+Q/jQHXorblfnJ1kxgpeCNddFrrP2u8=;
+        b=hx2BsviUzRVAN1aWuWQ1+Yi7PLn9yHIE1xGFdI+QTNY1MX74+SVWf/XvdFjHrKH/K3
+         2cj1iBe4dbSO7RhwvQbTqYhLkj018jtT2C7JZkkm6q6zSZwgUTKtvFg5dKrXzEQ3rdHO
+         eTrDV5kQrZJobNP4vdIJ8UFrjCcIq44JciVLHv5VNJi+5UdNgUn73+KP2OhKoJoC4iAG
+         cPeDGNVpdW8fwbmeD9aYhBN6KVl+LJVMpkail2j5mLNaThqo21GDGV7gXRJeRs9VNygt
+         qm80hsbOiokcRrIV9lRJZriB1pCjBpm7Q+TBzhaf7TjzNMXUtquj2mAVHDqnQukbjFQr
+         Ic0Q==
+X-Gm-Message-State: AOAM5317SyonMxOR+BMt8/WwQruyDxosofpQBs4tM3yhQxKVv+ytUvTv
+        FokEvWoazEfbMAmv7vRHBrFUP1vu1ltjYWPAnhB4cnYp9OXsBNxaetE2STGSlcAXCICvgOKwocF
+        sDmmJDlHJzdC4U0yhKxZl1LQr
+X-Received: by 2002:a9d:491:: with SMTP id 17mr2601955otm.338.1603825652821;
+        Tue, 27 Oct 2020 12:07:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzWW33cuqBanM3RqWmNlIAsoMbT3S8VnWYdIw36FDCID2skFOgGdV/X/Ei7bypd9s6bTTHJSg==
+X-Received: by 2002:a9d:491:: with SMTP id 17mr2601933otm.338.1603825652601;
+        Tue, 27 Oct 2020 12:07:32 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x83sm1765339oig.39.2020.10.27.12.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 12:07:32 -0700 (PDT)
+From:   trix@redhat.com
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, jonathan.kim@amd.com,
+        harish.kasiviswanathan@amd.com, Felix.Kuehling@amd.com,
+        zhengbin13@huawei.com, luben.tuikov@amd.com,
+        Joseph.Greathouse@amd.com, Hawking.Zhang@amd.com,
+        guchun.chen@amd.com, john.clements@amd.com, tao.zhou1@amd.com,
+        Dennis.Li@amd.com, Stanley.Yang@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] drm/amdgpu: remove unneeded semicolon
+Date:   Tue, 27 Oct 2020 12:07:26 -0700
+Message-Id: <20201027190726.1588801-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 07:45:53PM +0100, Vlastimil Babka wrote:
-> On 10/27/20 6:04 PM, Hui Su wrote:
-> > In list_lru_walk(), nr_to_walk type is 'unsigned long',
-> > so nr_to_walk won't be '< 0'.
-> > 
-> > In list_lru_walk_node(), nr_to_walk type is 'unsigned long',
-> > so *nr_to_walk won't be '< 0' too.
-> > 
-> > We can use '!nr_to_walk' instead of 'nr_to_walk <= 0', which
-> > is more precise.
-> > 
-> > Signed-off-by: Hui Su <sh_def@163.com>
-> 
-> OK. Why not this too?
-> 
-> --- a/mm/list_lru.c
-> +++ b/mm/list_lru.c
-> @@ -294,7 +294,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
-> 
->         isolated += list_lru_walk_one(lru, nid, NULL, isolate, cb_arg,
->                                       nr_to_walk);
-> -       if (*nr_to_walk > 0 && list_lru_memcg_aware(lru)) {
-> +       if (*nr_to_walk && list_lru_memcg_aware(lru)) {
->                 for_each_memcg_cache_index(memcg_idx) {
->                         struct list_lru_node *nlru = &lru->node[nid];
-> 
-> 
+From: Tom Rix <trix@redhat.com>
 
-Thanks for your fast reply.
+A semicolon is not needed after a switch statement.
 
-I did not notice that, and i would add this to my change.
-I will resend PATCH V2, and cc to you.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
+index 1b213c4ddfcb..19c0a3655228 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pmu.c
+@@ -654,7 +654,7 @@ int amdgpu_pmu_init(struct amdgpu_device *adev)
+ 
+ 	default:
+ 		return 0;
+-	};
++	}
+ 
+ 	return ret;
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+index 8bf6a7c056bc..a61cf8cfbfc3 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+@@ -953,7 +953,7 @@ static char *amdgpu_ras_badpage_flags_str(unsigned int flags)
+ 	case AMDGPU_RAS_RETIRE_PAGE_FAULT:
+ 	default:
+ 		return "F";
+-	};
++	}
+ }
+ 
+ /**
+-- 
+2.18.1
 
