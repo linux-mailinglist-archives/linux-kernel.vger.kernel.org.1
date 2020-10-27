@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F5829A396
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAAA29A39B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 05:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505368AbgJ0EPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 00:15:42 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:14503 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442620AbgJ0EPk (ORCPT
+        id S2505394AbgJ0E0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 00:26:05 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:43818 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443683AbgJ0E0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 00:15:40 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201027041537epoutp026915d5dc92c5c37b2fa39781cb24da2d~BvkMBow0v2851128511epoutp02N
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:15:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201027041537epoutp026915d5dc92c5c37b2fa39781cb24da2d~BvkMBow0v2851128511epoutp02N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603772137;
-        bh=vv7sDp/CWxEzC6FM8S+ckIPvRwYpNMTZ7LMulkjKrh8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WB77jJc1uKZswG4sC6bF1jNuvSWmkV7irazYhXgM6IL8bi2h7jm3WUnrMKRWDMV5s
-         l1Y5vMAYtweoBVNjaKNWUm3JNIJEGo62kU1EoHIRlBpJ9bCRCZQQNxTlo351UfmpAx
-         MIkX0f+OJ1xIF2R+1x68NI6TrkxOfwucKP1a/4Lk=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201027041536epcas1p29b2187c7149fdf43c441fcd670274667~BvkLa_lGx1220212202epcas1p22;
-        Tue, 27 Oct 2020 04:15:36 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4CKyzq2k96zMqYkV; Tue, 27 Oct
-        2020 04:15:35 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        07.24.09582.7EE979F5; Tue, 27 Oct 2020 13:15:35 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201027041535epcas1p489bbfe80b461f1e5c5deca1a571f1f35~BvkJ4Y-rs2999929999epcas1p4R;
-        Tue, 27 Oct 2020 04:15:35 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201027041535epsmtrp23b7ad5e93cebe299ba687e370e58cdd2~BvkJ3bo7N3020530205epsmtrp2J;
-        Tue, 27 Oct 2020 04:15:35 +0000 (GMT)
-X-AuditID: b6c32a37-8afff7000000256e-28-5f979ee7af8c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0E.69.08745.6EE979F5; Tue, 27 Oct 2020 13:15:34 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.111.64]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201027041534epsmtip1bf950b6be90a1d2d8a61053b26a74705~BvkJmh0iy2894628946epsmtip1c;
-        Tue, 27 Oct 2020 04:15:34 +0000 (GMT)
-From:   Hoegeun Kwon <hoegeun.kwon@samsung.com>
-To:     maxime@cerno.tech, eric@anholt.net, airlied@linux.ie,
-        daniel@ffwll.ch, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        dave.stevenson@raspberrypi.com, sungguk.na@samsung.com,
-        hoegeun.kwon@samsung.com
-Subject: [PATCH 1/1] drm/vc4: drv: Add error handding for bind
-Date:   Tue, 27 Oct 2020 13:14:42 +0900
-Message-Id: <20201027041442.30352-2-hoegeun.kwon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027041442.30352-1-hoegeun.kwon@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0wbZRjHfe+uR8F1nt10byph7HQmdKFQusIxKerWNKfbDIoxzhC7hp60
-        UtqmR3VzmtVtJV2hbGwyJlA2I4gBYaQSVpvgSrdCRAcoCJE6h7owVwIlFthk+KPtYfS/7/Pk
-        832fH+/DR4VuXMTXGysZi1FjIPEUrO9qhiTzdkuDOntu5mHKNfIVQnW5ghj1d18dSs27P8ao
-        C9dGeNTEcgSn/O+PAyrS7sQpz6+TPGrc14xTdaGeJOr8vb8AZe+/lkR5WwbAMxvpY5FBnG68
-        eR2nfxwZxen+lYsY7ek4idOXV2Z49M3qIYT+vPUobQ+uYnRtbwego560ogdfKy/QMRotY0ln
-        jKUmrd5YpiD3Fqv3qOW52dJMaT6VR6YbNRWMglTuK8pU6Q2xMcj0tzQGayxVpGFZMquwwGKy
-        VjLpOhNbqSAZs9ZgzjdLWE0FazWWSUpNFbuk2dk58hh4sFx33RlCzGO8Q3fag6gNzGJOkMyH
-        xE7o+LIJcYIUvpDwAni8qh7jgt8BjAb9vDglJKIA2ieTnYCfcLimrBzjA7AnVA+4IMbc+OV+
-        woATmXC5ZgqJ682EGk66qnhxCCU6EDjibU3U3kQUQs+JIBrXGLEdhn3fJQwCQgEH5z9Cuf62
-        ws4ef0Inx/hPR6N4/CFItPHh6t3FJA5SwvnwnwinN8HwUO96XgSjC/04p1k48WEY48w2AE/V
-        Na1DMnil7SwSnw0lMuAlXxaX3ga/uO8GcY0SG+HCcg2PG18AHVVCDnkSztq4DUEiFQ672tdb
-        oGG4c2h9K3UAtoVasNMgrfG/ChcB6ACPMma2ooxhpWbZ/7/MAxJ3Ks7zgnPzi5IAQPggACAf
-        JTcLmlPr1UKBVnP4HcZiUlusBoYNAHlse3Wo6JFSU+zQjZVqqTxHJpNRO6W5cqmU3CJY2+FQ
-        C4kyTSVTzjBmxvKvD+Eni2zINBGQTxd/Wx26xO9uOjxsl7zgIFP3Vh/6YP+ZgMot7hqWaOei
-        8pLu+k8eG1vVHXgostsmPjK+dEHl3LXboVT1nT66IXIbFDyR25TSb6s+O3uGRT8jn+UFTpTQ
-        P5+fyae7hed+erOzZmV5JKrNGKTe85cr9E9LkAa7dezrLbbgy2+7O5tPfvPHhqVj2/X3Cmfk
-        t7S9nsV9vhd79D/sMEbuXGnetrQ1dcH2wEDj1Hg4r1UxGryb0XWkxHdw4tWuWqWjd+BxynFc
-        5Z+eWntK5MrqnXt9v2DN/e6AqPiA+bnfbiBXva3fv9IwmvaGsmO+UVwqzpnSXr6156XaweeV
-        3cZTbQYXibE6jVSMWljNP7Rr90owBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKLMWRmVeSWpSXmKPExsWy7bCSnO6zedPjDc7tM7foPXeSyWJt71EW
-        i//bJjJbvJ27mMVi/pFzrBZXvr5nszjQeJnR4v3yLjaLTY+vsVpc3jWHzWLi7Q3sFjN+/GO0
-        aN17hN1ix7yDjA58Hk3vj7F5zLp/ls3jzrnzbB57vy1g8di0qpPNY/u3B6we97uPM3lsXlLv
-        0Xr0F4tH35ZVjB6fN8kFcEdx2aSk5mSWpRbp2yVwZZztus1UcIG14uXyo8wNjM9Yuhg5OCQE
-        TCR6r5d2MXJyCAnsYJSY/VgWxJYQkJFY1b+FFaJEWOLw4eIuRi6gko+MEl+/LmIHqWET0JX4
-        2nOdCcQWEUiVaHt/hAWkiFlgE5NE38keRpCEsICdxKaWo8wgNouAqsSrXZfAGngFbCWOvV3I
-        DLFMXmL1hgNgNidQ/Yrzn9kgDrKV+HOglWUCI98CRoZVjJKpBcW56bnFhgVGeanlesWJucWl
-        eel6yfm5mxjBIa+ltYNxz6oPeocYmTgYDzFKcDArifDOkZkaL8SbklhZlVqUH19UmpNafIhR
-        moNFSZz366yFcUIC6YklqdmpqQWpRTBZJg5OqQammhN550VquKtFQwo4uru2W1c/1zz5f/GO
-        HOl8lYaSpRcsRLiPh875rdZ9L2F9ysxaN9cbH8IyIt22e0w5U+ohZntZW3eWnVvYB8eiK5Zn
-        Vb+JakrVL/n9ck+79NNtnFs9dIIZ+O6f3GaauW/3g+U/vLYIrzBJnn/3Q0+W3sktKSYsnFKX
-        29SiH0quS+68bezv8Oh27SFDU6v4sn5dm5iEjij9ay77Y0U8llkKyuz7Nqm56sBF+yNdzz7M
-        bZBw1HMQf9llzflikZxz+woLkzi3XTZ9d7X8LnTN9V+5dNWnWreut5fCXm3XziuuT4pziaiR
-        2MbiL/CJNUUmRbA451jM4llhZ6fKd1Wsyjy1UomlOCPRUIu5qDgRACiDybPoAgAA
-X-CMS-MailID: 20201027041535epcas1p489bbfe80b461f1e5c5deca1a571f1f35
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201027041535epcas1p489bbfe80b461f1e5c5deca1a571f1f35
-References: <20201027041442.30352-1-hoegeun.kwon@samsung.com>
-        <CGME20201027041535epcas1p489bbfe80b461f1e5c5deca1a571f1f35@epcas1p4.samsung.com>
+        Tue, 27 Oct 2020 00:26:05 -0400
+Received: by mail-pl1-f194.google.com with SMTP id o9so87210plx.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 21:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=q8a1R7APHXz6ZL6IXaQsICKfgqyJPeRktgCx//C+/Ss=;
+        b=KL+NuJfe1pirzhrR+nfUoyaxO2yXPH1uQXQPaV5UwSxCeRIhuE79ubRUDClresUNw4
+         S2EyapN9q7kGcOkjPIo2kAcI6/9l8TSMph5lrpsgX3XdISyzG5UFd6xrpfJfqTxjDoXX
+         z8NDBKaqg0zqjTLnDyzrH1QIXIkUH2BdOpzTQTNrzyIhqNSqrdPr1907a4IzDUlJ3bkV
+         Rx1IRL27ZvGfJS3bXAjyoHEF3hS9eOMA2zFOqUVENhekPsr7MK/WySJ8rcLugCo4beUL
+         kNrlbI/92UBdNqKs4amVQ/BZWWznuBzGmmEJHkp8p0SFZZEaRztZz+rr5Rwq9PXYTxvn
+         kRGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=q8a1R7APHXz6ZL6IXaQsICKfgqyJPeRktgCx//C+/Ss=;
+        b=Ut1ljXuCCAeDV42lK2xY+K4BZG37k4nnhuVhVqtzTAKXIyCq1KZ5aywKf/Ot1jxkRk
+         aJ++9DMvwxd6fFO3PR07aXqpJhX1G/ukQaaLmDf0cdnvH8VoSLCjG+nsAcGv0yRUOu9e
+         aeTzJdnjdHedCvG/F/mLcVWefV4G2gv7iSrKXo4etF8SyUoMmMgfcsMyEGXUL1gPImtS
+         MFTJn9bBcevqglvXmX5aWq0CxOY+rGe2cyhPHV4wQ2Mb3TefKPMonwgPbnvt+01c1wyR
+         JKl0xjfuaYrs/mzH/v/XDrPIUfaysSXhQUAB88g77PbkCckyLz5M5AgrM29l3uSQ9N/5
+         Ug1A==
+X-Gm-Message-State: AOAM531vUHdi5JbJQ4zvnnR0b5NKGYvzmwlEwuINs8LdxRESWCFunswg
+        Q42oT7beaZYGUot2eHAlxjX+Ww==
+X-Google-Smtp-Source: ABdhPJyZSrthlQUhdkUr5Xtk/g+rLCqfqrp9PuiJWMQMH4v/m2TkanY+50e2zHzy5+6QSVRWIY/8Qg==
+X-Received: by 2002:a17:902:d706:b029:d5:dde6:f56 with SMTP id w6-20020a170902d706b02900d5dde60f56mr634056ply.26.1603772763043;
+        Mon, 26 Oct 2020 21:26:03 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id y3sm325813pfn.167.2020.10.26.21.26.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Oct 2020 21:26:01 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 09:55:59 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v2 4/4] cpufreq: schedutil: Always call drvier if
+ need_freq_update is set
+Message-ID: <20201027042559.hang4fnpyfd6yqu4@vireshk-i7>
+References: <2183878.gTFULuzKx9@kreacher>
+ <1905098.zDJocX6404@kreacher>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1905098.zDJocX6404@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a problem that if vc4_drm bind fails, a memory leak occurs on
-the drm_property_create side. Add error handding for drm_mode_config.
+Spelling mistake in $subject (driver)
 
-Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
----
- drivers/gpu/drm/vc4/vc4_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+On 23-10-20, 17:36, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Because sugov_update_next_freq() may skip a frequency update even if
+> the need_freq_update flag has been set for the policy at hand, policy
+> limits updates may not take effect as expected.
+> 
+> For example, if the intel_pstate driver operates in the passive mode
+> with HWP enabled, it needs to update the HWP min and max limits when
+> the policy min and max limits change, respectively, but that may not
+> happen if the target frequency does not change along with the limit
+> at hand.  In particular, if the policy min is changed first, causing
+> the target frequency to be adjusted to it, and the policy max limit
+> is changed later to the same value, the HWP max limit will not be
+> updated to follow it as expected, because the target frequency is
+> still equal to the policy min limit and it will not change until
+> that limit is updated.
+> 
+> To address this issue, modify get_next_freq() to clear
+> need_freq_update only if the CPUFREQ_NEED_UPDATE_LIMITS flag is
+> not set for the cpufreq driver in use (and it should be set for all
+> potentially affected drivers) and make sugov_update_next_freq()
+> check need_freq_update and continue when it is set regardless of
+> whether or not the new target frequency is equal to the old one.
+> 
+> Fixes: f6ebbcf08f37 ("cpufreq: intel_pstate: Implement passive mode with HWP enabled")
+> Reported-by: Zhang Rui <rui.zhang@intel.com>
+> Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> New patch in v2.
+> 
+> ---
+>  kernel/sched/cpufreq_schedutil.c |    8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> ===================================================================
+> --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> @@ -102,11 +102,12 @@ static bool sugov_should_update_freq(str
+>  static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+>  				   unsigned int next_freq)
+>  {
+> -	if (sg_policy->next_freq == next_freq)
+> +	if (sg_policy->next_freq == next_freq && !sg_policy->need_freq_update)
+>  		return false;
+>  
+>  	sg_policy->next_freq = next_freq;
+>  	sg_policy->last_freq_update_time = time;
+> +	sg_policy->need_freq_update = false;
+>  
+>  	return true;
+>  }
+> @@ -164,7 +165,10 @@ static unsigned int get_next_freq(struct
+>  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
+>  		return sg_policy->next_freq;
+>  
+> -	sg_policy->need_freq_update = false;
+> +	if (sg_policy->need_freq_update)
+> +		sg_policy->need_freq_update =
+> +			cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
+> +
 
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
-index f1a5fd5dab6f..a17aa1db11b6 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.c
-+++ b/drivers/gpu/drm/vc4/vc4_drv.c
-@@ -314,6 +314,7 @@ static int vc4_drm_bind(struct device *dev)
- 	component_unbind_all(dev, drm);
- gem_destroy:
- 	vc4_gem_destroy(drm);
-+	drm_mode_config_cleanup(drm);
- 	vc4_bo_cache_destroy(drm);
- dev_put:
- 	drm_dev_put(drm);
+The behavior here is a bit different from what we did in cpufreq.c. In cpufreq
+core we are _always_ allowing the call to reach the driver's target() routine,
+but here we do it only if limits have changed. Wonder if we should have similar
+behavior here as well ?
+
+Over that the code here can be rewritten a bit like:
+
+	if (sg_policy->need_freq_update)
+                sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
+        else if (freq == sg_policy->cached_raw_freq)
+		return sg_policy->next_freq;
+
 -- 
-2.17.1
-
+viresh
