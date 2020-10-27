@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015E729A680
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EAD29A670
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894704AbgJ0IX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:23:27 -0400
-Received: from mga01.intel.com ([192.55.52.88]:47682 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2894652AbgJ0IXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:23:13 -0400
-IronPort-SDR: 1gpT3vmYdwRnw1VT5VGmBJdljYWqBUwIN7u6ryRy2owPbuHu4LK8OEfvexblyGTQgMwj6eEDFT
- 8RkawDB6p+NQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="185782960"
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="185782960"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 01:23:11 -0700
-IronPort-SDR: CdsRoOI7usXtnfxyGZOX6YNZHAnyllx1Q5X2u6JanXybJl5GtudUlSTsWdYmh0L35/q2ljvMOU
- xDQiLUgSU80Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="303686745"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Oct 2020 01:23:03 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
-        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v4 2/6] spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
-Date:   Tue, 27 Oct 2020 16:22:47 +0800
-Message-Id: <20201027082251.30056-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201027082251.30056-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20201027082251.30056-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S2894566AbgJ0IWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:22:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45590 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389898AbgJ0IWt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:22:49 -0400
+Date:   Tue, 27 Oct 2020 09:22:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603786968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/DnBGT2o3RmzLH6Jk+SiaKYgGhj2tONBcJBQJ4Z5h+M=;
+        b=dile8uqtDV/sHjutdaTGsqHeNASd8kFpfs9SVjvfV/QOQo79JwTr0uWtEenEG48R/w14x+
+        dSh+XfPi7wd6NhpCa57zvFgIn6h+QruFIO54JHi8Jdoi5xeWzC8Qkt7qBZa48GjAnZ36ds
+        yInDwBB4zIa5ejUYjoB4Adgse7jb6QwfHTOz+Oe8CKPgg8Yn1bwN7xgElKl8tuXhVwOzjo
+        5ny3eTAReoix0CcLLe+zlYAIgFdIpMSek4qrFJhKhinTiUZKUUoere3VODXoM+TXNdrrBs
+        E/ITmvOWku3rbC+Z0ZE90CPIhFC2/JCdoCiLnnsX5+LcOphMkiAmRitjjaoWaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603786968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/DnBGT2o3RmzLH6Jk+SiaKYgGhj2tONBcJBQJ4Z5h+M=;
+        b=zMYphMDQPkj/3j4yQzIUfAZYfsJVOQ2LovKm+AryXAfyVmJd4JG2Ft6DPieP7hORBFCEl2
+        AyjDG5B6QfH21WAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.9.1-rt18
+Message-ID: <20201027082247.rs2h7l3wdzxc5f7i@linutronix.de>
+References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
+ <20201021131449.qlwjiq2l6embaii3@linutronix.de>
+ <54d33ca5-107e-e269-8c47-a1ae0dc60b0e@ccrma.stanford.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <54d33ca5-107e-e269-8c47-a1ae0dc60b0e@ccrma.stanford.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On 2020-10-26 23:53:20 [-0700], Fernando Lopez-Lezcano wrote:
+> Maybe I'm doing something wrong but I get a compilation error (see below)
+> when trying to do a debug build (building rpm packages for Fedora). 5.9.1 +
+> rt19...
+> 
+> Builds fine otherwise...
 
-On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
-Direct Access Controller(DAC).
+If you could remove CONFIG_TEST_LOCKUP then it should work. I will think
+of something.
 
-This patch adds a quirk to disable the Direct Access Controller
-for data transfer instead it uses indirect data transfer.
+> Thanks,
+> -- Fernando
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index d7b10c46fa70..6d6f7c440ece 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1107,6 +1107,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
- 	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
- 
- 	cqspi_controller_enable(cqspi, 1);
-+
-+	/* Disable direct access controller */
-+	if (!cqspi->use_direct_mode) {
-+		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-+		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-+		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-+	}
- }
- 
- static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
-@@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
- 	.quirks = CQSPI_NEEDS_WR_DELAY,
- };
- 
-+static const struct cqspi_driver_platdata intel_lgm_qspi = {
-+	.quirks = CQSPI_DISABLE_DAC_MODE,
-+};
-+
- static const struct of_device_id cqspi_dt_ids[] = {
- 	{
- 		.compatible = "cdns,qspi-nor",
-@@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
- 	},
- 	{
- 		.compatible = "intel,lgm-qspi",
-+		.data = &intel_lgm_qspi,
- 	},
- 	{ /* end of table */ }
- };
--- 
-2.11.0
-
+Sebastian
