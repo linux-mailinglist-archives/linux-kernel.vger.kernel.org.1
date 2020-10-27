@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BDF29C3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D275729C20C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368344AbgJ0OZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50138 "EHLO mail.kernel.org"
+        id S1819317AbgJ0R3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:29:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368164AbgJ0OYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:24:49 -0400
+        id S1750210AbgJ0Omh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:42:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D07820773;
-        Tue, 27 Oct 2020 14:24:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10A41207BB;
+        Tue, 27 Oct 2020 14:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808689;
-        bh=hR6U4WnyyHaew0oR5qjCvxwyrsc/wpr+fungtJa7tUA=;
+        s=default; t=1603809756;
+        bh=ZS6nVaxoVysnVnL0vCkvk7SNzQ9MvpfH8zkCFFFcde4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RCAjaFJYrAfKCGyrrJRM2XHlmLpKtv2DZvpacrQN9gG/7uYCTTZQCy3k7CLNNQCCG
-         DQz0zosC7e+y4zBbHfTpy7lM6jfAsyKUXBUM2qPjyu3otO4glUK+iU7up+ztgsdgcw
-         watjiUSrzOiQq6a2ytksM7REWiVIPF9hzcWtyn4g=
+        b=u366DzhwKVbqN/0Gq+8vsktNrH0WsP3qAEFjd5m9aILxc4Y8ehqijAKZlbcv4IQqc
+         AzG0SOqRIPmSJ4DUfeZ80QPp6e03ctaczSHppWHDWFmawFZx7SKPduvVN/VBphb6Re
+         ute7nJgm42qsAxf5WyCY7Rli3WcJJjNHHT8K7RhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 187/264] Input: sun4i-ps2 - fix handling of platform_get_irq() error
-Date:   Tue, 27 Oct 2020 14:54:05 +0100
-Message-Id: <20201027135439.438998576@linuxfoundation.org>
+Subject: [PATCH 5.4 308/408] arm64: dts: renesas: r8a77990: Fix MSIOF1 DMA channels
+Date:   Tue, 27 Oct 2020 14:54:06 +0100
+Message-Id: <20201027135509.317503705@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
-References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit cafb3abea6136e59ea534004e5773361e196bb94 ]
+[ Upstream commit 453802c463abd003a7c38ffbc90b67ba162335b6 ]
 
-platform_get_irq() returns -ERRNO on error.  In such case comparison
-to 0 would pass the check.
+According to Technical Update TN-RCT-S0352A/E, MSIOF1 DMA can only be
+used with SYS-DMAC0 on R-Car E3.
 
-Fixes: e443631d20f5 ("Input: serio - add support for Alwinner A10/A20 PS/2 controller")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20200828145744.3636-4-krzk@kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 8517042060b55a37 ("arm64: dts: renesas: r8a77990: Add DMA properties to MSIOF nodes")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20200917132117.8515-2-geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/sun4i-ps2.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a77990.dtsi | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/serio/sun4i-ps2.c b/drivers/input/serio/sun4i-ps2.c
-index 04b96fe393397..46512b4d686a8 100644
---- a/drivers/input/serio/sun4i-ps2.c
-+++ b/drivers/input/serio/sun4i-ps2.c
-@@ -210,7 +210,6 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
- 	struct sun4i_ps2data *drvdata;
- 	struct serio *serio;
- 	struct device *dev = &pdev->dev;
--	unsigned int irq;
- 	int error;
- 
- 	drvdata = kzalloc(sizeof(struct sun4i_ps2data), GFP_KERNEL);
-@@ -263,14 +262,12 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
- 	writel(0, drvdata->reg_base + PS2_REG_GCTL);
- 
- 	/* Get IRQ for the device */
--	irq = platform_get_irq(pdev, 0);
--	if (!irq) {
--		dev_err(dev, "no IRQ found\n");
--		error = -ENXIO;
-+	drvdata->irq = platform_get_irq(pdev, 0);
-+	if (drvdata->irq < 0) {
-+		error = drvdata->irq;
- 		goto err_disable_clk;
- 	}
- 
--	drvdata->irq = irq;
- 	drvdata->serio = serio;
- 	drvdata->dev = dev;
- 
+diff --git a/arch/arm64/boot/dts/renesas/r8a77990.dtsi b/arch/arm64/boot/dts/renesas/r8a77990.dtsi
+index 455954c3d98ea..dabee157119f9 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77990.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77990.dtsi
+@@ -1168,9 +1168,8 @@ msiof1: spi@e6ea0000 {
+ 			reg = <0 0xe6ea0000 0 0x0064>;
+ 			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cpg CPG_MOD 210>;
+-			dmas = <&dmac1 0x43>, <&dmac1 0x42>,
+-			       <&dmac2 0x43>, <&dmac2 0x42>;
+-			dma-names = "tx", "rx", "tx", "rx";
++			dmas = <&dmac0 0x43>, <&dmac0 0x42>;
++			dma-names = "tx", "rx";
+ 			power-domains = <&sysc R8A77990_PD_ALWAYS_ON>;
+ 			resets = <&cpg 210>;
+ 			#address-cells = <1>;
 -- 
 2.25.1
 
