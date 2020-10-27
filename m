@@ -2,227 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48E929ACF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E5829ACF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751662AbgJ0NPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:15:55 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:45911 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900599AbgJ0NPz (ORCPT
+        id S1751897AbgJ0NQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:16:23 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37766 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751680AbgJ0NQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:15:55 -0400
-Received: by mail-oi1-f174.google.com with SMTP id j7so1199983oie.12;
-        Tue, 27 Oct 2020 06:15:53 -0700 (PDT)
+        Tue, 27 Oct 2020 09:16:21 -0400
+Received: by mail-qt1-f196.google.com with SMTP id h19so882397qtq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 06:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=htuQpcVyaYACrT+nsrI4stqSgrJzxSmMvkzSIVftwUU=;
+        b=VhHdHuK7W+NZ4VnoClCKW1tJBdCkfHdU2mtB6LFUI/tyWI86pp2z9Yv0dPTm27rE/a
+         YC5POqDbDTNrWZTrsYkBQURNWCQyL5g1Y0pGcquvuPSsYdm5IQ4MedjnaGThFDco+J4e
+         HHRjfaBuUnQ300D9l0yLN+tiXZ3z6QLAN211Mj6yUrdCB/RVIEqmUp1/rxDRS6MZQfHs
+         KWh3XfV1UnkKNVQ09txutEuaYpyY/8/a9IOB6hqa7OGrVQBKiqNlz9P7Uzm21lb5OuJ1
+         90StBX6yrTD/5zlj7GEPfpSSwLUpsiQAUCchEIVirYyrk1oHeb/iz6Oqv7wh5MRxSOhY
+         VLWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=DhOxPerUXGp7wH7dTSBqcOhiwYiHrfDhbrgLrVfJ6BY=;
-        b=tmHrn0qpovFZPwjSD4CqayTTxnHVUYN8MLAHiBmjqA7Srx3gSjBWdNMIcaCOxLPoxU
-         xYpOIJZPsYQUHy6SVRq8KNQawP0ygNNPoom6FJKY5VmfUnpVMeMd2bEpokFS6VvjArLV
-         ePxMBrw94Tw8BT4OpKTtwpVNQEYulQ0IUI4wj/yP/CaK7UlJO/pt6WdV8PDhRCFyFonu
-         bt+ngcXRJ4+8ofcS9QlgdPGXyzuVSrkvo4mffhTUpUx8DyUj9NlJ47ZbRRbYrEchsiDZ
-         3FVPj6jAU58iWfK3OJLcq/q9ZT06ngUQ4pXbd/guj7yEQnq5ALI7huBtYwa/3d4JHblw
-         G8AQ==
-X-Gm-Message-State: AOAM532nHtpEmyDZ4CCVWppcv/htoAXoll/SIGez9nPluQCX4OoLc/4Z
-        vcjPxCkh3jqL2XNrJgUc6JeCRpkpsw==
-X-Google-Smtp-Source: ABdhPJwsOH25Fr17BSqL4eF3S/Pl3k46Q2oxLXGtR/2z7ukyp30wIjMknidUxttOLeCOXC4Wc35SAw==
-X-Received: by 2002:a05:6808:17:: with SMTP id u23mr1355915oic.31.1603804553266;
-        Tue, 27 Oct 2020 06:15:53 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i18sm939415oik.7.2020.10.27.06.15.52
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=htuQpcVyaYACrT+nsrI4stqSgrJzxSmMvkzSIVftwUU=;
+        b=HUWN+h+xyQnnq+SRLJFqd5+fOO5w0MXril+ckGCdQCZefkQiIKIZHmQt2vFJ11f7Mq
+         h8DR5VrcpA/2BKaxgcn8e/51j0+MHrLjzA1wEcvrwP/6P7E5uAX6Mtuna1f7pV024CIY
+         zgcNEzx/6vjXpviXyfsVfbtX/9iMPZEkCQW6Mop7Thg2LPFnmzeG7SUfI2jG/MXClgQi
+         8kq5hSK6HKUw+ev7GvMwhujuyo05+xkdxEllh8cIv5Arot6/J//Gz35Zft70+720PhoE
+         TIVP+f/hzjtnKG+oE1o7zzE/ecGvGvIQBIav74NG3xIjK2AVsC73YKtzfhMIqast0XW9
+         l/pQ==
+X-Gm-Message-State: AOAM533O3RLTLnChws+07R7tslM2If3HdJ/Wgi3TzCfefCiQ0wqfwNRi
+        0rJCt1zYmxNFQt57op0D+CU=
+X-Google-Smtp-Source: ABdhPJwiKQaOiwv0RtDsh2jZMOmkS9bMLnGgzqrc4bwQBIN/YYd3edFSav+9L/3P/Z7VUYDdqqzdyg==
+X-Received: by 2002:ac8:7b2a:: with SMTP id l10mr2021617qtu.222.1603804579972;
+        Tue, 27 Oct 2020 06:16:19 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id j8sm623679qke.38.2020.10.27.06.16.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:15:52 -0700 (PDT)
-Received: (nullmailer pid 1970142 invoked by uid 1000);
-        Tue, 27 Oct 2020 13:15:51 -0000
-Date:   Tue, 27 Oct 2020 08:15:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for 5.10
-Message-ID: <20201027131551.GA1959093@bogus>
+        Tue, 27 Oct 2020 06:16:19 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 27 Oct 2020 09:16:17 -0400
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: RFC x86/boot/64: BOOT_PGT_SIZE definition for compressed kernel
+Message-ID: <20201027131617.GA1743199@rani.riverdale.lan>
+References: <20201025004158.GA767345@rani.riverdale.lan>
+ <20201027124007.xkkseswwgerlzlsl@box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201027124007.xkkseswwgerlzlsl@box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Tue, Oct 27, 2020 at 03:40:07PM +0300, Kirill A. Shutemov wrote:
+> On Sat, Oct 24, 2020 at 08:41:58PM -0400, Arvind Sankar wrote:
+> > Hi, I think the definition of BOOT_PGT_SIZE in
+> > arch/x86/include/asm/boot.h is insufficient, especially after
+> >   ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+> > 
+> > Currently, it allocates 6 pages if KASLR is disabled, and either 17 or
+> > 19 pages depending on X86_VERBOSE_BOOTUP if KASLR is enabled.
+> > 
+> > - The X86_VERBOSE_BOOTUP test shouldn't be done: that only disables
+> >   debug messages, but warnings/errors are always output to VGA memory,
+> >   so the two extra pages for mapping video RAM are always needed.
+> > 
+> > - The calculation wasn't updated for X86_5LEVEL, which requires at least
+> >   one more page for the P4D level, and in theory could require two extra
+> >   pages for each of the 4 mappings (compressed kernel, output kernel,
+> >   boot_params and command line), though that would require a system with
+> >   truly ginormous amounts of RAM.
+> 
+> Or sparse physical memory map. I hacked QEMU before for testing 5-level
+> paging:
+> 
+> https://gist.github.com/kiryl/d45eb54110944ff95e544972d8bdac1d
+> 
+> > - If KASLR is disabled, there are only 6 pages, but now that we're
+> >   always setting up our own page table, we need 1+(2+2)*3 (one PGD, and
+> >   two PUD and two PMD pages for kernel, boot_params and command line),
+> >   and 2 more pages for the video RAM, and more for 5-level. Even for
+> >   !RELOCATABLE, 13 pages might be needed.
+> 
+> The comment for BOOT_PGT_SIZE has to be updated.
+> 
+> BTW, what happens if we underestimate BOOT_PGT_SIZE? Do we overwrite
+> something?
 
-Please pull DT fixes for 5.10.
+No, it checks whether it ran out of pages, so it will just error out and
+hang.
 
-Rob
+> 
+> > - SEV-ES needs one more page because it needs to do a PTE-level mapping
+> >   for the GHCB page.
+> > 
+> > - The static calculation is also busted because
+> >   boot/compressed/{kaslr.c,acpi.c} can scan the setup data, EFI
+> >   configuration tables and the EFI memmap, and none of these are
+> >   accounted for. They used to be scanned while still on the
+> >   firmware/bootloader page tables, but now our page tables have to cover
+> >   them as well. Trying to add up the worst case for all of these, and
+> >   anything else the compressed kernel might potentially access seems
+> >   like a lost cause.
+> > 
+> > We could do something similar to what the main kernel does with
+> > early_dynamic_pgts: map the compressed kernel at a fixed virtual
+> > address (in negative address space, say); recycle all the other mappings
+> > until we're done with decompression, and then map the output,
+> > boot_params and command line. The number of pages needed for this can be
+> > statically calculated, for 4-level paging we'd need 2 pages for the
+> > fixed mapping, 12 pages for the other three, and one PGD page.
+> 
+> Recycling idea look promising to me, but it would require handling #PF in
+> decompression code, right? It is considerable complication of the code.
+> 
 
+The #PF handler is already there now with the SEV-ES series, but I agree
+it would still complicate things. It's simpler to just increase
+BOOT_PGT_SIZE and make it unconditional (i.e. bump it to say 32 or 64
+even if !KASLR). It's @nobits anyway so it would not increase the size
+of the bzImage, just require a slightly larger memory allocation by the
+bootloader.
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.10-1
-
-for you to fetch changes up to f84e2c5c528d937564e4a9e3411418e4c914b1fb:
-
-  dt-bindings: Another round of adding missing 'additionalProperties/unevalutatedProperties' (2020-10-26 16:13:56 -0500)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.10:
-
-- More binding additionalProperties/unevaluatedProperties additions
-
-- More yamllint fixes on additions in the merge window
-
-- CrOS embedded controller schema updates to fix warnings
-
-- LEDs schema update adding ID_RGB
-
-- A reserved-memory fix for regions starting at address 0x0
-
-----------------------------------------------------------------
-Dan Murphy (1):
-      dt-bindings: leds: Update devicetree documents for ID_RGB
-
-Fabien Parent (1):
-      dt-bindings: mailbox: mtk-gce: fix incorrect mbox-cells value
-
-Ricardo Cañuelo (3):
-      dt-bindings: i2c: convert i2c-cros-ec-tunnel to json-schema
-      dt-bindings: input: convert cros-ec-keyb to json-schema
-      mfd: google,cros-ec: add missing properties
-
-Rob Herring (3):
-      dt-bindings: More whitespace clean-ups in schema files
-      dt-bindings: Explicitly allow additional properties in board/SoC schemas
-      dt-bindings: Another round of adding missing 'additionalProperties/unevalutatedProperties'
-
-Vincent Whitchurch (1):
-      of: Fix reserved-memory overlap detection
-
- Documentation/devicetree/bindings/arm/actions.yaml |   2 +
- Documentation/devicetree/bindings/arm/altera.yaml  |   3 +
- .../devicetree/bindings/arm/amazon,al.yaml         |   2 +
- Documentation/devicetree/bindings/arm/amlogic.yaml |   3 +
- .../devicetree/bindings/arm/arm,integrator.yaml    |   2 +
- .../devicetree/bindings/arm/arm,realview.yaml      |   2 +
- .../devicetree/bindings/arm/arm,versatile.yaml     |   2 +
- .../devicetree/bindings/arm/arm,vexpress-juno.yaml |   2 +
- .../devicetree/bindings/arm/atmel-at91.yaml        |   2 +
- Documentation/devicetree/bindings/arm/axxia.yaml   |   2 +
- .../devicetree/bindings/arm/bcm/bcm2835.yaml       |   2 +
- .../devicetree/bindings/arm/bcm/brcm,bcm11351.yaml |   2 +
- .../devicetree/bindings/arm/bcm/brcm,bcm21664.yaml |   2 +
- .../devicetree/bindings/arm/bcm/brcm,bcm23550.yaml |   2 +
- .../devicetree/bindings/arm/bcm/brcm,bcm4708.yaml  |   3 +
- .../devicetree/bindings/arm/bcm/brcm,cygnus.yaml   |   2 +
- .../devicetree/bindings/arm/bcm/brcm,hr2.yaml      |   2 +
- .../devicetree/bindings/arm/bcm/brcm,ns2.yaml      |   2 +
- .../devicetree/bindings/arm/bcm/brcm,nsp.yaml      |   2 +
- .../devicetree/bindings/arm/bcm/brcm,stingray.yaml |   2 +
- .../bindings/arm/bcm/brcm,vulcan-soc.yaml          |   2 +
- Documentation/devicetree/bindings/arm/bitmain.yaml |   3 +
- Documentation/devicetree/bindings/arm/calxeda.yaml |   2 +
- .../devicetree/bindings/arm/digicolor.yaml         |   2 +
- Documentation/devicetree/bindings/arm/fsl.yaml     |   2 +
- .../bindings/arm/hisilicon/hisilicon.yaml          |   3 +
- .../devicetree/bindings/arm/intel,keembay.yaml     |   3 +
- .../devicetree/bindings/arm/intel-ixp4xx.yaml      |   2 +
- .../bindings/arm/keystone/ti,k3-sci-common.yaml    |   2 +
- .../bindings/arm/marvell/armada-7k-8k.yaml         |   2 +
- .../devicetree/bindings/arm/mediatek.yaml          |   3 +
- .../devicetree/bindings/arm/microchip,sparx5.yaml  |   2 +
- Documentation/devicetree/bindings/arm/moxart.yaml  |   1 +
- .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   3 +
- .../devicetree/bindings/arm/mstar/mstar.yaml       |   2 +
- .../devicetree/bindings/arm/nxp/lpc32xx.yaml       |   2 +
- Documentation/devicetree/bindings/arm/qcom.yaml    |   2 +
- Documentation/devicetree/bindings/arm/rda.yaml     |   2 +
- Documentation/devicetree/bindings/arm/realtek.yaml |   3 +
- Documentation/devicetree/bindings/arm/renesas.yaml |   2 +
- .../devicetree/bindings/arm/rockchip.yaml          |   3 +
- .../bindings/arm/samsung/samsung-boards.yaml       |   2 +
- Documentation/devicetree/bindings/arm/sirf.yaml    |   3 +
- .../bindings/arm/socionext/milbeaut.yaml           |   3 +
- .../bindings/arm/socionext/uniphier.yaml           |   2 +
- Documentation/devicetree/bindings/arm/spear.yaml   |   3 +
- .../devicetree/bindings/arm/sprd/sprd.yaml         |   2 +
- Documentation/devicetree/bindings/arm/sti.yaml     |   3 +
- .../devicetree/bindings/arm/stm32/stm32.yaml       |  11 ++-
- Documentation/devicetree/bindings/arm/sunxi.yaml   |   2 +
- Documentation/devicetree/bindings/arm/tegra.yaml   |   2 +
- Documentation/devicetree/bindings/arm/ti/k3.yaml   |   3 +
- .../devicetree/bindings/arm/ti/nspire.yaml         |   3 +
- .../devicetree/bindings/arm/ti/ti,davinci.yaml     |   3 +
- Documentation/devicetree/bindings/arm/toshiba.yaml |   3 +
- Documentation/devicetree/bindings/arm/ux500.yaml   |   2 +
- Documentation/devicetree/bindings/arm/vt8500.yaml  |   3 +
- Documentation/devicetree/bindings/arm/xilinx.yaml  |   2 +
- Documentation/devicetree/bindings/arm/zte.yaml     |   2 +
- .../bindings/display/bridge/toshiba,tc358775.yaml  |  38 ++++----
- .../bindings/display/panel/ilitek,ili9881c.yaml    |   5 +-
- .../bindings/edac/amazon,al-mc-edac.yaml           |   1 +
- Documentation/devicetree/bindings/eeprom/at25.yaml |   6 +-
- .../bindings/gpio/kontron,sl28cpld-gpio.yaml       |   4 +-
- .../bindings/i2c/google,cros-ec-i2c-tunnel.yaml    |  66 +++++++++++++
- .../devicetree/bindings/i2c/i2c-cros-ec-tunnel.txt |  39 --------
- .../devicetree/bindings/i2c/ingenic,i2c.yaml       |   8 +-
- .../devicetree/bindings/iio/adc/adi,ad7291.yaml    |   3 +-
- .../devicetree/bindings/iio/adc/adi,ad7768-1.yaml  |   3 +-
- .../bindings/iio/adc/cosmic,10001-adc.yaml         |   4 +-
- .../devicetree/bindings/iio/adc/holt,hi8435.yaml   |   2 +-
- .../devicetree/bindings/iio/adc/lltc,ltc2497.yaml  |   2 +
- .../bindings/iio/humidity/ti,hdc2010.yaml          |   2 +
- .../devicetree/bindings/input/cros-ec-keyb.txt     |  72 ---------------
- .../bindings/input/google,cros-ec-keyb.yaml        |  92 +++++++++++++++++++
- .../interrupt-controller/ti,pruss-intc.yaml        |  12 +--
- .../bindings/interrupt-controller/ti,sci-inta.yaml |   2 +
- .../bindings/interrupt-controller/ti,sci-intr.yaml |   2 +
- .../devicetree/bindings/leds/backlight/common.yaml |   2 +
- Documentation/devicetree/bindings/leds/common.yaml |   2 +-
- .../bindings/leds/leds-class-multicolor.yaml       |   9 +-
- .../devicetree/bindings/leds/leds-lp50xx.yaml      |   8 ++
- .../devicetree/bindings/mailbox/mtk-gce.txt        |   2 +-
- .../devicetree/bindings/mfd/ene-kb3930.yaml        |   2 +-
- .../devicetree/bindings/mfd/google,cros-ec.yaml    |  56 +++++++++++
- .../devicetree/bindings/mips/ingenic/devices.yaml  |   3 +
- .../devicetree/bindings/mips/loongson/devices.yaml |   3 +
- .../devicetree/bindings/mmc/arasan,sdhci.yaml      |   8 +-
- .../bindings/mmc/microchip,dw-sparx5-sdhci.yaml    |   2 +
- .../devicetree/bindings/mmc/sdhci-am654.yaml       |  17 ++--
- .../devicetree/bindings/net/intel,dwmac-plat.yaml  |   2 +
- .../devicetree/bindings/net/ti,dp83822.yaml        |   2 +
- .../bindings/pci/socionext,uniphier-pcie-ep.yaml   |  18 ++--
- .../bindings/phy/socionext,uniphier-ahci-phy.yaml  |   6 +-
- .../devicetree/bindings/phy/ti,omap-usb2.yaml      |  22 +++--
- .../bindings/pinctrl/actions,s500-pinctrl.yaml     | 102 ++++++++++-----------
- .../bindings/pinctrl/pinctrl-mt8192.yaml           |   2 +-
- .../bindings/pinctrl/qcom,msm8226-pinctrl.yaml     |   6 +-
- .../bindings/pinctrl/toshiba,visconti-pinctrl.yaml |  24 ++---
- .../bindings/power/reset/reboot-mode.yaml          |   8 +-
- .../bindings/power/supply/ingenic,battery.yaml     |   8 +-
- .../power/supply/summit,smb347-charger.yaml        |  16 ++--
- .../devicetree/bindings/regulator/mps,mp886x.yaml  |   2 +
- .../devicetree/bindings/regulator/pfuze100.yaml    |   2 +
- .../devicetree/bindings/riscv/sifive-l2-cache.yaml |   4 +-
- .../devicetree/bindings/riscv/sifive.yaml          |   3 +
- Documentation/devicetree/bindings/rng/imx-rng.yaml |   6 +-
- .../devicetree/bindings/serial/fsl-imx-uart.yaml   |  34 +++----
- .../bindings/sound/google,cros-ec-codec.yaml       |  26 ++++--
- .../devicetree/bindings/sound/mchp,spdifrx.yaml    |   4 +-
- .../devicetree/bindings/sound/mchp,spdiftx.yaml    |   4 +-
- .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  40 ++++----
- .../devicetree/bindings/sound/realtek,rt1015p.yaml |   2 +
- .../devicetree/bindings/timer/arm,sp804.yaml       |  12 +--
- .../devicetree/bindings/usb/cdns,usb3.yaml         |   4 +-
- .../devicetree/bindings/usb/ti,hd3ss3220.yaml      |   2 +-
- .../devicetree/bindings/w1/fsl-imx-owire.yaml      |   8 +-
- drivers/of/of_reserved_mem.c                       |  13 ++-
- 118 files changed, 656 insertions(+), 348 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/i2c/google,cros-ec-i2c-tunnel.yaml
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-cros-ec-tunnel.txt
- delete mode 100644 Documentation/devicetree/bindings/input/cros-ec-keyb.txt
- create mode 100644 Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+Another alternative is reusing the KASLR code, which contains a memory
+allocator, and use it to find system memory for the page tables, but
+that also seems like an over-engineered approach.
