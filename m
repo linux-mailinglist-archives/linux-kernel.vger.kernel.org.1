@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED76A29C4A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6613529C524
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757581AbgJ0OTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40432 "EHLO mail.kernel.org"
+        id S1824242AbgJ0SEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:04:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1757278AbgJ0ORX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:17:23 -0400
+        id S2901066AbgJ0OSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:18:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3606C22202;
-        Tue, 27 Oct 2020 14:17:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28C84206D4;
+        Tue, 27 Oct 2020 14:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808242;
-        bh=Noym+lf8cZ47Ly+mv+s8DXWgLUwSiQZUDXTZQt2zu7A=;
+        s=default; t=1603808299;
+        bh=XjCeFuVIs7iMdOD4dixjzJsDhNXcVicMYLW7Q+67zsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P8+OQgN5fFf23Nno3WwliRelTVtGEp6YI00DF0/cvxucNBn9lEljiopW5dAHic1Fz
-         KSDJSp4eI7EPLfgsrdF2h5KXFEF0/EyfUq9n8wMQCOCbwY5OjOM8P4bJz7kTJKlmSv
-         rFFbEHOh4CXn2+DllFrCDBdKIa/AtJVkUmezPtRA=
+        b=s7AmjhDaXJJidNK0udbjpeehltypq/11OyQVG4wIKwTzcYx+pEEgcV201dR4dujLg
+         BM1M1JBWTWnfrq8bcMMxA5j9X5H2UZCVoGqhPeeB7cJtnM1Fxt0qm0lbbtavCGArjT
+         A89fEgILxi7tdMuGZ0HYJW4vT2+LYSu0tz+73bmg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 010/264] tipc: fix the skb_unshare() in tipc_buf_append()
-Date:   Tue, 27 Oct 2020 14:51:08 +0100
-Message-Id: <20201027135431.143348471@linuxfoundation.org>
+        stable@vger.kernel.org, Petr Tesarik <ptesarik@suse.cz>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 4.19 012/264] r8169: fix data corruption issue on RTL8402
+Date:   Tue, 27 Oct 2020 14:51:10 +0100
+Message-Id: <20201027135431.236677193@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -46,41 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit ed42989eab57d619667d7e87dfbd8fe207db54fe ]
+[ Upstream commit ef9da46ddef071e1bbb943afbbe9b38771855554 ]
 
-skb_unshare() drops a reference count on the old skb unconditionally,
-so in the failure case, we end up freeing the skb twice here.
-And because the skb is allocated in fclone and cloned by caller
-tipc_msg_reassemble(), the consequence is actually freeing the
-original skb too, thus triggered the UAF by syzbot.
+Petr reported that after resume from suspend RTL8402 partially
+truncates incoming packets, and re-initializing register RxConfig
+before the actual chip re-initialization sequence is needed to avoid
+the issue.
 
-Fix this by replacing this skb_unshare() with skb_cloned()+skb_copy().
-
-Fixes: ff48b6222e65 ("tipc: use skb_unshare() instead in tipc_buf_append()")
-Reported-and-tested-by: syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
-Cc: Jon Maloy <jmaloy@redhat.com>
-Cc: Ying Xue <ying.xue@windriver.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Petr Tesarik <ptesarik@suse.cz>
+Proposed-by: Petr Tesarik <ptesarik@suse.cz>
+Tested-by: Petr Tesarik <ptesarik@suse.cz>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169.c |   46 +++++++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 21 deletions(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -140,7 +140,8 @@ int tipc_buf_append(struct sk_buff **hea
- 	if (fragid == FIRST_FRAGMENT) {
- 		if (unlikely(head))
- 			goto err;
--		frag = skb_unshare(frag, GFP_ATOMIC);
-+		if (skb_cloned(frag))
-+			frag = skb_copy(frag, GFP_ATOMIC);
- 		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
+--- a/drivers/net/ethernet/realtek/r8169.c
++++ b/drivers/net/ethernet/realtek/r8169.c
+@@ -4111,6 +4111,27 @@ static void rtl_rar_set(struct rtl8169_p
+ 	rtl_unlock_work(tp);
+ }
+ 
++static void rtl_init_rxcfg(struct rtl8169_private *tp)
++{
++	switch (tp->mac_version) {
++	case RTL_GIGA_MAC_VER_01 ... RTL_GIGA_MAC_VER_06:
++	case RTL_GIGA_MAC_VER_10 ... RTL_GIGA_MAC_VER_17:
++		RTL_W32(tp, RxConfig, RX_FIFO_THRESH | RX_DMA_BURST);
++		break;
++	case RTL_GIGA_MAC_VER_18 ... RTL_GIGA_MAC_VER_24:
++	case RTL_GIGA_MAC_VER_34 ... RTL_GIGA_MAC_VER_36:
++	case RTL_GIGA_MAC_VER_38:
++		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
++		break;
++	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_51:
++		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
++		break;
++	default:
++		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
++		break;
++	}
++}
++
+ static int rtl_set_mac_address(struct net_device *dev, void *p)
+ {
+ 	struct rtl8169_private *tp = netdev_priv(dev);
+@@ -4128,6 +4149,10 @@ static int rtl_set_mac_address(struct ne
+ 
+ 	pm_runtime_put_noidle(d);
+ 
++	/* Reportedly at least Asus X453MA truncates packets otherwise */
++	if (tp->mac_version == RTL_GIGA_MAC_VER_37)
++		rtl_init_rxcfg(tp);
++
+ 	return 0;
+ }
+ 
+@@ -4289,27 +4314,6 @@ static void rtl_pll_power_up(struct rtl8
+ 	}
+ }
+ 
+-static void rtl_init_rxcfg(struct rtl8169_private *tp)
+-{
+-	switch (tp->mac_version) {
+-	case RTL_GIGA_MAC_VER_01 ... RTL_GIGA_MAC_VER_06:
+-	case RTL_GIGA_MAC_VER_10 ... RTL_GIGA_MAC_VER_17:
+-		RTL_W32(tp, RxConfig, RX_FIFO_THRESH | RX_DMA_BURST);
+-		break;
+-	case RTL_GIGA_MAC_VER_18 ... RTL_GIGA_MAC_VER_24:
+-	case RTL_GIGA_MAC_VER_34 ... RTL_GIGA_MAC_VER_36:
+-	case RTL_GIGA_MAC_VER_38:
+-		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
+-		break;
+-	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_51:
+-		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
+-		break;
+-	default:
+-		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
+-		break;
+-	}
+-}
+-
+ static void rtl8169_init_ring_indexes(struct rtl8169_private *tp)
+ {
+ 	tp->dirty_tx = tp->cur_tx = tp->cur_rx = 0;
 
 
