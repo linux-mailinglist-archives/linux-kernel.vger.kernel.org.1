@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4397129A893
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C33D29A88B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896593AbgJ0J6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:58:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:37030 "EHLO foss.arm.com"
+        id S2896559AbgJ0J63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:58:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38144 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410433AbgJ0J6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:58:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5AFD30E;
-        Tue, 27 Oct 2020 02:57:59 -0700 (PDT)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C35C13F66E;
-        Tue, 27 Oct 2020 02:57:57 -0700 (PDT)
-Subject: Re: [PATCH v2] sched: sched_domain fix highest_flag_domain function
-To:     Xuewen Yan <xuewen.yan94@gmail.com>, xuewen.yan@unisoc.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-References: <1603769572-8193-1-git-send-email-xuewen.yan94@gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <69257e98-2d93-673a-5dac-e11b6d5610be@arm.com>
-Date:   Tue, 27 Oct 2020 10:57:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2896563AbgJ0J6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 05:58:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03F31B2BE;
+        Tue, 27 Oct 2020 09:58:17 +0000 (UTC)
+Subject: Re: [PATCH 1/3] mm, page_alloc: do not rely on the order of
+ page_poison and init_on_alloc/free parameters
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>
+References: <20201026173358.14704-1-vbabka@suse.cz>
+ <20201026173358.14704-2-vbabka@suse.cz>
+ <3784dac7-49cb-006b-7b9d-1244d5c59935@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <9a2b88de-3c01-21d0-69ff-08643f7c4b68@suse.cz>
+Date:   Tue, 27 Oct 2020 10:58:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <1603769572-8193-1-git-send-email-xuewen.yan94@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <3784dac7-49cb-006b-7b9d-1244d5c59935@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2020 04:32, Xuewen Yan wrote:
-> the highest_flag_domain is to search the highest sched_domain
-> containing flag, but if the lower sched_domain didn't contain
-> the flag, but the higher sched_domain contains the flag, the
-> function will return NULL instead of the higher sched_domain.
+On 10/27/20 10:03 AM, David Hildenbrand wrote:
+> On 26.10.20 18:33, Vlastimil Babka wrote:
+>> Enabling page_poison=1 together with init_on_alloc=1 or init_on_free=1 produces
+>> a warning in dmesg that page_poison takes precendence. However, as these
+>> warnings are printed in early_param handlers for init_on_alloc/free, they are
+>> not printed if page_poison is enabled later on the command line (handlers are
+>> called in the order of their parameters), or when init_on_alloc/free is always
+>> enabled by the respective config option - before the page_poison early param
+>> handler is called, it is not considered to be enabled. This is inconsistent.
+>> 
+>> We can remove the dependency on order by making the init_on_* parameters only
+>> set a boolean variable, and postponing the evaluation after all early params
+>> have been processed. Introduce a new init_mem_debugging() function for that,
+>> and move the related debug_pagealloc processing there as well.
 > 
-> For example:
-> In MC domain : no SD_ASYM_CPUCAPACITY flag;
-> In DIE domain : containing SD_ASYM_CPUCAPACITY flag;
-> the "highest_flag_domain(cpu, SD_ASYM_CPUCAPACITY)" will return NULL.
+> init_mem_debugging() is somewhat sub-optimal - init_on_alloc=1 or
+> init_on_free=1 are rather security hardening mechanisms.
+
+Well yeah, init_mem_debugging_and_hardening()?
+
+> ... I wondered if this could be the place to initialize any kind of mm
+> parameters in the future. Like init_mem_params() or so.
+
+Maybe. In practice you often find out that different things have to be hooked in 
+different points of the init process, and a single function might not be enough. 
+I tried to group stuff that's really inter-related and can be initialized at the 
+same time.
+
+>> 
+>> As a result init_mem_debugging() knows always accurately if init_on_* and/or
+>> page_poison options were enabled. Thus we can also optimize want_init_on_alloc()
+>> and want_init_on_free(). We don't need to check page_poisoning_enabled() there,
+>> we can instead not enable the init_on_* tracepoint at all, if page poisoning is
+>> enabled. This results in a simpler and more effective code.
 > 
-> Signed-off-by: Xuewen Yan <xuewen.yan94@gmail.com>
-> ---
->  kernel/sched/sched.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> LGTM
 > 
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 28709f6..2c7c566 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1427,7 +1427,7 @@ static inline struct sched_domain *highest_flag_domain(int cpu, int flag)
->  
->  	for_each_domain(cpu, sd) {
->  		if (!(sd->flags & flag))
-> -			break;
-> +			continue;
->  		hsd = sd;
->  	}
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-We distinguish between SDF_SHARED_PARENT and SDF_SHARED_CHILD SD flags.
-
-1 SD_FLAG(*SD_ASYM_CPUCAPACITY*, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-2 SD_FLAG(SD_SERIALIZE, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-3 SD_FLAG(SD_OVERLAP, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-4 SD_FLAG(SD_NUMA, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
-
-1 SD_FLAG(SD_BALANCE_NEWIDLE, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-2 SD_FLAG(SD_BALANCE_EXEC, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-3 SD_FLAG(SD_BALANCE_FORK, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-4 SD_FLAG(SD_BALANCE_WAKE, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-5 82 SD_FLAG(SD_WAKE_AFFINE, SDF_SHARED_CHILD)
-6 SD_FLAG(SD_SHARE_CPUCAPACITY, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-7 SD_FLAG(SD_SHARE_PKG_RESOURCES, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-8 SD_FLAG(SD_ASYM_PACKING, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-
-We call lowest_flag_domain() on SDF_SHARED_PARENT and
-highest_flag_domain() on SDF_SHARED_CHILD SD flags.
-
-1 sd = lowest_flag_domain(cpu, SD_NUMA);
-2 sd = lowest_flag_domain(cpu, *SD_ASYM_CPUCAPACITY*);
-
-1 sd = highest_flag_domain(cpu, SD_SHARE_PKG_RESOURCES);
-2 sd = highest_flag_domain(cpu, SD_ASYM_PACKING);
+Thanks!
