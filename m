@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9688129BC78
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575C429BDFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1810017AbgJ0Qc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
+        id S1813483AbgJ0QuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802492AbgJ0Ptj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:49:39 -0400
+        id S1794937AbgJ0PO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:14:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D709422453;
-        Tue, 27 Oct 2020 15:49:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDA4420657;
+        Tue, 27 Oct 2020 15:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813775;
-        bh=TbvKyiIsY8u3aNEGtQ4lzndNOknupo3iNqO8vf8zft4=;
+        s=default; t=1603811667;
+        bh=/VH/Uh4ppG8CqszpVW7ftboKw3ENRADID/FSq+mRDz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xxI5MI3MP2ecXqXFCj7BCdD86SGTw/EZj5TGqPyW48035xin1xSu5TjsFAo1T603/
-         hhJWzTg3JQLs4lDzqT+F9WIMtdaO5fUCdO5Gd+n9GDN0Y4QOaZCUYaYl+uyIGFv4BF
-         kl1wif2harKxwtRN/rIgYeRFjOyuVzyAjBsq1x/I=
+        b=yC1S8QGCKxJN0jxzTa+CRdMmsKsCsIjsuwlfDtYetpGQay904hQ9070bQRRjDxYcP
+         QYNQZ69mCRGxlncYjRjcNQIVAbTwSOuSpAl9QDnuKCyUiQFlpuIqcDTKDxhpCFdFHn
+         BDvbKBuowKvZj0oV+3hvYYmvKxbRkKzDLdiLbdmg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 666/757] media: saa7134: avoid a shift overflow
-Date:   Tue, 27 Oct 2020 14:55:16 +0100
-Message-Id: <20201027135521.780785688@linuxfoundation.org>
+Subject: [PATCH 5.8 574/633] selftests/bpf: Fix overflow tests to reflect iter size increase
+Date:   Tue, 27 Oct 2020 14:55:17 +0100
+Message-Id: <20201027135549.734594680@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Alan Maguire <alan.maguire@oracle.com>
 
-[ Upstream commit 15a36aae1ec1c1f17149b6113b92631791830740 ]
+[ Upstream commit eb58bbf2e5c7917aa30bf8818761f26bbeeb2290 ]
 
-As reported by smatch:
-	drivers/media/pci/saa7134//saa7134-tvaudio.c:686 saa_dsp_writel() warn: should 'reg << 2' be a 64 bit type?
+bpf iter size increase to PAGE_SIZE << 3 means overflow tests assuming
+page size need to be bumped also.
 
-On a 64-bits Kernel, the shift might be bigger than 32 bits.
-
-In real, this should never happen, but let's shut up the warning.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/1601292670-1616-7-git-send-email-alan.maguire@oracle.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/saa7134/saa7134-tvaudio.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/pci/saa7134/saa7134-tvaudio.c b/drivers/media/pci/saa7134/saa7134-tvaudio.c
-index 79e1afb710758..5cc4ef21f9d37 100644
---- a/drivers/media/pci/saa7134/saa7134-tvaudio.c
-+++ b/drivers/media/pci/saa7134/saa7134-tvaudio.c
-@@ -683,7 +683,8 @@ int saa_dsp_writel(struct saa7134_dev *dev, int reg, u32 value)
- {
- 	int err;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+index 87c29dde1cf96..669f195de2fa0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -249,7 +249,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
+ 	struct bpf_map_info map_info = {};
+ 	struct bpf_iter_test_kern4 *skel;
+ 	struct bpf_link *link;
+-	__u32 page_size;
++	__u32 iter_size;
+ 	char *buf;
  
--	audio_dbg(2, "dsp write reg 0x%x = 0x%06x\n", reg << 2, value);
-+	audio_dbg(2, "dsp write reg 0x%x = 0x%06x\n",
-+		  (reg << 2) & 0xffffffff, value);
- 	err = saa_dsp_wait_bit(dev,SAA7135_DSP_RWSTATE_WRR);
- 	if (err < 0)
- 		return err;
+ 	skel = bpf_iter_test_kern4__open();
+@@ -271,19 +271,19 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
+ 		  "map_creation failed: %s\n", strerror(errno)))
+ 		goto free_map1;
+ 
+-	/* bpf_seq_printf kernel buffer is one page, so one map
++	/* bpf_seq_printf kernel buffer is 8 pages, so one map
+ 	 * bpf_seq_write will mostly fill it, and the other map
+ 	 * will partially fill and then trigger overflow and need
+ 	 * bpf_seq_read restart.
+ 	 */
+-	page_size = sysconf(_SC_PAGE_SIZE);
++	iter_size = sysconf(_SC_PAGE_SIZE) << 3;
+ 
+ 	if (test_e2big_overflow) {
+-		skel->rodata->print_len = (page_size + 8) / 8;
+-		expected_read_len = 2 * (page_size + 8);
++		skel->rodata->print_len = (iter_size + 8) / 8;
++		expected_read_len = 2 * (iter_size + 8);
+ 	} else if (!ret1) {
+-		skel->rodata->print_len = (page_size - 8) / 8;
+-		expected_read_len = 2 * (page_size - 8);
++		skel->rodata->print_len = (iter_size - 8) / 8;
++		expected_read_len = 2 * (iter_size - 8);
+ 	} else {
+ 		skel->rodata->print_len = 1;
+ 		expected_read_len = 2 * 8;
 -- 
 2.25.1
 
