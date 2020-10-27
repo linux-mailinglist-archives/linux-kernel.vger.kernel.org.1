@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A2F29BFBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 619C029BFD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1816555AbgJ0RHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40822 "EHLO mail.kernel.org"
+        id S369110AbgJ0RHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:07:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1762641AbgJ0PGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:06:41 -0400
+        id S1793527AbgJ0PGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:06:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F180C22275;
-        Tue, 27 Oct 2020 15:06:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B42F122453;
+        Tue, 27 Oct 2020 15:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811199;
-        bh=hyRHfek5kRpCjhxU/oAuY4RrZ4hzquBLpSBV0g4MUvY=;
+        s=default; t=1603811205;
+        bh=ChXSg92q0KDDStYfIpuZUm65CrxV/X8/S/XpJifQi6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NmRPPfiWApwtu3KOnLYgWcMZUxsBBUl3cfoVHTVAQ3MiitCocc7fe7QdFOdKUbsdV
-         N+up2jmdeClS7ITRPThl+Z3Yv+L48w7VsNideChm6cIhtv2bnmB16LPN4rLRIe7EmX
-         GVGRdCUMJarVuKH3x0ivNgiYRRtQGe8HIzbOVDDE=
+        b=MWQewhQWIHBkv/GVPTefnO5O7wsWFlKLEaMjEaK6x6hS65lK24B6WZNJwbUDgozNF
+         +f0Y1UvYbXRk01h5eoqQ3oEnbctW2j96e9K9mCBzn19vf4mlJ3cJHyRwsfnZX0JfBk
+         zHR+WwBTlinu+zCCI7Kh4QCz91VE5bQjGeIBHRa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 407/633] f2fs: reject CASEFOLD inode flag without casefold feature
-Date:   Tue, 27 Oct 2020 14:52:30 +0100
-Message-Id: <20201027135541.814012524@linuxfoundation.org>
+Subject: [PATCH 5.8 409/633] um: time-travel: Fix IRQ handling in time_travel_handle_message()
+Date:   Tue, 27 Oct 2020 14:52:32 +0100
+Message-Id: <20201027135541.910190231@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -46,67 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit f6322f3f1212e005e7e6aa82ceb62be53030a64b ]
+[ Upstream commit ebef8ea2ba967026192a26f4529890893919bc57 ]
 
-syzbot reported:
+As the comment here indicates, we need to do the polling in the
+idle loop without blocking interrupts, since interrupts can be
+vhost-user messages that we must process even while in our idle
+loop.
 
-    general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-    KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-    CPU: 0 PID: 6860 Comm: syz-executor835 Not tainted 5.9.0-rc8-syzkaller #0
-    Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-    RIP: 0010:utf8_casefold+0x43/0x1b0 fs/unicode/utf8-core.c:107
-    [...]
-    Call Trace:
-     f2fs_init_casefolded_name fs/f2fs/dir.c:85 [inline]
-     __f2fs_setup_filename fs/f2fs/dir.c:118 [inline]
-     f2fs_prepare_lookup+0x3bf/0x640 fs/f2fs/dir.c:163
-     f2fs_lookup+0x10d/0x920 fs/f2fs/namei.c:494
-     __lookup_hash+0x115/0x240 fs/namei.c:1445
-     filename_create+0x14b/0x630 fs/namei.c:3467
-     user_path_create fs/namei.c:3524 [inline]
-     do_mkdirat+0x56/0x310 fs/namei.c:3664
-     do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    [...]
+I don't know why I explained one thing and implemented another,
+but we have indeed observed random hangs due to this, depending
+on the timing of the messages.
 
-The problem is that an inode has F2FS_CASEFOLD_FL set, but the
-filesystem doesn't have the casefold feature flag set, and therefore
-super_block::s_encoding is NULL.
-
-Fix this by making sanity_check_inode() reject inodes that have
-F2FS_CASEFOLD_FL when the filesystem doesn't have the casefold feature.
-
-Reported-by: syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com
-Fixes: 2c2eb7a300cd ("f2fs: Support case-insensitive file name lookups")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 88ce64249233 ("um: Implement time-travel=ext")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/inode.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/um/kernel/time.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 44582a4db513e..1e014535c2530 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -287,6 +287,13 @@ static bool sanity_check_inode(struct inode *inode, struct page *node_page)
- 		return false;
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 25eaa6a0c6583..c07436e89e599 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -70,13 +70,17 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
+ 	 * read of the message and write of the ACK.
+ 	 */
+ 	if (mode != TTMH_READ) {
++		bool disabled = irqs_disabled();
++
++		BUG_ON(mode == TTMH_IDLE && !disabled);
++
++		if (disabled)
++			local_irq_enable();
+ 		while (os_poll(1, &time_travel_ext_fd) != 0) {
+-			if (mode == TTMH_IDLE) {
+-				BUG_ON(!irqs_disabled());
+-				local_irq_enable();
+-				local_irq_disable();
+-			}
++			/* nothing */
+ 		}
++		if (disabled)
++			local_irq_disable();
  	}
  
-+	if ((fi->i_flags & F2FS_CASEFOLD_FL) && !f2fs_sb_has_casefold(sbi)) {
-+		set_sbi_flag(sbi, SBI_NEED_FSCK);
-+		f2fs_warn(sbi, "%s: inode (ino=%lx) has casefold flag, but casefold feature is off",
-+			  __func__, inode->i_ino);
-+		return false;
-+	}
-+
- 	if (f2fs_has_extra_attr(inode) && f2fs_sb_has_compression(sbi) &&
- 			fi->i_flags & F2FS_COMPR_FL &&
- 			F2FS_FITS_IN_INODE(ri, fi->i_extra_isize,
+ 	ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
 -- 
 2.25.1
 
