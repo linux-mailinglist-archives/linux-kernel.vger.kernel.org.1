@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801EC29BD05
+	by mail.lfdr.de (Postfix) with ESMTP id 136DE29BD04
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811627AbgJ0QkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40470 "EHLO mail.kernel.org"
+        id S1811621AbgJ0QkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:40:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801900AbgJ0Po7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:44:59 -0400
+        id S1801895AbgJ0Po6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:44:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1722B24179;
-        Tue, 27 Oct 2020 15:44:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 089AF24196;
+        Tue, 27 Oct 2020 15:44:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813464;
-        bh=kFEfJA0BIjYptAwEMhWlCAXI1053v3fyFVB4Ke9sztU=;
+        s=default; t=1603813470;
+        bh=AYKo494trzgMeRK2ETB3lzu2juyX0qX3zdZH46EToeM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yShlfAozGsnl8NzJi+tGe8wtc0UYWqwRAvO4Bx11ZUHewDeEVURdA5/OrAEaaJGzz
-         cmK5hL1+IQlw0yee8JT3kBWqA059SwKSHRLhRSHDJPLlaGezoMo/8Dq/kDTsbn/nWo
-         yf9yNR+eULv/oWtqb6DOvU9mr4UQ45zJ5oXRvgFY=
+        b=EJspha+x3LLnR91AfWPBS+UYfFyFylpFUIFIKklELsMpWOXCK1T80hogUUBLOHxD3
+         sh/xxJMBAhzs8Jd2OQPp1fvgg/Ndz47NatlKSC/RlZYuWf80RBrEuT/VFRbTh8MKxx
+         SjoRQSMnwa/abLfn40w8kml+zah8S6w5pwWTJ2SM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Azhar Shaikh <azhar.shaikh@intel.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        stable@vger.kernel.org,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 560/757] platform/chrome: cros_ec_typec: Send enum values to usb_role_switch_set_role()
-Date:   Tue, 27 Oct 2020 14:53:30 +0100
-Message-Id: <20201027135516.764284415@linuxfoundation.org>
+Subject: [PATCH 5.9 562/757] Input: elants_i2c - fix typo for an attribute to show calibration count
+Date:   Tue, 27 Oct 2020 14:53:32 +0100
+Message-Id: <20201027135516.858598531@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -45,42 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Azhar Shaikh <azhar.shaikh@intel.com>
+From: Johnny Chuang <johnny.chuang.emc@gmail.com>
 
-[ Upstream commit 5381b0ed54b6af3c0e8184b43e34154e17904848 ]
+[ Upstream commit 93f634069707cfe562c38739f5062feccbe9a834 ]
 
-usb_role_switch_set_role() has the second argument as enum for usb_role.
-Currently depending upon the data role i.e. UFP(0) or DFP(1) is sent.
-This eventually translates to USB_ROLE_NONE in case of UFP and
-USB_ROLE_DEVICE in case of DFP. Correct this by sending correct enum
-values as USB_ROLE_DEVICE in case of UFP and USB_ROLE_HOST in case of
-DFP.
+Fixed typo for command from 0xE0 to 0xD0.
 
-Fixes: 7e7def15fa4b ("platform/chrome: cros_ec_typec: Add USB mux control")
-Signed-off-by: Azhar Shaikh <azhar.shaikh@intel.com>
-Cc: Prashant Malani <pmalani@chromium.org>
-Reviewed-by: Prashant Malani <pmalani@chromium.org>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Fixes: cf520c643012 ("Input: elants_i2c - provide an attribute to show calibration count")
+Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+Link: https://lore.kernel.org/r/1600238783-32303-1-git-send-email-johnny.chuang.emc@gmail.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/chrome/cros_ec_typec.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/touchscreen/elants_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 3fcd27ec9ad8f..10ef1fc75c0e1 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -591,7 +591,8 @@ static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
- 		dev_warn(typec->dev, "Configure muxes failed, err = %d\n", ret);
- 
- 	return usb_role_switch_set_role(typec->ports[port_num]->role_sw,
--					!!(resp.role & PD_CTRL_RESP_ROLE_DATA));
-+					resp.role & PD_CTRL_RESP_ROLE_DATA
-+					? USB_ROLE_HOST : USB_ROLE_DEVICE);
- }
- 
- static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
+index b0bd5bb079bec..75b39ef39b743 100644
+--- a/drivers/input/touchscreen/elants_i2c.c
++++ b/drivers/input/touchscreen/elants_i2c.c
+@@ -90,7 +90,7 @@
+ /* FW read command, 0x53 0x?? 0x0, 0x01 */
+ #define E_ELAN_INFO_FW_VER	0x00
+ #define E_ELAN_INFO_BC_VER	0x10
+-#define E_ELAN_INFO_REK		0xE0
++#define E_ELAN_INFO_REK		0xD0
+ #define E_ELAN_INFO_TEST_VER	0xE0
+ #define E_ELAN_INFO_FW_ID	0xF0
+ #define E_INFO_OSR		0xD6
 -- 
 2.25.1
 
