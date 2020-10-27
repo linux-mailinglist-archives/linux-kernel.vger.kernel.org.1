@@ -2,174 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC60629BD15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F2129BD8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811735AbgJ0Qk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:40:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:46122 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1811036AbgJ0Qgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:36:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE238150C;
-        Tue, 27 Oct 2020 09:36:50 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (e108754-lin.cambridge.arm.com [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 53D3A3F719;
-        Tue, 27 Oct 2020 09:36:49 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com
-Cc:     morten.rasmussen@arm.com, valentin.schneider@arm.com,
-        souvik.chakravarty@arm.com, viresh.kumar@linaro.org,
-        dietmar.eggemann@arm.com, ionela.voinescu@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v2 3/3] arm64: implement CPPC FFH support using AMUs
-Date:   Tue, 27 Oct 2020 16:36:24 +0000
-Message-Id: <20201027163624.20747-4-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027163624.20747-1-ionela.voinescu@arm.com>
-References: <20201027163624.20747-1-ionela.voinescu@arm.com>
+        id S1811807AbgJ0Qmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:42:38 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:40068 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1811194AbgJ0QiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:38:05 -0400
+Received: by mail-pf1-f194.google.com with SMTP id w21so1224327pfc.7;
+        Tue, 27 Oct 2020 09:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=T0NQC8q5PZfZ/nsIJ5qKnoN7K1varb2/TGSSOiRrezY=;
+        b=M1vwXINyKCI2zbkqZyjRXzOz+OiTTjv5+YsMO5WomPxQ3OpKFOn7449dzir9pXj29D
+         N5LsWZQuc+CpSU0G6fApBL8OSc3ryHX6s4+fH7/jMVFh8f3/aTe3/XJ1Ptp/jgX7r+t9
+         9xZFjZp26qxDvFk9dfn92Za9iIbief2hH5kZJ6lYpp2Ug7hYAdAIIbpVGHbquuB8px5+
+         LJQUV0NFSXrXOEc1N2TBFJmfeEId/wIGYG3QrPBOWi9ebke753T1av3HH461g4YDBEmp
+         Rt6Abuk4cHAhe3quvhm7Y+ucPdDhEs7s8FvMm4Xd2uPJGWC7E+Bo6tSPsXJgl9VVG1XI
+         FABw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=T0NQC8q5PZfZ/nsIJ5qKnoN7K1varb2/TGSSOiRrezY=;
+        b=T0KovKs6r2x/Qgd6mTlUitQ+6wDSJ7ET11exBu2ksQOdzZJ5QmDpTryBeYUhfZJamf
+         0gMjmfl6xdBvQTEXZkk1GituI/nIa1pfWPpug+ppnkoEBdVinqUzoAnMOT/zdCYGRQtL
+         BqU/V3SFGh6x9XLbT8aTcJxd/lZzCkZTglaqUwtuJyT59/1kItg0LZdoo36N03SzscXt
+         4cjdr+p4duk67u5nwGxRu2DDh5t6ijnYdtZRWUX6G+hrJN4faDTT5wwbOm5/AyCXTQaM
+         KK467OBhZEJT2Gjd3f58BdUEoXchw46aQF4fhu8xWJyp4O53JKFTp8/eIvtKOxz7A6pm
+         7XvQ==
+X-Gm-Message-State: AOAM532/wGcsnnyTkbX/YHwt061OJlfLKu5l3XWbWI44rE3muq5d2s2w
+        2YOEKJCIbZPkB13WZO3+7w==
+X-Google-Smtp-Source: ABdhPJxBV7fdXTggzQ998E92lWxE1sdD8P1AgGgCr6mresHIg18LPfPSKo6TccWBfKl7Hovza/PVDw==
+X-Received: by 2002:a63:5d61:: with SMTP id o33mr2564224pgm.295.1603816685018;
+        Tue, 27 Oct 2020 09:38:05 -0700 (PDT)
+Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id b7sm3139676pfr.171.2020.10.27.09.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 09:38:04 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH 4/5] fbcon: Avoid hard-coding built-in font charcount
+Date:   Tue, 27 Oct 2020 12:37:29 -0400
+Message-Id: <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com> <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com> <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com> <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If Activity Monitors (AMUs) are present, two of the counters can be used
-to implement support for CPPC's (Collaborative Processor Performance
-Control) delivered and reference performance monitoring functionality
-using FFH (Functional Fixed Hardware).
+fbcon_startup() and fbcon_init() are hard-coding the number of characters
+of our built-in fonts as 256. Recently, we included that information in
+our kernel font descriptor `struct font_desc`, so use `font->charcount`
+instead of a hard-coded value.
 
-Given that counters for a certain CPU can only be read from that CPU,
-while FFH operations can be called from any CPU for any of the CPUs, use
-smp_call_function_single() to provide the requested values.
+This patch depends on patch "Fonts: Add charcount field to font_desc".
 
-Therefore, depending on the register addresses, the following values
-are returned:
- - 0x0 (DeliveredPerformanceCounterRegister): AMU core counter
- - 0x1 (ReferencePerformanceCounterRegister): AMU constant counter
-
-The use of Activity Monitors is hidden behind the generic
-{read,store}_{corecnt,constcnt}() functions.
-
-Read functionality for these two registers represents the only current
-FFH support for CPPC. Read operations for other register values or write
-operation for all registers are unsupported. Therefore, keep CPPC's FFH
-unsupported if no CPUs have valid AMU frequency counters. For this
-purpose, the get_cpu_with_amu_feat() is introduced.
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 ---
- arch/arm64/include/asm/cpufeature.h |  6 ++++
- arch/arm64/kernel/cpufeature.c      |  5 +++
- arch/arm64/kernel/topology.c        | 54 +++++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
+ drivers/video/fbdev/core/fbcon.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 42187f424e11..9f4bdd2b26bf 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -741,9 +741,15 @@ static inline bool cpu_has_hw_af(void)
- }
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index cef437817b0d..e563847991b7 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -1004,7 +1004,7 @@ static const char *fbcon_startup(void)
+ 		vc->vc_font.width = font->width;
+ 		vc->vc_font.height = font->height;
+ 		vc->vc_font.data = (void *)(p->fontdata = font->data);
+-		vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
++		vc->vc_font.charcount = font->charcount;
+ 	} else {
+ 		p->fontdata = vc->vc_font.data;
+ 	}
+@@ -1083,8 +1083,7 @@ static void fbcon_init(struct vc_data *vc, int init)
+ 			vc->vc_font.width = font->width;
+ 			vc->vc_font.height = font->height;
+ 			vc->vc_font.data = (void *)(p->fontdata = font->data);
+-			vc->vc_font.charcount = 256; /* FIXME  Need to
+-							support more fonts */
++			vc->vc_font.charcount = font->charcount;
+ 		}
+ 	}
  
- #ifdef CONFIG_ARM64_AMU_EXTN
-+/* Get a cpu that supports the Activity Monitors Unit (AMU) */
-+extern int get_cpu_with_amu_feat(void);
- /* Check whether the cpu supports the Activity Monitors Unit (AMU) */
- extern bool cpu_has_amu_feat(int cpu);
- #else
-+static inline int get_cpu_with_amu_feat(void)
-+{
-+	return nr_cpu_ids;
-+}
- static inline bool cpu_has_amu_feat(int cpu)
- {
- 	return false;
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 1142970e985b..c867a1e484b9 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1526,6 +1526,11 @@ bool cpu_has_amu_feat(int cpu)
- 	return cpumask_test_cpu(cpu, &amu_cpus);
- }
- 
-+int get_cpu_with_amu_feat(void)
-+{
-+	return cpumask_any(&amu_cpus);
-+}
-+
- static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
- {
- 	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 764fdb0f947b..7d25087deaa5 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -154,6 +154,9 @@ void update_freq_counters_refs(void)
- 
- static inline bool freq_counters_valid(int cpu)
- {
-+	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
-+		return false;
-+
- 	if (!cpu_has_amu_feat(cpu)) {
- 		pr_debug("CPU%d: counters are not supported.\n", cpu);
- 		return false;
-@@ -330,3 +333,54 @@ void topology_scale_freq_tick(void)
- 	this_cpu_write(arch_core_cycles_prev, core_cnt);
- 	this_cpu_write(arch_const_cycles_prev, const_cnt);
- }
-+
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+#include <acpi/cppc_acpi.h>
-+
-+static inline
-+int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
-+{
-+	if (!cpu_has_amu_feat(cpu))
-+		return -EOPNOTSUPP;
-+
-+	smp_call_function_single(cpu, func, val, 1);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Refer to drivers/acpi/cppc_acpi.c for the description of the functions
-+ * below.
-+ */
-+bool cpc_ffh_supported(void)
-+{
-+	return freq_counters_valid(get_cpu_with_amu_feat());
-+}
-+
-+int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
-+{
-+	int ret = -EOPNOTSUPP;
-+
-+	switch ((u64)reg->address) {
-+	case 0x0:
-+		ret = counters_read_on_cpu(cpu, store_corecnt, val);
-+		break;
-+	case 0x1:
-+		ret = counters_read_on_cpu(cpu, store_constcnt, val);
-+		break;
-+	}
-+
-+	if (!ret) {
-+		*val &= GENMASK_ULL(reg->bit_offset + reg->bit_width - 1,
-+				    reg->bit_offset);
-+		*val >>= reg->bit_offset;
-+	}
-+
-+	return ret;
-+}
-+
-+int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif /* CONFIG_ACPI_CPPC_LIB */
 -- 
-2.17.1
+2.25.1
 
