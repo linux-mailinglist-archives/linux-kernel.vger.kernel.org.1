@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F1A29C6F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99F529C6F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827676AbgJ0S0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:26:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48180 "EHLO mail.kernel.org"
+        id S2504388AbgJ0S0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504321AbgJ0OAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:00:39 -0400
+        id S2504455AbgJ0OAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:00:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA9CC221F8;
-        Tue, 27 Oct 2020 14:00:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82140221F7;
+        Tue, 27 Oct 2020 14:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807239;
-        bh=kLqIkf1/SE8r4Wp0lP0UfuPx18W515CGoNhTtTNwxRQ=;
+        s=default; t=1603807242;
+        bh=3cDwcsEqcXMcYmODxaVu6YHF7Grm6Y61cmraLn+kRxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EdAn1RqTjjfX1ZHINkxDtPfp3iBJR0rSn42ju9uvkXLQ+nxKrPktO09Lb4ebS8b6L
-         Lpp1eY9XV78fIGbxm3Pc08KHL4V+ENlhNMx9ahGCVcAgvFvq+O6hU8liJMa4BVCJRS
-         MgbCw0L3TySOa7DhmkVVn5obzO+LOHwbhtmNYYck=
+        b=bWHnX5vjhzNooLGzroXtKsMazSH/r59CCHlKj8mTBYnKM7YDmyQcz6SOPL6/UQpcm
+         UB4xgdPKYvZq5JR6G2v+xyAc7Shma4U1W/FQt4ADMyyQ+f82XCiYUKbHC7tRp0b9Uh
+         7v6zAdjULs4geX6a1rlEPBsRGbuh0FMvdu7Olhe8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
+        stable@vger.kernel.org, Kajol Jain <kjain@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 063/112] kdb: Fix pager search for multi-line strings
-Date:   Tue, 27 Oct 2020 14:49:33 +0100
-Message-Id: <20201027134903.552351943@linuxfoundation.org>
+Subject: [PATCH 4.4 064/112] powerpc/perf/hv-gpci: Fix starting index value
+Date:   Tue, 27 Oct 2020 14:49:34 +0100
+Message-Id: <20201027134903.593616936@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -43,53 +43,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Thompson <daniel.thompson@linaro.org>
+From: Kajol Jain <kjain@linux.ibm.com>
 
-[ Upstream commit d081a6e353168f15e63eb9e9334757f20343319f ]
+[ Upstream commit 0f9866f7e85765bbda86666df56c92f377c3bc10 ]
 
-Currently using forward search doesn't handle multi-line strings correctly.
-The search routine replaces line breaks with \0 during the search and, for
-regular searches ("help | grep Common\n"), there is code after the line
-has been discarded or printed to replace the break character.
+Commit 9e9f60108423f ("powerpc/perf/{hv-gpci, hv-common}: generate
+requests with counters annotated") adds a framework for defining
+gpci counters.
+In this patch, they adds starting_index value as '0xffffffffffffffff'.
+which is wrong as starting_index is of size 32 bits.
 
-However during a pager search ("help\n" followed by "/Common\n") when the
-string is matched we will immediately return to normal output and the code
-that should restore the \n becomes unreachable. Fix this by restoring the
-replaced character when we disable the search mode and update the comment
-accordingly.
+Because of this, incase we try to run hv-gpci event we get error.
 
-Fixes: fb6daa7520f9d ("kdb: Provide forward search at more prompt")
-Link: https://lore.kernel.org/r/20200909141708.338273-1-daniel.thompson@linaro.org
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+In power9 machine:
+
+command#: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+          -C 0 -I 1000
+event syntax error: '..bie_count_and_time_tlbie_instructions_issued/'
+                                  \___ value too big for format, maximum is 4294967295
+
+This patch fix this issue and changes starting_index value to '0xffffffff'
+
+After this patch:
+
+command#: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/ -C 0 -I 1000
+     1.000085786              1,024      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     2.000287818              1,024      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     2.439113909             17,408      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+
+Fixes: 9e9f60108423 ("powerpc/perf/{hv-gpci, hv-common}: generate requests with counters annotated")
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201003074943.338618-1-kjain@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/debug/kdb/kdb_io.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/powerpc/perf/hv-gpci-requests.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-index cc892a9e109d8..ae39b014b7d6c 100644
---- a/kernel/debug/kdb/kdb_io.c
-+++ b/kernel/debug/kdb/kdb_io.c
-@@ -683,12 +683,16 @@ int vkdb_printf(enum kdb_msgsrc src, const char *fmt, va_list ap)
- 			size_avail = sizeof(kdb_buffer) - len;
- 			goto kdb_print_out;
- 		}
--		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH)
-+		if (kdb_grepping_flag >= KDB_GREPPING_FLAG_SEARCH) {
- 			/*
- 			 * This was a interactive search (using '/' at more
--			 * prompt) and it has completed. Clear the flag.
-+			 * prompt) and it has completed. Replace the \0 with
-+			 * its original value to ensure multi-line strings
-+			 * are handled properly, and return to normal mode.
- 			 */
-+			*cphold = replaced_byte;
- 			kdb_grepping_flag = 0;
-+		}
- 		/*
- 		 * at this point the string is a full line and
- 		 * should be printed, up to the null.
+diff --git a/arch/powerpc/perf/hv-gpci-requests.h b/arch/powerpc/perf/hv-gpci-requests.h
+index acd17648cd188..5ea24d16a74a1 100644
+--- a/arch/powerpc/perf/hv-gpci-requests.h
++++ b/arch/powerpc/perf/hv-gpci-requests.h
+@@ -94,7 +94,7 @@ REQUEST(__field(0,	8,	partition_id)
+ 
+ #define REQUEST_NAME system_performance_capabilities
+ #define REQUEST_NUM 0x40
+-#define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
++#define REQUEST_IDX_KIND "starting_index=0xffffffff"
+ #include I(REQUEST_BEGIN)
+ REQUEST(__field(0,	1,	perf_collect_privileged)
+ 	__field(0x1,	1,	capability_mask)
+@@ -222,7 +222,7 @@ REQUEST(__field(0,	2, partition_id)
+ 
+ #define REQUEST_NAME system_hypervisor_times
+ #define REQUEST_NUM 0xF0
+-#define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
++#define REQUEST_IDX_KIND "starting_index=0xffffffff"
+ #include I(REQUEST_BEGIN)
+ REQUEST(__count(0,	8,	time_spent_to_dispatch_virtual_processors)
+ 	__count(0x8,	8,	time_spent_processing_virtual_processor_timers)
+@@ -233,7 +233,7 @@ REQUEST(__count(0,	8,	time_spent_to_dispatch_virtual_processors)
+ 
+ #define REQUEST_NAME system_tlbie_count_and_time
+ #define REQUEST_NUM 0xF4
+-#define REQUEST_IDX_KIND "starting_index=0xffffffffffffffff"
++#define REQUEST_IDX_KIND "starting_index=0xffffffff"
+ #include I(REQUEST_BEGIN)
+ REQUEST(__count(0,	8,	tlbie_instructions_issued)
+ 	/*
 -- 
 2.25.1
 
