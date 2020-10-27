@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC0629B524
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1B029B53E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793834AbgJ0PId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38128 "EHLO mail.kernel.org"
+        id S1794038AbgJ0PJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:09:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790054AbgJ0PDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:03:40 -0400
+        id S1790069AbgJ0PDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:03:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9189B206E5;
-        Tue, 27 Oct 2020 15:03:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0578E20747;
+        Tue, 27 Oct 2020 15:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811020;
-        bh=ozxkbFFenR9Y7zzU2twX5o755Tjx9+u4UuqQpLoXqVY=;
+        s=default; t=1603811025;
+        bh=LGwsaEU/vCW1w8rIqeoh0Z85x0b832Nyw5LMC9pOKSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2VEzJPUHYUqY9XXDVtgziP8lKlQYltaez3qQNupchc8jXAOArvN5kusCNU90IM5Ii
-         X86DBL+EPUnG0EvmFtXcShmXy1bA/zFyVtLWZo+O77JcVdK24eV/Zzarb9Qdo10cdw
-         5/pumsmgzrhHwH9reSzrbLDhs/pY5vsRaY2wgNRM=
+        b=XtWhozHfwnBzwHqpwdw7nyfDViB+0MIBQeggdbE8DervjpkF8YJpNDXqFbFljL8jM
+         Bz4ZOVtEXFozmsTujJIEfLRqYUJkB3OpxeFotaZRR/aaEFQR9v3YxydfUFONjLAEII
+         Z9/r1Op7Ga2Z20CR/HwL07iD91mG9es2d19/NmzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 314/633] net: korina: fix kfree of rx/tx descriptor array
-Date:   Tue, 27 Oct 2020 14:50:57 +0100
-Message-Id: <20201027135537.406884535@linuxfoundation.org>
+Subject: [PATCH 5.8 316/633] mm/swapfile.c: fix potential memory leak in sys_swapon
+Date:   Tue, 27 Oct 2020 14:50:59 +0100
+Message-Id: <20201027135537.500219645@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,44 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 3af5f0f5c74ecbaf757ef06c3f80d56751277637 ]
+[ Upstream commit 822bca52ee7eb279acfba261a423ed7ac47d6f73 ]
 
-kmalloc returns KSEG0 addresses so convert back from KSEG1
-in kfree. Also make sure array is freed when the driver is
-unloaded from the kernel.
+If we failed to drain inode, we would forget to free the swap address
+space allocated by init_swap_address_space() above.
 
-Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: dc617f29dbe5 ("vfs: don't allow writes to swap files")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Link: https://lkml.kernel.org/r/20200930101803.53884-1-linmiaohe@huawei.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/korina.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/swapfile.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 03e034918d147..af441d699a57a 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1113,7 +1113,7 @@ static int korina_probe(struct platform_device *pdev)
- 	return rc;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 26707c5dc9fce..605294e4df684 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3336,7 +3336,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	error = inode_drain_writes(inode);
+ 	if (error) {
+ 		inode->i_flags &= ~S_SWAPFILE;
+-		goto bad_swap_unlock_inode;
++		goto free_swap_address_space;
+ 	}
  
- probe_err_register:
--	kfree(lp->td_ring);
-+	kfree(KSEG0ADDR(lp->td_ring));
- probe_err_td_ring:
- 	iounmap(lp->tx_dma_regs);
- probe_err_dma_tx:
-@@ -1133,6 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
- 	iounmap(lp->eth_regs);
- 	iounmap(lp->rx_dma_regs);
- 	iounmap(lp->tx_dma_regs);
-+	kfree(KSEG0ADDR(lp->td_ring));
+ 	mutex_lock(&swapon_mutex);
+@@ -3361,6 +3361,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
  
- 	unregister_netdev(bif->dev);
- 	free_netdev(bif->dev);
+ 	error = 0;
+ 	goto out;
++free_swap_address_space:
++	exit_swap_address_space(p->type);
+ bad_swap_unlock_inode:
+ 	inode_unlock(inode);
+ bad_swap:
 -- 
 2.25.1
 
