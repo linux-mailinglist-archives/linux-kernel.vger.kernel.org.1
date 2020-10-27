@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE67029B1CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518DE29B1D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760278AbgJ0OeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
+        id S1760593AbgJ0OfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:35:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902372AbgJ0Oc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:32:58 -0400
+        id S1760259AbgJ0OeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:34:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8420720709;
-        Tue, 27 Oct 2020 14:32:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AA7D20773;
+        Tue, 27 Oct 2020 14:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809177;
-        bh=YqtLuZQZPmRkC5QNozAQcF6nEFU1MFaMOGR/B2pblzs=;
+        s=default; t=1603809259;
+        bh=HX3aU6P1SMK8sP+Jjk+iqfwLcjm4EHSdB8nhGyqW1Q4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gvera7Vc3qmu/lWG3CtnptsMAjCu2V4XzQ4BRkV6hxqwrAZ991gaV0y6Moh8WPr6k
-         KxpUzG4Uo0hX+1yyp6xORfajcCizISkoMCbvNnWh2a2T6kOYw75ArSnAKhLq/Zc/CD
-         tAiSiGQ3frZKxTSA6I4wlhwcKoceKqR4NjO8Ut6U=
+        b=yB7LIqAcAU7wi8E5ZhhV7GuDggekGcMGQLKHe0QdsVp4OHJeHQEmkh+ha56/dPUGn
+         BKQ2oLnK0rqKeX37aYSVYkHMFNSfHSfIxtBLXBAZ4VRSwiofvJ8PVVjQGQIg8vr9+Z
+         fRq+ny/LQeBYzOoGf3I6YC+AZQvP2avRbRL2brQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Venkateswara Naralasetty <vnaralas@codeaurora.org>,
-        Markus Theil <markus.theil@tu-ilmenau.de>,
-        John Deere <24601deerej@gmail.com>,
-        Sven Eckelmann <sven@narfation.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 103/408] ath10k: provide survey info as accumulated data
-Date:   Tue, 27 Oct 2020 14:50:41 +0100
-Message-Id: <20201027135459.879588055@linuxfoundation.org>
+Subject: [PATCH 5.4 115/408] mwifiex: Do not use GFP_KERNEL in atomic context
+Date:   Tue, 27 Oct 2020 14:50:53 +0100
+Message-Id: <20201027135500.438619721@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -47,71 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 720e5c03e5cb26d33d97f55192b791bb48478aa5 ]
+[ Upstream commit d2ab7f00f4321370a8ee14e5630d4349fdacc42e ]
 
-It is expected that the returned counters by .get_survey are monotonic
-increasing. But the data from ath10k gets reset to zero regularly. Channel
-active/busy time are then showing incorrect values (less than previous or
-sometimes zero) for the currently active channel during successive survey
-dump commands.
+A possible call chain is as follow:
+  mwifiex_sdio_interrupt                            (sdio.c)
+    --> mwifiex_main_process                        (main.c)
+      --> mwifiex_process_cmdresp                   (cmdevt.c)
+        --> mwifiex_process_sta_cmdresp             (sta_cmdresp.c)
+          --> mwifiex_ret_802_11_scan               (scan.c)
+            --> mwifiex_parse_single_response_buf   (scan.c)
 
-example:
+'mwifiex_sdio_interrupt()' is an interrupt function.
 
-  $ iw dev wlan0 survey dump
-  Survey data from wlan0
-  	frequency:                      5180 MHz [in use]
-  	channel active time:            54995 ms
-  	channel busy time:              432 ms
-  	channel receive time:           0 ms
-  	channel transmit time:          59 ms
-  ...
+Also note that 'mwifiex_ret_802_11_scan()' already uses GFP_ATOMIC.
 
-  $ iw dev wlan0 survey dump
-  Survey data from wlan0
-  	frequency:                      5180 MHz [in use]
-  	channel active time:            32592 ms
-  	channel busy time:              254 ms
-  	channel receive time:           0 ms
-  	channel transmit time:          0 ms
-  ...
+So use GFP_ATOMIC instead of GFP_KERNEL when memory is allocated in
+'mwifiex_parse_single_response_buf()'.
 
-The correct way to handle this is to use the non-clearing
-WMI_BSS_SURVEY_REQ_TYPE_READ wmi_bss_survey_req_type. The firmware will
-then accumulate the survey data and handle wrap arounds.
-
-Tested-on: QCA9984 hw1.0 10.4-3.5.3-00057
-Tested-on: QCA988X hw2.0 10.2.4-1.0-00047
-Tested-on: QCA9888 hw2.0 10.4-3.9.0.2-00024
-Tested-on: QCA4019 hw1.0 10.4-3.6-00140
-
-Fixes: fa7937e3d5c2 ("ath10k: update bss channel survey information")
-Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
-Tested-by: Markus Theil <markus.theil@tu-ilmenau.de>
-Tested-by: John Deere <24601deerej@gmail.com>
-[sven@narfation.org: adjust commit message]
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Fixes: 7c6fa2a843c5 ("mwifiex: use cfg80211 dynamic scan table and cfg80211_get_bss API")
+or
+Fixes: 601216e12c65e ("mwifiex: process RX packets in SDIO IRQ thread directly")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1592232686-28712-1-git-send-email-kvalo@codeaurora.org
+Link: https://lore.kernel.org/r/20200809092906.744621-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+ drivers/net/wireless/marvell/mwifiex/scan.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d373602a80145..915ba2a7f7448 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7131,7 +7131,7 @@ ath10k_mac_update_bss_chan_survey(struct ath10k *ar,
- 				  struct ieee80211_channel *channel)
- {
- 	int ret;
--	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ_CLEAR;
-+	enum wmi_bss_survey_req_type type = WMI_BSS_SURVEY_REQ_TYPE_READ;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
+diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
+index 59f0651d148bb..629af26675cf1 100644
+--- a/drivers/net/wireless/marvell/mwifiex/scan.c
++++ b/drivers/net/wireless/marvell/mwifiex/scan.c
+@@ -1891,7 +1891,7 @@ mwifiex_parse_single_response_buf(struct mwifiex_private *priv, u8 **bss_info,
+ 					    chan, CFG80211_BSS_FTYPE_UNKNOWN,
+ 					    bssid, timestamp,
+ 					    cap_info_bitmap, beacon_period,
+-					    ie_buf, ie_len, rssi, GFP_KERNEL);
++					    ie_buf, ie_len, rssi, GFP_ATOMIC);
+ 			if (bss) {
+ 				bss_priv = (struct mwifiex_bss_priv *)bss->priv;
+ 				bss_priv->band = band;
 -- 
 2.25.1
 
