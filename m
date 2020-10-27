@@ -2,128 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934B029A94F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548F529A955
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897658AbgJ0KPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:15:49 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52354 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897644AbgJ0KPi (ORCPT
+        id S2897684AbgJ0KQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:16:06 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:44773 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2897674AbgJ0KQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:15:38 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 704DC1C0B8B; Tue, 27 Oct 2020 11:15:35 +0100 (CET)
-Date:   Tue, 27 Oct 2020 11:15:35 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] leds: rt4505: Add support for Richtek RT4505
- flash led controller
-Message-ID: <20201027101535.GB13900@duo.ucw.cz>
-References: <1603784069-24114-1-git-send-email-u0084500@gmail.com>
- <20201027082900.GA21354@amd>
- <CADiBU3915nyB2OE_bqPy8kVqPhKbdTpBe8ay_ZAoFwuJoL-BfQ@mail.gmail.com>
+        Tue, 27 Oct 2020 06:16:04 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5E29658026C;
+        Tue, 27 Oct 2020 06:16:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 27 Oct 2020 06:16:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=6ek8BSXlWORnKgWBP5B1QQSoz7
+        NyffqGB/miVQHie5s=; b=jd+cEYOKyqBI6Z4flqJkU0nSnJreKbFG7FEZ94JcLj
+        I4fpqUTlV6+QPT1SXZ1D9ox1NltkhHmJICAMw0TchWZ8onD/Gt8y+wgZ6sqkURP0
+        dVuo3wgTLcNNj0Zjz0u5xS/Iq25XjpOhsTVawGGHWE9P+v4ZemmM0dJyJtQF4NPO
+        e4R3pml9xa4VsMe29g8T1apsKmMG4BYw7UIDIlL6C6CRBm0i0X2kWxXhty2ZzlZD
+        RZuUyDkx7ZxoTeCWzYbaf7X+zFacisfjD3KogNMa+8AOLlGu/BkP2vaHDFSKZRjN
+        H/dYKrg0gYYvX5fRWMcpI+p10Lv73aobZx/o0arBrVhQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=6ek8BSXlWORnKgWBP
+        5B1QQSoz7NyffqGB/miVQHie5s=; b=laAL9ajaUvSvn+d2qPIfsh7b+l9hhC87+
+        dtA1GPLq9YjglxPYJR1ewC4lVdkZyxuyxig7rcVSsLyXnqAJfBBXS2dGM7V0kK3b
+        5o7n01bXo3YBf/ai7L/ayv6aBg0orgNVbMPSBbCFxJoplJf6DzCCydhjr6MjokdP
+        2xzNK5bQk1vd/3lnFUP2J4YNbldo4VP/j8FdGAwI+UICdisFVulO9O8fGT742RpA
+        sIhcUeFKdwlBtd7cus3yG22WFQaKfhuOnYYsE0lIWwWnNM0VyP/ZHq05JxtTPEj8
+        0P2rEoWgXkyONIbEdvgk8dQxBE12Cf4HIj9pt2CK1JOqdhdVdjm9A==
+X-ME-Sender: <xms:YfOXXyudBtTFTDcaWmwGap3SIvxqV7hshZJ_GphIwSsMKoMSESDwMQ>
+    <xme:YfOXX3epn63wLpbySvXh8mgbMC7WJUCQkwtzqH2QuHMygrkpkL8DE9RqC88MhJmjJ
+    QA2ImQCIvnzSNtAfcE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucft
+    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
+    hnpeejffehuddvvddvlefhgeelleffgfeijedvhefgieejtdeiueetjeetfeeukeejgeen
+    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:YfOXX9xpUMKgAByl8QlIGHPUmhXjt1RKTO99sh0xR6QvpyE5MO_rxQ>
+    <xmx:YfOXX9MmDJ-qm7r5w91mt6-qYk5PLxAHZmcKIxyXaaZ_zh8VMREf_w>
+    <xmx:YfOXXy_e1aOcFCJs-PnpJYvc2ILdBNNF4f_qFFXyL-WIyURGEPXMpA>
+    <xmx:YvOXX1VC_02m04r_d-yiwhKt8TwnE5Jd8f6uIuEp0ffn5IQ1HJS0DQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B861D328005D;
+        Tue, 27 Oct 2020 06:16:00 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH] drm/vc4: hdmi: Avoid sleeping in atomic context
+Date:   Tue, 27 Oct 2020 11:15:58 +0100
+Message-Id: <20201027101558.427256-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
-Content-Disposition: inline
-In-Reply-To: <CADiBU3915nyB2OE_bqPy8kVqPhKbdTpBe8ay_ZAoFwuJoL-BfQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When running the trigger hook, ALSA by default will take a spinlock, and
+thus will run the trigger hook in atomic context.
 
---s/l3CgOIzMHHjg/5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, our HDMI driver will send the infoframes as part of the trigger
+hook, and part of that process is to wait for a bit to be cleared for up to
+100ms. To be nicer to the system, that wait has some usleep_range that
+interact poorly with the atomic context.
 
-Hi!
+There's several ways we can fix this, but the more obvious one is to make
+ALSA take a mutex instead by setting the nonatomic flag on the DAI link.
+That doesn't work though, since now the cyclic callback installed by the
+dmaengine helpers in ALSA will take a mutex, while that callback is run by
+dmaengine's virt-chan code in a tasklet where sleeping is not allowed
+either.
 
-> > Please use upper-case "LED" everywhere.
-> >
-> > This should be 2nd in the series, after DT changes.
-> Sure, will ack in next series patch.
+Given the delay we need to poll the bit for, changing the usleep_range for
+a udelay and keep running it from a context where interrupts are disabled
+is not really a good option either.
 
-Feel free to wait for dt ACKs before resending.
+However, we can move the infoframe setup code in the hw_params hook, like
+is usually done in other HDMI controllers, that isn't protected by a
+spinlock and thus where we can sleep. Infoframes will be sent on a regular
+basis anyway, and since hw_params is where the audio parameters that end up
+in the infoframes are setup, this also makes a bit more sense.
 
-> > > +     help
-> > > +       This option enables support for the RT4505 flash led controll=
-er.
-> >
-> > Information where it is used would be welcome here.
-> How about to add the below line for the extra information?
-> Usually used to company with the camera device on smartphone/tablet
-> products
+Fixes: bb7d78568814 ("drm/vc4: Add HDMI audio support")
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Yes, that would help.
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 74da7c00ecd0..ec3ba3ecd32a 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1077,6 +1077,7 @@ static int vc4_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai)
+ {
+ 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
++	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+ 	struct device *dev = &vc4_hdmi->pdev->dev;
+ 	u32 audio_packet_config, channel_mask;
+ 	u32 channel_map;
+@@ -1136,6 +1137,8 @@ static int vc4_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
+ 	HDMI_WRITE(HDMI_AUDIO_PACKET_CONFIG, audio_packet_config);
+ 	vc4_hdmi_set_n_cts(vc4_hdmi);
+ 
++	vc4_hdmi_set_audio_infoframe(encoder);
++
+ 	return 0;
+ }
+ 
+@@ -1143,11 +1146,9 @@ static int vc4_hdmi_audio_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
+-	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+-		vc4_hdmi_set_audio_infoframe(encoder);
+ 		vc4_hdmi->audio.streaming = true;
+ 
+ 		if (vc4_hdmi->variant->phy_rng_enable)
+-- 
+2.26.2
 
-"It is commonly used in smartphones, such as Bell Packard T899" would
-be even better.
-
-> > > +     ret =3D regmap_update_bits(priv->regmap, RT4505_REG_ENABLE, RT4=
-505_ENABLE_MASK, val);
-> > > +
-> > > +unlock:
-> > > +     mutex_unlock(&priv->lock);
-> > > +     return ret;
-> > > +}
-> >
-> > Why is the locking needed? What will the /sys/class/leds interface
-> > look like on system with your flash?
->=20
-> The original thought is because there's still another way to control
-> flash like as v4l2.
-> But after reviewing the source code, led sysfs node will be protected
-> by led_cdev->led_access.
-> And V4L2 flash will also be protected by v4l2_fh_is_singular API.
-> I think the whole locking in the source code code may be removed. Right?
-
-Well, maybe you need it, I did not check..
-
-What will the /sys/class/leds interface look like on system with your flash?
-
-> > > +     *state =3D ((val & RT4505_FLASH_GET) =3D=3D RT4505_FLASH_GET) ?=
- true : false;
-> >
-> > No need for ? ... part.
-> Do you mean this function is not needed? If yes, it can be removed.
-> But if it removed, led sysfs flash_strobe show will be not supported.
-
-I meant "replace line with: *state =3D (val & RT4505_FLASH_GET) =3D=3D RT45=
-05_FLASH_GET;"
-
-> > > +static bool rt4505_is_accessible_reg(struct device *dev, unsigned in=
-t reg)
-> > > +{
-> > > +     if (reg =3D=3D RT4505_REG_RESET || (reg >=3D RT4505_REG_CONFIG =
- && reg <=3D RT4505_REG_FLAGS))
-> > > +             return true;
-> >
-> > Make this two stagements.
-> Like as the below one?? Or separate it into two if case.
-> if (reg =3D=3D RT4505_REG_RESET ||
->        reg >=3D RT4505_REG_CONFIG  && reg <=3D RT4505_REG_FLAGS))
-
-That would be fine, too... if you use just one space before "&&" :-).
-
-Best regards,
-							Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---s/l3CgOIzMHHjg/5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5fzRwAKCRAw5/Bqldv6
-8k9iAJ0dDvz58HeSc0sCZNkyktZd9hdtUwCdETJwZxtAXjPYTStw/T/M6cOkQr8=
-=uA/u
------END PGP SIGNATURE-----
-
---s/l3CgOIzMHHjg/5--
