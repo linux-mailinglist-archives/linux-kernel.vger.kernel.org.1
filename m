@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0629BF13
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A921A29BF0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1814929AbgJ0RAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:00:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
+        id S1814890AbgJ0RAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793873AbgJ0PIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:08:49 -0400
+        id S1793900AbgJ0PI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:08:59 -0400
 Received: from localhost.localdomain (i16-lef01-ix2-212-195-25-126.ft.lns.abo.bbox.fr [212.195.25.126])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38A80206E5;
-        Tue, 27 Oct 2020 15:08:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A66B321D41;
+        Tue, 27 Oct 2020 15:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811328;
-        bh=ji2nueDyFlaJc2i0cHxEefk0VAf9O16YPXiMwU/GjRY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=1TIYYP80bCV0QcwfNdq302eWpWxxCxtNcfKaL34+47UeIRRa3Jg7JKH/VHpY0W0Tt
-         BJwdY/LEcudt13ZaWQ4ylTKHSuby3Y/wb/a/3AhfpUa+lbi0UVcVhHQgatK4b6ZKTt
-         keFFy9CECMCl8aLUDrXHe+FGAw39qF5/WVKLl94c=
+        s=default; t=1603811339;
+        bh=F/3unrXBIqFN1AMtFeEOTOxOuveYqZ1JM6MxSNhHAkw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=a16xy+MeBE3VjTxI9eCTlJ2ucnojMIn2gI+TquK41qMK/AEP8nLqaxM1CHjCKLgKV
+         K38QFxbMxOCnGBwH5Bee9Vge7SW4rzMQLpR3YaKqgYKRMibVQQA6cm3whnIN0G+JF1
+         ZFXkYmn/COJEVspLbG82uro+qp5II9OnMsJ7eIqw=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -31,50 +31,48 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Phil Auld <pauld@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [PATCH 0/5] context_tracking: Flatter archs not using exception_enter/exit() v2
-Date:   Tue, 27 Oct 2020 16:08:22 +0100
-Message-Id: <20201027150827.148821-1-frederic@kernel.org>
+Subject: [PATCH 5/5] x86: Support HAVE_CONTEXT_TRACKING_OFFSTACK
+Date:   Tue, 27 Oct 2020 16:08:27 +0100
+Message-Id: <20201027150827.148821-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201027150827.148821-1-frederic@kernel.org>
+References: <20201027150827.148821-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to turn on/off nohz_full at runtime, we'll need
-the archs to give up saving the context tracking state on the task stack
-because this forces context tracking to run system wide, even on CPUs
-that don't have nohz_full enabled.
+A lot of ground work has been performed on x86 entry code. Fragile path
+between user_enter() and user_exit() have IRQs disabled. Uses of RCU and
+intrumentation in these fragile areas have been explicitly annotated
+and protected.
 
-Now being able to do so require sane entry code meeting some
-requirements that at least x86 just achieved recently (I haven't checked
-other archs yet).
+This architecture doesn't need exception_enter()/exception_exit()
+anymore and has therefore earned CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK.
 
-Changes since v2:
-
-- Rebase against v5.10-rc1
-- Use SCHED_WARN_ON() instead of WARN_ON_ONCE() for the context tracking
-  sanity check on schedule().
-
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	core/isolation-v2
-
-HEAD: 79f60f3dd0e0aea8b17c825371d8697444ae5faf
-
-Thanks,
-	Frederic
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Phil Auld <pauld@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 ---
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Frederic Weisbecker (5):
-      context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
-      context_tracking:  Don't implement exception_enter/exit() on CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK
-      sched: Detect call to schedule from critical entry code
-      context_tracking: Only define schedule_user() on !HAVE_CONTEXT_TRACKING_OFFSTACK archs
-      x86: Support HAVE_CONTEXT_TRACKING_OFFSTACK
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index f6946b81f74a..d793361839b5 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -162,6 +162,7 @@ config X86
+ 	select HAVE_CMPXCHG_DOUBLE
+ 	select HAVE_CMPXCHG_LOCAL
+ 	select HAVE_CONTEXT_TRACKING		if X86_64
++	select HAVE_CONTEXT_TRACKING_OFFSTACK	if HAVE_CONTEXT_TRACKING
+ 	select HAVE_C_RECORDMCOUNT
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DMA_CONTIGUOUS
+-- 
+2.25.1
 
-
- arch/Kconfig                     | 17 +++++++++++++++++
- arch/x86/Kconfig                 |  1 +
- include/linux/context_tracking.h |  6 ++++--
- kernel/sched/core.c              |  3 ++-
- 4 files changed, 24 insertions(+), 3 deletions(-)
