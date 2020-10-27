@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A040129AA44
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D9129AA48
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898950AbgJ0LHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:07:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:38360 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898903AbgJ0LHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:07:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7D8E30E;
-        Tue, 27 Oct 2020 04:07:29 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 321DB3F66E;
-        Tue, 27 Oct 2020 04:07:28 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 11:07:25 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, kbuild-all@lists.01.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        broonie@kernel.org, robh@kernel.org, satyakim@qti.qualcomm.com
-Subject: Re: [PATCH v3 1/4] firmware: arm_scmi: Add Voltage Domain Support
-Message-ID: <20201027110725.GE20482@e120937-lin>
-References: <20201026203148.47416-2-cristian.marussi@arm.com>
- <202010271312.r4CIynpy-lkp@intel.com>
+        id S2898971AbgJ0LH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:07:59 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52128 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2898962AbgJ0LH6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 07:07:58 -0400
+X-UUID: 1349bd094b584d02bfb9335d02997bf2-20201027
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=020CNiTHl98xYZMrYZF/KvDTIxGluBAqBjzqknM+bd4=;
+        b=XGqPV0XkKJ0utFm3fxlg/ylE8nL7XnJB6nTBGgMTJyJuv1g79IBfpMCzXFubDdzX+dYwxG8MnIqwskL2eKqYx0rXvRnsdMEosWOBeEvxZZmhGfSI6GAOWaDRONA+9x0jeFF8rz1akA0sovY5hnT35qrRB8ZJfygfgV28/VGSPpo=;
+X-UUID: 1349bd094b584d02bfb9335d02997bf2-20201027
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 977184522; Tue, 27 Oct 2020 19:07:50 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ MTKMBS09N1.mediatek.inc (172.21.101.35) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 27 Oct 2020 19:07:48 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 27 Oct 2020 19:07:48 +0800
+Message-ID: <1603796869.16422.2.camel@mtksdaap41>
+Subject: Re: [PATCH v3 04/16] soc: mediatek: pm-domains: Add bus protection
+ protocol
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+CC:     <linux-kernel@vger.kernel.org>, <matthias.bgg@gmail.com>,
+        <drinkcat@chromium.org>, <hsinyi@chromium.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        <fparent@baylibre.com>, Matthias Brugger <mbrugger@suse.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Tue, 27 Oct 2020 19:07:49 +0800
+In-Reply-To: <20201026175526.2915399-5-enric.balletbo@collabora.com>
+References: <20201026175526.2915399-1-enric.balletbo@collabora.com>
+         <20201026175526.2915399-5-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202010271312.r4CIynpy-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 02:04:39PM +0800, kernel test robot wrote:
-> Hi Cristian,
-> 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on soc/for-next]
-> [also build test WARNING on next-20201026]
-> [cannot apply to regulator/for-next robh/for-next rockchip/for-next keystone/next arm64/for-next/core linux/master linux-rpi/for-rpi-next at91/at91-next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Cristian-Marussi/Add-support-for-SCMIv3-0-Voltage-Domain-Protocol-and-SCMI-Regulator/20201027-043404
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-> config: arm-randconfig-c004-20201026 (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> "coccinelle warnings: (new ones prefixed by >>)"
-> >> drivers/firmware/arm_scmi/voltage.c:381:11-17: ERROR: application of sizeof to pointer
-> 
-This is a false positive because the intention here was in fact to
-allocate an array of pointers with devm_kcalloc().
-Maybe I could explicitly use a sizeof(void *) to avoid fooling
-coccicheck ?
-
-Thanks
-
-Cristian
-
-> Please review and possibly fold the followup patch.
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+T24gTW9uLCAyMDIwLTEwLTI2IGF0IDE4OjU1ICswMTAwLCBFbnJpYyBCYWxsZXRibyBpIFNlcnJh
+IHdyb3RlOg0KPiBGcm9tOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYnJ1Z2dlckBzdXNlLmNvbT4NCj4g
+DQo+IEJ1cyBwcm90ZWN0aW9uIHdpbGwgbmVlZCB0byB1cGRhdGUgbW9yZSB0aGVuIG9uZSByZWdp
+c3Rlcg0KPiBpbiBpbmZyYWNmZy4gQWRkIHN1cHBvcnQgZm9yIHNldmVyYWwgb3BlcmF0aW9ucy4N
+Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRoaWFzIEJydWdnZXIgPG1icnVnZ2VyQHN1c2UuY29t
+Pg0KPiBTaWduZWQtb2ZmLWJ5OiBFbnJpYyBCYWxsZXRibyBpIFNlcnJhIDxlbnJpYy5iYWxsZXRi
+b0Bjb2xsYWJvcmEuY29tPg0KPiAtLS0NCj4gDQo+IENoYW5nZXMgaW4gdjM6IE5vbmUNCj4gQ2hh
+bmdlcyBpbiB2MjogTm9uZQ0KPiANCj4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ODE3My1wbS1k
+b21haW5zLmggfCAgNCArLS0NCj4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbS1kb21haW5z
+LmMgICAgfCAzNiArKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gIGRyaXZlcnMvc29jL21lZGlh
+dGVrL210ay1wbS1kb21haW5zLmggICAgfCAgNCArKy0NCj4gIDMgZmlsZXMgY2hhbmdlZCwgMzEg
+aW5zZXJ0aW9ucygrKSwgMTMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9zb2MvbWVkaWF0ZWsvbXQ4MTczLXBtLWRvbWFpbnMuaCBiL2RyaXZlcnMvc29jL21lZGlhdGVr
+L210ODE3My1wbS1kb21haW5zLmgNCj4gaW5kZXggYTJhNjI0YmJkOGI4Li4zNDFjYzI4N2M4Y2Ug
+MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ODE3My1wbS1kb21haW5zLmgN
+Cj4gKysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXQ4MTczLXBtLWRvbWFpbnMuaA0KPiBAQCAt
+MzQsNyArMzQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNjcHN5c19kb21haW5fZGF0YSBzY3Bz
+eXNfZG9tYWluX2RhdGFfbXQ4MTczW10gPSB7DQo+ICAJCS5jdGxfb2ZmcyA9IFNQTV9ESVNfUFdS
+X0NPTiwNCj4gIAkJLnNyYW1fcGRuX2JpdHMgPSBHRU5NQVNLKDExLCA4KSwNCj4gIAkJLnNyYW1f
+cGRuX2Fja19iaXRzID0gR0VOTUFTSygxMiwgMTIpLA0KPiAtCQkuYnBfaW5mcmFjZmcgPSB7DQo+
+ICsJCS5icF9pbmZyYWNmZ1swXSA9IHsNCj4gIAkJCS5idXNfcHJvdF9yZWdfdXBkYXRlID0gdHJ1
+ZSwNCj4gIAkJCS5idXNfcHJvdF9tYXNrID0gTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NTV9NMCB8
+DQo+ICAJCQkJTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NTV9NMSwNCj4gQEAgLTc2LDcgKzc2LDcg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzY3BzeXNfZG9tYWluX2RhdGEgc2Nwc3lzX2RvbWFpbl9k
+YXRhX210ODE3M1tdID0gew0KPiAgCQkuY3RsX29mZnMgPSBTUE1fTUZHX1BXUl9DT04sDQo+ICAJ
+CS5zcmFtX3Bkbl9iaXRzID0gR0VOTUFTSygxMywgOCksDQo+ICAJCS5zcmFtX3Bkbl9hY2tfYml0
+cyA9IEdFTk1BU0soMjEsIDE2KSwNCj4gLQkJLmJwX2luZnJhY2ZnID0gew0KPiArCQkuYnBfaW5m
+cmFjZmdbMF0gPSB7DQo+ICAJCQkuYnVzX3Byb3RfcmVnX3VwZGF0ZSA9IHRydWUsDQo+ICAJCQku
+YnVzX3Byb3RfbWFzayA9IE1UODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX1MgfA0KPiAgCQkJCU1U
+ODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX00wIHwNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29j
+L21lZGlhdGVrL210ay1wbS1kb21haW5zLmMgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0t
+ZG9tYWlucy5jDQo+IGluZGV4IDE2NTAzZDZkYjZhOC4uMjEyMWUwNWNiOWE0IDEwMDY0NA0KPiAt
+LS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5jDQo+ICsrKyBiL2RyaXZl
+cnMvc29jL21lZGlhdGVrL210ay1wbS1kb21haW5zLmMNCj4gQEAgLTg5LDI0ICs4OSw0MCBAQCBz
+dGF0aWMgaW50IHNjcHN5c19zcmFtX2Rpc2FibGUoc3RydWN0IHNjcHN5c19kb21haW4gKnBkKQ0K
+PiAgDQo+ICBzdGF0aWMgaW50IHNjcHN5c19idXNfcHJvdGVjdF9lbmFibGUoc3RydWN0IHNjcHN5
+c19kb21haW4gKnBkKQ0KPiAgew0KPiAtCWNvbnN0IHN0cnVjdCBzY3BzeXNfYnVzX3Byb3RfZGF0
+YSAqYnBfZGF0YSA9ICZwZC0+ZGF0YS0+YnBfaW5mcmFjZmc7DQo+ICsJY29uc3Qgc3RydWN0IHNj
+cHN5c19idXNfcHJvdF9kYXRhICpicGQgPSBwZC0+ZGF0YS0+YnBfaW5mcmFjZmc7DQo+ICsJaW50
+IGksIHJldDsNCj4gIA0KPiAtCWlmICghYnBfZGF0YS0+YnVzX3Byb3RfbWFzaykNCj4gLQkJcmV0
+dXJuIDA7DQo+ICsJZm9yIChpID0gMDsgaSA8IFNQTV9NQVhfQlVTX1BST1RfREFUQTsgaSsrKSB7
+DQo+ICsJCWlmICghYnBkW2ldLmJ1c19wcm90X21hc2spDQo+ICsJCQlicmVhazsNCj4gIA0KPiAt
+CXJldHVybiBtdGtfaW5mcmFjZmdfc2V0X2J1c19wcm90ZWN0aW9uKHBkLT5pbmZyYWNmZywgYnBf
+ZGF0YS0+YnVzX3Byb3RfbWFzaywNCj4gLQkJCQkJICAgICAgIGJwX2RhdGEtPmJ1c19wcm90X3Jl
+Z191cGRhdGUpOw0KPiArCQlyZXQgPSBtdGtfaW5mcmFjZmdfc2V0X2J1c19wcm90ZWN0aW9uKHBk
+LT5pbmZyYWNmZywNCj4gKwkJCQkJCSAgICAgIGJwZFtpXS5idXNfcHJvdF9tYXNrLA0KPiArCQkJ
+CQkJICAgICAgYnBkW2ldLmJ1c19wcm90X3JlZ191cGRhdGUpOw0KPiArCQlpZiAocmV0KQ0KPiAr
+CQkJcmV0dXJuIHJldDsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gIH0NCj4gIA0KPiAg
+c3RhdGljIGludCBzY3BzeXNfYnVzX3Byb3RlY3RfZGlzYWJsZShzdHJ1Y3Qgc2Nwc3lzX2RvbWFp
+biAqcGQpDQo+ICB7DQo+IC0JY29uc3Qgc3RydWN0IHNjcHN5c19idXNfcHJvdF9kYXRhICpicF9k
+YXRhID0gJnBkLT5kYXRhLT5icF9pbmZyYWNmZzsNCj4gKwljb25zdCBzdHJ1Y3Qgc2Nwc3lzX2J1
+c19wcm90X2RhdGEgKmJwZCA9IHBkLT5kYXRhLT5icF9pbmZyYWNmZzsNCj4gKwlpbnQgaSwgcmV0
+Ow0KPiAgDQo+IC0JaWYgKCFicF9kYXRhLT5idXNfcHJvdF9tYXNrKQ0KPiAtCQlyZXR1cm4gMDsN
+Cj4gKwlmb3IgKGkgPSAwOyBpIDwgU1BNX01BWF9CVVNfUFJPVF9EQVRBOyBpKyspIHsNCg0KSSB0
+aG91Z2h0IGl0IHNob3VsZCBiZQ0KDQpmb3IgKGkgPSBTUE1fTUFYX0JVU19QUk9UX0RBVEEgLSAx
+OyBpID4gMDsgaS0tKSB7DQoJaWYgKCFicGRbaV0uYnVzX3Byb3RfbWFzaykNCgkJY29udGludWU7
+DQoNCi4uLg0KDQo+ICsJCWlmICghYnBkW2ldLmJ1c19wcm90X21hc2spDQo+ICsJCQlyZXR1cm4g
+MDsNCj4gIA0KPiAtCXJldHVybiBtdGtfaW5mcmFjZmdfY2xlYXJfYnVzX3Byb3RlY3Rpb24ocGQt
+PmluZnJhY2ZnLCBicF9kYXRhLT5idXNfcHJvdF9tYXNrLA0KPiAtCQkJCQkJIGJwX2RhdGEtPmJ1
+c19wcm90X3JlZ191cGRhdGUpOw0KPiArCQlyZXQgPSBtdGtfaW5mcmFjZmdfY2xlYXJfYnVzX3By
+b3RlY3Rpb24ocGQtPmluZnJhY2ZnLA0KPiArCQkJCQkJCWJwZFtpXS5idXNfcHJvdF9tYXNrLA0K
+PiArCQkJCQkJCWJwZFtpXS5idXNfcHJvdF9yZWdfdXBkYXRlKTsNCj4gKwkJaWYgKHJldCkNCj4g
+KwkJCXJldHVybiByZXQ7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIDA7DQo+ICB9DQo+ICANCj4g
+IHN0YXRpYyBpbnQgc2Nwc3lzX3Bvd2VyX29uKHN0cnVjdCBnZW5lcmljX3BtX2RvbWFpbiAqZ2Vu
+cGQpDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5o
+IGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuaA0KPiBpbmRleCA3YzhlZmNi
+M2NlZjIuLmU0MjhmZTIzYTdlMyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsv
+bXRrLXBtLWRvbWFpbnMuaA0KPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9t
+YWlucy5oDQo+IEBAIC0zMiw2ICszMiw4IEBADQo+ICAjZGVmaW5lIFBXUl9TVEFUVVNfQVVESU8J
+CUJJVCgyNCkNCj4gICNkZWZpbmUgUFdSX1NUQVRVU19VU0IJCQlCSVQoMjUpDQo+ICANCj4gKyNk
+ZWZpbmUgU1BNX01BWF9CVVNfUFJPVF9EQVRBCQkzDQo+ICsNCg0KI2RlZmluZSBTUE1fTUFYX0JV
+U19QUk9UX0RBVEEJCTUNCg0KdG8gYmUgY29tcGF0aWJsZSB3aXRoIE1UODE5Mg0KDQo+ICBzdHJ1
+Y3Qgc2Nwc3lzX2J1c19wcm90X2RhdGEgew0KPiAgCXUzMiBidXNfcHJvdF9tYXNrOw0KPiAgCWJv
+b2wgYnVzX3Byb3RfcmVnX3VwZGF0ZTsNCj4gQEAgLTUyLDcgKzU0LDcgQEAgc3RydWN0IHNjcHN5
+c19kb21haW5fZGF0YSB7DQo+ICAJdTMyIHNyYW1fcGRuX2JpdHM7DQo+ICAJdTMyIHNyYW1fcGRu
+X2Fja19iaXRzOw0KPiAgCXU4IGNhcHM7DQo+IC0JY29uc3Qgc3RydWN0IHNjcHN5c19idXNfcHJv
+dF9kYXRhIGJwX2luZnJhY2ZnOw0KPiArCWNvbnN0IHN0cnVjdCBzY3BzeXNfYnVzX3Byb3RfZGF0
+YSBicF9pbmZyYWNmZ1tTUE1fTUFYX0JVU19QUk9UX0RBVEFdOw0KPiAgfTsNCj4gIA0KPiAgc3Ry
+dWN0IHNjcHN5c19zb2NfZGF0YSB7DQoNCg==
 
