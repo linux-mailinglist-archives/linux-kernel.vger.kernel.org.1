@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0362E29AE26
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5B329AE27
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368196AbgJ0N50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:57:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44152 "EHLO mail.kernel.org"
+        id S1752877AbgJ0N52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:57:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368183AbgJ0N5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:57:23 -0400
+        id S368195AbgJ0N5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:57:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B91921D41;
-        Tue, 27 Oct 2020 13:57:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E13B0206D4;
+        Tue, 27 Oct 2020 13:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807042;
-        bh=FUWGOvcgF8CxKp2eOI162AUHqIMLMtEWwU9BRJDzHgI=;
+        s=default; t=1603807045;
+        bh=pMKRrqfvOHy/fjp+nLtLt0VDbwaeqH+dpUPi9NlYpJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyaQgfL8erqWbuWZRA2Vv8RNYouvShrt6i9esLeeFKlmuo9QWc97iH2G92f2pU5Nc
-         qrfLJ+0mBxS1djAjQ7YAjTcgAqOIvxb4EoPD9tGoho2G+GSdDEMMzLQSmPq0mTm97y
-         Am7epBMm6+d3rMvXuk+YqfwFYm4ZP9CjVbvVIaPs=
+        b=Ht+vHUVUbWB3aiH3Eth6nMy4IMOB3DB8eIR8FVJXylmwHf+atLMZZdIRwXW+ZX2ji
+         9ciYJMajc++mSZH5X/q+NBv+fw33PNxlgMAdwcfvJmMJ3OxTHM0vuZT7J3b6V17U/n
+         oPxMEiJpVh3qPLPErJBBjYGHKWuWMMV8CPcuBBNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 021/112] media: Revert "media: exynos4-is: Add missed check for pinctrl_lookup_state()"
-Date:   Tue, 27 Oct 2020 14:48:51 +0100
-Message-Id: <20201027134901.578412367@linuxfoundation.org>
+Subject: [PATCH 4.4 022/112] media: m5mols: Check function pointer in m5mols_sensor_power
+Date:   Tue, 27 Oct 2020 14:48:52 +0100
+Message-Id: <20201027134901.615577686@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
 References: <20201027134900.532249571@linuxfoundation.org>
@@ -45,43 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 00d21f325d58567d81d9172096692d0a9ea7f725 ]
+[ Upstream commit 52438c4463ac904d14bf3496765e67750766f3a6 ]
 
-The "idle" pinctrl state is optional as documented in the DT binding.
-The change introduced by the commit being reverted makes that pinctrl state
-mandatory and breaks initialization of the whole media driver, since the
-"idle" state is not specified in any mainline dts.
+clang static analysis reports this error
 
-This reverts commit 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
-to fix the regression.
+m5mols_core.c:767:4: warning: Called function pointer
+  is null (null dereference) [core.CallAndMessage]
+    info->set_power(&client->dev, 0);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 18ffec750578 ("media: exynos4-is: Add missed check for pinctrl_lookup_state()")
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In other places, the set_power ptr is checked.
+So add a check.
+
+Fixes: bc125106f8af ("[media] Add support for M-5MOLS 8 Mega Pixel camera ISP")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/media-dev.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/media/i2c/m5mols/m5mols_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
-index 31cc7d94064e3..6bc3c8a2e1443 100644
---- a/drivers/media/platform/exynos4-is/media-dev.c
-+++ b/drivers/media/platform/exynos4-is/media-dev.c
-@@ -1170,11 +1170,9 @@ static int fimc_md_get_pinctrl(struct fimc_md *fmd)
- 	if (IS_ERR(pctl->state_default))
- 		return PTR_ERR(pctl->state_default);
+diff --git a/drivers/media/i2c/m5mols/m5mols_core.c b/drivers/media/i2c/m5mols/m5mols_core.c
+index 6404c0d93e7af..514267680dc96 100644
+--- a/drivers/media/i2c/m5mols/m5mols_core.c
++++ b/drivers/media/i2c/m5mols/m5mols_core.c
+@@ -754,7 +754,8 @@ static int m5mols_sensor_power(struct m5mols_info *info, bool enable)
  
-+	/* PINCTRL_STATE_IDLE is optional */
- 	pctl->state_idle = pinctrl_lookup_state(pctl->pinctrl,
- 					PINCTRL_STATE_IDLE);
--	if (IS_ERR(pctl->state_idle))
--		return PTR_ERR(pctl->state_idle);
--
- 	return 0;
- }
+ 		ret = regulator_bulk_enable(ARRAY_SIZE(supplies), supplies);
+ 		if (ret) {
+-			info->set_power(&client->dev, 0);
++			if (info->set_power)
++				info->set_power(&client->dev, 0);
+ 			return ret;
+ 		}
  
 -- 
 2.25.1
