@@ -2,148 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976CA29A6EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8956029A6FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509346AbgJ0ItV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:49:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2509336AbgJ0ItR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:49:17 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 817B6207DE;
-        Tue, 27 Oct 2020 08:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603788557;
-        bh=vqvHVfwUem4JOBq/WXsfNE79L5Iz5nEhnMlkJj2ElFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cob/039dcWnn8OjH5If0m1K0e5hz+wi7uaTqafHhMC0w6AKDJ7mof/L9QVAWjAi5m
-         AzwVpAcX/G3bIeFGz/QZ6LDXFrWjC3A32wjsC/UaCx/T35y4jeNZtg1G5OqKcQamFp
-         mFhuBk5Uhn3ItuoN/wmMtQFg0IPWtBPQaAK5nUZY=
-Date:   Tue, 27 Oct 2020 10:49:02 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
- in the direct map
-Message-ID: <20201027084902.GH1154158@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <20201025101555.3057-3-rppt@kernel.org>
- <f20900a403bea9eb3f0814128e5ea46f6580f5a5.camel@intel.com>
- <20201026091554.GB1154158@kernel.org>
- <a28d8248057e7dc01716764da9edfd666722ff62.camel@intel.com>
+        id S2895113AbgJ0Iwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:52:45 -0400
+Received: from casper.infradead.org ([90.155.50.34]:34970 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895105AbgJ0Iwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:52:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Aakq5ONajagRQRWUZGCHnMSkynNLLZQ4DCSJugWWUH0=; b=KVvc9euKLp49L1tVLI9ZMxp2Wz
+        biMq3A2nuCumBvuYlInpMqo5NWa7xCVsMUhrpANCh6VA5CJ0cnJw/WkERnXhDqnefnWKbWuRRUPnl
+        nalwnOxRxJ43N4GEUIuh9mekPijAFin6CBxZUmlYx97sL2Y8g6AJfYS6ifvnjLAQRZNnsX1Yshh+i
+        VU9HassfXOpSVmxOCYd2ERk2Xqu1yK3S1Qud85PsS6FvYCL1/Q3MPE8bkuBbBPfRl3bw9JZM5h1gp
+        JT8mCtLu1uwhWF3gN6PKBn/a4oeWlq9nhs3gKQ7+eCZi+nGWL+ehFT9BNSwnjvqnAApByr2IINZz+
+        Km8bzm2g==;
+Received: from 089144193201.atnat0002.highway.a1.net ([89.144.193.201] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXKiV-0003bR-Hq; Tue, 27 Oct 2020 08:52:35 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     arnd@arndb.de
+Cc:     palmerdabbelt@google.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH] asm-generic: mark __{get,put}_user_fn as __always_inline
+Date:   Tue, 27 Oct 2020 09:50:17 +0100
+Message-Id: <20201027085017.3705228-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a28d8248057e7dc01716764da9edfd666722ff62.camel@intel.com>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 06:57:32PM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2020-10-26 at 11:15 +0200, Mike Rapoport wrote:
-> > On Mon, Oct 26, 2020 at 12:38:32AM +0000, Edgecombe, Rick P wrote:
-> > > On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
-> > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > 
-> > > > When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page
-> > > > may
-> > > > be
-> > > > not present in the direct map and has to be explicitly mapped
-> > > > before
-> > > > it
-> > > > could be copied.
-> > > > 
-> > > > On arm64 it is possible that a page would be removed from the
-> > > > direct
-> > > > map
-> > > > using set_direct_map_invalid_noflush() but __kernel_map_pages()
-> > > > will
-> > > > refuse
-> > > > to map this page back if DEBUG_PAGEALLOC is disabled.
-> > > 
-> > > It looks to me that arm64 __kernel_map_pages() will still attempt
-> > > to
-> > > map it if rodata_full is true, how does this happen?
-> > 
-> > Unless I misread the code, arm64 requires both rodata_full and
-> > debug_pagealloc_enabled() to be true for __kernel_map_pages() to do
-> > anything.
-> > But rodata_full condition applies to set_direct_map_*_noflush() as
-> > well,
-> > so with !rodata_full the linear map won't be ever changed.
-> 
-> Hmm, looks to me that __kernel_map_pages() will only skip it if both
-> debug pagealloc and rodata_full are false.
-> 
-> But now I'm wondering if maybe we could simplify things by just moving
-> the hibernate unmapped page logic off of the direct map. On x86,
-> text_poke() used to use this reserved fixmap pte thing that it could
-> rely on to remap memory with. If hibernate had some separate pte for
-> remapping like that, then we could not have any direct map restrictions
-> caused by it/kernel_map_pages(), and it wouldn't have to worry about
-> relying on anything else.
+Without the explicit __always_inline, some RISC-V configs place the
+functions out of line, triggering the BUILD_BUG_ON checks in the
+function.
 
-Well, there is map_kernel_range() that can be used by hibernation as
-there is no requirement for particular virtual address, but that would
-be quite costly if done for every page.
+Fixes: 11129e8ed4d9 ("riscv: use memcpy based uaccess for nommu again")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/asm-generic/uaccess.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Maybe we can do somthing like
-
-	if (kernel_page_present(s_page)) {
-		do_copy_page(dst, page_address(s_page));
-	} else {
-		map_kernel_range_noflush(page_address(page), PAGE_SIZE,
-					 PROT_READ, &page);
-		do_copy_page(dst, page_address(s_page));
-		unmap_kernel_range_noflush(page_address(page), PAGE_SIZE);
-	}
-
-But it seems that a prerequisite for changing the way a page is mapped
-in safe_copy_page() would be to teach hibernation that a mapping here
-may fail.
-
+diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
+index 45f9872fd74759..4973328f3c6e75 100644
+--- a/include/asm-generic/uaccess.h
++++ b/include/asm-generic/uaccess.h
+@@ -12,7 +12,8 @@
+ #ifdef CONFIG_UACCESS_MEMCPY
+ #include <asm/unaligned.h>
+ 
+-static inline int __get_user_fn(size_t size, const void __user *from, void *to)
++static __always_inline int
++__get_user_fn(size_t size, const void __user *from, void *to)
+ {
+ 	BUILD_BUG_ON(!__builtin_constant_p(size));
+ 
+@@ -37,7 +38,8 @@ static inline int __get_user_fn(size_t size, const void __user *from, void *to)
+ }
+ #define __get_user_fn(sz, u, k)	__get_user_fn(sz, u, k)
+ 
+-static inline int __put_user_fn(size_t size, void __user *to, void *from)
++static __always_inline int
++__put_user_fn(size_t size, void __user *to, void *from)
+ {
+ 	BUILD_BUG_ON(!__builtin_constant_p(size));
+ 
 -- 
-Sincerely yours,
-Mike.
+2.28.0
+
