@@ -2,158 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A369629A796
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B44429A792
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 10:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505098AbgJ0JRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 05:17:39 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45118 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390503AbgJ0JRj (ORCPT
+        id S2504868AbgJ0JRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 05:17:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732560AbgJ0JRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 05:17:39 -0400
-Received: by mail-wr1-f68.google.com with SMTP id e17so970002wru.12;
-        Tue, 27 Oct 2020 02:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KnJoJgk84FwLk/ANyG7dQFanuIJ2r/lfRIWtEAhvPa4=;
-        b=ujnM88ueWDajGmHeeT5G7HpaOgXoDvx+qDaU6FkBUQay6RhNQnKKhCFk6Wx1jMAlTW
-         gZSIpD/CVojtMtIa2W/8W0DCvEL2J5QYfcnfzQm2p7rA7Hc89o98eq+i9wi2AfwCFnEa
-         Ygv0J62U/Tv1dk52NxcLfxOQwnl6+gHGEds1CPYfuOPOv02hRF0P+E9DnXVqsQGYYeMs
-         hWOzxQDesGDEvQOO43ah4CUB08SJqsp2+I9tWtZnRO4LdkiZpXE+nDzPw3PVpUTHGsIk
-         pOtaM33FroDZohGx9BSrMw1ZmEkPGHxvtiP+55WT7ve3+MPpQIyw5H+FvWmjajUJJMuv
-         3QnA==
+        Tue, 27 Oct 2020 05:17:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603790230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2couyPS9oU8nqon9qRpsj1IaLZzKbO0wg6RKQog+8FE=;
+        b=gSgMIfrCjjqIcH1JbNWe9py0YG/2TPSHd6eKlakQoG8/sJr96UDTiZEGSsUzEAW+3I9X45
+        n7lykw6xrcKpnkzcqBz/G5zWTUZV0xKPGj4YkG4sO4yKEFSoUYXPghrOaUiEvKNbSfbmqk
+        BPW+PsWdc5u5hELUA0RCmkVIwGWODmQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-CWLZltCPMHOyoc5e2CfdrQ-1; Tue, 27 Oct 2020 05:17:08 -0400
+X-MC-Unique: CWLZltCPMHOyoc5e2CfdrQ-1
+Received: by mail-wr1-f72.google.com with SMTP id q15so493805wrw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 02:17:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KnJoJgk84FwLk/ANyG7dQFanuIJ2r/lfRIWtEAhvPa4=;
-        b=qpAOQTaqwz4cUb02rwOgRE2ytACRz9mZgtjYENcBUJIp4otnJuv8nmskPo9r1uWcUF
-         vQtWWdpzxURA7vLBRCmepZMdzzzvT2rsFyyvliHrTs+4qwaU687NlwycOFOFR5eQfWM0
-         COXPu8IpSpo1sq1WzP80K3hsW78AcJ66baaSvZ57HqSJl0oxecCllV5GTS3BZUeoht87
-         NUvZOyHNSd0uZYz41Q5QlkXFDBW5c8ZlflpKXSkpRFgwPfnDpglNZbMxhcPYw8kumOBM
-         fzwghGQRzS5Y9m5ywuEvkIBXLqPEe8F510AEwEdyEjhnOAFM5z0R+vy3o6frmYSozzGw
-         jyYg==
-X-Gm-Message-State: AOAM530Ypz5tTMj6DbDJDTdIr0ZHljDwV1kesfIAt+ctTQrhK3N3Cifp
-        9sdmHtlvHvmpkHKV06TQmGIwcyIjyMOfj+gsPb0=
-X-Google-Smtp-Source: ABdhPJzq/lbXlgJ69fxGubIR+kiwS/oAssL+fVrC+BMgwBznGUE3f3AzJtl9CYxKXZCPOJS+NsfMIgEEZtYJJMJs1q8=
-X-Received: by 2002:adf:82ab:: with SMTP id 40mr1592860wrc.420.1603790257100;
- Tue, 27 Oct 2020 02:17:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2couyPS9oU8nqon9qRpsj1IaLZzKbO0wg6RKQog+8FE=;
+        b=V6pzwLmEcmUPHzjnXyFGxFDIVaFuVVF8FlPFnYytIWZ14M4a7RwvHqh9UVyCdMBdOO
+         ZvbwVaGdIzFN5UZE8SFbYSBWMueisbdPaEeanjuPYq8fWNjSGisvzDeBWfe4+zeXZHws
+         2lgsUWCnnd8XbdHRx4nR9QDpEZc2M5XEMMnW5j4ZGepBNt3en2oXsrHLC8Cd3CpPnw//
+         f3wHjL5Bl5IPkK6AZp7Vs01cgdThYovCJaCaQKMAUV8/BLTvbbI7LA4h7NCz6EM9y5mS
+         jjWt4L7ADOjKNZ6F+kKxVVuxnzs/mAzQzfR/tZ2eRFn7l4abrzx/O9H/YuyzUhGfOGvz
+         o6fw==
+X-Gm-Message-State: AOAM530MNBlR8y/ht5lODa6s1bTzbCJfPZ2S7UjxyIuzm2LykLOibB8O
+        inzW18FdcqIiKeLq1Wnd6n+3cNScmPDwhIU1wATMqsfw6Cg/U33GubByk4thaHAh11jYioHe9iu
+        mPMoTEmhy7YLn6vFUCnVhNSEL
+X-Received: by 2002:a1c:4d13:: with SMTP id o19mr1709688wmh.185.1603790227295;
+        Tue, 27 Oct 2020 02:17:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOw3Fses5vfPNkX+6A+Vrc5l4MfHYL1vm4mt1FXcRuczReog+9IDOi94XyxRsLvwlXundZ/g==
+X-Received: by 2002:a1c:4d13:: with SMTP id o19mr1709663wmh.185.1603790227042;
+        Tue, 27 Oct 2020 02:17:07 -0700 (PDT)
+Received: from steredhat (host-79-17-248-215.retail.telecomitalia.it. [79.17.248.215])
+        by smtp.gmail.com with ESMTPSA id e25sm1151755wra.71.2020.10.27.02.17.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 02:17:06 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 10:17:04 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2][V2] vsock: remove ratelimit unknown ioctl message
+Message-ID: <20201027091704.eovesxm3h5f5mi4j@steredhat>
+References: <20201027090942.14916-1-colin.king@canonical.com>
+ <20201027090942.14916-2-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20201026080919.28413-1-zhang.lyra@gmail.com> <20201026080919.28413-4-zhang.lyra@gmail.com>
- <e1d01b18-44c1-0285-62bc-48d7c19e1bdb@roeck-us.net>
-In-Reply-To: <e1d01b18-44c1-0285-62bc-48d7c19e1bdb@roeck-us.net>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Tue, 27 Oct 2020 17:17:00 +0800
-Message-ID: <CAAfSe-sfwh42R1QyBfg+ZdLOiGsm8apAmoX4Cs27x682r2z_hw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] watchdog: sprd: check busy bit before kick watchdog
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Lingling Xu <ling_ling.xu@unisoc.com>, jingchao.ye@unisoc.com,
-        xiaoqing.wu@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201027090942.14916-2-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 at 22:44, Guenter Roeck <linux@roeck-us.net> wrote:
+On Tue, Oct 27, 2020 at 09:09:41AM +0000, Colin King wrote:
+>From: Colin Ian King <colin.king@canonical.com>
 >
-> On 10/26/20 1:09 AM, Chunyan Zhang wrote:
-> > From: Lingling Xu <ling_ling.xu@unisoc.com>
-> >
-> > As the specification described, checking busy bit must be done before kick
-> > watchdog.
-> >
+>When exercising the kernel with stress-ng with some ioctl tests the
+>"Unknown ioctl" error message is spamming the kernel log at a high
+>rate. Remove this message.
 >
-> That is a key functional change: So far the code checked if a value
-> was accepted after loading it. That is no longer the case. Effectively,
-> with this change, the _next_ operation will now check if the previous
-> operation was accepted. Is this intentional ?
+>Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>---
+> net/vmw_vsock/af_vsock.c | 1 -
+> 1 file changed, 1 deletion(-)
 
-Yes, the busy bit indicates whether the previous operation is done, so
-we have to make sure the last loading completed (the busy bit is not
-set) before new loading.
-
-The spec says that this bit is set after a new loading, and would last
-2 or 3 RTC clock cycles.
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
 >
-> Also, does this really solve a problem, or is it just an optimization ?
-> By checking for busy prior to an operation instead of after it the only
-> real difference is that the busy check will most likely succeed immediately
-> because enough time has passed since the last write.
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 9e93bc201cc0..865331b809e4 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -2072,7 +2072,6 @@ static long vsock_dev_do_ioctl(struct file *filp,
+> 		break;
 >
-> Ultimately it is your call how you want to handle this, but I think the
-> impact should be spelled out.
-
-Ok, I will add more details in the commit message.
-
-Many thanks for the review!
-
-Chunyan
-
+> 	default:
+>-		pr_err("Unknown ioctl %d\n", cmd);
+> 		retval = -EINVAL;
+> 	}
 >
-> Guenter
+>-- 
+>2.27.0
 >
-> > Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
-> > Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> >  drivers/watchdog/sprd_wdt.c | 27 ++++++++++++++-------------
-> >  1 file changed, 14 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
-> > index 4f2a8c6d6485..14071c66ff49 100644
-> > --- a/drivers/watchdog/sprd_wdt.c
-> > +++ b/drivers/watchdog/sprd_wdt.c
-> > @@ -108,20 +108,8 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
-> >       u32 tmr_step = timeout * SPRD_WDT_CNT_STEP;
-> >       u32 prtmr_step = pretimeout * SPRD_WDT_CNT_STEP;
-> >
-> > -     sprd_wdt_unlock(wdt->base);
-> > -     writel_relaxed((tmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
-> > -                   SPRD_WDT_LOW_VALUE_MASK, wdt->base + SPRD_WDT_LOAD_HIGH);
-> > -     writel_relaxed((tmr_step & SPRD_WDT_LOW_VALUE_MASK),
-> > -                    wdt->base + SPRD_WDT_LOAD_LOW);
-> > -     writel_relaxed((prtmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
-> > -                     SPRD_WDT_LOW_VALUE_MASK,
-> > -                    wdt->base + SPRD_WDT_IRQ_LOAD_HIGH);
-> > -     writel_relaxed(prtmr_step & SPRD_WDT_LOW_VALUE_MASK,
-> > -                    wdt->base + SPRD_WDT_IRQ_LOAD_LOW);
-> > -     sprd_wdt_lock(wdt->base);
-> > -
-> >       /*
-> > -      * Waiting the load value operation done,
-> > +      * Waiting the last load value operation done,
-> >        * it needs two or three RTC clock cycles.
-> >        */
-> >       do {
-> > @@ -134,6 +122,19 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
-> >
-> >       if (delay_cnt >= SPRD_WDT_LOAD_TIMEOUT)
-> >               return -EBUSY;
-> > +
-> > +     sprd_wdt_unlock(wdt->base);
-> > +     writel_relaxed((tmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
-> > +                   SPRD_WDT_LOW_VALUE_MASK, wdt->base + SPRD_WDT_LOAD_HIGH);
-> > +     writel_relaxed((tmr_step & SPRD_WDT_LOW_VALUE_MASK),
-> > +                    wdt->base + SPRD_WDT_LOAD_LOW);
-> > +     writel_relaxed((prtmr_step >> SPRD_WDT_CNT_HIGH_SHIFT) &
-> > +                     SPRD_WDT_LOW_VALUE_MASK,
-> > +                    wdt->base + SPRD_WDT_IRQ_LOAD_HIGH);
-> > +     writel_relaxed(prtmr_step & SPRD_WDT_LOW_VALUE_MASK,
-> > +                    wdt->base + SPRD_WDT_IRQ_LOAD_LOW);
-> > +     sprd_wdt_lock(wdt->base);
-> > +
-> >       return 0;
-> >  }
-> >
-> >
->
+
