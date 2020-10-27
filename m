@@ -2,109 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C76429C13E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27F529C0D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818794AbgJ0RXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:23:35 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:39931 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2900640AbgJ0Oyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:54:39 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5E702580391;
-        Tue, 27 Oct 2020 10:54:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 27 Oct 2020 10:54:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=UW+E2zW4VZ3UJMxESpcdsxmlJiw
-        oieqYRzoHTXgnbW0=; b=XgvLsbAxk4Z7pmp8Nxz1jtzRQm//UA5mEDYBA8X/FbL
-        KKjsM2NIkNWCQIywwzKkqDBLL4uMAIoWk1pKM9y17X6JiSRqtJsfSitEj/HV9Quf
-        MAe+CDcMepUznuryAtfiWzi0fDkGJ1XTnp8xM15qydp3FELZFf79voTpYHx3jGKa
-        3hJGEX4sx7cy1XPczlJe8QJXMpHymfrnzlr362tubaoxFkaQFLz+wzRHtr9D6py5
-        oTjfT4dmTI5lJE1zkIMHix5UGm5Lrg9taEa9Hs8n7xAEAIE3nt9sBJJpy19JN/hp
-        YxZOHvO3Td5NHJEXsSBfgdZrtZHgKOT12pmmtSu+crg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=UW+E2z
-        W4VZ3UJMxESpcdsxmlJiwoieqYRzoHTXgnbW0=; b=P2CJnQ8uuy9FH7czKoH61q
-        LLSW5lizedJjUKo0MQj3NUG4aRK7G2jyg4qkhYzYWMVKjQGiGs1BJRr0BHt3Ek8I
-        1tFPS/+I/aEcoR6bvuHm3vA3bCjnS64Wo8nWokF6zPMkUWAX/LCMxuBu/LaLxdzN
-        RVNvp+FcXx18qYf+/M+nWlBNxL47z30KvBnc6E3dzECo5zBLo8frjm+dpQZNTQCb
-        xdiytaAPPBDkR7D3AopbdxRZrgQn8iCExVgz43QZ0mkshLy06ffmmfpVvyVoA9Xt
-        nJ7/xaRvvOGNUZuKlpmo5kBoT2rXcA1W6KRhfMtVcbvT/gSeEyXDnydyPj7xGn8g
-        ==
-X-ME-Sender: <xms:qjSYX8pFfMlV8R1cAmDDHtINi4OWwiVTBfOYDEtjx3-KSD7Gzdz1mQ>
-    <xme:qjSYXypPyzowgHmZi0IIJaIMaICyrNw8B5gyuH3RhCUBohvmQ1btXCyzYAQNbKx_M
-    2032qMHIKcEWGq-7UM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:qjSYXxPJyA-scb1IKYFP_IJ58uvSuC6cHLlrC6yj6vtrgaA3_2KQlA>
-    <xmx:qjSYXz4bjDnp-ZxtumAIPjnsYuO_dzJ3KzO9rQDBmxXp-uYPtj6tLA>
-    <xmx:qjSYX74RjX5yu3Xb5jgR6iO3skzUOYFx78Ic5vqBDOXDZmu4xCmuKA>
-    <xmx:rTSYX4yPcxa1l_Dz1l_yRAm44oatfrLZ8YmYXWV_rk9iPjpKXLOeCw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 13C12328005D;
-        Tue, 27 Oct 2020 10:54:33 -0400 (EDT)
-Date:   Tue, 27 Oct 2020 15:54:31 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Cc:     eric@anholt.net, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        dave.stevenson@raspberrypi.com, sungguk.na@samsung.com
-Subject: Re: [PATCH 1/1] drm/vc4: drv: Add error handding for bind
-Message-ID: <20201027145431.zasv2oiydglz3n63@gilmour.lan>
-References: <20201027041442.30352-1-hoegeun.kwon@samsung.com>
- <CGME20201027041535epcas1p489bbfe80b461f1e5c5deca1a571f1f35@epcas1p4.samsung.com>
- <20201027041442.30352-2-hoegeun.kwon@samsung.com>
+        id S1818279AbgJ0RSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:18:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:42810 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1772409AbgJ0Oza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:55:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22B2C153B;
+        Tue, 27 Oct 2020 07:55:30 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 726293F719;
+        Tue, 27 Oct 2020 07:55:28 -0700 (PDT)
+Subject: Re: [PATCH v4 21/21] perf arm-spe: Add support for ARMv8.3-SPE
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+References: <20201027030917.15404-1-leo.yan@linaro.org>
+ <20201027030917.15404-22-leo.yan@linaro.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <dac9dc2a-0674-9811-62ad-bdd050da4ca2@arm.com>
+Date:   Tue, 27 Oct 2020 14:54:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wxa2nq6hnmca3hde"
-Content-Disposition: inline
-In-Reply-To: <20201027041442.30352-2-hoegeun.kwon@samsung.com>
+In-Reply-To: <20201027030917.15404-22-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---wxa2nq6hnmca3hde
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 27/10/2020 03:09, Leo Yan wrote:
 
 Hi,
 
-On Tue, Oct 27, 2020 at 01:14:42PM +0900, Hoegeun Kwon wrote:
-> There is a problem that if vc4_drm bind fails, a memory leak occurs on
-> the drm_property_create side. Add error handding for drm_mode_config.
->=20
-> Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> From: Wei Li <liwei391@huawei.com>
+> 
+> This patch is to support Armv8.3 extension for SPE, it adds alignment
+> field in the Events packet and it supports the Scalable Vector Extension
+> (SVE) for Operation packet and Events packet with two additions:
+> 
+>   - The vector length for SVE operations in the Operation Type packet;
+>   - The incomplete predicate and empty predicate fields in the Events
+>     packet.
+> 
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Applied, thanks!
-Maxime
+Looks correct, checked all bit patterns in the manual.
 
---wxa2nq6hnmca3hde
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
------BEGIN PGP SIGNATURE-----
+Cheers,
+Andre
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5g0pwAKCRDj7w1vZxhR
-xVOGAP97fk3mnbTRj0i/hLPPsFBfQ4SlfOkkqL3lZO6PXlFQdQEA+sZ/6u7b+J7p
-esNNHHdopvh+MLAwJW47eC/lLIZScAQ=
-=oZCt
------END PGP SIGNATURE-----
+> ---
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 72 ++++++++++++++++++-
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 +++++
+>  2 files changed, 86 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 5195ec3b1ec4..40b12d6893f9 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -332,6 +332,21 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
+>  		if (ret < 0)
+>  			return ret;
+>  	}
+> +	if (payload & BIT(EV_ALIGNMENT)) {
+> +		ret = arm_spe_pkt_snprintf(&buf, &blen, " ALIGNMENT");
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +	if (payload & BIT(EV_PARTIAL_PREDICATE)) {
+> +		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-PARTIAL-PRED");
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +	if (payload & BIT(EV_EMPTY_PREDICATE)) {
+> +		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-EMPTY-PRED");
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>  
+>  	return buf_len - blen;
+>  }
+> @@ -345,8 +360,42 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
+>  
+>  	switch (class) {
+>  	case SPE_OP_PKT_HDR_CLASS_OTHER:
+> -		return arm_spe_pkt_snprintf(&buf, &blen,
+> -			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
+> +		if (SPE_OP_PKT_IS_OTHER_SVE_OP(payload)) {
+> +
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, "SVE-OTHER");
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			/* SVE effective vector length */
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
+> +						   SPE_OP_PKG_SVE_EVL(payload));
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			if (payload & SPE_OP_PKT_SVE_FP) {
+> +				ret = arm_spe_pkt_snprintf(&buf, &blen, " FP");
+> +				if (ret < 0)
+> +					return ret;
+> +			}
+> +			if (payload & SPE_OP_PKT_SVE_PRED) {
+> +				ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
+> +				if (ret < 0)
+> +					return ret;
+> +			}
+> +		} else {
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, "OTHER");
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, " %s",
+> +					payload & SPE_OP_PKT_COND ?
+> +					"COND-SELECT" : "INSN-OTHER");
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+> +
+> +		return buf_len - blen;
+> +
+>  	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
+>  		ret = arm_spe_pkt_snprintf(&buf, &blen,
+>  					   payload & SPE_OP_PKT_ST ? "ST" : "LD");
+> @@ -400,6 +449,25 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
+>  			break;
+>  		}
+>  
+> +		if (SPE_OP_PKT_IS_LDST_SVE(payload)) {
+> +			/* SVE effective vector length */
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
+> +						   SPE_OP_PKG_SVE_EVL(payload));
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			if (payload & SPE_OP_PKT_SVE_PRED) {
+> +				ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
+> +				if (ret < 0)
+> +					return ret;
+> +			}
+> +			if (payload & SPE_OP_PKT_SVE_SG) {
+> +				ret = arm_spe_pkt_snprintf(&buf, &blen, " SG");
+> +				if (ret < 0)
+> +					return ret;
+> +			}
+> +		}
+> +
+>  		return buf_len - blen;
+>  
+>  	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> index 1ad14885c2a1..9b970e7bf1e2 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> @@ -113,6 +113,8 @@ enum arm_spe_events {
+>  #define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
+>  #define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
+>  
+> +#define SPE_OP_PKT_IS_OTHER_SVE_OP(v)		(((v) & (BIT(7) | BIT(3) | BIT(0))) == 0x8)
+> +
+>  #define SPE_OP_PKT_COND				BIT(0)
+>  
+>  #define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
+> @@ -128,6 +130,20 @@ enum arm_spe_events {
+>  #define SPE_OP_PKT_AT				BIT(2)
+>  #define SPE_OP_PKT_ST				BIT(0)
+>  
+> +#define SPE_OP_PKT_IS_LDST_SVE(v)		(((v) & (BIT(3) | BIT(1))) == 0x8)
+> +
+> +#define SPE_OP_PKT_SVE_SG			BIT(7)
+> +/*
+> + * SVE effective vector length (EVL) is stored in byte 0 bits [6:4];
+> + * the length is rounded up to a power of two and use 32 as one step,
+> + * so EVL calculation is:
+> + *
+> + *   32 * (2 ^ bits [6:4]) = 32 << (bits [6:4])
+> + */
+> +#define SPE_OP_PKG_SVE_EVL(v)			(32 << (((v) & GENMASK_ULL(6, 4)) >> 4))
+> +#define SPE_OP_PKT_SVE_PRED			BIT(2)
+> +#define SPE_OP_PKT_SVE_FP			BIT(1)
+> +
+>  #define SPE_OP_PKT_IS_INDIRECT_BRANCH(v)	(((v) & GENMASK_ULL(7, 1)) == 0x2)
+>  
+>  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
+> 
 
---wxa2nq6hnmca3hde--
