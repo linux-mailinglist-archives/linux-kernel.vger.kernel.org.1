@@ -2,118 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39A429CB99
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B4329CBA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 22:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374664AbgJ0Vzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 17:55:36 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:38013 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374656AbgJ0Vzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:55:35 -0400
-Received: by mail-il1-f195.google.com with SMTP id x7so1470536ili.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 14:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lgKSCb5c9tdTkF5QdAPCpCA9DpL5KH988jr8fE7us3c=;
-        b=fXEsD4d3KHbwjy0Hy7AOYfmlTutjASNHaqDSuDAP/mkXXgOS7eZ0sgGYNtvvD0nLSn
-         1v2NL+sdlQ5mD7k5IkU6gS3f2ETZo3ZQgS+3MfCv5HkyYidCUGtZusRzrYBnXO19GDkD
-         +cood94qqgOzQw57psef08614etVetRd4PM9I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lgKSCb5c9tdTkF5QdAPCpCA9DpL5KH988jr8fE7us3c=;
-        b=G2qkkVMMJ5Ofa624vwXMrkDo05jY5wOFLceOa1ZLjlKrp8yBqAUZ+uh+gX4+FEfSZb
-         KJplR+xhXQ+HbuCL4Wbotvx4sW8uHXTXkBSCPF2vD0C211DCYZYa6oVq4c3z9g6mnQTX
-         1N+aGYLM1rJ5uLpnHUCr0UmQpR2HO7R8GFiVFfvH8+8UxkDnLceVyyqHHrIptCjJetpg
-         BPZdp7viZdDyQwzqCsaFY5Furwuw0IfCu6EOOj3MyRvByvfpRsLJNHxujghEsmuUrj+N
-         LCzLLsVq815728dPLV/pOdrDtjSuiV0b/7pLQ6On3DGwISQkOmBZPOeoDKG39mGsX3ZD
-         7UOg==
-X-Gm-Message-State: AOAM530dYuKHxC/sI0k3LPJTgi8F/q0PzRIj28MIumSZ5Z9GXAED0q8L
-        PqEZf2jmNLlAYtYLae4YTQlWZA==
-X-Google-Smtp-Source: ABdhPJzmC1cbguyZPZtlPtoJsAGQaNltsHYTu67efw7/gCtEowygE8ptitCW3/02DXT/NydkLPM70A==
-X-Received: by 2002:a92:41c6:: with SMTP id o189mr3745351ila.261.1603835733784;
-        Tue, 27 Oct 2020 14:55:33 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p17sm1498718ilh.34.2020.10.27.14.55.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 14:55:32 -0700 (PDT)
-Subject: Re: [PATCH] selftests/ftrace: remove _do_fork() leftovers
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1603443123-17457-1-git-send-email-agordeev@linux.ibm.com>
- <20201023093523.65c495f8@gandalf.local.home>
- <20201023151243.GA1537@oc3871087118.ibm.com>
- <20201023114948.6900aa68@gandalf.local.home>
- <20201023115111.1c0e8768@gandalf.local.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <cedad9bf-ba6b-78ad-644f-ce5074f2fbed@linuxfoundation.org>
-Date:   Tue, 27 Oct 2020 15:55:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S374693AbgJ0V62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 17:58:28 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48432 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897378AbgJ0V61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 17:58:27 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kXWym-003sRd-1O; Tue, 27 Oct 2020 22:58:08 +0100
+Date:   Tue, 27 Oct 2020 22:58:08 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] net: dsa: mv88e6xxx: Support serdes ports on
+ MV88E6123/6131
+Message-ID: <20201027215808.GF904240@lunn.ch>
+References: <20201022012516.18720-1-chris.packham@alliedtelesis.co.nz>
+ <20201022012516.18720-5-chris.packham@alliedtelesis.co.nz>
+ <20201023224216.GE745568@lunn.ch>
+ <1b1d4c27-570b-8a2f-698b-d82b2ca8215d@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <20201023115111.1c0e8768@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b1d4c27-570b-8a2f-698b-d82b2ca8215d@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 9:51 AM, Steven Rostedt wrote:
-> On Fri, 23 Oct 2020 11:49:48 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Oct 27, 2020 at 08:56:09PM +0000, Chris Packham wrote:
 > 
->> On Fri, 23 Oct 2020 17:12:44 +0200
->> Alexander Gordeev <agordeev@linux.ibm.com> wrote:
->>
->>>> Perhaps we should have:
->>>>
->>>> 	# older kernels have do_fork, but newer kernels have kernel_clone
->>>> 	echo kernel_clone >> set_ftrace_filter || echo *do_fork >> set_ftrace_filter
->>>
->>> Would you suggest to do the same with all occurences in
->>> eea11285dab3 ("tracing: switch to kernel_clone()")?
->>> Otherwise it does not really make sense to just fix couple
->>> of tests out of dozens.
->>
->> Yes. I haven't pulled in the updated tests, so I haven't hit the errors yet
->> (nor have I merged my work with the switch to the new name yet). So those
->> will most definitely break my tests.
->>
->> But because it's a more generic issue, we should have a way to find what to
->> use. Perhaps add to the test.d/functions, something like:
->>
->> FUNCTION_FORK=`(if grep '\bkernel_clone\b' /proc/kallsyms > /dev/null; then
->>                  echo kernel_clone; else echo '_do_fork'; fi)`
->>
->> and use $FUNCTION_FORK everywhere that references it.
->>
->>
-> 
-> Let me pull in the latest changes, and whip up a patch that works on both
-> the older kernels as well as the newer ones.
-> 
-> -- Steve
-> 
+> On 24/10/20 11:42 am, Andrew Lunn wrote:
+> >> +int mv88e6123_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)
+> >> +{
+> >> +	if (mv88e6xxx_serdes_get_lane(chip, port) == 0)
+> >> +		return 0;
+> >> +
+> >> +	return 26 * sizeof(u16);
+> >> +}
+> > Hi Chris
+> >
+> > Where did 26 come from?
 
-Assume this is handled by
+> In the 88E6123 Serdes Register Description the highest register address 
+> was 26 so that's what I used.
 
-selftests/ftrace: Use $FUNCTION_FORK to reference kernel fork function
-https://patchwork.kernel.org/project/linux-kselftest/patch/20201026162032.124c728d@gandalf.local.home/
+> Technically there are 32 possible 
+> addresses in that space so I could go up to 32. Equally registers 9-14, 
+> 20, 22-23 are "reserved" so I could remove them from the total and have 
+> mv88e6123_serdes_get_regs() skip over them. I'm guessing skipping some 
+> (27-32) and not others is probably less than ideal.
 
-Just making sure.
+Hi Chris
 
-thanks,
--- Shuah
+I would dump all 32 and let userspace figure out if they mean
+anything. The current register dump for the 6390 SEDES is horrible,
+and i missed a register, and it is not easy to put in its correct
+place because of ABI reasons. If you can do KISS, all the better.
 
+      Andrew
