@@ -2,91 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3E629CBEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBEA29CBF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832346AbgJ0WXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 18:23:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505747AbgJ0WXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:23:54 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S374858AbgJ0W1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 18:27:01 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:36557 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374850AbgJ0W1A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 18:27:00 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48278221FB;
-        Tue, 27 Oct 2020 22:23:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603837433;
-        bh=Cc+90dgAQa5qCqT7yhr5+fNXcD/lqcWVm7Ov6RIsF+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vp30La2lUQBdT+96S72S0Dz1GBdL4xWzRgVCDUUYiqM/K1v5/g9Nnn/y8+SrzYwQg
-         h75xpYI33IvDxYnn9rJtAMoYxl0HX+x4vO0D92tKl80Ffkjq93h0t7Dd8Cud+CGbTQ
-         66CRxjf9li3sgA29EGFpvFJiJpiA8eroc6IiQMh8=
-Received: by mail-ot1-f42.google.com with SMTP id n15so2568853otl.8;
-        Tue, 27 Oct 2020 15:23:53 -0700 (PDT)
-X-Gm-Message-State: AOAM53155J3qiMXis/tlwYxqv5IK0Ms8lOLFqVgF6GiTbVIYG4U6HHAH
-        4nT3qBkHtkGOXsKRxbeqFsrImCdUrYlRw0TLWww=
-X-Google-Smtp-Source: ABdhPJziJpHQvbpPWWIsVOva0M9OAmaLmP58/5ARQiTSJz3RHLSs0wa1cHQ4AJnrxEt8YQdaEuEp0Vm2ExMSe83AUT8=
-X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr2946472ots.90.1603837432594;
- Tue, 27 Oct 2020 15:23:52 -0700 (PDT)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DA4FB22FB3;
+        Tue, 27 Oct 2020 23:26:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1603837618;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rhQZ6qZ9RvERhK0/FOn0nWDX9oV7/yBunnJMLi68+SY=;
+        b=XhoKeqJ6fA6IxkZ1u6sclV1ef80OMhKM+xuDOu/2xwNgQC6Y6CCeny5Fn1ZIq8ntpx1lmd
+        9o3HF3NpuDjPugWP30Q9P8xI/I7Y4Wx8+PFN0UK44e5fyEpljoqC8K3N4LScT3Qe8zjMlW
+        DCxuO/bvFue2/6nFu16sCwO07xQhDYY=
 MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org> <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
- <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com> <CAKwvOdnfkZXJdZkKO6qT53j6nH4HF=CcpUZcr7XOqdnQLSShmw@mail.gmail.com>
-In-Reply-To: <CAKwvOdnfkZXJdZkKO6qT53j6nH4HF=CcpUZcr7XOqdnQLSShmw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 27 Oct 2020 23:23:41 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGFWr5FSiO79VYEYhB2eCpDP5vyTJmdskxrKWnUz-GP-w@mail.gmail.com>
-Message-ID: <CAMj1kXGFWr5FSiO79VYEYhB2eCpDP5vyTJmdskxrKWnUz-GP-w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 23:26:55 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v5 0/3] mtd: spi-nor: keep lock bits if they are
+ non-volatile
+In-Reply-To: <20201003153235.29762-1-michael@walle.cc>
+References: <20201003153235.29762-1-michael@walle.cc>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <babd96f5018d6081746aa9063ce21756@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 23:03, Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Tue, Oct 27, 2020 at 2:50 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Tue, 27 Oct 2020 at 22:20, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >
-> > > On Tue, Oct 27, 2020 at 1:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> > > > index 6e390d58a9f8..ac3fa37a84f9 100644
-> > > > --- a/include/linux/compiler_types.h
-> > > > +++ b/include/linux/compiler_types.h
-> > > > @@ -247,10 +247,6 @@ struct ftrace_likely_data {
-> > > >  #define asm_inline asm
-> > > >  #endif
-> > > >
-> > > > -#ifndef __no_fgcse
-> > > > -# define __no_fgcse
-> > > > -#endif
-> > > > -
-> > > Finally, this is going to disable GCSE for the whole translation unit,
-> > > which may be overkill.   Previously it was isolated to one function
-> > > definition.  You could lower the definition of the preprocessor define
-> > > into kernel/bpf/core.c to keep its use isolated as far as possible.
-> > >
-> >
-> > Which preprocessor define?
->
-> __no_fgcse
->
+Am 2020-10-03 17:32, schrieb Michael Walle:
+> I bundled this as a series, because otherwise there will be conflicts
+> because the "remove global protection flag" patches modify the same 
+> lines
+> as the main patch.
+> 
+> See invdividual patches for the version history.
 
-But we can't use that, that is the whole point of this patch.
+any news here?
+
+-michael
