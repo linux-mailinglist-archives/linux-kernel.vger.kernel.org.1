@@ -2,66 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EAD29A670
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BD529A678
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894566AbgJ0IWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:22:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45590 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389898AbgJ0IWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:22:49 -0400
-Date:   Tue, 27 Oct 2020 09:22:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603786968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DnBGT2o3RmzLH6Jk+SiaKYgGhj2tONBcJBQJ4Z5h+M=;
-        b=dile8uqtDV/sHjutdaTGsqHeNASd8kFpfs9SVjvfV/QOQo79JwTr0uWtEenEG48R/w14x+
-        dSh+XfPi7wd6NhpCa57zvFgIn6h+QruFIO54JHi8Jdoi5xeWzC8Qkt7qBZa48GjAnZ36ds
-        yInDwBB4zIa5ejUYjoB4Adgse7jb6QwfHTOz+Oe8CKPgg8Yn1bwN7xgElKl8tuXhVwOzjo
-        5ny3eTAReoix0CcLLe+zlYAIgFdIpMSek4qrFJhKhinTiUZKUUoere3VODXoM+TXNdrrBs
-        E/ITmvOWku3rbC+Z0ZE90CPIhFC2/JCdoCiLnnsX5+LcOphMkiAmRitjjaoWaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603786968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DnBGT2o3RmzLH6Jk+SiaKYgGhj2tONBcJBQJ4Z5h+M=;
-        b=zMYphMDQPkj/3j4yQzIUfAZYfsJVOQ2LovKm+AryXAfyVmJd4JG2Ft6DPieP7hORBFCEl2
-        AyjDG5B6QfH21WAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.9.1-rt18
-Message-ID: <20201027082247.rs2h7l3wdzxc5f7i@linutronix.de>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
- <20201021131449.qlwjiq2l6embaii3@linutronix.de>
- <54d33ca5-107e-e269-8c47-a1ae0dc60b0e@ccrma.stanford.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <54d33ca5-107e-e269-8c47-a1ae0dc60b0e@ccrma.stanford.edu>
+        id S2894665AbgJ0IXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:23:15 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45857 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2894646AbgJ0IXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:23:12 -0400
+IronPort-SDR: 9hu8Zy9D4BD7adXZB6CF8IAOQjFax2HwtgydSI5xiR/ACHBnPh3FfEEUl8XY99zEJP45Vt1zDW
+ /asByAAvAAHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="252743856"
+X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
+   d="scan'208";a="252743856"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 01:23:11 -0700
+IronPort-SDR: n/+N35TcP2mV5TX0XWomAdxWBA2ASaph8pFSoApTVPFjKdzQdhWco7FS/Rb4MJJHY8WB5k+loi
+ NI2jOXjWop4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
+   d="scan'208";a="524610018"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Oct 2020 01:23:07 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
+        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v4 3/6] spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+Date:   Tue, 27 Oct 2020 16:22:48 +0800
+Message-Id: <20201027082251.30056-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20201027082251.30056-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20201027082251.30056-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 23:53:20 [-0700], Fernando Lopez-Lezcano wrote:
-> Maybe I'm doing something wrong but I get a compilation error (see below)
-> when trying to do a debug build (building rpm packages for Fedora). 5.9.1 +
-> rt19...
-> 
-> Builds fine otherwise...
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-If you could remove CONFIG_TEST_LOCKUP then it should work. I will think
-of something.
+Add multiple chipselect support for Intel LGM SoCs,
+currently QSPI-NOR and QSPI-NAND supported.
 
-> Thanks,
-> -- Fernando
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+---
+ drivers/spi/spi-cadence-quadspi.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Sebastian
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 6d6f7c440ece..c4440797db43 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -38,6 +38,7 @@
+ 
+ /* Capabilities */
+ #define CQSPI_SUPPORTS_OCTAL		BIT(0)
++#define CQSPI_SUPPORTS_MULTI_CHIPSELECT BIT(1)
+ 
+ struct cqspi_st;
+ 
+@@ -75,6 +76,7 @@ struct cqspi_st {
+ 	bool			is_decoded_cs;
+ 	u32			fifo_depth;
+ 	u32			fifo_width;
++	u32			num_chipselect;
+ 	bool			rclk_en;
+ 	u32			trigger_address;
+ 	u32			wr_delay;
+@@ -1049,6 +1051,7 @@ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+ 
+ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+ {
++	const struct cqspi_driver_platdata *ddata;
+ 	struct device *dev = &cqspi->pdev->dev;
+ 	struct device_node *np = dev->of_node;
+ 
+@@ -1070,6 +1073,15 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+ 		return -ENXIO;
+ 	}
+ 
++	ddata  = of_device_get_match_data(dev);
++	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
++		if (of_property_read_u32(np, "num-chipselect",
++					 &cqspi->num_chipselect)) {
++			dev_err(dev, "couldn't determine number of cs\n");
++			return -ENXIO;
++		}
++	}
++
+ 	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
+ 
+ 	return 0;
+@@ -1307,6 +1319,9 @@ static int cqspi_probe(struct platform_device *pdev)
+ 	cqspi->current_cs = -1;
+ 	cqspi->sclk = 0;
+ 
++	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
++		master->num_chipselect = cqspi->num_chipselect;
++
+ 	ret = cqspi_setup_flash(cqspi);
+ 	if (ret) {
+ 		dev_err(dev, "failed to setup flash parameters %d\n", ret);
+@@ -1396,6 +1411,7 @@ static const struct cqspi_driver_platdata am654_ospi = {
+ };
+ 
+ static const struct cqspi_driver_platdata intel_lgm_qspi = {
++	.hwcaps_mask = CQSPI_SUPPORTS_MULTI_CHIPSELECT,
+ 	.quirks = CQSPI_DISABLE_DAC_MODE,
+ };
+ 
+-- 
+2.11.0
+
