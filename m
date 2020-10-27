@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E5B29A97C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2C429A985
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 11:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436471AbgJ0KXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 06:23:16 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42007 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410469AbgJ0KXP (ORCPT
+        id S2898013AbgJ0KZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 06:25:13 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:36791 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437932AbgJ0KZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 06:23:15 -0400
-Received: by mail-wr1-f65.google.com with SMTP id j7so1219329wrt.9;
-        Tue, 27 Oct 2020 03:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B//Sw2wJ0hqD7Gjr+kfAvqiPXu+g6LMWNc+2dvqZKIA=;
-        b=U2LVGOjuEcsuTaQ7PTIcv/VGNK7UzLj5gvyajdmn/J8FGZPsqYgUblOpjDzP7cenol
-         sxi2McX05b+mBho+dssdYLyRMapbDpvfSfXzHfL9SgAehzDiXtEwEoj4RWmGlIC3hjIS
-         Hf4KzrOERlUwhlGwNFYXQ1Sxll3QFB8dF4l0Qh61+G8nhbas5KaVf5u62VWs3QeR0kiy
-         D7JmrX4IM0t4b5hSvYxVvy0LwskKa+rmffYjgh9UMqEnG8nFciT6cPRcymmKtsYBRMy8
-         MRcXNNRLDS4kQgPjcPkE//GrbUDAKxSeTjzDiFuMlC+i7nGn8yJ4XrNMxh+mfRa2frCx
-         xwqA==
+        Tue, 27 Oct 2020 06:25:12 -0400
+Received: by mail-ej1-f66.google.com with SMTP id w27so1456087ejb.3;
+        Tue, 27 Oct 2020 03:25:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B//Sw2wJ0hqD7Gjr+kfAvqiPXu+g6LMWNc+2dvqZKIA=;
-        b=HxR+3xYXSmKAVs95BwpwNS92gJ0bGafnZNMOZdnI7hnZxHPhI2XSrSAD50MJbAbsPv
-         KaK4MDEafMlJDQ1DYD9fAYu8KULcuRuV6f1P642PEfAvufcLsorzhha39X65GA/xPSLa
-         g6krl3VgsW7IHisAMBmeJtiQSnEUumUZyG486V19k2WgZcIML4ZV5jPoHn366MDyJDYv
-         qX5JOb166KtTOoGCad0zPNVyaqOCq+T6bIojlxtemdXsnGZ9GoxX2Q13eSjQwTUPxmkL
-         F4EpJuYudSmdius7nrr6MgorU3S8OkQlYSjGX36AwWOK9L2rqa1r/YPepggHzAy9GQFo
-         mLuQ==
-X-Gm-Message-State: AOAM5316AiyIghUm44QWaUaiy/Rt89IrNQzNSNJibfSFXxtZbDTLyDDy
-        EhipZuUKBM2W3ImL89JHT5l3DYqr6n0=
-X-Google-Smtp-Source: ABdhPJzvcuK2CIHkQV/DwWjteTFGMtPQLGAwYCGeX4Ipo1xxA2jrDeD0BwPs11em3axTqMHkiTbdFQ==
-X-Received: by 2002:adf:fd09:: with SMTP id e9mr1988097wrr.241.1603794193189;
-        Tue, 27 Oct 2020 03:23:13 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id x21sm1338343wmi.3.2020.10.27.03.23.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 03:23:12 -0700 (PDT)
-Subject: Re: [PATCH 1/2] system_data_types.7: Add 'off_t'
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, libc-alpha@sourceware.org,
-        linux-kernel@vger.kernel.org
-References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
- <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <87faeeeb-f2e0-7f1e-5692-78b43242f20b@gmail.com>
-Date:   Tue, 27 Oct 2020 11:23:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ylNf2aSrBKpAGk/XmG8j77J1836YfOHwLDEKrBDhhto=;
+        b=NuKxOtcoZKhMi/J7Bot2LzRHZtsIY2tGA0BrI6LMNM65U4R1IqMebM9shwg8F5t9EO
+         9Ir1sOXB1QXLHxyPQlKLRBnKtyG9nawGJR+PadH6RE0AniM2hakKmfDW5N5jMY3kcviF
+         mfOVQccNZaOdkw3rzqy7mFLXjCh0wLnb9LyVpnpjl7CaIgEcbJB2FjR3d1bgZuSUU17v
+         rg+gknmK0bjcGc6gIuzW4Hkhc1Z0/KywBeMvzUmoyiWIGOPb+Tq221SehO3oXm/9opbL
+         r/MLwO1418C2YTiM+JOkUcovvnDUmpWD41z1hXjtK0Mnmldwjk+I+3hbIgkJIVOO762w
+         xO7Q==
+X-Gm-Message-State: AOAM530bW5sa6rcrzlz1oOICU00c9s/tYrX2p5utioi/S5B4XN/F3QcU
+        dT+SFvplZSClrvm1RpX/yFs=
+X-Google-Smtp-Source: ABdhPJyTiWvQkB0SHAsJaXsSdNHED7COpFBG6lf+CNCt8imIyB1mFelDwWrl3AGCqa/XD9EaDgO3wg==
+X-Received: by 2002:a17:906:3bc7:: with SMTP id v7mr1586575ejf.245.1603794310498;
+        Tue, 27 Oct 2020 03:25:10 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id yw17sm747674ejb.97.2020.10.27.03.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 03:25:09 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 11:25:06 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 13/52] dt-bindings: memory: tegra124: emc: Document
+ new interconnect property
+Message-ID: <20201027102506.GB17089@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-14-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-14-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On 2020-10-07 08:53, Michael Kerrisk (man-pages) wrote:
-> On 10/6/20 12:12 AM, Alejandro Colomar wrote:
->> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+On Mon, Oct 26, 2020 at 01:16:56AM +0300, Dmitry Osipenko wrote:
+> External memory controller is interconnected with memory controller and
+> with external memory. Document new interconnect property which turns
+> External Memory Controller into interconnect provider.
 > 
-> Hi Alex,
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Thanks, patch applied. And I trimmed the "See also" a little.
-> I'd hold off on documenting loff_t and off64_t for the
-> moment. As you note in another mail, the *lseek* man page
-> situation is a bit of a mess. I'm not yet sure what to do.
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+> index 278549f9e051..ac00832ceac1 100644
+> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+> @@ -29,6 +29,9 @@ properties:
+>      items:
+>        - const: emc
+>  
+> +  "#interconnect-cells":
+> +    const: 0
+> +
+>    nvidia,memory-controller:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description:
+> @@ -327,6 +330,7 @@ required:
+>    - clocks
+>    - clock-names
+>    - nvidia,memory-controller
+> +  - "#interconnect-cells"
 
+Another required property, what about all existing users of this binding?
 
-I saw a TODO in the page about loff_t.
-Just wanted to ping you in case you forgot about it (I did).
+>  
+>  additionalProperties: false
+>  
+> @@ -345,6 +349,7 @@ examples:
+>  
+>          #iommu-cells = <1>;
+>          #reset-cells = <1>;
+> +        #interconnect-cells = <1>;
 
-Thanks,
+You meant '0'?
 
-Alex
+Best regards,
+Krzysztof
