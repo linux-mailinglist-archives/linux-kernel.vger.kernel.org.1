@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FBA29B5E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D1729B444
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796326AbgJ0PRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:17:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50244 "EHLO mail.kernel.org"
+        id S1787097AbgJ0O76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794767AbgJ0PN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:13:26 -0400
+        id S1762579AbgJ0Ona (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:43:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDF8421D41;
-        Tue, 27 Oct 2020 15:13:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29EAC206B2;
+        Tue, 27 Oct 2020 14:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811605;
-        bh=gZ5hX7BiaGGoFJsUDs4rmUHdZt47slybaLRfnGmle74=;
+        s=default; t=1603809809;
+        bh=xL8ILGkFw6xtr0TGQPiY83B9mEMpc9DCyccn1srqliI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A5KO8SfVDe636sGkOJ245DsBQrlMIq/9J3Ww9nrt//EV50HEeHJxcOGKVui8kdkJx
-         u04i/VZTS5mEAsQT8YY83wfWHRw+IMjSiBaqFmGop/DVnfFVgCGCQ7s3Q/VigDBFA5
-         O+ePeQIPV/Ft2Bt6hcQblI4dtPnA5H0OhLwcTSC0=
+        b=O921XHy2n9VHoGAfrIeJZQiS2Rnm+zmfx2S0RK0blyJJJi2lnFVXx0PdmGFe+Y0z+
+         edqdNdICJdBszdk5IKZr9v2tunIBcE/vCsrzTp+nbGROzSrjNwz396rY703QghZ/mt
+         xhcRN7dz4khRt8WtZpx4gzPX38rXdJaCJiGEL5pw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        stable@vger.kernel.org, Youquan Song <youquan.song@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 521/633] KVM: ioapic: break infinite recursion on lazy EOI
-Date:   Tue, 27 Oct 2020 14:54:24 +0100
-Message-Id: <20201027135547.206660307@linuxfoundation.org>
+Subject: [PATCH 5.4 328/408] x86/mce: Add Skylake quirk for patrol scrub reported errors
+Date:   Tue, 27 Oct 2020 14:54:26 +0100
+Message-Id: <20201027135510.247487777@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +43,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Borislav Petkov <bp@suse.de>
 
-[ Upstream commit 77377064c3a94911339f13ce113b3abf265e06da ]
+[ Upstream commit fd258dc4442c5c1c069c6b5b42bfe7d10cddda95 ]
 
-During shutdown the IOAPIC trigger mode is reset to edge triggered
-while the vfio-pci INTx is still registered with a resampler.
-This allows us to get into an infinite loop:
+The patrol scrubber in Skylake and Cascade Lake systems can be configured
+to report uncorrected errors using a special signature in the machine
+check bank and to signal using CMCI instead of machine check.
 
-ioapic_set_irq
-  -> ioapic_lazy_update_eoi
-  -> kvm_ioapic_update_eoi_one
-  -> kvm_notify_acked_irq
-  -> kvm_notify_acked_gsi
-  -> (via irq_acked fn ptr) irqfd_resampler_ack
-  -> kvm_set_irq
-  -> (via set fn ptr) kvm_set_ioapic_irq
-  -> kvm_ioapic_set_irq
-  -> ioapic_set_irq
+Update the severity calculation mechanism to allow specifying the model,
+minimum stepping and range of machine check bank numbers.
 
-Commit 8be8f932e3db ("kvm: ioapic: Restrict lazy EOI update to
-edge-triggered interrupts", 2020-05-04) acknowledges that this recursion
-loop exists and tries to avoid it at the call to ioapic_lazy_update_eoi,
-but at this point the scenario is already set, we have an edge interrupt
-with resampler on the same gsi.
+Add a new rule to detect the special signature (on model 0x55, stepping
+>=4 in any of the memory controller banks).
 
-Fortunately, the only user of irq ack notifiers (in addition to resamplefd)
-is i8254 timer interrupt reinjection.  These are edge-triggered, so in
-principle they would need the call to kvm_ioapic_update_eoi_one from
-ioapic_lazy_update_eoi, but they already disable AVIC(*), so they don't
-need the lazy EOI behavior.  Therefore, remove the call to
-kvm_ioapic_update_eoi_one from ioapic_lazy_update_eoi.
+ [ bp: Rewrite it.
+   aegl: Productize it. ]
 
-This fixes CVE-2020-27152.  Note that this issue cannot happen with
-SR-IOV assigned devices because virtual functions do not have INTx,
-only MSI.
-
-Fixes: f458d039db7e ("kvm: ioapic: Lazy update IOAPIC EOI")
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Tested-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Suggested-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Co-developed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200930021313.31810-2-tony.luck@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/ioapic.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/kernel/cpu/mce/severity.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
-index d057376bd3d33..698969e18fe35 100644
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -197,12 +197,9 @@ static void ioapic_lazy_update_eoi(struct kvm_ioapic *ioapic, int irq)
+diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+index 87bcdc6dc2f0c..0d09eb13743b4 100644
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -9,9 +9,11 @@
+ #include <linux/seq_file.h>
+ #include <linux/init.h>
+ #include <linux/debugfs.h>
+-#include <asm/mce.h>
+ #include <linux/uaccess.h>
  
- 		/*
- 		 * If no longer has pending EOI in LAPICs, update
--		 * EOI for this vetor.
-+		 * EOI for this vector.
- 		 */
- 		rtc_irq_eoi(ioapic, vcpu, entry->fields.vector);
--		kvm_ioapic_update_eoi_one(vcpu, ioapic,
--					  entry->fields.trig_mode,
--					  irq);
- 		break;
- 	}
- }
++#include <asm/mce.h>
++#include <asm/intel-family.h>
++
+ #include "internal.h"
+ 
+ /*
+@@ -40,9 +42,14 @@ static struct severity {
+ 	unsigned char context;
+ 	unsigned char excp;
+ 	unsigned char covered;
++	unsigned char cpu_model;
++	unsigned char cpu_minstepping;
++	unsigned char bank_lo, bank_hi;
+ 	char *msg;
+ } severities[] = {
+ #define MCESEV(s, m, c...) { .sev = MCE_ ## s ## _SEVERITY, .msg = m, ## c }
++#define BANK_RANGE(l, h) .bank_lo = l, .bank_hi = h
++#define MODEL_STEPPING(m, s) .cpu_model = m, .cpu_minstepping = s
+ #define  KERNEL		.context = IN_KERNEL
+ #define  USER		.context = IN_USER
+ #define  KERNEL_RECOV	.context = IN_KERNEL_RECOV
+@@ -97,7 +104,6 @@ static struct severity {
+ 		KEEP, "Corrected error",
+ 		NOSER, BITCLR(MCI_STATUS_UC)
+ 		),
+-
+ 	/*
+ 	 * known AO MCACODs reported via MCE or CMC:
+ 	 *
+@@ -113,6 +119,18 @@ static struct severity {
+ 		AO, "Action optional: last level cache writeback error",
+ 		SER, MASK(MCI_UC_AR|MCACOD, MCI_STATUS_UC|MCACOD_L3WB)
+ 		),
++	/*
++	 * Quirk for Skylake/Cascade Lake. Patrol scrubber may be configured
++	 * to report uncorrected errors using CMCI with a special signature.
++	 * UC=0, MSCOD=0x0010, MCACOD=binary(000X 0000 1100 XXXX) reported
++	 * in one of the memory controller banks.
++	 * Set severity to "AO" for same action as normal patrol scrub error.
++	 */
++	MCESEV(
++		AO, "Uncorrected Patrol Scrub Error",
++		SER, MASK(MCI_STATUS_UC|MCI_ADDR|0xffffeff0, MCI_ADDR|0x001000c0),
++		MODEL_STEPPING(INTEL_FAM6_SKYLAKE_X, 4), BANK_RANGE(13, 18)
++	),
+ 
+ 	/* ignore OVER for UCNA */
+ 	MCESEV(
+@@ -320,6 +338,12 @@ static int mce_severity_intel(struct mce *m, int tolerant, char **msg, bool is_e
+ 			continue;
+ 		if (s->excp && excp != s->excp)
+ 			continue;
++		if (s->cpu_model && boot_cpu_data.x86_model != s->cpu_model)
++			continue;
++		if (s->cpu_minstepping && boot_cpu_data.x86_stepping < s->cpu_minstepping)
++			continue;
++		if (s->bank_lo && (m->bank < s->bank_lo || m->bank > s->bank_hi))
++			continue;
+ 		if (msg)
+ 			*msg = s->msg;
+ 		s->covered = 1;
 -- 
 2.25.1
 
