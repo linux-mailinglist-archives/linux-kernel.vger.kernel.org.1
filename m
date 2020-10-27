@@ -2,174 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD5829AC9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65F529AD1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900402AbgJ0NA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:00:57 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58597 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900396AbgJ0NA4 (ORCPT
+        id S1752050AbgJ0NUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:20:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752042AbgJ0NUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:00:56 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kXOal-0007hB-0z; Tue, 27 Oct 2020 13:00:47 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     perex@perex.cz, hui.wang@canonical.com,
-        kai.vehmanen@linux.intel.com, mwolf@adiumentum.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH v3 1/3] ALSA: hda: Refactor codec PM to use direct-complete optimization
-Date:   Tue, 27 Oct 2020 21:00:36 +0800
-Message-Id: <20201027130038.16463-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201027130038.16463-1-kai.heng.feng@canonical.com>
-References: <20201027130038.16463-1-kai.heng.feng@canonical.com>
+        Tue, 27 Oct 2020 09:20:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603804831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zrbs4feV+OXib8FNuFXZ5PG/XcfO+Cqus0Ov9BLA2gQ=;
+        b=en1UdeYXYGJsRH/7qqw+HYMT0XVuLFBW955FDfN73Kpr4OjImjCYLQzrnSl9QLsSJNC+R0
+        CJDWOFszCsJY02WkjA2B6JpDl9BoCT5ldgtlAJONJinwi4Dy6xNiZ8emVa6d0oZgT5lQGL
+        0eQUt6fTmhF3oYfkWXYMPcV4694/Ucc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-b7rfsrgcNqqMnUuBXXqp3Q-1; Tue, 27 Oct 2020 09:20:29 -0400
+X-MC-Unique: b7rfsrgcNqqMnUuBXXqp3Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9742A188C129;
+        Tue, 27 Oct 2020 13:20:28 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 56F045D9DD;
+        Tue, 27 Oct 2020 13:20:25 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 08:19:59 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        dm-devel@redhat.com
+Subject: Re: [PATCH AUTOSEL 5.9 089/147] dm: change max_io_len() to use
+ blk_max_size_offset()
+Message-ID: <20201027121959.GA13012@redhat.com>
+References: <20201026234905.1022767-1-sashal@kernel.org>
+ <20201026234905.1022767-89-sashal@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026234905.1022767-89-sashal@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon system resume, hda_codec_pm_resume() uses hda_codec_force_resume()
-to resume the codec. However, pm_runtime_force_resume() won't really
-resume the codec because of pm_runtime_need_not_resume() check.
+On Mon, Oct 26 2020 at  7:48pm -0400,
+Sasha Levin <sashal@kernel.org> wrote:
 
-Hence, hda_codec_force_resume() schedules a jackpoll work, which is to
-really power up the codec.
+> From: Mike Snitzer <snitzer@redhat.com>
+> 
+> [ Upstream commit 5091cdec56faeaefa79de4b6cb3c3c55e50d1ac3 ]
+> 
+> Using blk_max_size_offset() enables DM core's splitting to impose
+> ti->max_io_len (via q->limits.chunk_sectors) and also fallback to
+> respecting q->limits.max_sectors if chunk_sectors isn't set.
+> 
+> Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Instead of doing that, we can use direct-complete to make the PM flow
-more straightforward, and keep codec always suspended through system PM
-flow if conditions are met.
+Not sure why this commit elevated to stable@ picking it up, please
+explain.
 
-On system suspend, PM core will decide what to do based on
-hda_codec_pm_prepare():
-- If codec is not runtime-suspended, PM core will suspend and resume the
-device as normal.
-- If codec is runtime-suspended, PM core will try to keep it suspended.
-If it's still suspended after system resume, we use
-hda_codec_pm_complete() to resume codec if it's needed.
+But you cannot take this commit standalone. These commits are prereqs:
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v3: 
- - No change
+22ada802ede8 block: use lcm_not_zero() when stacking chunk_sectors
+07d098e6bbad block: allow 'chunk_sectors' to be non-power-of-2
+882ec4e609c1 dm table: stack 'chunk_sectors' limit to account for target-specific splitting
 
-v2:
- - Also resume when codec->jackpoll_interval is set
+This goes for all stable@ trees you AUTOSEL'd commit 5091cdec56f for.
 
- sound/pci/hda/hda_codec.c | 45 +++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 16 deletions(-)
+Mike
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index a356c21edb90..4bb58e8b08a8 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2934,7 +2934,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- 	snd_hdac_leave_pm(&codec->core);
- }
- 
--static int hda_codec_runtime_suspend(struct device *dev)
-+static int hda_codec_suspend(struct device *dev)
- {
- 	struct hda_codec *codec = dev_to_hda_codec(dev);
- 	unsigned int state;
-@@ -2953,7 +2953,7 @@ static int hda_codec_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int hda_codec_runtime_resume(struct device *dev)
-+static int hda_codec_resume(struct device *dev)
- {
- 	struct hda_codec *codec = dev_to_hda_codec(dev);
- 
-@@ -2967,57 +2967,70 @@ static int hda_codec_runtime_resume(struct device *dev)
- 	pm_runtime_mark_last_busy(dev);
- 	return 0;
- }
-+
-+static int hda_codec_runtime_suspend(struct device *dev)
-+{
-+	return hda_codec_suspend(dev);
-+}
-+
-+static int hda_codec_runtime_resume(struct device *dev)
-+{
-+	return hda_codec_resume(dev);
-+}
-+
- #endif /* CONFIG_PM */
- 
- #ifdef CONFIG_PM_SLEEP
--static int hda_codec_force_resume(struct device *dev)
-+static int hda_codec_pm_prepare(struct device *dev)
-+{
-+	return pm_runtime_suspended(dev);
-+}
-+
-+static void hda_codec_pm_complete(struct device *dev)
- {
- 	struct hda_codec *codec = dev_to_hda_codec(dev);
--	int ret;
- 
--	ret = pm_runtime_force_resume(dev);
--	/* schedule jackpoll work for jack detection update */
--	if (codec->jackpoll_interval ||
--	    (pm_runtime_suspended(dev) && hda_codec_need_resume(codec)))
--		schedule_delayed_work(&codec->jackpoll_work,
--				      codec->jackpoll_interval);
--	return ret;
-+	if (pm_runtime_suspended(dev) && (codec->jackpoll_interval ||
-+	    hda_codec_need_resume(codec) || codec->forced_resume))
-+		pm_request_resume(dev);
- }
- 
- static int hda_codec_pm_suspend(struct device *dev)
- {
- 	dev->power.power_state = PMSG_SUSPEND;
--	return pm_runtime_force_suspend(dev);
-+	return hda_codec_suspend(dev);
- }
- 
- static int hda_codec_pm_resume(struct device *dev)
- {
- 	dev->power.power_state = PMSG_RESUME;
--	return hda_codec_force_resume(dev);
-+	return hda_codec_resume(dev);
- }
- 
- static int hda_codec_pm_freeze(struct device *dev)
- {
- 	dev->power.power_state = PMSG_FREEZE;
--	return pm_runtime_force_suspend(dev);
-+	return hda_codec_suspend(dev);
- }
- 
- static int hda_codec_pm_thaw(struct device *dev)
- {
- 	dev->power.power_state = PMSG_THAW;
--	return hda_codec_force_resume(dev);
-+	return hda_codec_resume(dev);
- }
- 
- static int hda_codec_pm_restore(struct device *dev)
- {
- 	dev->power.power_state = PMSG_RESTORE;
--	return hda_codec_force_resume(dev);
-+	return hda_codec_resume(dev);
- }
- #endif /* CONFIG_PM_SLEEP */
- 
- /* referred in hda_bind.c */
- const struct dev_pm_ops hda_codec_driver_pm = {
- #ifdef CONFIG_PM_SLEEP
-+	.prepare = hda_codec_pm_prepare,
-+	.complete = hda_codec_pm_complete,
- 	.suspend = hda_codec_pm_suspend,
- 	.resume = hda_codec_pm_resume,
- 	.freeze = hda_codec_pm_freeze,
--- 
-2.17.1
+> ---
+>  drivers/md/dm.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index 6ed05ca65a0f8..3982012b1309c 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -1051,22 +1051,18 @@ static sector_t max_io_len_target_boundary(sector_t sector, struct dm_target *ti
+>  static sector_t max_io_len(sector_t sector, struct dm_target *ti)
+>  {
+>  	sector_t len = max_io_len_target_boundary(sector, ti);
+> -	sector_t offset, max_len;
+> +	sector_t max_len;
+>  
+>  	/*
+>  	 * Does the target need to split even further?
+> +	 * - q->limits.chunk_sectors reflects ti->max_io_len so
+> +	 *   blk_max_size_offset() provides required splitting.
+> +	 * - blk_max_size_offset() also respects q->limits.max_sectors
+>  	 */
+> -	if (ti->max_io_len) {
+> -		offset = dm_target_offset(ti, sector);
+> -		if (unlikely(ti->max_io_len & (ti->max_io_len - 1)))
+> -			max_len = sector_div(offset, ti->max_io_len);
+> -		else
+> -			max_len = offset & (ti->max_io_len - 1);
+> -		max_len = ti->max_io_len - max_len;
+> -
+> -		if (len > max_len)
+> -			len = max_len;
+> -	}
+> +	max_len = blk_max_size_offset(dm_table_get_md(ti->table)->queue,
+> +				      dm_target_offset(ti, sector));
+> +	if (len > max_len)
+> +		len = max_len;
+>  
+>  	return len;
+>  }
+> -- 
+> 2.25.1
+> 
 
