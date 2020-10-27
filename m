@@ -2,128 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440F229AB4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D589029AB52
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750382AbgJ0L6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:58:19 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6260 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750371AbgJ0L6T (ORCPT
+        id S1750395AbgJ0L7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:59:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38898 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750386AbgJ0L7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:58:19 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f980b450001>; Tue, 27 Oct 2020 04:57:57 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 27 Oct
- 2020 11:58:14 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.56) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 27 Oct 2020 11:58:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OpJwEAhW/1o7e3SryeXWsqfxPV9ry9R8Iu6j5got1koMLs3EWQz+SdSBuRtz3YC6MCZbL/9WyP/5f+ymZaA9tvqGraI4yjhhLYzRkttiAPnirLuLgelN913a+vWBfdDitbaLNZtHZCu9dIf+NF7I3YAMBvtF5n2A0KQCPqkMnQdr4m78b/B5ILgrxShdMIO1UFd3g+5x/VHwOaV52uy/BydgCIdSobOn1NQsXmjbJ4eYChI8uonUy8hHRdLnTg3KkzIg2jFY8d23mTA+hJL44/T9y89j9V0Eaew/6AC40NFbabLqz/UcQEay21k5j80Dd4VRVRYJUYZqgpQfF4pTIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=euyUCc7Fc3m9fZe0HlaXBdvVYHYAC98vLn14YMvbS+Q=;
- b=BfUaY4Da/TOLKZYTvOuBL7hhaolcLrILnlbcnBfgzbEoyj2QrTlDKDKTp64eX2A+tEkzIB4y3pEsYgsfjCZWVY2fsQmqroIVtj2u5eRQb50lICIU1PPG1TwSsZiI+9HqgmiGpagCwGyViKKW5LZEp6Xc8vZqTxgMGJm1/vAFw+9/gBCqN5JUoPozTFiGXS1Sib3GcY1WevMGNLX00/CgV9beYB80pm6Prfqm4oCyHIrCh2yc/sfFEIPDfuOHeSjl67NWJicepcl4GNRQ1fNB7alKWEzbMSFrOoseQZaSxyoM4N1ms69LxhY3cjbxwcbdwxDyPfdbVLyznpKoLQ3kow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 27 Oct
- 2020 11:58:12 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
- 11:58:12 +0000
-Date:   Tue, 27 Oct 2020 08:58:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Tom Lendacky <thomas.lendacky@amd.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kvm@vger.kernel.org>,
-        Radim Kr??m???? <rkrcmar@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Alexander Potapenko" <glider@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Dmitry Vyukov" <dvyukov@google.com>,
-        Rik van Riel <riel@redhat.com>,
-        Larry Woodman <lwoodman@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Toshimitsu Kani <toshi.kani@hpe.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: AMD SME encrpytion and PCI BAR pages to user space
-Message-ID: <20201027115810.GH1523783@nvidia.com>
-References: <20201019152556.GA560082@nvidia.com>
- <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
- <20201021115933.GS6219@nvidia.com>
- <f9c50e3a-c5de-8c85-4d6c-0e8a90729420@amd.com>
- <20201021160322.GT6219@nvidia.com> <20201027084357.GA10053@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201027084357.GA10053@infradead.org>
-X-ClientProxiedBy: MN2PR01CA0053.prod.exchangelabs.com (2603:10b6:208:23f::22)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        Tue, 27 Oct 2020 07:59:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603799958;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aYSfCDepul2wbwhMPnzTehYxfINaZW91URrAjANGgCo=;
+        b=VIDV6HpQe2u3gmRCfwbUrraS6szpy+ul9D7pX/36pglzz+6O7zrjAQlrv7tN5/2QBb4g9k
+        bT2YdKeogKcFVXVobGsRPbNFGEMqrfie6+1j2fIc1/5272jmmdwgZis82R8KcYNO2txjgR
+        N3yTEJjBOR1KUED/AccOX6pwqExROjc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-sJv2UQPXPT-5ySi0gTcdmA-1; Tue, 27 Oct 2020 07:59:12 -0400
+X-MC-Unique: sJv2UQPXPT-5ySi0gTcdmA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C10061084D74;
+        Tue, 27 Oct 2020 11:59:10 +0000 (UTC)
+Received: from krava (unknown [10.40.195.208])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9612275154;
+        Tue, 27 Oct 2020 11:59:08 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 12:59:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 03/15] perf data: open data directory in read access
+ mode
+Message-ID: <20201027115907.GC2900849@krava>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <dc78ce8b-664c-45b9-ad44-4faaeb5d544f@linux.intel.com>
+ <20201024154317.GB2589351@krava>
+ <a368355b-4bf3-05b8-9fa0-ee3feb58f8bf@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR01CA0053.prod.exchangelabs.com (2603:10b6:208:23f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Tue, 27 Oct 2020 11:58:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXNcA-009G0X-VP; Tue, 27 Oct 2020 08:58:10 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603799877; bh=euyUCc7Fc3m9fZe0HlaXBdvVYHYAC98vLn14YMvbS+Q=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=BsYyMkxO11+8dWhoE/1vd3jsm0B6LncaeEWQKojoA35WglK4IsBwotwYx4xtqNKea
-         uL8QNdyijE1QZJ9kJholMyuVB1Lte6sT0SQqajJyv9QRAZM9bBBeEa2qjJahuNWvLk
-         QuqcuS0vCGDr5pdBJyrKYRp7oiBJcBY5gR005wAdfIIVOgv7IcQzuOD21nb+wjeU27
-         6udevM5BbAL2qONyjEgKegW9fW7NDH88t0hVIpDJOBjhoY7CejmCsbC6S5eDMmDDNy
-         6GJ7er886vRNiOU3NX0xiqogIEMjlKdXFlXFPhs8FGk1E1J8VKmgyBBxhr/ROs1y+C
-         7VzehGWJ5W9Tg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a368355b-4bf3-05b8-9fa0-ee3feb58f8bf@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 08:43:57AM +0000, Christoph Hellwig wrote:
-> On Wed, Oct 21, 2020 at 01:03:22PM -0300, Jason Gunthorpe wrote:
-> > Oh, interesting.. Yes the issue is no userspace DMA stuff uses the DMA
-> > API correctly (because it is in userspace)
-> > 
-> > So SWIOTLB tricks don't work, I wish the dma_map could fail for these
-> > situations
+On Mon, Oct 26, 2020 at 08:47:06PM +0300, Alexey Budankov wrote:
 > 
-> Userspace DMA by definition also does not use dma_map..
+> On 24.10.2020 18:43, Jiri Olsa wrote:
+> > On Wed, Oct 21, 2020 at 06:57:53PM +0300, Alexey Budankov wrote:
+> >>
+> >> Open files located at trace data directory in case read access
+> >> mode is requested. File are opened and its fds assigned to
+> >> perf_data dir files especially for loading data directories
+> >> content in perf report mode.
+> >>
+> >> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> >> ---
+> >>  tools/perf/util/data.c | 4 ++++
+> >>  1 file changed, 4 insertions(+)
+> >>
+> >> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> >> index c47aa34fdc0a..6ad61ac6ba67 100644
+> >> --- a/tools/perf/util/data.c
+> >> +++ b/tools/perf/util/data.c
+> >> @@ -321,6 +321,10 @@ static int open_dir(struct perf_data *data)
+> >>  		return -1;
+> >>  
+> >>  	ret = open_file(data);
+> >> +	if (!ret && perf_data__is_dir(data)) {
+> >> +		if (perf_data__is_read(data))
+> >> +			ret = perf_data__open_dir(data);
+> >> +	}
+> > 
+> > perf_data__open_dir is also called from perf_session__new
+> > is it called twice?
+> 
+> It is not called twice. It is in different branches.
+> This one is for write and the other one is for read.
 
-? Sure it does, ib_dma_map_sg_attrs() is what RDMA uses
+hum, is that right?
 
-What all the userspace users skip is the dma_sync*() - that would
-require a kernel call which defeats the point.
+	# ./perf record --threads 
+	^C[ perf record: Woken up 15 times to write data ]
+	[ perf record: Captured and wrote 1.421 MB perf.data (515 samples) ]
 
-So, my desire is some flag to dma_map_sg() that says
-  'user space mapping no dma_sync_*'
+	# gdb ./perf
+	GNU gdb (GDB) Fedora 9.1-6.fc32
 
-ie dma_sync_* is a NOP
+	(gdb) b perf_data__open_dir
+	Breakpoint 1 at 0x5b4753: file util/data.c, line 72.
 
-Then things like SWIOTLB on the SEV system can fail with an error code
-instead of malfunctioning
+	(gdb) r --no-pager report --stdio
+	Starting program: /home/jolsa/kernel/linux-perf/tools/perf/perf --no-pager report --stdio
 
-If FOLL_LONGERM is some estimate of this pattern then we have these users:
- - drivers/infiniband
- - v4l
- - vdpa
- - xdp
- - rds
- - habana labs
+	Breakpoint 1, perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+	72      {
+	(gdb) bt
+	#0  perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+	#1  0x00000000005b538d in open_dir (data=0x7fffffffb0e0) at util/data.c:326
+	#2  0x00000000005b546d in perf_data__open (data=0x7fffffffb0e0) at util/data.c:351
+	#3  0x00000000005627e8 in perf_session__new (data=0x7fffffffb0e0, repipe=false, tool=0x7fffffffb220) at util/session.c:210
+	#4  0x000000000045a572 in cmd_report (argc=0, argv=0x7fffffffd7a8) at builtin-report.c:1372
+	#5  0x00000000004f49ec in run_builtin (p=0xaadab0 <commands+240>, argc=2, argv=0x7fffffffd7a8) at perf.c:312
+	#6  0x00000000004f4c59 in handle_internal_command (argc=2, argv=0x7fffffffd7a8) at perf.c:364
+	#7  0x00000000004f4da0 in run_argv (argcp=0x7fffffffd5ec, argv=0x7fffffffd5e0) at perf.c:408
+	#8  0x00000000004f516c in main (argc=2, argv=0x7fffffffd7a8) at perf.c:538
 
-Jason
+	(gdb) c
+	Continuing.
+
+	Breakpoint 1, perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+	72      {
+	(gdb) bt
+	#0  perf_data__open_dir (data=0x7fffffffb0e0) at util/data.c:72
+	#1  0x0000000000562883 in perf_session__new (data=0x7fffffffb0e0, repipe=false, tool=0x7fffffffb220) at util/session.c:234
+	#2  0x000000000045a572 in cmd_report (argc=0, argv=0x7fffffffd7a8) at builtin-report.c:1372
+	#3  0x00000000004f49ec in run_builtin (p=0xaadab0 <commands+240>, argc=2, argv=0x7fffffffd7a8) at perf.c:312
+	#4  0x00000000004f4c59 in handle_internal_command (argc=2, argv=0x7fffffffd7a8) at perf.c:364
+	#5  0x00000000004f4da0 in run_argv (argcp=0x7fffffffd5ec, argv=0x7fffffffd5e0) at perf.c:408
+	#6  0x00000000004f516c in main (argc=2, argv=0x7fffffffd7a8) at perf.c:538
+
+
+AFAICS the second (current) call to perf_data__open_dir will
+do the job, because the call you added still does not see
+directory with proper version and will bail out on call to
+  perf_data__is_single_file
+
+perf_session__open call will read headers and update dir version
+so the current perf_data__open_dir will open the directory
+
+jirka
+
