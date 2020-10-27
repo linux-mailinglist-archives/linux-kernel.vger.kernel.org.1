@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E5829AB08
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4004429AB0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899425AbgJ0Lk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:40:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47458 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899415AbgJ0Lk6 (ORCPT
+        id S2899445AbgJ0LlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:41:21 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:46938 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2899427AbgJ0LlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:40:58 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RBeHX6030879;
-        Tue, 27 Oct 2020 06:40:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603798817;
-        bh=nfRhkoLnLUOvgtAdlZjcju3oync9ao17Pky8vmQ0ce0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=G2vHeSaaJ99cw7lLwkzmt4NkeB67wjH9bEkc+L/wIOU7E7ysCeKEoqS/8hh7JTOyR
-         XHLyZ2m4SFnP4dKCAMA7+kx8rO0UV/ve/FQoIC18ji/96rq+oYqnMqXKynWz+vXzdB
-         OUeABjeohJWDelXBqIXu9Q/Wn+0BceMgukJrMPCc=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RBeHD7078112
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 06:40:17 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
- Oct 2020 06:40:16 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 27 Oct 2020 06:40:16 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RBeDIb126547;
-        Tue, 27 Oct 2020 06:40:13 -0500
-Subject: Re: [PATCH] drm: bridge: cdns: Kconfig: Switch over dependency to
- ARCH_K3
-To:     Nishanth Menon <nm@ti.com>, Swapnil Jakhade <sjakhade@cadence.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Yuti Amonkar <yamonkar@cadence.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-CC:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>, <ssantosh@kernel.org>
-References: <20201026165441.22894-1-nm@ti.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <82d5e520-e223-71c3-b6e0-22b8e1eda8bf@ti.com>
-Date:   Tue, 27 Oct 2020 13:40:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Oct 2020 07:41:20 -0400
+Received: by mail-ej1-f67.google.com with SMTP id t25so1709812ejd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3/wYkEIdKWYXJ7kNDamm5GXkJZDwOHBhS+XfxKLG6sk=;
+        b=ZE7fjC60eVK2+kr06vcefzy9RmoNTZcsHKV/KcIS6zz5AJjM7kmzqFfDhYl+n9sPtj
+         xrtYoR8dzAX+4eUyA93br1d0Xu0FdJZLEObXbCbbst19zu9lAKDsZWk3B8KmbadfqnrV
+         vEnMrEwT8bNzLNnoT9vHPfglClE2cgpNys1Qrwo7EjutP2Tn3GWYfJX3FZNHtSGmkd7r
+         ICLG3PVyzffsJXC4rp1gqEpuNk1ZuuqivtQmYfaIt/8oD/fGWIXyIizoUrSrvC7ms1pg
+         aFpauqvX1U5M0eMintF53Q3Wq7Mfzkb1a7uQraYuv1YIRERmmQO2oB37UCKjBUHuB/Sb
+         hTBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3/wYkEIdKWYXJ7kNDamm5GXkJZDwOHBhS+XfxKLG6sk=;
+        b=Q6TwarkOicxUONBV7FSFJUZ+/LgvQVje7FhDYrJlH/7pWRJhSmNt6QAyXUlr9M0S9v
+         aIM3xsrn+uh+X/AJ1kdFHLapzS7NTpnPDSl/4RIlNl9S3sU6LhfWg2OgJp3Ti1MDJn4Q
+         7WYQkS7wwcWkzl0fokS2TOkXW6ucvjxzihUT5FAO+/WTbNkaEWG+OUI+t1YghoPEeJ3y
+         Z07wujEJMX0LjDW4R6C1YhhXYvZa5WJwgK7d5ylTt1S05KA1tIK3WBlrb7q+ZRv+0qsZ
+         ZPabDTsBmlbUwPazgb6u7zCN1+Ru5a6R4fntpvRwPmaPLX4jjnqSft4eF6kUeXVApTjc
+         EN3A==
+X-Gm-Message-State: AOAM5334VT4Dz5IUMna4rCkl8MyO4zZlzjxOAJiReGR/IyOAhUUycipN
+        4twSP/s3CBG7xvTnE8WpjW8=
+X-Google-Smtp-Source: ABdhPJxrYIvtub/cBlTtMWYQK0FXvqTA9bAYHcnyNyQ2oGvgq9XLPhZtMF549IQ1auqT0MlzRQSqig==
+X-Received: by 2002:a17:906:1e45:: with SMTP id i5mr1886739ejj.203.1603798879087;
+        Tue, 27 Oct 2020 04:41:19 -0700 (PDT)
+Received: from localhost.localdomain (dslb-002-204-140-230.002.204.pools.vodafone-ip.de. [2.204.140.230])
+        by smtp.gmail.com with ESMTPSA id l12sm804848edt.46.2020.10.27.04.41.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 04:41:18 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: rtl8188eu: remove commented defines
+Date:   Tue, 27 Oct 2020 12:40:43 +0100
+Message-Id: <20201027114043.22318-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <20201026165441.22894-1-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2020 18:54, Nishanth Menon wrote:
-> With the integration of chip-id detection scheme in kernel[1], there
-> is no specific need to maintain multitudes of SoC specific config
-> options, discussed as per [2], we have deprecated the usage in other
-> places for v5.10-rc1. Fix the missing user so that we can clean up the
-> configs in v5.11.
-> 
-> [1] drivers/soc/ti/k3-socinfo.c commit 907a2b7e2fc7 ("soc: ti: add k3 platforms chipid module driver")
-> [2] https://lore.kernel.org/linux-arm-kernel/20200908112534.t5bgrjf7y3a6l2ss@akan/
-> 
-> Fixes: afba7e6c5fc1 ("rm: bridge: cdns-mhdp8546: Add TI J721E wrapper")
-> Cc: Swapnil Jakhade <sjakhade@cadence.com>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Yuti Amonkar <yamonkar@cadence.com>
-> Cc: Jyri Sarha <jsarha@ti.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  drivers/gpu/drm/bridge/cadence/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig b/drivers/gpu/drm/bridge/cadence/Kconfig
-> index 511d67b16d14..ef8c230e0f62 100644
-> --- a/drivers/gpu/drm/bridge/cadence/Kconfig
-> +++ b/drivers/gpu/drm/bridge/cadence/Kconfig
-> @@ -13,7 +13,7 @@ config DRM_CDNS_MHDP8546
->  if DRM_CDNS_MHDP8546
->  
->  config DRM_CDNS_MHDP8546_J721E
-> -	depends on ARCH_K3_J721E_SOC || COMPILE_TEST
-> +	depends on ARCH_K3 || COMPILE_TEST
->  	bool "J721E Cadence DPI/DP wrapper support"
->  	default y
->  	help
-> 
+Remove commented defines from ioctl_linux.c. They are included from
+include/uapi/linux/wireless.h. Also clears a checkpatch warning.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+WARNING: Block comments use * on subsequent lines
 
- Tomi
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/rtl8188eu/os_dep/ioctl_linux.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
+diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+index 6ac904ceb95e..6f42f13a71fa 100644
+--- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+@@ -906,17 +906,6 @@ static int rtw_wx_get_range(struct net_device *dev,
+ /*  If the driver doesn't provide this capability to network manager, */
+ /*  the WPA/WPA2 routers can't be chosen in the network manager. */
+ 
+-/*
+-#define IW_SCAN_CAPA_NONE		0x00
+-#define IW_SCAN_CAPA_ESSID		0x01
+-#define IW_SCAN_CAPA_BSSID		0x02
+-#define IW_SCAN_CAPA_CHANNEL		0x04
+-#define IW_SCAN_CAPA_MODE		0x08
+-#define IW_SCAN_CAPA_RATE		0x10
+-#define IW_SCAN_CAPA_TYPE		0x20
+-#define IW_SCAN_CAPA_TIME		0x40
+-*/
+-
+ 	range->enc_capa = IW_ENC_CAPA_WPA | IW_ENC_CAPA_WPA2 |
+ 			  IW_ENC_CAPA_CIPHER_TKIP | IW_ENC_CAPA_CIPHER_CCMP;
+ 
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.29.0
+
