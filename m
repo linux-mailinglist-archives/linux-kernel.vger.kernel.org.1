@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAB329B31E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B895A29B2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762791AbgJ0Oo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42712 "EHLO mail.kernel.org"
+        id S1762654AbgJ0Onx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:43:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761124AbgJ0Om4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:42:56 -0400
+        id S1762258AbgJ0Olk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:41:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9033420773;
-        Tue, 27 Oct 2020 14:42:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E5F7206B2;
+        Tue, 27 Oct 2020 14:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809776;
-        bh=Aj3H/mllP3Z1Ndwy+73zR5D3CeWuFmetb4clh9ff4xM=;
+        s=default; t=1603809699;
+        bh=/Q/9iT+3FZb1HMWnOjk1ncX0c8Kd3NeK+6M3GkbPHmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRN8JRLtx5K9p5mdNJYDS2lsijJFr4NsDjefwlGDgw90HpGa47uw2KudUPY+s9lUH
-         4qJ1/dBEhNB0bAc/+cKa/NwP3JNYMXaasfvw6BgkOq303vBk6OkYCnTT04HkOcAt4t
-         kRc0JNryjPXCU90uxDSX95iUXZaOIUWHan59tPKY=
+        b=TQLNbmYAspLy6wf74119YaUYZx0LusWFgbkxlJdzr/eiL6KzG7pVobnxknq2FP1Q1
+         0gHSAk69Z8ei5jMVAsrOeXlmVpF2bdvvqUH9zahZK2TjHKbLrVrI7fCAtnBj1rSCKf
+         JwPcpADpkUTGEM+CnECquCigzNJMz4RVhU7jN+M8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 285/408] Input: stmfts - fix a & vs && typo
-Date:   Tue, 27 Oct 2020 14:53:43 +0100
-Message-Id: <20201027135508.267699830@linuxfoundation.org>
+Subject: [PATCH 5.4 289/408] Input: sun4i-ps2 - fix handling of platform_get_irq() error
+Date:   Tue, 27 Oct 2020 14:53:47 +0100
+Message-Id: <20201027135508.451018771@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,35 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit d04afe14b23651e7a8bc89727a759e982a8458e4 ]
+[ Upstream commit cafb3abea6136e59ea534004e5773361e196bb94 ]
 
-In stmfts_sysfs_hover_enable_write(), we should check value and
-sdata->hover_enabled is all true.
+platform_get_irq() returns -ERRNO on error.  In such case comparison
+to 0 would pass the check.
 
-Fixes: 78bcac7b2ae1 ("Input: add support for the STMicroelectronics FingerTip touchscreen")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200916141941.16684-1-yuehaibing@huawei.com
+Fixes: e443631d20f5 ("Input: serio - add support for Alwinner A10/A20 PS/2 controller")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Link: https://lore.kernel.org/r/20200828145744.3636-4-krzk@kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/stmfts.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/serio/sun4i-ps2.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/input/touchscreen/stmfts.c b/drivers/input/touchscreen/stmfts.c
-index b6f95f20f9244..cd8805d71d977 100644
---- a/drivers/input/touchscreen/stmfts.c
-+++ b/drivers/input/touchscreen/stmfts.c
-@@ -479,7 +479,7 @@ static ssize_t stmfts_sysfs_hover_enable_write(struct device *dev,
+diff --git a/drivers/input/serio/sun4i-ps2.c b/drivers/input/serio/sun4i-ps2.c
+index a681a2c04e399..f15ed3dcdb9b2 100644
+--- a/drivers/input/serio/sun4i-ps2.c
++++ b/drivers/input/serio/sun4i-ps2.c
+@@ -211,7 +211,6 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
+ 	struct sun4i_ps2data *drvdata;
+ 	struct serio *serio;
+ 	struct device *dev = &pdev->dev;
+-	unsigned int irq;
+ 	int error;
  
- 	mutex_lock(&sdata->mutex);
+ 	drvdata = kzalloc(sizeof(struct sun4i_ps2data), GFP_KERNEL);
+@@ -264,14 +263,12 @@ static int sun4i_ps2_probe(struct platform_device *pdev)
+ 	writel(0, drvdata->reg_base + PS2_REG_GCTL);
  
--	if (value & sdata->hover_enabled)
-+	if (value && sdata->hover_enabled)
- 		goto out;
+ 	/* Get IRQ for the device */
+-	irq = platform_get_irq(pdev, 0);
+-	if (!irq) {
+-		dev_err(dev, "no IRQ found\n");
+-		error = -ENXIO;
++	drvdata->irq = platform_get_irq(pdev, 0);
++	if (drvdata->irq < 0) {
++		error = drvdata->irq;
+ 		goto err_disable_clk;
+ 	}
  
- 	if (sdata->running)
+-	drvdata->irq = irq;
+ 	drvdata->serio = serio;
+ 	drvdata->dev = dev;
+ 
 -- 
 2.25.1
 
