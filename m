@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C2329B40F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD3E29B5F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782938AbgJ0O5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:57:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45270 "EHLO mail.kernel.org"
+        id S1796393AbgJ0PSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:18:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763873AbgJ0OpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:45:22 -0400
+        id S1794832AbgJ0PNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:13:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A145206E5;
-        Tue, 27 Oct 2020 14:45:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0512720728;
+        Tue, 27 Oct 2020 15:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809921;
-        bh=qBf58oDai6bWC91U46c4PuXGWtEl4hhIe0JUylRGiZk=;
+        s=default; t=1603811630;
+        bh=rEgEmrRM35eoBqfZs7DdD6giuzYoi6c0bGNFCpKWva4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=adsTu3m9GhO0aefvYKNwgIUjOjL+2TbV0Xemnl/q0oyWxc1j1UAq3A7p1EHUmx+H0
-         Vl7VtRsHww3inmkYTLpLMr/lrRF3fy8/f989kIj1NkE88cpoV0Pr1DZDFwY2BPH4Tn
-         90sgrXXscbrrGgzVD30ZZg3TniZrasvVNjoqR5v0=
+        b=NO+AlXSMQgPjNm4ylpNf/DtmScIspqdGJAzyidIaUIFbbgLWV25M+HejSp89oUcuA
+         U6KwlZ1CK4a0fTq+aMKfhPznN1u6CPS70RF5uaAKfeNJ5bkkP0u9aPLeOLnaOiK/eN
+         qKr0c/5AK8J8YnbaSLqxv3tDzYlPhP7zMLKurv5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 366/408] bpf: Limit callers stack depth 256 for subprogs with tailcalls
-Date:   Tue, 27 Oct 2020 14:55:04 +0100
-Message-Id: <20201027135512.002021094@linuxfoundation.org>
+Subject: [PATCH 5.8 562/633] bpf: Use raw_spin_trylock() for pcpu_freelist_push/pop in NMI
+Date:   Tue, 27 Oct 2020 14:55:05 +0100
+Message-Id: <20201027135549.169926284@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,83 +45,250 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+From: Song Liu <songliubraving@fb.com>
 
-[ Upstream commit 7f6e4312e15a5c370e84eaa685879b6bdcc717e4 ]
+[ Upstream commit 39d8f0d1026a990604770a658708f5845f7dbec0 ]
 
-Protect against potential stack overflow that might happen when bpf2bpf
-calls get combined with tailcalls. Limit the caller's stack depth for
-such case down to 256 so that the worst case scenario would result in 8k
-stack size (32 which is tailcall limit * 256 = 8k).
+Recent improvements in LOCKDEP highlighted a potential A-A deadlock with
+pcpu_freelist in NMI:
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+./tools/testing/selftests/bpf/test_progs -t stacktrace_build_id_nmi
+
+[   18.984807] ================================
+[   18.984807] WARNING: inconsistent lock state
+[   18.984808] 5.9.0-rc6-01771-g1466de1330e1 #2967 Not tainted
+[   18.984809] --------------------------------
+[   18.984809] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+[   18.984810] test_progs/1990 [HC2[2]:SC0[0]:HE0:SE1] takes:
+[   18.984810] ffffe8ffffc219c0 (&head->lock){....}-{2:2}, at: __pcpu_freelist_pop+0xe3/0x180
+[   18.984813] {INITIAL USE} state was registered at:
+[   18.984814]   lock_acquire+0x175/0x7c0
+[   18.984814]   _raw_spin_lock+0x2c/0x40
+[   18.984815]   __pcpu_freelist_pop+0xe3/0x180
+[   18.984815]   pcpu_freelist_pop+0x31/0x40
+[   18.984816]   htab_map_alloc+0xbbf/0xf40
+[   18.984816]   __do_sys_bpf+0x5aa/0x3ed0
+[   18.984817]   do_syscall_64+0x2d/0x40
+[   18.984818]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   18.984818] irq event stamp: 12
+[...]
+[   18.984822] other info that might help us debug this:
+[   18.984823]  Possible unsafe locking scenario:
+[   18.984823]
+[   18.984824]        CPU0
+[   18.984824]        ----
+[   18.984824]   lock(&head->lock);
+[   18.984826]   <Interrupt>
+[   18.984826]     lock(&head->lock);
+[   18.984827]
+[   18.984828]  *** DEADLOCK ***
+[   18.984828]
+[   18.984829] 2 locks held by test_progs/1990:
+[...]
+[   18.984838]  <NMI>
+[   18.984838]  dump_stack+0x9a/0xd0
+[   18.984839]  lock_acquire+0x5c9/0x7c0
+[   18.984839]  ? lock_release+0x6f0/0x6f0
+[   18.984840]  ? __pcpu_freelist_pop+0xe3/0x180
+[   18.984840]  _raw_spin_lock+0x2c/0x40
+[   18.984841]  ? __pcpu_freelist_pop+0xe3/0x180
+[   18.984841]  __pcpu_freelist_pop+0xe3/0x180
+[   18.984842]  pcpu_freelist_pop+0x17/0x40
+[   18.984842]  ? lock_release+0x6f0/0x6f0
+[   18.984843]  __bpf_get_stackid+0x534/0xaf0
+[   18.984843]  bpf_prog_1fd9e30e1438d3c5_oncpu+0x73/0x350
+[   18.984844]  bpf_overflow_handler+0x12f/0x3f0
+
+This is because pcpu_freelist_head.lock is accessed in both NMI and
+non-NMI context. Fix this issue by using raw_spin_trylock() in NMI.
+
+Since NMI interrupts non-NMI context, when NMI context tries to lock the
+raw_spinlock, non-NMI context of the same CPU may already have locked a
+lock and is blocked from unlocking the lock. For a system with N CPUs,
+there could be N NMIs at the same time, and they may block N non-NMI
+raw_spinlocks. This is tricky for pcpu_freelist_push(), where unlike
+_pop(), failing _push() means leaking memory. This issue is more likely to
+trigger in non-SMP system.
+
+Fix this issue with an extra list, pcpu_freelist.extralist. The extralist
+is primarily used to take _push() when raw_spin_trylock() failed on all
+the per CPU lists. It should be empty most of the time. The following
+table summarizes the behavior of pcpu_freelist in NMI and non-NMI:
+
+non-NMI pop(): 	use _lock(); check per CPU lists first;
+                if all per CPU lists are empty, check extralist;
+                if extralist is empty, return NULL.
+
+non-NMI push(): use _lock(); only push to per CPU lists.
+
+NMI pop():    use _trylock(); check per CPU lists first;
+              if all per CPU lists are locked or empty, check extralist;
+              if extralist is locked or empty, return NULL.
+
+NMI push():   use _trylock(); check per CPU lists first;
+              if all per CPU lists are locked; try push to extralist;
+              if extralist is also locked, keep trying on per CPU lists.
+
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20201005165838.3735218-1-songliubraving@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf_verifier.h |  1 +
- kernel/bpf/verifier.c        | 29 +++++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ kernel/bpf/percpu_freelist.c | 101 +++++++++++++++++++++++++++++++++--
+ kernel/bpf/percpu_freelist.h |   1 +
+ 2 files changed, 97 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 26a6d58ca78cc..81c7ea83e8079 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -342,6 +342,7 @@ struct bpf_subprog_info {
- 	u32 start; /* insn idx of function entry point */
- 	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
- 	u16 stack_depth; /* max. stack depth used by this function */
-+	bool has_tail_call;
+diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+index b367430e611c7..3d897de890612 100644
+--- a/kernel/bpf/percpu_freelist.c
++++ b/kernel/bpf/percpu_freelist.c
+@@ -17,6 +17,8 @@ int pcpu_freelist_init(struct pcpu_freelist *s)
+ 		raw_spin_lock_init(&head->lock);
+ 		head->first = NULL;
+ 	}
++	raw_spin_lock_init(&s->extralist.lock);
++	s->extralist.first = NULL;
+ 	return 0;
+ }
+ 
+@@ -40,12 +42,50 @@ static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
+ 	raw_spin_unlock(&head->lock);
+ }
+ 
++static inline bool pcpu_freelist_try_push_extra(struct pcpu_freelist *s,
++						struct pcpu_freelist_node *node)
++{
++	if (!raw_spin_trylock(&s->extralist.lock))
++		return false;
++
++	pcpu_freelist_push_node(&s->extralist, node);
++	raw_spin_unlock(&s->extralist.lock);
++	return true;
++}
++
++static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
++					     struct pcpu_freelist_node *node)
++{
++	int cpu, orig_cpu;
++
++	orig_cpu = cpu = raw_smp_processor_id();
++	while (1) {
++		struct pcpu_freelist_head *head;
++
++		head = per_cpu_ptr(s->freelist, cpu);
++		if (raw_spin_trylock(&head->lock)) {
++			pcpu_freelist_push_node(head, node);
++			raw_spin_unlock(&head->lock);
++			return;
++		}
++		cpu = cpumask_next(cpu, cpu_possible_mask);
++		if (cpu >= nr_cpu_ids)
++			cpu = 0;
++
++		/* cannot lock any per cpu lock, try extralist */
++		if (cpu == orig_cpu &&
++		    pcpu_freelist_try_push_extra(s, node))
++			return;
++	}
++}
++
+ void __pcpu_freelist_push(struct pcpu_freelist *s,
+ 			struct pcpu_freelist_node *node)
+ {
+-	struct pcpu_freelist_head *head = this_cpu_ptr(s->freelist);
+-
+-	___pcpu_freelist_push(head, node);
++	if (in_nmi())
++		___pcpu_freelist_push_nmi(s, node);
++	else
++		___pcpu_freelist_push(this_cpu_ptr(s->freelist), node);
+ }
+ 
+ void pcpu_freelist_push(struct pcpu_freelist *s,
+@@ -81,7 +121,7 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
+ 	}
+ }
+ 
+-struct pcpu_freelist_node *__pcpu_freelist_pop(struct pcpu_freelist *s)
++static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+ {
+ 	struct pcpu_freelist_head *head;
+ 	struct pcpu_freelist_node *node;
+@@ -102,8 +142,59 @@ struct pcpu_freelist_node *__pcpu_freelist_pop(struct pcpu_freelist *s)
+ 		if (cpu >= nr_cpu_ids)
+ 			cpu = 0;
+ 		if (cpu == orig_cpu)
+-			return NULL;
++			break;
++	}
++
++	/* per cpu lists are all empty, try extralist */
++	raw_spin_lock(&s->extralist.lock);
++	node = s->extralist.first;
++	if (node)
++		s->extralist.first = node->next;
++	raw_spin_unlock(&s->extralist.lock);
++	return node;
++}
++
++static struct pcpu_freelist_node *
++___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
++{
++	struct pcpu_freelist_head *head;
++	struct pcpu_freelist_node *node;
++	int orig_cpu, cpu;
++
++	orig_cpu = cpu = raw_smp_processor_id();
++	while (1) {
++		head = per_cpu_ptr(s->freelist, cpu);
++		if (raw_spin_trylock(&head->lock)) {
++			node = head->first;
++			if (node) {
++				head->first = node->next;
++				raw_spin_unlock(&head->lock);
++				return node;
++			}
++			raw_spin_unlock(&head->lock);
++		}
++		cpu = cpumask_next(cpu, cpu_possible_mask);
++		if (cpu >= nr_cpu_ids)
++			cpu = 0;
++		if (cpu == orig_cpu)
++			break;
+ 	}
++
++	/* cannot pop from per cpu lists, try extralist */
++	if (!raw_spin_trylock(&s->extralist.lock))
++		return NULL;
++	node = s->extralist.first;
++	if (node)
++		s->extralist.first = node->next;
++	raw_spin_unlock(&s->extralist.lock);
++	return node;
++}
++
++struct pcpu_freelist_node *__pcpu_freelist_pop(struct pcpu_freelist *s)
++{
++	if (in_nmi())
++		return ___pcpu_freelist_pop_nmi(s);
++	return ___pcpu_freelist_pop(s);
+ }
+ 
+ struct pcpu_freelist_node *pcpu_freelist_pop(struct pcpu_freelist *s)
+diff --git a/kernel/bpf/percpu_freelist.h b/kernel/bpf/percpu_freelist.h
+index fbf8a8a289791..3c76553cfe571 100644
+--- a/kernel/bpf/percpu_freelist.h
++++ b/kernel/bpf/percpu_freelist.h
+@@ -13,6 +13,7 @@ struct pcpu_freelist_head {
+ 
+ struct pcpu_freelist {
+ 	struct pcpu_freelist_head __percpu *freelist;
++	struct pcpu_freelist_head extralist;
  };
  
- /* single container for all structs
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ae27dd77a73cb..507474f79195f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1160,6 +1160,10 @@ static int check_subprogs(struct bpf_verifier_env *env)
- 	for (i = 0; i < insn_cnt; i++) {
- 		u8 code = insn[i].code;
- 
-+		if (code == (BPF_JMP | BPF_CALL) &&
-+		    insn[i].imm == BPF_FUNC_tail_call &&
-+		    insn[i].src_reg != BPF_PSEUDO_CALL)
-+			subprog[cur_subprog].has_tail_call = true;
- 		if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
- 			goto next;
- 		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
-@@ -2612,6 +2616,31 @@ static int check_max_stack_depth(struct bpf_verifier_env *env)
- 	int ret_prog[MAX_CALL_FRAMES];
- 
- process_func:
-+	/* protect against potential stack overflow that might happen when
-+	 * bpf2bpf calls get combined with tailcalls. Limit the caller's stack
-+	 * depth for such case down to 256 so that the worst case scenario
-+	 * would result in 8k stack size (32 which is tailcall limit * 256 =
-+	 * 8k).
-+	 *
-+	 * To get the idea what might happen, see an example:
-+	 * func1 -> sub rsp, 128
-+	 *  subfunc1 -> sub rsp, 256
-+	 *  tailcall1 -> add rsp, 256
-+	 *   func2 -> sub rsp, 192 (total stack size = 128 + 192 = 320)
-+	 *   subfunc2 -> sub rsp, 64
-+	 *   subfunc22 -> sub rsp, 128
-+	 *   tailcall2 -> add rsp, 128
-+	 *    func3 -> sub rsp, 32 (total stack size 128 + 192 + 64 + 32 = 416)
-+	 *
-+	 * tailcall will unwind the current stack frame but it will not get rid
-+	 * of caller's stack as shown on the example above.
-+	 */
-+	if (idx && subprog[idx].has_tail_call && depth >= 256) {
-+		verbose(env,
-+			"tail_calls are not allowed when call stack of previous frames is %d bytes. Too large\n",
-+			depth);
-+		return -EACCES;
-+	}
- 	/* round up to 32-bytes, since this is granularity
- 	 * of interpreter stack size
- 	 */
+ struct pcpu_freelist_node {
 -- 
 2.25.1
 
