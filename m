@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4915829BA7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638D429B7B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1805952AbgJ0QEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43676 "EHLO mail.kernel.org"
+        id S1795519AbgJ0PPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:15:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1802358AbgJ0Pq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:46:28 -0400
+        id S1794361AbgJ0PL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:11:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F3AF22265;
-        Tue, 27 Oct 2020 15:46:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E916421D24;
+        Tue, 27 Oct 2020 15:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813588;
-        bh=EpWlPeKkN3GPtcXmybBb3CwSOJntCNCw/WMcgU0NyTA=;
+        s=default; t=1603811487;
+        bh=NY6zUWyp4Q9m1nxkUjRJHZSZytY4h0qUVzUefWcCByo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=alFW5h0uMKwHyL7zYrAaushPq8thNhtaIg3j0tyfw7a6J4dZBbfdNIsDChFH+90vF
-         R1d6Gpcc+2IefGr1LKtPSJ593+cMvBCFmXMHitu8Or3ITVRA0uRn7pJXDo+MUuKs5I
-         li+12udBBEvXikOLuOg6BpsZEShrMkEHU+LonPIk=
+        b=C4uhN1K2g9x0JyRc7yODcE/0VXg3/FRl99xAyDJHmqkFZwMtBT72p2My0iFZzAcGn
+         qQGJf7QSiEMtOHLdNzkpvq3tYShgEX+5mVliNtF9yhwrHlYDDhWGM59hlNG/B7slXr
+         T8ii7pob+rnwzNWLVbdvYEFT8QGdUNF92Qj1EGtc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalyan Thota <kalyan_t@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 602/757] arm64: dts: qcom: sc7180: Drop flags on mdss irqs
+Subject: [PATCH 5.8 509/633] ARM: dts: stm32: Move ethernet PHY into DH SoM DT
 Date:   Tue, 27 Oct 2020 14:54:12 +0100
-Message-Id: <20201027135518.780532197@linuxfoundation.org>
+Message-Id: <20201027135546.613545750@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
-References: <20201027135450.497324313@linuxfoundation.org>
+In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
+References: <20201027135522.655719020@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +47,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 51e9874d382e089f664b3ce12773bbbaece5f369 ]
+[ Upstream commit b0a07f609600b6fa4c30f783db50c38456804485 ]
 
-The number of interrupt cells for the mdss interrupt controller is 1,
-meaning there should only be one cell for the interrupt number, not two
-where the second cell is the irq flags. Drop the second cell to match
-the binding.
+The PHY and the VIO regulator is populated on the SoM, move it
+into the SoM DT.
 
-Cc: Kalyan Thota <kalyan_t@codeaurora.org>
-Cc: Harigovindan P <harigovi@codeaurora.org
-Fixes: a3db7ad1af49 ("arm64: dts: sc7180: add display dt nodes")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20200811192503.1811462-1-swboyd@chromium.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi | 33 -----------------
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi  | 36 +++++++++++++++++++
+ 2 files changed, 36 insertions(+), 33 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index e875f6c3b6639..a6be72d8f6fde 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2785,7 +2785,7 @@ mdp: mdp@ae01000 {
- 				power-domains = <&rpmhpd SC7180_CX>;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+index 7c4bd615b3115..9cf6d90fbf69f 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-pdk2.dtsi
+@@ -11,7 +11,6 @@ aliases {
+ 		serial0 = &uart4;
+ 		serial1 = &usart3;
+ 		serial2 = &uart8;
+-		ethernet0 = &ethernet0;
+ 	};
  
- 				interrupt-parent = <&mdss>;
--				interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <0>;
+ 	chosen {
+@@ -33,16 +32,6 @@ display_bl: display-bl {
+ 		status = "okay";
+ 	};
  
- 				status = "disabled";
+-	ethernet_vio: vioregulator {
+-		compatible = "regulator-fixed";
+-		regulator-name = "vio";
+-		regulator-min-microvolt = <3300000>;
+-		regulator-max-microvolt = <3300000>;
+-		gpio = <&gpiog 3 GPIO_ACTIVE_LOW>;
+-		regulator-always-on;
+-		regulator-boot-on;
+-	};
+-
+ 	gpio-keys-polled {
+ 		compatible = "gpio-keys-polled";
+ 		#size-cells = <0>;
+@@ -141,28 +130,6 @@ &cec {
+ 	status = "okay";
+ };
  
-@@ -2833,7 +2833,7 @@ dsi0: dsi@ae94000 {
- 				reg-names = "dsi_ctrl";
+-&ethernet0 {
+-	status = "okay";
+-	pinctrl-0 = <&ethernet0_rmii_pins_a>;
+-	pinctrl-1 = <&ethernet0_rmii_sleep_pins_a>;
+-	pinctrl-names = "default", "sleep";
+-	phy-mode = "rmii";
+-	max-speed = <100>;
+-	phy-handle = <&phy0>;
+-	st,eth-ref-clk-sel;
+-	phy-reset-gpios = <&gpioh 15 GPIO_ACTIVE_LOW>;
+-
+-	mdio0 {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		compatible = "snps,dwmac-mdio";
+-
+-		phy0: ethernet-phy@1 {
+-			reg = <1>;
+-		};
+-	};
+-};
+-
+ &i2c2 {	/* Header X22 */
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c2_pins_a>;
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index ba905196fb549..d30a3c60da9b0 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -9,6 +9,10 @@
+ #include <dt-bindings/mfd/st,stpmic1.h>
  
- 				interrupt-parent = <&mdss>;
--				interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <4>;
+ / {
++	aliases {
++		ethernet0 = &ethernet0;
++	};
++
+ 	memory@c0000000 {
+ 		device_type = "memory";
+ 		reg = <0xC0000000 0x40000000>;
+@@ -55,6 +59,16 @@ retram: retram@38000000 {
+ 			no-map;
+ 		};
+ 	};
++
++	ethernet_vio: vioregulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vio";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&gpiog 3 GPIO_ACTIVE_LOW>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
+ };
  
- 				clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
- 					 <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
+ &adc {
+@@ -94,6 +108,28 @@ &dts {
+ 	status = "okay";
+ };
+ 
++&ethernet0 {
++	status = "okay";
++	pinctrl-0 = <&ethernet0_rmii_pins_a>;
++	pinctrl-1 = <&ethernet0_rmii_sleep_pins_a>;
++	pinctrl-names = "default", "sleep";
++	phy-mode = "rmii";
++	max-speed = <100>;
++	phy-handle = <&phy0>;
++	st,eth-ref-clk-sel;
++	phy-reset-gpios = <&gpioh 15 GPIO_ACTIVE_LOW>;
++
++	mdio0 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy0: ethernet-phy@1 {
++			reg = <1>;
++		};
++	};
++};
++
+ &i2c4 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c4_pins_a>;
 -- 
 2.25.1
 
