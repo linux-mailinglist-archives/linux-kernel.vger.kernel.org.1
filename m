@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324E729C70A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE08229C5A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827742AbgJ0S1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:27:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45528 "EHLO mail.kernel.org"
+        id S1754113AbgJ0OEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504161AbgJ0N6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:58:17 -0400
+        id S2504863AbgJ0OEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:04:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 903452068D;
-        Tue, 27 Oct 2020 13:58:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D372A2222C;
+        Tue, 27 Oct 2020 14:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807097;
-        bh=ARBwBmP1ayuaz9TqDVbtx09E9Qzdh0WrRDaHAdZfn84=;
+        s=default; t=1603807452;
+        bh=gAnXIdKLsqUvOJAAyBxNNufl+z8q4nno/Dh7BsCrLTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfU8mjgAgxABeuNhgQb1LN9KoE+ipwMwPqTH6JX9D97dVlcMPGAaNi/48kp5tEruB
-         hJXQ9q2AMq5Gs5GgkZewhuclAE90oZfRkxBpLwIPaodIjx1VgPUefnPdrd7Laxxt7m
-         6qEeYeeK/5PBkZdh3ouIWR1ePms5icmQb612Lz+8=
+        b=bUdTTp99Nde9AbG5OEVYXTgeW49D4VohqVeCLJj7bGZDMkaeZiBwc2Otl+conYuvZ
+         ZWTsux20LfqzRv0rG+nbedJGOX9uPLiG9QxhHipeIEHX9tBpoqZ6j0OjlyixmEIkFq
+         zUjdIL5u0KsDHP3A4xHNr+i5Fv7sUJNuWTpnFhBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 042/112] HID: roccat: add bounds checking in kone_sysfs_write_settings()
+        stable@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 058/139] powerpc/pseries: Fix missing of_node_put() in rng_init()
 Date:   Tue, 27 Oct 2020 14:49:12 +0100
-Message-Id: <20201027134902.549173149@linuxfoundation.org>
+Message-Id: <20201027134904.880807636@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nicholas Mc Guire <hofrat@osadl.org>
 
-[ Upstream commit d4f98dbfe717490e771b6e701904bfcf4b4557f0 ]
+[ Upstream commit 67c3e59443f5fc77be39e2ce0db75fbfa78c7965 ]
 
-This code doesn't check if "settings->startup_profile" is within bounds
-and that could result in an out of bounds array access.  What the code
-does do is it checks if the settings can be written to the firmware, so
-it's possible that the firmware has a bounds check?  It's safer and
-easier to verify when the bounds checking is done in the kernel.
+The call to of_find_compatible_node() returns a node pointer with
+refcount incremented thus it must be explicitly decremented here
+before returning.
 
-Fixes: 14bf62cde794 ("HID: add driver for Roccat Kone gaming mouse")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: a489043f4626 ("powerpc/pseries: Implement arch_get_random_long() based on H_RANDOM")
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1530522496-14816-1-git-send-email-hofrat@osadl.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-roccat-kone.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ arch/powerpc/platforms/pseries/rng.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/hid/hid-roccat-kone.c b/drivers/hid/hid-roccat-kone.c
-index c29265055ac1a..6c2b821c8d8b5 100644
---- a/drivers/hid/hid-roccat-kone.c
-+++ b/drivers/hid/hid-roccat-kone.c
-@@ -299,31 +299,40 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
- 	struct kone_device *kone = hid_get_drvdata(dev_get_drvdata(dev));
- 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
- 	int retval = 0, difference, old_profile;
-+	struct kone_settings *settings = (struct kone_settings *)buf;
+diff --git a/arch/powerpc/platforms/pseries/rng.c b/arch/powerpc/platforms/pseries/rng.c
+index 31ca557af60bc..262b8c5e1b9d0 100644
+--- a/arch/powerpc/platforms/pseries/rng.c
++++ b/arch/powerpc/platforms/pseries/rng.c
+@@ -40,6 +40,7 @@ static __init int rng_init(void)
  
- 	/* I need to get my data in one piece */
- 	if (off != 0 || count != sizeof(struct kone_settings))
- 		return -EINVAL;
+ 	ppc_md.get_random_seed = pseries_get_random_long;
  
- 	mutex_lock(&kone->kone_lock);
--	difference = memcmp(buf, &kone->settings, sizeof(struct kone_settings));
-+	difference = memcmp(settings, &kone->settings,
-+			    sizeof(struct kone_settings));
- 	if (difference) {
--		retval = kone_set_settings(usb_dev,
--				(struct kone_settings const *)buf);
--		if (retval) {
--			mutex_unlock(&kone->kone_lock);
--			return retval;
-+		if (settings->startup_profile < 1 ||
-+		    settings->startup_profile > 5) {
-+			retval = -EINVAL;
-+			goto unlock;
- 		}
- 
-+		retval = kone_set_settings(usb_dev, settings);
-+		if (retval)
-+			goto unlock;
-+
- 		old_profile = kone->settings.startup_profile;
--		memcpy(&kone->settings, buf, sizeof(struct kone_settings));
-+		memcpy(&kone->settings, settings, sizeof(struct kone_settings));
- 
- 		kone_profile_activated(kone, kone->settings.startup_profile);
- 
- 		if (kone->settings.startup_profile != old_profile)
- 			kone_profile_report(kone, kone->settings.startup_profile);
- 	}
-+unlock:
- 	mutex_unlock(&kone->kone_lock);
- 
-+	if (retval)
-+		return retval;
-+
- 	return sizeof(struct kone_settings);
++	of_node_put(dn);
+ 	return 0;
  }
- static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
+ machine_subsys_initcall(pseries, rng_init);
 -- 
 2.25.1
 
