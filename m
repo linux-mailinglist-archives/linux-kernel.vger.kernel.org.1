@@ -2,294 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7256129AD46
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F83629AD4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900679AbgJ0N1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:27:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61778 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2441356AbgJ0N1o (ORCPT
+        id S1752098AbgJ0N3f convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 09:29:35 -0400
+Received: from mail.fireflyinternet.com ([77.68.26.236]:51846 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2900685AbgJ0N3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:27:44 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RDJVmj148463;
-        Tue, 27 Oct 2020 09:27:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=AD8m36gp3rowaxCOB3QJmdElWoVg0RIOaJkHcbxAJ/c=;
- b=HpM65lhwD7YWfMJCYqe6CnZdDQtoL0lOP8fKcR/pIn/37USN6SsX/aB9fP+NpeVIn9yY
- E6HpUQNB394a9+SaXdzV126aoXIC8oFE0ZFfJ0gyJlUapMNHZSmTAKXKxrnJ4Kl1wEx1
- m2XiconvjWrretTqUujoMB5aqgBS2fhSXxqo4HjjczeWrpTUbHNBPY4deomPTB8qHsTV
- eaFidv2lV9SLQp6UTZrZ5OuONDExN5m8ZZPtbCqNNfEGRsUps4n+cK76XYG8bXb52/lc
- X5zn/M0QEBzXMJHZ7Itjn5ziMS+VLL4ZN6+H4hLuxiUgGYsjfHbA9aUJO7gm6ppj+UAn rQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34emb4g8rn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 09:27:42 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09RDQbGR194439;
-        Tue, 27 Oct 2020 09:27:42 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34emb4g8qg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 09:27:42 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09RDMp2g007845;
-        Tue, 27 Oct 2020 13:27:40 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 34cbw7ucxn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 13:27:40 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09RDRbEi28049750
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 13:27:37 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C03611C052;
-        Tue, 27 Oct 2020 13:27:37 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 89E8B11C04A;
-        Tue, 27 Oct 2020 13:27:36 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.77.212])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Oct 2020 13:27:36 +0000 (GMT)
-Date:   Tue, 27 Oct 2020 14:27:11 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v11 05/14] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-Message-ID: <20201027142711.1b57825e.pasic@linux.ibm.com>
-In-Reply-To: <20201022171209.19494-6-akrowiak@linux.ibm.com>
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
-        <20201022171209.19494-6-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Tue, 27 Oct 2020 09:29:34 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22817665-1500050 
+        for multiple; Tue, 27 Oct 2020 13:29:13 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-27_05:2020-10-26,2020-10-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- malwarescore=0 priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270081
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201027123056.GE2651@hirez.programming.kicks-ass.net>
+References: <20200930094937.GE2651@hirez.programming.kicks-ass.net> <160208761332.7002.17400661713288945222.tip-bot2@tip-bot2> <160379817513.29534.880306651053124370@build.alporthouse.com> <20201027115955.GA2611@hirez.programming.kicks-ass.net> <20201027123056.GE2651@hirez.programming.kicks-ass.net>
+Subject: Re: [tip: locking/core] lockdep: Fix usage_traceoverflow
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        tip-bot2 for Peter Zijlstra <tip-bot2@linutronix.de>,
+        Qian Cai <cai@redhat.com>, x86 <x86@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Date:   Tue, 27 Oct 2020 13:29:10 +0000
+Message-ID: <160380535006.10461.1259632375207276085@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 13:12:00 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> Let's implement the callback to indicate when an APQN
-> is in use by the vfio_ap device driver. The callback is
-> invoked whenever a change to the apmask or aqmask would
-> result in one or more queue devices being removed from the driver. The
-> vfio_ap device driver will indicate a resource is in use
-> if the APQN of any of the queue devices to be removed are assigned to
-> any of the matrix mdevs under the driver's control.
+Quoting Peter Zijlstra (2020-10-27 12:30:56)
+> On Tue, Oct 27, 2020 at 12:59:55PM +0100, Peter Zijlstra wrote:
+> > On Tue, Oct 27, 2020 at 11:29:35AM +0000, Chris Wilson wrote:
+> > > Quoting tip-bot2 for Peter Zijlstra (2020-10-07 17:20:13)
+> > > > The following commit has been merged into the locking/core branch of tip:
+> > > > 
+> > > > Commit-ID:     24d5a3bffef117ed90685f285c6c9d2faa3a02b4
+> > > > Gitweb:        https://git.kernel.org/tip/24d5a3bffef117ed90685f285c6c9d2faa3a02b4
+> > > > Author:        Peter Zijlstra <peterz@infradead.org>
+> > > > AuthorDate:    Wed, 30 Sep 2020 11:49:37 +02:00
+> > > > Committer:     Peter Zijlstra <peterz@infradead.org>
+> > > > CommitterDate: Wed, 07 Oct 2020 18:14:17 +02:00
+> > > > 
+> > > > lockdep: Fix usage_traceoverflow
+> > > > 
+> > > > Basically print_lock_class_header()'s for loop is out of sync with the
+> > > > the size of of ->usage_traces[].
+> > > 
+> > > We're hitting a problem,
+> > > 
+> > >     $ cat /proc/lockdep_stats
+> > > 
+> > > upon boot generates:
+> > > 
+> > > [   29.465702] DEBUG_LOCKS_WARN_ON(debug_atomic_read(nr_unused_locks) != nr_unused)
+> > > [   29.465716] WARNING: CPU: 0 PID: 488 at kernel/locking/lockdep_proc.c:256 lockdep_stats_show+0xa33/0xac0
+> > > 
+> > > that bisected to this patch. Only just completed the bisection and
+> > > thought you would like a heads up.
+> > 
+> > Oh hey, that's 'curious'... it does indeed trivially reproduce, let me
+> > have a poke.
 > 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     |  1 +
->  drivers/s390/crypto/vfio_ap_ops.c     | 78 +++++++++++++++++++--------
->  drivers/s390/crypto/vfio_ap_private.h |  2 +
->  3 files changed, 60 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index 73bd073fd5d3..8934471b7944 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -147,6 +147,7 @@ static int __init vfio_ap_init(void)
->  	memset(&vfio_ap_drv, 0, sizeof(vfio_ap_drv));
->  	vfio_ap_drv.probe = vfio_ap_mdev_probe_queue;
->  	vfio_ap_drv.remove = vfio_ap_mdev_remove_queue;
-> +	vfio_ap_drv.in_use = vfio_ap_mdev_resource_in_use;
->  	vfio_ap_drv.ids = ap_queue_ids;
->  
->  	ret = ap_driver_register(&vfio_ap_drv, THIS_MODULE, VFIO_AP_DRV_NAME);
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 1357f8f8b7e4..9e9fad560859 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -522,18 +522,40 @@ vfio_ap_mdev_verify_queues_reserved_for_apid(struct ap_matrix_mdev *matrix_mdev,
->  	return 0;
->  }
->  
-> +#define MDEV_SHARING_ERR "Userspace may not re-assign queue %02lx.%04lx " \
-> +			 "already assigned to %s"
-> +
-> +static void vfio_ap_mdev_log_sharing_err(const char *mdev_name,
-> +					 unsigned long *apm,
-> +					 unsigned long *aqm)
-> +{
-> +	unsigned long apid, apqi;
-> +
-> +	for_each_set_bit_inv(apid, apm, AP_DEVICES)
-> +		for_each_set_bit_inv(apqi, aqm, AP_DOMAINS)
-> +			pr_err(MDEV_SHARING_ERR, apid, apqi, mdev_name);
+> This seems to make it happy. Not quite sure that's the best solution.
 
-Isn't error rather severe for this? For my taste even warning would be
-severe for this.
+Finished the first round of testing on this patch (will try the second
+in a second). It solves the nr_unused_locks issue, but we find something
+else:
 
-> +}
-> +
->  /**
->   * vfio_ap_mdev_verify_no_sharing
->   *
-> - * Verifies that the APQNs derived from the cross product of the AP adapter IDs
-> - * and AP queue indexes comprising the AP matrix are not configured for another
-> + * Verifies that each APQN derived from the cross product of the AP adapter IDs
-> + * and AP queue indexes comprising an AP matrix is not assigned to a
->   * mediated device. AP queue sharing is not allowed.
->   *
-> - * @matrix_mdev: the mediated matrix device
-> + * @matrix_mdev: the mediated matrix device to which the APQNs being verified
-> + *		 are assigned. If the value is not NULL, then verification will
-> + *		 proceed for all other matrix mediated devices; otherwise, all
-> + *		 matrix mediated devices will be verified.
-> + * @mdev_apm: mask indicating the APIDs of the APQNs to be verified
-> + * @mdev_aqm: mask indicating the APQIs of the APQNs to be verified
->   *
-> - * Returns 0 if the APQNs are not shared, otherwise; returns -EADDRINUSE.
-> + * Returns 0 if no APQNs are not shared, otherwise; returns -EADDRINUSE if one
-> + * or more APQNs are shared.
->   */
-> -static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev)
-> +static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
-> +					  unsigned long *mdev_apm,
-> +					  unsigned long *mdev_aqm)
->  {
->  	struct ap_matrix_mdev *lstdev;
->  	DECLARE_BITMAP(apm, AP_DEVICES);
-> @@ -550,14 +572,15 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev)
->  		 * We work on full longs, as we can only exclude the leftover
->  		 * bits in non-inverse order. The leftover is all zeros.
->  		 */
-> -		if (!bitmap_and(apm, matrix_mdev->matrix.apm,
-> -				lstdev->matrix.apm, AP_DEVICES))
-> +		if (!bitmap_and(apm, mdev_apm, lstdev->matrix.apm, AP_DEVICES))
->  			continue;
->  
-> -		if (!bitmap_and(aqm, matrix_mdev->matrix.aqm,
-> -				lstdev->matrix.aqm, AP_DOMAINS))
-> +		if (!bitmap_and(aqm, mdev_aqm, lstdev->matrix.aqm, AP_DOMAINS))
->  			continue;
->  
-> +		vfio_ap_mdev_log_sharing_err(dev_name(mdev_dev(lstdev->mdev)),
-> +					     apm, aqm);
-> +
->  		return -EADDRINUSE;
->  	}
->  
-> @@ -683,6 +706,7 @@ static ssize_t assign_adapter_store(struct device *dev,
->  {
->  	int ret;
->  	unsigned long apid;
-> +	DECLARE_BITMAP(apm, AP_DEVICES);
->  	struct mdev_device *mdev = mdev_from_dev(dev);
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
-> @@ -708,18 +732,18 @@ static ssize_t assign_adapter_store(struct device *dev,
->  	if (ret)
->  		goto done;
->  
-> -	set_bit_inv(apid, matrix_mdev->matrix.apm);
-> +	memset(apm, 0, sizeof(apm));
-> +	set_bit_inv(apid, apm);
->  
-> -	ret = vfio_ap_mdev_verify_no_sharing(matrix_mdev);
-> +	ret = vfio_ap_mdev_verify_no_sharing(matrix_mdev, apm,
-> +					     matrix_mdev->matrix.aqm);
+<4> [304.908891] hm#2, depth: 6 [6], 3425cfea6ff31f7f != 547d92e9ec2ab9af
+<4> [304.908897] WARNING: CPU: 0 PID: 5658 at kernel/locking/lockdep.c:3679 check_chain_key+0x1a4/0x1f0
+<4> [304.908898] Modules linked in: vgem snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio i915 mei_hdcp x86_pkg_temp_thermal coretemp crct10dif_pclmul crc32_pclmul snd_hda_intel btusb snd_intel_dspcfg btrtl snd_hda_codec btbcm btintel ghash_clmulni_intel snd_hwdep bluetooth snd_hda_core e1000e snd_pcm cdc_ether ptp usbnet mei_me mii pps_core mei ecdh_generic ecc intel_lpss_pci prime_numbers
+<4> [304.908920] CPU: 0 PID: 5658 Comm: kms_psr Not tainted 5.10.0-rc1-CI-Trybot_7174+ #1
+<4> [304.908922] Hardware name: Intel Corporation Ice Lake Client Platform/IceLake U DDR4 SODIMM PD RVP TLC, BIOS ICLSFWR1.R00.3183.A00.1905020411 05/02/2019
+<4> [304.908923] RIP: 0010:check_chain_key+0x1a4/0x1f0
+<4> [304.908925] Code: a5 d8 08 00 00 74 e7 e8 7a eb 96 00 8b b5 e0 08 00 00 4c 89 e1 89 da 4c 8b 85 d8 08 00 00 48 c7 c7 d0 8f 30 82 e8 5f 2c 92 00 <0f> 0b 5b 5d 41 5c 41 5d c3 49 89 d5 49 c7 c4 ff ff ff ff 31 db e8
+<4> [304.908926] RSP: 0018:ffffc90000ba7af0 EFLAGS: 00010086
+<4> [304.908928] RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000000002
+<4> [304.908929] RDX: 0000000080000002 RSI: ffffffff82348c47 RDI: 00000000ffffffff
+<4> [304.908930] RBP: ffff88812d7dc040 R08: 0000000000000000 R09: c000000100002c92
+<4> [304.908931] R10: 00000000003b5380 R11: ffffc90000ba7900 R12: 3425cfea6ff31f7f
+<4> [304.908931] R13: ffff88812d7dc9f0 R14: 0000000000000003 R15: ffff88812d7dc9f0
+<4> [304.908933] FS:  00007f51722bb300(0000) GS:ffff88849fa00000(0000) knlGS:0000000000000000
+<4> [304.908934] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4> [304.908935] CR2: 00007ffd197adff0 CR3: 000000011d9ee004 CR4: 0000000000770ef0
+<4> [304.908935] PKRU: 55555554
+<4> [304.908936] Call Trace:
+<4> [304.908939]  __lock_acquire+0x5d0/0x2740
+<4> [304.908941]  lock_acquire+0xdc/0x3c0
+<4> [304.908944]  ? drm_modeset_lock+0xf6/0x110
+<4> [304.908947]  __ww_mutex_lock.constprop.18+0xd0/0x1010
+<4> [304.908949]  ? drm_modeset_lock+0xf6/0x110
+<4> [304.908951]  ? drm_modeset_lock+0xf6/0x110
+<4> [304.908953]  ? ww_mutex_lock_interruptible+0x39/0xa0
+<4> [304.908954]  ww_mutex_lock_interruptible+0x39/0xa0
+<4> [304.908956]  drm_modeset_lock+0xf6/0x110
+<4> [304.908958]  drm_atomic_get_connector_state+0x28/0x180
+<4> [304.909003]  intel_psr_fastset_force+0x76/0x170 [i915]
+<4> [304.909034]  i915_edp_psr_debug_set+0x53/0x70 [i915]
+<4> [304.909037]  simple_attr_write+0xb1/0xd0
+<4> [304.909040]  full_proxy_write+0x51/0x80
+<4> [304.909042]  vfs_write+0xc4/0x230
+<4> [304.909043]  ksys_write+0x5a/0xd0
+<4> [304.909045]  do_syscall_64+0x33/0x80
+<4> [304.909046]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+<4> [304.909047] RIP: 0033:0x7f517180d281
+<4> [304.909049] Code: c3 0f 1f 84 00 00 00 00 00 48 8b 05 59 8d 20 00 c3 0f 1f 84 00 00 00 00 00 8b 05 8a d1 20 00 85 c0 75 16 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 57 f3 c3 0f 1f 44 00 00 41 54 55 49 89 d4 53
+<4> [304.909050] RSP: 002b:00007ffd197b0728 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+<4> [304.909051] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f517180d281
+<4> [304.909052] RDX: 0000000000000003 RSI: 00007f5171cb0dee RDI: 0000000000000009
+<4> [304.909053] RBP: 0000000000000003 R08: 00007ffd197eb1b0 R09: 000000000005d270
+<4> [304.909054] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5171cb0dee
+<4> [304.909055] R13: 0000000000000009 R14: 000055bad33d98c0 R15: 0000000000000000
+<4> [304.909057] CPU: 0 PID: 5658 Comm: kms_psr Not tainted 5.10.0-rc1-CI-Trybot_7174+ #1
+<4> [304.909058] Hardware name: Intel Corporation Ice Lake Client Platform/IceLake U DDR4 SODIMM PD RVP TLC, BIOS ICLSFWR1.R00.3183.A00.1905020411 05/02/2019
+<4> [304.909059] Call Trace:
+<4> [304.909061]  dump_stack+0x77/0x97
+<4> [304.909064]  __warn.cold.14+0xe/0x4b
+<4> [304.909066]  ? check_chain_key+0x1a4/0x1f0
+<4> [304.909068]  report_bug+0xbd/0xf0
+<4> [304.909070]  handle_bug+0x3f/0x70
+<4> [304.909071]  exc_invalid_op+0x13/0x60
+<4> [304.909072]  asm_exc_invalid_op+0x12/0x20
+<4> [304.909074] RIP: 0010:check_chain_key+0x1a4/0x1f0
+<4> [304.909075] Code: a5 d8 08 00 00 74 e7 e8 7a eb 96 00 8b b5 e0 08 00 00 4c 89 e1 89 da 4c 8b 85 d8 08 00 00 48 c7 c7 d0 8f 30 82 e8 5f 2c 92 00 <0f> 0b 5b 5d 41 5c 41 5d c3 49 89 d5 49 c7 c4 ff ff ff ff 31 db e8
+<4> [304.909076] RSP: 0018:ffffc90000ba7af0 EFLAGS: 00010086
+<4> [304.909077] RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000000002
+<4> [304.909078] RDX: 0000000080000002 RSI: ffffffff82348c47 RDI: 00000000ffffffff
+<4> [304.909079] RBP: ffff88812d7dc040 R08: 0000000000000000 R09: c000000100002c92
+<4> [304.909080] R10: 00000000003b5380 R11: ffffc90000ba7900 R12: 3425cfea6ff31f7f
+<4> [304.909081] R13: ffff88812d7dc9f0 R14: 0000000000000003 R15: ffff88812d7dc9f0
+<4> [304.909083]  __lock_acquire+0x5d0/0x2740
+<4> [304.909086]  lock_acquire+0xdc/0x3c0
+<4> [304.909087]  ? drm_modeset_lock+0xf6/0x110
+<4> [304.909090]  __ww_mutex_lock.constprop.18+0xd0/0x1010
+<4> [304.909091]  ? drm_modeset_lock+0xf6/0x110
+<4> [304.909093]  ? drm_modeset_lock+0xf6/0x110
+<4> [304.909095]  ? ww_mutex_lock_interruptible+0x39/0xa0
+<4> [304.909096]  ww_mutex_lock_interruptible+0x39/0xa0
+<4> [304.909098]  drm_modeset_lock+0xf6/0x110
+<4> [304.909100]  drm_atomic_get_connector_state+0x28/0x180
+<4> [304.909149]  intel_psr_fastset_force+0x76/0x170 [i915]
+<4> [304.909179]  i915_edp_psr_debug_set+0x53/0x70 [i915]
+<4> [304.909181]  simple_attr_write+0xb1/0xd0
+<4> [304.909183]  full_proxy_write+0x51/0x80
+<4> [304.909184]  vfs_write+0xc4/0x230
+<4> [304.909185]  ksys_write+0x5a/0xd0
+<4> [304.909187]  do_syscall_64+0x33/0x80
+<4> [304.909188]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+<4> [304.909189] RIP: 0033:0x7f517180d281
+<4> [304.909190] Code: c3 0f 1f 84 00 00 00 00 00 48 8b 05 59 8d 20 00 c3 0f 1f 84 00 00 00 00 00 8b 05 8a d1 20 00 85 c0 75 16 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 57 f3 c3 0f 1f 44 00 00 41 54 55 49 89 d4 53
+<4> [304.909191] RSP: 002b:00007ffd197b0728 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+<4> [304.909193] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f517180d281
+<4> [304.909193] RDX: 0000000000000003 RSI: 00007f5171cb0dee RDI: 0000000000000009
+<4> [304.909194] RBP: 0000000000000003 R08: 00007ffd197eb1b0 R09: 000000000005d270
+<4> [304.909195] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5171cb0dee
+<4> [304.909196] R13: 0000000000000009 R14: 000055bad33d98c0 R15: 0000000000000000
+<4> [304.909198] irq event stamp: 93035
+<4> [304.909200] hardirqs last  enabled at (93035): [<ffffffff81a8b8b2>] _raw_spin_unlock_irqrestore+0x42/0x50
+<4> [304.909201] hardirqs last disabled at (93034): [<ffffffff81a8b687>] _raw_spin_lock_irqsave+0x47/0x50
+<4> [304.909203] softirqs last  enabled at (92760): [<ffffffff81e00342>] __do_softirq+0x342/0x48e
+<4> [304.909204] softirqs last disabled at (92753): [<ffffffff81c00f4f>] asm_call_irq_on_stack+0xf/0x20
 
-What is the benefit of using a copy here? I mean we have the vfio_ap lock
-so nobody can see the bit we speculatively flipped.
+https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7174/fi-icl-u2/igt@kms_psr@primary_mmap_gtt.html
+https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7174/fi-kbl-r/igt@kms_psr@primary_page_flip.html
+https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7174/fi-cml-s/igt@kms_psr@primary_mmap_gtt.html
+https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7174/fi-cml-u2/igt@kms_psr@primary_page_flip.html
 
-I've also pointed out in the previous patch that in_use() isn't
-perfectly reliable (at least in theory) because of a race.
-
-Otherwise looks good to me!
-
->  	if (ret)
-> -		goto share_err;
-> +		goto done;
->  
-> +	set_bit_inv(apid, matrix_mdev->matrix.apm);
->  	vfio_ap_mdev_link_queues(matrix_mdev, LINK_APID, apid);
->  	ret = count;
-> -	goto done;
->  
-> -share_err:
-> -	clear_bit_inv(apid, matrix_mdev->matrix.apm);
->  done:
->  	mutex_unlock(&matrix_dev->lock);
->  
-> @@ -831,6 +855,7 @@ static ssize_t assign_domain_store(struct device *dev,
->  {
->  	int ret;
->  	unsigned long apqi;
-> +	DECLARE_BITMAP(aqm, AP_DOMAINS);
->  	struct mdev_device *mdev = mdev_from_dev(dev);
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  	unsigned long max_apqi = matrix_mdev->matrix.aqm_max;
-> @@ -851,18 +876,18 @@ static ssize_t assign_domain_store(struct device *dev,
->  	if (ret)
->  		goto done;
->  
-> -	set_bit_inv(apqi, matrix_mdev->matrix.aqm);
-> +	memset(aqm, 0, sizeof(aqm));
-> +	set_bit_inv(apqi, aqm);
->  
-> -	ret = vfio_ap_mdev_verify_no_sharing(matrix_mdev);
-> +	ret = vfio_ap_mdev_verify_no_sharing(matrix_mdev,
-> +					     matrix_mdev->matrix.apm, aqm);
->  	if (ret)
-> -		goto share_err;
-> +		goto done;
->  
-> +	set_bit_inv(apqi, matrix_mdev->matrix.aqm);
->  	vfio_ap_mdev_link_queues(matrix_mdev, LINK_APQI, apqi);
->  	ret = count;
-> -	goto done;
->  
-> -share_err:
-> -	clear_bit_inv(apqi, matrix_mdev->matrix.aqm);
->  done:
->  	mutex_unlock(&matrix_dev->lock);
->  
-> @@ -1442,3 +1467,14 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
->  	kfree(q);
->  	mutex_unlock(&matrix_dev->lock);
->  }
-> +
-> +bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
-> +{
-> +	bool in_use;
-> +
-> +	mutex_lock(&matrix_dev->lock);
-> +	in_use = !!vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
-> +	mutex_unlock(&matrix_dev->lock);
-> +
-> +	return in_use;
-> +}
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index 4e5cc72fc0db..c1d8b5507610 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -105,4 +105,6 @@ struct vfio_ap_queue {
->  int vfio_ap_mdev_probe_queue(struct ap_device *queue);
->  void vfio_ap_mdev_remove_queue(struct ap_device *queue);
->  
-> +bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm);
-> +
->  #endif /* _VFIO_AP_PRIVATE_H_ */
-
+It is suspicious that those are all the same tests midway through the
+run, so it might be our bug, but it is one we haven't seen before.
+-Chris
