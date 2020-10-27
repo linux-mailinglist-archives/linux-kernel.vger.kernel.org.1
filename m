@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E479C29C4D1
+	by mail.lfdr.de (Postfix) with ESMTP id 7751529C4D0
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823214AbgJ0R6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44582 "EHLO mail.kernel.org"
+        id S1823207AbgJ0R6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:58:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2509304AbgJ0OUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:20:36 -0400
+        id S2900081AbgJ0OUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:20:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 199F4207BB;
-        Tue, 27 Oct 2020 14:20:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 415D7206F7;
+        Tue, 27 Oct 2020 14:20:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808435;
-        bh=Lg9nesCkwTM+6Mga/RtjvgH/UBzxlL+hzniaY8+jo4w=;
+        s=default; t=1603808440;
+        bh=VBveqTQRqqFBUP5e/jtDQ/vSTg8WLW6xhy6Cknv2CPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cxAnLvnK92Wgra7EKX3BMrqJYoEqGC18pTE4vLy9k1cDhW+KvXQfW9ySgsUWJ2L44
-         fpWZ7FxxAO4vsNDxxvsxtRQf/v5GW/x8Cr74o/vHhRSu0V/fuK2xcGVhU4tHHjtikJ
-         DZyf3sSz1TxH/L0GbOs2YaiGYJn0bTUbaGOIYaKE=
+        b=vHT/GZ9fjO+Ek0zXHupUYPWhhzrOLIp3K70Ytj2FkMR65AzMcmfIzEQ5xCEhoCgMT
+         cu8E9ohGmQBpSHBUm+V9YfQrJOQeV2mHk8e5CYAXmmaknRsVCoaOMzdracyrwIlV8W
+         ppTGe3E4V1yV3RMC+OGjKYFgo98ZOC1R9jQjI1QQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Mathieu Malaterre <malat@debian.org>,
-        Kangjie Lu <kjlu@umn.edu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        stable@vger.kernel.org,
+        Thomas Preston <thomas.preston@codethink.co.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 091/264] video: fbdev: radeon: Fix memleak in radeonfb_pci_register
-Date:   Tue, 27 Oct 2020 14:52:29 +0100
-Message-Id: <20201027135434.974709383@linuxfoundation.org>
+Subject: [PATCH 4.19 093/264] pinctrl: mcp23s08: Fix mcp23x17_regmap initialiser
+Date:   Tue, 27 Oct 2020 14:52:31 +0100
+Message-Id: <20201027135435.062239601@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -46,38 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Thomas Preston <thomas.preston@codethink.co.uk>
 
-[ Upstream commit fe6c6a4af2be8c15bac77f7ea160f947c04840d1 ]
+[ Upstream commit b445f6237744df5e8d4f56f8733b2108c611220a ]
 
-When radeon_kick_out_firmware_fb() fails, info should be
-freed just like the subsequent error paths.
+The mcp23x17_regmap is initialised with structs named "mcp23x16".
+However, the mcp23s08 driver doesn't support the MCP23016 device yet, so
+this appears to be a typo.
 
-Fixes: 069ee21a82344 ("fbdev: Fix loading of module radeonfb on PowerMac")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Mathieu Malaterre <malat@debian.org>
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200825062900.11210-1-dinghao.liu@zju.edu.cn
+Fixes: 8f38910ba4f6 ("pinctrl: mcp23s08: switch to regmap caching")
+Signed-off-by: Thomas Preston <thomas.preston@codethink.co.uk>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20200828213226.1734264-2-thomas.preston@codethink.co.uk
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/aty/radeon_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-mcp23s08.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/video/fbdev/aty/radeon_base.c b/drivers/video/fbdev/aty/radeon_base.c
-index e8594bbaea609..c6109a385cac9 100644
---- a/drivers/video/fbdev/aty/radeon_base.c
-+++ b/drivers/video/fbdev/aty/radeon_base.c
-@@ -2327,7 +2327,7 @@ static int radeonfb_pci_register(struct pci_dev *pdev,
+diff --git a/drivers/pinctrl/pinctrl-mcp23s08.c b/drivers/pinctrl/pinctrl-mcp23s08.c
+index 33c3eca0ece97..5f0cea13bb5ce 100644
+--- a/drivers/pinctrl/pinctrl-mcp23s08.c
++++ b/drivers/pinctrl/pinctrl-mcp23s08.c
+@@ -120,7 +120,7 @@ static const struct regmap_config mcp23x08_regmap = {
+ 	.max_register = MCP_OLAT,
+ };
  
- 	ret = radeon_kick_out_firmware_fb(pdev);
- 	if (ret)
--		return ret;
-+		goto err_release_fb;
+-static const struct reg_default mcp23x16_defaults[] = {
++static const struct reg_default mcp23x17_defaults[] = {
+ 	{.reg = MCP_IODIR << 1,		.def = 0xffff},
+ 	{.reg = MCP_IPOL << 1,		.def = 0x0000},
+ 	{.reg = MCP_GPINTEN << 1,	.def = 0x0000},
+@@ -131,23 +131,23 @@ static const struct reg_default mcp23x16_defaults[] = {
+ 	{.reg = MCP_OLAT << 1,		.def = 0x0000},
+ };
  
- 	/* request the mem regions */
- 	ret = pci_request_region(pdev, 0, "radeonfb framebuffer");
+-static const struct regmap_range mcp23x16_volatile_range = {
++static const struct regmap_range mcp23x17_volatile_range = {
+ 	.range_min = MCP_INTF << 1,
+ 	.range_max = MCP_GPIO << 1,
+ };
+ 
+-static const struct regmap_access_table mcp23x16_volatile_table = {
+-	.yes_ranges = &mcp23x16_volatile_range,
++static const struct regmap_access_table mcp23x17_volatile_table = {
++	.yes_ranges = &mcp23x17_volatile_range,
+ 	.n_yes_ranges = 1,
+ };
+ 
+-static const struct regmap_range mcp23x16_precious_range = {
++static const struct regmap_range mcp23x17_precious_range = {
+ 	.range_min = MCP_GPIO << 1,
+ 	.range_max = MCP_GPIO << 1,
+ };
+ 
+-static const struct regmap_access_table mcp23x16_precious_table = {
+-	.yes_ranges = &mcp23x16_precious_range,
++static const struct regmap_access_table mcp23x17_precious_table = {
++	.yes_ranges = &mcp23x17_precious_range,
+ 	.n_yes_ranges = 1,
+ };
+ 
+@@ -157,10 +157,10 @@ static const struct regmap_config mcp23x17_regmap = {
+ 
+ 	.reg_stride = 2,
+ 	.max_register = MCP_OLAT << 1,
+-	.volatile_table = &mcp23x16_volatile_table,
+-	.precious_table = &mcp23x16_precious_table,
+-	.reg_defaults = mcp23x16_defaults,
+-	.num_reg_defaults = ARRAY_SIZE(mcp23x16_defaults),
++	.volatile_table = &mcp23x17_volatile_table,
++	.precious_table = &mcp23x17_precious_table,
++	.reg_defaults = mcp23x17_defaults,
++	.num_reg_defaults = ARRAY_SIZE(mcp23x17_defaults),
+ 	.cache_type = REGCACHE_FLAT,
+ 	.val_format_endian = REGMAP_ENDIAN_LITTLE,
+ };
 -- 
 2.25.1
 
