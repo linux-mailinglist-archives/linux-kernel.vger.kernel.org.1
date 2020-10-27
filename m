@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7DD29B863
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9E529B86A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800193AbgJ0PfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47604 "EHLO mail.kernel.org"
+        id S1800253AbgJ0Pf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799293AbgJ0Paq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:30:46 -0400
+        id S1799399AbgJ0PbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:31:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9C9022202;
-        Tue, 27 Oct 2020 15:30:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6B032225E;
+        Tue, 27 Oct 2020 15:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812645;
-        bh=iKnE/Hc7xCVVFbYGgGIXEAKToBtNNhSRDCXKg6XNkX4=;
+        s=default; t=1603812677;
+        bh=GGBMuez467HASqgJ1KA2SrFzeHHIhUCoAv2b6S6Fj/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pN8BiJ0aNrYXJX9U8kXW8hMG7jg2732ZSX8JHCL6uD3ud4eclf3eudfU4W8WoXuS3
-         /B/NK+jrp+8B5LzIt7Ay121NQ+gKZqsCfruCifuEF34BMcz8FUw/OltcNY3e/nPGQB
-         o9aYSEvWusyP8uCQDp0vHGl/mG0+e3neibRzTWUE=
+        b=czJf2zdHd3XSdMXdPa9aQImQHzaV5qgdS/XA7efClQ+Bon3Eeu1scDUCLRWYfb8kE
+         brrm+8izu9r9ds05vgSpVYj8vKxjzdU7fPKYa00ufU3N29gXZMLNCuRtB5k3pQ8QyO
+         yR53HvE35glLlkrFm3InSHteHVIz+v8GNHczixYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Leach <mike.leach@linaro.org>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
+        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 274/757] coresight: cti: remove pm_runtime_get_sync() from CPU hotplug
-Date:   Tue, 27 Oct 2020 14:48:44 +0100
-Message-Id: <20201027135503.426384519@linuxfoundation.org>
+Subject: [PATCH 5.9 275/757] coresight: etm4x: Ensure default perf settings filter user/kernel
+Date:   Tue, 27 Oct 2020 14:48:45 +0100
+Message-Id: <20201027135503.474697960@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,79 +44,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tingwei Zhang <tingwei@codeaurora.org>
+From: Mike Leach <mike.leach@linaro.org>
 
-[ Upstream commit 6e8836c6df5327bdb24211424f1ad1411d1ed64a ]
+[ Upstream commit 096dcfb9cd6fefa7c03884b50c247593dc5f7dd3 ]
 
-Below BUG is triggered by call pm_runtime_get_sync() in
-cti_cpuhp_enable_hw(). It's in CPU hotplug callback with interrupt
-disabled. Pm_runtime_get_sync() calls clock driver to enable clock
-which could sleep. Remove pm_runtime_get_sync() in cti_cpuhp_enable_hw()
-since pm_runtime_get_sync() is called in cti_enabld and pm_runtime_put()
-is called in cti_disabled. No need to increase pm count when CPU gets
-online since it's not decreased when CPU is offline.
+Moving from using an address filter to trace the default "all addresses"
+range to no filtering to acheive the same result, has caused the perf
+filtering of kernel/user address spaces from not working unless an
+explicit address filter was used.
 
-[  105.800279] BUG: scheduling while atomic: swapper/1/0/0x00000002
-[  105.800290] Modules linked in:
-[  105.800327] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W
-5.9.0-rc1-gff1304be0a05-dirty #21
-[  105.800337] Hardware name: Thundercomm Dragonboard 845c (DT)
-[  105.800353] Call trace:
-[  105.800414]  dump_backtrace+0x0/0x1d4
-[  105.800439]  show_stack+0x14/0x1c
-[  105.800462]  dump_stack+0xc0/0x100
-[  105.800490]  __schedule_bug+0x58/0x74
-[  105.800523]  __schedule+0x590/0x65c
-[  105.800538]  schedule+0x78/0x10c
-[  105.800553]  schedule_timeout+0x188/0x250
-[  105.800585]  qmp_send.constprop.10+0x12c/0x1b0
-[  105.800599]  qmp_qdss_clk_prepare+0x18/0x20
-[  105.800622]  clk_core_prepare+0x48/0xd4
-[  105.800639]  clk_prepare+0x20/0x34
-[  105.800663]  amba_pm_runtime_resume+0x54/0x90
-[  105.800695]  __rpm_callback+0xdc/0x138
-[  105.800709]  rpm_callback+0x24/0x78
-[  105.800724]  rpm_resume+0x328/0x47c
-[  105.800739]  __pm_runtime_resume+0x50/0x74
-[  105.800768]  cti_starting_cpu+0x40/0xa4
-[  105.800795]  cpuhp_invoke_callback+0x84/0x1e0
-[  105.800814]  notify_cpu_starting+0x9c/0xb8
-[  105.800834]  secondary_start_kernel+0xd8/0x164
-[  105.800933] CPU1: Booted secondary processor 0x0000000100 [0x517f803c]
+This is due to the original code using a side-effect of the address
+filtering rather than setting the global TRCVICTLR exception level
+filtering.
 
-Fixes: e9b880581d55 ("coresight: cti: Add CPU Hotplug handling to CTI driver")
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+The use of the mode sysfs file is also similarly affected.
+
+A helper function is added to fix both instances.
+
+Fixes: ae2041510d5d ("coresight: etmv4: Update default filter and initialisation")
+Reported-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Leo Yan <leo.yan@linaro.org>
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200916191737.4001561-7-mathieu.poirier@linaro.org
+Link: https://lore.kernel.org/r/20200916191737.4001561-8-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-cti.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm4x.c | 32 +++++++++++++------
+ drivers/hwtracing/coresight/coresight-etm4x.h |  3 ++
+ 2 files changed, 25 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtracing/coresight/coresight-cti.c
-index d6fea6efec71f..c4e9cc7034ab7 100644
---- a/drivers/hwtracing/coresight/coresight-cti.c
-+++ b/drivers/hwtracing/coresight/coresight-cti.c
-@@ -141,9 +141,7 @@ static int cti_enable_hw(struct cti_drvdata *drvdata)
- static void cti_cpuhp_enable_hw(struct cti_drvdata *drvdata)
- {
- 	struct cti_config *config = &drvdata->config;
--	struct device *dev = &drvdata->csdev->dev;
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
+index 45d169a2512cf..2bcc8d4a82c8e 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+@@ -52,6 +52,7 @@ static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
+ static void etm4_set_default_config(struct etmv4_config *config);
+ static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
+ 				  struct perf_event *event);
++static u64 etm4_get_access_type(struct etmv4_config *config);
  
--	pm_runtime_get_sync(dev->parent);
- 	spin_lock(&drvdata->spinlock);
- 	config->hw_powered = true;
+ static enum cpuhp_state hp_online;
  
-@@ -163,7 +161,6 @@ static void cti_cpuhp_enable_hw(struct cti_drvdata *drvdata)
- 	/* did not re-enable due to no claim / no request */
- cti_hp_not_enabled:
- 	spin_unlock(&drvdata->spinlock);
--	pm_runtime_put(dev->parent);
+@@ -783,6 +784,22 @@ static void etm4_init_arch_data(void *info)
+ 	CS_LOCK(drvdata->base);
  }
  
- /* disable hardware */
++/* Set ELx trace filter access in the TRCVICTLR register */
++static void etm4_set_victlr_access(struct etmv4_config *config)
++{
++	u64 access_type;
++
++	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK | ETM_EXLEVEL_NS_VICTLR_MASK);
++
++	/*
++	 * TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering
++	 * bits in vinst_ctrl, same bit pattern as TRCACATRn values returned by
++	 * etm4_get_access_type() but with a relative shift in this register.
++	 */
++	access_type = etm4_get_access_type(config) << ETM_EXLEVEL_LSHIFT_TRCVICTLR;
++	config->vinst_ctrl |= (u32)access_type;
++}
++
+ static void etm4_set_default_config(struct etmv4_config *config)
+ {
+ 	/* disable all events tracing */
+@@ -800,6 +817,9 @@ static void etm4_set_default_config(struct etmv4_config *config)
+ 
+ 	/* TRCVICTLR::EVENT = 0x01, select the always on logic */
+ 	config->vinst_ctrl = BIT(0);
++
++	/* TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering */
++	etm4_set_victlr_access(config);
+ }
+ 
+ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
+@@ -1064,7 +1084,7 @@ static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
+ 
+ void etm4_config_trace_mode(struct etmv4_config *config)
+ {
+-	u32 addr_acc, mode;
++	u32 mode;
+ 
+ 	mode = config->mode;
+ 	mode &= (ETM_MODE_EXCL_KERN | ETM_MODE_EXCL_USER);
+@@ -1076,15 +1096,7 @@ void etm4_config_trace_mode(struct etmv4_config *config)
+ 	if (!(mode & ETM_MODE_EXCL_KERN) && !(mode & ETM_MODE_EXCL_USER))
+ 		return;
+ 
+-	addr_acc = config->addr_acc[ETM_DEFAULT_ADDR_COMP];
+-	/* clear default config */
+-	addr_acc &= ~(ETM_EXLEVEL_NS_APP | ETM_EXLEVEL_NS_OS |
+-		      ETM_EXLEVEL_NS_HYP);
+-
+-	addr_acc |= etm4_get_ns_access_type(config);
+-
+-	config->addr_acc[ETM_DEFAULT_ADDR_COMP] = addr_acc;
+-	config->addr_acc[ETM_DEFAULT_ADDR_COMP + 1] = addr_acc;
++	etm4_set_victlr_access(config);
+ }
+ 
+ static int etm4_online_cpu(unsigned int cpu)
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index b8283e1d6d88c..5259f96fd28a0 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -192,6 +192,9 @@
+ #define ETM_EXLEVEL_NS_HYP		BIT(14)
+ #define ETM_EXLEVEL_NS_NA		BIT(15)
+ 
++/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
++#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
++
+ /* secure / non secure masks - TRCVICTLR, IDR3 */
+ #define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
+ /* NS MON (EL3) mode never implemented */
 -- 
 2.25.1
 
