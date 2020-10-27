@@ -2,169 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E519229BB88
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF5229BB89
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756475AbgJ0QQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:16:51 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52735 "EHLO mga17.intel.com"
+        id S2900893AbgJ0QRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:17:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:45198 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369046AbgJ0QC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:02:29 -0400
-IronPort-SDR: kmDi+QjtrUZxfrtHUcdBYL0mRBhtrgpdER30K6hVYbK0YzRoepDD+I5A+2lMC/LKYIOSXM9vzZ
- JWuTu6l/3F+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="147964115"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="147964115"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 09:01:41 -0700
-IronPort-SDR: +S1J7oGkrwojAP/LNhOfmzZEx4c7Vxni4LJtFxeCkgrOpcLTNdkMyJILvgvcBjP4M0EhRXKmWr
- RqiTyg55Sy6w==
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="535845634"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.184]) ([10.249.227.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 09:01:36 -0700
-Subject: Re: [PATCH v2 00/15] Introduce threaded trace streaming for basic
- perf record operation
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
- <20201024154309.GA2589351@krava>
- <01bad2c4-4188-f5f5-452e-a0ea0672a187@linux.intel.com>
- <20201027121013.GE2900849@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <9c76b415-2610-14f8-37d4-461d0d5c078b@linux.intel.com>
-Date:   Tue, 27 Oct 2020 19:01:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S369040AbgJ0QC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:02:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14D75139F;
+        Tue, 27 Oct 2020 09:02:25 -0700 (PDT)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DD713F719;
+        Tue, 27 Oct 2020 09:02:23 -0700 (PDT)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Subject: [PATCH] mm: vmalloc: Fix kasan shadow poisoning size
+Date:   Tue, 27 Oct 2020 16:02:13 +0000
+Message-Id: <20201027160213.32904-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201027121013.GE2900849@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The size of vm area can be affected by the presence or not of the guard
+page. In particular when VM_NO_GUARD is present, the actual accessible
+size has to be considered like the real size minus the guard page.
 
-On 27.10.2020 15:10, Jiri Olsa wrote:
-> On Mon, Oct 26, 2020 at 08:59:01PM +0300, Alexey Budankov wrote:
->>
->> On 24.10.2020 18:43, Jiri Olsa wrote:
->>> On Wed, Oct 21, 2020 at 06:52:43PM +0300, Alexey Budankov wrote:
->>>>
->>>> Changes in v2:
->>>> - explicitly added credit tags to patches 6/15 and 15/15,
->>>>   additionally to cites [1], [2]
->>>> - updated description of 3/15 to explicitly mention the reason
->>>>   to open data directories in read access mode (e.g. for perf report)
->>>> - implemented fix for compilation error of 2/15
->>>> - explicitly elaborated on found issues to be resolved for
->>>>   threaded AUX trace capture
->>>>
->>>> v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
->>>>
->>>> Patch set provides threaded trace streaming for base perf record
->>>> operation. Provided streaming mode (--threads) mitigates profiling
->>>> data losses and resolves scalability issues of serial and asynchronous
->>>> (--aio) trace streaming modes on multicore server systems. The patch
->>>> set is based on the prototype [1], [2] and the most closely relates
->>>> to mode 3) "mode that creates thread for every monitored memory map".
->>>
->>> so what I liked about the previous code was that you could
->>> configure how the threads would be created
->>>
->>> default --threads options created thread for each cpu like
->>> in your change:
->>>
->>>   $ perf record -v --threads ...
->>>   ...
->>>   thread 0 monitor: 0 allowed: 0
->>>   thread 1 monitor: 1 allowed: 1
->>>   thread 2 monitor: 2 allowed: 2
->>>   thread 3 monitor: 3 allowed: 3
->>>   thread 4 monitor: 4 allowed: 4
->>>   thread 5 monitor: 5 allowed: 5
->>>   thread 6 monitor: 6 allowed: 6
->>>   thread 7 monitor: 7 allowed: 7
->>
->> Yes, it is configurable in the prototype. Even though this patch set
->> doesn't implement that parameters for --thread option, just because
->> VTune doesn't have use cases for that yet, it has still been designed
->> and implemented with that possible extension in mind so it could then
->> be easily added on top of it.
-> 
-> I'm not sure about vtune extensions, but if we are going to
-> have --threads option I believe we should make it configurable
-> at least to the extend descibed below
+Currently kasan does not keep into account this information during the
+poison operation and in particular tries to poison the guard page as
+well.
 
-It employs --threads mode only and there are no use cases
-observed so far beyond this mode. Do you have or see such
-use cases?
+This approach, even if incorrect, does not cause an issue because the
+tags for the guard page are written in the shadow memory.
+With the future introduction of the Tag-Based KASAN, being the guard
+page inaccessible by nature, the write tag operation on this page
+triggers a fault.
 
-Alexei
+Fix kasan shadow poisoning size invoking get_vm_area_size() instead of
+accessing directly the field in the data structure to detect the correct
+value.
 
-> 
-> jirka
-> 
->>
->>>
->>>
->>> then numa based:
->>>
->>>   $ perf record -v --threads=numa ...
->>>   ...
->>>   thread 0 monitor: 0-5,12-17 allowed: 0-5,12-17
->>>   thread 1 monitor: 6-11,18-23 allowed: 6-11,18-23
->>>
->>>
->>> socket based:
->>>
->>>   $ perf record -v --threads=socket ...
->>>   ...
->>>   thread 0 monitor: 0-7 allowed: 0-7
->>>
->>>
->>> core based:
->>>
->>>   $ perf record -v --threads=core ...
->>>   ...
->>>   thread 0 monitor: 0,4 allowed: 0,4
->>>   thread 1 monitor: 1,5 allowed: 1,5
->>>   thread 2 monitor: 2,6 allowed: 2,6
->>>   thread 3 monitor: 3,7 allowed: 3,7
->>>
->>>
->>> and user configurable:
->>>
->>>   $ perf record -v  --threads=0-3/0:4-7/4 ...
->>>   ...
->>>   threads: 0. monitor 0-3, allowed 0
->>>   threads: 1. monitor 4-7, allowed 4
->>>
->>>
->>> so this way you could easily pin threads to cpu/core/socket/numa,
->>> or to some other cpu of your choice, because this will be always
->>> game of try and check where I'm not getting LOST events and not
->>> creating 1000 threads
->>>
->>>  perf record: Add support for threads numa option value
->>>  perf record: Add support for threads socket option value
->>>  perf record: Add support for threads core option value
->>>  perf record: Add support for threads user option value
->>
->> Makes sense.
->>
->> Alexei
->>
-> 
+Fixes: d98c9e83b5e7c ("kasan: fix crashes on access to memory mapped by vm_map_ram()")
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+---
+ mm/vmalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 6ae491a8b210..1b5426965e84 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2256,7 +2256,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
+ 	debug_check_no_locks_freed(area->addr, get_vm_area_size(area));
+ 	debug_check_no_obj_freed(area->addr, get_vm_area_size(area));
+ 
+-	kasan_poison_vmalloc(area->addr, area->size);
++	kasan_poison_vmalloc(area->addr, get_vm_area_size(area));
+ 
+ 	vm_remove_mappings(area, deallocate_pages);
+ 
+-- 
+2.28.0
+
