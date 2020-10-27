@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A1729B79F
+	by mail.lfdr.de (Postfix) with ESMTP id 342FB29B79E
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795087AbgJ0PPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1795096AbgJ0PPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 11:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45034 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793994AbgJ0PJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:09:35 -0400
+        id S1794003AbgJ0PJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:09:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30FDF206E5;
-        Tue, 27 Oct 2020 15:09:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1295C20657;
+        Tue, 27 Oct 2020 15:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811374;
-        bh=hg5dNERNp39E82siiRmg5UI3KvzKjddXU4Hf7fOLtG4=;
+        s=default; t=1603811377;
+        bh=MzlmVuAvenrDn5vJlUBmv5V5+3UhaYVG+lxeEYlJHW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YcIWN6XGQq9qUF1HGdnjaiIiaFeTSnw1llFC083qqUDV7Mi9RT21VlmSBWpwnqiGo
-         qMQ9MQQRWBKVjRONIPBS8eVl3CRTKMYnCKE4pDTYWmiRy9rcWPvf4I5yw0f2gspdqg
-         swcOOV2a8T1dZV96M/YqCv0Xzp2A7JGsOlZ+mXyk=
+        b=i9wRvxCHasR8+9Mna1N2JuOoCCmNctL3kyPCb8bZQsGMCfjAIHJ8TLC6N4I2BqoJI
+         x83gKRNbPG1zoEPLImT8WKLdJ8Kgc+h+4FY3a2pLqfaWuJg1rh6jhRVtZb1aNkt23b
+         /BV2AxarYeQMDdAO5u8CO9N4OAOUSG8/ExNKNvbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 470/633] Input: omap4-keypad - fix handling of platform_get_irq() error
-Date:   Tue, 27 Oct 2020 14:53:33 +0100
-Message-Id: <20201027135544.782951445@linuxfoundation.org>
+Subject: [PATCH 5.8 471/633] Input: twl4030_keypad - fix handling of platform_get_irq() error
+Date:   Tue, 27 Oct 2020 14:53:34 +0100
+Message-Id: <20201027135544.830263432@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,37 +46,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 4738dd1992fa13acfbbd71800c71c612f466fa44 ]
+[ Upstream commit c277e1f0dc3c7d7b5b028e20dd414df241642036 ]
 
-platform_get_irq() returns -ERRNO on error.  In such case comparison
-to 0 would pass the check.
+platform_get_irq() returns -ERRNO on error.  In such case casting to
+unsigned and comparing to 0 would pass the check.
 
-Fixes: f3a1ba60dbdb ("Input: omap4-keypad - use platform device helpers")
+Fixes: 7abf38d6d13c ("Input: twl4030-keypad - add device tree support")
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20200828145744.3636-2-krzk@kernel.org
+Link: https://lore.kernel.org/r/20200828145744.3636-3-krzk@kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/omap4-keypad.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/input/keyboard/twl4030_keypad.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
-index 94c94d7f5155f..d6c924032aaa8 100644
---- a/drivers/input/keyboard/omap4-keypad.c
-+++ b/drivers/input/keyboard/omap4-keypad.c
-@@ -240,10 +240,8 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+diff --git a/drivers/input/keyboard/twl4030_keypad.c b/drivers/input/keyboard/twl4030_keypad.c
+index af3a6824f1a4d..77e0743a3cf85 100644
+--- a/drivers/input/keyboard/twl4030_keypad.c
++++ b/drivers/input/keyboard/twl4030_keypad.c
+@@ -50,7 +50,7 @@ struct twl4030_keypad {
+ 	bool		autorepeat;
+ 	unsigned int	n_rows;
+ 	unsigned int	n_cols;
+-	unsigned int	irq;
++	int		irq;
+ 
+ 	struct device *dbg_dev;
+ 	struct input_dev *input;
+@@ -376,10 +376,8 @@ static int twl4030_kp_probe(struct platform_device *pdev)
  	}
  
- 	irq = platform_get_irq(pdev, 0);
--	if (!irq) {
+ 	kp->irq = platform_get_irq(pdev, 0);
+-	if (!kp->irq) {
 -		dev_err(&pdev->dev, "no keyboard irq assigned\n");
 -		return -EINVAL;
 -	}
-+	if (irq < 0)
-+		return irq;
++	if (kp->irq < 0)
++		return kp->irq;
  
- 	keypad_data = kzalloc(sizeof(struct omap4_keypad), GFP_KERNEL);
- 	if (!keypad_data) {
+ 	error = matrix_keypad_build_keymap(keymap_data, NULL,
+ 					   TWL4030_MAX_ROWS,
 -- 
 2.25.1
 
