@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EB229A270
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD86429A27F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 03:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504309AbgJ0B4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:56:43 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:53274 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436576AbgJ0B4m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:56:42 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R1ngvH038172;
-        Tue, 27 Oct 2020 01:56:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=xoXbMTBzUmyUEogdN/xN/rvttckAEzghlO7QwtnvLrs=;
- b=gM0i+Dvp7FFNB4pemaL1YXPlIm+m47NCsl7PE29gthMTwFOI6qIYZMkE9CSGrEEzRfVz
- gFd5UAHWXSJgjyXhy4n1/f4Q1O6kEJDFMOoSZkz+e70w4Tk8+1JNgygLuJRfIDz9AJzw
- BXeBkQYIc8wMJWdlcE01cyxeuRmoVW3TDfLXpJ/kSCbUHXDtd31JVxUAEQM5olRLzes9
- RSJnOxgZRJOLiN+bFOZU8v4XKHK8UEd3nZuekSUR5cwWZMENDr5uA7fCq1letrJmOgPS
- Gph7bPP0+qMalcsyucBgNY/f9K+NkkHKs08qaxot1EQO7ikAdXVp8sf0Zr0vwVxRHF8S tw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34c9saqmh8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 01:56:34 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R1u0A7064402;
-        Tue, 27 Oct 2020 01:56:34 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34cx5wje9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 01:56:33 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09R1uTeh023758;
-        Tue, 27 Oct 2020 01:56:29 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 26 Oct 2020 18:56:29 -0700
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, brking@linux.ibm.com
-Subject: Re: [PATCH] ibmvfc: add new fields for version 2 of several MADs
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1v9ew4ekf.fsf@ca-mkp.ca.oracle.com>
-References: <20201026013649.10147-1-tyreld@linux.ibm.com>
-Date:   Mon, 26 Oct 2020 21:56:25 -0400
-In-Reply-To: <20201026013649.10147-1-tyreld@linux.ibm.com> (Tyrel Datwyler's
-        message of "Sun, 25 Oct 2020 20:36:49 -0500")
+        id S2504354AbgJ0CGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 22:06:07 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:63777 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504342AbgJ0CGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 22:06:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603764366; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=GxlUBsgWpRmzq1zbsPQ+RSymFtnjB5bpOntoDLsD6lY=;
+ b=Yzg1qVe8lJL2ClFbKTmvrgBUsdTNKj5KshUIG+qeGUjuo8WWe3rdyExVt5xYU5qa2JZneO2f
+ 91tZqRXTWjA1KheKv04sQ5MTGc7FozrFI1qod/RCD45nENhR9QgE91nDw2V9+3TEWcWGO9Eb
+ xyC6oblK+wL1g7jdnEDMnI0FJc8=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f97808e1e4642bf75eebb50 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 02:06:06
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AF996C433FE; Tue, 27 Oct 2020 02:06:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0400DC433C9;
+        Tue, 27 Oct 2020 02:06:04 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=1 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270013
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=1
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010270012
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 10:06:04 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Asutosh Das <asutoshd@codeaurora.org>
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] ufs: qcom: Enable aggressive power collapse for
+ ufs hba
+In-Reply-To: <0716681006075e9eebbf0decd28505824e22d637.1603754932.git.asutoshd@codeaurora.org>
+References: <ce0a3be9c685506803597fb770e37c099ae27232.1603754932.git.asutoshd@codeaurora.org>
+ <0716681006075e9eebbf0decd28505824e22d637.1603754932.git.asutoshd@codeaurora.org>
+Message-ID: <8f03a3a7a4209d2e1dfb07c6981a6ec6@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-27 07:30, Asutosh Das wrote:
+> Enabling this capability to let hba power-collapse
+> more often to save power.
+> 
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
 
-Tyrel,
+Reviewed-by: Can Guo <cang@codeaurora.org>
 
-> Introduce a targetWWPN field to several MADs. Its possible that a scsi
-> ID of a target can change due to some fabric changes. The WWPN of the
-> scsi target provides a better way to identify the target. Also, add
-> flags for receiving MAD versioning information and advertising client
-> support for targetWWPN with the VIOS. This latter capability flag will
-> be required for future clients capable of requesting multiple hardware
-> queues from the host adapter.
-
-Applied to 5.11/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> ---
+>  drivers/scsi/ufs/ufs-qcom.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index f9d6ef3..9a19c6d 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -863,6 +863,7 @@ static void ufs_qcom_set_caps(struct ufs_hba *hba)
+>  	hba->caps |= UFSHCD_CAP_AUTO_BKOPS_SUSPEND;
+>  	hba->caps |= UFSHCD_CAP_WB_EN;
+>  	hba->caps |= UFSHCD_CAP_CRYPTO;
+> +	hba->caps |= UFSHCD_CAP_AGGR_POWER_COLLAPSE;
+> 
+>  	if (host->hw_ver.major >= 0x2) {
+>  		host->caps = UFS_QCOM_CAP_QUNIPRO |
