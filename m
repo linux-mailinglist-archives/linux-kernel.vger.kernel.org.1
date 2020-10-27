@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D6029C199
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C6B29BF3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1818989AbgJ0R0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52412 "EHLO mail.kernel.org"
+        id S1787385AbgJ0PAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1775178AbgJ0Owg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:52:36 -0400
+        id S1740625AbgJ0Owk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:52:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEEB92071A;
-        Tue, 27 Oct 2020 14:52:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D62BD20773;
+        Tue, 27 Oct 2020 14:52:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810355;
-        bh=ll613dkm7n3gTgCydMFG353CjCIXvMrU10Ee+NzQupg=;
+        s=default; t=1603810358;
+        bh=83pEo1S7D1IwnxpOqE7t6gjf+YFk9V8DIqqxSYYN6Hk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDFH2FZfrkJ9WPwcFzYqQ2GCxdLBoWHY4093BA8SzMc9Xs1+X0XPg4wHNAU8u8Jff
-         BybE3M7CYv54BjkSWL9Q6PDLPTG6Uz5ghFzr/WeuiPx1L/lLoCaIRUJNzTZCC7+7xO
-         I3kCziBPJf2xHtzoMcl42e4tMpxYl6LjHLvAwMeE=
+        b=S+suT2qufEQmfHKSrdrkKpkoxdNVfKj+pVYhjk1MXmv2HvscLv9GC4nRjmRyfWDEP
+         aXwwVfz0Z7FLhGBzn0jATyAoLMaVKi2lraILJwryNoj3qS+W3/JMlLr5O2KTQAboEI
+         m+t/9xKH+MKER8hl3GZUJocLUaUG9EpWbrh59JZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
+        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 079/633] RAS/CEC: Fix cec_init() prototype
-Date:   Tue, 27 Oct 2020 14:47:02 +0100
-Message-Id: <20201027135526.399724477@linuxfoundation.org>
+Subject: [PATCH 5.8 080/633] sched/fair: Fix wrong negative conversion in find_energy_efficient_cpu()
+Date:   Tue, 27 Oct 2020 14:47:03 +0100
+Message-Id: <20201027135526.447517817@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,63 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Stefani <luca.stefani.ge1@gmail.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
 
-[ Upstream commit 85e6084e0b436cabe9c909e679937998ffbf9c9d ]
+[ Upstream commit da0777d35f47892f359c3f73ea155870bb595700 ]
 
-late_initcall() expects a function that returns an integer. Update the
-function signature to match.
+In find_energy_efficient_cpu() 'cpu_cap' could be less that 'util'.
+It might be because of RT, DL (so higher sched class than CFS), irq or
+thermal pressure signal, which reduce the capacity value.
+In such situation the result of 'cpu_cap - util' might be negative but
+stored in the unsigned long. Then it might be compared with other unsigned
+long when uclamp_rq_util_with() reduced the 'util' such that is passes the
+fits_capacity() check.
 
- [ bp: Massage commit message into proper sentences. ]
+Prevent this situation and make the arithmetic more safe.
 
-Fixes: 9554bfe403bd ("x86/mce: Convert the CEC to use the MCE notifier")
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Link: https://lkml.kernel.org/r/20200805095708.83939-1-luca.stefani.ge1@gmail.com
+Fixes: 1d42509e475cd ("sched/fair: Make EAS wakeup placement consider uclamp restrictions")
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20200810083004.26420-1-lukasz.luba@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ras/cec.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index 569d9ad2c5942..6939aa5b3dc7f 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -553,20 +553,20 @@ static struct notifier_block cec_nb = {
- 	.priority	= MCE_PRIO_CEC,
- };
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6b3b59cc51d6c..f71e8b0e0346a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6586,7 +6586,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
  
--static void __init cec_init(void)
-+static int __init cec_init(void)
- {
- 	if (ce_arr.disabled)
--		return;
-+		return -ENODEV;
+ 			util = cpu_util_next(cpu, p, cpu);
+ 			cpu_cap = capacity_of(cpu);
+-			spare_cap = cpu_cap - util;
++			spare_cap = cpu_cap;
++			lsub_positive(&spare_cap, util);
  
- 	ce_arr.array = (void *)get_zeroed_page(GFP_KERNEL);
- 	if (!ce_arr.array) {
- 		pr_err("Error allocating CE array page!\n");
--		return;
-+		return -ENOMEM;
- 	}
- 
- 	if (create_debugfs_nodes()) {
- 		free_page((unsigned long)ce_arr.array);
--		return;
-+		return -ENOMEM;
- 	}
- 
- 	INIT_DELAYED_WORK(&cec_work, cec_work_fn);
-@@ -575,6 +575,7 @@ static void __init cec_init(void)
- 	mce_register_decode_chain(&cec_nb);
- 
- 	pr_info("Correctable Errors collector initialized.\n");
-+	return 0;
- }
- late_initcall(cec_init);
- 
+ 			/*
+ 			 * Skip CPUs that cannot satisfy the capacity request.
 -- 
 2.25.1
 
