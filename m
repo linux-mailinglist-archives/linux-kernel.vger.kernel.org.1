@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1785629B040
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B769329AEE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757284AbgJ0ORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35374 "EHLO mail.kernel.org"
+        id S1754338AbgJ0OFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:05:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756516AbgJ0ONx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:13:53 -0400
+        id S2900861AbgJ0OEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:04:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DAEA206F7;
-        Tue, 27 Oct 2020 14:13:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5A6622258;
+        Tue, 27 Oct 2020 14:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808032;
-        bh=MLuDDTaUB4uTmwZ4dpT5VYniVaviqDvFtxNSNE2cCGE=;
+        s=default; t=1603807490;
+        bh=o0qb1mx8c1q6P4fZ7BG4638XwjlCO0XynwSpxNRUr5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p0maz7DcGIRTU4o+ezj98CWJHQikZA5Ponbmdo7I5s8RhUfLtNa+PjgcglhcwDuIH
-         loh57/2Ffs90s2RGgTb7CLKsS5do1HfynT8s98TXSUdaf/5UAYJANbIlA69qTMJSs3
-         rIu9e0kAgpeP476VWPJur6qM3019G4POzFBkmDNM=
+        b=FwX1ga8+BN6XonRnLjygZcCDWnIBjldSp6u58o24aiZ8lPEC7mMWtyXDoLIyHTiJG
+         hxQUvrp3RHiHiCN9KbMZJ4DftmEk1j4Bt4Gl6I9yaYNzQnxDVH6JNFrXbiOSdjJk5B
+         DUeG66DN5aRvP7YvbJi0yDhPSHFzgM7mOjX5N0b4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Daniel Axtens <dja@axtens.net>,
+        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 104/191] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
+Subject: [PATCH 4.9 065/139] powerpc/tau: Remove duplicated set_thresholds() call
 Date:   Tue, 27 Oct 2020 14:49:19 +0100
-Message-Id: <20201027134914.699029638@linuxfoundation.org>
+Message-Id: <20201027134905.203492499@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit a2d0230b91f7e23ceb5d8fb6a9799f30517ec33a ]
+[ Upstream commit 420ab2bc7544d978a5d0762ee736412fe9c796ab ]
 
-The patch avoids allocating cpufreq_policy on stack hence fixing frame
-size overflow in 'powernv_cpufreq_reboot_notifier':
+The commentary at the call site seems to disagree with the code. The
+conditional prevents calling set_thresholds() via the exception handler,
+which appears to crash. Perhaps that's because it immediately triggers
+another TAU exception. Anyway, calling set_thresholds() from TAUupdate()
+is redundant because tau_timeout() does so.
 
-  drivers/cpufreq/powernv-cpufreq.c: In function powernv_cpufreq_reboot_notifier:
-  drivers/cpufreq/powernv-cpufreq.c:906:1: error: the frame size of 2064 bytes is larger than 2048 bytes
-
-Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency during reboot/kexec")
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200922080254.41497-1-srikar@linux.vnet.ibm.com
+Link: https://lore.kernel.org/r/d7c7ee33232cf72a6a6bbb6ef05838b2e2b113c0.1599260540.git.fthain@telegraphics.com.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/powernv-cpufreq.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/tau_6xx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index dc81fc2bf8015..56c3d86e5b9de 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -846,12 +846,15 @@ static int powernv_cpufreq_reboot_notifier(struct notifier_block *nb,
- 				unsigned long action, void *unused)
- {
- 	int cpu;
--	struct cpufreq_policy cpu_policy;
-+	struct cpufreq_policy *cpu_policy;
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index 1880481322880..f6a92bf5ebfc6 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -107,11 +107,6 @@ void TAUupdate(int cpu)
+ #ifdef DEBUG
+ 	printk("grew = %d\n", tau[cpu].grew);
+ #endif
+-
+-#ifndef CONFIG_TAU_INT /* tau_timeout will do this if not using interrupts */
+-	set_thresholds(cpu);
+-#endif
+-
+ }
  
- 	rebooting = true;
- 	for_each_online_cpu(cpu) {
--		cpufreq_get_policy(&cpu_policy, cpu);
--		powernv_cpufreq_target_index(&cpu_policy, get_nominal_index());
-+		cpu_policy = cpufreq_cpu_get(cpu);
-+		if (!cpu_policy)
-+			continue;
-+		powernv_cpufreq_target_index(cpu_policy, get_nominal_index());
-+		cpufreq_cpu_put(cpu_policy);
- 	}
- 
- 	return NOTIFY_DONE;
+ #ifdef CONFIG_TAU_INT
 -- 
 2.25.1
 
