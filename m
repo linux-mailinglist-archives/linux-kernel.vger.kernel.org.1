@@ -2,132 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2214E29CD11
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD1429CD0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbgJ1BjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 21:39:00 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:52644 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1833026AbgJ0Xh2 (ORCPT
+        id S1726316AbgJ1BjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 21:39:12 -0400
+Received: from mail-qk1-f202.google.com ([209.85.222.202]:42655 "EHLO
+        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1833029AbgJ0Xhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:37:28 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4CLSmP52JLz1qrf4;
-        Wed, 28 Oct 2020 00:37:25 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4CLSmP4L4Wz1qxh0;
-        Wed, 28 Oct 2020 00:37:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id d_0TcLPL1O-b; Wed, 28 Oct 2020 00:37:24 +0100 (CET)
-X-Auth-Info: y1E296PKjR1EjwCQjRjly4MXLwtDaL72s0jq/tkD+COt/3N7THhYadhmeT3nZR5p
-Received: from igel.home (ppp-46-244-161-64.dynamic.mnet-online.de [46.244.161.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 28 Oct 2020 00:37:24 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id EF9D32C2B09; Wed, 28 Oct 2020 00:37:23 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] powerpc/uaccess: Switch __put_user_size_allowed()
- to __put_user_asm_goto()
-References: <94ba5a5138f99522e1562dbcdb38d31aa790dc89.1599216721.git.christophe.leroy__44535.5968013004$1599217383$gmane$org@csgroup.eu>
-        <87mu079ron.fsf@igel.home>
-X-Yow:  ...I think I'm having an overnight sensation right now!!
-Date:   Wed, 28 Oct 2020 00:37:23 +0100
-In-Reply-To: <87mu079ron.fsf@igel.home> (Andreas Schwab's message of "Wed, 28
-        Oct 2020 00:26:16 +0100")
-Message-ID: <87imav9r64.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 27 Oct 2020 19:37:39 -0400
+Received: by mail-qk1-f202.google.com with SMTP id e7so1914233qka.9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=6Ug1lZtYrMX0hCX8/6f/DPUAAEkbtDYFeA5DkZlPqkc=;
+        b=N/DzRsM28GY4x8CL71pjPGO3OSYCLyWIfrd1PuG4H2reL0PZccSPqVKIPqcokadAHH
+         87rBHn3QDGRQVvW/Acuawsefr3+ORuHfUTjkkzZ/RmLMfpg47YhCPgv/TuSrQa5pbbyY
+         FEkgZ4zZskh+o7+pYgWEWwW+6GUT787ftFXvG31zpkZBFTykq48XevHS6tjmLt7AkD4H
+         ZgPWGZxGWmqVdpjJSCwM+zJv4FqJNi75ltZhN4mfOPo5ReM3QesZ7avjZmuz+V2qtVQb
+         M0lKEZoLJ1Rhicw7meOHPruMttaqTDxLByWmxaSf/GKmHioobmSLuVD1AAY5A9UPonF+
+         Vgqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=6Ug1lZtYrMX0hCX8/6f/DPUAAEkbtDYFeA5DkZlPqkc=;
+        b=L297V9OrMgoFgjdyNdyU4TDebBIU45ylktBQ7eO7jQLy+0/UGHo2Cv4HECJnJGdoLD
+         HMtXmKUiNvmHcjvzJ3lUg1HO2BwyGja5ZAcUQqPryBgkp+KEzAosUsArc8gbJagynWTo
+         cHeIgOjwOv/epnCmPAHPQ+IGBveU2jQHxxaGRU+4dr6HtMb6IlvTtS8esYlgM00Z0xJq
+         vz6QGc6egFKwKoM38cg6hPPzPjg9mxx1pZNkUgbcYuv7tclo7ON4bOFi6YoZqZpUFlIp
+         i+QAaUZQmAusnSPsZDCB6AEAs9IzRd4NhnQOv3HgmVe/AA+AIIBGvD84txcthZigewSc
+         qYsg==
+X-Gm-Message-State: AOAM531rcoLUQfH3ciAtk0ayRcRNYhz+PmBTtqNwS5jG1L9wJyId+JHY
+        mZOC8EP1V+p0vHl5F8G5My7HWj5v4mULugjm9bgJ5OCvP2CC7ZXAziCiSMsswGG8VFO36/29Its
+        p+rmGyvxuHS+5A0MqPTAwukLTlJa9r9zrXn0uycewMeMIgjtGYK57ndaPVH0CYiAKrGLYm+Rq
+X-Google-Smtp-Source: ABdhPJzgmw/OsHwejrlvXN9zgTn2DaC0Cj6MaccnzISVSAYnhjrxqVck1OnPb87+0mr+urAsDflzv3ecUEb2
+Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
+ (user=bgardon job=sendgmr) by 2002:a05:6214:136f:: with SMTP id
+ c15mr4922924qvw.57.1603841856812; Tue, 27 Oct 2020 16:37:36 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 16:37:28 -0700
+Message-Id: <20201027233733.1484855-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+Subject: [PATCH 0/5] Add a dirty logging performance test
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 28 2020, Andreas Schwab wrote:
+Currently KVM lacks a simple, userspace agnostic, performance benchmark for
+dirty logging. Such a benchmark will be beneficial for ensuring that dirty
+logging performance does not regress, and to give a common baseline for
+validating performance improvements. The dirty log perf test introduced in
+this series builds on aspects of the existing demand paging perf test and
+provides time-based performance metrics for enabling and disabling dirty
+logging, getting the dirty log, and dirtying memory.
 
-> On Sep 04 2020, Christophe Leroy wrote:
->
->> __put_user_asm_goto() provides more flexibility to GCC and avoids using
->> a local variable to tell if the write succeeded or not.
->> GCC can then avoid implementing a cmp in the fast path.
->
-> That breaks CLONE_CHILD_SETTID.  I'm getting an assertion failure in
-> __libc_fork (THREAD_GETMEM (self, tid) != ppid).
+While the test currently only has a build target for x86, I expect it will
+work on, or be easily modified to support other architectures.
 
-This is what schedule_tail now looks like.  As you can see, put_user has
-become a nop:
+Ben Gardon (5):
+  KVM: selftests: Factor code out of demand_paging_test
+  KVM: selftests: Remove address rounding in guest code
+  KVM: selftests: Simplify demand_paging_test with timespec_diff_now
+  KVM: selftests: Add wrfract to common guest code
+  KVM: selftests: Introduce the dirty log perf test
 
-000000000000455c <.schedule_tail>:
-    455c:       7c 08 02 a6     mflr    r0
-    4560:       f8 01 00 10     std     r0,16(r1)
-    4564:       f8 21 ff 91     stdu    r1,-112(r1)
-    4568:       4b ff cd 4d     bl      12b4 <.finish_task_switch>
-    456c:       4b ff c0 99     bl      604 <.balance_callback>
-    4570:       e8 6d 01 88     ld      r3,392(r13)
-    4574:       e9 23 06 b0     ld      r9,1712(r3)
-    4578:       2f a9 00 00     cmpdi   cr7,r9,0
-    457c:       41 9e 00 14     beq     cr7,4590 <.schedule_tail+0x34>
-    4580:       38 80 00 00     li      r4,0
-    4584:       38 a0 00 00     li      r5,0
-    4588:       48 00 00 01     bl      4588 <.schedule_tail+0x2c>
-                        4588: R_PPC64_REL24     .__task_pid_nr_ns
-    458c:       60 00 00 00     nop
-    4590:       48 00 00 01     bl      4590 <.schedule_tail+0x34>
-                        4590: R_PPC64_REL24     .calculate_sigpending
-    4594:       60 00 00 00     nop
-    4598:       38 21 00 70     addi    r1,r1,112
-    459c:       e8 01 00 10     ld      r0,16(r1)
-    45a0:       7c 08 03 a6     mtlr    r0
-    45a4:       4e 80 00 20     blr
-
-This is schedule_tail in 5.9:
-
-000000000000455c <.schedule_tail>:
-    455c:       7c 08 02 a6     mflr    r0
-    4560:       fb c1 ff f0     std     r30,-16(r1)
-    4564:       fb e1 ff f8     std     r31,-8(r1)
-    4568:       f8 01 00 10     std     r0,16(r1)
-    456c:       f8 21 ff 81     stdu    r1,-128(r1)
-    4570:       4b ff cd 45     bl      12b4 <.finish_task_switch>
-    4574:       4b ff c0 91     bl      604 <.balance_callback>
-    4578:       eb cd 01 88     ld      r30,392(r13)
-    457c:       eb fe 06 b0     ld      r31,1712(r30)
-    4580:       2f bf 00 00     cmpdi   cr7,r31,0
-    4584:       41 9e 00 2c     beq     cr7,45b0 <.schedule_tail+0x54>
-    4588:       7f c3 f3 78     mr      r3,r30
-    458c:       38 80 00 00     li      r4,0
-    4590:       38 a0 00 00     li      r5,0
-    4594:       48 00 00 01     bl      4594 <.schedule_tail+0x38>
-                        4594: R_PPC64_REL24     .__task_pid_nr_ns
-    4598:       60 00 00 00     nop
-    459c:       e9 3e 0a b8     ld      r9,2744(r30)
-    45a0:       7f bf 48 40     cmpld   cr7,r31,r9
-    45a4:       41 9d 00 0c     bgt     cr7,45b0 <.schedule_tail+0x54>
-    45a8:       2b a9 00 03     cmpldi  cr7,r9,3
-    45ac:       41 9d 00 14     bgt     cr7,45c0 <.schedule_tail+0x64>
-    45b0:       48 00 00 01     bl      45b0 <.schedule_tail+0x54>
-                        45b0: R_PPC64_REL24     .calculate_sigpending
-    45b4:       60 00 00 00     nop
-    45b8:       38 21 00 80     addi    r1,r1,128
-    45bc:       48 00 00 00     b       45bc <.schedule_tail+0x60>
-                        45bc: R_PPC64_REL24     _restgpr0_30
-    45c0:       39 20 00 00     li      r9,0
-    45c4:       90 7f 00 00     stw     r3,0(r31)
-    45c8:       4b ff ff e8     b       45b0 <.schedule_tail+0x54>
-
-
-Andreas.
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/demand_paging_test.c        | 230 ++---------
+ .../selftests/kvm/dirty_log_perf_test.c       | 382 ++++++++++++++++++
+ .../selftests/kvm/include/perf_test_util.h    | 192 +++++++++
+ .../testing/selftests/kvm/include/test_util.h |   2 +
+ tools/testing/selftests/kvm/lib/test_util.c   |  22 +-
+ 7 files changed, 635 insertions(+), 195 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/dirty_log_perf_test.c
+ create mode 100644 tools/testing/selftests/kvm/include/perf_test_util.h
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.29.0.rc2.309.g374f81d7ae-goog
+
