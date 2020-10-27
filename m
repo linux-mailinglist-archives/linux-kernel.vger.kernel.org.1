@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B2729BAF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A0229B8AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802741AbgJ0PvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52076 "EHLO mail.kernel.org"
+        id S1801585AbgJ0Pmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:42:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799925AbgJ0PeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:34:09 -0400
+        id S1799948AbgJ0PeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:34:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F43F22264;
-        Tue, 27 Oct 2020 15:34:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 112FF2225E;
+        Tue, 27 Oct 2020 15:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812848;
-        bh=LOjcuGBJclT3lPR7rvlNiuRhVS2aSFtEgRiiyrMjcIw=;
+        s=default; t=1603812857;
+        bh=bT4zdji2nWw1CSWlYhosL2pkLfy29MGk2M4rnXIvYOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hPyVoA2tA+sid14em+U+XRdU5ShCeOB9nP8nSJ+NrWdMtT2khiHsf6lYpQ/0ybEmx
-         bZRBQ48Wrsj3s3L5o0aVdXejGLvHOA5huWZs/l5V3PsydvyaE736hA9HBG9QjKq1UB
-         dS/DxE9ptxKaGcEQv6YIsY9uNln1sUOByNvkr3ss=
+        b=jTnARZ0NKZl/87aGZB2yf/cARYSe9AwDA/9dz7DngwEgRiVtB2z2qLNZnY0P5Az44
+         Q+UJezJot28Z9UYSxYdPaWtKsRkm7yad3q7jf81OhHntJv+NBy367R70TmlcUGymrS
+         KbY8QnIQvAhC+noXEvlkLeCaIw+Cz/do49mU3aYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 352/757] serial: 8250: Discard RTS/DTS setting from clock update method
-Date:   Tue, 27 Oct 2020 14:50:02 +0100
-Message-Id: <20201027135507.084233919@linuxfoundation.org>
+Subject: [PATCH 5.9 355/757] mfd: syscon: Dont free allocated name for regmap_config
+Date:   Tue, 27 Oct 2020 14:50:05 +0100
+Message-Id: <20201027135507.222445643@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,37 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 7718453e36960dadb8dc46f2b514b309659e1270 ]
+[ Upstream commit 529a1101212a785c5df92c314b0e718287150c3b ]
 
-It has been a mistake to add the MCR register RTS/DTS fields setting in
-the generic method of the UART reference clock update. There is no point
-in asserting these lines at that procedure. Just discard the
-serial8250_out_MCR() mathod invocation from there then.
+The name allocated for the regmap_config structure is freed
+pretty early, right after the registration of the MMIO region.
 
-Fixes: 868f3ee6e452 ("serial: 8250: Add 8250 port clock update method")
-Tested-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Link: https://lore.kernel.org/r/20200923161950.6237-2-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Unfortunately, that doesn't follow the life cycle that debugfs
+expects, as it can access the name field long after the free
+has occurred.
+
+Move the free on the error path, and keep it forever otherwise.
+
+Fixes: e15d7f2b81d2 ("mfd: syscon: Use a unique name with regmap_config")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_port.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mfd/syscon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index c71d647eb87a0..1259fb6b66b38 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2665,7 +2665,6 @@ void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index df5cebb372a59..ca465794ea9c8 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -108,7 +108,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+ 	syscon_config.max_register = resource_size(&res) - reg_io_width;
  
- 	serial8250_set_divisor(port, baud, quot, frac);
- 	serial_port_out(port, UART_LCR, up->lcr);
--	serial8250_out_MCR(up, UART_MCR_DTR | UART_MCR_RTS);
- 
- 	spin_unlock_irqrestore(&port->lock, flags);
- 	serial8250_rpm_put(up);
+ 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
+-	kfree(syscon_config.name);
+ 	if (IS_ERR(regmap)) {
+ 		pr_err("regmap init failed\n");
+ 		ret = PTR_ERR(regmap);
+@@ -145,6 +144,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+ 	regmap_exit(regmap);
+ err_regmap:
+ 	iounmap(base);
++	kfree(syscon_config.name);
+ err_map:
+ 	kfree(syscon);
+ 	return ERR_PTR(ret);
 -- 
 2.25.1
 
