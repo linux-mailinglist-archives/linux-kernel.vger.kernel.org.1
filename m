@@ -2,267 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA75629BB9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F327329BB9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1808802AbgJ0QWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:22:39 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:37197 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1758183AbgJ0P6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:58:23 -0400
-Received: by mail-pj1-f67.google.com with SMTP id lt2so963853pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 08:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SoTaUfKUJiDUW2h9mVvR0z/C6fXDGCdxxD7m50xJHb8=;
-        b=rybjDI81CxzKYzrASZ5gv2AhvfYB5PzaVZC9/2aiQonUm5lgOrk+EaY3p4Z8h1zsPb
-         k5Dkt9Gi3ZQpr3+JaIyFzHb3C/PUR5vKuKM2XB4WPxkd8eoSEDlHwPQ9QXeIQDj00Yvj
-         XNydCwLLfiNi1gLL5bfDTPVNHGaZISJfcBnG8r30HZZqpIds8u0+lxzqSHy17xmAoV04
-         8iCx+tJxTrJFvXIOhg6FGAh85pzmuPP/1pMH6/GmTx1umS3H4tLulbOWYaSXCr2fJn9J
-         L/E8CVV+4lRQR+aEc5oUHx21LJ7mtfDeCeytEFOIe50U/nHwbD7AYdqIava2UhsivQpQ
-         rujQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SoTaUfKUJiDUW2h9mVvR0z/C6fXDGCdxxD7m50xJHb8=;
-        b=TW0CqycXbu+5cjwEPiws/1W+e7zDkUyOkju2Co8qSJdCjE0iFcpm59O6pbovB36CcY
-         vttbHiI/XuNsoqZ2aImXCk7NX9DE6phtGRKJuPbZyp7AgPJeds0XvigLQWwW7zYpYMzF
-         SbScJ5CmlK+ksGBIJjwXqNnJjSQDc7ublA6ybubthJVh6ub4iuOLRyYd3klPmLJE1Pj5
-         t9mSHw1BIUN9QkCYBZJSELwypBrlHzG1WD4MJCFyleFW+OsFY4M52JFtI6y9TnFmwUlF
-         JaNg+0IyJfqBPoa09b9bXVHOMMIEGRLO1a2hoEA3b+TsaLtR5GFLPHpJKRy3RdqAAtzM
-         YUDA==
-X-Gm-Message-State: AOAM530vSgHbhkVZavYmsgf+m+AIdOJ9AE409AOqTB2onv7zGtmVbhu/
-        4df9jmrRkbhX47JptaCQsig=
-X-Google-Smtp-Source: ABdhPJz3Mhrkhhf6pw0Fakr4CvuPUHpSyI4t16gepWBLRKml1tb0WsR1Rp2tFfUCg6IfOtauFBvkeA==
-X-Received: by 2002:a17:902:8605:b029:d5:a6dc:ad0a with SMTP id f5-20020a1709028605b02900d5a6dcad0amr2996510plo.56.1603814302199;
-        Tue, 27 Oct 2020 08:58:22 -0700 (PDT)
-Received: from ubuntu (1-171-243-36.dynamic-ip.hinet.net. [1.171.243.36])
-        by smtp.gmail.com with ESMTPSA id a11sm2623072pfn.125.2020.10.27.08.58.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 08:58:21 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 23:58:13 +0800
-From:   Yun Hsiang <hsiang023167@gmail.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        qais.yousef@arm.com, patrick.bellasi@matbug.net
-Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201027155813.GA818508@ubuntu>
-References: <20201025073632.720393-1-hsiang023167@gmail.com>
- <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
- <20201026154538.GA807103@ubuntu>
- <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
+        id S1808793AbgJ0QWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:22:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:31370 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S368923AbgJ0P6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:58:51 -0400
+IronPort-SDR: l5vOu3dYT2s/dHK6fnopku1bXlTLcCtsfdJwhe0ElQFP8KuXSZDm0ykyCH3So5rrFqSvvF6zGv
+ fQCoAnmGTOJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="168234891"
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="168234891"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 08:58:46 -0700
+IronPort-SDR: yfCObZJ2pZNO3OTrQ3JvMhZg7gsWEuW0S8I5Cc5mPAp+YRN3PbeJvbbk8T/nvF46SCn+jPR6yy
+ ckA/XsBYb/Hg==
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="535843677"
+Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.184]) ([10.249.227.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 08:58:44 -0700
+Subject: Re: [PATCH v2 12/15] perf record: introduce thread local variable for
+ trace streaming
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <b1a2fc8c-1106-63d6-40f1-376165490a59@linux.intel.com>
+ <20201024154357.GD2589351@krava>
+ <6eb97205-4d13-6487-8e15-a85f63d3f0cc@gmail.com>
+ <20201026103426.GC2726983@krava>
+ <78ca09c2-50da-3206-2dff-19523699d82b@gmail.com>
+ <20201027120130.GD2900849@krava>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <570923a3-b4bf-6129-f470-0717e434a498@linux.intel.com>
+Date:   Tue, 27 Oct 2020 18:58:41 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
+In-Reply-To: <20201027120130.GD2900849@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dietmar,
 
-On Mon, Oct 26, 2020 at 08:00:48PM +0100, Dietmar Eggemann wrote:
-> On 26/10/2020 16:45, Yun Hsiang wrote:
-> > Hi Dietmar,
-> > 
-> > On Mon, Oct 26, 2020 at 10:47:11AM +0100, Dietmar Eggemann wrote:
-> >> On 25/10/2020 08:36, Yun Hsiang wrote:
-> >>> If the user wants to stop controlling uclamp and let the task inherit
-> >>> the value from the group, we need a method to reset.
-> >>>
-> >>> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
-> >>> sched_setattr syscall.
-> >>>
-> >>> The policy is
-> >>> _CLAMP_RESET                           => reset both min and max
-> >>> _CLAMP_RESET | _CLAMP_MIN              => reset min value
-> >>> _CLAMP_RESET | _CLAMP_MAX              => reset max value
-> >>> _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-> >>>
-> >>> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
-> >>
-> >> [...]
-> >>
-> >>> @@ -1451,7 +1464,8 @@ static void __setscheduler_uclamp(struct task_struct *p,
-> >>>  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
-> >>>  
-> >>>  		/* Keep using defined clamps across class changes */
-> >>> -		if (uc_se->user_defined)
-> >>> +		if (flags != SCHED_FLAG_UTIL_CLAMP_RESET &&
-> >>> +				uc_se->user_defined)
-> >>>  			continue;
-> >>
-> >> With:
-> >>
-> >> (1) _CLAMP_RESET                           => reset both min and max
-> >> (2) _CLAMP_RESET | _CLAMP_MIN              => reset min value
-> >> (3) _CLAMP_RESET | _CLAMP_MAX              => reset max value
-> >> (4) _CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-> >>
-> >> If you reset an RT task with (1) you don't reset its uclamp.min value.
-> >>
-> >> __uclamp_update_util_min_rt_default(p) doesn't know about
-> >> SCHED_FLAG_UTIL_CLAMP_RESET. It only knows user_defined and will bail early.
-> >>
-> > 
-> > Sorry I didn't notice __uclamp_update_util_min_rt_default will return
-> > directly if user_defined is set, I'll fix it.
-> > 
-> >> [...]
-> >>
-> >>> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> >>> +	if (likely(!flags || flags == SCHED_FLAG_UTIL_CLAMP_RESET))
-> >>>  		return;
-> >>>  
-> >>> -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> >>> +	if (flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> >>> +		if (reset) {
-> >>> +			clamp_value = __default_uclamp_value(p, UCLAMP_MIN);
-> >>> +			user_defined = false;
-> >>> +		} else {
-> >>> +			clamp_value = attr->sched_util_min;
-> >>> +			user_defined = true;
-> >>> +		}
-> >>
-> >> Why do you reset for (1) in the for_each_clamp_id(clamp_id) loop and for
-> >> (2)-(4) in the if (flags & SCHED_FLAG_UTIL_CLAMP_MXX) condition?
-> >>
-> >> You could reset (1)-(4) in the for_each_clamp_id(clamp_id) loop? In this
-> >> case you wouldn't need __default_uclamp_value().
-> > 
-> > Do you mean adding these code in for_each_clamp_id(clamp_id) loop?
-> > 
-> > if (clamp_id == UCLAMP_MIN) {
-> > 	if (flags == SCHED_FLAG_UTIL_CLAMP_RESET || 
-> > 		(reset && (flags || SCHED_FLAG_UTIL_CLAMP_MIN)) ||
-> > 		!se->user_defined) {
-> > 		if (task_rt(p)) {
-> > 			clamp_value = sysctl_sched_uclamp_util_min_rt_default
-> > 		} else {
-> > 			clamp_value = uclamp_none(clamp_id);
-> > 		}
-> > 	} else 
-> > 		continue;
-> > }
-> > /* similar code for UCLAMP_MAX */
-> > ...
-> > uclamp_se_set(uc_se, clamp_value, false);
-> > 
-> > It seems more clear.
-> > If you think this one is better, I'll use this method and send patch V4.
+On 27.10.2020 15:01, Jiri Olsa wrote:
+> On Mon, Oct 26, 2020 at 05:11:30PM +0300, Alexei Budankov wrote:
+>>
+>> On 26.10.2020 13:34, Jiri Olsa wrote:
+>>> On Mon, Oct 26, 2020 at 11:21:28AM +0300, Alexei Budankov wrote:
+>>>>
+>>>> On 24.10.2020 18:43, Jiri Olsa wrote:
+>>>>> On Wed, Oct 21, 2020 at 07:07:00PM +0300, Alexey Budankov wrote:
+>>>>>>
+>>>>>> Introduce thread local variable and use it for threaded trace streaming.
+>>>>>>
+>>>>>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>>>>>> ---
+>>>>>>  tools/perf/builtin-record.c | 71 ++++++++++++++++++++++++++++++++-----
+>>>>>>  1 file changed, 62 insertions(+), 9 deletions(-)
+>>>>>>
+>>>>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>>>>>> index 89cb8e913fb3..3b7e9026f25b 100644
+>>>>>> --- a/tools/perf/builtin-record.c
+>>>>>> +++ b/tools/perf/builtin-record.c
+>>>>>> @@ -101,6 +101,8 @@ struct thread_data {
+>>>>>>  	u64		   bytes_written;
+>>>>>>  };
+>>>>>>  
+>>>>>> +static __thread struct thread_data *thread;
+>>>>>> +
+>>>>>>  struct record {
+>>>>>>  	struct perf_tool	tool;
+>>>>>>  	struct record_opts	opts;
+>>>>>> @@ -587,7 +589,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+>>>>>>  		}
+>>>>>>  	}
+>>>>>>  
+>>>>>> -	rec->samples++;
+>>>>>> +	if (thread)
+>>>>>> +		thread->samples++;
+>>>>>> +	else
+>>>>>> +		rec->samples++;
+>>>>>
+>>>>> this is really wrong, let's keep just single samples counter
+>>>>> ditto for all the other places in this patch
+>>>>
+>>>> This does look like data parallelism [1] which is very true for
+>>>> threaded trace streaming so your prototype design looks optimal.
+>>>>
+>>>> For this specific place incrementing global counter in memory is
+>>>> less performant and faces scalability limitations as a number of
+>>>> cores grow.
+>>>>
+>>>> Not sure why you have changed your mind.
+>>>
+>>> I'm not sure I follow.. what I'm complaining about is to have
+>>> 'samples' stat variable in separate locations for --threads
+>>> and --no-threads mode
+>>
+>> It is optimal to have samples variable as per thread one
+>> and then sum up the total in the end of data collection.
+>>
+>> Single global variable design has scalability and performance
+>> drawbacks.
+>>
+>> Why do you complain about per thread variable in this case?
+>> It looks like ideally fits these specific needs.
 > 
-> I thought about something like this. Only lightly tested. 
-> 
-> ---8<---
-> 
-> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Date: Mon, 26 Oct 2020 13:52:23 +0100
-> Subject: [PATCH] SCHED_FLAG_UTIL_CLAMP_RESET
-> 
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> ---
->  include/uapi/linux/sched.h |  4 +++-
->  kernel/sched/core.c        | 31 +++++++++++++++++++++++++++----
->  2 files changed, 30 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> index 3bac0a8ceab2..0dd890822751 100644
-> --- a/include/uapi/linux/sched.h
-> +++ b/include/uapi/linux/sched.h
-> @@ -132,12 +132,14 @@ struct clone_args {
->  #define SCHED_FLAG_KEEP_PARAMS		0x10
->  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
->  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
->  
->  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
->  				 SCHED_FLAG_KEEP_PARAMS)
->  
->  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
-> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
->  
->  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
->  			 SCHED_FLAG_RECLAIM		| \
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 3dc415f58bd7..717b1cf5cf1f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1438,6 +1438,23 @@ static int uclamp_validate(struct task_struct *p,
->  	return 0;
->  }
->  
-> +static bool uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
-> +{
-> +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
-> +		return false;
-> +
-> +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
-> +		return true;
-> +
-> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
-> +		return true;
-> +
-> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static void __setscheduler_uclamp(struct task_struct *p,
->  				  const struct sched_attr *attr)
->  {
-> @@ -1449,24 +1466,30 @@ static void __setscheduler_uclamp(struct task_struct *p,
->  	 */
->  	for_each_clamp_id(clamp_id) {
->  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
-> +		unsigned int value;
->  
->  		/* Keep using defined clamps across class changes */
-> -		if (uc_se->user_defined)
-> +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
-> +		    uc_se->user_defined) {
->  			continue;
-> +		}
->  
->  		/*
->  		 * RT by default have a 100% boost value that could be modified
->  		 * at runtime.
->  		 */
->  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
-> -			__uclamp_update_util_min_rt_default(p);
-> +			value = sysctl_sched_uclamp_util_min_rt_default;
->  		else
-> -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
-> +			value = uclamp_none(clamp_id);
->  
-> +		uclamp_se_set(uc_se, value, false);
->  	}
->  
-> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> +	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) ||
-> +	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET) {
->  		return;
-> +	}
->  
->  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
->  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+> I think there's misunderstanding.. I think we should move
+> samples to per thread 'thread' object and have just one
+> copy of that.. and do not increase separate variables for
+> thread and non-thread cases
 
-Got it. This is much better. I'll test and send patch V4.
-Thank for review and suggestions!
+Aw, I see. Using the same __thread object by main thread in
+serial and threaded modes. That makes sense.
+I will try in v3.
 
-> -- 
-> 2.17.1
-> 
-> 
-> 
+Alexei
 
-Best Regards,
-Yun
+> 
+> jirka
+> 
