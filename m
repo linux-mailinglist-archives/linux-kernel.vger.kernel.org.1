@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37A629C4A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C31529C54C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757599AbgJ0OTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40540 "EHLO mail.kernel.org"
+        id S1824978AbgJ0SHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:07:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900908AbgJ0OR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:17:28 -0400
+        id S2894657AbgJ0ORb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:17:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63668206D4;
-        Tue, 27 Oct 2020 14:17:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10F4C206FA;
+        Tue, 27 Oct 2020 14:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808248;
-        bh=2xe2IxVXNEOe5tbVNVRFe3UO2+ZWr7Ggj1Le36gQ/9c=;
+        s=default; t=1603808250;
+        bh=ezFQVV1nUSt6t+uBJs0Ya52Z+sEOmweY8PILro8+xTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RLJLM+jdOZSBs3fvrS2GkgEXVMxWTae052Kn+ymzKqwfcnQ0aR2fkPLA+0cVNKrtd
-         tX+h8pHp9DDs6JUR9NIAimb//ascXrRBiK6wMQCzHxk9MbhJL16H8606U/Zb5Excdq
-         8gerU2LL7gQG3rq8IMEf4lmsFXPVij7UK8aKmccQ=
+        b=vznrID9u1pGpKnQcW34upjI+EoXodXL7IIxnAJ+fsjC7l46jjRsbOfaICM3v1/yfK
+         MLs4iAQg3xoLmtdVA9Vx+pI2uA8BuUIa5Xt2nFWlabwTdw+Pk5u0tMgm6bQ7urohza
+         Xsqz0cADOfiySDr9xdYRgCTT6dJhTFPZM9W9ut7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neil Horman <nhorman@tuxdriver.com>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
+        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 020/264] net: hdlc_raw_eth: Clear the IFF_TX_SKB_SHARING flag after calling ether_setup
-Date:   Tue, 27 Oct 2020 14:51:18 +0100
-Message-Id: <20201027135431.609009179@linuxfoundation.org>
+Subject: [PATCH 4.19 021/264] net/sched: act_tunnel_key: fix OOB write in case of IPv6 ERSPAN tunnels
+Date:   Tue, 27 Oct 2020 14:51:19 +0100
+Message-Id: <20201027135431.656741510@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
 References: <20201027135430.632029009@linuxfoundation.org>
@@ -44,38 +44,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Davide Caratti <dcaratti@redhat.com>
 
-[ Upstream commit 5fce1e43e2d5bf2f7e3224d7b99b1c65ab2c26e2 ]
+[ Upstream commit a7a12b5a0f950bc6b9f7153390634ea798738db9 ]
 
-This driver calls ether_setup to set up the network device.
-The ether_setup function would add the IFF_TX_SKB_SHARING flag to the
-device. This flag indicates that it is safe to transmit shared skbs to
-the device.
+the following command
 
-However, this is not true. This driver may pad the frame (in eth_tx)
-before transmission, so the skb may be modified.
+ # tc action add action tunnel_key \
+ > set src_ip 2001:db8::1 dst_ip 2001:db8::2 id 10 erspan_opts 1:6789:0:0
 
-Fixes: 550fd08c2ceb ("net: Audit drivers to identify those needing IFF_TX_SKB_SHARING cleared")
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Link: https://lore.kernel.org/r/20201020063420.187497-1-xie.he.0141@gmail.com
+generates the following splat:
+
+ BUG: KASAN: slab-out-of-bounds in tunnel_key_copy_opts+0xcc9/0x1010 [act_tunnel_key]
+ Write of size 4 at addr ffff88813f5f1cc8 by task tc/873
+
+ CPU: 2 PID: 873 Comm: tc Not tainted 5.9.0+ #282
+ Hardware name: Red Hat KVM, BIOS 1.11.1-4.module+el8.1.0+4066+0f1aadab 04/01/2014
+ Call Trace:
+  dump_stack+0x99/0xcb
+  print_address_description.constprop.7+0x1e/0x230
+  kasan_report.cold.13+0x37/0x7c
+  tunnel_key_copy_opts+0xcc9/0x1010 [act_tunnel_key]
+  tunnel_key_init+0x160c/0x1f40 [act_tunnel_key]
+  tcf_action_init_1+0x5b5/0x850
+  tcf_action_init+0x15d/0x370
+  tcf_action_add+0xd9/0x2f0
+  tc_ctl_action+0x29b/0x3a0
+  rtnetlink_rcv_msg+0x341/0x8d0
+  netlink_rcv_skb+0x120/0x380
+  netlink_unicast+0x439/0x630
+  netlink_sendmsg+0x719/0xbf0
+  sock_sendmsg+0xe2/0x110
+  ____sys_sendmsg+0x5ba/0x890
+  ___sys_sendmsg+0xe9/0x160
+  __sys_sendmsg+0xd3/0x170
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7f872a96b338
+ Code: 89 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 8d 05 25 43 2c 00 8b 00 85 c0 75 17 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 41 89 d4 55
+ RSP: 002b:00007ffffe367518 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+ RAX: ffffffffffffffda RBX: 000000005f8f5aed RCX: 00007f872a96b338
+ RDX: 0000000000000000 RSI: 00007ffffe367580 RDI: 0000000000000003
+ RBP: 0000000000000000 R08: 0000000000000001 R09: 000000000000001c
+ R10: 000000000000000b R11: 0000000000000246 R12: 0000000000000001
+ R13: 0000000000686760 R14: 0000000000000601 R15: 0000000000000000
+
+ Allocated by task 873:
+  kasan_save_stack+0x19/0x40
+  __kasan_kmalloc.constprop.7+0xc1/0xd0
+  __kmalloc+0x151/0x310
+  metadata_dst_alloc+0x20/0x40
+  tunnel_key_init+0xfff/0x1f40 [act_tunnel_key]
+  tcf_action_init_1+0x5b5/0x850
+  tcf_action_init+0x15d/0x370
+  tcf_action_add+0xd9/0x2f0
+  tc_ctl_action+0x29b/0x3a0
+  rtnetlink_rcv_msg+0x341/0x8d0
+  netlink_rcv_skb+0x120/0x380
+  netlink_unicast+0x439/0x630
+  netlink_sendmsg+0x719/0xbf0
+  sock_sendmsg+0xe2/0x110
+  ____sys_sendmsg+0x5ba/0x890
+  ___sys_sendmsg+0xe9/0x160
+  __sys_sendmsg+0xd3/0x170
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+ The buggy address belongs to the object at ffff88813f5f1c00
+  which belongs to the cache kmalloc-256 of size 256
+ The buggy address is located 200 bytes inside of
+  256-byte region [ffff88813f5f1c00, ffff88813f5f1d00)
+ The buggy address belongs to the page:
+ page:0000000011b48a19 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13f5f0
+ head:0000000011b48a19 order:1 compound_mapcount:0
+ flags: 0x17ffffc0010200(slab|head)
+ raw: 0017ffffc0010200 0000000000000000 0000000d00000001 ffff888107c43400
+ raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+ page dumped because: kasan: bad access detected
+
+ Memory state around the buggy address:
+  ffff88813f5f1b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff88813f5f1c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ >ffff88813f5f1c80: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+                                               ^
+  ffff88813f5f1d00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff88813f5f1d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+
+using IPv6 tunnels, act_tunnel_key allocates a fixed amount of memory for
+the tunnel metadata, but then it expects additional bytes to store tunnel
+specific metadata with tunnel_key_copy_opts().
+
+Fix the arguments of __ipv6_tun_set_dst(), so that 'md_size' contains the
+size previously computed by tunnel_key_get_opts_len(), like it's done for
+IPv4 tunnels.
+
+Fixes: 0ed5269f9e41 ("net/sched: add tunnel option support to act_tunnel_key")
+Reported-by: Shuang Li <shuali@redhat.com>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
+Link: https://lore.kernel.org/r/36ebe969f6d13ff59912d6464a4356fe6f103766.1603231100.git.dcaratti@redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wan/hdlc_raw_eth.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/sched/act_tunnel_key.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wan/hdlc_raw_eth.c
-+++ b/drivers/net/wan/hdlc_raw_eth.c
-@@ -102,6 +102,7 @@ static int raw_eth_ioctl(struct net_devi
- 		old_qlen = dev->tx_queue_len;
- 		ether_setup(dev);
- 		dev->tx_queue_len = old_qlen;
-+		dev->priv_flags &= ~IFF_TX_SKB_SHARING;
- 		eth_hw_addr_random(dev);
- 		call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE, dev);
- 		netif_dormant_off(dev);
+--- a/net/sched/act_tunnel_key.c
++++ b/net/sched/act_tunnel_key.c
+@@ -314,7 +314,7 @@ static int tunnel_key_init(struct net *n
+ 
+ 			metadata = __ipv6_tun_set_dst(&saddr, &daddr, tos, ttl, dst_port,
+ 						      0, flags,
+-						      key_id, 0);
++						      key_id, opts_len);
+ 		} else {
+ 			NL_SET_ERR_MSG(extack, "Missing either ipv4 or ipv6 src and dst");
+ 			ret = -EINVAL;
 
 
