@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75F929AA3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAA129AA3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 12:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898923AbgJ0LGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 07:06:05 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:40914 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898906AbgJ0LGD (ORCPT
+        id S2898913AbgJ0LFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 07:05:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41825 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2898906AbgJ0LFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:06:03 -0400
-Received: by mail-yb1-f194.google.com with SMTP id n142so873358ybf.7;
-        Tue, 27 Oct 2020 04:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fAkQFeXsZSoQo8Ixdy03bk73JABL5fKKNRt0WsI4OiI=;
-        b=VBcRUwl3G/ASm/P4F+TRY+35HgJJw1i9VwUdF0TXFNcj6XYD9F6A7Rr2GPlat/vi/o
-         GVhosFgQzJHEYg9HfHClfJMvDKe4kncSB1gzArBgNRve3OA3zcwA+MvsZXiru4HBKoeO
-         4NfZXJEAXAGUcPL7XlQvrDWNVUjgZ2FgX0n01NPpPJV9mJstmUiUE4l7wGgYr+eFXUtX
-         ltIlSMp2eUc9JaosiIlA9s3Rk+uP4uzUCyOVQcH3kjjDWn+E3IEjRnAbuYVU7Lqs3NsX
-         I5gDqpUvrLv9lWjERT1nzxKSariSY+dP/grT1khLqleqxJMIFaVTosttzrOdMYKitVYk
-         o8PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fAkQFeXsZSoQo8Ixdy03bk73JABL5fKKNRt0WsI4OiI=;
-        b=OPAOz2j9WsNE2/ueF/mbxOGk9iknb+p4QN7WsY2qOg3n9wqJJUQMGfPhm37AzJFlCk
-         GXiDp4ElrjhKNNUwugaVMvapTseL/N4D3dh4ARmJPcGZAJ1qu2S1KON8vyj1MyC4oD61
-         W5TEpjv2yFmoo7IFi763nhM1K6Gpv4yF/0pfz/LgKxp9rllbRBd1rH7yVszL4JeFlcP3
-         H2+JBy032/gAAIz9RJI0YkGAbLy/PSBbcPLIfsKMh+s/eX5CPCl5i6a9goF26ljTzhSw
-         wpA9HuN2y468H2UHE2USzvDWxuHBvGDJsUdH4u3IXkT1rPeOqvOQd/K3ozp88SdkkvBH
-         W2ww==
-X-Gm-Message-State: AOAM5338Iva/hBDyA2ql7ZkceUlJytKNF4wy3SYjZbd0/XYlzJ9B8R+S
-        QCzyE/KRm9nWqznGV/wqLQVGzLFpEVFRPUSJlzY=
-X-Google-Smtp-Source: ABdhPJzlRGGpU7APibB8Rghrp1dbvcZQoFnUblTEQYRpQdsNX75ZevUNZ9hpwdTWWW6AR5c4Cy3oFtT77pOZ/KLqfak=
-X-Received: by 2002:a25:41c9:: with SMTP id o192mr2236771yba.127.1603796762491;
- Tue, 27 Oct 2020 04:06:02 -0700 (PDT)
+        Tue, 27 Oct 2020 07:05:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603796753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FrjeCAan5jwNXoKxJoHy3Krr60faw0rldSpx6L/g/YM=;
+        b=QAHatsGNIWsbbpQY/mVJnieTBypB02TkZxDleKxk9wi5CIxfeCaeWH1UpRNQCyjPH1Mhez
+        2xknsRNKLyNrjr7z/HDRXeefNeHEPaGp1+tT2bowZpXGOUGKa+iulydcMNjuVit33dBoKP
+        3xbg2/RRcV/EvzvztsjsVmb9TC9Gmzg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-Hb0IV2mzMM6PWJegTkv_9w-1; Tue, 27 Oct 2020 07:05:49 -0400
+X-MC-Unique: Hb0IV2mzMM6PWJegTkv_9w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9201D101F7A6;
+        Tue, 27 Oct 2020 11:05:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 899275D9F3;
+        Tue, 27 Oct 2020 11:05:47 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201021131133.128016-1-colin.king@canonical.com>
+References: <20201021131133.128016-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] afs: fix a dereference on pointer cell before cell is null checked
 MIME-Version: 1.0
-References: <20201023075530.19295-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201023075530.19295-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 27 Oct 2020 11:05:36 +0000
-Message-ID: <CA+V-a8t+2ioNTw1m9Xz0_Go=p6dSRWobL15Va5aE3GcWzOHTpA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] RZ/G2x add optee node
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3189276.1603796746.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 27 Oct 2020 11:05:46 +0000
+Message-ID: <3189277.1603796746@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Colin King <colin.king@canonical.com> wrote:
 
-On Fri, Oct 23, 2020 at 8:55 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Hi All,
->
-> This patch series adds optee node to HiHope RZ/G2{HMN} and EK874 boards.
->
-> This patch series applies on top of [1].
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
->     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.11
->
-> Cheers,
-> Prabhakar
->
-> Lad Prabhakar (2):
->   arm64: dts: renesas: hihope-common: Add optee node
->   arm64: dts: renesas: r8a774c0-ek874: Add optee node
->
-As agreed on the irc (optee nodes should be coming from firmware
-stack) let's drop these patches.
+> @@ -606,7 +605,7 @@ void afs_unuse_cell(struct afs_net *net, struct afs_=
+cell *cell, enum afs_cell_tr
+>  =
 
-Cheers,
-Prabhakar
+>  	u =3D atomic_read(&cell->ref);
+>  	a =3D atomic_dec_return(&cell->active);
+> -	trace_afs_cell(debug_id, u, a, reason);
+> +	trace_afs_cell(cell->debug_id, u, a, reason);
 
->  arch/arm64/boot/dts/renesas/hihope-common.dtsi | 7 +++++++
->  arch/arm64/boot/dts/renesas/r8a774c0-ek874.dts | 7 +++++++
->  2 files changed, 14 insertions(+)
->
-> --
-> 2.17.1
->
+It's probably better to read cell->debug_id before calling
+atomic_dec_return().
+
+I have a patch for this based on a report by Dan Carpenter, so no need to =
+send
+a revised patch.
+
+Thanks,
+David
+
