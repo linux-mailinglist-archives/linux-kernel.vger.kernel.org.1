@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AB729BF63
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CF929BF53
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793751AbgJ0PIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
+        id S1793662AbgJ0PHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:07:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789795AbgJ0PC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:02:56 -0400
+        id S1789672AbgJ0PC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:02:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C2A221707;
-        Tue, 27 Oct 2020 15:02:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65017207DE;
+        Tue, 27 Oct 2020 15:02:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810976;
-        bh=+GNDN30lOh/MdJAAIorz11RsKrk08cYro+JV5n0Oz88=;
+        s=default; t=1603810948;
+        bh=nALgSeWdz1PUQSaQqu/bwnyyDHbDE6gOQVLeheW9+KI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TlI69d64O33eOOD0wTnxgEh4DNRXnV66F54lEaopMrm2j03AKaarqb5R7/g2C8Cg8
-         lDHHgBk+hFBnkaoMmImUZU+W5JlkjBOzLqiI4cR02r7oo2x5Ojv7sxONf6dTlvO4pk
-         GfM3gozj19GhMRNuGdDyR1W4tJ8D55YwH/tlfpU0=
+        b=LQFZ+wDOYOsFJCytnnrtWV27vzvL1ZoLlms366jpSzlRV9RDhzHfA9GZBz9nE8/lN
+         2QmO4Ge2IzWBU46VdnMK0GM2b6n/+aEyVF0QUMPBUnFpAmjIIftMdjKBvGyU/CGf4A
+         44VRapRY3afwEAZIb5gnJdz9CooFwtrS5omaGHRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny B <abt-admin@mail.ru>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Julian Anastasov <ja@ssi.bg>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 312/633] ipvs: clear skb->tstamp in forwarding path
-Date:   Tue, 27 Oct 2020 14:50:55 +0100
-Message-Id: <20201027135537.312462364@linuxfoundation.org>
+Subject: [PATCH 5.8 320/633] selftests/ftrace: Change synthetic event name for inter-event-combined test
+Date:   Tue, 27 Oct 2020 14:51:03 +0100
+Message-Id: <20201027135537.687342109@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -46,57 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Anastasov <ja@ssi.bg>
+From: Tom Zanussi <zanussi@kernel.org>
 
-[ Upstream commit 7980d2eabde82be86c5be18aa3d07e88ec13c6a1 ]
+[ Upstream commit 96378b2088faea68f1fb05ea6b9a566fc569a44c ]
 
-fq qdisc requires tstamp to be cleared in forwarding path
+This test uses waking+wakeup_latency as an event name, which doesn't
+make sense since it includes an operator.  Illegal names are now
+detected by the synthetic event command parsing, which causes this
+test to fail.  Change the name to 'waking_plus_wakeup_latency' to
+prevent this.
 
-Reported-by: Evgeny B <abt-admin@mail.ru>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209427
-Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
-Fixes: 8203e2d844d3 ("net: clear skb->tstamp in forwarding paths")
-Fixes: fb420d5d91c1 ("tcp/fq: move back to CLOCK_MONOTONIC")
-Fixes: 80b14dee2bea ("net: Add a new socket option for a future transmit time.")
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
-Reviewed-by: Simon Horman <horms@verge.net.au>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Link: https://lkml.kernel.org/r/a1ee2f76ff28ef7166fb788ca8be968887808920.1602598160.git.zanussi@kernel.org
+
+Fixes: f06eec4d0f2c (selftests: ftrace: Add inter-event hist triggers testcases)
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipvs/ip_vs_xmit.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../inter-event/trigger-inter-event-combined-hist.tc      | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_xmit.c b/net/netfilter/ipvs/ip_vs_xmit.c
-index b00866d777fe0..d2e5a8f644b80 100644
---- a/net/netfilter/ipvs/ip_vs_xmit.c
-+++ b/net/netfilter/ipvs/ip_vs_xmit.c
-@@ -609,6 +609,8 @@ static inline int ip_vs_tunnel_xmit_prepare(struct sk_buff *skb,
- 	if (ret == NF_ACCEPT) {
- 		nf_reset_ct(skb);
- 		skb_forward_csum(skb);
-+		if (skb->dev)
-+			skb->tstamp = 0;
- 	}
- 	return ret;
- }
-@@ -649,6 +651,8 @@ static inline int ip_vs_nat_send_or_cont(int pf, struct sk_buff *skb,
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
+index 7449a4b8f1f9a..9098f1e7433fd 100644
+--- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
++++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-inter-event-combined-hist.tc
+@@ -25,12 +25,12 @@ echo 'wakeup_latency u64 lat pid_t pid' >> synthetic_events
+ echo 'hist:keys=pid:ts1=common_timestamp.usecs if comm=="ping"' >> events/sched/sched_wakeup/trigger
+ echo 'hist:keys=next_pid:wakeup_lat=common_timestamp.usecs-$ts1:onmatch(sched.sched_wakeup).wakeup_latency($wakeup_lat,next_pid) if next_comm=="ping"' > events/sched/sched_switch/trigger
  
- 	if (!local) {
- 		skb_forward_csum(skb);
-+		if (skb->dev)
-+			skb->tstamp = 0;
- 		NF_HOOK(pf, NF_INET_LOCAL_OUT, cp->ipvs->net, NULL, skb,
- 			NULL, skb_dst(skb)->dev, dst_output);
- 	} else
-@@ -669,6 +673,8 @@ static inline int ip_vs_send_or_cont(int pf, struct sk_buff *skb,
- 	if (!local) {
- 		ip_vs_drop_early_demux_sk(skb);
- 		skb_forward_csum(skb);
-+		if (skb->dev)
-+			skb->tstamp = 0;
- 		NF_HOOK(pf, NF_INET_LOCAL_OUT, cp->ipvs->net, NULL, skb,
- 			NULL, skb_dst(skb)->dev, dst_output);
- 	} else
+-echo 'waking+wakeup_latency u64 lat; pid_t pid' >> synthetic_events
+-echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking+wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
+-echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking+wakeup_latency/trigger
++echo 'waking_plus_wakeup_latency u64 lat; pid_t pid' >> synthetic_events
++echo 'hist:keys=pid,lat:sort=pid,lat:ww_lat=$waking_lat+$wakeup_lat:onmatch(synthetic.wakeup_latency).waking_plus_wakeup_latency($ww_lat,pid)' >> events/synthetic/wakeup_latency/trigger
++echo 'hist:keys=pid,lat:sort=pid,lat' >> events/synthetic/waking_plus_wakeup_latency/trigger
+ 
+ ping $LOCALHOST -c 3
+-if ! grep -q "pid:" events/synthetic/waking+wakeup_latency/hist; then
++if ! grep -q "pid:" events/synthetic/waking_plus_wakeup_latency/hist; then
+     fail "Failed to create combined histogram"
+ fi
+ 
 -- 
 2.25.1
 
