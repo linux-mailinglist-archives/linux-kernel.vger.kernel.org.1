@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C70C29B743
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A91329B74A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799341AbgJ0PbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:31:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40744 "EHLO mail.kernel.org"
+        id S1799412AbgJ0PbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:31:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1798137AbgJ0PZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:25:45 -0400
+        id S1798141AbgJ0PZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:25:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CD0B20728;
-        Tue, 27 Oct 2020 15:25:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4150C20657;
+        Tue, 27 Oct 2020 15:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812344;
-        bh=/MpkjtwbIeJqfHde6uoQ+qIVHoHiphfOXqQaZX7nSp8=;
+        s=default; t=1603812349;
+        bh=J4REINZOHT+mo5UJ7vS/fqY36s16U5xGSnBqpbisXW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRxSrRqxhGBaJmpDC58Yo6SJwV+kFW4sHbxCtjpuAqFQvCswERqeDczjInAffykNa
-         DmIwRepoMcofN+YuFiG57Jp1txtBTdnKEQ+yZGF8pcUB9hBJrH4GWjt3dFq+I6dbnr
-         aKF69691i5j4Bpb3UqIfU9uat7YL4IpizQuYqlAs=
+        b=Jg9ivsXWgfUzfrTw++w93caaPLlql7FKKq/LYOGFAhZH25C4e3rkyN06VQXOnRZvJ
+         JkvRXXmslWmwoUIOJfBGvYFn9H8o6OHvSmX2rtf55me2aOmnefjJL5V07/GsgT3w/L
+         HoF2yqS5luIQUKTQkWBlQmbMbSONNsAEBhd/kDYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brad Bishop <bradleyb@fuzziesquirrel.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Joel Stanley <joel@jms.id.au>, Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        Jay Fang <f.fangjian@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 146/757] spi: fsi: Fix use of the bneq+ sequencer instruction
-Date:   Tue, 27 Oct 2020 14:46:36 +0100
-Message-Id: <20201027135457.451054336@linuxfoundation.org>
+Subject: [PATCH 5.9 148/757] spi: dw-pci: free previously allocated IRQs if desc->setup() fails
+Date:   Tue, 27 Oct 2020 14:46:38 +0100
+Message-Id: <20201027135457.547501014@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,107 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brad Bishop <bradleyb@fuzziesquirrel.com>
+From: Jay Fang <f.fangjian@huawei.com>
 
-[ Upstream commit 7909eebb2bea7fdbb2de0aa794cf29843761ed5b ]
+[ Upstream commit 9599f341889c87e56bb944659c32490d05e2532f ]
 
-All of the switches in N2_count_control in the counter configuration are
-required to make the branch if not equal and increment command work.
-Set them when using bneq+.
+Free previously allocated IRQs when return an error code of desc->setup()
+which is not always successful. And simplify the code by adding a goto
+label.
 
-A side effect of this mode requires a dummy write to TDR when both
-transmitting and receiving otherwise the controller won't start shifting
-receive data.
-
-It is likely not possible to avoid TDR underrun errors in this mode and
-they are harmless, so do not check for them.
-
-Fixes: bbb6b2f9865b ("spi: Add FSI-attached SPI controller driver")
-Signed-off-by: Brad Bishop <bradleyb@fuzziesquirrel.com>
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20200909222857.28653-4-eajames@linux.ibm.com
+Fixes: 8f5c285f3ef5 ("SPI: designware: pci: Switch over to MSI interrupts")
+CC: Felipe Balbi <felipe.balbi@linux.intel.com>
+Signed-off-by: Jay Fang <f.fangjian@huawei.com>
+Link: https://lore.kernel.org/r/1600132969-53037-1-git-send-email-f.fangjian@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsi.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ drivers/spi/spi-dw-pci.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/spi/spi-fsi.c b/drivers/spi/spi-fsi.c
-index 8f64af0140e09..bb18b407cdcf3 100644
---- a/drivers/spi/spi-fsi.c
-+++ b/drivers/spi/spi-fsi.c
-@@ -29,6 +29,10 @@
- #define SPI_FSI_ERROR			0x0
- #define SPI_FSI_COUNTER_CFG		0x1
- #define  SPI_FSI_COUNTER_CFG_LOOPS(x)	 (((u64)(x) & 0xffULL) << 32)
-+#define  SPI_FSI_COUNTER_CFG_N2_RX	 BIT_ULL(8)
-+#define  SPI_FSI_COUNTER_CFG_N2_TX	 BIT_ULL(9)
-+#define  SPI_FSI_COUNTER_CFG_N2_IMPLICIT BIT_ULL(10)
-+#define  SPI_FSI_COUNTER_CFG_N2_RELOAD	 BIT_ULL(11)
- #define SPI_FSI_CFG1			0x2
- #define SPI_FSI_CLOCK_CFG		0x3
- #define  SPI_FSI_CLOCK_CFG_MM_ENABLE	 BIT_ULL(32)
-@@ -61,7 +65,7 @@
- #define  SPI_FSI_STATUS_RDR_OVERRUN	 BIT_ULL(62)
- #define  SPI_FSI_STATUS_RDR_FULL	 BIT_ULL(63)
- #define  SPI_FSI_STATUS_ANY_ERROR	 \
--	(SPI_FSI_STATUS_ERROR | SPI_FSI_STATUS_TDR_UNDERRUN | \
-+	(SPI_FSI_STATUS_ERROR | \
- 	 SPI_FSI_STATUS_TDR_OVERRUN | SPI_FSI_STATUS_RDR_UNDERRUN | \
- 	 SPI_FSI_STATUS_RDR_OVERRUN)
- #define SPI_FSI_PORT_CTRL		0x9
-@@ -238,6 +242,7 @@ static int fsi_spi_sequence_transfer(struct fsi_spi *ctx,
- 	int rc;
- 	u8 len = min(transfer->len, 8U);
- 	u8 rem = transfer->len % len;
-+	u64 cfg = 0ULL;
- 
- 	loops = transfer->len / len;
- 
-@@ -258,8 +263,14 @@ static int fsi_spi_sequence_transfer(struct fsi_spi *ctx,
- 	if (loops > 1) {
- 		fsi_spi_sequence_add(seq, SPI_FSI_SEQUENCE_BRANCH(idx));
- 
--		rc = fsi_spi_write_reg(ctx, SPI_FSI_COUNTER_CFG,
--				       SPI_FSI_COUNTER_CFG_LOOPS(loops - 1));
-+		cfg = SPI_FSI_COUNTER_CFG_LOOPS(loops - 1);
-+		if (transfer->rx_buf)
-+			cfg |= SPI_FSI_COUNTER_CFG_N2_RX |
-+				SPI_FSI_COUNTER_CFG_N2_TX |
-+				SPI_FSI_COUNTER_CFG_N2_IMPLICIT |
-+				SPI_FSI_COUNTER_CFG_N2_RELOAD;
-+
-+		rc = fsi_spi_write_reg(ctx, SPI_FSI_COUNTER_CFG, cfg);
- 		if (rc)
- 			return rc;
+diff --git a/drivers/spi/spi-dw-pci.c b/drivers/spi/spi-dw-pci.c
+index 2ea73809ca345..271839a8add0e 100644
+--- a/drivers/spi/spi-dw-pci.c
++++ b/drivers/spi/spi-dw-pci.c
+@@ -127,18 +127,16 @@ static int spi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		if (desc->setup) {
+ 			ret = desc->setup(dws);
+ 			if (ret)
+-				return ret;
++				goto err_free_irq_vectors;
+ 		}
+ 	} else {
+-		pci_free_irq_vectors(pdev);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto err_free_irq_vectors;
  	}
-@@ -275,6 +286,7 @@ static int fsi_spi_transfer_data(struct fsi_spi *ctx,
- {
- 	int rc = 0;
- 	u64 status = 0ULL;
-+	u64 cfg = 0ULL;
  
- 	if (transfer->tx_buf) {
- 		int nb;
-@@ -312,6 +324,16 @@ static int fsi_spi_transfer_data(struct fsi_spi *ctx,
- 		u64 in = 0ULL;
- 		u8 *rx = transfer->rx_buf;
+ 	ret = dw_spi_add_host(&pdev->dev, dws);
+-	if (ret) {
+-		pci_free_irq_vectors(pdev);
+-		return ret;
+-	}
++	if (ret)
++		goto err_free_irq_vectors;
  
-+		rc = fsi_spi_read_reg(ctx, SPI_FSI_COUNTER_CFG, &cfg);
-+		if (rc)
-+			return rc;
+ 	/* PCI hook and SPI hook use the same drv data */
+ 	pci_set_drvdata(pdev, dws);
+@@ -152,6 +150,10 @@ static int spi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	pm_runtime_allow(&pdev->dev);
+ 
+ 	return 0;
 +
-+		if (cfg & SPI_FSI_COUNTER_CFG_N2_IMPLICIT) {
-+			rc = fsi_spi_write_reg(ctx, SPI_FSI_DATA_TX, 0);
-+			if (rc)
-+				return rc;
-+		}
-+
- 		while (transfer->len > recv) {
- 			do {
- 				rc = fsi_spi_read_reg(ctx, SPI_FSI_STATUS,
++err_free_irq_vectors:
++	pci_free_irq_vectors(pdev);
++	return ret;
+ }
+ 
+ static void spi_pci_remove(struct pci_dev *pdev)
 -- 
 2.25.1
 
