@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B765429AD24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A2829AD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 14:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752076AbgJ0NWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 09:22:47 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:37842 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751929AbgJ0NWr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:22:47 -0400
-Received: by mail-ej1-f66.google.com with SMTP id p9so2211887eji.4;
-        Tue, 27 Oct 2020 06:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZMLUYGMKoX9mKM6hDiFyPEhjDprJlxdJ1WTRfMKyP3o=;
-        b=AgscIiz/pERLbak/64dOBSVrQjrer1k1W4rN96P2GE8s24Ot2tsq74Mop+nf+k8O64
-         USgcYj5qC/+ZKvi8H3Eo6e41crmISbsdAVO/06qsOffAwkjAYKEOofP8vtUird56wk/d
-         GKwMasQu73FQXM5+iI48RUDn+3nT/NnuhuvNtW5bOtzo1mhiBY8HI9ImOMnM5/qdiQgS
-         cojP+e4gwkt/67ITRbk+0dLzv2RQX6yr/bvHTgZQOrCXv80bg6A7v4MmnOUDB93b0x6l
-         WMLs8fwiOZSDQ2srq85Dm/uCJALWK9garTb6IpK8yc62eSkf0ENXmt2at855k5o26AYA
-         CNrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZMLUYGMKoX9mKM6hDiFyPEhjDprJlxdJ1WTRfMKyP3o=;
-        b=PBjwqw8QfFPmYZAAWYn7GFli0XiSbD+pC/AGuu676q7VcOGS7PkIfWmUyeJKrQQBnL
-         R6P5rr/e8bq1JjR46qiiKAeGcjLt8tukcI1tgmia6bHwa/giU7c04nYDvJI/Qo0t4qn9
-         u8pBWJN1bCQI0u7H+06/JUDXGcXWUf0voIqx/5+ct1ea2QCgEyhNHFaYblSp1RaGrX5f
-         6Lo0LEhxoo46zlqU9dgPkMVkLZlIlNjW85qg3ICNaClI7id+iOjZ53FWyND6mw66RTIy
-         cgajrLGqXb0+U0aNl5icKoZlHZkPonVw7LlmFncyEzN1pX3NifqoGG978zcYr9f+hV3J
-         NdkA==
-X-Gm-Message-State: AOAM532Mm4ThelBmyrvsrojJ5vgRaUdEqb5OkxuL1hqtonI9480PJrMv
-        FtIoDmtp9hNiFZStLlqBW0o=
-X-Google-Smtp-Source: ABdhPJyXjL8T6wqFPXMxyLMjoLY2xwFyK+FBv6JSqLvEj07I/7AQUFo9ETL4qG15rMkiYl4RgDoDTQ==
-X-Received: by 2002:a17:906:12cf:: with SMTP id l15mr2526427ejb.540.1603804964390;
-        Tue, 27 Oct 2020 06:22:44 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id t5sm977859edw.45.2020.10.27.06.22.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 06:22:43 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 14:22:41 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 08/52] dt-bindings: memory: tegra20: emc: Document
- mfd-simple compatible and statistics sub-device
-Message-ID: <20201027132241.GG1822510@ulmo>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-9-digetx@gmail.com>
+        id S1752103AbgJ0NYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 09:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752084AbgJ0NYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:24:04 -0400
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DB4420878;
+        Tue, 27 Oct 2020 13:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603805043;
+        bh=PECefxcOMLV7c0hbn8cf+aIW/r03dKBQ9nlsRb5VdDs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HwuK+hsJVCPMgJJnDVgBSy8reRpMrmqfsm9gO5+fbKq6F2XSpBQSROVY3juBqE4Nu
+         H5Yst+NRh57BsdJz98NHJCoNBp87/Qn0YRuoRJC+edQJNMpnwjSYZD1XNb61xd/4R8
+         NoOIHVXudUnL6JZ2eLTaTsIIIK+wa/E51N7WHr24=
+Received: by mail-qv1-f48.google.com with SMTP id s17so598765qvr.11;
+        Tue, 27 Oct 2020 06:24:03 -0700 (PDT)
+X-Gm-Message-State: AOAM530Xwk6peIpP4HoI7x/ahCRJAOZPJ3Ow9zFDP1jqs0hxPVlCMI+d
+        EGlQFMban8fXlYET2laLcEagwTqPE50QrcIjjcE=
+X-Google-Smtp-Source: ABdhPJyYsHgGrutKNJ9QeFsKYMZe4jJ+Ai8O3vheG62leodhX3TrVBQ2KB+n8D6pJ5GsMDJ26+scj747BsrgAVcUS90=
+X-Received: by 2002:a0c:c187:: with SMTP id n7mr2303412qvh.19.1603805042676;
+ Tue, 27 Oct 2020 06:24:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="8bBEDOJVaa9YlTAt"
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-9-digetx@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <20201026213040.3889546-1-arnd@kernel.org> <20201027035558.16864-1-xie.he.0141@gmail.com>
+ <CAJht_EPSs6W-r6kpWUNQDPzCjL-+_8mqq2JBoY=qhsQREgn92g@mail.gmail.com>
+In-Reply-To: <CAJht_EPSs6W-r6kpWUNQDPzCjL-+_8mqq2JBoY=qhsQREgn92g@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Oct 2020 14:23:46 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3JTg5Mi2XC9AEC+YwH552M_TXDY4BaULZz5WmEb3woRQ@mail.gmail.com>
+Message-ID: <CAK8P3a3JTg5Mi2XC9AEC+YwH552M_TXDY4BaULZz5WmEb3woRQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 01/11] atm: horizon: shut up clang null pointer
+ arithmetic warning
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Chas Williams <3chas3@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-atm-general@lists.sourceforge.net,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 5:02 AM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Mon, Oct 26, 2020 at 8:56 PM Xie He <xie.he.0141@gmail.com> wrote:
+> >
+> > > -  for (mem = (HDW *) memmap; mem < (HDW *) (memmap + 1); ++mem)
+> > > +  for (mem = (HDW *) memmap; mem < (HDW *) ((uintptr_t)memmap + 1); ++mem)
+> >
+> > Note that these two lines are semantically different. In the first line,
+> > "+ 1" moves the pointer by (sizeof memmap) bytes. However in the second
+> > line, "+ 1" moves the pointer by only 1 byte.
+>
+> Correction: in the first line "+ 1" moves the pointer by (sizeof *memmap) bytes.
 
---8bBEDOJVaa9YlTAt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, of course. I had looked up the types but mixed up the memmap
+and HDW definitions, but then got confused trying to understand the
+logic in wr_mem() that operates on bytes but expands them into
+multiples of 4.
 
-On Mon, Oct 26, 2020 at 01:16:51AM +0300, Dmitry Osipenko wrote:
-> External Memory Controller can gather various hardware statistics that
-> are intended to be used for debugging purposes and for dynamic frequency
-> scaling of memory bus.
->=20
-> Document the new mfd-simple compatible and EMC statistics sub-device.
-> The subdev contains EMC DFS OPP table and interconnect paths to be used
-> for dynamic scaling of system's memory bandwidth based on EMC utilization
-> statistics.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../memory-controllers/nvidia,tegra20-emc.txt | 43 +++++++++++++++++--
->  1 file changed, 40 insertions(+), 3 deletions(-)
+I've modified it as below now, will resend along with the other patches
+if you think this makes sense.
 
-Why does this have to be modelled as a separate device? Isn't this just
-using a couple of registers out of the EMC register range? If so, this
-would better just be integrated into the parent node and implemented as
-part of the EMC driver. No need to further complicate things by adding
-a dummy child.
+        Arnd
 
-Thierry
+--- a/drivers/atm/horizon.c
++++ b/drivers/atm/horizon.c
+@@ -1815,7 +1815,7 @@ static int hrz_init(hrz_dev *dev)
 
---8bBEDOJVaa9YlTAt
-Content-Type: application/pgp-signature; name="signature.asc"
+   int buff_count;
 
------BEGIN PGP SIGNATURE-----
+-  HDW * mem;
++  uintptr_t offset;
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+YHyEACgkQ3SOs138+
-s6EvOA/9GFUCJRzhojvUyJHzwHHS7x6T3glDA/XF4WmogDP9ijUclThlH5xzRkCP
-Lg0hU+S5WFRyfvIJOAA6D1Ou1b1TT9Enr0dO0+Jfq3ShIvaoRBe0XP/vqaKpKqXn
-P7VLT3lbs/3ZMzABDnFGSUvLwFqMlfdjXdDEExTOhDbpnoYSaleCiPtFqn4a1yye
-1yHG0aZ6zGO4Tyarc9v/ftAXiTMDfVDDUyj1sNwGeeqdlOpVT3nL7tP/8U1IFNOs
-5OKk4KGV3AkP/teJOjiw7DJeQpfEItcXvcmSTZx+MzHUUwqdk0my72MUIfDLA8SB
-8aB67dBJSUTExjlxSLGU+8GLVKvWrCr0cUMtU018rNNRrMAoazNfOmlU6i02eGx9
-ZfzTFqCdKShZVKBJkOHEaxLXt7DJuiwQ1aYzHNVlyNMQpmA8adEfmZPFWWuYLohd
-Hn8mGk0ORL5p2sdw5xXwJMOlsE+p5rKiwOsrxI4sCQ4q5stu29jiv7zruPE5pX1n
-Utq15ldrFwf1VNjrbm9K0XgAfEVbrBVc7Kg2xMeMCbpTRwuRQk22jF/aaCBUjGue
-h4brYNuSOCLxUdcs2NuE6suO+rYJgtT5nehI9PJXG/Y66zyc2Uxui3VqIyZdybID
-ZkeKK5fxiMuuyeYPzMU/sAA37rG5xZsOKVVyOOkJOlipMX2gioo=
-=a8kD
------END PGP SIGNATURE-----
+   cell_buf * tx_desc;
+   cell_buf * rx_desc;
+@@ -1841,8 +1841,8 @@ static int hrz_init(hrz_dev *dev)
 
---8bBEDOJVaa9YlTAt--
+   printk (" clearing memory");
+
+-  for (mem = (HDW *) memmap; mem < (HDW *) (memmap + 1); ++mem)
+-    wr_mem (dev, mem, 0);
++  for (offset = 0; offset < sizeof(struct MEMMAP); offset++)
++    wr_mem (dev, (HDW *)offset, 0);
+
+   printk (" tx channels");
