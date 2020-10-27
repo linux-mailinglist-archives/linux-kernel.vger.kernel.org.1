@@ -2,149 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB6529AC5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26F329AC62
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900216AbgJ0Mmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:42:39 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38878 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440517AbgJ0Mmi (ORCPT
+        id S2439582AbgJ0Mnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:43:31 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:46624 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406492AbgJ0Mnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:42:38 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 6465B1C0B7F; Tue, 27 Oct 2020 13:42:36 +0100 (CET)
-Date:   Tue, 27 Oct 2020 13:42:35 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     jkosina@suse.cz, dmitry.torokhov@gmail.com, vojtech@suse.cz,
-        linux-input@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Proper support for Saitek X36F joystick
-Message-ID: <20201027124235.GA27148@duo.ucw.cz>
+        Tue, 27 Oct 2020 08:43:31 -0400
+Received: by mail-il1-f193.google.com with SMTP id a20so1334925ilk.13;
+        Tue, 27 Oct 2020 05:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/heI+LfLgziLGJ60RM8gGheob87eQ914pvQOUOMmLFQ=;
+        b=lZsMreU9ST2gn3t4bSN3hBbKtesDEZtmhJU2DsroyfZ5d8/X04EF1y89wrsZFnP8au
+         VF+NyzzsAVfUXrd1JAWwG2PAHNEnwyPsIDc1d7+LhL2J+7bOFCVDlVrdSF+L14KE8WNq
+         HywBiQuDj5C8KQ7N97vKzxV1EAfetY5RBakaGeeosJwHZz9TkIe+qouCgDDwiYoAf919
+         o4BWXWtmbge9X8+/lxzAuSt/w+obcUTKbkiJ9pwutp+dvqt3waXiAkRJgDpX7CqtW1gW
+         L5bjb5PljJYZMtcs8TL3V/RKj++8FkgHwLpdgXdJaXUsJc7KtV+ODWhKlobR65FfR9Ss
+         3TEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/heI+LfLgziLGJ60RM8gGheob87eQ914pvQOUOMmLFQ=;
+        b=gD/vPHyCP++K+C/M544hUgSOhP5AkGElAYLopf351a/FSusgCahzTz7btC7QL6Tead
+         XkpmnN83nkM/jygaDvH9QoDyskMLm48fisN4Dk9ZnWD2pS7O+V2pe8KtJ+8lqVpVDaJ3
+         w2TdUm5qIY71SZXbTQz+2exefwL2yY0pofX/5OpsttbuLHZUWveXmRmgSwwktgH37ozc
+         lc72tCwtmqGbM9o8wcuRug8MRUOOu5VRrf4ppcgRh/YvJ699qscTqmcByNY6/lO/hUUp
+         a3eYyPv+knZxIA5hLu6kiCk5V/VzL3Y/YJmhxqnz7yiRx9lXI3B5SqiExVDvFrMcV3z8
+         CmZA==
+X-Gm-Message-State: AOAM5336GqY3N6EDbXdUmqvhN+G6UN7403zAP4/3j1lKVlTGUgewVKKY
+        +O6d7TOt91NvsE+oh/7MAinZP0qGLGrzkobc
+X-Google-Smtp-Source: ABdhPJwXtb2mxLksz1l1pGSuod4wpwFnPkIp2B6PQQOKjLTghLCdw51dW6f1uAsZPungR0lmNdMatQ==
+X-Received: by 2002:a05:6e02:60c:: with SMTP id t12mr1518702ils.297.1603802609130;
+        Tue, 27 Oct 2020 05:43:29 -0700 (PDT)
+Received: from penguin.lxd (c-24-245-2-95.hsd1.mn.comcast.net. [24.245.2.95])
+        by smtp.gmail.com with ESMTPSA id y26sm834030iol.24.2020.10.27.05.43.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 05:43:28 -0700 (PDT)
+From:   Jackie Zamow <jackie.zamow@gmail.com>
+To:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz
+Cc:     Jackie Zamow <jackie.zamow@gmail.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] power: fix typo in kernel/power/process.c
+Date:   Tue, 27 Oct 2020 07:43:19 -0500
+Message-Id: <20201027124319.1448-1-jackie.zamow@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch fixes a typo found in the function freeze_processes()
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jackie Zamow <jackie.zamow@gmail.com>
 
-Hi!
+---
+ kernel/power/process.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is from 4.19, but I doubt this changed recently.
+diff --git a/kernel/power/process.c b/kernel/power/process.c
+index 4b6a54da7e65..45b054b7b5ec 100644
+--- a/kernel/power/process.c
++++ b/kernel/power/process.c
+@@ -146,7 +146,7 @@ int freeze_processes(void)
+ 	BUG_ON(in_atomic());
+ 
+ 	/*
+-	 * Now that the whole userspace is frozen we need to disbale
++	 * Now that the whole userspace is frozen we need to disable
+ 	 * the OOM killer to disallow any further interference with
+ 	 * killable tasks. There is no guarantee oom victims will
+ 	 * ever reach a point they go away we have to wait with a timeout.
+-- 
+2.20.1
 
-Saitek X36F+X35T combination is detected like this... in short one
-hat, no switches, and lot of buttons.
-
-In reality, combination has 4 four-way switches (hats?), 2 slider
-switches (three positions) and lot less buttons. Sliders and 3 of 4
-hats are detected as groups of buttons. Last hat is strange, I can't
-see anything that corresponds to it on evtest, and as long as it is
-pushed in any direction, all the other events stop. (It is also one
-I'd like to use).
-
-What needs to be done to get more useful mapping for userspace?
-
-Is there any easy way to debug the hat that breaks everything?
-
-Best regards,
-								Pavel
-
-$ evtest /dev/input/by-id/usb-Saitek_Saitek_X36_00103464-event-joystick
-Input driver version is 1.0.1
-Input device ID: bus 0x3 vendor 0x6a3 product 0x53f version 0x100
-Input device name: "Saitek Saitek X36"
-Supported events:
-  Event type 0 (EV_SYN)
-  Event type 1 (EV_KEY)
-    Event code 288 (BTN_TRIGGER)
-    Event code 289 (BTN_THUMB)
-    Event code 290 (BTN_THUMB2)
-    Event code 291 (BTN_TOP)
-    Event code 292 (BTN_TOP2)
-    Event code 293 (BTN_PINKIE)
-    Event code 294 (BTN_BASE)
-    Event code 295 (BTN_BASE2)
-    Event code 296 (BTN_BASE3)
-    Event code 297 (BTN_BASE4)
-    Event code 298 (BTN_BASE5)
-    Event code 299 (BTN_BASE6)
-    Event code 300 (?)
-    Event code 301 (?)
-    Event code 302 (?)
-    Event code 303 (BTN_DEAD)
-    Event code 704 (BTN_TRIGGER_HAPPY1)
-    Event code 705 (BTN_TRIGGER_HAPPY2)
-    Event code 706 (BTN_TRIGGER_HAPPY3)
-    Event code 707 (BTN_TRIGGER_HAPPY4)
-    Event code 708 (BTN_TRIGGER_HAPPY5)
-    Event code 709 (BTN_TRIGGER_HAPPY6)
-    Event code 710 (BTN_TRIGGER_HAPPY7)
-    Event code 711 (BTN_TRIGGER_HAPPY8)
-    Event code 712 (BTN_TRIGGER_HAPPY9)
-    Event code 713 (BTN_TRIGGER_HAPPY10)
-  Event type 3 (EV_ABS)
-    Event code 0 (ABS_X)
-      Value    211
-      Min       76
-      Max      364
-      Flat      18
-    Event code 1 (ABS_Y)
-      Value    219
-      Min       76
-      Max      404
-      Flat      20
-    Event code 3 (ABS_RX)
-      Value    225
-      Min        1
-      Max      225
-      Flat      14
-    Event code 5 (ABS_RZ)
-      Value    156
-      Min       21
-      Max      241
-      Flat      13
-    Event code 6 (ABS_THROTTLE)
-      Value    235
-      Min       21
-      Max      235
-      Flat      13
-    Event code 7 (ABS_RUDDER)
-      Value      1
-      Min        1
-      Max      209
-      Flat      13
-    Event code 16 (ABS_HAT0X)
-      Value      0
-      Min       -1
-      Max        1
-    Event code 17 (ABS_HAT0Y)
-      Value      0
-      Min       -1
-      Max        1
-  Event type 4 (EV_MSC)
-    Event code 4 (MSC_SCAN)
-Properties:
-Testing ... (interrupt to exit)
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5gVuwAKCRAw5/Bqldv6
-8ookAJ9FGbgWf3SwZcirxxCXtiLWYHCKMgCfX/KCIfkaFGAqZU1GFC/OTdAdEH0=
-=wULs
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
