@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E55A29C704
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5695829C497
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1827713AbgJ0S05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47762 "EHLO mail.kernel.org"
+        id S1757339AbgJ0OSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753576AbgJ0OAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:00:23 -0400
+        id S1757021AbgJ0OPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:15:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A2F921D7B;
-        Tue, 27 Oct 2020 14:00:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5350F2072D;
+        Tue, 27 Oct 2020 14:15:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807222;
-        bh=qr5IBMUcnmL6i6o7msUoTodHVxH92J3rwPTt3mSQ8hE=;
+        s=default; t=1603808146;
+        bh=ZitSMksXbVfPgwkJze5+eHFHGlpfyn+wvp3XZE9BNfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BVbz4zUqmhkUhKLcQlrE1qTjr+UkoTJOolCM6FIqxyoHHx+IjKF3bvuhk8I19Qxzq
-         JJn+8M1fKx8hqQqJXRUyvqoumzrqaIjDfex7/Dtp4QuHJhSYSWOklbGgGMRXNBA3VC
-         F4KdDmCUtMIwP3WcpFVguLJtMNuslGnMdSaN6V04=
+        b=Al4Gp6r1KIVEk3RBg+stJ3bH9N8a+K9f/5ui5/iyYvN7qvr9pS3syUWWt/13WNHxS
+         JryPcPoWVlIQSoX0yWRgEg+oW/90DgWp0tQ1UZc1Ff3cgsy7Vx+sjQJX4MHG5wKQvW
+         KaqzQ6+psPBF9gLb7M7vb89Ekmk0jfpV6ysA7PKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com,
-        Rustam Kovhaev <rkovhaev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 087/112] ntfs: add check for mft record size in superblock
-Date:   Tue, 27 Oct 2020 14:49:57 +0100
-Message-Id: <20201027134904.659373069@linuxfoundation.org>
+Subject: [PATCH 4.14 143/191] media: exynos4-is: Fix a reference count leak
+Date:   Tue, 27 Oct 2020 14:49:58 +0100
+Message-Id: <20201027134916.580623458@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-References: <20201027134900.532249571@linuxfoundation.org>
+In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
+References: <20201027134909.701581493@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,44 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 4f8c94022f0bc3babd0a124c0a7dcdd7547bd94e ]
+[ Upstream commit 64157b2cb1940449e7df2670e85781c690266588 ]
 
-Number of bytes allocated for mft record should be equal to the mft record
-size stored in ntfs superblock as reported by syzbot, userspace might
-trigger out-of-bounds read by dereferencing ctx->attr in ntfs_attr_find()
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code, causing incorrect ref count if
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-Reported-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
-Acked-by: Anton Altaparmakov <anton@tuxera.com>
-Link: https://syzkaller.appspot.com/bug?extid=aed06913f36eff9b544e
-Link: https://lkml.kernel.org/r/20200824022804.226242-1-rkovhaev@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/media/platform/exynos4-is/mipi-csis.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index d284f07eda775..38260c07de8b5 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -1844,6 +1844,12 @@ int ntfs_read_inode_mount(struct inode *vi)
- 		brelse(bh);
+diff --git a/drivers/media/platform/exynos4-is/mipi-csis.c b/drivers/media/platform/exynos4-is/mipi-csis.c
+index 560aadabcb111..040d10df17c97 100644
+--- a/drivers/media/platform/exynos4-is/mipi-csis.c
++++ b/drivers/media/platform/exynos4-is/mipi-csis.c
+@@ -513,8 +513,10 @@ static int s5pcsis_s_stream(struct v4l2_subdev *sd, int enable)
+ 	if (enable) {
+ 		s5pcsis_clear_counters(state);
+ 		ret = pm_runtime_get_sync(&state->pdev->dev);
+-		if (ret && ret != 1)
++		if (ret && ret != 1) {
++			pm_runtime_put_noidle(&state->pdev->dev);
+ 			return ret;
++		}
  	}
  
-+	if (le32_to_cpu(m->bytes_allocated) != vol->mft_record_size) {
-+		ntfs_error(sb, "Incorrect mft record size %u in superblock, should be %u.",
-+				le32_to_cpu(m->bytes_allocated), vol->mft_record_size);
-+		goto err_out;
-+	}
-+
- 	/* Apply the mst fixups. */
- 	if (post_read_mst_fixup((NTFS_RECORD*)m, vol->mft_record_size)) {
- 		/* FIXME: Try to use the $MFTMirr now. */
+ 	mutex_lock(&state->lock);
 -- 
 2.25.1
 
