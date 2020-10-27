@@ -2,172 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3554329C876
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11E729C866
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829484AbgJ0TMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:12:08 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:51986 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1762525AbgJ0TJe (ORCPT
+        id S1829453AbgJ0TLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 15:11:05 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:2072 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S371908AbgJ0TKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:09:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CvGwbxdQWU0yUwxUSuiiHN1xqzMsQ3tR0c+NFhztTjs=; b=wRl0WMjVqZ536/QENSM5F95D2Z
-        zKmyl13OUdU21RVCTpvd88havNzLv2qYPgEiKg0f67eXJ0Bv9tbF6S+gay5raVLsbJAwI+/syUoPV
-        jmsj+R+tfp73VHXr9Lgm8XiypR9YDePazRl47Yjp49d9IYcf7Hy2XR7aIqVKBbq5/V8+/XIG9NF/L
-        mfDFQ6W94Fzmb+FL7Wh6qtXCESNZcpWSk5tZ7k5pJGUvh3dF4yChOsUZu9nD09bHLZvjJllXy6ZU3
-        g9bvuR7ry5c7LvO4mhzJ/Opoz4ZwldrKehbSzR8AXXpmvfVlAsqQe/0bajz/LnBeCPEB3ybykNNB+
-        w726Fd2Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXULS-0002ex-Rq; Tue, 27 Oct 2020 19:09:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EC2F5307A7C;
-        Tue, 27 Oct 2020 20:09:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D109F203C2679; Tue, 27 Oct 2020 20:09:19 +0100 (CET)
-Date:   Tue, 27 Oct 2020 20:09:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 1/2] sched/wait: Add add_wait_queue_priority()
-Message-ID: <20201027190919.GO2628@hirez.programming.kicks-ass.net>
-References: <20201026175325.585623-1-dwmw2@infradead.org>
- <20201027143944.648769-1-dwmw2@infradead.org>
- <20201027143944.648769-2-dwmw2@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027143944.648769-2-dwmw2@infradead.org>
+        Tue, 27 Oct 2020 15:10:52 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 27 Oct 2020 12:10:48 -0700
+X-QCInternal: smtphost
+Received: from asutoshd-linux1.qualcomm.com ([10.46.160.39])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 27 Oct 2020 12:10:47 -0700
+Received: by asutoshd-linux1.qualcomm.com (Postfix, from userid 92687)
+        id B146220F57; Tue, 27 Oct 2020 12:10:47 -0700 (PDT)
+From:   Asutosh Das <asutoshd@codeaurora.org>
+To:     cang@codeaurora.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v2 1/2] scsi: ufs: Put hba into LPM during clk gating
+Date:   Tue, 27 Oct 2020 12:10:36 -0700
+Message-Id: <52198e70bff750632740d78678a815256d697e43.1603825776.git.asutoshd@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 02:39:43PM +0000, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> This allows an exclusive wait_queue_entry to be added at the head of the
-> queue, instead of the tail as normal. Thus, it gets to consume events
-> first without allowing non-exclusive waiters to be woken at all.
-> 
-> The (first) intended use is for KVM IRQFD, which currently has
+From: Can Guo <cang@codeaurora.org>
 
-Do you have more? You could easily special case this inside the KVM
-code.
+During clock gating, after clocks are disabled,
+put hba into LPM to save more power.
 
-I don't _think_ the other users of __add_wait_queue() will mind the
-extra branch, but what do I know.
+Acked-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c |  9 +++++++--
+ drivers/scsi/ufs/ufshcd.h | 13 +++++++++++++
+ 2 files changed, 20 insertions(+), 2 deletions(-)
 
-> inconsistent behaviour depending on whether posted interrupts are
-> available or not. If they are, KVM will bypass the eventfd completely
-> and deliver interrupts directly to the appropriate vCPU. If not, events
-> are delivered through the eventfd and userspace will receive them when
-> polling on the eventfd.
-> 
-> By using add_wait_queue_priority(), KVM will be able to consistently
-> consume events within the kernel without accidentally exposing them
-> to userspace when they're supposed to be bypassed. This, in turn, means
-> that userspace doesn't have to jump through hoops to avoid listening
-> on the erroneously noisy eventfd and injecting duplicate interrupts.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->  include/linux/wait.h | 12 +++++++++++-
->  kernel/sched/wait.c  | 17 ++++++++++++++++-
->  2 files changed, 27 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/wait.h b/include/linux/wait.h
-> index 27fb99cfeb02..fe10e8570a52 100644
-> --- a/include/linux/wait.h
-> +++ b/include/linux/wait.h
-> @@ -22,6 +22,7 @@ int default_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int
->  #define WQ_FLAG_BOOKMARK	0x04
->  #define WQ_FLAG_CUSTOM		0x08
->  #define WQ_FLAG_DONE		0x10
-> +#define WQ_FLAG_PRIORITY	0x20
->  
->  /*
->   * A single wait-queue entry structure:
-> @@ -164,11 +165,20 @@ static inline bool wq_has_sleeper(struct wait_queue_head *wq_head)
->  
->  extern void add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
->  extern void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
-> +extern void add_wait_queue_priority(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
->  extern void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
->  
->  static inline void __add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
->  {
-> -	list_add(&wq_entry->entry, &wq_head->head);
-> +	struct list_head *head = &wq_head->head;
-> +	struct wait_queue_entry *wq;
-> +
-> +	list_for_each_entry(wq, &wq_head->head, entry) {
-> +		if (!(wq->flags & WQ_FLAG_PRIORITY))
-> +			break;
-> +		head = &wq->entry;
-> +	}
-> +	list_add(&wq_entry->entry, head);
->  }
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 47c544d..9fc1bac 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -245,6 +245,8 @@ static int ufshcd_wb_buf_flush_disable(struct ufs_hba *hba);
+ static int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable);
+ static int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
+ static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable);
++static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba);
++static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba);
+ 
+ static inline bool ufshcd_valid_tag(struct ufs_hba *hba, int tag)
+ {
+@@ -1548,6 +1550,7 @@ static void ufshcd_ungate_work(struct work_struct *work)
+ 	}
+ 
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	ufshcd_hba_vreg_set_hpm(hba);
+ 	ufshcd_setup_clocks(hba, true);
+ 
+ 	ufshcd_enable_irq(hba);
+@@ -1713,6 +1716,8 @@ static void ufshcd_gate_work(struct work_struct *work)
+ 		/* If link is active, device ref_clk can't be switched off */
+ 		__ufshcd_setup_clocks(hba, false, true);
+ 
++	/* Put the host controller in low power mode if possible */
++	ufshcd_hba_vreg_set_lpm(hba);
+ 	/*
+ 	 * In case you are here to cancel this work the gating state
+ 	 * would be marked as REQ_CLKS_ON. In this case keep the state
+@@ -8405,13 +8410,13 @@ static int ufshcd_vreg_set_hpm(struct ufs_hba *hba)
+ 
+ static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba)
+ {
+-	if (ufshcd_is_link_off(hba))
++	if (ufshcd_is_link_off(hba) || ufshcd_can_aggressive_pc(hba))
+ 		ufshcd_setup_hba_vreg(hba, false);
+ }
+ 
+ static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba)
+ {
+-	if (ufshcd_is_link_off(hba))
++	if (ufshcd_is_link_off(hba) || ufshcd_can_aggressive_pc(hba))
+ 		ufshcd_setup_hba_vreg(hba, true);
+ }
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 47eb143..0fbb735 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -592,6 +592,13 @@ enum ufshcd_caps {
+ 	 * inline crypto engine, if it is present
+ 	 */
+ 	UFSHCD_CAP_CRYPTO				= 1 << 8,
++
++	/*
++	 * This capability allows the controller regulators to be put into
++	 * lpm mode aggressively during clock gating.
++	 * This would increase power savings.
++	 */
++	UFSHCD_CAP_AGGR_POWER_COLLAPSE			= 1 << 9,
+ };
+ 
+ struct ufs_hba_variant_params {
+@@ -829,6 +836,12 @@ return true;
+ #endif
+ }
+ 
++static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
++{
++	return !!(ufshcd_is_link_hibern8(hba) &&
++		  (hba->caps & UFSHCD_CAP_AGGR_POWER_COLLAPSE));
++}
++
+ static inline bool ufshcd_is_auto_hibern8_supported(struct ufs_hba *hba)
+ {
+ 	return (hba->capabilities & MASK_AUTO_HIBERN8_SUPPORT) &&
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-So you're adding the PRIORITY things to the head of the list and need
-the PRIORITY flag to keep them in FIFO order there, right?
-
-While looking at this I found that weird __add_wait_queue_exclusive()
-which is used by fs/eventpoll.c and does something similar, except it
-doesn't keep the FIFO order.
-
-The Changelog doesn't state how important this property is to you.
-
->  /*
-> diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
-> index 01f5d3020589..183cc6ae68a6 100644
-> --- a/kernel/sched/wait.c
-> +++ b/kernel/sched/wait.c
-> @@ -37,6 +37,17 @@ void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue
->  }
->  EXPORT_SYMBOL(add_wait_queue_exclusive);
->  
-> +void add_wait_queue_priority(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
-> +{
-> +	unsigned long flags;
-> +
-> +	wq_entry->flags |= WQ_FLAG_EXCLUSIVE | WQ_FLAG_PRIORITY;
-> +	spin_lock_irqsave(&wq_head->lock, flags);
-> +	__add_wait_queue(wq_head, wq_entry);
-> +	spin_unlock_irqrestore(&wq_head->lock, flags);
-> +}
-> +EXPORT_SYMBOL_GPL(add_wait_queue_priority);
-> +
->  void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
->  {
->  	unsigned long flags;
-> @@ -57,7 +68,11 @@ EXPORT_SYMBOL(remove_wait_queue);
->  /*
->   * The core wakeup function. Non-exclusive wakeups (nr_exclusive == 0) just
->   * wake everything up. If it's an exclusive wakeup (nr_exclusive == small +ve
-> - * number) then we wake all the non-exclusive tasks and one exclusive task.
-> + * number) then we wake that number of exclusive tasks, and potentially all
-> + * the non-exclusive tasks. Normally, exclusive tasks will be at the end of
-> + * the list and any non-exclusive tasks will be woken first. A priority task
-> + * may be at the head of the list, and can consume the event without any other
-> + * tasks being woken.
->   *
->   * There are circumstances in which we can try to wake a task which has already
->   * started to run but is not in state TASK_RUNNING. try_to_wake_up() returns
-> -- 
-> 2.26.2
-> 
