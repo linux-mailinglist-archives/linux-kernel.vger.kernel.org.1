@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1653129B2CA
+	by mail.lfdr.de (Postfix) with ESMTP id 83DEC29B2CB
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1763895AbgJ0Op1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
+        id S1763927AbgJ0Opc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:45:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1763841AbgJ0OpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:45:01 -0400
+        id S1763857AbgJ0OpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:45:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A01F2222C;
-        Tue, 27 Oct 2020 14:45:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26F1422275;
+        Tue, 27 Oct 2020 14:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809900;
-        bh=iC0jZdjoqn1Py7xJojtmdX9lti5RGCBfHf+sGISAEjY=;
+        s=default; t=1603809909;
+        bh=NmE6hQ/3FioMCYKCOFbaQxX06Kh6L1zhoofrRgH5x+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nn4zgj1xhcvffq6/zwQDCWxEbX651Dbk7an/0coADtxpQzRun82wC2uYR4EQ9EzGd
-         f06qt4gG2pvFTBg4nElIKuKcCmdTjpWVX0csLGXzHqPKSj7AE43VvV6Flgj1ArCrez
-         JKocHAGJgPF0t7u/28itx82E6ECZTuAoIR8rj1P4=
+        b=1oKusnv+ieQWo2OuTsFZ8LhFGDSFa4uK5uORYUUZ6o+51xM7rCCOxYrM/30pchbDI
+         SEt0CRN0tWsHqbV12QK5Ag3TZbbtA69IBxqqFk0Ey+hJhvZkD5WE10AJ+jWLjN+dSI
+         f4Y/MdfXge5RTou2JUlWLbyuXfp3Ph86vAMucmd4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tzu-En Huang <tehuang@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 360/408] rtw88: increse the size of rx buffer size
-Date:   Tue, 27 Oct 2020 14:54:58 +0100
-Message-Id: <20201027135511.713576706@linuxfoundation.org>
+Subject: [PATCH 5.4 363/408] can: flexcan: flexcan_chip_stop(): add error handling and propagate error value
+Date:   Tue, 27 Oct 2020 14:55:01 +0100
+Message-Id: <20201027135511.864119649@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -43,37 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tzu-En Huang <tehuang@realtek.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-[ Upstream commit ee755732b7a16af018daa77d9562d2493fb7092f ]
+[ Upstream commit 9ad02c7f4f279504bdd38ab706fdc97d5f2b2a9c ]
 
-The vht capability of MAX_MPDU_LENGTH is 11454 in rtw88; however, the rx
-buffer size for each packet is 8192. When receiving packets that are
-larger than rx buffer size, it will leads to rx buffer ring overflow.
+This patch implements error handling and propagates the error value of
+flexcan_chip_stop(). This function will be called from flexcan_suspend()
+in an upcoming patch in some SoCs which support LPSR mode.
 
-Signed-off-by: Tzu-En Huang <tehuang@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200925061219.23754-2-tehuang@realtek.com
+Add a new function flexcan_chip_stop_disable_on_error() that tries to
+disable the chip even in case of errors.
+
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+[mkl: introduce flexcan_chip_stop_disable_on_error() and use it in flexcan_close()]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20200922144429.2613631-11-mkl@pengutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/pci.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/pci.h b/drivers/net/wireless/realtek/rtw88/pci.h
-index 87824a4caba98..a47d871ae506a 100644
---- a/drivers/net/wireless/realtek/rtw88/pci.h
-+++ b/drivers/net/wireless/realtek/rtw88/pci.h
-@@ -13,8 +13,8 @@
- #define RTK_BEQ_TX_DESC_NUM	256
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index e5c207ad3c77d..aaa7ed1dc97ee 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1232,18 +1232,23 @@ static int flexcan_chip_start(struct net_device *dev)
+ 	return err;
+ }
  
- #define RTK_MAX_RX_DESC_NUM	512
--/* 8K + rx desc size */
--#define RTK_PCI_RX_BUF_SIZE	(8192 + 24)
-+/* 11K + rx desc size */
-+#define RTK_PCI_RX_BUF_SIZE	(11454 + 24)
+-/* flexcan_chip_stop
++/* __flexcan_chip_stop
+  *
+- * this functions is entered with clocks enabled
++ * this function is entered with clocks enabled
+  */
+-static void flexcan_chip_stop(struct net_device *dev)
++static int __flexcan_chip_stop(struct net_device *dev, bool disable_on_error)
+ {
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 	struct flexcan_regs __iomem *regs = priv->regs;
++	int err;
  
- #define RTK_PCI_CTRL		0x300
- #define BIT_RST_TRXDMA_INTF	BIT(20)
+ 	/* freeze + disable module */
+-	flexcan_chip_freeze(priv);
+-	flexcan_chip_disable(priv);
++	err = flexcan_chip_freeze(priv);
++	if (err && !disable_on_error)
++		return err;
++	err = flexcan_chip_disable(priv);
++	if (err && !disable_on_error)
++		goto out_chip_unfreeze;
+ 
+ 	/* Disable all interrupts */
+ 	priv->write(0, &regs->imask2);
+@@ -1253,6 +1258,23 @@ static void flexcan_chip_stop(struct net_device *dev)
+ 
+ 	flexcan_transceiver_disable(priv);
+ 	priv->can.state = CAN_STATE_STOPPED;
++
++	return 0;
++
++ out_chip_unfreeze:
++	flexcan_chip_unfreeze(priv);
++
++	return err;
++}
++
++static inline int flexcan_chip_stop_disable_on_error(struct net_device *dev)
++{
++	return __flexcan_chip_stop(dev, true);
++}
++
++static inline int flexcan_chip_stop(struct net_device *dev)
++{
++	return __flexcan_chip_stop(dev, false);
+ }
+ 
+ static int flexcan_open(struct net_device *dev)
+@@ -1341,7 +1363,7 @@ static int flexcan_close(struct net_device *dev)
+ 
+ 	netif_stop_queue(dev);
+ 	can_rx_offload_disable(&priv->offload);
+-	flexcan_chip_stop(dev);
++	flexcan_chip_stop_disable_on_error(dev);
+ 
+ 	can_rx_offload_del(&priv->offload);
+ 	free_irq(dev->irq, dev);
 -- 
 2.25.1
 
