@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5676629C780
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5C529C786
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1823476AbgJ0SdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:33:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21822 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1789490AbgJ0SdB (ORCPT
+        id S1796449AbgJ0SeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:34:19 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:39750 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1795953AbgJ0SeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:33:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603823580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LUoo3HhPrykGvwK+MAKTfL5A7J2hnAQhpsgsVSSSXlo=;
-        b=hYV33i0RkgAjjRgMbqlBhJHvYcI0S2TLHb/r1G2rhYZ+YWTSlbf46/d5LInnVOzia8oHOt
-        w2/E7GXGE9NT6HsNpQY/mSPuKFxt7JUscaQphHF0lwOQpsNK5OPi0RDbwhdsjeBvfotsJq
-        2Uu+V9uhBfruo9UjaJpRgpc7Uk2yhxM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-S836uhR2O62vSdU1osWGqw-1; Tue, 27 Oct 2020 14:32:58 -0400
-X-MC-Unique: S836uhR2O62vSdU1osWGqw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DBC0101F7A2;
-        Tue, 27 Oct 2020 18:32:55 +0000 (UTC)
-Received: from ovpn-66-71.rdu2.redhat.com (ovpn-66-71.rdu2.redhat.com [10.10.66.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2927C5C1C2;
-        Tue, 27 Oct 2020 18:32:54 +0000 (UTC)
-Message-ID: <e58049812c833ac85f9241ab096b220b0a4d996b.camel@redhat.com>
-Subject: Re: [PATCH -next] arm64: Fix redefinition of init_new_context()
-From:   Qian Cai <cai@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Oct 2020 14:32:53 -0400
-In-Reply-To: <20201012141032.6333-1-cai@redhat.com>
-References: <20201012141032.6333-1-cai@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Tue, 27 Oct 2020 14:34:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kqdYjxc2O9b1X8EV8bVinkOpeHRHYJ1esUJTZZpw2xk=; b=KY7G0Euwn6mG5aWvpMvGuLpnBa
+        a3gSjDRKmxO6rw/2sBOn0MkjnAbr8V+p0m/yGotfvzVR2U8gUCFwnsfttVo4s6duOD75sqcyHW6K6
+        KIjhvB9kHlnMHbcvmnsM9JUHVEaI2+/WLunU/SUGXfLlIM5SHFiPthi8UmAN2qbQ1V73fmlysMsP0
+        5Z+WGwIJeocb+0r7Z6owkio5T6RLYJNC0JMLSGl9KsWBcPWu9fLtD5m2JeiySvu82xgHH2wKdF4DY
+        j+iD54vHfHm7eZI5E+hUJEOmfeqYE/rmekDvsTyRMQKSBpGMeMKnNocA1TOXBlmu2SePP1WtYqJ0l
+        ju6tB1HA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXTmn-00031p-7F; Tue, 27 Oct 2020 18:33:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB0B9307AAA;
+        Tue, 27 Oct 2020 19:33:30 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A7AF92D196570; Tue, 27 Oct 2020 19:33:30 +0100 (CET)
+Date:   Tue, 27 Oct 2020 19:33:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, luto@kernel.org, me@kylehuey.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, rocallahan@gmail.com,
+        alexandre.chartre@oracle.com, paulmck@kernel.org,
+        frederic@kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, mhiramat@kernel.org,
+        pmladek@suse.com, joel@joelfernandes.org, rostedt@goodmis.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, brgerst@gmail.com,
+        jpoimboe@redhat.com, daniel.thompson@linaro.org,
+        julliard@winehq.org, pgofman@codeweavers.com
+Subject: [PATCH v2 3/3] Fix DR_STEP vs ptrace_get_debugreg(6)
+Message-ID: <20201027183330.GM2628@hirez.programming.kicks-ass.net>
+References: <20201027091504.712183781@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027091504.712183781@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-12 at 10:10 -0400, Qian Cai wrote:
-> The linux-next commit c870baeede75 ("asm-generic: add generic MMU
-> versions of mmu context functions") missed a case in the arm64/for-next
-> branch.
-> 
-> Signed-off-by: Qian Cai <cai@redhat.com>
 
-Arnd, Stephen, can you apply this patch? Those compiling errors are back again
-in next-20201027.
+Commit d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to
+thread.virtual_dr6") changed the semantics of the variable from random
+collection of bits, to exactly only those bits that ptrace() needs.
 
-> ---
->  arch/arm64/include/asm/mmu_context.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/include/asm/mmu_context.h
-> b/arch/arm64/include/asm/mmu_context.h
-> index da5f146e665b..cd5c33a50469 100644
-> --- a/arch/arm64/include/asm/mmu_context.h
-> +++ b/arch/arm64/include/asm/mmu_context.h
-> @@ -176,6 +176,7 @@ static inline void cpu_replace_ttbr1(pgd_t *pgdp)
->   */
->  void check_and_switch_context(struct mm_struct *mm);
->  
-> +#define init_new_context init_new_context
->  static inline int
->  init_new_context(struct task_struct *tsk, struct mm_struct *mm)
->  {
+Unfortunately we lost DR_STEP for PTRACE_{BLOCK,SINGLE}STEP.
 
+Furthermore, it turns out that userspace expects DR_STEP to be
+unconditionally available, even for manual TF usage outside of
+PTRACE_{BLOCK,SINGLE}_STEP.
+
+Fixes: d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
+Reported-by: Kyle Huey <me@kylehuey.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+v2: uncondtionally provide DR_STEP, at the very least WINE relies on this
+
+ arch/x86/kernel/traps.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -937,10 +937,13 @@ static __always_inline void exc_debug_us
+ 	instrumentation_begin();
+ 
+ 	/*
+-	 * Clear the virtual DR6 value, ptrace() routines will set bits here
+-	 * for things it wants signals for.
++	 * Start the virtual/ptrace DR6 value with just the DR_STEP mask
++	 * of the real DR6. ptrace_triggered() will set the DR_TRAPn bits.
++	 *
++	 * Userspace expects DR_STEP to be visible in ptrace_get_debugreg(6)
++	 * even if it is not the result of PTRACE_SINGLESTEP.
+ 	 */
+-	current->thread.virtual_dr6 = 0;
++	current->thread.virtual_dr6 = (dr6 & DR_STEP);
+ 
+ 	/*
+ 	 * The SDM says "The processor clears the BTF flag when it
