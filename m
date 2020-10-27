@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7AB29C67F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4785C29C6AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1826278AbgJ0SSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:18:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
+        id S1827157AbgJ0SVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754141AbgJ0OLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:11:16 -0400
+        id S1753947AbgJ0ODK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:03:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12B7422384;
-        Tue, 27 Oct 2020 14:11:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBC8B2222C;
+        Tue, 27 Oct 2020 14:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807875;
-        bh=6nwMkp7AWLX6m+vIInrJJ/9opj19CuFuB8Axt5gn5m0=;
+        s=default; t=1603807390;
+        bh=sfL6G2Y/z9x8rEL+SjrEfC/mODkBAD3Iysx7cVHV0YQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xyKWXgD+W/V5G32Qrkbu/w7MXtHISIgy2I1riZ2ygF6wrPL5o1NTe1/LWsIbwXm2u
-         VfxEFKomk1QuL1liPA8AvT5IjyQJw4hTgDPWt70Yos+eciId1vexrtYzAntMxSUko8
-         MFu0q6/JuwpcsSIAin52JsS5oacbygUpVZBt4DHQ=
+        b=ongHX3xi5VLiGoTrCrmeQ82u/W97HRkrMXP4kGH2dweE8z0uShTnfhWU7I8Tko/dL
+         WX1Wvd+GEZPA+kwcsdgA2vRVqW15KR/aZ8Kuba+JIhEAacX9Ehe8f7ndxeW76agPI6
+         Mve/zWCtr0RkaFwAjhO+b8JdJuozrCMx/BK77TtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 042/191] Bluetooth: hci_uart: Cancel init work before unregistering
-Date:   Tue, 27 Oct 2020 14:48:17 +0100
-Message-Id: <20201027134911.762018213@linuxfoundation.org>
+        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 006/139] net: hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
+Date:   Tue, 27 Oct 2020 14:48:20 +0100
+Message-Id: <20201027134902.454609983@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit 3b799254cf6f481460719023d7a18f46651e5e7f ]
+[ Upstream commit 01c4ceae0a38a0bdbfea6896f41efcd985a9c064 ]
 
-If hci_uart_tty_close() or hci_uart_unregister_device() is called while
-hu->init_ready is scheduled, hci_register_dev() could be called after
-the hci_uart is torn down. Avoid this by ensuring the work is complete
-or canceled before checking the HCI_UART_REGISTERED flag.
+The hdlc_rcv function is used as hdlc_packet_type.func to process any
+skb received in the kernel with skb->protocol == htons(ETH_P_HDLC).
+The purpose of this function is to provide second-stage processing for
+skbs not assigned a "real" L3 skb->protocol value in the first stage.
 
-Fixes: 9f2aee848fe6 ("Bluetooth: Add delayed init sequence support for UART controllers")
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This function assumes the device from which the skb is received is an
+HDLC device (a device created by this module). It assumes that
+netdev_priv(dev) returns a pointer to "struct hdlc_device".
+
+However, it is possible that some driver in the kernel (not necessarily
+in our control) submits a received skb with skb->protocol ==
+htons(ETH_P_HDLC), from a non-HDLC device. In this case, the skb would
+still be received by hdlc_rcv. This will cause problems.
+
+hdlc_rcv should be able to recognize and drop invalid skbs. It should
+first make sure "dev" is actually an HDLC device, before starting its
+processing. This patch adds this check to hdlc_rcv.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201020013152.89259-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bluetooth/hci_ldisc.c  | 1 +
- drivers/bluetooth/hci_serdev.c | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/net/wan/hdlc.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
-index 43221def1d29f..f19606019eb01 100644
---- a/drivers/bluetooth/hci_ldisc.c
-+++ b/drivers/bluetooth/hci_ldisc.c
-@@ -541,6 +541,7 @@ static void hci_uart_tty_close(struct tty_struct *tty)
- 		clear_bit(HCI_UART_PROTO_READY, &hu->flags);
- 		percpu_up_write(&hu->proto_lock);
- 
-+		cancel_work_sync(&hu->init_ready);
- 		cancel_work_sync(&hu->write_work);
- 
- 		if (hdev) {
-diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
-index 72cf2d97b682c..196b046658ff4 100644
---- a/drivers/bluetooth/hci_serdev.c
-+++ b/drivers/bluetooth/hci_serdev.c
-@@ -361,6 +361,8 @@ void hci_uart_unregister_device(struct hci_uart *hu)
- 	struct hci_dev *hdev = hu->hdev;
- 
- 	clear_bit(HCI_UART_PROTO_READY, &hu->flags);
+--- a/drivers/net/wan/hdlc.c
++++ b/drivers/net/wan/hdlc.c
+@@ -57,7 +57,15 @@ int hdlc_change_mtu(struct net_device *d
+ static int hdlc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		    struct packet_type *p, struct net_device *orig_dev)
+ {
+-	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct hdlc_device *hdlc;
 +
-+	cancel_work_sync(&hu->init_ready);
- 	if (test_bit(HCI_UART_REGISTERED, &hu->flags))
- 		hci_unregister_dev(hdev);
- 	hci_free_dev(hdev);
--- 
-2.25.1
-
++	/* First make sure "dev" is an HDLC device */
++	if (!(dev->priv_flags & IFF_WAN_HDLC)) {
++		kfree_skb(skb);
++		return NET_RX_SUCCESS;
++	}
++
++	hdlc = dev_to_hdlc(dev);
+ 
+ 	if (!net_eq(dev_net(dev), &init_net)) {
+ 		kfree_skb(skb);
 
 
