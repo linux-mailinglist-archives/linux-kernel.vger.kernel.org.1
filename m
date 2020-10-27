@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B0A29AB9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE9929ABA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899659AbgJ0MQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:16:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2899633AbgJ0MQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:16:10 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 889B324677;
-        Tue, 27 Oct 2020 12:16:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603800969;
-        bh=rHy7m3RuiJVB+20ux7B22H/jeahOgDzJQVxUUqsPONE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nnslobMGiXfBKFGnGsYxOuqPAeWLHs9VXT5qE++xWWTVdGmCplAti2v3iFFzFaPmh
-         Aw2AlXxRpu2V1H8IMkogfIpWAvF+1iZ4KdGcyGqB3Mdx5Q8hdz0p0oleDQMcwMkW7I
-         Tm3oL/qRKuH7Eee2jicv4D49KxzNLOagtRWKlDNQ=
-Received: by mail-oo1-f52.google.com with SMTP id n2so268401ooo.8;
-        Tue, 27 Oct 2020 05:16:09 -0700 (PDT)
-X-Gm-Message-State: AOAM5302FloAnbSnrVnjFibVSewxkGq+XY0OOAffVn2uXawmEJJuSnL9
-        MyYhwfcr0sycV4BZwbdjNuT8yqffpH/Hpu/i9g==
-X-Google-Smtp-Source: ABdhPJwWNPIQlF6Bp7SJfw0BWlotFu1Nk1SaBiaHNR8Jk/NmGn35wJqO0jl1Ihg5ANtyL/n3D9IZ22eRLIBU/rPXk3E=
-X-Received: by 2002:a4a:d453:: with SMTP id p19mr1528328oos.50.1603800968782;
- Tue, 27 Oct 2020 05:16:08 -0700 (PDT)
+        id S2411695AbgJ0MRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:17:40 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53797 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411693AbgJ0MRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 08:17:38 -0400
+Received: by mail-wm1-f66.google.com with SMTP id d78so1165736wmd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LJP6zUa9eBmdV8bx1jdaWyKmaK9MsWkK16il5Qo0OrM=;
+        b=P+3tCIHOjCZAx0wmilW2GDFvIGyFUKkJ6kMCnuzTaqTK/WVy0FTiGFvqMSEeEaTSDi
+         lidtNcACGQa4FsZTJSv/WM+PJAWcMBZ84eqrsFS5cBt5SmJFi36Zt8P8jQqLDmjkvqeW
+         khRH3E+peGeaQTCIY3Vt2p8gYCX0QOu5toB/kJmHKtw/28SJ6BKumTSSq2MJytdIAdgp
+         oJxR5uAJUIN5EhwIO49GT3ZmC5B5ob3NU85YWSk0gy8yt2me9ot389ODzNeNzE1g7isf
+         BjKSBXgUK2OMn2MduiDvTrDfwsn8XX/eMtY9lahl6HLlIYN8j7wdAJNYVoPtfuaoSs+h
+         PRUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LJP6zUa9eBmdV8bx1jdaWyKmaK9MsWkK16il5Qo0OrM=;
+        b=QgBTe82akNms5MVskxGYmIbSuHYDi33+8blwLFlNBM+CkMMiTkXZ0dox7TC5SYIJ4w
+         Qlt9VNW7Itl8DnxcxVvzI0Yoh/ImEcnf2xT3/xqtqb/6dEbBAC+a5x9itYXNKhKbl7bL
+         AK/Jz174d808bxRNcrKWYtRmhb8rSQebQCe/cN4MVCbHVyUMNHexBBi9M7DtB/k7B+U7
+         /b707YHi0qJ2zaFsDXsqLxhBNUYxgznbcYlnqMPUU1P8Ud/GoZYbDCIG1Lvpgs6UFxRj
+         5F84rgoXFNVGaVm3RXDlo1eJlcTEORw+whrZ5B1NF1WmyMWfRzPAZ/PJyoRu5JQov1Aq
+         qXmw==
+X-Gm-Message-State: AOAM531gjV81k+PwnY/o4yX77bvFpC2EcyAIPNrE7nelAPP/cqfXxHCb
+        sSZ3qcpbFrNI4vrO47SEY4HD/g==
+X-Google-Smtp-Source: ABdhPJxUDPfM7/G4w39/lM3kfVBbiG37Et7vUzW73qIzYGjUaK5vAjNfvCioGZotPrXrgX+P7fvBjA==
+X-Received: by 2002:a1c:8087:: with SMTP id b129mr2477389wmd.10.1603801056147;
+        Tue, 27 Oct 2020 05:17:36 -0700 (PDT)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id a2sm1731908wrs.55.2020.10.27.05.17.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 05:17:35 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 0/8] slab: provide and use krealloc_array()
+Date:   Tue, 27 Oct 2020 13:17:17 +0100
+Message-Id: <20201027121725.24660-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
- <20201026143656.GA118160@bogus> <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
-In-Reply-To: <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 27 Oct 2020 07:15:57 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
-Message-ID: <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible
- for tamp node
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Christophe Roullier <christophe.roullier@st.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        devicetree@vger.kernel.org,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 4:30 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> Hello Rob,
->
-> On 10/26/20 3:36 PM, Rob Herring wrote:
-> > On Wed, Oct 21, 2020 at 12:28:55PM +0200, Ahmad Fatoum wrote:
-> >> The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
-> >> and features 32 backup registers that, being in the RTC domain, may
-> >> survive even with Vdd switched off.
-> >>
-> >> This makes it suitable for use to communicate a reboot mode from OS
-> >> to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
-> >> to support probing such a child node. The actual reboot mode
-> >> node could then be defined in a board.dts or fixed up by the bootloader.
-> >
-> > 'simple-mfd' implies there is no dependency on the parent node for the
-> > child (such as the regmap perhaps). Is that the case here?
->
-> No, there's a dependency and the Linux driver does syscon_node_to_regmap
-> on the device tree node's parent but that's how the syscon-reboot-mode binding
-> is documented:
->
->   The SYSCON mapped register is retrieved from the
->   parental dt-node plus the offset. So the SYSCON reboot-mode node
->   should be represented as a sub-node of a "syscon", "simple-mfd" node.
->
-> How would you prefer this being done instead?
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Well, probably the syscon driver could just probe any children, but
-I'm not sure if that would break anyone. So I guess fine as-is.
+Andy brought to my attention the fact that users allocating an array of
+equally sized elements should check if the size multiplication doesn't
+overflow. This is why we have helpers like kmalloc_array().
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+However we don't have krealloc_array() equivalent and there are many
+users who do their own multiplication when calling krealloc() for arrays.
 
-Rob
+This series provides krealloc_array() and uses it in a couple places.
+
+A separate series will follow adding devm_krealloc_array() which is
+needed in the xilinx adc driver.
+
+Bartosz Golaszewski (8):
+  mm: slab: provide krealloc_array()
+  ALSA: pcm: use krealloc_array()
+  vhost: vringh: use krealloc_array()
+  pinctrl: use krealloc_array()
+  edac: ghes: use krealloc_array()
+  drm: atomic: use krealloc_array()
+  hwtracing: intel: use krealloc_array()
+  dma-buf: use krealloc_array()
+
+ drivers/dma-buf/sync_file.c      |  4 ++--
+ drivers/edac/ghes_edac.c         |  4 ++--
+ drivers/gpu/drm/drm_atomic.c     |  3 ++-
+ drivers/hwtracing/intel_th/msu.c |  2 +-
+ drivers/pinctrl/pinctrl-utils.c  |  2 +-
+ drivers/vhost/vringh.c           |  3 ++-
+ include/linux/slab.h             | 11 +++++++++++
+ sound/core/pcm_lib.c             |  4 ++--
+ 8 files changed, 23 insertions(+), 10 deletions(-)
+
+-- 
+2.29.1
+
