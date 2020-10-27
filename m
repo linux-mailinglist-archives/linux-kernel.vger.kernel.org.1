@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE2829C0A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF5529C0D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1810962AbgJ0RRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:17:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
+        id S1818103AbgJ0RRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1782913AbgJ0O5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:57:41 -0400
+        id S1783062AbgJ0O5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:57:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7D5B20714;
-        Tue, 27 Oct 2020 14:57:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCD06204FD;
+        Tue, 27 Oct 2020 14:57:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810660;
-        bh=MO537yTZlawsZwUmLjXenwfiZhbXE6ENO0mjI/ZuZ2M=;
+        s=default; t=1603810669;
+        bh=bspOKSrUGSo8AnXtBdhJask40ndEeZ/DSxXRch7Q8r4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=orvyAMcYG/pCFOiocNrYRDU9Q8v1UHOvNqvvR29MXimGNcldyYSCQd4ugacOsXZs3
-         4qKPn3iYLokaaZemhx5tp3u0pgHQ+AoTHS2Rx6doEl2BaiUsABzxzIRUQIssRjzKKk
-         YDW1BOQB1BIPsXYysFmDnEE4fqNQhvh7/N2pwqW8=
+        b=CxA99vXgF/dA6Pk3uQLoYYkFn53HjO8/e/HzLGKaNE1V40V5F5GERF5hz3pHtsED3
+         9v2KbwbEqWo19q7deA8fEnnqlHFNi76z5h/lfe5qQtLTNZUSp+ZQIFAGcTsaEIlFkX
+         kvXPXn6/b08Bu1OGtdDfeZ13Fmd/yqKftWR+3HzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 219/633] scsi: mpt3sas: Fix sync irqs
-Date:   Tue, 27 Oct 2020 14:49:22 +0100
-Message-Id: <20201027135532.959168099@linuxfoundation.org>
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 222/633] xfs: force the log after remapping a synchronous-writes file
+Date:   Tue, 27 Oct 2020 14:49:25 +0100
+Message-Id: <20201027135533.094198077@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -45,58 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Henzl <thenzl@redhat.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 45181eab8ba79ed7a41b549f00500c0093828521 ]
+[ Upstream commit 5ffce3cc22a0e89813ed0c7162a68b639aef9ab6 ]
 
-_base_process_reply_queue() called from _base_interrupt() may schedule a
-new irq poll. Fix this by calling synchronize_irq() first.
+Commit 5833112df7e9 tried to make it so that a remap operation would
+force the log out to disk if the filesystem is mounted with mandatory
+synchronous writes.  Unfortunately, that commit failed to handle the
+case where the inode or the file descriptor require mandatory
+synchronous writes.
 
-Also ensure that enable_irq() is called only when necessary to avoid
-"Unbalanced enable for IRQ..." errors.
+Refactor the check into into a helper that will look for all three
+conditions, and now we can treat reflink just like any other synchronous
+write.
 
-Link: https://lore.kernel.org/r/20200910142126.8147-1-thenzl@redhat.com
-Fixes: 320e77acb327 ("scsi: mpt3sas: Irq poll to avoid CPU hard lockups")
-Acked-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Tomas Henzl <thenzl@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 5833112df7e9 ("xfs: reflink should force the log out if mounted with wsync")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ fs/xfs/xfs_file.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index a85c9672c6ea3..a67749c8f4ab3 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -1808,18 +1808,22 @@ mpt3sas_base_sync_reply_irqs(struct MPT3SAS_ADAPTER *ioc)
- 		/* TMs are on msix_index == 0 */
- 		if (reply_q->msix_index == 0)
- 			continue;
-+		synchronize_irq(pci_irq_vector(ioc->pdev, reply_q->msix_index));
- 		if (reply_q->irq_poll_scheduled) {
- 			/* Calling irq_poll_disable will wait for any pending
- 			 * callbacks to have completed.
- 			 */
- 			irq_poll_disable(&reply_q->irqpoll);
- 			irq_poll_enable(&reply_q->irqpoll);
--			reply_q->irq_poll_scheduled = false;
--			reply_q->irq_line_enable = true;
--			enable_irq(reply_q->os_irq);
--			continue;
-+			/* check how the scheduled poll has ended,
-+			 * clean up only if necessary
-+			 */
-+			if (reply_q->irq_poll_scheduled) {
-+				reply_q->irq_poll_scheduled = false;
-+				reply_q->irq_line_enable = true;
-+				enable_irq(reply_q->os_irq);
-+			}
- 		}
--		synchronize_irq(pci_irq_vector(ioc->pdev, reply_q->msix_index));
- 	}
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 4d7385426149c..3ebc73ccc1337 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -1005,6 +1005,21 @@ xfs_file_fadvise(
+ 	return ret;
  }
  
++/* Does this file, inode, or mount want synchronous writes? */
++static inline bool xfs_file_sync_writes(struct file *filp)
++{
++	struct xfs_inode	*ip = XFS_I(file_inode(filp));
++
++	if (ip->i_mount->m_flags & XFS_MOUNT_WSYNC)
++		return true;
++	if (filp->f_flags & (__O_SYNC | O_DSYNC))
++		return true;
++	if (IS_SYNC(file_inode(filp)))
++		return true;
++
++	return false;
++}
++
+ STATIC loff_t
+ xfs_file_remap_range(
+ 	struct file		*file_in,
+@@ -1062,7 +1077,7 @@ xfs_file_remap_range(
+ 	if (ret)
+ 		goto out_unlock;
+ 
+-	if (mp->m_flags & XFS_MOUNT_WSYNC)
++	if (xfs_file_sync_writes(file_in) || xfs_file_sync_writes(file_out))
+ 		xfs_log_force_inode(dest);
+ out_unlock:
+ 	xfs_reflink_remap_unlock(file_in, file_out);
 -- 
 2.25.1
 
