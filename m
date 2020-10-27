@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E42729C2FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F8F29C2A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1821166AbgJ0Rk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
+        id S1760350AbgJ0Oeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:34:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2902428AbgJ0OdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:33:18 -0400
+        id S2902453AbgJ0Odb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:33:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCBE122265;
-        Tue, 27 Oct 2020 14:33:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C293020773;
+        Tue, 27 Oct 2020 14:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809197;
-        bh=tPpFiGEeiuHNkKpOPzpDHxsPy99FpReOKevH4u5LW74=;
+        s=default; t=1603809211;
+        bh=GAEcYI73tOo/0HcEuL9S2l4FtNXoCbXC1XuSr4iDeCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hSPs0G9Lmt/AaVxMcFQ2qD7g98c9DkWKeq0mktg5pHoZSKNnsad4VRTy8dLJl/poi
-         dFg3JCRpOFPgJGljUUBFsA2F5rzIEowUbqnyncS96/2NYpg2PyBJjivO6P52Y4ynl9
-         pjbc0+KTSNiadVw9sU6PbdxeBE1nqzFm0wtBoyJI=
+        b=mFLCVMVL9QgfQBQNxgHpO5W3Ts3WkJabsBHcTdcHlki2zxtpATxftPlIUk7yvH5bU
+         rNFWAQEO1tSYV+xlmxhjPpnwm6cDGqmV+1MGO7goLKad+tBXBVl8V6uqT7MLMwH3ui
+         yM0QSr8WluUNvYFyvVIPDWKwmPUopMYrGCGigFtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/408] media: rcar_drif: Allocate v4l2_async_subdev dynamically
-Date:   Tue, 27 Oct 2020 14:50:21 +0100
-Message-Id: <20201027135458.923199218@linuxfoundation.org>
+Subject: [PATCH 5.4 085/408] crypto: omap-sham - fix digcnt register handling with export/import
+Date:   Tue, 27 Oct 2020 14:50:23 +0100
+Message-Id: <20201027135459.012909578@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -45,80 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 468e986dac0e94194334ca6d0abf3af8c250792e ]
+[ Upstream commit 3faf757bad75f3fc1b2736f0431e295a073a7423 ]
 
-v4l2_async_notifier_add_subdev() requires the asd to be allocated
-dynamically, but the rcar-drif driver embeds it in the
-rcar_drif_graph_ep structure. This causes memory corruption when the
-notifier is destroyed at remove time with v4l2_async_notifier_cleanup().
+Running export/import for hashes in peculiar order (mostly done by
+openssl) can mess up the internal book keeping of the OMAP SHA core.
+Fix by forcibly writing the correct DIGCNT back to hardware. This issue
+was noticed while transitioning to openssl 1.1 support.
 
-Fix this issue by registering the asd with
-v4l2_async_notifier_add_fwnode_subdev(), which allocates it dynamically
-internally.
-
-Fixes: d079f94c9046 ("media: platform: Switch to v4l2_async_notifier_add_subdev")
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 0d373d603202 ("crypto: omap-sham - Add OMAP4/AM33XX SHAM Support")
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar_drif.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ drivers/crypto/omap-sham.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/platform/rcar_drif.c b/drivers/media/platform/rcar_drif.c
-index 208ff260b0c10..af3c8d405509e 100644
---- a/drivers/media/platform/rcar_drif.c
-+++ b/drivers/media/platform/rcar_drif.c
-@@ -185,7 +185,6 @@ struct rcar_drif_frame_buf {
- /* OF graph endpoint's V4L2 async data */
- struct rcar_drif_graph_ep {
- 	struct v4l2_subdev *subdev;	/* Async matched subdev */
--	struct v4l2_async_subdev asd;	/* Async sub-device descriptor */
- };
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index aba5db3c0588f..d7c0c982ba433 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -453,6 +453,9 @@ static void omap_sham_write_ctrl_omap4(struct omap_sham_dev *dd, size_t length,
+ 	struct omap_sham_reqctx *ctx = ahash_request_ctx(dd->req);
+ 	u32 val, mask;
  
- /* DMA buffer */
-@@ -1105,12 +1104,6 @@ static int rcar_drif_notify_bound(struct v4l2_async_notifier *notifier,
- 	struct rcar_drif_sdr *sdr =
- 		container_of(notifier, struct rcar_drif_sdr, notifier);
- 
--	if (sdr->ep.asd.match.fwnode !=
--	    of_fwnode_handle(subdev->dev->of_node)) {
--		rdrif_err(sdr, "subdev %s cannot bind\n", subdev->name);
--		return -EINVAL;
--	}
--
- 	v4l2_set_subdev_hostdata(subdev, sdr);
- 	sdr->ep.subdev = subdev;
- 	rdrif_dbg(sdr, "bound asd %s\n", subdev->name);
-@@ -1214,7 +1207,7 @@ static int rcar_drif_parse_subdevs(struct rcar_drif_sdr *sdr)
- {
- 	struct v4l2_async_notifier *notifier = &sdr->notifier;
- 	struct fwnode_handle *fwnode, *ep;
--	int ret;
-+	struct v4l2_async_subdev *asd;
- 
- 	v4l2_async_notifier_init(notifier);
- 
-@@ -1233,12 +1226,13 @@ static int rcar_drif_parse_subdevs(struct rcar_drif_sdr *sdr)
- 		return -EINVAL;
- 	}
- 
--	sdr->ep.asd.match.fwnode = fwnode;
--	sdr->ep.asd.match_type = V4L2_ASYNC_MATCH_FWNODE;
--	ret = v4l2_async_notifier_add_subdev(notifier, &sdr->ep.asd);
-+	asd = v4l2_async_notifier_add_fwnode_subdev(notifier, fwnode,
-+						    sizeof(*asd));
- 	fwnode_handle_put(fwnode);
-+	if (IS_ERR(asd))
-+		return PTR_ERR(asd);
- 
--	return ret;
-+	return 0;
- }
- 
- /* Check if the given device is the primary bond */
++	if (likely(ctx->digcnt))
++		omap_sham_write(dd, SHA_REG_DIGCNT(dd), ctx->digcnt);
++
+ 	/*
+ 	 * Setting ALGO_CONST only for the first iteration and
+ 	 * CLOSE_HASH only for the last one. Note that flags mode bits
 -- 
 2.25.1
 
