@@ -2,132 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC8829C60F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AFF29C619
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1825693AbgJ0SMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:12:37 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:43317 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1825662AbgJ0SMZ (ORCPT
+        id S1825719AbgJ0SNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:13:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48280 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1825625AbgJ0SM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:12:25 -0400
-Received: by mail-il1-f196.google.com with SMTP id k1so2343987ilc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NGv1Y/0reu20DBr8S7i4JOZE8sfHN0Ia0VoWgcxjJq4=;
-        b=JMe8vNVo3R2gGH6hqxz3WmFJwUEBTwiTGu9xMdWnrNLe6fle4LBhd0K6gTtvTEgwJi
-         UT+WjdmnSDBiGYlBvo8Fqx+84H/9xfgl6SK66y9qVHZRbWhju7cbHYUSUQXedmbpyrTK
-         lTX7UbBpUzrw6nJifz6eEbpfGkpUAZfQGLnRxUwualNard49/hO7P6SMgCVwjMT6w7Qq
-         ffscM32esnRHZbhvvuuy8VWZigLp/h/EtXan4UXYPuBzamZsN7cl+Kpja0dO9kkesqph
-         jkEbhP7HgweP/CXzPxUwyWNF7wK2uItsT4e7H2E+tyczvQkHg6hIy+0gunBliPDMJHCA
-         d/MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NGv1Y/0reu20DBr8S7i4JOZE8sfHN0Ia0VoWgcxjJq4=;
-        b=o4fe9ZD2d8NnYXFeqcZuzvvc4zYTHIR7QEZfjGFcj+OSvgh+8ImYaSChsrMh3yF5EZ
-         u/KGUy6O9QXgb5Ydv9GZZbVVhZe7QrroxHJpgvc4/CY/7GsmQklwBp9ZMDa7CSuBLMeZ
-         uR+k1DWLjnv5JWHu+T3kH/pv31bCLHkHu3+i8tIWjYOIInP95ErdqKWFhZZM5nY6g29t
-         1NAB0NpM8picydyJ0typEX2Lp49LDJgvNkFkU2yvfd2gmjrTOixgKorE8h5jZbc4Wr0q
-         8SHRql+Mu9wKnWOH9eChk9vP5bqSeGL2i8GdWhrlLLuQnkjRZpV37iJMYTiGJkYE8bY9
-         Vi9w==
-X-Gm-Message-State: AOAM531/Nehf4xq2Qdh/PjcU71fJ0o3U0lj5sAGtVg0VRbZWsjw0PK7J
-        1NBwNYeVCsiyYxlUwXRMGGVL2cUsgnBOJMJjIV222g==
-X-Google-Smtp-Source: ABdhPJyTnQSKpb7ULx8ypqe5smcRjLTr9OXB2hTEElGXWXi2nGDOvd47JBO3gG3Scd0S9SvSSanP4ZAwgFMa+fh1jF4=
-X-Received: by 2002:a92:c5ce:: with SMTP id s14mr3130329ilt.40.1603822344388;
- Tue, 27 Oct 2020 11:12:24 -0700 (PDT)
+        Tue, 27 Oct 2020 14:12:58 -0400
+Date:   Tue, 27 Oct 2020 18:12:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603822375;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L/T3qfd6/noedTp67gMlroGovqNWCG5vnoB1h4Ikd4I=;
+        b=UPCbqo7+leMuPmTPED1zInRf+nJ8PPKIoDcTiPedy7oXN7UGULO9byJ2aYVXXdkd+ILoh+
+        TUM+2GR64u/gl7o21bIJCHLIgkSn2cig/Nvz7F0PoWY8v6dQBaU8RIZkme4T92xkDVhasn
+        kwYY8ndFRU9nk0jwVjQCo+CkHUD+XYt50AE6gzEYJYpHhNcfFUvSSJWl4Wox6oTVl7hsBA
+        9NTOR/i2ljiu/wLYODrTlGjYBwkXPx3oRf2EiKcGPu8JGG+puvT9KubSbwdIFz4qUpIz0A
+        qQtwjjAgvwJkSI554tDlsQxG1cSc3kFqRRXz8o+sm7DErPpbQ7EPyA6vWnuDcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603822375;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L/T3qfd6/noedTp67gMlroGovqNWCG5vnoB1h4Ikd4I=;
+        b=aBp+yOjZKmcYUQOtK/cn1e4tKFdsuuj9BCV97IhhAOLMDLm3ZKJdad5SFT0dKQaWlu7pFo
+        6Tj7ygOP1qk4rSBw==
+From:   "tip-bot2 for Fenghua Yu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Correct MBM total and local values
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201014004927.1839452-3-fenghua.yu@intel.com>
+References: <20201014004927.1839452-3-fenghua.yu@intel.com>
 MIME-Version: 1.0
-References: <20201027135325.22235-1-vincent.whitchurch@axis.com>
-In-Reply-To: <20201027135325.22235-1-vincent.whitchurch@axis.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 27 Oct 2020 19:12:13 +0100
-Message-ID: <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mockup: Allow probing from device tree
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel@axis.com, devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160382237255.397.11894584690572164364.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 2:54 PM Vincent Whitchurch
-<vincent.whitchurch@axis.com> wrote:
->
-> Allow the mockup driver to be probed via the device tree without any
-> module parameters, allowing it to be used to configure and test higher
-> level drivers like the leds-gpio driver and corresponding userspace
-> before actual hardware is available.
->
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
-> v2: Remove most of the added code, since the latest driver doesn't need it.
->     Drop DT binding document, since Rob Herring was OK with not documenting
->     this:
->     https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
->
->  drivers/gpio/gpio-mockup.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-> index 67ed4f238d43..c93892a6936a 100644
-> --- a/drivers/gpio/gpio-mockup.c
-> +++ b/drivers/gpio/gpio-mockup.c
-> @@ -13,6 +13,7 @@
->  #include <linux/gpio/driver.h>
->  #include <linux/interrupt.h>
->  #include <linux/irq.h>
-> +#include <linux/of.h>
+The following commit has been merged into the x86/cache branch of tip:
 
-Please keep the includes ordered alphabetically.
+Commit-ID:     4868a61d498af3627c3b571aa48107a845001e51
+Gitweb:        https://git.kernel.org/tip/4868a61d498af3627c3b571aa48107a845001e51
+Author:        Fenghua Yu <fenghua.yu@intel.com>
+AuthorDate:    Wed, 14 Oct 2020 00:49:27 
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 27 Oct 2020 18:57:22 +01:00
 
->  #include <linux/irq_sim.h>
->  #include <linux/irqdomain.h>
->  #include <linux/module.h>
-> @@ -460,9 +461,18 @@ static int gpio_mockup_probe(struct platform_device *pdev)
->         return 0;
->  }
->
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id gpio_mockup_of_match[] = {
-> +       { .compatible = "gpio-mockup", },
-> +       {},
-> +};
-> +MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
-> +#endif
+x86/resctrl: Correct MBM total and local values
 
-You don't need this ifdef - of_match_ptr() will evaluate to NULL if
-CONFIG_OF is disabled and the compiler will optimize this struct out.
+Intel Memory Bandwidth Monitoring (MBM) counters may report system
+memory bandwidth incorrectly on some Intel processors. The errata SKX99
+for Skylake server, BDF102 for Broadwell server, and the correction
+factor table are documented in Documentation/x86/resctrl.rst.
 
-Bartosz
+Intel MBM counters track metrics according to the assigned Resource
+Monitor ID (RMID) for that logical core. The IA32_QM_CTR register
+(MSR 0xC8E) used to report these metrics, may report incorrect system
+bandwidth for certain RMID values.
 
-> +
->  static struct platform_driver gpio_mockup_driver = {
->         .driver = {
->                 .name = "gpio-mockup",
-> +               .of_match_table = of_match_ptr(gpio_mockup_of_match),
->         },
->         .probe = gpio_mockup_probe,
->  };
-> @@ -556,8 +566,7 @@ static int __init gpio_mockup_init(void)
->  {
->         int i, num_chips, err;
->
-> -       if ((gpio_mockup_num_ranges < 2) ||
-> -           (gpio_mockup_num_ranges % 2) ||
-> +       if ((gpio_mockup_num_ranges % 2) ||
->             (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
->                 return -EINVAL;
->
-> --
-> 2.28.0
->
+Due to the errata, system memory bandwidth may not match what is
+reported.
+
+To work around the errata, correct MBM total and local readings using a
+correction factor table. If rmid > rmid threshold, MBM total and local
+values should be multiplied by the correction factor.
+
+ [ bp: Mark mbm_cf_table[] __initdata. ]
+
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lkml.kernel.org/r/20201014004927.1839452-3-fenghua.yu@intel.com
+---
+ arch/x86/kernel/cpu/resctrl/core.c     |  4 +-
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 82 ++++++++++++++++++++++++-
+ 3 files changed, 85 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index e5f4ee8..1a681fd 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -893,6 +893,10 @@ static __init void __check_quirks_intel(void)
+ 			set_rdt_options("!cmt,!mbmtotal,!mbmlocal,!l3cat");
+ 		else
+ 			set_rdt_options("!l3cat");
++		fallthrough;
++	case INTEL_FAM6_BROADWELL_X:
++		intel_rdt_mbm_apply_quirk();
++		break;
+ 	}
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 80fa997..6cb068f 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -616,6 +616,7 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ void mbm_setup_overflow_handler(struct rdt_domain *dom,
+ 				unsigned long delay_ms);
+ void mbm_handle_overflow(struct work_struct *work);
++void __init intel_rdt_mbm_apply_quirk(void);
+ bool is_mba_sc(struct rdt_resource *r);
+ void setup_default_ctrlval(struct rdt_resource *r, u32 *dc, u32 *dm);
+ u32 delay_bw_map(unsigned long bw, struct rdt_resource *r);
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 54dffe5..622073f 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -64,6 +64,69 @@ unsigned int rdt_mon_features;
+  */
+ unsigned int resctrl_cqm_threshold;
+ 
++#define CF(cf)	((unsigned long)(1048576 * (cf) + 0.5))
++
++/*
++ * The correction factor table is documented in Documentation/x86/resctrl.rst.
++ * If rmid > rmid threshold, MBM total and local values should be multiplied
++ * by the correction factor.
++ *
++ * The original table is modified for better code:
++ *
++ * 1. The threshold 0 is changed to rmid count - 1 so don't do correction
++ *    for the case.
++ * 2. MBM total and local correction table indexed by core counter which is
++ *    equal to (x86_cache_max_rmid + 1) / 8 - 1 and is from 0 up to 27.
++ * 3. The correction factor is normalized to 2^20 (1048576) so it's faster
++ *    to calculate corrected value by shifting:
++ *    corrected_value = (original_value * correction_factor) >> 20
++ */
++static const struct mbm_correction_factor_table {
++	u32 rmidthreshold;
++	u64 cf;
++} mbm_cf_table[] __initdata = {
++	{7,	CF(1.000000)},
++	{15,	CF(1.000000)},
++	{15,	CF(0.969650)},
++	{31,	CF(1.000000)},
++	{31,	CF(1.066667)},
++	{31,	CF(0.969650)},
++	{47,	CF(1.142857)},
++	{63,	CF(1.000000)},
++	{63,	CF(1.185115)},
++	{63,	CF(1.066553)},
++	{79,	CF(1.454545)},
++	{95,	CF(1.000000)},
++	{95,	CF(1.230769)},
++	{95,	CF(1.142857)},
++	{95,	CF(1.066667)},
++	{127,	CF(1.000000)},
++	{127,	CF(1.254863)},
++	{127,	CF(1.185255)},
++	{151,	CF(1.000000)},
++	{127,	CF(1.066667)},
++	{167,	CF(1.000000)},
++	{159,	CF(1.454334)},
++	{183,	CF(1.000000)},
++	{127,	CF(0.969744)},
++	{191,	CF(1.280246)},
++	{191,	CF(1.230921)},
++	{215,	CF(1.000000)},
++	{191,	CF(1.143118)},
++};
++
++static u32 mbm_cf_rmidthreshold __read_mostly = UINT_MAX;
++static u64 mbm_cf __read_mostly;
++
++static inline u64 get_corrected_mbm_count(u32 rmid, unsigned long val)
++{
++	/* Correct MBM value. */
++	if (rmid > mbm_cf_rmidthreshold)
++		val = (val * mbm_cf) >> 20;
++
++	return val;
++}
++
+ static inline struct rmid_entry *__rmid_entry(u32 rmid)
+ {
+ 	struct rmid_entry *entry;
+@@ -260,7 +323,8 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+ 	m->chunks += chunks;
+ 	m->prev_msr = tval;
+ 
+-	rr->val += m->chunks;
++	rr->val += get_corrected_mbm_count(rmid, m->chunks);
++
+ 	return 0;
+ }
+ 
+@@ -280,7 +344,7 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+ 
+ 	chunks = mbm_overflow_count(m->prev_bw_msr, tval, rr->r->mbm_width);
+ 	m->chunks += chunks;
+-	cur_bw = (chunks * r->mon_scale) >> 20;
++	cur_bw = (get_corrected_mbm_count(rmid, chunks) * r->mon_scale) >> 20;
+ 
+ 	if (m->delta_comp)
+ 		m->delta_bw = abs(cur_bw - m->prev_bw);
+@@ -644,3 +708,17 @@ int rdt_get_mon_l3_config(struct rdt_resource *r)
+ 
+ 	return 0;
+ }
++
++void __init intel_rdt_mbm_apply_quirk(void)
++{
++	int cf_index;
++
++	cf_index = (boot_cpu_data.x86_cache_max_rmid + 1) / 8 - 1;
++	if (cf_index >= ARRAY_SIZE(mbm_cf_table)) {
++		pr_info("No MBM correction factor available\n");
++		return;
++	}
++
++	mbm_cf_rmidthreshold = mbm_cf_table[cf_index].rmidthreshold;
++	mbm_cf = mbm_cf_table[cf_index].cf;
++}
