@@ -2,98 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D5029A22A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19D529A22D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 02:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503836AbgJ0BYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 21:24:20 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5169 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409216AbgJ0BYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 21:24:19 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CKvBF6gphz15M7B;
-        Tue, 27 Oct 2020 09:24:21 +0800 (CST)
-Received: from [10.74.191.121] (10.74.191.121) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 27 Oct 2020 09:24:11 +0800
-Subject: Re: [PATCH net] net: hns3: Clear the CMDQ registers before unmapping
- BAR region
-To:     Jakub Kicinski <kuba@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>
-CC:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
-        <tanhuazhong@huawei.com>
-References: <20201023051550.793-1-yuzenghui@huawei.com>
- <3c5c98f9-b4a0-69a2-d58d-bfef977c68ad@huawei.com>
- <e74f0a72-92d1-2ac9-1f4b-191477d673ef@huawei.com>
- <20201026161325.6f33d9c8@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <bca7fb17-2390-7ff3-d62d-fe279af6a225@huawei.com>
-Date:   Tue, 27 Oct 2020 09:24:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S2503852AbgJ0BYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 21:24:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:50539 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503842AbgJ0BYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 21:24:37 -0400
+IronPort-SDR: lG2OCie9uMcdM5BnP7/krBB1D1/q7Ffu2Dy5Ap0aTA/VlbSi63psk7kdQkl82fA5aofMKCi0ok
+ n06kphYu2Qiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="165421119"
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="165421119"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 18:24:36 -0700
+IronPort-SDR: 6NmLwTBEWfrCpL1SxpFnfrcWRhcyVnrqQR3aGmAH2QtYp0AKqSGFTdzE7kLcYB5BBCTImMdMOq
+ iCwemuy/LOnA==
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="535587383"
+Received: from ksprzacz-mobl1.ger.corp.intel.com (HELO linux.intel.com) ([10.252.59.214])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 18:24:30 -0700
+Date:   Tue, 27 Oct 2020 03:24:25 +0200
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     trix@redhat.com
+Cc:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, jejb@linux.ibm.com, dhowells@redhat.com,
+        mortonm@chromium.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
+Subject: Re: [PATCH] security: remove unneeded break
+Message-ID: <20201027012425.GA20485@linux.intel.com>
+References: <20201019173653.527-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201026161325.6f33d9c8@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019173653.527-1-trix@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/27 7:13, Jakub Kicinski wrote:
-> On Fri, 23 Oct 2020 15:01:14 +0800 Zenghui Yu wrote:
->> On 2020/10/23 14:22, Yunsheng Lin wrote:
->>> On 2020/10/23 13:15, Zenghui Yu wrote:  
->>>> When unbinding the hns3 driver with the HNS3 VF, I got the following
->>>> kernel panic:
->>>>
->>>> [  265.709989] Unable to handle kernel paging request at virtual address ffff800054627000
->>>> [  265.717928] Mem abort info:
->>>> [  265.720740]   ESR = 0x96000047
->>>> [  265.723810]   EC = 0x25: DABT (current EL), IL = 32 bits
->>>> [  265.729126]   SET = 0, FnV = 0
->>>> [  265.732195]   EA = 0, S1PTW = 0
->>>> [  265.735351] Data abort info:
->>>> [  265.738227]   ISV = 0, ISS = 0x00000047
->>>> [  265.742071]   CM = 0, WnR = 1
->>>> [  265.745055] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000009b54000
->>>> [  265.751753] [ffff800054627000] pgd=0000202ffffff003, p4d=0000202ffffff003, pud=00002020020eb003, pmd=00000020a0dfc003, pte=0000000000000000
->>>> [  265.764314] Internal error: Oops: 96000047 [#1] SMP
->>>> [  265.830357] CPU: 61 PID: 20319 Comm: bash Not tainted 5.9.0+ #206
->>>> [  265.836423] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.05 09/18/2019
->>>
->>> Do you care to provide the testcase for above calltrace?  
->>
->> I noticed it with VFIO, but it's easy to reproduce it manually. Here you
->> go:
->>
->>    # cat /sys/bus/pci/devices/0000\:7d\:00.2/sriov_totalvfs
->> 3
->>    # echo 3 > /sys/bus/pci/devices/0000\:7d\:00.2/sriov_numvfs
->>    # lspci | grep "Virtual Function"
->> 7d:01.6 Ethernet controller: Huawei Technologies Co., Ltd. HNS RDMA 
->> Network Controller (Virtual Function) (rev 21)
->> 7d:01.7 Ethernet controller: Huawei Technologies Co., Ltd. HNS RDMA 
->> Network Controller (Virtual Function) (rev 21)
->> 7d:02.0 Ethernet controller: Huawei Technologies Co., Ltd. HNS RDMA 
->> Network Controller (Virtual Function) (rev 21)
->>    # echo 0000:7d:01.6 > /sys/bus/pci/devices/0000:7d:01.6/driver/unbind
+On Mon, Oct 19, 2020 at 10:36:53AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> Do you know if the bug occurred on 5.4? Is this the correct fixes tag?
+> A break is not needed if it is preceded by a return
 > 
-> Fixes: 862d969a3a4d ("net: hns3: do VF's pci re-initialization while PF doing FLR")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-The correct Fixes tag should be:
+Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-Fixes: e3338205f0c7 ("net: hns3: uninitialize pci in the hclgevf_uninit")
-
-Thanks
-
-> 
-> .
-> 
+/Jarkko
