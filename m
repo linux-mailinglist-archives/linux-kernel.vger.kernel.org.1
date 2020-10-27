@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B1529B883
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B352429B9C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800481AbgJ0Pfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
+        id S1802865AbgJ0Pvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799698AbgJ0Pcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:32:55 -0400
+        id S1799801AbgJ0Pd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:33:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFF8222202;
-        Tue, 27 Oct 2020 15:32:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0D0220728;
+        Tue, 27 Oct 2020 15:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812774;
-        bh=1NVx5rLyal8hpuvHe85OB/FAzDsAwKW3xaNGwbHZY2E=;
+        s=default; t=1603812806;
+        bh=6exmvv24Fw1hTJU2vCCViY2Mbn6vNEO8CK2HmvC1JzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NNp4sAbiXOdR5InDqzILYYesInpMxOGQOLw7/FFl2SigRuSyWNdHCc3CZPy1CfaFd
-         5qZfwEaIXz2HXb+9gNBaSW0312JpXoFHpZ2pvSXWtOC9JQ424Z29juufxXXSSjChsp
-         zbsby4MkFB3k9kdRxTuMq85axnTYhoRzaZjda0jo=
+        b=oDKcR6BEZzghhalXQeMmPBXISvttiXyriObqUBtnW8BFg4gSuFMAVdFLrAKY+bNaq
+         ThhWPoi34xVq1SC9sEPz2c9/PHz/BWUA7eDBwsfq1/sGBd+In7lopuAOjewL7+dxx6
+         fp9ZGYzwkOs7L2/CmIYDd0FkaLNZ6FzhXXprzVMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 308/757] ALSA: seq: oss: Avoid mutex lock for a long-time ioctl
-Date:   Tue, 27 Oct 2020 14:49:18 +0100
-Message-Id: <20201027135505.003866131@linuxfoundation.org>
+        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 309/757] net/mlx5e: IPsec: Use kvfree() for memory allocated with kvzalloc()
+Date:   Tue, 27 Oct 2020 14:49:19 +0100
+Message-Id: <20201027135505.042062755@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -42,47 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Denis Efremov <efremov@linux.com>
 
-[ Upstream commit 2759caad2600d503c3b0ed800e7e03d2cd7a4c05 ]
+[ Upstream commit 22db4c24452a6681c7e99c6a06b38b5418395bec ]
 
-Recently we applied a fix to cover the whole OSS sequencer ioctls with
-the mutex for dealing with the possible races.  This works fine in
-general, but in theory, this may lead to unexpectedly long stall if an
-ioctl like SNDCTL_SEQ_SYNC is issued and an event with the far future
-timestamp was queued.
+Variables flow_group_in, spec in rx_fs_create() are allocated with
+kvzalloc(). It's incorrect to free them with kfree(). Use kvfree()
+instead.
 
-For fixing such a potential stall, this patch changes the mutex lock
-applied conditionally excluding such an ioctl command.  Also, change
-the mutex_lock() with the interruptible version for user to allow
-escaping from the big-hammer mutex.
-
-Fixes: 80982c7e834e ("ALSA: seq: oss: Serialize ioctls")
-Suggested-by: Pavel Machek <pavel@ucw.cz>
-Link: https://lore.kernel.org/r/20200922083856.28572-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 5e466345291a ("net/mlx5e: IPsec: Add IPsec steering in local NIC RX")
+Signed-off-by: Denis Efremov <efremov@linux.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/oss/seq_oss.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/seq/oss/seq_oss.c b/sound/core/seq/oss/seq_oss.c
-index c8b9c0b315d8f..250a92b187265 100644
---- a/sound/core/seq/oss/seq_oss.c
-+++ b/sound/core/seq/oss/seq_oss.c
-@@ -174,9 +174,12 @@ odev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	if (snd_BUG_ON(!dp))
- 		return -ENXIO;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
+index 429428bbc903c..b974f3cd10058 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
+@@ -228,8 +228,8 @@ static int rx_fs_create(struct mlx5e_priv *priv,
+ 	fs_prot->miss_rule = miss_rule;
  
--	mutex_lock(&register_mutex);
-+	if (cmd != SNDCTL_SEQ_SYNC &&
-+	    mutex_lock_interruptible(&register_mutex))
-+		return -ERESTARTSYS;
- 	rc = snd_seq_oss_ioctl(dp, cmd, arg);
--	mutex_unlock(&register_mutex);
-+	if (cmd != SNDCTL_SEQ_SYNC)
-+		mutex_unlock(&register_mutex);
- 	return rc;
+ out:
+-	kfree(flow_group_in);
+-	kfree(spec);
++	kvfree(flow_group_in);
++	kvfree(spec);
+ 	return err;
  }
  
 -- 
