@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F92729B598
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFCD29B58A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794783AbgJ0PNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:13:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40328 "EHLO mail.kernel.org"
+        id S1794723AbgJ0PNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:13:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1792705AbgJ0PGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:06:09 -0400
+        id S1793164AbgJ0PGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:06:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7529321707;
-        Tue, 27 Oct 2020 15:06:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B81B206E5;
+        Tue, 27 Oct 2020 15:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811169;
-        bh=3w4MIXeh8IKYH+mUDyfUlU+z15dNC+PVjEr1TiFW/rw=;
+        s=default; t=1603811174;
+        bh=xPTYDqcKFPNokPQ4YG2zVjKrCaVG4vsCuNK5PQRUCM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UPHhYJpbLEL2XuKUL5uUOPFTPHTPZmQOqQ7v2f951imaXFzAXm9Wmj/vM4oJrhsC9
-         sGfvWIWJEsJVK1CKNrjjw2i49UJustN3+0dyMQLu+8eUg86ZgaG3vUfcE7Ksf8WJI9
-         M0S/tAuYQ5GTJm/LtzxJGayAuhO9MRRIVxd9ZSt8=
+        b=Onofla2ZqIN/N1RFMhKjOA+bnP1ozV3eTuey7PFQPgzOlutB8PsZNHuNgv+mBc0uU
+         lnKoS/EZrLAkPF3kCzi55kkB2v7EAI/nxLfXYnSXt8jHwpVLFU/lPSkW6yzq2lWBpy
+         YHq+VV0oyWibZydmhsh/Clsx38sLI22JSSDbAENU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 397/633] powerpc/64: fix irq replay missing preempt
-Date:   Tue, 27 Oct 2020 14:52:20 +0100
-Message-Id: <20201027135541.336660495@linuxfoundation.org>
+Subject: [PATCH 5.8 399/633] powerpc/perf: Exclude pmc5/6 from the irrelevant PMU group constraints
+Date:   Tue, 27 Oct 2020 14:52:22 +0100
+Message-Id: <20201027135541.429691096@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,53 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-[ Upstream commit 903fd31d3212ab72d564c68f6cfb5d04db68773e ]
+[ Upstream commit 3b6c3adbb2fa42749c3d38cfc4d4d0b7e096bb7b ]
 
-Prior to commit 3282a3da25bd ("powerpc/64: Implement soft interrupt
-replay in C"), replayed interrupts returned by the regular interrupt
-exit code, which performs preemption in case an interrupt had set
-need_resched.
+PMU counter support functions enforces event constraints for group of
+events to check if all events in a group can be monitored. Incase of
+event codes using PMC5 and PMC6 ( 500fa and 600f4 respectively ), not
+all constraints are applicable, say the threshold or sample bits. But
+current code includes pmc5 and pmc6 in some group constraints (like
+IC_DC Qualifier bits) which is actually not applicable and hence
+results in those events not getting counted when scheduled along with
+group of other events. Patch fixes this by excluding PMC5/6 from
+constraints which are not relevant for it.
 
-This logic was missed by the conversion. Adding preempt_disable/enable
-around the interrupt replay and final irq enable will reschedule if
-needed.
-
-Fixes: 3282a3da25bd ("powerpc/64: Implement soft interrupt replay in C")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Fixes: 7ffd948 ("powerpc/perf: factor out power8 pmu functions")
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200915114650.3980244-1-npiggin@gmail.com
+Link: https://lore.kernel.org/r/1600672204-1610-1-git-send-email-atrajeev@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/irq.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/powerpc/perf/isa207-common.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/powerpc/kernel/irq.c b/arch/powerpc/kernel/irq.c
-index 05b1cc0e009e4..297ee79febc6c 100644
---- a/arch/powerpc/kernel/irq.c
-+++ b/arch/powerpc/kernel/irq.c
-@@ -368,6 +368,12 @@ notrace void arch_local_irq_restore(unsigned long mask)
+diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
+index 4c86da5eb28ab..0b5c8f4fbdbfd 100644
+--- a/arch/powerpc/perf/isa207-common.c
++++ b/arch/powerpc/perf/isa207-common.c
+@@ -269,6 +269,15 @@ int isa207_get_constraint(u64 event, unsigned long *maskp, unsigned long *valp)
+ 
+ 		mask  |= CNST_PMC_MASK(pmc);
+ 		value |= CNST_PMC_VAL(pmc);
++
++		/*
++		 * PMC5 and PMC6 are used to count cycles and instructions and
++		 * they do not support most of the constraint bits. Add a check
++		 * to exclude PMC5/6 from most of the constraints except for
++		 * EBB/BHRB.
++		 */
++		if (pmc >= 5)
++			goto ebb_bhrb;
+ 	}
+ 
+ 	if (pmc <= 4) {
+@@ -335,6 +344,7 @@ int isa207_get_constraint(u64 event, unsigned long *maskp, unsigned long *valp)
  		}
  	}
  
-+	/*
-+	 * Disable preempt here, so that the below preempt_enable will
-+	 * perform resched if required (a replayed interrupt may set
-+	 * need_resched).
-+	 */
-+	preempt_disable();
- 	irq_soft_mask_set(IRQS_ALL_DISABLED);
- 	trace_hardirqs_off();
- 
-@@ -377,6 +383,7 @@ notrace void arch_local_irq_restore(unsigned long mask)
- 	trace_hardirqs_on();
- 	irq_soft_mask_set(IRQS_ENABLED);
- 	__hard_irq_enable();
-+	preempt_enable();
- }
- EXPORT_SYMBOL(arch_local_irq_restore);
- 
++ebb_bhrb:
+ 	if (!pmc && ebb)
+ 		/* EBB events must specify the PMC */
+ 		return -1;
 -- 
 2.25.1
 
