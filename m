@@ -2,145 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D395729C7CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4702C29C7D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829117AbgJ0Suj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:50:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40166 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1829134AbgJ0Sug (ORCPT
+        id S1829181AbgJ0SvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:51:10 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46563 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442713AbgJ0SvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:50:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603824619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+0Ba8mUgAE+0hU6zaMSaF5/fsLeGgzIX1yGstr4Luok=;
-        b=cMHw1ZhaC3EVWWK9skZpX8RQGnGjXJpxEcinu9q9LtnoL8Ezs+duv9HmVpbg+8pRB0RfZI
-        sntLomqSyI9iff5aM53stx/ghIELancR1D2DXZ1+oxc3uGgjt5t8OH3yzrbv19k0Gpp3bz
-        IZYBWpI4MqNPTE4G752y34YU7xh2iLU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-ZB97D6P6P9mBG0tXGa3pDg-1; Tue, 27 Oct 2020 14:50:17 -0400
-X-MC-Unique: ZB97D6P6P9mBG0tXGa3pDg-1
-Received: by mail-wm1-f72.google.com with SMTP id b23so907329wmj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:50:16 -0700 (PDT)
+        Tue, 27 Oct 2020 14:51:03 -0400
+Received: by mail-wr1-f66.google.com with SMTP id n6so3051940wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xZvOPp8kVilTXiarx7tF8Az0EBe1RW6Y/QV8MotyV8s=;
+        b=E+QQVJ6LfsGiPw+sjgvs9YvBaCMf1GKIz7ybqinbvbTMr1KW7mqY4QeBxNzuBdpThA
+         5nblxw4cSCvxn53HUmGzrWW56wSRcZpEwRo8h3Il6vyoNnQIHYZG/9MPA2jqo8IOuzOL
+         8MTCtvJdUGydgE1zIBJMJEYdbTnFiHIdKO51I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+0Ba8mUgAE+0hU6zaMSaF5/fsLeGgzIX1yGstr4Luok=;
-        b=bk11MOHEW7AhzSNeD9gWBfcWowVkcwEWV7MDm8PoX8+S4JmLlfMqJxdOJuImqqIQbD
-         sK2VWfXfswO8ImgV4NAmz+Ovv/t9TBqTJd7IF1x5QvhZMFG7xSVe/YEQdRbFzBVN1bso
-         XXv4/YGfR9EveIiWWHoVk7+8eevbTPe3KlPc+43BaxosgiNdUQKE4np9Lc5eAP0yiULu
-         xPjHDUKA8QsMmNMge2KnQWY1cboigk1mvxe9jBy/9vjN3z3RseDDSE5fQtz4WEyJ/ZhB
-         nEpcvroFiY6xE+tSkrrJm/g0c4ETHMixWhqBKslHOuLd0ePuFVtDaXE0hT7PCWsPebBY
-         nJaQ==
-X-Gm-Message-State: AOAM5302lo7Ok26LkOYb6h8TWVpa/jgzDafz+O6Eq1lIr7GTRx+w8M5I
-        MTHabLmmuNZVErvoxeHBvEzKb4RsJYXzjg15O2FxqxrnyMASf4rBXQX4uTOGLO3PJGNZwBkreRG
-        sIHC1B0WRzHu4LMdHKUaz9+bG
-X-Received: by 2002:adf:ce12:: with SMTP id p18mr4432352wrn.52.1603824615605;
-        Tue, 27 Oct 2020 11:50:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1G9oFzSvrpOHbfb2BWS1dQWrwHlZzXL2MnGZ5QN/1YxSdA1cwYTpx8mRXDExt+HsekkIKpQ==
-X-Received: by 2002:adf:ce12:: with SMTP id p18mr4432325wrn.52.1603824615356;
-        Tue, 27 Oct 2020 11:50:15 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x81sm2920137wmb.11.2020.10.27.11.50.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 11:50:14 -0700 (PDT)
-Subject: Re: [PATCH 3/3] sched: Add cond_resched_rwlock
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <20201027164950.1057601-1-bgardon@google.com>
- <20201027164950.1057601-3-bgardon@google.com>
- <20201027184440.GN2628@hirez.programming.kicks-ass.net>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <31db67e0-bd9f-ff6d-2cee-b60ad52f71b2@redhat.com>
-Date:   Tue, 27 Oct 2020 19:50:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=xZvOPp8kVilTXiarx7tF8Az0EBe1RW6Y/QV8MotyV8s=;
+        b=uLFUVP4qj4xMSn9FrOD+S7VGc19e58dRXTqFlSpPK5ZaxCkMy4ZZaT/iRwHIChIF7Y
+         bFKFNxDT8TBBuoUYmi8wgB+A3MR046DeFU+VNq1vvHkhGmYpwx76iJn2KdA1QsLuHELM
+         h9M9CV5nlPw+rf8au5kdMT5D8qYCZckdz3Tky+4BrI2jFkySP14E1JDAbSA/qum0gh0p
+         p7SJlJOtJJztTT6jlqjmPKSzFO04tt7iQsrQRJEqFZ9GE+KBiIZswBnTyKjRsGS6V/fF
+         +fcxmCaBfc3B0uLkYTrbUE3DNdgAj4kIIWWkaW66xhrS0xVZOeLNeNeiM9CsSeC1zIkv
+         V3Wg==
+X-Gm-Message-State: AOAM533EUNFNlO0H8/W/FIu6IGn0YFTbeBaVQ30W2vryKCjzefx9SKU3
+        m0n/mKPd7kpv6ny/3idfl5NqXA==
+X-Google-Smtp-Source: ABdhPJynFNg4Z7kz02rR4kjthPaTiI0vcEd436zZEQWyrQ9iXhwvzQ88EYNHIKOIDvTpL9kSzGn5Jg==
+X-Received: by 2002:adf:e446:: with SMTP id t6mr4255615wrm.46.1603824661583;
+        Tue, 27 Oct 2020 11:51:01 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 24sm2884131wmg.8.2020.10.27.11.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 11:51:00 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 19:50:58 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] Fonts: Make font size unsigned in font_desc
+Message-ID: <20201027185058.GM401619@phenom.ffwll.local>
+Mail-Followup-To: Peilin Ye <yepeilin.cs@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-parisc@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1603788511.git.yepeilin.cs@gmail.com>
+ <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+ <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201027184440.GN2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/20 19:44, Peter Zijlstra wrote:
-> On Tue, Oct 27, 2020 at 09:49:50AM -0700, Ben Gardon wrote:
+On Tue, Oct 27, 2020 at 12:33:05PM -0400, Peilin Ye wrote:
+> It is improper to define `width` and `height` as signed in `struct
+> font_desc`. Make them unsigned. Also, change the corresponding printk()
+> format identifiers from `%d` to `%u`, in sti_select_fbfont().
 > 
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index d2003a7d5ab55..ac58e7829a063 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -6152,6 +6152,46 @@ int __cond_resched_lock(spinlock_t *lock)
->>  }
->>  EXPORT_SYMBOL(__cond_resched_lock);
->>  
->> +int __cond_resched_rwlock_read(rwlock_t *lock)
->> +{
->> +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
->> +	int ret = 0;
->> +
->> +	lockdep_assert_held(lock);
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+
+I'm not entirely sure of the motivation here ... height/width should never
+ever be even close to the limit here. Or have you seen integer math that
+could potentially go wrong if we go with unsigned instead of int?
+-Daniel
+
+> ---
+> Build-tested.
 > 
-> 	lockdep_assert_held_read(lock);
+>  drivers/video/console/sticore.c | 2 +-
+>  include/linux/font.h            | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
->> +
->> +	if (rwlock_needbreak(lock) || resched) {
->> +		read_unlock(lock);
->> +		if (resched)
->> +			preempt_schedule_common();
->> +		else
->> +			cpu_relax();
->> +		ret = 1;
->> +		read_lock(lock);
->> +	}
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(__cond_resched_rwlock_read);
->> +
->> +int __cond_resched_rwlock_write(rwlock_t *lock)
->> +{
->> +	int resched = should_resched(PREEMPT_LOCK_OFFSET);
->> +	int ret = 0;
->> +
->> +	lockdep_assert_held(lock);
-> 
-> 	lockdep_assert_held_write(lock);
-> 
->> +
->> +	if (rwlock_needbreak(lock) || resched) {
->> +		write_unlock(lock);
->> +		if (resched)
->> +			preempt_schedule_common();
->> +		else
->> +			cpu_relax();
->> +		ret = 1;
->> +		write_lock(lock);
->> +	}
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(__cond_resched_rwlock_write);
-> 
-> If this is the only feedback (the patches look fine to me), don't bother
-> resending, I'll edit them when applying.
+> diff --git a/drivers/video/console/sticore.c b/drivers/video/console/sticore.c
+> index 6a26a364f9bd..d1bb5915082b 100644
+> --- a/drivers/video/console/sticore.c
+> +++ b/drivers/video/console/sticore.c
+> @@ -502,7 +502,7 @@ sti_select_fbfont(struct sti_cooked_rom *cooked_rom, const char *fbfont_name)
+>  	if (!fbfont)
+>  		return NULL;
+>  
+> -	pr_info("STI selected %dx%d framebuffer font %s for sticon\n",
+> +	pr_info("STI selected %ux%u framebuffer font %s for sticon\n",
+>  			fbfont->width, fbfont->height, fbfont->name);
+>  			
+>  	bpc = ((fbfont->width+7)/8) * fbfont->height; 
+> diff --git a/include/linux/font.h b/include/linux/font.h
+> index b5b312c19e46..4f50d736ea72 100644
+> --- a/include/linux/font.h
+> +++ b/include/linux/font.h
+> @@ -16,7 +16,7 @@
+>  struct font_desc {
+>      int idx;
+>      const char *name;
+> -    int width, height;
+> +    unsigned int width, height;
+>      const void *data;
+>      int pref;
+>  };
+> -- 
+> 2.25.1
 > 
 
-If that is an Acked-by, I'll merge them through the KVM tree when time
-comes.
-
-Paolo
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
