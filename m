@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE52B29CC29
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A6629CBFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 23:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756810AbgJ0WqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 18:46:05 -0400
-Received: from gproxy8-pub.mail.unifiedlayer.com ([67.222.33.93]:45531 "EHLO
-        gproxy8-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1756659AbgJ0WqE (ORCPT
+        id S1832421AbgJ0Wci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 18:32:38 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:49054 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2506391AbgJ0Wch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:46:04 -0400
-X-Greylist: delayed 1289 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Oct 2020 18:46:03 EDT
-Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
-        by gproxy8.mail.unifiedlayer.com (Postfix) with ESMTP id B383E1AB00C
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 16:24:32 -0600 (MDT)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id XXOKkQvFkeMJHXXOKkciod; Tue, 27 Oct 2020 16:24:32 -0600
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=Y8/WTCWN c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=afefHYAZSVUA:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=j8Cu_9a8AAAA:8
- a=IoZbvd0QVz0GP0qJnMMA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=Qzt0FRFQUfIA:10:nop_sms_unsolicited a=A2jcf3dkIZPIRbEE90CI:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=qLNHaShxH+BuYmX86ec/p6Gc60doNdEEhXQaMzUstV4=; b=5hCULJrjtZ5hkLqVniTdyRnP1I
-        FqiJDKbAXrV5XvC9qLUPCeNUknjOCV1rr8WEmzKjH2iqztwrn5OIfaoIQT/6OLcsiU0/5aiU9d5k8
-        TotIQwa+Ji+/hFrZXlB8xa0pJwCAXpKBFDePVz9BfDGYnm3lK2LwqCxonV7UxqXAxCHbYUVyIqh6R
-        mFvMqEwhqYZCZBN+Ce5WSQfASI5wbtFYKgs7yNnyBa0sM2830IInnIHerVovX5T6m/B9papAwJMmj
-        C1V6fKxHveV3CyCvkp/obeVYRnncrXi/Qae9KmQlgEIis6B6fb4T5/3pCyK9EEVChujYrjBEa27iD
-        jo1Vsw6g==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:50372 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kXXOI-000UYu-FO; Tue, 27 Oct 2020 22:24:30 +0000
-Date:   Tue, 27 Oct 2020 15:24:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-samsung-soc@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nks@flawful.org, georgi.djakov@linaro.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
- -EPROBE_DEFER
-Message-ID: <20201027222428.GA125472@roeck-us.net>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+        Tue, 27 Oct 2020 18:32:37 -0400
+Received: from mailhost.synopsys.com (sv2-mailhost1.synopsys.com [10.205.2.133])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 4885E40515;
+        Tue, 27 Oct 2020 22:32:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1603837956; bh=Sja1KZoIneYVxxUnkZzOBZp8oo90HsWHX/KK4Q7CDf4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MKdrgiFjoU9OwyG2l+530lFHRM3Umm0ABuAwQgl9tEEPtagDWQ9s+O4a82hsVx3rL
+         9dVdUApGKD1nsShPqIPhAwUiYqUOBhQ9CuQbJ/a34yTW+EQJw9rZ4u4imaCbx6sD4z
+         /Iy3IXb8eS+HGJTbm2Gr3tOPRID3m9JdvDpouPM91qMP/Tbom4CAfdh8WH207E0Gg6
+         9IdBvlWiTxHd6bk3Fezq2St1ECL+6im6goDAhimCK82tN77TFyBLmmNlQpHzlVXO/1
+         OsIjKq38EsdGdirY6KW3co3AleQUCUP5Di27h18KjEPhTLuYbUKj6VhXvlbitjEssY
+         0tyVSVuiFS8DQ==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (unknown [10.13.183.89])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 9DF40A0096;
+        Tue, 27 Oct 2020 22:32:34 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Alexey.Brodkin@synopsys.com,
+        Eugeniy.Paltsev@synopsys.com, Igor.Guryanov@synopsys.com,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: [PATCH] ARC: stack unwinding: avoid indefinite looping
+Date:   Tue, 27 Oct 2020 15:32:33 -0700
+Message-Id: <20201027223233.3199386-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kXXOI-000UYu-FO
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:50372
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 4
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying again through different e-mail provider. My previous e-mail
-got stuck in spam filters. Apologies if this is received multiple
-times.
+Currently stack unwinder is a while(1) loop which relies on the dwarf
+unwinder to signal termination, which in turn relies on dwarf info to do
+so. This in theory could cause an infinite loop if the dwarf info was
+somehow messed up or the register contents were etc.
 
-On Mon, Aug 24, 2020 at 02:39:32PM +0530, Viresh Kumar wrote:
-> From: Stephan Gerhold <stephan@gerhold.net>
-> 
-[ ... ]
->  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!opp_table)
-> -		return ERR_PTR(-ENOMEM);
-> +	if (!IS_ERR(opp_table))
-> +		return opp_table;
+This fix thus detects the excessive looping and breaks the loop.
 
-This should have been
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/kernel/stacktrace.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-	if (IS_ERR(opp_table))
-		return opp_table;
+diff --git a/arch/arc/kernel/stacktrace.c b/arch/arc/kernel/stacktrace.c
+index bf40e06f3fb8..0fed32b95923 100644
+--- a/arch/arc/kernel/stacktrace.c
++++ b/arch/arc/kernel/stacktrace.c
+@@ -115,7 +115,7 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
+ 		int (*consumer_fn) (unsigned int, void *), void *arg)
+ {
+ #ifdef CONFIG_ARC_DW2_UNWIND
+-	int ret = 0;
++	int ret = 0, cnt = 0;
+ 	unsigned int address;
+ 	struct unwind_frame_info frame_info;
+ 
+@@ -135,6 +135,11 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
+ 			break;
+ 
+ 		frame_info.regs.r63 = frame_info.regs.r31;
++
++		if (cnt++ > 128) {
++			printk("unwinder looping too long, aborting !\n");
++			return 0;
++		}
+ 	}
+ 
+ 	return address;		/* return the last address it saw */
+-- 
+2.25.1
 
-Guenter
