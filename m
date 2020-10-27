@@ -2,167 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24EC29C4F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CA329C4FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1824021AbgJ0SBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 14:01:38 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:45011 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1823710AbgJ0SBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 14:01:00 -0400
-Received: by mail-io1-f65.google.com with SMTP id z17so2505285iog.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ed3AIF7qFllVghkuMSpgY+e4IbkAvQfdceeKpQaUdxk=;
-        b=UoiZn2ejgC7wXGBMzC5P1HZYY0nl6Wa3KE0/4S9Ciuieo7WYMXpDS0Iaqpc4XiAPdO
-         qMSPbldaS4qotDJxt10RTbnG9MLtwWkVWivTQZrOtp1ibfKEiirPfM/hcYKscWcE5G9+
-         hdA0OqGIyHCG+6wpH2Tcj5TcpWPTkljgGKnbGOzRrgHXz7X+jipA9gLH6g8zN/Jx0l4s
-         /OKkLzKstGxFD2CYIuU1B33wI1K0Ml8+qKW5x8c0LoZzpt+1zSKoX87G79JYtOSZ/rG6
-         gJ+d5QJ1DFf7m/UdqRG6MK7XEwKpEIVQ7cBBbC41y7jJlAMtCPK8jhzSkqrf6tO37h92
-         JCSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ed3AIF7qFllVghkuMSpgY+e4IbkAvQfdceeKpQaUdxk=;
-        b=U4GkDQU7S03kZAr30ZcIfcEuVSB0OIgzhCMRdh/VNVm2NDeud7AmfGZWV08lO26Y+m
-         IKj/j7MIfYDzd6J6D3RW3L+tBTWgFklQfUsmwlWWKvE0ppCSwsCfdgp4FPzxZSP8DDG+
-         6rYWjYLfxBDo7vKNF89OKurlXzH9y1ALf1PcGx3mN7RSgdJvNfzZ/9NDJBVzaUBBHrsh
-         W4H6q8BL95WF0sHBUqQmkNYhIXJoNhdXq69Qk4YjMWHwLiuM5DG3PF/EIB7ReuLtEsKs
-         lwZK/R/r7lP1YxK2Y+TJunkdCC4miLPCAt/0kXI5DWqVoOgSFnMltIdTB9XnDq9MrmRN
-         l8Ig==
-X-Gm-Message-State: AOAM533RoZEkBKVHt1fd7U+YyuMU3HAve3/PgU9nihWbGa0lJESYmJVi
-        SfuL+DQKPuiGvghApFUNnZ/C5hqSbIBb/z9YNZK0Ng==
-X-Google-Smtp-Source: ABdhPJwN08N0ZyzhoITVdnvB4ryeaKood+3vq0iIUYgCE2JJfuXumCj2bIDB2qD60OdiaWwDhRbGH3iAIo+DCc+ziro=
-X-Received: by 2002:a6b:f401:: with SMTP id i1mr3323522iog.130.1603821657825;
- Tue, 27 Oct 2020 11:00:57 -0700 (PDT)
+        id S1824029AbgJ0SBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1814692AbgJ0SBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 14:01:07 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A39E222D9
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 18:01:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603821666;
+        bh=TzTwdAMYcD4LPCWjUhVT3CxdGaolHmO/jVpnkosMXy8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=z5mk9ns0PmrZb8SGFBMQ/FIlShHAHi50QXpeAZF/33pPmCsNkL0R4oKTRFo77NRm/
+         yqkjeSrsyrRUn8VZx9LBdCa2r0UbgwPXUiseRgH4XSRWEptJESe9JAPXi6jF0XpxDK
+         3EAIAibnNinkj0vIswmyMlD8axqESRiQ5v9idJnc=
+Received: by mail-wr1-f48.google.com with SMTP id e17so2905734wru.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 11:01:05 -0700 (PDT)
+X-Gm-Message-State: AOAM533/sC+S3KKHb/hT34pdUVnBL5lrQ/Y1XAHzcRSPFJx4WS5Qq9GW
+        bUdDH14LBUNISPaxNv8ZAPsqdM9gGM1G7ExCbgBwgg==
+X-Google-Smtp-Source: ABdhPJxqlszRQTrZ+ysE5KwQCRoFWTNryUspjt1j6bAb6OacxUZmjCBpmOpk//lGSL9F3x8psgHj3QwvJYbmG1VqvYY=
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr4306851wrw.18.1603821664354;
+ Tue, 27 Oct 2020 11:01:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027121725.24660-1-brgl@bgdev.pl> <20201027121725.24660-4-brgl@bgdev.pl>
- <20201027112607-mutt-send-email-mst@kernel.org> <685d850347a1191bba8ba7766fc409b140d18f03.camel@perches.com>
- <CAMpxmJU0C84DjPmqmWvPgv0zwgGLhkpKLRDuKkZHAa=wi+LvBA@mail.gmail.com> <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
-In-Reply-To: <2767969b94fd66db1fb0fc13b5783ae65b7deb2f.camel@perches.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 27 Oct 2020 19:00:46 +0100
-Message-ID: <CAMRc=McvW_E0aE2Ep=3aZvb=kNDMz6=ZH-EQzARAD-tyJG5Rrg@mail.gmail.com>
-Subject: Re: [PATCH 3/8] vhost: vringh: use krealloc_array()
-To:     Joe Perches <joe@perches.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-drm <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        netdev <netdev@vger.kernel.org>, linux-mm@kvack.org,
-        Linux-ALSA <alsa-devel@alsa-project.org>
+References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+ <20201026155521.GQ2594@hirez.programming.kicks-ass.net> <20201026160513.GC2651@hirez.programming.kicks-ass.net>
+ <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
+ <20201026163100.GR2594@hirez.programming.kicks-ass.net> <20201026165519.GD2651@hirez.programming.kicks-ass.net>
+ <CALCETrVwzcpk88jWeNb+iCGBFsyzgbZ0E9_x330A2P-CMzSr4g@mail.gmail.com> <20201027081932.GY2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201027081932.GY2611@hirez.programming.kicks-ass.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 27 Oct 2020 11:00:52 -0700
+X-Gmail-Original-Message-ID: <CALCETrUcx_GaYhUbdc82faeftn+PssdWbWSPWELZ7Npcrbd92w@mail.gmail.com>
+Message-ID: <CALCETrUcx_GaYhUbdc82faeftn+PssdWbWSPWELZ7Npcrbd92w@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
+ longer reported in dr6
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Kyle Huey <me@kylehuey.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 6:08 PM Joe Perches <joe@perches.com> wrote:
+On Tue, Oct 27, 2020 at 1:19 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Tue, 2020-10-27 at 17:58 +0100, Bartosz Golaszewski wrote:
-> > On Tue, Oct 27, 2020 at 5:50 PM Joe Perches <joe@perches.com> wrote:
+> On Mon, Oct 26, 2020 at 04:30:32PM -0700, Andy Lutomirski wrote:
+>
+> > > @@ -935,6 +936,26 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+> > >         irqentry_enter_from_user_mode(regs);
+> > >         instrumentation_begin();
 > > >
-> > > On Tue, 2020-10-27 at 11:28 -0400, Michael S. Tsirkin wrote:
-> > > > On Tue, Oct 27, 2020 at 01:17:20PM +0100, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > >
-> > > > > Use the helper that checks for overflows internally instead of manually
-> > > > > calculating the size of the new array.
-> > > > >
-> > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > >
-> > > > No problem with the patch, it does introduce some symmetry in the code.
-> > >
-> > > Perhaps more symmetry by using kmemdup
-> > > ---
-> > >  drivers/vhost/vringh.c | 23 ++++++++++-------------
-> > >  1 file changed, 10 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> > > index 8bd8b403f087..99222a3651cd 100644
-> > > --- a/drivers/vhost/vringh.c
-> > > +++ b/drivers/vhost/vringh.c
-> > > @@ -191,26 +191,23 @@ static int move_to_indirect(const struct vringh *vrh,
-> > >  static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
-> > >  {
-> > >         struct kvec *new;
-> > > -       unsigned int flag, new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-> > > +       size_t new_num = (iov->max_num & ~VRINGH_IOV_ALLOCATED) * 2;
-> > > +       size_t size;
-> > >
-> > >         if (new_num < 8)
-> > >                 new_num = 8;
-> > >
-> > > -       flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
-> > > -       if (flag)
-> > > -               new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
-> > > -       else {
-> > > -               new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
-> > > -               if (new) {
-> > > -                       memcpy(new, iov->iov,
-> > > -                              iov->max_num * sizeof(struct iovec));
-> > > -                       flag = VRINGH_IOV_ALLOCATED;
-> > > -               }
-> > > -       }
-> > > +       if (unlikely(check_mul_overflow(new_num, sizeof(struct iovec), &size)))
-> > > +               return -ENOMEM;
+> > > +       /*
+> > > +        * Clear the virtual DR6 value, ptrace routines will set bits here for
+> > > +        * things we want signals for.
+> > > +        */
+> > > +       current->thread.virtual_dr6 = 0;
 > > > +
+> > > +       /*
+> > > +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
+> > > +        * the ptrace visible DR6 copy.
+> > > +        */
+> > > +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
+> > > +               current->thread.virtual_dr6 |= (dr6 & DR_STEP);
 > >
-> > The whole point of using helpers such as kmalloc_array() is not doing
-> > these checks manually.
+> > I'm guessing that this would fail a much simpler test, though: have a
+> > program use PUSHF to set TF and then read out DR6 from the SIGTRAP.  I
+> > can whip up such a test if you like.
 >
-> Tradeoffs for in readability for overflow and not mistyping or doing
-> the multiplication of iov->max_num * sizeof(struct iovec) twice.
->
+> Kyle also mentioned it. The reason I didn't do that is because ptrace()
+> didn't set the TF, so why should it see it in ptrace_get_debugreg(6) ?
 
-It's out of scope for this series - I want to add users for
-krealloc_array(), not refactor code I don't really know. If the
-maintainer of this bit objects, it can be dropped.
-
-> Just fyi:
->
-> the realloc doesn't do a multiplication overflow test as written so the
-> suggestion is slightly more resistant to defect.
->
-
-I'm not sure what your point is. I used krealloc_array() exactly for
-this reason - to add the overflow test.
-
-BTW I suppose kmalloc_array() here can be replaced with
-krealloc_array() if the original pointer is NULL the first time it's
-called.
-
-Bartosz
+I assume you already figured this out, but my specific concern is with
+the get_si_code(dr6) part -- that's sent directly to the task being
+debugged or debugging itself (and, sadly, to ptrace, and who knows
+what debuggers do).
