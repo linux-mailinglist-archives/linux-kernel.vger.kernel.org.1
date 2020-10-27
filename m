@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03FF29B85A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB3929B858
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800123AbgJ0PfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46742 "EHLO mail.kernel.org"
+        id S1800106AbgJ0PfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:35:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797737AbgJ0PaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:30:05 -0400
+        id S1797960AbgJ0PaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:30:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52FB722264;
-        Tue, 27 Oct 2020 15:30:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65A9D20728;
+        Tue, 27 Oct 2020 15:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812604;
-        bh=7eJIhGU+LhBF44KrW7v9gCBclDyX+xR1ykuZGzElen8=;
+        s=default; t=1603812608;
+        bh=6FBiIxQzkB3jbzMl05xxWV4AakLDBq6/8nQcuyuypD8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fn5ZrxIBNhLCqDKnXm2MIaoV3JhvPqeRjA8o6UKiI5BK6dzIWCNREOcfNoa4kpwE2
-         NR2vhYODXG+pMPJY/GwBk65KhSi92ABD4gR2FpGCSwA2Q07IREBhjTW/uphdaTZIMp
-         N9MInOeotdgkIPJK8wq8nWaP8v73xwoGqa4oZEHw=
+        b=QBvtMZqfk/iCktIb1lgRPkymMDZA5la2jQgJDqpvD08DEi1D7hB7eWdAIqVZCGgek
+         yykW5jSjDj0rcSa1kSK+xUoOnH+RiCr19d+8NaRZ1owpuq/qU6sjgqclhIG1Lfzw4s
+         a9cwr6EF9GaMFsGJsyufaYkPL+CLl8R+n6guUBk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, KP Singh <kpsingh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 267/757] cpufreq: qcom: Dont add frequencies without an OPP
-Date:   Tue, 27 Oct 2020 14:48:37 +0100
-Message-Id: <20201027135503.097951412@linuxfoundation.org>
+Subject: [PATCH 5.9 268/757] ima: Fix NULL pointer dereference in ima_file_hash
+Date:   Tue, 27 Oct 2020 14:48:38 +0100
+Message-Id: <20201027135503.147495198@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,65 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Kaehlcke <mka@chromium.org>
+From: KP Singh <kpsingh@google.com>
 
-[ Upstream commit bc9b9c5ab9d8d16157737db539929d57562926e9 ]
+[ Upstream commit aa662fc04f5b290b3979332588bf8d812b189962 ]
 
-The driver currently adds all frequencies from the hardware LUT to
-the cpufreq table, regardless of whether the corresponding OPP
-exists. This prevents devices from disabling certain OPPs through
-the device tree and can result in CPU frequencies for which the
-interconnect bandwidth can't be adjusted. Only add frequencies
-with an OPP entry.
+ima_file_hash can be called when there is no iint->ima_hash available
+even though the inode exists in the integrity cache. It is fairly
+common for a file to not have a hash. (e.g. an mknodat, prior to the
+file being closed).
 
-Fixes: 55538fbc79e9 ("cpufreq: qcom: Read voltage LUT and populate OPP")
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Another example where this can happen (suggested by Jann Horn):
+
+Process A does:
+
+	while(1) {
+		unlink("/tmp/imafoo");
+		fd = open("/tmp/imafoo", O_RDWR|O_CREAT|O_TRUNC, 0700);
+		if (fd == -1) {
+			perror("open");
+			continue;
+		}
+		write(fd, "A", 1);
+		close(fd);
+	}
+
+and Process B does:
+
+	while (1) {
+		int fd = open("/tmp/imafoo", O_RDONLY);
+		if (fd == -1)
+			continue;
+    		char *mapping = mmap(NULL, 0x1000, PROT_READ|PROT_EXEC,
+			 	     MAP_PRIVATE, fd, 0);
+		if (mapping != MAP_FAILED)
+			munmap(mapping, 0x1000);
+		close(fd);
+  	}
+
+Due to the race to get the iint->mutex between ima_file_hash and
+process_measurement iint->ima_hash could still be NULL.
+
+Fixes: 6beea7afcc72 ("ima: add the ability to query the cached hash of a given file")
+Signed-off-by: KP Singh <kpsingh@google.com>
+Reviewed-by: Florent Revest <revest@chromium.org>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/qcom-cpufreq-hw.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ security/integrity/ima/ima_main.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index 3fb044b907a83..47b7d394d2abb 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -177,10 +177,15 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
- 			freq = cpu_hw_rate / 1000;
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 8a91711ca79b2..4c86cd4eece0c 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -531,6 +531,16 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 		return -EOPNOTSUPP;
  
- 		if (freq != prev_freq && core_count != LUT_TURBO_IND) {
--			table[i].frequency = freq;
--			qcom_cpufreq_update_opp(cpu_dev, freq, volt);
--			dev_dbg(cpu_dev, "index=%d freq=%d, core_count %d\n", i,
-+			if (!qcom_cpufreq_update_opp(cpu_dev, freq, volt)) {
-+				table[i].frequency = freq;
-+				dev_dbg(cpu_dev, "index=%d freq=%d, core_count %d\n", i,
- 				freq, core_count);
-+			} else {
-+				dev_warn(cpu_dev, "failed to update OPP for freq=%d\n", freq);
-+				table[i].frequency = CPUFREQ_ENTRY_INVALID;
-+			}
+ 	mutex_lock(&iint->mutex);
 +
- 		} else if (core_count == LUT_TURBO_IND) {
- 			table[i].frequency = CPUFREQ_ENTRY_INVALID;
- 		}
-@@ -197,9 +202,13 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
- 			 * as the boost frequency
- 			 */
- 			if (prev->frequency == CPUFREQ_ENTRY_INVALID) {
--				prev->frequency = prev_freq;
--				prev->flags = CPUFREQ_BOOST_FREQ;
--				qcom_cpufreq_update_opp(cpu_dev, prev_freq, volt);
-+				if (!qcom_cpufreq_update_opp(cpu_dev, prev_freq, volt)) {
-+					prev->frequency = prev_freq;
-+					prev->flags = CPUFREQ_BOOST_FREQ;
-+				} else {
-+					dev_warn(cpu_dev, "failed to update OPP for freq=%d\n",
-+						 freq);
-+				}
- 			}
++	/*
++	 * ima_file_hash can be called when ima_collect_measurement has still
++	 * not been called, we might not always have a hash.
++	 */
++	if (!iint->ima_hash) {
++		mutex_unlock(&iint->mutex);
++		return -EOPNOTSUPP;
++	}
++
+ 	if (buf) {
+ 		size_t copied_size;
  
- 			break;
 -- 
 2.25.1
 
