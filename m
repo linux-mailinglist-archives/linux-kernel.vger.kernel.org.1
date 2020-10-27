@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDA629AFE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A716829AEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756508AbgJ0ONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59216 "EHLO mail.kernel.org"
+        id S1753847AbgJ0OCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:02:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755487AbgJ0OKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:10:11 -0400
+        id S1753781AbgJ0OCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:02:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5834A2072D;
-        Tue, 27 Oct 2020 14:10:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E39BC2224A;
+        Tue, 27 Oct 2020 14:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807810;
-        bh=hhlNZSd18jXoaJsn/LJh8if3lsngdLGTRiTTCPpCh1I=;
+        s=default; t=1603807327;
+        bh=1Nu5tq6jcZMS2aNCXXbUZv1a7uHqN19Ivx68LEbg6Gg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GD9yQhVrKgfoWp7Vj9dMIswpjh8UNmx5WGQyroNUoBUJSTxvs2yQHbaWHq6hdBvge
-         TgFkVciVMRTb0HTwHCLV/nGHsiRITv8eUQa1KkZZ/14iiQmDtcd3qElVVrxKTr2/c0
-         5w7UDjI2CgBSbZsLfi36Pz8nO1bsiOg/PPmHps2k=
+        b=A5NYn/J8eec9FwTwEAnqNAtx6WzbTkgHvrhF4S0zx4y+muS1lxgQ/ly2kc2UpM5eg
+         SUqqjmcf9L3sOMGwooSdhMrsbF0MQbUp8dqsjhAykRwEFHYRDRNt/4kJyQ9wp4+kkn
+         FILsTRLgOl6n5QxKre0ulpLL5rz/RteiB5CUc5+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 050/191] drm/gma500: fix error check
-Date:   Tue, 27 Oct 2020 14:48:25 +0100
-Message-Id: <20201027134912.140686794@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 4.9 013/139] ima: Dont ignore errors from crypto_shash_update()
+Date:   Tue, 27 Oct 2020 14:48:27 +0100
+Message-Id: <20201027134902.775759261@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-[ Upstream commit cdd296cdae1af2d27dae3fcfbdf12c5252ab78cf ]
+commit 60386b854008adc951c470067f90a2d85b5d520f upstream.
 
-Reviewing this block of code in cdv_intel_dp_init()
+Errors returned by crypto_shash_update() are not checked in
+ima_calc_boot_aggregate_tfm() and thus can be overwritten at the next
+iteration of the loop. This patch adds a check after calling
+crypto_shash_update() and returns immediately if the result is not zero.
 
-ret = cdv_intel_dp_aux_native_read(gma_encoder, DP_DPCD_REV, ...
+Cc: stable@vger.kernel.org
+Fixes: 3323eec921efd ("integrity: IMA as an integrity service provider")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-cdv_intel_edp_panel_vdd_off(gma_encoder);
-if (ret == 0) {
-	/* if this fails, presume the device is a ghost */
-	DRM_INFO("failed to retrieve link info, disabling eDP\n");
-	drm_encoder_cleanup(encoder);
-	cdv_intel_dp_destroy(connector);
-	goto err_priv;
-} else {
-
-The (ret == 0) is not strict enough.
-cdv_intel_dp_aux_native_read() returns > 0 on success
-otherwise it is failure.
-
-So change to <=
-
-Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200805205911.20927-1-trix@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/ima_crypto.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index c52f9adf5e04c..7ec4e3fbafd8c 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -2121,7 +2121,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 					       intel_dp->dpcd,
- 					       sizeof(intel_dp->dpcd));
- 		cdv_intel_edp_panel_vdd_off(gma_encoder);
--		if (ret == 0) {
-+		if (ret <= 0) {
- 			/* if this fails, presume the device is a ghost */
- 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
- 			cdv_intel_dp_encoder_destroy(encoder);
--- 
-2.25.1
-
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -683,6 +683,8 @@ static int __init ima_calc_boot_aggregat
+ 		ima_pcrread(i, pcr_i);
+ 		/* now accumulate with current aggregate */
+ 		rc = crypto_shash_update(shash, pcr_i, TPM_DIGEST_SIZE);
++		if (rc != 0)
++			return rc;
+ 	}
+ 	if (!rc)
+ 		crypto_shash_final(shash, digest);
 
 
