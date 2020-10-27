@@ -2,103 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F2129BD8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD8A29BD16
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811807AbgJ0Qmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:42:38 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:40068 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1811194AbgJ0QiF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:38:05 -0400
-Received: by mail-pf1-f194.google.com with SMTP id w21so1224327pfc.7;
-        Tue, 27 Oct 2020 09:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T0NQC8q5PZfZ/nsIJ5qKnoN7K1varb2/TGSSOiRrezY=;
-        b=M1vwXINyKCI2zbkqZyjRXzOz+OiTTjv5+YsMO5WomPxQ3OpKFOn7449dzir9pXj29D
-         N5LsWZQuc+CpSU0G6fApBL8OSc3ryHX6s4+fH7/jMVFh8f3/aTe3/XJ1Ptp/jgX7r+t9
-         9xZFjZp26qxDvFk9dfn92Za9iIbief2hH5kZJ6lYpp2Ug7hYAdAIIbpVGHbquuB8px5+
-         LJQUV0NFSXrXOEc1N2TBFJmfeEId/wIGYG3QrPBOWi9ebke753T1av3HH461g4YDBEmp
-         Rt6Abuk4cHAhe3quvhm7Y+ucPdDhEs7s8FvMm4Xd2uPJGWC7E+Bo6tSPsXJgl9VVG1XI
-         FABw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T0NQC8q5PZfZ/nsIJ5qKnoN7K1varb2/TGSSOiRrezY=;
-        b=T0KovKs6r2x/Qgd6mTlUitQ+6wDSJ7ET11exBu2ksQOdzZJ5QmDpTryBeYUhfZJamf
-         0gMjmfl6xdBvQTEXZkk1GituI/nIa1pfWPpug+ppnkoEBdVinqUzoAnMOT/zdCYGRQtL
-         BqU/V3SFGh6x9XLbT8aTcJxd/lZzCkZTglaqUwtuJyT59/1kItg0LZdoo36N03SzscXt
-         4cjdr+p4duk67u5nwGxRu2DDh5t6ijnYdtZRWUX6G+hrJN4faDTT5wwbOm5/AyCXTQaM
-         KK467OBhZEJT2Gjd3f58BdUEoXchw46aQF4fhu8xWJyp4O53JKFTp8/eIvtKOxz7A6pm
-         7XvQ==
-X-Gm-Message-State: AOAM532/wGcsnnyTkbX/YHwt061OJlfLKu5l3XWbWI44rE3muq5d2s2w
-        2YOEKJCIbZPkB13WZO3+7w==
-X-Google-Smtp-Source: ABdhPJxBV7fdXTggzQ998E92lWxE1sdD8P1AgGgCr6mresHIg18LPfPSKo6TccWBfKl7Hovza/PVDw==
-X-Received: by 2002:a63:5d61:: with SMTP id o33mr2564224pgm.295.1603816685018;
-        Tue, 27 Oct 2020 09:38:05 -0700 (PDT)
-Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
-        by smtp.gmail.com with ESMTPSA id b7sm3139676pfr.171.2020.10.27.09.38.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 09:38:04 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
-Subject: [PATCH 4/5] fbcon: Avoid hard-coding built-in font charcount
-Date:   Tue, 27 Oct 2020 12:37:29 -0400
-Message-Id: <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
-References: <cover.1603788511.git.yepeilin.cs@gmail.com> <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com> <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com> <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
+        id S1811741AbgJ0QlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:41:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57214 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1811377AbgJ0Qj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:39:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603816766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JJiJEDE7myKOzJJqcrQBhP723tRBZzPCt0xyjegCZyo=;
+        b=oOZF8j5VcLBB2Biij0BPnfG/VVSqF2d3+xea/rKuifEOdHDT68ztD1z7gEH+zb9CiCA5Fm
+        kucIxddP/TmoPdWgMiAhzkAk9Mj9P+QZEnLIHKUb+V3eJCc7ZaC1ZZrZbmk2ik6IxLr8L8
+        pp9AGWkaMP+9+gsw2VfGcQRrM3FoRQo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 54316B2B5;
+        Tue, 27 Oct 2020 16:39:26 +0000 (UTC)
+Date:   Tue, 27 Oct 2020 17:39:25 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     qiang.zhang@windriver.com
+Cc:     tj@kernel.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] kthread_worker: re-set CPU affinities if CPU come online
+Message-ID: <20201027163925.GE31882@alley>
+References: <20201026065213.30477-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026065213.30477-1-qiang.zhang@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fbcon_startup() and fbcon_init() are hard-coding the number of characters
-of our built-in fonts as 256. Recently, we included that information in
-our kernel font descriptor `struct font_desc`, so use `font->charcount`
-instead of a hard-coded value.
+On Mon 2020-10-26 14:52:13, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
+> 
+> When someone CPU offlined, the 'kthread_worker' which bind this CPU,
+> will run anywhere, if this CPU online, recovery of 'kthread_worker'
+> affinity by cpuhp notifiers.
 
-This patch depends on patch "Fonts: Add charcount field to font_desc".
+I am not familiar with CPU hotplug notifiers. I rather add Thomas and
+Peter into Cc.
 
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
- drivers/video/fbdev/core/fbcon.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  include/linux/kthread.h |  2 ++
+>  kernel/kthread.c        | 35 ++++++++++++++++++++++++++++++++++-
+>  2 files changed, 36 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+> index 65b81e0c494d..5acbf2e731cb 100644
+> --- a/include/linux/kthread.h
+> +++ b/include/linux/kthread.h
+> @@ -93,6 +93,8 @@ struct kthread_worker {
+>  	struct list_head	delayed_work_list;
+>  	struct task_struct	*task;
+>  	struct kthread_work	*current_work;
+> +	struct hlist_node       cpuhp_node;
+> +	int                     bind_cpu;
+>  };
+>  
+>  struct kthread_work {
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index e29773c82b70..68968832777f 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -28,8 +28,10 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/numa.h>
+>  #include <linux/sched/isolation.h>
+> +#include <linux/cpu.h>
+>  #include <trace/events/sched.h>
+>  
+> +static enum cpuhp_state kworker_online;
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index cef437817b0d..e563847991b7 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1004,7 +1004,7 @@ static const char *fbcon_startup(void)
- 		vc->vc_font.width = font->width;
- 		vc->vc_font.height = font->height;
- 		vc->vc_font.data = (void *)(p->fontdata = font->data);
--		vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
-+		vc->vc_font.charcount = font->charcount;
- 	} else {
- 		p->fontdata = vc->vc_font.data;
- 	}
-@@ -1083,8 +1083,7 @@ static void fbcon_init(struct vc_data *vc, int init)
- 			vc->vc_font.width = font->width;
- 			vc->vc_font.height = font->height;
- 			vc->vc_font.data = (void *)(p->fontdata = font->data);
--			vc->vc_font.charcount = 256; /* FIXME  Need to
--							support more fonts */
-+			vc->vc_font.charcount = font->charcount;
- 		}
- 	}
- 
--- 
-2.25.1
+Please, use kthread_worker_online.
 
+I know that it is too long but it is used everywhere. Consistency
+is useful when searching and reading the code.
+
+>  static DEFINE_SPINLOCK(kthread_create_lock);
+>  static LIST_HEAD(kthread_create_list);
+> @@ -649,6 +651,8 @@ void __kthread_init_worker(struct kthread_worker *worker,
+>  	lockdep_set_class_and_name(&worker->lock, key, name);
+>  	INIT_LIST_HEAD(&worker->work_list);
+>  	INIT_LIST_HEAD(&worker->delayed_work_list);
+> +	worker->bind_cpu = -1;
+> +	INIT_HLIST_NODE(&worker->cpuhp_node);
+
+Same has to be done also in KTHREAD_WORKER_INIT macro defined
+in include/linux/kthread.h.
+
+>  }
+>  EXPORT_SYMBOL_GPL(__kthread_init_worker);
+>  
+> @@ -737,8 +741,11 @@ __kthread_create_worker(int cpu, unsigned int flags,
+>  	if (IS_ERR(task))
+>  		goto fail_task;
+>  
+> -	if (cpu >= 0)
+> +	if (cpu >= 0) {
+>  		kthread_bind(task, cpu);
+> +		worker->bind_cpu = cpu;
+> +		cpuhp_state_add_instance_nocalls(kworker_online, &worker->cpuhp_node);
+
+There is a rather theoretical race that the CPU might get down and up
+between kthread_bind() and adding the callback.
+
+It actually won't be a problem because the kthread_worker is still not
+running at this stage and will not get migrated.
+
+But I would switch the order just to be on the safe side and avoid
+doubts about this race.
+
+
+> +	}
+>  
+>  	worker->flags = flags;
+>  	worker->task = task;
+> @@ -1220,6 +1227,9 @@ void kthread_destroy_worker(struct kthread_worker *worker)
+>  	if (WARN_ON(!task))
+>  		return;
+>  
+> +	if (worker->bind_cpu >= 0)
+> +		cpuhp_state_remove_instance_nocalls(kworker_online, &worker->cpuhp_node);
+> +
+>  	kthread_flush_worker(worker);
+>  	kthread_stop(task);
+>  	WARN_ON(!list_empty(&worker->work_list));
+> @@ -1227,6 +1237,29 @@ void kthread_destroy_worker(struct kthread_worker *worker)
+>  }
+>  EXPORT_SYMBOL(kthread_destroy_worker);
+>  
+> +static int kworker_cpu_online(unsigned int cpu, struct hlist_node *node)
+> +{
+> +	struct kthread_worker *worker = hlist_entry(node, struct kthread_worker, cpuhp_node);
+
+The code here looks correct.
+
+JFYI, I was curious why many cpuhp callbacks used hlist_entry_safe().
+But they did not check for NULL. Hence the _safe() variant did
+not really prevented any crash.
+
+I seems that it was a cargo-cult programming. cpuhp_invoke_callback() calls
+simple hlist_for_each(). If I get it correctly, the operations are
+synchronized by cpus_read_lock()/cpus_write_lock() and _safe variant
+really is not needed.
+
+
+> +	struct task_struct *task = worker->task;
+> +
+
+The WARN_ON_ONCE() below would trigger only where there is a bug in
+the CPU hotplug code. Please, add a comment explaining that it is
+a rather theoretical situation. Something like in the workqueue code:
+
+	/* as we're called from CPU_ONLINE, the following shouldn't fail */
+
+> +	if (cpu == worker->bind_cpu)
+> +		WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpumask_of(cpu)) < 0);
+>
+> +	return 0;
+> +}
+> +
+> +static __init int kthread_worker_hotplug_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "kthread-worker/online",
+> +					kworker_cpu_online, NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +	kworker_online = ret;
+> +	return 0;
+> +}
+> +subsys_initcall(kthread_worker_hotplug_init);
+
+I would make it core_initcall(), It is built-in and should be usable
+as early as possible.
+
+Otherwise, the patch looks fine to me. Great catch!
+
+Best Regards,
+Petr
+
+> +
+>  /**
+>   * kthread_use_mm - make the calling kthread operate on an address space
+>   * @mm: address space to operate on
+> -- 
+> 2.17.1
