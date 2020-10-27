@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A015C29B674
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBCF29B676
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796760AbgJ0PTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52702 "EHLO mail.kernel.org"
+        id S1796814AbgJ0PTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:19:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796194AbgJ0PQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:16:01 -0400
+        id S1796198AbgJ0PQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:16:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE6F52224A;
-        Tue, 27 Oct 2020 15:16:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E060520657;
+        Tue, 27 Oct 2020 15:16:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811761;
-        bh=fLiAoAGyPCd7f6ZiKnIY/1DfUH5bqyP4A7ZYOC0nuHw=;
+        s=default; t=1603811767;
+        bh=TfWJq0F+eNJwR3zuDSJhyRJNiFATVZ7YZaKoLVaSsv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t48qxLaC3apEI27Se6aO5gsLp4AuAMczcizLb7shhj5UjXcgOs/SxXK5uuVI3NDGz
-         SXt/RKWEsC15xP1l8i89OkYt1UoQKDMI/QSMSMgey4DqZrk+MIzJe4/BIhB3YEimLS
-         ZAOe2W4Xtk4wBzsa7eRyQxWD96NELXsJtd6EXDPc=
+        b=2Ayi4w9qYZsRda/8FCF8NJzRamHXvuO8JS6CVKHjYwrtRN6mQWboTmZ6JfscUPHYh
+         yzgAVEefJHwzVDKq76gFymFWWGndPpLg+YAdv3tOOlGYuM3sVryqcHnuPS/LRSLVJ4
+         zpA3UEVV5YdMcF51RiRDJ9w7gWzc8LPeim2bKJ1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 607/633] Bluetooth: btusb: Fix memleak in btusb_mtk_submit_wmt_recv_urb
-Date:   Tue, 27 Oct 2020 14:55:50 +0100
-Message-Id: <20201027135551.293834425@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+c9e294bbe0333a6b7640@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 609/633] reiserfs: Fix memory leak in reiserfs_parse_options()
+Date:   Tue, 27 Oct 2020 14:55:52 +0100
+Message-Id: <20201027135551.389626216@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -43,32 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit d33fe77bdf75806d785dabf90d21d962122e5296 ]
+[ Upstream commit e9d4709fcc26353df12070566970f080e651f0c9 ]
 
-When kmalloc() on buf fails, urb should be freed just like
-when kmalloc() on dr fails.
+When a usrjquota or grpjquota mount option is used multiple times, we
+will leak memory allocated for the file name. Make sure the last setting
+is used and all the previous ones are properly freed.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Reported-by: syzbot+c9e294bbe0333a6b7640@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/reiserfs/super.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index a5fef9aa419fd..91a0c84d55c97 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2849,6 +2849,7 @@ static int btusb_mtk_submit_wmt_recv_urb(struct hci_dev *hdev)
- 	buf = kmalloc(size, GFP_KERNEL);
- 	if (!buf) {
- 		kfree(dr);
-+		usb_free_urb(urb);
- 		return -ENOMEM;
- 	}
- 
+diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+index a6bce5b1fb1dc..1b9c7a387dc71 100644
+--- a/fs/reiserfs/super.c
++++ b/fs/reiserfs/super.c
+@@ -1258,6 +1258,10 @@ static int reiserfs_parse_options(struct super_block *s,
+ 						 "turned on.");
+ 				return 0;
+ 			}
++			if (qf_names[qtype] !=
++			    REISERFS_SB(s)->s_qf_names[qtype])
++				kfree(qf_names[qtype]);
++			qf_names[qtype] = NULL;
+ 			if (*arg) {	/* Some filename specified? */
+ 				if (REISERFS_SB(s)->s_qf_names[qtype]
+ 				    && strcmp(REISERFS_SB(s)->s_qf_names[qtype],
+@@ -1287,10 +1291,6 @@ static int reiserfs_parse_options(struct super_block *s,
+ 				else
+ 					*mount_options |= 1 << REISERFS_GRPQUOTA;
+ 			} else {
+-				if (qf_names[qtype] !=
+-				    REISERFS_SB(s)->s_qf_names[qtype])
+-					kfree(qf_names[qtype]);
+-				qf_names[qtype] = NULL;
+ 				if (qtype == USRQUOTA)
+ 					*mount_options &= ~(1 << REISERFS_USRQUOTA);
+ 				else
 -- 
 2.25.1
 
