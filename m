@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A644329BCE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58E529BD13
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1799499AbgJ0Qhq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 12:37:46 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:58585 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1810239AbgJ0QfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:35:14 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22819579-1500050 
-        for multiple; Tue, 27 Oct 2020 16:34:57 +0000
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201027154533.GB2611@hirez.programming.kicks-ass.net>
-References: <20200930094937.GE2651@hirez.programming.kicks-ass.net> <160208761332.7002.17400661713288945222.tip-bot2@tip-bot2> <160379817513.29534.880306651053124370@build.alporthouse.com> <20201027115955.GA2611@hirez.programming.kicks-ass.net> <20201027123056.GE2651@hirez.programming.kicks-ass.net> <160380535006.10461.1259632375207276085@build.alporthouse.com> <20201027154533.GB2611@hirez.programming.kicks-ass.net>
-Subject: Re: [tip: locking/core] lockdep: Fix usage_traceoverflow
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        tip-bot2 for Peter Zijlstra <tip-bot2@linutronix.de>,
-        Qian Cai <cai@redhat.com>, x86 <x86@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Date:   Tue, 27 Oct 2020 16:34:53 +0000
-Message-ID: <160381649396.10461.15013696719989662769@build.alporthouse.com>
-User-Agent: alot/0.9
+        id S1811720AbgJ0Qkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:40:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:46078 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1811001AbgJ0Qgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:36:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CBA0139F;
+        Tue, 27 Oct 2020 09:36:41 -0700 (PDT)
+Received: from e108754-lin.cambridge.arm.com (e108754-lin.cambridge.arm.com [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C0A8D3F719;
+        Tue, 27 Oct 2020 09:36:39 -0700 (PDT)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com
+Cc:     morten.rasmussen@arm.com, valentin.schneider@arm.com,
+        souvik.chakravarty@arm.com, viresh.kumar@linaro.org,
+        dietmar.eggemann@arm.com, ionela.voinescu@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND v2 0/3] arm64: cppc: add FFH support using AMUs
+Date:   Tue, 27 Oct 2020 16:36:21 +0000
+Message-Id: <20201027163624.20747-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Peter Zijlstra (2020-10-27 15:45:33)
-> On Tue, Oct 27, 2020 at 01:29:10PM +0000, Chris Wilson wrote:
-> 
-> > <4> [304.908891] hm#2, depth: 6 [6], 3425cfea6ff31f7f != 547d92e9ec2ab9af
-> > <4> [304.908897] WARNING: CPU: 0 PID: 5658 at kernel/locking/lockdep.c:3679 check_chain_key+0x1a4/0x1f0
-> 
-> Urgh, I don't think I've _ever_ seen that warning trigger.
-> 
-> The comments that go with it suggest memory corruption is the most
-> likely trigger of it. Is it easy to trigger?
+This series adds support for CPPC's delivered and reference performance
+counters through the FFH methods by using the AMU equivalent core and
+constant cycle counters.
 
-For the automated CI, yes, the few machines that run that particular HW
-test seem to hit it regularly. I have not yet reproduced it for myself.
-I thought it looked like something kasan would provide some insight for
-and we should get a kasan run through CI over the w/e. I suspect we've
-feed in some garbage and called it a lock.
--Chris
+This support is added in patch 3/3, while the first 2 patches generalise
+the existing AMU counter read and validation functionality to be reused
+for this usecase.
+
+The specification that drove this implementation can be found at [1],
+chapter 3.2.
+
+RESEND v2: rebase and retest on v5.10-rc1
+
+v1 -> v2:
+ - v1 can be found at [2]
+ - The previous patch 1/4 was removed and a get_cpu_with_amu_feat()
+   function was introduced instead, in 3/3, as suggested by Catalin.
+   Given that most checks for the presence of AMUs is done at CPU
+   level, followed by other validation, this implementation works
+   better than the one initially introduced in v1/->patch 1/4.
+ - Fixed warning reported by 0-day kernel test robot.
+ - All build tests and FVP tests at [2] were re-run for this version.
+ - This version is based on linux-next/20201001.
+
+[1] https://documentation-service.arm.com/static/5f106ad60daa596235e80081
+[2] https://lore.kernel.org/lkml/20200826130309.28027-1-ionela.voinescu@arm.com/
+
+Thank you,
+Ionela.
+
+Ionela Voinescu (3):
+  arm64: wrap and generalise counter read functions
+  arm64: split counter validation function
+  arm64: implement CPPC FFH support using AMUs
+
+ arch/arm64/include/asm/cpufeature.h |  11 +++
+ arch/arm64/include/asm/topology.h   |   2 +
+ arch/arm64/kernel/cpufeature.c      |   8 +-
+ arch/arm64/kernel/topology.c        | 132 ++++++++++++++++++++++------
+ 4 files changed, 121 insertions(+), 32 deletions(-)
+
+
+base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
+-- 
+2.17.1
+
