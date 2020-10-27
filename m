@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614A129AB99
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B0A29AB9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899650AbgJ0MQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:16:14 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:38717 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750901AbgJ0MQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:16:09 -0400
-Received: by mail-pg1-f193.google.com with SMTP id i26so682054pgl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=pWBtIzMURnNZwf5E6ccAuvdeCFLhHS4uNoSrzuo7TUI=;
-        b=xq0/h44NIR8g0JJ9TXGYR727SOWgGvc1tbK6rZs7CpX5BoTd2JY+quQgOEhFjBL1C1
-         2ykJGVGT03IKjtWZHlHqSNz3totASLl9NiZYU2dydOdWGCxU879QUAE4xQbkAYN3x0hi
-         AflfDsx2MV4GGA8Rn7iyDI9Rh5SIPZjh3x5iaR8Adra24ZHSP7YEM4nMrvyYpKHqQGxE
-         /27wHrYHZKbOHBy6M9o/47YhS/eqpWdUtsal/UHODsGpYNNvxfCHW2ab8l7kJzp4fffX
-         TKrjzDeoTX0I3nuhxYwdiveTrYIMf5P/p+C7YZvDiQIdWZT8yRilFyxrCraahOeGJ9/l
-         pweg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=pWBtIzMURnNZwf5E6ccAuvdeCFLhHS4uNoSrzuo7TUI=;
-        b=umAlkUEmN9ucUxLg15256GUimKvRN8oeZYflK+kBSIcpkrds9zTbJIL78pq0mvv2mF
-         ZhIVEvoFyngXmMizRuSDDr7NnN52lZyUo2p8OpBfWhycHLTVplEBIRBQruF/FjOW81WJ
-         A4MpkrqLHBXn0TwyCnxgNDahn+HcYJdSsDZb1G9jR1V2kVauuW4SUlC30r1MWGgqGn2s
-         +YEnR6PoHegEtCIZfKQxZl6WA3Q3/YzZhUrcM5SNDlzhnMKIruN52t0oO3METae2RBvw
-         Nw6zPFJkU4W4WP+b1PNT3IDC+3pAGOrp8mLxwz3CFUjV8q97ywgIciGMR83JNlvYRjF3
-         cFeg==
-X-Gm-Message-State: AOAM532y+m8lf6hnhWFwqtnjEnIMyhbkIuxQqxuLeiRDH0RCm/TTv4i+
-        eoWEzysGk4iv4VeghYU0MbZpnQ==
-X-Google-Smtp-Source: ABdhPJzn8ICZbnjfRaw2e1HyNEy8kpjZJMmNlFcbjHwcsU8Mor/10oPQmIQYKPFdxNJk9Wec7Fx8xw==
-X-Received: by 2002:a63:2c93:: with SMTP id s141mr1675186pgs.169.1603800967192;
-        Tue, 27 Oct 2020 05:16:07 -0700 (PDT)
-Received: from libai.bytedance.net ([61.120.150.71])
-        by smtp.gmail.com with ESMTPSA id t12sm1820747pji.26.2020.10.27.05.16.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 05:16:06 -0700 (PDT)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     hch@lst.de, sagi@grimberg.me, chaitanya.kulkarni@wdc.com
-Cc:     pizhenwei@bytedance.com, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] nvmet-tcp: add keep-alive
-Date:   Tue, 27 Oct 2020 20:15:46 +0800
-Message-Id: <20201027121546.1776104-2-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201027121546.1776104-1-pizhenwei@bytedance.com>
-References: <20201027121546.1776104-1-pizhenwei@bytedance.com>
+        id S2899659AbgJ0MQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:16:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2899633AbgJ0MQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 08:16:10 -0400
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 889B324677;
+        Tue, 27 Oct 2020 12:16:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603800969;
+        bh=rHy7m3RuiJVB+20ux7B22H/jeahOgDzJQVxUUqsPONE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nnslobMGiXfBKFGnGsYxOuqPAeWLHs9VXT5qE++xWWTVdGmCplAti2v3iFFzFaPmh
+         Aw2AlXxRpu2V1H8IMkogfIpWAvF+1iZ4KdGcyGqB3Mdx5Q8hdz0p0oleDQMcwMkW7I
+         Tm3oL/qRKuH7Eee2jicv4D49KxzNLOagtRWKlDNQ=
+Received: by mail-oo1-f52.google.com with SMTP id n2so268401ooo.8;
+        Tue, 27 Oct 2020 05:16:09 -0700 (PDT)
+X-Gm-Message-State: AOAM5302FloAnbSnrVnjFibVSewxkGq+XY0OOAffVn2uXawmEJJuSnL9
+        MyYhwfcr0sycV4BZwbdjNuT8yqffpH/Hpu/i9g==
+X-Google-Smtp-Source: ABdhPJwWNPIQlF6Bp7SJfw0BWlotFu1Nk1SaBiaHNR8Jk/NmGn35wJqO0jl1Ihg5ANtyL/n3D9IZ22eRLIBU/rPXk3E=
+X-Received: by 2002:a4a:d453:: with SMTP id p19mr1528328oos.50.1603800968782;
+ Tue, 27 Oct 2020 05:16:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
+ <20201026143656.GA118160@bogus> <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
+In-Reply-To: <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 27 Oct 2020 07:15:57 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
+Message-ID: <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible
+ for tamp node
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Christophe Roullier <christophe.roullier@st.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        devicetree@vger.kernel.org,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tcp keep-alive to detect dead connections for zero KATO case.
+On Mon, Oct 26, 2020 at 4:30 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> Hello Rob,
+>
+> On 10/26/20 3:36 PM, Rob Herring wrote:
+> > On Wed, Oct 21, 2020 at 12:28:55PM +0200, Ahmad Fatoum wrote:
+> >> The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
+> >> and features 32 backup registers that, being in the RTC domain, may
+> >> survive even with Vdd switched off.
+> >>
+> >> This makes it suitable for use to communicate a reboot mode from OS
+> >> to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
+> >> to support probing such a child node. The actual reboot mode
+> >> node could then be defined in a board.dts or fixed up by the bootloader.
+> >
+> > 'simple-mfd' implies there is no dependency on the parent node for the
+> > child (such as the regmap perhaps). Is that the case here?
+>
+> No, there's a dependency and the Linux driver does syscon_node_to_regmap
+> on the device tree node's parent but that's how the syscon-reboot-mode binding
+> is documented:
+>
+>   The SYSCON mapped register is retrieved from the
+>   parental dt-node plus the offset. So the SYSCON reboot-mode node
+>   should be represented as a sub-node of a "syscon", "simple-mfd" node.
+>
+> How would you prefer this being done instead?
 
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
----
- drivers/nvme/target/tcp.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Well, probably the syscon driver could just probe any children, but
+I'm not sure if that would break anyone. So I guess fine as-is.
 
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index dc1f0f647189..58800e914e61 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1714,6 +1714,30 @@ static void nvmet_tcp_disc_port_addr(struct nvmet_req *req,
- 	}
- }
- 
-+static int nvmet_tcp_keep_alive(struct nvmet_req *req)
-+{
-+	struct nvmet_tcp_cmd *cmd = container_of(req, struct nvmet_tcp_cmd, req);
-+	struct nvmet_tcp_queue *queue = cmd->queue;
-+	struct socket *sock = queue->sock;
-+	int ret;
-+
-+	/* TCP Keepalive options, max 5+1*3 = 8s */
-+	sock_set_keepalive(sock->sk);
-+	ret = tcp_sock_set_keepidle(sock->sk, 5);
-+	if (ret)
-+		return ret;
-+
-+	ret = tcp_sock_set_keepintvl(sock->sk, 1);
-+	if (ret)
-+		return ret;
-+
-+	ret = tcp_sock_set_keepcnt(sock->sk, 3);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static const struct nvmet_fabrics_ops nvmet_tcp_ops = {
- 	.owner			= THIS_MODULE,
- 	.type			= NVMF_TRTYPE_TCP,
-@@ -1724,6 +1748,7 @@ static const struct nvmet_fabrics_ops nvmet_tcp_ops = {
- 	.delete_ctrl		= nvmet_tcp_delete_ctrl,
- 	.install_queue		= nvmet_tcp_install_queue,
- 	.disc_traddr		= nvmet_tcp_disc_port_addr,
-+	.keep_alive		= nvmet_tcp_keep_alive,
- };
- 
- static int __init nvmet_tcp_init(void)
--- 
-2.11.0
+Reviewed-by: Rob Herring <robh@kernel.org>
 
+Rob
