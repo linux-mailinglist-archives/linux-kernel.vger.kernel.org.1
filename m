@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB230299EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECDE299DB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439129AbgJ0AKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:10:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395124AbgJ0AJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:09:54 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7B8A2087C;
-        Tue, 27 Oct 2020 00:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603757394;
-        bh=K2UUaSLNQyBICP48dxxnV3Rzi+dMsSPNYnRRZ736Fns=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VKStnxmWV226U2v7xj35GTY4p7R9KmQmLTua9ip7J/ijNDZ3sBTuci2GopTSIPJKS
-         Ac83PAOnlrzdO0k9i0mE9rrbpjj1HY2gWZ5D8F0oNhYmZ/zCH2iQGS2PmAn1878BMZ
-         7FLXq4EtLEswmwlfrjm5yuwuYyh+siU4cKRbO7Mw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.14 06/46] um: change sigio_spinlock to a mutex
-Date:   Mon, 26 Oct 2020 20:09:05 -0400
-Message-Id: <20201027000946.1026923-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201027000946.1026923-1-sashal@kernel.org>
-References: <20201027000946.1026923-1-sashal@kernel.org>
+        id S2439088AbgJ0AJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:09:21 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42560 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404510AbgJ0AJJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:09:09 -0400
+Received: by mail-pf1-f195.google.com with SMTP id x13so7120397pfa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 17:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LsJlRjdqhDVAHhw47g/atIos95r5K18qubNura+3fzc=;
+        b=DV6OWsJ8YTis4RWe74HnMoSPHx2wnbbnih3F0P+HiF57IXnyKrAIcBplDa0TuQW0fe
+         aii8O67y5CuNtSNcN0q+CPIFocqT+ma+us4RoqX4TC6tMgaGBGUnwVHQJ/N6qPZoUIZl
+         N8PZQaTFtDJvhHp2KmiMn99XHribiQTVBqggOOByg6ZsC+AIdPeSZ7IIhzJWtbXj8peQ
+         vUIkbSwJfbOC01KBcysHUuhejsj0lkLWHowENLgMtxCKJmsxzr5jKuNTtJsywdn514eT
+         kI7wIhvyoH92wMz2QHWzCBEBrmMggfxor976qEm1YW1xHPKbqwPNkX7lWR3OAQC8rWrk
+         OKFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LsJlRjdqhDVAHhw47g/atIos95r5K18qubNura+3fzc=;
+        b=B3Wzfh1KhOld9whgapWnytfIueAOkSaKLTg1r83NrkJXX+p+tnQ/qtMe/+oT5Zpy8n
+         urO6U6jt/kJk+Ytud0DO5jW3GwdEiWRMw6jVNfWKXUjX98wh98QiN3M05DNIzpPZK4vm
+         MW/NqZ0Js5sS3+Ywy1mEl4pRcCTdb6dkapHEzt4a5Dn0mNN8wFyZbiDcmPGVmlPCp58h
+         /Bh64m5Irp8mPeA1q9YsS0yZ1fNzp0cq0m/ryfLheV5RR6G12sgYYE+UjVown5keVEnQ
+         FwUKvXsYws7fvc9db+9PBc+ypfyROBF+kuqlg1obGB6NdIgjQ1Hs2URKPgjExnqtmizy
+         Z1ug==
+X-Gm-Message-State: AOAM531UHk/6/kp3XDeN3a+dPIK7+ZraJqfhd+W/+p5wMp6Uwbxl1EGP
+        wJfM7o0LpCLf5KYUYkVRWIU5hw==
+X-Google-Smtp-Source: ABdhPJzyk1CokDb3PmPO6AYN5WbyxmkTO2goVocCEnl70vwlgJZot7evNIwwh9o3S+Q92QVwXSE2HA==
+X-Received: by 2002:a65:5c02:: with SMTP id u2mr18125891pgr.173.1603757348944;
+        Mon, 26 Oct 2020 17:09:08 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id e16sm13676837pfh.45.2020.10.26.17.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 17:09:08 -0700 (PDT)
+Subject: Re: [REGRESSION] mm: process_vm_readv testcase no longer works after
+ compat_prcoess_vm_readv removed
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Kyle Huey <me@kylehuey.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Robert O'Callahan <robert@ocallahan.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
+ <70d5569e-4ad6-988a-e047-5d12d298684c@kernel.dk>
+ <20201027000521.GD3576660@ZenIV.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0127a542-3f93-7bd0-e00d-4a0e49846c8f@kernel.dk>
+Date:   Mon, 26 Oct 2020 18:09:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201027000521.GD3576660@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On 10/26/20 6:05 PM, Al Viro wrote:
+> On Mon, Oct 26, 2020 at 05:56:11PM -0600, Jens Axboe wrote:
+>> On 10/26/20 4:55 PM, Kyle Huey wrote:
+>>> A test program from the rr[0] test suite, vm_readv_writev[1], no
+>>> longer works on 5.10-rc1 when compiled as a 32 bit binary and executed
+>>> on a 64 bit kernel. The first process_vm_readv call (on line 35) now
+>>> fails with EFAULT. I have bisected this to
+>>> c3973b401ef2b0b8005f8074a10e96e3ea093823.
+>>>
+>>> It should be fairly straightforward to extract the test case from our
+>>> repository into a standalone program.
+>>
+>> Can you check with this applied?
+>>
+>> diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
+>> index fd12da80b6f2..05676722d9cd 100644
+>> --- a/mm/process_vm_access.c
+>> +++ b/mm/process_vm_access.c
+>> @@ -273,7 +273,8 @@ static ssize_t process_vm_rw(pid_t pid,
+>>  		return rc;
+>>  	if (!iov_iter_count(&iter))
+>>  		goto free_iov_l;
+>> -	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r, false);
+>> +	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r,
+>> +				in_compat_syscall());
+> 
+> _ouch_
+> 
+> There's a bug, all right, but I'm not sure that this is all there is
+> to it. For now it's probably the right fix, but...  Consider the fun
+> trying to use that from 32bit process to access the memory of 64bit
+> one.  IOW, we might want to add an explicit flag for "force 64bit
+> addresses/sizes in rvec".
 
-[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
+Ouch yes good point, nice catch.
 
-Lockdep complains at boot:
-
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
-
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
-
-Change the spinlock to a mutex to avoid that.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index b5e0cbb343828..476ded92affac 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -36,14 +36,14 @@ int write_sigio_irq(int fd)
- }
- 
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
- 
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
- 
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
- }
 -- 
-2.25.1
+Jens Axboe
 
