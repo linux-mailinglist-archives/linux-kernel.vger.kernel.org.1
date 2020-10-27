@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500A329B87A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D8029B879
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1800382AbgJ0Pfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1800391AbgJ0Pfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 27 Oct 2020 11:35:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49244 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:49314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1799561AbgJ0PcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:32:10 -0400
+        id S1799571AbgJ0PcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:32:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4320920728;
-        Tue, 27 Oct 2020 15:32:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1F6822202;
+        Tue, 27 Oct 2020 15:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812729;
-        bh=v73Ta+ScJRWCFopas3K9azkdlpQ0DyatyfvApVT089E=;
+        s=default; t=1603812732;
+        bh=XMkQTYUfMEhIA+a+lO8Oxa/bNczWeriCd977SjZGeZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jmrgcyi24Ct87iwrPK1d/Gep22yRTbN/i4Qhdw9mIL/b87F4HqsozY1GGfYpcGU1R
-         33KzBzirU1wIduxPE9gxDp/LJxubyJaQSBgZ5CJYCsnRLqKkRYbpd5G6IldXK+Rr8n
-         ckAZTHwVTTjBUuux8sTou+W5TLqn/Dz2vpCD9KfE=
+        b=VEPRbbi8QABpuqWPUcJ1aTsq80ZnwZUrPXE6ZhVteOzKirsx9y02Az0bbiBhjyONO
+         9T9Lm4kUwuPEMRiQix4H3JLc8WJDwbQM5ygin71sK7KSX4tQFoYfVW0tqrGCzCStta
+         VE1lOlK0NRUsO/UbzTh0nNIx1GIfGxqxZCjK81Fw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadym Kochan <vadym.kochan@plvision.eu>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 280/757] nvmem: core: fix missing of_node_put() in of_nvmem_device_get()
-Date:   Tue, 27 Oct 2020 14:48:50 +0100
-Message-Id: <20201027135503.718376550@linuxfoundation.org>
+Subject: [PATCH 5.9 281/757] selftests: mptcp: interpret \n as a new line
+Date:   Tue, 27 Oct 2020 14:48:51 +0100
+Message-Id: <20201027135503.757829789@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,47 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vadym.kochan@plvision.eu>
+From: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-[ Upstream commit b1c194dcdb1425fa59eec61ab927cfff33096149 ]
+[ Upstream commit 8b974778f998ab1be23eca7436fc13d2d8c6bd59 ]
 
-of_parse_phandle() returns device_node with incremented ref count
-which needs to be decremented by of_node_put() when device_node
-is not used.
+In case of errors, this message was printed:
 
-Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200917134437.16637-5-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  (...)
+  # read: Resource temporarily unavailable
+  #  client exit code 0, server 3
+  # \nnetns ns1-0-BJlt5D socket stat for 10003:
+  (...)
+
+Obviously, the idea was to add a new line before the socket stat and not
+print "\nnetns".
+
+Fixes: b08fbf241064 ("selftests: add test-cases for MPTCP MP_JOIN")
+Fixes: 048d19d444be ("mptcp: add basic kselftest for mptcp")
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvmem/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/mptcp/mptcp_connect.sh | 4 ++--
+ tools/testing/selftests/net/mptcp/mptcp_join.sh    | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 6cd3edb2eaf65..204a515d8bc5d 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -835,6 +835,7 @@ struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
- {
+diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
+index 57d75b7f62203..e9449430f98df 100755
+--- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
++++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
+@@ -444,9 +444,9 @@ do_transfer()
+ 	duration=$(printf "(duration %05sms)" $duration)
+ 	if [ ${rets} -ne 0 ] || [ ${retc} -ne 0 ]; then
+ 		echo "$duration [ FAIL ] client exit code $retc, server $rets" 1>&2
+-		echo "\nnetns ${listener_ns} socket stat for $port:" 1>&2
++		echo -e "\nnetns ${listener_ns} socket stat for ${port}:" 1>&2
+ 		ip netns exec ${listener_ns} ss -nita 1>&2 -o "sport = :$port"
+-		echo "\nnetns ${connector_ns} socket stat for $port:" 1>&2
++		echo -e "\nnetns ${connector_ns} socket stat for ${port}:" 1>&2
+ 		ip netns exec ${connector_ns} ss -nita 1>&2 -o "dport = :$port"
  
- 	struct device_node *nvmem_np;
-+	struct nvmem_device *nvmem;
- 	int index = 0;
+ 		cat "$capout"
+diff --git a/tools/testing/selftests/net/mptcp/mptcp_join.sh b/tools/testing/selftests/net/mptcp/mptcp_join.sh
+index f39c1129ce5f0..c2943e4dfcfe6 100755
+--- a/tools/testing/selftests/net/mptcp/mptcp_join.sh
++++ b/tools/testing/selftests/net/mptcp/mptcp_join.sh
+@@ -176,9 +176,9 @@ do_transfer()
  
- 	if (id)
-@@ -844,7 +845,9 @@ struct nvmem_device *of_nvmem_device_get(struct device_node *np, const char *id)
- 	if (!nvmem_np)
- 		return ERR_PTR(-ENOENT);
+ 	if [ ${rets} -ne 0 ] || [ ${retc} -ne 0 ]; then
+ 		echo " client exit code $retc, server $rets" 1>&2
+-		echo "\nnetns ${listener_ns} socket stat for $port:" 1>&2
++		echo -e "\nnetns ${listener_ns} socket stat for ${port}:" 1>&2
+ 		ip netns exec ${listener_ns} ss -nita 1>&2 -o "sport = :$port"
+-		echo "\nnetns ${connector_ns} socket stat for $port:" 1>&2
++		echo -e "\nnetns ${connector_ns} socket stat for ${port}:" 1>&2
+ 		ip netns exec ${connector_ns} ss -nita 1>&2 -o "dport = :$port"
  
--	return __nvmem_device_get(nvmem_np, device_match_of_node);
-+	nvmem = __nvmem_device_get(nvmem_np, device_match_of_node);
-+	of_node_put(nvmem_np);
-+	return nvmem;
- }
- EXPORT_SYMBOL_GPL(of_nvmem_device_get);
- #endif
+ 		cat "$capout"
 -- 
 2.25.1
 
