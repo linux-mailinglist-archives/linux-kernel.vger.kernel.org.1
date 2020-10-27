@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E55929C2C9
+	by mail.lfdr.de (Postfix) with ESMTP id E028829C2CA
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760141AbgJ0Ode (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
+        id S1760149AbgJ0Odg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:33:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896226AbgJ0ObY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:31:24 -0400
+        id S2902201AbgJ0Ob1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:31:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30FCE206DC;
-        Tue, 27 Oct 2020 14:31:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB1B020754;
+        Tue, 27 Oct 2020 14:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809083;
-        bh=pb/A/SOzAyWfrLuDKXOHHkEICQKjJ6DTplvDk4lmNUM=;
+        s=default; t=1603809086;
+        bh=solqgdnKKWFCskQ2IjV7aCH2XMHqzw0ApGOuephiAfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zNZ1s7kvzyCzKN4yqHOmAWY9uIUswIfFQBuUrjNYmS1LwsxcOv5B/VACv/lkFHElg
-         lc9qsyTwWIcoCrknhjwVPfxqOoZz0IbxoeQ7WIWl+dY4O2dXWnnq65vrzmc+nP2BR1
-         MDGBANlY42xMYnhQHymW841b9U0SKyHWTLdCX8R0=
+        b=f2T5BLKy94p/YaO4AZ5ZGAXwYPvBNk0BZTisAlNNkQyVMT8terUPwgvjakOguaG0P
+         oU7CjiMC1VYCfY1Ignuj7NY1xVvDFaaAgeNILuxVM2RGjRwNLnVIbRN5SkiQ6zRyog
+         D65xYuLIVEPL0MUtBqSDFUXxPfKrwWuMOBpD2cOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Jamie Iles <jamie@jamieiles.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 069/408] crypto: ixp4xx - Fix the size used in a dma_free_coherent() call
-Date:   Tue, 27 Oct 2020 14:50:07 +0100
-Message-Id: <20201027135458.260570359@linuxfoundation.org>
+Subject: [PATCH 5.4 070/408] crypto: picoxcell - Fix potential race condition bug
+Date:   Tue, 27 Oct 2020 14:50:08 +0100
+Message-Id: <20201027135458.308277102@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
 References: <20201027135455.027547757@linuxfoundation.org>
@@ -44,34 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-[ Upstream commit f7ade9aaf66bd5599690acf0597df2c0f6cd825a ]
+[ Upstream commit 64f4a62e3b17f1e473f971127c2924cae42afc82 ]
 
-Update the size used in 'dma_free_coherent()' in order to match the one
-used in the corresponding 'dma_alloc_coherent()', in 'setup_crypt_desc()'.
+engine->stat_irq_thresh was initialized after device_create_file() in
+the probe function, the initialization may race with call to
+spacc_stat_irq_thresh_store() which updates engine->stat_irq_thresh,
+therefore initialize it before creating the file in probe function.
 
-Fixes: 81bef0150074 ("crypto: ixp4xx - Hardware crypto support for IXP4xx CPUs")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: ce92136843cb ("crypto: picoxcell - add support for the...")
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Acked-by: Jamie Iles <jamie@jamieiles.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ixp4xx_crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/picoxcell_crypto.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
-index 9181523ba7607..acaa504d5a798 100644
---- a/drivers/crypto/ixp4xx_crypto.c
-+++ b/drivers/crypto/ixp4xx_crypto.c
-@@ -527,7 +527,7 @@ static void release_ixp_crypto(struct device *dev)
- 
- 	if (crypt_virt) {
- 		dma_free_coherent(dev,
--			NPE_QLEN_TOTAL * sizeof( struct crypt_ctl),
-+			NPE_QLEN * sizeof(struct crypt_ctl),
- 			crypt_virt, crypt_phys);
+diff --git a/drivers/crypto/picoxcell_crypto.c b/drivers/crypto/picoxcell_crypto.c
+index 2680e1525db58..13ecbb0e58528 100644
+--- a/drivers/crypto/picoxcell_crypto.c
++++ b/drivers/crypto/picoxcell_crypto.c
+@@ -1697,11 +1697,6 @@ static int spacc_probe(struct platform_device *pdev)
+ 		goto err_clk_put;
  	}
- }
+ 
+-	ret = device_create_file(&pdev->dev, &dev_attr_stat_irq_thresh);
+-	if (ret)
+-		goto err_clk_disable;
+-
+-
+ 	/*
+ 	 * Use an IRQ threshold of 50% as a default. This seems to be a
+ 	 * reasonable trade off of latency against throughput but can be
+@@ -1709,6 +1704,10 @@ static int spacc_probe(struct platform_device *pdev)
+ 	 */
+ 	engine->stat_irq_thresh = (engine->fifo_sz / 2);
+ 
++	ret = device_create_file(&pdev->dev, &dev_attr_stat_irq_thresh);
++	if (ret)
++		goto err_clk_disable;
++
+ 	/*
+ 	 * Configure the interrupts. We only use the STAT_CNT interrupt as we
+ 	 * only submit a new packet for processing when we complete another in
 -- 
 2.25.1
 
