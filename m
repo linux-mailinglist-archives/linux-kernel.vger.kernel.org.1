@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C3F29BB0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4444529B8AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1803122AbgJ0PwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:52:18 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:43618 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1799418AbgJ0PbZ (ORCPT
+        id S1801539AbgJ0Pmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:42:38 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41840 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1799913AbgJ0PeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:31:25 -0400
-Received: by mail-lf1-f66.google.com with SMTP id l28so2838520lfp.10;
-        Tue, 27 Oct 2020 08:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fHBOxQ4ds2L5zAe+IuVRpnyZ/0NNh1Z4K/iPh0DplL0=;
-        b=FrFeVRKYfjR60SUSEWYarWyVfbowL0Ud1Eji9GIT0h5PaTT8VDCPnslo8AaFuNtyTd
-         jWYa1PiIUnDfYqal6c8SXQEGtn35Dx21FF1vpSXT/Btm2N9+/PYsVDp7eH9bU0f59QPY
-         HXARwhnWZ8mHG6Me8oDKdLMsoWrWhpCPn802tusd2n260z0+Ji2TSVsZbPB3dojZQcre
-         FMzxlua8ApZGgx/pHHhBci76Np9dDQWX7/3v8iziLolh76ZICVvcLICkNuqidccCVUJ8
-         kIBYt1gFcoDUs80eLG3Kpj0NEfPuZB7bqQtufpYzTE2XOQepKo+kxYGjR6bCRzFbtDm/
-         Lx4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fHBOxQ4ds2L5zAe+IuVRpnyZ/0NNh1Z4K/iPh0DplL0=;
-        b=dYOmeYo2MQqLAiD6bHUSem9hN3ZDOnXnGdPHkL167i9owALV3wqjWBIxzGikS9Idon
-         Co1exfnMC15jTnokCHej5ZYVlyZM4jXz/r1Boj/ckaK0zRjxyXBcZaM6GFgzC4S48UB6
-         CKv0WBYwEbPfetAOK86lj6ekd0nnnjfl+0qRhe0zZVq9OttPiSzvg4jzdTqZlf+SgXep
-         ABmdOxSOjxUTWMOglM5Uf80hPlTNILLxbS7e4a3kg4/tDLfS5pt0Vi23HY8Zx03nJoj+
-         6zNE5XCbG42bciGKcK8QZxCDy0baSd2hexddyxS9OcS1tfkOAw3oQh5Fcicc9ObB/5Si
-         /jxg==
-X-Gm-Message-State: AOAM531E0I6e0oqsSkiOXCwRNhgIZS9a9mO6wA52wbWrFn0lsbIAa33k
-        yVBA8S6bVGED0Xjr7Db/6acFCFiuXkEZPIzzx1lOZnKMrDY=
-X-Google-Smtp-Source: ABdhPJyNHgiM1WZV6kimlOxnv8sy1Xt8EYt2qlI4JysJ/j1JiAgXlQLt4MJyxmzzEcCrEQ+POBbOR25Kj72oKnNqHiE=
-X-Received: by 2002:a19:7fc2:: with SMTP id a185mr970412lfd.84.1603812683068;
- Tue, 27 Oct 2020 08:31:23 -0700 (PDT)
+        Tue, 27 Oct 2020 11:34:03 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09RFXpSU122658;
+        Tue, 27 Oct 2020 10:33:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603812831;
+        bh=4o9Ae+25venqCtbBsHi5T/xxGCzMF37n9QCBec9rNak=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dIHzbiDqa6OOuGqY6jZR81uJNvCwfq3aqDSglIs4y93RbYwxacJtMGYnyUe33ya8V
+         oSj72rmHEjtinxGD7S41rL/gVHorzP9Lz10MgdS9Vasrh71KK1zdKFO1VBPUyznZe+
+         XzPDaMRxatIcn+oA7BbuPNsv/xN2PF4y9Kwftd2c=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09RFXpwp087684
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 10:33:51 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 27
+ Oct 2020 10:31:45 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 27 Oct 2020 10:31:45 -0500
+Received: from [10.1.3.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09RFVYNo059550;
+        Tue, 27 Oct 2020 10:31:38 -0500
+Subject: Re: [PATCH 1/4] drm/tilcdc: avoid 'make W=2' build failure
+To:     Arnd Bergmann <arnd@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20201026194110.3817470-1-arnd@kernel.org>
+From:   Jyri Sarha <jsarha@ti.com>
+Autocrypt: addr=jsarha@ti.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <19af29c5-91e7-055f-cffa-0c813ed5233b@ti.com>
+Date:   Tue, 27 Oct 2020 17:31:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201026125227.54520-1-a.nogikh@gmail.com> <20201026125227.54520-3-a.nogikh@gmail.com>
-In-Reply-To: <20201026125227.54520-3-a.nogikh@gmail.com>
-From:   Akinobu Mita <akinobu.mita@gmail.com>
-Date:   Wed, 28 Oct 2020 00:31:11 +0900
-Message-ID: <CAC5umyjZn+gtO=u8GhptVggzodbY-vnk9NNTOqyZyUW2up2ASQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] docs: add fail_lsm_hooks info to fault-injection.rst
-To:     Aleksandr Nogikh <a.nogikh@gmail.com>
-Cc:     jmorris@namei.org, serge@hallyn.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>, keescook@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201026194110.3817470-1-arnd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=E5=B9=B410=E6=9C=8826=E6=97=A5(=E6=9C=88) 21:52 Aleksandr Nogikh <a.no=
-gikh@gmail.com>:
->
-> From: Aleksandr Nogikh <nogikh@google.com>
->
-> Describe fail_lsm_hooks fault injection capability.
->
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> ---
-> v2:
-> - Added this commit.
-> ---
->  Documentation/fault-injection/fault-injection.rst | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/Documentation/fault-injection/fault-injection.rst b/Document=
-ation/fault-injection/fault-injection.rst
-> index 31ecfe44e5b4..48705adfbc18 100644
-> --- a/Documentation/fault-injection/fault-injection.rst
-> +++ b/Documentation/fault-injection/fault-injection.rst
-> @@ -48,6 +48,12 @@ Available fault injection capabilities
->    status code is NVME_SC_INVALID_OPCODE with no retry. The status code a=
-nd
->    retry flag can be set via the debugfs.
->
-> +- fail_lsm_hooks
-> +
-> +  injects failures into LSM hooks. When a fault is injected, actual hook=
-s
-> +  are not executed and a code from /sys/kernel/debug/fail_lsm_hooks/retv=
-al
-> +  is returned (the default value is -EACCES).
+On 26/10/2020 21:41, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The -Wmissing-field-initializer warning when building with W=2
+> turns into an error because tilcdc is built with -Werror:
+> 
+> drm/tilcdc/tilcdc_drv.c:431:33: error: missing field 'data' initializer [-Werror,-Wmissing-field-initializers] { "regs", tilcdc_regs_show, 0 },
+> drm/tilcdc/tilcdc_drv.c:432:33: error: missing field 'data' initializer [-Werror,-Wmissing-field-initializers] { "mm",   tilcdc_mm_show,   0 },
+> 
+> Add the missing field initializers to address the warning.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-In addition to this global one, what do you think about per-hook fault
-injection,
-i.e. /sys/kernel/debug/fail_lsm_hooks/<FUNC>/retval ?
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
 
-In this case, we need a fault_attr for each hook. (Maybe, we can use the sa=
-me
-technique that is used to define security_hook_heads).
+Please let me know if you want me to merge this.
+
+Best regards,
+Jyri
+
+> ---
+>  drivers/gpu/drm/tilcdc/tilcdc_drv.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+> index 4f5fc3e87383..754a66051a21 100644
+> --- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+> +++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+> @@ -428,8 +428,8 @@ static int tilcdc_mm_show(struct seq_file *m, void *arg)
+>  }
+>  
+>  static struct drm_info_list tilcdc_debugfs_list[] = {
+> -		{ "regs", tilcdc_regs_show, 0 },
+> -		{ "mm",   tilcdc_mm_show,   0 },
+> +		{ "regs", tilcdc_regs_show, 0, NULL },
+> +		{ "mm",   tilcdc_mm_show,   0, NULL },
+>  };
+>  
+>  static void tilcdc_debugfs_init(struct drm_minor *minor)
+> 
+
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
