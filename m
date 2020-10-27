@@ -2,121 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8838A29C242
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146BF29C24A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820232AbgJ0ReB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:34:01 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:33846 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1819702AbgJ0Rau (ORCPT
+        id S1820270AbgJ0ReT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:34:19 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39832 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1820257AbgJ0ReO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:30:50 -0400
-Received: by mail-qk1-f194.google.com with SMTP id x20so1955183qkn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:30:48 -0700 (PDT)
+        Tue, 27 Oct 2020 13:34:14 -0400
+Received: by mail-qt1-f196.google.com with SMTP id i7so1602488qti.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 10:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XYSeqyz/JIAv8fNqM55u3XsYcFX6LZVCFHKdWniBKbU=;
-        b=HB0b295Lv8MXIWJcp5LaqEKYZPE+K3XJZKxBq6R5kmC6Nv5NBAXfZHe0G9FRdCju8m
-         /J6Gg6vFr6M76B5EbWhrpsygLjgdD9MKNm6/AwPpZ5bXVqnmN6+sYeWIa/lrARJ0YU/x
-         W18x+EDL33QjPGGHu4OeKfE745kMtVhb0BSew=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DJdrHkP5GhFWBxOBTxYJLlq85LF0Y8rsT83lHf4BoXA=;
+        b=rElie7nCB2CSbeT6c/CaRa3JHjFQyZbh0vMF7smW6sS0e7lP2rguaapbfqKZlnXJMt
+         H/al2Ps4yGge5TkCv7RwrkHawwOXy7AJkP6a/iHLDnTJvdGRLGrXBrr8QHt4+yioaM7L
+         jm5b8mvRFwige6iwO7e8ADEX+VDoGG6tk9ObciKNvJ/nDOLSqFj9Bih4li5/oehtBTtQ
+         HTj5kT4vsEwtH4CacmE/gNkfyvQUZep5AoMjgt2VbxMKwj/AeKBpLHynlUJJOdSdLoKM
+         ZHyiJ1lH32gzTeEwyueSWFnkIQ8aVPKVnxVB0hEwI3ylp/eOUfkYi538tWiNR0Gj79Ui
+         cp8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XYSeqyz/JIAv8fNqM55u3XsYcFX6LZVCFHKdWniBKbU=;
-        b=PBgKX50dQp9+dcC1rg3rCWn8H/sWd44ZiPHeMqG5Pzj/czl8RhhbqJ10FPOrIncIvw
-         phnw40CqBgZPhF/z05jG5lV1dzJBpqPNLE3BYmy4tUc7vkrsBJ5EQx34F//xbLcEJxpI
-         x77uPZxusZvEQiCXGIU/KLYEDZBK6R6aLaXtwUtks4Livs8TrJjxXIAMCTdGzO3Xw1SA
-         ieN6QOVrIV3unhIkq4x/vC+6EsKnRHZgfM66jfjMUtPPuFhKRd3HlegQO/J104x8d5IH
-         jfw0WgURXUXTcyOK8uwGUFv3pAcTG42Ocd8O/eaaGs9suunEf/wV4gpp1u138W/h79Vs
-         Ev8g==
-X-Gm-Message-State: AOAM531EVhLokTOKUzVr1J1rk8D5IMpcd7kiqO40qthbPeEVpN1wI4A/
-        +c6yOkRIMzKvLtoyx4a4f0JmKg==
-X-Google-Smtp-Source: ABdhPJxbwOpdpa+A8Rc7aok4VV3rF8fkP5IBJnsgQ/TQGOaEnmW+eEbGgNwptKqFJ+VQAiEmk/l/dQ==
-X-Received: by 2002:a37:a34a:: with SMTP id m71mr3257792qke.81.1603819847951;
-        Tue, 27 Oct 2020 10:30:47 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t8sm1281237qtb.97.2020.10.27.10.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 10:30:47 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 13:30:46 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v8 2/6] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201027173046.GA1018765@google.com>
-References: <20201021190813.3005054-1-joel@joelfernandes.org>
- <20201021190813.3005054-3-joel@joelfernandes.org>
- <20201026003212.GA104441@lothringen>
- <20201026054043.GA4192074@google.com>
- <20201026112445.GC104441@lothringen>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DJdrHkP5GhFWBxOBTxYJLlq85LF0Y8rsT83lHf4BoXA=;
+        b=jizr88frw07x8b4PxWZDkUJrVyQlS+N2fFtmM8Chw2TKIjGWd5X3PRruXTdAgjDZKK
+         xhgFEmDNgLx1gYezx8NwNwg4gT+itMdh+cF/dEXu91bcMRwv1Tm10uvR8vapHJs8aiNc
+         u0ZOR8GO2E+3Kt1M85JcCdOGgSDWLJzAfh8vgyAf/CQozV3chxoFEacTl8Ljy8ZA/HvN
+         7stGTz2n0kBIleSHWHeKHuuMwA+JlbXijYg2p1feFX4U26OD1Ig37TT/ofV3uVE1T9wq
+         YL72VlqdUCcyq92EnA1CzvPBYzEzi2LdNlFUsPibmm5czH1tOhsNQrHuhQnIgDQSqodb
+         rEqg==
+X-Gm-Message-State: AOAM531iqBMYbeWePcHHL9yMAPNULeHXZnc2fE5ubl9tRxpimRSskR5H
+        ebyomgIV5jrX5pSeku1WZeMrJfA/YbLowaq6uWE4
+X-Google-Smtp-Source: ABdhPJz/W/bHvKVWc1klsC77yaMfEuw1Y1K6JU//5irH2wtAr3GVuUgYh1g/Klv2dAUfqxNmvqxd3qxjKjau5y/TcQQ=
+X-Received: by 2002:ac8:4e49:: with SMTP id e9mr3216124qtw.114.1603820051180;
+ Tue, 27 Oct 2020 10:34:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026112445.GC104441@lothringen>
+References: <20201026183523.82749-1-98.arpi@gmail.com> <20201026183639.82883-1-98.arpi@gmail.com>
+In-Reply-To: <20201026183639.82883-1-98.arpi@gmail.com>
+From:   Iurii Zaikin <yzaikin@google.com>
+Date:   Tue, 27 Oct 2020 10:33:34 -0700
+Message-ID: <CAAXuY3o9Xe-atK0Mja6qXLncUhmmVf4pR7hsANsqaoUX71RXVg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 12:24:45PM +0100, Frederic Weisbecker wrote:
-[..] 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 0f23d20d485a..79b7081143a7 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -1160,6 +1160,7 @@ static void srcu_advance_state(struct srcu_struct *ssp)
-> >   */
-> >  static void srcu_invoke_callbacks(struct work_struct *work)
-> >  {
-> > +	long len;
-> >  	bool more;
-> >  	struct rcu_cblist ready_cbs;
-> >  	struct rcu_head *rhp;
-> > @@ -1182,6 +1183,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
-> >  	/* We are on the job!  Extract and invoke ready callbacks. */
-> >  	sdp->srcu_cblist_invoking = true;
-> >  	rcu_segcblist_extract_done_cbs(&sdp->srcu_cblist, &ready_cbs);
-> > +	len = ready_cbs.len;
-> >  	spin_unlock_irq_rcu_node(sdp);
-> >  	rhp = rcu_cblist_dequeue(&ready_cbs);
-> >  	for (; rhp != NULL; rhp = rcu_cblist_dequeue(&ready_cbs)) {
-> > @@ -1190,13 +1192,14 @@ static void srcu_invoke_callbacks(struct work_struct *work)
-> >  		rhp->func(rhp);
-> >  		local_bh_enable();
-> >  	}
-> > +	WARN_ON_ONCE(ready_cbs.len);
-> >  
-> >  	/*
-> >  	 * Update counts, accelerate new callbacks, and if needed,
-> >  	 * schedule another round of callback invocation.
-> >  	 */
-> >  	spin_lock_irq_rcu_node(sdp);
-> > -	rcu_segcblist_insert_count(&sdp->srcu_cblist, &ready_cbs);
-> > +	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
-> >  	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> >  				       rcu_seq_snap(&ssp->srcu_gp_seq));
-> >  	sdp->srcu_cblist_invoking = false;
-> 
-> Looks good! Thanks.
+>
+> Modify fs/ext4/inode-test.c to use the parameterized testing
+> feature of KUnit.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> ---
+> Changes v2->v3:
+> - Marked hardcoded test data const
+> - Modification based on latest implementation of KUnit parameterized testing
+> Changes v1->v2:
+> - Modification based on latest implementation of KUnit parameterized testing
+>
+>  fs/ext4/inode-test.c | 314 ++++++++++++++++++++++---------------------
+>  1 file changed, 158 insertions(+), 156 deletions(-)
+>
+> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+> index d62d802c9c12..3a449623b775 100644
+> --- a/fs/ext4/inode-test.c
+> +++ b/fs/ext4/inode-test.c
+> @@ -80,6 +80,139 @@ struct timestamp_expectation {
+>         bool lower_bound;
+>  };
+>
+> +static const struct timestamp_expectation test_data[] = {
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 0,
+> +               .expected = {0LL, 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits =  2,
+> +               .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 6,
+> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 0xFFFFFFFF,
+> +               .expected = {.tv_sec = 0x300000000LL,
+> +                            .tv_nsec = MAX_NANOSECONDS},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 3,
+> +               .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 3,
+> +               .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> +       }
+> +};
+> +
+> +KUNIT_PARAM_GENERATOR(ext4_inode, test_data);
+> +
+>  static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+>  {
+>         if (test->msb_set) {
+> @@ -101,166 +234,35 @@ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+>   */
+>  static void inode_test_xtimestamp_decoding(struct kunit *test)
+>  {
+> -       const struct timestamp_expectation test_data[] = {
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 0,
+> -                       .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 0,
+> -                       .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 0,
+> -                       .expected = {0LL, 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 0,
+> -                       .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 1,
+> -                       .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = true,
+> -                       .extra_bits =  2,
+> -                       .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+> -                       .msb_set = true,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 2,
+> -                       .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 2,
+> -                       .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 2,
+> -                       .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 6,
+> -                       .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 0xFFFFFFFF,
+> -                       .expected = {.tv_sec = 0x300000000LL,
+> -                                    .tv_nsec = MAX_NANOSECONDS},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = true,
+> -                       .extra_bits = 3,
+> -                       .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> -               },
+> -
+> -               {
+> -                       .test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> -                       .msb_set = false,
+> -                       .lower_bound = false,
+> -                       .extra_bits = 3,
+> -                       .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> -               }
+> -       };
+> -
+>         struct timespec64 timestamp;
+> -       int i;
+> -
+> -       for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
+> -               timestamp.tv_sec = get_32bit_time(&test_data[i]);
+> -               ext4_decode_extra_time(&timestamp,
+> -                                      cpu_to_le32(test_data[i].extra_bits));
+> -
+> -               KUNIT_EXPECT_EQ_MSG(test,
+> -                                   test_data[i].expected.tv_sec,
+> -                                   timestamp.tv_sec,
+> -                                   CASE_NAME_FORMAT,
+> -                                   test_data[i].test_case_name,
+> -                                   test_data[i].msb_set,
+> -                                   test_data[i].lower_bound,
+> -                                   test_data[i].extra_bits);
+> -               KUNIT_EXPECT_EQ_MSG(test,
+> -                                   test_data[i].expected.tv_nsec,
+> -                                   timestamp.tv_nsec,
+> -                                   CASE_NAME_FORMAT,
+> -                                   test_data[i].test_case_name,
+> -                                   test_data[i].msb_set,
+> -                                   test_data[i].lower_bound,
+> -                                   test_data[i].extra_bits);
+> -       }
+> +
+> +       struct timestamp_expectation *test_param =
+> +                       (struct timestamp_expectation *)(test->param_values);
+> +
+> +       timestamp.tv_sec = get_32bit_time(test_param);
+> +       ext4_decode_extra_time(&timestamp,
+> +                              cpu_to_le32(test_param->extra_bits));
+> +
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           test_param->expected.tv_sec,
+> +                           timestamp.tv_sec,
+> +                           CASE_NAME_FORMAT,
+> +                           test_param->test_case_name,
+> +                           test_param->msb_set,
+> +                           test_param->lower_bound,
+> +                           test_param->extra_bits);
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           test_param->expected.tv_nsec,
+> +                           timestamp.tv_nsec,
+> +                           CASE_NAME_FORMAT,
+> +                           test_param->test_case_name,
+> +                           test_param->msb_set,
+> +                           test_param->lower_bound,
+> +                           test_param->extra_bits);
+>  }
+>
+>  static struct kunit_case ext4_inode_test_cases[] = {
+> -       KUNIT_CASE(inode_test_xtimestamp_decoding),
+> +       KUNIT_CASE_PARAM(inode_test_xtimestamp_decoding, ext4_inode_gen_params),
+>         {}
+>  };
+>
+> --
+> 2.25.1
+>
 
-Just to report, with this fix the (s)rcutorture tests pass:
-
-SRCU-N ------- 259086 GPs (143.937/s) [srcu: g3342384 f0x0 total-gps=3342384]
-SRCU-P ------- 69443 GPs (38.5794/s) [srcud: g637552 f0x0 total-gps=637552]
-
-thanks,
-
- - Joel
-
+Reviewed-by: Iurii Zaikin <yzaikin@google.com>
