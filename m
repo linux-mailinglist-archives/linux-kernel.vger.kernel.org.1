@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A910029B5C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD9A29B43E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1795890AbgJ0PPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49196 "EHLO mail.kernel.org"
+        id S1784931AbgJ0O7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794616AbgJ0PMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:12:41 -0400
+        id S1762388AbgJ0OoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:44:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA14A20728;
-        Tue, 27 Oct 2020 15:12:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AD3B20773;
+        Tue, 27 Oct 2020 14:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811560;
-        bh=+n1S3A+tYy55zl/N+PuWYLmn/WLTr5AUGrt5WVfD6Nk=;
+        s=default; t=1603809856;
+        bh=TPSg9F6aclc44MNfpeDtKYRLYQIcsA9t3mTkIqI3l/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmWqjKFGtAfXPkw4Gx6vZn7UKWczIcbF4HGG/50NgFi2WDsQReA1+YMNQ1h/tleAu
-         Ccq1gsepAZ/0MzTVj/hDtWPjESiX4finvmsIJgxjbbhG+v+WQOrsYFXl+P68i5+0OB
-         rFF9FWA0lwZ7Le8mxNr1c2UjMlSbVA8KemorVJjk=
+        b=r4eiGQ8M4Nf2FuK2jmq5BobTKEa+CZ8bi6iRcaKx2Ddf0PYqmTy9xwOZt5BHyMnNi
+         A79SraKVA38iDOInOGhHN5LZSdwwlO4PRrBGZs0+Lfy5y55mlMWhxmk+9s5BY/Mwj1
+         +LCJIVKGKH9OJhrv+yevI/7dwEDLovrIrQjbjPro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Adam Goode <agoode@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 536/633] media: sti: Fix reference count leaks
-Date:   Tue, 27 Oct 2020 14:54:39 +0100
-Message-Id: <20201027135547.929274290@linuxfoundation.org>
+Subject: [PATCH 5.4 342/408] media: uvcvideo: Ensure all probed info is returned to v4l2
+Date:   Tue, 27 Oct 2020 14:54:40 +0100
+Message-Id: <20201027135510.891800132@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
+References: <20201027135455.027547757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Adam Goode <agoode@google.com>
 
-[ Upstream commit 6f4432bae9f2d12fc1815b5e26cc07e69bcad0df ]
+[ Upstream commit 8a652a17e3c005dcdae31b6c8fdf14382a29cbbe ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code, causing incorrect ref count if
-pm_runtime_put_noidle() is not called in error handling paths.
-Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+bFrameIndex and bFormatIndex can be negotiated by the camera during
+probing, resulting in the camera choosing a different format than
+expected. v4l2 can already accommodate such changes, but the code was
+not updating the proper fields.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Without such a change, v4l2 would potentially interpret the payload
+incorrectly, causing corrupted output. This was happening on the
+Elgato HD60 S+, which currently always renegotiates to format 1.
+
+As an aside, the Elgato firmware is buggy and should not be renegotating,
+but it is still a valid thing for the camera to do. Both macOS and Windows
+will properly probe and read uncorrupted images from this camera.
+
+With this change, both qv4l2 and chromium can now read uncorrupted video
+from the Elgato HD60 S+.
+
+[Add blank lines, remove periods at the of messages]
+
+Signed-off-by: Adam Goode <agoode@google.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sti/hva/hva-hw.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/usb/uvc/uvc_v4l2.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
-index 401aaafa17109..bb13348be0832 100644
---- a/drivers/media/platform/sti/hva/hva-hw.c
-+++ b/drivers/media/platform/sti/hva/hva-hw.c
-@@ -272,6 +272,7 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 0335e69b70abe..5e6f3153b5ff8 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -247,11 +247,41 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 	if (ret < 0)
+ 		goto done;
  
- 	if (pm_runtime_get_sync(dev) < 0) {
- 		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
-+		pm_runtime_put_noidle(dev);
- 		mutex_unlock(&hva->protect_mutex);
- 		return -EFAULT;
- 	}
-@@ -553,6 +554,7 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
++	/* After the probe, update fmt with the values returned from
++	 * negotiation with the device.
++	 */
++	for (i = 0; i < stream->nformats; ++i) {
++		if (probe->bFormatIndex == stream->format[i].index) {
++			format = &stream->format[i];
++			break;
++		}
++	}
++
++	if (i == stream->nformats) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
++			  probe->bFormatIndex);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < format->nframes; ++i) {
++		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
++			frame = &format->frame[i];
++			break;
++		}
++	}
++
++	if (i == format->nframes) {
++		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
++			  probe->bFrameIndex);
++		return -EINVAL;
++	}
++
+ 	fmt->fmt.pix.width = frame->wWidth;
+ 	fmt->fmt.pix.height = frame->wHeight;
+ 	fmt->fmt.pix.field = V4L2_FIELD_NONE;
+ 	fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(format, frame);
+ 	fmt->fmt.pix.sizeimage = probe->dwMaxVideoFrameSize;
++	fmt->fmt.pix.pixelformat = format->fcc;
+ 	fmt->fmt.pix.colorspace = format->colorspace;
  
- 	if (pm_runtime_get_sync(dev) < 0) {
- 		seq_puts(s, "Cannot wake up IP\n");
-+		pm_runtime_put_noidle(dev);
- 		mutex_unlock(&hva->protect_mutex);
- 		return;
- 	}
+ 	if (uvc_format != NULL)
 -- 
 2.25.1
 
