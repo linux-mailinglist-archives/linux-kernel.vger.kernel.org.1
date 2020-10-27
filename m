@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B59129C49D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB21629C545
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901150AbgJ0OTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:19:24 -0400
-Received: from mail-qk1-f202.google.com ([209.85.222.202]:42469 "EHLO
-        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757180AbgJ0OQi (ORCPT
+        id S1824919AbgJ0SGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:06:47 -0400
+Received: from mail-wr1-f74.google.com ([209.85.221.74]:35641 "EHLO
+        mail-wr1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508620AbgJ0OQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:16:38 -0400
-Received: by mail-qk1-f202.google.com with SMTP id e7so839926qka.9
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:16:36 -0700 (PDT)
+        Tue, 27 Oct 2020 10:16:45 -0400
+Received: by mail-wr1-f74.google.com with SMTP id t3so827710wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=OIhtJmQn8cPhTYAMUsg4K5Bpc/At3M+CZmjJH0wJYj0=;
-        b=swqC9CC50SvTwnu1p+NAEDUkfC9DTlBcJNPL6hdrqHkHXUlyAUE5Vht1e0smkxqH4D
-         /0HZD6e4s1ZRQYVNH7Tx08omITR3CywUlxhYtKryxWjlHTxZ3N11mcSfiuLpn+co7mMh
-         PKADunsWulz/DMZ685eoabCdusjZjOsaUkV1te8xrH5clsKVDy2M1SJqM/JUT5YQPnjy
-         GB3G/Gfh3jgc0zezL0jZZ68W2hjiFmAU0jvZwM4VdvD60Yr8LMU9XnyjtCAIduXJysWD
-         RHkhzeAPh4CR76dqhU5m502SyrspBlNwaLXH6EqCV1RJTAyAcqXJYhwQG5A05DLFfpWj
-         wciw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=amWdP6FV7IwvIOgrtWK6Wa5LLRx0C6kQ2UzTi3lX/Ww=;
+        b=lqYJFavIH+U4gFwR4Ufpqsg9KCYNXbJ3F8gnrRSYEHQI3/A9+te13dBCntzIVhHjPA
+         yM/u2APl511RqstDqN55oOyS5UP4F22H/qyDB5WR7vaX3lk9aNkuR0sQDMgO4HTJoT2P
+         nUddrSTOur3uISgb2z/F6hHZ6MIYXhpIqkCKj2iS3tCmoXeHvH04eMp18wWCBfWo3H9C
+         IWJ3GPgBuk64n7JwdO61szS3AlX7mUf1cu8NrRaBk+3UmrzTr4PXcXohLQCOyybY0a39
+         ZogLQhigFh5RhWSVOsR8UYLQRHv3SabS6DfurmVtNpuvQc1oCiGBsU8hyksRke4zFsLy
+         e1pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=OIhtJmQn8cPhTYAMUsg4K5Bpc/At3M+CZmjJH0wJYj0=;
-        b=V+4DCzbA1vSXZenLCA8rCAugTgOI35RCvj2UvCGX0W0wn+HW0Luv2EWsqx13/SUHKe
-         P5jxwVqe++HXi75QpCAhEzHrUuLMrDHPRCNCLdYZRRC7yp2iS4FoEm0hGxc7YcG8gyV/
-         epwkqMNb9Zgjkg9odWM9Q3BEFO5knnlE3JS2s4eOcJw7ocS5iYbDvzu/EB+2+0V6tyIS
-         Gp4afmmF1JSUSTchMfMxD/bBrMk3UTBNvr2PLVsI+mt04nP6wgg0ZBXMV9l3zu9tP6MY
-         xSfMjfF11laApJh0EWWPV2JxTmdPdoaQVCLGBiqsM0ATD/LAsDBopE8nQsNJX2kZ1iOD
-         y3rw==
-X-Gm-Message-State: AOAM531NHXxhveDEe5v09gdXrn46XsynXoqFIZ8UQwTu0LlbCIvpgxBT
-        k71tlRZJ8xUVjyNneBFFMRewXigrcg==
-X-Google-Smtp-Source: ABdhPJxPqYmqxq3HpEgVPCM1Ayd8D9b+wgHFlJYApQIK5Kr+4fRK+eo3YA4xPHQzdYQGSVlyWYBlOyoJTA==
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=amWdP6FV7IwvIOgrtWK6Wa5LLRx0C6kQ2UzTi3lX/Ww=;
+        b=WHwfWh4391Alk9pV1hvgLLGL8sJrcl0PFW+yljOvIFfI9lHxiPpp0qVQZ9+G1lqnYN
+         YUDp1ubsi49q87/rTYS9/iLccdhOxRTx20l+Oq00vbjF+3E9GGj4NaPxsy99bCXWK0Uv
+         3Y/65kINPwXhQkUtROzuD4Jd3J0WnCAf9z5EDiKvu/fW9LohCYYA8U9GzEYFtqmJjKJm
+         2LhcZv3Z3c2TomwjIv3VtQn3MTnUWZ5SJgWtrx4j1FWRs966xqN+KiAB9qDY7mcmrRsO
+         OWzaUdYdYCr6ki/vTsz7LpubhofX8was+TDCoCLeqssh/IjNfhDyBLkhj5j4FRd6/UWK
+         0KxQ==
+X-Gm-Message-State: AOAM533oXTfQ4yKf1uCuGsPqTh7w85otRA6neiQu7o+x8a/nwtTz1rcR
+        Yn9q02L7xmCy2oFOaMBJJ7UbQz/n/A==
+X-Google-Smtp-Source: ABdhPJxg2TfSVwFzHU/1bZA22yprPnzmXJsVKmsjs/zjJxuqWYfMpJQfyT+LsH4Tz15aeMtqUAjINyxpZw==
 Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
- (user=elver job=sendgmr) by 2002:a0c:fa91:: with SMTP id o17mr2582669qvn.49.1603808196014;
- Tue, 27 Oct 2020 07:16:36 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 15:15:57 +0100
-Message-Id: <20201027141606.426816-1-elver@google.com>
+ (user=elver job=sendgmr) by 2002:adf:eac6:: with SMTP id o6mr3348520wrn.117.1603808201007;
+ Tue, 27 Oct 2020 07:16:41 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 15:15:59 +0100
+In-Reply-To: <20201027141606.426816-1-elver@google.com>
+Message-Id: <20201027141606.426816-3-elver@google.com>
 Mime-Version: 1.0
+References: <20201027141606.426816-1-elver@google.com>
 X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH v5 0/9] KFENCE: A low-overhead sampling-based memory safety
- error detector
+Subject: [PATCH v5 2/9] x86, kfence: enable KFENCE for x86
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, akpm@linux-foundation.org, glider@google.com
 Cc:     hpa@zytor.com, paulmck@kernel.org, andreyknvl@google.com,
@@ -68,146 +70,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
-low-overhead sampling-based memory safety error detector of heap
-use-after-free, invalid-free, and out-of-bounds access errors.  This
-series enables KFENCE for the x86 and arm64 architectures, and adds
-KFENCE hooks to the SLAB and SLUB allocators.
+From: Alexander Potapenko <glider@google.com>
 
-KFENCE is designed to be enabled in production kernels, and has near
-zero performance overhead. Compared to KASAN, KFENCE trades performance
-for precision. The main motivation behind KFENCE's design, is that with
-enough total uptime KFENCE will detect bugs in code paths not typically
-exercised by non-production test workloads. One way to quickly achieve a
-large enough total uptime is when the tool is deployed across a large
-fleet of machines.
+Add architecture specific implementation details for KFENCE and enable
+KFENCE for the x86 architecture. In particular, this implements the
+required interface in <asm/kfence.h> for setting up the pool and
+providing helper functions for protecting and unprotecting pages.
 
-KFENCE objects each reside on a dedicated page, at either the left or
-right page boundaries. The pages to the left and right of the object
-page are "guard pages", whose attributes are changed to a protected
-state, and cause page faults on any attempted access to them. Such page
-faults are then intercepted by KFENCE, which handles the fault
-gracefully by reporting a memory access error.
+For x86, we need to ensure that the pool uses 4K pages, which is done
+using the set_memory_4k() helper function.
 
-Guarded allocations are set up based on a sample interval (can be set
-via kfence.sample_interval). After expiration of the sample interval,
-the next allocation through the main allocator (SLAB or SLUB) returns a
-guarded allocation from the KFENCE object pool. At this point, the timer
-is reset, and the next allocation is set up after the expiration of the
-interval.
-
-To enable/disable a KFENCE allocation through the main allocator's
-fast-path without overhead, KFENCE relies on static branches via the
-static keys infrastructure. The static branch is toggled to redirect the
-allocation to KFENCE.
-
-The KFENCE memory pool is of fixed size, and if the pool is exhausted no
-further KFENCE allocations occur. The default config is conservative
-with only 255 objects, resulting in a pool size of 2 MiB (with 4 KiB
-pages).
-
-We have verified by running synthetic benchmarks (sysbench I/O,
-hackbench) that a kernel with KFENCE is performance-neutral compared to
-a non-KFENCE baseline kernel.
-
-KFENCE is inspired by GWP-ASan [1], a userspace tool with similar
-properties. The name "KFENCE" is a homage to the Electric Fence Malloc
-Debugger [2].
-
-For more details, see Documentation/dev-tools/kfence.rst added in the
-series -- also viewable here:
-
-	https://raw.githubusercontent.com/google/kasan/kfence/Documentation/dev-tools/kfence.rst
-
-[1] http://llvm.org/docs/GwpAsan.html
-[2] https://linux.die.net/man/3/efence
-
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Co-developed-by: Marco Elver <elver@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+---
 v5:
-* Lots of smaller fixes (see details in patches).
-* Optimize is_kfence_address() by using better in-range check.
-* Removal of HAVE_ARCH_KFENCE_STATIC_POOL and static pool
-  support in favor of memblock_alloc'd pool only, as it avoids all
-  issues with virt_to translations. With the new optimizations to
-  is_kfence_address(), we measure no noticeable performance impact.
-* Taint with TAINT_BAD_PAGE, to distinguish memory errors from regular
-  warnings (also used by SL*B/KASAN/etc. for memory errors).
-* Rework sample_interval parameter dynamic setting semantics.
-* Rework kfence_shutdown_cache().
-* Fix obj_to_index+objs_per_slab_page, which among other things is
-  required when using memcg accounted allocations.
-* Rebase to 5.10-rc1.
+* MAJOR CHANGE: Switch to the memblock_alloc'd pool. Running benchmarks
+  with the newly optimized is_kfence_address(), no difference between
+  baseline and KFENCE is observed.
+* Suggested by Jann Horn:
+  * Move x86 kfence_handle_page_fault before oops handling.
+  * WARN_ON in kfence_protect_page if non-4K pages.
+  * Better comments for x86 kfence_protect_page.
 
-v4: https://lkml.kernel.org/r/20200929133814.2834621-1-elver@google.com
-* MAINTAINERS: Split out from first patch.
-* Make static memory pool's attrs entirely arch-dependent.
-* Fix report generation if __slab_free tail-called.
-* Clarify RCU test comment [reported by Paul E. McKenney].
-
-v3: https://lkml.kernel.org/r/20200921132611.1700350-1-elver@google.com
-* Rewrite SLAB/SLUB patch descriptions to clarify need for 'orig_size'.
-* Various smaller fixes (see details in patches).
-
-v2: https://lkml.kernel.org/r/20200915132046.3332537-1-elver@google.com
-* Various comment/documentation changes (see details in patches).
-* Various smaller fixes (see details in patches).
-* Change all reports to reference the kfence object, "kfence-#nn".
-* Skip allocation/free internals stack trace.
-* Rework KMEMLEAK compatibility patch.
-
-RFC/v1: https://lkml.kernel.org/r/20200907134055.2878499-1-elver@google.com
-
-Alexander Potapenko (5):
-  mm: add Kernel Electric-Fence infrastructure
-  x86, kfence: enable KFENCE for x86
-  mm, kfence: insert KFENCE hooks for SLAB
-  mm, kfence: insert KFENCE hooks for SLUB
-  kfence, kasan: make KFENCE compatible with KASAN
-
-Marco Elver (4):
-  arm64, kfence: enable KFENCE for ARM64
-  kfence, Documentation: add KFENCE documentation
-  kfence: add test suite
-  MAINTAINERS: Add entry for KFENCE
-
- Documentation/dev-tools/index.rst  |   1 +
- Documentation/dev-tools/kfence.rst | 291 ++++++++++
- MAINTAINERS                        |  11 +
- arch/arm64/Kconfig                 |   1 +
- arch/arm64/include/asm/kfence.h    |  19 +
- arch/arm64/mm/fault.c              |   4 +
- arch/arm64/mm/mmu.c                |   7 +-
- arch/x86/Kconfig                   |   1 +
- arch/x86/include/asm/kfence.h      |  65 +++
- arch/x86/mm/fault.c                |   4 +
- include/linux/kfence.h             | 191 +++++++
- include/linux/slab_def.h           |   3 +
- include/linux/slub_def.h           |   3 +
- init/main.c                        |   3 +
- lib/Kconfig.debug                  |   1 +
- lib/Kconfig.kfence                 |  73 +++
- mm/Makefile                        |   1 +
- mm/kasan/common.c                  |  15 +
- mm/kasan/generic.c                 |   3 +-
- mm/kfence/Makefile                 |   6 +
- mm/kfence/core.c                   | 823 +++++++++++++++++++++++++++++
- mm/kfence/kfence.h                 | 102 ++++
- mm/kfence/kfence_test.c            | 822 ++++++++++++++++++++++++++++
- mm/kfence/report.c                 | 236 +++++++++
- mm/slab.c                          |  37 +-
- mm/slab_common.c                   |   5 +-
- mm/slub.c                          |  72 ++-
- 27 files changed, 2769 insertions(+), 31 deletions(-)
- create mode 100644 Documentation/dev-tools/kfence.rst
- create mode 100644 arch/arm64/include/asm/kfence.h
+v4:
+* Define __kfence_pool_attrs.
+---
+ arch/x86/Kconfig              |  1 +
+ arch/x86/include/asm/kfence.h | 65 +++++++++++++++++++++++++++++++++++
+ arch/x86/mm/fault.c           |  4 +++
+ 3 files changed, 70 insertions(+)
  create mode 100644 arch/x86/include/asm/kfence.h
- create mode 100644 include/linux/kfence.h
- create mode 100644 lib/Kconfig.kfence
- create mode 100644 mm/kfence/Makefile
- create mode 100644 mm/kfence/core.c
- create mode 100644 mm/kfence/kfence.h
- create mode 100644 mm/kfence/kfence_test.c
- create mode 100644 mm/kfence/report.c
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index f6946b81f74a..c9ec6b5ba358 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -144,6 +144,7 @@ config X86
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN			if X86_64
+ 	select HAVE_ARCH_KASAN_VMALLOC		if X86_64
++	select HAVE_ARCH_KFENCE
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS		if MMU
+ 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if MMU && COMPAT
+diff --git a/arch/x86/include/asm/kfence.h b/arch/x86/include/asm/kfence.h
+new file mode 100644
+index 000000000000..beeac105dae7
+--- /dev/null
++++ b/arch/x86/include/asm/kfence.h
+@@ -0,0 +1,65 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _ASM_X86_KFENCE_H
++#define _ASM_X86_KFENCE_H
++
++#include <linux/bug.h>
++#include <linux/kfence.h>
++
++#include <asm/pgalloc.h>
++#include <asm/pgtable.h>
++#include <asm/set_memory.h>
++#include <asm/tlbflush.h>
++
++/*
++ * The page fault handler entry function, up to which the stack trace is
++ * truncated in reports.
++ */
++#define KFENCE_SKIP_ARCH_FAULT_HANDLER "asm_exc_page_fault"
++
++/* Force 4K pages for __kfence_pool. */
++static inline bool arch_kfence_init_pool(void)
++{
++	unsigned long addr;
++
++	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
++	     addr += PAGE_SIZE) {
++		unsigned int level;
++
++		if (!lookup_address(addr, &level))
++			return false;
++
++		if (level != PG_LEVEL_4K)
++			set_memory_4k(addr, 1);
++	}
++
++	return true;
++}
++
++/* Protect the given page and flush TLB. */
++static inline bool kfence_protect_page(unsigned long addr, bool protect)
++{
++	unsigned int level;
++	pte_t *pte = lookup_address(addr, &level);
++
++	if (WARN_ON(!pte || level != PG_LEVEL_4K))
++		return false;
++
++	/*
++	 * We need to avoid IPIs, as we may get KFENCE allocations or faults
++	 * with interrupts disabled. Therefore, the below is best-effort, and
++	 * does not flush TLBs on all CPUs. We can tolerate some inaccuracy;
++	 * lazy fault handling takes care of faults after the page is PRESENT.
++	 */
++
++	if (protect)
++		set_pte(pte, __pte(pte_val(*pte) & ~_PAGE_PRESENT));
++	else
++		set_pte(pte, __pte(pte_val(*pte) | _PAGE_PRESENT));
++
++	/* Flush this CPU's TLB. */
++	flush_tlb_one_kernel(addr);
++	return true;
++}
++
++#endif /* _ASM_X86_KFENCE_H */
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 82bf37a5c9ec..380638745f42 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -9,6 +9,7 @@
+ #include <linux/kdebug.h>		/* oops_begin/end, ...		*/
+ #include <linux/extable.h>		/* search_exception_tables	*/
+ #include <linux/memblock.h>		/* max_low_pfn			*/
++#include <linux/kfence.h>		/* kfence_handle_page_fault	*/
+ #include <linux/kprobes.h>		/* NOKPROBE_SYMBOL, ...		*/
+ #include <linux/mmiotrace.h>		/* kmmio_handler, ...		*/
+ #include <linux/perf_event.h>		/* perf_sw_event		*/
+@@ -725,6 +726,9 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+ 	if (IS_ENABLED(CONFIG_EFI))
+ 		efi_recover_from_page_fault(address);
+ 
++	if (kfence_handle_page_fault(address))
++		return;
++
+ oops:
+ 	/*
+ 	 * Oops. The kernel tried to access some bad page. We'll have to
 -- 
 2.29.0.rc2.309.g374f81d7ae-goog
 
