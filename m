@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8465B29B67A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0416729B67B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1796865AbgJ0PUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:20:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
+        id S1796889AbgJ0PU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:20:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794582AbgJ0PQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:16:56 -0400
+        id S1796301AbgJ0PRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:17:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCC7422275;
-        Tue, 27 Oct 2020 15:16:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4748F2225C;
+        Tue, 27 Oct 2020 15:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811813;
-        bh=9CFA3euX9rYEbJKVYSLghDfyXSWascRda3Kd8WXBc0w=;
+        s=default; t=1603811832;
+        bh=Tvu2p9Pi8z1YiEfClLPGGISIx6HNTdHeQPv//3cQMlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjDUEaUJljLI7Iz2VBWgYF6v5qQJ4Wx+lbm9ygNQ6QMh8UQhfj2ijpooDHz8mNZbf
-         S8P3du+JGWTnUj7hi/q3nUTplx9HKa7xHq4NmQ7u/Qz6X+qI5q3hnhPG+3cgOzsySW
-         XXRJ05yS5ijdTvvjcXpzFNIpCVfYw5hg0kzU4KBs=
+        b=F+AWv7lbJ6LfAOVdzswxbIAXkzSnCJZGIEzCWK4QmAUIwIjYsxjTZDwUGp+vvljAW
+         JzAZerngEb5lYoMckDyDX/yG0BIahpekpAPWQ9haL1DD3PB+hshvszOFjwCBZ1VyLI
+         r9y/ISSOGe0uVacZd2tXxrjdSRq+7bRlwOm+spHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 5.8 626/633] tty: serial: lpuart: fix lpuart32_write usage
-Date:   Tue, 27 Oct 2020 14:56:09 +0100
-Message-Id: <20201027135552.180479837@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 633/633] usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
+Date:   Tue, 27 Oct 2020 14:56:16 +0100
+Message-Id: <20201027135552.515673673@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -41,66 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+From: Lorenzo Colitti <lorenzo@google.com>
 
-commit 9ea40db477c024dcb87321b7f32bd6ea12130ac2 upstream.
+[ Upstream commit 7974ecd7d3c0f42a98566f281e44ea8573a2ad88 ]
 
-The 2nd and 3rd parameter were wrongly used, and cause kernel abort when
-doing kgdb debug.
+Currently, enabling f_ncm at SuperSpeed Plus speeds results in an
+oops in config_ep_by_speed because ncm_set_alt passes in NULL
+ssp_descriptors. Fix this by re-using the SuperSpeed descriptors.
+This is safe because usb_assign_descriptors calls
+usb_copy_descriptors.
 
-Fixes: 1da17d7cf8e2 ("tty: serial: fsl_lpuart: Use appropriate lpuart32_* I/O funcs")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
-Link: https://lore.kernel.org/r/20200929091920.22612-1-peng.fan@nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Tested: enabled f_ncm on a dwc3 gadget and 10Gbps link, ran iperf
+Reviewed-by: Maciej Żenczykowski <maze@google.com>
+Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/fsl_lpuart.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/usb/gadget/function/f_ncm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -649,26 +649,24 @@ static int lpuart32_poll_init(struct uar
- 	spin_lock_irqsave(&sport->port.lock, flags);
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index 7672fa25085b0..92a7c3a839454 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1536,7 +1536,7 @@ static int ncm_bind(struct usb_configuration *c, struct usb_function *f)
+ 		fs_ncm_notify_desc.bEndpointAddress;
  
- 	/* Disable Rx & Tx */
--	lpuart32_write(&sport->port, UARTCTRL, 0);
-+	lpuart32_write(&sport->port, 0, UARTCTRL);
+ 	status = usb_assign_descriptors(f, ncm_fs_function, ncm_hs_function,
+-			ncm_ss_function, NULL);
++			ncm_ss_function, ncm_ss_function);
+ 	if (status)
+ 		goto fail;
  
- 	temp = lpuart32_read(&sport->port, UARTFIFO);
- 
- 	/* Enable Rx and Tx FIFO */
--	lpuart32_write(&sport->port, UARTFIFO,
--		       temp | UARTFIFO_RXFE | UARTFIFO_TXFE);
-+	lpuart32_write(&sport->port, temp | UARTFIFO_RXFE | UARTFIFO_TXFE, UARTFIFO);
- 
- 	/* flush Tx and Rx FIFO */
--	lpuart32_write(&sport->port, UARTFIFO,
--		       UARTFIFO_TXFLUSH | UARTFIFO_RXFLUSH);
-+	lpuart32_write(&sport->port, UARTFIFO_TXFLUSH | UARTFIFO_RXFLUSH, UARTFIFO);
- 
- 	/* explicitly clear RDRF */
- 	if (lpuart32_read(&sport->port, UARTSTAT) & UARTSTAT_RDRF) {
- 		lpuart32_read(&sport->port, UARTDATA);
--		lpuart32_write(&sport->port, UARTFIFO, UARTFIFO_RXUF);
-+		lpuart32_write(&sport->port, UARTFIFO_RXUF, UARTFIFO);
- 	}
- 
- 	/* Enable Rx and Tx */
--	lpuart32_write(&sport->port, UARTCTRL, UARTCTRL_RE | UARTCTRL_TE);
-+	lpuart32_write(&sport->port, UARTCTRL_RE | UARTCTRL_TE, UARTCTRL);
- 	spin_unlock_irqrestore(&sport->port.lock, flags);
- 
- 	return 0;
-@@ -677,7 +675,7 @@ static int lpuart32_poll_init(struct uar
- static void lpuart32_poll_put_char(struct uart_port *port, unsigned char c)
- {
- 	lpuart32_wait_bit_set(port, UARTSTAT, UARTSTAT_TDRE);
--	lpuart32_write(port, UARTDATA, c);
-+	lpuart32_write(port, c, UARTDATA);
- }
- 
- static int lpuart32_poll_get_char(struct uart_port *port)
+-- 
+2.25.1
+
 
 
