@@ -2,50 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FEC29A497
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EB229A49C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 07:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506461AbgJ0GWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 02:22:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506441AbgJ0GWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 02:22:22 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3728B216FD;
-        Tue, 27 Oct 2020 06:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603779741;
-        bh=OX6Gx1/fazV7MgcdQVipYlPzthf7xQVRu6z13u2l37g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HTJ1CB3eGJLWuPKuMtrCh2xzKMlhQJzY7OyRAEsQkiyXoPuPQ3/UIjGDGEqhF+yiJ
-         /JPjDYkCvD4H+1UIX0jaI6YuJn7BO30UI5CnA+4On75ZvM89inOD78+DF0csBaErG6
-         F1x+QZ7ywt8xKjBsnK57ByYzRrtRKf0Opyz+4ATM=
-Date:   Tue, 27 Oct 2020 07:22:17 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        b.zolnierkie@samsung.com, jani.nikula@intel.com,
-        daniel.vetter@ffwll.ch, gustavoars@kernel.org,
-        dri-devel@lists.freedesktop.org, akpm@linux-foundation.org,
-        rppt@kernel.org
-Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
-Message-ID: <20201027062217.GE206502@kroah.com>
-References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
- <ad87c5c1-061d-8a81-7b2c-43a8687a464f@suse.de>
- <3294C797-1BBB-4410-812B-4A4BB813F002@oracle.com>
+        id S2506488AbgJ0GYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 02:24:33 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46679 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506481AbgJ0GYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 02:24:32 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y14so297093pfp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:24:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XDzLawsZWTgBiTujXWpsK77KEKX/jGVDhki2g23FY+A=;
+        b=RVlDr+/smc3F/UJNH0aOziDmyfpHtrMFNUxtiUKrK7f3JeWdpPnwTlIGel7DE/LC9b
+         NhDPmgppbhGoKY+juPw5Lq+FFiWavJD5NUrqs+bO7WHlCZUxAVRIwFp0CeBHDNfaz/NQ
+         ScBUc9v6vDYb4lotOXe5wpnVZFBL3BQTJLNUatqSiDCZG6udN0i3PyftYcy4Cyz9PRka
+         JKwDTmGpdMQBOP7CGQSaMuoU0U0OVYYiLO34UG2YZ+YIx1IpcomYe49kBc4J859KDkLK
+         yeN+uHC0kS32Xjn4GjtslovHW/Iztqu89qbbs3Axl/WpHI8DzYk+/iCnJBydCIFmMmgw
+         erog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XDzLawsZWTgBiTujXWpsK77KEKX/jGVDhki2g23FY+A=;
+        b=WkxBMSTnN5hQAH9IuQ9xmZznbEg9GHgTtCpilvG8BEQoY4cQYK9R/Wy/6xLrsf93JN
+         Q3JP06kfYUk4l+1qy4S14jnJUp8MF/+inuPn/R5CuyAVZWV3g91XhOsf7wTbcotGNA5c
+         gQPUEWcVGzjoFFey2mXDJxZHnd1ZM48uNikfG7Eka4oRgfBacb7i4w18F6J2bvmcMUQ+
+         EKVhKEdPAYOr3yoLyZ2a/xoUmI1dsbXmCVSx7g+/6SlxVAQMQ/lLuDQDirfBt+OcnNlQ
+         rJhy2ofcYDYkBo7qsQYCm+OjnJlvdT7womonNJM0X/sHIJRyIvc6APTo5QvNMX93o3VT
+         jO6g==
+X-Gm-Message-State: AOAM531bomKVAKS8isiKyn6JjtAmVvpHw9M63uCeBPm//IaxD3mQOZig
+        OJMis0rOxk+n9B8T5YdIZdc=
+X-Google-Smtp-Source: ABdhPJxAA64suNUVH7s5DiqqojurfxL04RfyjW3yMRhaPenGb+q0ukvisc9PbzjStW8aJX17gZzzxQ==
+X-Received: by 2002:a63:1604:: with SMTP id w4mr629480pgl.148.1603779871240;
+        Mon, 26 Oct 2020 23:24:31 -0700 (PDT)
+Received: from localhost.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id p8sm654298pgs.34.2020.10.26.23.24.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 23:24:30 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Cc:     John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: [PATCHv5] perf kvm: add kvm-stat for arm64
+Date:   Tue, 27 Oct 2020 15:24:21 +0900
+Message-Id: <20201027062421.463355-1-sergey.senozhatsky@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3294C797-1BBB-4410-812B-4A4BB813F002@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:00:11AM -0700, Saeed Mirzamohammadi wrote:
-> Thanks, adding stable.
+Add support for perf kvm stat on arm64 platform.
 
-Why?  What are we supposed to do with this?
+Example:
+ # perf kvm stat report
+
+Analyze events for all VMs, all VCPUs:
+
+    VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+
+   DABT_LOW     661867    98.91%    40.45%      2.19us   3364.65us      6.24us ( +-   0.34% )
+        IRQ       4598     0.69%    57.44%      2.89us   3397.59us   1276.27us ( +-   1.61% )
+        WFx       1475     0.22%     1.71%      2.22us   3388.63us    118.31us ( +-   8.69% )
+   IABT_LOW       1018     0.15%     0.38%      2.22us   2742.07us     38.29us ( +-  12.55% )
+      SYS64        180     0.03%     0.01%      2.07us    112.91us      6.57us ( +-  14.95% )
+      HVC64         17     0.00%     0.01%      2.19us    322.35us     42.95us ( +-  58.98% )
+
+Total Samples:669155, Total events handled time:10216387.86us.
+
+Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Leo Yan <leo.yan@linaro.org>
+---
+
+v5: rebased against perf/core (Arnaldo)
+v4: rebased against perf/core (Leo)
+v3: report ARM_EXCEPTION_IL exceptions (Leo)
+v2: reworked the patch after offline discussion with Suleiman
+
+ tools/perf/arch/arm64/Makefile                |  1 +
+ tools/perf/arch/arm64/util/Build              |  1 +
+ .../arch/arm64/util/arm64_exception_types.h   | 92 +++++++++++++++++++
+ tools/perf/arch/arm64/util/kvm-stat.c         | 85 +++++++++++++++++
+ 4 files changed, 179 insertions(+)
+ create mode 100644 tools/perf/arch/arm64/util/arm64_exception_types.h
+ create mode 100644 tools/perf/arch/arm64/util/kvm-stat.c
+
+diff --git a/tools/perf/arch/arm64/Makefile b/tools/perf/arch/arm64/Makefile
+index dbef716a1913..fab3095fb5d0 100644
+--- a/tools/perf/arch/arm64/Makefile
++++ b/tools/perf/arch/arm64/Makefile
+@@ -4,6 +4,7 @@ PERF_HAVE_DWARF_REGS := 1
+ endif
+ PERF_HAVE_JITDUMP := 1
+ PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET := 1
++HAVE_KVM_STAT_SUPPORT := 1
+ 
+ #
+ # Syscall table generation for perf
+diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
+index b53294d74b01..8d2b9bcfffca 100644
+--- a/tools/perf/arch/arm64/util/Build
++++ b/tools/perf/arch/arm64/util/Build
+@@ -2,6 +2,7 @@ perf-y += header.o
+ perf-y += machine.o
+ perf-y += perf_regs.o
+ perf-y += tsc.o
++perf-y += kvm-stat.o
+ perf-$(CONFIG_DWARF)     += dwarf-regs.o
+ perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
+ perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
+diff --git a/tools/perf/arch/arm64/util/arm64_exception_types.h b/tools/perf/arch/arm64/util/arm64_exception_types.h
+new file mode 100644
+index 000000000000..27c981ebe401
+--- /dev/null
++++ b/tools/perf/arch/arm64/util/arm64_exception_types.h
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0
++#ifndef ARCH_PERF_ARM64_EXCEPTION_TYPES_H
++#define ARCH_PERF_ARM64_EXCEPTION_TYPES_H
++
++/* Per asm/virt.h */
++#define HVC_STUB_ERR		  0xbadca11
++
++/* Per asm/kvm_asm.h */
++#define ARM_EXCEPTION_IRQ		0
++#define ARM_EXCEPTION_EL1_SERROR	1
++#define ARM_EXCEPTION_TRAP		2
++#define ARM_EXCEPTION_IL		3
++/* The hyp-stub will return this for any kvm_call_hyp() call */
++#define ARM_EXCEPTION_HYP_GONE		HVC_STUB_ERR
++
++#define kvm_arm_exception_type					\
++	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
++	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
++	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
++	{ARM_EXCEPTION_IL,		"ILLEGAL"	},	\
++	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
++
++/* Per asm/esr.h */
++#define ESR_ELx_EC_UNKNOWN	(0x00)
++#define ESR_ELx_EC_WFx		(0x01)
++/* Unallocated EC: 0x02 */
++#define ESR_ELx_EC_CP15_32	(0x03)
++#define ESR_ELx_EC_CP15_64	(0x04)
++#define ESR_ELx_EC_CP14_MR	(0x05)
++#define ESR_ELx_EC_CP14_LS	(0x06)
++#define ESR_ELx_EC_FP_ASIMD	(0x07)
++#define ESR_ELx_EC_CP10_ID	(0x08)	/* EL2 only */
++#define ESR_ELx_EC_PAC		(0x09)	/* EL2 and above */
++/* Unallocated EC: 0x0A - 0x0B */
++#define ESR_ELx_EC_CP14_64	(0x0C)
++/* Unallocated EC: 0x0d */
++#define ESR_ELx_EC_ILL		(0x0E)
++/* Unallocated EC: 0x0F - 0x10 */
++#define ESR_ELx_EC_SVC32	(0x11)
++#define ESR_ELx_EC_HVC32	(0x12)	/* EL2 only */
++#define ESR_ELx_EC_SMC32	(0x13)	/* EL2 and above */
++/* Unallocated EC: 0x14 */
++#define ESR_ELx_EC_SVC64	(0x15)
++#define ESR_ELx_EC_HVC64	(0x16)	/* EL2 and above */
++#define ESR_ELx_EC_SMC64	(0x17)	/* EL2 and above */
++#define ESR_ELx_EC_SYS64	(0x18)
++#define ESR_ELx_EC_SVE		(0x19)
++#define ESR_ELx_EC_ERET		(0x1a)	/* EL2 only */
++/* Unallocated EC: 0x1b - 0x1E */
++#define ESR_ELx_EC_IMP_DEF	(0x1f)	/* EL3 only */
++#define ESR_ELx_EC_IABT_LOW	(0x20)
++#define ESR_ELx_EC_IABT_CUR	(0x21)
++#define ESR_ELx_EC_PC_ALIGN	(0x22)
++/* Unallocated EC: 0x23 */
++#define ESR_ELx_EC_DABT_LOW	(0x24)
++#define ESR_ELx_EC_DABT_CUR	(0x25)
++#define ESR_ELx_EC_SP_ALIGN	(0x26)
++/* Unallocated EC: 0x27 */
++#define ESR_ELx_EC_FP_EXC32	(0x28)
++/* Unallocated EC: 0x29 - 0x2B */
++#define ESR_ELx_EC_FP_EXC64	(0x2C)
++/* Unallocated EC: 0x2D - 0x2E */
++#define ESR_ELx_EC_SERROR	(0x2F)
++#define ESR_ELx_EC_BREAKPT_LOW	(0x30)
++#define ESR_ELx_EC_BREAKPT_CUR	(0x31)
++#define ESR_ELx_EC_SOFTSTP_LOW	(0x32)
++#define ESR_ELx_EC_SOFTSTP_CUR	(0x33)
++#define ESR_ELx_EC_WATCHPT_LOW	(0x34)
++#define ESR_ELx_EC_WATCHPT_CUR	(0x35)
++/* Unallocated EC: 0x36 - 0x37 */
++#define ESR_ELx_EC_BKPT32	(0x38)
++/* Unallocated EC: 0x39 */
++#define ESR_ELx_EC_VECTOR32	(0x3A)	/* EL2 only */
++/* Unallocated EC: 0x3B */
++#define ESR_ELx_EC_BRK64	(0x3C)
++/* Unallocated EC: 0x3D - 0x3F */
++#define ESR_ELx_EC_MAX		(0x3F)
++
++#define ECN(x) { ESR_ELx_EC_##x, #x }
++
++#define kvm_arm_exception_class \
++	ECN(UNKNOWN), ECN(WFx), ECN(CP15_32), ECN(CP15_64), ECN(CP14_MR), \
++	ECN(CP14_LS), ECN(FP_ASIMD), ECN(CP10_ID), ECN(PAC), ECN(CP14_64), \
++	ECN(SVC64), ECN(HVC64), ECN(SMC64), ECN(SYS64), ECN(SVE), \
++	ECN(IMP_DEF), ECN(IABT_LOW), ECN(IABT_CUR), \
++	ECN(PC_ALIGN), ECN(DABT_LOW), ECN(DABT_CUR), \
++	ECN(SP_ALIGN), ECN(FP_EXC32), ECN(FP_EXC64), ECN(SERROR), \
++	ECN(BREAKPT_LOW), ECN(BREAKPT_CUR), ECN(SOFTSTP_LOW), \
++	ECN(SOFTSTP_CUR), ECN(WATCHPT_LOW), ECN(WATCHPT_CUR), \
++	ECN(BKPT32), ECN(VECTOR32), ECN(BRK64)
++
++#endif /* ARCH_PERF_ARM64_EXCEPTION_TYPES_H */
+diff --git a/tools/perf/arch/arm64/util/kvm-stat.c b/tools/perf/arch/arm64/util/kvm-stat.c
+new file mode 100644
+index 000000000000..50376b9062c1
+--- /dev/null
++++ b/tools/perf/arch/arm64/util/kvm-stat.c
+@@ -0,0 +1,85 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <errno.h>
++#include <memory.h>
++#include "../../util/evsel.h"
++#include "../../util/kvm-stat.h"
++#include "arm64_exception_types.h"
++#include "debug.h"
++
++define_exit_reasons_table(arm64_exit_reasons, kvm_arm_exception_type);
++define_exit_reasons_table(arm64_trap_exit_reasons, kvm_arm_exception_class);
++
++const char *kvm_trap_exit_reason = "esr_ec";
++const char *vcpu_id_str = "id";
++const int decode_str_len = 20;
++const char *kvm_exit_reason = "ret";
++const char *kvm_entry_trace = "kvm:kvm_entry";
++const char *kvm_exit_trace = "kvm:kvm_exit";
++
++const char *kvm_events_tp[] = {
++	"kvm:kvm_entry",
++	"kvm:kvm_exit",
++	NULL,
++};
++
++static void event_get_key(struct evsel *evsel,
++			  struct perf_sample *sample,
++			  struct event_key *key)
++{
++	key->info = 0;
++	key->key = evsel__intval(evsel, sample, kvm_exit_reason);
++	key->exit_reasons = arm64_exit_reasons;
++
++	/*
++	 * TRAP exceptions carry exception class info in esr_ec field
++	 * and, hence, we need to use a different exit_reasons table to
++	 * properly decode event's est_ec.
++	 */
++	if (key->key == ARM_EXCEPTION_TRAP) {
++		key->key = evsel__intval(evsel, sample, kvm_trap_exit_reason);
++		key->exit_reasons = arm64_trap_exit_reasons;
++	}
++}
++
++static bool event_begin(struct evsel *evsel,
++			struct perf_sample *sample __maybe_unused,
++			struct event_key *key __maybe_unused)
++{
++	return !strcmp(evsel->name, kvm_entry_trace);
++}
++
++static bool event_end(struct evsel *evsel,
++		      struct perf_sample *sample,
++		      struct event_key *key)
++{
++	if (!strcmp(evsel->name, kvm_exit_trace)) {
++		event_get_key(evsel, sample, key);
++		return true;
++	}
++	return false;
++}
++
++static struct kvm_events_ops exit_events = {
++	.is_begin_event = event_begin,
++	.is_end_event	= event_end,
++	.decode_key	= exit_event_decode_key,
++	.name		= "VM-EXIT"
++};
++
++struct kvm_reg_events_ops kvm_reg_events_ops[] = {
++	{
++		.name	= "vmexit",
++		.ops	= &exit_events,
++	},
++	{ NULL },
++};
++
++const char * const kvm_skip_events[] = {
++	NULL,
++};
++
++int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
++{
++	kvm->exit_reasons_isa = "arm64";
++	return 0;
++}
+-- 
+2.29.0
+
