@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5197029C91F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8963D29C919
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 20:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370315AbgJ0Tjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 15:39:40 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:38327 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1830357AbgJ0Tjj (ORCPT
+        id S1830355AbgJ0Tjg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Oct 2020 15:39:36 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:37830 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504405AbgJ0Tjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 15:39:39 -0400
-Received: by mail-lj1-f194.google.com with SMTP id m20so3141628ljj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x/ZjpB7n4FkhzFJT9cWI1qyNowromE99mrhGgv/JAmU=;
-        b=KeATWeNipyp1eWODhRbUlx9kFO99Nm9k6qs84jXqerWUcCzTZENLcty09ys+27qY3J
-         4574zHE7ZbcZAn5FfJV86/stLb76ObZ7cu41BZldRsJWuzi8i/e2I0sB3ESm07n9QOeJ
-         vsqcBbuFHVNwAHde6xQiI5oXO1vL63/dxhGLo=
+        Tue, 27 Oct 2020 15:39:35 -0400
+Received: by mail-ed1-f68.google.com with SMTP id o18so2697061edq.4;
+        Tue, 27 Oct 2020 12:39:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x/ZjpB7n4FkhzFJT9cWI1qyNowromE99mrhGgv/JAmU=;
-        b=A7PS+pmQQRFpK2pNMYfcUQqrZf0YYMhOabHuKxUYIfnDaM9Ynvvr9rT6dCZSTKFTYR
-         DV21PZ+4raMwI1C7XZgdyD/qot9sJpshokP8rZ+QAiEIGDVFvJMSkg8G6Nx/FHUhdpA4
-         /kJVCD1a4oSdv8M+3RDCgUztPNUtc4R5SgEIJb7rD6tEExQHbFupMZxehITkrEfcsef5
-         E8lpTD/HTIZbU3T9fl0I3SdMKvRdTvkVsSl9TfFrvuO9WLnn2IMTINvDF1iGsnMYR/f+
-         YkhLsy+1J0NUOCsD8tYoCsqJSP1cVlxPfrech+8HAEmuL+ew4ZWl63nTE5EHIju3zd2t
-         MFGA==
-X-Gm-Message-State: AOAM531lwkTHkNffmk8NQoyEdjkqLjl010gBvmzOWiANOFv6b78pDB20
-        aiiokOJxzz81QyJETEnvP+BtROnmdSwJ7w==
-X-Google-Smtp-Source: ABdhPJwGLeMn0T069urLQ+voAfF/NdWvBjQ/lCJuQNxMM7tgMf0i3kFXu05XOvFNIzvAvM+v32xl4g==
-X-Received: by 2002:a2e:7d08:: with SMTP id y8mr1685931ljc.257.1603827576321;
-        Tue, 27 Oct 2020 12:39:36 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id e21sm290951ljl.44.2020.10.27.12.39.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 12:39:35 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id 2so3066047ljj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 12:39:34 -0700 (PDT)
-X-Received: by 2002:a2e:2202:: with SMTP id i2mr1623327lji.70.1603827574410;
- Tue, 27 Oct 2020 12:39:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=prGqBiI5JimrXFF/vzXUDQaJ2EGlRDSeqqtNy7sjrCk=;
+        b=eeR7ZZa3mX1J7wzslIN5qYkm+IQGhYbwJeOmzoTdhUPcL86D23ES7Jl5HoyCXGruDH
+         KTLluNLroz3oyiWpKcmD4dzPWoGbfnHGdbbhXlBwN+9m1/dDEacXhT9P97iQ0CLzb0Sc
+         fVzvHsbz+8fRmGrr/XFkCXGdFvEaA0N74CbVK+qmZQXBFh9krF5qDFV2PsPhRU6mZrR8
+         9ldQtTdh7mhiFABYLipfG6XGZxdK/PbDwlF7mYu6ANQIlgQSWeIl+vBFDvfFIcNtCXhG
+         7TkJD2+HMG50DA1gbOBxIVkSJTtEHoOpele95FXOm1rvC86K8M+1675sqGa+zdawEufW
+         JWiQ==
+X-Gm-Message-State: AOAM531T+qFshkMml7G943NSB/MjydGTj0s1rC7pkm4WIbrnXzhxi6hE
+        SnCkcDpDho/Da1wTAEM5lDc=
+X-Google-Smtp-Source: ABdhPJx/SLYaSJuvkdADGSTZROEQyUbm34KcNB5Cvm3aHaUVFHZ7v9Fg+sHR2VzYjZ1cuP6eGnu2Ow==
+X-Received: by 2002:a50:d0d0:: with SMTP id g16mr3879489edf.18.1603827573664;
+        Tue, 27 Oct 2020 12:39:33 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id n22sm1534573edr.11.2020.10.27.12.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 12:39:32 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 20:39:30 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 09/52] dt-bindings: memory: tegra30: mc: Document new
+ interconnect property
+Message-ID: <20201027193930.GC140636@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-10-digetx@gmail.com>
+ <20201027090550.GI4244@kozik-lap>
+ <7770b89e-f30b-3bfd-1e21-8ebbe905efcd@gmail.com>
 MIME-Version: 1.0
-References: <20201027164255.1573301-1-trix@redhat.com> <CAKwvOd=83v0Sv-NhQ5xgqdNSRm2b=pOJDziX8axZ9t2YyYwz-A@mail.gmail.com>
-In-Reply-To: <CAKwvOd=83v0Sv-NhQ5xgqdNSRm2b=pOJDziX8axZ9t2YyYwz-A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 27 Oct 2020 12:39:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi0urcZx_TU=U5_hWEFbuwd67QV=7k7H5q7uWtvnV72kg@mail.gmail.com>
-Message-ID: <CAHk-=wi0urcZx_TU=U5_hWEFbuwd67QV=7k7H5q7uWtvnV72kg@mail.gmail.com>
-Subject: Re: Subject: [RFC] clang tooling cleanups
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Tom Rix <trix@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-toolchains@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Huckleberry <nhuck15@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <7770b89e-f30b-3bfd-1e21-8ebbe905efcd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 11:42 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Most recently Joe sent a treewide fix for section attributes that
-> Linux pulled just after the merge window closed, IIUC.  Maybe that
-> would be the best time, since automation makes it trivial for anyone
-> to run the treewide fixit whenever.
+On Tue, Oct 27, 2020 at 10:18:35PM +0300, Dmitry Osipenko wrote:
+> 27.10.2020 12:05, Krzysztof Kozlowski пишет:
+> > On Mon, Oct 26, 2020 at 01:16:52AM +0300, Dmitry Osipenko wrote:
+> >> Memory controller is interconnected with memory clients and with the
+> >> External Memory Controller. Document new interconnect property which
+> >> turns memory controller into interconnect provider.
+> >>
+> >> Acked-by: Rob Herring <robh@kernel.org>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  .../bindings/memory-controllers/nvidia,tegra30-mc.yaml       | 5 +++++
+> >>  1 file changed, 5 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
+> >> index 84fd57bcf0dc..5436e6d420bc 100644
+> >> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
+> >> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra30-mc.yaml
+> >> @@ -57,6 +57,9 @@ properties:
+> >>    "#iommu-cells":
+> >>      const: 1
+> >>  
+> >> +  "#interconnect-cells":
+> >> +    const: 1
+> >> +
+> >>  patternProperties:
+> >>    "^emc-timings-[0-9]+$":
+> >>      type: object
+> >> @@ -120,6 +123,7 @@ required:
+> >>    - clock-names
+> >>    - "#reset-cells"
+> >>    - "#iommu-cells"
+> >> +  - "#interconnect-cells"
+> > 
+> > Rob,
+> > 
+> > You were fine with adding a new required property which breaks all
+> > existing DTBs?
+> 
+> This is a required property for the new bindings and optional for the
+> older. Does it really need to be made optional in the binding?
 
-Well, it worked fine timing-wise, but the fact that it wasn't in
-linux-next did mean that it then hit a few small snags once merged.
+Mhmm... that's an interesting point. I assumed that the bindings should
+reflect current status of the ABI, but I could imagine that you update
+the bindings while keeping the driver working with older DTBs.
 
-It's not a big deal - I never got the feeling that that patch was
-rushed or that Joe hadn't vetted it enough, and it was well worth it,
-but I'm pointing that out simply as an example of the model having a
-few gotchas.
+How do you actually track then the ABI? If incompatible change can be
+added to the bindings, later anyone anytime can also update the driver
+to enforce the bindings. To require such property.
 
-So avoiding linux-next (in order to avoid merge pain) does have
-downsides. And even obvious and 100% automated fixes can cause issues
-if there are #ifdef's or other architecture-specific things that then
-mean that the extra semicolon might matter after all. Usually for
-horribly bad reasons, but still..
+Best regards,
+Krzysztof
 
-So it would be best if this got a lot of multi-architecture (and
-multi-config) coverage if it avoids linux-next.
 
-                Linus
+> 
+> > Were these bindings marked as unstable? The patchset does not even
+> > say/scream that it breaks the ABI, so this might be quite a surprise for
+> > someone...
+> 
+> Please see tegra_mc_interconnect_setup() in "memory: tegra-mc: Add
+> interconnect framework" patch, which check presence of the new ICC DT
+> property.
