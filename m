@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9343F29CA77
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAEE29CA7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831880AbgJ0Ujp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:39:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1831860AbgJ0Ujd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:39:33 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 219C420725;
-        Tue, 27 Oct 2020 20:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603831172;
-        bh=OioNNIMpmE73+hdu17irdscY8n2O0KgLmga33QfwV9k=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=JyinfZlG2CozbpmBQ6+cM9Yb/0avAmc9+61oDeEOKKDUHeeQzElkfQyIDwpzfIBgC
-         2xQlKrFvAS6gksWtKBMBgqCUuCnX6BG27mjIVAQTJmJKI/AIBteAZjoNPclxqFAah9
-         Dn6Ms/BwgMpixxJtXW2Yrxd8WFL6jtDdiAFz7ols=
-Date:   Tue, 27 Oct 2020 20:39:27 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20201027111526.12326-1-srinivas.kandagatla@linaro.org>
-References: <20201027111526.12326-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2] ASoC: qcom: qdsp6: make use of devm_of_platform_populate
-Message-Id: <160383115673.25818.13026629187393927150.b4-ty@kernel.org>
+        id S373111AbgJ0Uk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:40:57 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:55440 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504847AbgJ0Uk4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:40:56 -0400
+Received: by mail-pj1-f66.google.com with SMTP id c17so1396036pjo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 13:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XK2vhDOZfiB4rtHPEukgUGdcEQPpZW+i+EIpmvDwIRs=;
+        b=iRu6J6h0ewW6b3k9tqtOhXtdCfOgge6iZYHWUcyAkDZ8YOegSkcVDF7gC3k4jPVF7H
+         XDmHxVGoKISu5zXOadu/RMA1sFU4O4dAHwEyAtV+S5dU/8uSHiYI9AhEvqJg/UFm9rDK
+         BIDEQe/9taUwEg2Aj3iILtgUniZGuwj41StKbFiGsyhl5hhuT0W9rym6qeUxDhs2UxJP
+         Q4P1Jnev3zv7MB9JT++IZEz3rD5yJitVI4Bi2H7u64sS1JViNIRkct1S/Gm9foTkzDBW
+         qZSbf3cwDZnvzrLr58fzt/JXWm21oFdsR2IgdQ53zTOUk79ToxWZhJE9tzEHuSAF7EiG
+         9BkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XK2vhDOZfiB4rtHPEukgUGdcEQPpZW+i+EIpmvDwIRs=;
+        b=BmH7dMRIrALgV4xg49VPw9oCXdgatasYX4gguE3WI/fJtudSE/g9uIOYxDYglaEmn0
+         ioMlCYf/2AhZghtSRhHsd7W3Oue6Maofmco1q/OkHtU93Q/ouAzGsyKa4TdPiPi9NF4O
+         1kxc/8jy3kh7KMoLawvo9BabS9JAcVDKjC16gnaBRHuxP6apmHhYRL8+wR383IK/VmIp
+         nwsn55lCfPxKvFehqhloKbLATsLh44D3DUwf+6cMAetO2oEIWMZpTZOUCvBrIfAk47Kn
+         aGI3dqrwCojqAC9q6dxsZrRV3sexPLqHejiYjTDTF8u7j39nomQ4VRtRxbRXfvyqJkwQ
+         BcNg==
+X-Gm-Message-State: AOAM530v6ISZYXXjzZBkhsTsqH4tPBj4BV4MOv8B3vZz3sJ83Fl7HO/2
+        /6QfIUlv6Xwrv39ZUru1RSIMWRISdB58XSHSVMoPEg==
+X-Google-Smtp-Source: ABdhPJyUA+vysDeRt7g/FxOhDlUe9n7QzIQqbpk84eLBA1OnEyJeHMW5A2zLyqWGlfAeg+O+kTmXuUW3uirw5pihg2Y=
+X-Received: by 2002:a17:902:db82:b029:d6:3fe4:9825 with SMTP id
+ m2-20020a170902db82b02900d63fe49825mr3886001pld.29.1603831254116; Tue, 27 Oct
+ 2020 13:40:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
+ <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
+ <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
+ <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
+ <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
+ <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
+ <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com>
+ <CAKwvOdkE=ViGOhvoBRcV=9anjowC_vb4Vtefp9010+sC4c_+Sw@mail.gmail.com>
+ <CAMj1kXEhcQ_ngNVWddV76NqEz6d0tDhfStYGd5diydefzVLvdQ@mail.gmail.com>
+ <CAKwvOd=8YO3Vm0DuaWpDigMiwni+fVdrpagZtsROGziinjLvig@mail.gmail.com> <20201027203001.GA1833548@rani.riverdale.lan>
+In-Reply-To: <20201027203001.GA1833548@rani.riverdale.lan>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 27 Oct 2020 13:40:43 -0700
+Message-ID: <CAKwvOdmrjeLpS8H_uf_cfbOYFvE-ZhOdJQ14o4VoNF8ugARA0Q@mail.gmail.com>
+Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        kernel-toolchains@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 11:15:26 +0000, Srinivas Kandagatla wrote:
-> make use of devm_of_platform_populate to remove some redundant code!
+On Tue, Oct 27, 2020 at 1:30 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Tue, Oct 27, 2020 at 01:17:55PM -0700, Nick Desaulniers wrote:
+> > > >  (I feel the same about there
+> > > > being an empty asm(); statement in the definition of asm_volatile_goto
+> > > > for compiler-gcc.h).  Might be time to "fix the compiler."
+> > > >
+> > > > (It sounds like Arvind is both in agreement with my sentiment, and has
+> > > > the root cause).
+> > > >
+> Btw, the bug mentioned in asm_volatile_goto seems like its been fixed in
+> 4.9, so the hack could be dropped now?
 
-Applied to
+https://lore.kernel.org/lkml/20180907222109.163802-1-ndesaulniers@google.com/
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: qcom: qdsp6: make use of devm_of_platform_populate
-      commit: 023e1b1f1164a5e2da2ad20588cf164de9ef67bb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
+For the life of me I can't find Linus' response.  Maybe he shot it
+down in the PR, but I can't find it...Miguel do you recall?  I could
+paraphrase, but might be better to not rely on my memory.
+-- 
 Thanks,
-Mark
+~Nick Desaulniers
