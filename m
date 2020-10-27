@@ -2,347 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB9029BEC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFFA29BEF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1814584AbgJ0Q5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:57:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57036 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1813844AbgJ0Qz2 (ORCPT
+        id S1814683AbgJ0Q6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:58:30 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:16121 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1814576AbgJ0Q5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:55:28 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09RGWsEY157992;
-        Tue, 27 Oct 2020 12:55:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=uD/CK7aYQgFaw4WqbJSs4YbvZ4TxFFPTUTUT3SgWHVY=;
- b=nG8PSTwioWoRs6PRs/PS3Gn4BQcLxs8tyV8VEpyyXPxRz9+Jn+fqA3YbEBYOh/OXQ5P0
- VABaF8P07I3OQceejgifSHGAM425WeC7sxJldTLzTHOyuEo6yQNHfRz+gtIE4bpBu6zn
- iB0JsDPcxsMXSfD1XJt9J6zykoYzlSKL5PWDVK4KfIWgkQWLNfRMXb55qfuxbo72s32u
- SAxu7qo5RAhbG+SdTNCYXREr5WpbZoaJx8JYRqphqYe3vkw0dT/lpH+1JJ9P1nJJCi5s
- oJSvE+dWcbjPZeNbnmq/3AVVvA5lI/hQwgdJFSUOIutcfZtyDe/xXF33vWUW7YbH+s7n bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34ejb6m0ey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 12:55:24 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09RGXKTS160959;
-        Tue, 27 Oct 2020 12:55:24 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34ejb6m0e0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 12:55:24 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09RGr1rM014482;
-        Tue, 27 Oct 2020 16:55:22 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 34cbhh3k5h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Oct 2020 16:55:22 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09RGtJvC28377420
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 16:55:19 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9EDF842047;
-        Tue, 27 Oct 2020 16:55:19 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A47C442042;
-        Tue, 27 Oct 2020 16:55:18 +0000 (GMT)
-Received: from funtu.home (unknown [9.171.1.97])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 27 Oct 2020 16:55:18 +0000 (GMT)
-Subject: Re: [PATCH v11 04/14] s390/zcrypt: driver callback to indicate
- resource in use
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
- <20201022171209.19494-5-akrowiak@linux.ibm.com>
-From:   Harald Freudenberger <freude@linux.ibm.com>
-Message-ID: <42f3f4f9-6263-cb1e-d882-30b62236a594@linux.ibm.com>
-Date:   Tue, 27 Oct 2020 17:55:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201022171209.19494-5-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        Tue, 27 Oct 2020 12:57:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1603817862; x=1635353862;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Oz6vPe+Tcxbk49QYHwTFCGCx69BqOPi7aAxn4P3J+Tc=;
+  b=xVYk+34UvR3y+mileygwqWedvcn5tHn4FU4yAJoRhZfeo9C85hvvIpEx
+   FL0uQmiW/vpqF6WDeX1ZRF3ByrGqTOzubFEcLOFVmle1Qb6cs/rqJemEU
+   PVbbv3OCn6yJpQ8L7wFofkiXeC/cYkfZ5GtjRhwIhPQQNNbTA+Z1hrLR3
+   mjGFvLVc4Eo7u7DStAR2jLTMSaV3+BcA1jyR8UNcS+RjOhVQ51WQDzakM
+   cIYbmQzPCZ+5gMNPpGsjcp/9yL66p5ytBc2/i9KO7+tyrw9YPYibGIm6g
+   sJ+46s6bFJ/wM0f+45K/1ymt2qKin5JJTXeVm0FR+Rvp+VUiQVaeKW1Os
+   g==;
+IronPort-SDR: kyoJrtkov2lwodQIKIr2XCFHZV445XP5m4zoPRVTQFwYntz7tcXQd2/dDzg/pj2dCV2yqK2c2X
+ nVZ58/q2l/q+wH5E1moTWMT9uFi3udotY/GVt9T05HeUWClD7trzlLhHgOH5JMAyRYERfBbxxS
+ 1WxqErFyMY2D0F4Mw6R9TRDLeBqj/q1z7t52pZKxcUcZLZE44UEMdwA8G54heZ6fequ8oyvQhX
+ 25x2q6Z46eiMiJSK9/K5PanPcF7pNiZuztzFGiMDBfjw1ym2BJxuDGkzLp7m3U6Y3h6NN41KnR
+ 1a8=
+X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
+   d="scan'208";a="101126710"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Oct 2020 09:57:40 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 27 Oct 2020 09:57:40 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Tue, 27 Oct 2020 09:57:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c4ww42BW7CDTPQbKdHuPWE+YIzwj7xW5vjPhYLfNToxqcMn1hG4pfjyZYcuelL+EKu68w4GGU2H8RQaa6CUX5HBpW7MoyXHdS9FagPVNl8vJ89k7v2Xhf+VValrZiLFjCEwuZa/vsztgwqIfjIlK+sU3AzkIowEccAWNxnNUueP9ABZVkMOVM7hQuKP02h9WqlNXZDMHLaf/8/OjoUS+S6U1VP/33ChEduUU1HH5wLpnwVJbcGhsa6O+QJkGbg2VJhpMkdjb11q+Mrha98nHXo3a/KbMJCI6U6g4CL/mtj6AIMXMd30sou02uCy63+Q9EwGZRQvxGGCbSI+1ldVTwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Oz6vPe+Tcxbk49QYHwTFCGCx69BqOPi7aAxn4P3J+Tc=;
+ b=bWcri2RdJ460MTirnjvNV84E6rF2JatIF8u2GGT0N/XcY84mbvZInu3XOMulNYE0rOXYtPUHtzmc33mvjZZ5D9NQQ4GoaIV5EpBKtG+S61PIOw49GBf65TEA4ybkfSv4e7eDj1rjsYIrq4WOlwYqjdjDEkfTdWgvKqK0KONWOacgE0znlv96niZTmQGLrXozL0w0yevwtp2sqnxydSfds/JMNa4ClJbq8DT25UPmo+dTty+pvyKIKfoJfpSlgCiEhd/1uCx5b+pBT4Xx4djm/Vx9TVNpUWTAOL9tVgExhmHzvwVBLnSoL/gP/sZao0UKgDYUe6aX+OfVLJcEUm/rxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Oz6vPe+Tcxbk49QYHwTFCGCx69BqOPi7aAxn4P3J+Tc=;
+ b=jhNbB2EnHD7Ie1WKW40cWb+HwfkemB2Bgxf8COi5PMzq3mx19az8OnTLoXn2o7SzCLMXQDgHxVIEMK4epfwrDp/sFlgGuIYT2o5lrTCyD9IO5L2hmZKrOWCkt9IHX+VeLZ7uZ3HQBxT4wm/+P11suCZUngYuyQ4eGutRlS5oTRE=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB2736.namprd11.prod.outlook.com (2603:10b6:805:5a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Tue, 27 Oct
+ 2020 16:57:39 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::7c1b:6212:7f1e:5c6f]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::7c1b:6212:7f1e:5c6f%3]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
+ 16:57:38 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <masonccyang@mxic.com.tw>, <broonie@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <boris.brezillon@collabora.com>, <matthias.bgg@gmail.com>
+CC:     <juliensu@mxic.com.tw>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <p.yadav@ti.com>, <ycllin@mxic.com.tw>
+Subject: Re: [PATCH v4 1/7] mtd: spi-nor: sfdp: get octal mode maximum speed
+ from BFPT
+Thread-Topic: [PATCH v4 1/7] mtd: spi-nor: sfdp: get octal mode maximum speed
+ from BFPT
+Thread-Index: AQHWrIJF/cj+GvvkW023XwftDkioRg==
+Date:   Tue, 27 Oct 2020 16:57:38 +0000
+Message-ID: <5df6d950-d47e-daec-cd06-d6a1880457e7@microchip.com>
+References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw>
+ <1590737775-4798-2-git-send-email-masonccyang@mxic.com.tw>
+In-Reply-To: <1590737775-4798-2-git-send-email-masonccyang@mxic.com.tw>
+Accept-Language: en-US
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-27_10:2020-10-26,2020-10-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- mlxscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0 impostorscore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270098
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: mxic.com.tw; dkim=none (message not signed)
+ header.d=none;mxic.com.tw; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [86.127.107.112]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 072ea670-c413-45fe-818b-08d87a99695a
+x-ms-traffictypediagnostic: SN6PR11MB2736:
+x-microsoft-antispam-prvs: <SN6PR11MB27361BAB36F54B037E7DACF2F0160@SN6PR11MB2736.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:644;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kIYTYEKrp0NB6HcsOXepxPjylce1vpeZrn4jV7tlUqZvsCuMtWFztqjfbxJQs2/TgTiLMeYtMC1AMyslvm8E3wT9s1i3DBGGRwc+p4Yl2lZmwORqUg8FsYtrj8Cx//byR75NCguoFLQ+hOh2IOqCCz+xTlHdyU35pnFVp4g+S1cvGD2Ux0wL7r/G8ZhUV5g7zPF/HQXrTLV03FMC1gGEqxdrADH6JtyL33CegDMfPoCeYin5tf5QdJpQNLXrozSheUBQKC0nFdxnwqRFzRcO4r9ni1Qc4iqfoQ9eP7+pO3yEsKhslc9zAvamWezBdaHUdBAUnkc5fNcYr4t1571L1069FwbUiqhAWKFJSi7I5rPBS4vebTwB34BuFkLhpotR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(396003)(376002)(346002)(186003)(86362001)(31696002)(31686004)(6512007)(478600001)(2906002)(316002)(5660300002)(36756003)(110136005)(54906003)(2616005)(8936002)(76116006)(8676002)(6506007)(64756008)(53546011)(26005)(6486002)(66446008)(71200400001)(66476007)(4326008)(66556008)(7416002)(83380400001)(66946007)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 0avYsMubjX7Z2gRqdu/bC7xu/h9ZNQKJqqKwBD8zwlX0PEXDAAFGCjjeQqdcASoBAoh2/cIYLRY+t0yWomLR/AZdcvaCXVoZXRPSHcYxP3YCkE0qefdtRcGIwdInaJj8oo5EJKHoMzbyenaJi+G0H2hebjs2KrCdUT8o11auX8XC88UyB4j2FZtmL0hZNRVmosadwVSvdVmq1zTmtdNGO8KoSFYTpTYwkXkr0L6e383YviBdyUf5QSLoZlBYFCAs63AThzQVwYkQgp4Efp+nxwCOroLxy0JBrP4rc7EPaWCchn56pF1AmouND5tJ4XmHTCOhZH+8uvJtZ98zsZrjaT0CQGEu4CRc/cCxgpypR3TwGvA8aMIENu7YPobt4sYdt2o4mtEYaK17kGCqYe59mIxH/HQAFR/3utYqDZYU8yEFwUvEL8+uDb0XL5oH9Zg83HQGbRfxbkFl7UgT0jQ8idPFE1qufIvzRx+teY/AJyrlLrdJd84Hva3RztG1ihjdxPexOrNnHMgHxqJq+dLabuTuak+feJ7ZmyYhiB3lYowha3ihLaYC66Tpwl/ti4xu4cFEgCAUjj/KGRwB/we3pTTBKRYk8GzWP9q/p6biFp72MuPWmfVG+3uX6dOSObKSbc5NmpoAGRpZIF4g+so7xA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <43FCA5A58C850543833509D8686986CE@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 072ea670-c413-45fe-818b-08d87a99695a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2020 16:57:38.8242
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nieTu174f8DiqLfzyI+Zru+/0YAQZMOQvFGpCao0inbj165GQsgJya+qgSqgTQMUaX5Smzko9GEK95xQRYlX7RgCkoQhV3hLT8qGRiqiCI4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2736
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.20 19:11, Tony Krowiak wrote:
-> Introduces a new driver callback to prevent a root user from unbinding
-> an AP queue from its device driver if the queue is in use. The callback
-> will be invoked whenever a change to the AP bus's sysfs apmask or aqmask
-> attributes would result in one or more AP queues being removed from its
-> driver. If the callback responds in the affirmative for any driver
-> queried, the change to the apmask or aqmask will be rejected with a device
-> in use error.
->
-> For this patch, only non-default drivers will be queried. Currently,
-> there is only one non-default driver, the vfio_ap device driver. The
-> vfio_ap device driver facilitates pass-through of an AP queue to a
-> guest. The idea here is that a guest may be administered by a different
-> sysadmin than the host and we don't want AP resources to unexpectedly
-> disappear from a guest's AP configuration (i.e., adapters and domains
-> assigned to the matrix mdev). This will enforce the proper procedure for
-> removing AP resources intended for guest usage which is to
-> first unassign them from the matrix mdev, then unbind them from the
-> vfio_ap device driver.
->
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/ap_bus.c | 148 ++++++++++++++++++++++++++++++++---
->  drivers/s390/crypto/ap_bus.h |   4 +
->  2 files changed, 142 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
-> index 485cbfcbf06e..998e61cd86d9 100644
-> --- a/drivers/s390/crypto/ap_bus.c
-> +++ b/drivers/s390/crypto/ap_bus.c
-> @@ -35,6 +35,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/debugfs.h>
->  #include <linux/ctype.h>
-> +#include <linux/module.h>
->  
->  #include "ap_bus.h"
->  #include "ap_debug.h"
-> @@ -893,6 +894,23 @@ static int modify_bitmap(const char *str, unsigned long *bitmap, int bits)
->  	return 0;
->  }
->  
-> +static int ap_parse_bitmap_str(const char *str, unsigned long *bitmap, int bits,
-> +			       unsigned long *newmap)
-> +{
-> +	unsigned long size;
-> +	int rc;
-> +
-> +	size = BITS_TO_LONGS(bits)*sizeof(unsigned long);
-> +	if (*str == '+' || *str == '-') {
-> +		memcpy(newmap, bitmap, size);
-> +		rc = modify_bitmap(str, newmap, bits);
-> +	} else {
-> +		memset(newmap, 0, size);
-> +		rc = hex2bitmap(str, newmap, bits);
-> +	}
-> +	return rc;
-> +}
-> +
->  int ap_parse_mask_str(const char *str,
->  		      unsigned long *bitmap, int bits,
->  		      struct mutex *lock)
-> @@ -912,14 +930,7 @@ int ap_parse_mask_str(const char *str,
->  		kfree(newmap);
->  		return -ERESTARTSYS;
->  	}
-> -
-> -	if (*str == '+' || *str == '-') {
-> -		memcpy(newmap, bitmap, size);
-> -		rc = modify_bitmap(str, newmap, bits);
-> -	} else {
-> -		memset(newmap, 0, size);
-> -		rc = hex2bitmap(str, newmap, bits);
-> -	}
-> +	rc = ap_parse_bitmap_str(str, bitmap, bits, newmap);
->  	if (rc == 0)
->  		memcpy(bitmap, newmap, size);
->  	mutex_unlock(lock);
-> @@ -1111,12 +1122,70 @@ static ssize_t apmask_show(struct bus_type *bus, char *buf)
->  	return rc;
->  }
->  
-> +static int __verify_card_reservations(struct device_driver *drv, void *data)
-> +{
-> +	int rc = 0;
-> +	struct ap_driver *ap_drv = to_ap_drv(drv);
-> +	unsigned long *newapm = (unsigned long *)data;
-> +
-> +	/*
-> +	 * No need to verify whether the driver is using the queues if it is the
-> +	 * default driver.
-> +	 */
-> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
-> +		return 0;
-> +
-> +	/* The non-default driver's module must be loaded */
-Can you please update this comment? It should be something like
-/* increase the driver's module refcounter to be sure it is not
-   going away when we invoke the callback function. */
-
-> +	if (!try_module_get(drv->owner))
-> +		return 0;
-> +
-> +	if (ap_drv->in_use)
-> +		if (ap_drv->in_use(newapm, ap_perms.aqm))
-> +			rc = -EBUSY;
-> +
-And here: /* release driver's module */ or simmilar
-> +	module_put(drv->owner);
-> +
-> +	return rc;
-> +}
-> +
-> +static int apmask_commit(unsigned long *newapm)
-> +{
-> +	int rc;
-> +	unsigned long reserved[BITS_TO_LONGS(AP_DEVICES)];
-> +
-> +	/*
-> +	 * Check if any bits in the apmask have been set which will
-> +	 * result in queues being removed from non-default drivers
-> +	 */
-> +	if (bitmap_andnot(reserved, newapm, ap_perms.apm, AP_DEVICES)) {
-> +		rc = bus_for_each_drv(&ap_bus_type, NULL, reserved,
-> +				      __verify_card_reservations);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	memcpy(ap_perms.apm, newapm, APMASKSIZE);
-> +
-> +	return 0;
-> +}
-> +
->  static ssize_t apmask_store(struct bus_type *bus, const char *buf,
->  			    size_t count)
->  {
->  	int rc;
-> +	DECLARE_BITMAP(newapm, AP_DEVICES);
-> +
-> +	if (mutex_lock_interruptible(&ap_perms_mutex))
-> +		return -ERESTARTSYS;
-> +
-> +	rc = ap_parse_bitmap_str(buf, ap_perms.apm, AP_DEVICES, newapm);
-> +	if (rc)
-> +		goto done;
->  
-> -	rc = ap_parse_mask_str(buf, ap_perms.apm, AP_DEVICES, &ap_perms_mutex);
-> +	rc = apmask_commit(newapm);
-> +
-> +done:
-> +	mutex_unlock(&ap_perms_mutex);
->  	if (rc)
->  		return rc;
->  
-> @@ -1142,12 +1211,71 @@ static ssize_t aqmask_show(struct bus_type *bus, char *buf)
->  	return rc;
->  }
->  
-> +static int __verify_queue_reservations(struct device_driver *drv, void *data)
-> +{
-> +	int rc = 0;
-> +	struct ap_driver *ap_drv = to_ap_drv(drv);
-> +	unsigned long *newaqm = (unsigned long *)data;
-> +
-> +	/*
-> +	 * If the reserved bits do not identify queues reserved for use by the
-> +	 * non-default driver, there is no need to verify the driver is using
-> +	 * the queues.
-> +	 */
-> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
-> +		return 0;
-> +
-> +	/* The non-default driver's module must be loaded */
-Same here.
-> +	if (!try_module_get(drv->owner))
-> +		return 0;
-> +
-> +	if (ap_drv->in_use)
-> +		if (ap_drv->in_use(ap_perms.apm, newaqm))
-> +			rc = -EBUSY;
-> +
-and here
-> +	module_put(drv->owner);
-> +
-> +	return rc;
-> +}
-> +
-> +static int aqmask_commit(unsigned long *newaqm)
-> +{
-> +	int rc;
-> +	unsigned long reserved[BITS_TO_LONGS(AP_DOMAINS)];
-> +
-> +	/*
-> +	 * Check if any bits in the aqmask have been set which will
-> +	 * result in queues being removed from non-default drivers
-> +	 */
-> +	if (bitmap_andnot(reserved, newaqm, ap_perms.aqm, AP_DOMAINS)) {
-> +		rc = bus_for_each_drv(&ap_bus_type, NULL, reserved,
-> +				      __verify_queue_reservations);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	memcpy(ap_perms.aqm, newaqm, AQMASKSIZE);
-> +
-> +	return 0;
-> +}
-> +
->  static ssize_t aqmask_store(struct bus_type *bus, const char *buf,
->  			    size_t count)
->  {
->  	int rc;
-> +	DECLARE_BITMAP(newaqm, AP_DOMAINS);
->  
-> -	rc = ap_parse_mask_str(buf, ap_perms.aqm, AP_DOMAINS, &ap_perms_mutex);
-> +	if (mutex_lock_interruptible(&ap_perms_mutex))
-> +		return -ERESTARTSYS;
-> +
-> +	rc = ap_parse_bitmap_str(buf, ap_perms.aqm, AP_DOMAINS, newaqm);
-> +	if (rc)
-> +		goto done;
-> +
-> +	rc = aqmask_commit(newaqm);
-> +
-> +done:
-> +	mutex_unlock(&ap_perms_mutex);
->  	if (rc)
->  		return rc;
->  
-> diff --git a/drivers/s390/crypto/ap_bus.h b/drivers/s390/crypto/ap_bus.h
-> index 5029b80132aa..6ce154d924d3 100644
-> --- a/drivers/s390/crypto/ap_bus.h
-> +++ b/drivers/s390/crypto/ap_bus.h
-> @@ -145,6 +145,7 @@ struct ap_driver {
->  
->  	int (*probe)(struct ap_device *);
->  	void (*remove)(struct ap_device *);
-> +	bool (*in_use)(unsigned long *apm, unsigned long *aqm);
->  };
->  
->  #define to_ap_drv(x) container_of((x), struct ap_driver, driver)
-> @@ -293,6 +294,9 @@ void ap_queue_init_state(struct ap_queue *aq);
->  struct ap_card *ap_card_create(int id, int queue_depth, int raw_device_type,
->  			       int comp_device_type, unsigned int functions);
->  
-> +#define APMASKSIZE (BITS_TO_LONGS(AP_DEVICES) * sizeof(unsigned long))
-> +#define AQMASKSIZE (BITS_TO_LONGS(AP_DOMAINS) * sizeof(unsigned long))
-> +
->  struct ap_perms {
->  	unsigned long ioctlm[BITS_TO_LONGS(AP_IOCTLS)];
->  	unsigned long apm[BITS_TO_LONGS(AP_DEVICES)];
-I still don't like this code. That's because of what it is doing - not because of the code quality.
-And Halil, you are right. It is adding more pressure to the mutex used for locking the apmask
-and aqmask stuff (and the zcrypt multiple device drivers support code also).
-I am very concerned about the in_use callback which is called with the ap_perms_mutex
-held AND during bus_for_each_drv (so holding the overall AP BUS mutex) and then diving
-into the vfio_ap ... with yet another mutex to protect the vfio structs.
-Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
+SGksIE1hc29uLCBZQyBMaW4sDQoNCk9uIDUvMjkvMjAgMTA6MzYgQU0sIE1hc29uIFlhbmcgd3Jv
+dGU6DQo+IEdldCBtYXhpbXVtIG9wZXJhdGlvbiBzcGVlZCBvZiBkZXZpY2UgaW4gb2N0YWwgbW9k
+ZSBmcm9tDQo+IEJGUFQgMjB0aCBEV09SRC4NCj4gDQoNCkkgd291bGQgbGlrZSB0byB1bmRlcnN0
+YW5kIGhvdyB3b3VsZCB3ZSB1c2UgdGhlIG1heCBzcGVlZCB2YWx1ZQ0KYXQgdGhlIFNQSSBOT1Ig
+bGV2ZWwuIFRoZSBtYXhpbXVtIG9wZXJhdGlvbiBzcGVlZCBpcyB0eXBpY2FsbHkgdXNlZA0KdG8g
+ZGV0ZXJtaW5lIHRoZSBudW1iZXIgb2YgZHVtbXkgY3ljbGVzLCB3aGljaCBpcyBkZXNjcmliZWQg
+aW4geFNQSQ0KU3BlYyBmb3Igc3BlZWRzIG9mIDIwMCBNSHogb3IgbGVzcy4gRXZlbiBpZiBCRlBU
+W2R3b3JkMjBdIGRlc2NyaWJlcw0Kc3VwcG9ydGVkIHNwZWVkcyB1cCB0byA0MDAgTUh6LCBpdCBk
+b2Vzbid0IGluZGljYXRlIHRoZSBudW1iZXIgb2YNCnJlcXVpcmVkIGR1bW15IGN5Y2xlcy4gV2hh
+dCBudW1iZXIgb2YgZHVtbXkgY3ljbGVzIHdvdWxkIHdlIHVzZSBmb3INCnNwZWVkcyBoaWdoZXIg
+dGhhbiAyMDAgTUh6Pw0KDQpXZSBtYXkgYmUgdGVtcHRlZCBob3dldmVyIHRvIHBhc3MgdGhlIG1h
+eF9zcGVlZF9oeiB0byB0aGUgU1BJTUVNIGxheWVyLA0Kc28gdGhhdCB0aGUgY29udHJvbGxlciBj
+YW4gc3luYyB3aXRoIHRoZSBtZW1vcnkgdG8gY2hvb3NlIHRoZSBiZXN0DQphdmFpbGFibGUgc3Bl
+ZWQuDQoNCkNoZWVycywNCnRhDQoNCj4gU2lnbmVkLW9mZi1ieTogTWFzb24gWWFuZyA8bWFzb25j
+Y3lhbmdAbXhpYy5jb20udHc+DQo+IC0tLQ0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmgg
+fCAgMiArKw0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMgfCAzNiArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysNCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oIHwg
+IDQgKysrKw0KPiAgMyBmaWxlcyBjaGFuZ2VkLCA0MiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmggYi9kcml2ZXJzL210ZC9zcGktbm9y
+L2NvcmUuaA0KPiBpbmRleCA2ZjJmNmIyLi43YTM2YjIyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
+L210ZC9zcGktbm9yL2NvcmUuaA0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaA0K
+PiBAQCAtMTkwLDYgKzE5MCw3IEBAIHN0cnVjdCBzcGlfbm9yX2xvY2tpbmdfb3BzIHsNCj4gICAq
+DQo+ICAgKiBAc2l6ZToJCXRoZSBmbGFzaCBtZW1vcnkgZGVuc2l0eSBpbiBieXRlcy4NCj4gICAq
+IEBwYWdlX3NpemU6CQl0aGUgcGFnZSBzaXplIG9mIHRoZSBTUEkgTk9SIGZsYXNoIG1lbW9yeS4N
+Cj4gKyAqIEBvY3RhbF9tYXhfc3BlZWQ6CW1heGltdW0gb3BlcmF0aW9uIHNwZWVkIG9mIGRldmlj
+ZSBpbiBvY3RhbCBtb2RlLg0KPiAgICogQGh3Y2FwczoJCWRlc2NyaWJlcyB0aGUgcmVhZCBhbmQg
+cGFnZSBwcm9ncmFtIGhhcmR3YXJlDQo+ICAgKgkJCWNhcGFiaWxpdGllcy4NCj4gICAqIEByZWFk
+czoJCXJlYWQgY2FwYWJpbGl0aWVzIG9yZGVyZWQgYnkgcHJpb3JpdHk6IHRoZSBoaWdoZXIgaW5k
+ZXgNCj4gQEAgLTIxMiw2ICsyMTMsNyBAQCBzdHJ1Y3Qgc3BpX25vcl9sb2NraW5nX29wcyB7DQo+
+ICBzdHJ1Y3Qgc3BpX25vcl9mbGFzaF9wYXJhbWV0ZXIgew0KPiAgCXU2NAkJCQlzaXplOw0KPiAg
+CXUzMgkJCQlwYWdlX3NpemU7DQo+ICsJdTE2CQkJCW9jdGFsX21heF9zcGVlZDsNCj4gIA0KPiAg
+CXN0cnVjdCBzcGlfbm9yX2h3Y2FwcwkJaHdjYXBzOw0KPiAgCXN0cnVjdCBzcGlfbm9yX3JlYWRf
+Y29tbWFuZAlyZWFkc1tTTk9SX0NNRF9SRUFEX01BWF07DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC9zcGktbm9yL3NmZHAuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5jDQo+IGluZGV4
+IGY2MDM4ZDMuLjRkMTNmNjYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2Zk
+cC5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5jDQo+IEBAIC00LDYgKzQsNyBA
+QA0KPiAgICogQ29weXJpZ2h0IChDKSAyMDE0LCBGcmVlc2NhbGUgU2VtaWNvbmR1Y3RvciwgSW5j
+Lg0KPiAgICovDQo+ICANCj4gKyNpbmNsdWRlIDxsaW51eC9iaXRmaWVsZC5oPg0KPiAgI2luY2x1
+ZGUgPGxpbnV4L3NsYWIuaD4NCj4gICNpbmNsdWRlIDxsaW51eC9zb3J0Lmg+DQo+ICAjaW5jbHVk
+ZSA8bGludXgvbXRkL3NwaS1ub3IuaD4NCj4gQEAgLTI2LDYgKzI3LDEyIEBADQo+ICAjZGVmaW5l
+IFNGRFBfSkVTRDIxNkFfTUlOT1IJNQ0KPiAgI2RlZmluZSBTRkRQX0pFU0QyMTZCX01JTk9SCTYN
+Cj4gIA0KPiArLyogQmFzaWMgRmxhc2ggUGFyYW1ldGVyIFRhYmxlIDIwdGggRFdPUkQsIE1heCBv
+cGVyYXRpb24gc3BlZWQgb2YgZGV2aWNlICovDQo+ICtzdHJ1Y3Qgb2N0YWxfbWF4X3NwZWVkIHsN
+Cj4gKwl1OCBpZHg7IC8qIEJpdHMgdmFsdWUgKi8NCj4gKwl1MTYgaHo7IC8qIE1IeiAqLw0KPiAr
+fTsNCj4gKw0KPiAgc3RydWN0IHNmZHBfaGVhZGVyIHsNCj4gIAl1MzIJCXNpZ25hdHVyZTsgLyog
+T3g1MDQ0NDY1M1UgPD0+ICJTRkRQIiAqLw0KPiAgCXU4CQltaW5vcjsNCj4gQEAgLTQ0MCw2ICs0
+NDcsMjIgQEAgc3RhdGljIGludCBzcGlfbm9yX3BhcnNlX2JmcHQoc3RydWN0IHNwaV9ub3IgKm5v
+ciwNCj4gIAl1MzIgYWRkcjsNCj4gIAl1MTYgaGFsZjsNCj4gIAl1OCBlcmFzZV9tYXNrOw0KPiAr
+CXN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2N0YWxfbWF4X3NwZWVkIG1heF9oeltdID0gew0KPiArCQkv
+KiBCaXRzIHZhbHVlLCBNSHogKi8NCj4gKwkJeyAweDBjLCA0MDAgfSwNCj4gKwkJeyAweDBiLCAz
+MzMgfSwNCj4gKwkJeyAweDBhLCAyNjYgfSwNCj4gKwkJeyAweDA5LCAyNTAgfSwNCj4gKwkJeyAw
+eDA4LCAyMDAgfSwNCj4gKwkJeyAweDA3LCAxNjYgfSwNCj4gKwkJeyAweDA2LCAxMzMgfSwNCj4g
+KwkJeyAweDA1LCAxMDAgfSwNCj4gKwkJeyAweDA0LCAgODAgfSwNCj4gKwkJeyAweDAzLCAgNjYg
+fSwNCj4gKwkJeyAweDAyLCAgNTAgfSwNCj4gKwkJeyAweDAxLCAgMzMgfSwNCj4gKwl9Ow0KPiAr
+CXU4IGlkeDsNCj4gIA0KPiAgCS8qIEpFU0QyMTYgQmFzaWMgRmxhc2ggUGFyYW1ldGVyIFRhYmxl
+IGxlbmd0aCBpcyBhdCBsZWFzdCA5IERXT1JEcy4gKi8NCj4gIAlpZiAoYmZwdF9oZWFkZXItPmxl
+bmd0aCA8IEJGUFRfRFdPUkRfTUFYX0pFU0QyMTYpDQo+IEBAIC02MDQsNiArNjI3LDE5IEBAIHN0
+YXRpYyBpbnQgc3BpX25vcl9wYXJzZV9iZnB0KHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICAJCXJl
+dHVybiAtRUlOVkFMOw0KPiAgCX0NCj4gIA0KPiArCS8qIE9jdGFsIG1vZGUgbWF4IHNwZWVkICov
+DQo+ICsJaWR4ID0gbWF4KEZJRUxEX0dFVChCRlBUX0RXT1JEMjBfT0NUQUxfRFRSX01BWF9TUEVF
+RCwNCj4gKwkJCSAgICBiZnB0LmR3b3Jkc1tCRlBUX0RXT1JEKDIwKV0pLA0KPiArCQkgIEZJRUxE
+X0dFVChCRlBUX0RXT1JEMjBfT0NUQUxfU1RSX01BWF9TUEVFRCwNCj4gKwkJCSAgICBiZnB0LmR3
+b3Jkc1tCRlBUX0RXT1JEKDIwKV0pKTsNCj4gKw0KPiArCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9T
+SVpFKG1heF9oeik7IGkrKykgew0KPiArCQlpZiAobWF4X2h6W2ldLmlkeCA9PSBpZHgpIHsNCj4g
+KwkJCXBhcmFtcy0+b2N0YWxfbWF4X3NwZWVkID0gbWF4X2h6W2ldLmh6Ow0KPiArCQkJYnJlYWs7
+DQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gIAlyZXR1cm4gc3BpX25vcl9wb3N0X2JmcHRfZml4dXBz
+KG5vciwgYmZwdF9oZWFkZXIsICZiZnB0LCBwYXJhbXMpOw0KPiAgfQ0KPiAgDQo+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuaCBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2Zk
+cC5oDQo+IGluZGV4IGUwYThkZWQuLjhhZTZkOWEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRk
+L3NwaS1ub3Ivc2ZkcC5oDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oDQo+IEBA
+IC04Myw2ICs4MywxMCBAQCBzdHJ1Y3Qgc2ZkcF9iZnB0IHsNCj4gICNkZWZpbmUgQkZQVF9EV09S
+RDE1X1FFUl9TUjJfQklUMV9OT19SRAkJKDB4NFVMIDw8IDIwKQ0KPiAgI2RlZmluZSBCRlBUX0RX
+T1JEMTVfUUVSX1NSMl9CSVQxCQkoMHg1VUwgPDwgMjApIC8qIFNwYW5zaW9uICovDQo+ICANCj4g
+KyNkZWZpbmUgQkZQVF9EV09SRDIwX09DVEFMX01BWF9TUEVFRF9NQVNLICAgICAgIEdFTk1BU0so
+MzEsIDE2KQ0KPiArI2RlZmluZSBCRlBUX0RXT1JEMjBfT0NUQUxfRFRSX01BWF9TUEVFRCAgICAg
+ICAgR0VOTUFTSygzMSwgMjgpDQo+ICsjZGVmaW5lIEJGUFRfRFdPUkQyMF9PQ1RBTF9TVFJfTUFY
+X1NQRUVEICAgICAgICBHRU5NQVNLKDE5LCAxNikNCj4gKw0KPiAgc3RydWN0IHNmZHBfcGFyYW1l
+dGVyX2hlYWRlciB7DQo+ICAJdTgJCWlkX2xzYjsNCj4gIAl1OAkJbWlub3I7DQo+IA0KDQo=
