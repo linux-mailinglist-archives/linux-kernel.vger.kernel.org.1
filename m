@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FD529C18A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD9829C0E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775586AbgJ0Owx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:52:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49730 "EHLO mail.kernel.org"
+        id S368552AbgJ0Oy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751811AbgJ0Otg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:49:36 -0400
+        id S1766317AbgJ0OsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:48:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF37620709;
-        Tue, 27 Oct 2020 14:49:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1F1020709;
+        Tue, 27 Oct 2020 14:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810176;
-        bh=KQJxvTiXweDIRIfgfcFS+hECTfQ7EuJqFOR+hyAgQTM=;
+        s=default; t=1603810089;
+        bh=Wk6oyEMtaxZAZBQtmH1ud7Z24NCHUghIcxVPyF8m00Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxLxWOukWFK4BN/4LeC59OutFkuV9r5jQ75X6iftb2qAiR3iMXjTsCqIwiaTp25IZ
-         bgJZd5ngP0M5z05ZwWjv0msKK2Or8mY/0yDI1f8VtudVDt6sAE/3u/LZveJMPHe9lC
-         tVbNsSUKHpIOnOEHSlLq9xcr3arUkXG2ZKTE6F+I=
+        b=wbjyXdLR4mH8OcW4i619vx17VRWPTplx+IzhjJGnF8fWX7weM20JGy2dBX/nrcV7y
+         MLff+xw5PfnJ8o2+kFB6juZDTgNB4CpekvbmELYrBusYR0btLdG4abk8IJH897VEr6
+         FMtEPC3hPgoOfRrv8h192TaB3TR3DwwCT2Otq61A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.8 016/633] net: usb: qmi_wwan: add Cellient MPL200 card
-Date:   Tue, 27 Oct 2020 14:45:59 +0100
-Message-Id: <20201027135523.455864298@linuxfoundation.org>
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
+Subject: [PATCH 5.8 017/633] tipc: fix the skb_unshare() in tipc_buf_append()
+Date:   Tue, 27 Oct 2020 14:46:00 +0100
+Message-Id: <20201027135523.497338814@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,29 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit 28802e7c0c9954218d1830f7507edc9d49b03a00 ]
+[ Upstream commit ed42989eab57d619667d7e87dfbd8fe207db54fe ]
 
-Add usb ids of the Cellient MPL200 card.
+skb_unshare() drops a reference count on the old skb unconditionally,
+so in the failure case, we end up freeing the skb twice here.
+And because the skb is allocated in fclone and cloned by caller
+tipc_msg_reassemble(), the consequence is actually freeing the
+original skb too, thus triggered the UAF by syzbot.
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Acked-by: Bjørn Mork <bjorn@mork.no>
+Fix this by replacing this skb_unshare() with skb_cloned()+skb_copy().
+
+Fixes: ff48b6222e65 ("tipc: use skb_unshare() instead in tipc_buf_append()")
+Reported-and-tested-by: syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
+Cc: Jon Maloy <jmaloy@redhat.com>
+Cc: Ying Xue <ying.xue@windriver.com>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/tipc/msg.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1375,6 +1375,7 @@ static const struct usb_device_id produc
- 	{QMI_QUIRK_SET_DTR(0x2cb7, 0x0104, 4)},	/* Fibocom NL678 series */
- 	{QMI_FIXED_INTF(0x0489, 0xe0b4, 0)},	/* Foxconn T77W968 LTE */
- 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
-+	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},    /* Cellient MPL200 (rebranded Qualcomm 05c6:9025) */
- 
- 	/* 4. Gobi 1000 devices */
- 	{QMI_GOBI1K_DEVICE(0x05c6, 0x9212)},	/* Acer Gobi Modem Device */
+--- a/net/tipc/msg.c
++++ b/net/tipc/msg.c
+@@ -150,7 +150,8 @@ int tipc_buf_append(struct sk_buff **hea
+ 	if (fragid == FIRST_FRAGMENT) {
+ 		if (unlikely(head))
+ 			goto err;
+-		frag = skb_unshare(frag, GFP_ATOMIC);
++		if (skb_cloned(frag))
++			frag = skb_copy(frag, GFP_ATOMIC);
+ 		if (unlikely(!frag))
+ 			goto err;
+ 		head = *headbuf = frag;
 
 
