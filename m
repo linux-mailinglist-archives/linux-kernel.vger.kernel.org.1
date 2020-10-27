@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C842329B5A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B9F29B5A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1794855AbgJ0PN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42646 "EHLO mail.kernel.org"
+        id S1794867AbgJ0POB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:14:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1793679AbgJ0PHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:07:46 -0400
+        id S1755003AbgJ0PHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:07:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7055121527;
-        Tue, 27 Oct 2020 15:07:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A9A6206F4;
+        Tue, 27 Oct 2020 15:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811266;
-        bh=XrIAT1dWci8E6RSIYz7ierZt2aV5rT5Yns5W68o/SBo=;
+        s=default; t=1603811272;
+        bh=We996f3Yt0RlMfvEgD/QJQy46NEviZymVLgf3GEBbvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pEdaNIfFuHnvWPhqY1tZw0+Vc+EU9bEEMKJMln7XBkMv0BWvCB02GYyTbzZjMWhkQ
-         8rdsgiSYQQn7l/k+QbpDmcuwmJQVFc+SE26WjdFPcnqWMrjx/o6ndlhpnF73yekmIn
-         45AQX/ZtkpykWZ6Vih8RHvQPTegJrIokhmVAKxQw=
+        b=eywQ9O/VxuRbbGF59zHM0s4GGzOR8JpJynn4nYATPcPQJ/wAT0ESj5f+CLyVgyjya
+         eUVTHuNMxxhFDV8IMndJGyJCoYJunAGMJWpcGhXt5eBCX8PxSi2FmZdnq1tb440Ti1
+         KHBp5HwCRr+2M9NzT7XwVzv63dgWvD00H2zdmLL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ray Jui <ray.jui@broadcom.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 432/633] PCI: iproc: Set affinity mask on MSI interrupts
-Date:   Tue, 27 Oct 2020 14:52:55 +0100
-Message-Id: <20201027135542.989712273@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 434/633] rpmsg: Avoid double-free in mtk_rpmsg_register_device
+Date:   Tue, 27 Oct 2020 14:52:57 +0100
+Message-Id: <20201027135543.087484945@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,53 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Nicolas Boichat <drinkcat@chromium.org>
 
-[ Upstream commit eb7eacaa5b9e4f665bd08d416c8f88e63d2f123c ]
+[ Upstream commit 231331b2dbd71487159a0400d9ffd967eb0d0e08 ]
 
-The core interrupt code expects the irq_set_affinity call to update the
-effective affinity for the interrupt. This was not being done, so update
-iproc_msi_irq_set_affinity() to do so.
+If rpmsg_register_device fails, it will call
+mtk_rpmsg_release_device which already frees mdev.
 
-Link: https://lore.kernel.org/r/20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz
-Fixes: 3bc2b2348835 ("PCI: iproc: Add iProc PCIe MSI support")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Ray Jui <ray.jui@broadcom.com>
+Fixes: 7017996951fd ("rpmsg: add rpmsg support for mt8183 SCP.")
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20200903080547.v3.1.I56cf27cd59f4013bd074dc622c8b8248b034a4cc@changeid
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-iproc-msi.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/rpmsg/mtk_rpmsg.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
-index 3176ad3ab0e52..908475d27e0e7 100644
---- a/drivers/pci/controller/pcie-iproc-msi.c
-+++ b/drivers/pci/controller/pcie-iproc-msi.c
-@@ -209,15 +209,20 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
- 	struct iproc_msi *msi = irq_data_get_irq_chip_data(data);
- 	int target_cpu = cpumask_first(mask);
- 	int curr_cpu;
-+	int ret;
+diff --git a/drivers/rpmsg/mtk_rpmsg.c b/drivers/rpmsg/mtk_rpmsg.c
+index 83f2b8804ee98..96a17ec291401 100644
+--- a/drivers/rpmsg/mtk_rpmsg.c
++++ b/drivers/rpmsg/mtk_rpmsg.c
+@@ -200,7 +200,6 @@ static int mtk_rpmsg_register_device(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
+ 	struct rpmsg_device *rpdev;
+ 	struct mtk_rpmsg_device *mdev;
+ 	struct platform_device *pdev = mtk_subdev->pdev;
+-	int ret;
  
- 	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
- 	if (curr_cpu == target_cpu)
--		return IRQ_SET_MASK_OK_DONE;
-+		ret = IRQ_SET_MASK_OK_DONE;
-+	else {
-+		/* steer MSI to the target CPU */
-+		data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
-+		ret = IRQ_SET_MASK_OK;
-+	}
+ 	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
+ 	if (!mdev)
+@@ -219,13 +218,7 @@ static int mtk_rpmsg_register_device(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
+ 	rpdev->dev.parent = &pdev->dev;
+ 	rpdev->dev.release = mtk_rpmsg_release_device;
  
--	/* steer MSI to the target CPU */
--	data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
-+	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
- 
--	return IRQ_SET_MASK_OK;
-+	return ret;
+-	ret = rpmsg_register_device(rpdev);
+-	if (ret) {
+-		kfree(mdev);
+-		return ret;
+-	}
+-
+-	return 0;
++	return rpmsg_register_device(rpdev);
  }
  
- static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,
+ static void mtk_register_device_work_function(struct work_struct *register_work)
 -- 
 2.25.1
 
