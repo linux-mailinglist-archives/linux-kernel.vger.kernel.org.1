@@ -2,214 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347B429BAC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BADF229BAC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1807621AbgJ0QMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:12:18 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:39723 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1806808AbgJ0QIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:08:34 -0400
-Received: by mail-il1-f193.google.com with SMTP id q1so1984288ilt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6rAfY3NSqXlT1WPhNg+wGdttjuTFu01uQvx6roKDSO0=;
-        b=oTPIk2RzGWVc0YchN2QbHHL1XteP2IXxgpmMpZquQvHvczuYqGOsZrCgpJ22tf88xB
-         1/hxl9IubMODeS95YYwaSxGDtch6FIdKjE/89+a76oWGMYkYbZj1viSeT/VkiIIR/FSI
-         jwPP7xGFGjEPGjH2vaNDnlloENr6lse4BmeuXNuyRAFFjRqT0l2CUXWOwhvxy6v/74+4
-         nnHamh0JLMz9LiYmYfNQwZgXcFDzb8bRhddwzHlfOSizKFP3WmhjE82VqCb2kaz1MKVc
-         2BI19EevEy1hXzNsD4mMmHFqLQkkFdRc3Kpca5C41NJyG51RcOARrRa+rdH7tPLxjNyb
-         m0Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6rAfY3NSqXlT1WPhNg+wGdttjuTFu01uQvx6roKDSO0=;
-        b=qB9UOEFv9+m9oH5fnP2rBEDUyEwCAXIBYqxZNKSRN6MbWWFx7swWK4C4simZSU1/H8
-         hyAtjTCt9xJH/NcpyuOquGJ6ar0HNKY4mU8ytckjfepKHEOLwt8tvAceHBo1EwZHcO9B
-         8G342ML3SZkP2wDLrfi3aUUbnAughas+Zr4FCKV6ez1UWdkjmkthTzsC1km0jbOUff38
-         86dMp3Hw5APziEC5A5c6sbPL5q2ya5UsYIWSNRAhjUOdFlHnp5XNcNv/Lta2V9+So7Pj
-         gvjI14jI+badPQAv1DSbP0+DbVJnd36YT+WVPr+IgNZdaTbyOnv2P02jJ2U2B4HTxe4n
-         lxEg==
-X-Gm-Message-State: AOAM531dwuBiHyxCV8LKeCEKA1tCKAfwHpYeojSvz4eikrMdSDtQ9qoY
-        FRctausOZMAqFiv2VJdZo37JTWHLzoIxgjGJz14Piw==
-X-Google-Smtp-Source: ABdhPJxxoCNaawsy16iagkTtkcpbO1hw7slzU7A2BngEf7XFnJH07yerrqnn5NlbErjreG6y7YKFIW10fq3gdxZRrzk=
-X-Received: by 2002:a92:aa01:: with SMTP id j1mr2679564ili.301.1603814913221;
- Tue, 27 Oct 2020 09:08:33 -0700 (PDT)
+        id S1807629AbgJ0QMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:12:22 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:30236 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1806865AbgJ0QJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:09:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603814953; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dT90kWWroS9dLwKtujk+UCNmypgH2HW5a8TnSckeDH4=;
+ b=X8Mf6YWHvON3vam+xOGDgXSsh6Wf1ZUTtYaPw5WsUyQL1TwdiMKj6ikV1Ef736q+re6BznKV
+ 2CuiSMrrQEbLluhZBhHQTKVHMCOJgHd9h1j3DxVBoIWxMv7rBFHbT/IDX6Cpe9xb38JqtnfE
+ dxk7znH88pVTs8q5y7/AWXWiCyk=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f98461b83cdcf4c2fe1c716 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Oct 2020 16:08:59
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 71CC5C3854A; Tue, 27 Oct 2020 16:08:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DEA62C43459;
+        Tue, 27 Oct 2020 16:08:55 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201023133130.194140-1-fparent@baylibre.com> <20201023133130.194140-6-fparent@baylibre.com>
- <CAAOTY_8ZgoQJFnEDDZ=JCy-3zLwn7yjk1EHVYgeSG2ufLxK04g@mail.gmail.com>
-In-Reply-To: <CAAOTY_8ZgoQJFnEDDZ=JCy-3zLwn7yjk1EHVYgeSG2ufLxK04g@mail.gmail.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Tue, 27 Oct 2020 17:08:22 +0100
-Message-ID: <CAOwMV_wzp67zeiSvXP59OLMwd_8srfSTSqV9BwXagq5gFu6B3g@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] drm/mediatek: Add support for main DDP path on MT8167
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 27 Oct 2020 21:38:55 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jonathan Marek <jonathan@marek.ca>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/a6xx: Add support for using system cache on
+ MMU500 based targets
+In-Reply-To: <20201027143949.GC23509@jcrouse1-lnx.qualcomm.com>
+References: <20201026185428.101443-1-jcrouse@codeaurora.org>
+ <d5050762b88d5d0d957ad5057f165b21@codeaurora.org>
+ <20201027143949.GC23509@jcrouse1-lnx.qualcomm.com>
+Message-ID: <5fc20190e3d2c642f7e8820ae89a7057@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chun-Kuang,
+On 2020-10-27 20:09, Jordan Crouse wrote:
+> On Tue, Oct 27, 2020 at 12:38:02PM +0530, Sai Prakash Ranjan wrote:
+>> On 2020-10-27 00:24, Jordan Crouse wrote:
+>> >This is an extension to the series [1] to enable the System Cache (LLC)
+>> >for
+>> >Adreno a6xx targets.
+>> >
+>> >GPU targets with an MMU-500 attached have a slightly different process for
+>> >enabling system cache. Use the compatible string on the IOMMU phandle
+>> >to see if an MMU-500 is attached and modify the programming sequence
+>> >accordingly.
+>> >
+>> >[1] https://patchwork.freedesktop.org/series/83037/
+>> >
+>> >Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+>> >---
+>> >
+>> > drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 46 +++++++++++++++++++++------
+>> > drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  1 +
+>> > 2 files changed, 37 insertions(+), 10 deletions(-)
+>> >
+>> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> >b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> >index 95c98c642876..b7737732fbb6 100644
+>> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>> >@@ -1042,6 +1042,8 @@ static void a6xx_llc_deactivate(struct a6xx_gpu
+>> >*a6xx_gpu)
+>> >
+>> > static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
+>> > {
+>> >+	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
+>> >+	struct msm_gpu *gpu = &adreno_gpu->base;
+>> > 	u32 cntl1_regval = 0;
+>> >
+>> > 	if (IS_ERR(a6xx_gpu->llc_mmio))
+>> >@@ -1055,11 +1057,17 @@ static void a6xx_llc_activate(struct a6xx_gpu
+>> >*a6xx_gpu)
+>> > 			       (gpu_scid << 15) | (gpu_scid << 20);
+>> > 	}
+>> >
+>> >+	/*
+>> >+	 * For targets with a MMU500, activate the slice but don't program the
+>> >+	 * register.  The XBL will take care of that.
+>> >+	 */
+>> > 	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
+>> >-		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
+>> >+		if (!a6xx_gpu->have_mmu500) {
+>> >+			u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
+>> >
+>> >-		gpuhtw_scid &= 0x1f;
+>> >-		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
+>> >+			gpuhtw_scid &= 0x1f;
+>> >+			cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
+>> >+		}
+>> > 	}
+>> >
+>> > 	if (cntl1_regval) {
+>> >@@ -1067,13 +1075,20 @@ static void a6xx_llc_activate(struct a6xx_gpu
+>> >*a6xx_gpu)
+>> > 		 * Program the slice IDs for the various GPU blocks and GPU MMU
+>> > 		 * pagetables
+>> > 		 */
+>> >-		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1,
+>> >cntl1_regval);
+>> >-
+>> >-		/*
+>> >-		 * Program cacheability overrides to not allocate cache lines on
+>> >-		 * a write miss
+>> >-		 */
+>> >-		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF,
+>> >0x03);
+>> >+		if (a6xx_gpu->have_mmu500)
+>> >+			gpu_rmw(gpu, REG_A6XX_GBIF_SCACHE_CNTL1, GENMASK(24, 0),
+>> >+				cntl1_regval);
+>> >+		else {
+>> >+			a6xx_llc_write(a6xx_gpu,
+>> >+				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
+>> >+
+>> >+			/*
+>> >+			 * Program cacheability overrides to not allocate cache
+>> >+			 * lines on a write miss
+>> >+			 */
+>> >+			a6xx_llc_rmw(a6xx_gpu,
+>> >+				REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
+>> >+		}
+>> > 	}
+>> > }
+>> >
+>> >@@ -1086,10 +1101,21 @@ static void a6xx_llc_slices_destroy(struct
+>> >a6xx_gpu *a6xx_gpu)
+>> > static void a6xx_llc_slices_init(struct platform_device *pdev,
+>> > 		struct a6xx_gpu *a6xx_gpu)
+>> > {
+>> >+	struct device_node *phandle;
+>> >+
+>> > 	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
+>> > 	if (IS_ERR(a6xx_gpu->llc_mmio))
+>> > 		return;
+>> >
+>> >+	/*
+>> >+	 * There is a different programming path for targets with an mmu500
+>> >+	 * attached, so detect if that is the case
+>> >+	 */
+>> >+	phandle = of_parse_phandle(pdev->dev.of_node, "iommus", 0);
+>> >+	a6xx_gpu->have_mmu500 = (phandle &&
+>> >+		of_device_is_compatible(phandle, "arm,mmu500"));
+>> >+	of_node_put(phandle);
+>> >+
+>> > 	a6xx_gpu->llc_slice = llcc_slice_getd(LLCC_GPU);
+>> > 	a6xx_gpu->htw_llc_slice = llcc_slice_getd(LLCC_GPUHTW);
+>> >
+>> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+>> >b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+>> >index 9e6079af679c..e793d329e77b 100644
+>> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+>> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+>> >@@ -32,6 +32,7 @@ struct a6xx_gpu {
+>> > 	void __iomem *llc_mmio;
+>> > 	void *llc_slice;
+>> > 	void *htw_llc_slice;
+>> >+	bool have_mmu500;
+>> > };
+>> >
+>> > #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
+>> 
+>> Thanks Jordan for the patch.
+> 
+> If it makes your life or Rob's life easier, please feel free to squash 
+> them.
+> 
 
-On Fri, Oct 23, 2020 at 5:52 PM Chun-Kuang Hu <chunkuang.hu@kernel.org> wro=
-te:
->
-> Hi, Fabien:
->
-> Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8823=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:31=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> >
-> > Add the main (DSI) drm display path for MT8167.
-> >
-> > Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> > ---
-> >
-> > Changelog:
-> >
-> > V2: No change
-> >
-> >  drivers/gpu/drm/mediatek/mtk_drm_drv.c | 38 ++++++++++++++++++++++++++
-> >  1 file changed, 38 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/m=
-ediatek/mtk_drm_drv.c
-> > index 59c85c63b7cc..3952435093fe 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> > @@ -112,6 +112,17 @@ static const enum mtk_ddp_comp_id mt2712_mtk_ddp_t=
-hird[] =3D {
-> >         DDP_COMPONENT_PWM2,
-> >  };
-> >
-> > +static enum mtk_ddp_comp_id mt8167_mtk_ddp_main[] =3D {
-> > +       DDP_COMPONENT_OVL0,
-> > +       DDP_COMPONENT_COLOR0,
-> > +       DDP_COMPONENT_CCORR,
-> > +       DDP_COMPONENT_AAL0,
-> > +       DDP_COMPONENT_GAMMA,
-> > +       DDP_COMPONENT_DITHER,
-> > +       DDP_COMPONENT_RDMA0,
-> > +       DDP_COMPONENT_DSI0,
-> > +};
-> > +
-> >  static const enum mtk_ddp_comp_id mt8173_mtk_ddp_main[] =3D {
-> >         DDP_COMPONENT_OVL0,
-> >         DDP_COMPONENT_COLOR0,
-> > @@ -163,6 +174,11 @@ static const struct mtk_mmsys_driver_data mt8173_m=
-msys_driver_data =3D {
-> >         .ext_len =3D ARRAY_SIZE(mt8173_mtk_ddp_ext),
-> >  };
-> >
-> > +static const struct mtk_mmsys_driver_data mt8167_mmsys_driver_data =3D=
- {
-> > +       .main_path =3D mt8167_mtk_ddp_main,
-> > +       .main_len =3D ARRAY_SIZE(mt8167_mtk_ddp_main),
-> > +};
-> > +
-> >  static int mtk_drm_kms_init(struct drm_device *drm)
-> >  {
-> >         struct mtk_drm_private *private =3D drm->dev_private;
-> > @@ -401,26 +417,42 @@ static const struct component_master_ops mtk_drm_=
-ops =3D {
-> >  static const struct of_device_id mtk_ddp_comp_dt_ids[] =3D {
-> >         { .compatible =3D "mediatek,mt2701-disp-ovl",
-> >           .data =3D (void *)MTK_DISP_OVL },
-> > +       { .compatible =3D "mediatek,mt8167-disp-ovl",
-> > +         .data =3D (void *)MTK_DISP_OVL },
-> >         { .compatible =3D "mediatek,mt8173-disp-ovl",
-> >           .data =3D (void *)MTK_DISP_OVL },
-> >         { .compatible =3D "mediatek,mt2701-disp-rdma",
-> >           .data =3D (void *)MTK_DISP_RDMA },
-> > +       { .compatible =3D "mediatek,mt8167-disp-rdma",
-> > +         .data =3D (void *)MTK_DISP_RDMA },
-> >         { .compatible =3D "mediatek,mt8173-disp-rdma",
-> >           .data =3D (void *)MTK_DISP_RDMA },
-> >         { .compatible =3D "mediatek,mt8173-disp-wdma",
-> >           .data =3D (void *)MTK_DISP_WDMA },
-> > +       { .compatible =3D "mediatek,mt8167-disp-ccorr",
-> > +         .data =3D (void *)MTK_DISP_CCORR },
-> >         { .compatible =3D "mediatek,mt2701-disp-color",
-> >           .data =3D (void *)MTK_DISP_COLOR },
-> > +       { .compatible =3D "mediatek,mt8167-disp-color",
-> > +         .data =3D (void *)MTK_DISP_COLOR },
-> >         { .compatible =3D "mediatek,mt8173-disp-color",
-> >           .data =3D (void *)MTK_DISP_COLOR },
-> > +       { .compatible =3D "mediatek,mt8167-disp-aal",
-> > +         .data =3D (void *)MTK_DISP_AAL},
-> >         { .compatible =3D "mediatek,mt8173-disp-aal",
-> >           .data =3D (void *)MTK_DISP_AAL},
-> > +       { .compatible =3D "mediatek,mt8167-disp-gamma",
-> > +         .data =3D (void *)MTK_DISP_GAMMA, },
-> >         { .compatible =3D "mediatek,mt8173-disp-gamma",
-> >           .data =3D (void *)MTK_DISP_GAMMA, },
-> > +       { .compatible =3D "mediatek,mt8167-disp-dither",
-> > +         .data =3D (void *)MTK_DISP_DITHER },
-> >         { .compatible =3D "mediatek,mt8173-disp-ufoe",
-> >           .data =3D (void *)MTK_DISP_UFOE },
-> >         { .compatible =3D "mediatek,mt2701-dsi",
-> >           .data =3D (void *)MTK_DSI },
-> > +       { .compatible =3D "mediatek,mt8167-dsi",
-> > +         .data =3D (void *)MTK_DSI },
-> >         { .compatible =3D "mediatek,mt8173-dsi",
-> >           .data =3D (void *)MTK_DSI },
-> >         { .compatible =3D "mediatek,mt2701-dpi",
-> > @@ -431,10 +463,14 @@ static const struct of_device_id mtk_ddp_comp_dt_=
-ids[] =3D {
-> >           .data =3D (void *)MTK_DISP_MUTEX },
-> >         { .compatible =3D "mediatek,mt2712-disp-mutex",
-> >           .data =3D (void *)MTK_DISP_MUTEX },
-> > +       { .compatible =3D "mediatek,mt8167-disp-mutex",
-> > +         .data =3D (void *)MTK_DISP_MUTEX },
-> >         { .compatible =3D "mediatek,mt8173-disp-mutex",
-> >           .data =3D (void *)MTK_DISP_MUTEX },
-> >         { .compatible =3D "mediatek,mt2701-disp-pwm",
-> >           .data =3D (void *)MTK_DISP_BLS },
-> > +       { .compatible =3D "mediatek,mt8167-disp-pwm",
-> > +         .data =3D (void *)MTK_DISP_PWM },
-> >         { .compatible =3D "mediatek,mt8173-disp-pwm",
-> >           .data =3D (void *)MTK_DISP_PWM },
-> >         { .compatible =3D "mediatek,mt8173-disp-od",
-> > @@ -449,6 +485,8 @@ static const struct of_device_id mtk_drm_of_ids[] =
-=3D {
-> >           .data =3D &mt7623_mmsys_driver_data},
-> >         { .compatible =3D "mediatek,mt2712-mmsys",
-> >           .data =3D &mt2712_mmsys_driver_data},
-> > +       { .compatible =3D "mediatek,mt8167-mmsys",
->
-> This patch looks good to me, but it depend on another patch which
-> define the compatible "mediatek,mt8167-mmsys". Where is that patch?
+Sure, I will squash them in the next version with a change
+which Robin pointed out.
 
-You can find the patch there:
-https://patchwork.kernel.org/project/linux-mediatek/patch/20201027160631.60=
-8503-2-fparent@baylibre.com/
+Thanks,
+Sai
 
->
-> Regards,
-> Chun-Kuang.
->
-> > +         .data =3D &mt8167_mmsys_driver_data},
-> >         { .compatible =3D "mediatek,mt8173-mmsys",
-> >           .data =3D &mt8173_mmsys_driver_data},
-> >         { }
-> > --
-> > 2.28.0
-> >
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
