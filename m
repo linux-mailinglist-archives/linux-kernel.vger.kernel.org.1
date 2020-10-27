@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B298829B6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3119129B6BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797594AbgJ0PY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:24:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37818 "EHLO mail.kernel.org"
+        id S1797602AbgJ0PYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1797323AbgJ0PWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:22:53 -0400
+        id S1797332AbgJ0PW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:22:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E1B220657;
-        Tue, 27 Oct 2020 15:22:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DE8F2064B;
+        Tue, 27 Oct 2020 15:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812173;
-        bh=7uyB9atqs1ASUhJEUJ6KUZQMtbf7sTKSZGFbcU0r53E=;
+        s=default; t=1603812176;
+        bh=p7NNNZMBxNsyoTsqtcaif3w4G0jBrVdCgsFZHvNNmf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T+TR+r4RtTEkyETaCGdVWyVWKCFA3c/hERA2lNTwzb/1K+S437EF0I2Td8AcN9L31
-         ORWMzmeeTd7bWt0zIVcHcUeKWLdgfONGkiZRs8fq/ZGkSHHRm9d68WA6SqZVvdmLgi
-         xmqQRPFKffjUpiH1KVAhKfVEHKzGZFt6gXKAC8u0=
+        b=xQqlpaL7vRh0Lnrag6FISUB4gGsi8Mt3raPfwRv/OlJInTMWPo3d8E8wIeJ1F7Acs
+         gWGAeJnY3dRabZ9MEsviXPZygqNiLJyITP8vTp37tUzcWyexaeQW4pa2t1/ITQCQv4
+         yUb4xx4lLpLXoPPSMXbKVkt7TT29wBE3CTqYFzK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 118/757] regulator: set of_node for qcom vbus regulator
-Date:   Tue, 27 Oct 2020 14:46:08 +0100
-Message-Id: <20201027135456.110742616@linuxfoundation.org>
+Subject: [PATCH 5.9 119/757] crypto: algif_skcipher - EBUSY on aio should be an error
+Date:   Tue, 27 Oct 2020 14:46:09 +0100
+Message-Id: <20201027135456.158657092@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,34 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 66c3b96a7bd042427d2e0eaa8704536828f8235f ]
+[ Upstream commit 2a05b029c1ee045b886ebf9efef9985ca23450de ]
 
-This allows the regulator to be found by devm_regulator_get().
+I removed the MAY_BACKLOG flag on the aio path a while ago but
+the error check still incorrectly interpreted EBUSY as success.
+This may cause the submitter to wait for a request that will never
+complete.
 
-Fixes: 4fe66d5a62fb ("regulator: Add support for QCOM PMIC VBUS booster")
-
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Link: https://lore.kernel.org/r/20200818162508.5246-1-jonathan@marek.ca
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: dad419970637 ("crypto: algif_skcipher - Do not set...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/qcom_usb_vbus-regulator.c | 1 +
- 1 file changed, 1 insertion(+)
+ crypto/algif_skcipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/qcom_usb_vbus-regulator.c b/drivers/regulator/qcom_usb_vbus-regulator.c
-index 8ba947f3585f5..457788b505720 100644
---- a/drivers/regulator/qcom_usb_vbus-regulator.c
-+++ b/drivers/regulator/qcom_usb_vbus-regulator.c
-@@ -63,6 +63,7 @@ static int qcom_usb_vbus_regulator_probe(struct platform_device *pdev)
- 	qcom_usb_vbus_rdesc.enable_mask = OTG_EN;
- 	config.dev = dev;
- 	config.init_data = init_data;
-+	config.of_node = dev->of_node;
- 	config.regmap = regmap;
+diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+index 478f3b8f5bd52..ee8890ee8f332 100644
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -123,7 +123,7 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+ 			crypto_skcipher_decrypt(&areq->cra_u.skcipher_req);
  
- 	rdev = devm_regulator_register(dev, &qcom_usb_vbus_rdesc, &config);
+ 		/* AIO operation in progress */
+-		if (err == -EINPROGRESS || err == -EBUSY)
++		if (err == -EINPROGRESS)
+ 			return -EIOCBQUEUED;
+ 
+ 		sock_put(sk);
 -- 
 2.25.1
 
