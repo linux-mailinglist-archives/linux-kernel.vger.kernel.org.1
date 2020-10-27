@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9643F29B014
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D9729AEC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757075AbgJ0OQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:16:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60920 "EHLO mail.kernel.org"
+        id S1754047AbgJ0ODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756205AbgJ0OMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:12:00 -0400
+        id S1754027AbgJ0ODs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:03:48 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A51B223AB;
-        Tue, 27 Oct 2020 14:11:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 906F32222C;
+        Tue, 27 Oct 2020 14:03:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807917;
-        bh=oj5HLCgTap0UE8B9NbqNauRQX8CuLpo1hR0Pot0m9Jg=;
+        s=default; t=1603807428;
+        bh=Fh3CurmhpDkxBXxMF8kBsENV/noZeSJClYThqjOkMQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3peQ0gkQfRFxce51n28KAZX/B7+L3JgJ7pt/MZUP5EQLDwVtcomjCi4y36pQVU3P
-         ccyOco3rdcC+ZeNF3J/aZ+AUrjkhXRdw5+QrIbst2gSu+LZ7jzzGDuDqhlCf4k3xpa
-         n5ngiggnfp9ED6fHVHPnbKWzFn4RybAPUcKrAxRw=
+        b=G/2IMW5OucqYRKmcb3IbAlZejEWFHVp8PHoFYmDmErMLpsj2TNfSV3UbWhnMzReoF
+         a5RoztjF2rI0U0EQWttMmfreU0zK5dgF/AMxTArZ4CYK9Fh3GIcXZupLvhtDL56YP5
+         OcElLR+ZEg2vUq4nWEOhd/d//DvVSXW08PtJpimw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 089/191] mtd: lpddr: fix excessive stack usage with clang
+Subject: [PATCH 4.9 050/139] usb: gadget: f_ncm: fix ncm_bitrate for SuperSpeed and above.
 Date:   Tue, 27 Oct 2020 14:49:04 +0100
-Message-Id: <20201027134913.976351668@linuxfoundation.org>
+Message-Id: <20201027134904.507540923@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
+References: <20201027134902.130312227@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,94 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Lorenzo Colitti <lorenzo@google.com>
 
-[ Upstream commit 3e1b6469f8324bee5927b063e2aca30d3e56b907 ]
+[ Upstream commit 986499b1569af980a819817f17238015b27793f6 ]
 
-Building lpddr2_nvm with clang can result in a giant stack usage
-in one function:
+Currently, SuperSpeed NCM gadgets report a speed of 851 Mbps
+in USB_CDC_NOTIFY_SPEED_CHANGE. But the calculation appears to
+assume 16 packets per microframe, and USB 3 and above no longer
+use microframes.
 
-drivers/mtd/lpddr/lpddr2_nvm.c:399:12: error: stack frame size of 1144 bytes in function 'lpddr2_nvm_probe' [-Werror,-Wframe-larger-than=]
+Maximum speed is actually much higher. On a direct connection,
+theoretical throughput is at most 3.86 Gbps for gen1x1 and
+9.36 Gbps for gen2x1, and I have seen gadget->host iperf
+throughput of >2 Gbps for gen1x1 and >4 Gbps for gen2x1.
 
-The problem is that clang decides to build a copy of the mtd_info
-structure on the stack and then do a memcpy() into the actual version. It
-shouldn't really do it that way, but it's not strictly a bug either.
+Unfortunately the ConnectionSpeedChange defined in the CDC spec
+only uses 32-bit values, so we can't report accurate numbers for
+10Gbps and above. So, report 3.75Gbps for SuperSpeed (which is
+roughly maximum theoretical performance) and 4.25Gbps for
+SuperSpeed Plus (which is close to the maximum that we can report
+in a 32-bit unsigned integer).
 
-As a workaround, use a static const version of the structure to assign
-most of the members upfront and then only set the few members that
-require runtime knowledge at probe time.
+This results in:
 
-Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200505140136.263461-1-arnd@arndb.de
+[50879.191272] cdc_ncm 2-2:1.0 enx228b127e050c: renamed from usb0
+[50879.234778] cdc_ncm 2-2:1.0 enx228b127e050c: 3750 mbit/s downlink 3750 mbit/s uplink
+
+on SuperSpeed and:
+
+[50798.434527] cdc_ncm 8-2:1.0 enx228b127e050c: renamed from usb0
+[50798.524278] cdc_ncm 8-2:1.0 enx228b127e050c: 4250 mbit/s downlink 4250 mbit/s uplink
+
+on SuperSpeed Plus.
+
+Fixes: 1650113888fe ("usb: gadget: f_ncm: add SuperSpeed descriptors for CDC NCM")
+Reviewed-by: Maciej Żenczykowski <maze@google.com>
+Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/lpddr/lpddr2_nvm.c | 35 ++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+ drivers/usb/gadget/function/f_ncm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-index 2342277c9bcb0..5e36366d9b36d 100644
---- a/drivers/mtd/lpddr/lpddr2_nvm.c
-+++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-@@ -408,6 +408,17 @@ static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
- 	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
- }
- 
-+static const struct mtd_info lpddr2_nvm_mtd_info = {
-+	.type		= MTD_RAM,
-+	.writesize	= 1,
-+	.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
-+	._read		= lpddr2_nvm_read,
-+	._write		= lpddr2_nvm_write,
-+	._erase		= lpddr2_nvm_erase,
-+	._unlock	= lpddr2_nvm_unlock,
-+	._lock		= lpddr2_nvm_lock,
-+};
-+
- /*
-  * lpddr2_nvm driver probe method
-  */
-@@ -448,6 +459,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
- 		.pfow_base	= OW_BASE_ADDRESS,
- 		.fldrv_priv	= pcm_data,
- 	};
-+
- 	if (IS_ERR(map->virt))
- 		return PTR_ERR(map->virt);
- 
-@@ -459,22 +471,13 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
- 		return PTR_ERR(pcm_data->ctl_regs);
- 
- 	/* Populate mtd_info data structure */
--	*mtd = (struct mtd_info) {
--		.dev		= { .parent = &pdev->dev },
--		.name		= pdev->dev.init_name,
--		.type		= MTD_RAM,
--		.priv		= map,
--		.size		= resource_size(add_range),
--		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
--		.writesize	= 1,
--		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
--		.flags		= (MTD_CAP_NVRAM | MTD_POWERUP_LOCK),
--		._read		= lpddr2_nvm_read,
--		._write		= lpddr2_nvm_write,
--		._erase		= lpddr2_nvm_erase,
--		._unlock	= lpddr2_nvm_unlock,
--		._lock		= lpddr2_nvm_lock,
--	};
-+	*mtd = lpddr2_nvm_mtd_info;
-+	mtd->dev.parent		= &pdev->dev;
-+	mtd->name		= pdev->dev.init_name;
-+	mtd->priv		= map;
-+	mtd->size		= resource_size(add_range);
-+	mtd->erasesize		= ERASE_BLOCKSIZE * pcm_data->bus_width;
-+	mtd->writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width;
- 
- 	/* Verify the presence of the device looking for PFOW string */
- 	if (!lpddr2_nvm_pfow_present(map)) {
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index 0061bf130598e..ba8fa97a62cfd 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -91,8 +91,10 @@ static inline struct f_ncm *func_to_ncm(struct usb_function *f)
+ /* peak (theoretical) bulk transfer rate in bits-per-second */
+ static inline unsigned ncm_bitrate(struct usb_gadget *g)
+ {
+-	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
+-		return 13 * 1024 * 8 * 1000 * 8;
++	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
++		return 4250000000U;
++	else if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
++		return 3750000000U;
+ 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
+ 		return 13 * 512 * 8 * 1000 * 8;
+ 	else
 -- 
 2.25.1
 
