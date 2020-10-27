@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8597C29B645
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 536B229B649
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1797236AbgJ0PWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32966 "EHLO mail.kernel.org"
+        id S1797259AbgJ0PWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:22:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796834AbgJ0PUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:20:06 -0400
+        id S1796854AbgJ0PUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:20:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 781FF20728;
-        Tue, 27 Oct 2020 15:20:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65FCC2224A;
+        Tue, 27 Oct 2020 15:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603812006;
-        bh=HdDfKqdDl9jL2oa9/5M7IYCYqaUTL4ZctplRvPI00K4=;
+        s=default; t=1603812015;
+        bh=mqQCLmeaHGFFJStA/Xz1a8NZIRfxPJMeFJv1wdg9m3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dnW92QHr1Wobx8w8gt8PRg506H7ikX5OolyVnUx4fEqs6UgqkLktHhZBLZAjy/nX/
-         Z/M8SSZwycGur41YceJm6/mGLtxrm3+VBHEiTuntwDD4B86etcC1mgiM54Tv4Ok8jR
-         CCjhVolze7PlCtoKhTwEB2p9oulaIHFKSU9VTvzM=
+        b=vTRxNqtg05B+Ywidx2N/jFvM5TpNg2vwXBfg0rZ2lQKqtkVHiLjq8M8b3lT5t7IT8
+         hAfFQb49dVO7DuApGLIpfQFmE9xRefm5nw3jYcBMmRQ+JG26Feyv1JUqTY5RER0k/S
+         d00ACceoFiGBYkxZbXcPZ35LmkySAa1zQtBY8Xgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.9 059/757] ALSA: hda - Dont register a cb func if it is registered already
-Date:   Tue, 27 Oct 2020 14:45:09 +0100
-Message-Id: <20201027135453.328413877@linuxfoundation.org>
+Subject: [PATCH 5.9 062/757] ALSA: hda/realtek - The front Mic on a HP machine doesnt work
+Date:   Tue, 27 Oct 2020 14:45:12 +0100
+Message-Id: <20201027135453.478874013@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -42,58 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Jeremy Szu <jeremy.szu@canonical.com>
 
-commit f4794c6064a83d2c57b264bd299c367d172d1044 upstream.
+commit 148ebf548a1af366fc797fcc7d03f0bb92b12a79 upstream.
 
-If the caller of enable_callback_mst() passes a cb func, the callee
-function will malloc memory and link this cb func to the list
-unconditionally. This will introduce problem if caller is in the
-hda_codec_ops.init() since the init() will be repeatedly called in the
-codec rt_resume().
+On a HP ZCentral, the front Mic could not be detected.
 
-So far, the patch_hdmi.c and patch_ca0132.c call enable_callback_mst()
-in the hda_codec_ops.init().
+The codec of the HP ZCentrol is alc671 and it needs to override the pin
+configuration to enable the headset mic.
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200930055146.5665-1-hui.wang@canonical.com
+Link: https://lore.kernel.org/r/20201008105645.65505-1-jeremy.szu@canonical.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/hda_jack.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -275,6 +275,18 @@ int snd_hda_jack_detect_state_mst(struct
- }
- EXPORT_SYMBOL_GPL(snd_hda_jack_detect_state_mst);
- 
-+static bool func_is_already_in_callback_list(struct hda_jack_tbl *jack,
-+					     hda_jack_callback_fn func)
-+{
-+	struct hda_jack_callback *cb;
-+
-+	for (cb = jack->callback; cb; cb = cb->next) {
-+		if (cb->func == func)
-+			return true;
-+	}
-+	return false;
-+}
-+
- /**
-  * snd_hda_jack_detect_enable_mst - enable the jack-detection
-  * @codec: the HDA codec
-@@ -297,7 +309,7 @@ snd_hda_jack_detect_enable_callback_mst(
- 	jack = snd_hda_jack_tbl_new(codec, nid, dev_id);
- 	if (!jack)
- 		return ERR_PTR(-ENOMEM);
--	if (func) {
-+	if (func && !func_is_already_in_callback_list(jack, func)) {
- 		callback = kzalloc(sizeof(*callback), GFP_KERNEL);
- 		if (!callback)
- 			return ERR_PTR(-ENOMEM);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9623,6 +9623,7 @@ static const struct snd_pci_quirk alc662
+ 	SND_PCI_QUIRK(0x1028, 0x0698, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x069f, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
++	SND_PCI_QUIRK(0x103c, 0x873e, "HP", ALC671_FIXUP_HP_HEADSET_MIC2),
+ 	SND_PCI_QUIRK(0x1043, 0x1080, "Asus UX501VW", ALC668_FIXUP_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x1043, 0x11cd, "Asus N550", ALC662_FIXUP_ASUS_Nx50),
+ 	SND_PCI_QUIRK(0x1043, 0x13df, "Asus N550JX", ALC662_FIXUP_BASS_1A),
 
 
