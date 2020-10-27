@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B23229C493
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A6429C6D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 19:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757297AbgJ0OSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:18:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36988 "EHLO mail.kernel.org"
+        id S1827379AbgJ0SX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 14:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756906AbgJ0OPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:15:11 -0400
+        id S1753641AbgJ0OBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:01:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14AE1206F7;
-        Tue, 27 Oct 2020 14:15:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9855F221F8;
+        Tue, 27 Oct 2020 14:01:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603808110;
-        bh=c+hKADWJK/1wsGh/aViROL3bcWaIRh94iWjLK3xVe/c=;
+        s=default; t=1603807275;
+        bh=b0fn2WsIbPOHU2gdfv3rRmasaAVtIhOYtHllGMy7Ec4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=inU3ojZPLkZAlYpJO2Wl+izwcR+iRdeUInnw0RL9hZB1d64Maw69vpPUApjLHSgaE
-         4QfiLMe8GH8+D/MUm8gvBxlW3MMl2ET4iC9lnE0v5BKAChOTU+6KXvvVS4vJ020NRf
-         zu0DO/pfBYjfCy897ACpX7I5+eiX5Jbrmix2ssaA=
+        b=m2Gxf36HHEn2pHc96tOBb7lqfLoPaqNxwfWbOR8seeaF/5Wy2Rl9tJQJxFMDVAQNQ
+         bJuMqA9yPr34gVUx9K5kzzOSg6yVY1IpHlIu5tfn/tpesnfctpRCPVuK9SCYDEm/St
+         GiM2WEjGwWxiJrt818LW8IEd9yJE0gT7uiAByDUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sherry Sun <sherry.sun@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Yufen <wangyufen@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 160/191] misc: vop: add round_up(x,4) for vring_size to avoid kernel panic
-Date:   Tue, 27 Oct 2020 14:50:15 +0100
-Message-Id: <20201027134917.411900072@linuxfoundation.org>
+Subject: [PATCH 4.4 107/112] brcm80211: fix possible memleak in brcmf_proto_msgbuf_attach
+Date:   Tue, 27 Oct 2020 14:50:17 +0100
+Message-Id: <20201027134905.608552235@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134909.701581493@linuxfoundation.org>
-References: <20201027134909.701581493@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,89 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sherry Sun <sherry.sun@nxp.com>
+From: Wang Yufen <wangyufen@huawei.com>
 
-[ Upstream commit cc1a2679865a94b83804822996eed010a50a7c1d ]
+[ Upstream commit 6c151410d5b57e6bb0d91a735ac511459539a7bf ]
 
-Since struct _mic_vring_info and vring are allocated together and follow
-vring, if the vring_size() is not four bytes aligned, which will cause
-the start address of struct _mic_vring_info is not four byte aligned.
-For example, when vring entries is 128, the vring_size() will be 5126
-bytes. The _mic_vring_info struct layout in ddr looks like:
-0x90002400:  00000000 00390000 EE010000 0000C0FF
-Here 0x39 is the avail_idx member, and 0xC0FFEE01 is the magic member.
+When brcmf_proto_msgbuf_attach fail and msgbuf->txflow_wq != NULL,
+we should destroy the workqueue.
 
-When EP use ioread32(magic) to reads the magic in RC's share memory, it
-will cause kernel panic on ARM64 platform due to the cross-byte io read.
-Here read magic in user space use le32toh(vr0->info->magic) will meet
-the same issue.
-So add round_up(x,4) for vring_size, then the struct _mic_vring_info
-will store in this way:
-0x90002400:  00000000 00000000 00000039 C0FFEE01
-Which will avoid kernel panic when read magic in struct _mic_vring_info.
-
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20200929091106.24624-4-sherry.sun@nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1595237765-66238-1-git-send-email-wangyufen@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/mic/vop/vop_main.c   | 2 +-
- drivers/misc/mic/vop/vop_vringh.c | 4 ++--
- samples/mic/mpssd/mpssd.c         | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/brcm80211/brcmfmac/msgbuf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/misc/mic/vop/vop_main.c b/drivers/misc/mic/vop/vop_main.c
-index a341938c7e2c6..e7cb57f8ddfe2 100644
---- a/drivers/misc/mic/vop/vop_main.c
-+++ b/drivers/misc/mic/vop/vop_main.c
-@@ -301,7 +301,7 @@ static struct virtqueue *vop_find_vq(struct virtio_device *dev,
- 	/* First assign the vring's allocated in host memory */
- 	vqconfig = _vop_vq_config(vdev->desc) + index;
- 	memcpy_fromio(&config, vqconfig, sizeof(config));
--	_vr_size = vring_size(le16_to_cpu(config.num), MIC_VIRTIO_RING_ALIGN);
-+	_vr_size = round_up(vring_size(le16_to_cpu(config.num), MIC_VIRTIO_RING_ALIGN), 4);
- 	vr_size = PAGE_ALIGN(_vr_size + sizeof(struct _mic_vring_info));
- 	va = vpdev->hw_ops->ioremap(vpdev, le64_to_cpu(config.address),
- 			vr_size);
-diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
-index 99bde52a3a256..49e7a7240469c 100644
---- a/drivers/misc/mic/vop/vop_vringh.c
-+++ b/drivers/misc/mic/vop/vop_vringh.c
-@@ -308,7 +308,7 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
- 
- 		num = le16_to_cpu(vqconfig[i].num);
- 		mutex_init(&vvr->vr_mutex);
--		vr_size = PAGE_ALIGN(vring_size(num, MIC_VIRTIO_RING_ALIGN) +
-+		vr_size = PAGE_ALIGN(round_up(vring_size(num, MIC_VIRTIO_RING_ALIGN), 4) +
- 			sizeof(struct _mic_vring_info));
- 		vr->va = (void *)
- 			__get_free_pages(GFP_KERNEL | __GFP_ZERO,
-@@ -320,7 +320,7 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
- 			goto err;
- 		}
- 		vr->len = vr_size;
--		vr->info = vr->va + vring_size(num, MIC_VIRTIO_RING_ALIGN);
-+		vr->info = vr->va + round_up(vring_size(num, MIC_VIRTIO_RING_ALIGN), 4);
- 		vr->info->magic = cpu_to_le32(MIC_MAGIC + vdev->virtio_id + i);
- 		vr_addr = dma_map_single(&vpdev->dev, vr->va, vr_size,
- 					 DMA_BIDIRECTIONAL);
-diff --git a/samples/mic/mpssd/mpssd.c b/samples/mic/mpssd/mpssd.c
-index 49db1def1721c..84e583ab8fd0c 100644
---- a/samples/mic/mpssd/mpssd.c
-+++ b/samples/mic/mpssd/mpssd.c
-@@ -414,9 +414,9 @@ mic_virtio_copy(struct mic_info *mic, int fd,
- 
- static inline unsigned _vring_size(unsigned int num, unsigned long align)
- {
--	return ((sizeof(struct vring_desc) * num + sizeof(__u16) * (3 + num)
-+	return _ALIGN_UP(((sizeof(struct vring_desc) * num + sizeof(__u16) * (3 + num)
- 				+ align - 1) & ~(align - 1))
--		+ sizeof(__u16) * 3 + sizeof(struct vring_used_elem) * num;
-+		+ sizeof(__u16) * 3 + sizeof(struct vring_used_elem) * num, 4);
- }
- 
- /*
+diff --git a/drivers/net/wireless/brcm80211/brcmfmac/msgbuf.c b/drivers/net/wireless/brcm80211/brcmfmac/msgbuf.c
+index f944f356d9c51..cacb43573f579 100644
+--- a/drivers/net/wireless/brcm80211/brcmfmac/msgbuf.c
++++ b/drivers/net/wireless/brcm80211/brcmfmac/msgbuf.c
+@@ -1530,6 +1530,8 @@ int brcmf_proto_msgbuf_attach(struct brcmf_pub *drvr)
+ 					  BRCMF_TX_IOCTL_MAX_MSG_SIZE,
+ 					  msgbuf->ioctbuf,
+ 					  msgbuf->ioctbuf_handle);
++		if (msgbuf->txflow_wq)
++			destroy_workqueue(msgbuf->txflow_wq);
+ 		kfree(msgbuf);
+ 	}
+ 	return -ENOMEM;
 -- 
 2.25.1
 
