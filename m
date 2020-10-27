@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D352029C9F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA6129C9FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:16:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1831102AbgJ0UPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505120AbgJ0UPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:15:31 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE8EC222D9;
-        Tue, 27 Oct 2020 20:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603829729;
-        bh=k99urQCr5bqqGQYEIYyO+VH8YrhpcEKq73v6441UE7E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IWaX040EfBp7TebZkcfbUksBN8XtVdYgnEVHmZaYAY02WQ2XsCLrDZSnMY8NTwLfw
-         29Xj2XIoDU5At1lafmVHCvyXrNl5TJ8neeDVQZCTKdJ3shSzeNCaRpQscn7uS4g8a/
-         icj/n6/unORecRU2RUNh1YeVkNIyT1p6hQerClQY=
-Received: by mail-ot1-f52.google.com with SMTP id h62so2283860oth.9;
-        Tue, 27 Oct 2020 13:15:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532Za5nymo6Lt8EjiNntzXmEKH1pn7eF1kbC0bCgA55rk5EfuA0s
-        vu8Rl/9gZMV5J/DFfuMlj5khXpqUAKyrC1Q+psg=
-X-Google-Smtp-Source: ABdhPJz7OiekGW/gRYpC7hC2i5PrYMFhEwtbtysJSgICs5C8iOPhqCdhUlX41my68uZsg6m0UncvoboW4ZUHXG8A8cs=
-X-Received: by 2002:a9d:2daa:: with SMTP id g39mr2896564otb.77.1603829728869;
- Tue, 27 Oct 2020 13:15:28 -0700 (PDT)
+        id S1831120AbgJ0UQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:16:35 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:37638 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409422AbgJ0UQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:16:34 -0400
+Received: by mail-lf1-f66.google.com with SMTP id j30so4008140lfp.4;
+        Tue, 27 Oct 2020 13:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NZ/QoULjtElXVXQH2NSCFi85fHMToCHynpanEMruLAo=;
+        b=W01C0YxDJA+JZP7S2bioKHSYjG2/2Ev1CsLzkaCvkGY6p5KDwKm77oEDUYGG4FELCi
+         kzBdBCEdFEmfeoXiZnHElufMHoAsgDlmpjvAiBIgQxsjWS1DQYGRxYNzvkW+IlfB2MCy
+         PSC0W7v13wyWzy3LE6D+WmefS9/IIwzmftdOaN7W7d8IHWoeAeQ2UcYkLoTmpihETbJ8
+         PfuKxM1xunWQdbcvLDJqWpRG921c60S13LrXcSQBv2cMwDsLkt4YKkbYc7HZhdd+BkY0
+         EEbDfRLKjeFDnasxFUGOjYGrVJChOEexx3+MdVTE5AAhbwZlScabGL5AFIMlQ0MKFKh/
+         kyeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NZ/QoULjtElXVXQH2NSCFi85fHMToCHynpanEMruLAo=;
+        b=h9gJrD8qaist4cv+Qc9AcKoSALpqqDNsUbpKtMWXK7SMwVeYzfLUUv5qLWFH0W0XPG
+         FAixwpeI4XO+OC1tOq8dsuqZYFOVJ0zAdU56sdxyympK8AMnYD3VG0xFOAu0uwAFXHrW
+         OLTLzjsEobQk0yxtZtYOkA9kifynRYAHRllh++hFylFjR5To9NRC0C5NE/XwhYKz1YI/
+         xJvp1sAynopdKV8xYw89O4U/UobATHB4rqdIDtgf/eRMJOCkL16Zh441PG+NNGajwRWD
+         xsOL2QWslogn9+MZLYzi/FLOhPzo6CigK+3XAU7bWYeV8NpSyfCPSaz1ialImKV9tdWA
+         kgUw==
+X-Gm-Message-State: AOAM530EOEIEp1OiJGZvXwUHxJst3THLiS6LeGBeaWbZnSKILzLIIHVw
+        G+tlz+5uMUl6EicgHSTryxPo/h90Hoc=
+X-Google-Smtp-Source: ABdhPJzhElyTa1Nm+0EwsDbXiq6YOVoLV9mChM3jCyg8PWOvYvdZKxeME2v9jB1jCLHlQP8elBRK5w==
+X-Received: by 2002:a19:550d:: with SMTP id n13mr1374492lfe.526.1603829790828;
+        Tue, 27 Oct 2020 13:16:30 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id t66sm241138lff.85.2020.10.27.13.16.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 13:16:30 -0700 (PDT)
+Subject: Re: [PATCH v6 13/52] dt-bindings: memory: tegra124: emc: Document new
+ interconnect property
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-14-digetx@gmail.com> <20201027102506.GB17089@kozik-lap>
+ <f38984b6-d53f-a43d-0387-e787b3c1924d@gmail.com>
+ <20201027194833.GE140636@kozik-lap>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0a7aeebf-c5ab-13ea-3927-fa39512afd87@gmail.com>
+Date:   Tue, 27 Oct 2020 23:16:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
- <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
- <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
- <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
- <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
- <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
- <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com> <CAKwvOdkE=ViGOhvoBRcV=9anjowC_vb4Vtefp9010+sC4c_+Sw@mail.gmail.com>
-In-Reply-To: <CAKwvOdkE=ViGOhvoBRcV=9anjowC_vb4Vtefp9010+sC4c_+Sw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 27 Oct 2020 21:15:17 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEhcQ_ngNVWddV76NqEz6d0tDhfStYGd5diydefzVLvdQ@mail.gmail.com>
-Message-ID: <CAMj1kXEhcQ_ngNVWddV76NqEz6d0tDhfStYGd5diydefzVLvdQ@mail.gmail.com>
-Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        kernel-toolchains@vger.kernel.org,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201027194833.GE140636@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 21:12, Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Tue, Oct 27, 2020 at 12:25 PM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> >
-> > Hi Nick,
-> >
-> > CC Josh
-> >
-> > On Mon, Oct 26, 2020 at 6:49 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > > On Mon, Oct 26, 2020 at 10:44 AM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > > > On Mon, Oct 26, 2020 at 6:39 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > > On Mon, 26 Oct 2020 at 17:01, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > > I.e. including the ".eh_frame" warning. I have tried bisecting that
-> > > > > > > > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
-> > > > > > > > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
-> > > > > > > > placement"), which is another red herring.
-> > > > > > >
-> > > > > > > kernel/bpf/core.o is the only file containing an eh_frame section,
-> > > > > > > causing the warning.
-> > >
-> > > When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
-> > > missing from someone's KBUILD_CFLAGS.
-> > > But I don't see anything curious in kernel/bpf/Makefile, unless
-> > > cc-disable-warning is somehow broken.
-> >
-> > I tracked it down to kernel/bpf/core.c:___bpf_prog_run() being tagged
-> > with __no_fgcse aka __attribute__((optimize("-fno-gcse"))).
-> >
-> > Even if the function is trivially empty ("return 0;"), a ".eh_frame" section
-> > is generated.  Removing the __no_fgcse tag fixes that.
->
-> That's weird.  I feel pretty strongly that unless we're working around
-> a well understood compiler bug with a comment that links to a
-> submitted bug report, turning off rando compiler optimizations is a
-> terrible hack for which one must proceed straight to jail; do not pass
-> go; do not collect $200.  But maybe I'd feel differently for this case
-> given the context of the change that added it.  (Ard mentions
-> retpolines+orc+objtool; can someone share the relevant SHA if you have
-> it handy so I don't have to go digging?)
+27.10.2020 22:48, Krzysztof Kozlowski пишет:
+> On Tue, Oct 27, 2020 at 10:19:28PM +0300, Dmitry Osipenko wrote:
+>> 27.10.2020 13:25, Krzysztof Kozlowski пишет:
+>>> On Mon, Oct 26, 2020 at 01:16:56AM +0300, Dmitry Osipenko wrote:
+>>>> External memory controller is interconnected with memory controller and
+>>>> with external memory. Document new interconnect property which turns
+>>>> External Memory Controller into interconnect provider.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 +++++++
+>>>>  1 file changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+>>>> index 278549f9e051..ac00832ceac1 100644
+>>>> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+>>>> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra124-emc.yaml
+>>>> @@ -29,6 +29,9 @@ properties:
+>>>>      items:
+>>>>        - const: emc
+>>>>  
+>>>> +  "#interconnect-cells":
+>>>> +    const: 0
+>>>> +
+>>>>    nvidia,memory-controller:
+>>>>      $ref: /schemas/types.yaml#/definitions/phandle
+>>>>      description:
+>>>> @@ -327,6 +330,7 @@ required:
+>>>>    - clocks
+>>>>    - clock-names
+>>>>    - nvidia,memory-controller
+>>>> +  - "#interconnect-cells"
+>>>
+>>> Another required property, what about all existing users of this binding?
+>>
+>> EMC/devfreq drivers check presence of the new properties and ask users
+>> to upgrade the DT. The kernel will continue to work fine using older
+>> DTBs, but devfreq driver won't load.
+> 
+> If the devfreq was working fine before (with these older DTBs and older
+> kernel) then you break the feature.
+> 
+> If devfreq was not working or was not stable enough, then nothing is
+> broken so such change is accepted.
+> 
+> Which one is then?
 
-commit 3193c0836f203a91bef96d88c64cccf0be090d9c
-Author: Josh Poimboeuf <jpoimboe@redhat.com>
-Date:   Wed Jul 17 20:36:45 2019 -0500
-
-    bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()
-
-has
-
-Fixes: e55a73251da3 ("bpf: Fix ORC unwinding in non-JIT BPF code")
-
-and mentions objtool and CONFIG_RETPOLINE.
-
->  (I feel the same about there
-> being an empty asm(); statement in the definition of asm_volatile_goto
-> for compiler-gcc.h).  Might be time to "fix the compiler."
->
-> (It sounds like Arvind is both in agreement with my sentiment, and has
-> the root cause).
->
-
-I agree that the __no_fgcse hack is terrible. Does Clang support the
-following pragmas?
-
-#pragma GCC push_options
-#pragma GCC optimize ("-fno-gcse")
-#pragma GCC pop_options
-
-?
+Definitely the latter. The current devfreq works okay'ish, but we rely
+on hardware to recover from temporal FIFO underflows and it's a
+user-visible problem which this series addresses.
