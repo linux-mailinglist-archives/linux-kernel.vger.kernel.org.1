@@ -2,147 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A229F29B4C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AEB29B4A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788536AbgJ0PA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:00:26 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:35159 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781955AbgJ0O41 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:56:27 -0400
-Received: by mail-vs1-f67.google.com with SMTP id n18so1021791vsl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7N00e/7kH+Yp4R4pJtyvMuHgjNguf39k60HnAyywGr8=;
-        b=PQOocXuwqLG6zyH9ezZA5L3BQzRzKnf1PKdM5xRszjG+LdFclmTjocdF9krB81vSEX
-         ZJQJM2sFs45Sa32cGCyMAM8zbKOkMr3ZxXgUyj+juEpeST4u4KaXWFbNH++rsL5f/L+T
-         mhcW+1g3hVqdF21+mAcfNEk8TdYhBdUU034Ns=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7N00e/7kH+Yp4R4pJtyvMuHgjNguf39k60HnAyywGr8=;
-        b=DlxOjeBZoM4Zx62Cs4bxKaxgOpOAVZ020y1KfYFi7X9HG4tI6uONWTpjqdxFR0xJil
-         qLBle4SM+EJ4h9K/1I9Xal/aTckCjGi8JloAmgUeTwhhwKcTgiaRMYrF3gZxcXxkgtQL
-         VsjKNcUy5Y/jmMwt5KrjU+mAh85AILUWNwJBVe2VM1c8nPYMpray2e0tmLmsFZN5DmDC
-         tOiFfqr3NhiNWsHCpnDv7i+rS3MCH0VqqlJWRLIkaz9CT3Bm7ehbzEVTMrWqiXzPuJOb
-         RIKwD1+ujjWTfkm5DWac5UKFLdkLSBdDlO5zYly84DaUMPFNVCRVYSc3sZ8isiohlZ/z
-         rcWQ==
-X-Gm-Message-State: AOAM530g8veTjPvW08PYPISfTmyCu9dTyjrHpQqXQKd6Gaz1G77bDrQM
-        78vpnlETrNSiQLdrNpCMOBvfBcjBVjTWeA==
-X-Google-Smtp-Source: ABdhPJw4r/Ml4wj/KGkinlDwU3ws7cZkI46LGwwLoD9mH/IcpbxGn6wwgOsH8G9amH7Px3jr4qhQAA==
-X-Received: by 2002:a67:c492:: with SMTP id d18mr1507523vsk.54.1603810584531;
-        Tue, 27 Oct 2020 07:56:24 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id w123sm174358vke.26.2020.10.27.07.56.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Oct 2020 07:56:23 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id b3so1016737vsc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:56:23 -0700 (PDT)
-X-Received: by 2002:a67:5d46:: with SMTP id r67mr1691192vsb.34.1603810583251;
- Tue, 27 Oct 2020 07:56:23 -0700 (PDT)
+        id S1790104AbgJ0PDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1762733AbgJ0PA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:00:56 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB4DC22281;
+        Tue, 27 Oct 2020 15:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603810855;
+        bh=AXHAJzEDu94PibfVxpBm1LaYRJ52DXyepkRACwNN5zs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zPxjlBvMZHCUXhq17T2RZjYNMsKXkwRUWBpdyPTDOJwOLCVKp/J83H4BJN0o3p+nH
+         akXcdg9alggqueAMmev3jRSexXzHsl5pZLzJbP4PsJRbscH1zeVmx6AUXk2U3pIakE
+         SIbsFzJMuEJxi5715lRxQGlyW2lytkSTwYrbG51s=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AD6F9403C2; Tue, 27 Oct 2020 12:00:52 -0300 (-03)
+Date:   Tue, 27 Oct 2020 12:00:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Leo Yan <leo.yan@linaro.org>, Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv5] perf kvm: add kvm-stat for arm64
+Message-ID: <20201027150052.GC2479604@kernel.org>
+References: <20201027062421.463355-1-sergey.senozhatsky@gmail.com>
 MIME-Version: 1.0
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
- <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
- <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com>
- <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org> <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
- <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
-In-Reply-To: <002801d6ac20$89ac4df0$9d04e9d0$@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 27 Oct 2020 07:56:10 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W1FiHRHeX-sATY_9x33n6P2n3KaoxfiGjvn2mwAm_-BA@mail.gmail.com>
-Message-ID: <CAD=FV=W1FiHRHeX-sATY_9x33n6P2n3KaoxfiGjvn2mwAm_-BA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     Abhishek Kumar <kuabhs@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Brian Norris <briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027062421.463355-1-sergey.senozhatsky@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Em Tue, Oct 27, 2020 at 03:24:21PM +0900, Sergey Senozhatsky escreveu:
+> Add support for perf kvm stat on arm64 platform.
+> 
+> Example:
+>  # perf kvm stat report
+> 
+> Analyze events for all VMs, all VCPUs:
+> 
+>     VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+> 
+>    DABT_LOW     661867    98.91%    40.45%      2.19us   3364.65us      6.24us ( +-   0.34% )
+>         IRQ       4598     0.69%    57.44%      2.89us   3397.59us   1276.27us ( +-   1.61% )
+>         WFx       1475     0.22%     1.71%      2.22us   3388.63us    118.31us ( +-   8.69% )
+>    IABT_LOW       1018     0.15%     0.38%      2.22us   2742.07us     38.29us ( +-  12.55% )
+>       SYS64        180     0.03%     0.01%      2.07us    112.91us      6.57us ( +-  14.95% )
+>       HVC64         17     0.00%     0.01%      2.19us    322.35us     42.95us ( +-  58.98% )
+> 
+> Total Samples:669155, Total events handled time:10216387.86us.
+> 
+> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> Tested-by: Leo Yan <leo.yan@linaro.org>
 
-On Mon, Oct 26, 2020 at 10:18 PM Rakesh Pillai <pillair@codeaurora.org> wro=
-te:
->
->
->
-> > -----Original Message-----
-> > From: Doug Anderson <dianders@chromium.org>
-> > Sent: Tuesday, October 27, 2020 4:21 AM
-> > To: Rakesh Pillai <pillair@codeaurora.org>
-> > Cc: Abhishek Kumar <kuabhs@chromium.org>; Kalle Valo
-> > <kvalo@codeaurora.org>; ath10k <ath10k@lists.infradead.org>; LKML
-> > <linux-kernel@vger.kernel.org>; linux-wireless <linux-
-> > wireless@vger.kernel.org>; Brian Norris <briannorris@chromium.org>
-> > Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
-> >
-> > Hi,
-> >
-> > On Sat, Oct 24, 2020 at 9:40 AM Rakesh Pillai <pillair@codeaurora.org> =
-wrote:
-> > >
-> > > >         if (bd_ie_type =3D=3D ATH10K_BD_IE_BOARD) {
-> > > > +               /* With variant and chip id */
-> > > >                 ret =3D ath10k_core_create_board_name(ar, boardname=
-,
-> > > > -                                                   sizeof(boardnam=
-e), true);
-> > > > +                                               sizeof(boardname), =
-true, true);
-> > >
-> > > Instead of adding a lot of code to generate a second fallback name, i=
-ts
-> > better to just modify the condition inside the function
-> > =E2=80=9Cath10k_core_create_board_name=E2=80=9D to allow the generation=
- of BDF tag using
-> > chip id, even =E2=80=9Cif ar->id.bdf_ext[0] =3D=3D '\0 =E2=80=9C.
-> > >
-> > > This will make sure that the variant string is NULL, and just board-i=
-d and
-> > chip-id is used. This will help avoid most of the code changes.
-> > > The code would look as shown below
-> > >
-> > > @@ -1493,7 +1493,7 @@ static int ath10k_core_create_board_name(struct
-> > ath10k *ar, char *name,
-> > >         }
-> > >
-> > >         if (ar->id.qmi_ids_valid) {
-> > > -               if (with_variant && ar->id.bdf_ext[0] !=3D '\0')
-> > > +               if (with_variant)
-> >
-> > Wouldn't the above just be "if (with_chip_id)" instead?  ...but yeah,
-> > that would be a cleaner way to do this.  Abhishek: do you want to post
-> > a v2?
->
->
-> The parameter name passed to this function is "with_variant", since other=
- non-qmi targets (eg QCA6174) use this as a flag to just add the variant fi=
-eld.
-> This can be renamed to something meaningful for both qmi and non-qmi targ=
-ets.
+Thanks, applied.
 
-I think we still need Abhishek's change to have two booleans passed to
-this function, though, right?  Thus, it'll be called 3 times:
+- Arnaldo
 
-* with_chip_id =3D false, with_variant =3D false
-* with_chip_id =3D true, with_variant =3D true
-* with_chip_id =3D true, with_variant =3D false
+> ---
+> 
+> v5: rebased against perf/core (Arnaldo)
+> v4: rebased against perf/core (Leo)
+> v3: report ARM_EXCEPTION_IL exceptions (Leo)
+> v2: reworked the patch after offline discussion with Suleiman
+> 
+>  tools/perf/arch/arm64/Makefile                |  1 +
+>  tools/perf/arch/arm64/util/Build              |  1 +
+>  .../arch/arm64/util/arm64_exception_types.h   | 92 +++++++++++++++++++
+>  tools/perf/arch/arm64/util/kvm-stat.c         | 85 +++++++++++++++++
+>  4 files changed, 179 insertions(+)
+>  create mode 100644 tools/perf/arch/arm64/util/arm64_exception_types.h
+>  create mode 100644 tools/perf/arch/arm64/util/kvm-stat.c
+> 
+> diff --git a/tools/perf/arch/arm64/Makefile b/tools/perf/arch/arm64/Makefile
+> index dbef716a1913..fab3095fb5d0 100644
+> --- a/tools/perf/arch/arm64/Makefile
+> +++ b/tools/perf/arch/arm64/Makefile
+> @@ -4,6 +4,7 @@ PERF_HAVE_DWARF_REGS := 1
+>  endif
+>  PERF_HAVE_JITDUMP := 1
+>  PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET := 1
+> +HAVE_KVM_STAT_SUPPORT := 1
+>  
+>  #
+>  # Syscall table generation for perf
+> diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
+> index b53294d74b01..8d2b9bcfffca 100644
+> --- a/tools/perf/arch/arm64/util/Build
+> +++ b/tools/perf/arch/arm64/util/Build
+> @@ -2,6 +2,7 @@ perf-y += header.o
+>  perf-y += machine.o
+>  perf-y += perf_regs.o
+>  perf-y += tsc.o
+> +perf-y += kvm-stat.o
+>  perf-$(CONFIG_DWARF)     += dwarf-regs.o
+>  perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
+>  perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
+> diff --git a/tools/perf/arch/arm64/util/arm64_exception_types.h b/tools/perf/arch/arm64/util/arm64_exception_types.h
+> new file mode 100644
+> index 000000000000..27c981ebe401
+> --- /dev/null
+> +++ b/tools/perf/arch/arm64/util/arm64_exception_types.h
+> @@ -0,0 +1,92 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#ifndef ARCH_PERF_ARM64_EXCEPTION_TYPES_H
+> +#define ARCH_PERF_ARM64_EXCEPTION_TYPES_H
+> +
+> +/* Per asm/virt.h */
+> +#define HVC_STUB_ERR		  0xbadca11
+> +
+> +/* Per asm/kvm_asm.h */
+> +#define ARM_EXCEPTION_IRQ		0
+> +#define ARM_EXCEPTION_EL1_SERROR	1
+> +#define ARM_EXCEPTION_TRAP		2
+> +#define ARM_EXCEPTION_IL		3
+> +/* The hyp-stub will return this for any kvm_call_hyp() call */
+> +#define ARM_EXCEPTION_HYP_GONE		HVC_STUB_ERR
+> +
+> +#define kvm_arm_exception_type					\
+> +	{ARM_EXCEPTION_IRQ,		"IRQ"		},	\
+> +	{ARM_EXCEPTION_EL1_SERROR,	"SERROR"	},	\
+> +	{ARM_EXCEPTION_TRAP,		"TRAP"		},	\
+> +	{ARM_EXCEPTION_IL,		"ILLEGAL"	},	\
+> +	{ARM_EXCEPTION_HYP_GONE,	"HYP_GONE"	}
+> +
+> +/* Per asm/esr.h */
+> +#define ESR_ELx_EC_UNKNOWN	(0x00)
+> +#define ESR_ELx_EC_WFx		(0x01)
+> +/* Unallocated EC: 0x02 */
+> +#define ESR_ELx_EC_CP15_32	(0x03)
+> +#define ESR_ELx_EC_CP15_64	(0x04)
+> +#define ESR_ELx_EC_CP14_MR	(0x05)
+> +#define ESR_ELx_EC_CP14_LS	(0x06)
+> +#define ESR_ELx_EC_FP_ASIMD	(0x07)
+> +#define ESR_ELx_EC_CP10_ID	(0x08)	/* EL2 only */
+> +#define ESR_ELx_EC_PAC		(0x09)	/* EL2 and above */
+> +/* Unallocated EC: 0x0A - 0x0B */
+> +#define ESR_ELx_EC_CP14_64	(0x0C)
+> +/* Unallocated EC: 0x0d */
+> +#define ESR_ELx_EC_ILL		(0x0E)
+> +/* Unallocated EC: 0x0F - 0x10 */
+> +#define ESR_ELx_EC_SVC32	(0x11)
+> +#define ESR_ELx_EC_HVC32	(0x12)	/* EL2 only */
+> +#define ESR_ELx_EC_SMC32	(0x13)	/* EL2 and above */
+> +/* Unallocated EC: 0x14 */
+> +#define ESR_ELx_EC_SVC64	(0x15)
+> +#define ESR_ELx_EC_HVC64	(0x16)	/* EL2 and above */
+> +#define ESR_ELx_EC_SMC64	(0x17)	/* EL2 and above */
+> +#define ESR_ELx_EC_SYS64	(0x18)
+> +#define ESR_ELx_EC_SVE		(0x19)
+> +#define ESR_ELx_EC_ERET		(0x1a)	/* EL2 only */
+> +/* Unallocated EC: 0x1b - 0x1E */
+> +#define ESR_ELx_EC_IMP_DEF	(0x1f)	/* EL3 only */
+> +#define ESR_ELx_EC_IABT_LOW	(0x20)
+> +#define ESR_ELx_EC_IABT_CUR	(0x21)
+> +#define ESR_ELx_EC_PC_ALIGN	(0x22)
+> +/* Unallocated EC: 0x23 */
+> +#define ESR_ELx_EC_DABT_LOW	(0x24)
+> +#define ESR_ELx_EC_DABT_CUR	(0x25)
+> +#define ESR_ELx_EC_SP_ALIGN	(0x26)
+> +/* Unallocated EC: 0x27 */
+> +#define ESR_ELx_EC_FP_EXC32	(0x28)
+> +/* Unallocated EC: 0x29 - 0x2B */
+> +#define ESR_ELx_EC_FP_EXC64	(0x2C)
+> +/* Unallocated EC: 0x2D - 0x2E */
+> +#define ESR_ELx_EC_SERROR	(0x2F)
+> +#define ESR_ELx_EC_BREAKPT_LOW	(0x30)
+> +#define ESR_ELx_EC_BREAKPT_CUR	(0x31)
+> +#define ESR_ELx_EC_SOFTSTP_LOW	(0x32)
+> +#define ESR_ELx_EC_SOFTSTP_CUR	(0x33)
+> +#define ESR_ELx_EC_WATCHPT_LOW	(0x34)
+> +#define ESR_ELx_EC_WATCHPT_CUR	(0x35)
+> +/* Unallocated EC: 0x36 - 0x37 */
+> +#define ESR_ELx_EC_BKPT32	(0x38)
+> +/* Unallocated EC: 0x39 */
+> +#define ESR_ELx_EC_VECTOR32	(0x3A)	/* EL2 only */
+> +/* Unallocated EC: 0x3B */
+> +#define ESR_ELx_EC_BRK64	(0x3C)
+> +/* Unallocated EC: 0x3D - 0x3F */
+> +#define ESR_ELx_EC_MAX		(0x3F)
+> +
+> +#define ECN(x) { ESR_ELx_EC_##x, #x }
+> +
+> +#define kvm_arm_exception_class \
+> +	ECN(UNKNOWN), ECN(WFx), ECN(CP15_32), ECN(CP15_64), ECN(CP14_MR), \
+> +	ECN(CP14_LS), ECN(FP_ASIMD), ECN(CP10_ID), ECN(PAC), ECN(CP14_64), \
+> +	ECN(SVC64), ECN(HVC64), ECN(SMC64), ECN(SYS64), ECN(SVE), \
+> +	ECN(IMP_DEF), ECN(IABT_LOW), ECN(IABT_CUR), \
+> +	ECN(PC_ALIGN), ECN(DABT_LOW), ECN(DABT_CUR), \
+> +	ECN(SP_ALIGN), ECN(FP_EXC32), ECN(FP_EXC64), ECN(SERROR), \
+> +	ECN(BREAKPT_LOW), ECN(BREAKPT_CUR), ECN(SOFTSTP_LOW), \
+> +	ECN(SOFTSTP_CUR), ECN(WATCHPT_LOW), ECN(WATCHPT_CUR), \
+> +	ECN(BKPT32), ECN(VECTOR32), ECN(BRK64)
+> +
+> +#endif /* ARCH_PERF_ARM64_EXCEPTION_TYPES_H */
+> diff --git a/tools/perf/arch/arm64/util/kvm-stat.c b/tools/perf/arch/arm64/util/kvm-stat.c
+> new file mode 100644
+> index 000000000000..50376b9062c1
+> --- /dev/null
+> +++ b/tools/perf/arch/arm64/util/kvm-stat.c
+> @@ -0,0 +1,85 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <errno.h>
+> +#include <memory.h>
+> +#include "../../util/evsel.h"
+> +#include "../../util/kvm-stat.h"
+> +#include "arm64_exception_types.h"
+> +#include "debug.h"
+> +
+> +define_exit_reasons_table(arm64_exit_reasons, kvm_arm_exception_type);
+> +define_exit_reasons_table(arm64_trap_exit_reasons, kvm_arm_exception_class);
+> +
+> +const char *kvm_trap_exit_reason = "esr_ec";
+> +const char *vcpu_id_str = "id";
+> +const int decode_str_len = 20;
+> +const char *kvm_exit_reason = "ret";
+> +const char *kvm_entry_trace = "kvm:kvm_entry";
+> +const char *kvm_exit_trace = "kvm:kvm_exit";
+> +
+> +const char *kvm_events_tp[] = {
+> +	"kvm:kvm_entry",
+> +	"kvm:kvm_exit",
+> +	NULL,
+> +};
+> +
+> +static void event_get_key(struct evsel *evsel,
+> +			  struct perf_sample *sample,
+> +			  struct event_key *key)
+> +{
+> +	key->info = 0;
+> +	key->key = evsel__intval(evsel, sample, kvm_exit_reason);
+> +	key->exit_reasons = arm64_exit_reasons;
+> +
+> +	/*
+> +	 * TRAP exceptions carry exception class info in esr_ec field
+> +	 * and, hence, we need to use a different exit_reasons table to
+> +	 * properly decode event's est_ec.
+> +	 */
+> +	if (key->key == ARM_EXCEPTION_TRAP) {
+> +		key->key = evsel__intval(evsel, sample, kvm_trap_exit_reason);
+> +		key->exit_reasons = arm64_trap_exit_reasons;
+> +	}
+> +}
+> +
+> +static bool event_begin(struct evsel *evsel,
+> +			struct perf_sample *sample __maybe_unused,
+> +			struct event_key *key __maybe_unused)
+> +{
+> +	return !strcmp(evsel->name, kvm_entry_trace);
+> +}
+> +
+> +static bool event_end(struct evsel *evsel,
+> +		      struct perf_sample *sample,
+> +		      struct event_key *key)
+> +{
+> +	if (!strcmp(evsel->name, kvm_exit_trace)) {
+> +		event_get_key(evsel, sample, key);
+> +		return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +static struct kvm_events_ops exit_events = {
+> +	.is_begin_event = event_begin,
+> +	.is_end_event	= event_end,
+> +	.decode_key	= exit_event_decode_key,
+> +	.name		= "VM-EXIT"
+> +};
+> +
+> +struct kvm_reg_events_ops kvm_reg_events_ops[] = {
+> +	{
+> +		.name	= "vmexit",
+> +		.ops	= &exit_events,
+> +	},
+> +	{ NULL },
+> +};
+> +
+> +const char * const kvm_skip_events[] = {
+> +	NULL,
+> +};
+> +
+> +int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
+> +{
+> +	kvm->exit_reasons_isa = "arm64";
+> +	return 0;
+> +}
+> -- 
+> 2.29.0
+> 
 
-The two cases you want to combine are both with "with_chip_id =3D true",
-right?  The "with_variant" variable being false will make the variant
-string empty.
+-- 
 
--Doug
+- Arnaldo
