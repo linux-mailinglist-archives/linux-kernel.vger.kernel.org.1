@@ -2,200 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F8729A623
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4277E29A616
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 09:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508749AbgJ0IEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 04:04:53 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:34244 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508699AbgJ0IDz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 04:03:55 -0400
-Received: by mail-pf1-f194.google.com with SMTP id o129so459366pfb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 01:03:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uiglRpBNWkrLFEUzSubzu7HQqvI3OKCdlqP2Lx2y8is=;
-        b=P+Nz2tG9WB/qhj+FCO+gcFTyNF1I6MsxBKRw9kmsx8p6kTqOEUDww4WezfUMzA7ids
-         ac0Zw4GET/vXhxCf8QG68dkLY5mwIlJRUt9Gm+jLihmcX0NoOz+Cp5twgR8DGsYW67qd
-         PZLKcV4nEUGWtiN0RpyT1yxo4Vpm4Vkn4poFL4T2cKC8G6zrJxeA05Boleywdh/UF3ZC
-         mRUnhoac0MFVouztQxbXWFTjsi/iFZUkv7BWXoxoXhK2tMu9Ey2RFTz7zACV5EhVfAwX
-         vnFuZ5csx1UlaEVc6ELswrsJ5ZO+KZAEF/R9wChhpmuL/z63EgKtfFu5WfRU6MxRFo7g
-         u0PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uiglRpBNWkrLFEUzSubzu7HQqvI3OKCdlqP2Lx2y8is=;
-        b=W2gGkxZCgdyU56s3JGLrmFeJYHf6U2LNSx8+c1mkwk78w1RluuHNBK0f/jYg7ovC3q
-         PfK52fjnbgGWM7567bpa/HFZadJfm8ufJY/Th/yYkAhL9Whw6Zivjq/BMThJoNgnXbvm
-         awpCT5iL7asS9jSDMOMnL4AUF1Tnb8QieHVktbKpQpOTkG8vuKUiQ9VtGryI0BOjJDU9
-         wHRYYHCZhQ2onVJEr6wLSBNnfOzFeMOp6CRqPWjtwmdDl8JNz4BHKI52HPLsJVqFoKKI
-         2gbHL3sAvefdwXV8TwTQ0TBPT90o+oyQek8ZUfe/ZDY3muq017nI86YMCaT2LEewXye1
-         Ao9Q==
-X-Gm-Message-State: AOAM531BVX3IF6rbF0JuTd4RKPQIG3VpLQPULsGjbYho1h3IglLGdKsu
-        AZMIYImCbSFbcen9W1arcp0+zg==
-X-Google-Smtp-Source: ABdhPJxqNnFSCS9aSZpbv6+4QVNMOZB8yeIGk564y0BvOrg9NvzTp9pcjm2oymtvYwf9KBriDCrUgQ==
-X-Received: by 2002:aa7:91c8:0:b029:155:c7c1:3fae with SMTP id z8-20020aa791c80000b0290155c7c13faemr1060014pfa.74.1603785834731;
-        Tue, 27 Oct 2020 01:03:54 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.89])
-        by smtp.gmail.com with ESMTPSA id p8sm1039580pgs.34.2020.10.27.01.03.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 01:03:54 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
-        christian.brauner@ubuntu.com, peterz@infradead.org,
-        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
-        esyr@redhat.com, surenb@google.com, areber@redhat.com,
-        elver@google.com
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 5/5] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
-Date:   Tue, 27 Oct 2020 16:02:56 +0800
-Message-Id: <20201027080256.76497-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201027080256.76497-1-songmuchun@bytedance.com>
-References: <20201027080256.76497-1-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2508686AbgJ0IDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 04:03:46 -0400
+Received: from mga12.intel.com ([192.55.52.136]:17255 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2508650AbgJ0IDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 04:03:25 -0400
+IronPort-SDR: y8us5Kr0AMyKmw/hO8MSKyNSCJdwy6HSOLRED0ZfQ7NLd3Jz5UWq+unliSjRDbn3/T8pntL9WX
+ Kk1hKN97MMvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="147326439"
+X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
+   d="scan'208";a="147326439"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 01:03:14 -0700
+IronPort-SDR: UeI2iedu7Fd5nuOVyuRMymVdn/z3xtknrkFAfN28wuqWiF51G7EQO9WKYbUXGtvvxei+gIgvIY
+ ySc+njmMFMVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
+   d="scan'208";a="360665036"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Oct 2020 01:03:11 -0700
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
+Subject: [PATCH v7 0/2] Add Intel LGM soc DMA support
+Date:   Tue, 27 Oct 2020 16:03:05 +0800
+Message-Id: <cover.1600827061.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can reuse the code of mem_cgroup_lruvec() to simplify the code
-of the mem_cgroup_page_lruvec().
+Add DMA controller driver for Lightning Mountain(LGM) family of SoCs.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h | 44 +++++++++++++++++++++++++++-----------
- mm/memcontrol.c            | 40 ----------------------------------
- 2 files changed, 32 insertions(+), 52 deletions(-)
+The main function of the DMA controller is the transfer of data from/to any
+DPlus compliant peripheral to/from the memory. A memory to memory copy
+capability can also be configured.
+This ldma driver is used for configure the device and channnels for data
+and control paths.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 95807bf6be64..5e8480e54cd8 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -451,16 +451,9 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
- 	return memcg->nodeinfo[nid];
- }
- 
--/**
-- * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-- * @memcg: memcg of the wanted lruvec
-- *
-- * Returns the lru list vector holding pages for a given @memcg &
-- * @node combination. This can be the node lruvec, if the memory
-- * controller is disabled.
-- */
--static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
--					       struct pglist_data *pgdat)
-+static inline struct lruvec *mem_cgroup_node_lruvec(struct mem_cgroup *memcg,
-+						    struct pglist_data *pgdat,
-+						    int nid)
- {
- 	struct mem_cgroup_per_node *mz;
- 	struct lruvec *lruvec;
-@@ -473,7 +466,7 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
--	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-+	mz = mem_cgroup_nodeinfo(memcg, nid);
- 	lruvec = &mz->lruvec;
- out:
- 	/*
-@@ -486,7 +479,34 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 	return lruvec;
- }
- 
--struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-+/**
-+ * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-+ * @memcg: memcg of the wanted lruvec
-+ *
-+ * Returns the lru list vector holding pages for a given @memcg &
-+ * @node combination. This can be the node lruvec, if the memory
-+ * controller is disabled.
-+ */
-+static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-+					       struct pglist_data *pgdat)
-+{
-+	return mem_cgroup_node_lruvec(memcg, pgdat, pgdat->node_id);
-+}
-+
-+/**
-+ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-+ * @page: the page
-+ * @pgdat: pgdat of the page
-+ *
-+ * This function relies on page->mem_cgroup being stable - see the
-+ * access rules in commit_charge().
-+ */
-+static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-+						    struct pglist_data *pgdat)
-+{
-+	return mem_cgroup_node_lruvec(page->mem_cgroup, pgdat,
-+				      page_to_nid(page));
-+}
- 
- struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 70345b15b150..7097f3fc4dee 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1332,46 +1332,6 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
- 	return ret;
- }
- 
--/**
-- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-- * @page: the page
-- * @pgdat: pgdat of the page
-- *
-- * This function relies on page->mem_cgroup being stable - see the
-- * access rules in commit_charge().
-- */
--struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
--{
--	struct mem_cgroup_per_node *mz;
--	struct mem_cgroup *memcg;
--	struct lruvec *lruvec;
--
--	if (mem_cgroup_disabled()) {
--		lruvec = &pgdat->__lruvec;
--		goto out;
--	}
--
--	memcg = page->mem_cgroup;
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
--	if (!memcg)
--		memcg = root_mem_cgroup;
--
--	mz = mem_cgroup_page_nodeinfo(memcg, page);
--	lruvec = &mz->lruvec;
--out:
--	/*
--	 * Since a node can be onlined after the mem_cgroup was created,
--	 * we have to be prepared to initialize lruvec->zone here;
--	 * and if offlined then reonlined, we need to reinitialize it.
--	 */
--	if (unlikely(lruvec->pgdat != pgdat))
--		lruvec->pgdat = pgdat;
--	return lruvec;
--}
--
- /**
-  * mem_cgroup_update_lru_size - account for adding or removing an lru page
-  * @lruvec: mem_cgroup per zone lru vector
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP.
+
+-------------
+Future Plans:
+-------------
+LGM SOC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
+
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for intel LGM SOC
+  Add Intel LGM soc DMA support.
+
+ .../devicetree/bindings/dma/intel,ldma.yaml        |  135 ++
+ drivers/dma/Kconfig                                |    2 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/lgm/Kconfig                            |    9 +
+ drivers/dma/lgm/Makefile                           |    2 +
+ drivers/dma/lgm/lgm-dma.c                          | 1765 ++++++++++++++++++++
+ include/linux/dma/lgm_dma.h                        |   27 +
+ 7 files changed, 1941 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
+ create mode 100644 include/linux/dma/lgm_dma.h
+
 -- 
-2.20.1
+2.11.0
 
