@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992E629C958
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7015E29C95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 21:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1830611AbgJ0UAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 16:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1823131AbgJ0UAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:00:19 -0400
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 094C422275;
-        Tue, 27 Oct 2020 20:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603828818;
-        bh=C8PNoOCxuRcL/lFBVvomssyBtYmkskLNwoLcNzkR5Vs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cr5dQW59BNWBgEYpuBUIA3s72exOWsAd2OlWLReIcgzgSLrsfzxKE6zRunMVogLSo
-         LmLWxc91RWzKoB9Gtxr0K+7VZgOkVaEb1SX9mezXGBUD14dcZV5hoSGvg08ZXdRTIi
-         Q2GtouUNf8HeaT0ihrJwnCWe294AqcVTE17F6Ukc=
-Received: by mail-qt1-f174.google.com with SMTP id s39so1505434qtb.2;
-        Tue, 27 Oct 2020 13:00:17 -0700 (PDT)
-X-Gm-Message-State: AOAM5306FoGTk+eVqcHBkhvSwb+lUjyJXsQI3cjrAsjjWCCZm9UrtGHk
-        B84bs5//iXhzsNL5UBwnihycIhwz/jUlTauMn04=
-X-Google-Smtp-Source: ABdhPJzHE+3FGUR6Vtj4ilGlCmvzRyNA4JBb/mYGM6PUyhS1g31Nk7geVbcH3sKFxz1efLAyb/D51bCAVaCcEQFLiYw=
-X-Received: by 2002:ac8:4808:: with SMTP id g8mr3798666qtq.18.1603828817040;
- Tue, 27 Oct 2020 13:00:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201027145252.3976138-1-arnd@kernel.org> <20201027192229.GA22829@infradead.org>
-In-Reply-To: <20201027192229.GA22829@infradead.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 27 Oct 2020 21:00:00 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1V5aaEw213rNecYxhDB3s9Lrhbm=ueBPPXbW4Bua0n6A@mail.gmail.com>
-Message-ID: <CAK8P3a1V5aaEw213rNecYxhDB3s9Lrhbm=ueBPPXbW4Bua0n6A@mail.gmail.com>
-Subject: Re: [PATCH v2] seq_file: fix clang warning for NULL pointer arithmetic
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
+        id S1830624AbgJ0UAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 16:00:40 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34922 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1830614AbgJ0UAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 16:00:38 -0400
+Received: by mail-qt1-f193.google.com with SMTP id s39so1506350qtb.2;
+        Tue, 27 Oct 2020 13:00:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TVuLHKcXENXuQnK7BbqbATj1Ow+/O3OET0tWd5g550g=;
+        b=mP0vr1qRuUQR81DKmnV8194x/AjZPMsguc2eq/A5LnYQc8WN31EdpclRq5QVEiguNC
+         viciyDYZqo+cja357tj67V9Ldk0LSraSsvStPxeETJwDvUyDE0QqkcWdodVZFQKVwWxL
+         epou4TbwiMHu7YGhXYGrCAeTC0M9FwqgpQSze1vdX6jE1Hycg9mcVCPQLugXG7BO4n3f
+         ZKNCIrqLrRLE/IRXNhwwU6cP1LaeM2czwNcLqri8C9uV5dM+QmnFUKEZdmkSyS5SkMpZ
+         6NJMI/dGiMEUrcA1CaTUHfY+8FHHy99q4+iH591UceHfx51c0qvDioxTaXMjQDk4tcQp
+         Mr+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=TVuLHKcXENXuQnK7BbqbATj1Ow+/O3OET0tWd5g550g=;
+        b=UT8nenYGTXpAFwAqfi16KZOTbzF2qOQzfAs1xYZ42aVp6W3CtETbQ1HsUXKqbIN6IU
+         6xyJokFFCtO+ilO4/HdgCEg50DTGMFZ6reLSMYYpnVwvetVSs4wXBj6Euz6jKKqmNN1X
+         T2KAfjqOi6CYepRhCpcIU+Rgpa6zu1GFOd4eNGu3IfzA9IWZnK9XW8xeCATsCwh3e6ms
+         24bBjgMwqEhnV1NULAtCHIwHUTcqo/ECW5En55FTZwt0DYbAXgGiY9gS1l7dNDq+Coqf
+         8Hj15X5jNNJes47s1WrG8wEgIqJbqeWu4BmDgeklpXqclUsNWsMCJecsbQYdzJ6obx0Q
+         eZNA==
+X-Gm-Message-State: AOAM530WWDKXlfwtZzK8lmJ1hZK9NZipKjx15KZs1PDo6I3n9bgZ7Soz
+        107H4gz7QQlgU75Z7Ye+xZc=
+X-Google-Smtp-Source: ABdhPJxU2pZfgj9I3plzFh3cez4o/WkT19yFU0erA2KwXzjCWYK8HyryZLdTY2tsgV+PFXrSig2WwQ==
+X-Received: by 2002:ac8:4295:: with SMTP id o21mr3704200qtl.313.1603828836358;
+        Tue, 27 Oct 2020 13:00:36 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id z6sm1479349qtw.36.2020.10.27.13.00.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 13:00:35 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 27 Oct 2020 16:00:33 -0400
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
+Message-ID: <20201027200033.GA1826217@rani.riverdale.lan>
+References: <20200821194310.3089815-1-keescook@chromium.org>
+ <20200821194310.3089815-14-keescook@chromium.org>
+ <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
+ <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
+ <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
+ <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
+ <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
+ <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
+ <CAMuHMdUDOzJbzf=0jom9dnSzkC+dkMdkyY_BOBMAivbJfF+Gmg@mail.gmail.com>
+ <CAMj1kXEw+6Srqd5w9oxpik3VUbehapx_TcHLDCbmHZBSdY768Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEw+6Srqd5w9oxpik3VUbehapx_TcHLDCbmHZBSdY768Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 8:22 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-> > index f277d023ebcd..eafeb8bf4fe4 100644
-> > --- a/fs/kernfs/file.c
-> > +++ b/fs/kernfs/file.c
-> > @@ -121,10 +121,10 @@ static void *kernfs_seq_start(struct seq_file *sf, loff_t *ppos)
-> >               return next;
-> >       } else {
-> >               /*
-> > -              * The same behavior and code as single_open().  Returns
-> > -              * !NULL if pos is at the beginning; otherwise, NULL.
-> > +              * The same behavior and code as single_open().  Continues
-> > +              * if pos is at the beginning; otherwise, EOF.
-> >                */
-> > -             return NULL + !*ppos;
-> > +             return *ppos ? SEQ_OPEN_SINGLE : SEQ_OPEN_EOF;
->
-> Why the somewhat obsfucating unary expression instead of a good
-> old if?
->
-> e.g.
->
->                 return next;
->         }
->         if (*ppos)
->                 retun SEQ_OPEN_SINGLE;
->         return NULL;
->
->
-> >               ++*ppos;
-> > -             return NULL;
-> > +             return SEQ_OPEN_EOF;
->
-> I don't think SEQ_OPEN_EOF is all that useful.  NULL is the documented
-> end case already.
-
-Right, Al already pointed out the same thing on IRC.
-
-> > diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
-> > index 813614d4b71f..26f0758b6551 100644
-> > --- a/include/linux/seq_file.h
-> > +++ b/include/linux/seq_file.h
-> > @@ -37,6 +37,9 @@ struct seq_operations {
+On Tue, Oct 27, 2020 at 08:33:00PM +0100, Ard Biesheuvel wrote:
+> On Tue, 27 Oct 2020 at 20:25, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > >
+> > > When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
+> > > missing from someone's KBUILD_CFLAGS.
+> > > But I don't see anything curious in kernel/bpf/Makefile, unless
+> > > cc-disable-warning is somehow broken.
 > >
-> >  #define SEQ_SKIP 1
+> > I tracked it down to kernel/bpf/core.c:___bpf_prog_run() being tagged
+> > with __no_fgcse aka __attribute__((optimize("-fno-gcse"))).
 > >
-> > +#define SEQ_OPEN_EOF (void *)0
-> > +#define SEQ_OPEN_SINGLE      (void *)1
->
-> I think SEQ_OPEN_SINGLE also wants a comment documenting it.
-> AFAICS the reason for it is that ->start needs to return something
-> non-NULL for the seq_file code to make progress, and there is nothing
-> better for the single_open case.
+> > Even if the function is trivially empty ("return 0;"), a ".eh_frame" section
+> > is generated.  Removing the __no_fgcse tag fixes that.
+> >
+> 
+> 
+> Given that it was added for issues related to retpolines, ORC and
+> objtool, it should be safe to make that annotation x86-only.
 
-Ok.
+The optimize attribute is not meant for production use. I had mentioned
+this at the time but it got lost: the optimize attribute apparently does
+not add options, it replaces them completely. So I'm guessing this one
+is dropping the -fno-asynchronous-unwind-tables and causing the eh_frame
+sections, though I don't know why that doesn't cause eh_frame on x86?
 
-     Arnd
+https://lore.kernel.org/lkml/alpine.LSU.2.21.2004151445520.11688@wotan.suse.de/
