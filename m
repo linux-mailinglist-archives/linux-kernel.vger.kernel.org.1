@@ -2,125 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4E429A52E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029F129A52B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 08:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507101AbgJ0HEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 03:04:44 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37876 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389459AbgJ0HEn (ORCPT
+        id S2507087AbgJ0HDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 03:03:50 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:45487 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387606AbgJ0HDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 03:04:43 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R6x77f133327;
-        Tue, 27 Oct 2020 07:04:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=MoJnc7fpNcxcIDKLzoP8QllWHmSTzy69tYst281zTM0=;
- b=nS7wNtwoVKf8eYvPpO+lmH0MWeR5qbypI4qXAqXIHwl2QjVKkn2+KSKhb/wL4WTCsAdJ
- x38p9aHWYjirLw45lCEeU2s7rnnWqV0LQLpfO7ZesG7g+D0U0hyR3PhzorB8ek4/wvsN
- 1/8Q8gPuNng1RG2+vD009g6DTgsnU7xzYsBTcNPjxXae/lp25Wn9uOekbF5WydaSTt06
- HW0Bu1HZZeR4IKgxI8t1NJABvK1t830xS/Gl5tOFk+Z7KRdlrUHW2GwRQMMtnoV9xLtn
- TyPcZ9HHohQntLJRYmIBCjNhJdz7/CGl57Et/yEGHZpzyh4S8Jey9CCm0Sihx8ANrdbX Fw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34cc7kr7ft-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 07:04:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09R703L4053829;
-        Tue, 27 Oct 2020 07:02:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34cx5ws8e8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 07:02:34 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09R72XQQ005169;
-        Tue, 27 Oct 2020 07:02:33 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Oct 2020 00:02:32 -0700
-Date:   Tue, 27 Oct 2020 10:02:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sujeev Dias <sdias@codeaurora.org>,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [kbuild] drivers/bus/mhi/core/boot.c:222:3: warning: Variable 'i' is
- modified but its new value is never used.
-Message-ID: <20201027070226.GI18329@kadam>
+        Tue, 27 Oct 2020 03:03:50 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kXJ1C-00019L-Kr; Tue, 27 Oct 2020 08:03:42 +0100
+Subject: Re: [Linux-stm32] [PATCH v7 10/12] ARM: dts: stm32: Fix schema
+ warnings for pwm-leds
+To:     Alexander Dahl <post@lespocky.de>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Alexander Dahl <ada@thorsis.com>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-leds@vger.kernel.org
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-11-post@lespocky.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <b387bda8-3643-1d27-4996-2aa4dc94d69f@pengutronix.de>
+Date:   Tue, 27 Oct 2020 08:03:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: WZM5JHUVEETOS6DT6UDL7SOWRYJ65CWY
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270045
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010270045
+In-Reply-To: <20201005203451.9985-11-post@lespocky.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-head:   4525c8781ec0701ce824e8bd379ae1b129e26568
-commit: cd457afb16670501f00354eb0e705a7d8a50d79d bus: mhi: core: Add support for downloading firmware over BHIe
-compiler: powerpc64le-linux-gcc (GCC) 9.3.0
+Hello Alexander,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+On 10/5/20 10:34 PM, Alexander Dahl wrote:
+> The node names for devices using the pwm-leds driver follow a certain
+> naming scheme (now).  Parent node name is not enforced, but recommended
+> by DT project.
+> 
+>   DTC     arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
+>   CHECK   arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml
+> /home/alex/build/linux/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dt.yaml: led-rgb: 'led-blue', 'led-green', 'led-red' do not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
+>         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> 
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
 
+Acked-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+But got two questions below:
 
->> drivers/bus/mhi/core/boot.c:222:3: warning: Variable 'i' is modified but its new value is never used. [unreadVariable]
-     i++;
-     ^
+> ---
+> 
+> Notes:
+>     v6 -> v7:
+>       * split up patch (one per sub arch)
+>       * added actual warnings to commit message
+> 
+>  arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> index 5700e6b700d3..25d548cb975b 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> +++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> @@ -36,34 +36,34 @@
+>  		stdout-path = &uart4;
+>  	};
+>  
+> -	led-act {
+> +	led-controller-1 {
+>  		compatible = "gpio-leds";
+>  
+> -		led-green {
+> +		led-1 {
+>  			label = "mc1:green:act";
+>  			gpios = <&gpioa 13 GPIO_ACTIVE_LOW>;
+>  			linux,default-trigger = "heartbeat";
+>  		};
+>  	};
+>  
+> -	led-rgb {
+> +	led-controller-2 {
 
-vim +/i +222 drivers/bus/mhi/core/boot.c
+Is a single RGB LED really a controller?
 
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  203  static void mhi_firmware_copy(struct mhi_controller *mhi_cntrl,
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  204  			      const struct firmware *firmware,
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  205  			      struct image_info *img_info)
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  206  {
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  207  	size_t remainder = firmware->size;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  208  	size_t to_cpy;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  209  	const u8 *buf = firmware->data;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  210  	int i = 0;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  211  	struct mhi_buf *mhi_buf = img_info->mhi_buf;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  212  	struct bhi_vec_entry *bhi_vec = img_info->bhi_vec;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  213  
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  214  	while (remainder) {
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  215  		to_cpy = min(remainder, mhi_buf->len);
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  216  		memcpy(mhi_buf->buf, buf, to_cpy);
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  217  		bhi_vec->dma_addr = mhi_buf->dma_addr;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  218  		bhi_vec->size = to_cpy;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  219  
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  220  		buf += to_cpy;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  221  		remainder -= to_cpy;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20 @222  		i++;
-                                                                ^^^^
-Delete i.
+>  		compatible = "pwm-leds";
+>  
+> -		led-red {
+> +		led-2 {
 
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  223  		bhi_vec++;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  224  		mhi_buf++;
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  225  	}
-cd457afb166705 Manivannan Sadhasivam 2020-02-20  226  }
+Shouldn't this have been led-1 as well or is the numbering "global" ?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+>  			label = "mc1:red:rgb";
+>  			pwms = <&leds_pwm 1 1000000 0>;
+>  			max-brightness = <255>;
+>  			active-low;
+>  		};
+>  
+> -		led-green {
+> +		led-3 {
+>  			label = "mc1:green:rgb";
+>  			pwms = <&leds_pwm 2 1000000 0>;
+>  			max-brightness = <255>;
+>  			active-low;
+>  		};
+>  
+> -		led-blue {
+> +		led-4 {
+>  			label = "mc1:blue:rgb";
+>  			pwms = <&leds_pwm 3 1000000 0>;
+>  			max-brightness = <255>;
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
