@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C7E29C237
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418BB29C403
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820147AbgJ0RdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:33:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40364 "EHLO mail.kernel.org"
+        id S2895590AbgJ0OXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:23:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1749389AbgJ0Ok7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:40:59 -0400
+        id S1758745AbgJ0OXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:23:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1064020773;
-        Tue, 27 Oct 2020 14:40:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC6512072D;
+        Tue, 27 Oct 2020 14:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603809659;
-        bh=PwNsTTg+LtHgt4tgNS1aq3jdFXUUQKhY/MbYzvfhcUU=;
+        s=default; t=1603808600;
+        bh=QAW/jlNSRCVvcA1WLXud2dlUkPshFx36zNfbC/i2nLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CG2jV7SpHwQmsNrVGcz7OhrzHKriGUSaLjW4/wva6+xLHdoOi6vVjstgQKoF8v96m
-         lqQqHRhGGgDhpWnhCqL5AFcD4EQKpPZh/cbawk4FP5Rv493VmjNGTYAYI/osF1wF5d
-         W0D2b3Jb9U1S5NTblV9z6afUdFFmUXn1r3dOVenA=
+        b=h172PI0H2+G8W6VwMOeXeH9a3UFWiq33mn3mmFYB5r+fuSUpZg5fz2rnIDcgrn/JS
+         QIWCaUH60OsgoOwYoWCxFM2qYU+hBrD+YKP3T9rA6lINCOtFmxBhKMqNVp987cWc8s
+         0YFhw7OtkV4opWVkL378J/nbFq6ZvX/xk4b1Bb/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Weihang Li <liweihang@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 274/408] clk: bcm2835: add missing release if devm_clk_hw_register fails
+Subject: [PATCH 4.19 154/264] RDMA/hns: Fix missing sq_sig_type when querying QP
 Date:   Tue, 27 Oct 2020 14:53:32 +0100
-Message-Id: <20201027135507.760123034@linuxfoundation.org>
+Message-Id: <20201027135437.910438843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135455.027547757@linuxfoundation.org>
-References: <20201027135455.027547757@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+References: <20201027135430.632029009@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Weihang Li <liweihang@huawei.com>
 
-[ Upstream commit f6c992ca7dd4f49042eec61f3fb426c94d901675 ]
+[ Upstream commit 05df49279f8926178ecb3ce88e61b63104cd6293 ]
 
-In the implementation of bcm2835_register_pll(), the allocated pll is
-leaked if devm_clk_hw_register() fails to register hw. Release pll if
-devm_clk_hw_register() fails.
+The sq_sig_type field should be filled when querying QP, or the users may
+get a wrong value.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Link: https://lore.kernel.org/r/20200809231202.15811-1-navid.emamdoost@gmail.com
-Fixes: 41691b8862e2 ("clk: bcm2835: Add support for programming the audio domain clocks")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
+Link: https://lore.kernel.org/r/1600509802-44382-9-git-send-email-liweihang@huawei.com
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/bcm/clk-bcm2835.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
-index 45420b514149f..c5486537b9284 100644
---- a/drivers/clk/bcm/clk-bcm2835.c
-+++ b/drivers/clk/bcm/clk-bcm2835.c
-@@ -1336,8 +1336,10 @@ static struct clk_hw *bcm2835_register_pll(struct bcm2835_cprman *cprman,
- 	pll->hw.init = &init;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 417de7ac0d5e2..2a203e08d4c1a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -3821,6 +3821,7 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 	}
  
- 	ret = devm_clk_hw_register(cprman->dev, &pll->hw);
--	if (ret)
-+	if (ret) {
-+		kfree(pll);
- 		return NULL;
-+	}
- 	return &pll->hw;
- }
+ 	qp_init_attr->cap = qp_attr->cap;
++	qp_init_attr->sq_sig_type = hr_qp->sq_signal_bits;
  
+ out:
+ 	mutex_unlock(&hr_qp->mutex);
 -- 
 2.25.1
 
