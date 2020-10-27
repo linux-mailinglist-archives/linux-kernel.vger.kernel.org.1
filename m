@@ -2,1010 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213E029A32A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A091729A317
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504814AbgJ0DT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 23:19:56 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18930 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504585AbgJ0DTd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 23:19:33 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9791cb0000>; Mon, 26 Oct 2020 20:19:39 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 27 Oct
- 2020 03:19:31 +0000
-Received: from skomatineni-linux.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 27 Oct 2020 03:19:31 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <hverkuil@xs4all.nl>
-CC:     <mchehab@kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 10/10] media: tegra-video: Add support for x8 captures with gang ports
-Date:   Mon, 26 Oct 2020 20:19:23 -0700
-Message-ID: <1603768763-25590-11-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603768763-25590-1-git-send-email-skomatineni@nvidia.com>
-References: <1603768763-25590-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        id S2504529AbgJ0DSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:18:02 -0400
+Received: from mail-bn7nam10on2084.outbound.protection.outlook.com ([40.107.92.84]:51585
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2444375AbgJ0DSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 23:18:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UEti5++YvxSyVLWkr3oSe2XEhjWjKQuo+xf53hD31RHxSvmtR+pomnbn2/oz0AgCbuT258E0b0REdDXvEMhvZfLe6oWEF8EE1Pmogcm834hJb7G09Ih8aiNHfr5Tem4/UjL1qMpfC37wQUTrgMIvrTGqSQ+EXui2E1Mp68VGTOzbo7PFzt5e3I4gmCKLrV77+yaSxAPPpxOpya5ElEKiPC5M0BbSQsN9cIc4dghVZvEhtLmfJM22oqU+z3K2ylenHxKhfV6uTAovxEZiRttgdptwyStuTslWyip5+nDh1T6NSF2gxVLcw4vyxXWq3XD57P2gJS++kKHrIMjl78dG2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J6Z8PaWzNk9hjjC7gD+m4VjbbUD4RZxtbO3BG+jpL2o=;
+ b=U9+zR4/VhoFqriq7jhs+r5HxmzsYjC5/YZ5ifxMOB5XKBrM/EeNxmtdNwbjrqOSTJygPfqCTJtIYAXCPL6RfdHo51a/RqwUAgxUC8UZtlDHHNG8n/1tANp1WjQWo4yrzj6mgqNHAuRwxhmbvY8/tYhE/6tv4rj6nuWWdv9fMM2+qVvABUdf0LFuhUrjbNfIiXEG+j7NIINJ/rrdJpzNlBXW9Sj4VP+2wUfXLMEXpl+2NcE+dFqr/EOpfRofnLnYWyoS/TqlIfLlpIp26n7SijVAveRS0AwjgO5h0OlYRa6dPro6UkRG4ynGTcxGpzLi1nrxKSqOZaBZcudr3+dIUYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J6Z8PaWzNk9hjjC7gD+m4VjbbUD4RZxtbO3BG+jpL2o=;
+ b=ssfzIAjhhTypD4Q5cslB7CByUu5/F09fuXm64bDgg0zVUXhnAtFLUR+A7x0kimzQlAVeRwrUGE97/z9qhBZ5fejSSe7gW6BedVFaxp2r8dSac8mxRbwTuOoHq+Gu5ibHvdcuU/xumJ4PGfKhBqcj5rIZxAj3EX4gmV/Y/2EAeuw=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN1PR12MB2511.namprd12.prod.outlook.com (2603:10b6:802:23::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24; Tue, 27 Oct
+ 2020 03:17:57 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::4888:5f3e:dbbc:c838]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::4888:5f3e:dbbc:c838%6]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
+ 03:17:56 +0000
+Cc:     brijesh.singh@amd.com, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        eric van tassell <Eric.VanTassell@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [RFC PATCH 0/8] KVM: x86/mmu: Introduce pinned SPTEs framework
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20200731212323.21746-1-sean.j.christopherson@intel.com>
+ <3bf90589-8404-8bd6-925c-427f72528fc2@amd.com>
+ <20200803171620.GC3151@linux.intel.com>
+ <16ef9998-84a9-1db4-d9a3-a0cab055a8a2@amd.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <a1ecadce-531f-3698-7962-cbca6a1ebaf3@amd.com>
+Date:   Mon, 26 Oct 2020 22:22:24 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
+In-Reply-To: <16ef9998-84a9-1db4-d9a3-a0cab055a8a2@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SN4PR0801CA0014.namprd08.prod.outlook.com
+ (2603:10b6:803:29::24) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603768779; bh=h/mVfHw5pkkHAqpAzS0xJifsCukHVrv0H/ojnwO4sIw=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=Wckd2W7QPkLbcnRzJTjUQebgKay+XlmoMZb37nIe/Mn+wV2D/cjyJfyosN8VDkwXM
-         JadwLRHkyQ4iRXTfvpw5mCVDtVNn74YX7Pl1Qm7lSEXrYBRlqazxYv3sDqR2vtMFbd
-         Poltsjwm7RZbk8BOk8RT51YSq4sTrzHlv3CDtn5mHCvVn4qk4B8BSzpRPqwc1KmwKb
-         WKtwZS8Asbpd7Tk1GMp1cIYDppQE4Nsm1E8/DOm2D9dQsPWMkIbjwJz1RYWMGFr0oZ
-         5dJKVFWylVoQ2hIOAuHfQXj3d/TZxk7h56jpJm719poenA0aa3IPD/ZxR4NUArBGAy
-         yGxFiRAMX5oSQ==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0801CA0014.namprd08.prod.outlook.com (2603:10b6:803:29::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.23 via Frontend Transport; Tue, 27 Oct 2020 03:17:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c0c7825a-d145-45d7-dfe2-08d87a26e66e
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2511:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB251191138C84AF828F7ECED1E5160@SN1PR12MB2511.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tV4up3aItaRVMNYJBxAaCl4uLHTpgmRN1NeVvm+lagK0dBlRRmoWe63Wp6LCfgxf/l/UmkWOcJ3r6lymIkaGoqO6FjOKQr6W6dyJcmvqkSFIEdSUazib3YACdl2FZ+mKxJ29hvadVqwBHTImRTjgwLo1mTwOEM6ZYDnwJ79pX9i1Q6AyqQFqJcOwskCnPqaY2zgVkip00Lx8gpJJ6HTnhaspCeI/IbGIOrHjhPrH2XsmfjiVkIMCPcKdw1/xM2o+sbsViS/N+oZ/kYbLdZrH1+9HcgivT+xYJPQG20+JkNQIUZ9OylDPremMhFmVJkk4N0XN0JfqH7uNZGntesBzaa++fhDt1fMR3WBGNz0qYO23izSm/Jh6Xx6hI70DNf+3VlRDbd8zT86lrRk+RifiKNNl4V9uQQDmT+jQPLMb/DxdH4cZ2a5t3V4P6BFmoKHOCMZtt5CAAtluElIsot2e+g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(956004)(316002)(66946007)(2906002)(36756003)(54906003)(66476007)(5660300002)(66556008)(31686004)(6486002)(16526019)(6666004)(2616005)(8936002)(86362001)(83380400001)(45080400002)(478600001)(4326008)(6512007)(53546011)(966005)(6506007)(31696002)(8676002)(186003)(52116002)(44832011)(26005)(6916009)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: yY3HTAaId750NLHjK9jDdGC7Ulc9hAcgkE+KicBfBGJzqgZXatnZBxC8PwNJp+M9SYnMiHeO+Z61gQMp41ewVO07EsJnAkE7QoL4ky0xS7zYXHaH+dgOYorj10jZg39EGZD/Xejez0O2zVHYUdjG0xU7SREIBmYnQQDfmGUDz8Cpxk696bUtZsixLtOyfDTAr/h7/mnMka3aFlVu07hmjw9nEsFpN6NjjRyytwHKrzGz7oSQX4fURtop3ws8AZ3Ub19VrOnZaiCkxa3nXXuLdXRKzov/ZuQh/x620LmWSeZT2FOBBHAc4duS5+moCS14Rfn5nh8hVzzi1hhvVb4XmS5abQumNLqT6yXOXqmyR3QhlfVrOTMcdTX8N+svnp7xQiaIxa9Ee+PLz9d7g4AlZWtN8KbknihJP3Lnf8tc6Zdcngv46Bo/Nzes6j7IWbCmdnd8+hFW2Jrv7Ugs9YXqJ3OmNajHsIzHD0IohR9IBrKAUfOTtNeWKheQ9qXOzCqeB9rowLpAlAe9oxboQ0OyO//Z1qdvGx6riM4ms2J0D4JtiGClaYou7AMymqOb/bMhT5btNfAkdW2EO1K9+HazxBpivDztP6MYP/n3EfTrufIYjpsZBeFOtY8M6OivoqaXcZeauGo0POgXkeM/MihmJw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0c7825a-d145-45d7-dfe2-08d87a26e66e
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2020 03:17:56.7766
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L2UcoWbSticrLZyHC6Kw9mnviqffXFP4Ev+TnqNaFuQNVDjh92a768d5QxPhbvAmUMWG3EKhw3bRgF2ifRBwkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2511
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra VI/CSI hardware don't have native 8 lane capture support.
+Hi Sean,
 
-Each CSI port has max 4 lanes only. So for x8 captures, consecutive
-ports are ganged up for left half and right half captures on to each
-x4 ports with buffer offsets based on source image split width to align
-side-by-side.
+On 8/4/20 2:40 PM, Brijesh Singh wrote:
+> On 8/3/20 12:16 PM, Sean Christopherson wrote:
+>> On Mon, Aug 03, 2020 at 10:52:05AM -0500, Brijesh Singh wrote:
+>>> Thanks for series Sean. Some thoughts
+>>>
+>>>
+>>> On 7/31/20 4:23 PM, Sean Christopherson wrote:
+>>>> SEV currently needs to pin guest memory as it doesn't support migrating
+>>>> encrypted pages.  Introduce a framework in KVM's MMU to support pinning
+>>>> pages on demand without requiring additional memory allocations, and with
+>>>> (somewhat hazy) line of sight toward supporting more advanced features for
+>>>> encrypted guest memory, e.g. host page migration.
+>>> Eric's attempt to do a lazy pinning suffers with the memory allocation
+>>> problem and your series seems to address it. As you have noticed,
+>>> currently the SEV enablement  in the KVM does not support migrating the
+>>> encrypted pages. But the recent SEV firmware provides a support to
+>>> migrate the encrypted pages (e.g host page migration). The support is
+>>> available in SEV FW >= 0.17.
+>> I assume SEV also doesn't support ballooning?  Ballooning would be a good
+>> first step toward page migration as I think it'd be easier for KVM to
+>> support, e.g. only needs to deal with the "zap" and not the "move".
+>
+> Yes, the ballooning does not work with the SEV.
+>
+>
+>>>> The idea is to use a software available bit in the SPTE to track that a
+>>>> page has been pinned.  The decision to pin a page and the actual pinning
+>>>> managment is handled by vendor code via kvm_x86_ops hooks.  There are
+>>>> intentionally two hooks (zap and unzap) introduced that are not needed for
+>>>> SEV.  I included them to again show how the flag (probably renamed?) could
+>>>> be used for more than just pin/unpin.
+>>> If using the available software bits for the tracking the pinning is
+>>> acceptable then it can be used for the non-SEV guests (if needed). I
+>>> will look through your patch more carefully but one immediate question,
+>>> when do we unpin the pages? In the case of the SEV, once a page is
+>>> pinned then it should not be unpinned until the guest terminates. If we
+>>> unpin the page before the VM terminates then there is a  chance the host
+>>> page migration will kick-in and move the pages. The KVM MMU code may
+>>> call to drop the spte's during the zap/unzap and this happens a lot
+>>> during a guest execution and it will lead us to the path where a vendor
+>>> specific code will unpin the pages during the guest execution and cause
+>>> a data corruption for the SEV guest.
+>> The pages are unpinned by:
+>>
+>>   drop_spte()
+>>   |
+>>   -> rmap_remove()
+>>      |
+>>      -> sev_drop_pinned_spte()
+>>
+>>
+>> The intent is to allow unpinning pages when the mm_struct dies, i.e. when
+>> the memory is no longer reachable (as opposed to when the last reference to
+>> KVM is put), but typing that out, I realize there are dependencies and
+>> assumptions that don't hold true for SEV as implemented.
+>
+> So, I tried this RFC with the SEV guest (of course after adding some of
+> the stuff you highlighted below), the guest fails randomly. I have seen
+> a two to three type of failures 1) boot 2) kernbench execution and 3)
+> device addition/removal, the failure signature is not consistent. I
+> believe after addressing some of the dependencies we may able to make
+> some progress but it will add new restriction which did not existed before.
+>
+>>   - Parent shadow pages won't be zapped.  Recycling MMU pages and zapping
+>>     all SPs due to memslot updates are the two concerns.
+>>
+>>     The easy way out for recycling is to not recycle SPs with pinned
+>>     children, though that may or may not fly with VMM admins.
+>>
+>>     I'm trying to resolve the memslot issue[*], but confirming that there's
+>>     no longer an issue with not zapping everything is proving difficult as
+>>     we haven't yet reproduced the original bug.
+>>
+>>   - drop_large_spte() won't be invoked.  I believe the only semi-legitimate
+>>     scenario is if the NX huge page workaround is toggled on while a VM is
+>>     running.  Disallowing that if there is an SEV guest seems reasonable?
+>>
+>>     There might be an issue with the host page size changing, but I don't
+>>     think that can happen if the page is pinned.  That needs more
+>>     investigation.
+>>
+>>
+>> [*] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.kernel.org%2Fr%2F20200703025047.13987-1-sean.j.christopherson%40intel.com&amp;data=02%7C01%7Cbrijesh.singh%40amd.com%7C8d0dd94297ff4d24e54108d837d0f1dc%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637320717832773086&amp;sdata=yAHvMptxstoczXBZkFCpNC4AbADOJOgluwAtIYCuNVo%3D&amp;reserved=0
 
-All ports in gang are configured together during the corresponding
-video device node streaming for x8 captures.
 
-x8 capture with gang ports are supported with HDMI-to-CSI bridges
-where they split 4K image into left half onto one x4 port and
-right half onto second x4 port.
+We would like to pin the guest memory on #NPF to reduce the boot delay
+for the SEV guest. Are you planning to proceed with this RFC? With the
+some fixes, I am able to get the RFC working for the SEV guest. I can
+share those fixes with you so that you can include them on next
+revision. One of the main roadblock I see is that the proposed framework
+has a dependency on the memslot patch you mentioned above. Without the
+memslot patch we will end up dropping (aka unpinning) spte during
+memslot updates which is not acceptable for the SEV guest. I don't see
+any resolution on the memslot patch yet. Any updates are appreciated. I
+understand that getting memslot issue resolved may be difficult, so I am
+wondering if in the meantime we should proceed with the xarray approach
+to track the pinned pages and release them on VM termination.
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/staging/media/tegra-video/csi.c      |  47 ++++-
- drivers/staging/media/tegra-video/csi.h      |  14 +-
- drivers/staging/media/tegra-video/tegra210.c | 304 ++++++++++++++++++---------
- drivers/staging/media/tegra-video/vi.c       | 117 ++++++++---
- drivers/staging/media/tegra-video/vi.h       |  17 +-
- 5 files changed, 347 insertions(+), 152 deletions(-)
 
-diff --git a/drivers/staging/media/tegra-video/csi.c b/drivers/staging/media/tegra-video/csi.c
-index a19c85c..a6c54f8 100644
---- a/drivers/staging/media/tegra-video/csi.c
-+++ b/drivers/staging/media/tegra-video/csi.c
-@@ -253,13 +253,14 @@ static unsigned int csi_get_pixel_rate(struct tegra_csi_channel *csi_chan)
- }
- 
- void tegra_csi_calc_settle_time(struct tegra_csi_channel *csi_chan,
-+				u8 csi_port_num,
- 				u8 *clk_settle_time,
- 				u8 *ths_settle_time)
- {
- 	struct tegra_csi *csi = csi_chan->csi;
- 	unsigned int cil_clk_mhz;
- 	unsigned int pix_clk_mhz;
--	int clk_idx = (csi_chan->csi_port_num >> 1) + 1;
-+	int clk_idx = (csi_port_num >> 1) + 1;
- 
- 	cil_clk_mhz = clk_get_rate(csi->clks[clk_idx].clk) / MHZ;
- 	pix_clk_mhz = csi_get_pixel_rate(csi_chan) / MHZ;
-@@ -410,7 +411,7 @@ static int tegra_csi_channel_alloc(struct tegra_csi *csi,
- 				   unsigned int num_pads)
- {
- 	struct tegra_csi_channel *chan;
--	int ret = 0;
-+	int ret = 0, i;
- 
- 	chan = kzalloc(sizeof(*chan), GFP_KERNEL);
- 	if (!chan)
-@@ -418,8 +419,21 @@ static int tegra_csi_channel_alloc(struct tegra_csi *csi,
- 
- 	list_add_tail(&chan->list, &csi->csi_chans);
- 	chan->csi = csi;
--	chan->csi_port_num = port_num;
--	chan->numlanes = lanes;
-+	/*
-+	 * Each CSI brick has maximum of 4 lanes.
-+	 * For lanes more than 4, use multiple of immediate CSI bricks as gang.
-+	 */
-+	if (lanes <= CSI_LANES_PER_BRICK) {
-+		chan->numlanes = lanes;
-+		chan->numgangports = 1;
-+	} else {
-+		chan->numlanes = CSI_LANES_PER_BRICK;
-+		chan->numgangports = lanes / CSI_LANES_PER_BRICK;
-+	}
-+
-+	for (i = 0; i < chan->numgangports; i++)
-+		chan->csi_port_nums[i] = port_num + i * CSI_PORTS_PER_BRICK;
-+
- 	chan->of_node = node;
- 	chan->numpads = num_pads;
- 	if (num_pads & 0x2) {
-@@ -461,9 +475,6 @@ static int tegra_csi_tpg_channels_alloc(struct tegra_csi *csi)
- static int tegra_csi_channels_alloc(struct tegra_csi *csi)
- {
- 	struct device_node *node = csi->dev->of_node;
--	struct v4l2_fwnode_endpoint v4l2_ep = {
--		.bus_type = V4L2_MBUS_CSI2_DPHY
--	};
- 	struct fwnode_handle *fwh;
- 	struct device_node *channel;
- 	struct device_node *ep;
-@@ -471,6 +482,8 @@ static int tegra_csi_channels_alloc(struct tegra_csi *csi)
- 	int ret;
- 
- 	for_each_child_of_node(node, channel) {
-+		struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
-+
- 		if (!of_node_name_eq(channel, "channel"))
- 			continue;
- 
-@@ -499,8 +512,20 @@ static int tegra_csi_channels_alloc(struct tegra_csi *csi)
- 			goto err_node_put;
- 		}
- 
--		lanes = v4l2_ep.bus.mipi_csi2.num_data_lanes;
--		if (!lanes || ((lanes & (lanes - 1)) != 0)) {
-+		if (v4l2_ep.bus_type == V4L2_MBUS_PARALLEL)
-+			lanes = v4l2_ep.bus.parallel.bus_width;
-+		else
-+			lanes = v4l2_ep.bus.mipi_csi2.num_data_lanes;
-+
-+		/*
-+		 * Each CSI brick has maximum 4 data lanes.
-+		 * For lanes more than 4, validate lanes to be multiple of 4
-+		 * so multiple of consecutive CSI bricks can be ganged up for
-+		 * streaming.
-+		 */
-+		if (!lanes || ((lanes & (lanes - 1)) != 0) ||
-+		    (lanes > CSI_LANES_PER_BRICK && (((lanes & 3) != 0) ||
-+		    ((portno & 1) != 0)))) {
- 			dev_err(csi->dev, "invalid data-lanes %d for %pOF\n",
- 				lanes, channel);
- 			ret = -EINVAL;
-@@ -544,7 +569,7 @@ static int tegra_csi_channel_init(struct tegra_csi_channel *chan)
- 	subdev->dev = csi->dev;
- 	if (IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG))
- 		snprintf(subdev->name, V4L2_SUBDEV_NAME_SIZE, "%s-%d", "tpg",
--			 chan->csi_port_num);
-+			 chan->csi_port_nums[0]);
- 	else
- 		snprintf(subdev->name, V4L2_SUBDEV_NAME_SIZE, "%s",
- 			 kbasename(chan->of_node->full_name));
-@@ -596,7 +621,7 @@ static int tegra_csi_channels_init(struct tegra_csi *csi)
- 		if (ret) {
- 			dev_err(csi->dev,
- 				"failed to initialize channel-%d: %d\n",
--				chan->csi_port_num, ret);
-+				chan->csi_port_nums[0], ret);
- 			return ret;
- 		}
- 	}
-diff --git a/drivers/staging/media/tegra-video/csi.h b/drivers/staging/media/tegra-video/csi.h
-index c65ff73..386f7c6 100644
---- a/drivers/staging/media/tegra-video/csi.h
-+++ b/drivers/staging/media/tegra-video/csi.h
-@@ -17,6 +17,10 @@
-  * CILB.
-  */
- #define CSI_PORTS_PER_BRICK	2
-+#define CSI_LANES_PER_BRICK	4
-+
-+/* Maximum 2 CSI x4 ports can be ganged up for streaming */
-+#define GANG_PORTS_MAX	2
- 
- /* each CSI channel can have one sink and one source pads */
- #define TEGRA_CSI_PADS_NUM	2
-@@ -43,8 +47,10 @@ struct tegra_csi;
-  * @numpads: number of pads.
-  * @csi: Tegra CSI device structure
-  * @of_node: csi device tree node
-- * @numlanes: number of lanes used per port/channel
-- * @csi_port_num: CSI channel port number
-+ * @numgangports: number of immediate ports ganged up to meet the
-+ *             channel bus-width
-+ * @numlanes: number of lanes used per port
-+ * @csi_port_nums: CSI channel port numbers
-  * @pg_mode: test pattern generator mode for channel
-  * @format: active format of the channel
-  * @framerate: active framerate for TPG
-@@ -60,8 +66,9 @@ struct tegra_csi_channel {
- 	unsigned int numpads;
- 	struct tegra_csi *csi;
- 	struct device_node *of_node;
-+	u8 numgangports;
- 	unsigned int numlanes;
--	u8 csi_port_num;
-+	u8 csi_port_nums[GANG_PORTS_MAX];
- 	u8 pg_mode;
- 	struct v4l2_mbus_framefmt format;
- 	unsigned int framerate;
-@@ -150,6 +157,7 @@ extern const struct tegra_csi_soc tegra210_csi_soc;
- 
- void tegra_csi_error_recover(struct v4l2_subdev *subdev);
- void tegra_csi_calc_settle_time(struct tegra_csi_channel *csi_chan,
-+				u8 csi_port_num,
- 				u8 *clk_settle_time,
- 				u8 *ths_settle_time);
- #endif
-diff --git a/drivers/staging/media/tegra-video/tegra210.c b/drivers/staging/media/tegra-video/tegra210.c
-index 929d277..aff56fc 100644
---- a/drivers/staging/media/tegra-video/tegra210.c
-+++ b/drivers/staging/media/tegra-video/tegra210.c
-@@ -149,21 +149,22 @@ static u32 tegra_vi_read(struct tegra_vi_channel *chan, unsigned int addr)
- }
- 
- /* Tegra210 VI_CSI registers accessors */
--static void vi_csi_write(struct tegra_vi_channel *chan, unsigned int addr,
--			 u32 val)
-+static void vi_csi_write(struct tegra_vi_channel *chan, u8 portno,
-+			 unsigned int addr, u32 val)
- {
- 	void __iomem *vi_csi_base;
- 
--	vi_csi_base = chan->vi->iomem + TEGRA210_VI_CSI_BASE(chan->portno);
-+	vi_csi_base = chan->vi->iomem + TEGRA210_VI_CSI_BASE(portno);
- 
- 	writel_relaxed(val, vi_csi_base + addr);
- }
- 
--static u32 vi_csi_read(struct tegra_vi_channel *chan, unsigned int addr)
-+static u32 vi_csi_read(struct tegra_vi_channel *chan, u8 portno,
-+		       unsigned int addr)
- {
- 	void __iomem *vi_csi_base;
- 
--	vi_csi_base = chan->vi->iomem + TEGRA210_VI_CSI_BASE(chan->portno);
-+	vi_csi_base = chan->vi->iomem + TEGRA210_VI_CSI_BASE(portno);
- 
- 	return readl_relaxed(vi_csi_base + addr);
- }
-@@ -171,7 +172,8 @@ static u32 vi_csi_read(struct tegra_vi_channel *chan, unsigned int addr)
- /*
-  * Tegra210 VI channel capture operations
-  */
--static int tegra_channel_capture_setup(struct tegra_vi_channel *chan)
-+static int tegra_channel_capture_setup(struct tegra_vi_channel *chan,
-+				       u8 portno)
- {
- 	u32 height = chan->format.height;
- 	u32 width = chan->format.width;
-@@ -192,19 +194,30 @@ static int tegra_channel_capture_setup(struct tegra_vi_channel *chan)
- 	    data_type == TEGRA_IMAGE_DT_RGB888)
- 		bypass_pixel_transform = 0;
- 
--	vi_csi_write(chan, TEGRA_VI_CSI_ERROR_STATUS, 0xffffffff);
--	vi_csi_write(chan, TEGRA_VI_CSI_IMAGE_DEF,
-+	/*
-+	 * For x8 source streaming, the source image is split onto two x4 ports
-+	 * with left half to first x4 port and right half to second x4 port.
-+	 * So, use split width and corresponding word count for each x4 port.
-+	 */
-+	if (chan->numgangports > 1) {
-+		width = width >> 1;
-+		word_count = (width * chan->fmtinfo->bit_width) / 8;
-+	}
-+
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_ERROR_STATUS, 0xffffffff);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_IMAGE_DEF,
- 		     bypass_pixel_transform |
- 		     (format << IMAGE_DEF_FORMAT_OFFSET) |
- 		     IMAGE_DEF_DEST_MEM);
--	vi_csi_write(chan, TEGRA_VI_CSI_IMAGE_DT, data_type);
--	vi_csi_write(chan, TEGRA_VI_CSI_IMAGE_SIZE_WC, word_count);
--	vi_csi_write(chan, TEGRA_VI_CSI_IMAGE_SIZE,
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_IMAGE_DT, data_type);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_IMAGE_SIZE_WC, word_count);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_IMAGE_SIZE,
- 		     (height << IMAGE_SIZE_HEIGHT_OFFSET) | width);
- 	return 0;
- }
- 
--static void tegra_channel_vi_soft_reset(struct tegra_vi_channel *chan)
-+static void tegra_channel_vi_soft_reset(struct tegra_vi_channel *chan,
-+					u8 portno)
- {
- 	/* disable clock gating to enable continuous clock */
- 	tegra_vi_write(chan, TEGRA_VI_CFG_CG_CTRL, 0);
-@@ -212,15 +225,16 @@ static void tegra_channel_vi_soft_reset(struct tegra_vi_channel *chan)
- 	 * Soft reset memory client interface, pixel format logic, sensor
- 	 * control logic, and a shadow copy logic to bring VI to clean state.
- 	 */
--	vi_csi_write(chan, TEGRA_VI_CSI_SW_RESET, 0xf);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SW_RESET, 0xf);
- 	usleep_range(100, 200);
--	vi_csi_write(chan, TEGRA_VI_CSI_SW_RESET, 0x0);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SW_RESET, 0x0);
- 
- 	/* enable back VI clock gating */
- 	tegra_vi_write(chan, TEGRA_VI_CFG_CG_CTRL, VI_CG_2ND_LEVEL_EN);
- }
- 
--static void tegra_channel_capture_error_recover(struct tegra_vi_channel *chan)
-+static void tegra_channel_capture_error_recover(struct tegra_vi_channel *chan,
-+						u8 portno)
- {
- 	struct v4l2_subdev *subdev;
- 	u32 val;
-@@ -232,9 +246,9 @@ static void tegra_channel_capture_error_recover(struct tegra_vi_channel *chan)
- 	 * events which can cause CSI and VI hardware hang.
- 	 * This helps to have a clean capture for next frame.
- 	 */
--	val = vi_csi_read(chan, TEGRA_VI_CSI_ERROR_STATUS);
-+	val = vi_csi_read(chan, portno, TEGRA_VI_CSI_ERROR_STATUS);
- 	dev_dbg(&chan->video.dev, "TEGRA_VI_CSI_ERROR_STATUS 0x%08x\n", val);
--	vi_csi_write(chan, TEGRA_VI_CSI_ERROR_STATUS, val);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_ERROR_STATUS, val);
- 
- 	val = tegra_vi_read(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT_ERROR);
- 	dev_dbg(&chan->video.dev,
-@@ -242,8 +256,8 @@ static void tegra_channel_capture_error_recover(struct tegra_vi_channel *chan)
- 	tegra_vi_write(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT_ERROR, val);
- 
- 	/* recover VI by issuing software reset and re-setup for capture */
--	tegra_channel_vi_soft_reset(chan);
--	tegra_channel_capture_setup(chan);
-+	tegra_channel_vi_soft_reset(chan, portno);
-+	tegra_channel_capture_setup(chan, portno);
- 
- 	/* recover CSI block */
- 	subdev = tegra_channel_get_remote_csi_subdev(chan);
-@@ -282,80 +296,114 @@ static void release_buffer(struct tegra_vi_channel *chan,
- 	vb2_buffer_done(&vb->vb2_buf, state);
- }
- 
--static int tegra_channel_capture_frame(struct tegra_vi_channel *chan,
--				       struct tegra_channel_buffer *buf)
-+static void tegra_channel_vi_buffer_setup(struct tegra_vi_channel *chan,
-+					  u8 portno, u32 buf_offset,
-+					  struct tegra_channel_buffer *buf)
- {
--	u32 thresh, value, frame_start, mw_ack_done;
--	int bytes_per_line = chan->format.bytesperline;
-+	int bytesperline = chan->format.bytesperline;
- 	u32 sizeimage = chan->format.sizeimage;
--	int err;
- 
- 	/* program buffer address by using surface 0 */
--	vi_csi_write(chan, TEGRA_VI_CSI_SURFACE0_OFFSET_MSB,
--		     (u64)buf->addr >> 32);
--	vi_csi_write(chan, TEGRA_VI_CSI_SURFACE0_OFFSET_LSB, buf->addr);
--	vi_csi_write(chan, TEGRA_VI_CSI_SURFACE0_STRIDE, bytes_per_line);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SURFACE0_OFFSET_MSB,
-+		     ((u64)buf->addr + buf_offset) >> 32);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SURFACE0_OFFSET_LSB,
-+		     buf->addr + buf_offset);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SURFACE0_STRIDE, bytesperline);
- 
-+	if (chan->fmtinfo->fourcc != V4L2_PIX_FMT_NV16)
-+		return;
- 	/*
- 	 * Program surface 1 for UV plane with offset sizeimage from Y plane.
- 	 */
--	if (chan->fmtinfo->fourcc == V4L2_PIX_FMT_NV16) {
--		vi_csi_write(chan, TEGRA_VI_CSI_SURFACE1_OFFSET_MSB,
--			     ((u64)buf->addr + sizeimage / 2) >> 32);
--		vi_csi_write(chan, TEGRA_VI_CSI_SURFACE1_OFFSET_LSB,
--			     buf->addr + sizeimage / 2);
--		vi_csi_write(chan, TEGRA_VI_CSI_SURFACE1_STRIDE,
--			     bytes_per_line);
--	}
--
--	/*
--	 * Tegra VI block interacts with host1x syncpt for synchronizing
--	 * programmed condition of capture state and hardware operation.
--	 * Frame start and Memory write acknowledge syncpts has their own
--	 * FIFO of depth 2.
--	 *
--	 * Syncpoint trigger conditions set through VI_INCR_SYNCPT register
--	 * are added to HW syncpt FIFO and when the HW triggers, syncpt
--	 * condition is removed from the FIFO and counter at syncpoint index
--	 * will be incremented by the hardware and software can wait for
--	 * counter to reach threshold to synchronize capturing frame with the
--	 * hardware capture events.
--	 */
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SURFACE1_OFFSET_MSB,
-+		     (((u64)buf->addr + sizeimage / 2) + buf_offset) >> 32);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SURFACE1_OFFSET_LSB,
-+		     buf->addr + sizeimage / 2 + buf_offset);
-+	vi_csi_write(chan, portno, TEGRA_VI_CSI_SURFACE1_STRIDE, bytesperline);
-+}
- 
--	/* increase channel syncpoint threshold for FRAME_START */
--	thresh = host1x_syncpt_incr_max(chan->frame_start_sp, 1);
-+static int tegra_channel_capture_frame(struct tegra_vi_channel *chan,
-+				       struct tegra_channel_buffer *buf)
-+{
-+	u32 thresh, value, frame_start, mw_ack_done;
-+	u32 fs_thresh[GANG_PORTS_MAX];
-+	u8 *portnos = chan->portnos;
-+	int gang_bpl = (chan->format.width >> 1) * chan->fmtinfo->bpp;
-+	u32 buf_offset;
-+	bool capture_timedout = false;
-+	int err, i;
-+
-+	for (i = 0; i < chan->numgangports; i++) {
-+		/*
-+		 * Align buffers side-by-side for all consecutive x4 ports
-+		 * in gang ports using bytes per line based on source split
-+		 * width.
-+		 */
-+		buf_offset = i * roundup(gang_bpl, SURFACE_ALIGN_BYTES);
-+		tegra_channel_vi_buffer_setup(chan, portnos[i], buf_offset,
-+					      buf);
- 
--	/* Program FRAME_START trigger condition syncpt request */
--	frame_start = VI_CSI_PP_FRAME_START(chan->portno);
--	value = VI_CFG_VI_INCR_SYNCPT_COND(frame_start) |
--		host1x_syncpt_id(chan->frame_start_sp);
--	tegra_vi_write(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT, value);
-+		/*
-+		 * Tegra VI block interacts with host1x syncpt to synchronize
-+		 * programmed condition and hardware operation for capture.
-+		 * Frame start and Memory write acknowledge syncpts has their
-+		 * own FIFO of depth 2.
-+		 *
-+		 * Syncpoint trigger conditions set through VI_INCR_SYNCPT
-+		 * register are added to HW syncpt FIFO and when HW triggers,
-+		 * syncpt condition is removed from the FIFO and counter at
-+		 * syncpoint index will be incremented by the hardware and
-+		 * software can wait for counter to reach threshold to
-+		 * synchronize capturing frame with hardware capture events.
-+		 */
- 
--	/* increase channel syncpoint threshold for MW_ACK_DONE */
--	buf->mw_ack_sp_thresh = host1x_syncpt_incr_max(chan->mw_ack_sp, 1);
-+		/* increase channel syncpoint threshold for FRAME_START */
-+		thresh = host1x_syncpt_incr_max(chan->frame_start_sp[i], 1);
-+		fs_thresh[i] = thresh;
-+
-+		/* Program FRAME_START trigger condition syncpt request */
-+		frame_start = VI_CSI_PP_FRAME_START(portnos[i]);
-+		value = VI_CFG_VI_INCR_SYNCPT_COND(frame_start) |
-+			host1x_syncpt_id(chan->frame_start_sp[i]);
-+		tegra_vi_write(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT, value);
-+
-+		/* increase channel syncpoint threshold for MW_ACK_DONE */
-+		thresh = host1x_syncpt_incr_max(chan->mw_ack_sp[i], 1);
-+		buf->mw_ack_sp_thresh[i] = thresh;
-+
-+		/* Program MW_ACK_DONE trigger condition syncpt request */
-+		mw_ack_done = VI_CSI_MW_ACK_DONE(portnos[i]);
-+		value = VI_CFG_VI_INCR_SYNCPT_COND(mw_ack_done) |
-+			host1x_syncpt_id(chan->mw_ack_sp[i]);
-+		tegra_vi_write(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT, value);
-+	}
- 
--	/* Program MW_ACK_DONE trigger condition syncpt request */
--	mw_ack_done = VI_CSI_MW_ACK_DONE(chan->portno);
--	value = VI_CFG_VI_INCR_SYNCPT_COND(mw_ack_done) |
--		host1x_syncpt_id(chan->mw_ack_sp);
--	tegra_vi_write(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT, value);
-+	/* enable single shot capture after all ganged ports are ready */
-+	for (i = 0; i < chan->numgangports; i++)
-+		vi_csi_write(chan, portnos[i], TEGRA_VI_CSI_SINGLE_SHOT,
-+			     SINGLE_SHOT_CAPTURE);
- 
--	/* enable single shot capture */
--	vi_csi_write(chan, TEGRA_VI_CSI_SINGLE_SHOT, SINGLE_SHOT_CAPTURE);
-+	for (i = 0; i < chan->numgangports; i++) {
-+		/*
-+		 * Wait for syncpt counter to reach frame start event threshold
-+		 */
-+		err = host1x_syncpt_wait(chan->frame_start_sp[i], fs_thresh[i],
-+					 TEGRA_VI_SYNCPT_WAIT_TIMEOUT, &value);
-+		if (err) {
-+			capture_timedout = true;
-+			/* increment syncpoint counter for timedout events */
-+			host1x_syncpt_incr(chan->frame_start_sp[i]);
-+			spin_lock(&chan->sp_incr_lock[i]);
-+			host1x_syncpt_incr(chan->mw_ack_sp[i]);
-+			spin_unlock(&chan->sp_incr_lock[i]);
-+			/* clear errors and recover */
-+			tegra_channel_capture_error_recover(chan, portnos[i]);
-+		}
-+	}
- 
--	/* wait for syncpt counter to reach frame start event threshold */
--	err = host1x_syncpt_wait(chan->frame_start_sp, thresh,
--				 TEGRA_VI_SYNCPT_WAIT_TIMEOUT, &value);
--	if (err) {
-+	if (capture_timedout) {
- 		dev_err_ratelimited(&chan->video.dev,
- 				    "frame start syncpt timeout: %d\n", err);
--		/* increment syncpoint counter for timedout events */
--		host1x_syncpt_incr(chan->frame_start_sp);
--		spin_lock(&chan->sp_incr_lock);
--		host1x_syncpt_incr(chan->mw_ack_sp);
--		spin_unlock(&chan->sp_incr_lock);
--		/* clear errors and recover */
--		tegra_channel_capture_error_recover(chan);
- 		release_buffer(chan, buf, VB2_BUF_STATE_ERROR);
- 		return err;
- 	}
-@@ -376,21 +424,29 @@ static void tegra_channel_capture_done(struct tegra_vi_channel *chan,
- {
- 	enum vb2_buffer_state state = VB2_BUF_STATE_DONE;
- 	u32 value;
--	int ret;
-+	bool capture_timedout = false;
-+	int ret, i;
- 
--	/* wait for syncpt counter to reach MW_ACK_DONE event threshold */
--	ret = host1x_syncpt_wait(chan->mw_ack_sp, buf->mw_ack_sp_thresh,
--				 TEGRA_VI_SYNCPT_WAIT_TIMEOUT, &value);
--	if (ret) {
--		dev_err_ratelimited(&chan->video.dev,
--				    "MW_ACK_DONE syncpt timeout: %d\n", ret);
--		state = VB2_BUF_STATE_ERROR;
--		/* increment syncpoint counter for timedout event */
--		spin_lock(&chan->sp_incr_lock);
--		host1x_syncpt_incr(chan->mw_ack_sp);
--		spin_unlock(&chan->sp_incr_lock);
-+	for (i = 0; i < chan->numgangports; i++) {
-+		/*
-+		 * Wait for syncpt counter to reach MW_ACK_DONE event threshold
-+		 */
-+		ret = host1x_syncpt_wait(chan->mw_ack_sp[i],
-+					 buf->mw_ack_sp_thresh[i],
-+					 TEGRA_VI_SYNCPT_WAIT_TIMEOUT, &value);
-+		if (ret) {
-+			capture_timedout = true;
-+			state = VB2_BUF_STATE_ERROR;
-+			/* increment syncpoint counter for timedout event */
-+			spin_lock(&chan->sp_incr_lock[i]);
-+			host1x_syncpt_incr(chan->mw_ack_sp[i]);
-+			spin_unlock(&chan->sp_incr_lock[i]);
-+		}
- 	}
- 
-+	if (capture_timedout)
-+		dev_err_ratelimited(&chan->video.dev,
-+				    "MW_ACK_DONE syncpt timeout: %d\n", ret);
- 	release_buffer(chan, buf, state);
- }
- 
-@@ -463,14 +519,12 @@ static int tegra210_vi_start_streaming(struct vb2_queue *vq, u32 count)
- 	struct tegra_vi_channel *chan = vb2_get_drv_priv(vq);
- 	struct media_pipeline *pipe = &chan->video.pipe;
- 	u32 val;
--	int ret;
-+	u8 *portnos = chan->portnos;
-+	int ret, i;
- 
- 	tegra_vi_write(chan, TEGRA_VI_CFG_CG_CTRL, VI_CG_2ND_LEVEL_EN);
- 
--	/* clear errors */
--	val = vi_csi_read(chan, TEGRA_VI_CSI_ERROR_STATUS);
--	vi_csi_write(chan, TEGRA_VI_CSI_ERROR_STATUS, val);
--
-+	/* clear syncpt errors */
- 	val = tegra_vi_read(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT_ERROR);
- 	tegra_vi_write(chan, TEGRA_VI_CFG_VI_INCR_SYNCPT_ERROR, val);
- 
-@@ -489,7 +543,14 @@ static int tegra210_vi_start_streaming(struct vb2_queue *vq, u32 count)
- 	if (ret < 0)
- 		goto error_pipeline_start;
- 
--	tegra_channel_capture_setup(chan);
-+	/* clear csi errors and do capture setup for all ports in gang mode */
-+	for (i = 0; i < chan->numgangports; i++) {
-+		val = vi_csi_read(chan, portnos[i], TEGRA_VI_CSI_ERROR_STATUS);
-+		vi_csi_write(chan, portnos[i], TEGRA_VI_CSI_ERROR_STATUS, val);
-+
-+		tegra_channel_capture_setup(chan, portnos[i]);
-+	}
-+
- 	ret = tegra_channel_set_stream(chan, true);
- 	if (ret < 0)
- 		goto error_set_stream;
-@@ -743,10 +804,10 @@ static void tpg_write(struct tegra_csi *csi, u8 portno, unsigned int addr,
- /*
-  * Tegra210 CSI operations
-  */
--static void tegra210_csi_error_recover(struct tegra_csi_channel *csi_chan)
-+static void tegra210_csi_port_recover(struct tegra_csi_channel *csi_chan,
-+				      u8 portno)
- {
- 	struct tegra_csi *csi = csi_chan->csi;
--	unsigned int portno = csi_chan->csi_port_num;
- 	u32 val;
- 
- 	/*
-@@ -795,16 +856,26 @@ static void tegra210_csi_error_recover(struct tegra_csi_channel *csi_chan)
- 	}
- }
- 
--static int tegra210_csi_start_streaming(struct tegra_csi_channel *csi_chan)
-+static void tegra210_csi_error_recover(struct tegra_csi_channel *csi_chan)
-+{
-+	u8 *portnos = csi_chan->csi_port_nums;
-+	int i;
-+
-+	for (i = 0; i < csi_chan->numgangports; i++)
-+		tegra210_csi_port_recover(csi_chan, portnos[i]);
-+}
-+
-+static int
-+tegra210_csi_port_start_streaming(struct tegra_csi_channel *csi_chan,
-+				  u8 portno)
- {
- 	struct tegra_csi *csi = csi_chan->csi;
--	unsigned int portno = csi_chan->csi_port_num;
- 	u8 clk_settle_time = 0;
- 	u8 ths_settle_time = 10;
- 	u32 val;
- 
- 	if (!csi_chan->pg_mode)
--		tegra_csi_calc_settle_time(csi_chan, &clk_settle_time,
-+		tegra_csi_calc_settle_time(csi_chan, portno, &clk_settle_time,
- 					   &ths_settle_time);
- 
- 	csi_write(csi, portno, TEGRA_CSI_CLKEN_OVERRIDE, 0);
-@@ -903,10 +974,10 @@ static int tegra210_csi_start_streaming(struct tegra_csi_channel *csi_chan)
- 	return 0;
- }
- 
--static void tegra210_csi_stop_streaming(struct tegra_csi_channel *csi_chan)
-+static void
-+tegra210_csi_port_stop_streaming(struct tegra_csi_channel *csi_chan, u8 portno)
- {
- 	struct tegra_csi *csi = csi_chan->csi;
--	unsigned int portno = csi_chan->csi_port_num;
- 	u32 val;
- 
- 	val = pp_read(csi, portno, TEGRA_CSI_PIXEL_PARSER_STATUS);
-@@ -944,6 +1015,35 @@ static void tegra210_csi_stop_streaming(struct tegra_csi_channel *csi_chan)
- 	}
- }
- 
-+static int tegra210_csi_start_streaming(struct tegra_csi_channel *csi_chan)
-+{
-+	u8 *portnos = csi_chan->csi_port_nums;
-+	int ret, i;
-+
-+	for (i = 0; i < csi_chan->numgangports; i++) {
-+		ret = tegra210_csi_port_start_streaming(csi_chan, portnos[i]);
-+		if (ret)
-+			goto stream_start_fail;
-+	}
-+
-+	return 0;
-+
-+stream_start_fail:
-+	for (i = i - 1; i >= 0; i--)
-+		tegra210_csi_port_stop_streaming(csi_chan, portnos[i]);
-+
-+	return ret;
-+}
-+
-+static void tegra210_csi_stop_streaming(struct tegra_csi_channel *csi_chan)
-+{
-+	u8 *portnos = csi_chan->csi_port_nums;
-+	int i;
-+
-+	for (i = 0; i < csi_chan->numgangports; i++)
-+		tegra210_csi_port_stop_streaming(csi_chan, portnos[i]);
-+}
-+
- /*
-  * Tegra210 CSI TPG frame rate table with horizontal and vertical
-  * blanking intervals for corresponding format and resolution.
-diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
-index e866f7d..4812f2c 100644
---- a/drivers/staging/media/tegra-video/vi.c
-+++ b/drivers/staging/media/tegra-video/vi.c
-@@ -30,7 +30,6 @@
- #include "vi.h"
- #include "video.h"
- 
--#define SURFACE_ALIGN_BYTES		64
- #define MAX_CID_CONTROLS		1
- 
- static const struct tegra_video_format tegra_default_format = {
-@@ -1090,12 +1089,20 @@ static int vi_fmts_bitmap_init(struct tegra_vi_channel *chan)
- 	return 0;
- }
- 
-+static void tegra_channel_host1x_syncpts_free(struct tegra_vi_channel *chan)
-+{
-+	int i;
-+
-+	for (i = 0; i < chan->numgangports; i++) {
-+		host1x_syncpt_free(chan->mw_ack_sp[i]);
-+		host1x_syncpt_free(chan->frame_start_sp[i]);
-+	}
-+}
-+
- static void tegra_channel_cleanup(struct tegra_vi_channel *chan)
- {
- 	v4l2_ctrl_handler_free(&chan->ctrl_handler);
- 	media_entity_cleanup(&chan->video.entity);
--	host1x_syncpt_free(chan->mw_ack_sp);
--	host1x_syncpt_free(chan->frame_start_sp);
- 	mutex_destroy(&chan->video_lock);
- }
- 
-@@ -1107,6 +1114,7 @@ void tegra_channels_cleanup(struct tegra_vi *vi)
- 		return;
- 
- 	list_for_each_entry_safe(chan, tmp, &vi->vi_chans, list) {
-+		tegra_channel_host1x_syncpts_free(chan);
- 		tegra_channel_cleanup(chan);
- 		list_del(&chan->list);
- 		kfree(chan);
-@@ -1117,7 +1125,6 @@ static int tegra_channel_init(struct tegra_vi_channel *chan)
- {
- 	struct tegra_vi *vi = chan->vi;
- 	struct tegra_video_device *vid = dev_get_drvdata(vi->client.host);
--	unsigned long flags = HOST1X_SYNCPT_CLIENT_MANAGED;
- 	int ret;
- 
- 	mutex_init(&chan->video_lock);
-@@ -1125,7 +1132,6 @@ static int tegra_channel_init(struct tegra_vi_channel *chan)
- 	INIT_LIST_HEAD(&chan->done);
- 	spin_lock_init(&chan->start_lock);
- 	spin_lock_init(&chan->done_lock);
--	spin_lock_init(&chan->sp_incr_lock);
- 	init_waitqueue_head(&chan->start_wait);
- 	init_waitqueue_head(&chan->done_wait);
- 
-@@ -1140,26 +1146,13 @@ static int tegra_channel_init(struct tegra_vi_channel *chan)
- 	chan->format.sizeimage = chan->format.bytesperline * TEGRA_DEF_HEIGHT;
- 	tegra_channel_fmt_align(chan, &chan->format, chan->fmtinfo->bpp);
- 
--	chan->frame_start_sp = host1x_syncpt_request(&vi->client, flags);
--	if (!chan->frame_start_sp) {
--		dev_err(vi->dev, "failed to request frame start syncpoint\n");
--		return -ENOMEM;
--	}
--
--	chan->mw_ack_sp = host1x_syncpt_request(&vi->client, flags);
--	if (!chan->mw_ack_sp) {
--		dev_err(vi->dev, "failed to request memory ack syncpoint\n");
--		ret = -ENOMEM;
--		goto free_fs_syncpt;
--	}
--
- 	/* initialize the media entity */
- 	chan->pad.flags = MEDIA_PAD_FL_SINK;
- 	ret = media_entity_pads_init(&chan->video.entity, 1, &chan->pad);
- 	if (ret < 0) {
- 		dev_err(vi->dev,
- 			"failed to initialize media entity: %d\n", ret);
--		goto free_mw_ack_syncpt;
-+		return ret;
- 	}
- 
- 	ret = v4l2_ctrl_handler_init(&chan->ctrl_handler, MAX_CID_CONTROLS);
-@@ -1175,7 +1168,7 @@ static int tegra_channel_init(struct tegra_vi_channel *chan)
- 	chan->video.release = video_device_release_empty;
- 	chan->video.queue = &chan->queue;
- 	snprintf(chan->video.name, sizeof(chan->video.name), "%s-%s-%u",
--		 dev_name(vi->dev), "output", chan->portno);
-+		 dev_name(vi->dev), "output", chan->portnos[0]);
- 	chan->video.vfl_type = VFL_TYPE_VIDEO;
- 	chan->video.vfl_dir = VFL_DIR_RX;
- 	chan->video.ioctl_ops = &tegra_channel_ioctl_ops;
-@@ -1211,10 +1204,6 @@ static int tegra_channel_init(struct tegra_vi_channel *chan)
- 	v4l2_ctrl_handler_free(&chan->ctrl_handler);
- cleanup_media:
- 	media_entity_cleanup(&chan->video.entity);
--free_mw_ack_syncpt:
--	host1x_syncpt_free(chan->mw_ack_sp);
--free_fs_syncpt:
--	host1x_syncpt_free(chan->frame_start_sp);
- 	return ret;
- }
- 
-@@ -1234,7 +1223,8 @@ static int tegra_vi_channel_alloc(struct tegra_vi *vi, unsigned int port_num,
- 		return -ENOMEM;
- 
- 	chan->vi = vi;
--	chan->portno = port_num;
-+	chan->portnos[0] = port_num;
-+	chan->numgangports = 1;
- 	chan->of_node = node;
- 	list_add_tail(&chan->list, &vi->vi_chans);
- 
-@@ -1312,7 +1302,7 @@ static int tegra_vi_channels_init(struct tegra_vi *vi)
- 		if (ret < 0) {
- 			dev_err(vi->dev,
- 				"failed to initialize channel-%d: %d\n",
--				chan->portno, ret);
-+				chan->portnos[0], ret);
- 			goto cleanup;
- 		}
- 	}
-@@ -1326,6 +1316,46 @@ static int tegra_vi_channels_init(struct tegra_vi *vi)
- 	return ret;
- }
- 
-+static int tegra_vi_channel_syncpt_init(struct tegra_vi *vi)
-+{
-+	struct tegra_vi_channel *chan;
-+	unsigned long flags = HOST1X_SYNCPT_CLIENT_MANAGED;
-+	struct host1x_syncpt *fs_sp;
-+	struct host1x_syncpt *mw_sp;
-+	int ret, i;
-+
-+	list_for_each_entry(chan, &vi->vi_chans, list) {
-+		for (i = 0; i < chan->numgangports; i++) {
-+			fs_sp = host1x_syncpt_request(&vi->client, flags);
-+			if (!fs_sp) {
-+				dev_err(vi->dev, "failed to request frame start syncpoint\n");
-+				ret = -ENOMEM;
-+				goto free_syncpts;
-+			}
-+
-+			mw_sp = host1x_syncpt_request(&vi->client, flags);
-+			if (!mw_sp) {
-+				dev_err(vi->dev, "failed to request memory ack syncpoint\n");
-+				ret = -ENOMEM;
-+				host1x_syncpt_free(fs_sp);
-+				goto free_syncpts;
-+			}
-+
-+			chan->frame_start_sp[i] = fs_sp;
-+			chan->mw_ack_sp[i] = mw_sp;
-+			spin_lock_init(&chan->sp_incr_lock[i]);
-+		}
-+	}
-+
-+	return 0;
-+
-+free_syncpts:
-+	list_for_each_entry_continue_reverse(chan, &vi->vi_chans, list)
-+		tegra_channel_host1x_syncpts_free(chan);
-+
-+	return ret;
-+}
-+
- void tegra_v4l2_nodes_cleanup_tpg(struct tegra_video_device *vid)
- {
- 	struct tegra_vi *vi = vid->vi;
-@@ -1576,8 +1606,9 @@ static int tegra_vi_graph_notify_complete(struct v4l2_async_notifier *notifier)
- 	struct v4l2_async_subdev *asd;
- 	struct v4l2_subdev *subdev;
- 	struct tegra_vi_channel *chan;
-+	struct tegra_csi_channel *csi_chan;
- 	struct tegra_vi *vi;
--	int ret;
-+	int ret, i;
- 
- 	chan = container_of(notifier, struct tegra_vi_channel, notifier);
- 	vi = chan->vi;
-@@ -1634,6 +1665,15 @@ static int tegra_vi_graph_notify_complete(struct v4l2_async_notifier *notifier)
- 
- 	v4l2_set_subdev_hostdata(subdev, chan);
- 
-+	/*
-+	 * Retrieve number of gang ports from csi channel and add consecutive
-+	 * ports to vi channel ports.
-+	 */
-+	csi_chan = v4l2_get_subdevdata(subdev);
-+	chan->numgangports = csi_chan->numgangports;
-+	for (i = 1; i < chan->numgangports; i++)
-+		chan->portnos[i] = chan->portnos[0] + i * CSI_PORTS_PER_BRICK;
-+
- 	subdev = tegra_channel_get_remote_source_subdev(chan);
- 	v4l2_set_subdev_hostdata(subdev, chan);
- 
-@@ -1759,7 +1799,8 @@ static int tegra_vi_graph_init(struct tegra_vi *vi)
- 	 * next channels.
- 	 */
- 	list_for_each_entry(chan, &vi->vi_chans, list) {
--		remote = fwnode_graph_get_remote_node(fwnode, chan->portno, 0);
-+		remote = fwnode_graph_get_remote_node(fwnode, chan->portnos[0],
-+						      0);
- 		if (!remote)
- 			continue;
- 
-@@ -1774,7 +1815,7 @@ static int tegra_vi_graph_init(struct tegra_vi *vi)
- 		if (ret < 0) {
- 			dev_err(vi->dev,
- 				"failed to register channel %d notifier: %d\n",
--				chan->portno, ret);
-+				chan->portnos[0], ret);
- 			v4l2_async_notifier_cleanup(&chan->notifier);
- 		}
- 	}
-@@ -1825,11 +1866,27 @@ static int tegra_vi_init(struct host1x_client *client)
- 	if (!IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG)) {
- 		ret = tegra_vi_graph_init(vi);
- 		if (ret < 0)
--			goto free_chans;
-+			goto cleanup_chans;
- 	}
- 
-+	/*
-+	 * x8 capture uses multiple ports as gang with simultaneous capture
-+	 * of left half onto one x4 port and right half onto second x4 port.
-+	 * Total ports grouped together as gang is retrieved from CSI subdev
-+	 * during graph build.
-+	 * So, create host1x syncpts for all ports in a gang after graph init.
-+	 */
-+	ret = tegra_vi_channel_syncpt_init(vi);
-+	if (ret < 0)
-+		goto cleanup_graph;
-+
- 	return 0;
- 
-+cleanup_graph:
-+	tegra_vi_graph_cleanup(vi);
-+cleanup_chans:
-+	list_for_each_entry(chan, &vi->vi_chans, list)
-+		tegra_channel_cleanup(chan);
- free_chans:
- 	list_for_each_entry_safe(chan, tmp, &vi->vi_chans, list) {
- 		list_del(&chan->list);
-diff --git a/drivers/staging/media/tegra-video/vi.h b/drivers/staging/media/tegra-video/vi.h
-index 7d6b7a6..947e641 100644
---- a/drivers/staging/media/tegra-video/vi.h
-+++ b/drivers/staging/media/tegra-video/vi.h
-@@ -21,6 +21,8 @@
- #include <media/v4l2-subdev.h>
- #include <media/videobuf2-v4l2.h>
- 
-+#include "csi.h"
-+
- #define TEGRA_MIN_WIDTH		32U
- #define TEGRA_MAX_WIDTH		32768U
- #define TEGRA_MIN_HEIGHT	32U
-@@ -31,6 +33,7 @@
- #define TEGRA_IMAGE_FORMAT_DEF	32
- 
- #define MAX_FORMAT_NUM		64
-+#define SURFACE_ALIGN_BYTES	64
- 
- enum tegra_vi_pg_mode {
- 	TEGRA_VI_PG_DISABLED = 0,
-@@ -151,7 +154,8 @@ struct tegra_vi_graph_entity {
-  * @done: list of capture done queued buffers
-  * @done_lock: protects the capture done queue list
-  *
-- * @portno: VI channel port number
-+ * @portnos: VI channel port numbers
-+ * @numgangports: number of ports combined together as a gang for capture
-  * @of_node: device node of VI channel
-  *
-  * @ctrl_handler: V4L2 control handler of this video channel
-@@ -168,10 +172,10 @@ struct tegra_vi_channel {
- 	struct media_pad pad;
- 
- 	struct tegra_vi *vi;
--	struct host1x_syncpt *frame_start_sp;
--	struct host1x_syncpt *mw_ack_sp;
-+	struct host1x_syncpt *frame_start_sp[GANG_PORTS_MAX];
-+	struct host1x_syncpt *mw_ack_sp[GANG_PORTS_MAX];
- 	/* protects the cpu syncpoint increment */
--	spinlock_t sp_incr_lock;
-+	spinlock_t sp_incr_lock[GANG_PORTS_MAX];
- 
- 	struct task_struct *kthread_start_capture;
- 	wait_queue_head_t start_wait;
-@@ -190,7 +194,8 @@ struct tegra_vi_channel {
- 	/* protects the capture done queue list */
- 	spinlock_t done_lock;
- 
--	unsigned char portno;
-+	unsigned char portnos[GANG_PORTS_MAX];
-+	u8 numgangports;
- 	struct device_node *of_node;
- 
- 	struct v4l2_ctrl_handler ctrl_handler;
-@@ -216,7 +221,7 @@ struct tegra_channel_buffer {
- 	struct list_head queue;
- 	struct tegra_vi_channel *chan;
- 	dma_addr_t addr;
--	u32 mw_ack_sp_thresh;
-+	u32 mw_ack_sp_thresh[GANG_PORTS_MAX];
- };
- 
- /*
--- 
-2.7.4
-
+>>>> Bugs in the core implementation are pretty much guaranteed.  The basic
+>>>> concept has been tested, but in a fairly different incarnation.  Most
+>>>> notably, tagging PRESENT SPTEs as PINNED has not been tested, although
+>>>> using the PINNED flag to track zapped (and known to be pinned) SPTEs has
+>>>> been tested.  I cobbled this variation together fairly quickly to get the
+>>>> code out there for discussion.
+>>>>
+>>>> The last patch to pin SEV pages during sev_launch_update_data() is
+>>>> incomplete; it's there to show how we might leverage MMU-based pinning to
+>>>> support pinning pages before the guest is live.
+>>> I will add the SEV specific bits and  give this a try.
+>>>
+>>>> Sean Christopherson (8):
+>>>>   KVM: x86/mmu: Return old SPTE from mmu_spte_clear_track_bits()
+>>>>   KVM: x86/mmu: Use bits 2:0 to check for present SPTEs
+>>>>   KVM: x86/mmu: Refactor handling of not-present SPTEs in mmu_set_spte()
+>>>>   KVM: x86/mmu: Add infrastructure for pinning PFNs on demand
+>>>>   KVM: SVM: Use the KVM MMU SPTE pinning hooks to pin pages on demand
+>>>>   KVM: x86/mmu: Move 'pfn' variable to caller of direct_page_fault()
+>>>>   KVM: x86/mmu: Introduce kvm_mmu_map_tdp_page() for use by SEV
+>>>>   KVM: SVM: Pin SEV pages in MMU during sev_launch_update_data()
+>>>>
+>>>>  arch/x86/include/asm/kvm_host.h |   7 ++
+>>>>  arch/x86/kvm/mmu.h              |   3 +
+>>>>  arch/x86/kvm/mmu/mmu.c          | 186 +++++++++++++++++++++++++-------
+>>>>  arch/x86/kvm/mmu/paging_tmpl.h  |   3 +-
+>>>>  arch/x86/kvm/svm/sev.c          | 141 +++++++++++++++++++++++-
+>>>>  arch/x86/kvm/svm/svm.c          |   3 +
+>>>>  arch/x86/kvm/svm/svm.h          |   3 +
+>>>>  7 files changed, 302 insertions(+), 44 deletions(-)
+>>>>
