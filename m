@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0DE29BDFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6930B29BC64
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813454AbgJ0QuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:50:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51818 "EHLO mail.kernel.org"
+        id S1780272AbgJ0Qb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1794984AbgJ0POp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:14:45 -0400
+        id S1802549AbgJ0PuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:50:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC87122384;
-        Tue, 27 Oct 2020 15:14:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DA592065C;
+        Tue, 27 Oct 2020 15:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811684;
-        bh=zlDNZx9rt71dhDzH3YzbXbl2z1FGcNMtbtHfolhdRjY=;
+        s=default; t=1603813800;
+        bh=j0LIKN0AGws6i/FKT7AeuxpkYYH9yjFN2mAKrtet9CE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eTkw8ZasOjisEtFf8aYtGPS2yuVKxD+fPxP3rIanXN4OnEsDr+qRFzgRR68imdQZ9
-         NpvCnFnXNRJ7m4lEMoZHChuHkwHAv0ueZgBkQXTGtoPp8IaWXbxi70H5O2ULE7Jst3
-         xOE5eQv/OZD1840tCXmNIvwqbVjhTwX/aV8yE0Ys=
+        b=c4fj5hX+ceJQig7FU7q0m5t3SK2kJr6Ed94MhSyjkF8C/5C8T+2+Cbq0VMqkeXquv
+         lAffkytlVLGJ3XBUDSISa6pEAOL4VNmbnawdqOoysSv3L2X/AV8Tb0pIN3Vj/qmLn/
+         7x6b1v5AA8OwL3J6MVFpPgu+SPGlmG3OSPBsg9kM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Mikael=20Wikstr=C3=B6m?= <leakim.wikstrom@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 579/633] HID: multitouch: Lenovo X1 Tablet Gen3 trackpoint and buttons
-Date:   Tue, 27 Oct 2020 14:55:22 +0100
-Message-Id: <20201027135549.973576588@linuxfoundation.org>
+        syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 673/757] ntfs: add check for mft record size in superblock
+Date:   Tue, 27 Oct 2020 14:55:23 +0100
+Message-Id: <20201027135522.096590308@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
-References: <20201027135522.655719020@linuxfoundation.org>
+In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
+References: <20201027135450.497324313@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikael Wikström <leakim.wikstrom@gmail.com>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-[ Upstream commit 140958da9ab53a7df9e9ccc7678ea64655279ac1 ]
+[ Upstream commit 4f8c94022f0bc3babd0a124c0a7dcdd7547bd94e ]
 
-One more device that needs 40d5bb87 to resolve regression for the trackpoint
-and three mouse buttons on the type cover of the Lenovo X1 Tablet Gen3.
+Number of bytes allocated for mft record should be equal to the mft record
+size stored in ntfs superblock as reported by syzbot, userspace might
+trigger out-of-bounds read by dereferencing ctx->attr in ntfs_attr_find()
 
-It is probably also needed for the Lenovo X1 Tablet Gen2 with PID 0x60a3
-
-Signed-off-by: Mikael Wikström <leakim.wikstrom@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Reported-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: syzbot+aed06913f36eff9b544e@syzkaller.appspotmail.com
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+Link: https://syzkaller.appspot.com/bug?extid=aed06913f36eff9b544e
+Link: https://lkml.kernel.org/r/20200824022804.226242-1-rkovhaev@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h        | 1 +
- drivers/hid/hid-multitouch.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+ fs/ntfs/inode.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index b49ec7dde6457..0ca8906a6f839 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -726,6 +726,7 @@
- #define USB_DEVICE_ID_LENOVO_SCROLLPOINT_OPTICAL	0x6049
- #define USB_DEVICE_ID_LENOVO_TPPRODOCK	0x6067
- #define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
-+#define USB_DEVICE_ID_LENOVO_X1_TAB3	0x60b5
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D	0x608d
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019	0x6019
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E	0x602e
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index e3152155c4b85..99f041afd5c0c 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1973,6 +1973,12 @@ static const struct hid_device_id mt_devices[] = {
- 		HID_DEVICE(BUS_I2C, HID_GROUP_GENERIC,
- 			USB_VENDOR_ID_LG, I2C_DEVICE_ID_LG_7010) },
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index 9bb9f0952b186..caf563981532b 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -1810,6 +1810,12 @@ int ntfs_read_inode_mount(struct inode *vi)
+ 		brelse(bh);
+ 	}
  
-+	/* Lenovo X1 TAB Gen 3 */
-+	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
-+		HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
-+			   USB_VENDOR_ID_LENOVO,
-+			   USB_DEVICE_ID_LENOVO_X1_TAB3) },
++	if (le32_to_cpu(m->bytes_allocated) != vol->mft_record_size) {
++		ntfs_error(sb, "Incorrect mft record size %u in superblock, should be %u.",
++				le32_to_cpu(m->bytes_allocated), vol->mft_record_size);
++		goto err_out;
++	}
 +
- 	/* MosArt panels */
- 	{ .driver_data = MT_CLS_CONFIDENCE_MINUS_ONE,
- 		MT_USB_DEVICE(USB_VENDOR_ID_ASUS,
+ 	/* Apply the mst fixups. */
+ 	if (post_read_mst_fixup((NTFS_RECORD*)m, vol->mft_record_size)) {
+ 		/* FIXME: Try to use the $MFTMirr now. */
 -- 
 2.25.1
 
