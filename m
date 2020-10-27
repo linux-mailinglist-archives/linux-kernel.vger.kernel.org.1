@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2C429BB25
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1643C29BA31
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1801050AbgJ0P5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:57:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
+        id S1799632AbgJ0P52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:57:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1796444AbgJ0PSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:18:41 -0400
+        id S1796456AbgJ0PSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:18:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 008922064B;
-        Tue, 27 Oct 2020 15:18:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E75422064B;
+        Tue, 27 Oct 2020 15:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603811920;
-        bh=GDDgLjCvdP9hJNwmJ1F7bl4nLQrkpUorMjVj4T51kKk=;
+        s=default; t=1603811926;
+        bh=xyi1kZoxi62/ou7uYIIQuK5NO3LHkBoAObP+ddndtds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tJDkA8XM1XOrgUu8bs6gmYQ/NdQ6TwIJNXACY3wtz+7c9ACRATv7EvI+B+KGqLiAo
-         rr1oGBH8HJnGKLo5VrSnd3pdyfwAgAKWTULEeqYKvq7vfGUCHkCPsc6M9oUTB/iatV
-         T5zIqFU/86aZGOOtp0vLKNQ0HQijS5LsLjuy+gJw=
+        b=tPy9uP8USS+yRlcaKTZgnRdfNEEI/5OoiejxlrQeDXlnwOVGZYgxPZJYrOYiqfgkV
+         ul1UCLfWM3n3CvJ0Y4589yDG85qxgG4cO3J8xSosY2r9NMruPorbPtVS/CuLUxMygk
+         SHjf3xnGVFBy64i2EnS8xzGv48WQp/oFpgj3BoV8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Huu Le <hoang.h.le@dektech.com.au>,
+        stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 029/757] tipc: re-configure queue limit for broadcast link
-Date:   Tue, 27 Oct 2020 14:44:39 +0100
-Message-Id: <20201027135451.891158496@linuxfoundation.org>
+Subject: [PATCH 5.9 031/757] chelsio/chtls: fix socket lock
+Date:   Tue, 27 Oct 2020 14:44:41 +0100
+Message-Id: <20201027135451.982295986@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -43,48 +43,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Huu Le <hoang.h.le@dektech.com.au>
+From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
 
-[ Upstream commit 75cee397ae6f1020fbb75db90aa22a51bc3318ac ]
+[ Upstream commit 0fb5f0160a36d7acaa8e84ce873af99f94b60484 ]
 
-The queue limit of the broadcast link is being calculated base on initial
-MTU. However, when MTU value changed (e.g manual changing MTU on NIC
-device, MTU negotiation etc.,) we do not re-calculate queue limit.
-This gives throughput does not reflect with the change.
+In chtls_sendpage() socket lock is released but not acquired,
+fix it by taking lock.
 
-So fix it by calling the function to re-calculate queue limit of the
-broadcast link.
-
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Huu Le <hoang.h.le@dektech.com.au>
+Fixes: 36bedb3f2e5b ("crypto: chtls - Inline TLS record Tx")
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/bcast.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/crypto/chelsio/chtls/chtls_io.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/tipc/bcast.c
-+++ b/net/tipc/bcast.c
-@@ -108,6 +108,7 @@ static void tipc_bcbase_select_primary(s
- {
- 	struct tipc_bc_base *bb = tipc_bc_base(net);
- 	int all_dests =  tipc_link_bc_peers(bb->link);
-+	int max_win = tipc_link_max_win(bb->link);
- 	int i, mtu, prim;
+--- a/drivers/crypto/chelsio/chtls/chtls_io.c
++++ b/drivers/crypto/chelsio/chtls/chtls_io.c
+@@ -1240,6 +1240,7 @@ int chtls_sendpage(struct sock *sk, stru
+ 	copied = 0;
+ 	csk = rcu_dereference_sk_user_data(sk);
+ 	cdev = csk->cdev;
++	lock_sock(sk);
+ 	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
  
- 	bb->primary_bearer = INVALID_BEARER_ID;
-@@ -121,8 +122,11 @@ static void tipc_bcbase_select_primary(s
- 			continue;
- 
- 		mtu = tipc_bearer_mtu(net, i);
--		if (mtu < tipc_link_mtu(bb->link))
-+		if (mtu < tipc_link_mtu(bb->link)) {
- 			tipc_link_set_mtu(bb->link, mtu);
-+			tipc_link_set_queue_limits(bb->link, max_win,
-+						   max_win);
-+		}
- 		bb->bcast_support &= tipc_bearer_bcast_support(net, i);
- 		if (bb->dests[i] < all_dests)
- 			continue;
+ 	err = sk_stream_wait_connect(sk, &timeo);
 
 
