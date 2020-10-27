@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAE629AEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91A629AE8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 15:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754451AbgJ0OFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:05:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53556 "EHLO mail.kernel.org"
+        id S1753699AbgJ0OBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754374AbgJ0OFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:05:15 -0400
+        id S2504367AbgJ0OAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:00:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3512B2222C;
-        Tue, 27 Oct 2020 14:05:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60AC32068D;
+        Tue, 27 Oct 2020 14:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603807514;
-        bh=OrrQLVR1kDUnlCzLjRgqW/nqMZGWN2iMOP7koZ04DfY=;
+        s=default; t=1603807244;
+        bh=fYOSCIP8zxkfuMuUrdpVgvK1kacTalWOaZtAxrp7EUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UrTAwY2Gx/tkd+gDDytRgGuCpbaSIvsSknVZMbKukzbuauyX3HwI94vKRZb5eGQLS
-         jw1HLC/BBNxjgQvoZmjoccPzrfZ8wnjDmzpbhhQeyUJBFGlVmGBqhD0IsYEheqVPtT
-         bdL184+eJ8ObUnNS9CK/7SCQ4CJbDzfPtHil/B+Y=
+        b=ueWyuBQ+G1o6eIs/4aewxYcIxyY2nhX2Ypx4rloBSSGeausysfstWnLTnFKJIVitm
+         hUi1nYKdazVT5BlgE2pqXLqS76HyYN+UhCEeOmeayJ7v0+f+EjA7+xvjXVMwxcZtvT
+         u3+r6KMumil7EBETjoaB46T5Z4WCIb6F13jpPyJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 081/139] Input: imx6ul_tsc - clean up some errors in imx6ul_tsc_resume()
+Subject: [PATCH 4.4 065/112] cpufreq: powernv: Fix frame-size-overflow in powernv_cpufreq_reboot_notifier
 Date:   Tue, 27 Oct 2020 14:49:35 +0100
-Message-Id: <20201027134905.975874141@linuxfoundation.org>
+Message-Id: <20201027134903.642260635@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-References: <20201027134902.130312227@linuxfoundation.org>
+In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
+References: <20201027134900.532249571@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-[ Upstream commit 30df23c5ecdfb8da5b0bc17ceef67eff9e1b0957 ]
+[ Upstream commit a2d0230b91f7e23ceb5d8fb6a9799f30517ec33a ]
 
-If imx6ul_tsc_init() fails then we need to clean up the clocks.
+The patch avoids allocating cpufreq_policy on stack hence fixing frame
+size overflow in 'powernv_cpufreq_reboot_notifier':
 
-I reversed the "if (input_dev->users) {" condition to make the code a
-bit simpler.
+  drivers/cpufreq/powernv-cpufreq.c: In function powernv_cpufreq_reboot_notifier:
+  drivers/cpufreq/powernv-cpufreq.c:906:1: error: the frame size of 2064 bytes is larger than 2048 bytes
 
-Fixes: 6cc527b05847 ("Input: imx6ul_tsc - propagate the errors")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200905124942.GC183976@mwanda
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency during reboot/kexec")
+Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200922080254.41497-1-srikar@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/imx6ul_tsc.c | 27 +++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ drivers/cpufreq/powernv-cpufreq.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/touchscreen/imx6ul_tsc.c b/drivers/input/touchscreen/imx6ul_tsc.c
-index 8275267eac254..4be7ddc04af0f 100644
---- a/drivers/input/touchscreen/imx6ul_tsc.c
-+++ b/drivers/input/touchscreen/imx6ul_tsc.c
-@@ -490,20 +490,25 @@ static int __maybe_unused imx6ul_tsc_resume(struct device *dev)
+diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
+index 57e6c45724e73..1930a1d1a1892 100644
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -410,12 +410,15 @@ static int powernv_cpufreq_reboot_notifier(struct notifier_block *nb,
+ 				unsigned long action, void *unused)
+ {
+ 	int cpu;
+-	struct cpufreq_policy cpu_policy;
++	struct cpufreq_policy *cpu_policy;
  
- 	mutex_lock(&input_dev->mutex);
- 
--	if (input_dev->users) {
--		retval = clk_prepare_enable(tsc->adc_clk);
--		if (retval)
--			goto out;
--
--		retval = clk_prepare_enable(tsc->tsc_clk);
--		if (retval) {
--			clk_disable_unprepare(tsc->adc_clk);
--			goto out;
--		}
-+	if (!input_dev->users)
-+		goto out;
- 
--		retval = imx6ul_tsc_init(tsc);
-+	retval = clk_prepare_enable(tsc->adc_clk);
-+	if (retval)
-+		goto out;
-+
-+	retval = clk_prepare_enable(tsc->tsc_clk);
-+	if (retval) {
-+		clk_disable_unprepare(tsc->adc_clk);
-+		goto out;
+ 	rebooting = true;
+ 	for_each_online_cpu(cpu) {
+-		cpufreq_get_policy(&cpu_policy, cpu);
+-		powernv_cpufreq_target_index(&cpu_policy, get_nominal_index());
++		cpu_policy = cpufreq_cpu_get(cpu);
++		if (!cpu_policy)
++			continue;
++		powernv_cpufreq_target_index(cpu_policy, get_nominal_index());
++		cpufreq_cpu_put(cpu_policy);
  	}
  
-+	retval = imx6ul_tsc_init(tsc);
-+	if (retval) {
-+		clk_disable_unprepare(tsc->tsc_clk);
-+		clk_disable_unprepare(tsc->adc_clk);
-+		goto out;
-+	}
- out:
- 	mutex_unlock(&input_dev->mutex);
- 	return retval;
+ 	return NOTIFY_DONE;
 -- 
 2.25.1
 
