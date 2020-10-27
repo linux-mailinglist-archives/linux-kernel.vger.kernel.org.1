@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DF829AC24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD6529AC37
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 13:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899965AbgJ0MdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 08:33:18 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36385 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411809AbgJ0MdR (ORCPT
+        id S2900063AbgJ0MiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 08:38:09 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40734 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2900053AbgJ0MiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:33:17 -0400
-Received: by mail-io1-f69.google.com with SMTP id q126so712612iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 05:33:16 -0700 (PDT)
+        Tue, 27 Oct 2020 08:38:08 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 23so1557010ljv.7;
+        Tue, 27 Oct 2020 05:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=vahP35hIg4Z9TX7Ulxw+JLPNjil+mWhfbx0IQp4z3Hk=;
+        b=RpQ+Mlo6+D4vhkapHBOgMWurkzcLiQzSs5ACIKPeZXZobPykthQ+RLo7bqEd4UZgSu
+         j+JJHJsXyApfvZL7P3wNe9g5KIQ/Xu89mnTzl9Ci9VoCjW8DHvvH13BHBozBUT9j0I+s
+         U8j7pcrWKV3OUXv7uT1roALobi/RfgIktRnFCcWyzcAg4R3kBi/dmDSglEE0awySgraV
+         9cdWG56+vJXUw+zr3avUGWg3abyIN4cyxSrSsOI3tXij/bxprUsP01mvqJ9TPiwr/CvA
+         uyZSmL69oLkD2wiN00QYdF6JIY9AijgoOvqEi1L4niQdFtyDdjzLSXJr7jr+S98IQJEc
+         Ldbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=FofA/azUC/4jOvukNRdRU5+c9AoRXjk/SRFBK/2eTD0=;
-        b=H3SbnllTz5j2wkP0XaHeOhrSJc2OW6XxsN9u1E+TBVuuf1K1DNrYC9YU3JloiCzFDY
-         4/7oa0Q/+E4R7n3nQun2ae0tG+F6CWakqwZqqdYA9zVRKhheSpdcC46PDM6fPcK5pVvQ
-         flpC4v3kzYDk2HKHaNNEM27ph8NLsU9+X625TQGfnBEDByFOLDb3+D+jVNTtWqavxPsw
-         BywzGVNR/JtFpBgNfSREFQX/ixjlCxBbNvdBYjEsi2AbTyuRQlIHe/cd682aBVXhljN8
-         d6j8hff7YxwFNdQOk+dE6K8gMNsdOu3XgfY81cav+O/n/2Y2ULVSHAat552IU272c862
-         DQkg==
-X-Gm-Message-State: AOAM530qIuNdKP1v5ShK0pUApXhqLiRF0VhHV7D3gE1JcQ6LfCHe3uWL
-        gv8SAcH8sNQS++nDWraO5EVVyfMMqX39YbqENlyHGrtTasla
-X-Google-Smtp-Source: ABdhPJwSuAcDLBIvSKckcwgm4tsrpSETPpi96K9Rf1JDfHhZ+g87MLAR9Pg4qeWFxwyjgNkKNBjgqPqLoIy4WXDVwqENAIagb47d
-MIME-Version: 1.0
-X-Received: by 2002:a5e:d515:: with SMTP id e21mr1862616iom.9.1603801996145;
- Tue, 27 Oct 2020 05:33:16 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 05:33:16 -0700
-In-Reply-To: <000000000000143a4305aba36803@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000045390f05b2a640c4@google.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in ath9k_hif_usb_rx_cb (2)
-From:   syzbot <syzbot+6ecc26112e7241c454ef@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
-        davem@davemloft.net, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vahP35hIg4Z9TX7Ulxw+JLPNjil+mWhfbx0IQp4z3Hk=;
+        b=gEVCFwdxhYVuCuGKNE5b/bFh30mz6nh2pCrZ3uxG1O0bEqpD0+xix9zuSaGmPTaNcv
+         qqN/FqspC82lUBM6ep0I5PR5G0/cWasStVavh5hmbEG1bpBZ8nvXbO1dI0TJiS33o2FX
+         QC/JN/GG1hn8M3bO4K5GCSWKUzECAGXDa29kMQXWQEhXYIyWkUOUFiMpuLm4/E6ekdS1
+         ld/JaIhH3tIzEY7slk1yu/jee8X6569ICNhZoDS/eC7nlsw3usViLK50p6Z5ZzPDZoTd
+         H9i8U0G4UE27jZA8i8Fq9dIKcLP/oKRcLE5LSnzgKwuLWtrvap8sgkgQKJpmOnNPkprS
+         +I8Q==
+X-Gm-Message-State: AOAM530VB9ikdwJarS44vZ4OSCLoeMkNgxcgm6Xnv8/PaE9GagkGr94c
+        jVKbvrFJKOehaFC5RImW4P/PaT535A2qjtAA
+X-Google-Smtp-Source: ABdhPJw+G0h55774/2Dna177AbD16UbvkWwJWYVmHDifFEnaYenPakmczFrXvoTkjirCT1kIqPxMNQ==
+X-Received: by 2002:a2e:b5c1:: with SMTP id g1mr938842ljn.305.1603802284106;
+        Tue, 27 Oct 2020 05:38:04 -0700 (PDT)
+Received: from DESKTOP-GSFPEC9.localdomain (broadband-46-242-8-148.ip.moscow.rt.ru. [46.242.8.148])
+        by smtp.gmail.com with ESMTPSA id e15sm49132ljj.60.2020.10.27.05.38.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 05:38:03 -0700 (PDT)
+From:   Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc:     supreeth.venkatesh@amd.com, aladyshev22@gmail.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] ARM: dts: aspeed: amd-ethanolx: Update KCS nodes to use v2 binding
+Date:   Tue, 27 Oct 2020 15:37:20 +0300
+Message-Id: <20201027123722.2935-1-aladyshev22@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+KCS nodes compatible property in the 'aspeed-g5.dtsi' file was
+changed to use v2 binding in the commit fa4c8ec6feaa
+("ARM: dts: aspeed: Change KCS nodes to v2 binding").
+For the proper initialization of /dev/ipmi-kcs* devices
+KCS node variables also need to be changed to use v2 binding.
 
-HEAD commit:    3650b228 Linux 5.10-rc1
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=14485e50500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b1c5bd23a80035ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=6ecc26112e7241c454ef
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d8eff7900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15130390500000
+Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+---
+ arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6ecc26112e7241c454ef@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:399 [inline]
-BUG: KASAN: slab-out-of-bounds in ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:562 [inline]
-BUG: KASAN: slab-out-of-bounds in ath9k_hif_usb_rx_cb+0x3ab/0x1020 drivers/net/wireless/ath/ath9k/hif_usb.c:680
-Read of size 41740 at addr ffff88810bf10000 by task swapper/0/0
-
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- memcpy+0x20/0x60 mm/kasan/common.c:105
- memcpy include/linux/string.h:399 [inline]
- ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:562 [inline]
- ath9k_hif_usb_rx_cb+0x3ab/0x1020 drivers/net/wireless/ath/ath9k/hif_usb.c:680
- __usb_hcd_giveback_urb+0x32d/0x560 drivers/usb/core/hcd.c:1650
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
- dummy_timer+0x11f4/0x3280 drivers/usb/gadget/udc/dummy_hcd.c:1967
- call_timer_fn+0x1a5/0x630 kernel/time/timer.c:1415
- expire_timers kernel/time/timer.c:1460 [inline]
- __run_timers.part.0+0x67c/0xa10 kernel/time/timer.c:1752
- __run_timers kernel/time/timer.c:1733 [inline]
- run_timer_softirq+0x80/0x120 kernel/time/timer.c:1765
- __do_softirq+0x1b2/0x945 kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x80/0xa0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x110/0x1a0 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x43/0xa0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:79 [inline]
-RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:169 [inline]
-RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:112 [inline]
-RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:517
-Code: bd 13 a1 fb 84 db 75 ac e8 64 1b a1 fb e8 8f c1 a6 fb e9 0c 00 00 00 e8 55 1b a1 fb 0f 00 2d 1e be 69 00 e8 49 1b a1 fb fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 e4 13 a1 fb 48 85 db
-RSP: 0018:ffffffff87007d60 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffffffff1079e01
-RDX: ffffffff87031000 RSI: ffffffff859daf27 RDI: ffffffff859daf11
-RBP: ffff888103980864 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888103980800 R14: ffff888103980864 R15: ffff88810545e804
- acpi_idle_enter+0x355/0x4f0 drivers/acpi/processor_idle.c:648
- cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:132 [inline]
- cpuidle_idle_call kernel/sched/idle.c:213 [inline]
- do_idle+0x3d5/0x580 kernel/sched/idle.c:273
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:369
- start_kernel+0x472/0x493 init/main.c:1051
- secondary_startup_64_no_verify+0xa6/0xab
-
-The buggy address belongs to the page:
-page:00000000dfda5045 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10bf10
-head:00000000dfda5045 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x200000000010000(head)
-raw: 0200000000010000 dead000000000100 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88810bf18380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88810bf18400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88810bf18480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc
-                                                                ^
- ffff88810bf18500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc 00
- ffff88810bf18580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
+index 60ba86f3e5bc..89ddc3847222 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
+@@ -139,17 +139,17 @@
+ 
+ &kcs1 {
+ 	status = "okay";
+-	kcs_addr = <0x60>;
++	aspeed,lpc-io-reg = <0x60>;
+ };
+ 
+ &kcs2 {
+ 	status = "okay";
+-	kcs_addr = <0x62>;
++	aspeed,lpc-io-reg = <0x62>;
+ };
+ 
+ &kcs4 {
+ 	status = "okay";
+-	kcs_addr = <0x97DE>;
++	aspeed,lpc-io-reg = <0x97DE>;
+ };
+ 
+ &lpc_snoop {
+-- 
+2.17.1
 
