@@ -2,160 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0586829BE8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2F129BE8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1813434AbgJ0Qv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 12:51:26 -0400
-Received: from mail-pl1-f202.google.com ([209.85.214.202]:36605 "EHLO
-        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1813395AbgJ0Qt7 (ORCPT
+        id S1813557AbgJ0Qu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 12:50:57 -0400
+Received: from mail-pj1-f43.google.com ([209.85.216.43]:35323 "EHLO
+        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1813496AbgJ0Qu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:49:59 -0400
-Received: by mail-pl1-f202.google.com with SMTP id v6so1264994plo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 09:49:58 -0700 (PDT)
+        Tue, 27 Oct 2020 12:50:29 -0400
+Received: by mail-pj1-f43.google.com with SMTP id h4so1041130pjk.0;
+        Tue, 27 Oct 2020 09:50:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=9wWRec99gN9dBHws62nUYEcveG+Fv/NYOt3MJb2ccyQ=;
-        b=aUMB149cvGGQuG2bVbNSUocZgWt1sioEvdQd1cZrZrEqyOKZ+Quzhm+vTh197m0dc5
-         0Vh57Q3oISS9HGv+r2I9dZMDV770VJlHwU3svC8s+mIllf3iDoeX6oD2B7dV2aKqHzUp
-         Q4tIdMUo47oLRLSRiXIgnpJsz0dOrget/Unwv/O9XWGXkSFdwArwcINKdj95dtMvsy04
-         3czpJYElfSsGu4IpB8T5pMod3JxnvmtlnbSMsqvyJHUnT74eIqXKxdzzyCh2YoBeaGPm
-         JMcqioxwFoyynkj9fgCt6MfJLBctSBh6bUW4R3xkleTBkKt0PqXAa/9dUl8iMA82QeYN
-         jUYA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HptrGwBSY+SD+CDa0bd+3OxbTLi4hMQSBZc7Kms8AlM=;
+        b=SloE/kKeI7PO02Z+h+wXGCAWMViSW6igjNsKi66UgTllzsf3Xo6lcfNN9TKzvnGz+O
+         XdUGidI0SkH6IYKDAy6fCGH7p45ca7aCZPPpBs+hzcCKoaTXmYy1hRg1UxzuO9/Ir52v
+         2GHeyuWwCB3PgNUJyCJ99aWZ19Ta+Swx/eL8cyS04LCr67nbMkcvk+AiQLkiCrXLtGaa
+         1bI5nNiH/BumJ7Kfksftg+A48qlnMSXf91iRXxjciYyPK50SL8nGjswljjr+F3yUqq6G
+         KX+R6b8X5fPOfTFGIOkwhGfPyjq22j391lukmuhQ5KjUA2gOJDoXLmpIoW+sDYulXSh3
+         GqdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=9wWRec99gN9dBHws62nUYEcveG+Fv/NYOt3MJb2ccyQ=;
-        b=WDE2PU9G7AVapdRjSvEKhGFdKD/4NF/tCo5dn3O0EiPTcqUshB2IgpaGks6s/mOjl9
-         D4TwOLfDdgcAzbA8CbglrlnEXKZlYekoptCdi0rlSZqZMPamPpBeXRJyecbEUi+EhoiK
-         rh6P1EQNrVXfkYGi5c+LkjCqWyOdfy1otfOwhwauKlJu2cowHca+OqCw8P691EwcqRHd
-         ycZg1pNPBg0S4ECzP7wruRRE2lEY2UJVp2DkZmetVBjK+BfMO9BdY0c9CAqHf1sonAQK
-         DPm8HeWSXF5to/remSjA9IpQmAE2vXDGHTcvkkI5FZVCWQdDAcVLhTbmy33BXtcurneC
-         9NmA==
-X-Gm-Message-State: AOAM533bNvwScg/RYNVZ+zbETG+rZmqqh48dsg0JbwjS2cOk0PL5yxhk
-        e7Nf5wSwid2r3cOqK24iySnAJuUeEGbDFBCEJ4LSMSp801FjMVWywVFkQSlzFtytr4eVlgZfIZl
-        4gPOtGnXiDk7GtUHP1YXsaR2fgtHuJVR30ZEJGYVenJiiJwzgZe5feBw4StTg7dhnyeOAwZ8F
-X-Google-Smtp-Source: ABdhPJwcmANEN9+xA/xdNMbReOFXLVV5MCPIMd8gklhGJVpnaHvVILVlA/jnwXbAZHA9QeUOm94UHlN8lzAN
-Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:90a:f198:: with SMTP id
- bv24mr2820492pjb.230.1603817397922; Tue, 27 Oct 2020 09:49:57 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 09:49:50 -0700
-In-Reply-To: <20201027164950.1057601-1-bgardon@google.com>
-Message-Id: <20201027164950.1057601-3-bgardon@google.com>
-Mime-Version: 1.0
-References: <20201027164950.1057601-1-bgardon@google.com>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH 3/3] sched: Add cond_resched_rwlock
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HptrGwBSY+SD+CDa0bd+3OxbTLi4hMQSBZc7Kms8AlM=;
+        b=oSMoEGsIafUtj1LfXPxVZoAIDQ9GH0jk8OR2yvO3t1d0xhCbmw4hxjSplGYdeO1xbY
+         NdyYd4fLi7VPXF9y1kb45m3c3nbTvUOeFWouccw+zHf55RFFEkI49oVjGW8DN1so7WEN
+         sYCKXB435HROPKMiEowB/2xgCzj1VZ9FGKrGpJoqfc3cOubzqED8ZlnGa2k/0mTc9O1y
+         D8WxoDgSsetXDlkXVe8pOEWY3ZNBwKYd0YvqtERUyuvtFUed4PvpbVJInUjbVcyQ8V33
+         PU/q4tZFzRSKba8sqSzD5HMZVWNtflfJYzHfFBZjNyVQWhcMwqOhDZEKnVKKi1MhU4EW
+         rR3Q==
+X-Gm-Message-State: AOAM532ZJVIo9N4SkO0x7BW0iYDllaBOd1oiYPbkKbzFRwHOa9XmmCcQ
+        1ANFAwZzPb/HM+X0uy2s4Q==
+X-Google-Smtp-Source: ABdhPJzMTJ8Bn35UCTNCGA0/agh8C9PXo3qzw/+//DmpetLuoSxkefj3JCZmZuvgck6DNRGfBiwPoA==
+X-Received: by 2002:a17:902:9a84:b029:d3:8b4f:50d5 with SMTP id w4-20020a1709029a84b02900d38b4f50d5mr3605768plp.48.1603817428057;
+        Tue, 27 Oct 2020 09:50:28 -0700 (PDT)
+Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id b3sm2840505pfd.66.2020.10.27.09.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 09:50:27 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 12:50:21 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Following up
+Message-ID: <20201027165021.GA1178130@PWN>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1603788511.git.yepeilin.cs@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rescheduling while holding a spin lock is essential for keeping long
-running kernel operations running smoothly. Add the facility to
-cond_resched rwlocks.
+Hi Daniel,
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- include/linux/sched.h | 12 ++++++++++++
- kernel/sched/core.c   | 40 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+)
+More about the 3 things we've discussed before:
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 77179160ec3ab..2eb0c53fce115 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1841,12 +1841,24 @@ static inline int _cond_resched(void) { return 0; }
- })
- 
- extern int __cond_resched_lock(spinlock_t *lock);
-+extern int __cond_resched_rwlock_read(rwlock_t *lock);
-+extern int __cond_resched_rwlock_write(rwlock_t *lock);
- 
- #define cond_resched_lock(lock) ({				\
- 	___might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);\
- 	__cond_resched_lock(lock);				\
- })
- 
-+#define cond_resched_rwlock_read(lock) ({			\
-+	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
-+	__cond_resched_rwlock_read(lock);			\
-+})
-+
-+#define cond_resched_rwlock_write(lock) ({			\
-+	__might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);	\
-+	__cond_resched_rwlock_write(lock);			\
-+})
-+
- static inline void cond_resched_rcu(void)
- {
- #if defined(CONFIG_DEBUG_ATOMIC_SLEEP) || !defined(CONFIG_PREEMPT_RCU)
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d2003a7d5ab55..ac58e7829a063 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6152,6 +6152,46 @@ int __cond_resched_lock(spinlock_t *lock)
- }
- EXPORT_SYMBOL(__cond_resched_lock);
- 
-+int __cond_resched_rwlock_read(rwlock_t *lock)
+  1. Cleaning up con_font_op():
+
+(drivers/tty/vt/vt.c)
+int con_font_op(struct vc_data *vc, struct console_font_op *op)
+{
+	switch (op->op) {
+	case KD_FONT_OP_SET:
+		return con_font_set(vc, op);
+	case KD_FONT_OP_GET:
+		return con_font_get(vc, op);
+	case KD_FONT_OP_SET_DEFAULT:
+		return con_font_default(vc, op);
+	case KD_FONT_OP_COPY:
+		return con_font_copy(vc, op);
+	}
+	return -ENOSYS;
+}
+
+On Tue, Sep 29, 2020 at 04:38:49PM +0200, Daniel Vetter wrote:
+> I think if we change the conf_font_get/set/default/copy functions to not
+> take the *op struct (which is take pretty arbitrarily from one of the
+> ioctl), but the parameters each needs directly, that would clean up the
+> code a _lot_.
+
+    This is on my TODO list! One day I came up with some idea about
+    fbcon.c, so I postponed this a bit...
+
+  2. Removing dummy functions, like sisusbdummycon_font_set():
+    
+    Turns out, before c396a5bf457f ("console: Expand dummy functions for
+    CFI"), they were just some macros:
+
+-#define SISUSBCONDUMMY (void *)sisusbdummycon_dummy
++static int sisusbdummycon_font_set(struct vc_data *vc,
++                                  struct console_font *font,
++                                  unsigned int flags)
 +{
-+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
-+	int ret = 0;
-+
-+	lockdep_assert_held(lock);
-+
-+	if (rwlock_needbreak(lock) || resched) {
-+		read_unlock(lock);
-+		if (resched)
-+			preempt_schedule_common();
-+		else
-+			cpu_relax();
-+		ret = 1;
-+		read_lock(lock);
-+	}
-+	return ret;
++       return 0;
 +}
-+EXPORT_SYMBOL(__cond_resched_rwlock_read);
-+
-+int __cond_resched_rwlock_write(rwlock_t *lock)
-+{
-+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
-+	int ret = 0;
-+
-+	lockdep_assert_held(lock);
-+
-+	if (rwlock_needbreak(lock) || resched) {
-+		write_unlock(lock);
-+		if (resched)
-+			preempt_schedule_common();
-+		else
-+			cpu_relax();
-+		ret = 1;
-+		write_lock(lock);
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL(__cond_resched_rwlock_write);
-+
- /**
-  * yield - yield the current processor to other threads.
-  *
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
+
+    ...and they had been there for a very long (10+ years) time. Removing
+    code like this makes me a bit nervous, and...
+
+On Tue, Sep 29, 2020 at 04:38:49PM +0200, Daniel Vetter wrote:
+> This actually does something. tbh I would not be surprises if the
+> fb_set utility is the only thing that uses this - with a bit of code
+> search we could perhaps confirm this, and delete all the other
+> implementations.
+
+    ...you mentioned code search, where & what should we look at, in order
+    to confirm it's safe to remove them?
+
+  3. Using `font_desc` in `vc_data`:
+
+    Our plan for the gradual conversion was to use a helper function to
+    set font for a vc, but after reviewing the 300-ish occurrence of
+    `vc_font`, it seems like code doesn't usually set it as a whole:
+
+(drivers/usb/misc/sisusbvga/sisusb_con.c)
+	[...]
+	c->vc_font.height = sisusb->current_font_height;
+	[...]
+
+    ...that's it! It only cares about the height. There are only 4 or 5
+    places in fbcon.c that actually set all fields of `vc_font`, like:
+
+    		vc->vc_font.width = font->width;
+		vc->vc_font.height = font->height;
+		vc->vc_font.data = (void *)(p->fontdata = font->data);
+		vc->vc_font.charcount = 256; /* FIXME  Need to support more fonts */
+
+    To make it even more complicated, `p` is a `struct fbcon_display *`,
+    containing yet another font data pointer (`fontdata`) that I think
+    should be replaced by a `font_desc *`...
+
+    In conclusion, I think it's all about a few hard problems in fbcon.c.
+    I'll keep trying and see how it goes.
+    
+Thank you,
+Peilin Ye
 
