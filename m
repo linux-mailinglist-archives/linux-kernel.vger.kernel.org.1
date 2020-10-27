@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FC729C076
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B832829C06A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781245AbgJ0OzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 10:55:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50140 "EHLO mail.kernel.org"
+        id S1782692AbgJ0O5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 10:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772587AbgJ0OuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:50:21 -0400
+        id S1773016AbgJ0Ouy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:50:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D90F620709;
-        Tue, 27 Oct 2020 14:50:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D825020709;
+        Tue, 27 Oct 2020 14:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810221;
-        bh=UXWVw92xD2IiNl8i0Lbk5m04/x79jJuEpl26RVJC2EI=;
+        s=default; t=1603810253;
+        bh=o3A/QP+JhTRVXqTuhUe+dQVjo8H50XxqktlF/fWyxw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F59iYNgkXt1CP1zQ54wOu1e1qs3KqM20OguD50fX4Xaf6OgnwIBesY19b8v/IBMPo
-         7BTVTCH4ZLWHj1t1x6Jmz3NRF/QXwMe/22KiU+CntRASxuJYRcQPnL8E8MF0QpdcD3
-         S9TFXCWdaBPy8tn0CMuUd82ZMcolOlpIckRMcGUg=
+        b=aIcIiqiAxXHOlClKYrJ/bPeonxNWVU4crWMj3ZQnTLKD5c7TFaoyljWaGWTxC7/lv
+         c8Ao7fKaRevjv8cfMzDMftXggIGacmyeMFk6Q8TOPgtEkEc7A3ZszTZhs0aOYNBRD/
+         2sfB0sOQDkVwjft6zVZ37SFWpqU1kGXcIPrMDXTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shyam Prasad N <sprasad@microsoft.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.8 063/633] cifs: Return the error from crypt_message when enc/dec key not found.
-Date:   Tue, 27 Oct 2020 14:46:46 +0100
-Message-Id: <20201027135525.652582033@linuxfoundation.org>
+        stable@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.8 073/633] KVM: x86: Intercept LA57 to inject #GP fault when its reserved
+Date:   Tue, 27 Oct 2020 14:46:56 +0100
+Message-Id: <20201027135526.118006788@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,44 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Prasad N <sprasad@microsoft.com>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-commit 0bd294b55a5de442370c29fa53bab17aef3ff318 upstream.
+commit 6e1d849fa3296526e64b75fa227b6377cd0fd3da upstream.
 
-In crypt_message, when smb2_get_enc_key returns error, we need to
-return the error back to the caller. If not, we end up processing
-the message further, causing a kernel oops due to unwarranted access
-of memory.
+Unconditionally intercept changes to CR4.LA57 so that KVM correctly
+injects a #GP fault if the guest attempts to set CR4.LA57 when it's
+supported in hardware but not exposed to the guest.
 
-Call Trace:
-smb3_receive_transform+0x120/0x870 [cifs]
-cifs_demultiplex_thread+0xb53/0xc20 [cifs]
-? cifs_handle_standard+0x190/0x190 [cifs]
-kthread+0x116/0x130
-? kthread_park+0x80/0x80
-ret_from_fork+0x1f/0x30
+Long term, KVM needs to properly handle CR4 bits that can be under guest
+control but also may be reserved from the guest's perspective.  But, KVM
+currently sets the CR4 guest/host mask only during vCPU creation, and
+reworking flows to change that will take a bit of elbow grease.
 
-Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-CC: Stable <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Even if/when generic support for intercepting reserved bits exists, it's
+probably not worth letting the guest set CR4.LA57 directly.  LA57 can't
+be toggled while long mode is enabled, thus it's all but guaranteed to
+be set once (maybe twice, e.g. by BIOS and kernel) during boot and never
+touched again.  On the flip side, letting the guest own CR4.LA57 may
+incur extra VMREADs.  In other words, this temporary "hack" is probably
+also the right long term fix.
+
+Fixes: fd8cb433734e ("KVM: MMU: Expose the LA57 feature to VM.")
+Cc: stable@vger.kernel.org
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+[sean: rewrote changelog]
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200930041659.28181-2-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2ops.c |    2 +-
+ arch/x86/kvm/kvm_cache_regs.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3924,7 +3924,7 @@ crypt_message(struct TCP_Server_Info *se
- 	if (rc) {
- 		cifs_server_dbg(VFS, "%s: Could not get %scryption key\n", __func__,
- 			 enc ? "en" : "de");
--		return 0;
-+		return rc;
- 	}
+--- a/arch/x86/kvm/kvm_cache_regs.h
++++ b/arch/x86/kvm/kvm_cache_regs.h
+@@ -7,7 +7,7 @@
+ #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
+ #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
+ 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
+-	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE | X86_CR4_TSD)
++	 | X86_CR4_OSXMMEXCPT | X86_CR4_PGE | X86_CR4_TSD)
  
- 	rc = smb3_crypto_aead_allocate(server);
+ #define BUILD_KVM_GPR_ACCESSORS(lname, uname)				      \
+ static __always_inline unsigned long kvm_##lname##_read(struct kvm_vcpu *vcpu)\
 
 
