@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4AE29B4B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C0429B47E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 16:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789763AbgJ0PCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32998 "EHLO mail.kernel.org"
+        id S2505401AbgJ0PC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:02:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1752793AbgJ0O7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:59:36 -0400
+        id S1784724AbgJ0O7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:59:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C401F22264;
-        Tue, 27 Oct 2020 14:59:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9947E22281;
+        Tue, 27 Oct 2020 14:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603810775;
-        bh=Gs7Qsj0MOdUiZ2k2AOCUTv6rEikJjI4CXfSPbB5i3Us=;
+        s=default; t=1603810778;
+        bh=838kLNn+K13lIKne6GHx05EbvVunaJoK6lVG4g/2iCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QRVQkMMLgku9p/2RD7/lUJmYQ/cIGqRgvB2tkdvgTLxtXHbkSho+aTwocIOYLo6YX
-         m0f2yxs5Iqrls1uf35PpscJLy65eFQ9Npnv/+OPh7l0J/JOblqXpW/yXy37FDKTfDw
-         w7DIzoZww8BR3uLtUNh6O9DHaUeOBXf5CJQzMsH0=
+        b=k9WXironhFwjE4znIckOzVTTbjcUNY22nRG0d25MSMXMYMBLv+EUHqHgVJ4ww+cQk
+         x9Et+XRyJmGbzPFCgKZ8mT+R8eq/p0wflIy0eHgWrGtjNe1dDNniqGhr6LY/UrnQHf
+         sYqV7sUPsIyARKxoURy55k+0JKzYcnpiMI0TlWSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 260/633] ASoC: cros_ec_codec: fix kconfig dependency warning for SND_SOC_CROS_EC_CODEC
-Date:   Tue, 27 Oct 2020 14:50:03 +0100
-Message-Id: <20201027135534.860416736@linuxfoundation.org>
+Subject: [PATCH 5.8 261/633] misc: mic: scif: Fix error handling path
+Date:   Tue, 27 Oct 2020 14:50:04 +0100
+Message-Id: <20201027135534.906964620@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135522.655719020@linuxfoundation.org>
 References: <20201027135522.655719020@linuxfoundation.org>
@@ -44,45 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit 50b18e4a2608e3897f3787eaa7dfa869b40d9923 ]
+[ Upstream commit a81072a9c0ae734b7889929b0bc070fe3f353f0e ]
 
-When SND_SOC_CROS_EC_CODEC is enabled and CRYPTO is disabled, it results
-in the following Kbuild warning:
+Inside __scif_pin_pages(), when map_flags != SCIF_MAP_KERNEL it
+will call pin_user_pages_fast() to map nr_pages. However,
+pin_user_pages_fast() might fail with a return value -ERRNO.
 
-WARNING: unmet direct dependencies detected for CRYPTO_LIB_SHA256
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - SND_SOC_CROS_EC_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && CROS_EC [=y]
+The return value is stored in pinned_pages->nr_pages. which in
+turn is passed to unpin_user_pages(), which expects
+pinned_pages->nr_pages >=0, else disaster.
 
-The reason is that SND_SOC_CROS_EC_CODEC selects CRYPTO_LIB_SHA256 without
-depending on or selecting CRYPTO while CRYPTO_LIB_SHA256 is subordinate to
-CRYPTO.
+Fix this by assigning pinned_pages->nr_pages to 0 if
+pin_user_pages_fast() returns -ERRNO.
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
-
-Fixes: 93fa0af4790a ("ASoC: cros_ec_codec: switch to library API for SHA-256")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Link: https://lore.kernel.org/r/20200917141803.92889-1-fazilyildiran@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: ba612aa8b487 ("misc: mic: SCIF memory registration and unregistration")
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Link: https://lore.kernel.org/r/1600570295-29546-1-git-send-email-jrdr.linux@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/mic/scif/scif_rma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 986a6308818b2..2a8484f37496c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -539,6 +539,7 @@ config SND_SOC_CQ0093VC
- config SND_SOC_CROS_EC_CODEC
- 	tristate "codec driver for ChromeOS EC"
- 	depends on CROS_EC
-+	select CRYPTO
- 	select CRYPTO_LIB_SHA256
- 	help
- 	  If you say yes here you will get support for the
+diff --git a/drivers/misc/mic/scif/scif_rma.c b/drivers/misc/mic/scif/scif_rma.c
+index 406cd5abfa726..56c784699eb8e 100644
+--- a/drivers/misc/mic/scif/scif_rma.c
++++ b/drivers/misc/mic/scif/scif_rma.c
+@@ -1384,6 +1384,8 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 				(prot & SCIF_PROT_WRITE) ? FOLL_WRITE : 0,
+ 				pinned_pages->pages);
+ 		if (nr_pages != pinned_pages->nr_pages) {
++			if (pinned_pages->nr_pages < 0)
++				pinned_pages->nr_pages = 0;
+ 			if (try_upgrade) {
+ 				if (ulimit)
+ 					__scif_dec_pinned_vm_lock(mm, nr_pages);
+@@ -1400,7 +1402,6 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 
+ 	if (pinned_pages->nr_pages < nr_pages) {
+ 		err = -EFAULT;
+-		pinned_pages->nr_pages = nr_pages;
+ 		goto dec_pinned;
+ 	}
+ 
+@@ -1413,7 +1414,6 @@ int __scif_pin_pages(void *addr, size_t len, int *out_prot,
+ 		__scif_dec_pinned_vm_lock(mm, nr_pages);
+ 	/* Something went wrong! Rollback */
+ error_unmap:
+-	pinned_pages->nr_pages = nr_pages;
+ 	scif_destroy_pinned_pages(pinned_pages);
+ 	*pages = NULL;
+ 	dev_dbg(scif_info.mdev.this_device,
 -- 
 2.25.1
 
