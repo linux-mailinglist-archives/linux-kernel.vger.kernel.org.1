@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD1729B992
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD6B29B9B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 17:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1802611AbgJ0Pu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 11:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56344 "EHLO mail.kernel.org"
+        id S1802726AbgJ0PvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 11:51:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1801040AbgJ0PhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 11:37:21 -0400
+        id S1801044AbgJ0Phd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 11:37:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5836E22264;
-        Tue, 27 Oct 2020 15:37:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9C00204EF;
+        Tue, 27 Oct 2020 15:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603813041;
-        bh=oCslFUlESiEpVn7iFFjf5E+c/u+6AHCQp4TdHxfD4dQ=;
+        s=default; t=1603813052;
+        bh=pgU48Lf+PiMP7v6usSDcWLCT0cPhAWdBgvnWQMGxPRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EFejY1PrHZq0b/Yz2yBS6gWT/Kag0bHENTFxlbS/a7wKnpLIIIyeIGvOqkmrOd3hI
-         IgWQOoX/b/dPhWWZJCiz7S5qFzvdMp920e7RglNtMRRyKF3Y+aAiJEAtv4v9dtOwhj
-         HVBdQT8kBH7od26MoSFU/iwMTduUeTZiL9GMWh2c=
+        b=xsSp5BiSEhBlT4KXtoMKeqafNtYEWA55DuJDyVQhtUKlV4lJzVx7cFluSnTo05XWG
+         nXLcxy7QynvRKzNEM6IwkGnbvViLM+5sszQyn4QHJZipJ5yA5Cr/tbvia4vcU79Tdb
+         2O3GTmhWJSq8NlwAE1G1OGxkcFNfLHgrbofhYVJA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        coverity-bot <keescook+coverity-bot@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 418/757] ARM: 9007/1: l2c: fix prefetch bits init in L2X0_AUX_CTRL using DT values
-Date:   Tue, 27 Oct 2020 14:51:08 +0100
-Message-Id: <20201027135510.186614286@linuxfoundation.org>
+Subject: [PATCH 5.9 422/757] ida: Free allocated bitmap in error path
+Date:   Tue, 27 Oct 2020 14:51:12 +0100
+Message-Id: <20201027135510.359998751@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201027135450.497324313@linuxfoundation.org>
 References: <20201027135450.497324313@linuxfoundation.org>
@@ -44,65 +45,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Tucker <guillaume.tucker@collabora.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit 8e007b367a59bcdf484c81f6df9bd5a4cc179ca6 ]
+[ Upstream commit a219b856a2b993da234108307be772448f22b0ce ]
 
-The L310_PREFETCH_CTRL register bits 28 and 29 to enable data and
-instruction prefetch respectively can also be accessed via the
-L2X0_AUX_CTRL register.  They appear to be actually wired together in
-hardware between the registers.  Changing them in the prefetch
-register only will get undone when restoring the aux control register
-later on.  For this reason, set these bits in both registers during
-initialisation according to the devicetree property values.
+If a bitmap needs to be allocated, and then by the time the thread
+is scheduled to be run again all the indices which would satisfy the
+allocation have been allocated then we would leak the allocation.  Almost
+impossible to hit in practice, but a trivial fix.  Found by Coverity.
 
-Link: https://lore.kernel.org/lkml/76f2f3ad5e77e356e0a5b99ceee1e774a2842c25.1597061474.git.guillaume.tucker@collabora.com/
-
-Fixes: ec3bd0e68a67 ("ARM: 8391/1: l2c: add options to overwrite prefetching behavior")
-Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Fixes: f32f004cddf8 ("ida: Convert to XArray")
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mm/cache-l2x0.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ lib/idr.c                           |  1 +
+ tools/testing/radix-tree/idr-test.c | 29 +++++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/arch/arm/mm/cache-l2x0.c b/arch/arm/mm/cache-l2x0.c
-index 12c26eb88afbc..43d91bfd23600 100644
---- a/arch/arm/mm/cache-l2x0.c
-+++ b/arch/arm/mm/cache-l2x0.c
-@@ -1249,20 +1249,28 @@ static void __init l2c310_of_parse(const struct device_node *np,
+diff --git a/lib/idr.c b/lib/idr.c
+index c2cf2c52bbde5..4d2eef0259d2c 100644
+--- a/lib/idr.c
++++ b/lib/idr.c
+@@ -470,6 +470,7 @@ int ida_alloc_range(struct ida *ida, unsigned int min, unsigned int max,
+ 	goto retry;
+ nospc:
+ 	xas_unlock_irqrestore(&xas, flags);
++	kfree(alloc);
+ 	return -ENOSPC;
+ }
+ EXPORT_SYMBOL(ida_alloc_range);
+diff --git a/tools/testing/radix-tree/idr-test.c b/tools/testing/radix-tree/idr-test.c
+index 8995092d541ec..3b796dd5e5772 100644
+--- a/tools/testing/radix-tree/idr-test.c
++++ b/tools/testing/radix-tree/idr-test.c
+@@ -523,8 +523,27 @@ static void *ida_random_fn(void *arg)
+ 	return NULL;
+ }
  
- 	ret = of_property_read_u32(np, "prefetch-data", &val);
- 	if (ret == 0) {
--		if (val)
-+		if (val) {
- 			prefetch |= L310_PREFETCH_CTRL_DATA_PREFETCH;
--		else
-+			*aux_val |= L310_PREFETCH_CTRL_DATA_PREFETCH;
-+		} else {
- 			prefetch &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
-+			*aux_val &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
-+		}
-+		*aux_mask &= ~L310_PREFETCH_CTRL_DATA_PREFETCH;
- 	} else if (ret != -EINVAL) {
- 		pr_err("L2C-310 OF prefetch-data property value is missing\n");
- 	}
++static void *ida_leak_fn(void *arg)
++{
++	struct ida *ida = arg;
++	time_t s = time(NULL);
++	int i, ret;
++
++	rcu_register_thread();
++
++	do for (i = 0; i < 1000; i++) {
++		ret = ida_alloc_range(ida, 128, 128, GFP_KERNEL);
++		if (ret >= 0)
++			ida_free(ida, 128);
++	} while (time(NULL) < s + 2);
++
++	rcu_unregister_thread();
++	return NULL;
++}
++
+ void ida_thread_tests(void)
+ {
++	DEFINE_IDA(ida);
+ 	pthread_t threads[20];
+ 	int i;
  
- 	ret = of_property_read_u32(np, "prefetch-instr", &val);
- 	if (ret == 0) {
--		if (val)
-+		if (val) {
- 			prefetch |= L310_PREFETCH_CTRL_INSTR_PREFETCH;
--		else
-+			*aux_val |= L310_PREFETCH_CTRL_INSTR_PREFETCH;
-+		} else {
- 			prefetch &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
-+			*aux_val &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
+@@ -536,6 +555,16 @@ void ida_thread_tests(void)
+ 
+ 	while (i--)
+ 		pthread_join(threads[i], NULL);
++
++	for (i = 0; i < ARRAY_SIZE(threads); i++)
++		if (pthread_create(&threads[i], NULL, ida_leak_fn, &ida)) {
++			perror("creating ida thread");
++			exit(1);
 +		}
-+		*aux_mask &= ~L310_PREFETCH_CTRL_INSTR_PREFETCH;
- 	} else if (ret != -EINVAL) {
- 		pr_err("L2C-310 OF prefetch-instr property value is missing\n");
- 	}
++
++	while (i--)
++		pthread_join(threads[i], NULL);
++	assert(ida_is_empty(&ida));
+ }
+ 
+ void ida_tests(void)
 -- 
 2.25.1
 
