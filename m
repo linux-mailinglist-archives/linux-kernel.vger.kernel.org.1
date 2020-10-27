@@ -2,168 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0A929C393
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF0029C34E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 18:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1822248AbgJ0Rsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 13:48:32 -0400
-Received: from mga18.intel.com ([134.134.136.126]:19011 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901794AbgJ0O0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:26:30 -0400
-IronPort-SDR: xROMfIoEN3JqlZOamORHsl4Q+/s2fTCvl5l81KLDb6l/QavCLZK7vHtyePY0TCRwkilxTGsftr
- +pzKX9dfm76A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="155867380"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="155867380"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:26:28 -0700
-IronPort-SDR: 3VNI4NRSBDWHp8nQBfs/B/8vJs2jkonqlfs51gP36eNdtj4GgHKhavP7gY55qKOaYs5zeu0n6W
- +n+P7cASaUiw==
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="535814770"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.227.194]) ([10.249.227.194])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 07:26:25 -0700
-Subject: Re: [PATCH v2 00/15] Introduce threaded trace streaming for basic
- perf record operation
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
- <20201024154309.GA2589351@krava>
- <01bad2c4-4188-f5f5-452e-a0ea0672a187@linux.intel.com>
- <20201027121013.GE2900849@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <6c75bf86-5f41-49dc-bbeb-20502ecba62a@linux.intel.com>
-Date:   Tue, 27 Oct 2020 17:26:23 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1821535AbgJ0Rol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 13:44:41 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:36781 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896213AbgJ0ObC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:31:02 -0400
+Received: by mail-lj1-f196.google.com with SMTP id x6so2018473ljd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 07:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9yAnJkcJq8fJ842gCRIxyhnneLlwmBgpRa2BY7duk18=;
+        b=JIM8871i1dAY6MSJz2tnV/FaZI+lJY9QwJ+/gDWCvRVezbv2K7KuEkac0kz9L4TnP+
+         up9BbSX57/v+XFqrwe9Nk6H3tY8lSWitihitPvKIbv/oYdwnx9UbEhaTF7lwTVSiWIgD
+         ilkRy+vADEKZklPaM92sf7U2ZDEvt4vyQe17Hxsa1D9yAAFqXvrXeAG2Sryk8l69zJde
+         pqvLQX2h+a+SXWzUCKBuRQLJgq79yjMzdWMayJKWo9486eawdqlCCvRGx82m7o4ryXkg
+         Z8XiUFO+bNowsVwe89aLNK8ALBpx8ImxxN9i0ZU5L8514D85RUZwUUjty5eqn4+jgs2n
+         dH+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9yAnJkcJq8fJ842gCRIxyhnneLlwmBgpRa2BY7duk18=;
+        b=URGDJwy3zNNDC974+U7B3JEdMLKypMuCzQGGxvuFXKfu6K4cA037fdgZkMVIilKv9w
+         IM56LrgKfAVSY8WlLaRMC4cHwMOEjhMfsHag2f1UsEcKrBLx7Lv5T8kLwv/6QlW07Gd7
+         qNcxvDOW6WBVfjqFQM09OQRmdlfE7twarYhrCByUje6rDpFzIGpoNoxjLNqT8XLbG62b
+         xUmHKf5RgjvTizzsIjOaNI/RnDM/X2+Fw4RbioTOg+hyV0G0lEV/2i4QTLoc63JbhI7+
+         +GMB5WjKdgklRwpIz8+VZC+ZON1pb1lSvbx26a2wipgLamDdASYoc952JTKR2BD1RgjC
+         CI3A==
+X-Gm-Message-State: AOAM533LwKT1HXXgvw2ql0Aypm8Jl3S0J0Nqw0cCE0z1TBHIGj2p5vwQ
+        qZsHi/9QZsm13DEpDVTS8EvKZx55aKxk6A==
+X-Google-Smtp-Source: ABdhPJxE9wm01oT28amSRCIGKy3EHdyNrPGPuB+JBcPp7uz1dYSw974Isdqrkp2wPm37df4UQ++3rA==
+X-Received: by 2002:a2e:6a19:: with SMTP id f25mr1306896ljc.386.1603809060636;
+        Tue, 27 Oct 2020 07:31:00 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b10sm191716lfd.263.2020.10.27.07.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 07:31:00 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 54474103677; Tue, 27 Oct 2020 17:31:02 +0300 (+03)
+Date:   Tue, 27 Oct 2020 17:31:02 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: RFC x86/boot/64: BOOT_PGT_SIZE definition for compressed kernel
+Message-ID: <20201027143102.ugco5dmixu66fjsc@box>
+References: <20201025004158.GA767345@rani.riverdale.lan>
+ <20201027124007.xkkseswwgerlzlsl@box>
+ <20201027131617.GA1743199@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <20201027121013.GE2900849@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027131617.GA1743199@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 09:16:17AM -0400, Arvind Sankar wrote:
+> The #PF handler is already there now with the SEV-ES series, but I agree
+> it would still complicate things. It's simpler to just increase
+> BOOT_PGT_SIZE and make it unconditional (i.e. bump it to say 32 or 64
+> even if !KASLR). It's @nobits anyway so it would not increase the size
+> of the bzImage, just require a slightly larger memory allocation by the
+> bootloader.
 
-On 27.10.2020 15:10, Jiri Olsa wrote:
-> On Mon, Oct 26, 2020 at 08:59:01PM +0300, Alexey Budankov wrote:
->>
->> On 24.10.2020 18:43, Jiri Olsa wrote:
->>> On Wed, Oct 21, 2020 at 06:52:43PM +0300, Alexey Budankov wrote:
->>>>
->>>> Changes in v2:
->>>> - explicitly added credit tags to patches 6/15 and 15/15,
->>>>   additionally to cites [1], [2]
->>>> - updated description of 3/15 to explicitly mention the reason
->>>>   to open data directories in read access mode (e.g. for perf report)
->>>> - implemented fix for compilation error of 2/15
->>>> - explicitly elaborated on found issues to be resolved for
->>>>   threaded AUX trace capture
->>>>
->>>> v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
->>>>
->>>> Patch set provides threaded trace streaming for base perf record
->>>> operation. Provided streaming mode (--threads) mitigates profiling
->>>> data losses and resolves scalability issues of serial and asynchronous
->>>> (--aio) trace streaming modes on multicore server systems. The patch
->>>> set is based on the prototype [1], [2] and the most closely relates
->>>> to mode 3) "mode that creates thread for every monitored memory map".
->>>
->>> so what I liked about the previous code was that you could
->>> configure how the threads would be created
->>>
->>> default --threads options created thread for each cpu like
->>> in your change:
->>>
->>>   $ perf record -v --threads ...
->>>   ...
->>>   thread 0 monitor: 0 allowed: 0
->>>   thread 1 monitor: 1 allowed: 1
->>>   thread 2 monitor: 2 allowed: 2
->>>   thread 3 monitor: 3 allowed: 3
->>>   thread 4 monitor: 4 allowed: 4
->>>   thread 5 monitor: 5 allowed: 5
->>>   thread 6 monitor: 6 allowed: 6
->>>   thread 7 monitor: 7 allowed: 7
->>
->> Yes, it is configurable in the prototype. Even though this patch set
->> doesn't implement that parameters for --thread option, just because
->> VTune doesn't have use cases for that yet, it has still been designed
->> and implemented with that possible extension in mind so it could then
->> be easily added on top of it.
-> 
-> I'm not sure about vtune extensions, but if we are going to
-> have --threads option I believe we should make it configurable
-> at least to the extend descibed below
+I guess it's fine. But I'm worried we leave the picture in the same
+fragile state. We still rely on the magic number.
 
-vtune employs --threads mode only and there are no use cases
-observed so far beyond this mode. Do you have such use cases?
-
-Alexei
-
-> 
-> jirka
-> 
->>
->>>
->>>
->>> then numa based:
->>>
->>>   $ perf record -v --threads=numa ...
->>>   ...
->>>   thread 0 monitor: 0-5,12-17 allowed: 0-5,12-17
->>>   thread 1 monitor: 6-11,18-23 allowed: 6-11,18-23
->>>
->>>
->>> socket based:
->>>
->>>   $ perf record -v --threads=socket ...
->>>   ...
->>>   thread 0 monitor: 0-7 allowed: 0-7
->>>
->>>
->>> core based:
->>>
->>>   $ perf record -v --threads=core ...
->>>   ...
->>>   thread 0 monitor: 0,4 allowed: 0,4
->>>   thread 1 monitor: 1,5 allowed: 1,5
->>>   thread 2 monitor: 2,6 allowed: 2,6
->>>   thread 3 monitor: 3,7 allowed: 3,7
->>>
->>>
->>> and user configurable:
->>>
->>>   $ perf record -v  --threads=0-3/0:4-7/4 ...
->>>   ...
->>>   threads: 0. monitor 0-3, allowed 0
->>>   threads: 1. monitor 4-7, allowed 4
->>>
->>>
->>> so this way you could easily pin threads to cpu/core/socket/numa,
->>> or to some other cpu of your choice, because this will be always
->>> game of try and check where I'm not getting LOST events and not
->>> creating 1000 threads
->>>
->>>  perf record: Add support for threads numa option value
->>>  perf record: Add support for threads socket option value
->>>  perf record: Add support for threads core option value
->>>  perf record: Add support for threads user option value
->>
->> Makes sense.
->>
->> Alexei
->>
-> 
+-- 
+ Kirill A. Shutemov
