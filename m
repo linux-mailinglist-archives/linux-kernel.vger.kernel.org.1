@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EB729D6A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1D829D660
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731453AbgJ1WRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S1731218AbgJ1WOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731436AbgJ1WQ4 (ORCPT
+        with ESMTP id S1730220AbgJ1WO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:16:56 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F156AC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:16:55 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id j21so567097ota.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xcYtxhATV9tNgzx/0u/R7WT0cT5PolfDyRZ40j1FlbI=;
-        b=zgsUAsMT0yDpwiTyOvKDRHI+scC2U9iPXQzA5yYwY+Tqh8UAupR9WUMi5j7rPAKb0G
-         MBot37UhvP8sRYYRvOgUm86e204v15RwQ8HNzZ9o/hzd4Wei6ltsr8yURMsIeJMmt0fh
-         9G1X21u3jibbfJmYoUEblBbsG2Dh5PvSnLFLGiohh+01PMCPtvyR+3DmVDI2MWxiX2Nz
-         XKnMH1kwOt848xReaMGXXTVvHnND/sSAfk0bRQ5M9++dwwC7boNt61hkeSezDkm0U65p
-         y1b93ygDMQQRL0vL9JH0JfGL/WyWk9yj3sfsiR43T9P78VT+Q7PubjaogZZeWp5Tc3VB
-         8iHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xcYtxhATV9tNgzx/0u/R7WT0cT5PolfDyRZ40j1FlbI=;
-        b=X9APbF8zN27uQUddhSCf7dZJJPzLqnlo1k3PEgz3/l3HCAGtsinqCgWWntMWtAzdHL
-         pUA4B8uH7msqw4/792o1+QcvcHNs36UlhJZm4LvGs4dz2rx5NGZZ5Dsa/7PSoEsEJOzG
-         q6NidfG1IsKBSa89ZSn6hQAsxfzBR84DVfCPmq4RdnqakgPV2TvrKYpSwkQm/7fsAgh5
-         9+3UqZCTYe+4aoeMi/6J8KrwHG5eKoKSRFV6UwoOEPwjo/8SXS49bDwNpN5tP1Njt804
-         4vt7oCY4n5MNaoJzCEVsbwuo07CKYEATo9S6U1dr1oK6QXzLvrv99pEdIQDy6d6HZLOR
-         oFzQ==
-X-Gm-Message-State: AOAM5308NhhPe3v90km8aFuRokrmgAEMW4IQkb11XwPsMX7IMx3ffVrW
-        FYBLwpJHCNtUqcHyOtjuIvB+86XCLmJ13CjRgCgBA9vPfA55Nz5m
-X-Google-Smtp-Source: ABdhPJy6soemAsqMe1KYx+bmBldzxZD4Uw6ebV8TsxQ/bcsplxiFnj7KM2Q6qrJCMRh4pBcok2RmEJjEr5dSkRTzXfY=
-X-Received: by 2002:a9d:22e4:: with SMTP id y91mr5240199ota.72.1603893200353;
- Wed, 28 Oct 2020 06:53:20 -0700 (PDT)
+        Wed, 28 Oct 2020 18:14:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC2FC0613CF;
+        Wed, 28 Oct 2020 15:14:26 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 13:56:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603893372;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kAvI7dHJx8wfahjko7XQ1ABYhbCwCkyHVzhFN8A1ygU=;
+        b=E5uz2HTICYHzGXw5ZYiy/+yBdTDS6u57xqxSe4g+gBFI4aUVexvQH39Y80k5tqUI5BRfhk
+        UqTWu0PhM5g9fDg74F4koNJasCKkA6NsIuELkUefftvmD3mtxFGgGh0FbN5g39VfiVY6sl
+        nsY/ShNCdt7rLsALBX1llxhzcefQpkx5bB+ZWWeBniRUEaM+TARCllN+nsL5GBThS8q9Sg
+        JZZMZyQZv46ZcSUAao44pzZ7Ir49Np1L+SKYaHPfbtVNqxwwRwNA/sOK+wThe1z2yfno/B
+        Cq+WsDmYyJgPmVM9BuRlrgAMsWYk4AnbSqxPxUdWnpK5RGvdNoaGkiMAlLAzMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603893372;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kAvI7dHJx8wfahjko7XQ1ABYhbCwCkyHVzhFN8A1ygU=;
+        b=1zLNqNSgg67VMV43CcBi7SqLpnB0p3bbn2areaRCcBwzRV0ukphUpEYMpDkAxTdmv26G4B
+        qlAQPU6cxj9TT1CA==
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/mm/ident_map: Check for errors from ident_pud_init()
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201027230648.1885111-1-nivedita@alum.mit.edu>
+References: <20201027230648.1885111-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-References: <20201027134902.130312227@linuxfoundation.org>
-In-Reply-To: <20201027134902.130312227@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 28 Oct 2020 19:23:08 +0530
-Message-ID: <CA+G9fYvGVjxrJf=vFzuqhWfcmCUPbeOB3qgL7HWZUBiFAo4KSA@mail.gmail.com>
-Subject: Re: [PATCH 4.9 000/139] 4.9.241-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <160389337110.397.17976376777109994425.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 19:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.241 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Oct 2020 13:48:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.241-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The following commit has been merged into the x86/mm branch of tip:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Commit-ID:     1fcd009102ee02e217f2e7635ab65517d785da8e
+Gitweb:        https://git.kernel.org/tip/1fcd009102ee02e217f2e7635ab65517d785da8e
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Tue, 27 Oct 2020 19:06:48 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 28 Oct 2020 14:48:30 +01:00
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+x86/mm/ident_map: Check for errors from ident_pud_init()
 
-Summary
-------------------------------------------------------------------------
+Commit
 
-kernel: 4.9.241-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: 97bfc73b33b595e89801f5fd849c14af344dccdd
-git describe: v4.9.240-140-g97bfc73b33b5
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.240-140-g97bfc73b33b5
+  ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
 
-No regressions (compared to build v4.9.240)
+added ident_p4d_init() to support 5-level paging, but this function
+doesn't check and return errors from ident_pud_init().
 
-No fixes (compared to build v4.9.240)
+For example, the decompressor stub uses this code to create an identity
+mapping. If it runs out of pages while trying to allocate a PMD
+pagetable, the error will be currently ignored.
 
-Ran 16492 total tests in the following environments and test suites.
+Fix this to propagate errors.
 
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
+ [ bp: Space out statements for better readability. ]
 
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* perf
-* v4l2-compliance
-* ltp-sched-tests
-* network-basic-tests
-* ltp-containers-tests
-* ltp-fs-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
+Fixes: ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lkml.kernel.org/r/20201027230648.1885111-1-nivedita@alum.mit.edu
+---
+ arch/x86/mm/ident_map.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
+index fe7a125..968d700 100644
+--- a/arch/x86/mm/ident_map.c
++++ b/arch/x86/mm/ident_map.c
+@@ -62,6 +62,7 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
+ 			  unsigned long addr, unsigned long end)
+ {
+ 	unsigned long next;
++	int result;
+ 
+ 	for (; addr < end; addr = next) {
+ 		p4d_t *p4d = p4d_page + p4d_index(addr);
+@@ -73,13 +74,20 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
+ 
+ 		if (p4d_present(*p4d)) {
+ 			pud = pud_offset(p4d, 0);
+-			ident_pud_init(info, pud, addr, next);
++			result = ident_pud_init(info, pud, addr, next);
++			if (result)
++				return result;
++
+ 			continue;
+ 		}
+ 		pud = (pud_t *)info->alloc_pgt_page(info->context);
+ 		if (!pud)
+ 			return -ENOMEM;
+-		ident_pud_init(info, pud, addr, next);
++
++		result = ident_pud_init(info, pud, addr, next);
++		if (result)
++			return result;
++
+ 		set_p4d(p4d, __p4d(__pa(pud) | info->kernpg_flag));
+ 	}
+ 
