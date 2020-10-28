@@ -2,418 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8999829DC0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA43829DB85
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390901AbgJ2ATP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:19:15 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:37697 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730295AbgJ1Wo6 (ORCPT
+        id S2390131AbgJ2ACA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:02:00 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:39675 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgJ2AB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:44:58 -0400
-Received: by mail-ed1-f68.google.com with SMTP id o18so1195721edq.4;
-        Wed, 28 Oct 2020 15:44:55 -0700 (PDT)
+        Wed, 28 Oct 2020 20:01:58 -0400
+Received: by mail-lj1-f194.google.com with SMTP id m16so1158017ljo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:01:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MmDawDqqG51j1SEyUh74FZXblmEHsPWixia7zM2SpSs=;
-        b=NF+19iPVhhhNQIRt5u9R0NK3KdmU71qPuPUw/5LWEUKJiQsBetgAVZW1ykW1NFYjT3
-         eUhp1JsZEdWBg/oqcWGkFrztbBBoSOzdvOqZi7id31CKCor0q5HSnkvjrl4RqSSqYVXu
-         ZTVwkjmzV6EoFrFsWYTlXsbR8H5XA4wIcW9rmaqOGTKNAbJPdZFIoVaOFnE6vBEhzxdd
-         NwqrS5K67bXWCoEm4+vPwD942LuaylM7aJSlpGB0U31fdmhpOQLRbIYa2s/5axO/HQ5D
-         0uw9mNr+GqGBhPLUtTC672y/1v8J37F83QQazLHNggQHSZ9ZBvL4DT9fkQnc8pUxechu
-         UPBg==
-X-Gm-Message-State: AOAM530YPZE5yAuqYN/GX74l7DzIwFW0ZwVAddRIT7cFIwoWo/CKpnIv
-        fIuHGODxBvsLM3Id9MZltgXcvy2GyNY2QA==
-X-Google-Smtp-Source: ABdhPJxNRoWBHACALnv5RhHLKHytkZfjCSJNZCKNcvIIL4frBkuztq6+oQimGzCWxz+ouc+HF4DP2A==
-X-Received: by 2002:ac2:4545:: with SMTP id j5mr2236735lfm.267.1603878530400;
-        Wed, 28 Oct 2020 02:48:50 -0700 (PDT)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id f21sm474021lfc.122.2020.10.28.02.48.48
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=fXCMewML1R44X9ELdtxmrAR2fEXSSjSMh1z8WcI8TOE=;
+        b=CZ/s4sn7JJUct8NBai9kw+fJBz8jexdKJXD86nrWnYYB3C0g8SF4PM4v+GCSonVqMt
+         7UayKNEoCCG1bSL4CD0Hz0TA+kKLcElhztUaLQDWcLDySpEmb9LS9vsRx2u9XQkWF9Dm
+         f6KVbsE1iv0SXW7U3xtokOyl3b8UTq+ehskkiilr6jxG9fmDd3c6WPyBIt72GQdKeCHw
+         rf/Z5JjL8kkjon1YpCSIsweFJhzkUJ/Upwa26qluUsiXsaeKBgbjHBNcRqZJV8ewAbv/
+         RGyezr+MItOyR+XHQQcYaZ+4uegiJcjegY5HHMBG2M+YSnBBycqyFJysPnEVxL1leLeF
+         u9pA==
+X-Gm-Message-State: AOAM530bvFv/d95nG0NXzTFKnP+f8xOeQ8qiFZrXvYeoJ3NeeXvb1/1l
+        o6cji/gRCDfNjmoEpnAoX4tR3k2QR8+YN9H/
+X-Google-Smtp-Source: ABdhPJzto0yxapQSHMpCqgTr8htQUA5n7x4VR9wP2l3a2iVO5TDvbv2WIEStegHxeUa2gG8JsUhL5Q==
+X-Received: by 2002:a17:906:3852:: with SMTP id w18mr6511843ejc.551.1603879950884;
+        Wed, 28 Oct 2020 03:12:30 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id hh17sm2682649ejb.125.2020.10.28.03.12.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 02:48:49 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 11:48:43 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v4 3/4] wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
-Message-ID: <3a765211597a3440444ac81a67584184d6e964af.1603877481.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1603877481.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 28 Oct 2020 03:12:30 -0700 (PDT)
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
+ <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
+ <20201026154538.GA807103@ubuntu>
+ <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
+ <20201027155813.GA818508@ubuntu>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Yun Hsiang <hsiang023167@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, qais.yousef@arm.com
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+In-reply-to: <20201027155813.GA818508@ubuntu>
+Message-ID: <87v9eumzic.derkling@matbug.net>
+Date:   Wed, 28 Oct 2020 11:11:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1603877481.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Watchdog support for ROHM BD9576MUF and BD9573MUF PMICs which are
-mainly used to power the R-Car series processors. The watchdog is
-pinged using a GPIO and enabled using another GPIO. Additionally
-watchdog time-out can be configured to HW prior starting the watchdog.
-Watchdog timeout can be configured to detect only delayed ping or in
-a window mode where also too fast pings are detected.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/watchdog/Kconfig      |  13 ++
- drivers/watchdog/Makefile     |   1 +
- drivers/watchdog/bd9576_wdt.c | 290 ++++++++++++++++++++++++++++++++++
- 3 files changed, 304 insertions(+)
- create mode 100644 drivers/watchdog/bd9576_wdt.c
+Hi Dietmar, Yun,
+I hope I'm not too late before v4 posting ;)
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index fd7968635e6d..d5fec1bdf23e 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -172,6 +172,19 @@ config BD70528_WATCHDOG
- 	  Alternatively say M to compile the driver as a module,
- 	  which will be called bd70528_wdt.
- 
-+config BD957XMUF_WATCHDOG
-+	tristate "ROHM BD9576MUF and BD9573MUF PMIC Watchdog"
-+	depends on MFD_ROHM_BD957XMUF
-+	select WATCHDOG_CORE
-+	help
-+	  Support for the watchdog in the ROHM BD9576 and BD9573 PMICs.
-+	  These PMIC ICs contain watchdog block which can be configured
-+	  to toggle reset line if SoC fails to ping watchdog via GPIO.
-+
-+	  Say Y here to include support for the ROHM BD9576 or BD9573
-+	  watchdog. Alternatively say M to compile the driver as a module,
-+	  which will be called bd9576_wdt.
-+
- config DA9052_WATCHDOG
- 	tristate "Dialog DA9052 Watchdog"
- 	depends on PMIC_DA9052 || COMPILE_TEST
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 071a2e50be98..54f39883f3ac 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -209,6 +209,7 @@ obj-$(CONFIG_XEN_WDT) += xen_wdt.o
- 
- # Architecture Independent
- obj-$(CONFIG_BD70528_WATCHDOG) += bd70528_wdt.o
-+obj-$(CONFIG_BD957XMUF_WATCHDOG) += bd9576_wdt.o
- obj-$(CONFIG_DA9052_WATCHDOG) += da9052_wdt.o
- obj-$(CONFIG_DA9055_WATCHDOG) += da9055_wdt.o
- obj-$(CONFIG_DA9062_WATCHDOG) += da9062_wdt.o
-diff --git a/drivers/watchdog/bd9576_wdt.c b/drivers/watchdog/bd9576_wdt.c
-new file mode 100644
-index 000000000000..afef19ce01be
---- /dev/null
-+++ b/drivers/watchdog/bd9576_wdt.c
-@@ -0,0 +1,290 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2020 ROHM Semiconductors
-+ *
-+ * ROHM BD9576MUF and BD9573MUF Watchdog driver
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/mfd/rohm-bd957x.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/watchdog.h>
-+
-+static bool nowayout;
-+module_param(nowayout, bool, 0);
-+MODULE_PARM_DESC(nowayout,
-+		"Watchdog cannot be stopped once started (default=\"false\")");
-+
-+#define HW_MARGIN_MIN 2
-+#define HW_MARGIN_MAX 4416
-+#define BD957X_WDT_DEFAULT_MARGIN 4416
-+
-+struct bd9576_wdt_priv {
-+	struct gpio_desc	*gpiod_ping;
-+	struct gpio_desc	*gpiod_en;
-+	struct device		*dev;
-+	struct regmap		*regmap;
-+	bool			always_running;
-+	struct watchdog_device	wdd;
-+};
-+
-+static void bd9576_wdt_disable(struct bd9576_wdt_priv *priv)
-+{
-+	gpiod_set_value_cansleep(priv->gpiod_en, 0);
-+}
-+
-+static int bd9576_wdt_ping(struct watchdog_device *wdd)
-+{
-+	struct bd9576_wdt_priv *priv = watchdog_get_drvdata(wdd);
-+
-+	/* Pulse */
-+	gpiod_set_value_cansleep(priv->gpiod_ping, 1);
-+	gpiod_set_value_cansleep(priv->gpiod_ping, 0);
-+
-+	return 0;
-+}
-+
-+static int bd9576_wdt_start(struct watchdog_device *wdd)
-+{
-+	struct bd9576_wdt_priv *priv = watchdog_get_drvdata(wdd);
-+
-+	gpiod_set_value_cansleep(priv->gpiod_en, 1);
-+
-+	return bd9576_wdt_ping(wdd);
-+}
-+
-+static int bd9576_wdt_stop(struct watchdog_device *wdd)
-+{
-+	struct bd9576_wdt_priv *priv = watchdog_get_drvdata(wdd);
-+
-+	if (!priv->always_running)
-+		bd9576_wdt_disable(priv);
-+	else
-+		set_bit(WDOG_HW_RUNNING, &wdd->status);
-+
-+	return 0;
-+}
-+
-+static const struct watchdog_info bd957x_wdt_ident = {
-+	.options	= WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
-+			  WDIOF_SETTIMEOUT,
-+	.identity	= "BD957x Watchdog",
-+};
-+
-+static const struct watchdog_ops bd957x_wdt_ops = {
-+	.owner		= THIS_MODULE,
-+	.start		= bd9576_wdt_start,
-+	.stop		= bd9576_wdt_stop,
-+	.ping		= bd9576_wdt_ping,
-+};
-+
-+/* Unit is hundreds of uS */
-+#define FASTNG_MIN 23
-+
-+static int find_closest_fast(int target, int *sel, int *val)
-+{
-+	int i;
-+	int window = FASTNG_MIN;
-+
-+	for (i = 0; i < 8 && window < target; i++)
-+		window <<= 1;
-+
-+	*val = window;
-+	*sel = i;
-+
-+	if (i == 8)
-+		return -EINVAL;
-+
-+	return 0;
-+
-+}
-+
-+static int find_closest_slow_by_fast(int fast_val, int target, int *slowsel)
-+{
-+	int sel;
-+	static const int multipliers[] = {2, 3, 7, 15};
-+
-+	for (sel = 0; sel < ARRAY_SIZE(multipliers) &&
-+	     multipliers[sel] * fast_val < target; sel++)
-+		;
-+
-+	if (sel == ARRAY_SIZE(multipliers))
-+		return -EINVAL;
-+
-+	*slowsel = sel;
-+
-+	return 0;
-+}
-+
-+static int find_closest_slow(int target, int *slow_sel, int *fast_sel)
-+{
-+	static const int multipliers[] = {2, 3, 7, 15};
-+	int i, j;
-+	int val = 0;
-+	int window = FASTNG_MIN;
-+
-+	for (i = 0; i < 8; i++) {
-+		for (j = 0; j < ARRAY_SIZE(multipliers); j++) {
-+			int slow;
-+
-+			slow = window * multipliers[j];
-+			if (slow >= target && (!val || slow < val)) {
-+				val = slow;
-+				*fast_sel = i;
-+				*slow_sel = j;
-+			}
-+		}
-+		window <<= 1;
-+	}
-+	if (!val)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+#define BD957X_WDG_TYPE_WINDOW BIT(5)
-+#define BD957X_WDG_TYPE_SLOW 0
-+#define BD957X_WDG_TYPE_MASK BIT(5)
-+#define BD957X_WDG_NG_RATIO_MASK 0x18
-+#define BD957X_WDG_FASTNG_MASK 0x7
-+
-+static int bd957x_set_wdt_mode(struct bd9576_wdt_priv *priv, int hw_margin,
-+			       int hw_margin_min)
-+{
-+	int ret, fastng, slowng, type, reg, mask;
-+	struct device *dev = priv->dev;
-+
-+	/* convert to 100uS */
-+	hw_margin *= 10;
-+	hw_margin_min *= 10;
-+	if (hw_margin_min) {
-+		int min;
-+
-+		type = BD957X_WDG_TYPE_WINDOW;
-+		dev_dbg(dev, "Setting type WINDOW 0x%x\n", type);
-+		ret = find_closest_fast(hw_margin_min, &fastng, &min);
-+		if (ret) {
-+			dev_err(dev, "bad WDT window for fast timeout\n");
-+			return ret;
-+		}
-+
-+		ret = find_closest_slow_by_fast(min, hw_margin, &slowng);
-+		if (ret) {
-+			dev_err(dev, "bad WDT window\n");
-+			return ret;
-+		}
-+
-+	} else {
-+		type = BD957X_WDG_TYPE_SLOW;
-+		dev_dbg(dev, "Setting type SLOW 0x%x\n", type);
-+		ret = find_closest_slow(hw_margin, &slowng, &fastng);
-+		if (ret) {
-+			dev_err(dev, "bad WDT window\n");
-+			return ret;
-+		}
-+	}
-+
-+	slowng <<= ffs(BD957X_WDG_NG_RATIO_MASK) - 1;
-+	reg = type | slowng | fastng;
-+	mask = BD957X_WDG_TYPE_MASK | BD957X_WDG_NG_RATIO_MASK |
-+	       BD957X_WDG_FASTNG_MASK;
-+	ret = regmap_update_bits(priv->regmap, BD957X_REG_WDT_CONF,
-+				 mask, reg);
-+
-+	return ret;
-+}
-+
-+static int bd9576_wdt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->parent->of_node;
-+	struct bd9576_wdt_priv *priv;
-+	u32 hw_margin[2];
-+	u32 hw_margin_max = BD957X_WDT_DEFAULT_MARGIN, hw_margin_min = 0;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->dev = dev;
-+	priv->regmap = dev_get_regmap(dev->parent, NULL);
-+	if (!priv->regmap) {
-+		dev_err(dev, "No regmap found\n");
-+		return -ENODEV;
-+	}
-+
-+	priv->gpiod_en = devm_gpiod_get_from_of_node(dev, dev->parent->of_node,
-+						     "rohm,watchdog-enable-gpios",
-+						     0, GPIOD_OUT_LOW,
-+						     "watchdog-enable");
-+	if (IS_ERR(priv->gpiod_en))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpiod_en),
-+			      "getting watchdog-enable GPIO failed\n");
-+
-+	priv->gpiod_ping = devm_gpiod_get_from_of_node(dev, dev->parent->of_node,
-+						     "rohm,watchdog-ping-gpios",
-+						     0, GPIOD_OUT_LOW,
-+						     "watchdog-ping");
-+	if (IS_ERR(priv->gpiod_ping))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpiod_ping),
-+				     "getting watchdog-ping GPIO failed\n");
-+
-+	ret = of_property_read_variable_u32_array(np, "rohm,hw-timeout-ms",
-+						  &hw_margin[0], 1, 2);
-+	if (ret < 0 && ret != -EINVAL)
-+		return ret;
-+
-+	if (ret == 1)
-+		hw_margin_max = hw_margin[0];
-+
-+	if (ret == 2) {
-+		hw_margin_max = hw_margin[1];
-+		hw_margin_min = hw_margin[0];
-+	}
-+
-+	ret = bd957x_set_wdt_mode(priv, hw_margin_max, hw_margin_min);
-+	if (ret)
-+		return ret;
-+
-+	priv->always_running = of_property_read_bool(np, "always-running");
-+
-+	watchdog_set_drvdata(&priv->wdd, priv);
-+
-+	priv->wdd.info			= &bd957x_wdt_ident;
-+	priv->wdd.ops			= &bd957x_wdt_ops;
-+	priv->wdd.min_hw_heartbeat_ms	= hw_margin_min;
-+	priv->wdd.max_hw_heartbeat_ms	= hw_margin_max;
-+	priv->wdd.parent		= dev;
-+	priv->wdd.timeout		= (hw_margin_max / 2) * 1000;
-+
-+	watchdog_init_timeout(&priv->wdd, 0, dev);
-+	watchdog_set_nowayout(&priv->wdd, nowayout);
-+
-+	watchdog_stop_on_reboot(&priv->wdd);
-+
-+	if (priv->always_running)
-+		bd9576_wdt_start(&priv->wdd);
-+
-+	return devm_watchdog_register_device(dev, &priv->wdd);
-+}
-+
-+static struct platform_driver bd9576_wdt_driver = {
-+	.driver	= {
-+		.name = "bd9576-wdt",
-+	},
-+	.probe	= bd9576_wdt_probe,
-+};
-+
-+module_platform_driver(bd9576_wdt_driver);
-+
-+MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-+MODULE_DESCRIPTION("ROHM BD9576/BD9573 Watchdog driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:bd9576-wdt");
--- 
-2.21.3
+I think the overall approach is sound, I just added in a couple of
+cleanups and a possible fix (user_defined reset).
+
+Best,
+Patrick
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+On Tue, Oct 27, 2020 at 16:58:13 +0100, Yun Hsiang <hsiang023167@gmail.com> wrote...
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+> Hi Diet mar,
+> On Mon, Oct 26, 2020 at 08:00:48PM +0100, Dietmar Eggemann wrote:
+>> On 26/10/2020 16:45, Yun Hsiang wrote:
+
+[...]
+
+>> I thought about something like this. Only lightly tested. 
+>> 
+>> ---8<---
+>> 
+>> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>> Date: Mon, 26 Oct 2020 13:52:23 +0100
+>> Subject: [PATCH] SCHED_FLAG_UTIL_CLAMP_RESET
+>> 
+>> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>> ---
+>>  include/uapi/linux/sched.h |  4 +++-
+>>  kernel/sched/core.c        | 31 +++++++++++++++++++++++++++----
+>>  2 files changed, 30 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+>> index 3bac0a8ceab2..0dd890822751 100644
+>> --- a/include/uapi/linux/sched.h
+>> +++ b/include/uapi/linux/sched.h
+>> @@ -132,12 +132,14 @@ struct clone_args {
+>>  #define SCHED_FLAG_KEEP_PARAMS		0x10
+>>  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
+>>  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
+>> +#define SCHED_FLAG_UTIL_CLAMP_RESET	0x80
+>>  
+>>  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
+>>  				 SCHED_FLAG_KEEP_PARAMS)
+>>  
+>>  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
+>> -				 SCHED_FLAG_UTIL_CLAMP_MAX)
+>> +				 SCHED_FLAG_UTIL_CLAMP_MAX | \
+>> +				 SCHED_FLAG_UTIL_CLAMP_RESET)
+>>  
+>>  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
+>>  			 SCHED_FLAG_RECLAIM		| \
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 3dc415f58bd7..717b1cf5cf1f 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -1438,6 +1438,23 @@ static int uclamp_validate(struct task_struct *p,
+>>  	return 0;
+>>  }
+>>  
+>> +static bool uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
+>> +{
+
+Maybe we can add in some comments?
+
+        /* No _UCLAMP_RESET flag set: do not reset */
+>> +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
+>> +		return false;
+>> +
+
+        /* Only _UCLAMP_RESET flag set: reset both clamps */
+>> +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
+>> +		return true;
+>> +
+        /* Both _UCLAMP_RESET and _UCLAMP_MIN flags are set: reset only min */
+>> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
+>> +		return true;
+>> +
+
+        /* Both _UCLAMP_RESET and _UCLAMP_MAX flags are set: reset only max */
+>> +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
+>> +		return true;
+
+Since the evaluation ordering is important, do we have to better
+_always_ use a READ_ONCE() for all flags accesses above, to ensure it is
+preserved?
+
+>> +
+>> +	return false;
+>> +}
+>> +
+>>  static void __setscheduler_uclamp(struct task_struct *p,
+>>  				  const struct sched_attr *attr)
+>>  {
+>> @@ -1449,24 +1466,30 @@ static void __setscheduler_uclamp(struct task_struct *p,
+>>  	 */
+
+Perhaps we should update the comment above this loop with something
+like:
+
+        /*
+         * Reset to default clamps on forced _UCLAMP_RESET (always) and
+         * for tasks without a task-specific value (on scheduling class change).
+         */
+>>  	for_each_clamp_id(clamp_id) {
+>>  		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+>> +		unsigned int value;
+>>  
+>>  		/* Keep using defined clamps across class changes */
+>> -		if (uc_se->user_defined)
+>> +		if (!uclamp_reset(clamp_id, attr->sched_flags) &&
+>> +		    uc_se->user_defined) {
+>>  			continue;
+>> +		}
+
+I think we miss to reset the user_defined flag here.
+
+What about replacing the above chunk with:
+
+                if (uclamp_reset(clamp_id, attr->sched_flags))
+                        uc_se->user_defined = false;
+                if (uc-se->user_defined)
+                        continue;
+
+?
+
+
+>>  
+>>  		/*
+>>  		 * RT by default have a 100% boost value that could be modified
+>>  		 * at runtime.
+>>  		 */
+>>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+>> -			__uclamp_update_util_min_rt_default(p);
+>> +			value = sysctl_sched_uclamp_util_min_rt_default;
+
+By removing this usage of __uclamp_updadate_util_min_rt_default(p),
+the only other usage remaining is the call from:
+   uclamp_udpate_util_min_rt_default().
+
+What about an additional cleanup by in-lining the only surviving usage?
+
+
+>>  		else
+>> -			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+>> +			value = uclamp_none(clamp_id);
+>>  
+>> +		uclamp_se_set(uc_se, value, false);
+>>  	}
+>>  
+>> -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+>> +	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) ||
+>> +	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET) {
+
+The likely() above should not wrap both conditions to be effective?
+
+>>  		return;
+>> +	}
+>>  
+>>  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+>>  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
