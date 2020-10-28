@@ -2,198 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD6129D7BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531BF29D613
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732827AbgJ1W00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S1730701AbgJ1WLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732288AbgJ1W0Y (ORCPT
+        with ESMTP id S1730667AbgJ1WLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:24 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F448C0613CF;
-        Wed, 28 Oct 2020 15:26:23 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id t20so1102441edr.11;
-        Wed, 28 Oct 2020 15:26:22 -0700 (PDT)
+        Wed, 28 Oct 2020 18:11:30 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B27CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:11:30 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id x20so529856qkn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:11:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DFt3OsdRuEz3CXOLtAVxHXrZK5+IKIOLidQMqe1NacM=;
-        b=JsDlWTxfzAuIg2nrxgAAaqdUyd+UeKHpmbYpAf5+6Cag2nEZBupfl0u8jvleNBW6xJ
-         oVgeyeyCboCMPA0sVMsp6RUPF0xBCZOFF9cnWhOxYh0Lwo+19y8y/eSOoa4dfTA83iuE
-         rOUduuUgo6IjDQNE+RttmeyNhPejU4hzaVSkMpHbMaaKgIv/K8ECX3G1mmHxJ0gmhk5M
-         u/JQQDeIot++TKYYpbMJbywgT552zizhjWbfCDoKk7oet4sNb4iJxlM1iI3xr4O0wCiL
-         VZYfhcsx6bBrDK4Lx3J4j5h+HetgwTSee1MYEZLmIoLikoykr0WtsJqHWzZ2Hkfg0gfm
-         10GQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3/dbD6k4zYkgkO9i/jaBjHmJBv6HsgR1Y1s5z72VaeM=;
+        b=jzDu0zGYV0sCIMDYmrlx17KFFoRGJVXaSP+JM88dVWILaYVrfQJE2VXQPgnQ08FRxE
+         QVcSp4+JL+KPNLAVXckuIZnlh8outKNgN+r4OZy5Fg0EHiTuhqZWp7HA0Ur6plHHHYAY
+         y7GCrQk65iuRcFAU2fhrOJIfSSX0Ynw+7qInYaqmCDYybwiImcylQ7pO4d3l28LpeU3O
+         TJeSXadzPxxdW6NfHewQqmkw0OQvxiT9NG7G+DSlRxNymzsTIfX577sXouL34sZlZCUC
+         i3YxGbxHXGXWVLkZ6Ya64js4/WG1rMD9FwW2zjJriSu0CK8TA1Jn8vXRILl0KfvspuuK
+         scYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DFt3OsdRuEz3CXOLtAVxHXrZK5+IKIOLidQMqe1NacM=;
-        b=ZRdSZPwefNyY/46zBZdD4KFY+p+Tg7YsfilP+tNGAzJLDRHRoKRhTjGwxEqXtuZsPX
-         Uzm2DMqtAWwLYwdyHYp1b6TOdGDtmIXH+3xA3Eq7r5uufOAWBGz7306mfWdSqOM/yTBA
-         REbPs1eS/bIvQIXfvxerd8Posz4mtrlPSnGWKF8vJtTrGPuOsgOC/aceb/xCaLSAofyR
-         GRNFa20abh0kQYA/Agj8QU2bHeXW5etKmh11VCqHKfrtNgryGfiWM2Z5lIRg/nN9fBVo
-         N6g+6lGpLtCjXD+ALF7yWxeaTLaVew5WRKAtATXhg3FBJOzXHrktYE3EwwD2g6szxOQG
-         fiSg==
-X-Gm-Message-State: AOAM532v+VZTRjz30RmIWB5Nv/yV1JxbpOqOoCGZd+/aCCGDy7ziuBEW
-        jzReGT2ye29QoGfYtsMhOAou1mxNL/w=
-X-Google-Smtp-Source: ABdhPJzLDPFfkFNWRJSCu21o/qzBa6227icsqhYSbn8/HpDZ+nrlhJvtmoj9iehd/PZp9PNOe1wCZg==
-X-Received: by 2002:a50:ef12:: with SMTP id m18mr8774172eds.313.1603903534856;
-        Wed, 28 Oct 2020 09:45:34 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id w22sm104171edu.15.2020.10.28.09.45.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 09:45:33 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 17:45:31 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        JC Kuo <jckuo@nvidia.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH] phy: tegra: xusb: Fix dangling pointer on probe failure
-Message-ID: <20201028164531.GA252854@ulmo>
-References: <20201013095820.311376-1-maz@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3/dbD6k4zYkgkO9i/jaBjHmJBv6HsgR1Y1s5z72VaeM=;
+        b=dTuB7ct2Se+mEO/PxAAaKI4SLtTqZdgSkNF3+/nh3grKcGFExohr/74moSWQRuZMbc
+         bQ1V96K08Xk/BEzBw1iMAPemNHyLLSFvIhijvbo2EK51s0QxbZ3Albaan38HIYv7bOs4
+         VzLot+CDougHxk+MvVGofIsEtASb2aUNhGqdPIL331Gs4rdQgtgOSQTDX70TkoNoSQaB
+         I2OuzGVP4BJMliq6iGj824Q63oA8kYIF02CtP9mwwEOTFtJG9IS7C0J/WIJ416QJ7xJC
+         HqhL5ivv0WFGn5VhqBW7iCe1ISx42JqcD5Pjcf+6PwehW7VK711fNVx8QOlOMn6uXQpo
+         hcXw==
+X-Gm-Message-State: AOAM530UQLkX8eOFz/oAtwYs/5wR7HOSaei1N22U2sYB+4HOHqMB2WWK
+        HNf/kJRqb4+PSvJlR2bn+H8whCLYPxIxuLC7TiFkEt59MqqsjQ==
+X-Google-Smtp-Source: ABdhPJxF7GbY5uAzlHVamEE2HLYsj+a+74v1Wuj5gYY+3vUFn7x8Uhm0uxbnb1tBMmwbqvDYgBze6LvlaqOptayTr5E=
+X-Received: by 2002:ac8:44ae:: with SMTP id a14mr8151829qto.67.1603903670610;
+ Wed, 28 Oct 2020 09:47:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
-Content-Disposition: inline
-In-Reply-To: <20201013095820.311376-1-maz@kernel.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <cover.1603372719.git.andreyknvl@google.com> <21fa5f4eb6ee132a57b716ff6245f2c98de2d204.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <21fa5f4eb6ee132a57b716ff6245f2c98de2d204.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 17:47:39 +0100
+Message-ID: <CACT4Y+Z-BVAVy-WLLT7x8iFAzk+VoPSaiHK3xh9ya_2xJ-7hZA@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 15/21] kasan: check kasan_enabled in annotations
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 13, 2020 at 10:58:20AM +0100, Marc Zyngier wrote:
-> If, for some reason, the xusb PHY fails to probe, it leaves
-> a dangling pointer attached to the platform device structure.
->=20
-> This would normally be harmless, but the Tegra XHCI driver then
-> goes and extract that pointer from the PHY device. Things go
-> downhill from there:
->=20
->     8.752082] [004d554e5145533c] address between user and kernel address =
-ranges
-> [    8.752085] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [    8.752088] Modules linked in: max77620_regulator(E+) xhci_tegra(E+) s=
-dhci_tegra(E+) xhci_hcd(E) sdhci_pltfm(E) cqhci(E) fixed(E) usbcore(E) scsi=
-_mod(E) sdhci(E) host1x(E+)
-> [    8.752103] CPU: 4 PID: 158 Comm: systemd-udevd Tainted: G S      W   =
-E     5.9.0-rc7-00298-gf6337624c4fe #1980
-> [    8.752105] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
-> [    8.752108] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=3D--)
-> [    8.752115] pc : kobject_put+0x1c/0x21c
-> [    8.752120] lr : put_device+0x20/0x30
-> [    8.752121] sp : ffffffc012eb3840
-> [    8.752122] x29: ffffffc012eb3840 x28: ffffffc010e82638
-> [    8.752125] x27: ffffffc008d56440 x26: 0000000000000000
-> [    8.752128] x25: ffffff81eb508200 x24: 0000000000000000
-> [    8.752130] x23: ffffff81eb538800 x22: 0000000000000000
-> [    8.752132] x21: 00000000fffffdfb x20: ffffff81eb538810
-> [    8.752134] x19: 3d4d554e51455300 x18: 0000000000000020
-> [    8.752136] x17: ffffffc008d00270 x16: ffffffc008d00c94
-> [    8.752138] x15: 0000000000000004 x14: ffffff81ebd4ae90
-> [    8.752140] x13: 0000000000000000 x12: ffffff81eb86a4e8
-> [    8.752142] x11: ffffff81eb86a480 x10: ffffff81eb862fea
-> [    8.752144] x9 : ffffffc01055fb28 x8 : ffffff81eb86a4a8
-> [    8.752146] x7 : 0000000000000001 x6 : 0000000000000001
-> [    8.752148] x5 : ffffff81dff8bc38 x4 : 0000000000000000
-> [    8.752150] x3 : 0000000000000001 x2 : 0000000000000001
-> [    8.752152] x1 : 0000000000000002 x0 : 3d4d554e51455300
-> [    8.752155] Call trace:
-> [    8.752157]  kobject_put+0x1c/0x21c
-> [    8.752160]  put_device+0x20/0x30
-> [    8.752164]  tegra_xusb_padctl_put+0x24/0x3c
-> [    8.752170]  tegra_xusb_probe+0x8b0/0xd10 [xhci_tegra]
-> [    8.752174]  platform_drv_probe+0x60/0xb4
-> [    8.752176]  really_probe+0xf0/0x504
-> [    8.752179]  driver_probe_device+0x100/0x170
-> [    8.752181]  device_driver_attach+0xcc/0xd4
-> [    8.752183]  __driver_attach+0xb0/0x17c
-> [    8.752185]  bus_for_each_dev+0x7c/0xd4
-> [    8.752187]  driver_attach+0x30/0x3c
-> [    8.752189]  bus_add_driver+0x154/0x250
-> [    8.752191]  driver_register+0x84/0x140
-> [    8.752193]  __platform_driver_register+0x54/0x60
-> [    8.752197]  tegra_xusb_init+0x40/0x1000 [xhci_tegra]
-> [    8.752201]  do_one_initcall+0x54/0x2d0
-> [    8.752205]  do_init_module+0x68/0x29c
-> [    8.752207]  load_module+0x2178/0x26c0
-> [    8.752209]  __do_sys_finit_module+0xb0/0x120
-> [    8.752211]  __arm64_sys_finit_module+0x2c/0x40
-> [    8.752215]  el0_svc_common.constprop.0+0x80/0x240
-> [    8.752218]  do_el0_svc+0x30/0xa0
-> [    8.752220]  el0_svc+0x18/0x50
-> [    8.752223]  el0_sync_handler+0x90/0x318
-> [    8.752225]  el0_sync+0x158/0x180
-> [    8.752230] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (3940f000)
-> [    8.752232] ---[ end trace 90f6c89d62d85ff5 ]---
->=20
-> Reset the pointer on probe failure fixes the issue.
->=20
-> Fixes: 53d2a715c2403 ("phy: Add Tegra XUSB pad controller support")
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Thu, Oct 22, 2020 at 3:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Declare the kasan_enabled static key in include/linux/kasan.h and in
+> include/linux/mm.h and check it in all kasan annotations. This allows to
+> avoid any slowdown caused by function calls when kasan_enabled is
+> disabled.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/I2589451d3c96c97abbcbf714baabe6161c6f153e
 > ---
->  drivers/phy/tegra/xusb.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
-> index de4a46fe1763..ad88d74c1884 100644
-> --- a/drivers/phy/tegra/xusb.c
-> +++ b/drivers/phy/tegra/xusb.c
-> @@ -1242,6 +1242,7 @@ static int tegra_xusb_padctl_probe(struct platform_=
-device *pdev)
->  reset:
->  	reset_control_assert(padctl->rst);
->  remove:
-> +	platform_set_drvdata(pdev, NULL);
->  	soc->ops->remove(padctl);
->  	return err;
+>  include/linux/kasan.h | 210 ++++++++++++++++++++++++++++++++----------
+>  include/linux/mm.h    |  27 ++++--
+>  mm/kasan/common.c     |  60 ++++++------
+>  3 files changed, 211 insertions(+), 86 deletions(-)
+>
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 2b9023224474..8654275aa62e 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -2,6 +2,7 @@
+>  #ifndef _LINUX_KASAN_H
+>  #define _LINUX_KASAN_H
+>
+> +#include <linux/jump_label.h>
+>  #include <linux/types.h>
+>
+>  struct kmem_cache;
+> @@ -66,40 +67,154 @@ static inline void kasan_disable_current(void) {}
+>
+>  #ifdef CONFIG_KASAN
+>
+> -void kasan_alloc_pages(struct page *page, unsigned int order);
+> -void kasan_free_pages(struct page *page, unsigned int order);
+> +struct kasan_cache {
+> +       int alloc_meta_offset;
+> +       int free_meta_offset;
+> +};
+> +
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +DECLARE_STATIC_KEY_FALSE(kasan_enabled);
+> +#else
+> +DECLARE_STATIC_KEY_TRUE(kasan_enabled);
+> +#endif
+>
+> -void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+> -                       slab_flags_t *flags);
+> +void __kasan_alloc_pages(struct page *page, unsigned int order);
+> +static inline void kasan_alloc_pages(struct page *page, unsigned int order)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_alloc_pages(page, order);
+
+The patch looks fine per se, but I think with the suggestion in the
+previous patch, this should be:
+
+      if (kasan_is_enabled())
+             __kasan_alloc_pages(page, order);
+
+No overhead for other modes and less logic duplication.
+
+> +}
+>
+> -void kasan_unpoison_data(const void *address, size_t size);
+> -void kasan_unpoison_slab(const void *ptr);
+> +void __kasan_free_pages(struct page *page, unsigned int order);
+> +static inline void kasan_free_pages(struct page *page, unsigned int order)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_free_pages(page, order);
+> +}
+>
+> -void kasan_poison_slab(struct page *page);
+> -void kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
+> -void kasan_poison_object_data(struct kmem_cache *cache, void *object);
+> -void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+> -                                       const void *object);
+> +void __kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+> +                               slab_flags_t *flags);
+> +static inline void kasan_cache_create(struct kmem_cache *cache,
+> +                       unsigned int *size, slab_flags_t *flags)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_cache_create(cache, size, flags);
+> +}
+>
+> -void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
+> -                                               gfp_t flags);
+> -void kasan_kfree_large(void *ptr, unsigned long ip);
+> -void kasan_poison_kfree(void *ptr, unsigned long ip);
+> -void * __must_check kasan_kmalloc(struct kmem_cache *s, const void *object,
+> -                                       size_t size, gfp_t flags);
+> -void * __must_check kasan_krealloc(const void *object, size_t new_size,
+> -                                       gfp_t flags);
+> +size_t __kasan_metadata_size(struct kmem_cache *cache);
+> +static inline size_t kasan_metadata_size(struct kmem_cache *cache)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_metadata_size(cache);
+> +       return 0;
+> +}
+>
+> -void * __must_check kasan_slab_alloc(struct kmem_cache *s, void *object,
+> -                                       gfp_t flags);
+> -bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip);
+> +void __kasan_unpoison_data(const void *addr, size_t size);
+> +static inline void kasan_unpoison_data(const void *addr, size_t size)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_unpoison_data(addr, size);
+> +}
+>
+> -struct kasan_cache {
+> -       int alloc_meta_offset;
+> -       int free_meta_offset;
+> -};
+> +void __kasan_unpoison_slab(const void *ptr);
+> +static inline void kasan_unpoison_slab(const void *ptr)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_unpoison_slab(ptr);
+> +}
+> +
+> +void __kasan_poison_slab(struct page *page);
+> +static inline void kasan_poison_slab(struct page *page)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_poison_slab(page);
+> +}
+> +
+> +void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
+> +static inline void kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_unpoison_object_data(cache, object);
+> +}
+> +
+> +void __kasan_poison_object_data(struct kmem_cache *cache, void *object);
+> +static inline void kasan_poison_object_data(struct kmem_cache *cache, void *object)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_poison_object_data(cache, object);
+> +}
+> +
+> +void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+> +                                         const void *object);
+> +static inline void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+> +                                                     const void *object)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_init_slab_obj(cache, object);
+> +       return (void *)object;
+> +}
+> +
+> +bool __kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip);
+> +static inline bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_slab_free(s, object, ip);
+> +       return false;
+> +}
+>
+> -size_t kasan_metadata_size(struct kmem_cache *cache);
+> +void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
+> +                                      void *object, gfp_t flags);
+> +static inline void * __must_check kasan_slab_alloc(struct kmem_cache *s,
+> +                                                  void *object, gfp_t flags)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_slab_alloc(s, object, flags);
+> +       return object;
+> +}
+> +
+> +void * __must_check __kasan_kmalloc(struct kmem_cache *s, const void *object,
+> +                                   size_t size, gfp_t flags);
+> +static inline void * __must_check kasan_kmalloc(struct kmem_cache *s, const void *object,
+> +                                               size_t size, gfp_t flags)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_kmalloc(s, object, size, flags);
+> +       return (void *)object;
+> +}
+> +
+> +void * __must_check __kasan_kmalloc_large(const void *ptr,
+> +                                         size_t size, gfp_t flags);
+> +static inline void * __must_check kasan_kmalloc_large(const void *ptr,
+> +                                                     size_t size, gfp_t flags)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_kmalloc_large(ptr, size, flags);
+> +       return (void *)ptr;
+> +}
+> +
+> +void * __must_check __kasan_krealloc(const void *object,
+> +                                    size_t new_size, gfp_t flags);
+> +static inline void * __must_check kasan_krealloc(const void *object,
+> +                                                size_t new_size, gfp_t flags)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return __kasan_krealloc(object, new_size, flags);
+> +       return (void *)object;
+> +}
+> +
+> +void __kasan_poison_kfree(void *ptr, unsigned long ip);
+> +static inline void kasan_poison_kfree(void *ptr, unsigned long ip)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_poison_kfree(ptr, ip);
+> +}
+> +
+> +void __kasan_kfree_large(void *ptr, unsigned long ip);
+> +static inline void kasan_kfree_large(void *ptr, unsigned long ip)
+> +{
+> +       if (static_branch_likely(&kasan_enabled))
+> +               __kasan_kfree_large(ptr, ip);
+> +}
+>
+>  bool kasan_save_enable_multi_shot(void);
+>  void kasan_restore_multi_shot(bool enabled);
+> @@ -108,14 +223,12 @@ void kasan_restore_multi_shot(bool enabled);
+>
+>  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+>  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+> -
+>  static inline void kasan_cache_create(struct kmem_cache *cache,
+>                                       unsigned int *size,
+>                                       slab_flags_t *flags) {}
+> -
+> -static inline void kasan_unpoison_data(const void *address, size_t size) { }
+> -static inline void kasan_unpoison_slab(const void *ptr) { }
+> -
+> +static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+> +static inline void kasan_unpoison_data(const void *address, size_t size) {}
+> +static inline void kasan_unpoison_slab(const void *ptr) {}
+>  static inline void kasan_poison_slab(struct page *page) {}
+>  static inline void kasan_unpoison_object_data(struct kmem_cache *cache,
+>                                         void *object) {}
+> @@ -126,36 +239,33 @@ static inline void *kasan_init_slab_obj(struct kmem_cache *cache,
+>  {
+>         return (void *)object;
 >  }
-
-Sorry, I had missed this before. Why is this necessary? The driver core
-already does dev_set_drvdata(dev, NULL) on failure, which is the same as
-your platform_set_drvdata() here.
-
-I suppose one possible explanation would be if for some reason we end up
-here in the error cleanup path but with err =3D=3D 0.
-
-Do you have more information on when this happens so that I can repro
-and investigate? Alternatively, if you've still got this set up, can you
-do a quick test to see if "err" is indeed a negative error code when we
-get here?
-
-Thierry
-
---ReaqsoxgOBHFXBhH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+ZoCcACgkQ3SOs138+
-s6FewhAAjHyWUxUTrWwxoY+I9rdfNymvaMtSJt34EoRsABbllyMzBbUoG2v9Kxbc
-qjZJoCb8ZfENweLAQ+O1DidDXEeu2/dpMh1stNkfhAIW0pY7g2kcsQXP8lqLK8fR
-u9gp2lgWZ8nzTV9rW0FEvNMZgZZGVQUJ27BEoI2JsG1+u4OZZ1RQO5JUfX9xcefa
-KWL+NFW+Pg8hWV8McfZXy9yfJ+Lo65IQS4q4I9zjjicUjS+pRy6RCfS6uFW8moeG
-wVr0Fuj5Ixy9//wYqmbvi9tRGLdc3FFk7ZB26Cauya4povqbMp8n0zBBaJsdosru
-wEL3c4gy8Gjagch2ntOYCF+ib2ySlUKZjWwXWsdlZo48fHi+fw7ujfnqUxJupZ4s
-LwI+uyPhoxzw70qd31IV3btRYYWf/bCsVvvoA8o5yLWBCDCmBnUKYuOe62/jWDb2
-8EUcmxmWPVhF+3ZyQLxFiGjIveKqscBnd/uR7p/Rbmf+SDFUpovGWfZdnaxOKijq
-Wfdse8clRBF/55ESyELXwFfy2MQJqcENdjMOGIyURCL1S0AF9l86tbYJ7JmI+Mk7
-mEi0gnwAUQYvaf5wgBxVoF0a/AIzfNQ4YtsNPK5Y40uDMRR6+W7mMFbnvEjYMcRw
-2JkqTgK5lQpfTbiBE+WWikubNwnLbDOU+glMXtfEvh++8wU6RDk=
-=1snv
------END PGP SIGNATURE-----
-
---ReaqsoxgOBHFXBhH--
+> -
+> -static inline void *kasan_kmalloc_large(void *ptr, size_t size, gfp_t flags)
+> +static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+> +                                  unsigned long ip)
+>  {
+> -       return ptr;
+> +       return false;
+>  }
+> -static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
+> -static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
+> -static inline void *kasan_kmalloc(struct kmem_cache *s, const void *object,
+> -                               size_t size, gfp_t flags)
+> +static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
+> +                                  gfp_t flags)
+>  {
+> -       return (void *)object;
+> +       return object;
+>  }
+> -static inline void *kasan_krealloc(const void *object, size_t new_size,
+> -                                gfp_t flags)
+> +static inline void *kasan_kmalloc(struct kmem_cache *s, const void *object,
+> +                               size_t size, gfp_t flags)
+>  {
+>         return (void *)object;
+>  }
+>
+> -static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
+> -                                  gfp_t flags)
+> +static inline void *kasan_kmalloc_large(const void *ptr, size_t size, gfp_t flags)
+>  {
+> -       return object;
+> +       return (void *)ptr;
+>  }
+> -static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+> -                                  unsigned long ip)
+> +static inline void *kasan_krealloc(const void *object, size_t new_size,
+> +                                gfp_t flags)
+>  {
+> -       return false;
+> +       return (void *)object;
+>  }
+> -
+> -static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+> +static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
+> +static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
+>
+>  #endif /* CONFIG_KASAN */
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index a3cac68c737c..701e9d7666d6 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1412,22 +1412,36 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
+>  #endif /* CONFIG_NUMA_BALANCING */
+>
+>  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> +
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +DECLARE_STATIC_KEY_FALSE(kasan_enabled);
+> +#else
+> +DECLARE_STATIC_KEY_TRUE(kasan_enabled);
+> +#endif
+> +
+>  static inline u8 page_kasan_tag(const struct page *page)
+>  {
+> -       return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
+> +       if (static_branch_likely(&kasan_enabled))
+> +               return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
+> +       return 0xff;
+>  }
+>
+>  static inline void page_kasan_tag_set(struct page *page, u8 tag)
+>  {
+> -       page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
+> -       page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
+> +       if (static_branch_likely(&kasan_enabled)) {
+> +               page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
+> +               page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
+> +       }
+>  }
+>
+>  static inline void page_kasan_tag_reset(struct page *page)
+>  {
+> -       page_kasan_tag_set(page, 0xff);
+> +       if (static_branch_likely(&kasan_enabled))
+> +               page_kasan_tag_set(page, 0xff);
+>  }
+> -#else
+> +
+> +#else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
+> +
+>  static inline u8 page_kasan_tag(const struct page *page)
+>  {
+>         return 0xff;
+> @@ -1435,7 +1449,8 @@ static inline u8 page_kasan_tag(const struct page *page)
+>
+>  static inline void page_kasan_tag_set(struct page *page, u8 tag) { }
+>  static inline void page_kasan_tag_reset(struct page *page) { }
+> -#endif
+> +
+> +#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
+>
+>  static inline struct zone *page_zone(const struct page *page)
+>  {
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index cc129ef62ab1..c5ec60e1a4d2 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -81,7 +81,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
+>  }
+>  #endif /* CONFIG_KASAN_STACK */
+>
+> -void kasan_alloc_pages(struct page *page, unsigned int order)
+> +void __kasan_alloc_pages(struct page *page, unsigned int order)
+>  {
+>         u8 tag;
+>         unsigned long i;
+> @@ -95,7 +95,7 @@ void kasan_alloc_pages(struct page *page, unsigned int order)
+>         kasan_unpoison_memory(page_address(page), PAGE_SIZE << order);
+>  }
+>
+> -void kasan_free_pages(struct page *page, unsigned int order)
+> +void __kasan_free_pages(struct page *page, unsigned int order)
+>  {
+>         if (likely(!PageHighMem(page)))
+>                 kasan_poison_memory(page_address(page),
+> @@ -122,8 +122,8 @@ static inline unsigned int optimal_redzone(unsigned int object_size)
+>                 object_size <= (1 << 16) - 1024 ? 1024 : 2048;
+>  }
+>
+> -void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+> -                       slab_flags_t *flags)
+> +void __kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+> +                         slab_flags_t *flags)
+>  {
+>         unsigned int orig_size = *size;
+>         unsigned int redzone_size;
+> @@ -165,7 +165,7 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+>         *flags |= SLAB_KASAN;
+>  }
+>
+> -size_t kasan_metadata_size(struct kmem_cache *cache)
+> +size_t __kasan_metadata_size(struct kmem_cache *cache)
+>  {
+>         if (static_branch_unlikely(&kasan_stack))
+>                 return (cache->kasan_info.alloc_meta_offset ?
+> @@ -188,17 +188,17 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+>         return (void *)reset_tag(object) + cache->kasan_info.free_meta_offset;
+>  }
+>
+> -void kasan_unpoison_data(const void *address, size_t size)
+> +void __kasan_unpoison_data(const void *addr, size_t size)
+>  {
+> -       kasan_unpoison_memory(address, size);
+> +       kasan_unpoison_memory(addr, size);
+>  }
+>
+> -void kasan_unpoison_slab(const void *ptr)
+> +void __kasan_unpoison_slab(const void *ptr)
+>  {
+>         kasan_unpoison_memory(ptr, __ksize(ptr));
+>  }
+>
+> -void kasan_poison_slab(struct page *page)
+> +void __kasan_poison_slab(struct page *page)
+>  {
+>         unsigned long i;
+>
+> @@ -208,12 +208,12 @@ void kasan_poison_slab(struct page *page)
+>                         KASAN_KMALLOC_REDZONE);
+>  }
+>
+> -void kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+> +void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+>  {
+>         kasan_unpoison_memory(object, cache->object_size);
+>  }
+>
+> -void kasan_poison_object_data(struct kmem_cache *cache, void *object)
+> +void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+>  {
+>         kasan_poison_memory(object,
+>                         round_up(cache->object_size, KASAN_GRANULE_SIZE),
+> @@ -266,7 +266,7 @@ static u8 assign_tag(struct kmem_cache *cache, const void *object,
+>  #endif
+>  }
+>
+> -void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+> +void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+>                                                 const void *object)
+>  {
+>         struct kasan_alloc_meta *alloc_meta;
+> @@ -285,7 +285,7 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+>         return (void *)object;
+>  }
+>
+> -static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+> +static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>                               unsigned long ip, bool quarantine)
+>  {
+>         u8 tag;
+> @@ -329,9 +329,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>         return false;
+>  }
+>
+> -bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
+> +bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
+>  {
+> -       return __kasan_slab_free(cache, object, ip, true);
+> +       return ____kasan_slab_free(cache, object, ip, true);
+>  }
+>
+>  static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+> @@ -339,7 +339,7 @@ static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+>         kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
+>  }
+>
+> -static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
+> +static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>                                 size_t size, gfp_t flags, bool keep_tag)
+>  {
+>         unsigned long redzone_start;
+> @@ -371,20 +371,20 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>         return set_tag(object, tag);
+>  }
+>
+> -void * __must_check kasan_slab_alloc(struct kmem_cache *cache, void *object,
+> -                                       gfp_t flags)
+> +void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+> +                                       void *object, gfp_t flags)
+>  {
+> -       return __kasan_kmalloc(cache, object, cache->object_size, flags, false);
+> +       return ____kasan_kmalloc(cache, object, cache->object_size, flags, false);
+>  }
+>
+> -void * __must_check kasan_kmalloc(struct kmem_cache *cache, const void *object,
+> -                               size_t size, gfp_t flags)
+> +void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object,
+> +                                       size_t size, gfp_t flags)
+>  {
+> -       return __kasan_kmalloc(cache, object, size, flags, true);
+> +       return ____kasan_kmalloc(cache, object, size, flags, true);
+>  }
+> -EXPORT_SYMBOL(kasan_kmalloc);
+> +EXPORT_SYMBOL(__kasan_kmalloc);
+>
+> -void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
+> +void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
+>                                                 gfp_t flags)
+>  {
+>         struct page *page;
+> @@ -409,7 +409,7 @@ void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
+>         return (void *)ptr;
+>  }
+>
+> -void * __must_check kasan_krealloc(const void *object, size_t size, gfp_t flags)
+> +void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flags)
+>  {
+>         struct page *page;
+>
+> @@ -419,13 +419,13 @@ void * __must_check kasan_krealloc(const void *object, size_t size, gfp_t flags)
+>         page = virt_to_head_page(object);
+>
+>         if (unlikely(!PageSlab(page)))
+> -               return kasan_kmalloc_large(object, size, flags);
+> +               return __kasan_kmalloc_large(object, size, flags);
+>         else
+> -               return __kasan_kmalloc(page->slab_cache, object, size,
+> +               return ____kasan_kmalloc(page->slab_cache, object, size,
+>                                                 flags, true);
+>  }
+>
+> -void kasan_poison_kfree(void *ptr, unsigned long ip)
+> +void __kasan_poison_kfree(void *ptr, unsigned long ip)
+>  {
+>         struct page *page;
+>
+> @@ -438,11 +438,11 @@ void kasan_poison_kfree(void *ptr, unsigned long ip)
+>                 }
+>                 kasan_poison_memory(ptr, page_size(page), KASAN_FREE_PAGE);
+>         } else {
+> -               __kasan_slab_free(page->slab_cache, ptr, ip, false);
+> +               ____kasan_slab_free(page->slab_cache, ptr, ip, false);
+>         }
+>  }
+>
+> -void kasan_kfree_large(void *ptr, unsigned long ip)
+> +void __kasan_kfree_large(void *ptr, unsigned long ip)
+>  {
+>         if (ptr != page_address(virt_to_head_page(ptr)))
+>                 kasan_report_invalid_free(ptr, ip);
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
