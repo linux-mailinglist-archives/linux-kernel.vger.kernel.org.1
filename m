@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3613C29DF3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECDD29DCA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403996AbgJ2BAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:00:01 -0400
-Received: from verein.lst.de ([213.95.11.211]:45249 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731500AbgJ1WR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7742C68BFE; Wed, 28 Oct 2020 18:31:08 +0100 (CET)
-Date:   Wed, 28 Oct 2020 18:31:08 +0100
-From:   "hch@lst.de" <hch@lst.de>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     "hch@lst.de" <hch@lst.de>, Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linaro-mm-sig-owner@lists.linaro.org" 
-        <linaro-mm-sig-owner@lists.linaro.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: WARNING in dma_map_page_attrs
-Message-ID: <20201028173108.GA10135@lst.de>
-References: <000000000000335adc05b23300f6@google.com> <000000000000a0f8a305b261fe4a@google.com> <20201024111516.59abc9ec@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net> <BY5PR12MB4322CC03CE0D34B83269676ADC190@BY5PR12MB4322.namprd12.prod.outlook.com> <20201027081103.GA22877@lst.de> <BY5PR12MB43221380BB0259FF0693BB0CDC160@BY5PR12MB4322.namprd12.prod.outlook.com>
+        id S2388659AbgJ2Abe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387919AbgJ1Wbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:31:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0348DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=UuWciXtDDMkvKh0Vv+GVLGgNQQOwDDD9jqSv8mkONwA=; b=I6lk8Hx+YtZLEeLtSc1E5QRXeR
+        Ak9LUcdMvh8Ur2JJqCOUZPfWCfauGFeTnRpmYrBnAxNR8SXY8ntNaelx8POwCANijIzc+1kV1BNmz
+        qrMybcCzW8k5NkjVwde57qCbB28odbFImsjLIsJ817Pbk7p9s1MGgDmQDRrVptNZeMbAsI3CRyC/6
+        hUPIVPTHJGTIQamK1neUpF38LfMdZ8aXSqhAyxn3xXPapE6iYnQZWTHeHnMia0tw/13Amgpa3rWMs
+        Xxueu2CsiuJ3DIO2sUvImj3rORv7V3ZXgNFW0lfmS8IDfGffHS8ZPepBAdkU0cKwz2xUxYGdjjELG
+        JumX3F3w==;
+Received: from [2601:1c0:6280:3f0::507c] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXpSp-0007Qd-KC; Wed, 28 Oct 2020 17:42:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Subject: [PATCH v2] KUnit: Docs: style: fix some Kconfig example issues
+Date:   Wed, 28 Oct 2020 10:42:18 -0700
+Message-Id: <20201028174218.11750-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB43221380BB0259FF0693BB0CDC160@BY5PR12MB4322.namprd12.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:52:30PM +0000, Parav Pandit wrote:
-> 
-> > From: hch@lst.de <hch@lst.de>
-> > Sent: Tuesday, October 27, 2020 1:41 PM
-> > 
-> > On Mon, Oct 26, 2020 at 05:23:48AM +0000, Parav Pandit wrote:
-> > > Hi Christoph,
-> > >
-> > > > From: Jakub Kicinski <kuba@kernel.org>
-> > > > Sent: Saturday, October 24, 2020 11:45 PM
-> > > >
-> > > > CC: rdma, looks like rdma from the stack trace
-> > > >
-> > > > On Fri, 23 Oct 2020 20:07:17 -0700 syzbot wrote:
-> > > > > syzbot has found a reproducer for the following issue on:
-> > > > >
-> > > > > HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of
-> > git://git.kernel.org/..
-> > >
-> > > In [1] you mentioned that dma_mask should not be set for dma_virt_ops.
-> > > So patch [2] removed it.
-> > >
-> > > But check to validate the dma mask for all dma_ops was added in [3].
-> > >
-> > > What is the right way? Did I misunderstood your comment about
-> > dma_mask in [1]?
-> > 
-> > No, I did not say we don't need the mask.  I said copying over the various
-> > dma-related fields from the parent is bogus.
-> > 
-> > I think rxe (and ther other drivers/infiniband/sw drivers) need a simple
-> > dma_coerce_mask_and_coherent and nothing else.
-> 
-> I see. Does below fix make sense?
-> Is DMA_MASK_NONE correct?
+Fix the Kconfig example to be closer to Kconfig coding style.
 
-DMA_MASK_NONE is gone in 5.10.  I think you want DMA_BIT_MASK(64).
-That isn't actually correct for 32-bit platforms, but good enough.
+Also add punctuation and a trailing slash ('/') to a sub-directory
+name -- this is how the text mostly appears in other Kconfig files.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Gow <davidgow@google.com>
+Cc: linux-kselftest@vger.kernel.org
+Cc: kunit-dev@googlegroups.com
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: David Gow <davidgow@google.com>
+---
+v2: covert spaces indentation to tabs in Kconfig example
+
+ Documentation/dev-tools/kunit/style.rst |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+--- linux-next-20201027.orig/Documentation/dev-tools/kunit/style.rst
++++ linux-next-20201027/Documentation/dev-tools/kunit/style.rst
+@@ -175,17 +175,17 @@ An example Kconfig entry:
+ 
+ .. code-block:: none
+ 
+-        config FOO_KUNIT_TEST
+-                tristate "KUnit test for foo" if !KUNIT_ALL_TESTS
+-                depends on KUNIT
+-                default KUNIT_ALL_TESTS
+-                help
+-                    This builds unit tests for foo.
++	config FOO_KUNIT_TEST
++		tristate "KUnit test for foo" if !KUNIT_ALL_TESTS
++		depends on KUNIT
++		default KUNIT_ALL_TESTS
++		help
++		  This builds unit tests for foo.
+ 
+-                    For more information on KUnit and unit tests in general, please refer
+-                    to the KUnit documentation in Documentation/dev-tools/kunit
++		  For more information on KUnit and unit tests in general, please refer
++		  to the KUnit documentation in Documentation/dev-tools/kunit/.
+ 
+-                    If unsure, say N
++		  If unsure, say N.
+ 
+ 
+ Test File and Module Names
