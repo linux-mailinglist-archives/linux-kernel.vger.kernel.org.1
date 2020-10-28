@@ -2,79 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482C829D9CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F4E29D9E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390033AbgJ1XCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:02:52 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:34806 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730802AbgJ1XCl (ORCPT
+        id S2390066AbgJ1XGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:06:19 -0400
+Received: from mail-pf1-f200.google.com ([209.85.210.200]:55492 "EHLO
+        mail-pf1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389785AbgJ1XGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:02:41 -0400
-Received: by mail-ua1-f67.google.com with SMTP id x11so205457uav.1;
-        Wed, 28 Oct 2020 16:02:39 -0700 (PDT)
+        Wed, 28 Oct 2020 19:06:13 -0400
+Received: by mail-pf1-f200.google.com with SMTP id z12so585707pfa.22
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0G4ddUyBDAmFIJZfLdJeZ5DORv/CzVKctJJjdwMQ2hA=;
-        b=oz+h/9W+vKiikyttr3MXE6n+al9sEwMYTXDWlFY7XMk5RchM/TbVPM4aj6wR9DmKJm
-         Vf9IsFYIRJyXHOOW1hzEUSgzn2vQFIXtXpDltuN1HxA1Dw/T/9Q/oAEQ/U1Ckw2kMb7P
-         jm7ISi1ZusltCQhKECpunGF00fS3hzWoCKa9iVuBF03EbIIM3JsDwBpoivb1bTT2tD96
-         exVxUpNct4ew8+p7F9T1EaJ4kC9dk3Z3eYdB91wf89KL1cZX7t2fNT1Qhj3QD8NI5BCQ
-         0XHkLy6O88W8egEK2ieyAMxUTe1YFMLx/Jxm/FCmJBJlet3vNiIBFKHziOv5hupjD1vQ
-         CQeg==
-X-Gm-Message-State: AOAM532VNSrf0ULp6L8Edy5vqVeNuHT9s59n4H8suuYNR1if3NryFrZv
-        6bI8Jw+OfQRkXAWlwQsdN+LBjasn3A==
-X-Google-Smtp-Source: ABdhPJzjsODVzwEavFHnP2SeXAsiY9C71CRqgTEGh2Z6Q40K80z+BHN5EwtDNrj8BkTr0cnmJRhWGw==
-X-Received: by 2002:a9d:5b3:: with SMTP id 48mr5823698otd.110.1603899170988;
-        Wed, 28 Oct 2020 08:32:50 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y8sm2733386oon.16.2020.10.28.08.32.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 08:32:50 -0700 (PDT)
-Received: (nullmailer pid 4063907 invoked by uid 1000);
-        Wed, 28 Oct 2020 15:32:49 -0000
-Date:   Wed, 28 Oct 2020 10:32:49 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, Jacky Bai <ping.bai@nxp.com>,
-        Marek Vasut <marek.vasut@gmail.com>, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v4 09/14] Documentation: bindings: clk: Add bindings for
- i.MX BLK_CTL
-Message-ID: <20201028153249.GA4063845@bogus>
-References: <1603740750-10385-1-git-send-email-abel.vesa@nxp.com>
- <1603740750-10385-10-git-send-email-abel.vesa@nxp.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MqjoSdva1wfK+hQdS37oMwtOGGifvUM6vcpSTQxQdrQ=;
+        b=bRpodyDGvywhbYyOMRLiIWoGLpJAtSQbZE/LCceTXhsqAzPRZe/ERtF4j9rNqU60kd
+         xY2rEPMPCFY7RPAMd/djBnFBV3TUTYtk5PYQmM0LoA11d8MgqMAc+qQ8eZd47cLUsRkC
+         eUte684zY1wNmre0EiPKEjz8zpqF+AFesPxkDQ7Odb2jAtFqF7uqIzQJqxNUZDRcOw6h
+         XWbYLvkHGJINgnOfEwZRo503o5rZx2GBuDnqfUuTD6H/d3Wrx8/KUOUc0/c1o4+Ys1Mb
+         42Zhw7fR4FZgYA6wzlPMja2Ncw2cxhKBlS0Smw+1ymuAHh1+IfSsrqceaSXb8f17jd3C
+         +vzg==
+X-Gm-Message-State: AOAM531KANuY7f9XrA6MnLKbQ/Lxgpgpn+JgkR4R9mMVI1IxCad5jW4e
+        VVYGsJSLHbKyttQCTXbHecH8kYhTerVu7hkKe3fCp9f0wTP9
+X-Google-Smtp-Source: ABdhPJx2SIcqpONqSHWatP8dAS6iVcIj+SrI5NXPfmppkaaJMp/6HoiWQcW951WoP33zEbBBiRzemuMy6VQGpaQx5te6qm3H04OY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603740750-10385-10-git-send-email-abel.vesa@nxp.com>
+X-Received: by 2002:a92:d709:: with SMTP id m9mr6503546iln.226.1603899197532;
+ Wed, 28 Oct 2020 08:33:17 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 08:33:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ecb1de05b2bce118@google.com>
+Subject: WARNING in ovs_dp_cmd_new
+From:   syzbot <syzbot+d35e01f2daf3cee35470@syzkaller.appspotmail.com>
+To:     amit.kucheria@linaro.org, daniel.lezcano@linaro.org,
+        davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pshelar@ovn.org, rui.zhang@intel.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 21:32:25 +0200, Abel Vesa wrote:
-> Document the i.MX BLK_CTL with its devicetree properties.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->  .../devicetree/bindings/clock/fsl,imx-blk-ctl.yaml | 60 ++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/fsl,imx-blk-ctl.yaml
-> 
+Hello,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+syzbot found the following issue on:
+
+HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of git://git.kernel.org/..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=155125b0500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=46c6fea3eb827ae1
+dashboard link: https://syzkaller.appspot.com/bug?extid=d35e01f2daf3cee35470
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144916df900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14eee964500000
+
+The issue was bisected to:
+
+commit 1ce50e7d408ef2bdc8ca021363fd46d1b8bfad00
+Author: Daniel Lezcano <daniel.lezcano@linaro.org>
+Date:   Mon Jul 6 10:55:37 2020 +0000
+
+    thermal: core: genetlink support for events/cmd/sampling
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14d64554500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16d64554500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d64554500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d35e01f2daf3cee35470@syzkaller.appspotmail.com
+Fixes: 1ce50e7d408e ("thermal: core: genetlink support for events/cmd/sampling")
+
+netlink: 44 bytes leftover after parsing attributes in process `syz-executor235'.
+------------[ cut here ]------------
+Dropping previously announced user features
+WARNING: CPU: 1 PID: 8534 at net/openvswitch/datapath.c:1587 ovs_dp_reset_user_features net/openvswitch/datapath.c:1587 [inline]
+WARNING: CPU: 1 PID: 8534 at net/openvswitch/datapath.c:1587 ovs_dp_cmd_new+0xca7/0xec0 net/openvswitch/datapath.c:1725
+Modules linked in:
+CPU: 1 PID: 8534 Comm: syz-executor235 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ovs_dp_reset_user_features net/openvswitch/datapath.c:1587 [inline]
+RIP: 0010:ovs_dp_cmd_new+0xca7/0xec0 net/openvswitch/datapath.c:1725
+Code: 2a 0f b6 04 02 84 c0 74 04 3c 03 7e 21 c7 43 68 00 00 00 00 e9 17 fe ff ff e8 05 86 d6 f8 48 c7 c7 a0 fa 6a 8a e8 89 f2 11 00 <0f> 0b eb be 4c 89 e7 e8 4d fb 17 f9 eb d5 e8 e6 fa 17 f9 e9 3f ff
+RSP: 0018:ffffc9000162f510 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888025989300 RCX: 0000000000000000
+RDX: ffff88801fcb1a40 RSI: ffffffff8158ce35 RDI: fffff520002c5e94
+RBP: ffff88801cd87100 R08: 0000000000000001 R09: ffff8880b9f2005b
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888025989368
+R13: 0000000000000006 R14: ffff8880188d9ff8 R15: ffff888027e1b3c0
+FS:  0000000001138880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055600d8b5628 CR3: 0000000020260000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4419b9
+Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe494aefa8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004419b9
+RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000003
+RBP: 0000000000015d76 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000402760
+R13: 00000000004027f0 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
