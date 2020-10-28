@@ -2,230 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC97629DA90
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0851B29DAA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390392AbgJ1X0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:26:03 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:53231 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390353AbgJ1XZQ (ORCPT
+        id S2390438AbgJ1X03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:26:29 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:55262 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390418AbgJ1X0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:25:16 -0400
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 28 Oct 2020 00:18:56 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg02-sd.qualcomm.com with ESMTP; 28 Oct 2020 00:18:56 -0700
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 549D01B21; Wed, 28 Oct 2020 00:18:56 -0700 (PDT)
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Kavya Nunna <knunna@codeaurora.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-Subject: [PATCH v4 3/3] extcon: qcom-spmi: Add support for VBUS detection
-Date:   Wed, 28 Oct 2020 00:18:54 -0700
-Message-Id: <9068e6be0da4ea051e6c072f78a37d6f27fd9fc2.1603869292.git.gurus@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1603869292.git.gurus@codeaurora.org>
-References: <cover.1603869292.git.gurus@codeaurora.org>
-In-Reply-To: <cover.1603869292.git.gurus@codeaurora.org>
-References: <cover.1603869292.git.gurus@codeaurora.org>
+        Wed, 28 Oct 2020 19:26:24 -0400
+Received: by mail-wm1-f68.google.com with SMTP id w23so800077wmi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:26:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3SS40df89lZEGyvg63MO4TxFrSMgpg8lrX0GUBDHf0A=;
+        b=Y6iSDlmSW1gLm+Mbphd/vYJZp+Md7/MwLL7CW9nhSeXd8Z1JnUr2nKkADUPeWBfSWQ
+         8fWX2dgfuEj5dcEBPC4PQ2pwzAkWlkDPwc4a39ZSzJEacZtIU39D9DpPQ+OT7kMPVbkh
+         fKvNtmFPMQIyCm9v0blNIpNWZtqEteFbnVqaTTscixXPjBKIc7vE7UZB7Qt0SweC3A6y
+         owhlvzS/mgKupPS1P+R3YFKyDT0TWJi9GLtqec0Nn+aAlind30FY13d0Es9/9VbrHW+/
+         f8Y9cq46BpzdMmYMmQfFC/XkLM+tOwwngl7hP7nw4B+kNjLcLPxZ10PAdLsgsGPsGJX+
+         A6kg==
+X-Gm-Message-State: AOAM533ASMggxptCRGhPGuMR3+P0AKQ3VF6ryiKNsFBcIJSGC7E3Y6Fh
+        oWaG1H7Zf+T5evNLH70XQrJxxU1rtB5DUGHrct+s0JoL
+X-Google-Smtp-Source: ABdhPJwyLkaOKrsIQK3PL5S5Usk3dlQ/WoogNwrErs+j0fyIbSYKPMY61Y7ofrY/f4pDZVhuPEp1brr0FMst1AddmiE=
+X-Received: by 2002:a1c:9c51:: with SMTP id f78mr6881455wme.189.1603869780311;
+ Wed, 28 Oct 2020 00:23:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <d28243e3-3178-d7cd-7b96-7ed63fd83493@linux.intel.com> <20201024154349.GC2589351@krava>
+ <43d5e54f-b56e-729f-d08e-2c6b6799c797@linux.intel.com> <20201027122154.GF2900849@krava>
+ <872f5052-788b-fe6d-d0ac-82e9639910d2@linux.intel.com>
+In-Reply-To: <872f5052-788b-fe6d-d0ac-82e9639910d2@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 28 Oct 2020 16:22:49 +0900
+Message-ID: <CAM9d7cifhL--aYn05dYABmqoxGXX6xRC9W+Q+cWSnKqGUPPvzA@mail.gmail.com>
+Subject: Re: [PATCH v2 06/15] perf session: load data directory into tool
+ process memory
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Ghayal <aghayal@codeaurora.org>
+On Tue, Oct 27, 2020 at 11:43 PM Alexey Budankov
+<alexey.budankov@linux.intel.com> wrote:
+>
+>
+> On 27.10.2020 15:21, Jiri Olsa wrote:
+> > On Tue, Oct 27, 2020 at 10:37:58AM +0300, Alexey Budankov wrote:
+> >> I agree perf report OOM issue can exist on really-big servers but data
+> >> directories support for report mode for not-so-big servers and desktops
+> >> is already enabled with this smaller change. Also really-big-servers
+> >> come with really-big amount of memory and collection could possibly be
+> >> limited to only interesting phases of execution so the issue could likely
+> >> be avoided. At the same time threaded trace streaming could clarify on
+> >> real use cases that are blocked by perf report OOM issue and that would
+> >> clarify on exact required solution. So perf report OOM issue shouldn't
+> >> be the showstopper for upstream of threaded trace streaming.
+> >
+> > so the short answer is no, right? ;-)
+>
+> Answer to what question? Resolve OOM in perf report for data directories?
+> I don't see a simple solution for that. The next issue after OOM is resolved
+> is a very long processing of data directories. And again there is no simple
+> solution for that as well. But it still need progress in order to be resolved
+> eventually.
 
-VBUS can be detected via a dedicated PMIC pin. Add support
-for reporting the VBUS status.
+I think we should find a better way than just adding all events to the
+ordered events queue in memory then processing them one by one.
 
-Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
-Signed-off-by: Kavya Nunna <knunna@codeaurora.org>
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
----
- drivers/extcon/extcon-qcom-spmi-misc.c | 100 ++++++++++++++++++++++++++-------
- 1 file changed, 81 insertions(+), 19 deletions(-)
+Separating tracking events (FORK/MMAP/...) might be the first step.
 
-diff --git a/drivers/extcon/extcon-qcom-spmi-misc.c b/drivers/extcon/extcon-qcom-spmi-misc.c
-index 6b836ae..6bd6746 100644
---- a/drivers/extcon/extcon-qcom-spmi-misc.c
-+++ b/drivers/extcon/extcon-qcom-spmi-misc.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /**
-  * extcon-qcom-spmi-misc.c - Qualcomm USB extcon driver to support USB ID
-- *				detection based on extcon-usb-gpio.c.
-+ *			and VBUS detection based on extcon-usb-gpio.c.
-  *
-  * Copyright (C) 2016 Linaro, Ltd.
-  * Stephen Boyd <stephen.boyd@linaro.org>
-@@ -21,30 +21,56 @@
- 
- struct qcom_usb_extcon_info {
- 	struct extcon_dev *edev;
--	int irq;
-+	int id_irq;
-+	int vbus_irq;
- 	struct delayed_work wq_detcable;
- 	unsigned long debounce_jiffies;
- };
- 
- static const unsigned int qcom_usb_extcon_cable[] = {
-+	EXTCON_USB,
- 	EXTCON_USB_HOST,
- 	EXTCON_NONE,
- };
- 
- static void qcom_usb_extcon_detect_cable(struct work_struct *work)
- {
--	bool id;
-+	bool state = false;
- 	int ret;
-+	union extcon_property_value val;
- 	struct qcom_usb_extcon_info *info = container_of(to_delayed_work(work),
- 						    struct qcom_usb_extcon_info,
- 						    wq_detcable);
- 
--	/* check ID and update cable state */
--	ret = irq_get_irqchip_state(info->irq, IRQCHIP_STATE_LINE_LEVEL, &id);
--	if (ret)
--		return;
-+	if (info->id_irq > 0) {
-+		/* check ID and update cable state */
-+		ret = irq_get_irqchip_state(info->id_irq,
-+				IRQCHIP_STATE_LINE_LEVEL, &state);
-+		if (ret)
-+			return;
-+
-+		if (!state) {
-+			val.intval = true;
-+			extcon_set_property(info->edev, EXTCON_USB_HOST,
-+						EXTCON_PROP_USB_SS, val);
-+		}
-+		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !state);
-+	}
- 
--	extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !id);
-+	if (info->vbus_irq > 0) {
-+		/* check VBUS and update cable state */
-+		ret = irq_get_irqchip_state(info->vbus_irq,
-+				IRQCHIP_STATE_LINE_LEVEL, &state);
-+		if (ret)
-+			return;
-+
-+		if (state) {
-+			val.intval = true;
-+			extcon_set_property(info->edev, EXTCON_USB,
-+						EXTCON_PROP_USB_SS, val);
-+		}
-+		extcon_set_state_sync(info->edev, EXTCON_USB, state);
-+	}
- }
- 
- static irqreturn_t qcom_usb_irq_handler(int irq, void *dev_id)
-@@ -79,21 +105,48 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ret = extcon_set_property_capability(info->edev,
-+			EXTCON_USB, EXTCON_PROP_USB_SS);
-+	ret |= extcon_set_property_capability(info->edev,
-+			EXTCON_USB_HOST, EXTCON_PROP_USB_SS);
-+	if (ret) {
-+		dev_err(dev, "failed to register extcon props rc=%d\n",
-+						ret);
-+		return ret;
-+	}
-+
- 	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
- 	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
- 
--	info->irq = platform_get_irq_byname(pdev, "usb_id");
--	if (info->irq < 0)
--		return info->irq;
-+	info->id_irq = platform_get_irq_byname(pdev, "usb_id");
-+	if (info->id_irq > 0) {
-+		ret = devm_request_threaded_irq(dev, info->id_irq, NULL,
-+					qcom_usb_irq_handler,
-+					IRQF_TRIGGER_RISING |
-+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+					pdev->name, info);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to request handler for ID IRQ\n");
-+			return ret;
-+		}
-+	}
- 
--	ret = devm_request_threaded_irq(dev, info->irq, NULL,
-+	info->vbus_irq = platform_get_irq_byname(pdev, "usb_vbus");
-+	if (info->vbus_irq > 0) {
-+		ret = devm_request_threaded_irq(dev, info->vbus_irq, NULL,
- 					qcom_usb_irq_handler,
- 					IRQF_TRIGGER_RISING |
- 					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 					pdev->name, info);
--	if (ret < 0) {
--		dev_err(dev, "failed to request handler for ID IRQ\n");
--		return ret;
-+		if (ret < 0) {
-+			dev_err(dev, "failed to request handler for VBUS IRQ\n");
-+			return ret;
-+		}
-+	}
-+
-+	if (info->id_irq < 0 && info->vbus_irq < 0) {
-+		dev_err(dev, "ID and VBUS IRQ not found\n");
-+		return -EINVAL;
- 	}
- 
- 	platform_set_drvdata(pdev, info);
-@@ -120,8 +173,12 @@ static int qcom_usb_extcon_suspend(struct device *dev)
- 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
- 	int ret = 0;
- 
--	if (device_may_wakeup(dev))
--		ret = enable_irq_wake(info->irq);
-+	if (device_may_wakeup(dev)) {
-+		if (info->id_irq > 0)
-+			ret = enable_irq_wake(info->id_irq);
-+		if (info->vbus_irq > 0)
-+			ret = enable_irq_wake(info->vbus_irq);
-+	}
- 
- 	return ret;
- }
-@@ -131,8 +188,12 @@ static int qcom_usb_extcon_resume(struct device *dev)
- 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
- 	int ret = 0;
- 
--	if (device_may_wakeup(dev))
--		ret = disable_irq_wake(info->irq);
-+	if (device_may_wakeup(dev)) {
-+		if (info->id_irq > 0)
-+			ret = disable_irq_wake(info->id_irq);
-+		if (info->vbus_irq > 0)
-+			ret = disable_irq_wake(info->vbus_irq);
-+	}
- 
- 	return ret;
- }
-@@ -143,6 +204,7 @@ static SIMPLE_DEV_PM_OPS(qcom_usb_extcon_pm_ops,
- 
- static const struct of_device_id qcom_usb_extcon_dt_match[] = {
- 	{ .compatible = "qcom,pm8941-misc", },
-+	{ .compatible = "qcom,pmd-vbus-det", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_usb_extcon_dt_match);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Thanks
+Namhyung
