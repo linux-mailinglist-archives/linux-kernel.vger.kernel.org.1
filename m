@@ -2,78 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F5C29D54C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A656C29D719
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgJ1WAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:00:00 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:40271 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729309AbgJ1V73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:59:29 -0400
-Received: by mail-ej1-f67.google.com with SMTP id z5so1045181ejw.7;
-        Wed, 28 Oct 2020 14:59:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IhJDr1KOFYKtq0dERU6JvhmpI21rDzVWNPeoxCOyP1g=;
-        b=tbGhUeim0JqJGZdMQyQxaDT9aWFfFODTsQFSdLkD8gzHmJdjC2LhrlzrKlOXZjAE7X
-         BGmNbLT2TsNwxadubr2OBZohm4EcTIddTGHgA/oxN4dx9TrGKeCXT/nbTOr2FDmyKvBh
-         rgpY3j+DZ5roYXfvpKr3J6j4KOXyjxPVde+xYnnLZAoanE7Dxg182BDFJc/4mnmmS8CS
-         GxfFOAHwwvAX6OkpJUsD3Y/A+2zJM4t4PqOU+/USkqDeyvJheuJ/EyZHCCDEBCARzBW0
-         FjLJBB/Z99FXcYApJ+zo8xnaqvB4pO6isN7teVJibHq6GpVDk06hBfebrgCY/77NjwYB
-         H20g==
-X-Gm-Message-State: AOAM533hGxwvguYn6sSe8kI/+GW0XF+Cy3nmvVM2bfVMtdlj+sgWOKVa
-        vexsGbWNiZeVb2A0R8YYUzo=
-X-Google-Smtp-Source: ABdhPJyaAY5hirP9AM9iwHk+7oGAO7czy2aUScLhsDaWHV8yGg0GD331nuyrXAgJnTfpCQ1We0SMKQ==
-X-Received: by 2002:a17:906:2ad3:: with SMTP id m19mr1116263eje.81.1603922367860;
-        Wed, 28 Oct 2020 14:59:27 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id c3sm464228edl.60.2020.10.28.14.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 14:59:26 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 22:59:24 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 4/4] CREDITS: remove trailing white spaces
-Message-ID: <20201028215924.GD269525@kozik-lap>
-References: <20201016151528.7553-1-krzk@kernel.org>
- <20201016151528.7553-4-krzk@kernel.org>
+        id S1732360AbgJ1WUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731714AbgJ1WRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:42 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B0AA21D24;
+        Wed, 28 Oct 2020 00:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603845460;
+        bh=0zcCDwiBKC7ofVzm4/NFPmdSFJYkgfHmXUEJF+KMr7w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=feaYeggrK047irjSAhmMDIkRvp9bJhCRnzJbg0nYzL98Z57xVzKCSyQ8HxPkcpP4e
+         /n6a/YHe3l8aCn5o/WsyB4nxWSF6CVkI34y5dO6I8aIuUZVDogJNvhOMlcQOjBEgSJ
+         yB+VxFJ1b898d/VkvB8coVRY8lmPeWc80SiP+gPY=
+Date:   Tue, 27 Oct 2020 17:37:39 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yi Li <yili@winhong.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] net: core: Use skb_is_gso() in skb_checksum_help()
+Message-ID: <20201027173739.7144cb97@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201027055904.2683444-1-yili@winhong.com>
+References: <20201026092403.5e0634f3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201027055904.2683444-1-yili@winhong.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201016151528.7553-4-krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 05:15:28PM +0200, Krzysztof Kozlowski wrote:
-> Remove trailing white spaces.  No functional/substantive change.
+On Tue, 27 Oct 2020 13:59:04 +0800 Yi Li wrote:
+> No functional changes, just minor refactoring.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  CREDITS | 52 ++++++++++++++++++++++++++--------------------------
->  1 file changed, 26 insertions(+), 26 deletions(-)
+> Signed-off-by: Yi Li <yili@winhong.com>
 
-Applied.
-
-Best regards,
-Krzysztof
-
+Applied, thanks!
