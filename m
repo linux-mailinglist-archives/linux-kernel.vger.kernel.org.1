@@ -2,304 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4015B29D911
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60E029D89C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389515AbgJ1Wn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389503AbgJ1Wnz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:43:55 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123BC0613CF;
-        Wed, 28 Oct 2020 15:43:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id f21so352264plr.5;
-        Wed, 28 Oct 2020 15:43:55 -0700 (PDT)
+        id S2388079AbgJ1Wep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:34:45 -0400
+Received: from mail-dm6nam10on2040.outbound.protection.outlook.com ([40.107.93.40]:41825
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387529AbgJ1WcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:32:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SyF+fjToWT52pGgbOmP3kv6a0TQscugvPXZrt5eUTdxFRQhKxCLVxIm72YPts5jjLhVedJLoOn0+qrJGvcwbpA95vpV7ODCnJ31Uwsem10oGHJcNNAdWModirr2QHZzxATHzJMqfiNE3NXGPABNLB1Vtm771GGNPC/0wxbO60zjbF9xy0GAhjvupeFUBZ3tlUTf7mWSXKT2ouo19PryoRT2Kycp4RtKSAmxjmn91VPi37roz2Eh2HD+WtdYkvmHC6hCrJyMWCRJw+beVg38XB+tlY/G+zbmagTYe8Ww/D5YalnPuexehwf0xJwpR26nhbnMb8JhncmuhBYUb3MzUDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LNHZ6QE2kz0rzJDxJ8agwRI+miR67gp6zQFzF2f2+Cc=;
+ b=HpJcCqrp7ZbkMwbJ9wDYjbDeGIUBhB/y1i4icwcHbfYNR58VjCZHcBmZ0h/neKu0szYXY8XQFDOm30tDQ8G0eo5IdSsLsVAB+M6yCprlMOQysQBbY6c5EYHNpUHjdZC5mN+cPa/AilJc7nvcoK24CiG77XlfM55qF5X80u8vtEru3Pkgx+ccY0zkiA5FMYd++sxkhJsf7Bcuz9xodWFLgJMz0Fv/Vu5jUa/tjy/BNtTFcjymz1d2aZyieskSyre+9p/c+hNDp/94mY2H32ewAv6Lbh3x4mYc2dYEt8F+zILqEfw4CTLQNMrTwim3fcU+uiDtp4oml26S5jv8yuHa9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oaa8geg/T7Mkg1IhrPZ9ojItG/nEdjLtTyyx3XiRm1g=;
-        b=iXpwEKz4ahjXONPencKe1/fGUjTiRHXYhjFkWnYTO/LyraTFF82uNHLqAEZBITozVX
-         wSE2C0eWJjmfzlCrdqJU4gToJwL9zYQt3CoL5jYkVnAbTUcCEMOrbjnGSTyB0OajDSzY
-         0MdPKWc0+3GKM2aM7xvoVCFTshTkbxcyOiP8jnajHiAYsqB1Dgs5o40jLXH2mqh23tog
-         Td5089h6p1IAfsadUCDJagHAuNMaYoanED4Z3Osg9fSPJWv2OQ3brSAFsiB2NIEksgYg
-         xFFTLmyiBSaj1Y7W2n9ATS6iBvIKhf2CEmunsNqt0Z3M2BypMEiV4xsquHzRCI8La8RT
-         Wytw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oaa8geg/T7Mkg1IhrPZ9ojItG/nEdjLtTyyx3XiRm1g=;
-        b=HVB1yCR7d7lSDWk+w7xmwPknwJbFn7Py2PEGC6XUhOvyJaa1iF1uJPrM7qBNHIOHFS
-         s1AGwiwW9mlpfwTAlBDAQ1cTQRkXIooYTWULyCdhXrFEuT6KjtxUm8b2YOo2ZjKiECiq
-         O+cf27952tvj5zGWh1c6Iidf6WLY++1e/VMWqsHtSznPLuCyHn3qMGrXSh8Bx6cW0pvh
-         yQdNfxdzwQpYcXB7q0DkFntHMfqPh8YDl4hdwQCVuciQu+DDBZ2GmvrDcJG2TyajsX8v
-         LsbvnvNZVXeNgX0ACT05PtxAKMgEF9OSQdBDmEobBsTwNsznudSHVTF+YAfySnw2QD0a
-         sRmw==
-X-Gm-Message-State: AOAM5325rCAKQwA1Vd+DRXvIN1TadLN2d9CHyabqhpIyJLYEnJD49fNv
-        kyZ1zKDZ4FAkiAiQYqMqkrVZj/BQj27mdOYH
-X-Google-Smtp-Source: ABdhPJybZt79yEe27byzOwh0sHeZgjRxRq2Pvo32WalOk1EF/2tFMOJayyDjsZx6fTAePmIzTIeISQ==
-X-Received: by 2002:a17:902:6505:b029:d5:f870:4d20 with SMTP id b5-20020a1709026505b02900d5f8704d20mr6721566plk.34.1603874728042;
-        Wed, 28 Oct 2020 01:45:28 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.242.167])
-        by smtp.gmail.com with ESMTPSA id ck21sm4196820pjb.56.2020.10.28.01.45.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 01:45:27 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201027174630.85213-1-98.arpi@gmail.com>
- <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <5aa41bb7-79fa-bcd6-ef51-e27dabceb5cf@gmail.com>
-Date:   Wed, 28 Oct 2020 14:15:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LNHZ6QE2kz0rzJDxJ8agwRI+miR67gp6zQFzF2f2+Cc=;
+ b=WY4ytmOxhekLYodxRZYqmMBlWYQYGIBwFwPHvpqH4pVXsNzGknP82Wp7fdpPouCf9P+uQUxpcaon4CY13GR4vI6D2z3SOnHMXAhuy2IoErLe96wPyRm6Z3UL4kFmzDOlQM8jQQ2o+Vlkf6tGwieSt6xFUBkM7mGMtkG7K7lTet8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BY5PR12MB4098.namprd12.prod.outlook.com (2603:10b6:a03:205::8)
+ by BY5PR12MB4919.namprd12.prod.outlook.com (2603:10b6:a03:1d6::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Wed, 28 Oct
+ 2020 09:00:37 +0000
+Received: from BY5PR12MB4098.namprd12.prod.outlook.com
+ ([fe80::e1a3:69b7:a02d:a74d]) by BY5PR12MB4098.namprd12.prod.outlook.com
+ ([fe80::e1a3:69b7:a02d:a74d%7]) with mapi id 15.20.3499.019; Wed, 28 Oct 2020
+ 09:00:37 +0000
+From:   Sandeep Singh <Sandeep.Singh@amd.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        jic23@kernel.org, Nehal-bakulchandra.Shah@amd.com
+Cc:     mail@richard-neumann.de, Shyam-sundar.S-k@amd.com,
+        lipheng@hanmail.net, Sandeep Singh <sandeep.singh@amd.com>
+Subject: [PATCH v3] AMD_SFH: Fix for incorrect Sensor index
+Date:   Wed, 28 Oct 2020 14:30:10 +0530
+Message-Id: <20201028090010.2689060-1-Sandeep.Singh@amd.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [165.204.156.251]
+X-ClientProxiedBy: MA1PR01CA0123.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::17) To BY5PR12MB4098.namprd12.prod.outlook.com
+ (2603:10b6:a03:205::8)
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNOpbXHs4gs9Ro-u7hyN_zZ7s3AqDcdDy1Nqxq4ckThugA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from jatayu.amd.com (165.204.156.251) by MA1PR01CA0123.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:35::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 09:00:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d6baa59d-58d0-4d6e-b256-08d87b1fefe2
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4919:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR12MB491989B09588EADC76F391E6E0170@BY5PR12MB4919.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kEixEBbk0IyXzwPEuIyvMPf0AS+W+qbOsp21bR6Lmk5Gymp+687WrSnKwLsZU/Xy8RWNpF8YyKuCvBcDbxWWYw5c2SvATv2CPRvy3q/Gkk5UojIS1zXLvFV1xsKhSwYGDHCI0LK1EWKQ5aI+kGtxY1Tio2m4IBpsmsIhLcSiZEP3u9lutyGLRAq4XQCGUYNMHv/W+iI+CTpsbPhOHjH6tcatzAcCrSPSrNHM/10dyCgzTlBUxlamu7h+8vN7yBNcUItoDokwSnhqnKlLibEFRmF7dV30sxi6Xrwug7h7n0D9r/qOaxuyWCjOLkKoWYZMYzvuN2lHD5WD4M4GjYLXChl88itnuzC5xczHubPcdxaDR6WulUR66U5KJCVkG3kOAgtajvl8PXLG2Qh4L390sA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4098.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(136003)(346002)(366004)(8676002)(36756003)(6666004)(66946007)(2906002)(66556008)(66476007)(8936002)(316002)(6636002)(478600001)(2616005)(83380400001)(86362001)(186003)(16526019)(6486002)(5660300002)(4326008)(26005)(52116002)(7696005)(956004)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: hUBr5nyyy+c1jmJJBjlnYgAX1gAnFa5Y5whrfzBfGn+h2tfDWrEVw98l3sfSCvhrGiKnR9XxYEFLu2BQ8/hfnIhHu1IipCGCV3AmzMaAJw6oVy65d27aJgEx/N1WcvXIZ1MK8ukJEXo5SmbwoscbM2G36hnAZg6Wq2Ydqz73pcZ4VoKUXxwBpIqiXt1ZxUXcpwRcqmPbVxShydmOwwsDH2xwWFIfKR2+Fb3DVJazWznW6N8+44uxkGldqyOIHgAFVvm3BryOZRyWShxW6KbzHyYUwogGwtfcOS9yBOsoG6Jis1o1I4bUJR0xbrF+Xc3SiZtQFSlNpROu04REhg+1POlGJCaGsdm3b9irfxvH3/5EGiQkb7/KDXlD1ffDC0TCx1RRBEPOqL4N/mSUaCFYDdT7QLKrZLGRGC8ngh/DgI/wMemwOf2miLE7XRBmvMekXfMvc23hUIBKEDWZFFw85ds4nrRgaBhV2njbmjWCMkb3YC4ngDRmZMyv1aEdUEWN+4+xQ/bs5W1FKXUHzWy9+T2XyRa7AWA34Z/EKGGUfmj77OZ0oWEj8e8uJqTEWnCcPkR9n5I8VXtaARh1wliHfe3owaP80X0eDuah7SamqrdZ3sNaLG5TuzBRqdNA+LD6+cZyV22RMaXXtnwThSXX7g==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6baa59d-58d0-4d6e-b256-08d87b1fefe2
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4098.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2020 09:00:37.3212
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HcYbUFP80AS/pZPZOHG/5NqisiYB3JwvttocIp/ZKhHiiKq7XdnrqGafWdliVjYL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4919
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/20 12:51 am, Marco Elver wrote:
-> On Tue, 27 Oct 2020 at 18:47, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>
->> Implementation of support for parameterized testing in KUnit.
->> This approach requires the creation of a test case using the
->> KUNIT_CASE_PARAM macro that accepts a generator function as input.
->> This generator function should return the next parameter given the
->> previous parameter in parameterized tests. It also provides
->> a macro to generate common-case generators.
->>
->> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->> Co-developed-by: Marco Elver <elver@google.com>
->> Signed-off-by: Marco Elver <elver@google.com>
->> ---
->> Changes v3->v4:
->> - Rename kunit variables
->> - Rename generator function helper macro
->> - Add documentation for generator approach
->> - Display test case name in case of failure along with param index
->> Changes v2->v3:
->> - Modifictaion of generator macro and method
->> Changes v1->v2:
->> - Use of a generator method to access test case parameters
->>
->>  include/kunit/test.h | 34 ++++++++++++++++++++++++++++++++++
->>  lib/kunit/test.c     | 21 ++++++++++++++++++++-
->>  2 files changed, 54 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/kunit/test.h b/include/kunit/test.h
->> index 9197da792336..ec2307ee9bb0 100644
->> --- a/include/kunit/test.h
->> +++ b/include/kunit/test.h
->> @@ -107,6 +107,13 @@ struct kunit;
->>   *
->>   * @run_case: the function representing the actual test case.
->>   * @name:     the name of the test case.
->> + * @generate_params: the generator function for parameterized tests.
->> + *
->> + * The generator function is used to lazily generate a series of
->> + * arbitrarily typed values that fit into a void*. The argument @prev
->> + * is the previously returned value, which should be used to derive the
->> + * next value; @prev is set to NULL on the initial generator call.
->> + * When no more values are available, the generator must return NULL.
->>   *
-> 
-> Hmm, should this really be the first paragraph? I think it should be
-> the paragraph before "Example:" maybe. But then that paragraph should
-> refer to generate_params e.g. "The generator function @generate_params
-> is used to ........".
-> 
-> The other option you have is to move this paragraph to the kernel-doc
-> comment for KUNIT_CASE_PARAM, which seems to be missing a kernel-doc
-> comment.
-> 
->>   * A test case is a function with the signature,
->>   * ``void (*)(struct kunit *)``
->> @@ -141,6 +148,7 @@ struct kunit;
->>  struct kunit_case {
->>         void (*run_case)(struct kunit *test);
->>         const char *name;
->> +       void* (*generate_params)(void *prev);
->>
->>         /* private: internal use only. */
->>         bool success;
->> @@ -162,6 +170,9 @@ static inline char *kunit_status_to_string(bool status)
->>   * &struct kunit_case for an example on how to use it.
->>   */
->>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
-> 
-> I.e. create a new kernel-doc comment for KUNIT_CASE_PARAM here, and
-> simply move the paragraph describing the generator protocol into that
-> comment.
-> 
+From: Sandeep Singh <sandeep.singh@amd.com>
 
-I will make this change.
+It appears like the accelerometer/magnetometer and gyroscope
+indices were interchanged in the patch series which got into
+for-5.11/amd-sfh-hid until Mandoli/Richard reported to us.
+Ideally sensor indices should be 0,1,2 for the accelerometer,
+Gyroscope, Magnetometer respectively, but this interchanged
+possibly could be because i was using a test MP2 firmware
+on my machine.
 
->> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
->> +               { .run_case = test_name, .name = #test_name,    \
->> +                 .generate_params = gen_params }
->>
->>  /**
->>   * struct kunit_suite - describes a related collection of &struct kunit_case
->> @@ -208,6 +219,15 @@ struct kunit {
->>         const char *name; /* Read only after initialization! */
->>         char *log; /* Points at case log after initialization */
->>         struct kunit_try_catch try_catch;
->> +       /* param_value points to test case parameters in parameterized tests */
-> 
-> Hmm, not quite: param_value is the current parameter value for a test
-> case. Most likely it's a pointer, but it doesn't need to be.
-> 
->> +       void *param_value;
->> +       /*
->> +        * param_index stores the index of the parameter in
->> +        * parameterized tests. param_index + 1 is printed
->> +        * to indicate the parameter that causes the test
->> +        * to fail in case of test failure.
->> +        */
-> 
-> I think this comment needs to be reformatted, because you can use at
-> the very least use 80 cols per line. (If you use vim, visual select
-> and do 'gq'.)
-> 
->> +       int param_index;
->>         /*
->>          * success starts as true, and may only be set to false during a
->>          * test case; thus, it is safe to update this across multiple
->> @@ -1742,4 +1762,18 @@ do {                                                                            \
->>                                                 fmt,                           \
->>                                                 ##__VA_ARGS__)
->>
->> +/**
->> + * KUNIT_ARRAY_PARAM() - Helper method for test parameter generators
->> + *                      required in parameterized tests.
->> + * @name:  prefix of the name for the test parameter generator function.
->> + *        It will be suffixed by "_gen_params".
->> + * @array: a user-supplied pointer to an array of test parameters.
->> + */
->> +#define KUNIT_ARRAY_PARAM(name, array)                                                         \
->> +       static void *name##_gen_params(void *prev)                                              \
->> +       {                                                                                       \
->> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
->> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
->> +       }
->> +
->>  #endif /* _KUNIT_TEST_H */
->> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
->> index 750704abe89a..8ad908b61494 100644
->> --- a/lib/kunit/test.c
->> +++ b/lib/kunit/test.c
->> @@ -127,6 +127,12 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
->>  }
->>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
->>
->> +static void kunit_print_failed_param(struct kunit *test)
->> +{
->> +       kunit_err(test, "\n\tTest failed at:\n\ttest case: %s\n\tparameter: %d\n",
->> +                                               test->name, test->param_index + 1);
->> +}
-> 
-> Hmm, perhaps I wasn't clear, but I think I also misunderstood how the
-> test case successes are presented: they are not, and it's all bunched
-> into a single test case.
-> 
-> Firstly, kunit_err() already prints the test name, so if we want
-> something like "  # : the_test_case_name: failed at parameter #X",
-> simply having
-> 
->     kunit_err(test, "failed at parameter #%d\n", test->param_index + 1)
-> 
-> would be what you want.
-> 
-> But I think I missed that parameters do not actually produce a set of
-> test cases (sorry for noticing late). I think in their current form,
-> the parameterized tests would not be useful for my tests, because each
-> of my tests have test cases that have specific init and exit
-> functions. For each parameter, these would also need to run.
-> 
-> Ideally, each parameter produces its own independent test case
-> "test_case#param_index". That way, CI systems will also be able to
-> logically separate different test case params, simply because each
-> param produced its own distinct test case.
-> 
-> So, for example, we would get a series of test cases from something
-> like KUNIT_CASE_PARAM(test_case, foo_gen_params), and in the output
-> we'd see:
-> 
->     ok X - test_case#1
->     ok X - test_case#2
->     ok X - test_case#3
->     ok X - test_case#4
->     ....
-> 
-> Would that make more sense?
-> 
-> That way we'd ensure that test-case specific initialization and
-> cleanup done in init and exit functions is properly taken care of, and
-> you wouldn't need kunit_print_failed_param().
-> 
-> AFAIK, for what I propose you'd have to modify kunit_print_ok_not_ok()
-> (show param_index if parameterized test) and probably
-> kunit_run_case_catch_errors() (generate params and set
-> test->param_value and param_index).
-> 
-> Was there a reason why each param cannot be a distinct test case? If
-> not, I think this would be more useful.
-> 
+This patch fixes the earlier commit with the right sensor
+indices and also removing unused structures
+_hid_report_descriptor,
+_hid_device_descriptor as reported by Richard.
 
-Oh, I hadn't considered this earlier. I will try it out for the next version.
+Reported-by: Mandoli <lipheng@hanmail.net>
+Reported-by: Richard Neumann <mail@richard-neumann.de>
+Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
+Fixes: SFH: PCIe driver to add support of AMD sensor fusion hub (4f567b9f8141)
+---
 
->>  static void kunit_print_string_stream(struct kunit *test,
->>                                       struct string_stream *stream)
->>  {
->> @@ -168,6 +174,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
->>         assert->format(assert, stream);
->>
->>         kunit_print_string_stream(test, stream);
->> +       if (test->param_value)
->> +               kunit_print_failed_param(test);
->>
->>         WARN_ON(string_stream_destroy(stream));
->>  }
->> @@ -239,7 +247,18 @@ static void kunit_run_case_internal(struct kunit *test,
->>                 }
->>         }
->>
->> -       test_case->run_case(test);
->> +       if (!test_case->generate_params) {
->> +               test_case->run_case(test);
->> +       } else {
->> +               test->param_value = test_case->generate_params(NULL);
->> +               test->param_index = 0;
->> +
->> +               while (test->param_value) {
->> +                       test_case->run_case(test);
->> +                       test->param_value = test_case->generate_params(test->param_value);
->> +                       test->param_index++;
->> +               }
->> +       }
-> 
-> Thanks,
-> -- Marco
-> 
+Changes since v1:(https://lkml.org/lkml/2020/10/23/172)
+	-> Add Reported by : Richard Neumann
 
-I'll make all the suggested changes.
-Thanks!
+Changes since v2:(https://lkml.org/lkml/2020/10/24/22)
+	-> Modified commit message 
+
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.c             |  6 +++---
+ .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h  | 14 --------------
+ 2 files changed, 3 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
+index 9c5eb442e1a6..a51c7b76283b 100644
+--- a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
++++ b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
+@@ -20,9 +20,9 @@
+ #define DRIVER_NAME	"pcie_mp2_amd"
+ #define DRIVER_DESC	"AMD(R) PCIe MP2 Communication Driver"
+ 
+-#define ACEL_EN		BIT(1)
+-#define GYRO_EN		BIT(2)
+-#define MAGNO_EN	BIT(3)
++#define ACEL_EN		BIT(0)
++#define GYRO_EN		BIT(1)
++#define MAGNO_EN		BIT(2)
+ #define ALS_EN		BIT(19)
+ 
+ void amd_start_sensor(struct amd_mp2_dev *privdata, struct amd_mp2_sensor_info info)
+diff --git a/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h b/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
+index ac9a01cc1454..095c471d8fd6 100644
+--- a/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
++++ b/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
+@@ -16,11 +16,6 @@ enum desc_type {
+ 	feature_size,
+ };
+ 
+-struct _hid_report_descriptor {
+-	u8 bDescriptorType;
+-	u8 wDescriptorLength;
+-};
+-
+ struct common_feature_property {
+ 	/* common properties */
+ 	u8 report_id;
+@@ -38,15 +33,6 @@ struct common_input_property {
+ 	u8 event_type;
+ } __packed;
+ 
+-struct _hid_device_descriptor {
+-	u8 bLength;
+-	u8 bDescriptorType;
+-	u8 bcdHID[2];
+-	u8 bCountryCode;
+-	u8 bNumDescriptors;
+-	struct _hid_report_descriptor *reports;
+-};
+-
+ struct accel3_feature_report {
+ 	struct common_feature_property common_property;
+ 	/* properties specific to this sensor */
+-- 
+2.25.1
+
