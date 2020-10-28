@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920C029DC47
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D588E29DC78
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388499AbgJ2AXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:23:42 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55198 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388354AbgJ1Whn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:37:43 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09SK2OQ2015527;
-        Wed, 28 Oct 2020 15:02:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603915344;
-        bh=o3y/Ko52UWOP2r6NyGzju3m7wUK+9F50IDH+1PbV1+I=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=nAcmELvF+vjrrNcZ81hM8wmF68PPe10VPfwKmZrWz/XYSRMnDLoDoh+hs9UOG/+zE
-         nTszN8+SY4GsULIBwZLVpNvyG2lpwFP3nWiIKYALcy9SIjP+SVepLE3ggIDUdcllia
-         IAvXSYIvF3WiAzhyBLCUC7oIC1JhpS6BjjY0mUxM=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09SK2OT3092998
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 28 Oct 2020 15:02:24 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 28
- Oct 2020 15:02:23 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 28 Oct 2020 15:02:23 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09SK2Mgs047010;
-        Wed, 28 Oct 2020 15:02:23 -0500
-Date:   Thu, 29 Oct 2020 01:32:22 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
-Message-ID: <20201028200220.eskcgrf2bqzzijz5@ti.com>
-References: <20201005153138.6437-1-p.yadav@ti.com>
- <d0d702c1-761b-1480-c74d-135193b33c26@microchip.com>
- <20201028124920.pot77v4phkqiswhr@ti.com>
- <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
+        id S2387748AbgJ1WdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:33:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388494AbgJ1WdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:33:00 -0400
+Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CD602072E;
+        Wed, 28 Oct 2020 22:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603924379;
+        bh=ifer0qFpmgpScVnZn7aVvw9lQMczxYrypi1yqr3rAwI=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=NNULfFQLt/FTEQpuj0ZA9HTeU4TE3UfyQnnDWSDk74jLAnDEr22kWibODAsFZE2Ji
+         qtGRZOoGN9JwyoPKIHfdBKQojSnDD9lEY2ROWnNOmBIRcxKlw4Ur+gQtXewnT1BGCw
+         /GdULCATmV6cCysRHQ4Yy1kenbTnJ6ZX1bWfzkXI=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Shevchenko <andy@kernel.org>, Milo Kim <milo.kim@ti.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [RESEND PATCH 31/42] mfd: timberdale: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:58 +0100
+Message-Id: <20201028223009.369824-31-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
+References: <20201028223009.369824-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/10/20 03:21PM, Tudor.Ambarus@microchip.com wrote:
-> On 10/28/20 2:49 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > Hi Tudor,
-> > 
-> > On 28/10/20 07:53AM, Tudor.Ambarus@microchip.com wrote:
-> >> Hi, Pratyush,
-> >>
-> >> On 10/5/20 6:31 PM, Pratyush Yadav wrote:
-> >>> Tested on Micron MT35X and S28HS flashes for Octal DTR.
-> >>
-> >> Do these flashes define the "Command Sequences to Change to
-> >> Octal DDR (8D-8D-8D) mode" table? Can't we use that table
-> >> instead of defining our own octal dtr enable functions?
-> > 
-> > The Micron flash does not have this table. The Cypress flash does. The
-> > problem is that one of the samples of the Cypress flash I tested on had
-> > incorrect data in that table which meant the sequence would fail. The
-> > newer samples of the flash have the correct data.
-> 
-> Can we differentiate the Cypress flashes?
+Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+ - it brings some meaning,
+ - it might point attention why auto device ID was not used.
 
-No way I know of.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/mfd/timberdale.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> Do you remember what was the incorrect data?
-
-The address width for the write register command was 4 bytes when the 
-flash uses 3 bytes by default.
- 
-> > 
-> > I don't know how many of those faulty flashes are out there in the wild.
-> > IMO, to be on the safe side spi_nor_cypress_octal_dtr_enable() needs to
-> > be implemented. So from the point of view of this series there is no
-> > need to parse the Octal DDR enable table.
-> 
-> Meh, we cover manufacturer's mistakes. On the long run, our aim should be
-> to follow the SFDP standard and if a flash implements it wrong, to either
-> fix it via a fixup hook (if the fix is minimal), or to skip the faulty
-> table.
-> 
-> Regarding "Command Sequences to Change to Octal DDR (8D-8D-8D) mode"
-> table. Have you looked over
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
-> ?
-> Is there a standard way to determine the offsets of opcode, addr and
-> data in the cmd seq?
-
-To be honest the spec does not say much about how the data should be 
-interpreted so I am not sure either. My understanding is that those are 
-effectively data bytes to send out on the bus.
-
-One way to implement such a function, would be to put the first byte as 
-the command opcode and the rest as data [0], with no address and dummy 
-cycles. So no matter the address length, the controller should send out 
-the bytes in sequence and then the flash can interpret them according to 
-the address width it expects.
-
-The downside is that someone debugging this on the controller's end 
-might get confused seeing an opcode that expects an address phase but 
-SPI NOR not sending one.
-
-The other way would be to use the first byte as opcode, the next 
-nor->addr_width bytes as address and the remaining as data, with no 
-dummy cycles. This would fail if the 8D enable command does not use 
-nor->addr_width address bytes [1].
-
-I don't know which of the two is better but I think both are better than 
-the switch-case hackery in Mason's patch which has to assume either the 
-address width or the data length and leaves no way to play around with 
-them in fixup hooks. If you have any better ideas I'm all ears.
-
-[0] AFAIK many controllers can't have 0 command bytes.
-[1] I'm not sure how common that would be though.
- 
-> Cheers,
-> ta
-> > 
-> >> I see that Mason used this table for a macronix flash:
-> >> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
-> >> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw/
-> >>
-> >> Cheers,
-> >> ta
-> > 
-> > --
-> > Regards,
-> > Pratyush Yadav
-> > Texas Instruments India
-> > 
-> 
-
+diff --git a/drivers/mfd/timberdale.c b/drivers/mfd/timberdale.c
+index faecbca6dba3..de1589fa2120 100644
+--- a/drivers/mfd/timberdale.c
++++ b/drivers/mfd/timberdale.c
+@@ -740,25 +740,25 @@ static int timb_probe(struct pci_dev *dev,
+ 	ip_setup = priv->fw.config & TIMB_HW_VER_MASK;
+ 	switch (ip_setup) {
+ 	case TIMB_HW_VER0:
+-		err = mfd_add_devices(&dev->dev, -1,
++		err = mfd_add_devices(&dev->dev, PLATFORM_DEVID_NONE,
+ 			timberdale_cells_bar0_cfg0,
+ 			ARRAY_SIZE(timberdale_cells_bar0_cfg0),
+ 			&dev->resource[0], msix_entries[0].vector, NULL);
+ 		break;
+ 	case TIMB_HW_VER1:
+-		err = mfd_add_devices(&dev->dev, -1,
++		err = mfd_add_devices(&dev->dev, PLATFORM_DEVID_NONE,
+ 			timberdale_cells_bar0_cfg1,
+ 			ARRAY_SIZE(timberdale_cells_bar0_cfg1),
+ 			&dev->resource[0], msix_entries[0].vector, NULL);
+ 		break;
+ 	case TIMB_HW_VER2:
+-		err = mfd_add_devices(&dev->dev, -1,
++		err = mfd_add_devices(&dev->dev, PLATFORM_DEVID_NONE,
+ 			timberdale_cells_bar0_cfg2,
+ 			ARRAY_SIZE(timberdale_cells_bar0_cfg2),
+ 			&dev->resource[0], msix_entries[0].vector, NULL);
+ 		break;
+ 	case TIMB_HW_VER3:
+-		err = mfd_add_devices(&dev->dev, -1,
++		err = mfd_add_devices(&dev->dev, PLATFORM_DEVID_NONE,
+ 			timberdale_cells_bar0_cfg3,
+ 			ARRAY_SIZE(timberdale_cells_bar0_cfg3),
+ 			&dev->resource[0], msix_entries[0].vector, NULL);
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+2.25.1
+
