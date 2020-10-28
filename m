@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8A629D57F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEAD29D5D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgJ1WDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:03:22 -0400
-Received: from m12-18.163.com ([220.181.12.18]:52754 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729724AbgJ1WDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:03:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=nAs3v
-        bkCmcV6Oy/GkOcEF/dH1rSAqiDrs/rbgl/Dt0I=; b=qUigTwMcCWIF+OxcrVy8g
-        cA8If80/dMbSNmPzz/m3D3doUZNlVPvjgjjQ5H0GD3UdmfA478UCyqGCeya3hMsk
-        Qp2C0MLBgyL6fqzdBO00lu2V6rhv/UC79dsGVgYHkPriES2abYgQJmgeCbQOvy0T
-        47yZWxHAxieyMYxbCfZNZE=
-Received: from localhost (unknown [101.86.209.121])
-        by smtp14 (Coremail) with SMTP id EsCowAC314PdjplfhT2uAg--.3425S2;
-        Wed, 28 Oct 2020 23:31:41 +0800 (CST)
-Date:   Wed, 28 Oct 2020 23:31:41 +0800
-From:   Hui Su <sh_def@163.com>
-To:     Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, sh_def@163.com
-Subject: [PATCH v3] mm/oom_kill: remove comment and rename
- is_dump_unreclaim_slabs()
-Message-ID: <20201028153141.GB77196@rlk>
-References: <20201027144529.GA3558@rlk>
- <20201027145814.GY20500@dhcp22.suse.cz>
- <20201027151156.GA4336@rlk>
- <20201027192322.GA20500@dhcp22.suse.cz>
+        id S1730298AbgJ1WJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:09:07 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41922 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730278AbgJ1WJF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:09:05 -0400
+Received: by mail-ot1-f65.google.com with SMTP id n15so571695otl.8;
+        Wed, 28 Oct 2020 15:09:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1KdqXDK4M/5ZEV294fuZhX7Y5VXRQ8lO6npUgDUtHCo=;
+        b=ohKKonLNUrvLzSsdaIdqXfQX4K5xdcoXNlVCi+i8P4Hz0/F4Q2z1L04TRIFAc++dIX
+         Yej9J5C7RjV4d1s+s7c+ws3Mw2p2yJo0xRsW0kD5yHs0p2c2GoPBl+cECeVAaKMt11pq
+         MgZprqGd75BXp8pSeRe//DDa66SKyek6/lNa5YqjRHneL6duRnVWW6BMixRsO6PHvjnq
+         kmukS4kTlXawyeXZoLeIMIaoX/nI8iBNyX8sbD9cyykoKu7Q7C9puaXI10AJoaxQI4VO
+         g21JUvQXZ115+eCgYQkXLmwtGs4JccUdcssprqZ52bHXGvx8bvIoyRdFcYhQTfJSnh6L
+         U8sQ==
+X-Gm-Message-State: AOAM5326E0I59oorgHKjSMiaxB8VVd3Ov3NvClSHM/rToQJ7o+NS6xZB
+        wtPvLRXZV/jF89V0NjcDUs6cqXrQgA==
+X-Google-Smtp-Source: ABdhPJzKJ5XeHqQoJzEDcWmzSMiRturBprI3oV8B8fgDO4tHsUo5qjbS+NPLdGrci0BNyCk5/JUZoQ==
+X-Received: by 2002:a9d:7315:: with SMTP id e21mr5341300otk.372.1603899117315;
+        Wed, 28 Oct 2020 08:31:57 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j4sm2235193ota.17.2020.10.28.08.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:31:56 -0700 (PDT)
+Received: (nullmailer pid 4062647 invoked by uid 1000);
+        Wed, 28 Oct 2020 15:31:55 -0000
+Date:   Wed, 28 Oct 2020 10:31:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        David Jander <david@protonic.nl>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v4 4/5] dt-bindings: arm: fsl: add Plymovent BAS board
+Message-ID: <20201028153155.GA4062454@bogus>
+References: <20201022104022.13149-1-o.rempel@pengutronix.de>
+ <20201022104022.13149-5-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201027192322.GA20500@dhcp22.suse.cz>
-X-CM-TRANSID: EsCowAC314PdjplfhT2uAg--.3425S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Wr4xWryrZw4DZw4rGrg_yoW8Xr1Up3
-        Z3t34Dtw4rtrZI9F4xCr429r1avws5KFyfJr9xKw18Zw15Xw1UurW8C342vr9IqFyrAFs3
-        JrWayr4kZ3WDZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uzq2_UUUUU=
-X-Originating-IP: [101.86.209.121]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiMR3LX1UMWJ7UYAAAsT
+In-Reply-To: <20201022104022.13149-5-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Comment for is_dump_unreclaim_slabs is not really clear whether it is
-meant to instruct how to use the function or whether it is an outdated
-information of the past implementation of the function. it doesn't realy
-help that is_dump_unreclaim_slabs is hard to grasp on its own.
+On Thu, 22 Oct 2020 12:40:21 +0200, Oleksij Rempel wrote:
+> Add Plymovent Group BV BAS iMX6dl based board
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Rename the helper to should_dump_unreclaim_slabs which should make it
-clear what it is meant to do and drop the comment as the purpose
-should be pretty evident now.
-
-Signed-off-by: Hui Su <sh_def@163.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/oom_kill.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 8b84661a6410..d181e24d7193 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -170,11 +170,7 @@ static bool oom_unkillable_task(struct task_struct *p)
- 	return false;
- }
- 
--/*
-- * Print out unreclaimble slabs info when unreclaimable slabs amount is greater
-- * than all user memory (LRU pages)
-- */
--static bool is_dump_unreclaim_slabs(void)
-+static bool should_dump_unreclaim_slabs(void)
- {
- 	unsigned long nr_lru;
- 
-@@ -463,7 +459,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
- 		mem_cgroup_print_oom_meminfo(oc->memcg);
- 	else {
- 		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
--		if (is_dump_unreclaim_slabs())
-+		if (should_dump_unreclaim_slabs())
- 			dump_unreclaimable_slab();
- 	}
- 	if (sysctl_oom_dump_tasks)
--- 
-2.29.0
-
-
+Acked-by: Rob Herring <robh@kernel.org>
