@@ -2,268 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7437529D66E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFED529D74B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731222AbgJ1WO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:14:58 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:54685 "EHLO m42-4.mailgun.net"
+        id S1732591AbgJ1WWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731053AbgJ1WO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:14:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603923294; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=MRHOdj0rXEaf/OvD/sXpqwAPB8C1K/tQHR8uh41g/To=; b=hNQLTKVwb1m1YsH1HrSvs8PDjBr33r7aKpzK5eUeBm65MCRtSz9oeRe4rDiVuh7QfN2qxNjt
- UCAw27kEpM0xdDCZ9dbWRdZ37ZR3kiaZy8Je4kweoCKIIJ8Bwil4mZW15EncH1SeATdPTUAh
- nEJrHwszkAc7jatkYpstzsoqcZk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f997e07aca26e7bb96f3127 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 14:19:51
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E0A4FC43382; Wed, 28 Oct 2020 14:19:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732648AbgJ1WWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:22:25 -0400
+Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53737C433FF;
-        Wed, 28 Oct 2020 14:19:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53737C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] bus: mhi: core: Add support MHI EE FP for download
- firmware
-To:     Hemant Kumar <hemantk@codeaurora.org>, carl.yin@quectel.com,
-        manivannan.sadhasivam@linaro.org, sfr@canb.auug.org.au
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        naveen.kumar@quectel.com
-References: <20201027094338.23110-1-carl.yin@quectel.com>
- <937f9236-1c07-d101-a8d7-afad68afdd2b@codeaurora.org>
- <322cf3df-86f1-7614-62b1-db8594a8062a@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <f5af4fff-1328-dd26-6791-8a978a446692@codeaurora.org>
-Date:   Wed, 28 Oct 2020 08:19:48 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        by mail.kernel.org (Postfix) with ESMTPSA id CFE8A2477E;
+        Wed, 28 Oct 2020 14:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603895015;
+        bh=Uz4OwRATxTLBlUxipo4jT2DyhNN6SugfL+n5rgIRc7U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dAoKbE8Z9+wkH4E+a9MrBJ1sK0oc/piiTNq1dnE57f4iwvbp+IW3wcWBYz9LWj8cj
+         kowjODrZQw5IXD+9C2/iKRAT+v31kgL9rGzFMXqdE7WZVjbxC5rqrhV1S2dQph7DRP
+         3ACu4tqjDeT8GZY2vtd2KeXplOo73jYJxiiRoEiI=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kXmMN-003hkl-VD; Wed, 28 Oct 2020 15:23:32 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Benson Leung <bleung@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Richard Gong <richard.gong@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>,
+        Tony Luck <tony.luck@intel.com>, Wu Hao <hao.wu@intel.com>
+Subject: [PATCH 00/33] ABI: add it to the documentation build system
+Date:   Wed, 28 Oct 2020 15:22:58 +0100
+Message-Id: <cover.1603893146.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <322cf3df-86f1-7614-62b1-db8594a8062a@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/2020 5:01 PM, Hemant Kumar wrote:
-> Hi Jeff,
-> 
-> On 10/27/20 8:11 AM, Jeffrey Hugo wrote:
->> On 10/27/2020 3:43 AM, carl.yin@quectel.com wrote:
->>> From: "carl.yin" <carl.yin@quectel.com>
->>>
->>> MHI wwan modems support download firmware to nand or emmc
->>> by firehose protocol, process as next:
->>> 1. wwan modem normal bootup and enter EE AMSS, create mhi DIAG chan 
->>> device
->>> 2. send EDL cmd via DIAG chan, then modem enter EE EDL
->>> 3. boot.c download 'firehose/prog_firehose_sdx55.mbn' via BHI interface
->>> 4. modem enter EE FP, and create mhi EDL chan device
->>> 5. user space tool download FW to modem via EDL chan by firehose 
->>> protocol
->>>
->>> Signed-off-by: carl.yin <carl.yin@quectel.com>
->>> ---
->>>   drivers/bus/mhi/core/boot.c     |  4 +++-
->>>   drivers/bus/mhi/core/init.c     |  2 ++
->>>   drivers/bus/mhi/core/internal.h |  1 +
->>>   drivers/bus/mhi/core/main.c     |  3 +++
->>>   drivers/bus/mhi/core/pm.c       | 16 +++++++++++++++-
->>>   include/linux/mhi.h             |  4 +++-
->>>   6 files changed, 27 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
->>> index 24422f5..ab39ad6 100644
->>> --- a/drivers/bus/mhi/core/boot.c
->>> +++ b/drivers/bus/mhi/core/boot.c
->>> @@ -460,8 +460,10 @@ void mhi_fw_load_handler(struct mhi_controller 
->>> *mhi_cntrl)
->>>           return;
->>>       }
->>> -    if (mhi_cntrl->ee == MHI_EE_EDL)
->>> +    if (mhi_cntrl->ee == MHI_EE_EDL) {
->>> +        mhi_ready_state_transition(mhi_cntrl);
->>>           return;
->>> +    }
->>>       write_lock_irq(&mhi_cntrl->pm_lock);
->>>       mhi_cntrl->dev_state = MHI_STATE_RESET;
->>> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
->>> index ac4aa5c..9c2c2f3 100644
->>> --- a/drivers/bus/mhi/core/init.c
->>> +++ b/drivers/bus/mhi/core/init.c
->>> @@ -26,6 +26,7 @@ const char * const mhi_ee_str[MHI_EE_MAX] = {
->>>       [MHI_EE_WFW] = "WFW",
->>>       [MHI_EE_PTHRU] = "PASS THRU",
->>>       [MHI_EE_EDL] = "EDL",
->>> +    [MHI_EE_FP] = "FP",
->>>       [MHI_EE_DISABLE_TRANSITION] = "DISABLE",
->>>       [MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
->>>   };
->>> @@ -35,6 +36,7 @@ const char * const 
->>> dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
->>>       [DEV_ST_TRANSITION_READY] = "READY",
->>>       [DEV_ST_TRANSITION_SBL] = "SBL",
->>>       [DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
->>> +    [DEV_ST_TRANSITION_FP] = "FP",
->>>       [DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
->>>       [DEV_ST_TRANSITION_DISABLE] = "DISABLE",
->>>   };
->>> diff --git a/drivers/bus/mhi/core/internal.h 
->>> b/drivers/bus/mhi/core/internal.h
->>> index 4abf0cf..6ae897a 100644
->>> --- a/drivers/bus/mhi/core/internal.h
->>> +++ b/drivers/bus/mhi/core/internal.h
->>> @@ -386,6 +386,7 @@ enum dev_st_transition {
->>>       DEV_ST_TRANSITION_READY,
->>>       DEV_ST_TRANSITION_SBL,
->>>       DEV_ST_TRANSITION_MISSION_MODE,
->>> +    DEV_ST_TRANSITION_FP,
->>>       DEV_ST_TRANSITION_SYS_ERR,
->>>       DEV_ST_TRANSITION_DISABLE,
->>>       DEV_ST_TRANSITION_MAX,
->>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->>> index 3950792..e307b58 100644
->>> --- a/drivers/bus/mhi/core/main.c
->>> +++ b/drivers/bus/mhi/core/main.c
->>> @@ -782,6 +782,9 @@ int mhi_process_ctrl_ev_ring(struct 
->>> mhi_controller *mhi_cntrl,
->>>               case MHI_EE_SBL:
->>>                   st = DEV_ST_TRANSITION_SBL;
->>>                   break;
->>> +            case MHI_EE_FP:
->>> +                st = DEV_ST_TRANSITION_FP;
->>> +                break;
->>>               case MHI_EE_WFW:
->>>               case MHI_EE_AMSS:
->>>                   st = DEV_ST_TRANSITION_MISSION_MODE;
->>> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
->>> index 3de7b16..3c95a5d 100644
->>> --- a/drivers/bus/mhi/core/pm.c
->>> +++ b/drivers/bus/mhi/core/pm.c
->>> @@ -563,7 +563,15 @@ static void mhi_pm_disable_transition(struct 
->>> mhi_controller *mhi_cntrl,
->>>       }
->>>       if (cur_state == MHI_PM_SYS_ERR_PROCESS) {
->>> -        mhi_ready_state_transition(mhi_cntrl);
->>> +        if (mhi_get_exec_env(mhi_cntrl) == MHI_EE_EDL
->>> +            && mhi_get_mhi_state(mhi_cntrl) == MHI_STATE_RESET) {
->>> +            write_lock_irq(&mhi_cntrl->pm_lock);
->>> +            cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_POR);
->>> +            write_unlock_irq(&mhi_cntrl->pm_lock);
->>> +            mhi_queue_state_transition(mhi_cntrl, 
->>> DEV_ST_TRANSITION_PBL);
->>> +        } else {
->>> +            mhi_ready_state_transition(mhi_cntrl);
->>> +        }
->>>       } else {
->>>           /* Move to disable state */
->>>           write_lock_irq(&mhi_cntrl->pm_lock);
->>> @@ -658,6 +666,12 @@ void mhi_pm_st_worker(struct work_struct *work)
->>>           case DEV_ST_TRANSITION_MISSION_MODE:
->>>               mhi_pm_mission_mode_transition(mhi_cntrl);
->>>               break;
->>> +        case DEV_ST_TRANSITION_FP:
->>> +            write_lock_irq(&mhi_cntrl->pm_lock);
->>> +            mhi_cntrl->ee = MHI_EE_FP;
->>> +            write_unlock_irq(&mhi_cntrl->pm_lock);
->>> +            mhi_create_devices(mhi_cntrl);
->>> +            break;
->>>           case DEV_ST_TRANSITION_READY:
->>>               mhi_ready_state_transition(mhi_cntrl);
->>>               break;
->>> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
->>> index 6e1122c..4620af8 100644
->>> --- a/include/linux/mhi.h
->>> +++ b/include/linux/mhi.h
->>> @@ -120,6 +120,7 @@ struct mhi_link_info {
->>>    * @MHI_EE_WFW: WLAN firmware mode
->>>    * @MHI_EE_PTHRU: Passthrough
->>>    * @MHI_EE_EDL: Embedded downloader
->>> + * @MHI_EE_FP, Flash Programmer Environment
->>>    */
->>>   enum mhi_ee_type {
->>>       MHI_EE_PBL,
->>> @@ -129,7 +130,8 @@ enum mhi_ee_type {
->>>       MHI_EE_WFW,
->>>       MHI_EE_PTHRU,
->>>       MHI_EE_EDL,
->>> -    MHI_EE_MAX_SUPPORTED = MHI_EE_EDL,
->>> +    MHI_EE_FP,
->>> +    MHI_EE_MAX_SUPPORTED = MHI_EE_FP,
->>>       MHI_EE_DISABLE_TRANSITION, /* local EE, not related to mhi spec */
->>>       MHI_EE_NOT_SUPPORTED,
->>>       MHI_EE_MAX,
->>>
->>
->> This gets a NACK from me.  I don't see the FP_EE that this patch 
->> introduces defined in the spec.  Where did it come from?
->>
-> There is indeed a FP EE, BHI spec will be updated with this EE next month.
+Hi Greg,
 
-<sigh> Alright I withdraw my nack based on your word.
+As requested, this is a rebased version on the top of v5.10-rc1
+adding support for having the Linux ABI documentted inside
+the Linux admin manual.
 
-> Basically, once device goes to EDL, flash programmer image is downloaded 
-> using BHI protocol (same as we download SBL image using BHI from PBL in 
-> current use case). Once it is downloaded intvec sends EE change event 
-> for FP. Also event is generated for the same which is used to create
-> EDL channels (34, 35) which is used by flash programmer to flash image
-> for AMSS.
+When compared with the version I sent years ago, this
+version has:
 
-Intresting.  Seems simple enough.
+- a logic to detect duplicated ABI symbols;
+- it auto-generate cross-reference markups for ABI symbols,
+  ABI files and .rst files;
+- Other files from 5.10-rc1 required adjustments in order
+  to be accepted by the script in rst-source mode;
+- Some bug fixes.
 
-> 
->  >> 2. send EDL cmd via DIAG chan, then modem enter EE EDL
-> #2 needs to be done in cleaner way. From AMSS when diag cmd is sent to 
-> switch to EDL, device would send SYS_ERR which we can use to do a call 
-> back to mhi controller to perform power down and power up. Instead of
-> moving pm state to POR from disable transition :-
+PS.: I didn't try to merge it against linux-next yet. So,
+I won't doubt that applying it could cause some conflicts.
 
-This seems sane to me.  I'll review v2 when it gets posted.
+Feel free to review it.
 
-> 
-> @@ -563,7 +563,15 @@ static void mhi_pm_disable_transition(struct
->  >> mhi_controller *mhi_cntrl,
->  >>       }
->  >>       if (cur_state == MHI_PM_SYS_ERR_PROCESS) {
->  >> -        mhi_ready_state_transition(mhi_cntrl);
->  >> +        if (mhi_get_exec_env(mhi_cntrl) == MHI_EE_EDL
->  >> +            && mhi_get_mhi_state(mhi_cntrl) == MHI_STATE_RESET) {
->  >> +            write_lock_irq(&mhi_cntrl->pm_lock);
->  >> +            cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_POR);
->  >> +            write_unlock_irq(&mhi_cntrl->pm_lock);
->  >> +            mhi_queue_state_transition(mhi_cntrl,
->  >> DEV_ST_TRANSITION_PBL);
->  >> +        } else {
->  >> +            mhi_ready_state_transition(mhi_cntrl);
->  >> +        }
-> 
-> Thanks,
-> Hemant
-> 
+Regards,
+Mauro
 
+
+Mauro Carvalho Chehab (33):
+  scripts: get_abi.pl: change script to allow parsing in ReST mode
+  scripts: get_abi.pl: fix parsing on ReST mode
+  scripts: get_abi.pl: Allow optionally record from where a line came
+    from
+  scripts: get_abi.pl: improve its parser to better catch up indentation
+  scripts: get_abi.pl: cleanup ABI cross-reference logic
+  scripts: get_abi.pl: detect duplicated ABI definitions
+  scripts: get_abi.pl: output users in ReST format
+  scripts: get_abi.pl: prevent duplicated file names
+  scripts: get_abi.pl: use bold font for ABI definitions
+  scripts: get_abi.pl: auto-generate cross references
+  docs: kernellog.py: add support for info()
+  docs: kernel_abi.py: add a script to parse ABI documentation
+  docs: kernel_abi.py: fix UTF-8 support
+  docs: kernel_abi.py: make it compatible with Sphinx 1.7+
+  docs: kernel_abi.py: use --enable-lineno for get_abi.pl
+  docs: kernel_abi.py: Handle with a lazy Sphinx parser
+  docs: add ABI documentation to the admin-guide book
+  docs: ABI: README: specify that files should be ReST compatible
+  docs: ABI: stable: make files ReST compatible
+  docs: ABI: testing: make the files compatible with ReST output
+  docs: ABI: make it parse ABI/stable as ReST-compatible files
+  docs: ABI: create a 2-depth index for ABI
+  docs: ABI: don't escape ReST-incompatible chars from obsolete and
+    removed
+  docs: abi-testing.rst: enable --rst-sources when building docs
+  docs: Kconfig/Makefile: add a check for broken ABI files
+  docs: ABI: convert testing/configfs-acpi to ReST
+  docs: ABI: fix syntax to be parsed using ReST notation
+  docs: ABI: vdso: use the right format for ABI
+  docs: ABI: sysfs-bus-nvdimm: use the right format for ABI
+  docs: ABI: cleanup several ABI documents
+  docs: ABI: change read/write attributes
+  docs: ABI: stable: remove a duplicated documentation
+  docs: ABI: unify /sys/class/leds/<led>/max_brightness documentation
+
+ Documentation/ABI/README                      |  10 +-
+ Documentation/ABI/obsolete/sysfs-class-dax    |   8 +-
+ .../ABI/obsolete/sysfs-driver-hid-roccat-pyra |   3 +
+ Documentation/ABI/obsolete/sysfs-gpio         |   2 +
+ Documentation/ABI/removed/devfs               |   1 +
+ Documentation/ABI/removed/raw1394             |   1 +
+ Documentation/ABI/removed/sysfs-class-rfkill  |   2 +-
+ Documentation/ABI/removed/video1394           |   1 +
+ Documentation/ABI/stable/firewire-cdev        |  67 ++--
+ Documentation/ABI/stable/sysfs-acpi-pmprofile |  26 +-
+ Documentation/ABI/stable/sysfs-bus-firewire   |   3 +
+ Documentation/ABI/stable/sysfs-bus-nvmem      |  19 +-
+ Documentation/ABI/stable/sysfs-bus-usb        |   6 +-
+ Documentation/ABI/stable/sysfs-bus-vmbus      |   7 -
+ Documentation/ABI/stable/sysfs-bus-w1         |   1 +
+ .../ABI/stable/sysfs-class-backlight          |   1 +
+ .../ABI/stable/sysfs-class-infiniband         |  93 +++--
+ Documentation/ABI/stable/sysfs-class-rfkill   |  13 +-
+ Documentation/ABI/stable/sysfs-class-tpm      |  94 ++---
+ Documentation/ABI/stable/sysfs-devices        |   5 +-
+ .../ABI/stable/sysfs-driver-firmware-zynqmp   |  62 ++--
+ Documentation/ABI/stable/sysfs-driver-ib_srp  |   1 +
+ Documentation/ABI/stable/sysfs-driver-speakup |   4 +
+ .../ABI/stable/sysfs-firmware-efi-vars        |   4 +
+ .../ABI/stable/sysfs-firmware-opal-dump       |   5 +
+ .../ABI/stable/sysfs-firmware-opal-elog       |   2 +
+ Documentation/ABI/stable/sysfs-hypervisor-xen |   3 +
+ Documentation/ABI/stable/vdso                 |  11 +-
+ Documentation/ABI/testing/configfs-acpi       |  34 +-
+ Documentation/ABI/testing/configfs-most       | 135 ++++---
+ .../ABI/testing/configfs-spear-pcie-gadget    |  36 +-
+ Documentation/ABI/testing/configfs-usb-gadget |  83 +++--
+ .../ABI/testing/configfs-usb-gadget-ecm       |  12 +-
+ .../ABI/testing/configfs-usb-gadget-eem       |  10 +-
+ .../ABI/testing/configfs-usb-gadget-hid       |  10 +-
+ .../ABI/testing/configfs-usb-gadget-loopback  |   6 +-
+ .../testing/configfs-usb-gadget-mass-storage  |  18 +-
+ .../ABI/testing/configfs-usb-gadget-midi      |  14 +-
+ .../ABI/testing/configfs-usb-gadget-printer   |   6 +-
+ .../ABI/testing/configfs-usb-gadget-rndis     |  16 +-
+ .../testing/configfs-usb-gadget-sourcesink    |  18 +-
+ .../ABI/testing/configfs-usb-gadget-subset    |  10 +-
+ .../ABI/testing/configfs-usb-gadget-uac1      |  18 +-
+ .../ABI/testing/configfs-usb-gadget-uac2      |  14 +-
+ .../ABI/testing/configfs-usb-gadget-uvc       | 220 ++++++-----
+ .../ABI/testing/debugfs-cec-error-inj         |   2 +-
+ .../ABI/testing/debugfs-driver-habanalabs     |  12 +-
+ Documentation/ABI/testing/debugfs-ec          |  11 +-
+ Documentation/ABI/testing/debugfs-moxtet      |  30 +-
+ .../ABI/testing/debugfs-pfo-nx-crypto         |  28 +-
+ Documentation/ABI/testing/debugfs-pktcdvd     |  13 +-
+ .../ABI/testing/debugfs-turris-mox-rwtm       |  15 +-
+ Documentation/ABI/testing/debugfs-wilco-ec    |  21 +-
+ Documentation/ABI/testing/dell-smbios-wmi     |  32 +-
+ Documentation/ABI/testing/dev-kmsg            |  27 +-
+ Documentation/ABI/testing/evm                 |  17 +-
+ Documentation/ABI/testing/gpio-cdev           |  13 +-
+ Documentation/ABI/testing/ima_policy          |  30 +-
+ Documentation/ABI/testing/procfs-diskstats    |  46 ++-
+ Documentation/ABI/testing/procfs-smaps_rollup |  48 +--
+ Documentation/ABI/testing/pstore              |  19 +-
+ Documentation/ABI/testing/sysfs-block         |  38 +-
+ Documentation/ABI/testing/sysfs-block-device  |   2 +
+ Documentation/ABI/testing/sysfs-block-rnbd    |   4 +-
+ Documentation/ABI/testing/sysfs-bus-acpi      |  19 +-
+ .../testing/sysfs-bus-coresight-devices-cti   |  60 +--
+ .../testing/sysfs-bus-coresight-devices-etb10 |  21 +-
+ .../testing/sysfs-bus-coresight-devices-etm3x |  10 +-
+ .../testing/sysfs-bus-coresight-devices-etm4x |  76 ++--
+ .../testing/sysfs-bus-coresight-devices-stm   |   2 +-
+ .../testing/sysfs-bus-coresight-devices-tmc   |  20 +-
+ Documentation/ABI/testing/sysfs-bus-css       |   3 +
+ Documentation/ABI/testing/sysfs-bus-dfl       |   2 +
+ .../sysfs-bus-event_source-devices-dfl_fme    |  14 +-
+ .../sysfs-bus-event_source-devices-format     |   3 +-
+ .../sysfs-bus-event_source-devices-hv_24x7    |   6 +-
+ .../sysfs-bus-event_source-devices-hv_gpci    |   7 +-
+ Documentation/ABI/testing/sysfs-bus-fcoe      |  68 ++--
+ Documentation/ABI/testing/sysfs-bus-fsl-mc    |  12 +-
+ .../ABI/testing/sysfs-bus-i2c-devices-fsa9480 |  26 +-
+ .../ABI/testing/sysfs-bus-i2c-devices-pca954x |  27 +-
+ Documentation/ABI/testing/sysfs-bus-i3c       |   2 +
+ Documentation/ABI/testing/sysfs-bus-iio       |  30 +-
+ .../sysfs-bus-iio-adc-envelope-detector       |   5 +-
+ .../ABI/testing/sysfs-bus-iio-adc-hi8435      |   5 +
+ .../ABI/testing/sysfs-bus-iio-adc-stm32       |   3 +
+ .../ABI/testing/sysfs-bus-iio-cros-ec         |   2 +-
+ .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32 |   8 +-
+ .../ABI/testing/sysfs-bus-iio-distance-srf08  |   7 +-
+ .../testing/sysfs-bus-iio-frequency-ad9523    |   2 +
+ .../testing/sysfs-bus-iio-frequency-adf4371   |  10 +-
+ .../ABI/testing/sysfs-bus-iio-health-afe440x  |  12 +-
+ .../ABI/testing/sysfs-bus-iio-light-isl29018  |   6 +-
+ .../ABI/testing/sysfs-bus-iio-lptimer-stm32   |  29 +-
+ .../sysfs-bus-iio-magnetometer-hmc5843        |  19 +-
+ .../sysfs-bus-iio-temperature-max31856        |  19 +-
+ .../ABI/testing/sysfs-bus-iio-timer-stm32     | 137 ++++---
+ .../testing/sysfs-bus-intel_th-devices-gth    |  11 +-
+ .../testing/sysfs-bus-intel_th-devices-msc    |   4 +
+ Documentation/ABI/testing/sysfs-bus-most      |   6 +-
+ .../ABI/testing/sysfs-bus-moxtet-devices      |   6 +-
+ Documentation/ABI/testing/sysfs-bus-nfit      |   2 +-
+ Documentation/ABI/testing/sysfs-bus-nvdimm    |   6 +
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  23 +-
+ Documentation/ABI/testing/sysfs-bus-pci       |  22 +-
+ .../testing/sysfs-bus-pci-devices-aer_stats   | 119 +++---
+ .../ABI/testing/sysfs-bus-pci-devices-catpt   |   1 +
+ .../testing/sysfs-bus-pci-drivers-ehci_hcd    |   4 +-
+ Documentation/ABI/testing/sysfs-bus-rapidio   |  23 +-
+ Documentation/ABI/testing/sysfs-bus-rbd       |  37 +-
+ Documentation/ABI/testing/sysfs-bus-siox      |   3 +
+ .../ABI/testing/sysfs-bus-thunderbolt         |  58 +--
+ Documentation/ABI/testing/sysfs-bus-usb       |  32 +-
+ .../testing/sysfs-bus-usb-devices-usbsevseg   |   7 +-
+ Documentation/ABI/testing/sysfs-bus-vfio-mdev |  10 +-
+ .../sysfs-class-backlight-driver-lm3533       |  26 +-
+ Documentation/ABI/testing/sysfs-class-bdi     |   1 -
+ .../ABI/testing/sysfs-class-chromeos          |  15 +-
+ Documentation/ABI/testing/sysfs-class-cxl     |  23 +-
+ Documentation/ABI/testing/sysfs-class-devfreq |   6 +-
+ Documentation/ABI/testing/sysfs-class-devlink |  30 +-
+ Documentation/ABI/testing/sysfs-class-extcon  |  34 +-
+ .../ABI/testing/sysfs-class-fpga-manager      |   5 +-
+ Documentation/ABI/testing/sysfs-class-gnss    |   2 +
+ Documentation/ABI/testing/sysfs-class-led     |  28 +-
+ .../testing/sysfs-class-led-driver-el15203000 | 229 ++++++------
+ .../ABI/testing/sysfs-class-led-driver-lm3533 |  44 ++-
+ .../ABI/testing/sysfs-class-led-driver-sc27xx |   4 +-
+ .../ABI/testing/sysfs-class-led-flash         |  27 +-
+ .../ABI/testing/sysfs-class-led-multicolor    |  23 +-
+ .../testing/sysfs-class-led-trigger-netdev    |   7 +
+ .../testing/sysfs-class-led-trigger-usbport   |   1 +
+ .../ABI/testing/sysfs-class-leds-gt683r       |   8 +-
+ Documentation/ABI/testing/sysfs-class-mic     |  52 ++-
+ Documentation/ABI/testing/sysfs-class-net     |  61 +++-
+ .../ABI/testing/sysfs-class-net-cdc_ncm       |   6 +-
+ .../ABI/testing/sysfs-class-net-phydev        |   2 +
+ Documentation/ABI/testing/sysfs-class-ocxl    |  17 +-
+ Documentation/ABI/testing/sysfs-class-pktcdvd |  36 +-
+ Documentation/ABI/testing/sysfs-class-power   |  85 ++++-
+ .../ABI/testing/sysfs-class-power-mp2629      |   1 +
+ .../ABI/testing/sysfs-class-power-twl4030     |  33 +-
+ .../ABI/testing/sysfs-class-power-wilco       |  18 +-
+ Documentation/ABI/testing/sysfs-class-rapidio |  46 +--
+ Documentation/ABI/testing/sysfs-class-rc      |  30 +-
+ .../ABI/testing/sysfs-class-regulator         |  36 +-
+ .../ABI/testing/sysfs-class-remoteproc        |  14 +-
+ .../ABI/testing/sysfs-class-rnbd-client       |  93 ++---
+ ...ysfs-class-rtc-rtc0-device-rtc_calibration |   1 +
+ .../ABI/testing/sysfs-class-rtrs-client       |  23 +-
+ .../ABI/testing/sysfs-class-scsi_host         |   7 +-
+ Documentation/ABI/testing/sysfs-class-typec   |  12 +-
+ Documentation/ABI/testing/sysfs-class-uwb_rc  |  13 +-
+ .../ABI/testing/sysfs-class-watchdog          |   7 +-
+ Documentation/ABI/testing/sysfs-dev           |   7 +-
+ .../ABI/testing/sysfs-devices-mapping         |  41 ++-
+ .../ABI/testing/sysfs-devices-memory          |  15 +-
+ .../testing/sysfs-devices-platform-ACPI-TAD   |   4 +
+ .../sysfs-devices-platform-_UDC_-gadget       |  10 +-
+ .../ABI/testing/sysfs-devices-platform-docg3  |  10 +-
+ .../ABI/testing/sysfs-devices-platform-ipmi   |  52 +--
+ .../sysfs-devices-platform-sh_mobile_lcdc_fb  |   8 +-
+ .../sysfs-devices-platform-stratix10-rsu      |  10 +
+ .../ABI/testing/sysfs-devices-system-cpu      | 101 ++++--
+ .../ABI/testing/sysfs-devices-system-ibm-rtl  |   6 +-
+ .../testing/sysfs-driver-bd9571mwv-regulator  |   4 +
+ Documentation/ABI/testing/sysfs-driver-genwqe |  11 +-
+ .../ABI/testing/sysfs-driver-hid-lenovo       |  10 +
+ .../testing/sysfs-driver-hid-logitech-lg4ff   |  18 +-
+ .../ABI/testing/sysfs-driver-hid-ntrig        |  13 +-
+ .../ABI/testing/sysfs-driver-hid-roccat-kone  |  19 +
+ .../ABI/testing/sysfs-driver-hid-wiimote      |  12 +-
+ .../ABI/testing/sysfs-driver-input-exc3000    |   2 +
+ .../ABI/testing/sysfs-driver-jz4780-efuse     |   6 +-
+ .../ABI/testing/sysfs-driver-pciback          |   6 +-
+ .../ABI/testing/sysfs-driver-samsung-laptop   |  13 +-
+ .../ABI/testing/sysfs-driver-toshiba_acpi     |  26 ++
+ .../ABI/testing/sysfs-driver-toshiba_haps     |   2 +
+ Documentation/ABI/testing/sysfs-driver-ufs    | 228 +++++++++---
+ .../ABI/testing/sysfs-driver-w1_ds28e17       |   3 +
+ .../ABI/testing/sysfs-driver-w1_therm         |  75 ++--
+ Documentation/ABI/testing/sysfs-driver-wacom  |   4 +-
+ Documentation/ABI/testing/sysfs-firmware-acpi | 237 ++++++------
+ .../ABI/testing/sysfs-firmware-dmi-entries    |  50 +--
+ .../ABI/testing/sysfs-firmware-efi-esrt       |  28 +-
+ .../testing/sysfs-firmware-efi-runtime-map    |  14 +-
+ Documentation/ABI/testing/sysfs-firmware-gsmi |   2 +-
+ .../ABI/testing/sysfs-firmware-memmap         |  16 +-
+ .../ABI/testing/sysfs-firmware-qemu_fw_cfg    |  20 +-
+ Documentation/ABI/testing/sysfs-firmware-sfi  |   6 +-
+ .../ABI/testing/sysfs-firmware-sgi_uv         |   6 +-
+ .../testing/sysfs-firmware-turris-mox-rwtm    |  10 +-
+ Documentation/ABI/testing/sysfs-fs-ext4       |   4 +-
+ Documentation/ABI/testing/sysfs-fs-f2fs       |  48 ++-
+ .../ABI/testing/sysfs-hypervisor-xen          |  13 +-
+ .../ABI/testing/sysfs-kernel-boot_params      |  23 +-
+ .../ABI/testing/sysfs-kernel-mm-hugepages     |  12 +-
+ Documentation/ABI/testing/sysfs-kernel-mm-ksm |   5 +-
+ Documentation/ABI/testing/sysfs-kernel-slab   |   3 +
+ Documentation/ABI/testing/sysfs-module        |  17 +-
+ .../ABI/testing/sysfs-platform-asus-laptop    |  21 +-
+ .../ABI/testing/sysfs-platform-asus-wmi       |   1 +
+ Documentation/ABI/testing/sysfs-platform-at91 |  10 +-
+ .../ABI/testing/sysfs-platform-dell-laptop    |  10 +-
+ .../ABI/testing/sysfs-platform-dell-smbios    |   4 +-
+ .../ABI/testing/sysfs-platform-dfl-fme        |  14 +-
+ Documentation/ABI/testing/sysfs-platform-dptf |  11 +-
+ .../ABI/testing/sysfs-platform-eeepc-laptop   |  14 +-
+ .../testing/sysfs-platform-i2c-demux-pinctrl  |   4 +-
+ .../ABI/testing/sysfs-platform-ideapad-laptop |   9 +-
+ .../sysfs-platform-intel-wmi-sbl-fw-update    |   1 +
+ .../sysfs-platform-intel-wmi-thunderbolt      |   1 +
+ Documentation/ABI/testing/sysfs-platform-kim  |   1 +
+ .../testing/sysfs-platform-mellanox-bootctl   |  50 ++-
+ .../testing/sysfs-platform-phy-rcar-gen3-usb2 |  10 +-
+ .../ABI/testing/sysfs-platform-renesas_usb3   |  10 +-
+ .../ABI/testing/sysfs-platform-sst-atom       |  13 +-
+ .../ABI/testing/sysfs-platform-usbip-vudc     |  11 +-
+ .../ABI/testing/sysfs-platform-wilco-ec       |   1 +
+ Documentation/ABI/testing/sysfs-power         |  21 +-
+ Documentation/ABI/testing/sysfs-profiling     |   2 +-
+ Documentation/ABI/testing/sysfs-ptp           |   2 +-
+ Documentation/ABI/testing/sysfs-uevent        |  10 +-
+ Documentation/ABI/testing/sysfs-wusb_cbaf     |   3 +-
+ Documentation/ABI/testing/usb-charger-uevent  |  82 +++--
+ Documentation/ABI/testing/usb-uevent          |  32 +-
+ Documentation/Kconfig                         |  10 +
+ Documentation/Makefile                        |   5 +
+ Documentation/admin-guide/abi-obsolete.rst    |  11 +
+ Documentation/admin-guide/abi-removed.rst     |   5 +
+ Documentation/admin-guide/abi-stable.rst      |  14 +
+ Documentation/admin-guide/abi-testing.rst     |  20 +
+ Documentation/admin-guide/abi.rst             |  11 +
+ Documentation/admin-guide/index.rst           |   2 +
+ Documentation/conf.py                         |   3 +-
+ Documentation/sphinx/kernel_abi.py            | 194 ++++++++++
+ Documentation/sphinx/kernellog.py             |   6 +-
+ lib/Kconfig.debug                             |   2 +
+ scripts/get_abi.pl                            | 342 ++++++++++++------
+ 239 files changed, 3767 insertions(+), 2111 deletions(-)
+ create mode 100644 Documentation/admin-guide/abi-obsolete.rst
+ create mode 100644 Documentation/admin-guide/abi-removed.rst
+ create mode 100644 Documentation/admin-guide/abi-stable.rst
+ create mode 100644 Documentation/admin-guide/abi-testing.rst
+ create mode 100644 Documentation/admin-guide/abi.rst
+ create mode 100644 Documentation/sphinx/kernel_abi.py
 
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.26.2
+
+
