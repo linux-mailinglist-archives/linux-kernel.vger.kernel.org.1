@@ -2,140 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6624929E2F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB6A29E2F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgJ1Vdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:33:44 -0400
-Received: from condef-09.nifty.com ([202.248.20.74]:33296 "EHLO
-        condef-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJ1Vdh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:37 -0400
-Received: from conssluserg-01.nifty.com ([10.126.8.80])by condef-09.nifty.com with ESMTP id 09S61Lsb004256;
-        Wed, 28 Oct 2020 15:01:21 +0900
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 09S60xNs024399;
-        Wed, 28 Oct 2020 15:01:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 09S60xNs024399
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1603864860;
-        bh=lT9aShEb3t31gnYye1Wa4WVM9hnC/c+4/aQIRcL0wvk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ltVly168VyEBcPz7seTJSxcURd5B3kELJCa+EM3NQDyDEVTHeSXMmG4YX5n18e8u/
-         /fFzSVK5F+49TR2OCVK+/sm9Svgl7iZuUqNHtStmN76HdLuKesJbuHstkGs2N+OE31
-         D+Ic9iQZgtlYXhMjT6I7BS3Wgru+M9ecRJlYzYbRv9ebM4Ym4CgNo9sdx6PJip/yAL
-         l4LEGmEPYfW9VDIF3tXEEIB39fIQByl2EzskJpONClRpmEh+isHIfbtXtjmg/VOQoV
-         oghLBzbMvCi2A8wC+BQ4KrtHAZ7coqE8HqfY3FP0FrACvPCBPUqb390/DEqI0Yh0vw
-         aP0s0oYQVR2uQ==
-X-Nifty-SrcIP: [209.85.214.179]
-Received: by mail-pl1-f179.google.com with SMTP id r10so1962687plx.3;
-        Tue, 27 Oct 2020 23:01:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530deFw0N8UqsRgyC6CjJ3WzimYWWl2j33d+RmCFv8oko2QJSc0+
-        BGl5YZIqDb65HIDj02oCte9mZrXPMR7j1aKtPP8=
-X-Google-Smtp-Source: ABdhPJzNt5zMQBqTtpJ50H5zzYYfT/zBi1Hp8B3XD/FVfMEkgJvsqqzlikKGfB6QeZjPtT8RiU08Va+P49/XykjEolg=
-X-Received: by 2002:a17:902:c40f:b029:d6:16b5:4de with SMTP id
- k15-20020a170902c40fb02900d616b504demr5598649plk.1.1603864859258; Tue, 27 Oct
- 2020 23:00:59 -0700 (PDT)
+        id S1726277AbgJ1Vdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:33:46 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:29487 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbgJ1Vdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:33:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=1582; q=dns/txt; s=axis-central1;
+  t=1603920821; x=1635456821;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wShs6Il8676fEisJ9OqkRk7Glv/K0kWtHAFo/leZB64=;
+  b=XueiRrt/TAHzdubbGmnVUpFvbr7WJRhWdQUAfkDeXQv2mFheCSUAtmhB
+   WPtKT9/R3VHqoyNLd7bYb6oGMVqRFk1AfQoAyK80LdGVIxNGkWpsP4Hv+
+   pz35u3QkxKWCdIPgylYwKzXunm2DI702z76LGKlnkN2Rrh2iu6onywlUX
+   eiEXSL00y8j2gSfMKScnxC0M77j9WbUXjyhPJwn4U456Ozx9zB8bXCBD1
+   evTL/IkKz2gfm1F4Yh+u7kjiMcTs7Y7hZvGnFyGHusWWddnz2hTyHtNRC
+   zzRUUg4lINfteKhB7EIfJdEqKhxafHvr9JAG1yEtnVR6RLQUs6FQbSg+n
+   A==;
+IronPort-SDR: U8zltDoScmoPmC4fPkt4No97bd/rwXnqaOG5X7a0JcHti08Il8LC8DtC222YcI/kIB6HgvWfwt
+ J/+H8AGXxQE/W2fpGK68aV/w+DL+bhkqgv8ZEqqoOf4EuyFJp7vUDOaI7ntfwxhFqFf5opGXoz
+ 7AM11J2KHztE6qRm628hbygd7ayww1h2buIKls+eNCank0Tl1VE92QLqmH0a4JS/oC5LabwAlC
+ slCRd1L83rroA2diWK8sYxBEz1gB2QvUU67wzHmoeKXcM9DyYQLhBPQy1LrCU5xy+74tC8qHFo
+ pCs=
+X-IronPort-AV: E=Sophos;i="5.77,425,1596492000"; 
+   d="scan'208";a="13984860"
+Date:   Wed, 28 Oct 2020 09:57:46 +0100
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+CC:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel <kernel@axis.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] gpio: mockup: Allow probing from device tree
+Message-ID: <20201028085746.bmyb4y6ypburdy5s@axis.com>
+References: <20201027135325.22235-1-vincent.whitchurch@axis.com>
+ <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026193217.402412-1-svenjoac@gmx.de>
-In-Reply-To: <20201026193217.402412-1-svenjoac@gmx.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 28 Oct 2020 15:00:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS4VfYLLBZn=Fkd+D5D+3ejVd4jPFLtWu6joLxVXtxKUg@mail.gmail.com>
-Message-ID: <CAK7LNAS4VfYLLBZn=Fkd+D5D+3ejVd4jPFLtWu6joLxVXtxKUg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] builddeb: Fix rootless build in setuid/setgid directory
-To:     Sven Joachim <svenjoac@gmx.de>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guillem Jover <guillem@hadrons.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 4:32 AM Sven Joachim <svenjoac@gmx.de> wrote:
->
-> Building 5.10-rc1 in a setgid directory failed with the following
-> error:
->
-> dpkg-deb: error: control directory has bad permissions 2755 (must be
-> >=0755 and <=0775)
->
-> When building with fakeroot, the earlier chown call would have removed
-> the setgid bits, but in a rootless build they remain.
->
+On Tue, Oct 27, 2020 at 07:12:13PM +0100, Bartosz Golaszewski wrote:
+> On Tue, Oct 27, 2020 at 2:54 PM Vincent Whitchurch
+> <vincent.whitchurch@axis.com> wrote:
+> > diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+> > index 67ed4f238d43..c93892a6936a 100644
+> > --- a/drivers/gpio/gpio-mockup.c
+> > +++ b/drivers/gpio/gpio-mockup.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/gpio/driver.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/irq.h>
+> > +#include <linux/of.h>
+> 
+> Please keep the includes ordered alphabetically.
 
+Thanks, fixed in v3.
 
-Applied to linux-kbuild. Thanks.
+> >  #include <linux/irq_sim.h>
+> >  #include <linux/irqdomain.h>
+> >  #include <linux/module.h>
+> > @@ -460,9 +461,18 @@ static int gpio_mockup_probe(struct platform_device *pdev)
+> >         return 0;
+> >  }
+> >
+> > +#ifdef CONFIG_OF
+> > +static const struct of_device_id gpio_mockup_of_match[] = {
+> > +       { .compatible = "gpio-mockup", },
+> > +       {},
+> > +};
+> > +MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
+> > +#endif
+> 
+> You don't need this ifdef - of_match_ptr() will evaluate to NULL if
+> CONFIG_OF is disabled and the compiler will optimize this struct out.
 
-I agreed with "g-s" but was not sure about "u-s"
-because nothing is explained about setuid,
-and the setuid bit against directories seems to have no effect.
+The compiler can't optimise out the struct in the case of a module build
+since there is a reference from the MODULE_DEVICE_TABLE:
 
+ $ grep CONFIG_OF .config
+ # CONFIG_OF is not set
+ $ nm drivers/gpio/gpio-mockup.ko  | grep of_
+ 00000000 r gpio_mockup_of_match
+ 00000000 R __mod_of__gpio_mockup_of_match_device_table
 
-
-
-
-It was interesting to read this article:
-https://superuser.com/questions/471844/why-is-setuid-ignored-on-directories
-
-
-
-Also, it is summarized in the wikipedia
-https://en.wikipedia.org/wiki/Setuid#setuid_and_setgid_on_directories
-
-"The setuid permission set on a directory is ignored on most UNIX and
-Linux systems.[citation needed] However FreeBSD can be configured to
-interpret setuid in a manner similar to setgid, in which case it
-forces all files and sub-directories created in a directory to be
-owned by that directory's owner - a simple form of inheritance.[5]
-This is generally not needed on most systems derived from BSD, since
-by default directories are treated as if their setgid bit is always
-set, regardless of the actual value. As is stated in open(2), "When a
-new file is created it is given the group of the directory which
-contains it.""
-
-
-After all, I am convinced that it would not hurt to do "u-s"
-although I have never tested kernel builds on FreeBSD.
-
-
-
-
-
-
-
-
-
-
-> Fixes: 3e8541803624 ("builddeb: Enable rootless builds")
-> Cc: Guillem Jover <guillem@hadrons.org>
-> Signed-off-by: Sven Joachim <svenjoac@gmx.de>
-> ---
->  scripts/package/builddeb | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-> index 1b11f8993629..91a502bb97e8 100755
-> --- a/scripts/package/builddeb
-> +++ b/scripts/package/builddeb
-> @@ -45,6 +45,8 @@ create_package() {
->         chmod -R go-w "$pdir"
->         # in case we are in a restrictive umask environment like 0077
->         chmod -R a+rX "$pdir"
-> +       # in case we build in a setuid/setgid directory
-> +       chmod -R ug-s "$pdir"
->
->         # Create the package
->         dpkg-gencontrol -p$pname -P"$pdir"
-> --
-> 2.28.0
->
-
-
---
-Best Regards
-
-Masahiro Yamada
+But these few wasted bytes don't matter so I removed the CONFIG_OF
+anyway as you suggested.
