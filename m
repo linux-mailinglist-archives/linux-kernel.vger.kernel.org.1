@@ -2,105 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21C029D57E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D88329D5B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729731AbgJ1WDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729653AbgJ1WDK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:03:10 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAF6C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:03:10 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id a23so441775qkg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AG7fb7d0C8MAPzIXBnKbPS8VY0VZhAzE0h3g8JJD9l8=;
-        b=C3K8jt2EESSq9VBTNlezdB5lhUxguZOUeT8DjBvyG9TszljClDzOfG9DwkqrQSgiD7
-         TdYSZRXFVXdRK/2xcEgpMnOCr8pKQySnqXpr+6yWakTPSBKVaIyOgjz63BpmBDc1l6n/
-         oc3RCyWLuwsp8oo7N1h4IgYsKQRuTOUkgfdMjmVTJZeMDRNN8phA44WY8oAON1PE1cMP
-         BAbHBlLZM5jUcM1Ao2QLQJTOwhNnrr/gyHpiRepcpk0VVVUcmlKrh7FE8sh4SrEjgKJz
-         +ysNTbhkEbg/e6PDlHO25ydv/+rlaEHf2lCQqiXu7NSafJ/zd2YFqCLEUxXtZHd6J/3w
-         wuYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AG7fb7d0C8MAPzIXBnKbPS8VY0VZhAzE0h3g8JJD9l8=;
-        b=QM0DTTNnsaRQN9Maua4LcZykVlPaVOjADTuIlkJ+2u3RUASckWEdTChNri18SbEyK/
-         Q8+IxR+WW/8EJMj98MVsrAwZBvGAlTAfvolWQhFxQBSO1o3ZgSTfNrurWBbUecT0wHSc
-         mGQdPo16xNXjtXGEcflC30XvDqcyPkGQwUqM0dVftAMNbJPwciTSbKjvwaBH2MCqwaHJ
-         jxegUfzoTgLtMLYVVVT4+4XDz0FSUyLdp9J5m2sMZGQ4QrBg+FNlmZ3RZMBg+Gveyos3
-         dc/eBTfmNlRJeQs8gz7gbDx46ghNX/yWpsFbRg8jnplGMKssuorngYM2HsHkb4RVwFfN
-         CyPQ==
-X-Gm-Message-State: AOAM530G9MPHtgfSBrNXG5kmRwIWVxcRDoQC5uPtgsYDdInNm6k0xbT+
-        fL3IoaCyGsh4HjQJdEQZHF3cZDtHCtmS54VdHsFUeK0XeaEKKw==
-X-Google-Smtp-Source: ABdhPJz1pGv64k+Jss9JKkY2ROsSjCftXLL5fqnH7sCV0rYWTeW7P4EWOFLz8h+PPFPgRTWwgCdIeRM/Iw+SD1q3zig=
-X-Received: by 2002:ac8:44ae:: with SMTP id a14mr8224570qto.67.1603904668207;
- Wed, 28 Oct 2020 10:04:28 -0700 (PDT)
+        id S1730172AbgJ1WIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:08:01 -0400
+Received: from mga11.intel.com ([192.55.52.93]:9420 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730357AbgJ1WHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:07:54 -0400
+IronPort-SDR: 40FHPcWqQj1zxW/9cQqRsalTkTN8+904YEC5PXmBkLXB00Ob4qcHRmK1QaHzHqiKw7hzTkifXK
+ H3lQQaixz6sQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="164795977"
+X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
+   d="scan'208";a="164795977"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:04:33 -0700
+IronPort-SDR: Wk+cwQAX4UPPu1+Li/FegkOVOmBdRomPZlJPiY7KK86Ir7CYzhZssJFvA7qlf0OpQ6e3vs4Slo
+ YNNYDIsRR5Eg==
+X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
+   d="scan'208";a="351078828"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:04:33 -0700
+Date:   Wed, 28 Oct 2020 10:04:32 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Gleb Natapov <gleb@redhat.com>, Avi Kivity <avi@redhat.com>,
+        Ingo Molnar <mingo@elte.hu>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86: kvm: avoid -Wshadow warning in header
+Message-ID: <20201028170430.GC7584@linux.intel.com>
+References: <20201026161512.3708919-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <6ed65cca58736301a1cacb539a6e672aecd7859d.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <6ed65cca58736301a1cacb539a6e672aecd7859d.1603372719.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 28 Oct 2020 18:04:16 +0100
-Message-ID: <CACT4Y+YHvfccvAYgkO5TrB=uy_htvNi4qshfLOqvci3RGzfR1Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 21/21] kasan: clarify comment in __kasan_kfree_large
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026161512.3708919-1-arnd@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Currently it says that the memory gets poisoned by page_alloc code.
-> Clarify this by mentioning the specific callback that poisons the
-> memory.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I1334dffb69b87d7986fab88a1a039cc3ea764725
+On Mon, Oct 26, 2020 at 05:14:39PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There are hundreds of warnings in a W=2 build about a local
+> variable shadowing the global 'apic' definition:
+> 
+> arch/x86/kvm/lapic.h:149:65: warning: declaration of 'apic' shadows a global declaration [-Wshadow]
+> 
+> Avoid this by renaming the local in the kvm/lapic.h header
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-
-> ---
->  mm/kasan/common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 3cd56861eb11..54af79aa8d3f 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -445,5 +445,5 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
->  {
->         if (ptr != page_address(virt_to_head_page(ptr)))
->                 kasan_report_invalid_free(ptr, ip);
-> -       /* The object will be poisoned by page_alloc. */
-> +       /* The object will be poisoned by kasan_free_pages(). */
->  }
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+Rather than change KVM, and presumably other files as well, e.g. kvm/lapic.c and
+apic/io_apic.c also shadow 'apic' all over the place, what about renaming the
+global 'apic' to something more unique?  KVM aside, using such a common name for
+a global variable has always struck me as a bit odd/dangerous/confusing.
