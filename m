@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D93729D471
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1027F29D2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgJ1VwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgJ1VwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:52:06 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921B1C0613CF;
-        Wed, 28 Oct 2020 14:52:06 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id f7so1156402oib.4;
-        Wed, 28 Oct 2020 14:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hsiBaHtytHat8/EztZJPMms+wc+gkK9fFhRbXpui7XQ=;
-        b=MQEVLxlQBAUE8Edv0UruJBsGHTS6407b6J0mWXgnZtxQWJVTgvfoZAswU7xJkgQYQ0
-         Ddm8sQ76zjJVRKtkQlFy90/AG4a+nCqMy6zwee3lZeSF58nUjzSCyR6e5ipuATwKeQFx
-         +dpfnl3557iDt1HkVOdgqrc/F0u3oSsHc41Nw5dv21WL9SpIUx4hRzE3USyBCuRi6Rfd
-         7tuyWySJ5FCOs5D5P4BwoT+Kdd7sZpT5YW6+QKiL8YaQN3JGb90e1j3XsaGJDBGK6uGY
-         fiWnh8PoMxckM3nrVT395A+mMs9GIBD/ul5M6+fZHqzzmTg6GJIP3AVVGMnWB1PRla0t
-         k7+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hsiBaHtytHat8/EztZJPMms+wc+gkK9fFhRbXpui7XQ=;
-        b=WNtPKcbP2JxSkulBXowV3IIiDZ12QDrGoILu5h7gcZLNJHspPhsy0Aw/4dGUdPAo5n
-         RAcb43Ez5gNj7vP4/zgXLTslWZFu765q8/QGKeOAz0gq6PzAbW4Ok0Q03Ri2gSdsWxVp
-         23St3rWcISojR3OHwYYtFU/4XEN7cuGATiROBb8cUjFXtXv2GqSAClF09zBmh1tvxJEb
-         55wTB2UHEXD3gYK8S7kzm6uOanYrNCojSEjfX2me9U/0U3XEUA3VoIgaSBbKLNp3N6KK
-         ilITnByRqdQpxhfzLWIoND3bzUyUQdPf6rjRxxQTTfeHsSkhgW53njsQyiYJFuNaZE8r
-         7K1w==
-X-Gm-Message-State: AOAM530mdRXOqrOzS84LUHvH7eXL5ZKLCRkSA1dVUHfJ7kAp/jZnUjPi
-        xrOePGq92UixBYb5LsabStWzDP/37xDPWnM+PJJ30Yt/MgA=
-X-Google-Smtp-Source: ABdhPJy8JQRH34yo0LYH7fgqv7KNi4P+zNVt6GyrQjGrjJOIklaLoU3uoLRGVJm039L01MwTAaSTVYc9qlINuCALcKg=
-X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr651136pjb.228.1603916683534;
- Wed, 28 Oct 2020 13:24:43 -0700 (PDT)
+        id S1726623AbgJ1Veh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:34:37 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47179 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbgJ1Vea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:34:30 -0400
+IronPort-SDR: dDNiq1q+eGD0HT5sYc5w3rXOwIouRkNrLaMD1WGSg6etuQQIm2qI6l4sB4pphxZeP4fnz3JO/X
+ X/NctVg4eXxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="167551729"
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="167551729"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 13:28:15 -0700
+IronPort-SDR: jia/gU5gyeTEnxsb3Aod47MDuzaAxauqKiUUppFwrQx1Nau19iEkBasFDAKEh+7a9/6RvKPv7h
+ fbFeVLbRRmVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
+   d="scan'208";a="526467869"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga005.fm.intel.com with ESMTP; 28 Oct 2020 13:28:15 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Christopherson Sean J" <sean.j.christopherson@intel.com>,
+        "Ashok Raj" <ashok.raj@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH RFC v2 1/4] x86/cpufeatures: Enumerate #DB for bus lock detection
+Date:   Wed, 28 Oct 2020 20:28:01 +0000
+Message-Id: <20201028202804.3562179-2-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201028202804.3562179-1-fenghua.yu@intel.com>
+References: <20201028202804.3562179-1-fenghua.yu@intel.com>
 MIME-Version: 1.0
-References: <20201027135325.22235-1-vincent.whitchurch@axis.com> <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
-In-Reply-To: <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 28 Oct 2020 22:25:32 +0200
-Message-ID: <CAHp75Vff1AyKDb=JiocsAefnft+tcm+BnuWDrxViQqZAQZjuVg@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: mockup: Allow probing from device tree
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel@axis.com, devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 8:41 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> On Tue, Oct 27, 2020 at 2:54 PM Vincent Whitchurch
-> <vincent.whitchurch@axis.com> wrote:
+A bus lock is acquired either through split locked access to
+writeback (WB) memory or by using locks to uncacheable (UC) memory
+(e.g. direct device assignment). This is typically >1000 cycles slower
+than an atomic operation within a cache line. It also disrupts performance
+on other cores.
 
-...
+Some CPUs have ability to notify the kernel by an #DB trap after a user
+instruction acquires a bus lock and is executed. This allows the kernel
+to enforce user application throttling or mitigations.
 
-> > +#include <linux/of.h>
->
-> Please keep the includes ordered alphabetically.
+The CPU feature flag to be shown in /proc/cpuinfo will be "bus_lock_detect".
 
-Besides the fact that that is a wrong header to be included.
-mod_devicetable.h is the correct one.
-(See also below)
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-...
-
-> > +#ifdef CONFIG_OF
-> > +static const struct of_device_id gpio_mockup_of_match[] = {
-> > +       { .compatible = "gpio-mockup", },
-> > +       {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
-> > +#endif
->
-> You don't need this ifdef - of_match_ptr() will evaluate to NULL if
-> CONFIG_OF is disabled and the compiler will optimize this struct out.
-
-It's not so. If you drop ugly ifdeffery (and I vote for that, see also
-above) the of_match_ptr() must be dropped as well.
-Otherwise the compiler will issue the warning. So it is either all or none.
-
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index dad350d42ecf..f375d9cb8123 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -352,6 +352,7 @@
+ #define X86_FEATURE_AVX512_VPOPCNTDQ	(16*32+14) /* POPCNT for vectors of DW/QW */
+ #define X86_FEATURE_LA57		(16*32+16) /* 5-level page tables */
+ #define X86_FEATURE_RDPID		(16*32+22) /* RDPID instruction */
++#define X86_FEATURE_BUS_LOCK_DETECT	(16*32+24) /* Bus Lock detect */
+ #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
+ #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
+ #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
 -- 
-With Best Regards,
-Andy Shevchenko
+2.29.0
+
