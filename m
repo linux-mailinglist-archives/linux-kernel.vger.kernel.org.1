@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8193A29DF08
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC5529DF00
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403807AbgJ2A6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
+        id S2403825AbgJ2A6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:58:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731590AbgJ1WRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:33 -0400
-Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
+        id S1731574AbgJ1WRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:32 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D75982474E;
-        Wed, 28 Oct 2020 13:57:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 664C1246CA;
+        Wed, 28 Oct 2020 14:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603893431;
-        bh=ou8YkSujVcJoedLOVi8IVrmAZ5xwL3bKWujQtDKeyiM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=dd1rBAslmKgbRiMx/reW2ex4P2fRiyTOVjYGfjceUBLuVa0ONJmlCkjmqOJkDppJ/
-         K7ph6zBAc7Ln+K+u4/ZmSGYYwqRWsC4UK1iLz6neiKjuIHad8L0sSlVY/EtX5g6yn8
-         NllpkpKsWOdGfAxalsey1FD/la5y0YVEzVhhow+Q=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: Re: [PATCH v3] usb: dwc3: core: fix a issue about clear connect state
-In-Reply-To: <20201028125812.GA59692@nuc8i5>
-References: <20201020135806.30268-1-zhengdejin5@gmail.com>
- <875z6wdq62.fsf@kernel.org> <20201028125812.GA59692@nuc8i5>
-Date:   Wed, 28 Oct 2020 15:57:03 +0200
-Message-ID: <87y2jqlahc.fsf@kernel.org>
+        s=default; t=1603894073;
+        bh=DsEwn1Aha0aISLTxhqMFeop4UEe24Ykwyy3xN/SnAJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y08StW8cfkj105JGXGm6iImQCDwPVwR+LXCEKF1cbyQAyEZqjo75Gtt0TAGj4bYPv
+         gYY/vhLIlnEIrKILv7vbgoNZNgeyntbnOjL2P3goFEIYSIgCXuuNlEHmmLJ4mMo0oy
+         vLa1b0hR6yqm8Ndop2Y4XuoLMDz6bHHyWj0k0adE=
+Date:   Wed, 28 Oct 2020 14:07:48 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] module: use hidden visibility for weak symbol references
+Message-ID: <20201028140747.GB28554@willie-the-truck>
+References: <20201027151132.14066-1-ardb@kernel.org>
+ <20201028100049.GA27873@willie-the-truck>
+ <CAMj1kXHFwmjz9CJGrBJ_E4nau=0gqSnR6B6wv6wVq5QHd0tYJg@mail.gmail.com>
+ <20201028132437.GA28251@willie-the-truck>
+ <20201028140344.GB6867@linux-8ccs>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028140344.GB6867@linux-8ccs>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 28, 2020 at 03:03:44PM +0100, Jessica Yu wrote:
+> +++ Will Deacon [28/10/20 13:24 +0000]:
+> > On Wed, Oct 28, 2020 at 01:27:01PM +0100, Ard Biesheuvel wrote:
+> > > On Wed, 28 Oct 2020 at 11:00, Will Deacon <will@kernel.org> wrote:
+> > > > On Tue, Oct 27, 2020 at 04:11:32PM +0100, Ard Biesheuvel wrote:
+> > > > > Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
+> > > > > unwanted sections") results in build errors on arm64 for configurations
+> > > > > that have CONFIG_MODULES disabled.
+> > > > >
+> > > > > The commit in question added ASSERT()s to the arm64 linker script to
+> > > > > ensure that linker generated sections such as .got, .plt etc are empty,
+> > > > > but as it turns out, there are corner cases where the linker does emit
+> > > > > content into those sections. More specifically, weak references to
+> > > > > function symbols (which can remain unsatisfied, and can therefore not
+> > > > > be emitted as relative references) will be emitted as GOT and PLT
+> > > > > entries when linking the kernel in PIE mode (which is the case when
+> > > > > CONFIG_RELOCATABLE is enabled, which is on by default).
+> > > > >
+> > > > > What happens is that code such as
+> > > > >
+> > > > >       struct device *(*fn)(struct device *dev);
+> > > > >       struct device *iommu_device;
+> > > > >
+> > > > >       fn = symbol_get(mdev_get_iommu_device);
+> > > > >       if (fn) {
+> > > > >               iommu_device = fn(dev);
+> > > > >
+> > > > > essentially gets converted into the following when CONFIG_MODULES is off:
+> > > > >
+> > > > >       struct device *iommu_device;
+> > > > >
+> > > > >       if (&mdev_get_iommu_device) {
+> > > > >               iommu_device = mdev_get_iommu_device(dev);
+> > > > >
+> > > > > where mdev_get_iommu_device is emitted as a weak symbol reference into
+> > > > > the object file. The first reference is decorated with an ordinary
+> > > > > ABS64 data relocation (which yields 0x0 if the reference remains
+> > > > > unsatisfied). However, the indirect call is turned into a direct call
+> > > > > covered by a R_AARCH64_CALL26 relocation, which is converted into a
+> > > > > call via a PLT entry taking the target address from the associated
+> > > > > GOT entry.
+> > > > >
+> > > > > Given that such GOT and PLT entries are unnecessary for fully linked
+> > > > > binaries such as the kernel, let's give these weak symbol references
+> > > > > hidden visibility, so that the linker knows that the weak reference
+> > > > > via R_AARCH64_CALL26 can simply remain unsatisfied.
+> > > > >
+> > > > > Cc: Jessica Yu <jeyu@kernel.org>
+> > > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > > > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > > ---
+> > > > >  include/linux/module.h | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > Cheers. I gave this a spin, but I unfortunately still see the following
+> > > > linker warning with allnoconfig:
+> > > >
+> > > >   aarch64-linux-gnu-ld: warning: orphan section `.igot.plt' from `arch/arm64/kernel/head.o' being placed in section `.igot.plt'
+> > > >
+> > > > which looks unrelated to symbol_get(), but maybe it's worth knocking these
+> > > > things on the head (no pun intended) at the same time?
+> > > >
+> > > 
+> > > Yeah, that is just one of those spurious sections that turns up empty
+> > > anyway. The head.o is a red herring, it is simply the first file
+> > > appearing in the link.
+> > > 
+> > > This should fix it
+> > > 
+> > > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+> > > index 6567d80dd15f..48b222f1c700 100644
+> > > --- a/arch/arm64/kernel/vmlinux.lds.S
+> > > +++ b/arch/arm64/kernel/vmlinux.lds.S
+> > > @@ -278,7 +278,7 @@ SECTIONS
+> > >          * explicitly check instead of blindly discarding.
+> > >          */
+> > >         .plt : {
+> > > -               *(.plt) *(.plt.*) *(.iplt) *(.igot)
+> > > +               *(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
+> > >         }
+> > >         ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure
+> > > linkages detected!")
+> > 
+> > Cheers, that fixes the extra warning for me. If you could send a proper
+> > patch, I'm happy to queue as an arm64 fix! (I'm assuming the former is going
+> > via Jessica, but I can also take that with her Ack).
+> 
+> Hi! Yes, please feel free to take this patch along with the other fix:
+> 
+> Acked-by: Jessica Yu <jeyu@kernel.org>
 
+Cheers, Jessica -- I'll queue them in a sec!
 
-Hi,
-
-Dejin Zheng <zhengdejin5@gmail.com> writes:
->> Dejin Zheng <zhengdejin5@gmail.com> writes:
->> > According to Synopsys Programming Guide chapter 2.2 Register Resets,
->> > it cannot reset the DCTL register by setting DCTL.CSFTRST for core soft
->> > reset, if DWC3 controller as a slave device and stay connected with a =
-usb
->> > host, then, while rebooting linux, it will fail to reinitialize dwc3 a=
-s a
->> > slave device when the DWC3 controller did not power off. because the
->> > connection status is incorrect, so we also need to clear DCTL.RUN_STOP
->> > bit for disabling connect when doing core soft reset. There will still
->> > be other stale configuration in DCTL, so reset the other fields of DCTL
->> > to the default value 0.
->>=20
->> This commit log is a bit hard to understand. When does this problem
->> actually happen? It seems like it's in the case of, perhaps, kexecing
->> into a new kernel, is that right?
->>=20
-> It happens when entering the kernel for the second time after the reboot
-> command.
->
->> At the time dwc3_core_soft_reset() is called, the assumption is that
->> we're starting with a clean core, from power up. If we have stale
->> configuration from a previous run, we should fix this on the exit
->> path. Note that if we're reaching probe with pull up connected, we
->> already have issues elsewhere.
->>=20
->> I think this is not the right fix for the problem.
->>
-> I think you are right, Thinh also suggested me fix it on the exit path
-> in the previous patch v2. Do you think I can do these cleanups in the
-> shutdown hook of this driver? Balbi, is there a more suitable place to
-> do this by your rich experience? Thanks!
-
-I don't think shutdown is called during removal, I'm not sure. I think
-we had some fixes done in shutdown time, though. Test it out, but make
-sure there are no issues with a regular modprobe cycle.
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+ZeK8RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQaO9g/+O6gSiZU19vBa6Mw0v0MrGc7xMoZ0HAXa
-DLrp0A/GeQSgDyDu7v7gFpFMlnZBI4e4kPxXMqo7fazBXfKQ77jvqZA7Wg+NFPFQ
-uFnY1sjcRsCdkpe7O5gzTINqlfpYdmRtRdHlJb4+c4MP0p+jwS+8AyLhe6fQJRcs
-fS6+uZucHbWhzz/UmSjtZEbNLdkQYcgXkmzsdiq0Wge0oOoaTTTRcLz+CbhmjnqH
-8dKc5I7EohpbbcwaDu7Jeyhz2qZAVM/0z/1geKcQRAw9044RFr8U44yQAVkp+lnm
-zhsysWF3bkLKkeZpG2jT90SjOPTCH6Mf7YkVNqiiFW3FoVqx9Ri2EgxvXMmOtwE6
-S9IvNvY+LmLlPVOkqfIb0Xva4WQLXZo9vNKzg+njCbAxvzYCNi2Xho7pY42jlaCZ
-ZrZLZLYP9mjrUHn4pyAcVe+2KwCc3W+cJVoNgdWzgxXyBAI9WoUk1F2npLU3u9bH
-teAhZGWtBaDcQMC6NAeaCmAEDLtVaLp4MgF8JMN5LFs0E/2XtgJ411DpYKs5K1Xc
-ng7vvrQe3rRj94rFeyoRniJBeGQ9HqW6b47d9tAHAbAqXJKcTbxHfwUCOPCJrIoq
-nCVL7CxzJ9cHRUHJz6fWoMSaBa7i/CqqZ64ENwXaTIo7iUQnQFUFDjkaJR/A6PIz
-h+hIwvCwSCo=
-=8K1m
------END PGP SIGNATURE-----
---=-=-=--
+Will
