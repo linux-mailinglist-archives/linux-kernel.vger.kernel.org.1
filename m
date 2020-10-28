@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47D129DBF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C572929DC77
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731941AbgJ1Wq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:46:28 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:39256 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389132AbgJ1Wq1 (ORCPT
+        id S2388305AbgJ1WdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:33:20 -0400
+Received: from office2.cesnet.cz ([195.113.144.244]:36732 "EHLO
+        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387983AbgJ1Wb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:46:27 -0400
-Received: by mail-oi1-f194.google.com with SMTP id u127so1276251oib.6;
-        Wed, 28 Oct 2020 15:46:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6CzfvnivIEtvj6xKXXqKUjstXdtKoBRAAdit4qN1a2I=;
-        b=TANWwb/Q46eeKQrzUUvsUW5/Wyh401T0N3Ntu7e77muax5MRoSgOhHEBA0pxzS9dK+
-         YhOWRsp9ghpY+8RBoSbmjcH9f6/LzX4qJa4hneI/YR/QR9t+lY1xVwnyBtQdAXejK1mQ
-         xBy7RKYl1DOCSgyjkAtN/1GmzUqOyWpAI5AgtN0lBnjQQn0gkpBoWhv/Nt95NnDhXiCL
-         efpEqCcKQk2JdIz1LtIlNDRIVBsDEy2KPrqC8/OSkEtapnvijPHo1VVF8Q1HaxSMA4iQ
-         DK0eLANuK9KE9qKD5dGfvKLiQTpeQ6sdvkVyaiFFRI/PTBl4jB5fzC5CxNK4abL7LxBR
-         koKQ==
-X-Gm-Message-State: AOAM532/h0OyBvvQbMknI0Q6wEKR1pLREOjUZR32K8jYYPWE3akwYCBA
-        t1Jollp86F+8rzW+BFnelSDDRI0X7A==
-X-Google-Smtp-Source: ABdhPJxE9oU+7OVIoCWc40SC7yS+EHHKpQBId3YfoudCOvuyyuURrzX+lBd6EBrH1r3aDJcLC8qKgw==
-X-Received: by 2002:aca:bfc2:: with SMTP id p185mr5868175oif.60.1603899057838;
-        Wed, 28 Oct 2020 08:30:57 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h14sm2078172otl.0.2020.10.28.08.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 08:30:57 -0700 (PDT)
-Received: (nullmailer pid 4060952 invoked by uid 1000);
-        Wed, 28 Oct 2020 15:30:56 -0000
-Date:   Wed, 28 Oct 2020 10:30:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        dri-devel@lists.freedesktop.org, Viresh Kumar <vireshk@kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>, linux-pm@vger.kernel.org,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>
-Subject: Re: [PATCH v6 15/52] dt-bindings: tegra30-actmon: Document OPP and
- interconnect properties
-Message-ID: <20201028153056.GA4060899@bogus>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-16-digetx@gmail.com>
+        Wed, 28 Oct 2020 18:31:56 -0400
+X-Greylist: delayed 891 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Oct 2020 18:31:54 EDT
+Received: from localhost (ip-94-112-194-201.net.upcbroadband.cz [94.112.194.201])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 0E59840006C;
+        Wed, 28 Oct 2020 17:20:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1603902025;
+        bh=FRibDlx3Yp7qZ17lscMO2+sg7G7lVTcO2Z4urA+IPno=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=e5UA9ya9CDjPccXm0zpAHIs3QLM/9+l5o4JCbiyoMwo/+YI2a9+2jCe1lMhcVcsjr
+         3Bdwrutxe++DGbJL1HkJZLAiKIYRLN1tynlSzlfcesBD3WCLUDMierbMOm6TP43GJH
+         JuPiHxYogAW/ugfXqp13he4XIZrvhhoudmGFlk0UBRQI0QSdupvUw4p6sSANTAe+Ys
+         R8oGw0LF09ln57rgGcpe2jIJZbJmVYtzljIxtukGvpGw2atj+Km9KiYQGml7zt4tNU
+         O7bSchZIaBay3h6dad2vlLYsd2/0/TTfFKYFnbLa0uHZkLVIaEsZfnCSU5TnG9GNcU
+         6wHyAja9PvleA==
+From:   =?iso-8859-1?Q?Jan_Kundr=E1t?= <jan.kundrat@cesnet.cz>
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH v2] serial: max310x: rework RX interrupt handling
+Date:   Wed, 28 Oct 2020 17:20:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201025221735.3062-16-digetx@gmail.com>
+Message-ID: <3841e43b-5f16-4b5c-9b43-4d3a90e57723@cesnet.cz>
+In-Reply-To: <20201001074415.349739-1-thomas.petazzoni@bootlin.com>
+References: <20201001074415.349739-1-thomas.petazzoni@bootlin.com>
+Organization: CESNET
+User-Agent: Trojita/unstable-2020-07-06; Qt/5.14.2; xcb; Linux; 
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 01:16:58 +0300, Dmitry Osipenko wrote:
-> Document EMC DFS OPP table and interconnect paths that will be used
-> for scaling of system's memory bandwidth based on memory utilization
-> statistics. Previously ACTMON was supposed to drive EMC clock rate
-> directly, but now it should do it using interconnect framework in order
-> to support shared voltage scaling in addition to the frequency scaling.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../arm/tegra/nvidia,tegra30-actmon.txt       | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
+On =C4=8Dtvrtek 1. =C5=99=C3=ADjna 2020 9:44:15 CEST, Thomas Petazzoni wrote:=
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Currently, the RX interrupt logic uses the RXEMPTY interrupt, with the
+> RXEMPTYINV bit set, which means we get an RX interrupt as soon as the
+> RX FIFO is non-empty.
+>
+> However, with the MAX310X having a FIFO of 128 bytes, this makes very
+> poor use of the FIFO: we trigger an interrupt as soon as the RX FIFO
+> has one byte, which means a lot of interrupts, each only collecting a
+> few bytes from the FIFO, causing a significant CPU load.
+
+Thanks for taking the time to write this patch. We're using MAX14830 on a=20
+Clearfog Base board via a 26 MHz SPI bus. Our code polls a custom=20
+peripheral over UART at 115200 baud ten times a second; the messages are=20
+typically shorter than 50 chars. Before this patch, `perf top --sort=20
+comm,dso` showed about 28% CPU load for the corresponding SPI kthread,=20
+after applying this patch it's between 3 and 5%. That's cool :).
+
+Tested-by: Jan Kundr=C3=A1t <jan.kundrat@cesnet.cz>
+Reviewed-by: Jan Kundr=C3=A1t <jan.kundrat@cesnet.cz>
+
+(but see below, please)
+
+> +=09/* Enable LSR, RX FIFO trigger, CTS change interrupts */
+> +=09val =3D MAX310X_IRQ_LSR_BIT  | MAX310X_IRQ_RXFIFO_BIT |=20
+> MAX310X_IRQ_TXEMPTY_BIT;
+>  =09max310x_port_write(port, MAX310X_IRQEN_REG, val | MAX310X_IRQ_CTS_BIT);=
+
+
+This comment doesn't fully match that code, and also the effective value=20
+that is written to the register is split into two statements. What about=20
+just:
+
++=09/* Enable LSR, RX FIFO trigger, TX FIFO empty, CTS change interrupts */
++ =09max310x_port_write(port, MAX310X_IRQEN_REG, MAX310X_IRQ_LSR_BIT |=20
+MAX310X_IRQ_RXFIFO_BIT | MAX310X_IRQ_TXEMPTY_BIT | MAX310X_IRQ_CTS_BIT);
+
+With kind regards,
+Jan
