@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4446929D8A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDCE29D8D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388151AbgJ1Weq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:34:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46842 "EHLO mail.kernel.org"
+        id S2388426AbgJ1Wde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388355AbgJ1Wcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:32:54 -0400
+        id S2388384AbgJ1Wdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:33:32 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5668720725;
-        Wed, 28 Oct 2020 22:32:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43DE620731;
+        Wed, 28 Oct 2020 22:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924374;
-        bh=/opRYDoUP2hkyGCV09IodIsiWsmlN0SL1QF+3h41Rxg=;
+        s=default; t=1603924411;
+        bh=eWfEGkJKN4hzXyneYZiCS7LVfHIUvAWEodm+KnOsw1s=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=HhVzhSypvTcVdlYW7mJb/nTs+cnlDhpx9f/4lKsHv4R2JCiW7xHQKXZk39ERzB8/p
-         DwB7MRY32DiuHCEqGT8LBQ2k18rpAgAx8TC+BwK5Ciz9y+sR1l0mCWyJkqSnbHtwx3
-         V7/k2+yRH42jUNTIoXJQ4y2rce9kqC8gJtdhefOM=
+        b=eziRXj/TqKh0LCKY1nYiZuc40F5ZBBFCBXPWHn3BalNDmKLPxrFvlOkifQKSVdctN
+         wZ0wSvafWdHebDr7LJWQwtghun+MGwEwObjVDwaUeggWxT2KxmeOcvRTT+8H+R8G3W
+         MT0PyZgNvdttSo7FdaR6XoumWnL3j6p4xhEnWp9w=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -44,9 +44,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [RESEND PATCH 30/42] mfd: tc3589x: use PLATFORM_DEVID_NONE
-Date:   Wed, 28 Oct 2020 23:29:57 +0100
-Message-Id: <20201028223009.369824-30-krzk@kernel.org>
+Subject: [RESEND PATCH 37/42] mfd: tps80031: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:30:04 +0100
+Message-Id: <20201028223009.369824-37-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
 References: <20201028223009.369824-1-krzk@kernel.org>
@@ -62,33 +62,22 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/mfd/tc3589x.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mfd/tps80031.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
-index 7882a37ffc35..22821112cc6b 100644
---- a/drivers/mfd/tc3589x.c
-+++ b/drivers/mfd/tc3589x.c
-@@ -287,7 +287,8 @@ static int tc3589x_device_init(struct tc3589x *tc3589x)
- 	unsigned int blocks = tc3589x->pdata->block;
+diff --git a/drivers/mfd/tps80031.c b/drivers/mfd/tps80031.c
+index 907452b86e32..c8ea8fbae281 100644
+--- a/drivers/mfd/tps80031.c
++++ b/drivers/mfd/tps80031.c
+@@ -488,7 +488,7 @@ static int tps80031_probe(struct i2c_client *client,
  
- 	if (blocks & TC3589x_BLOCK_GPIO) {
--		ret = mfd_add_devices(tc3589x->dev, -1, tc3589x_dev_gpio,
-+		ret = mfd_add_devices(tc3589x->dev, PLATFORM_DEVID_NONE,
-+				      tc3589x_dev_gpio,
- 				      ARRAY_SIZE(tc3589x_dev_gpio), NULL,
- 				      0, tc3589x->domain);
- 		if (ret) {
-@@ -298,7 +299,8 @@ static int tc3589x_device_init(struct tc3589x *tc3589x)
- 	}
+ 	tps80031_init_ext_control(tps80031, pdata);
  
- 	if (blocks & TC3589x_BLOCK_KEYPAD) {
--		ret = mfd_add_devices(tc3589x->dev, -1, tc3589x_dev_keypad,
-+		ret = mfd_add_devices(tc3589x->dev, PLATFORM_DEVID_NONE,
-+				      tc3589x_dev_keypad,
- 				      ARRAY_SIZE(tc3589x_dev_keypad), NULL,
- 				      0, tc3589x->domain);
- 		if (ret) {
+-	ret = mfd_add_devices(tps80031->dev, -1,
++	ret = mfd_add_devices(tps80031->dev, PLATFORM_DEVID_NONE,
+ 			tps80031_cell, ARRAY_SIZE(tps80031_cell),
+ 			NULL, 0,
+ 			regmap_irq_get_domain(tps80031->irq_data));
 -- 
 2.25.1
 
