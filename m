@@ -2,98 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3FD29D665
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA42529D68F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730998AbgJ1WMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
+        id S1731389AbgJ1WQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730161AbgJ1WL2 (ORCPT
+        with ESMTP id S1729987AbgJ1WQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:11:28 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D7FC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:11:28 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id m128so1187504oig.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:11:28 -0700 (PDT)
+        Wed, 28 Oct 2020 18:16:06 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6041C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:16:05 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 23so920886ljv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:16:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2lMQ52opYyBFO/8867Rc9HWGhmmRhbhGzcJErb4OtTk=;
-        b=fI0t4BxySPIKVYRDW0X9AXX9OUIVJ0i/IcCj1u6CvQF8PsgvfX6iDVVZmT+L5OwIWk
-         yoG+215nSPpM6CL47027i0uDqhuClzPHJLJTFYPqlBePyix501UL4sg5W6uJnBEPSzdv
-         QNbm3DYpW3acKN2JX9MeWEj/i94spl3Ekzj7+7YyXHo+dqPM9Hvo1UrUTsX+lXrbfyKm
-         IHr/sYrZ/nPuU7uHWl30RPPs9gNvhpqSbtdmdKUo8eS1IPHYkkrcmNk6ZSb9X7efUEiT
-         xdBg/+u/V5As2OXPt81jOWeTwHpGsJXhVirjF3ESdAcqadsGDH2/w4KWEDWhW6SqEHvo
-         l3mw==
+         :content-disposition:in-reply-to;
+        bh=Kgs7oOpZiYMl5H9WjnHmd1QkROQmWLTfKSTmyAsUaIY=;
+        b=QT3KbY0cn1J1iTy+1fLJ5oZJ8uOp5dPKiT042ECYgACs1DaqqiFE004N4MiEUzm/sp
+         FAGwauvRmcA2zwmtAvP5tm66nl0F5bmxowyhvdvHkCwxaSCMv3YtQfyWj7hKqMK99pi0
+         rq5bjRVVgPgc8xm1MiAb8eBS1PmEGqTAsetdy2p0Dee1QAfrvbj6JSLyEingLRR76jaN
+         0enE9H0GyhN8UXfmQu0BaAx7y41A+P7mvBrHXBv9gRPzR/lLI4LyA8ZopOafNnfGonG7
+         vKpodtSSQw5wZDx52aJEDswkFk29D6mftf+sufUo7K/tHY1PwOpGvSjyEaw5MZwjcwCR
+         Ef2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2lMQ52opYyBFO/8867Rc9HWGhmmRhbhGzcJErb4OtTk=;
-        b=FC1g7ldJgrBU41dlqKphRg81OgDoR5/5qljWmY5PamjPthE6QHitymdXMEXFhmXZsQ
-         Z2gRyyuSfTWn3xnccK01IUTDX42EUWj3WBT6xb9lUWV5wHLg/CzIBcmsyhe5jfXdGixN
-         Y2y1psEiBIh0Ex9xC2vGezc1ppzsG2osJQnQBNphqXz+P1Z48RE3aY421urd47v9n/By
-         598u0bE2TfOuj/BPLhoDgNgPos6uRPRZC24X+TK8n7VVF0w/0fNczD9xV1CSUtRvYERk
-         29AsBAYMRsiIqi0HtJIVvZihYK80jB8JG9f63lHNaYh5Gdxj+e8nBQu78Ph5a7fnVAHB
-         pIFw==
-X-Gm-Message-State: AOAM5323247qGhkblXcpZpB+5+s4/p+tB4iTJD7/+GP3hT54t2/Ak2Og
-        GMt0VxGqC/KSv7fPMRU2XLddhg9O00hs5Q==
-X-Google-Smtp-Source: ABdhPJwieZLKERYh5i+WcdYFNjnB1YDi1rMC2Wk3oXGFuwXvXKqEySiv1P8w4btQ05XHTYrpVhRGQQ==
-X-Received: by 2002:a17:90a:1f07:: with SMTP id u7mr7452262pja.69.1603896848198;
-        Wed, 28 Oct 2020 07:54:08 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id 63sm6317614pfv.25.2020.10.28.07.54.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Oct 2020 07:54:07 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 20:24:05 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Tero Kristo <t-kristo@ti.com>
-Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] opp: fix bad error check logic in the opp helper register
-Message-ID: <20201028145405.ucfepzt6xoxro6fi@vireshk-i7>
-References: <20201028141357.10345-1-t-kristo@ti.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kgs7oOpZiYMl5H9WjnHmd1QkROQmWLTfKSTmyAsUaIY=;
+        b=NKyfrPXAw43Hsbr0+NJ8ff7L9y21cbXsqJM9X0B5n51GSBxhW/MeuUVnqER+koT9i1
+         p5VY9B/x0glR/0AeiXOjV7cKToOsIqETG/eym0RZ5W7nVBlJm9Jc9bSDuvEGzWJMQ/Q7
+         pbhgF7voITOL9QV0Ybq4NYGAph/m+9ocQ0cPkodo0QjfbCrfGzvbIZqQoyhhRmIY7J1a
+         XsEflJTmQdv7+UzYE++hGI49fZ46KdUiY/ZbaGz8fpY4/COCfjU53o8ZDH05V88DfuJx
+         apa3YBwfip5Rg2MtmC8qd+hFi0RTCF4MA1aPbppgZapZ3RJMCy1Xd+vfOYDsaHnrg/jo
+         3KCw==
+X-Gm-Message-State: AOAM532pc3vEoQ52ZQokWSijGNETX3aTwBDrDXQr6a07LeATQCOpvZhf
+        OO+LINtD9nsFj0NNfHpURKll2U3NNNOdHQ==
+X-Google-Smtp-Source: ABdhPJxaoMdHf9VjBHJiaJux8MOBb5IV8da8WyQ7NwAcHNA6kfKRLpioHRTMxrceTg2Ior50e3Xf5Q==
+X-Received: by 2002:a5d:420b:: with SMTP id n11mr5541659wrq.218.1603896953907;
+        Wed, 28 Oct 2020 07:55:53 -0700 (PDT)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id l5sm7110494wrq.14.2020.10.28.07.55.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 07:55:53 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:55:51 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Alexandru Stan <amstan@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] ARM: dts: rockchip: veyron: Remove 0 point from
+ brightness-levels
+Message-ID: <20201028145551.pn6nxi6skcfbqori@holly.lan>
+References: <20201022050445.930403-1-amstan@chromium.org>
+ <20201021220404.v3.1.I96b8d872ec51171f19274e43e96cadc092881271@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028141357.10345-1-t-kristo@ti.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201021220404.v3.1.I96b8d872ec51171f19274e43e96cadc092881271@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-10-20, 16:13, Tero Kristo wrote:
-> The error check is incorrectly negated causing the helper to never
-> register anything. This causes platforms that depend on this
-> functionality to fail always with any cpufreq transition, and at least
-> TI DRA7 based platforms fail to boot completely due to warning message
-> flood from _generic_set_opp_regulator complaining about multiple
-> regulators not being supported.
+On Wed, Oct 21, 2020 at 10:04:43PM -0700, Alexandru Stan wrote:
+> The extra 0 only adds one point in the userspace visible range,
+> so this change is almost a noop with the current driver behavior.
 > 
-> Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> We don't need the 0% point, userspace seems to handle this just fine
+> because it uses the bl_power property to turn off the display.
+> 
+> Furthermore after adding "backlight: pwm_bl: Fix interpolation" patch,
+> the backlight interpolation will work a little differently. So we need
+> to preemptively remove the 0-3 segment since otherwise we would have a
+> 252 long interpolation that would slowly go between 0 and 3, looking
+> really bad in userspace. So it's almost a noop/cleanup now, but it will
+> be required in the future.
+> 
+> Signed-off-by: Alexandru Stan <amstan@chromium.org>
+
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+
 > ---
->  drivers/opp/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 2483e765318a..4ac4e7ce6b8b 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -1930,7 +1930,7 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
->  		return ERR_PTR(-EINVAL);
+>  arch/arm/boot/dts/rk3288-veyron-jaq.dts    | 2 +-
+>  arch/arm/boot/dts/rk3288-veyron-minnie.dts | 2 +-
+>  arch/arm/boot/dts/rk3288-veyron-tiger.dts  | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/rk3288-veyron-jaq.dts b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+> index af77ab20586d..4a148cf1defc 100644
+> --- a/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+> +++ b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+> @@ -20,7 +20,7 @@ / {
 >  
->  	opp_table = dev_pm_opp_get_opp_table(dev);
-> -	if (!IS_ERR(opp_table))
-> +	if (IS_ERR(opp_table))
->  		return opp_table;
+>  &backlight {
+>  	/* Jaq panel PWM must be >= 3%, so start non-zero brightness at 8 */
+> -	brightness-levels = <0 8 255>;
+> +	brightness-levels = <8 255>;
+>  	num-interpolated-steps = <247>;
+>  };
 >  
->  	/* This should be called before OPPs are initialized */
-
-A similar fix is already pushed in linux-next for this.
-
--- 
-viresh
+> diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+> index f8b69e0a16a0..82fc6fba9999 100644
+> --- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+> +++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+> @@ -39,7 +39,7 @@ volum_up {
+>  
+>  &backlight {
+>  	/* Minnie panel PWM must be >= 1%, so start non-zero brightness at 3 */
+> -	brightness-levels = <0 3 255>;
+> +	brightness-levels = <3 255>;
+>  	num-interpolated-steps = <252>;
+>  };
+>  
+> diff --git a/arch/arm/boot/dts/rk3288-veyron-tiger.dts b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+> index 069f0c2c1fdf..52a84cbe7a90 100644
+> --- a/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+> +++ b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+> @@ -23,7 +23,7 @@ / {
+>  
+>  &backlight {
+>  	/* Tiger panel PWM must be >= 1%, so start non-zero brightness at 3 */
+> -	brightness-levels = <0 3 255>;
+> +	brightness-levels = <3 255>;
+>  	num-interpolated-steps = <252>;
+>  };
+>  
+> -- 
+> 2.28.0
