@@ -2,168 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22E129E2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818EA29E2F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgJ1VeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:34:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11806 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726444AbgJ1VeB (ORCPT
+        id S1726210AbgJ1Vdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:33:41 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41641 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725989AbgJ1Vdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:34:01 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09SCXV0U123184;
-        Wed, 28 Oct 2020 08:35:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=rHF6Yz59thCYyjQXEOJ1jQe6RNpwoec7Q33DAyj1sg0=;
- b=NwJFu0bdrOPw1NPOyLZcR5/P6fiQPXDoWRXoT6bKwvXrREuf1vitt1mc3LQIuYNiG0UB
- fqijZ6qbe2DXFM29VLpuaemWm+YgypabyfPo8pVW8Gvp+PMh435zDvTf0oK/sRaHpKxK
- aH/7mCYQr0MAiuiZDDbctn0Zo2jiKH3tdke5Ldf8x8egplagAHnizwlRozlJr7CFXLeO
- 7bBvtGlWYFqw/jLskzF3z2OqJwlmFvBpu/4Lby7KoGY4ZHvaInJZXBq+a6wzfNYhBroa
- Zp/ehDr+dYOaNIie08+Vo+8oU9YehfkJeQbHtjkg2mQXAn3+HYreHlaUQUWwLLKAok+p Ew== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34endju226-1
+        Wed, 28 Oct 2020 17:33:35 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09SF6vEx025320;
+        Wed, 28 Oct 2020 16:17:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=pPYG/LhfAgAZlR2F/GmGEbUodjwV2nmicwRkUApDpvw=;
+ b=u8+ZjN/B6IdqCdgc7M3GIWXSOMeVT8MVxlLAg1Pefm3kw8NCcC8zHorJSszySXZRwPpX
+ Za9HpnTACoRlZSUYIxtMNosjpwV7RxwbdIfxk2hjarJZ9fTNcgUfgZQc3bswesxNRQIK
+ lJHRp6JU3PIGLub3uJapn+xpmqP5xxpH6gVczND8AOAmSLowTAG91C76+0zs8tzwlCOL
+ fjvH71HPG6Gd4MsB3e6ZoCg1MtdV5G7KcF9Vcxo7DsNhb7vGRs2R9qTygJKGlVl42Hh7
+ gm38GDQCWU1vmpZ36ALO0NZTgHQHTozgTPpMJnmAkjo+P8P8eLAxS/witbDaRAaVhnpm aQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34ccf3tc02-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 08:35:51 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09SCXwOv125263;
-        Wed, 28 Oct 2020 08:35:51 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34endju1xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 08:35:51 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09SCQvYf027926;
-        Wed, 28 Oct 2020 12:35:47 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 34ejqe8kwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 12:35:47 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09SCZjds31457732
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 12:35:45 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5AC79A4055;
-        Wed, 28 Oct 2020 12:35:45 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3873DA4040;
-        Wed, 28 Oct 2020 12:35:43 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.79.210.102])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Oct 2020 12:35:43 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Phil Auld <pauld@redhat.com>
-Subject: [PATCH 2/4] powerpc: Rename is_kvm_guest to check_kvm_guest
-Date:   Wed, 28 Oct 2020 18:05:10 +0530
-Message-Id: <20201028123512.871051-3-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201028123512.871051-1-srikar@linux.vnet.ibm.com>
-References: <20201028123512.871051-1-srikar@linux.vnet.ibm.com>
+        Wed, 28 Oct 2020 16:17:03 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8395E100034;
+        Wed, 28 Oct 2020 16:17:02 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 47AF724F94B;
+        Wed, 28 Oct 2020 16:17:02 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct 2020 16:17:01
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Subject: [PATCH 1/1] usb: typec: add missing MODULE_DEVICE_TABLE() to stusb160x
+Date:   Wed, 28 Oct 2020 16:17:03 +0100
+Message-ID: <20201028151703.31195-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_06:2020-10-26,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 adultscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010280083
+ definitions=2020-10-28_07:2020-10-28,2020-10-28 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-is_kvm_guest() will be reused in subsequent patch in a new avatar.  Hence
-rename is_kvm_guest to check_kvm_guest. No additional changes.
+When stusb160x driver is built as a module, no modalias information is
+available, and it prevents the module to be loaded by udev.
+Add MODULE_DEVICE_TABLE() to fix this issue.
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Phil Auld <pauld@redhat.com>
+Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 ---
- arch/powerpc/include/asm/kvm_guest.h | 4 ++--
- arch/powerpc/include/asm/kvm_para.h  | 2 +-
- arch/powerpc/kernel/firmware.c       | 2 +-
- arch/powerpc/platforms/pseries/smp.c | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/usb/typec/stusb160x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/include/asm/kvm_guest.h b/arch/powerpc/include/asm/kvm_guest.h
-index c0ace884a0e8..ba8291e02ba9 100644
---- a/arch/powerpc/include/asm/kvm_guest.h
-+++ b/arch/powerpc/include/asm/kvm_guest.h
-@@ -7,9 +7,9 @@
- #define __POWERPC_KVM_GUEST_H__
+diff --git a/drivers/usb/typec/stusb160x.c b/drivers/usb/typec/stusb160x.c
+index da7f1957bcb3..42076697e26c 100644
+--- a/drivers/usb/typec/stusb160x.c
++++ b/drivers/usb/typec/stusb160x.c
+@@ -633,6 +633,7 @@ static const struct of_device_id stusb160x_of_match[] = {
+ 	{ .compatible = "st,stusb1600", .data = &stusb1600_regmap_config},
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, stusb160x_of_match);
  
- #if defined(CONFIG_PPC_PSERIES) || defined(CONFIG_KVM_GUEST)
--bool is_kvm_guest(void);
-+bool check_kvm_guest(void);
- #else
--static inline bool is_kvm_guest(void) { return false; }
-+static inline bool check_kvm_guest(void) { return false; }
- #endif
- 
- #endif /* __POWERPC_KVM_GUEST_H__ */
-diff --git a/arch/powerpc/include/asm/kvm_para.h b/arch/powerpc/include/asm/kvm_para.h
-index abe1b5e82547..6fba06b6cfdb 100644
---- a/arch/powerpc/include/asm/kvm_para.h
-+++ b/arch/powerpc/include/asm/kvm_para.h
-@@ -14,7 +14,7 @@
- 
- static inline int kvm_para_available(void)
+ static int stusb160x_probe(struct i2c_client *client)
  {
--	return IS_ENABLED(CONFIG_KVM_GUEST) && is_kvm_guest();
-+	return IS_ENABLED(CONFIG_KVM_GUEST) && check_kvm_guest();
- }
- 
- static inline unsigned int kvm_arch_para_features(void)
-diff --git a/arch/powerpc/kernel/firmware.c b/arch/powerpc/kernel/firmware.c
-index fe48d319d490..61243267d4cf 100644
---- a/arch/powerpc/kernel/firmware.c
-+++ b/arch/powerpc/kernel/firmware.c
-@@ -21,7 +21,7 @@ EXPORT_SYMBOL_GPL(powerpc_firmware_features);
- #endif
- 
- #if defined(CONFIG_PPC_PSERIES) || defined(CONFIG_KVM_GUEST)
--bool is_kvm_guest(void)
-+bool check_kvm_guest(void)
- {
- 	struct device_node *hyper_node;
- 
-diff --git a/arch/powerpc/platforms/pseries/smp.c b/arch/powerpc/platforms/pseries/smp.c
-index d578732c545d..c70b4be9f0a5 100644
---- a/arch/powerpc/platforms/pseries/smp.c
-+++ b/arch/powerpc/platforms/pseries/smp.c
-@@ -211,7 +211,7 @@ static __init void pSeries_smp_probe(void)
- 	if (!cpu_has_feature(CPU_FTR_SMT))
- 		return;
- 
--	if (is_kvm_guest()) {
-+	if (check_kvm_guest()) {
- 		/*
- 		 * KVM emulates doorbells by disabling FSCR[MSGP] so msgsndp
- 		 * faults to the hypervisor which then reads the instruction
 -- 
-2.18.4
+2.17.1
 
