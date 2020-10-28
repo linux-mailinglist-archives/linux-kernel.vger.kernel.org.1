@@ -2,80 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668B829CD1F
+	by mail.lfdr.de (Postfix) with ESMTP id D344929CD20
 	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 02:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgJ1BkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Oct 2020 21:40:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37002 "EHLO mail.kernel.org"
+        id S1726522AbgJ1BkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Oct 2020 21:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1833087AbgJ1AQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Oct 2020 20:16:22 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        id S1833090AbgJ1ARd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Oct 2020 20:17:33 -0400
+Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49E762223C;
-        Wed, 28 Oct 2020 00:16:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3ED820754;
+        Wed, 28 Oct 2020 00:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603844181;
-        bh=Dl+mj1slgc0isDj7rpRd4dRtbRYsNG/Rbix4uZLptjM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZRL4/5G+YNajasrAV3EwWJZg8NDm9kYY1bbgpaAAjDnDx9pz6zPHFVUd8vHiLU0KK
-         m/lX2Ug/7DSPawiu0/3UeN5Fa0gX/uiyIBuKqHBjNM24BTWkittOYbsl7t1VUURp+A
-         b/KmWtoNJmd/rXxJ6n3IwsPxNtLN6CPi0jcyEGbs=
-Date:   Tue, 27 Oct 2020 17:16:20 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Cc:     <linux-renesas-soc@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, <geert+renesas@glider.be>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dirk Behme <dirk.behme@de.bosch.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>
-Subject: Re: [PATCH net v2] ravb: Fix bit fields checking in
- ravb_hwtstamp_get()
-Message-ID: <20201027171620.2b5eef40@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201026102130.29368-1-andrew_gabbasov@mentor.com>
-References: <20201026102130.29368-1-andrew_gabbasov@mentor.com>
+        s=default; t=1603844253;
+        bh=64WD8N3Jdh0k9s8/dbTgUj57aRyxZOU1EhEW52HUC0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lanomw3ylBChPo8GRHJEQOBALRuohS/PfE/Pii/cS0XBnUJQpo+QL2wI2WfB9scJq
+         Z0QO0W4t97hRqY8bYCAhxoeBOO5FdYmgQ+DuprVmvAeZ9keW8iRD9MMBD7VCsMQAVN
+         +qMIEtMM+eS6Pzd033RJLAOdMO/VWE/140DqRWjo=
+Date:   Tue, 27 Oct 2020 17:17:31 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: Re: [PATCH v2 3/4] dm: add support for passing through inline crypto
+ support
+Message-ID: <20201028001731.GA2578048@gmail.com>
+References: <20201015214632.41951-1-satyat@google.com>
+ <20201015214632.41951-4-satyat@google.com>
+ <20201027213151.GC2416412@gmail.com>
+ <20201027235847.GA913775@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027235847.GA913775@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 05:21:30 -0500 Andrew Gabbasov wrote:
-> In the function ravb_hwtstamp_get() in ravb_main.c with the existing
-> values for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL
-> (0x6)
-> 
-> if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
-> 	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
-> else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
-> 	config.rx_filter = HWTSTAMP_FILTER_ALL;
-> 
-> if the test on RAVB_RXTSTAMP_TYPE_ALL should be true,
-> it will never be reached.
-> 
-> This issue can be verified with 'hwtstamp_config' testing program
-> (tools/testing/selftests/net/hwtstamp_config.c). Setting filter type
-> to ALL and subsequent retrieving it gives incorrect value:
-> 
-> $ hwtstamp_config eth0 OFF ALL
-> flags = 0
-> tx_type = OFF
-> rx_filter = ALL
-> $ hwtstamp_config eth0
-> flags = 0
-> tx_type = OFF
-> rx_filter = PTP_V2_L2_EVENT
-> 
-> Correct this by converting if-else's to switch.
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+On Tue, Oct 27, 2020 at 11:58:47PM +0000, Satya Tangirala wrote:
+> > > +/**
+> > > + * blk_ksm_update_capabilities() - Update the restrictions of a KSM to those of
+> > > + *				   another KSM
+> > > + * @target_ksm: The KSM whose restrictions to update.
+> > > + * @reference_ksm: The KSM to whose restrictions this function will update
+> > > + *		   @target_ksm's restrictions to,
+> > > + */
+> > > +void blk_ksm_update_capabilities(struct blk_keyslot_manager *target_ksm,
+> > > +				 struct blk_keyslot_manager *reference_ksm)
+> > > +{
+> > > +	memcpy(target_ksm->crypto_modes_supported,
+> > > +	       reference_ksm->crypto_modes_supported,
+> > > +	       sizeof(target_ksm->crypto_modes_supported));
+> > > +
+> > > +	target_ksm->max_dun_bytes_supported =
+> > > +				reference_ksm->max_dun_bytes_supported;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(blk_ksm_update_capabilities);
+> > 
+> > Wouldn't it be easier to replace the original blk_keyslot_manager, rather than
+> > modify it?  Then blk_ksm_update_capabilities() wouldn't be needed.
+> > 
+> I didn't want to replace the original blk_keyslot_manager because it's
+> possible that e.g. fscrypt is checking for crypto capabilities support
+> via blk_ksm_crypto_cfg_supported() when DM wants to replace the
+> blk_keyslot_manager. DM would have to free the memory used by the
+> blk_keyslot_manager, but blk_ksm_crypto_cfg_supported() might still
+> be trying to access that memory. I did it this way to avoid having to
+> add refcounts or something else to the blk_keyslot_manager...(And I
+> didn't bother adding any synchronization code since the capabilities
+> only ever expand, and never contract).
 
-Applied, thank you!
+Are you sure that's possible?  That would imply that there is no synchronization
+between limits/capabilities in the request_queue being changed and the
+request_queue being used.  That's already buggy.  Maybe it's the sort of thing
+that is gotten away with in practice, in which case avoiding a free() would
+indeed be a good idea, but it's worth explicitly clarifying whether all this
+code is indeed racy by design...
+
+> > > diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
+> > > index cd0478d44058..2b3efa9f9fae 100644
+> > > --- a/drivers/md/dm-ioctl.c
+> > > +++ b/drivers/md/dm-ioctl.c
+> > > @@ -1358,6 +1358,10 @@ static int table_load(struct file *filp, struct dm_ioctl *param, size_t param_si
+> > >  		goto err_unlock_md_type;
+> > >  	}
+> > >  
+> > > +	r = dm_verify_inline_encryption(md, t);
+> > > +	if (r)
+> > > +		goto err_unlock_md_type;
+> > > +
+> > >  	if (dm_get_md_type(md) == DM_TYPE_NONE) {
+> > >  		/* Initial table load: acquire type of table. */
+> > >  		dm_set_md_type(md, dm_table_get_type(t));
+> > > @@ -2114,6 +2118,10 @@ int __init dm_early_create(struct dm_ioctl *dmi,
+> > >  	if (r)
+> > >  		goto err_destroy_table;
+> > >  
+> > > +	r = dm_verify_inline_encryption(md, t);
+> > > +	if (r)
+> > > +		goto err_destroy_table;
+> > > +
+> > >  	md->type = dm_table_get_type(t);
+> > >  	/* setup md->queue to reflect md's type (may block) */
+> > >  	r = dm_setup_md_queue(md, t);
+> > 
+> > Both table_load() and dm_early_create() call dm_setup_md_queue().  Wouldn't it
+> > be simpler to handle inline encryption in dm_setup_md_queue(), instead of doing
+> > it in both table_load() and dm_early_create()?
+> > 
+> table_load() only calls dm_setup_md_queue() on initial table load (when
+> the md_type is DM_TYPE_NONE), so I can't call
+> dm_verify_inline_encryption() in only dm_setup_md_queue(), because
+> dm_verify_inline_encryption() needs to run on every table load.
+
+Where do all the other limitations and capabilities of the request_queue get
+updated on non-initial table loads, then?
+
+> > > +/**
+> > > + * dm_verify_inline_encryption() - Verifies that the current keyslot manager of
+> > > + *				   the mapped_device can be replaced by the
+> > > + *				   keyslot manager of a given dm_table.
+> > > + * @md: The mapped_device
+> > > + * @t: The dm_table
+> > > + *
+> > > + * In particular, this function checks that the keyslot manager that will be
+> > > + * constructed for the dm_table will support a superset of the capabilities that
+> > > + * the current keyslot manager of the mapped_device supports.
+> > > + *
+> > > + * Return: 0 if the table's keyslot_manager can replace the current keyslot
+> > > + *	   manager of the mapped_device. Negative value otherwise.
+> > > + */
+> > > +int dm_verify_inline_encryption(struct mapped_device *md, struct dm_table *t)
+> > > +{
+> > > +	struct blk_keyslot_manager *ksm = dm_init_inline_encryption(md, t);
+> > > +
+> > > +	if (IS_ERR(ksm))
+> > > +		return PTR_ERR(ksm);
+> > > +	blk_ksm_destroy(ksm);
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > This function seems redundant with dm_init_inline_encryption().  Wouldn't it be
+> > simpler to do:
+> > 
+> > - dm_setup_md_queue() and dm_swap_table() call dm_init_inline_encryption() after
+> >   dm_calculate_queue_limits().
+> > 
+> > - ksm gets passed to dm_table_set_restrictions(), which calls
+> >   dm_update_keyslot_manager() (maybe rename to dm_update_inline_encryption()?)
+> >   to actually set q->ksm.
+> > 
+> > That way, the crypto capabilities would be handled similarly to how the
+> > queue_limits are already handled.
+> > 
+> If we call it from dm_swap_table(), we could have it pass the returned
+> ksm to __bind(), either as a new argument, or by adding the ksm to the
+> queue_limits (I'll have to check if that's ok/a good idea in the first
+> place), and __bind() could send the argument to
+> dm_table_set_restrictions()
+> 
+> But the real issue is, I think we should check whether a new table is
+> valid (from the ksm capabilities support perspective) at the time that
+> table is loaded (as opposed to only checking it when DM attempts to swap
+> it in, which might be a lot later, when the user resumes the device) - so
+> I can't only call it from dm_setup_md_queue(), and I'd have to call it
+> from table_load() anyway. And the returned ksm that table_load() obtains
+> from dm_init_inline_encryption() can't really be used - because
+> 1) the ksm constructed at dm_swap_table() might actually support more
+> capabilities than the ksm constructed in table_load(), because
+> underlying devices might get resumed, and have new tables swapped in,
+> and might support more capabilities than before
+> 2) a subsequent dm_swap_table() call could fail for whatever reason, and
+> we'll need to revert to the current ksm.
+> 
+> What I'm doing right now is simply freeing the ksm returned by
+> dm_init_inline_encryption() whenever it's called from table_load()
+> (and I'm trying to make that process a little nicer by wrapping it in a
+> function called dm_verify_inline_encryption()) - so if we're going to
+> have to call dm_init_inline_encryption() and then freeing the returned
+> ksm in table_load(), I think it might be better to continue to have
+> dm_verify_inline_encryption(), unless you'd prefer just open coding the
+> function directly.
+
+I don't understand why this needs to be so complicated.  Doesn't the dm layer
+have the same problem for all the other queue limits and capabilities?  What
+makes inline encryption different?
+
+- Eric
