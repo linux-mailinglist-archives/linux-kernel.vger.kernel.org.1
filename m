@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E43D29D71B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCBD29D78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732473AbgJ1WU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:20:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731661AbgJ1WRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:40 -0400
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03F3B24746;
-        Wed, 28 Oct 2020 13:20:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603891239;
-        bh=+zcA/6pTJEiqhEIB6b9u13iGz/vyrIiNkbw5+OfR3RU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G8BbRQyz/59LYY1N42cxCAJhwL18YtebLWmX5CIxnlOO5I2ajUNwDm2lyKa9cslSa
-         vQY7OdvwsOhagPj5BoHEV4HJ3tuxYWcLqCNhIwoKiuqVpk4NL3i1jX9p2cUUbEdOPy
-         KA+YZ6F+a9vywgLP/ys9YSb7KiyrzgLubZq7l5gU=
-Received: by mail-lj1-f169.google.com with SMTP id y16so6313501ljk.1;
-        Wed, 28 Oct 2020 06:20:38 -0700 (PDT)
-X-Gm-Message-State: AOAM531qtEGQyjQZNPEI+7miht5Sk4MoSM67qEH1C1l57DZrXm/xXlS7
-        oOomT8wRdnYUKjE+uVX/fyMQpQB09iU1+rS5Wkg=
-X-Google-Smtp-Source: ABdhPJwPj+jJVO+NGNXNwzAOQ7QC4CMa7GE7JJfMww785BE/4plVH+2GBu818TRJNl+lheV7rkZknd5yyXXDquGphqE=
-X-Received: by 2002:a2e:b8c8:: with SMTP id s8mr3141184ljp.189.1603891237138;
- Wed, 28 Oct 2020 06:20:37 -0700 (PDT)
+        id S1732933AbgJ1WZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732899AbgJ1WZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:25:24 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE14C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:25:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a200so623153pfa.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Hvfu2O4x70zfOMPRKar/p0Ao3IuBnxAMAZDvJC8rl68=;
+        b=zoof0+raMu/he+76Q9IaQ8w/GqD3T0dWynKY3ZLIejbNzYdWEPv+hT4wf64OGRdHrz
+         eX6HseZHjxRB9kzvRbRKAfYDP3Bu5FYM2bDW+JDzsCJ4Bly0VbtiSxaA7KF4X/6EatYU
+         TadbOvoVZBNcDYRzcNNvJTGAjaE8GnrjybD4QvfaQpgsSECkHDNJkIrW+FeTpZuE2CnK
+         hnV6jBVqsIaCXlVTWrfORfZoQI7k/1fTfoA7csEqTA9eFUteZscv4KGPdip2v0yQjgeP
+         RhG0A4RycKaGcmzey0lGPfF5nmF90L50aRJdED3hV5s3YW57vtS4fj3Z9qTqnCdijLky
+         Qkkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hvfu2O4x70zfOMPRKar/p0Ao3IuBnxAMAZDvJC8rl68=;
+        b=ewRJ4ib9w5/4jKqoax3uGnTMCaAWuOKSvURCLr+FFT9v62tJsPVV4oITZl014eR7UJ
+         X2436GyTUfYQ6cncPbMb7y2P1TbjGoxIXYcY36PBt/LOiNsRpitXTEWj5AwWeZSHfZtf
+         CmjV97PZ9HiXTGXGx8SCsL9KyMSQCugq2fr7FEUDw2YdjH7A3mfjRKbdPTi7hnL1c/3i
+         RSRKDM3FsIj5+V7ukU5pJZj68oCpZsA3CdDwKKDkFzgyWJds4YcSglebxm0o6FxF7OBK
+         d88WJk1kHV+qBpgeJdpLFGwjjXsB2Qkbs7i0zIqjoZNvufwRCqG0HRYwvsfABXWVWMQc
+         bcMg==
+X-Gm-Message-State: AOAM531NwF//KmCYFthnV6RFGZ5oLpUP5A90F4pygQhXFuU8ukQ1FlTH
+        Chqg4XmMD4F1eDjK+Xz84U6+qO0oPxDu+2n7
+X-Google-Smtp-Source: ABdhPJw5nHKnt9TZvp0aBVHgiiUiftX46fk75iMXXqiiQv4OKF3yjXJiExJgv4ZU17o39DPteg5CsQ==
+X-Received: by 2002:a92:ddd1:: with SMTP id d17mr5514566ilr.275.1603891847202;
+        Wed, 28 Oct 2020 06:30:47 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id n15sm2747094ilt.58.2020.10.28.06.30.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 06:30:45 -0700 (PDT)
+Subject: Re: [PATCH net 5/5] net: ipa: avoid going past end of resource group
+ array
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, evgreen@chromium.org,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201027161120.5575-1-elder@linaro.org>
+ <20201027161120.5575-6-elder@linaro.org>
+ <CA+FuTSdGCBG0tZXfPTJqTnV7zRNv2VmuThOydwj080NWw4PU9Q@mail.gmail.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <d8611e9f-acef-d354-c776-f06b27365945@linaro.org>
+Date:   Wed, 28 Oct 2020 08:30:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201027212448.454129-1-arnd@kernel.org> <20201028103456.GB1042@kadam>
-In-Reply-To: <20201028103456.GB1042@kadam>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 28 Oct 2020 14:20:20 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a03Oi-hKh9Db95K_ou_Lk5svWAo5HV8ZgxuktJi2RWS2A@mail.gmail.com>
-Message-ID: <CAK8P3a03Oi-hKh9Db95K_ou_Lk5svWAo5HV8ZgxuktJi2RWS2A@mail.gmail.com>
-Subject: Re: [RFC] wimax: move out to staging
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+FuTSdGCBG0tZXfPTJqTnV7zRNv2VmuThOydwj080NWw4PU9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:34 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are no known users of this driver as of October 2020, and it will
-> > be removed unless someone turns out to still need it in future releases.
-> >
-> > According to https://en.wikipedia.org/wiki/List_of_WiMAX_networks, there
-> > have been many public wimax networks, but it appears that these entries
-> > are all stale, after everyone has migrated to LTE or discontinued their
-> > service altogether.
->
-> Wimax is still pretty common in Africa.  But you have to buy an outdoor
-> antenae with all the software on it and an ethernet cable into your
-> house.
+On 10/27/20 7:14 PM, Willem de Bruijn wrote:
+> On Tue, Oct 27, 2020 at 12:38 PM Alex Elder <elder@linaro.org> wrote:
+>>
+>> The minimum and maximum limits for resources assigned to a given
+>> resource group are programmed in pairs, with the limits for two
+>> groups set in a single register.
+>>
+>> If the number of supported resource groups is odd, only half of the
+>> register that defines these limits is valid for the last group; that
+>> group has no second group in the pair.
+>>
+>> Currently we ignore this constraint, and it turns out to be harmless,
+> 
+> If nothing currently calls it with an odd number of registers, is this
+> a bugfix or a new feature (anticipating future expansion, I guess)?
 
-Ah, good to know, thanks for the information. I'll include that when
-I resend the patch, which I have to do anyway to avoid a small
-regression. I did a look at a couple of African ISPs that seemed to
-all have discontinued service, but I suppose I should have looked
-more carefully.
+. . .
 
->  I don't know what software the antennaes are using.  Probably
-> Linux but with an out of tree kernel module is my guess.
+Sorry, I missed this comment.  Yes, I'm working on support for
+an upcoming IPA hardware version that has 5 resources of each
+type.  And it is a bug fix, though the bug doesn't bite us
+(because the maximum number of resources supported is even),
+so "it turns out to be harmless."
 
-Right, it seems very unlikely that they would be using the old
-Intel drivers, and it's also unlikely that they are updating those
-boxes to new kernels. I found a firmware image for Huawei
-BM623m, which runs a proprietary kernel module for the wimax
-stack on an MT7108 (arm926) phone chip running a
-linux-2.6.26.8-rt16 kernel.
-
-       Arnd
+					-Alex
