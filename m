@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5166529E27F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06F329E27C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgJ1VfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:35:25 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43012 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgJ1VfU (ORCPT
+        id S1729441AbgJ2COz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:14:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726772AbgJ1Vfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:35:20 -0400
-Received: by mail-wr1-f67.google.com with SMTP id g12so591115wrp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=z0bo9p/MHEtnqQo3sYgSNQdn7CC7jYK4NuW7gro8gUQ=;
-        b=EjigtYeY5Z4vpwcIl4MJFuY9I6ZyMqhUA1zVC5c+gjfE4oPozccC6kfD6777IpAlGO
-         mc7jYs3S+C4MqN5J7lJCxxzJ0WrohShRPgXDyhbAkadQVZUvER7XMM+Ubx0s9JmQnFVd
-         tmfWRuYNN3zXDTJsgfnnNky6CXlsMAufYHZHfDQW0XT3L7x+M4Y8Ghdo6aO8wkcupmCG
-         qxourfq8Nw66DL49D1ZJeijEs/lS2IJ50yqkXGEkxcKA8/CBeod3gjAm1aMKgB9Cyyos
-         yPKmK/QQJ8B2IjkdMT+dkwfD0dRbXNsmOq4MAnD2232N9us6chr6eum9moM9/jjJz7jH
-         hNJA==
+        Wed, 28 Oct 2020 17:35:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603920935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QJHhfZ2V2kb0ESkGQZCAib+1qqkooRbQR95yCbytl7s=;
+        b=EFZBLLoFENA5ieRplqxCSfzhUzYAHdUhuFnztpG3/I+HOaIOZvKdFBrar1dsvK/Fy8S6oW
+        GmAASkgGdqgguknAhyLsQuDUeI0Qt3TIrEes2vaYCQ6Pp2hyXvcW2BWHC7pa5KNAtLC0yB
+        0KHtRt9QumE53cCL/aY8Htike29JoC4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-95NiMNOMN0i5xv_8YuE0BA-1; Wed, 28 Oct 2020 07:33:42 -0400
+X-MC-Unique: 95NiMNOMN0i5xv_8YuE0BA-1
+Received: by mail-ed1-f72.google.com with SMTP id b16so1988650edn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 04:33:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=z0bo9p/MHEtnqQo3sYgSNQdn7CC7jYK4NuW7gro8gUQ=;
-        b=fB2z1YbRMHvLwSyzjVuXvvyOvphTN2j9R2WFAO/0Ns6n+BkLdMJH0A8VPGksk7HOja
-         LJgIFzyREamh8j1bskGMivSkDzFhoxOa6F/bw2e8QfbhgeHMLYKMDSQJnL1Uhda1PmCT
-         uHE4Nb8L433nu9kQQtht4ESVlgxZ0AcQTbJG6ym7ezf6qtONeRv5lDw4O0h0ZwnarKKH
-         XhaLvPcUFgx6gcdclctlog8CXj5fmg5Uea9hMK+2W8RW0VKE9800jhz+4hQ1B7ISCKTa
-         AwbZFlCJ3kTvZJeAsn7gKUzZK5QBIcpF3lmYEkVAXWQJ2Csz9+/sWFuwzPVyc21AFLW/
-         QGYQ==
-X-Gm-Message-State: AOAM531T0xQtMJWYQkK0aBbRE5TwRi/LwRPdPbnYIlYwF4ECKu3w/X/7
-        dmL8v2LI2OV1SZJL4mBX/1xWmdPAbCu3Rb/+y5oWfSjEpg==
-X-Google-Smtp-Source: ABdhPJzWkjUo+wzmC+Aid/66YzC6oFHXQvvnXtV3qjYBPDSYSSuo3+DRnzB3mjF3mxvZfHNxyDT1fLGdC7mZRjuKEig=
-X-Received: by 2002:a17:906:2894:: with SMTP id o20mr6822049ejd.221.1603883932463;
- Wed, 28 Oct 2020 04:18:52 -0700 (PDT)
+        bh=QJHhfZ2V2kb0ESkGQZCAib+1qqkooRbQR95yCbytl7s=;
+        b=SJhacxQFhWb5jf1TgDpD2KXJlFBjQ6Vrgnm3OHfMX+A5QCaL/JeKdSm1fR+zuIUOwX
+         zSmAsxJAGZnhB+9yIJF/1QXnQDq6lygNHsiNj/I8Lb+dIA9yyMYYwdXHPw7H1gRrN9xx
+         mcMKlV/4n5RzERfqs+uG9f74lIPPfXs0G7c6pv7EtbgjCIMGjMRCpm2JIw7ZzTCc47RT
+         LXoKd7FSwGPTl9CsNcwkr9u3y0c310ZpQM0N27Aje3wIHWeKFgEwRasGLtU2L8BqlbVe
+         eY7h9bpz5/EBcpEiRRunYmLu0Sm6bci8aAJvclC51WCT7qxpATDgWD3Gyge0k7wiJJr9
+         OS1w==
+X-Gm-Message-State: AOAM531QpSkIyV8kD+nKD9Ajn4VHJewFySlWd4YfyXZ5lhRF/lb7NpKW
+        srO47V5UNxOVMpgSrJVKQnhTqBsg95SoNDq8GmtP30gCq2EmxQf5autTbzumFIbxFfsURjzGvTX
+        tKPZOVX1cAn7rNbiyYMJVPjIp
+X-Received: by 2002:a17:906:402:: with SMTP id d2mr3293514eja.165.1603884820790;
+        Wed, 28 Oct 2020 04:33:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIKV5nnNTcNuopRKBG+aVCqjxcweo+pTjYRN//cyr5S9Wkk3HlbZG1Mt+zdaQ2EMO5feyEGA==
+X-Received: by 2002:a17:906:402:: with SMTP id d2mr3293495eja.165.1603884820534;
+        Wed, 28 Oct 2020 04:33:40 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id k18sm2651040edx.54.2020.10.28.04.33.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 04:33:39 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: remove unneeded break
+To:     trix@redhat.com, jlee@suse.com, mgross@linux.intel.com,
+        malattia@linux.it
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201019133212.12671-1-trix@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <dd06e057-7ca8-972b-3d71-8e06aa68961f@redhat.com>
+Date:   Wed, 28 Oct 2020 12:33:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-From:   Camille Mougey <commial@gmail.com>
-Date:   Wed, 28 Oct 2020 12:18:47 +0100
-Message-ID: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
-Subject: [seccomp] Request for a "enable on execve" mode for Seccomp filters
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Rich Felker <dalias@libc.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Denis Efremov <efremov@linux.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201019133212.12671-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-(This is my first message to the kernel list, I hope I'm doing it right)
+On 10/19/20 3:32 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> A break is not needed if it is preceded by a return
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-From my understanding, there is no way to delay the activation of
-seccomp filters, for instance "until an _execve_ call".
-But this might be useful, especially for tools who sandbox other,
-non-cooperative, executables, such as "systemd" or "FireJail".
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-It seems to be a caveat of seccomp specific to the system call
-_execve_. For now, some tools such as "systemd" explicitly mention
-this exception, and do not support it (from the man page):
-> Note that strict system call filters may impact execution and error handl=
-ing code paths of the service invocation. Specifically, access to the execv=
-e system call is required for the execution of the service binary =E2=80=94=
- if it is blocked service invocation will necessarily fail
+Note it will show up there once I've pushed my local branch there,
+which might take a while.
 
-"FireJail" takes a different approach[1], with a kind of workaround:
-the project uses an external library to be loaded through LD_PRELOAD
-mechanism, in order to install filters during the loader stage.
-This approach, a bit hacky, also has several caveats:
-* _openat_, _mmap_, etc. must be allowed in order to reach the
-LD_PRELOAD mechanism, and for the crafted library to work ;
-* it doesn't work for static binaries.
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-I only see hackish ways to restrict the use of _execve_ in a
-non-cooperative executable. These methods seem globally bypassables
-and not satisfactory from a security point of view.
+Regards,
 
-IMHO, a way to prepare filter and enable them only on the next
-_execve_ would have some benefit:
-* have a way to restrict _execve_ in a non-cooperative executable;
-* install filters atomically, ie. before the _execve_ system call
-return. That would limit racy situations, and have the very firsts
-instructions of potentially untrusted binaries already subject to
-seccomp filters. It would also ensure there is only one thread running
-at the filter enabling time.
+Hans
 
-From what I understand, there is a relative use case[2] where the
-"enable on exec" mode would also be a solution.
+> ---
+>  drivers/platform/x86/acer-wmi.c    | 1 -
+>  drivers/platform/x86/sony-laptop.c | 3 ---
+>  drivers/platform/x86/wmi.c         | 3 ---
+>  3 files changed, 7 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+> index 49f4b73be513..1c2084c74a57 100644
+> --- a/drivers/platform/x86/acer-wmi.c
+> +++ b/drivers/platform/x86/acer-wmi.c
+> @@ -792,7 +792,6 @@ static acpi_status AMW0_set_u32(u32 value, u32 cap)
+>  		switch (quirks->brightness) {
+>  		default:
+>  			return ec_write(0x83, value);
+> -			break;
+>  		}
+>  	default:
+>  		return AE_ERROR;
+> diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
+> index e5a1b5533408..704813374922 100644
+> --- a/drivers/platform/x86/sony-laptop.c
+> +++ b/drivers/platform/x86/sony-laptop.c
+> @@ -2467,13 +2467,11 @@ static int __sony_nc_gfx_switch_status_get(void)
+>  		 * 0: integrated GFX (stamina)
+>  		 */
+>  		return result & 0x1 ? SPEED : STAMINA;
+> -		break;
+>  	case 0x015B:
+>  		/* 0: discrete GFX (speed)
+>  		 * 1: integrated GFX (stamina)
+>  		 */
+>  		return result & 0x1 ? STAMINA : SPEED;
+> -		break;
+>  	case 0x0128:
+>  		/* it's a more elaborated bitmask, for now:
+>  		 * 2: integrated GFX (stamina)
+> @@ -2482,7 +2480,6 @@ static int __sony_nc_gfx_switch_status_get(void)
+>  		dprintk("GFX Status: 0x%x\n", result);
+>  		return result & 0x80 ? AUTO :
+>  			result & 0x02 ? STAMINA : SPEED;
+> -		break;
+>  	}
+>  	return -EINVAL;
+>  }
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index d88f388a3450..44e802f9f1b4 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -1260,13 +1260,10 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physical_address address,
+>  	switch (result) {
+>  	case -EINVAL:
+>  		return AE_BAD_PARAMETER;
+> -		break;
+>  	case -ENODEV:
+>  		return AE_NOT_FOUND;
+> -		break;
+>  	case -ETIME:
+>  		return AE_TIME;
+> -		break;
+>  	default:
+>  		return AE_OK;
+>  	}
+> 
 
-Thanks for your attention,
-C. Mougey
-
-[1]: https://github.com/netblue30/firejail/issues/3685
-[2]: https://lore.kernel.org/linux-man/202010250759.F9745E0B6@keescook/
