@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3063529D364
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420B329D510
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgJ1Vn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgJ1VnW (ORCPT
+        id S1729181AbgJ1V6b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 17:58:31 -0400
+Received: from mail.fireflyinternet.com ([77.68.26.236]:55860 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728786AbgJ1V62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:43:22 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C231C0613CF;
-        Wed, 28 Oct 2020 14:43:22 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x7so991876ili.5;
-        Wed, 28 Oct 2020 14:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ozYCZRgZqvrBNZwSGWpcjHZ/UebLYVQ2msLNU5VY5Mo=;
-        b=uoRMTe+GToyjDoY9/GaktCa1BeSuPzVAR3/boLPppUGl2qn34CK74mw2rIzAvM3ugD
-         SQ2p3aZO5PqkKhiOBdyBW8DBlPIF/Tcc6+83P3KSglxaTdhTl9wHL0mu6LpQJ/aNPYGk
-         /aDeRn5tXPMYv6ZrqEqshKEqAMefYDA42I2NAyiczmdob/fE6/C17lTpYjIm3i2nHFub
-         K7djTFNomWxGyjgJgYaExtWgiUrXfPoe1d3WFjoYg76WLdF5US+sBtUNs/orjJRmkjIT
-         oyE1avb6xQqwp/xtMx5iZ1T0D8ckNdMumCO27aucVma7HiOGSBhpTihnODBRV/SORZ9K
-         jh4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ozYCZRgZqvrBNZwSGWpcjHZ/UebLYVQ2msLNU5VY5Mo=;
-        b=JxiQeAP6dvKB85JUPFPrcNEDA2w0x8x3+OoV1zVhk3OFgiN+igbqgPCM6VO5rMJ2pY
-         5cMiamFbi0oxjAGWfd75bfGxVHPREYxK1XYZQzosiuyvZa4bRDFhqtfKsuABTuGXEXKq
-         9WaVFjP3YYPHPKG16GALTn1NYr8sM4zlPSaYsnVTQKmKjNl31gPnhyEZa/8QrwGqiYUm
-         kdnx7dxsdr50YWGgHza0XfWAnEYkog/8st5SyxXdUh3TRTPZwx1Ri+Gydlu7fKHQ6H9/
-         7brvmOtfGEJi7kTWB/I2rBN6iJleGg4nKNLf5Pwo1AhMbg56Jt885BeFkZtRy6IzI9e5
-         mK3g==
-X-Gm-Message-State: AOAM531odQqRjfVAq2JbSpUTAK7bU3Q1aoJobGsLdWzcg/X1lX1jM2kb
-        w14L/WrETjLK8IZ65tH/ONhVCS8SVAbm7hIW6cwfcVK0zUwiFA==
-X-Google-Smtp-Source: ABdhPJwBVHlD8D4vAAXos2Nzvs1/eRlOYVtS1b+L4Ik0PIOGENFpsUsLpxj2nAxw9y6dHLnM6j3+R7WB5l0ZfZPRLMc=
-X-Received: by 2002:a92:c04c:: with SMTP id o12mr171588ilf.22.1603906736261;
- Wed, 28 Oct 2020 10:38:56 -0700 (PDT)
+        Wed, 28 Oct 2020 17:58:28 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 22827296-1500050 
+        for multiple; Wed, 28 Oct 2020 17:40:51 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201028113533.26160-1-lukas.bulwahn@gmail.com> <d956a5a5-c064-3fd4-5e78-809638ba14ef@redhat.com>
-In-Reply-To: <d956a5a5-c064-3fd4-5e78-809638ba14ef@redhat.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 28 Oct 2020 10:38:45 -0700
-Message-ID: <CAM_iQpUfE2f3QBFY6r0_D2mzFK_SsmFXdA-1p3h7yquM8912fg@mail.gmail.com>
-Subject: Re: [PATCH] net: cls_api: remove unneeded local variable in tc_dump_chain()
-To:     Tom Rix <trix@redhat.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <160381649396.10461.15013696719989662769@build.alporthouse.com>
+References: <20200930094937.GE2651@hirez.programming.kicks-ass.net> <160208761332.7002.17400661713288945222.tip-bot2@tip-bot2> <160379817513.29534.880306651053124370@build.alporthouse.com> <20201027115955.GA2611@hirez.programming.kicks-ass.net> <20201027123056.GE2651@hirez.programming.kicks-ass.net> <160380535006.10461.1259632375207276085@build.alporthouse.com> <20201027154533.GB2611@hirez.programming.kicks-ass.net> <160381649396.10461.15013696719989662769@build.alporthouse.com>
+Subject: Re: [tip: locking/core] lockdep: Fix usage_traceoverflow
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        tip-bot2 for Peter Zijlstra <tip-bot2@linutronix.de>,
+        Qian Cai <cai@redhat.com>, x86 <x86@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Date:   Wed, 28 Oct 2020 17:40:48 +0000
+Message-ID: <160390684819.31966.12048967113267928793@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 6:59 AM Tom Rix <trix@redhat.com> wrote:
->
->
-> On 10/28/20 4:35 AM, Lukas Bulwahn wrote:
-> > @@ -2971,13 +2963,11 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
-> >               if (!dev)
-> >                       return skb->len;
-> >
-> > -             parent = tcm->tcm_parent;
-> > -             if (!parent) {
-> > +             if (!tcm->tcm_parent)
-> >                       q = dev->qdisc;
-> > -                     parent = q->handle;
->
-> This looks like a an unused error handler.
->
-> and the later call to
->
-> if (TC_H_MIN(tcm->tcm_parent)
->
-> maybe should be
->
-> if (TC_H_MIN(parent))
+Quoting Chris Wilson (2020-10-27 16:34:53)
+> Quoting Peter Zijlstra (2020-10-27 15:45:33)
+> > On Tue, Oct 27, 2020 at 01:29:10PM +0000, Chris Wilson wrote:
+> > 
+> > > <4> [304.908891] hm#2, depth: 6 [6], 3425cfea6ff31f7f != 547d92e9ec2ab9af
+> > > <4> [304.908897] WARNING: CPU: 0 PID: 5658 at kernel/locking/lockdep.c:3679 check_chain_key+0x1a4/0x1f0
+> > 
+> > Urgh, I don't think I've _ever_ seen that warning trigger.
+> > 
+> > The comments that go with it suggest memory corruption is the most
+> > likely trigger of it. Is it easy to trigger?
+> 
+> For the automated CI, yes, the few machines that run that particular HW
+> test seem to hit it regularly. I have not yet reproduced it for myself.
+> I thought it looked like something kasan would provide some insight for
+> and we should get a kasan run through CI over the w/e. I suspect we've
+> feed in some garbage and called it a lock.
 
-When tcm->tcm_parent is 0, TC_H_MIN(tcm->tcm_parent) is also 0,
-so we will not hit that if branch.
+I tracked it down to a second invocation of lock_acquire_shared_recursive()
+intermingled with some other regular mutexes (in this case ww_mutex).
 
-So, I think Lukas' patch is correct.
+We hit this path in validate_chain():
+	/*
+	 * Mark recursive read, as we jump over it when
+	 * building dependencies (just like we jump over
+	 * trylock entries):
+	 */
+	if (ret == 2)
+		hlock->read = 2;
 
-Thanks.
+and that is modifying hlock_id() and so the chain-key, after it has
+already been computed.
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 035f81b1cc87..f193f756e1e3 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4831,7 +4831,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+        if (!validate_chain(curr, hlock, chain_head, chain_key))
+                return 0;
+
+-       curr->curr_chain_key = chain_key;
++       curr->curr_chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
+        curr->lockdep_depth++;
+        check_chain_key(curr);
+
+works as a heavy hammer.
+-Chris
