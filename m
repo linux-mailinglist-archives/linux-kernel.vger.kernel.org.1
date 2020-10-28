@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A2829D427
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A6C29D53E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgJ1Vt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:49:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57348 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgJ1Vt1 (ORCPT
+        id S1729332AbgJ1V7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729296AbgJ1V70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:49:27 -0400
-Date:   Wed, 28 Oct 2020 19:10:41 +0100
+        Wed, 28 Oct 2020 17:59:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BBEC0613D1;
+        Wed, 28 Oct 2020 14:59:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603908648;
+        s=2020; t=1603909350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=AO50ZlsNOKzgistJGx8rcx0DCrsMMCg9sIqOnldD5ak=;
-        b=c+7LLYT+6bET4Jh3v/Djkuc3IXM2E2Nsz9UnXbljNFEi09zF+SPZeoyJYf6QzBkTq6xBxj
-        STBP1/0WYjPPDFB52Ch86tCSCkP1mBtDdIQplUbech8mTbekmNwMYEz5+iKQ/s9mdjJF6t
-        15JDaKKimcCOEx19eCLJvjWYVA9XDR7RDQtHEQIF+1AXfF30fDfaiWqCy63PBaB7hEESe/
-        JstpG3mgOflfRDkglCstELRNf8SYgfd/uGXFRZkX38wPU1V1hTDi1ZkGeLNd5irD2WIqh2
-        bI3bAmVA2RGxJFEopFc7bOkKT+jFZeaRmR7leHt6KxEbbDsn/OB8WfYoM3Fe9g==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hHSo5mLm2YdFaQeHlvR8xcV3UAJmfAc+vvkhBluX8qo=;
+        b=G2SRgpwNjPS2PH7DHQA38BGfmVOfajAY2isL1Sq1OCS+XXjtEyTCt+SlM57rdjf3f+6n+g
+        m99IZb/Jfe3WefkKHGyD4pVPkCTs+byjYWrm9re7Bmnqmg1w+gWb64Zhy4SFCzqnBY2TWM
+        4xO6vBXlYhhZhkX9m8t4GC3RpkdUEiTfTcI+qHAowj7S3BdlVvr6Shded/G4HztZ3nHU1C
+        Dq+fde2zgojwG0K+oabyxY3WkE3FutsDA3o/+Lm4fuTFNwFBpXmcjtVsOMUKnXYL5j/zWQ
+        XS4+Feii3CoyBWBe/cm0H0JJGGDwMfs0zUcvpHmDB5N+jftG6g5PbFoSEKpJ/g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603908648;
+        s=2020e; t=1603909350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=AO50ZlsNOKzgistJGx8rcx0DCrsMMCg9sIqOnldD5ak=;
-        b=JGgrVbK89BTnWUxWgM/qbSSabb4oFR5gyUsxd+tCUkvTlxNdlNDyMm/0MeTSIbxsdkOPwp
-        qG2NCzleHxM7i4Cg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [RFC PATCH] lib/test_lockup: Minimum fix to get it compiled on
- PREEMPT_RT
-Message-ID: <20201028181041.xyeothhkouc3p4md@linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hHSo5mLm2YdFaQeHlvR8xcV3UAJmfAc+vvkhBluX8qo=;
+        b=JEwHkmPJCpzQmpW+KFKsSIdIi/I+53aSg4+W8esXHBbp57OL4ZDRhuIQIt3/H/G0qisUa9
+        urgekIPvbeQQIXDw==
+To:     John Garry <john.garry@huawei.com>, gregkh@linuxfoundation.org,
+        rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com
+Cc:     linuxarm@huawei.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org,
+        John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+In-Reply-To: <1603888387-52499-2-git-send-email-john.garry@huawei.com>
+References: <1603888387-52499-1-git-send-email-john.garry@huawei.com> <1603888387-52499-2-git-send-email-john.garry@huawei.com>
+Date:   Wed, 28 Oct 2020 19:22:29 +0100
+Message-ID: <87eelifbx6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On PREEMPT_RT the locks are quite different so they can't be tested as
-it is done below. The alternative is to test for the waitlock within
-rtmutex.
+On Wed, Oct 28 2020 at 20:33, John Garry wrote:
+>  
+> +int irq_update_affinity_desc(unsigned int irq,
+> +			     struct irq_affinity_desc *affinity)
+> +{
+> +	unsigned long flags;
+> +	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, 0);
+> +
+> +	if (!desc)
+> +		return -EINVAL;
 
-This is the bare minim to get it compiled. Problems which exist on
-PREEMP_RT:
-- none of the locks (spinlock_t, rwlock_t, mutex_t, rw_semaphore) may be
-  acquired with disabled preemption or interrupts.
-  If I read the code correct the it is possible to acquire a mutex_t with
-  disabled interrupts.
-  I don't know how to obtain a lock pointer. Technically they are not
-  exported to userland.
+Just looking at it some more. This needs a check whether the interrupt
+is actually shut down. Otherwise the update will corrupt
+state. Something like this:
 
-- memory can not be allocated with disabled preemption or interrupts
-  even with GFP_ATOMIC.
+        if (irqd_is_started(&desc->irq_data))
+        	return -EBUSY;
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- lib/test_lockup.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+But all of this can't work on x86 due to the way how vector allocation
+works. Let me think about that.
 
-diff --git a/lib/test_lockup.c b/lib/test_lockup.c
-index f1a020bcc763e..864554e769738 100644
---- a/lib/test_lockup.c
-+++ b/lib/test_lockup.c
-@@ -480,6 +480,21 @@ static int __init test_lockup_init(void)
- 		return -EINVAL;
- 
- #ifdef CONFIG_DEBUG_SPINLOCK
-+#ifdef CONFIG_PREEMPT_RT
-+	if (test_magic(lock_spinlock_ptr,
-+		       offsetof(spinlock_t, lock.wait_lock.magic),
-+		       SPINLOCK_MAGIC) ||
-+	    test_magic(lock_rwlock_ptr,
-+		       offsetof(rwlock_t, rtmutex.wait_lock.magic),
-+		       SPINLOCK_MAGIC) ||
-+	    test_magic(lock_mutex_ptr,
-+		       offsetof(struct mutex, lock.wait_lock.magic),
-+		       SPINLOCK_MAGIC) ||
-+	    test_magic(lock_rwsem_ptr,
-+		       offsetof(struct rw_semaphore, rtmutex.wait_lock.magic),
-+		       SPINLOCK_MAGIC))
-+		return -EINVAL;
-+#else
- 	if (test_magic(lock_spinlock_ptr,
- 		       offsetof(spinlock_t, rlock.magic),
- 		       SPINLOCK_MAGIC) ||
-@@ -493,6 +508,7 @@ static int __init test_lockup_init(void)
- 		       offsetof(struct rw_semaphore, wait_lock.magic),
- 		       SPINLOCK_MAGIC))
- 		return -EINVAL;
-+#endif
- #endif
- 
- 	if ((wait_state != TASK_RUNNING ||
--- 
-2.28.0
+Thanks,
+
+        tglx
 
