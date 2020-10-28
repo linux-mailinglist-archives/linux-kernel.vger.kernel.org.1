@@ -2,74 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2F629D5A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E4229D787
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbgJ1WHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:07:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:45195 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730063AbgJ1WH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:07:28 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8D0A568BEB; Wed, 28 Oct 2020 18:22:01 +0100 (CET)
-Date:   Wed, 28 Oct 2020 18:22:01 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     linuxppc-dev@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH kernel v3 1/2] dma: Allow mixing bypass and mapped DMA
- operation
-Message-ID: <20201028172201.GB10015@lst.de>
-References: <20201028070030.60643-1-aik@ozlabs.ru> <20201028070030.60643-2-aik@ozlabs.ru>
+        id S1732845AbgJ1WZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:25:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732807AbgJ1WZG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:25:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603923903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sq1B8u8NLUEB8OJpFZ9ZPM/0L4/ZYp1FVYQZCWkCea0=;
+        b=QJMfoN4oYHNnQCMpewagHKJbpwrphefKQ/4+CPvqMsnYceFMPgxNivIkuhjt1p1AYxLyfz
+        y5Az/LxE7nNQIBdyvip6zZlyeKvxatq+Hf5B3uS2Hn35/ha8L+C2SSy3mMhH1SrrOC+6Tn
+        F1BmyrQAoY2w332xVa7ix5BnRZDVSfU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-9CJbCyPEPz-cpOpqL47xFw-1; Wed, 28 Oct 2020 13:23:16 -0400
+X-MC-Unique: 9CJbCyPEPz-cpOpqL47xFw-1
+Received: by mail-ej1-f69.google.com with SMTP id pk23so117019ejb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 10:23:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sq1B8u8NLUEB8OJpFZ9ZPM/0L4/ZYp1FVYQZCWkCea0=;
+        b=q2006qbj2TPZKleXwH96sH5jurgg1EEumCET4rtMxYvcd9RlmNMmyRgJesD1KVCzJ7
+         p62BJ/A4zxo/fZEaMzv2hPW+A+IBtZIzMWureqQqN158BK6HjGcgP10O6uGNMeMjSVDn
+         HTGZNaQEwWbJmbhAFoGizOjDvEOOjiZOd0Rj4C7ifIQa5k2z3QoJpMVAMMvhZRKfDMUT
+         rTDvqN8RcyX6es5vQc5eoTZIVVCDroq6gQgv1vX1wva3q5teIvmfmxHnMcqUBedfQ4aq
+         m7JyOIqbMIGS7h7jFgCma2nubU9oDkJCE/i2JLVQcK6JilMnL1SivM7OXrJt6sQ5Zi43
+         n8AA==
+X-Gm-Message-State: AOAM533wfevqe4iGCG7CFcm1q2Vn8VnaC+rpGSLX/0/s1clgI5I1LbnD
+        SFin0Jc9VN2vw77ur89fiu+sGuHVHbdKhXu1v4uOcWCHyIj6zf7JgMXa64GVSZsUSgvHwyP8UPB
+        rzqh/mhO48J2UVd5ToZfTeO0H
+X-Received: by 2002:a17:906:6453:: with SMTP id l19mr125879ejn.366.1603905794991;
+        Wed, 28 Oct 2020 10:23:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzREE5X9JMuMW0uT+945/sNIo/Jw2GIPaYjye6jFS3w2G6zpJDNsvl2GTmVFhYI71fL0HiW4A==
+X-Received: by 2002:a17:906:6453:: with SMTP id l19mr125853ejn.366.1603905794640;
+        Wed, 28 Oct 2020 10:23:14 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id l17sm112230eji.14.2020.10.28.10.23.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 10:23:13 -0700 (PDT)
+Subject: Re: [PATCH] Documentation: Add documentation for new platform_profile
+ sysfs attribute
+To:     Bastien Nocera <hadess@hadess.net>,
+        Mark Pearson <markpearson@lenovo.com>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, eliadevito@gmail.com, bberg@redhat.com,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <markpearson@lenovo.com>
+ <20201027164219.868839-1-markpearson@lenovo.com>
+ <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d5f0bcba-5366-87da-d199-a85d59ba6c1c@redhat.com>
+Date:   Wed, 28 Oct 2020 18:23:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028070030.60643-2-aik@ozlabs.ru>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <5ca1ae238b23a611b8a490c244fd93cdcc36ef79.camel@hadess.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 06:00:29PM +1100, Alexey Kardashevskiy wrote:
-> At the moment we allow bypassing DMA ops only when we can do this for
-> the entire RAM. However there are configs with mixed type memory
-> where we could still allow bypassing IOMMU in most cases;
-> POWERPC with persistent memory is one example.
-> 
-> This adds an arch hook to determine where bypass can still work and
-> we invoke direct DMA API. The following patch checks the bus limit
-> on POWERPC to allow or disallow direct mapping.
-> 
-> This adds a CONFIG_ARCH_HAS_DMA_SET_MASK config option to make arch_xxxx
-> hooks no-op by default.
-> 
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
->  kernel/dma/mapping.c | 24 ++++++++++++++++++++----
->  kernel/dma/Kconfig   |  4 ++++
->  2 files changed, 24 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index 51bb8fa8eb89..a0bc9eb876ed 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -137,6 +137,18 @@ static inline bool dma_map_direct(struct device *dev,
->  	return dma_go_direct(dev, *dev->dma_mask, ops);
->  }
->  
-> +#ifdef CONFIG_ARCH_HAS_DMA_MAP_DIRECT
-> +bool arch_dma_map_page_direct(struct device *dev, phys_addr_t addr);
-> +bool arch_dma_unmap_page_direct(struct device *dev, dma_addr_t dma_handle);
-> +bool arch_dma_map_sg_direct(struct device *dev, struct scatterlist *sg, int nents);
-> +bool arch_dma_unmap_sg_direct(struct device *dev, struct scatterlist *sg, int nents);
-> +#else
-> +#define arch_dma_map_page_direct(d, a) (0)
-> +#define arch_dma_unmap_page_direct(d, a) (0)
-> +#define arch_dma_map_sg_direct(d, s, n) (0)
-> +#define arch_dma_unmap_sg_direct(d, s, n) (0)
-> +#endif
+Hi,
 
-A bunch of overly long lines here.  Except for that this looks ok to me.
-If you want me to queue up the series I can just fix it up.
+On 10/28/20 2:45 PM, Bastien Nocera wrote:
+> Hey Hans, Mark,
+> 
+> On Tue, 2020-10-27 at 12:42 -0400, Mark Pearson wrote:
+>> From: Hans de Goede <hdegoede@redhat.com>
+>>
+>> On modern systems the platform performance, temperature, fan and
+>> other
+>> hardware related characteristics are often dynamically configurable.
+>> The
+>> profile is often automatically adjusted to the load by somei
+>> automatic-mechanism (which may very well live outside the kernel).
+>>
+>> These auto platform-adjustment mechanisms often can be configured
+>> with
+>> one of several 'platform-profiles', with either a bias towards low-
+>> power
+> 
+> Can you please make sure to quote 'platform-profile' and 'profile-name'
+> this way all through the document? They're not existing words, and
+> quoting them shows that they're attribute names, rather than English.
+> 
+>> consumption or towards performance (and higher power consumption and
+>> thermals).
+> 
+> s/thermal/temperature/
+> 
+> "A thermal" is something else (it's seasonal underwear for me ;)
+> 
+>> Introduce a new platform_profile sysfs API which offers a generic API
+>> for
+>> selecting the performance-profile of these automatic-mechanisms.
+>>
+>> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
+>> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>> Changes in V1:
+>>  - Moved from RFC to proposed patch
+>>  - Added cool profile as requested
+>>  - removed extra-profiles as no longer relevant
+>>
+>>  .../ABI/testing/sysfs-platform_profile        | 66
+>> +++++++++++++++++++
+>>  1 file changed, 66 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-platform_profile
+>> b/Documentation/ABI/testing/sysfs-platform_profile
+>> new file mode 100644
+>> index 000000000000..240bd3d7532b
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-platform_profile
+>> @@ -0,0 +1,66 @@
+>> +Platform-profile selection (e.g.
+>> /sys/firmware/acpi/platform_profile)
+>> +
+>> +On modern systems the platform performance, temperature, fan and
+>> other
+>> +hardware related characteristics are often dynamically configurable.
+>> The
+>> +profile is often automatically adjusted to the load by some
+>> +automatic-mechanism (which may very well live outside the kernel).
+>> +
+>> +These auto platform-adjustment mechanisms often can be configured
+>> with
+>> +one of several 'platform-profiles', with either a bias towards low-
+>> power
+>> +consumption or towards performance (and higher power consumption and
+>> +thermals).
+>> +
+>> +The purpose of the platform_profile attribute is to offer a generic
+>> sysfs
+>> +API for selecting the platform-profile of these automatic-
+>> mechanisms.
+>> +
+>> +Note that this API is only for selecting the platform-profile, it is
+>> +NOT a goal of this API to allow monitoring the resulting performance
+>> +characteristics. Monitoring performance is best done with
+>> device/vendor
+>> +specific tools such as e.g. turbostat.
+>> +
+>> +Specifically when selecting a high-performance profile the actual
+>> achieved
+>> +performance may be limited by various factors such as: the heat
+>> generated
+>> +by other components, room temperature, free air flow at the bottom
+>> of a
+>> +laptop, etc. It is explicitly NOT a goal of this API to let
+>> userspace know
+>> +about any sub-optimal conditions which are impeding reaching the
+>> requested
+>> +performance level.
+>> +
+>> +Since numbers are a rather meaningless way to describe platform-
+>> profiles
+> 
+> It's not meaningless, but rather ambiguous. For a range of 1 to 5, is 1
+> high performance, and 5 low power, or vice-versa?
+
+It is meaningless because the space we are trying to describe with the
+profile-names is not 1 dimensional. E.g. as discussed before cool and
+low-power are not necessarily the same thing. If you have a better way
+to word this I'm definitely in favor of improving the text here.
+
+> 
+>> +this API uses strings to describe the various profiles. To make sure
+>> that
+>> +userspace gets a consistent experience when using this API this API
+> 
+> you can remove "when using this API".
+> 
+>> +document defines a fixed set of profile-names. Drivers *must* map
+>> their
+>> +internal profile representation/names onto this fixed set.
+>> +
+>> +If for some reason there is no good match when mapping then a new
+>> profile-name
+>> +may be added.
+> 
+> "for some reason" can be removed.
+> 
+>>  Drivers which wish to introduce new profile-names must:
+>> +1. Have very good reasons to do so.
+> 
+> "1. Explain why the existing 'profile-names' cannot be used"
+> 
+>> +2. Add the new profile-name to this document, so that future drivers
+>> which also
+>> +   have a similar problem can use the same name.
+> 
+> "2. Add the new 'profile-name' to the documentation so that other
+> drivers can use it, as well as user-space knowing clearly what
+> behaviour the 'profile-name' corresponds to"
+> 
+>> +
+>> +What:          /sys/firmware/acpi/platform_profile_choices
+>> +Date:          October 2020
+>> +Contact:       Hans de Goede <hdegoede@redhat.com>
+>> +Description:
+>> +               Reading this file gives a space separated list of
+>> profiles
+>> +               supported for this device.
+> 
+> "This file contains a space-separated list of profiles..."
+> 
+>> +
+>> +               Drivers must use the following standard profile-
+>> names:
+>> +
+>> +               low-power:              Emphasises low power
+>> consumption
+>> +               cool:                   Emphasises cooler operation
+>> +               quiet:                  Emphasises quieter operation
+>> +               balanced:               Balance between low power
+>> consumption
+>> +                                       and performance
+>> +               performance:            Emphasises performance (and
+>> may lead to
+>> +                                       higher temperatures and fan
+>> speeds)
+> 
+> I'd replace "Emphasises" with either "Focus on" or the US English
+> spelling of "Emphasizes".
+> 
+>> +               Userspace may expect drivers to offer at least
+>> several of these
+>> +               standard profile-names.
+> 
+> Replce "at least several" with "more than one".
+> 
+>> +
+>> +What:          /sys/firmware/acpi/platform_profile
+>> +Date:          October 2020
+>> +Contact:       Hans de Goede <hdegoede@redhat.com>
+>> +Description:
+>> +               Reading this file gives the current selected profile
+>> for this
+>> +               device. Writing this file with one of the strings
+>> from
+>> +               available_profiles changes the profile to the new
+>> value.
+> 
+> Is there another file which explains whether those sysfs value will
+> contain a trailing linefeed?
+
+sysfs APIs are typically created so that they can be used from the shell,
+so on read a newline will be added. On write a newline at the end
+typically is allowed, but ignored. There are even special helper functions
+to deal with properly ignoring the newline on write.
+
+Regards,
+
+Hans
+
+
