@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D621529E1A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D734729E1B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgJ2CCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:02:33 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57801 "EHLO ozlabs.org"
+        id S1729076AbgJ2CDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:03:08 -0400
+Received: from namei.org ([65.99.196.166]:38520 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbgJ1Vsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:48:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLcPv3x0rz9sWR;
-        Wed, 28 Oct 2020 16:21:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1603862517;
-        bh=nf1mLdFJ0kx+l4bAzc8TDSq5oJ1BVY7ziOLLxVUp4Ec=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=b2XLqh82Ft0BUKNmxn6WyYG3MvYWbcldWNHuB1m53NzFePCrmosVnlIj8ykkV3HDX
-         SqS5GtgZhko82slMH+mrT+4gxr2bLXW6iGTj/C6c9ro9DhC7UH0aQyObVk/Swn1mb3
-         ceSFoFaxbuQtUaq26iJTgHEhcbBUn4pVNp2rEQFG+0pP1McVeVISWnEElHAw2UmW5O
-         nALchLvR1IJehEWMw7fn0BKXBXl4Bbix/VP1IEktUuGpzZOW1g/Fn1J/Eq7iW9OGGr
-         yFAhni8dMYOgy3eEbaKMT9xxpQ/43w8SJzuwFfIUzC04ErSSbOiqnVmNSGb4e9L2Nj
-         cncTTn5+1o96g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ibmvscsi: fix race potential race after loss of transport
-In-Reply-To: <20201025001355.4527-1-tyreld@linux.ibm.com>
-References: <20201025001355.4527-1-tyreld@linux.ibm.com>
-Date:   Wed, 28 Oct 2020 16:21:54 +1100
-Message-ID: <87o8knvsb1.fsf@mpe.ellerman.id.au>
+        id S1727928AbgJ1Vsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:48:47 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 09S5TZBd026933;
+        Wed, 28 Oct 2020 05:29:35 GMT
+Date:   Wed, 28 Oct 2020 16:29:35 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+cc:     "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Subject: Re: [PATCH v22 05/12] LSM: Infrastructure management of the
+ superblock
+In-Reply-To: <20201027200358.557003-6-mic@digikod.net>
+Message-ID: <alpine.LRH.2.21.2010281628570.25689@namei.org>
+References: <20201027200358.557003-1-mic@digikod.net> <20201027200358.557003-6-mic@digikod.net>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="1665246916-514386363-1603862978=:25689"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tyrel Datwyler <tyreld@linux.ibm.com> writes:
-> After a loss of tranport due to an adatper migration or crash/disconnect from
-> the host partner there is a tiny window where we can race adjusting the
-> request_limit of the adapter. The request limit is atomically inc/dec to track
-> the number of inflight requests against the allowed limit of our VIOS partner.
-> After a transport loss we set the request_limit to zero to reflect this state.
-> However, there is a window where the adapter may attempt to queue a command
-> because the transport loss event hasn't been fully processed yet and
-> request_limit is still greater than zero. The hypercall to send the event will
-> fail and the error path will increment the request_limit as a result. If the
-> adapter processes the transport event prior to this increment the request_limit
-> becomes out of sync with the adapter state and can result in scsi commands being
-> submitted on the now reset connection prior to an SRP Login resulting in a
-> protocol violation.
->
-> Fix this race by protecting request_limit with the host lock when changing the
-> value via atomic_set() to indicate no transport.
->
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvscsi.c | 36 +++++++++++++++++++++++---------
->  1 file changed, 26 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
-> index b1f3017b6547..188ed75417a5 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvscsi.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
-> @@ -806,6 +806,22 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
->  	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
->  }
->  
-> +/**
-> + * ibmvscsi_set_request_limit - Set the adapter request_limit in response to
-> + * an adapter failure, reset, or SRP Login. Done under host lock to prevent
-> + * race with scsi command submission.
-> + * @hostdata:	adapter to adjust
-> + * @limit:	new request limit
-> + */
-> +static void ibmvscsi_set_request_limit(struct ibmvscsi_host_data *hostdata, int limit)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(hostdata->host->host_lock, flags);
-> +	atomic_set(&hostdata->request_limit, limit);
-> +	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
-> +}
-> +
->  /**
->   * ibmvscsi_reset_host - Reset the connection to the server
->   * @hostdata:	struct ibmvscsi_host_data to reset
-...
-> @@ -2137,12 +2153,12 @@ static void ibmvscsi_do_work(struct ibmvscsi_host_data *hostdata)
->  	}
->  
->  	hostdata->action = IBMVSCSI_HOST_ACTION_NONE;
-> +	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-You drop the lock ...
+--1665246916-514386363-1603862978=:25689
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
->  	if (rc) {
-> -		atomic_set(&hostdata->request_limit, -1);
-> +		ibmvscsi_set_request_limit(hostdata, -1);
+On Tue, 27 Oct 2020, Mickaël Salaün wrote:
 
-.. then retake it, then drop it again in ibmvscsi_set_request_limit().
+> From: Casey Schaufler <casey@schaufler-ca.com>
+> 
+> Move management of the superblock->sb_security blob out of the
+> individual security modules and into the security infrastructure.
+> Instead of allocating the blobs from within the modules, the modules
+> tell the infrastructure how much space is required, and the space is
+> allocated there.
+> 
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: John Johansen <john.johansen@canonical.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Reviewed-by: Stephen Smalley <stephen.smalley.work@gmail.com>
 
-Which introduces the possibility that something else gets the lock
-before you can set the limit to -1.
+It would be good to see review from JJ here.
 
-I'm not sure that's a bug, but it's not obviously correct either?
+-- 
+James Morris
+<jmorris@namei.org>
 
-cheers
-
->  		dev_err(hostdata->dev, "error after %s\n", action);
->  	}
-> -	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
->  
->  	scsi_unblock_requests(hostdata->host);
->  }
+--1665246916-514386363-1603862978=:25689--
