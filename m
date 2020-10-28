@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C572929DC77
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D0729DC50
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388305AbgJ1WdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:33:20 -0400
-Received: from office2.cesnet.cz ([195.113.144.244]:36732 "EHLO
-        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387983AbgJ1Wb4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:31:56 -0400
-X-Greylist: delayed 891 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Oct 2020 18:31:54 EDT
-Received: from localhost (ip-94-112-194-201.net.upcbroadband.cz [94.112.194.201])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S2388515AbgJ2AYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388430AbgJ1WhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:37:23 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by office2.cesnet.cz (Postfix) with ESMTPSA id 0E59840006C;
-        Wed, 28 Oct 2020 17:20:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
-        s=office2-2020; t=1603902025;
-        bh=FRibDlx3Yp7qZ17lscMO2+sg7G7lVTcO2Z4urA+IPno=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=e5UA9ya9CDjPccXm0zpAHIs3QLM/9+l5o4JCbiyoMwo/+YI2a9+2jCe1lMhcVcsjr
-         3Bdwrutxe++DGbJL1HkJZLAiKIYRLN1tynlSzlfcesBD3WCLUDMierbMOm6TP43GJH
-         JuPiHxYogAW/ugfXqp13he4XIZrvhhoudmGFlk0UBRQI0QSdupvUw4p6sSANTAe+Ys
-         R8oGw0LF09ln57rgGcpe2jIJZbJmVYtzljIxtukGvpGw2atj+Km9KiYQGml7zt4tNU
-         O7bSchZIaBay3h6dad2vlLYsd2/0/TTfFKYFnbLa0uHZkLVIaEsZfnCSU5TnG9GNcU
-         6wHyAja9PvleA==
-From:   =?iso-8859-1?Q?Jan_Kundr=E1t?= <jan.kundrat@cesnet.cz>
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH v2] serial: max310x: rework RX interrupt handling
-Date:   Wed, 28 Oct 2020 17:20:24 +0100
+        by mail.kernel.org (Postfix) with ESMTPSA id A423C247E7;
+        Wed, 28 Oct 2020 16:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603903240;
+        bh=RG/Dac088H5GVmB7A3wzm+xNBIFvyWXhedgYOBuwUuA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mp0mi5V8yuRZfhOasGBS8qD3xtNqW+453ws5nwNnegndxP833WyBMnr5XW7bNcW3D
+         Qu5goUOs2xTMMCynd2KTpZzxHBdPm3/izAVJrGVEKEndCOGCjJwD0AypGBM2QNaWqT
+         7KKfpi26hxuJ7sW4Qmx+gd3mScUPM4+0zS6o+4I0=
+Date:   Wed, 28 Oct 2020 09:40:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lucyyan@google.com, moritzf@google.com,
+        James.Bottomley@hansenpartnership.com
+Subject: Re: [PATCH/RFC net-next v3] net: dec: tulip: de2104x: Add shutdown
+ handler to stop NIC
+Message-ID: <20201028094038.5bd6eccb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201028015909.GA52884@epycbox.lan>
+References: <20201023202834.660091-1-mdf@kernel.org>
+        <20201027161606.477a445e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201028015909.GA52884@epycbox.lan>
 MIME-Version: 1.0
-Message-ID: <3841e43b-5f16-4b5c-9b43-4d3a90e57723@cesnet.cz>
-In-Reply-To: <20201001074415.349739-1-thomas.petazzoni@bootlin.com>
-References: <20201001074415.349739-1-thomas.petazzoni@bootlin.com>
-Organization: CESNET
-User-Agent: Trojita/unstable-2020-07-06; Qt/5.14.2; xcb; Linux; 
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On =C4=8Dtvrtek 1. =C5=99=C3=ADjna 2020 9:44:15 CEST, Thomas Petazzoni wrote:=
+On Tue, 27 Oct 2020 18:59:09 -0700 Moritz Fischer wrote:
+> Hi Jakub,
+> 
+> On Tue, Oct 27, 2020 at 04:16:06PM -0700, Jakub Kicinski wrote:
+> > On Fri, 23 Oct 2020 13:28:34 -0700 Moritz Fischer wrote:  
+> > > diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
+> > > index d9f6c19940ef..ea7442cc8e75 100644
+> > > --- a/drivers/net/ethernet/dec/tulip/de2104x.c
+> > > +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
+> > > @@ -2175,11 +2175,19 @@ static int __maybe_unused de_resume(struct device *dev_d)
+> > >  
+> > >  static SIMPLE_DEV_PM_OPS(de_pm_ops, de_suspend, de_resume);
+> > >  
+> > > +static void de_shutdown(struct pci_dev *pdev)
+> > > +{
+> > > +	struct net_device *dev = pci_get_drvdata(pdev);
+> > > +
+> > > +	de_close(dev);  
+> > 
+> > Apparently I get all the best ideas when I'm about to apply something..  
+> 
+> Better now than after =)
+> 
+> > I don't think you can just call de_close() like that, because 
+> > (a) it may expect rtnl_lock() to be held, and (b) it may not be open.  
+> 
+> how about:
+> 
+> rtnl_lock();
+> if (netif_running(dev))
+> 	dev_close(dev);
+> rtnl_unlock();
 
-> Currently, the RX interrupt logic uses the RXEMPTY interrupt, with the
-> RXEMPTYINV bit set, which means we get an RX interrupt as soon as the
-> RX FIFO is non-empty.
->
-> However, with the MAX310X having a FIFO of 128 bytes, this makes very
-> poor use of the FIFO: we trigger an interrupt as soon as the RX FIFO
-> has one byte, which means a lot of interrupts, each only collecting a
-> few bytes from the FIFO, causing a significant CPU load.
-
-Thanks for taking the time to write this patch. We're using MAX14830 on a=20
-Clearfog Base board via a 26 MHz SPI bus. Our code polls a custom=20
-peripheral over UART at 115200 baud ten times a second; the messages are=20
-typically shorter than 50 chars. Before this patch, `perf top --sort=20
-comm,dso` showed about 28% CPU load for the corresponding SPI kthread,=20
-after applying this patch it's between 3 and 5%. That's cool :).
-
-Tested-by: Jan Kundr=C3=A1t <jan.kundrat@cesnet.cz>
-Reviewed-by: Jan Kundr=C3=A1t <jan.kundrat@cesnet.cz>
-
-(but see below, please)
-
-> +=09/* Enable LSR, RX FIFO trigger, CTS change interrupts */
-> +=09val =3D MAX310X_IRQ_LSR_BIT  | MAX310X_IRQ_RXFIFO_BIT |=20
-> MAX310X_IRQ_TXEMPTY_BIT;
->  =09max310x_port_write(port, MAX310X_IRQEN_REG, val | MAX310X_IRQ_CTS_BIT);=
-
-
-This comment doesn't fully match that code, and also the effective value=20
-that is written to the register is split into two statements. What about=20
-just:
-
-+=09/* Enable LSR, RX FIFO trigger, TX FIFO empty, CTS change interrupts */
-+ =09max310x_port_write(port, MAX310X_IRQEN_REG, MAX310X_IRQ_LSR_BIT |=20
-MAX310X_IRQ_RXFIFO_BIT | MAX310X_IRQ_TXEMPTY_BIT | MAX310X_IRQ_CTS_BIT);
-
-With kind regards,
-Jan
+That's fine as well, although dev_close() checks if the device is UP
+AFAICT.
