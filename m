@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A4B29D610
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB74229D5E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729547AbgJ1WLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:11:33 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:34574 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730665AbgJ1WLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:11:23 -0400
-Received: from zn.tnic (p200300ec2f0aab00f97e6c5296953a73.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ab00:f97e:6c52:9695:3a73])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 561D51EC03C1;
-        Wed, 28 Oct 2020 20:44:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1603914244;
+        id S1730346AbgJ1WJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:09:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29836 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730335AbgJ1WJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:09:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603922965;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kmhsCqnOlHi4ixOVZ87EzyZjkxp8ouvhlUNx8nUfMNI=;
-        b=KM2UZ92zuUSHGj0wXw1SSR97tAhO8TD14jN4ALj3QsH/FMGj68Squ6Qf/ED6JOmNn6X9DD
-        qbnNPmqy4PYEyoPfu/cEofZhVuWfBHQgqqvAlBjMS6HSt4y+/u0FHVoNH1J7GQILHaVxIN
-        BLJNlTRd/dw9XJ2nn/YnsfriM9zBOfc=
-Date:   Wed, 28 Oct 2020 20:43:55 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
-Message-ID: <20201028194355.GB27112@zn.tnic>
-References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
- <20201027200803.GL15580@zn.tnic>
- <20201027211422.GC1833548@rani.riverdale.lan>
- <20201028133909.GA27112@zn.tnic>
- <20201028164551.GA1989568@rani.riverdale.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201028164551.GA1989568@rani.riverdale.lan>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=284b5r+7PQhFjN0PmG3IKEcminvVA7d407HnU3mjfkE=;
+        b=VZS/5aq5iT7jByT+bagzx8vzPqQHXTY2ClAhq/IA8csEDMZG/rIpbmtlM2xM9TFENNtDM3
+        hf7B6pwDwmZfoqlZUlft9lP2h9HW6NPeWSbTYO1Bkxqt9AEfo5/VTq3n7LM2/wNPE/Mu3e
+        yz/HloZna19HQFNiC6Kk7/H0/o+8U9k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-KC48yM7BOjKGJFAyziTMpw-1; Wed, 28 Oct 2020 16:09:03 -0400
+X-MC-Unique: KC48yM7BOjKGJFAyziTMpw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8ECDB8030DE;
+        Wed, 28 Oct 2020 20:09:01 +0000 (UTC)
+Received: from ovpn-66-92.rdu2.redhat.com (ovpn-66-92.rdu2.redhat.com [10.10.66.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4472D5B4B6;
+        Wed, 28 Oct 2020 20:09:00 +0000 (UTC)
+Message-ID: <7cd579ccdacb4f672cf2dc3a0d4553d1845e7ebf.camel@redhat.com>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+From:   Qian Cai <cai@redhat.com>
+To:     paulmck@kernel.org
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Wed, 28 Oct 2020 16:08:59 -0400
+In-Reply-To: <20201028155328.GC3249@paulmck-ThinkPad-P72>
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+         <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+         <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+         <1db80eb9676124836809421e85e1aa782c269a80.camel@redhat.com>
+         <20201028030130.GB3249@paulmck-ThinkPad-P72>
+         <8194dca3b2e871f04c7f6e49672837f8df22546f.camel@redhat.com>
+         <20201028155328.GC3249@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:45:51PM -0400, Arvind Sankar wrote:
-> You don't want to try to run the kernel from physical address 0 in any
-> case. The default is set to 16MiB to avoid low memory, historically to
-> avoid the 24-bit ISA DMA range.
+On Wed, 2020-10-28 at 08:53 -0700, Paul E. McKenney wrote:
+> On Wed, Oct 28, 2020 at 10:39:47AM -0400, Qian Cai wrote:
+> > On Tue, 2020-10-27 at 20:01 -0700, Paul E. McKenney wrote:
+> > > If I have the right email thread associated with the right fixes, these
+> > > commits in -rcu should be what you are looking for:
+> > > 
+> > > 73b658b6b7d5 ("rcu: Prevent lockdep-RCU splats on lock
+> > > acquisition/release")
+> > > 626b79aa935a ("x86/smpboot:  Move rcu_cpu_starting() earlier")
+> > > 
+> > > And maybe this one as well:
+> > > 
+> > > 3a6f638cb95b ("rcu,ftrace: Fix ftrace recursion")
+> > > 
+> > > Please let me know if these commits do not fix things.
+> > While those patches silence the warnings for x86. Other arches are still
+> > suffering. It is only after applying the patch from Boqun below fixed
+> > everything.
+> 
+> Fair point!
+> 
+> > Is it a good idea for Boqun to write a formal patch or we should fix all
+> > arches
+> > individually like "x86/smpboot: Move rcu_cpu_starting() earlier"?
+> 
+> By Boqun's patch, you mean the change to debug_lockdep_rcu_enabled()
+> shown below?  Peter Zijlstra showed that real failures can happen, so we
 
-Sure, that's why I wrote:
+Yes.
 
-"... so I guess this should be a range > 0 specification but I guess not
-important."
+> do not want to cover them up.  So we are firmly in "fix all architectures"
+> space here, sorry!
+> 
+> I am happy to accumulate those patches, but cannot commit to creating
+> or testing them.
 
-So how about a sentence or two alluding to that fact in the help text of
-that option?
+Okay, I posted 3 patches for each arch and CC'ed you. BTW, it looks like
+something is wrong on @vger.kernel.org today where I received many of those,
 
-> This doesn't matter for the 64-bit kernel, which can be run from any
-> physical address independent of the RELOCATABLE/PHYSICAL_START settings.
-> It only matters on 32-bit, where VA and PA are tied together by
-> 	VA == __PAGE_OFFSET + PA
+4.7.1 Hello [216.205.24.124], for recipient address <linux-kernel@vger.kernel.org> the policy analysis reported: zpostgrey: connect: Connection refused
 
-You mean the kernel text mapping I assume because we do
+and I can see your previous mails did not even reach there either.
 
-#define __va(x)                 ((void *)((unsigned long)(x)+PAGE_OFFSET))
+https://lore.kernel.org/lkml/
 
-on 64-bit too but that's the direct mapping of all physical memory.
 
-> On 64-bit, the kernel's location in VA space and physical space can be
-> independently moved around, so a kernel that starts at 16MiB in VA space
-> can be loaded anywhere above 16MiB in physical space.
 
-Right.
-
-> KERNEL_IMAGE_SIZE is _not_ the size of the kernel image, the name is
-> misleading.
-
-So that needs fixing too, I guess.
-
-> It is the maximum VA that the kernel can occupy, it is used
-> to prepopulate the PMD-level pagetable for initial boot (level2_kernel_pgt)
-> and is also used to define MODULES_VADDR, so it _is_ talking about
-> mappings. If you have a 30MiB kernel that is placed at a starting VA of
-> 510MiB when KERNEL_IMAGE_SIZE is 512MiB, it won't boot.
-
-... because not the whole kernel will be mapped, sure. There's a comment
-above KERNEL_IMAGE_SIZE which could use some of that explanation.
-
-> Increasing vmlinux size can trigger the problem by pushing _end
-> beyond KERNEL_IMAGE_SIZE, but the problem occurs once _end -
-> __START_KERNEL_map exceeds KERNEL_IMAGE_SIZE, not when _end - _text
-> exceeds it, hence this patch.
-
-Understood - in both cases, once _end goes beyond the 512MiB end of the
-PMD mapping, we've lost. Please add that part to the commit message too
-because we will forget.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
