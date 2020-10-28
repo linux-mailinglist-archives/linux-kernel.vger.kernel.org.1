@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B851129DF49
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C9929DF09
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404021AbgJ2BAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
+        id S2403847AbgJ2A6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:58:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731537AbgJ1WR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:28 -0400
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731592AbgJ1WRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:33 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2607724179;
-        Wed, 28 Oct 2020 06:52:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2E0F22258;
+        Wed, 28 Oct 2020 07:06:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603867920;
-        bh=WgbuHj01IFnS0Vj48OP8wcJkPWzOiL5aoOn7vv03c4g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NNPg4GyiaHS1i8YK/6d3Ckx2fUsPyrZolq6BMElDKh7cfUVDosbIfW12QK+vL+3Kd
-         90FAjPPv8CPN34Y3SeKxY2aVd6D401txJox5nWy0s9v4LQw9oZxF+IfPGDLt/Bay4+
-         AyYYXe5PX3WYPdt0X23xtq825ajjbyl79Fcus1aM=
-Received: by mail-oi1-f175.google.com with SMTP id w191so3973402oif.2;
-        Tue, 27 Oct 2020 23:52:00 -0700 (PDT)
-X-Gm-Message-State: AOAM533YKS/WyiUjXcVLHyXR1N37RwJoMua/A4hLKMkR2t7ASPACcoud
-        A6HYGkJtYxyCgtPkwDREsi55ZfE7ZswPqRRPt80=
-X-Google-Smtp-Source: ABdhPJx18X7t9J9cXdTUMq84QR/n+hVe8dOJJQwyEFKevqTuSiKhUkSBkkuw1zKDDRcq6nyTSf58ymou8trpmtyBC9s=
-X-Received: by 2002:aca:5c82:: with SMTP id q124mr4120751oib.33.1603867919159;
- Tue, 27 Oct 2020 23:51:59 -0700 (PDT)
+        s=default; t=1603868780;
+        bh=YChEHz/HMIZXFgJlC5N7Fzlzj7gCzimRk6RkLGlPpUo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IANYRRmHlPy3bhAs1Hh2qZjQG6VQMppaQETQCro/w3g91t/KxQHsTcQVJbN+VbbZE
+         XSrR+E9z17g2oZ7bRdkvybjHxVqKIflDh50Hi9D7MQGouEwvRhhNhmoYj9BuoXhAiW
+         WhMAnO1UprkB/vEiW+MXOJfC/vxYwtO9s1v1WS5U=
+Date:   Wed, 28 Oct 2020 08:07:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     "hch@infradead.org" <hch@infradead.org>,
+        "vincent.whitchurch@axis.com" <vincent.whitchurch@axis.com>,
+        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>, Andy Duan <fugang.duan@nxp.com>
+Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory to dma
+ coherent memory
+Message-ID: <20201028070712.GA1649838@kroah.com>
+References: <20201028020305.10593-1-sherry.sun@nxp.com>
+ <20201028055836.GA244690@kroah.com>
+ <AM0PR04MB4947032368486CC9874C812692170@AM0PR04MB4947.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org> <72f0dd64-9f65-cbd0-873a-684540912847@iogearbox.net>
-In-Reply-To: <72f0dd64-9f65-cbd0-873a-684540912847@iogearbox.net>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 28 Oct 2020 07:51:47 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG=B-2BAwj1HmMjQpdL5N0WUaoMXGrH_DXvkEZ6gyndaQ@mail.gmail.com>
-Message-ID: <CAMj1kXG=B-2BAwj1HmMjQpdL5N0WUaoMXGrH_DXvkEZ6gyndaQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM0PR04MB4947032368486CC9874C812692170@AM0PR04MB4947.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 at 00:04, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 10/27/20 9:57 PM, Ard Biesheuvel wrote:
-> > Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
-> > ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> > function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> > GCC specific optimization that was causing trouble on x86 builds, and
-> > was not expected to have any positive effect in the first place.
-> >
-> > However, as the GCC manual documents, __attribute__((optimize))
-> > is not for production use, and results in all other optimization
-> > options to be forgotten for the function in question. This can
-> > cause all kinds of trouble, but in one particular reported case,
->
-> Looks like there are couple more as well aside from __no_fgcse, are you
-> also planning to fix them?
->
->    arch/powerpc/kernel/setup.h:14:#define __nostackprotector __attribute__((__optimize__("no-stack-protector")))
->    tools/include/linux/compiler-gcc.h:37:#define __no_tail_call __attribute__((optimize("no-optimize-sibling-calls")))
->
+On Wed, Oct 28, 2020 at 06:05:28AM +0000, Sherry Sun wrote:
+> Hi Greg,
+> 
+> > Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory to dma
+> > coherent memory
+> > 
+> > On Wed, Oct 28, 2020 at 10:03:03AM +0800, Sherry Sun wrote:
+> > > Changes in V5:
+> > > 1. Reorganize the vop_mmap function code in patch 1, which is done by
+> > Christoph.
+> > > 2. Completely remove the unnecessary code related to reassign the used
+> > > ring for card in patch 2.
+> > >
+> > > The original vop driver only supports dma coherent device, as it
+> > > allocates and maps vring by _get_free_pages and dma_map_single, but
+> > > not use dma_sync_single_for_cpu/device to sync the updates of
+> > > device_page/vring between EP and RC, which will cause memory
+> > > synchronization problem for device don't support hardware dma coherent.
+> > >
+> > > And allocate vrings use dma_alloc_coherent is a common way in kernel,
+> > > as the memory interacted between two systems should use consistent
+> > > memory to avoid caching effects. So here add noncoherent platform
+> > support for vop driver.
+> > > Also add some related dma changes to make sure noncoherent platform
+> > > works well.
+> > >
+> > > Sherry Sun (2):
+> > >   misc: vop: change the way of allocating vrings and device page
+> > >   misc: vop: do not allocate and reassign the used ring
+> > >
+> > >  drivers/misc/mic/bus/vop_bus.h     |   2 +
+> > >  drivers/misc/mic/host/mic_boot.c   |   9 ++
+> > >  drivers/misc/mic/host/mic_main.c   |  43 ++------
+> > >  drivers/misc/mic/vop/vop_debugfs.c |   4 -
+> > >  drivers/misc/mic/vop/vop_main.c    |  70 +-----------
+> > >  drivers/misc/mic/vop/vop_vringh.c  | 166 ++++++++++-------------------
+> > >  include/uapi/linux/mic_common.h    |   9 +-
+> > >  7 files changed, 85 insertions(+), 218 deletions(-)
+> > 
+> > Have you all seen:
+> > 	https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%
+> > 2Flore.kernel.org%2Fr%2F8c1443136563de34699d2c084df478181c205db4.16
+> > 03854416.git.sudeep.dutt%40intel.com&amp;data=04%7C01%7Csherry.sun%
+> > 40nxp.com%7Cc19c987667434969847e08d87b0685e8%7C686ea1d3bc2b4c6f
+> > a92cd99c5c301635%7C0%7C0%7C637394615238940323%7CUnknown%7CTW
+> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> > VCI6Mn0%3D%7C1000&amp;sdata=Zq%2FtHWTq%2BuIVBYXFGoeBmq0JJzYd
+> > 9zDyv4NVN4TpC%2FU%3D&amp;reserved=0
+> > 
+> > Looks like this code is asking to just be deleted, is that ok with you?
+> 
+> Yes, I saw that patch. I'm ok with it.
 
-No, but we can notify the respective maintainers.
+Great, can you please provide a "Reviewed-by:" or "Acked-by:" for it?
 
-> > it causes -fno-asynchronous-unwind-tables to be disregarded,
-> > resulting in .eh_frame info to be emitted for the function
-> > inadvertently.
->
-> Would have been useful to add a pointer to the original discussion with
-> Link tag.
->
-> Link: https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
->
+thanks,
 
-Agreed.
-
-> > This reverts commit 3193c0836f203, and instead, it disables the -fgcse
-> > optimization for the entire source file, but only when building for
-> > X86.
-> >
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> [...]
-> > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > index bdc8cd1b6767..02b58f44c479 100644
-> > --- a/kernel/bpf/Makefile
-> > +++ b/kernel/bpf/Makefile
-> > @@ -1,6 +1,8 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> >   obj-y := core.o
-> > -CFLAGS_core.o += $(call cc-disable-warning, override-init)
-> > +# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
-> > +cflags-core-$(CONFIG_X86) := -fno-gcse
-> > +CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
->
-> Also, this needs to be guarded behind !CONFIG_RETPOLINE and !CONFIG_BPF_JIT_ALWAYS_ON
-> in particular the latter since only in this case interpreter is compiled in ... most
-> distros have the CONFIG_BPF_JIT_ALWAYS_ON set these days for x86.
->
-
-Is that a new requirement? Because before this patch, -fno-gcse was
-applied unconditionally.
-
-> Do you have an analysis for the commit log on what else this penalizes in core.c if
-> it's now for the entire translation unit?
->
-
-No, I simply observed the regression this caused on non-x86
-architectures, and proposed a way to fix it.
-
-Do you have any concerns in particular regarding other things in
-core.c? Would you prefer ___bpf_prog_run() to be moved into a separate
-.c file?
-
-
-> >   obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> >   obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 9268d77898b7..55454d2278b1 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-> >    *
-> >    * Decode and execute eBPF instructions.
-> >    */
-> > -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> > +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> >   {
-> >   #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
-> >   #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
-> >
->
+greg k-h
