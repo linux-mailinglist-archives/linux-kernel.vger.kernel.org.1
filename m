@@ -2,251 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F33929D3DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D5129D2DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbgJ1VrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:47:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:38342 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727661AbgJ1VrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:47:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 370E51BF3;
-        Wed, 28 Oct 2020 13:29:57 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F09A3F66E;
-        Wed, 28 Oct 2020 13:29:55 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v2 7/8] firmware: arm_scmi: make notify_priv really private
-Date:   Wed, 28 Oct 2020 20:29:13 +0000
-Message-Id: <20201028202914.43662-8-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201028202914.43662-1-cristian.marussi@arm.com>
-References: <20201028202914.43662-1-cristian.marussi@arm.com>
+        id S1726877AbgJ1VhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:37:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47823 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726852AbgJ1VhD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:37:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603921021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3PN8li90MQEODpG7uKAlxNFFjh3wZGx6qB1VA0YAdTY=;
+        b=STLAEU3XcaJALN5ShQPxpH6YHzJS44qfrjxl+4nEqf4KfTjKak7XAzSwRYuwM1v3B3PS8W
+        C+ULVCK2eJkh1CA1G92v5v1urHJZ0KNs0WmaLHwpEm96JmyNXFGtg/dKfAdgOv4cT45RDR
+        XHsDdq76tMtocVM2z9m4SISQZRaYeFA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-ljAf1TDSMFSGLPWBF0yvxg-1; Wed, 28 Oct 2020 16:35:13 -0400
+X-MC-Unique: ljAf1TDSMFSGLPWBF0yvxg-1
+Received: by mail-ej1-f71.google.com with SMTP id x12so283189eju.22
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 13:35:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3PN8li90MQEODpG7uKAlxNFFjh3wZGx6qB1VA0YAdTY=;
+        b=DaoJGVrRdCzzPq23Nr6a5VtYLZjVzqEma/z0qbxp7wEG1xgBlR5P1PuzPX+1KLbAfJ
+         qjObnLM1uwSrm3NY7q/oz/3bzTx/S6DxqPuWOZMOAURL4ZVXXg4v2g9V3vixEneIGbDG
+         SPFzCmTVcAud93Da3g+usaIZWQTATHbUS8z4S23K7H2AlChijdDdaHeTxl7TYzEmIZAg
+         0KMyXs9cqJ4Nivb7UtksnJdJdhsupweWL+XTKj5AfVwIQmkDcGUfozszSdtaf0ySWI8W
+         y2RzCLe0kGXecpaHy9Fhbx918Q4ec9hakK8XzT6eh/LawFjeB2LH4RYpc5laZrADC7+E
+         Aouw==
+X-Gm-Message-State: AOAM530oJAsswzJgQV5kWwFSNoRXtn77a3JNUbt2HYTqlnTqhDo/47uq
+        0wwFScoJNQz5thevVU8T+2+fSSOyjlHgqHrgQwa7Df5GJ5imRyZgUm5yyxEm+0011kPViOZ8hYn
+        SWCpxTH0QnkG6sdSaYO1ehZyT
+X-Received: by 2002:a50:fd17:: with SMTP id i23mr727358eds.50.1603917312284;
+        Wed, 28 Oct 2020 13:35:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQpVmMC85/uYP4ywhmAg3+8R38d2cO03kqeV9fRLbZDvJODVlNFcG/q/XwN/ngYqbeqRwSnQ==
+X-Received: by 2002:a50:fd17:: with SMTP id i23mr727328eds.50.1603917311967;
+        Wed, 28 Oct 2020 13:35:11 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id a1sm421062edk.52.2020.10.28.13.35.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 13:35:11 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] Input: i8042 - Prevent intermixing i8042 commands
+To:     Raul E Rangel <rrangel@chromium.org>, linux-input@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, Shirish.S@amd.com,
+        Andy Shevchenko <andy@infradead.org>,
+        Dan Murphy <dmurphy@ti.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Pavel Machek <pavel@ucw.cz>,
+        Rajat Jain <rajatja@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <20200827144112.v2.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <00524d2b-b734-ffd4-0d99-e8cbda8510b3@redhat.com>
+Date:   Wed, 28 Oct 2020 21:35:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20200827144112.v2.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Notification private data is currently accessible via handle->notify_priv;
-this data was indeed meant to be private to the notification core support
-and not to be accessible to SCMI drivers: make it private hiding it inside
-instance descriptor struct scmi_info.
+Hi,
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_scmi/common.h |  4 +++
- drivers/firmware/arm_scmi/driver.c | 21 +++++++++++++
- drivers/firmware/arm_scmi/notify.c | 49 +++++++++++-------------------
- include/linux/scmi_protocol.h      |  3 --
- 4 files changed, 43 insertions(+), 34 deletions(-)
+Quick self intro: I have take over drivers/platform/x86
+maintainership from Andy; and I'm working my way through
+the backlog of old patches in patchwork:
+https://patchwork.kernel.org/project/platform-driver-x86/list/
 
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index 995f19a07b5e..9ae0e4133f31 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -342,4 +342,8 @@ void shmem_clear_channel(struct scmi_shared_mem __iomem *shmem);
- bool shmem_poll_done(struct scmi_shared_mem __iomem *shmem,
- 		     struct scmi_xfer *xfer);
- 
-+void scmi_set_notification_instance_data(const struct scmi_handle *handle,
-+					 void *priv);
-+void *scmi_get_notification_instance_data(const struct scmi_handle *handle);
-+
- #endif /* _SCMI_COMMON_H */
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 87ceb235194b..d6a975992136 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -113,6 +113,7 @@ struct scmi_protocol_instance {
-  * @protocols_mtx: A mutex to protect protocols instances initialization.
-  * @protocols_imp: List of protocols implemented, currently maximum of
-  *	MAX_PROTOCOLS_IMP elements allocated by the base protocol
-+ * @notify_priv: Pointer to private data structure specific to notifications.
-  * @node: List head
-  * @users: Number of users of this instance
-  */
-@@ -129,6 +130,7 @@ struct scmi_info {
- 	/* Ensure mutual exclusive access to protocols instance array */
- 	struct mutex protocols_mtx;
- 	u8 *protocols_imp;
-+	void *notify_priv;
- 	struct list_head node;
- 	int users;
- };
-@@ -170,6 +172,25 @@ static inline void scmi_dump_header_dbg(struct device *dev,
- 		hdr->id, hdr->seq, hdr->protocol_id);
- }
- 
-+void scmi_set_notification_instance_data(const struct scmi_handle *handle,
-+					 void *priv)
-+{
-+	struct scmi_info *info = handle_to_scmi_info(handle);
-+
-+	info->notify_priv = priv;
-+	/* Ensure updated protocol private date are visible */
-+	smp_wmb();
-+}
-+
-+void *scmi_get_notification_instance_data(const struct scmi_handle *handle)
-+{
-+	struct scmi_info *info = handle_to_scmi_info(handle);
-+
-+	/* Ensure protocols_private_data has been updated */
-+	smp_rmb();
-+	return info->notify_priv;
-+}
-+
- /**
-  * scmi_xfer_get() - Allocate one message
-  *
-diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 6d4a1d78c22e..1c0126f41756 100644
---- a/drivers/firmware/arm_scmi/notify.c
-+++ b/drivers/firmware/arm_scmi/notify.c
-@@ -580,11 +580,9 @@ int scmi_notify(const struct scmi_handle *handle, u8 proto_id, u8 evt_id,
- 	struct scmi_event_header eh;
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_get_notification_instance_data(handle);
-+	if (!ni)
- 		return 0;
--	ni = handle->notify_priv;
- 
- 	r_evt = SCMI_GET_REVT(ni, proto_id, evt_id);
- 	if (!r_evt)
-@@ -760,11 +758,9 @@ int scmi_register_protocol_events(const struct scmi_handle *handle, u8 proto_id,
- 	    (!ee->num_sources && !ee->ops->get_num_sources))
- 		return -EINVAL;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_get_notification_instance_data(handle);
-+	if (!ni)
- 		return -ENOMEM;
--	ni = handle->notify_priv;
- 
- 	/* num_sources cannot be <= 0 */
- 	if (ee->num_sources) {
-@@ -849,12 +845,10 @@ void scmi_deregister_protocol_events(const struct scmi_handle *handle,
- 	struct scmi_notify_instance *ni;
- 	struct scmi_registered_events_desc *pd;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_get_notification_instance_data(handle);
-+	if (!ni)
- 		return;
- 
--	ni = handle->notify_priv;
- 	pd = ni->registered_protocols[proto_id];
- 	if (!pd)
- 		return;
-@@ -1357,11 +1351,9 @@ static int scmi_register_notifier(const struct scmi_handle *handle,
- 	struct scmi_event_handler *hndl;
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_get_notification_instance_data(handle);
-+	if (!ni)
- 		return -ENODEV;
--	ni = handle->notify_priv;
- 
- 	evt_key = MAKE_HASH_KEY(proto_id, evt_id,
- 				src_id ? *src_id : SRC_ID_MASK);
-@@ -1405,11 +1397,9 @@ static int scmi_unregister_notifier(const struct scmi_handle *handle,
- 	struct scmi_event_handler *hndl;
- 	struct scmi_notify_instance *ni;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_get_notification_instance_data(handle);
-+	if (!ni)
- 		return -ENODEV;
--	ni = handle->notify_priv;
- 
- 	evt_key = MAKE_HASH_KEY(proto_id, evt_id,
- 				src_id ? *src_id : SRC_ID_MASK);
-@@ -1682,8 +1672,8 @@ int scmi_notification_init(struct scmi_handle *handle)
- 
- 	INIT_WORK(&ni->init_work, scmi_protocols_late_init);
- 
-+	scmi_set_notification_instance_data(handle, ni);
- 	handle->notify_ops = &notify_ops;
--	handle->notify_priv = ni;
- 	/* Ensure handle is up to date */
- 	smp_wmb();
- 
-@@ -1695,7 +1685,7 @@ int scmi_notification_init(struct scmi_handle *handle)
- 
- err:
- 	dev_warn(handle->dev, "Initialization Failed.\n");
--	devres_release_group(handle->dev, NULL);
-+	devres_release_group(handle->dev, gid);
- 	return -ENOMEM;
- }
- 
-@@ -1706,19 +1696,16 @@ int scmi_notification_init(struct scmi_handle *handle)
- void scmi_notification_exit(struct scmi_handle *handle)
- {
- 	struct scmi_notify_instance *ni;
-+	void *gid;
- 
--	/* Ensure notify_priv is updated */
--	smp_rmb();
--	if (!handle->notify_priv)
-+	ni = scmi_get_notification_instance_data(handle);
-+	if (!ni)
- 		return;
--	ni = handle->notify_priv;
--
--	handle->notify_priv = NULL;
--	/* Ensure handle is up to date */
--	smp_wmb();
-+	scmi_set_notification_instance_data(handle, NULL);
- 
- 	/* Destroy while letting pending work complete */
- 	destroy_workqueue(ni->notify_wq);
- 
--	devres_release_group(ni->handle->dev, ni->gid);
-+	gid = ni->gid;
-+	devres_release_group(ni->handle->dev, gid);
- }
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 383b3d0ca383..66625aedd3a7 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -279,8 +279,6 @@ struct scmi_notify_ops {
-  *	     dedicated protocol handler
-  * @put_ops: method to release a protocol
-  * @notify_ops: pointer to set of notifications related operations
-- * @notify_priv: pointer to private data structure specific to notifications
-- *	(for internal use only)
-  */
- struct scmi_handle {
- 	struct device *dev;
-@@ -297,7 +295,6 @@ struct scmi_handle {
- 	void (*put_ops)(const struct scmi_handle *handle, u8 proto);
- 
- 	const struct scmi_notify_ops *notify_ops;
--	void *notify_priv;
- };
- 
- enum scmi_std_protocol {
--- 
-2.17.1
+On 8/27/20 10:41 PM, Raul E Rangel wrote:
+> The i8042_mutex must be held by writers of the AUX and KBD ports, as
+> well as users of i8042_command. There were a lot of users of
+> i8042_command that were not calling i8042_lock_chip/i8042_unlock_chip.
+> This resulted in i8042_commands being issues in between PS/2
+> transactions.
+> 
+> This change moves the mutex lock into i8042_command and removes the
+> burden of locking the mutex from the callers.
+> 
+> It is expected that the i8042_mutex is locked before calling
+> i8042_aux_write or i8042_kbd_write. This is currently done by the PS/2
+> layer via ps2_begin_command and ps2_end_command. Other modules
+> (serio_raw) do not currently lock the mutex, so there is still a
+> possibility for intermixed commands.
+> 
+> Link: https://lore.kernel.org/linux-input/CAHQZ30ANTeM-pgdYZ4AbgxsnevBJnJgKZ1Kg+Uy8oSXZUvz=og@mail.gmail.com
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+
+Patch looks good to me, you can add my:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+(for both the drivers/platform/x86 bits and in general).
+
+Dmitry, feel free to merge this through the input tree, I don't
+expect the touched pdx86 parts to see any changes this cycle.
+
+Regards,
+
+Hans
+
+
+
+
+
+> ---
+> Tested this on a device with only a PS/2 keyboard. I was able to do
+> 1200+ suspend/resume cycles.
+> 
+> Also tested this on a device with a PS/2 keyboard and a PS/2 mouse.
+> I was able to do 250+ iterations with out problems.
+> 
+> Changes in v2:
+> - Fixed bad indent
+> - Added Link: tag
+> - Removed left over rc variable
+> 
+>  drivers/input/serio/i8042.c         | 29 ++++++++++++++---------------
+>  drivers/leds/leds-clevo-mail.c      |  9 ---------
+>  drivers/platform/x86/acer-wmi.c     |  2 --
+>  drivers/platform/x86/amilo-rfkill.c |  6 +-----
+>  include/linux/i8042.h               | 10 ----------
+>  5 files changed, 15 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
+> index 0dddf273afd94..65ca6b47f41e8 100644
+> --- a/drivers/input/serio/i8042.c
+> +++ b/drivers/input/serio/i8042.c
+> @@ -137,8 +137,7 @@ static DEFINE_SPINLOCK(i8042_lock);
+>  
+>  /*
+>   * Writers to AUX and KBD ports as well as users issuing i8042_command
+> - * directly should acquire i8042_mutex (by means of calling
+> - * i8042_lock_chip() and i8042_unlock_ship() helpers) to ensure that
+> + * directly should acquire i8042_mutex to ensure that
+>   * they do not disturb each other (unfortunately in many i8042
+>   * implementations write to one of the ports will immediately abort
+>   * command that is being processed by another port).
+> @@ -173,18 +172,6 @@ static irqreturn_t i8042_interrupt(int irq, void *dev_id);
+>  static bool (*i8042_platform_filter)(unsigned char data, unsigned char str,
+>  				     struct serio *serio);
+>  
+> -void i8042_lock_chip(void)
+> -{
+> -	mutex_lock(&i8042_mutex);
+> -}
+> -EXPORT_SYMBOL(i8042_lock_chip);
+> -
+> -void i8042_unlock_chip(void)
+> -{
+> -	mutex_unlock(&i8042_mutex);
+> -}
+> -EXPORT_SYMBOL(i8042_unlock_chip);
+> -
+>  int i8042_install_filter(bool (*filter)(unsigned char data, unsigned char str,
+>  					struct serio *serio))
+>  {
+> @@ -343,10 +330,14 @@ int i8042_command(unsigned char *param, int command)
+>  	unsigned long flags;
+>  	int retval;
+>  
+> +	mutex_lock(&i8042_mutex);
+> +
+>  	spin_lock_irqsave(&i8042_lock, flags);
+>  	retval = __i8042_command(param, command);
+>  	spin_unlock_irqrestore(&i8042_lock, flags);
+>  
+> +	mutex_unlock(&i8042_mutex);
+> +
+>  	return retval;
+>  }
+>  EXPORT_SYMBOL(i8042_command);
+> @@ -379,10 +370,18 @@ static int i8042_kbd_write(struct serio *port, unsigned char c)
+>  static int i8042_aux_write(struct serio *serio, unsigned char c)
+>  {
+>  	struct i8042_port *port = serio->port_data;
+> +	unsigned long flags;
+> +	int retval = 0;
+> +
+> +	spin_lock_irqsave(&i8042_lock, flags);
+>  
+> -	return i8042_command(&c, port->mux == -1 ?
+> +	retval = __i8042_command(&c, port->mux == -1 ?
+>  					I8042_CMD_AUX_SEND :
+>  					I8042_CMD_MUX_SEND + port->mux);
+> +
+> +	spin_unlock_irqrestore(&i8042_lock, flags);
+> +
+> +	return retval;
+>  }
+>  
+>  
+> diff --git a/drivers/leds/leds-clevo-mail.c b/drivers/leds/leds-clevo-mail.c
+> index f512e99b976b1..6c3d7e54f95cf 100644
+> --- a/drivers/leds/leds-clevo-mail.c
+> +++ b/drivers/leds/leds-clevo-mail.c
+> @@ -95,17 +95,12 @@ MODULE_DEVICE_TABLE(dmi, clevo_mail_led_dmi_table);
+>  static void clevo_mail_led_set(struct led_classdev *led_cdev,
+>  				enum led_brightness value)
+>  {
+> -	i8042_lock_chip();
+> -
+>  	if (value == LED_OFF)
+>  		i8042_command(NULL, CLEVO_MAIL_LED_OFF);
+>  	else if (value <= LED_HALF)
+>  		i8042_command(NULL, CLEVO_MAIL_LED_BLINK_0_5HZ);
+>  	else
+>  		i8042_command(NULL, CLEVO_MAIL_LED_BLINK_1HZ);
+> -
+> -	i8042_unlock_chip();
+> -
+>  }
+>  
+>  static int clevo_mail_led_blink(struct led_classdev *led_cdev,
+> @@ -114,8 +109,6 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
+>  {
+>  	int status = -EINVAL;
+>  
+> -	i8042_lock_chip();
+> -
+>  	if (*delay_on == 0 /* ms */ && *delay_off == 0 /* ms */) {
+>  		/* Special case: the leds subsystem requested us to
+>  		 * chose one user friendly blinking of the LED, and
+> @@ -142,8 +135,6 @@ static int clevo_mail_led_blink(struct led_classdev *led_cdev,
+>  		       *delay_on, *delay_off);
+>  	}
+>  
+> -	i8042_unlock_chip();
+> -
+>  	return status;
+>  }
+>  
+> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+> index 60c18f21588dd..6cb6f800503b2 100644
+> --- a/drivers/platform/x86/acer-wmi.c
+> +++ b/drivers/platform/x86/acer-wmi.c
+> @@ -1044,9 +1044,7 @@ static acpi_status WMID_set_u32(u32 value, u32 cap)
+>  			return AE_BAD_PARAMETER;
+>  		if (quirks->mailled == 1) {
+>  			param = value ? 0x92 : 0x93;
+> -			i8042_lock_chip();
+>  			i8042_command(&param, 0x1059);
+> -			i8042_unlock_chip();
+>  			return 0;
+>  		}
+>  		break;
+> diff --git a/drivers/platform/x86/amilo-rfkill.c b/drivers/platform/x86/amilo-rfkill.c
+> index 493e169c8f615..c981c6e07ff94 100644
+> --- a/drivers/platform/x86/amilo-rfkill.c
+> +++ b/drivers/platform/x86/amilo-rfkill.c
+> @@ -28,12 +28,8 @@
+>  static int amilo_a1655_rfkill_set_block(void *data, bool blocked)
+>  {
+>  	u8 param = blocked ? A1655_WIFI_OFF : A1655_WIFI_ON;
+> -	int rc;
+>  
+> -	i8042_lock_chip();
+> -	rc = i8042_command(&param, A1655_WIFI_COMMAND);
+> -	i8042_unlock_chip();
+> -	return rc;
+> +	return i8042_command(&param, A1655_WIFI_COMMAND);
+>  }
+>  
+>  static const struct rfkill_ops amilo_a1655_rfkill_ops = {
+> diff --git a/include/linux/i8042.h b/include/linux/i8042.h
+> index 0261e2fb36364..1c081081c161d 100644
+> --- a/include/linux/i8042.h
+> +++ b/include/linux/i8042.h
+> @@ -55,8 +55,6 @@ struct serio;
+>  
+>  #if defined(CONFIG_SERIO_I8042) || defined(CONFIG_SERIO_I8042_MODULE)
+>  
+> -void i8042_lock_chip(void);
+> -void i8042_unlock_chip(void);
+>  int i8042_command(unsigned char *param, int command);
+>  int i8042_install_filter(bool (*filter)(unsigned char data, unsigned char str,
+>  					struct serio *serio));
+> @@ -65,14 +63,6 @@ int i8042_remove_filter(bool (*filter)(unsigned char data, unsigned char str,
+>  
+>  #else
+>  
+> -static inline void i8042_lock_chip(void)
+> -{
+> -}
+> -
+> -static inline void i8042_unlock_chip(void)
+> -{
+> -}
+> -
+>  static inline int i8042_command(unsigned char *param, int command)
+>  {
+>  	return -ENODEV;
+> 
 
