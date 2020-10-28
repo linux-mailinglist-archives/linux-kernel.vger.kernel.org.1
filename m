@@ -2,172 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCFB29D415
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3063529D364
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbgJ1VtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:49:02 -0400
-Received: from mga05.intel.com ([192.55.52.43]:26090 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727320AbgJ1VlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:41:13 -0400
-IronPort-SDR: OpC4szz3fHAuD8pqrlHm2exBowQGMMVKZjODEOpn4TCCu55iARHyZz+2+fXx/Z+CEn1oIQyi0I
- FuSKl+K2YnFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="253001487"
-X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
-   d="scan'208";a="253001487"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:37:48 -0700
-IronPort-SDR: 6mWnxPAaYOYZ8LJrZSU6NcUbtvGqv6Ftcd9juQdx88HDPXam0oa1RQXzJknkeTsP1sdk8cI5dL
- oUs/+WZa56IA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
-   d="scan'208";a="323414392"
-Received: from lkp-server02.sh.intel.com (HELO 0471ce7c9af6) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 28 Oct 2020 10:37:47 -0700
-Received: from kbuild by 0471ce7c9af6 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kXpOM-00006k-Ts; Wed, 28 Oct 2020 17:37:46 +0000
-Date:   Thu, 29 Oct 2020 01:37:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/uapi/ipv4] BUILD SUCCESS
- fcf5365d0c33dedef4d17e545bfa45099ec6c8b7
-Message-ID: <5f99ac66.iufpyv3IjodJo6da%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726065AbgJ1Vn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgJ1VnW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:43:22 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C231C0613CF;
+        Wed, 28 Oct 2020 14:43:22 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id x7so991876ili.5;
+        Wed, 28 Oct 2020 14:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ozYCZRgZqvrBNZwSGWpcjHZ/UebLYVQ2msLNU5VY5Mo=;
+        b=uoRMTe+GToyjDoY9/GaktCa1BeSuPzVAR3/boLPppUGl2qn34CK74mw2rIzAvM3ugD
+         SQ2p3aZO5PqkKhiOBdyBW8DBlPIF/Tcc6+83P3KSglxaTdhTl9wHL0mu6LpQJ/aNPYGk
+         /aDeRn5tXPMYv6ZrqEqshKEqAMefYDA42I2NAyiczmdob/fE6/C17lTpYjIm3i2nHFub
+         K7djTFNomWxGyjgJgYaExtWgiUrXfPoe1d3WFjoYg76WLdF5US+sBtUNs/orjJRmkjIT
+         oyE1avb6xQqwp/xtMx5iZ1T0D8ckNdMumCO27aucVma7HiOGSBhpTihnODBRV/SORZ9K
+         jh4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ozYCZRgZqvrBNZwSGWpcjHZ/UebLYVQ2msLNU5VY5Mo=;
+        b=JxiQeAP6dvKB85JUPFPrcNEDA2w0x8x3+OoV1zVhk3OFgiN+igbqgPCM6VO5rMJ2pY
+         5cMiamFbi0oxjAGWfd75bfGxVHPREYxK1XYZQzosiuyvZa4bRDFhqtfKsuABTuGXEXKq
+         9WaVFjP3YYPHPKG16GALTn1NYr8sM4zlPSaYsnVTQKmKjNl31gPnhyEZa/8QrwGqiYUm
+         kdnx7dxsdr50YWGgHza0XfWAnEYkog/8st5SyxXdUh3TRTPZwx1Ri+Gydlu7fKHQ6H9/
+         7brvmOtfGEJi7kTWB/I2rBN6iJleGg4nKNLf5Pwo1AhMbg56Jt885BeFkZtRy6IzI9e5
+         mK3g==
+X-Gm-Message-State: AOAM531odQqRjfVAq2JbSpUTAK7bU3Q1aoJobGsLdWzcg/X1lX1jM2kb
+        w14L/WrETjLK8IZ65tH/ONhVCS8SVAbm7hIW6cwfcVK0zUwiFA==
+X-Google-Smtp-Source: ABdhPJwBVHlD8D4vAAXos2Nzvs1/eRlOYVtS1b+L4Ik0PIOGENFpsUsLpxj2nAxw9y6dHLnM6j3+R7WB5l0ZfZPRLMc=
+X-Received: by 2002:a92:c04c:: with SMTP id o12mr171588ilf.22.1603906736261;
+ Wed, 28 Oct 2020 10:38:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201028113533.26160-1-lukas.bulwahn@gmail.com> <d956a5a5-c064-3fd4-5e78-809638ba14ef@redhat.com>
+In-Reply-To: <d956a5a5-c064-3fd4-5e78-809638ba14ef@redhat.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 28 Oct 2020 10:38:45 -0700
+Message-ID: <CAM_iQpUfE2f3QBFY6r0_D2mzFK_SsmFXdA-1p3h7yquM8912fg@mail.gmail.com>
+Subject: Re: [PATCH] net: cls_api: remove unneeded local variable in tc_dump_chain()
+To:     Tom Rix <trix@redhat.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/uapi/ipv4
-branch HEAD: fcf5365d0c33dedef4d17e545bfa45099ec6c8b7  net: ipv4: Replace one-element array with flexible-array member
+On Wed, Oct 28, 2020 at 6:59 AM Tom Rix <trix@redhat.com> wrote:
+>
+>
+> On 10/28/20 4:35 AM, Lukas Bulwahn wrote:
+> > @@ -2971,13 +2963,11 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
+> >               if (!dev)
+> >                       return skb->len;
+> >
+> > -             parent = tcm->tcm_parent;
+> > -             if (!parent) {
+> > +             if (!tcm->tcm_parent)
+> >                       q = dev->qdisc;
+> > -                     parent = q->handle;
+>
+> This looks like a an unused error handler.
+>
+> and the later call to
+>
+> if (TC_H_MIN(tcm->tcm_parent)
+>
+> maybe should be
+>
+> if (TC_H_MIN(parent))
 
-elapsed time: 720m
+When tcm->tcm_parent is 0, TC_H_MIN(tcm->tcm_parent) is also 0,
+so we will not hit that if branch.
 
-configs tested: 108
-configs skipped: 2
+So, I think Lukas' patch is correct.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                    nommu_k210_defconfig
-nds32                             allnoconfig
-powerpc                     tqm8555_defconfig
-mips                        bcm47xx_defconfig
-sh                     sh7710voipgw_defconfig
-m68k                         apollo_defconfig
-powerpc                       ebony_defconfig
-mips                        jmr3927_defconfig
-powerpc                     stx_gp3_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                         at91_dt_defconfig
-powerpc                     pseries_defconfig
-arm                        magician_defconfig
-arm                           efm32_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                      arches_defconfig
-arm                         s5pv210_defconfig
-arm                          pxa168_defconfig
-mips                      maltaaprp_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                      pasemi_defconfig
-mips                         bigsur_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          exynos_defconfig
-xtensa                           allyesconfig
-sh                          rsk7264_defconfig
-arm                         vf610m4_defconfig
-nds32                            alldefconfig
-um                           x86_64_defconfig
-arm                      tct_hammer_defconfig
-arm                              zx_defconfig
-mips                       bmips_be_defconfig
-arm                           viper_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                      bmips_stb_defconfig
-powerpc                 canyonlands_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201028
-i386                 randconfig-a005-20201028
-i386                 randconfig-a003-20201028
-i386                 randconfig-a001-20201028
-i386                 randconfig-a004-20201028
-i386                 randconfig-a006-20201028
-x86_64               randconfig-a011-20201028
-x86_64               randconfig-a013-20201028
-x86_64               randconfig-a016-20201028
-x86_64               randconfig-a015-20201028
-x86_64               randconfig-a012-20201028
-x86_64               randconfig-a014-20201028
-i386                 randconfig-a016-20201028
-i386                 randconfig-a014-20201028
-i386                 randconfig-a015-20201028
-i386                 randconfig-a013-20201028
-i386                 randconfig-a012-20201028
-i386                 randconfig-a011-20201028
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20201028
-x86_64               randconfig-a002-20201028
-x86_64               randconfig-a003-20201028
-x86_64               randconfig-a006-20201028
-x86_64               randconfig-a005-20201028
-x86_64               randconfig-a004-20201028
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks.
