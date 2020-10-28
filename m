@@ -2,342 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9435729D784
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AA229D64C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732831AbgJ1WZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732552AbgJ1WVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:21:47 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BAEC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:21:46 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x203so1195753oia.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mFVMIrLdCxV+8cp8GWoWf3/5fAgqPZAXfATkx0X3HRI=;
-        b=086mSmYNIKquvUs/3FC33XpsVOTW3Qu76/x5SHnCISOWO7PoMcOtMKpnf6YwvyXtWB
-         aVkxPco0eXT5sebizGVALWfK7l/mloGkmvFhYSfkvujPlWMxB92gkENSYqGfl/x6A47O
-         3ZsD+s4AZackwpMGyzvoCgDtJebFSPTaVA7tlY8X+3YCmb15eBdQgtNLDFbvShQ5GLna
-         lNq6bCm/nv0eq30LsJk1kNX7UMGNtOS00lVj+I8U5Hd583ZZjtjGuemnrMdPZlxe+XdA
-         cwmZsRIQWvOaEfEo/LFog+Pqh9o1/M8GEIQcLQWrazWaiqpdou1KIDcg3GmFkasnHgel
-         ZjrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mFVMIrLdCxV+8cp8GWoWf3/5fAgqPZAXfATkx0X3HRI=;
-        b=P15Vo7AZmGvbvvzoZxvPageosC2UVl4796FighOjniFSKcTNSEq+rWX8bLX5+bq7I5
-         i+a6DmuM9+fY4fOb20+FEyRIIzjYlDVPPTMkOtBZW+axMmPnAqsNad5xf2GNFpvX0rQN
-         j9o6AJ3SG2OFhokOZQN2ytp3INYDyzRL4nKquxxpn82abj3yNTTNITpi8cjRpyoJgy5k
-         nkJwwySCcfDzcITY1JMBp0SlvqG3D56Xd+guNm0dFMXlwtcVWpmZ/4m/qJ5pJ+10MQ/q
-         ZbfP/O9Ga45FOASBF6fuffKU0MNIfoAFB56dyv/lO+lRZApxqyv2C8AI4QZHMM0+bywZ
-         p7iQ==
-X-Gm-Message-State: AOAM530Wud2zMyRpxoj03Wd+yHuC8kWII/FX/ezm9Dg7QJMCEagJ6yPi
-        vJUy6hXwVkZev0ke6/d3jEZpoWxbOs+1Ub8A2EotEUAN3uO6bMOg
-X-Google-Smtp-Source: ABdhPJz39oMPi6YrX9/B/1ZjqP5C8IWRl2J8WjAA1b9U6+Ei/bQPgo8wmN0cxwmD0qErFckBlhXeahkf6JuLDLeWbzA=
-X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr5681238pjb.13.1603870040809;
- Wed, 28 Oct 2020 00:27:20 -0700 (PDT)
+        id S1731111AbgJ1WNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:13:35 -0400
+Received: from mail-eopbgr150057.outbound.protection.outlook.com ([40.107.15.57]:38469
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730948AbgJ1WNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:13:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GmRrJWQLaLwjCfDYIWHSQpADFE9cc3bmyZx/A68uUZtRr9Ji3mb+ehf9pdiQpt7yj83N1zMaCMb/3ghonexnjL6cqlsfggR9UtHxLPaDWoG4CeStIJY/VszBHlEXEhQaA/58Ti+ixpnjXHmrfVY6T5xJbfhDDkBIX08ZDRacM6LqyLCp69PG79glamDbZXZiBZiHCOwNCD9OtmasVaTn1uw7crL0g4859/RlHXPx8m8xG85e/vMe4l+qP0MgvnaCAiIn0kStJPGKItOoOxdDb4nSVaNYuUTKINW6pjTCX5H5B9VMWSMxaIVkn1PgygakCPC9KQYR0iVCyn4fEqwiEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W53cW9J774EaPVUgxlukdA7jnhKcOyo4Z7vbn/GA0DU=;
+ b=XcQN9YJywuPC4mQXp+wDFnpU6Til9Y7JS/2b+zD3hq+KKxR2Ybh9AWugadxn1vWlG4U1N2DDTtue54yxuCynpDsf/Mw8sQHZPJULw7jn+PdjXxeyP4sxFZLIk0+MzXrib4b5gpW/PFEuebKutVrYoK0DQwF0eZJTJl/2T+R53PEFWa5SSn5+jI/riIPJYz0cE+zSyjAx8MoRmJOv2Sgtu/udpaDu7dnoAM7YXf7eZ9H9Y7NWJtq1vIvn+NSx3mGLtqADJY0phK+2r3M6T2Z+CLUs6O5c8b4p8f6EyPH0hxtKc5GSdzyeptddGIEh8CiR5ySLbTGWpluqKCyF4zwEig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W53cW9J774EaPVUgxlukdA7jnhKcOyo4Z7vbn/GA0DU=;
+ b=oJIJIy5Z/ocAoxg61PmShmF3F2U7OCJ4HmHvEdgdOz0e9fVbbigLnBeg30Xe9rph2nVQukn/3kq5VugT6m1F8A7fqD5EXJh58QIogBIWanetQZHy/gKkwoXROSCmwHlpSYrPSR0dUGJRVbw/bbvG74IRuPpaJdk3xqEx2W2upMY=
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::12)
+ by AM0PR04MB5698.eurprd04.prod.outlook.com (2603:10a6:208:12a::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 28 Oct
+ 2020 07:35:52 +0000
+Received: from AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::b902:6be0:622b:26c2]) by AM8PR04MB7300.eurprd04.prod.outlook.com
+ ([fe80::b902:6be0:622b:26c2%4]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
+ 07:35:52 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Pawel Laszczak <pawell@cadence.com>
+CC:     "balbi@kernel.org" <balbi@kernel.org>,
+        "rogerq@ti.com" <rogerq@ti.com>, "nsekhar@ti.com" <nsekhar@ti.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rahul Kumar <kurahul@cadence.com>
+Subject: RE: [PATCH v3] usb: cdns3: Variable 'length' set but not used
+Thread-Topic: [PATCH v3] usb: cdns3: Variable 'length' set but not used
+Thread-Index: AQHWoq98xx7XZYJdVkmeSngJp6ePZqmptLIAgAAh+NCAAQ3WQIAAid+AgAE3nRCAAApfgIAABAVA
+Date:   Wed, 28 Oct 2020 07:35:52 +0000
+Message-ID: <AM8PR04MB7300CE054149183918FF5C2F8B170@AM8PR04MB7300.eurprd04.prod.outlook.com>
+References: <20201015045529.2022-1-pawell@cadence.com>
+ <DM6PR07MB55290EA090C418457C1E293BDD190@DM6PR07MB5529.namprd07.prod.outlook.com>
+ <AM8PR04MB7300C4C0BB37319ABC1680528B190@AM8PR04MB7300.eurprd04.prod.outlook.com>
+ <AM8PR04MB73000CE28EC53B3402BFC5BE8B160@AM8PR04MB7300.eurprd04.prod.outlook.com>
+ <DM6PR07MB552997CD8216B5AFD522104CDD160@DM6PR07MB5529.namprd07.prod.outlook.com>
+ <AM8PR04MB7300DE47422D951CF74E006C8B170@AM8PR04MB7300.eurprd04.prod.outlook.com>
+ <DM6PR07MB55296E10F720D4B7431663A4DD170@DM6PR07MB5529.namprd07.prod.outlook.com>
+In-Reply-To: <DM6PR07MB55296E10F720D4B7431663A4DD170@DM6PR07MB5529.namprd07.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: cadence.com; dkim=none (message not signed)
+ header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [180.164.158.209]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 251815f7-6339-40f5-efcc-08d87b141901
+x-ms-traffictypediagnostic: AM0PR04MB5698:
+x-microsoft-antispam-prvs: <AM0PR04MB569812E62CF6B02ABD5069728B170@AM0PR04MB5698.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UACneNX7sOCcY0E6u3sa/23rDkg/S350Fmjbdrvvgd2ZtYBfh75szN4p5/U4QL76Wu/3FXFrjESsSu3M8QF9QfJ9BObui9msp4U+rPP8YzS9xJ4pVSFEBBGvgatjwlLDPT9elk5kmGKX9JU79cz33K92Ahj/8aoMmuwhX92uj36DTJXr8dKUL355gUqk8lIpQiPn/8XAyuDhRPmAWk/Lgf1dsGIVq4zchOVfHjbAtqbFKZWhEqyNQcZlfJdY2dKiSNO3+fI1hj/DPNNg8zUeAHxNQ4aU6pa4sLrO4dM4AV9q+xAsRsAYbD4pD5jlSTeDVB81sbNGSJEfumZQxSyRRB9dpUKPLxt4Z/zjRVJzxrpg9gxUiZRdDyO96N51xrIMJNU+lJLhmH15b00nTSd9Lg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7300.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(396003)(366004)(186003)(2906002)(6916009)(54906003)(7696005)(83380400001)(71200400001)(52536014)(478600001)(5660300002)(6506007)(86362001)(45080400002)(9686003)(76116006)(8936002)(8676002)(316002)(966005)(55016002)(33656002)(66946007)(66476007)(26005)(44832011)(66556008)(4326008)(66446008)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: XdSuo3UYapn38m8DA4z1iI7jx/VIKNGvgcXSc3hLyuTVHRdf5vuQK/r6nJe8yXx6R65PyUIZ7px69h37QfC/6waXWoiemapiHa4D7fLRNER4Cj65/6hxzdLzxd7j4rvsP4eHleBCCxRhpQkCK6fMdf6/zRPTp/odPpecNQxrCGw+I/v88KonojGpVT59FVR+UXEpE7mxV6wCb8fCxhBoTaZPVl9xJd9lq1Z8VzjyZGPI6WqfUw73clVjPwPDu2vLOFQhBXwkvg7Vo8p9nCIWK/YMoJGv5mGIEr9eM4gbmehJO0Iqq3dUU7co+LC/KokOi8hff4gMRuJsiM9hHQ8ndIHQtBnT7ZPoK36EOZvyvgqc5DcPgh0Hy//A8CFjgB7k7I6ir9eaP/hQPuDQAF3eBozFiaEZFFdlbMyX+nRy1Rg2iMXyzpZFw2whq2GF6WGTzVSpmKQblm5gr52qPLPfkaVUTuMBHzz9XySP1Lb6kxjTOMpsrwpX/iCXD5D3RexuaCqIAtWIKFiFbgUVDM5du8zebtDr0W8Cf8VdkkYqZo0yDQDliq7dVvhpdWKmTcQm0r4RTCwlKqCogybJO6F/EDQZweP4PQgvPPm5oINP9KxlXnqp3A0zLuseiHq1/wXWCn0SmAjGI+3J5pXCrqr4Qg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
- <20201026145114.59424-6-songmuchun@bytedance.com> <81a7a7f0-fe0e-42e4-8de0-9092b033addc@oracle.com>
-In-Reply-To: <81a7a7f0-fe0e-42e4-8de0-9092b033addc@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 28 Oct 2020 15:26:44 +0800
-Message-ID: <CAMZfGtVV5eZS-LFtU89WSdMGCib8WX0AojkL-4X+_5yvuMz2Ew@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 05/19] mm/hugetlb: Introduce pgtable
- allocation/freeing helpers
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7300.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 251815f7-6339-40f5-efcc-08d87b141901
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 07:35:52.1497
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eWdUA9beaQZZoKo6gl/Y8kTiTFfTTkPwIaDcYmcHbOjfGk6TRRBWPUITK9DVXs/2f1/P0CRmMIS3vpoZQBRUcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5698
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 8:33 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 10/26/20 7:51 AM, Muchun Song wrote:
-> > On some architectures, the vmemmap areas use huge page mapping.
-> > If we want to free the unused vmemmap pages, we have to split
-> > the huge pmd firstly. So we should pre-allocate pgtable to split
-> > huge pmd.
+=20
+>=20
 > >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  arch/x86/include/asm/hugetlb.h |   5 ++
-> >  include/linux/hugetlb.h        |  17 +++++
-> >  mm/hugetlb.c                   | 117 +++++++++++++++++++++++++++++++++
-> >  3 files changed, 139 insertions(+)
+> >> Peter,
+> >>
+> >> It looks like you missed the " [PATCH v3] usb: cdns3: Variable
+> >> 'length' set but not used"
+> >>
+> >> It's quite important because compiler complains for this when I use W=
+=3D1.
+> >>
 > >
-> > diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
-> > index 1721b1aadeb1..f5e882f999cd 100644
-> > --- a/arch/x86/include/asm/hugetlb.h
-> > +++ b/arch/x86/include/asm/hugetlb.h
-> > @@ -5,6 +5,11 @@
-> >  #include <asm/page.h>
-> >  #include <asm-generic/hugetlb.h>
-> >
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +#define VMEMMAP_HPAGE_SHIFT                  PMD_SHIFT
-> > +#define arch_vmemmap_support_huge_mapping()  boot_cpu_has(X86_FEATURE_PSE)
-> > +#endif
-> > +
-> >  #define hugepages_supported() boot_cpu_has(X86_FEATURE_PSE)
-> >
-> >  #endif /* _ASM_X86_HUGETLB_H */
-> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > index eed3dd3bd626..ace304a6196c 100644
-> > --- a/include/linux/hugetlb.h
-> > +++ b/include/linux/hugetlb.h
-> > @@ -593,6 +593,23 @@ static inline unsigned int blocks_per_huge_page(struct hstate *h)
-> >
-> >  #include <asm/hugetlb.h>
-> >
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +#ifndef arch_vmemmap_support_huge_mapping
-> > +static inline bool arch_vmemmap_support_huge_mapping(void)
-> > +{
-> > +     return false;
-> > +}
-> > +#endif
-> > +
-> > +#ifndef VMEMMAP_HPAGE_SHIFT
-> > +#define VMEMMAP_HPAGE_SHIFT          PMD_SHIFT
-> > +#endif
-> > +#define VMEMMAP_HPAGE_ORDER          (VMEMMAP_HPAGE_SHIFT - PAGE_SHIFT)
-> > +#define VMEMMAP_HPAGE_NR             (1 << VMEMMAP_HPAGE_ORDER)
-> > +#define VMEMMAP_HPAGE_SIZE           ((1UL) << VMEMMAP_HPAGE_SHIFT)
-> > +#define VMEMMAP_HPAGE_MASK           (~(VMEMMAP_HPAGE_SIZE - 1))
-> > +#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
-> > +
-> >  #ifndef is_hugepage_only_range
-> >  static inline int is_hugepage_only_range(struct mm_struct *mm,
-> >                                       unsigned long addr, unsigned long len)
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index f1b2b733b49b..d6ae9b6876be 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1295,11 +1295,108 @@ static inline void destroy_compound_gigantic_page(struct page *page,
-> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> >  #define RESERVE_VMEMMAP_NR   2U
-> >
-> > +#define page_huge_pte(page)  ((page)->pmd_huge_pte)
-> > +
->
-> I am not good at function names.  The following suggestions may be too
-> verbose.  However, they helped me understand purpose of routines.
->
-> >  static inline unsigned int nr_free_vmemmap(struct hstate *h)
->
->         perhaps?                free_vmemmap_pages_per_hpage()
->
-> >  {
-> >       return h->nr_free_vmemmap_pages;
-> >  }
-> >
-> > +static inline unsigned int nr_vmemmap(struct hstate *h)
->
->         perhaps?                vmemmap_pages_per_hpage()
->
-> > +{
-> > +     return nr_free_vmemmap(h) + RESERVE_VMEMMAP_NR;
-> > +}
-> > +
-> > +static inline unsigned long nr_vmemmap_size(struct hstate *h)
->
->         perhaps?                vmemmap_pages_size_per_hpage()
->
-> > +{
-> > +     return (unsigned long)nr_vmemmap(h) << PAGE_SHIFT;
-> > +}
-> > +
-> > +static inline unsigned int nr_pgtable(struct hstate *h)
->
->         perhaps?        pgtable_pages_to_prealloc_per_hpage()
+> >Pawel, it is the bug-fix, and located at branch: for-usb-fixes.
+>=20
+> But I can't see it in this branch:
+>=20
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit.k=
+ern
+> el.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fpeter.chen%2Fusb.git%2Flo
+> g%2F%3Fh%3Dfor-usb-fixes%26qt%3Dgrep%26q%3Dcdns3&amp;data=3D04%7C
+> 01%7Cpeter.chen%40nxp.com%7Cc49c80ded3ec4bae70aa08d87b120467%7C
+> 686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637394664604902329%7
+> CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBT
+> iI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DjtcT0U8ZptlBSwST00%2B
+> bMtCQDZDr%2B3PNMm69RrZWgDs%3D&amp;reserved=3D0
+>=20
+> I can see there only: usb: cdns3: Rids of duplicate error message.
+>=20
 
-Good suggestions. Thanks. I will apply this.
+Thanks for notifying it, I have updated it.
 
->
-> > +{
-> > +     unsigned long vmemmap_size = nr_vmemmap_size(h);
-> > +
-> > +     if (!arch_vmemmap_support_huge_mapping())
-> > +             return 0;
-> > +
-> > +     /*
-> > +      * No need pre-allocate page tabels when there is no vmemmap pages
-> > +      * to free.
-> > +      */
-> > +     if (!nr_free_vmemmap(h))
-> > +             return 0;
-> > +
-> > +     return ALIGN(vmemmap_size, VMEMMAP_HPAGE_SIZE) >> VMEMMAP_HPAGE_SHIFT;
-> > +}
-> > +
-> > +static inline void vmemmap_pgtable_init(struct page *page)
-> > +{
-> > +     page_huge_pte(page) = NULL;
-> > +}
-> > +
->
-> I see the following routines follow the pattern for vmemmap manipulation
-> in dax.
+Peter
 
-Did you mean move those functions to mm/sparse-vmemmap.c?
-
->
-> > +static void vmemmap_pgtable_deposit(struct page *page, pte_t *pte_p)
-> > +{
-> > +     pgtable_t pgtable = virt_to_page(pte_p);
-> > +
-> > +     /* FIFO */
-> > +     if (!page_huge_pte(page))
-> > +             INIT_LIST_HEAD(&pgtable->lru);
-> > +     else
-> > +             list_add(&pgtable->lru, &page_huge_pte(page)->lru);
-> > +     page_huge_pte(page) = pgtable;
-> > +}
-> > +
-> > +static pte_t *vmemmap_pgtable_withdraw(struct page *page)
-> > +{
-> > +     pgtable_t pgtable;
-> > +
-> > +     /* FIFO */
-> > +     pgtable = page_huge_pte(page);
-> > +     if (unlikely(!pgtable))
-> > +             return NULL;
-> > +     page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
-> > +                                                    struct page, lru);
-> > +     if (page_huge_pte(page))
-> > +             list_del(&pgtable->lru);
-> > +     return page_to_virt(pgtable);
-> > +}
-> > +
-> > +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
-> > +{
-> > +     int i;
-> > +     pte_t *pte_p;
-> > +     unsigned int nr = nr_pgtable(h);
-> > +
-> > +     if (!nr)
-> > +             return 0;
-> > +
-> > +     vmemmap_pgtable_init(page);
-> > +
-> > +     for (i = 0; i < nr; i++) {
-> > +             pte_p = pte_alloc_one_kernel(&init_mm);
-> > +             if (!pte_p)
-> > +                     goto out;
-> > +             vmemmap_pgtable_deposit(page, pte_p);
-> > +     }
-> > +
-> > +     return 0;
-> > +out:
-> > +     while (i-- && (pte_p = vmemmap_pgtable_withdraw(page)))
-> > +             pte_free_kernel(&init_mm, pte_p);
-> > +     return -ENOMEM;
-> > +}
-> > +
-> > +static inline void vmemmap_pgtable_free(struct hstate *h, struct page *page)
-> > +{
-> > +     pte_t *pte_p;
-> > +
-> > +     if (!nr_pgtable(h))
-> > +             return;
-> > +
-> > +     while ((pte_p = vmemmap_pgtable_withdraw(page)))
-> > +             pte_free_kernel(&init_mm, pte_p);
-> > +}
-> > +
-> >  static void __init hugetlb_vmemmap_init(struct hstate *h)
-> >  {
-> >       unsigned int order = huge_page_order(h);
-> > @@ -1323,6 +1420,15 @@ static void __init hugetlb_vmemmap_init(struct hstate *h)
-> >  static inline void hugetlb_vmemmap_init(struct hstate *h)
-> >  {
-> >  }
-> > +
-> > +static inline int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +static inline void vmemmap_pgtable_free(struct hstate *h, struct page *page)
-> > +{
-> > +}
-> >  #endif
 > >
-> >  static void update_and_free_page(struct hstate *h, struct page *page)
-> > @@ -1531,6 +1637,9 @@ void free_huge_page(struct page *page)
-> >
-> >  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
-> >  {
-> > +     /* Must be called before the initialization of @page->lru */
-> > +     vmemmap_pgtable_free(h, page);
-> > +
-> >       INIT_LIST_HEAD(&page->lru);
-> >       set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> >       set_hugetlb_cgroup(page, NULL);
-> > @@ -1783,6 +1892,14 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
-> >       if (!page)
-> >               return NULL;
-> >
-> > +     if (vmemmap_pgtable_prealloc(h, page)) {
-> > +             if (hstate_is_gigantic(h))
-> > +                     free_gigantic_page(page, huge_page_order(h));
-> > +             else
-> > +                     put_page(page);
-> > +             return NULL;
-> > +     }
-> > +
->
-> It seems a bit strange that we will fail a huge page allocation if
-> vmemmap_pgtable_prealloc fails.  Not sure, but it almost seems like we shold
-> allow the allocation and log a warning?  It is somewhat unfortunate that
-> we need to allocate a page to free pages.
-
-Yeah, it seems unfortunate. But if we allocate success, we can free some
-vmemmap pages later. Like a compromise :) . If we can successfully allocate
-a huge page, I also prefer to be able to successfully allocate another one page.
-If we allow the allocation when vmemmap_pgtable_prealloc fails, we also
-need to mark this page that vmemmap has not been released. Seems
-increase complexity.
-
-Thanks.
-
->
-> >       if (hstate_is_gigantic(h))
-> >               prep_compound_gigantic_page(page, huge_page_order(h));
-> >       prep_new_huge_page(h, page, page_to_nid(page));
-> >
->
->
-> --
-> Mike Kravetz
-
-
-
--- 
-Yours,
-Muchun
+> >> Thanks,
+> >> Pawel
+> >>
+> >> >> >
+> >> >> > A gentle ping.
+> >> >> >
+> >> >> > I assume that you should add this and the rest overdue cdsn3
+> >> >> > patches as first to you ci-for-usb-next branch.
+> >> >> > Am I right?
+> >> >> >
+> >> >>
+> >> >> Hi Pawel,
+> >> >>
+> >> >> I queued them locally, and I waited for v5.10-rc1 which was out
+> >> >> yesterday, then I will apply them, and add cdns3 patches to my
+> >> >> kernel.org branch. Will update you these two days.
+> >> >>
+> >> >> Peter
+> >> >
+> >> >Hi Pawel,
+> >> >
+> >> >The cdns3 -next patches pushed to: for-usb-next; cdns3 -fixes
+> >> >patches pushed
+> >> to: for-usb-fixes.
+> >> >The git is:
+> >> >git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
+> >> >
+> >> >Currently, I only pushed three of your patches, would you please
+> >> >review my
+> >> patches, thanks.
+> >> >
+> >> >Peter
