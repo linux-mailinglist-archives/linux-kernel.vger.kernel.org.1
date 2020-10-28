@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DBF29D90D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EF929D8BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388373AbgJ1Wnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731880AbgJ1WnW (ORCPT
+        id S2388299AbgJ1WgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:36:02 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45296 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387678AbgJ1WeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:43:22 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3958EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:43:21 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id q1so1136011ilt.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=EU4BIg2azI6KrFeXdN2S9ddBMfs8nFlUQWD4DaTqFAq7JE2BQDNKRiA9dqT+tVWlQu
-         sUNcc4FeHsjQ4h/PMP4txU0t8MRAuBwqkWKiJbAkKHON6+RlMpcIGqnBHLdCUkl3Wqpc
-         FbJNpSru7Rm5DUQOyvlweGFT9CrmgO5kN0imfN/dwU9Wnf988RKaI0f2l0G2UJ4RjNer
-         2Qxq7ACeCgjrsyB5e5qt1FrHtsTBiVpCKGfBoFbEsnu7CbiQ+JbqP7fKDXahm4Kz/0TO
-         ZKkFOpd8HQ/0BRHh95yEqIB+30ksAxph+vgLpdGfDyUO7uFVktFTSaQ2esuzqwULSZUg
-         eyjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=TVNvSBUEBRMTza6q5amwku+d/Eco8pRwy6d5SQW7Niem3aW7bxKzszpwnwKACWm/o4
-         vVlGQSr2fhKKGNuNDlC3lg/qL8CY7aRuSWhzUfF6RSM77SgpcPTtpKNWzrgge93wi/ZH
-         JZQEu6GOo1icaMp9o9ETmwfVE1PqJ/rXjCUDhAgvXrLG0+Hl9op5j4ikAUxSmJzYbz3K
-         FCyiBXPI2InlVZmOnPveQoKIHC+dPIKr0lJzEK0XenFqhyzItm2i6I6ja5eLtslSZM4J
-         0+WuT+f/HmIsrSmGwulBhjBHW9oo3hgp5F2bSpbEo+0JJhkaTlTJhvr0t7nc51Bwg0J8
-         DeAQ==
-X-Gm-Message-State: AOAM530KgrRh0kXya+47bYEFoxh3Dgd9UbAeim7SBBzRdIyhvV508vfI
-        1n7OJTxXXAeWTYY6fTgqu6e+fKRnsJmCUHE4goMD7S9ATfE=
-X-Google-Smtp-Source: ABdhPJzrHP5MThI6p/9pMIeUhVkRtrkk9dnFrBKzSB6lf3jQhUB4QRf9ML2/oPPjMylBNsOXZHFp3eXZTXZRVzpwCZA=
-X-Received: by 2002:a05:6602:160b:: with SMTP id x11mr5231997iow.170.1603879091246;
- Wed, 28 Oct 2020 02:58:11 -0700 (PDT)
+        Wed, 28 Oct 2020 18:34:01 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SAYjhV164632;
+        Wed, 28 Oct 2020 10:35:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ozdXlFYXaQsb4RcCSPg5tS7ML5aca7VnqAE1SSL3wjA=;
+ b=P1GfKVVuy2PBBO0yBlQ5B+bLVaz7tvTTRCvaaknjaUQEA7DlW4ozyJz5VqACPiBu6lZU
+ a3606LFOJZq6rlaI8QQCLWynTslU3zc6nJbl+Bi3yWSr/rVWtJhCj4xFBe9QeV6kNfcn
+ arlcsL69M7tNHqpEVGU/QVRsYXhqUvV1Rmb+sAL2CsNq7Bq+rLcKkKX2CB8nOnan32rh
+ sI+FCxbK8iSZRgY32flh4lhxmpGhDn930X3FSRgC3GaIHlxgyamYN4bbu3QMOv+2+3t5
+ /wCxd0+1Xm2JnqzrwQXVh2jnKo7pZrYYovphfQ2nVOJFTO/4LOERRxeWWm8PqcMEysoL Fg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34dgm44698-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 28 Oct 2020 10:35:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SAQ5vv072316;
+        Wed, 28 Oct 2020 10:35:11 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34cx5y6073-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Oct 2020 10:35:11 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09SAZ5PP007506;
+        Wed, 28 Oct 2020 10:35:05 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 28 Oct 2020 03:35:03 -0700
+Date:   Wed, 28 Oct 2020 13:34:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [RFC] wimax: move out to staging
+Message-ID: <20201028103456.GB1042@kadam>
+References: <20201027212448.454129-1-arnd@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a6b:d301:0:0:0:0:0 with HTTP; Wed, 28 Oct 2020 02:58:10
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <fred.kim0099@gmail.com>
-Date:   Wed, 28 Oct 2020 02:58:10 -0700
-Message-ID: <CAKfKxnP-Bm=4b2_zj=691561=kwm2WBWy9h+K5E+t1yWgRVLgw@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027212448.454129-1-arnd@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010280070
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010280071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+On Tue, Oct 27, 2020 at 10:20:13PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There are no known users of this driver as of October 2020, and it will
+> be removed unless someone turns out to still need it in future releases.
+> 
+> According to https://en.wikipedia.org/wiki/List_of_WiMAX_networks, there
+> have been many public wimax networks, but it appears that these entries
+> are all stale, after everyone has migrated to LTE or discontinued their
+> service altogether.
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Wimax is still pretty common in Africa.  But you have to buy an outdoor
+antenae with all the software on it and an ethernet cable into your
+house.  I don't know what software the antennaes are using.  Probably
+Linux but with an out of tree kernel module is my guess.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+regards,
+dan carpenter
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
-
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
