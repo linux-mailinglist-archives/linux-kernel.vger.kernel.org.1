@@ -2,141 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF0B29DAAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D97E29DA85
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390595AbgJ1X2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        id S2390335AbgJ1XYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390441AbgJ1X2d (ORCPT
+        with ESMTP id S1733103AbgJ1XLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:28:33 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C71C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:28:33 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id x20so1225755ilj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:28:33 -0700 (PDT)
+        Wed, 28 Oct 2020 19:11:01 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD61C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:11:01 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id j129so613135qke.5
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:11:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z2nv8ieGjS37fi1b03zMseQoHKsRO+D/JXqI8/WM/lg=;
-        b=II7y2sOO4VBMYCA8hvox5v3rLsbjjK+ou6Wgnt6+3iHcpCSwOMEyDXIgGkXoT99fbl
-         L4S+W94x43NMy8AhMMFEFxUbPf6VxLU6vVJ4V/dnEPIY3iyrqijWlNa6gtC6UsAt1F4y
-         rFgaskObCDEblL5aTglXYq15v9S1R69bZWSOSlREpM6g8neG4WGYk3JPzGzs+EXjG/Gb
-         NH/X3uC5QaXqb1bsS3s27HpvpOkfyfBCiHKYKJ4yi9AjOteWgzlPxAIFbRslJvXinP0O
-         9U2uOEo/TpsTI4M/2a6VrRGYVOxx1TD4hfaW+zQ8N/MayGM7tDgmoUx/Zyrr5yoMShl5
-         WkfQ==
+        bh=BV2fbXkevBYTBJzl8kvjc7MGIINM37SNxFV2YU5u4pc=;
+        b=HT0S21FFEt+LKY4oXEUf6dkQ35v/XmYt4KlAwtTWz9MoKDVcYmi7ulko2Bd2xyQ/8x
+         oG7TKCxunRYdFQCN24qaZtz/6sFftchSJ38Jw7Jk7zMVsZZwNbbiwY4dZTVLYaMutFVv
+         zPknJDk+RMuhoxzzx4+mIT7kbu2EMzbsSblPQRZZcsLKgZb5oL6t9hH4AQJJXKVcBLH8
+         +yj8zElTJxXtWM/3H7Jf4iI/FKvYIkUMWjFCYM6oEkxDr0yZNV7PchuN/5ZqO9hNWoZS
+         xU1fa2y8jGP9UImBjMRQVIyf5/ehx8LCaq9xo8ntDGf+vXH0I0DprD+DWc90kNK5fcyc
+         IkYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z2nv8ieGjS37fi1b03zMseQoHKsRO+D/JXqI8/WM/lg=;
-        b=U7u5CBfV9YEOKZQZukrJwgOqbyQyyWB0h3VeJ7a+jCrCeYTzLe6t4R4EGglR2wjNv7
-         IDYHWLe6QAcFbM5TeO1D/nhPkJTt6wKwzjgY3jRvg+vOKXzfkqjdVcINyWzmTsZHecsn
-         sCfCPLHDfZS4ccophB9AfmS42pcs46LZ3u38NMjn3Am8lJy7+LdgU7/wK7yMXOQv++bS
-         oYYRoMNCwIsKDfK05/nFy0xI9I0z2wDI8A4u6XO+wLYqoFDDYBHsywcbTx0ZdpwkpJ2f
-         XwjN1VpJm8X7ifplfsXr6PFJtCqQ7/5faRo3EvddXIaNeCFJySMsb6WBu9KuaW1M4MTk
-         IWAQ==
-X-Gm-Message-State: AOAM533Q58VpvyfQWPFvkk5BQGd0496zK/7lSCOIt6fCPaVqJy9Dkw93
-        j0EcFqDjuQPJbfJEMjzr+zPqp7BlYiAdjlsgoHcuzMYOmKY=
-X-Google-Smtp-Source: ABdhPJz9PfM0Rg/BH/F/zTz+sEmqFR7fWaO1laj/CwdbRYwjhOTCkMQkThF45nzYh2RLYxT9cR9T15lxpMj5YrhhpnU=
-X-Received: by 2002:a92:d8cb:: with SMTP id l11mr5348907ilo.88.1603880868118;
- Wed, 28 Oct 2020 03:27:48 -0700 (PDT)
+        bh=BV2fbXkevBYTBJzl8kvjc7MGIINM37SNxFV2YU5u4pc=;
+        b=l80lvxrzYXjaI4o+gOFvQCHzMTyqQEX/q+ymp/w52Ko0zHRGuG8fIQdUSfNSf4LUpE
+         pn3ayqOLQwvaiEwnASiOr8vKYGsILFVMye0b5COF5FRb7vBSeghHEdpuKioQwP4z09UB
+         7SmgH8Pt+hzaSjA8f/D24iUkRTTmHN4Zj3bb7Utdw3l4w+n4vJLfmal9A4ht2rfrVAM+
+         eJwuSoYhtqcGJnEmyfQ0vDP2rwBmA0OkqH8Kg2G9LDoSEUnhJykM0mfuoMY1vQ+3NNLu
+         LYTEw1bIeoG2uVxW5ygVThSjp1son0GpWuNXzPDgFVJAf7ZRdBvEohsIdtoGEFC8iYhZ
+         Gpmw==
+X-Gm-Message-State: AOAM533nkTSJOQSzvDYStwibDdDBc04Y4ghuej9hq0gPKhqUnLMn59b4
+        t/nWLeZnatCeI7uCjggHSJ61zieJrfCLHNGKuh2BRoNNgLGmLg==
+X-Google-Smtp-Source: ABdhPJxl0qO8to3NJbfQAtehDg9+4/Sk3NGfn1TAKewWw3jUDYOR0ExTd1zLbMw7hj0IRx8TPOBHLOINw/p26OyC7Mg=
+X-Received: by 2002:a05:620a:5b9:: with SMTP id q25mr6625803qkq.501.1603883314438;
+ Wed, 28 Oct 2020 04:08:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <1603371365-30863-1-git-send-email-weiyi.lu@mediatek.com> <1603371365-30863-11-git-send-email-weiyi.lu@mediatek.com>
-In-Reply-To: <1603371365-30863-11-git-send-email-weiyi.lu@mediatek.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Wed, 28 Oct 2020 11:27:36 +0100
-Message-ID: <CAOwMV_xh0=D+sEDZM4AOqid6XtGCenyjdzm=Go77DBaiuwe1Lg@mail.gmail.com>
-Subject: Re: [PATCH 10/12] clk: mediatek: Clean up the pll_en_bit from en_mask
- on MT8183
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream@mediatek.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <cover.1603372719.git.andreyknvl@google.com> <56b19be34ee958103481bdfc501978556a168b42.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <56b19be34ee958103481bdfc501978556a168b42.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 12:08:23 +0100
+Message-ID: <CACT4Y+ZVjEQaQExenOPg-tXQKRE5wUEm_iDn5DUQH_4QC-DBzg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 10/21] kasan: inline random_tag for HW_TAGS
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Weiyi,
-
-The clock driver for MT8167 has been merged in v5.10-rc1. Can you also
-apply the change to that driver.
-Thank you
-
-Fabien
-
-On Fri, Oct 23, 2020 at 2:44 AM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
+On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
 >
-> remove pll_en_bit(bit0) from en_mask to make en_mask a pure en_mask
-> that only used for pll dividers.
+> Using random_tag() currently results in a function call. Move its
+> definition to mm/kasan/kasan.h and turn it into a static inline function
+> for hardware tag-based mode to avoid uneeded function call.
 >
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Iac5b2faf9a912900e16cca6834d621f5d4abf427
 > ---
->  drivers/clk/mediatek/clk-mt8183.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+>  mm/kasan/hw_tags.c |  5 -----
+>  mm/kasan/kasan.h   | 37 ++++++++++++++++++++-----------------
+>  2 files changed, 20 insertions(+), 22 deletions(-)
 >
-> diff --git a/drivers/clk/mediatek/clk-mt8183.c b/drivers/clk/mediatek/clk-mt8183.c
-> index 5046852..608108c 100644
-> --- a/drivers/clk/mediatek/clk-mt8183.c
-> +++ b/drivers/clk/mediatek/clk-mt8183.c
-> @@ -1121,34 +1121,34 @@
->  };
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index c3a0e83b5e7a..4c24bfcfeff9 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -36,11 +36,6 @@ void kasan_unpoison_memory(const void *address, size_t size)
+>                           round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
+>  }
 >
->  static const struct mtk_pll_data plls[] = {
-> -       PLL_B(CLK_APMIXED_ARMPLL_LL, "armpll_ll", 0x0200, 0x020C, 0x00000001,
-> +       PLL_B(CLK_APMIXED_ARMPLL_LL, "armpll_ll", 0x0200, 0x020C, 0,
->                 HAVE_RST_BAR | PLL_AO, BIT(24), 22, 8, 0x0204, 24, 0x0, 0x0, 0,
->                 0x0204, 0, 0, armpll_div_table),
-> -       PLL_B(CLK_APMIXED_ARMPLL_L, "armpll_l", 0x0210, 0x021C, 0x00000001,
-> +       PLL_B(CLK_APMIXED_ARMPLL_L, "armpll_l", 0x0210, 0x021C, 0,
->                 HAVE_RST_BAR | PLL_AO, BIT(24), 22, 8, 0x0214, 24, 0x0, 0x0, 0,
->                 0x0214, 0, 0, armpll_div_table),
-> -       PLL(CLK_APMIXED_CCIPLL, "ccipll", 0x0290, 0x029C, 0x00000001,
-> +       PLL(CLK_APMIXED_CCIPLL, "ccipll", 0x0290, 0x029C, 0,
->                 HAVE_RST_BAR | PLL_AO, BIT(24), 22, 8, 0x0294, 24, 0x0, 0x0, 0,
->                 0x0294, 0, 0),
-> -       PLL(CLK_APMIXED_MAINPLL, "mainpll", 0x0220, 0x022C, 0x00000001,
-> +       PLL(CLK_APMIXED_MAINPLL, "mainpll", 0x0220, 0x022C, 0,
->                 HAVE_RST_BAR, BIT(24), 22, 8, 0x0224, 24, 0x0, 0x0, 0,
->                 0x0224, 0, 0),
-> -       PLL(CLK_APMIXED_UNIV2PLL, "univ2pll", 0x0230, 0x023C, 0x00000001,
-> +       PLL(CLK_APMIXED_UNIV2PLL, "univ2pll", 0x0230, 0x023C, 0,
->                 HAVE_RST_BAR, BIT(24), 22, 8, 0x0234, 24, 0x0, 0x0, 0,
->                 0x0234, 0, 0),
-> -       PLL_B(CLK_APMIXED_MFGPLL, "mfgpll", 0x0240, 0x024C, 0x00000001,
-> +       PLL_B(CLK_APMIXED_MFGPLL, "mfgpll", 0x0240, 0x024C, 0,
->                 0, 0, 22, 8, 0x0244, 24, 0x0, 0x0, 0, 0x0244, 0, 0,
->                 mfgpll_div_table),
-> -       PLL(CLK_APMIXED_MSDCPLL, "msdcpll", 0x0250, 0x025C, 0x00000001,
-> +       PLL(CLK_APMIXED_MSDCPLL, "msdcpll", 0x0250, 0x025C, 0,
->                 0, 0, 22, 8, 0x0254, 24, 0x0, 0x0, 0, 0x0254, 0, 0),
-> -       PLL(CLK_APMIXED_TVDPLL, "tvdpll", 0x0260, 0x026C, 0x00000001,
-> +       PLL(CLK_APMIXED_TVDPLL, "tvdpll", 0x0260, 0x026C, 0,
->                 0, 0, 22, 8, 0x0264, 24, 0x0, 0x0, 0, 0x0264, 0, 0),
-> -       PLL(CLK_APMIXED_MMPLL, "mmpll", 0x0270, 0x027C, 0x00000001,
-> +       PLL(CLK_APMIXED_MMPLL, "mmpll", 0x0270, 0x027C, 0,
->                 HAVE_RST_BAR, BIT(23), 22, 8, 0x0274, 24, 0x0, 0x0, 0,
->                 0x0274, 0, 0),
-> -       PLL(CLK_APMIXED_APLL1, "apll1", 0x02A0, 0x02B0, 0x00000001,
-> +       PLL(CLK_APMIXED_APLL1, "apll1", 0x02A0, 0x02B0, 0,
->                 0, 0, 32, 8, 0x02A0, 1, 0x02A8, 0x0014, 0, 0x02A4, 0, 0x02A0),
-> -       PLL(CLK_APMIXED_APLL2, "apll2", 0x02b4, 0x02c4, 0x00000001,
-> +       PLL(CLK_APMIXED_APLL2, "apll2", 0x02b4, 0x02c4, 0,
->                 0, 0, 32, 8, 0x02B4, 1, 0x02BC, 0x0014, 1, 0x02B8, 0, 0x02B4),
->  };
+> -u8 random_tag(void)
+> -{
+> -       return get_random_tag();
+> -}
+> -
+>  bool check_invalid_free(void *addr)
+>  {
+>         u8 ptr_tag = get_tag(addr);
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 0ccbb3c4c519..94ba15c2f860 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -188,6 +188,12 @@ static inline bool addr_has_metadata(const void *addr)
 >
+>  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+>
+> +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> +void print_tags(u8 addr_tag, const void *addr);
+> +#else
+> +static inline void print_tags(u8 addr_tag, const void *addr) { }
+> +#endif
+> +
+>  bool check_invalid_free(void *addr);
+>
+>  void *find_first_bad_addr(void *addr, size_t size);
+> @@ -223,23 +229,6 @@ static inline void quarantine_reduce(void) { }
+>  static inline void quarantine_remove_cache(struct kmem_cache *cache) { }
+>  #endif
+>
+> -#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> -
+> -void print_tags(u8 addr_tag, const void *addr);
+> -
+> -u8 random_tag(void);
+> -
+> -#else
+> -
+> -static inline void print_tags(u8 addr_tag, const void *addr) { }
+> -
+> -static inline u8 random_tag(void)
+> -{
+> -       return 0;
+> -}
+> -
+> -#endif
+> -
+>  #ifndef arch_kasan_set_tag
+>  static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+>  {
+> @@ -273,6 +262,20 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+>  #define get_mem_tag(addr)                      arch_get_mem_tag(addr)
+>  #define set_mem_tag_range(addr, size, tag)     arch_set_mem_tag_range((addr), (size), (tag))
+>
+> +#ifdef CONFIG_KASAN_SW_TAGS
+> +u8 random_tag(void);
+> +#elif defined(CONFIG_KASAN_HW_TAGS)
+> +static inline u8 random_tag(void)
+> +{
+> +       return get_random_tag();
+
+What's the difference between random_tag() and get_random_tag()? Do we
+need both?
+
+
+> +}
+> +#else
+> +static inline u8 random_tag(void)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  /*
+>   * Exported functions for interfaces called from assembly or from generated
+>   * code. Declarations here to avoid warning about missing declarations.
 > --
-> 1.8.1.1.dirty
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
