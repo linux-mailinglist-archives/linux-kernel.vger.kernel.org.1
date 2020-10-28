@@ -2,93 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAAE29E10E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932E129E12B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgJ2BxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728114AbgJ1V5i (ORCPT
+        id S1727527AbgJ2ByJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:54:09 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6564 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728323AbgJ1V5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:57:38 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7094BC0613CF;
-        Wed, 28 Oct 2020 14:57:37 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id k27so1130681oij.11;
-        Wed, 28 Oct 2020 14:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o3LdnC6Ytf9c4DWqirvo5UI8m31/cCv50Msd5N5b88E=;
-        b=Kf71SoURoZbPK+PTfpdvnSb2QDHbMtDUocxpU73Xm5V5jGamSBODV0w6lYIVnGP0nV
-         DZ9Gdjd5BFLVfw5kKlCaR03dC5cXa8EhN79hBIChP81o6QIvCt3WeTJ6Z36GHc0sK8as
-         5VJGnPsXbHwajZqU3QZfdcaACxkdjVqQJrKLGa9SfKw5RFFspZAmZoqSHmkX/kLiBgKz
-         EABafBm1gpst3U19AYutktoYC/VVn1aIk+uU147O2FzwNnThNMnyL8Mm5/HfWdxMpdFq
-         9CX3CfnmQZJbrmns0KcGq5/u0bTWswbBbqF5CUIduXQm+0DpA1rB7M758jtPjYrpaPdl
-         53JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o3LdnC6Ytf9c4DWqirvo5UI8m31/cCv50Msd5N5b88E=;
-        b=kcjA2Y8dl7sHLtKB48B6uhEuCFv0vvWaKjJBfCqdxY4pyPz9nMTjYPRT92n2nifxhQ
-         daTwAZLgSiQvyYPn/P6Pv4+E9BpGwokZaBxEQxvi+2CTk3IQ4Sodl1SGIR1UAKJ4YL88
-         cxgYcHJocz/2Y4wbECpCtHthsD/93uCqOvglYKDrtWO33NASR3uP/ph6kDnIRc1+yL+9
-         uRxbK5tQK1BHEdWTdeu4pKkhgfN4yzaLRwurhbGHpJa530aOQRJkI4FuMBMmzn5rUL1Q
-         CZrMZ/JzP9Hyi4oSpUAJYOnpgQL/eTkS8D/7xMmoEu6fckZ0+EdQgkY6LhtxiQxAgASa
-         v33w==
-X-Gm-Message-State: AOAM533REwJUezSx/xjwCiiNere5r3p4DlYHsNsXLwI50JNCP1oVsHYN
-        sn2wjWbKxLqIatT6FxpQAIZXiyi7YFpE
-X-Google-Smtp-Source: ABdhPJyMeXkxKEBeQiHyAtviwtfq3kqG2WHDNhJ1R5euCg8w4YtLIcQ7PkGZIvhWiAeQxnrwQKGzPg==
-X-Received: by 2002:a17:90b:4a4f:: with SMTP id lb15mr1916524pjb.103.1603863270836;
-        Tue, 27 Oct 2020 22:34:30 -0700 (PDT)
-Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
-        by smtp.gmail.com with ESMTPSA id j20sm3771189pgl.40.2020.10.27.22.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 22:34:30 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 01:34:23 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Following up
-Message-ID: <20201028053423.GA1205528@PWN>
-References: <cover.1603788511.git.yepeilin.cs@gmail.com>
- <20201027165021.GA1178130@PWN>
- <CAKMK7uH9L9WHBndEnUhAMMh0KsKUcz2zfKdi250gVqJGEG6usQ@mail.gmail.com>
+        Wed, 28 Oct 2020 17:57:22 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CLf5C09VYzhbBq;
+        Wed, 28 Oct 2020 14:37:35 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 28 Oct
+ 2020 14:37:29 +0800
+Subject: Re: [f2fs-dev] [PATCH v4 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION
+ ioctl
+To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Daeho Jeong <daehojeong@google.com>
+References: <20201027053818.3291747-1-daeho43@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <a4d3f116-4090-8699-2973-b5a4933205ed@huawei.com>
+Date:   Wed, 28 Oct 2020 14:37:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uH9L9WHBndEnUhAMMh0KsKUcz2zfKdi250gVqJGEG6usQ@mail.gmail.com>
+In-Reply-To: <20201027053818.3291747-1-daeho43@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 07:36:54PM +0100, Daniel Vetter wrote:
-> On Tue, Oct 27, 2020 at 5:50 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> >     ...you mentioned code search, where & what should we look at, in order
-> >     to confirm it's safe to remove them?
+On 2020/10/27 13:38, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
 > 
-> Way back there was google's code search, which was awesome. Now I just
-> put the structure name/ioctl #define/number into
-> google/bing/duckduckgo and see if anything turns up. Plus check how
-> it's used in fb tools (although I just recently learned that fb-test
-> pretty much disappeared from the internet, very hard to find the
-> original).
+> Added a new F2FS_IOC_GET_COMPRESS_OPTION ioctl to get file compression
+> option of a file.
 > 
-> If you're unsure, we can merge a patch, then wait about 1 year for any
-> users to show up with problems. If that's not the case, assume they're
-> all gone, or it was never used and just implemented because it was
-> copied from somewhere else, or "just in case". There's lots of dead
-> uapi around.
+> struct f2fs_comp_option {
+>      u8 algorithm;         => compression algorithm
+>                            => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+>      u8 log_cluster_size;  => log scale cluster size
+>                            => 2 ~ 8
 
-I see, it will be my next thing to do. Hopefully this will remove a lot
-of console_font occurrences.
+I prepare to change i_padding field to i_cflags, so I guess we need to update
+struct f2fs_comp_option as well later.
 
-Peilin
+BTW, i_cflags could be set to support more layout of compress inode, e.g.
+like recently developed ckksum feature which need to struct compress_data layout
+update.
 
+> };
+> 
+> struct f2fs_comp_option option;
+> 
+> ioctl(fd, F2FS_IOC_GET_COMPRESS_OPTION, &option);
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+> 
+> v4: changed commit message.
+> v3: changed the error number more specific.
+> v2: added ioctl description.
+> ---
+>   fs/f2fs/f2fs.h |  7 +++++++
+>   fs/f2fs/file.c | 30 ++++++++++++++++++++++++++++++
+>   2 files changed, 37 insertions(+)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 53fe2853579c..a33c90cf979b 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -433,6 +433,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+>   					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
+>   #define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
+>   						struct f2fs_sectrim_range)
+> +#define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
+> +						struct f2fs_comp_option)
+>   
+>   /*
+>    * should be same as XFS_IOC_GOINGDOWN.
+> @@ -481,6 +483,11 @@ struct f2fs_sectrim_range {
+>   	u64 flags;
+>   };
+>   
+> +struct f2fs_comp_option {
+> +	u8 algorithm;
+> +	u8 log_cluster_size;
+> +};
+> +
+>   /* for inline stuff */
+>   #define DEF_INLINE_RESERVED_SIZE	1
+>   static inline int get_extra_isize(struct inode *inode);
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index ef5a844de53f..8922ab191a9d 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -3936,6 +3936,33 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>   	return ret;
+>   }
+>   
+> +static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	struct f2fs_comp_option option;
+> +
+> +	if (!f2fs_sb_has_compression(F2FS_I_SB(inode)))
+> +		return -EOPNOTSUPP;
+> +
+> +	inode_lock(inode);
+> +
+> +	if (!f2fs_compressed_file(inode)) {
+> +		inode_unlock(inode);
+> +		return -ENODATA;
+> +	}
+> +
+> +	option.algorithm = F2FS_I(inode)->i_compress_algorithm;
+> +	option.log_cluster_size = F2FS_I(inode)->i_log_cluster_size;
+> +
+> +	inode_unlock(inode);
+> +
+> +	if (copy_to_user((struct f2fs_comp_option __user *)arg, &option,
+> +				sizeof(option)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
+>   long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>   {
+>   	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+> @@ -4024,6 +4051,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>   		return f2fs_reserve_compress_blocks(filp, arg);
+>   	case F2FS_IOC_SEC_TRIM_FILE:
+>   		return f2fs_sec_trim_file(filp, arg);
+> +	case F2FS_IOC_GET_COMPRESS_OPTION:
+> +		return f2fs_ioc_get_compress_option(filp, arg);
+>   	default:
+>   		return -ENOTTY;
+>   	}
+> @@ -4194,6 +4223,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>   	case F2FS_IOC_RELEASE_COMPRESS_BLOCKS:
+>   	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+>   	case F2FS_IOC_SEC_TRIM_FILE:
+> +	case F2FS_IOC_GET_COMPRESS_OPTION:
+>   		break;
+>   	default:
+>   		return -ENOIOCTLCMD;
+> 
