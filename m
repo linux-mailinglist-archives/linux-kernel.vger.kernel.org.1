@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD1529DCD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1994129DCC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgJ2Acv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:32:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733176AbgJ1WXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:23:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603923803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ne++NwAowBsZnEzENFSXOGSBJsnQe3xK6jfU1qsRalc=;
-        b=Dy/2fK9FNGXzjdrCcjZML3oiDwP/SdfaE2A6TcjWWqqKkTJpZxSVf4KckWhZtt0qONxSRu
-        ZQl7ICV/YUOgJvRiADFlNCuWnze15naVhhKsh1FeIPh50bwHwPeE+Pxa0Afrz/DS/OT+0o
-        WKM2LOUqeuy4IZY4IXe3aH7dZL6g3Rw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-jVl6CifXPDG0Hr_b1AbcPA-1; Wed, 28 Oct 2020 18:23:21 -0400
-X-MC-Unique: jVl6CifXPDG0Hr_b1AbcPA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2387722AbgJ1Wab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:30:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732857AbgJ1WaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:30:18 -0400
+Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1830C8049DE;
-        Wed, 28 Oct 2020 22:23:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 32AED19D61;
-        Wed, 28 Oct 2020 22:23:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 06/11] afs: Fix page leak on afs_write_begin() failure
-From:   David Howells <dhowells@redhat.com>
-To:     linux-afs@lists.infradead.org
-Cc:     Nick Piggin <npiggin@gmail.com>, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 28 Oct 2020 22:23:18 +0000
-Message-ID: <160392379844.592578.11228676987413311828.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160392375589.592578.13383738325695138512.stgit@warthog.procyon.org.uk>
-References: <160392375589.592578.13383738325695138512.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        by mail.kernel.org (Postfix) with ESMTPSA id 3895F20714;
+        Wed, 28 Oct 2020 22:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603924218;
+        bh=Z3MQKhv+ZLUhU7MgkJiui/AhRWMSips3cc5Y1lahYAY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZfjpmpFm2yBCiugjBHAeL4425YSyLy0X5jKvkOBXp5l/nR0qUv1Nq60XeZZf8O8Xg
+         HiPz8zOo8yWC3Gmw+YVoEFVUwiF1UHqgRRYDf4t+PWoHMIrM8oLGyeehSfTMLmXPx0
+         vK5HI+7mrMUammjz14hEUuHkFGWdM2ge0XLVIH8U=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Shevchenko <andy@kernel.org>, Milo Kim <milo.kim@ti.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [RESEND PATCH 01/42] mfd: arizona: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:28 +0100
+Message-Id: <20201028223009.369824-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the leak of the target page in afs_write_begin() when it fails.
+Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+ - it brings some meaning,
+ - it might point attention why auto device ID was not used.
 
-Fixes: 15b4650e55e0 ("afs: convert to new aops")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Nick Piggin <npiggin@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
+ drivers/mfd/arizona-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- fs/afs/write.c |   23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 50d5ff4ad70d..6eb367d04eda 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -76,7 +76,7 @@ static int afs_fill_page(struct afs_vnode *vnode, struct key *key,
-  */
- int afs_write_begin(struct file *file, struct address_space *mapping,
- 		    loff_t pos, unsigned len, unsigned flags,
--		    struct page **pagep, void **fsdata)
-+		    struct page **_page, void **fsdata)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
- 	struct page *page;
-@@ -110,9 +110,6 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 		SetPageUptodate(page);
- 	}
- 
--	/* page won't leak in error case: it eventually gets cleaned off LRU */
--	*pagep = page;
--
- try_again:
- 	/* See if this page is already partially written in a way that we can
- 	 * merge the new write with.
-@@ -155,6 +152,7 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 		set_page_private(page, priv);
- 	else
- 		attach_page_private(page, (void *)priv);
-+	*_page = page;
- 	_leave(" = 0");
- 	return 0;
- 
-@@ -164,17 +162,18 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- flush_conflicting_write:
- 	_debug("flush conflict");
- 	ret = write_one_page(page);
--	if (ret < 0) {
--		_leave(" = %d", ret);
--		return ret;
--	}
-+	if (ret < 0)
-+		goto error;
- 
- 	ret = lock_page_killable(page);
--	if (ret < 0) {
--		_leave(" = %d", ret);
--		return ret;
--	}
-+	if (ret < 0)
-+		goto error;
- 	goto try_again;
-+
-+error:
-+	put_page(page);
-+	_leave(" = %d", ret);
-+	return ret;
- }
- 
- /*
-
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 000cb82023e3..bf48372db605 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -1043,8 +1043,9 @@ int arizona_dev_init(struct arizona *arizona)
+ 	case CS47L24:
+ 		break; /* No LDO1 regulator */
+ 	default:
+-		ret = mfd_add_devices(arizona->dev, -1, early_devs,
+-				      ARRAY_SIZE(early_devs), NULL, 0, NULL);
++		ret = mfd_add_devices(arizona->dev, PLATFORM_DEVID_NONE,
++				      early_devs, ARRAY_SIZE(early_devs),
++				      NULL, 0, NULL);
+ 		if (ret != 0) {
+ 			dev_err(dev, "Failed to add early children: %d\n", ret);
+ 			return ret;
+-- 
+2.25.1
 
