@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EDC29D842
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E519E29D844
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387807AbgJ1Wa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:30:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
+        id S2387819AbgJ1Wa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:30:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387785AbgJ1Wav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:30:51 -0400
+        id S2387793AbgJ1Wa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:30:56 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 290CF20719;
-        Wed, 28 Oct 2020 22:30:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6131F20725;
+        Wed, 28 Oct 2020 22:30:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924249;
-        bh=yrIDtrUhmYNv3dPSz7tBCP/xxyCCBmLUAke1TAMzkTs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fThgRFzhG7hREyoN1dFzgfDBr8/saK8IOJlOAd2ZDKqo9NrM/J8Z7zjPtzlS+iUOe
-         Fy94aO3kHfGYhjnXuDitbKfip4sliWtWRVmMBluLOfZZdGQgcvGDRNUvFDJ0NVfF8q
-         WaXmVw9Lk7FB80MCRMIcpAz30W2AtUp+DfXOqdNc=
+        s=default; t=1603924255;
+        bh=ZhHhkh6o1JF/ds+3rdUTx+1vE3mzIzoPH4I1vjLLy5w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=viEbwuZDoYAR+E4LAsjCYAH8P8MbPR/9VNMiQXeZjcvtQ4o7mavRbVdZEiQJrGbN8
+         IZKQeADuKwgi++NkOMLojI0vZZ+OF54G4+fIBtUAw3IRGX8g4EY6ATwrT4zdksi+iG
+         ij1Ro79mS1Sy5op8AQNgV4NlIh6gvdzZRKBQANFg=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -44,9 +44,10 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [RESEND PATCH 07/42] mfd: bcm590xx: use PLATFORM_DEVID_NONE
-Date:   Wed, 28 Oct 2020 23:29:34 +0100
-Message-Id: <20201028223009.369824-7-krzk@kernel.org>
+Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: [RESEND PATCH 08/42] mfd: da9055: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:35 +0100
+Message-Id: <20201028223009.369824-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
 References: <20201028223009.369824-1-krzk@kernel.org>
@@ -61,27 +62,24 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
  - it might point attention why auto device ID was not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 ---
- drivers/mfd/bcm590xx.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mfd/da9055-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/bcm590xx.c b/drivers/mfd/bcm590xx.c
-index bfac5dc091ca..2f7186a6f6c0 100644
---- a/drivers/mfd/bcm590xx.c
-+++ b/drivers/mfd/bcm590xx.c
-@@ -78,8 +78,9 @@ static int bcm590xx_i2c_probe(struct i2c_client *i2c_pri,
- 		goto err;
- 	}
+diff --git a/drivers/mfd/da9055-core.c b/drivers/mfd/da9055-core.c
+index 6d0af8486269..ff8fe165b937 100644
+--- a/drivers/mfd/da9055-core.c
++++ b/drivers/mfd/da9055-core.c
+@@ -400,7 +400,7 @@ int da9055_device_init(struct da9055 *da9055)
  
--	ret = devm_mfd_add_devices(&i2c_pri->dev, -1, bcm590xx_devs,
--				   ARRAY_SIZE(bcm590xx_devs), NULL, 0, NULL);
-+	ret = devm_mfd_add_devices(&i2c_pri->dev, PLATFORM_DEVID_NONE,
-+				   bcm590xx_devs, ARRAY_SIZE(bcm590xx_devs),
-+				   NULL, 0, NULL);
- 	if (ret < 0) {
- 		dev_err(&i2c_pri->dev, "failed to add sub-devices: %d\n", ret);
- 		goto err;
+ 	da9055->irq_base = regmap_irq_chip_get_base(da9055->irq_data);
+ 
+-	ret = mfd_add_devices(da9055->dev, -1,
++	ret = mfd_add_devices(da9055->dev, PLATFORM_DEVID_NONE,
+ 			      da9055_devs, ARRAY_SIZE(da9055_devs),
+ 			      NULL, da9055->irq_base, NULL);
+ 	if (ret)
 -- 
 2.25.1
 
