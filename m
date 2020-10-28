@@ -2,89 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B41A29DAEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0850829DB6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390625AbgJ1Xio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
+        id S2389330AbgJ1X4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390547AbgJ1XhH (ORCPT
+        with ESMTP id S2389291AbgJ1Xzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:37:07 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0821CC0613CF;
-        Wed, 28 Oct 2020 16:37:07 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d24so1072987ljg.10;
-        Wed, 28 Oct 2020 16:37:06 -0700 (PDT)
+        Wed, 28 Oct 2020 19:55:39 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F51C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:55:38 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id 7so1428003ejm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:55:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=blRKpHWKYllsC3fZsoBdHMYqC0YSHlFEixMlCc4fF1w=;
-        b=uWoqSVv7/sXCFBs4uRVc7ZJnrRrLnXRL/+OZi80QKKTgvbfwumMUj5KjiHEfCDwRTT
-         4l77Y7QqHNGwxkvw+86NlgbOJIbEGK4exb73CcG7bxXiIhUe0N903Cdh3FQo3A0tl3q2
-         VVSy51o6KCEFVvO6WPGI4jxOMAYccyYb5zEX6DU9nVjW78QVsyJC3woh3PIjNjhr0gi7
-         zA6Fm+EE9Jqof6qEe3uaZElg1mUFZEfpLNHtDSERMYtGr66mYG8lcT8onl0aY8Ew4dz/
-         2ChThQ8iNbHXpa+VJlmskDf+WUndSWm2VHt4ifMPz4XZVW8mfQK3LdkpOO3eHP+1+v9D
-         bUgw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6y4QOceXe8zRQKZs06ORTkquPOtHQn77ARvbGZP9r1M=;
+        b=gFRUCQCFuTR8+JtdmcXcAlK5X7E61XmvvyAGA/K18mnTt93AI2o+wSqfYUI4n8Y0lU
+         +48KACrQVO3Qw2aB5MwS/gPxeoLzJZw2XI2pEtuKlzoaB/ELqONtZsDRg2xOHXNYJiB6
+         ur5YGrTWS0kXoutcPvKSjtwakbK/45cyXDu+4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=blRKpHWKYllsC3fZsoBdHMYqC0YSHlFEixMlCc4fF1w=;
-        b=SZ0x/bm17vHlQtN2fssnI9hEoh4hOqixAxx0DbC2U8Mpdda6gpvXO8A8XFjRdpf4Gb
-         Wp6Yj4rO5mJWJbr56LrXtJeNH355+7kXeDea1QsQZeIe3GcFyBb1BawTYkyKbSdkwC1n
-         U/3FL3XFoKb0LYRpM7+MBJVYOQLgm6dBWsR+puGw0KvHLveVAhdVxTllu0a2jvi9vqSP
-         fjyJoC55DN88bLJGiDvUPNuE5/AJmu/DTbosX0hjduTkiSEITMuf7fOlfJrPFnrJ/Zav
-         7Tn4utHqJhNx2CyxQmqAwvZbedIiGBJpXRNoPnshYvyIdZ/d4qA9eKfwZq4psDLDmxbP
-         ZuWw==
-X-Gm-Message-State: AOAM5313D9L/q4BSBvAq2pelBmRiQ7MDFb6za6okSd6Bn+Jl4uvkHxLm
-        q2lifxehCXBZN1aVOAbLx0kzysp9MFXb7EW/
-X-Google-Smtp-Source: ABdhPJz86BOoINx8fEi+KX53QXqf+HoCczR0skh70fOJrBPW6LQi7RmJY8byNi8zXcJRJpwKsL5dUw==
-X-Received: by 2002:a17:906:3689:: with SMTP id a9mr7090398ejc.403.1603886320892;
-        Wed, 28 Oct 2020 04:58:40 -0700 (PDT)
-Received: from localhost.localdomain ([87.116.178.171])
-        by smtp.googlemail.com with ESMTPSA id f13sm2817210ejf.42.2020.10.28.04.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 04:58:40 -0700 (PDT)
-From:   Nenad Peric <nperic@gmail.com>
-To:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net
-Cc:     Nenad Peric <nperic@gmail.com>, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: [PATCH] arm64: dts: allwinner: h5: OrangePi Prime: Fix ethernet node
-Date:   Wed, 28 Oct 2020 12:58:17 +0100
-Message-Id: <20201028115817.68113-1-nperic@gmail.com>
-X-Mailer: git-send-email 2.29.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6y4QOceXe8zRQKZs06ORTkquPOtHQn77ARvbGZP9r1M=;
+        b=BUn37PtuYmRevJ1+YqEiKHXfdvo1L2w4lQczCPzOvM60/1zBb0C5DCictXOAphIa/g
+         cyPDr88YpGsJeL0JaoJSW4DKxJSTOQlFelFhcpuMXGgGviwKob1IAR/j8kHeaOljocDo
+         iJhox8f8IkI8UDYv3iv4tuxYFf+FqHEhqYMJouc814omrgOpn0PYTdxU7JVTBnJ+nZbf
+         oR20R3ezeXeO6F4pKRa5wsgzau1Sz9Sbl0n7zlBXWmc6Xt1qg80Ani09J/3HbYuigSGN
+         odddiPnkWdsYJKBzv5AOQoOllwMTruNJdKXsjFjRqxU/8WOpqjT0eo4jmbcNwJGfLx8z
+         gz1g==
+X-Gm-Message-State: AOAM531/gC8gK6568WTj2AGUyCr36mHn6o77A1W4WL3YvR0KVIb2Wk1X
+        EvXKXZ9M1kSjuxvrR5Kqdv6XrQmepiNGsA==
+X-Google-Smtp-Source: ABdhPJzls00cI8z19mJi3Xzfak5jZQ/eSlfLp9Q+AuWkXFtHQZ2N9CQSJGdSuGHfYZ7f20vqhAUxsA==
+X-Received: by 2002:a17:907:2177:: with SMTP id rl23mr7131993ejb.243.1603886921595;
+        Wed, 28 Oct 2020 05:08:41 -0700 (PDT)
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
+        by smtp.gmail.com with ESMTPSA id ao17sm2936382ejc.18.2020.10.28.05.08.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 05:08:40 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id n6so5367441wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 05:08:40 -0700 (PDT)
+X-Received: by 2002:adf:ab05:: with SMTP id q5mr8280571wrc.32.1603886919796;
+ Wed, 28 Oct 2020 05:08:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201028091947.93097-1-krzk@kernel.org> <MWHPR11MB0046B799E9AD3648C6F67BFE87170@MWHPR11MB0046.namprd11.prod.outlook.com>
+ <CAJKOXPePfsRNZkY+L1XM3_iz6dMYFNZAJgrcut9JriuwYkKWsw@mail.gmail.com>
+ <CAJKOXPf6zhpu_3oQZ2bL_FnkBx7-NwH65N_OzVkH=Nh1bYkHxw@mail.gmail.com>
+ <20201028100311.GF26150@paasikivi.fi.intel.com> <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
+In-Reply-To: <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 28 Oct 2020 13:08:28 +0100
+X-Gmail-Original-Message-ID: <CAAFQd5AwvuuxekSdDnHNB7KiC7+mHFisEkCW71F3XQMWaFqamw@mail.gmail.com>
+Message-ID: <CAAFQd5AwvuuxekSdDnHNB7KiC7+mHFisEkCW71F3XQMWaFqamw@mail.gmail.com>
+Subject: Re: [PATCH] media: i2c: imx258: correct mode to GBGB/RGRG
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Yeh, Andy" <andy.yeh@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jason Chen <jasonx.z.chen@intel.com>,
+        Alan Chiang <alanx.chiang@intel.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+On Wed, Oct 28, 2020 at 11:15 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Wed, 28 Oct 2020 at 11:03, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> >
+> > On Wed, Oct 28, 2020 at 10:56:55AM +0100, Krzysztof Kozlowski wrote:
+> > > On Wed, 28 Oct 2020 at 10:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > >
+> > > > On Wed, 28 Oct 2020 at 10:43, Yeh, Andy <andy.yeh@intel.com> wrote:
+> > > > >
+> > > > > But the sensor settings for the original submission is to output GRBG Bayer RAW.
+> > > > >
+> > > > > Regards, Andy
+> > > >
+> > > > No, not to my knowledge. There are no settings for color output
+> > > > because it is fixed to GBGB/RGRG. I was looking a lot into this driver
+> > > > (I have few other problems with it, already few other patches posted)
+> > > > and I could not find a setting for this in datasheet. If you know the
+> > > > setting for the other color - can you point me to it?
+> > >
+> > > And except the datasheet which mentions the specific format, the
+> > > testing confirms it. With original color the pictures are pink/purple.
+> > > With proper color, the pictures are correct (with more green color as
+> > > expected for bayer).
+> >
+> > Quoting the driver's start_streaming function:
+> >
+> >         /* Set Orientation be 180 degree */
+> >         ret = imx258_write_reg(imx258, REG_MIRROR_FLIP_CONTROL,
+> >                                IMX258_REG_VALUE_08BIT, REG_CONFIG_MIRROR_FLIP);
+>
+> I understand that you think it will replace the lines and columns and
+> the first line will be RG, instead of GB.... or actually BG because it
+> flips horizontal and vertical? So why does it not work?
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Nenad Peric <nperic@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Any chance your SoC capture interface performs this flipping on its own as well?
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-index cb44bfa5981f..33ab44072e6d 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-prime.dts
-@@ -124,7 +124,7 @@ &emac {
- 	pinctrl-0 = <&emac_rgmii_pins>;
- 	phy-supply = <&reg_gmac_3v3>;
- 	phy-handle = <&ext_rgmii_phy>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
- 
--- 
-2.29.1
+>
+> BTW, this nicely points that the comment around
+> device_property_read_u32() for rotation is a little bit misleading :)
+>
 
+Are you referring to the comment below?
+
+/*
+* Check that the device is mounted upside down. The driver only
+* supports a single pixel order right now.
+*/
+ret = device_property_read_u32(&client->dev, "rotation", &val);
+if (ret || val != 180)
+    return -EINVAL;
+
+What's misleading about it?
+
+> >         if (ret) {
+> >                 dev_err(&client->dev, "%s failed to set orientation\n",
+> >                         __func__);
+> >                 return ret;
+> >         }
+> >
+> > Could it be you're taking pictures of pink objects? ;-)
+>
+> I can send a few sample pictures taken with GStreamer (RAW8, not
+> original RAW10)...
+>
+> Best regards,
+> Krzysztof
