@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872D629D59F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B428C29D774
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730077AbgJ1WHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:07:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50829 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729419AbgJ1WHR (ORCPT
+        id S1732989AbgJ1WYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:24:34 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:35172 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732535AbgJ1WY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:07:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603922836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O/BGLtzgfmF0SgLWDxB+OjnwScbwNx4rvirjwHvdxu8=;
-        b=TkJlsHOTF19GsnnXXudJHW4flnIJnzy0DkLPUg/kXTVgZFpykQyE6mXFMnw6GszPbgzuS5
-        xrfI7YNWrzphNXRbfNvUomCAO1VV7xB2Sx6+eJIuSRl8P8685ZLDYlT/7TyylM9wuCbvNK
-        7t2QOTHdzUL0+oKAAozxaavUq5bNHJ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-w0Cal7W0O1KKXv-zA7kNsg-1; Wed, 28 Oct 2020 13:05:11 -0400
-X-MC-Unique: w0Cal7W0O1KKXv-zA7kNsg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F60B802B66;
-        Wed, 28 Oct 2020 17:05:10 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1511D100164C;
-        Wed, 28 Oct 2020 17:05:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201028143442.GA20115@casper.infradead.org>
-References: <20201028143442.GA20115@casper.infradead.org> <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk> <160389426655.300137.17487677797144804730.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        kernel test robot <lkp@intel.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
+        Wed, 28 Oct 2020 18:24:27 -0400
+Received: by mail-oi1-f195.google.com with SMTP id w191so1255567oif.2;
+        Wed, 28 Oct 2020 15:24:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/Sv2FVoxnqW/ZZL6On0xD6CMoZAcuyjIfOT9376yoH8=;
+        b=rqRSRRX7acYNnPFjl/UGml/5HXbamyNX+MDtOANAP4DRktQJN9smXodJnSiMShEQTN
+         mIISW5INDBHASkskNZUHtis0MqDNaDvXT+kl7308qejMTx2fxYWYfsTkFiEpEOhpCkAh
+         3aZ2WH1SogpZbydNbZ8nZ8p56hdmdCZVn9DZUDlnV+fmepjyp/BuTuPwFecGp8vYYOG+
+         kQ9xHwNwWuo7ZI2DziPafz2qGl565R5Ai92C3lELPIlcm8S8FKwVdofEBMgJagWum/Cd
+         EE8sfLpbsCj20NiI7pvvLAlvzU4VXgHa3jsLEhSHmN+7+qag+rbja+CeSrYE5UzY2bhZ
+         OWmA==
+X-Gm-Message-State: AOAM532t8TouyN3PfIy7wDEsT4G9UGHS0oUKBkznkO0ZYAuy/V03wfBV
+        vSsJuxUFl0k3r8moOWjsZ9aRn6tPbnBwDscLkUqi0vR5
+X-Google-Smtp-Source: ABdhPJyblUt9XGbqG//4Rk9sfsTFBrwwgwHA1TBlEHDbR6syB2Nw14Bq1Q16HKbBNe5BKXGGevPeQscCGwnL0JZWNpU=
+X-Received: by 2002:aca:30d7:: with SMTP id w206mr266429oiw.69.1603904785647;
+ Wed, 28 Oct 2020 10:06:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <548208.1603904708.1@warthog.procyon.org.uk>
-Date:   Wed, 28 Oct 2020 17:05:08 +0000
-Message-ID: <548209.1603904708@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20201027185934.1586984-1-trix@redhat.com>
+In-Reply-To: <20201027185934.1586984-1-trix@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 28 Oct 2020 18:06:14 +0100
+Message-ID: <CAJZ5v0iGDnDbUnb5AYYMrV2st7Vc=kDSHp-YB1xKS-ccea8=XQ@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: speedstep: remove unneeded semicolon
+To:     trix@redhat.com
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Oct 27, 2020 at 8:00 PM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> A semicolon is not needed after a switch statement.
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/cpufreq/speedstep-lib.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/speedstep-lib.c b/drivers/cpufreq/speedstep-lib.c
+> index a13a2d1e444e..0b66df4ed513 100644
+> --- a/drivers/cpufreq/speedstep-lib.c
+> +++ b/drivers/cpufreq/speedstep-lib.c
+> @@ -240,7 +240,7 @@ unsigned int speedstep_get_frequency(enum speedstep_processor processor)
+>                 return pentium3_get_frequency(processor);
+>         default:
+>                 return 0;
+> -       };
+> +       }
+>         return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(speedstep_get_frequency);
+> --
 
-> > +{
-> > +	if (PAGE_SIZE - 1 <= __AFS_PAGE_PRIV_MASK)
-> > +		return 1;
-> > +	else
-> > +		return PAGE_SIZE / (__AFS_PAGE_PRIV_MASK + 1);
-> 
-> Could this be DIV_ROUND_UP(PAGE_SIZE, __AFS_PAGE_PRIV_MASK + 1); avoiding
-> a conditional?  I appreciate it's calculated at compile time today, but
-> it'll be dynamic with THP.
-
-Hmmm - actually, I want a shift size, not a number of bytes as I divide by it
-twice in afs_page_dirty().
-
-David
-
+Applied as 5.10-rc material, thanks!
