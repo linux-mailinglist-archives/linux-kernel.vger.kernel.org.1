@@ -2,178 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D85029D91A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827ED29D874
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389338AbgJ1WoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389345AbgJ1Wmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:42:47 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73AFC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:42:46 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id a7so831978lfk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JzxgzmFEKg3uyOYq0U+7u1Sr88Fa5cBf5J/ai9Bi9w4=;
-        b=c8YXWXabra4sW5/XLNopgCr1Ey4kEIOYZ1bnz6+tWCnkIM88z4M2Q3I8N6B+DLSZt4
-         cJzYWSgKqRYIP05RISLd1JWNSMYFkd9oJV/3pYM+4YbdbwwpPxZY4yZg7EkQpNCDvAMI
-         gD29S7F17ZYzpny8Auzr9eQgNQUDt2NXaN1SE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JzxgzmFEKg3uyOYq0U+7u1Sr88Fa5cBf5J/ai9Bi9w4=;
-        b=Drsqdwq3cEFi8qiuvpWrCPsRhOz9vciExu//VJA1i8yHrKPwpSDQU5K9wOyNkLSDFU
-         Ppjd1GII5Zz1CdHDu09etEcgZUOpMPMBhFHmWM+nhuJHH8GzmPO01mnj1rSR262pA2lk
-         RVOD/BRJv0mG/lrXat1M44Yt34urgf8H0HbFXHA9Tuaxg8I2peDzzKvpgqXtBqAYGZ+X
-         VM68FT7LSvR0xwx+kjdpNbgYouYC6CbvQheMkK3RApO6wfx74FAXq/I8GNMe+cKe6Kev
-         zqnsaV9oqCAjHnPrF2yKsoqP4ILunsD/hin4rPQjkw6NC83dOAmpyOd9aaeu2Ba961v3
-         ABwA==
-X-Gm-Message-State: AOAM533kYuq7Y3kSA5rX/c0ebOG6VfiAlnVVJf7cLQRCAY76YNOrk0sa
-        T5XTs/XJ/XNGVhsLneKBBiyliW/XyJ2wHKkOPQw=
-X-Google-Smtp-Source: ABdhPJw9WvnFCFfe0bMtDkbOl61PKkk2WINL/17GJ+UJzZwPlfMZ2z28uuVsBREELq+J+ey2Z9mmqA==
-X-Received: by 2002:adf:e685:: with SMTP id r5mr390473wrm.340.1603905483580;
-        Wed, 28 Oct 2020 10:18:03 -0700 (PDT)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id y4sm222505wrp.74.2020.10.28.10.18.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 10:18:02 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        id S1733268AbgJ1WcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:32:24 -0400
+Received: from mga11.intel.com ([192.55.52.93]:11242 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388066AbgJ1WcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:32:17 -0400
+IronPort-SDR: fR984K4StptNhf1YJklrh4X0YpejD48M5CAGo8M9awe9nMto6PqgRMWYBGSDprnskI3g6MbyxR
+ hhrOKmaNwE1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="164801095"
+X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
+   d="scan'208";a="164801095"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:28:30 -0700
+IronPort-SDR: 9n+7FIccD+eP2hk3pvzeBsqJvzGPKAmWSYcqRTbx47T/6knbJNt72YVPBrNNCtq3ozD8HWc/l1
+ ZlA3prTyEvFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
+   d="scan'208";a="318665931"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 28 Oct 2020 10:28:27 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D485B2A0; Wed, 28 Oct 2020 19:28:26 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] gpiolib: acpi: Support GpioInt with active_low polarity
-Date:   Wed, 28 Oct 2020 18:17:57 +0100
-Message-Id: <20201028171757.765866-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] kernel.h: Drop unneeded <linux/kernel.h> inclusion from other headers
+Date:   Wed, 28 Oct 2020 19:28:26 +0200
+Message-Id: <20201028172826.41635-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the current implementation we only support active_high polarity for
-GpioInt.
+There is no evidence we need kernel.h inclusion in certain headers.
+Drop unneeded <linux/kernel.h> inclusion from other headers.
 
-There can be cases where a GPIO has active_low polarity and it is also a
-IRQ source.
-
-De-couple the irq_polarity and active_low fields instead of re-use it.
-
-With this patch we support ACPI devices such as:
-
-Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
-{
-        GpioInt (Edge, ActiveBoth, Exclusive, PullDefault, 0x0000,
-        "\\_SB.PCI0.GPIO", 0x00, ResourceConsumer, ,
-        )
-        {   // Pin list
-                0x0064
-        }
-})
-Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
-{
-        ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301") /* Device Properties for _DSD */,
-        Package (0x01)
-        {
-        Package (0x02)
-        {
-                "privacy-gpio",
-                Package (0x04)
-                {
-                \_SB.PCI0.XHCI.RHUB.HS07,
-                Zero,
-                Zero,
-                One
-                }
-        }
-        }
-})
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/gpio/gpiolib-acpi.c | 8 ++++----
- drivers/gpio/gpiolib-acpi.h | 6 ++++--
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ include/linux/rwsem.h    | 1 -
+ include/linux/spinlock.h | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index 834a12f3219e..bc33c1056391 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -624,7 +624,7 @@ int acpi_gpio_update_gpiod_lookup_flags(unsigned long *lookupflags,
- 		break;
- 	}
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 25e3fde85617..97571bf1286d 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -11,7 +11,6 @@
+ #include <linux/linkage.h>
  
--	if (info->polarity == GPIO_ACTIVE_LOW)
-+	if (info->active_low)
- 		*lookupflags |= GPIO_ACTIVE_LOW;
- 
- 	return 0;
-@@ -665,6 +665,7 @@ static int acpi_populate_gpio_lookup(struct acpi_resource *ares, void *data)
- 					      agpio->pin_table[pin_index]);
- 		lookup->info.pin_config = agpio->pin_config;
- 		lookup->info.gpioint = gpioint;
-+		lookup->info.active_low = !!lookup->active_low;
- 
- 		/*
- 		 * Polarity and triggering are only specified for GpioInt
-@@ -675,11 +676,10 @@ static int acpi_populate_gpio_lookup(struct acpi_resource *ares, void *data)
- 		 */
- 		if (lookup->info.gpioint) {
- 			lookup->info.flags = GPIOD_IN;
--			lookup->info.polarity = agpio->polarity;
-+			lookup->info.irq_polarity = agpio->polarity;
- 			lookup->info.triggering = agpio->triggering;
- 		} else {
- 			lookup->info.flags = acpi_gpio_to_gpiod_flags(agpio);
--			lookup->info.polarity = lookup->active_low;
- 		}
- 	}
- 
-@@ -958,7 +958,7 @@ int acpi_dev_gpio_irq_get(struct acpi_device *adev, int index)
- 				return ret;
- 
- 			irq_flags = acpi_dev_get_irq_type(info.triggering,
--							  info.polarity);
-+							  info.irq_polarity);
- 
- 			/* Set type if specified and different than the current one */
- 			if (irq_flags != IRQ_TYPE_NONE &&
-diff --git a/drivers/gpio/gpiolib-acpi.h b/drivers/gpio/gpiolib-acpi.h
-index 1c6d65cf0629..816a2d7a21ed 100644
---- a/drivers/gpio/gpiolib-acpi.h
-+++ b/drivers/gpio/gpiolib-acpi.h
-@@ -16,7 +16,8 @@ struct acpi_device;
-  * @flags: GPIO initialization flags
-  * @gpioint: if %true this GPIO is of type GpioInt otherwise type is GpioIo
-  * @pin_config: pin bias as provided by ACPI
-- * @polarity: interrupt polarity as provided by ACPI
-+ * @irq_polarity: interrupt polarity as provided by ACPI
-+ * @active_low: pin polarity as provided by ACPI
-  * @triggering: triggering type as provided by ACPI
-  * @quirks: Linux specific quirks as provided by struct acpi_gpio_mapping
-  */
-@@ -25,7 +26,8 @@ struct acpi_gpio_info {
- 	enum gpiod_flags flags;
- 	bool gpioint;
- 	int pin_config;
--	int polarity;
-+	int irq_polarity;
-+	bool active_low;
- 	int triggering;
- 	unsigned int quirks;
- };
+ #include <linux/types.h>
+-#include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/spinlock.h>
+ #include <linux/atomic.h>
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index 79897841a2cc..520f32c93745 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -53,7 +53,6 @@
+ #include <linux/compiler.h>
+ #include <linux/irqflags.h>
+ #include <linux/thread_info.h>
+-#include <linux/kernel.h>
+ #include <linux/stringify.h>
+ #include <linux/bottom_half.h>
+ #include <linux/lockdep.h>
 -- 
-2.29.0.rc2.309.g374f81d7ae-goog
+2.28.0
 
