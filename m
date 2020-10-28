@@ -2,259 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86B029E05B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AD729E058
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729713AbgJ1WE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:04:59 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7076 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729338AbgJ1WCN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:13 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CLp3v577DzLqVv;
-        Wed, 28 Oct 2020 20:36:59 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 28 Oct 2020 20:36:47 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <martin.petersen@oracle.com>, <jejb@linux.ibm.com>,
-        <tglx@linutronix.de>
-CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <maz@kernel.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 3/3] scsi: hisi_sas: Expose HW queues for v2 hw
-Date:   Wed, 28 Oct 2020 20:33:07 +0800
-Message-ID: <1603888387-52499-4-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1603888387-52499-1-git-send-email-john.garry@huawei.com>
-References: <1603888387-52499-1-git-send-email-john.garry@huawei.com>
+        id S1729780AbgJ1WFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:38784 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729498AbgJ1WCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCC741762;
+        Wed, 28 Oct 2020 05:34:23 -0700 (PDT)
+Received: from e110176-lin.kfn.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 787853F719;
+        Wed, 28 Oct 2020 05:34:21 -0700 (PDT)
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     Ofir Drang <ofir.drang@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Milan Broz <gmazyland@gmail.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] crypto: switch to crypto API for EBOIV generation
+Date:   Wed, 28 Oct 2020 14:34:15 +0200
+Message-Id: <20201028123420.30623-1-gilad@benyossef.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a performance enhancement, make the completion queue interrupts
-managed.
+This series creates an EBOIV template that produces a skcipher
+transform which passes through all operations to the skcipher, while
+using the same skcipher and key to encrypt the input IV, which is
+assumed to be a sector offset, although this is not enforced.
 
-In addition, in commit bf0beec0607d ("blk-mq: drain I/O when all CPUs in a
-hctx are offline"), CPU hotplug for MQ devices using managed interrupts
-is made safe. So expose HW queues to blk-mq to take advantage of this.
+This matches dm-crypt use of EBOIV to provide BitLocker support,
+and so it is proposed as a replacement in patch #3.
 
-Flag Scsi_host.host_tagset is also set to ensure that the HBA is not sent
-more commands than it can handle. However the driver still does not use
-request tag for IPTT as there are many HW bugs which means that special
-rules apply for IPTT allocation.
+Replacing the dm-crypt specific EBOIV implementation to a Crypto
+API based one allows us to save a memory allocation per
+each request, as well as opening the way for use of compatible
+alternative transform providers, one of which, based on the
+Arm TrustZone CryptoCell hardware, is proposed as patch #4.
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- drivers/scsi/hisi_sas/hisi_sas.h       |  4 ++
- drivers/scsi/hisi_sas/hisi_sas_main.c  | 11 ++++
- drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 71 ++++++++++++++++++++++----
- 3 files changed, 75 insertions(+), 11 deletions(-)
+Future potential work to allow encapsulating the handling of
+multiple subsequent blocks by the Crypto API may also
+benefit from this work.
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas.h b/drivers/scsi/hisi_sas/hisi_sas.h
-index a25cfc11c96d..33c4fb45dd99 100644
---- a/drivers/scsi/hisi_sas/hisi_sas.h
-+++ b/drivers/scsi/hisi_sas/hisi_sas.h
-@@ -14,6 +14,7 @@
- #include <linux/debugfs.h>
- #include <linux/dmapool.h>
- #include <linux/iopoll.h>
-+#include <linux/irq.h>
- #include <linux/lcm.h>
- #include <linux/libata.h>
- #include <linux/mfd/syscon.h>
-@@ -312,6 +313,7 @@ enum {
- 
- struct hisi_sas_hw {
- 	int (*hw_init)(struct hisi_hba *hisi_hba);
-+	int (*interrupt_preinit)(struct hisi_hba *hisi_hba);
- 	void (*setup_itct)(struct hisi_hba *hisi_hba,
- 			   struct hisi_sas_device *device);
- 	int (*slot_index_alloc)(struct hisi_hba *hisi_hba,
-@@ -418,6 +420,8 @@ struct hisi_hba {
- 	u32 refclk_frequency_mhz;
- 	u8 sas_addr[SAS_ADDR_SIZE];
- 
-+	int irq_map[128]; /* v2 hw */
-+
- 	int n_phy;
- 	spinlock_t lock;
- 	struct semaphore sem;
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index 128583dfccf2..56f914203679 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -2614,6 +2614,13 @@ static struct Scsi_Host *hisi_sas_shost_alloc(struct platform_device *pdev,
- 	return NULL;
- }
- 
-+static int hisi_sas_interrupt_preinit(struct hisi_hba *hisi_hba)
-+{
-+	if (hisi_hba->hw->interrupt_preinit)
-+		return hisi_hba->hw->interrupt_preinit(hisi_hba);
-+	return 0;
-+}
-+
- int hisi_sas_probe(struct platform_device *pdev,
- 		   const struct hisi_sas_hw *hw)
- {
-@@ -2671,6 +2678,10 @@ int hisi_sas_probe(struct platform_device *pdev,
- 		sha->sas_port[i] = &hisi_hba->port[i].sas_port;
- 	}
- 
-+	rc = hisi_sas_interrupt_preinit(hisi_hba);
-+	if (rc)
-+		goto err_out_ha;
-+
- 	rc = scsi_add_host(shost, &pdev->dev);
- 	if (rc)
- 		goto err_out_ha;
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-index b57177b52fac..d6b933c3d0a2 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
-@@ -3302,6 +3302,37 @@ static irq_handler_t fatal_interrupts[HISI_SAS_FATAL_INT_NR] = {
- 	fatal_axi_int_v2_hw
- };
- 
-+static int hisi_sas_v2_interrupt_preinit(struct hisi_hba *hisi_hba)
-+{
-+	struct platform_device *pdev = hisi_hba->platform_dev;
-+	struct Scsi_Host *shost = hisi_hba->shost;
-+	int rc, i, *irqs, count;
-+	struct irq_affinity desc = {
-+		.pre_vectors = 96, /* base of completion queue interrupts */
-+		.post_vectors = 16,
-+	};
-+
-+	rc = platform_get_irqs_affinity(pdev, &desc, &count, &irqs);
-+	if (rc < 0)
-+		return rc;
-+
-+	/* 128 interrupts are always expected */
-+	if (count != 128) {
-+		kfree(irqs);
-+		return -EIO;
-+	}
-+
-+	/* Store the IRQ numbers in the driver */
-+	for (i = 0; i < 128; i++)
-+		hisi_hba->irq_map[i] = irqs[i];
-+
-+	shost->nr_hw_queues = hisi_hba->cq_nvecs = hisi_hba->queue_count;
-+
-+	kfree(irqs);
-+
-+	return 0;
-+}
-+
- /*
-  * There is a limitation in the hip06 chipset that we need
-  * to map in all mbigen interrupts, even if they are not used.
-@@ -3310,14 +3341,11 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- {
- 	struct platform_device *pdev = hisi_hba->platform_dev;
- 	struct device *dev = &pdev->dev;
--	int irq, rc = 0, irq_map[128];
-+	int irq, rc = 0;
- 	int i, phy_no, fatal_no, queue_no;
- 
--	for (i = 0; i < 128; i++)
--		irq_map[i] = platform_get_irq(pdev, i);
--
- 	for (i = 0; i < HISI_SAS_PHY_INT_NR; i++) {
--		irq = irq_map[i + 1]; /* Phy up/down is irq1 */
-+		irq = hisi_hba->irq_map[i + 1]; /* Phy up/down is irq1 */
- 		rc = devm_request_irq(dev, irq, phy_interrupts[i], 0,
- 				      DRV_NAME " phy", hisi_hba);
- 		if (rc) {
-@@ -3331,7 +3359,7 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 	for (phy_no = 0; phy_no < hisi_hba->n_phy; phy_no++) {
- 		struct hisi_sas_phy *phy = &hisi_hba->phy[phy_no];
- 
--		irq = irq_map[phy_no + 72];
-+		irq = hisi_hba->irq_map[phy_no + 72];
- 		rc = devm_request_irq(dev, irq, sata_int_v2_hw, 0,
- 				      DRV_NAME " sata", phy);
- 		if (rc) {
-@@ -3343,7 +3371,7 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 	}
- 
- 	for (fatal_no = 0; fatal_no < HISI_SAS_FATAL_INT_NR; fatal_no++) {
--		irq = irq_map[fatal_no + 81];
-+		irq = hisi_hba->irq_map[fatal_no + 81];
- 		rc = devm_request_irq(dev, irq, fatal_interrupts[fatal_no], 0,
- 				      DRV_NAME " fatal", hisi_hba);
- 		if (rc) {
-@@ -3357,7 +3385,7 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 	for (queue_no = 0; queue_no < hisi_hba->queue_count; queue_no++) {
- 		struct hisi_sas_cq *cq = &hisi_hba->cq[queue_no];
- 
--		cq->irq_no = irq_map[queue_no + 96];
-+		cq->irq_no = hisi_hba->irq_map[queue_no + 96];
- 		rc = devm_request_threaded_irq(dev, cq->irq_no,
- 					       cq_interrupt_v2_hw,
- 					       cq_thread_v2_hw, IRQF_ONESHOT,
-@@ -3368,10 +3396,8 @@ static int interrupt_init_v2_hw(struct hisi_hba *hisi_hba)
- 			rc = -ENOENT;
- 			goto err_out;
- 		}
-+		cq->irq_mask = irq_get_affinity_mask(cq->irq_no);
- 	}
--
--	hisi_hba->cq_nvecs = hisi_hba->queue_count;
--
- err_out:
- 	return rc;
- }
-@@ -3529,6 +3555,26 @@ static struct device_attribute *host_attrs_v2_hw[] = {
- 	NULL
- };
- 
-+static int map_queues_v2_hw(struct Scsi_Host *shost)
-+{
-+	struct hisi_hba *hisi_hba = shost_priv(shost);
-+	struct blk_mq_queue_map *qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
-+	const struct cpumask *mask;
-+	unsigned int queue, cpu;
-+
-+	for (queue = 0; queue < qmap->nr_queues; queue++) {
-+		mask = irq_get_affinity_mask(hisi_hba->irq_map[96 + queue]);
-+		if (!mask)
-+			continue;
-+
-+		for_each_cpu(cpu, mask)
-+			qmap->mq_map[cpu] = qmap->queue_offset + queue;
-+	}
-+
-+	return 0;
-+
-+}
-+
- static struct scsi_host_template sht_v2_hw = {
- 	.name			= DRV_NAME,
- 	.proc_name		= DRV_NAME,
-@@ -3553,10 +3599,13 @@ static struct scsi_host_template sht_v2_hw = {
- #endif
- 	.shost_attrs		= host_attrs_v2_hw,
- 	.host_reset		= hisi_sas_host_reset,
-+	.map_queues		= map_queues_v2_hw,
-+	.host_tagset		= 1,
- };
- 
- static const struct hisi_sas_hw hisi_sas_v2_hw = {
- 	.hw_init = hisi_sas_v2_init,
-+	.interrupt_preinit = hisi_sas_v2_interrupt_preinit,
- 	.setup_itct = setup_itct_v2_hw,
- 	.slot_index_alloc = slot_index_alloc_quirk_v2_hw,
- 	.alloc_dev = alloc_dev_quirk_v2_hw,
+The code has been tested on both x86_64 virtual machine
+with the dm-crypt test suite and on an arm 32 bit board
+with the CryptoCell hardware.
+
+Since no offical source for eboiv test vectors is known,
+the test vectors supplied as patch #2 are derived from
+sectors which are part of the dm-crypt test suite.
+
+Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Milan Broz <gmazyland@gmail.com> 
+
+
+Changes from v1:
+- Incorporated feedback from Eric Biggers regarding eboiv template code.
+- Incorporated fixes for issues found by kernel test robot.
+- Moved from a Kconfig dependency of DM_CRYPT to EBOIV to
+  EBOIV default of DM_CRYPT as suggested by Herbert Xu.
+
+Gilad Ben-Yossef (4):
+  crypto: add eboiv as a crypto API template
+  crypto: add eboiv(cbc(aes)) test vectors
+  dm crypt: switch to EBOIV crypto API template
+  crypto: ccree: re-introduce ccree eboiv support
+
+ crypto/Kconfig                       |  23 +++
+ crypto/Makefile                      |   1 +
+ crypto/eboiv.c                       | 271 ++++++++++++++++++++++++++
+ crypto/tcrypt.c                      |   9 +
+ crypto/testmgr.c                     |   6 +
+ crypto/testmgr.h                     | 279 +++++++++++++++++++++++++++
+ drivers/crypto/ccree/cc_cipher.c     | 132 +++++++++----
+ drivers/crypto/ccree/cc_crypto_ctx.h |   1 +
+ drivers/md/dm-crypt.c                |  61 ++----
+ 9 files changed, 704 insertions(+), 79 deletions(-)
+ create mode 100644 crypto/eboiv.c
+
 -- 
-2.26.2
+2.28.0
 
