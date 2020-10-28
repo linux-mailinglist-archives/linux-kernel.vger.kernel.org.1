@@ -2,97 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F1E29E1DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F274F29E19E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388149AbgJ2CEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:04:20 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:49278 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727255AbgJ1Vkt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:40:49 -0400
-Received: from firstfloor.org (c-71-237-255-61.hsd1.or.comcast.net [71.237.255.61])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        id S1729032AbgJ2CCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:02:35 -0400
+Received: from ozlabs.org ([203.11.71.1]:55439 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726364AbgJ1Vsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:48:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by one.firstfloor.org (Postfix) with ESMTPSA id 5399486766;
-        Wed, 28 Oct 2020 06:15:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1603862115;
-        bh=PpI0teziI0VYma/TqTR0yi5ir0d/ttc56gOqlluhAOE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SXbvFNhoqqKDjZ+wy5kE7CwI4/F0kWWjR+SK0SYzQEboeN+Jq7qhjmHhVZmtsX5hr
-         hUGa2Bn/jnOdFtcHw6iDyakO3cjVM/2sYibWH47YyykOs8sSa58QAD0+YbBhqHzlxx
-         a4d9+x73jtOeLYftYdvrUOKyivK+53vHOenBX4vs=
-Received: by firstfloor.org (Postfix, from userid 1000)
-        id 9BF6EA0E64; Tue, 27 Oct 2020 22:15:11 -0700 (PDT)
-From:   Andi Kleen <andi@firstfloor.org>
-To:     acme@kernel.org
-Cc:     jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <andi@firstfloor.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH v2] perf tools: Support -x for perf stat report
-Date:   Tue, 27 Oct 2020 22:15:10 -0700
-Message-Id: <20201028051510.9526-1-andi@firstfloor.org>
-X-Mailer: git-send-email 2.28.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLcMN2vl1z9sWL;
+        Wed, 28 Oct 2020 16:19:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603862385;
+        bh=HsQ+BMZS4Im1PO5FHVBGT6a0Wzm4f131MXdYTkoyax4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pEGGL58TwZOn5qcYDnG7NyRDXlbjMEPuH4GtsZZHG+WrweEKY7c7MBd+AHh7Zk/D6
+         LO4fSRjHdKaZ6C8QcOkq9MixLG1GF2SCPpGGg7O6zpsIO7TUkqktYjqmsPu8nvU8rX
+         D7sPVRF3NA5e2ofpEDWQo/08kXcYNGxjbkPMaJp1CYWPMzaL/dGoRskOAZd1px5m8C
+         PuHotvoTgLfC7aatvbA37Fnnwe+JqpDa/GPyE3i/IN4KVzItJuSgoXu80x4k11FCy0
+         jEgQCzajGg75gy7jpVPnnzNAzkY+XwcgRJN1tELLk84xQp+oMODFRbPoD5B12GaGCb
+         gt3j13u/TyV3g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Andreas Schwab <schwab@linux-m68k.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] powerpc/uaccess: Switch __put_user_size_allowed() to __put_user_asm_goto()
+In-Reply-To: <87imav9r64.fsf@igel.home>
+References: <94ba5a5138f99522e1562dbcdb38d31aa790dc89.1599216721.git.christophe.leroy__44535.5968013004$1599217383$gmane$org@csgroup.eu> <87mu079ron.fsf@igel.home> <87imav9r64.fsf@igel.home>
+Date:   Wed, 28 Oct 2020 16:19:42 +1100
+Message-ID: <87pn53vsep.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the -x, option to enable CSV output with perf stat
-report. Useful to parse the information with other programs.
+Andreas Schwab <schwab@linux-m68k.org> writes:
+> On Okt 28 2020, Andreas Schwab wrote:
+>
+>> On Sep 04 2020, Christophe Leroy wrote:
+>>
+>>> __put_user_asm_goto() provides more flexibility to GCC and avoids using
+>>> a local variable to tell if the write succeeded or not.
+>>> GCC can then avoid implementing a cmp in the fast path.
+>>
+>> That breaks CLONE_CHILD_SETTID.  I'm getting an assertion failure in
+>> __libc_fork (THREAD_GETMEM (self, tid) != ppid).
+>
+> This is what schedule_tail now looks like.  As you can see, put_user has
+> become a nop:
+>
+> 000000000000455c <.schedule_tail>:
+>     455c:       7c 08 02 a6     mflr    r0
+>     4560:       f8 01 00 10     std     r0,16(r1)
+>     4564:       f8 21 ff 91     stdu    r1,-112(r1)
+>     4568:       4b ff cd 4d     bl      12b4 <.finish_task_switch>
+>     456c:       4b ff c0 99     bl      604 <.balance_callback>
+>     4570:       e8 6d 01 88     ld      r3,392(r13)
+>     4574:       e9 23 06 b0     ld      r9,1712(r3)
+>     4578:       2f a9 00 00     cmpdi   cr7,r9,0
+>     457c:       41 9e 00 14     beq     cr7,4590 <.schedule_tail+0x34>
+>     4580:       38 80 00 00     li      r4,0
+>     4584:       38 a0 00 00     li      r5,0
+>     4588:       48 00 00 01     bl      4588 <.schedule_tail+0x2c>
+>                         4588: R_PPC64_REL24     .__task_pid_nr_ns
+>     458c:       60 00 00 00     nop
+>     4590:       48 00 00 01     bl      4590 <.schedule_tail+0x34>
+>                         4590: R_PPC64_REL24     .calculate_sigpending
+>     4594:       60 00 00 00     nop
+>     4598:       38 21 00 70     addi    r1,r1,112
+>     459c:       e8 01 00 10     ld      r0,16(r1)
+>     45a0:       7c 08 03 a6     mtlr    r0
+>     45a4:       4e 80 00 20     blr
 
-% perf stat record --quiet -a -I 1000 sleep 5
-% perf stat report -x,
-     1.000838672,4003.55,msec,cpu-clock,4003548736,100.00,,
-     1.000838672,11243,,context-switches,4003631885,100.00,0.003,M/sec
-     1.000838672,1682,,cpu-migrations,4003672150,100.00,0.420,K/sec
-     1.000838672,13244,,page-faults,4003697471,100.00,0.003,M/sec
-     1.000838672,2953214077,,cycles,4003715495,100.00,0.738,GHz
-     1.000838672,4380820799,,instructions,4003738270,100.00,1.48,insn per cycle
-     1.000838672,809865653,,branches,4003760616,100.00,202.287,M/sec
-     1.000838672,12439843,,branch-misses,4003780785,100.00,1.54,of all branches
-...
+Not for me, see below.
 
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+What config and compiler are you using?
 
----
+cheers
 
-v2: Fix default output (Jiri). Also handle \t as special value like the
-original parser (Andi)
----
- tools/perf/builtin-stat.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 743fe47e7a88..2f7eb6b68344 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1988,6 +1988,8 @@ static int __cmd_report(int argc, const char **argv)
- 		     "aggregate counts per numa node", AGGR_NODE),
- 	OPT_SET_UINT('A', "no-aggr", &perf_stat.aggr_mode,
- 		     "disable CPU count aggregation", AGGR_NONE),
-+	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
-+		   "print counts with custom separator"),
- 	OPT_END()
- 	};
- 	struct stat st;
-@@ -2002,6 +2004,13 @@ static int __cmd_report(int argc, const char **argv)
- 			input_name = "perf.data";
- 	}
- 
-+	if (strcmp(stat_config.csv_sep, " ")) {
-+		stat_config.csv_output = true;
-+		if (!strcmp(stat_config.csv_sep, "\\t"))
-+			stat_config.csv_sep = "\t";
-+		stat_config.big_num = false;
-+	}
-+
- 	perf_stat.data.path = input_name;
- 	perf_stat.data.mode = PERF_DATA_MODE_READ;
- 
--- 
-2.28.0
 
+c000000000181aa0 <schedule_tail>:
+c000000000181aa0:       82 01 4c 3c     addis   r2,r12,386
+c000000000181aa4:       60 1b 42 38     addi    r2,r2,7008
+c000000000181aa8:       a6 02 08 7c     mflr    r0
+c000000000181aac:       cd b5 ee 4b     bl      c00000000006d078 <_mcount>
+c000000000181ab0:       a6 02 08 7c     mflr    r0
+c000000000181ab4:       f8 ff e1 fb     std     r31,-8(r1)
+c000000000181ab8:       10 00 01 f8     std     r0,16(r1)
+c000000000181abc:       d1 ff 21 f8     stdu    r1,-48(r1)
+c000000000181ac0:       c9 7d ff 4b     bl      c000000000179888 <finish_task_switch+0x8>
+c000000000181ac4:       40 0a 23 e9     ld      r9,2624(r3)
+c000000000181ac8:       00 00 a9 2f     cmpdi   cr7,r9,0
+c000000000181acc:       b4 00 9e 40     bne     cr7,c000000000181b80 <schedule_tail+0xe0>
+c000000000181ad0:       68 09 6d e8     ld      r3,2408(r13)
+c000000000181ad4:       48 07 e3 eb     ld      r31,1864(r3)
+c000000000181ad8:       00 00 bf 2f     cmpdi   cr7,r31,0
+c000000000181adc:       88 00 9e 41     beq     cr7,c000000000181b64 <schedule_tail+0xc4>
+c000000000181ae0:       00 00 a0 38     li      r5,0
+c000000000181ae4:       00 00 80 38     li      r4,0
+c000000000181ae8:       21 4b fe 4b     bl      c000000000166608 <__task_pid_nr_ns+0x8>
+c000000000181aec:       00 00 00 60     nop
+c000000000181af0:       ff ff 20 39     li      r9,-1
+c000000000181af4:       00 03 29 79     clrldi  r9,r9,12
+c000000000181af8:       40 48 bf 7f     cmpld   cr7,r31,r9
+c000000000181afc:       68 00 9d 41     bgt     cr7,c000000000181b64 <schedule_tail+0xc4>
+c000000000181b00:       01 00 29 39     addi    r9,r9,1
+c000000000181b04:       50 48 3f 7d     subf    r9,r31,r9
+c000000000181b08:       03 00 a9 2b     cmpldi  cr7,r9,3
+c000000000181b0c:       58 00 9d 40     ble     cr7,c000000000181b64 <schedule_tail+0xc4>
+c000000000181b10:       02 00 42 3d     addis   r10,r2,2
+c000000000181b14:       18 25 4a 39     addi    r10,r10,9496
+c000000000181b18:       00 00 2a e9     ld      r9,0(r10)
+c000000000181b1c:       22 00 29 e9     lwa     r9,32(r9)
+c000000000181b20:       00 00 89 2f     cmpwi   cr7,r9,0
+c000000000181b24:       24 00 9c 40     bge     cr7,c000000000181b48 <schedule_tail+0xa8>
+c000000000181b28:       2c 01 00 4c     isync
+c000000000181b2c:       00 40 20 3d     lis     r9,16384
+c000000000181b30:       c6 07 29 79     rldicr  r9,r9,32,31
+
+c000000000181b34:       a6 03 3d 7d     mtspr   29,r9		# put_user() begins here
+c000000000181b38:       2c 01 00 4c     isync
+c000000000181b3c:       00 00 2a e9     ld      r9,0(r10)
+c000000000181b40:       22 00 29 e9     lwa     r9,32(r9)
+c000000000181b44:       00 00 89 2f     cmpwi   cr7,r9,0
+c000000000181b48:       00 00 7f 90     stw     r3,0(r31)
+c000000000181b4c:       18 00 9c 40     bge     cr7,c000000000181b64 <schedule_tail+0xc4>
+c000000000181b50:       2c 01 00 4c     isync
+c000000000181b54:       ff ff 20 39     li      r9,-1
+c000000000181b58:       44 00 29 79     rldicr  r9,r9,0,1
+c000000000181b5c:       a6 03 3d 7d     mtspr   29,r9
+c000000000181b60:       2c 01 00 4c     isync
+
+c000000000181b64:       b5 c9 fc 4b     bl      c00000000014e518 <calculate_sigpending+0x8>
+c000000000181b68:       00 00 00 60     nop
+c000000000181b6c:       30 00 21 38     addi    r1,r1,48
+c000000000181b70:       10 00 01 e8     ld      r0,16(r1)
+c000000000181b74:       f8 ff e1 eb     ld      r31,-8(r1)
+c000000000181b78:       a6 03 08 7c     mtlr    r0
+c000000000181b7c:       20 00 80 4e     blr
+c000000000181b80:       39 40 ff 4b     bl      c000000000175bb8 <__balance_callback+0x8>
+c000000000181b84:       4c ff ff 4b     b       c000000000181ad0 <schedule_tail+0x30>
