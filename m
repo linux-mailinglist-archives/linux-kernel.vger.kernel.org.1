@@ -2,186 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472F029D508
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB7329D2B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgJ1V43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728602AbgJ1V4X (ORCPT
+        id S1726530AbgJ1VeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:34:11 -0400
+Received: from mail-m1272.qiye.163.com ([115.236.127.2]:7159 "EHLO
+        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgJ1VeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:56:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF8C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:56:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0aab002bb6ddc5d07837c1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ab00:2bb6:ddc5:d078:37c1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 390491EC0494;
-        Wed, 28 Oct 2020 14:39:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1603892358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=yVbuVYVOUKsblE/68+tpjrSrUjA614WzS6Qde3GZktc=;
-        b=CFx2SWS8+FYLt45SKJ6BjT2UQz0QS83pysRPhR9P5t8pIyaMk2sNel72AzUGWlrNry92rE
-        fF1WFZ7fNpWxO9JvTCHOkwuTC+w/e0rUHD/DW4g4O+U+SDcc06c9kooSD2ccdoL4pJdiju
-        e1bHJ/fEmg6Kl3baIlNPLgYdmRhoE6k=
-Date:   Wed, 28 Oct 2020 14:39:09 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
-Message-ID: <20201028133909.GA27112@zn.tnic>
-References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
- <20201027200803.GL15580@zn.tnic>
- <20201027211422.GC1833548@rani.riverdale.lan>
+        Wed, 28 Oct 2020 17:34:07 -0400
+Received: from ubuntu.localdomain (unknown [58.250.176.229])
+        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id EB3D0B02446;
+        Wed, 28 Oct 2020 21:48:49 +0800 (CST)
+From:   Bailu Lin <bailu.lin@vivo.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Bailu Lin <bailu.lin@vivo.com>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+Subject: [PATCH] Documentation: Chinese translation of  Documentation/arm64/perf.rst
+Date:   Wed, 28 Oct 2020 06:48:24 -0700
+Message-Id: <20201028134831.79592-1-bailu.lin@vivo.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201027211422.GC1833548@rani.riverdale.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHh9PSx9MH0oaTU8fVkpNS0hDQklCSEtPTkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODI6Dyo6ET8eDS4CGE1RTzQW
+        GkhPCjlVSlVKTUtIQ0JJQkhLQ0JLVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOS1VKTE1VSUlCWVdZCAFZQU5OTkI3Bg++
+X-HM-Tid: 0a756f77e6ed98b7kuuueb3d0b02446
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 05:14:22PM -0400, Arvind Sankar wrote:
-> This is indeed just a small correctness fixlet, but I'm not following
-> the rest of your comments.
+This is a Chinese translated version of
+ Documentation/arm64/perf.rst
 
-I'm just trying to make sense of that house of cards we have here.
+Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+---
+ Documentation/arm64/perf.rst                  |  2 +
+ .../translations/zh_CN/arm64/index.rst        |  1 +
+ .../translations/zh_CN/arm64/perf.rst         | 85 +++++++++++++++++++
+ 3 files changed, 88 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/arm64/perf.rst
 
-> PHYSICAL_START has an effect independent of the setting of
-> RELOCATABLE.
-
-Theoretically you can set PHYSICAL_START to 0x0:
-
-config PHYSICAL_START
-        hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
-        default "0x1000000"
-        help
-          This gives the physical address where the kernel is loaded.
-
-          If kernel is a not relocatable (CONFIG_RELOCATABLE=n) then
-          bzImage will decompress itself to above physical address and
-          run from there.
-	  ^^^^^^^^^^^^^^
-
-and disable RELOCATABLE:
-
-CONFIG_PHYSICAL_START=0x0
-# CONFIG_RELOCATABLE is not set
-
-but then you hit this:
-
-ld: per-CPU data too large - increase CONFIG_PHYSICAL_START
-
-full output at the end of the mail.
-
-> It's where the kernel image starts in virtual address space, as shown
-> by the 16MiB difference between __START_KERNEL_map and _text in the
-> usual .config situation. In all configs, not just majority, the kernel
-> image itself starts at _text.
-
-Of course.
-
-> The 16MiB gap below _text is not actually mapped, but the important
-> point is that the way the initial construction of pagetables is
-> currently setup, the code cannot map anything above __START_KERNEL_map
-> + KERNEL_IMAGE_SIZE, so _end needs to be below that.
-
-Right.
-
-> If KASLR was disabled (either at build-time or run-time), these
-> link-time addresses are where the kernel actually lives (in VA space);
-> and if it was enabled, it will make sure to place the _end of the kernel
-> below KERNEL_IMAGE_SIZE when choosing a random virtual location.
-
-Yes.
-
-> That said, AFAICT, RELOCATABLE and PHYSICAL_START look like historical
-> artifacts at this point: RELOCATABLE should be completely irrelevant for
-> the 64-bit kernel, and there's really no reason to be able to configure
-> the start VA of the kernel, that should just be constant independent of
-> PHYSICAL_START.
-
-See the CONFIG_PHYSICAL_START help text. Apparently there has been a
-use case where one can set PHYSICAL_START to the region where a kdump
-kernel is going to be loaded and that kdump kernel is a vmlinux and not
-a bzImage and thus not relocatable.
-
-And I just produced a .config which doesn't work. I guess
-
-	"Don't change this unless you know what you are doing."
-
-is supposed to say that that value can't be just anything but that ain't
-good enough.
-
-Lemme try a different offset after reading this:
-
-	  Otherwise if you plan to use vmlinux
-          for capturing the crash dump change this value to start of
-          the reserved region.  In other words, it can be set based on
-          the "X" value as specified in the "crashkernel=YM@XM"
-
-Setting it to 256M works:
-
-$ readelf -a vmlinux | grep -E "\W(_end|_text)"
- 95509: ffffffff90000000     0 NOTYPE  GLOBAL DEFAULT    1 _text
- 97868: ffffffff9aa26000     0 NOTYPE  GLOBAL DEFAULT   30 _end
-
-Setting to 8M works too, it seems:
-
-$ readelf -a vmlinux | grep -E "\W(_end|_text)"
- 95509: ffffffff80800000     0 NOTYPE  GLOBAL DEFAULT    1 _text
- 97868: ffffffff8b226000     0 NOTYPE  GLOBAL DEFAULT   30 _end
-
-so I guess this should be a range > 0 specification but I guess not
-important.
-
-Going back to the question at hand, if you think about it, the kernel
-image *is* between _text or _stext and _end. And KERNEL_IMAGE_SIZE is
-exactly what it is - the size of the kernel image.
-
-Now, if you were talking about a kernel *mapping* size, then I'd
-understand but this check is for the kernel *image* size.
-
-But reading that commit message again:
-
-    these build-time and link-time checks would have prevented the
-    vmlinux size regression.
-
-this *is* talking about vmlinux size and that starts at _text...
-
-Thx.
-
-ld: per-CPU data too large - increase CONFIG_PHYSICAL_START
-init/main.o: in function `perf_trace_initcall_level':
-/home/boris/kernel/linux/./include/trace/events/initcall.h:10:(.text+0x147): relocation truncated to fit: R_X86_64_PC32 against symbol `this_cpu_off' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
-init/main.o: in function `perf_trace_initcall_start':
-/home/boris/kernel/linux/./include/trace/events/initcall.h:27:(.text+0x252): relocation truncated to fit: R_X86_64_PC32 against symbol `this_cpu_off' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
-init/main.o: in function `perf_trace_initcall_finish':
-/home/boris/kernel/linux/./include/trace/events/initcall.h:48:(.text+0x319): relocation truncated to fit: R_X86_64_PC32 against symbol `this_cpu_off' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
-init/main.o: in function `preempt_count':
-/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:26:(.text+0x823): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
-/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:26:(.text+0x84f): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
-init/main.o: in function `preempt_count_set':
-/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:34:(.text+0x88f): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
-/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:37:(.text+0x8a3): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
-init/main.o: in function `trace_initcall_start':
-/home/boris/kernel/linux/./include/trace/events/initcall.h:27:(.text+0x8e5): relocation truncated to fit: R_X86_64_PC32 against symbol `cpu_number' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
-init/main.o: in function `__preempt_count_add':
-/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:79:(.text+0x8fc): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
-init/main.o: in function `__preempt_count_dec_and_test':
-/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:94:(.text+0x91b): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
-init/main.o: in function `trace_initcall_finish':
-/home/boris/kernel/linux/./include/trace/events/initcall.h:48:(.text+0x932): additional relocation overflows omitted from the output
-make: *** [Makefile:1164: vmlinux] Error 1
-
-
+diff --git a/Documentation/arm64/perf.rst b/Documentation/arm64/perf.rst
+index 9c76a97baf28..b567f177d385 100644
+--- a/Documentation/arm64/perf.rst
++++ b/Documentation/arm64/perf.rst
+@@ -1,5 +1,7 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
++.. _perf_index:
++
+ =====================
+ Perf Event Attributes
+ =====================
+diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+index e31a6090384d..f51fed166326 100644
+--- a/Documentation/translations/zh_CN/arm64/index.rst
++++ b/Documentation/translations/zh_CN/arm64/index.rst
+@@ -15,3 +15,4 @@ ARM64 架构
+ 
+     amu
+     hugetlbpage
++    perf
+diff --git a/Documentation/translations/zh_CN/arm64/perf.rst b/Documentation/translations/zh_CN/arm64/perf.rst
+new file mode 100644
+index 000000000000..be8269dd5d9a
+--- /dev/null
++++ b/Documentation/translations/zh_CN/arm64/perf.rst
+@@ -0,0 +1,85 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/arm64/perf.rst <perf_index>`
++
++Translator: Bailu Lin <bailu.lin@vivo.com>
++
++=============
++Perf 事件属性
++=============
++
++:作者: Andrew Murray <andrew.murray@arm.com>
++:日期: 2019-03-06
++
++exclude_user
++------------
++
++该属性排除用户空间。
++
++用户空间始终运行在 EL0，因此该属性将排除 EL0。
++
++
++exclude_kernel
++--------------
++
++该属性排除内核空间。
++
++打开 VHE 时内核运行在 EL2，不打开 VHE 时内核运行在 EL1。客户端
++内核总是运行在 EL1。
++
++对于主机端，该属性排除 EL1 和 VHE 上的 EL2。
++
++对于客户端，该属性排除 EL1。请注意客户端从来不会运行在 EL2。
++
++
++exclude_hv
++----------
++
++该属性排除虚拟机监控器。
++
++对于 VHE 主机端该属性将被忽略，因为此时主机端内核是虚拟机监控器。
++
++对于 non-VHE 主机端该属性将排除 EL2，因为虚拟机监控器运行在 EL2
++的任何代码主要用于客户端和主机端的切换。
++
++对于客户端该属性无效。请注意客户端从来不会运行在 EL2。
++
++
++exclude_host / exclude_guest
++----------------------------
++
++这些属性分别排除了 KVM 主机端和客户端。
++
++KVM 主机端可能运行在 EL0（用户空间），EL1（non-VHE 内核）和
++EL2（VHE 内核 或 non-VHE 虚拟机监控器）。
++
++KVM 客户端可能运行在 EL0（用户空间）和 EL1（内核）。
++
++由于主机端和客户端之间重叠的异常级别，我们不能仅仅依靠 PMU 的硬件异
++常过滤机制-因此我们必须启用/禁用对于客户端进入和退出的计数。而这在
++VHE 和 non-VHE 系统上表现不同。
++
++对于 non-VHE 系统的 exclude_host 属性排除 EL2 -  在进入和退出客户
++端时，我们会根据 exclude_host 和 exclude_guest 属性在适当的情况下
++禁用/启用该事件。
++
++对于 VHE 系统的 exclude_guest 属性排除 EL1，而对其中的 exclude_host
++属性同时排除 EL0，EL2。在进入和退出客户端时，我们会适当地根据
++exclude_host 和 exclude_guest 属性包括/排除 EL0。
++
++以上声明也适用于在 not-VHE 客户端使用这些属性时，但是请注意客户端从
++来不会运行在 EL2。
++
++
++准确性
++------
++
++在 non-VHE 主机端上，我们在 EL2 进入/退出主机端/客户端的切换时启用/
++关闭计数器 -但是在启用/禁用计数器和进入/退出客户端之间存在一段延时。
++对于 exclude_host， 我们可以通过过滤 EL2 消除在客户端进入/退出边界
++上用于计数客户端事件的主机端事件计数器。但是当使用 !exclude_hv 时，
++在客户端进入/退出有一个小的暗窗口无法捕获到主机端的事件。
++
++在VHE系统尚没有暗窗口。
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
