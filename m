@@ -2,117 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4174229D9C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2E229DA4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390016AbgJ1XCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:02:35 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51880 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730802AbgJ1XBe (ORCPT
+        id S2388017AbgJ1XS6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 19:18:58 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:34090 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728198AbgJ1XRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:01:34 -0400
-Received: by mail-io1-f70.google.com with SMTP id m25so648090ioh.18
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:01:31 -0700 (PDT)
+        Wed, 28 Oct 2020 19:17:40 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y16so1110040ljk.1;
+        Wed, 28 Oct 2020 16:17:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=I6Tv0mZbA3G3bm/uFU3fYpeMhFGdLavDRFYielkX/qA=;
-        b=ggr0abyuz053su1eOuaIi82vBj86y7ih6KUvvGJ/6fXk4raxaRGwoLMMdz8aVIqEiE
-         j88wXQofuGrBrYX7CX0PK/7lnPzpzNrTLTwZR2OaW6Aj/qgdGMWpAAWoV9S+V7WmFYKt
-         6zBRcmIF3gaMNM+TrXGMWCFk6vZvsf12+DMZCytnvHb2+j1cjuQyDIK7xQVF2PInCmBz
-         F3+ExpwuvAEK00TF2pNjuW023r8byVDARkdI+2gFYoWw2pkSfo9UefXkmK3zC4fNxS4a
-         mWhGcAnui8AyAOUuT70OXSoBixuVUaImaHYrBaX8qsYPU9ZQV9xjelKRiKDUPp4nvMuS
-         R0Ow==
-X-Gm-Message-State: AOAM532FQZT/clRiV3H1llAzxDeL9e6y8cHjzlpwUY0CT4icsya+61ds
-        2NrrDWFuBB9rTVpkn8eNBA71BQgHwi+1cakkZ3yc522rvkh8
-X-Google-Smtp-Source: ABdhPJyvkYDWO+MkW+GPCkfakucDqW9Hg44YfadMBs6jV2DHt/jCKIE8L/gnqUoHI6yNY3G7ACZNkuRZvv0g+FRnZh3ag17bqYv1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tOzGuUmz353raLqizP2rvx4LkjDP5IM9PyiPt5zQsck=;
+        b=jJtONSraL9jOMQSXwzrVOBF8qBnjdokxiP0xkykvx0UoBzDRKwhb5PZqWjHWdDVB9C
+         YuS00hM/NBYa8WzAtn5OmO97bw0/3sFsEbDxz5/QGPv3wLuq3iURn1cNiVxpELI3VZAP
+         YJI1EU4LjrnssbayFL/hxOJ+NVDcjw2xHqE+AoH4CTMD4DjdSuzqyg4D2Ism4/FNzOb1
+         Ysauw1RtbTsqvGr3A2WMa/RM8Zmjysq5rVe8PkZuwJBAbirBZ7OFTqA90gnd3v+PAQBe
+         xsw9XdSsX2ldssGidVfijOHBhKlCvW6Um/lAJVrnPtzro6bfxFb0BTEbBMWnemBA1VUx
+         LejA==
+X-Gm-Message-State: AOAM531j2wsgBjkMEHbaK601HeE2rQSGG2m6PHbxm6D1SGdzcMFoOvoV
+        Ag4t4w6bV2DyA6UbXxZExyW/PPOxq+Crdg==
+X-Google-Smtp-Source: ABdhPJx7uTojdx8c4uChsolOHCfdvqUlE8lbp5QLK2dcQNvxdYAlOS/eER5VjqNvSaVQADiGzYDahA==
+X-Received: by 2002:a17:906:52d5:: with SMTP id w21mr8600918ejn.501.1603899329605;
+        Wed, 28 Oct 2020 08:35:29 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id e2sm3163675edn.30.2020.10.28.08.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:35:27 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 16:35:25 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 04/52] dt-bindings: memory: tegra20: emc: Document
+ nvidia,memory-controller property
+Message-ID: <20201028153525.GA133954@kozik-lap>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-5-digetx@gmail.com>
+ <20201027085417.GD4244@kozik-lap>
+ <54191034-dcb9-7cab-333b-5bb2553f0ed1@gmail.com>
+ <20201027193039.GA140636@kozik-lap>
+ <20201028152303.GA4041470@bogus>
 MIME-Version: 1.0
-X-Received: by 2002:a92:8746:: with SMTP id d6mr6602712ilm.255.1603899197781;
- Wed, 28 Oct 2020 08:33:17 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 08:33:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f07eb205b2bce11b@google.com>
-Subject: WARNING: suspicious RCU usage in ovs_flow_tbl_masks_cache_resize
-From:   syzbot <syzbot+9a8f8bfcc56e8578016c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pshelar@ovn.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201028152303.GA4041470@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 28, 2020 at 10:23:03AM -0500, Rob Herring wrote:
+> On Tue, Oct 27, 2020 at 08:30:39PM +0100, Krzysztof Kozlowski wrote:
+> > On Tue, Oct 27, 2020 at 10:17:19PM +0300, Dmitry Osipenko wrote:
+> > > 27.10.2020 11:54, Krzysztof Kozlowski пишет:
+> > > > On Mon, Oct 26, 2020 at 01:16:47AM +0300, Dmitry Osipenko wrote:
+> > > >> Tegra20 External Memory Controller talks to DRAM chips and it needs to be
+> > > >> reprogrammed when memory frequency changes. Tegra Memory Controller sits
+> > > >> behind EMC and these controllers are tightly coupled. This patch adds the
+> > > >> new phandle property which allows to properly express connection of EMC
+> > > >> and MC hardware in a device-tree, it also put the Tegra20 EMC binding on
+> > > >> par with Tegra30+ EMC bindings, which is handy to have.
+> > > >>
+> > > >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > >> ---
+> > > >>  .../bindings/memory-controllers/nvidia,tegra20-emc.txt          | 2 ++
+> > > >>  1 file changed, 2 insertions(+)
+> > > >>
+> > > >> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> > > >> index 567cffd37f3f..1b0d4417aad8 100644
+> > > >> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> > > >> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> > > >> @@ -12,6 +12,7 @@ Properties:
+> > > >>    irrespective of ram-code configuration.
+> > > >>  - interrupts : Should contain EMC General interrupt.
+> > > >>  - clocks : Should contain EMC clock.
+> > > >> +- nvidia,memory-controller : Phandle of the Memory Controller node.
+> > > > 
+> > > > It looks like you adding a required property which is an ABI break.
+> > > The T20 EMC driver is unused so far in upstream and it will become used
+> > > only once this series is applied. Hence it's fine to change the ABI.
+> > 
+> > The ABI is not about upstream, but downstream. 
+> 
+> "If it's not upstream, it doesn't exist."
+> 
+> Though we do have to account for out of tree users where the DT is not 
+> in tree, but upstream drivers are used. Downstream as in vendor kernels 
+> typically has loads of other crap.
 
-syzbot found the following issue on:
+That's the case I am referring to. Maybe not in case of Tegra, but
+multiple other designs are quite popular in industrial uses and their
+DTSes were not upstreamed.
 
-HEAD commit:    6daa1da4 chelsio/chtls: fix memory leaks in CPL handlers
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=10defae4500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=46c6fea3eb827ae1
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a8f8bfcc56e8578016c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fed5bc500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12afff40500000
+This is anyway different case, as Dmitry explained - nothing got broken
+because not much was working before around this.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9a8f8bfcc56e8578016c@syzkaller.appspotmail.com
+> 
+> > There are no other
+> > upstreams using this ABI. Unless you have in mind that existing T20 EMC
+> > driver was a noop, doing absolutely nothing, therefore there is no
+> > breakage of any other users?
+> 
+> ABI breaks are ultimately up to the platform maintainers to decide.
 
-netlink: 44 bytes leftover after parsing attributes in process `syz-executor522'.
-=============================
-WARNING: suspicious RCU usage
-5.9.0-syzkaller #0 Not tainted
------------------------------
-net/openvswitch/flow_table.c:393 suspicious rcu_dereference_check() usage!
+Cool! That reshapes significantly my existing point of view, especially
+about discussions on Exynos bindings (long time ago). Thanks for
+clarification.
 
-other info that might help us debug this:
+Best regards,
+Krzysztof
 
-
-rcu_scheduler_active = 2, debug_locks = 1
-1 lock held by syz-executor522/8493:
- #0: ffffffff8c9af210 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
-
-stack backtrace:
-CPU: 1 PID: 8493 Comm: syz-executor522 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- ovs_flow_tbl_masks_cache_resize+0x1bf/0x200 net/openvswitch/flow_table.c:393
- ovs_dp_change+0x231/0x2b0 net/openvswitch/datapath.c:1616
- ovs_dp_cmd_new+0x4c1/0xec0 net/openvswitch/datapath.c:1706
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440ad9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffff6e416d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440ad9
-RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000003
-RBP: 00000000006cb018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022e0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
