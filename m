@@ -2,129 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607D829DB50
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D07E29DAF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389285AbgJ1XuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
+        id S1727033AbgJ1XmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732742AbgJ1XuB (ORCPT
+        with ESMTP id S1726094AbgJ1XmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:50:01 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7F9C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:50:01 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id z10so325728vkn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:50:01 -0700 (PDT)
+        Wed, 28 Oct 2020 19:42:08 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80296C0613CF;
+        Wed, 28 Oct 2020 16:42:08 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id h12so791397qtc.9;
+        Wed, 28 Oct 2020 16:42:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=q3HZdrGNxCI/rwL2bJs+sG1c4DmY7gX64VUv8zPGJp0=;
-        b=w3iZHgADd5v9U6zAOB8D+M8MEqnphniRW2Jy/fJCVN1kcqPClAO4LvMLqXOn07ZoLx
-         ghyYw4tbLkd4ZLpFJ5yYzeB2FBTJQOSqLMu+eu0MDJFJ1PQQMIkmn0b06suSVU6pNGV6
-         uV39iGdCd3/RgcBjaecMILewDPwDqHInv8BvhYSJukEtH5w8pUdZPPy3QYGUUlq8TXYX
-         hViJ47ZuJPB3vTAc/INXSEvHVjOHsgy8am405mFyVp6YQXoavgdc2s31XtRWYPbONypI
-         78PXWgfQYCOgG1JQeffggPKb8W+MjeWpY6LcpiSzsV3ffNOzQEzvrZzoRDJygvKe4ngM
-         kzKw==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=04ThpYsSViFhWqOQvQSGIlYZRGcXGFtIhUlX8pfHTD8=;
+        b=OC6Zm4U5t2xQjcut4yBwkeEk5KarEkjfCrPdUlu381Nv4vJI895Svp7x8sDb3IBxS3
+         fPfhT1B7HGC5UpOKgQPbPKJ8OQ+Wh5ei1AjIXfyGnvpaGsc8RYdCba4m2e8dSOSNKG0r
+         6IaEkkFLl4zzAivCnLsMl8DdDeZ7xDzu5G81g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=q3HZdrGNxCI/rwL2bJs+sG1c4DmY7gX64VUv8zPGJp0=;
-        b=FHxOrcNF4CZQA30Z6nJ38jKMuwLMYaDUlnCHRrlFhxTSSaEtd9l1axqlVq2rnW62ys
-         MLTpM49eroRQ8t0d718uZaH/fTtmue/R1gg7g8fK8j54yf72vBzXzzRRciUKCWfyhFE2
-         qrIAVSkOAwxHFaUtL2VfyoiiCPSt+aDh3c9KbFYGbS8o4SMw4lWktJ6cLArI+11MtgtS
-         TzsXsh7kG31UyAB9PbtdvltqA5z2j1AKO0UMUK6MFiN2lJB2hO0fojaw95izgDJ9mMxa
-         x/uq/bUVxQrO3B6CcoTlnTm+wg4PmB/FNSK6gQwd+CROuVF2wrN6HRehxdCAsYouhj9M
-         dYag==
-X-Gm-Message-State: AOAM532fF3jEROaLbNooVBMbdSG/UFEtpCocxd890Y/z7i5eJk8RegUF
-        hJZ6WnHQ+atTxrNomKoLS2WcfH+oFTTwmw==
-X-Google-Smtp-Source: ABdhPJx3bloTJFrm0fb9VkDA3VdvEPdnyGyj3MWhkAqG7wE90ovxnS/KcE9dbBFeor/v06ApPv/DnQ==
-X-Received: by 2002:a05:6a00:2cf:b029:160:c0c:a95c with SMTP id b15-20020a056a0002cfb02901600c0ca95cmr5587882pft.76.1603857803605;
-        Tue, 27 Oct 2020 21:03:23 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id kk14sm3187829pjb.47.2020.10.27.21.03.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 21:03:22 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 09:33:20 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 46/52] opp: Put interconnect paths outside of
- opp_table_lock
-Message-ID: <20201028040320.4nobxzudy3fuwmms@vireshk-i7>
-References: <20201025221735.3062-1-digetx@gmail.com>
- <20201025221735.3062-47-digetx@gmail.com>
- <20201027051013.5gr4s3wuuwxsd7ax@vireshk-i7>
- <44169d24-4afc-5388-788f-d1e8263fc627@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=04ThpYsSViFhWqOQvQSGIlYZRGcXGFtIhUlX8pfHTD8=;
+        b=DLMle3rBT5FB64Jk9Cu8f3eYwMY/3daZc7z+O2hNNbwt5pFquzv7nLowGJY4uNv0mj
+         uKcBG+PN5LFZZs7P+mUs34LQg5zJWR/oLVa9t2vrARLE2fjdrzL3Ij8qUs3dhSU0QO6y
+         +4w0I6BQOW7CInLVoEzrzDyL3oC4xg++q/Hg6QWSU5LYfQLRCIGNX6gAYmuIY2JeHpOh
+         hbi1xa1vMnyNz6L5bCUzZ3k1+tz/QQOXXZGGsaym8W56q7asN+U8fjaU9T3OiC238qr5
+         B+P/3RgZAVkkfiwH9M2aLqz8O/+3nScpD31x78+BKGDUOi9BddixEVME8i1VrIOBFgYl
+         nJtQ==
+X-Gm-Message-State: AOAM5300wHRy/OUwaVJZqGthLvjrALd7PddJlhopgrvW/ozb65VqlMum
+        I6R+hxE++nacojzzX1wzL4GZ5uBfyI2GR19WswbUdjtlX2xVCg==
+X-Google-Smtp-Source: ABdhPJyi2tYbl11+8oD/pTg7MqvJo0FJxH9J/m9YOi24yaf3RoUaPY8LWOMrUDpfxRRNH1Z9ZM9QvQ/K9quBWlRWBR8=
+X-Received: by 2002:a05:620a:1303:: with SMTP id o3mr5853719qkj.66.1603861861220;
+ Tue, 27 Oct 2020 22:11:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <44169d24-4afc-5388-788f-d1e8263fc627@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201012033150.21056-1-billy_tsai@aspeedtech.com>
+ <20201012033150.21056-3-billy_tsai@aspeedtech.com> <CACPK8XdYvSmwdAkBzAO3kC8_PYa3CtPkNb0VxcOhmb2UYz5zDA@mail.gmail.com>
+ <E0B8BD13-86F6-486E-95DF-1038D7F59A8B@aspeedtech.com>
+In-Reply-To: <E0B8BD13-86F6-486E-95DF-1038D7F59A8B@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 28 Oct 2020 05:10:49 +0000
+Message-ID: <CACPK8Xeg_LRGv1EEm7cdDWK2xST0mBP=iG7=43UE5qmEMMDsHQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Arm: dts: aspeed-g6: Add sgpio node
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-20, 23:26, Dmitry Osipenko wrote:
-> 27.10.2020 08:10, Viresh Kumar пишет:
-> > On 26-10-20, 01:17, Dmitry Osipenko wrote:
-> >> This patch fixes lockup which happens when OPP table is released if
-> >> interconnect provider uses OPP in the icc_provider->set() callback
-> >> and bandwidth of the ICC path is set to 0 by the ICC core when path
-> >> is released. The icc_put() doesn't need the opp_table_lock protection,
-> >> hence let's move it outside of the lock in order to resolve the problem.
-> >>
-> >> In particular this fixes tegra-devfreq driver lockup on trying to unload
-> >> the driver module. The devfreq driver uses OPP-bandwidth API and its ICC
-> >> provider also uses OPP for DVFS, hence they both take same opp_table_lock
-> >> when OPP table of the devfreq is released.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> ...
-> > 
-> > Never make such _fixes_ part of such a big patchset. Always send them
-> > separately.
-> 
-> Perhaps it's not obvious from the commit description that this patch
-> doesn't fix any known problems of the current mainline kernel and it's
-> needed only for the new patches.
+On Mon, 12 Oct 2020 at 04:56, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+>
+> Hi Joel,
+>
+> Thanks for the review.
+>
+> On 2020/10/12, 12:35 PM, Joel Stanley wrote:
+>
+>     > On Mon, 12 Oct 2020 at 03:32, Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+>     > >
+>     > > This patch is used to add sgpiom and sgpios nodes and add compatible
+>     > > string for sgpiom.
+>     >
+>     > You also need to add sgpios documentation to the bindings docs.
+>     >
+>     > Whenever you add new device tree bindings to the kernel tree you
+>     > should add documentation for them.
+>     >
+>     > When preparing patches for submission, use scripts/checkpatch.pl to
+>     > check for common issues. It will warn you if you are adding strings
+>     > that are not documented.
+>     >
+>     > Cheers,
+>     >
+>     > Joel
+>     >
+>    Because the driver of sgpios doesn't be implemented, so I don't know how to describe it at sgpio-aspeed.txt.
+>    Can I just add  compatible string " aspeed,ast2600-sgpios " to the document for bypassing the warning of checkpatch?
 
-No, I understood that we started getting the warning now only after
-some other patches of yours. Nevertheless, it should be considered as
-a fix only as that generated lockdep because of locking placement. And
-so sending such stuff separately is better as that allows people to
-apply it fast.
+Ignore the sgpios issue for now; we don't have a driver for it so
+there's no need to add strings. Drop that part from your dts patch.
 
-> > Having said that, I already have a patch with me which shall fix it for you as
-> > well:
-> 
-> I see that yours fix is already applied, thanks!
+>     > >
+>     > >  - compatible : Should be one of
+>     > > -  "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio"
+>     > > +  "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio", "aspeed,ast2600-sgpiom"
+>     >
+>     > I think we should add sgpiom strings for the ast2500 (and ast2400?)
+>     > too, as this is how they should have been named in the first place:
+>     >
+>    If I change the document whether I also need to send the patch for sgpio driver and g5/g4.dtsi?
 
-I hope it worked for you. Thanks.
+For the sgpiom? We already have a driver for that.
 
--- 
-viresh
+As I said above, make this about fixing the sgpio master and put aside
+the sgpio slave issue for now.
+
+Cheers,
+
+Joel
+
+>     > >  - compatible : Should be one of
+>     > >    "aspeed,ast2400-sgpio", "aspeed,ast2500-sgpio"
+>     > >   "aspeed,ast2400-sgpiom", "aspeed,ast2500-sgpiom", "aspeed,ast2600-sgpiom"
