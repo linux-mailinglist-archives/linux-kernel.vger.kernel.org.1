@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A6129D8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818E929D862
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389028AbgJ1Wk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+        id S2387971AbgJ1Wbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388996AbgJ1WkC (ORCPT
+        with ESMTP id S2387937AbgJ1Wbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:40:02 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB7DC0613CF;
-        Wed, 28 Oct 2020 15:40:02 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id k1so1115090ilc.10;
-        Wed, 28 Oct 2020 15:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oVUnL5kaK/5rf5G4sA+8aqXRjWDzkxcWebk6ujgD/a4=;
-        b=lVdjvlJU8QJiTeX+orF6aiSQkRhcTKXek6pC70EbrVTGQRVobxa66NKgA+x8PuyWhl
-         7i51fj9jrqvaY/A+Nq0rUmnagneca6PbrtahlzFwb1oX10Zz7IjDcEYKtKToagfhiKk9
-         nZYsz2oDRR8+cBnaHrBk995yn3o0KthFHODqWTmVZ6oWZhh+SQZ4CT3/Y1NgEd4eXJXB
-         gY3c+gl2Vp7G1ttS7UXUC9LZiUcWKZ1DBUNf101rzl3vzIm+8SqZwU7esW5mvCcpLYqt
-         dlT8aMX4y+r5CvAXeK8QUrg+XWtPiCnylPhhDe6fWShg+SNW0py2hw4zCtU6xpbDOxIC
-         3g2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oVUnL5kaK/5rf5G4sA+8aqXRjWDzkxcWebk6ujgD/a4=;
-        b=mtaiSImGLciSd83KvlcutPj+voqrFnYh+zrjWKkRdMNNCZLc1mNu7JEYDNzPw4Bq70
-         PRwEq69bpqqgRCwgjWPau2fEn6zs9/WdbAUPa1s0N+Po8dQTFyKJkg1ugWDo+CQzYULO
-         TopjwXhxd89dkHFiuIlsaYv7Pl9xx1AMcZZG1Oh7quJ58RyJkLeBQj/9f2Dqtq4tjLUp
-         B67EqrJmpjdW7/MXJZX2KzTjEc96Z95ID/spMyo7xVfxZ3vv2ML6PVaW5bMXyC/3i1l1
-         wxioueo6Gn8izIuGUgo8eoVxQoXFpNXrS9+MWEz1RO5mndBkQ10/1+q342uSTIHfqYV5
-         /yng==
-X-Gm-Message-State: AOAM530AX6aiKK870p1kanAxwAOvEqccANLP4B5AzaGq58uIxglDK4jp
-        nEsdu657w4UnRXZIya+lG/5Je9ow8nFy
-X-Google-Smtp-Source: ABdhPJwEfZ3S8cf5PNLPqQJlTMzx7UgTYspNtvNwe66BtBr0YbnEEqapRdlrd4oUtTF14CnlZ5pGnw==
-X-Received: by 2002:a63:9d4d:: with SMTP id i74mr4838250pgd.182.1603863047104;
-        Tue, 27 Oct 2020 22:30:47 -0700 (PDT)
-Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
-        by smtp.gmail.com with ESMTPSA id q8sm4300935pfg.118.2020.10.27.22.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 22:30:46 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 01:30:34 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] fbcon: Avoid hard-coding built-in font charcount
-Message-ID: <20201028053034.GA1205431@PWN>
-References: <cover.1603788511.git.yepeilin.cs@gmail.com>
- <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
- <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
- <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
- <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
- <20201027191353.GO401619@phenom.ffwll.local>
+        Wed, 28 Oct 2020 18:31:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DC5C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=wdyb7qRuLjR6s6XwwT89tkhrLT43vXhm0ixZ6vQNaB8=; b=hp0ozUsPB0Fw0gJZivtfAYk/bf
+        B3KQahTA80SGKkWIi0hizERQVDna+C8kieHsEy5H+ZmnPW21mAy6mbkJoUGlMXk6ACxJDftsb6i72
+        LiKErYWinHPh0kJeJLhA7IA7FoE/cq1oKWV/cIJyELTLtXm1XGg8nEt9miOxHuJvD1tNor6oajeI4
+        5+nZ0oTtfnVjFCQAEo7N3e8ysg2bp1V1Et7ryebPWpkJfhdgKiOc/rOjXjl7/U3tD+S/hXYcuphfM
+        34hn8ghQSFdXtHknDES69h1fSYRe6pzzjLDcWJnObIRtAvGoFUPMiVh2Q71UGv0b2JsGcHc50v7Lk
+        Shzlo54A==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXe4V-0001wK-41; Wed, 28 Oct 2020 05:32:31 +0000
+Subject: Re: [PATCH] KUnit: Docs: style: fix some Kconfig example issues
+To:     David Gow <davidgow@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+References: <20201027184909.20881-1-rdunlap@infradead.org>
+ <CABVgOSmtTK=V8EFL8KTmN+e+pP6HKZQo+LMsmqG3PnxuhFtZ9A@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <07963645-1644-53c2-b1da-8f89fe865eda@infradead.org>
+Date:   Tue, 27 Oct 2020 22:32:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027191353.GO401619@phenom.ffwll.local>
+In-Reply-To: <CABVgOSmtTK=V8EFL8KTmN+e+pP6HKZQo+LMsmqG3PnxuhFtZ9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 08:13:53PM +0100, Daniel Vetter wrote:
-> On Tue, Oct 27, 2020 at 12:37:29PM -0400, Peilin Ye wrote:
-> > fbcon_startup() and fbcon_init() are hard-coding the number of characters
-> > of our built-in fonts as 256. Recently, we included that information in
-> > our kernel font descriptor `struct font_desc`, so use `font->charcount`
-> > instead of a hard-coded value.
-> > 
-> > This patch depends on patch "Fonts: Add charcount field to font_desc".
-> > 
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+On 10/27/20 8:00 PM, David Gow wrote:
+> On Wed, Oct 28, 2020 at 2:49 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Fix the Kconfig example to be closer to Kconfig coding style.
+>> (Except that it still uses spaces instead of tabs for indentation;
+>> I guess that Sphinx wants it that way.)
+>>
+>> Also add punctuation and a trailing slash ('/') to a sub-directory
+>> name -- this is how the text mostly appears in other Kconfig files.
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: David Gow <davidgow@google.com>
+>> Cc: linux-kselftest@vger.kernel.org
+>> Cc: kunit-dev@googlegroups.com
+>> Cc: Shuah Khan <shuah@kernel.org>
+>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>> Cc: Brendan Higgins <brendanhiggins@google.com>
+>> ---
 > 
-> So I think this is correct, but it also doesn't do a hole lot yet. fbcon.c
-> still has tons of hard-coded 256 all over, and if (p->userfont).
+> Thanks for fixing this!
 > 
-> I think if we instead set vc->vc_font.charcount both in fbcon_init and in
-> fbcon_do_set_font (probably just replace the userfont parameter with
-> font_charcount for now), then we could replace these all with
-> vc->vc_font.charcount. And the code would already improve quite a bit I
-> think.
+> For what it's worth, I _think_ we could get away with tabs for
+> indentation in the file without Sphinx actually complaining, but it
+> does annoy some of the editors, and as far as I can tell, Sphinx
+> converts them back to spaces in its output. I'm far from an expert,
+> though...
 > 
-> With just this change here I think we have even more inconsistency, since
-> for built-in fonts vc->vc_font.charcount is now set correctly, but for
-> userfonts we need to instead look at FNTCHARCNT(vc->vc_font.data).
+> Regardless, this is:
+> 
+> Reviewed-by: David Gow <davidgow@google.com>
 
-You are right, let's remove FNTCHARCNT() altogether. fbcon_do_set_font()
-still needs a userfont parameter for refcount handling, I'll just add a
-charcount parameter to it.
+I tested with tabs for indentation and it's no problem with Sphinx.
+Some editors care?  I am surprised.  and don't much care.
 
-Peilin
+I would be happy to submit a v2 using tabs for indentation.
 
+thanks.
+-- 
+~Randy
