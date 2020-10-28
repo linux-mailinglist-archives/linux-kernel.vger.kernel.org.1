@@ -2,127 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE4A29DA65
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4489D29DA14
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390208AbgJ1XVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbgJ1XTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:19:42 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04046C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:19:42 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w65so751613pfd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xg57KUmN634wOly6nL89XU9gsH2m48A0iDZqjX+5yQs=;
-        b=VzO+KbtFvhZFihPl+Fk9WG+YxUuVglZBNm15uHZgP4kEtHAHfFjv/mga4cJKMFsy1D
-         nIBFcneZYZjp12Pth+qzWgacdGE6PonY0QzyMYkKQjeq67AQSG5ffr64NamRKo/eXcv3
-         4o8RMD+rOVNqhef6fbJsE29sVFupnPWUsnpAdd/RD6+uG1YEJjtz7GN6+js1PUIQ2B8k
-         RsQGHFzgg39LGQYxDv9i6f9B6s8HDbC/pWlB4nGr4GUdOiPUUaffpFcjxwkZf2EfdenL
-         Etgd/kFbA+J2SVHDBrD4mKHrGKsCJnl+eBLdVqqkvLuKScESgSvCaPT0kBrccUezwVYd
-         1H6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xg57KUmN634wOly6nL89XU9gsH2m48A0iDZqjX+5yQs=;
-        b=PcTksBhiTBT8H8J5EMQPdsd7dHW+nAJHMZbJp6Qu93U6AXzP6pNSHd2V5WP6fog/Yo
-         r8m8XeC4kkN5velB17Y9GybPyb35/a5MUP0l1DQ7YIECyId+pY9ZIAQdaeaKJ8lCKRb8
-         /jutaueQOexahxSNiM8NCzhWSyca3GPhYP3vK3JwxmEzPiG7do4lAlPjHdIOEsM5hjEN
-         HBT4n4hjkwXKvIMt/f/x30jaYjEbi8Z1AchkeNE7KCAqulS0QsAwNHQGj2M4t5yHBWgH
-         XawxRHx8rj7/tKtuwDTRFLULC+5ijWfGJpWRFy6KxCPOOd39aUYv1W4ARpejNXpTADE6
-         Zr9A==
-X-Gm-Message-State: AOAM530j0e6JO2iEKcjkYzLhgE/IKrxwDwPwVV/oSBxr8k13MwFBvhGE
-        vpJuCfMNdofh1Ych2OgfYmxTERTj6XItJ9gK
-X-Google-Smtp-Source: ABdhPJw0j7PoPu4pgeSAV+hnCESE+7s9TazchA9vHW2bC/BTkL2Eo+uzdv7kK82qQsSKxBi4EKxUdg==
-X-Received: by 2002:a17:902:8c8b:b029:d2:42fe:370a with SMTP id t11-20020a1709028c8bb02900d242fe370amr7033341plo.83.1603887634931;
-        Wed, 28 Oct 2020 05:20:34 -0700 (PDT)
-Received: from Monkey.fios-router.home ([47.144.162.13])
-        by smtp.gmail.com with ESMTPSA id a143sm6329137pfd.138.2020.10.28.05.20.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 05:20:34 -0700 (PDT)
-From:   "John B. Wyatt IV" <jbwyatt4@gmail.com>
-To:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen ' <tim.c.chen@intel.com>
-Cc:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
-Subject: [PATCH 0/8] Style and small fixes for core-scheduling
-Date:   Wed, 28 Oct 2020 05:19:09 -0700
-Message-Id: <20201028121917.635203-1-jbwyatt4@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S2390235AbgJ1XO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:14:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50610 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390212AbgJ1XNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 19:13:05 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kXkS3-003yGL-RM; Wed, 28 Oct 2020 13:21:15 +0100
+Date:   Wed, 28 Oct 2020 13:21:15 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pavana Sharma <pavana.sharma@digi.com>
+Cc:     f.fainelli@gmail.com, davem@davemloft.net,
+        gregkh@linuxfoundation.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        vivien.didelot@gmail.com
+Subject: Re: [PATCH v5 3/3] net: dsa: mv88e6xxx: Add support for mv88e6393x
+ family of Marvell
+Message-ID: <20201028122115.GC933237@lunn.ch>
+References: <cover.1603837678.git.pavana.sharma@digi.com>
+ <e5fdcddeda21884a21162e441d1e8a04994f2825.1603837679.git.pavana.sharma@digi.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5fdcddeda21884a21162e441d1e8a04994f2825.1603837679.git.pavana.sharma@digi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patchset of style and small fixes for the 8th iteration of the
-Core-Scheduling feature.
+On Wed, Oct 28, 2020 at 10:09:50AM +1000, Pavana Sharma wrote:
+> The Marvell 88E6393X device is a single-chip integration of a 11-port
+> Ethernet switch with eight integrated Gigabit Ethernet (GbE) transceivers
+> and three 10-Gigabit interfaces.
+> 
+> This patch adds functionalities specific to mv88e6393x family (88E6393X,
+> 88E6193X and 88E6191X)
 
-Style fixes include changing spaces to tabs, inserting new lines before
-declarations, removing unused braces, and spelling.
+Please break this patch up a bit into preparation patches, and the
+last patch actually adding support for the new family.
 
-Two small fixes involving changing a main() to main(void) and removing an
-unused 'else'.
+e.g. serdes_get_lane() returning -ENODEV should be a patch of its
+own. That should hopefully answer the question which
 
-All issues were reported by checkpatch.
+ommit 5122d4ec9e8053a5944bf77db6bd6c89143531d7
+Author: Vivien Didelot <vivien.didelot@gmail.com>
+Date:   Sat Aug 31 16:18:30 2019 -0400
 
-I am a new Linux kernel developer interning with the Outreachy project.
+    net: dsa: mv88e6xxx: simplify .serdes_get_lane
+    
+    Because the mapping between a SERDES interface and its lane is static,
+    we don't need to stick with negative error codes actually and we can
+    simply return 0 if there is no lane, just like the IRQ mapping.
+    
+    This way we can keep a simple and intuitive API using unsigned lane
+    numbers while simplifying the implementations with single return
+    statements
 
-Please feel free to advise on any corrections or improvements that can be
-made.
+raises.
 
-John B. Wyatt IV (8):
-  sched: Correct misspellings in core-scheduling.rst
-  sched: Fix bad function definition
-  sched: Fix some style issues in test_coresched.c
-  sched: Remove unused else
-  sched: Add newline after declaration
-  sched: Remove unneeded braces
-  sched: Replace spaces with tabs
-  sched: Add newlines after declarations
+> +static const struct mv88e6xxx_ops mv88e6193x_ops = {
+> +	/* MV88E6XXX_FAMILY_6393 */
+> +	.setup_errata = mv88e6393x_setup_errata,
+> +	.irl_init_all = mv88e6390_g2_irl_init_all,
+> +	.get_eeprom = mv88e6xxx_g2_get_eeprom8,
+> +	.set_eeprom = mv88e6xxx_g2_set_eeprom8,
+> +	.set_switch_mac = mv88e6xxx_g2_set_switch_mac,
+> +	.phy_read = mv88e6xxx_g2_smi_phy_read,
+> +	.phy_write = mv88e6xxx_g2_smi_phy_write,
+> +	.port_set_link = mv88e6xxx_port_set_link,
+> +	.port_set_speed_duplex = mv88e6393x_port_set_speed_duplex,
+> +	.port_set_rgmii_delay = mv88e6390_port_set_rgmii_delay,
+> +	.port_tag_remap = mv88e6390_port_tag_remap,
+> +	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
+> +	.port_set_egress_floods = mv88e6352_port_set_egress_floods,
+> +	.port_set_ether_type = mv88e6393x_port_set_ether_type,
+> +	.port_set_jumbo_size = mv88e6165_port_set_jumbo_size,
+> +	.port_egress_rate_limiting = mv88e6097_port_egress_rate_limiting,
+> +	.port_pause_limit = mv88e6390_port_pause_limit,
+> +	.port_set_cmode = mv88e6393x_port_set_cmode,
+> +	.port_disable_learn_limit = mv88e6xxx_port_disable_learn_limit,
+> +	.port_disable_pri_override = mv88e6xxx_port_disable_pri_override,
+> +	.port_get_cmode = mv88e6352_port_get_cmode,
+> +	.stats_snapshot = mv88e6390_g1_stats_snapshot,
+> +	.stats_set_histogram = mv88e6390_g1_stats_set_histogram,
+> +	.stats_get_sset_count = mv88e6320_stats_get_sset_count,
+> +	.stats_get_strings = mv88e6320_stats_get_strings,
+> +	.stats_get_stats = mv88e6390_stats_get_stats,
+> +	.set_cpu_port = mv88e6393x_port_set_cpu_dest,
+> +	.set_egress_port = mv88e6393x_set_egress_port,
+> +	.watchdog_ops = &mv88e6390_watchdog_ops,
+> +	.mgmt_rsvd2cpu = mv88e6393x_port_mgmt_rsvd2cpu,
+> +	.pot_clear = mv88e6xxx_g2_pot_clear,
+> +	.reset = mv88e6352_g1_reset,
+> +	.rmu_disable = mv88e6390_g1_rmu_disable,
+> +	.vtu_getnext = mv88e6390_g1_vtu_getnext,
+> +	.vtu_loadpurge = mv88e6390_g1_vtu_loadpurge,
+> +	.serdes_power = mv88e6393x_serdes_power,
+> +	.serdes_get_lane = mv88e6393x_serdes_get_lane,
+> +	/* Check status register pause & lpa register */
+> +	.serdes_pcs_get_state = mv88e6390_serdes_pcs_get_state,
+> +	.serdes_irq_mapping = mv88e6390_serdes_irq_mapping,
+> +	.serdes_irq_enable = mv88e6393x_serdes_irq_enable,
+> +	.serdes_irq_status = mv88e6393x_serdes_irq_status,
+> +	.gpio_ops = &mv88e6352_gpio_ops,
+> +	.avb_ops = &mv88e6390_avb_ops,
+> +	.ptp_ops = &mv88e6352_ptp_ops,
+> +	.phylink_validate = mv88e6393x_phylink_validate,
+> +};
 
- Documentation/admin-guide/hw-vuln/core-scheduling.rst | 8 ++++----
- arch/x86/include/asm/thread_info.h                    | 4 ++--
- kernel/sched/core.c                                   | 6 ++++--
- kernel/sched/coretag.c                                | 3 ++-
- tools/testing/selftests/sched/test_coresched.c        | 8 ++++----
- 5 files changed, 16 insertions(+), 13 deletions(-)
+> diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
+> index 823ae89e5fca..03c0466ab4ae 100644
+> --- a/drivers/net/dsa/mv88e6xxx/chip.h
+> +++ b/drivers/net/dsa/mv88e6xxx/chip.h
+> @@ -63,6 +63,8 @@ enum mv88e6xxx_model {
+>  	MV88E6190,
+>  	MV88E6190X,
+>  	MV88E6191,
+> +	MV88E6191X,
 
--- 
-2.28.0
+Is the 6191X part of the 6193 family? Not the 6390, like the 6191 is?
+Or do we have the 6191 in the wrong family?
 
+> +	MV88E6193X,
+
+You don't add any _ops structure for the 6193x. How is it different?
+Can you make your best guess at the ops structure. Also, what about
+the 6191X?
+
+>  	MV88E6220,
+>  	MV88E6240,
+>  	MV88E6250,
+> @@ -75,6 +77,7 @@ enum mv88e6xxx_model {
+>  	MV88E6352,
+>  	MV88E6390,
+>  	MV88E6390X,
+> +	MV88E6393X,
+>  };
+>  
+>  enum mv88e6xxx_family {
+> @@ -90,6 +93,7 @@ enum mv88e6xxx_family {
+>  	MV88E6XXX_FAMILY_6351,	/* 6171 6175 6350 6351 */
+>  	MV88E6XXX_FAMILY_6352,	/* 6172 6176 6240 6352 */
+>  	MV88E6XXX_FAMILY_6390,  /* 6190 6190X 6191 6290 6390 6390X */
+> +	MV88E6XXX_FAMILY_6393,	/* 6191X 6193X 6393X */
+>  };
+
+   Andrew
