@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA5429D5DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 844CF29D5EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730332AbgJ1WJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:09:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6660 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730255AbgJ1WJA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:09:00 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CLYLp2Sfqz15M2S;
-        Wed, 28 Oct 2020 11:04:02 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.238) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Wed, 28 Oct 2020
- 11:03:53 +0800
-To:     <viro@zeniv.linux.org.uk>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-CC:     <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <cai@redhat.com>
-Subject: [PATCH] pipe: fix potential inode leak in create_pipe_files()
-Message-ID: <779f767d-c08b-0c03-198e-06270100d529@huawei.com>
-Date:   Wed, 28 Oct 2020 11:03:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1730387AbgJ1WJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:09:56 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33425 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729546AbgJ1WIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:08:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLYk16RCKz9sV1;
+        Wed, 28 Oct 2020 14:20:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603855242;
+        bh=CRfZH8sS4m3q576hoo52jubFUX5+xu6CWRWXT6PSSVw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dGZQankLeXTTTsZ46S91gmCcLk/8u/zRgH8k5/iu2oby4cteirC2Q5sPtIVtCXhv4
+         SeOnR7rZMfQVjOmPGVc3tCT7Fxb24o7l7Cu1c8MXfLQoQL1KEqUGsN3YNDd5+xBQZZ
+         D5fSSE6HscaMDu/QSzhH0ljCa+JtjJ8SdNTNHxlDKTXL1/gPns34YNyALdenuWUCS5
+         GUA8OtmuubB8qyBPbOHulqTRlS+ABaPbhxv6TX88Udpkuw/Pwucy0raEjrfdk5AmR6
+         DsF4ZYx5pCNljPC0W/O12G0leKa3bvt08A86vMevBqvUMnByBA0AhKlcyeTVvdAQ4+
+         NHXOgRtglR+7Q==
+Date:   Wed, 28 Oct 2020 14:20:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the counters tree
+Message-ID: <20201028142039.6c7eb38a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.238]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/jsRZyDiU4L6e+kJ8x299/dG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/jsRZyDiU4L6e+kJ8x299/dG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In create_pipe_files(), if alloc_file_clone() fails, we will call
-put_pipe_info to release pipe, and call fput() to release f.
-However, we donot call iput() to free inode.
+Hi all,
 
-Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Signed-off-by: Feilong Lin <linfeilong@huawei.com>
----
- fs/pipe.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 0ac197658a2d..8856607fde65 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -924,6 +924,7 @@ int create_pipe_files(struct file **res, int flags)
- 	if (IS_ERR(res[0])) {
- 		put_pipe_info(inode, inode->i_pipe);
- 		fput(f);
-+		iput(inode);
- 		return PTR_ERR(res[0]);
- 	}
- 	res[0]->private_data = inode->i_pipe;
--- 
-2.19.1
+After merging the counters tree, today's linux-next build (htmldocs)
+produced these warnings:
 
 
+Documentation/core-api/counters.rst:45: WARNING: undefined label: test coun=
+ters module (if the link has no caption the label must precede a section he=
+ader)
+Documentation/core-api/counters.rst:48: WARNING: undefined label: selftest =
+for counters (if the link has no caption the label must precede a section h=
+eader)
+Documentation/core-api/counters.rst:61: WARNING: undefined label: atomic_op=
+s (if the link has no caption the label must precede a section header)
+
+Introduced by commit
+
+  37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/jsRZyDiU4L6e+kJ8x299/dG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Y44cACgkQAVBC80lX
+0GwnGwf+IzF0UHULm0hUAWeaZaoB1Lo/nfQtKyBYzHvqH2R2KZf/SXNAURc5+CFJ
+e3V47DznraFmxeODoNIeiih26tnfWSPz5T83bv4iXPqsJD8znOsvl30AK6tK7ZqN
+gAOImK+J4RQMOz7mh8UVEXKyXK5VKdwEECOhd8w046fq/iBGSBnSq8M6rSjBDKou
+1VWlvH64ahDANtSJtzUDEQHPMLZssyU9Mtc+8PQOLOaBxGGkt1FBuDc9L8jc9K1e
+uT5seh8xXSH7LjVTcQCAz6v82V5PsWTD7adHnyGbM1Na72abUyUfpRhP1rQ9ZfzZ
+G8paVDN3le55uhGd/APEKltFWzFA4g==
+=ksOc
+-----END PGP SIGNATURE-----
+
+--Sig_/jsRZyDiU4L6e+kJ8x299/dG--
