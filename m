@@ -2,139 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5455C29DFCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF3E29DF81
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730047AbgJ2BEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728543AbgJ1WGJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:06:09 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D13C0613CF;
-        Wed, 28 Oct 2020 15:06:08 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id p7so1151611ioo.6;
-        Wed, 28 Oct 2020 15:06:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AMavcgab6f/G1LUhaSL/VnJNMSO60VRuV52F7ID9Z1w=;
-        b=EEBx/en4jUjbpcytmaGqmQqZoK88eThP+DK9XrxHaN1SQ97f4DrSYomDP9X0SkW/q0
-         0Ber+eFxG+cd5uPhS9kdMvcxwOsNyvUepSmCzF0TsiaP4hVWzXTUgLvgS/dMFSOxyzGk
-         16u+I0XQc8qsTHSPvYyz4rHV/3lQF3ThUC3tsDsCPS7dA5Ch0eGbrwSUZZ0hL3TNeOZG
-         CN+mzBK34uZp1FOpOIHpgudSrBlFlgzn5ZeXE3KM3F4rVihVfxpyLVG39v8DBIYrtkyE
-         jP4hkiJ1Zb4zzHVZo4l6i5dRHdIorBBpHSNi4Xnn8MEx3bY91Z+6rCAstCz6GCl+fxKY
-         ymrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AMavcgab6f/G1LUhaSL/VnJNMSO60VRuV52F7ID9Z1w=;
-        b=CKpYiUzKGjXL4CxtU6+GaP15fd6Xsqjtz/dqg2P6v2vodl49iA5RdZr4bSTV2cy3iq
-         dDGX8FUFw7YMQtmDKOSZqmTLmMMc6SbFohuC0uRg8/dPmhHvjf1BcQSlHvjsyQnGjGFm
-         PO/UnaQuUbBrWTzN9BLdxsAKQNQzZ3w7gG3ikuLPaNCy6GuHmgyFhVRSb2Lfmr8qHkKG
-         vyPvBQwGayPlrdRRB4rwyd8/xg4a7ir6gcrv9BOCwY1HddWTFv4js6LL8QMRdQRndrjJ
-         WDjJCvVJohq3qmvoiFy9Qu615C/JZqc39FQ/l8nKsda9eP/sli9WSfkSz2sDPW81acKZ
-         2C9Q==
-X-Gm-Message-State: AOAM530SG7VqaJa7OiXisKna++lsnFpXsOKaIaweltNijmCeZU1ZQYhU
-        nQtB9MEYCrhWfa5sFo05UoYfxYh0LodR5Nde
-X-Google-Smtp-Source: ABdhPJxizRPARCHdEsCXjgrcYCTJx2PzRg4bj6IZWfYbOoEie0tP3vFgu3sgYYebDUS52otqnjvptw==
-X-Received: by 2002:a65:62ca:: with SMTP id m10mr6618468pgv.407.1603894962096;
-        Wed, 28 Oct 2020 07:22:42 -0700 (PDT)
-Received: from k5-sbwpb.flets-east.jp (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id c12sm6293543pgi.14.2020.10.28.07.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 07:22:41 -0700 (PDT)
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl,
-        Tsuchiya Yuto <kitakar@gmail.com>
-Subject: [PATCH 1/2] mwifiex: fix mwifiex_shutdown_sw() causing sw reset failure
-Date:   Wed, 28 Oct 2020 23:21:09 +0900
-Message-Id: <20201028142110.18144-2-kitakar@gmail.com>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201028142110.18144-1-kitakar@gmail.com>
-References: <20201028142110.18144-1-kitakar@gmail.com>
+        id S2404111AbgJ2BBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:01:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731485AbgJ1WRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:23 -0400
+Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95DF8247BF;
+        Wed, 28 Oct 2020 14:23:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603895015;
+        bh=YqWvLG/HlVMMTDoxlArrGqJGoB3hGxiNvQNMWzmgHsI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bpoeatvNSyNRCdqK1dq4YsN5UKoiMHbM/HVm4w394g+4AUxwntJqDbxhLLheG8E+5
+         0hcyBUk6PSRUb3JT9SfETt3lqxxFWl66r9w0cCvBJ/MsvSFPhymuG4tN3xdzw9MBkd
+         9YLd/DGT3edQaadPcfTBM+j0eKAbgQWy3Iwga0Uo=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kXmMP-003hls-E5; Wed, 28 Oct 2020 15:23:33 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Enderborg <peter.enderborg@sony.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 25/33] docs: Kconfig/Makefile: add a check for broken ABI files
+Date:   Wed, 28 Oct 2020 15:23:23 +0100
+Message-Id: <f97df0ea6dd59cf5fe1655c71eb34af71c67d20c.1603893146.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1603893146.git.mchehab+huawei@kernel.org>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When FLR is performed but without fw reset for some reasons (e.g. on
-Surface devices, fw reset requires another quirk), it fails to reset
-properly. You can trigger the issue on such devices via debugfs entry
-for reset:
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-    $ echo 1 | sudo tee /sys/kernel/debug/mwifiex/mlan0/reset
+The files under Documentation/ABI should follow the syntax
+as defined at Documentation/ABI/README.
 
-and the resulting dmesg log:
+Allow checking if they're following the syntax by running
+the ABI parser script on COMPILE_TEST.
 
-    [   45.740508] mwifiex_pcie 0000:03:00.0: Resetting per request
-    [   45.742937] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 3
-    [   45.744666] mwifiex_pcie 0000:03:00.0: info: shutdown mwifiex...
-    [   45.751530] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.751539] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771691] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771695] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771697] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771698] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771699] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771701] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771702] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771703] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771704] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771705] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771707] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771708] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   53.099343] mwifiex_pcie 0000:03:00.0: info: trying to associate to '[SSID]' bssid [BSSID]
-    [   53.241870] mwifiex_pcie 0000:03:00.0: info: associated to bssid [BSSID] successfully
-    [   75.377942] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [   85.385491] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 15
-    [   87.539408] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [   87.539412] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   99.699917] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [   99.699925] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [  111.859802] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [  111.859808] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [...]
+With that, when there's a problem with a file under
+Documentation/ABI, it would produce a warning like:
 
-When comparing mwifiex_shutdown_sw() with mwifiex_pcie_remove(), it
-lacks mwifiex_init_shutdown_fw().
+	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#14:
+		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_cor' doesn't have a description
+	Warning: file ./Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats#21:
+		What '/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_fatal' doesn't have a description
 
-This commit fixes mwifiex_shutdown_sw() by adding the missing
-mwifiex_init_shutdown_fw().
-
-Fixes: 4c5dae59d2e9 ("mwifiex: add PCIe function level reset support")
-Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/Kconfig  | 10 ++++++++++
+ Documentation/Makefile |  5 +++++
+ lib/Kconfig.debug      |  2 ++
+ scripts/get_abi.pl     | 14 +++++++++++---
+ 4 files changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 9ba8a8f64976b..6283df5aaaf8b 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -1471,6 +1471,8 @@ int mwifiex_shutdown_sw(struct mwifiex_adapter *adapter)
- 	priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
- 	mwifiex_deauthenticate(priv, NULL);
+diff --git a/Documentation/Kconfig b/Documentation/Kconfig
+index 66046fa1c341..e549a61f4d96 100644
+--- a/Documentation/Kconfig
++++ b/Documentation/Kconfig
+@@ -10,4 +10,14 @@ config WARN_MISSING_DOCUMENTS
  
-+	mwifiex_init_shutdown_fw(priv, MWIFIEX_FUNC_SHUTDOWN);
+ 	   If unsure, select 'N'.
+ 
++config WARN_ABI_ERRORS
++	bool "Warn if there are errors at ABI files"
++	depends on COMPILE_TEST
++	help
++	   The files under Documentation/ABI should follow what's
++	   described at Documentation/ABI/README. Yet, as they're manually
++	   written, it would be possible that some of those files would
++	   have errors that would break them for being parsed by
++	   scripts/get_abi.pl. Add a check to verify them.
+ 
++	   If unsure, select 'N'.
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 4e47dff8b315..61a7310b49e0 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -10,6 +10,11 @@ ifeq ($(CONFIG_WARN_MISSING_DOCUMENTS),y)
+ $(shell $(srctree)/scripts/documentation-file-ref-check --warn)
+ endif
+ 
++# Check for broken ABI files
++ifeq ($(CONFIG_WARN_ABI_ERRORS),y)
++$(shell $(srctree)/scripts/get_abi.pl validate --dir $(srctree)/Documentation/ABI)
++endif
 +
- 	mwifiex_uninit_sw(adapter);
- 	adapter->is_up = false;
+ # You can set these variables from the command line.
+ SPHINXBUILD   = sphinx-build
+ SPHINXOPTS    =
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index d7a7bc3b6098..c789b39ed527 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2446,4 +2446,6 @@ config HYPERV_TESTING
  
+ endmenu # "Kernel Testing and Coverage"
+ 
++source "Documentation/Kconfig"
++
+ endmenu # Kernel hacking
+diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
+index 3cff7cdf1397..413349789145 100755
+--- a/scripts/get_abi.pl
++++ b/scripts/get_abi.pl
+@@ -50,7 +50,15 @@ my %symbols;
+ sub parse_error($$$$) {
+ 	my ($file, $ln, $msg, $data) = @_;
+ 
+-	print STDERR "file $file#$ln: $msg at\n\t$data";
++	$data =~ s/\s+$/\n/;
++
++	print STDERR "Warning: file $file#$ln:\n\t$msg";
++
++	if ($data ne "") {
++		print STDERR ". Line\n\t\t$data";
++	} else {
++	    print STDERR "\n";
++	}
+ }
+ 
+ #
+@@ -110,7 +118,7 @@ sub parse_abi {
+ 
+ 			# Invalid, but it is a common mistake
+ 			if ($new_tag eq "where") {
+-				parse_error($file, $ln, "tag 'Where' is invalid. Should be 'What:' instead", $_);
++				parse_error($file, $ln, "tag 'Where' is invalid. Should be 'What:' instead", "");
+ 				$new_tag = "what";
+ 			}
+ 
+@@ -225,7 +233,7 @@ sub parse_abi {
+ 		}
+ 
+ 		# Everything else is error
+-		parse_error($file, $ln, "Unexpected line:", $_);
++		parse_error($file, $ln, "Unexpected content", $_);
+ 	}
+ 	$data{$nametag}->{description} =~ s/^\n+// if ($data{$nametag}->{description});
+ 	if ($what) {
 -- 
-2.29.1
+2.26.2
 
