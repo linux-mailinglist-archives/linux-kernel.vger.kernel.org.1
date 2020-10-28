@@ -2,216 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D74B29D99C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504FB29D8B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389905AbgJ1W6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733264AbgJ1W4d (ORCPT
+        id S2388271AbgJ1Wfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:35:50 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40470 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732560AbgJ1Wfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:56:33 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0A4C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:56:33 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id x11so201470uav.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ozg/xNrcYSziE20bzi4lIPwNQnRu5LTAaFvjlaSgtGk=;
-        b=C78HtLq7jT+jP9hMgZWD6rTRSns8CtEY5TtXp8yOpaV3uWHPRW4VEULBwtiV323cJy
-         j/R+byIa7BpjbCW2A57u4bRQgUq+V1hcO4aU5qYXkE0cq+FVfGvqep0ghcfwPVYuNjOo
-         QAQyawL14OtAx3STd3Uc4fmzuPxCB4R9t4yWtzg1RR+iy3YnHtWnCIvAmcijhuEpcoQB
-         xtBIYP8RlrkA94M96acTYtcwH/KMr4PHfeKl8J/p68AFZllOsIXpdOQALmbXEiX1HcOC
-         NwJcIKoSybjuKFy+QslQceolgIzzqFbvlXZezmVlkO+pr7X3A0sSPAtvIfXdXpfXPv+l
-         oIhQ==
+        Wed, 28 Oct 2020 18:35:47 -0400
+Received: by mail-oi1-f195.google.com with SMTP id m128so1246919oig.7;
+        Wed, 28 Oct 2020 15:35:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ozg/xNrcYSziE20bzi4lIPwNQnRu5LTAaFvjlaSgtGk=;
-        b=IWDBSI7pf4CeipcefLz1RR63iiblxutEtrM2DmwZ1HanxlLv0dqm3sKh9AXezagTyf
-         y4k4L6W+QzAMiFAZUQI4sfmB46mh+Sbo7ZD/odMEQXgTsMKPvKJZOuky3bnzt4a9CiWH
-         YiCwPGPSgPxQanIzCiYhiz+XnTt1VlFV4QN5gBEZAL7gklcEQp97BCb5dK9ag8KNjYL1
-         otZzMyK0btQB/ZE6mkXAGEo5FQALbbUNHllfKBFuUh/euPFMXQkUwc70vAjyW2aOfRhJ
-         2BdzYY1EOzlIwdNxl+lGUqv5jZWCULoTdeCedv8DEEW1l0st47TnVegqZ9EIPZyklmY3
-         jJEg==
-X-Gm-Message-State: AOAM531Ygef6yLbGXNdeROsir7cGyxbasnNuDfKsvJxXL2NfaozqeRt2
-        eM1jQiRcdtG3pv51ZsbjP0/tXiGDh/iXD3FTwoUXMGUjH4xYxqMj
-X-Google-Smtp-Source: ABdhPJy++gKqdUg1HOlS/X39Aj8EsBgkT5xmgJ6KMAsEGOHJ5HZWjKQF6HnvM/L5XgEnqFr7qDncUNJQZbqysimK7L0=
-X-Received: by 2002:a9d:22e4:: with SMTP id y91mr5232950ota.72.1603893041819;
- Wed, 28 Oct 2020 06:50:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j40fXvYMK2w1uYoqbRN/p/K2nSLc7QBgd4j2HeymL48=;
+        b=rZxK11zR99v0qURJQX/GHzTQbEUlOkWtuiBfwl1SBRgwr7B11SPJiMCbDIeyFlosdt
+         P538eehxjTY+dtWzgXLGm/BsC+zxxj23tWAulV4goETwIHMzddLmby6pAuO9qCJDotM/
+         rZnvllcO/z1RvCbCFWvpshW+KfAdtbov9EgRCkDlb8T1rkArypoAHH7Xlz/mmKFwJVDO
+         MVZA6oLIOGd5Pgc+2wNtv6/nhqV36Hr31ehIPbZXwYWLkOZMNipj+huWgzkvDvRTAopR
+         ufLRRvBJ2lEXWiJLI5SxxVfPP1kRTec35wrpsJ2CQxFy2nY0H5MihgoZ36ecwkxk2Iva
+         Dvlw==
+X-Gm-Message-State: AOAM532Ak0cMegW5QRAq/PBQ/Gea6vZZLV8z4Tp4DfRrHUKxbrrr320Y
+        Yg4YAWo8ZEE3Wr4/sSgX0BFKdM/4qA==
+X-Google-Smtp-Source: ABdhPJwoDP3ZNhOt8k6d3nBfKIYb6o3ezWXIw7ASHIquqjVuovgMd+jq/KjXaIEjhCPeoDgQTQdHFw==
+X-Received: by 2002:aca:38c6:: with SMTP id f189mr5415873oia.27.1603893201354;
+        Wed, 28 Oct 2020 06:53:21 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t5sm2145145oth.16.2020.10.28.06.53.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 06:53:20 -0700 (PDT)
+Received: (nullmailer pid 3927164 invoked by uid 1000);
+        Wed, 28 Oct 2020 13:53:19 -0000
+Date:   Wed, 28 Oct 2020 08:53:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, sboyd@kernel.org,
+        robh+dt@kernel.org, mturquette@baylibre.com,
+        devicetree@vger.kernel.org, bjorn.andersson@linaro.org
+Subject: Re: [RESEND PATCH v3 1/4] dt-bindings: clock: Add support for LPASS
+ Audio Clock Controller
+Message-ID: <20201028135319.GA3926524@bogus>
+References: <20201026120221.18984-1-srinivas.kandagatla@linaro.org>
+ <20201026120221.18984-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-References: <20201027134900.532249571@linuxfoundation.org>
-In-Reply-To: <20201027134900.532249571@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 28 Oct 2020 19:20:30 +0530
-Message-ID: <CA+G9fYvH9o8SkuxJ3QZ5W2_oQpaTLdNs-=78FKSRG1+oPbvSeg@mail.gmail.com>
-Subject: Re: [PATCH 4.4 000/112] 4.4.241-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026120221.18984-2-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 19:27, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.241 release.
-> There are 112 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Oct 2020 13:48:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.241-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.241-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: b3d9b0c29dc82606492af20d03760fb07876eb22
-git describe: v4.4.240-113-gb3d9b0c29dc8
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.240-113-gb3d9b0c29dc8
-
-No regressions (compared to build v4.4.240)
-
-No fixes (compared to build v4.4.240)
-
-Ran 7633 total tests in the following environments and test suites.
-
-Environments
---------------
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-math-tests
-* install-android-platform-tools-r2600
-* perf
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.241-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.241-rc1-hikey-20201027-837
-git commit: 7aa5c99e548c0f8522c9c04b9f489957aee944b9
-git describe: 4.4.241-rc1-hikey-20201027-837
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.241-rc1-hikey-20201027-837
+On Mon, 26 Oct 2020 12:02:18 +0000, Srinivas Kandagatla wrote:
+> Audio Clock controller is a block inside LPASS which controls
+> 2 Glitch free muxes to LPASS codec Macros.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/clock/qcom,audiocc-sm8250.yaml   | 58 +++++++++++++++++++
+>  .../clock/qcom,sm8250-lpass-audiocc.h         | 13 +++++
+>  2 files changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
+> 
 
 
-No regressions (compared to build 4.4.241-rc1-hikey-20201024-836)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-No fixes (compared to build 4.4.241-rc1-hikey-20201024-836)
+yamllint warnings/errors:
 
-Ran 1748 total tests in the following environments and test suites.
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.example.dts:25.30-31 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1366: dt_binding_check] Error 2
 
-Environments
---------------
-- hi6220-hikey - arm64
 
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
+See https://patchwork.ozlabs.org/patch/1387714
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
