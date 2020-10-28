@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F75529D91D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDF629D84F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389185AbgJ1Wod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53222 "EHLO mail.kernel.org"
+        id S2387859AbgJ1WbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389159AbgJ1WmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:42:23 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387852AbgJ1WbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:31:11 -0400
+Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A38EB247D4;
-        Wed, 28 Oct 2020 20:15:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B49220720;
+        Wed, 28 Oct 2020 22:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603916154;
-        bh=yeuEHlayFmSooOIM4atMOm1X/2p7fFSFU1uBRzszkkg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hBUc6JcB0RsnYdPRgf4DTu6DEOetHuj7XfmsvGJ5Y5OUK7ACi488NbzzbGwCJKfEh
-         rACnq/LMvlJDZzYy5pw4lyC10IPU2EJN6dS3KsOoIWgMZ6LhyXtMSCMbkR4jEsVQ2i
-         i1oP/+mOgS6AIuGCAbj+Lrv/ubdHHHWYtXiR8dvw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 469A835225B2; Wed, 28 Oct 2020 13:15:54 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 13:15:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [RFC][PATCH v3 6/6] rcu/tree: Use irq_work_queue_remote()
-Message-ID: <20201028201554.GE3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.584884062@infradead.org>
- <20201028145428.GE2628@hirez.programming.kicks-ass.net>
- <20201028200243.GJ2651@hirez.programming.kicks-ass.net>
+        s=default; t=1603924271;
+        bh=14PRgQ9ja2vhKOIYad9z8Ly4hH8wA/Mlt1rDuUMOPjg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=j8/npGYSUb0iY//8SVCqzASzEAnBs8i2WfbO9p4J7yAEcKGRLkf5RFlyZQdSNADtc
+         VAE5arKxMxraOBA+JIaJ9x2E5q74ArET0IsrXiz64ZxLOKn10Tdlq8/tRe8ixcNEqr
+         UEzDIRe7UEMuvoIFpCBCb6o/LjrmymZWKsXgD3G8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Andy Shevchenko <andy@kernel.org>, Milo Kim <milo.kim@ti.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [RESEND PATCH 11/42] mfd: intel_soc_pmic: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:38 +0100
+Message-Id: <20201028223009.369824-11-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
+References: <20201028223009.369824-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028200243.GJ2651@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 09:02:43PM +0100, Peter Zijlstra wrote:
-> On Wed, Oct 28, 2020 at 03:54:28PM +0100, Peter Zijlstra wrote:
-> > On Wed, Oct 28, 2020 at 12:07:13PM +0100, Peter Zijlstra wrote:
-> > > AFAICT we only need/use irq_work_queue_on() on remote CPUs, since we
-> > > can directly access local state.  So avoid the IRQ_WORK dependency and
-> > > use the unconditionally available irq_work_queue_remote().
-> > > 
-> > > This survives a number of TREE01 runs.
-> > 
-> > OK, Paul mentioned on IRC that while it is extremely unlikely, this code
-> > does not indeed guarantee it will not try to IPI self.
-> > 
-> > I'll try again.
-> 
-> This is the best I could come up with.. :/
-> 
-> ---
-> Subject: rcu/tree: Use irq_work_queue_remote()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Wed Oct 28 11:53:40 CET 2020
-> 
-> All sites that consume rcu_iw_gp_seq seem to have rcu_node lock held,
-> so setting it probably should too. Also the effect of self-IPI here
-> would be setting rcu_iw_gp_seq to the value we just set it to
-> (pointless) and clearing rcu_iw_pending, which we just set, so don't
-> set it.
-> 
-> Passes TREE01.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/rcu/tree.c |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1308,14 +1308,16 @@ static int rcu_implicit_dynticks_qs(stru
->  			resched_cpu(rdp->cpu);
->  			WRITE_ONCE(rdp->last_fqs_resched, jiffies);
->  		}
-> -#ifdef CONFIG_IRQ_WORK
-> +		raw_spin_lock_rcu_node(rnp);
+Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+ - it brings some meaning,
+ - it might point attention why auto device ID was not used.
 
-The caller of rcu_implicit_dynticks_qs() already holds this lock.
-Please see the force_qs_rnp() function and its second call site,
-to which rcu_implicit_dynticks_qs() is passed as an argument.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/mfd/intel_soc_pmic_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But other than that, this does look plausible.  And getting rid of
-that #ifdef is worth something.  ;-)
+diff --git a/drivers/mfd/intel_soc_pmic_core.c b/drivers/mfd/intel_soc_pmic_core.c
+index ddd64f9e3341..b7bbe58dedcc 100644
+--- a/drivers/mfd/intel_soc_pmic_core.c
++++ b/drivers/mfd/intel_soc_pmic_core.c
+@@ -86,7 +86,7 @@ static int intel_soc_pmic_i2c_probe(struct i2c_client *i2c,
+ 	/* Add lookup table for crc-pwm */
+ 	pwm_add_table(crc_pwm_lookup, ARRAY_SIZE(crc_pwm_lookup));
+ 
+-	ret = mfd_add_devices(dev, -1, config->cell_dev,
++	ret = mfd_add_devices(dev, PLATFORM_DEVID_NONE, config->cell_dev,
+ 			      config->n_cell_devs, NULL, 0,
+ 			      regmap_irq_get_domain(pmic->irq_chip_data));
+ 	if (ret)
+-- 
+2.25.1
 
-							Thanx, Paul
-
->  		if (!rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
->  		    (rnp->ffmask & rdp->grpmask)) {
-> -			rdp->rcu_iw_pending = true;
->  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
-> -			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-> +			if (likely(rdp->cpu != smp_processor_id())) {
-> +				rdp->rcu_iw_pending = true;
-> +				irq_work_queue_remote(rdp->cpu, &rdp->rcu_iw);
-> +			}
->  		}
-> -#endif
-> +		raw_spin_unlock_rcu_node(rnp);
->  	}
->  
->  	return 0;
