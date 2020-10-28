@@ -2,197 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C86229E128
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5277229E11F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728694AbgJ2Bx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:53:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728682AbgJ1V5Y (ORCPT
+        id S1728872AbgJ2Bxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728659AbgJ1V51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:57:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603922242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7H6fn0sflmDKqkVqjVyUYl4il+uaeJMTU2fENiZAfKY=;
-        b=IlxD5ZvqfCZoDxG9JOCWsutMIdqX+kmawcmefVRWlopzX12/hJ78op/prNT3vZY5pIyX+5
-        tky7C/SbEdEBuUy3MbTcdqdV7+voJK3eetmSEPHfvAAbpRlPr2dJm9JXJNKUVL6eprbkdb
-        DnrzHXDpTOVCc/qk0sEQcvU10y8QHcc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-38TkBNg8PLmcPbR1FBSbNQ-1; Wed, 28 Oct 2020 07:54:44 -0400
-X-MC-Unique: 38TkBNg8PLmcPbR1FBSbNQ-1
-Received: by mail-ed1-f69.google.com with SMTP id m1so1994315edr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 04:54:44 -0700 (PDT)
+        Wed, 28 Oct 2020 17:57:27 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7E5C0613CF;
+        Wed, 28 Oct 2020 14:57:27 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k21so618700wmi.1;
+        Wed, 28 Oct 2020 14:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=A0oVWK/PD/2SiJZrfVFOxqFlp4+JetaKuHdDt62eT5Y=;
+        b=Z2ndfn5j7k7+QMJwNsAEGZoaEYBos7I7MqRDzTDgT+C7OVFtal3as/fuFyGorI6nbb
+         W2o6iKwFFEhVR4Im417Q9EjZdKs5jB5qpUZQU515sVhglsK5zxhUZ67WyCWhpXQlOWNo
+         1lStxvC2TvAHkEzniUcXmIkBZg1TUKaAHNP5zBG0WmmnArYSSMYDXJLJ9Qk0TbtzdLqc
+         D2NfPZel85LMUvnpNFHJxRMtIwNJCwOD2XSus1YUoh18+8H+FKZNhQAmQa4mJdV0tOgI
+         gjIHXbG8W9OSqe9k4qtt7239j1F9Z0bmTGLCMXO+owZhGHNG9er6XDOKx0p3VI7ZVVQr
+         I2lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7H6fn0sflmDKqkVqjVyUYl4il+uaeJMTU2fENiZAfKY=;
-        b=YF8Voi1TNvoDffH8rWdRHUXgeBDYjzo/zYmi5Z/NqKV4cjyY2zYLm+QkLo9JXVm0Lj
-         rEbyiX6QQcuRGMb0DmenqEtVgPw5X0XPhYnYFK13E3IeWvFaZSLRUQc6LXpzH6jI5O6L
-         yiyro+cvMQqBQ+at/fAMkMIF4RoytTX75WUD4IQW7OdO/gJaAZkbbAIPPucn4dSBHRzh
-         V6ZM15vd4SeBej/TX3lUMov+dAboDWj0rWTF1UKCGS+MuOxQllZqiNQ1mzoHwsERZdiR
-         OfLyV9hcXqGaFh0GdKnMIclScaVs7JBeuT/l5j86oP1N91sn8jipFA/dSGcpbcKDV8pL
-         B38A==
-X-Gm-Message-State: AOAM531rEvtTPmzvgvCS6xhRriOFksT0+JoXvgnkKGhHyHGKztvMxZhX
-        C8gBvXhcI1GyVPWZ0n7VpmqFSeu/C1Tao3O3/RMlB/j9Er9rEDjeBLU/2NSl2uZaWKtMcjp7YLa
-        7+X9UP4AGt0iZWW8kdRssrGZz
-X-Received: by 2002:a17:906:3290:: with SMTP id 16mr7055823ejw.308.1603886082962;
-        Wed, 28 Oct 2020 04:54:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyki7zPz1WgRhVvswcqc8DYrUa2nHa46FuIilVQLasUTTavgZEBiFJ8BDY2RERDV8wGBbiebg==
-X-Received: by 2002:a17:906:3290:: with SMTP id 16mr7055799ejw.308.1603886082717;
-        Wed, 28 Oct 2020 04:54:42 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id r3sm2768715edw.42.2020.10.28.04.54.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 04:54:42 -0700 (PDT)
-Subject: Re: [PATCH] Documentation: Add documentation for new platform_profile
- sysfs attribute
-To:     Mark Pearson <markpearson@lenovo.com>
-Cc:     dvhart@infradead.org, mgross@linux.intel.com,
-        mario.limonciello@dell.com, eliadevito@gmail.com,
-        hadess@hadess.net, bberg@redhat.com, linux-pm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <markpearson@lenovo.com>
- <20201027164219.868839-1-markpearson@lenovo.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8749d17c-4d0b-5c29-a8c9-4a6704b422d6@redhat.com>
-Date:   Wed, 28 Oct 2020 12:54:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20201027164219.868839-1-markpearson@lenovo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=A0oVWK/PD/2SiJZrfVFOxqFlp4+JetaKuHdDt62eT5Y=;
+        b=VTepSMyAgq3xz7xPoR5YRYI1T8R2ADgJOXsCw53kQTCThQ0ITwVDJmIu0uZ++zBMtQ
+         H5Vo1Q80bmmfZ50TP3E1rDwOMrHRgFc85P7UG1NYfe4TWXpXBBSXINzPBlssHwFiFcjk
+         2p5l3HOKBZgGxOg2l0Y4gep2k06YxFlAb5PQ59SpO/MPVK/16DsxAFJEilLyegBJqpXX
+         zI47d6L1Ox2wogzZFnJh/lkKHBIF5tKd9404s9PKAsg5DY+78sMW96U/eoE7qxEMxA9u
+         K5fnoJCArv8W1wHMJNPbKRHlr/b2xmpE8ATiL0lJCdGxkFwDnunnx7ojrA7xGKDzicac
+         RvlA==
+X-Gm-Message-State: AOAM533vJs8/vTH4My5Wt+7UDPCCCK7XkfFkzRlFOjaIhBhY+HtvRW6H
+        Vh8NOeuluRIByXSs5XLkuW7R3TeLt5oF3T3O
+X-Google-Smtp-Source: ABdhPJyaRHfb5LCfX2Rq7KACTz6umOsO5aK3fujyrp10owGv38bNI8BTsGvajv1jEuk9xmUB2K/Xsg==
+X-Received: by 2002:a1c:bdc4:: with SMTP id n187mr8303423wmf.185.1603887682784;
+        Wed, 28 Oct 2020 05:21:22 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d7a:200:a915:6596:e9b0:4f60])
+        by smtp.gmail.com with ESMTPSA id c1sm6783945wru.49.2020.10.28.05.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 05:21:22 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+Cc:     "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] x86/unwind: remove unneeded initialization
+Date:   Wed, 28 Oct 2020 13:21:02 +0100
+Message-Id: <20201028122102.24202-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+make clang-analyzer on x86_64 defconfig caught my attention with:
 
-A few minor nitpicks below, mostly stuff which I missed before, sorry.
+  arch/x86/kernel/unwind_orc.c:38:7: warning: Value stored to 'mid' during
+  its initialization is never read [clang-analyzer-deadcode.DeadStores]
+          int *mid = first, *found = first;
+               ^
 
-I suggest you make v2 part of the series where you actually add the
-drivers/acpi/... and the thinkpad_acpi.c bits to implement this.
+Commit ee9f8fce9964 ("x86/unwind: Add the ORC unwinder") introduced
+__orc_find() with this unneeded dead-store initialization.
 
-On 10/27/20 5:42 PM, Mark Pearson wrote:
-> From: Hans de Goede <hdegoede@redhat.com>
-> 
-> On modern systems the platform performance, temperature, fan and other
-> hardware related characteristics are often dynamically configurable. The
-> profile is often automatically adjusted to the load by somei
+Put the variable in local scope and initialize only once the value is
+needed to make clang-analyzer happy.
 
-s/somei/some/
+As compilers will detect this unneeded assignment and optimize this
+anyway, the resulting object code is effectively identical before and
+after this change.
 
-> automatic-mechanism (which may very well live outside the kernel).
-> 
-> These auto platform-adjustment mechanisms often can be configured with
-> one of several 'platform-profiles', with either a bias towards low-power
-> consumption or towards performance (and higher power consumption and
-> thermals).
+No functional change. Effectively, no change to object code.
 
-I think it is better to also drop the " (and higher power consumption and
-thermals)" bit here (and below) like you did for the cool and quiet parts.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20201028
 
-Regards,
+Josh, please ack.
+Ingo, Borislav, please pick this minor non-urgent clean-up patch.
 
-Hans
+ arch/x86/kernel/unwind_orc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Introduce a new platform_profile sysfs API which offers a generic API for
-> selecting the performance-profile of these automatic-mechanisms.
-> 
-> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
-> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changes in V1:
->  - Moved from RFC to proposed patch
->  - Added cool profile as requested
->  - removed extra-profiles as no longer relevant
-> 
->  .../ABI/testing/sysfs-platform_profile        | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-platform_profile b/Documentation/ABI/testing/sysfs-platform_profile
-> new file mode 100644
-> index 000000000000..240bd3d7532b
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-platform_profile
-> @@ -0,0 +1,66 @@
-> +Platform-profile selection (e.g. /sys/firmware/acpi/platform_profile)
-> +
-> +On modern systems the platform performance, temperature, fan and other
-> +hardware related characteristics are often dynamically configurable. The
-> +profile is often automatically adjusted to the load by some
-> +automatic-mechanism (which may very well live outside the kernel).
-> +
-> +These auto platform-adjustment mechanisms often can be configured with
-> +one of several 'platform-profiles', with either a bias towards low-power
-> +consumption or towards performance (and higher power consumption and
-> +thermals).
-> +
-> +The purpose of the platform_profile attribute is to offer a generic sysfs
-> +API for selecting the platform-profile of these automatic-mechanisms.
-> +
-> +Note that this API is only for selecting the platform-profile, it is
-> +NOT a goal of this API to allow monitoring the resulting performance
-> +characteristics. Monitoring performance is best done with device/vendor
-> +specific tools such as e.g. turbostat.
-> +
-> +Specifically when selecting a high-performance profile the actual achieved
-> +performance may be limited by various factors such as: the heat generated
-> +by other components, room temperature, free air flow at the bottom of a
-> +laptop, etc. It is explicitly NOT a goal of this API to let userspace know
-> +about any sub-optimal conditions which are impeding reaching the requested
-> +performance level.
-> +
-> +Since numbers are a rather meaningless way to describe platform-profiles
-> +this API uses strings to describe the various profiles. To make sure that
-> +userspace gets a consistent experience when using this API this API
-> +document defines a fixed set of profile-names. Drivers *must* map their
-> +internal profile representation/names onto this fixed set.
-> +
-> +If for some reason there is no good match when mapping then a new profile-name
-> +may be added. Drivers which wish to introduce new profile-names must:
-> +1. Have very good reasons to do so.
-> +2. Add the new profile-name to this document, so that future drivers which also
-> +   have a similar problem can use the same name.
-> +
-> +What:		/sys/firmware/acpi/platform_profile_choices
-> +Date:		October 2020
-> +Contact:	Hans de Goede <hdegoede@redhat.com>
-> +Description:
-> +		Reading this file gives a space separated list of profiles
-> +		supported for this device.
-> +
-> +		Drivers must use the following standard profile-names:
-> +
-> +		low-power:		Emphasises low power consumption
-> +		cool:			Emphasises cooler operation
-> +		quiet:			Emphasises quieter operation
-> +		balanced:		Balance between low power consumption
-> +					and performance
-> +		performance:		Emphasises performance (and may lead to
-> +					higher temperatures and fan speeds)
-> +
-> +		Userspace may expect drivers to offer at least several of these
-> +		standard profile-names.
-> +
-> +What:		/sys/firmware/acpi/platform_profile
-> +Date:		October 2020
-> +Contact:	Hans de Goede <hdegoede@redhat.com>
-> +Description:
-> +		Reading this file gives the current selected profile for this
-> +		device. Writing this file with one of the strings from
-> +		available_profiles changes the profile to the new value.
-> 
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 6a339ce328e0..5c64eed08257 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -35,7 +35,7 @@ static struct orc_entry *__orc_find(int *ip_table, struct orc_entry *u_table,
+ {
+ 	int *first = ip_table;
+ 	int *last = ip_table + num_entries - 1;
+-	int *mid = first, *found = first;
++	int *found = first;
+ 
+ 	if (!num_entries)
+ 		return NULL;
+@@ -47,7 +47,7 @@ static struct orc_entry *__orc_find(int *ip_table, struct orc_entry *u_table,
+ 	 * ignored when they conflict with a real entry.
+ 	 */
+ 	while (first <= last) {
+-		mid = first + ((last - first) / 2);
++		int *mid = first + ((last - first) / 2);
+ 
+ 		if (orc_ip(mid) <= ip) {
+ 			found = mid;
+-- 
+2.17.1
 
