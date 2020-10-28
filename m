@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0F929D504
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A84429D2A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgJ1V4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728579AbgJ1V4M (ORCPT
+        id S1726359AbgJ1Vdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:33:50 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46794 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgJ1Vdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:56:12 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D59C0613CF;
-        Wed, 28 Oct 2020 14:56:12 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id j7so1120239oie.12;
-        Wed, 28 Oct 2020 14:56:12 -0700 (PDT)
+        Wed, 28 Oct 2020 17:33:47 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y14so510537pfp.13;
+        Wed, 28 Oct 2020 14:33:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zHdXxs/T9mZg7pnTabmXNYI1gYHQQJ61N4sTHUvcPUk=;
-        b=AmUwQcAt1VAGU+7CByHjC1Oes4GGfSweQWXlDbr/CgxxRlilrbYYTenjwbPYHyWEgz
-         LHKkymEHL2DocTPL4lE4s+GQ7MnwLW2fbZ8VVqpdXOb7lw036dXA7nGpYVbCDuH1Drc8
-         mjDgmgjwN2ET48i7VDJG6QiYUGQHvkY1SH2nnqru/vudIvjqa93+hzscx+Nvsh2a9CrY
-         13a7Xjp8UBlCNG7rx9Cjx3h9wI5LXEOHlShiduPrll7YHkterXWu9qvJ04eUO2hO0u1j
-         WpgOuzLuGL0Elokp1fJyngH94yqobI2Te7x3nMzibwjr9jD5Kj2aRA3flo0MUczTmrDn
-         Y11Q==
+        bh=O16ozSgNVeUbZNwvfhn7rD7cA+u7qcU4L0YeQ5QzNhI=;
+        b=jOYQNnY9IfokAO0ZMFdny3vr+8MYjeJt17M9HL/enN+XfZ5GFHdYKdxBOn3lbJnUIv
+         jFQLU3BAla+q4MLprOD6h42sZW0i2YqaYK+FoXD6CV+I+Il4mazbkzfJpIbnI3JFcYge
+         uoFtOgLD6CwiGAnAE8bN32EQkiHaC5Y4d5gD3rFWxTFYUGfDTbqRHNGuKNZot00dTX/6
+         zMpS3roJ7892WDowTxKa16WKk3TUYrCUPeHc/pjE+G5jCI6zCXwRVkujD5O5cis1sfwX
+         bPpn7sn8o+VsbOSDoz7/w22rwF/rR1/AUz1RhQuq24Kgt30cXGst1G4ejvHNgt8RQ16L
+         5/8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zHdXxs/T9mZg7pnTabmXNYI1gYHQQJ61N4sTHUvcPUk=;
-        b=KTvV7+WpGvbXzWL9absHP6KSMhSNGXtW6DCLg1fGi+7QG5+RN7YCVQr2wN4L1N40xI
-         psj+vHeeJayz6NwfRF9O7laKVtxJg/f+z002BH2WBRLRyscuIRvQyJ8XlZjUBQC7Oo4h
-         i/x4wdG5GY7lHd7eNsRtsXKdJhPTmK6yRFESSuD8iOjXiWVC7DZtv6C7lZdXHVLAAtwR
-         EMRm3/Uowu2mlBoPVh9zxcEVD5uHlvMUbYPwGGNPqqgu9c4PPumrmknfD5gdfMgMtUqX
-         D0MnEAJuNBJzglaTKDdzzriL+XrWSoua0qq6bmdltILYEtAGd3Zj2u3rk37eixsdGc2N
-         q9dw==
-X-Gm-Message-State: AOAM531RV6PY+mE4hT/JWY2WFDyRbM2P3XGsHAJJnkonp4mCJVbqiY8P
-        bEGB6AHtjT7rXhtDa6ddRgoI02VUKCWh5dYb
-X-Google-Smtp-Source: ABdhPJxMerd/WVMTl6OAD0Q/nuNJbG+xVQtf6jhUUfBHNGjpniJCbD9kmKMHF4xtAw9wKqE6f/hbuQ==
-X-Received: by 2002:a17:90a:5303:: with SMTP id x3mr2781024pjh.188.1603895158254;
-        Wed, 28 Oct 2020 07:25:58 -0700 (PDT)
+        bh=O16ozSgNVeUbZNwvfhn7rD7cA+u7qcU4L0YeQ5QzNhI=;
+        b=cXqbabA1gleTjpnoXnSgVhMqYOrz5+Sik703VWqTEY0WG5YBn8cBYC3upFpZPNOcSM
+         TNN93yhRZhJ7d8i3GuLPXBfb62Y/lpK6XBs/83Yji5daQRpKE1Elfc0TulGsc2ZTHoqm
+         wD5qcAGFPk8v9iSLdpzlB6FRVNY1uPZ0A9tQQv0OEa8/1hjDwFLIyNh+uaL6jWblGyEG
+         0ldXpei0P1oZusFnUeBe2H4dIEJ7nDMZvEYCl7Eo6NC4n4QJ8s0C+bB4DnWSZN/q/X1C
+         9nuCYPthx4gARLp2Y7uZ9Da9fHfz96sqL/66CwQCKgWmlnoYa0VZ5Y20Hoo1NVHK6WM0
+         UGlQ==
+X-Gm-Message-State: AOAM533ISeN18wJaFdxY6o5bG2bZbWd2qLbrlav4BozYxcgutgRrlwcA
+        5DQD214iBZv/c40tZpn6xHr1fc1GXtnyt9oY
+X-Google-Smtp-Source: ABdhPJyxd0WqzPwiTiazqJqvnqrghz5YeFG+0daHa8O+g7tvBTOBB0Ji13PCAj0J9kgGD6HyIODEYQ==
+X-Received: by 2002:a17:902:bd43:b029:d6:820d:cb85 with SMTP id b3-20020a170902bd43b02900d6820dcb85mr240758plx.37.1603895314671;
+        Wed, 28 Oct 2020 07:28:34 -0700 (PDT)
 Received: from k5-sbwpb.flets-east.jp (i60-35-254-237.s41.a020.ap.plala.or.jp. [60.35.254.237])
-        by smtp.gmail.com with ESMTPSA id 194sm6227192pfz.182.2020.10.28.07.25.54
+        by smtp.gmail.com with ESMTPSA id g67sm6581754pfb.9.2020.10.28.07.28.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 07:25:57 -0700 (PDT)
+        Wed, 28 Oct 2020 07:28:34 -0700 (PDT)
 From:   Tsuchiya Yuto <kitakar@gmail.com>
 To:     Amitkumar Karwar <amitkarwar@gmail.com>,
         Ganapathi Bhat <ganapathi.bhat@nxp.com>,
@@ -60,66 +57,237 @@ Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         Maximilian Luz <luzmaximilian@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl,
         Tsuchiya Yuto <kitakar@gmail.com>
-Subject: [PATCH 2/3] mwifiex: add allow_ps_mode module parameter
-Date:   Wed, 28 Oct 2020 23:24:32 +0900
-Message-Id: <20201028142433.18501-3-kitakar@gmail.com>
+Subject: [RFC PATCH 2/3] mwifiex: pcie: add reset_d3cold quirk for Surface gen4+ devices
+Date:   Wed, 28 Oct 2020 23:27:52 +0900
+Message-Id: <20201028142753.18855-3-kitakar@gmail.com>
 X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201028142433.18501-1-kitakar@gmail.com>
-References: <20201028142433.18501-1-kitakar@gmail.com>
+In-Reply-To: <20201028142753.18855-1-kitakar@gmail.com>
+References: <20201028142753.18855-1-kitakar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make the ps_mode (power_save) control easier, this commit adds a new
-module parameter allow_ps_mode and set it false (disallowed) by default.
+To reset mwifiex on Surface gen4+ (Pro 4 or later gen) devices, it
+seems that putting the wifi device into D3cold is required according
+to errata.inf file on Windows installation (Windows/INF/errata.inf).
 
-When this parameter is set to false, changing the power_save mode will
-be disallowed like the following:
+This patch adds a function that performs power-cycle (put into D3cold
+then D0) and call the function at the end of reset_prepare().
 
-    $ sudo iw dev mlan0 set power_save on
-    command failed: Operation not permitted (-1)
+Note: Need to also reset the parent device (bridge) of wifi on SB1;
+it might be because the bridge of wifi always reports it's in D3hot.
+When I tried to reset only the wifi device (not touching parent), it gave
+the following error and the reset failed:
+
+    acpi device:4b: Cannot transition to power state D0 for parent in D3hot
+    mwifiex_pcie 0000:03:00.0: can't change power state from D3cold to D0 (config space inaccessible)
 
 Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
 ---
- drivers/net/wireless/marvell/mwifiex/cfg80211.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Current issue:
+* After reset with this quirk, ASPM settings don't get restored.
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index a6b9dc6700b14..943bc1e8ceaee 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -25,6 +25,11 @@
- static char *reg_alpha2;
- module_param(reg_alpha2, charp, 0);
- 
-+static bool allow_ps_mode;
-+module_param(allow_ps_mode, bool, 0644);
-+MODULE_PARM_DESC(allow_ps_mode,
-+		 "allow WiFi power management to be enabled. (default: disallowed)");
+Below is the "sudo lspci -nnvvv" diff before/after fw reset on Surface Book 1:
+
+    #
+    # 03:00.0 Ethernet controller [0200]: Marvell Technology Group Ltd. 88W8897 [AVASTAR] 802.11ac Wireless [11ab:2b38]
+    #
+    @@ -574,9 +574,9 @@
+            Capabilities: [168 v1] L1 PM Substates
+                    L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
+                              PortCommonModeRestoreTime=70us PortTPowerOnTime=10us
+    -               L1SubCtl1: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+
+    -                          T_CommonMode=0us LTR1.2_Threshold=163840ns
+    -               L1SubCtl2: T_PwrOn=44us
+    +               L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2- ASPM_L1.1-
+    +                          T_CommonMode=0us LTR1.2_Threshold=0ns
+    +               L1SubCtl2: T_PwrOn=10us
+            Kernel driver in use: mwifiex_pcie
+            Kernel modules: mwifiex_pcie
+    
+    #
+    # no changes on root port of wifi regarding ASPM
+    #
+
+As you see, all of the L1 substates are disabled after fw reset. LTR
+value is also changed.
+
+ drivers/net/wireless/marvell/mwifiex/pcie.c   |  7 ++
+ .../wireless/marvell/mwifiex/pcie_quirks.c    | 73 +++++++++++++++++--
+ .../wireless/marvell/mwifiex/pcie_quirks.h    |  3 +-
+ 3 files changed, 74 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
+index 362cf10debfa0..c0c4b5a9149ab 100644
+--- a/drivers/net/wireless/marvell/mwifiex/pcie.c
++++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+@@ -529,6 +529,13 @@ static void mwifiex_pcie_reset_prepare(struct pci_dev *pdev)
+ 	mwifiex_shutdown_sw(adapter);
+ 	clear_bit(MWIFIEX_IFACE_WORK_DEVICE_DUMP, &card->work_flags);
+ 	clear_bit(MWIFIEX_IFACE_WORK_CARD_RESET, &card->work_flags);
 +
- static const struct ieee80211_iface_limit mwifiex_ap_sta_limits[] = {
- 	{
- 		.max = MWIFIEX_MAX_BSS_NUM,
-@@ -435,6 +440,17 @@ mwifiex_cfg80211_set_power_mgmt(struct wiphy *wiphy,
- 
- 	ps_mode = enabled;
- 
-+	/* Allow ps_mode to be enabled only when allow_ps_mode is true */
-+	if (ps_mode && !allow_ps_mode) {
-+		mwifiex_dbg(priv->adapter, MSG,
-+			    "Enabling ps_mode disallowed by modparam\n");
++	/* For Surface gen4+ devices, we need to put wifi into D3cold right
++	 * before performing FLR
++	 */
++	if (card->quirks & QUIRK_FW_RST_D3COLD)
++		mwifiex_pcie_reset_d3cold_quirk(pdev);
 +
-+		/* Return -EPERM to inform userspace tools that setting
-+		 * power_save to be enabled is not permitted.
-+		 */
-+		return -EPERM;
-+	}
-+
- 	return mwifiex_drv_set_power(priv, &ps_mode);
+ 	mwifiex_dbg(adapter, INFO, "%s, successful\n", __func__);
  }
  
+diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+index 929aee2b0a60a..edc739c542fea 100644
+--- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
++++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+@@ -21,7 +21,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Pro 5",
+@@ -30,7 +30,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Pro 5 (LTE)",
+@@ -39,7 +39,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Pro 6",
+@@ -47,7 +47,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Book 1",
+@@ -55,7 +55,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Book 2",
+@@ -63,7 +63,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Laptop 1",
+@@ -71,7 +71,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface Laptop 2",
+@@ -79,7 +79,7 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
+ 		},
+-		.driver_data = 0,
++		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+ 	},
+ 	{
+ 		.ident = "Surface 3",
+@@ -111,4 +111,61 @@ void mwifiex_initialize_quirks(struct pcie_service_card *card)
+ 
+ 	if (!card->quirks)
+ 		dev_info(&pdev->dev, "no quirks enabled\n");
++	if (card->quirks & QUIRK_FW_RST_D3COLD)
++		dev_info(&pdev->dev, "quirk reset_d3cold enabled\n");
++}
++
++static void mwifiex_pcie_set_power_d3cold(struct pci_dev *pdev)
++{
++	dev_info(&pdev->dev, "putting into D3cold...\n");
++
++	pci_save_state(pdev);
++	if (pci_is_enabled(pdev))
++		pci_disable_device(pdev);
++	pci_set_power_state(pdev, PCI_D3cold);
++}
++
++static int mwifiex_pcie_set_power_d0(struct pci_dev *pdev)
++{
++	int ret;
++
++	dev_info(&pdev->dev, "putting into D0...\n");
++
++	pci_set_power_state(pdev, PCI_D0);
++	ret = pci_enable_device(pdev);
++	if (ret) {
++		dev_err(&pdev->dev, "pci_enable_device failed\n");
++		return ret;
++	}
++	pci_restore_state(pdev);
++
++	return 0;
++}
++
++int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev)
++{
++	struct pci_dev *parent_pdev = pci_upstream_bridge(pdev);
++	int ret;
++
++	/* Power-cycle (put into D3cold then D0) */
++	dev_info(&pdev->dev, "Using reset_d3cold quirk to perform FW reset\n");
++
++	/* We need to perform power-cycle also for bridge of wifi because
++	 * on some devices (e.g. Surface Book 1), the OS for some reasons
++	 * can't know the real power state of the bridge.
++	 * When tried to power-cycle only wifi, the reset failed with the
++	 * following dmesg log:
++	 * "Cannot transition to power state D0 for parent in D3hot".
++	 */
++	mwifiex_pcie_set_power_d3cold(pdev);
++	mwifiex_pcie_set_power_d3cold(parent_pdev);
++
++	ret = mwifiex_pcie_set_power_d0(parent_pdev);
++	if (ret)
++		return ret;
++	ret = mwifiex_pcie_set_power_d0(pdev);
++	if (ret)
++		return ret;
++
++	return 0;
+ }
+diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+index 5326ae7e56713..8b9dcb5070d87 100644
+--- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
++++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+@@ -6,6 +6,7 @@
+ #include "pcie.h"
+ 
+ /* quirks */
+-// quirk flags can be added here
++#define QUIRK_FW_RST_D3COLD	BIT(0)
+ 
+ void mwifiex_initialize_quirks(struct pcie_service_card *card);
++int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev);
 -- 
 2.29.1
 
