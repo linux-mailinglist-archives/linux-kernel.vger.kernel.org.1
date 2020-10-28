@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B428C29D774
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4C029D6AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732989AbgJ1WYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:24:34 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35172 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732535AbgJ1WY1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:24:27 -0400
-Received: by mail-oi1-f195.google.com with SMTP id w191so1255567oif.2;
-        Wed, 28 Oct 2020 15:24:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Sv2FVoxnqW/ZZL6On0xD6CMoZAcuyjIfOT9376yoH8=;
-        b=rqRSRRX7acYNnPFjl/UGml/5HXbamyNX+MDtOANAP4DRktQJN9smXodJnSiMShEQTN
-         mIISW5INDBHASkskNZUHtis0MqDNaDvXT+kl7308qejMTx2fxYWYfsTkFiEpEOhpCkAh
-         3aZ2WH1SogpZbydNbZ8nZ8p56hdmdCZVn9DZUDlnV+fmepjyp/BuTuPwFecGp8vYYOG+
-         kQ9xHwNwWuo7ZI2DziPafz2qGl565R5Ai92C3lELPIlcm8S8FKwVdofEBMgJagWum/Cd
-         EE8sfLpbsCj20NiI7pvvLAlvzU4VXgHa3jsLEhSHmN+7+qag+rbja+CeSrYE5UzY2bhZ
-         OWmA==
-X-Gm-Message-State: AOAM532t8TouyN3PfIy7wDEsT4G9UGHS0oUKBkznkO0ZYAuy/V03wfBV
-        vSsJuxUFl0k3r8moOWjsZ9aRn6tPbnBwDscLkUqi0vR5
-X-Google-Smtp-Source: ABdhPJyblUt9XGbqG//4Rk9sfsTFBrwwgwHA1TBlEHDbR6syB2Nw14Bq1Q16HKbBNe5BKXGGevPeQscCGwnL0JZWNpU=
-X-Received: by 2002:aca:30d7:: with SMTP id w206mr266429oiw.69.1603904785647;
- Wed, 28 Oct 2020 10:06:25 -0700 (PDT)
+        id S1731478AbgJ1WRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:17:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:58445 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731459AbgJ1WRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:07 -0400
+IronPort-SDR: tTBMoPS/hCNOyFsZL3XBzSXqn956hNj6ObC4YkZVzzVjW45p3LYwVwzz14ahwVf3Tq3CdQxKwJ
+ 1s9f9dMckjqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="147581619"
+X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
+   d="scan'208";a="147581619"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:13:51 -0700
+IronPort-SDR: rdROUzDEGk2wo3Npe3je3eTrc3dLnV4UgVqN9FX4UpdDVebiBYWc2eO8G/wZ8eHuduCXAY4LF1
+ 92hA9IyS0fVQ==
+X-IronPort-AV: E=Sophos;i="5.77,427,1596524400"; 
+   d="scan'208";a="536311333"
+Received: from rramir3-mobl.amr.corp.intel.com (HELO [10.254.71.48]) ([10.254.71.48])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 10:13:50 -0700
+Subject: Re: [PATCH v11 4/5] PCI/portdrv: Remove redundant pci_aer_available()
+ check in DPC enable logic
+To:     Ethan Zhao <xerces.zhao@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>, knsathya@kernel.org
+References: <cover.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <2faef6f884aae9ae92e57e7c6a88a6195553c684.1603766889.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAKF3qh1J=_nxFTztyEjMBJav_W+JY60gzf27dvantMeKU+Aatg@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <ee679e38-dd8a-7d43-8715-a4e454664f89@linux.intel.com>
+Date:   Wed, 28 Oct 2020 10:13:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201027185934.1586984-1-trix@redhat.com>
-In-Reply-To: <20201027185934.1586984-1-trix@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 28 Oct 2020 18:06:14 +0100
-Message-ID: <CAJZ5v0iGDnDbUnb5AYYMrV2st7Vc=kDSHp-YB1xKS-ccea8=XQ@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: speedstep: remove unneeded semicolon
-To:     trix@redhat.com
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKF3qh1J=_nxFTztyEjMBJav_W+JY60gzf27dvantMeKU+Aatg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 8:00 PM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> A semicolon is not needed after a switch statement.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/cpufreq/speedstep-lib.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/speedstep-lib.c b/drivers/cpufreq/speedstep-lib.c
-> index a13a2d1e444e..0b66df4ed513 100644
-> --- a/drivers/cpufreq/speedstep-lib.c
-> +++ b/drivers/cpufreq/speedstep-lib.c
-> @@ -240,7 +240,7 @@ unsigned int speedstep_get_frequency(enum speedstep_processor processor)
->                 return pentium3_get_frequency(processor);
->         default:
->                 return 0;
-> -       };
-> +       }
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(speedstep_get_frequency);
-> --
 
-Applied as 5.10-rc material, thanks!
+
+On 10/27/20 11:00 PM, Ethan Zhao wrote:
+> On Tue, Oct 27, 2020 at 10:00 PM Kuppuswamy Sathyanarayanan
+> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>>
+>> In DPC service enable logic, check for
+>> services & PCIE_PORT_SERVICE_AER implies pci_aer_available()
+> How about PCIE_PORT_SERVICE_AER is not configured, but
+> pcie_aer_disable == 0 ？
+Its not possible in current code flow. DPC service is configured
+following AER service configuration.
+>> is true. So there is no need to explicitly check it again.
+>>
+>> Also, passing pcie_ports=dpc-native in kernel command line
+>> implies DPC needs to be enabled in native mode irrespective
+>> of AER ownership status. So checking for pci_aer_available()
+>> without checking for pcie_ports status is incorrect.
+>>
+>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> ---
+>>   drivers/pci/pcie/portdrv_core.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+>> index 2c0278f0fdcc..e257a2ca3595 100644
+>> --- a/drivers/pci/pcie/portdrv_core.c
+>> +++ b/drivers/pci/pcie/portdrv_core.c
+>> @@ -252,7 +252,6 @@ static int get_port_device_capability(struct pci_dev *dev)
+>>           * permission to use AER.
+>>           */
+>>          if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+>> -           pci_aer_available() &&
+>>              (host->native_dpc || (services & PCIE_PORT_SERVICE_AER)))
+>>                  services |= PCIE_PORT_SERVICE_DPC;
+>>
+>> --
+>> 2.17.1
+>>
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
