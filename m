@@ -2,116 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BE429D4C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A473D29D2BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgJ1Vy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728756AbgJ1VyW (ORCPT
+        id S1726571AbgJ1Ve0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:34:26 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56724 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726557AbgJ1VeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:54:22 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19D7C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:22 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id d15so434086ybl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SLwuvMzZvnnRNQP9we9x59FzXelhwfghvGsrUjCw4VU=;
-        b=RhHG4HNLIvQOsKCKHMFdQG5fs/Mi3bnrL+uhZVtOtEPwgm7l8Kvlgq5+7bAAIJDIZy
-         Ws2PXYZVCaUR12gMSyaiAYhIMDvGbUlv+Ej83F2O+nIySiFW2fsYHQrp12w//YPSzbf7
-         xb36K+7+JCa5forimaubJnMEPqQAeU7CqhIiejJE7uke9RLQ6+Y22KO0G5TUzIcvFIZD
-         k4NFqDjN7dU+7PuIZJJkzVKtD4Uqx5xauUIjz70dJvYImXDu3e3R0eYdu4Wiq4wKtD5E
-         GRwSgaI4X2KVd+3wdqacGA2Pm3CzZFP8WdyZY4h9llIGUaSqJYZ8u0GfZeL4AbYPP0tJ
-         6zVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SLwuvMzZvnnRNQP9we9x59FzXelhwfghvGsrUjCw4VU=;
-        b=CebgDH/4R332URHgTh4sy2r5upIbCrwaz/7GZjQ5VMUPlFKGjPmdIlto1VvgxSw/9c
-         Ic+vuAc1YVd5COJxnfJs4Fv7THnT1fR7BpRfKvAeAvn6Xr7+HczSvGmcQFJMI6w+JpGG
-         k2OEmhB/GjW6tKaO82wIscLXIbScup4uYDl99qRHfQOOo/L7nVoersFUFOi4MsTYaZbQ
-         K7D4xAuwpCup6v4LI1s7+f+x6gJ936waPFaMxC/JDAXnPLJ2inGBursPhZEO6Qmq1zn4
-         vyW96084BcyVBSPIthQhwJZzTzQdD9SaWWY3FeVrPtod7+PB13TYBagwULEH49y7CDxK
-         uK2w==
-X-Gm-Message-State: AOAM532beOPmw5TtZdr2VYVgfKD7G5L9cqWx1ZY2IDdfiJW0WhZnUhhB
-        LACk3zBNKjznvXOc/EGcCOf4dmHeu6CPhg==
-X-Google-Smtp-Source: ABdhPJzcQn+pi4scFs4Et0ODIMxdwgv+wQwl2Usiplw+seac0umWnfV8DesXaeFja8jdkurmnB1XQg==
-X-Received: by 2002:a05:6830:1e70:: with SMTP id m16mr5395840otr.51.1603898412480;
-        Wed, 28 Oct 2020 08:20:12 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h6sm2708389oia.51.2020.10.28.08.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 08:20:11 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Wed, 28 Oct 2020 17:34:23 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09SFTUUZ013074
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 11:29:31 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 92AB1420107; Wed, 28 Oct 2020 11:29:30 -0400 (EDT)
+Date:   Wed, 28 Oct 2020 11:29:30 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] pinctrl: qcom: sm8250: Specify PDC map
-Date:   Wed, 28 Oct 2020 08:20:40 -0700
-Message-Id: <20201028152040.1142473-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
+Subject: Re: [PATCH] ext4: properly check for dirty state in
+ ext4_inode_datasync_dirty()
+Message-ID: <20201028152930.GQ5691@mit.edu>
+References: <20201024140115.GA35973@xps-13-7390>
+ <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
+ <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify the PDC mapping for SM8250, so that gpio interrupts are
-propertly mapped to the wakeup IRQs of the PDC.
+On Wed, Oct 28, 2020 at 08:57:03AM +0530, Ritesh Harjani wrote:
+> 
+> Well, I too noticed this yesterday while I was testing xfstests -g swap.
+> Those tests were returning _notrun, hence that could be the reason why
+> it didn't get notice in XFSTESTing from Ted.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Yeah, one of the things I discussed with Harshad is we really need a
+test that looks like generic/472, but which is in shared/NNN, and
+which unconditionally tries to use swapon for those file systems where
+swapfiles are expected to work.  This is actually the second
+regression caused by our breaking swapfile support (the other being
+the iomap bmap change), which escaped our testing because we didn't
+notice that generic/472 was skipped.
 
-Resending this as it didn't seem to have hit the list.
+(Mental note; perhaps we should have a way of flagging tests that are
+skipped when previously they would run in the {kvm,gce}-xfstests
+framework.)
 
- drivers/pinctrl/qcom/pinctrl-sm8250.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/pinctrl/qcom/pinctrl-sm8250.c b/drivers/pinctrl/qcom/pinctrl-sm8250.c
-index 826df0d637ea..af144e724bd9 100644
---- a/drivers/pinctrl/qcom/pinctrl-sm8250.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sm8250.c
-@@ -1313,6 +1313,22 @@ static const struct msm_pingroup sm8250_groups[] = {
- 	[183] = SDC_PINGROUP(sdc2_data, 0xb7000, 9, 0),
- };
- 
-+static const struct msm_gpio_wakeirq_map sm8250_pdc_map[] = {
-+	{ 0, 79 }, { 1, 84 }, { 2, 80 }, { 3, 82 }, { 4, 107 }, { 7, 43 },
-+	{ 11, 42 }, { 14, 44 }, { 15, 52 }, { 19, 67 }, { 23, 68 }, { 24, 105 },
-+	{ 27, 92 }, { 28, 106 }, { 31, 69 }, { 35, 70 }, { 39, 37 },
-+	{ 40, 108 }, { 43, 71 }, { 45, 72 }, { 47, 83 }, { 51, 74 }, { 55, 77 },
-+	{ 59, 78 }, { 63, 75 }, { 64, 81 }, { 65, 87 }, { 66, 88 }, { 67, 89 },
-+	{ 68, 54 }, { 70, 85 }, { 77, 46 }, { 80, 90 }, { 81, 91 }, { 83, 97 },
-+	{ 84, 98 }, { 86, 99 }, { 87, 100 }, { 88, 101 }, { 89, 102 },
-+	{ 92, 103 }, { 93, 104 }, { 100, 53 }, { 103, 47 }, { 104, 48 },
-+	{ 108, 49 }, { 109, 94 }, { 110, 95 }, { 111, 96 }, { 112, 55 },
-+	{ 113, 56 }, { 118, 50 }, { 121, 51 }, { 122, 57 }, { 123, 58 },
-+	{ 124, 45 }, { 126, 59 }, { 128, 76 }, { 129, 86 }, { 132, 93 },
-+	{ 133, 65 }, { 134, 66 }, { 136, 62 }, { 137, 63 }, { 138, 64 },
-+	{ 142, 60 }, { 143, 61 }
-+};
-+
- static const struct msm_pinctrl_soc_data sm8250_pinctrl = {
- 	.pins = sm8250_pins,
- 	.npins = ARRAY_SIZE(sm8250_pins),
-@@ -1323,6 +1339,8 @@ static const struct msm_pinctrl_soc_data sm8250_pinctrl = {
- 	.ngpios = 181,
- 	.tiles = sm8250_tiles,
- 	.ntiles = ARRAY_SIZE(sm8250_tiles),
-+	.wakeirq_map = sm8250_pdc_map,
-+	.nwakeirq_map = ARRAY_SIZE(sm8250_pdc_map),
- };
- 
- static int sm8250_pinctrl_probe(struct platform_device *pdev)
--- 
-2.28.0
-
+						- Ted
