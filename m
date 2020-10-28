@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F6929D640
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8A629D57F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbgJ1WNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56464 "EHLO mail.kernel.org"
+        id S1729746AbgJ1WDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:03:22 -0400
+Received: from m12-18.163.com ([220.181.12.18]:52754 "EHLO m12-18.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730829AbgJ1WMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:12:23 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC763247C5;
-        Wed, 28 Oct 2020 15:29:18 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 11:29:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [RFC][PATCH 1/2 v2] ftrace/x86: Allow for arguments to be
- passed in to REGS by default
-Message-ID: <20201028112916.50bcbc69@oasis.local.home>
-In-Reply-To: <20201028102502.28095c95@oasis.local.home>
-References: <20201028131542.963014814@goodmis.org>
-        <20201028131909.738751907@goodmis.org>
-        <20201028102502.28095c95@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729724AbgJ1WDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:03:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=nAs3v
+        bkCmcV6Oy/GkOcEF/dH1rSAqiDrs/rbgl/Dt0I=; b=qUigTwMcCWIF+OxcrVy8g
+        cA8If80/dMbSNmPzz/m3D3doUZNlVPvjgjjQ5H0GD3UdmfA478UCyqGCeya3hMsk
+        Qp2C0MLBgyL6fqzdBO00lu2V6rhv/UC79dsGVgYHkPriES2abYgQJmgeCbQOvy0T
+        47yZWxHAxieyMYxbCfZNZE=
+Received: from localhost (unknown [101.86.209.121])
+        by smtp14 (Coremail) with SMTP id EsCowAC314PdjplfhT2uAg--.3425S2;
+        Wed, 28 Oct 2020 23:31:41 +0800 (CST)
+Date:   Wed, 28 Oct 2020 23:31:41 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, sh_def@163.com
+Subject: [PATCH v3] mm/oom_kill: remove comment and rename
+ is_dump_unreclaim_slabs()
+Message-ID: <20201028153141.GB77196@rlk>
+References: <20201027144529.GA3558@rlk>
+ <20201027145814.GY20500@dhcp22.suse.cz>
+ <20201027151156.GA4336@rlk>
+ <20201027192322.GA20500@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027192322.GA20500@dhcp22.suse.cz>
+X-CM-TRANSID: EsCowAC314PdjplfhT2uAg--.3425S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Wr4xWryrZw4DZw4rGrg_yoW8Xr1Up3
+        Z3t34Dtw4rtrZI9F4xCr429r1avws5KFyfJr9xKw18Zw15Xw1UurW8C342vr9IqFyrAFs3
+        JrWayr4kZ3WDZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uzq2_UUUUU=
+X-Originating-IP: [101.86.209.121]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiMR3LX1UMWJ7UYAAAsT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+Comment for is_dump_unreclaim_slabs is not really clear whether it is
+meant to instruct how to use the function or whether it is an outdated
+information of the past implementation of the function. it doesn't realy
+help that is_dump_unreclaim_slabs is hard to grasp on its own.
 
-Talking with Peter and Thomas on IRC, where they really don't like
-passing a partial pt_regs around, got me thinking of redoing the REGS
-parameter of ftrace. Kprobes is the only user that requires the full
-registers being saved, and that's only because some kprobe user might
-want them.
+Rename the helper to should_dump_unreclaim_slabs which should make it
+clear what it is meant to do and drop the comment as the purpose
+should be pretty evident now.
 
-On Wed, 28 Oct 2020 10:25:02 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
->
->  typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
->  			      struct ftrace_ops *op, struct pt_regs *regs);
->  
+Signed-off-by: Hui Su <sh_def@163.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
+ mm/oom_kill.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 8b84661a6410..d181e24d7193 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -170,11 +170,7 @@ static bool oom_unkillable_task(struct task_struct *p)
+ 	return false;
+ }
+ 
+-/*
+- * Print out unreclaimble slabs info when unreclaimable slabs amount is greater
+- * than all user memory (LRU pages)
+- */
+-static bool is_dump_unreclaim_slabs(void)
++static bool should_dump_unreclaim_slabs(void)
+ {
+ 	unsigned long nr_lru;
+ 
+@@ -463,7 +459,7 @@ static void dump_header(struct oom_control *oc, struct task_struct *p)
+ 		mem_cgroup_print_oom_meminfo(oc->memcg);
+ 	else {
+ 		show_mem(SHOW_MEM_FILTER_NODES, oc->nodemask);
+-		if (is_dump_unreclaim_slabs())
++		if (should_dump_unreclaim_slabs())
+ 			dump_unreclaimable_slab();
+ 	}
+ 	if (sysctl_oom_dump_tasks)
+-- 
+2.29.0
 
 
-Most registers of pt_regs at a start of a function is rather useless.
-What if we got rid of FL_SAVE_REGS all together and had a "ftrace_regs"
-structure passed in that would have only access to all the argument
-registers, the stack pointer and the instruction pointer?
-
-Then kprobes could just create its own pt_regs, fill in all the data
-from ftrace_regs and then fill the rest with zeros or possibly whatever
-the values currently are (does it really matter what those registers
-are?), including flags.
-
-Not only would this simplify the code, it would probably allow moving
-more of the kprobe code from the arch specific to the generic code, and
-remove a lot of duplication.
-
-This would also help speed up the processing of live kernel patching.
-
-And best of all, it would give everything access to the arguments of a
-function and a stack pointer with out (ab)using pt_regs.
-
-Do you think this would be feasible?
-
--- Steve
