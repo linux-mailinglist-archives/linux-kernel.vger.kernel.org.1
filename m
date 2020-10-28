@@ -2,272 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB20F29DB79
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576F929DAFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387393AbgJ1X7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
+        id S1726851AbgJ1XmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389353AbgJ1X6t (ORCPT
+        with ESMTP id S1726137AbgJ1XmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:58:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9DCC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:58:49 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id o9so418654plx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:58:49 -0700 (PDT)
+        Wed, 28 Oct 2020 19:42:17 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D654BC0613CF;
+        Wed, 28 Oct 2020 16:42:16 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id t20so637838qvv.8;
+        Wed, 28 Oct 2020 16:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qbvAGH/+Gr6HsAx+cEfZRUqTu0GwIJPlNLOpAb2FoYM=;
-        b=xxRyotoRjKsBrbSG6Xuz0lPR5v2OwE30j1BpgwxF2EPvYQMWbhTbOjNDKTDJtiWVZt
-         s1HvR0O2DkSl6RbF//5DAC/nSymMDGUr1nDfDsIcP3dM1pSMoiIsn2P3D5RKJBQS4vWK
-         S1WKSFbt8MGGSJ1ReqnlUC/u+AaZWYri1a32JdKzG04D/7P4LWOly3JOK1ncMC0V2A4z
-         0BwiiYcARBgCgSNqzI3dnX1pd4wwoeEJjvL3Pu4NGHD6DWS/qtKR2F1gIDScJXOcHFND
-         IuyD+94PL8xrmHNLpp7Jh2QWjp77ZIKJcPrH9Yt8+6dOxgeBkAWtu4AryU9+vu5AZQTh
-         dZmA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q2w0GJP+O24zlClsx6Zd9yJQfOlv+kG1yF/TN+Wun14=;
+        b=n5x+LUX2iOSa9A1Ozlkg4pr/k5hWJnKWLWekiVdEHyz16IbWcYLK5XhIxltZ7k4Wp3
+         vJ6VwZsa2HTmIvjsJbsOaDp8NwxAvELwDzeav6QYQqDfAy7YbNqfa3GrdkRWSfitq1bQ
+         JKnm1rC6ubNYvLGylAs8E9v3WRC8dQfrQcUBDi9+m5W2wNEc5WBTFBbZAw1SrNAyQiR0
+         985XTzcK7/EGV279NJLpxcy5w2l1x+MFZCueGBlsGvcDAZ3Q/of1Qk2NYPRKkEGnS7CG
+         EuOurqQcrXotkY7o+MOGAYUOJtgDlvHXMyCzwZbnwjp6S7+3kQYi7xhqWAynaSWXp0no
+         l2sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qbvAGH/+Gr6HsAx+cEfZRUqTu0GwIJPlNLOpAb2FoYM=;
-        b=TizLBFi0Lc7nTfzciESi72RbVTBMsJibj/wUGIfSCgeyYJJOaq/MG90vTWsvkqNgJi
-         jgPdjXJfEyx6ZAV304mIWLoQURTyH6sU7a1JiKHbfpwKDsJSULg5YpHv46oxW1aIe4Fs
-         HM+8RnHtFnzf0ZL5a7DELo09dEQKtK4Dnil+b+9hmayGfWRz3F8hIWHM3xuBKdqruh5z
-         sTOJMyR80qnAvem/boYui9v3s530z9TNy7tjXgf8BkrYoXaFw6dN7YlqhhZvU6F92whU
-         jsXLqH8EYzCNPrR8DCIAbZeG1C0HvTBGVgzY1CPZ6cjrniFK/dW33WlzIqA3Wx6FcCF3
-         2rCw==
-X-Gm-Message-State: AOAM53060QckZpDk+85LL0s1PNG44i6MrDaP0MFsMMkWOsyAN9GeacbA
-        /UHDhQ563TaMqNEWi2mVw1BVQ0xPwjXUbpph3T0PVg6EjXw1YQ==
-X-Google-Smtp-Source: ABdhPJz+D+K09j+kA/3msWckVaX/tsiMARRK498ZPG9YJfYQI/tM8nbDl+06SeQ1WVT7Affb3jnzh2kbtd6loobWy3I=
-X-Received: by 2002:a05:6102:41a:: with SMTP id d26mr4850463vsq.48.1603880318781;
- Wed, 28 Oct 2020 03:18:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q2w0GJP+O24zlClsx6Zd9yJQfOlv+kG1yF/TN+Wun14=;
+        b=ogftfustdUPHXLYZxJZdyViHiGa5uLoB7xGA9iYaXVmDA++Vtl3jkPHT7m3r8F/4rp
+         Gu5gKJio7nhmLxvb3ukVnjvKeZctFzkQ0Sr25IIRH4pVi2jCjkgMOTyfNLX66lPyBIQz
+         p+YNI2vh7iz8E2VC71kBQj2XXBAUzozSoh+bDEAo9ecEuoOIPCeXs8dyCUV+0DoTx6Q3
+         I3FziC6Ji9gKyOZz4w+ah4LX3a0aGWgCFRhBdRBOpHnbcC/3Eh8cybEXpwwcs5s2oHnv
+         3NuQ8qCCKPCz9k3t5/maL8cNJdQYA3zEYf6hwfF7ozy7S6GP1xo5KWrWnRLyWP9Cv8ko
+         L7Mw==
+X-Gm-Message-State: AOAM5325d3V1Ornz5cVyQs01M+u+zdgi0S+jy9utwYhCO050thf2q0/b
+        9BMn/KG+W9IuK0tXHUnnMymUSWTw8EPa
+X-Google-Smtp-Source: ABdhPJyKmvi+wrim6ggQx3fuKG0hwNY5mHGUXX+rZcx02E6mWjNckXz9MyfFa4GcSkcckzQuBqpKtw==
+X-Received: by 2002:a62:b515:0:b029:155:95e8:fbed with SMTP id y21-20020a62b5150000b029015595e8fbedmr6479066pfe.49.1603881064332;
+        Wed, 28 Oct 2020 03:31:04 -0700 (PDT)
+Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id il17sm4149183pjb.39.2020.10.28.03.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 03:31:03 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 06:30:50 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-parisc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] Fonts: Make font size unsigned in font_desc
+Message-ID: <20201028103050.GA1209391@PWN>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com>
+ <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+ <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
+ <20201027185058.GM401619@phenom.ffwll.local>
+ <20201028054307.GA1205568@PWN>
+ <20201028081844.GS401619@phenom.ffwll.local>
 MIME-Version: 1.0
-References: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
- <CAPDyKFrnkF3mU5PJsy0VtEjPSToktSsRRtyMvQF97vymc+rY5A@mail.gmail.com>
- <dd210290eef6467cbffca8cbaddb8b84@realsil.com.cn> <CAPDyKFqwsJaYrXMVabR7qui6yqr4FAHfYq1ghfsf0HtRSZpGGw@mail.gmail.com>
- <ba3c68fea4614434838a0a8cbc0e892a@realsil.com.cn> <CAPDyKFrDLJtDkkWsSENLDu2xLqptkjDk94YxYfkfW7UPBoG+bg@mail.gmail.com>
- <dd3bb2880b3e4da1b601b7e2b21f55c1@realsil.com.cn>
-In-Reply-To: <dd3bb2880b3e4da1b601b7e2b21f55c1@realsil.com.cn>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 28 Oct 2020 11:18:02 +0100
-Message-ID: <CAPDyKFqA6Q9qvVu1gORLPed7iAn5JHTX7AWRO05D3GtsPA6tbg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-To:     =?UTF-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
-Cc:     Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028081844.GS401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 at 11:05, =E5=86=AF=E9=94=90 <rui_feng@realsil.com.cn> =
-wrote:
->
-> >
-> > >
-> > > On Mon, 26 Oct 2020 at 09:22, =E5=86=AF=E9=94=90 <rui_feng@realsil.co=
-m.cn> wrote:
-> > > >
-> > > > >
-> > > > > + Christoph (to help us understand if PCIe/NVMe devices can be
-> > > > > + marked
-> > > > > + read-only)
-> > > > >
-> > > > > On Thu, 22 Oct 2020 at 08:04, =E5=86=AF=E9=94=90 <rui_feng@realsi=
-l.com.cn> wrote:
-> > > > > >
-> > > > > > >
-> > > > > > > On Fri, 25 Sep 2020 at 03:57, <rui_feng@realsil.com.cn> wrote=
-:
-> > > > > > > >
-> > > > > > > > From: Rui Feng <rui_feng@realsil.com.cn>
-> > > > > > > >
-> > > > > > > > RTS5261 support legacy SD mode and SD Express mode.
-> > > > > > > > In SD7.x, SD association introduce SD Express as a new mode=
-.
-> > > > > > > > This patch makes RTS5261 support SD Express mode.
-> > > > > > >
-> > > > > > > As per patch 2, can you please add some more information abou=
-t
-> > > > > > > what changes are needed to support SD Express? This just
-> > > > > > > states that the support is implemented, but please elaborate =
-how.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
-> > > > > > > > ---
-> > > > > > > >  drivers/mmc/host/rtsx_pci_sdmmc.c | 59
-> > > > > > > > +++++++++++++++++++++++++++++++
-> > > > > > > >  1 file changed, 59 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> > > > > > > > b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> > > > > > > > index 2763a376b054..efde374a4a5e 100644
-> > > > > > > > --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-> > > > > > > > +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-> > > > > > > > @@ -895,7 +895,9 @@ static int sd_set_bus_width(struct
-> > > > > > > > realtek_pci_sdmmc *host,  static int sd_power_on(struct
-> > > > > > > > realtek_pci_sdmmc *host)  {
-> > > > > > > >         struct rtsx_pcr *pcr =3D host->pcr;
-> > > > > > > > +       struct mmc_host *mmc =3D host->mmc;
-> > > > > > > >         int err;
-> > > > > > > > +       u32 val;
-> > > > > > > >
-> > > > > > > >         if (host->power_state =3D=3D SDMMC_POWER_ON)
-> > > > > > > >                 return 0;
-> > > > > > > > @@ -922,6 +924,14 @@ static int sd_power_on(struct
-> > > > > > > > realtek_pci_sdmmc
-> > > > > > > *host)
-> > > > > > > >         if (err < 0)
-> > > > > > > >                 return err;
-> > > > > > > >
-> > > > > > > > +       if (PCI_PID(pcr) =3D=3D PID_5261) {
-> > > > > > > > +               val =3D rtsx_pci_readl(pcr, RTSX_BIPR);
-> > > > > > > > +               if (val & SD_WRITE_PROTECT) {
-> > > > > > > > +                       pcr->extra_caps &=3D
-> > > > > > > ~EXTRA_CAPS_SD_EXPRESS;
-> > > > > > > > +                       mmc->caps2 &=3D
-> > ~(MMC_CAP2_SD_EXP
-> > > |
-> > > > > > > > + MMC_CAP2_SD_EXP_1_2V);
-> > > > > > >
-> > > > > > > This looks a bit weird to me. For a write protected card you
-> > > > > > > want to disable the SD_EXPRESS support, right?
-> > > > > > >
-> > > > > > Right. If end user insert a write protected SD express card, I
-> > > > > > will disable
-> > > > > SD_EXPRESS support.
-> > > > > > If host switch to SD EXPRESS mode, the card will be recognized
-> > > > > > as a writable PCIe/NVMe device, I think this is not end user's =
-purpose.
-> > > > >
-> > > > > Hmm.
-> > > > >
-> > > > > Falling back to use the legacy SD interface is probably not what
-> > > > > the user expects either.
-> > > > >
-> > > > > Note that the physical write protect switch/pin isn't mandatory t=
-o
-> > > > > support and it doesn't even exist for all formats of SD cards. In
-> > > > > the mmc core, we are defaulting to make the card write enabled, i=
-f
-> > > > > the switch isn't supported by the host driver. Additionally,
-> > > > > nothing prevents the end user from mounting the filesystem in
-> > > > > read-only mode, if
-> > > that is preferred.
-> > > > >
-> > > > > >
-> > > > > > > Is there no mechanism to support read-only PCIe/NVMe based
-> > > > > > > storage
-> > > > > devices?
-> > > > > > > If that is the case, maybe it's simply better to not support
-> > > > > > > the readonly option at all for SD express cards?
-> > > > > > >
-> > > > > > I think there's no mechanism to support read-only PCIe/NVMe
-> > > > > > based storage
-> > > > > devices.
-> > > > >
-> > > > > I have looped in Christoph, maybe he can give us his opinion on t=
-his.
-> > > > >
-> > > > > > But different venders may have different opinions. This is only
-> > > > > > Realtek's
-> > > > > opinion.
-> > > > >
-> > > > > I understand. However, the most important point for me, is that w=
-e
-> > > > > don't end up in a situation where each mmc host handles this
-> > > > > differently. We should strive towards a consistent behavior.
-> > > > >
-> > > > > At this point I tend to prefer to default to ignore the write
-> > > > > protect switch for SD express, unless we can find a way to
-> > > > > properly support
-> > > it.
-> > > > >
-> > > > For information security purpose, some companies or business users
-> > > > set their
-> > > notebook SD as "read only".
-> > > > Because a lot of "read only" requirements from those companies or
-> > > > business
-> > > users, notebook vendor controls reader write protect pin to achieve i=
-t.
-> > > > Notebook BIOS might have option to choose "read only" or not.
-> > > > This is why we think write protect is more important than speed.
-> > >
-> > > I understand that it may be used, in some way or the other to provide
-> > > a hint to the operating system to mount it in read-only mode.
-> > >
-> > > Although, if there were a real security feature involved, the interna=
-l
-> > > FW of the SD card would also monitor the switch, to support read-only
-> > > mode. As I understand it, that's not the common case.
-> > >
-> > > > If you prefer to consistent behavior, I can ignore the write protec=
-t
-> > > > switch for
-> > > SD express.
-> > >
-> > > At this point, I prefer if you would ignore the write protect switch
-> > > in the SD controller driver.
-> > >
-> > I will ignore write protect switch in V3.
-> >
-> Sorry I ignore the HW design.
-> The reader has two mechanism for mode selection (SD Legacy or SD Express)=
-. One is SW (MMC driver) and another is HW.
-> We use HW mechanism when system exit S3 or S4.
-> HW mechanism selects mode when chip is power on.
-> Here is an example for HW mechanism.
-> 1. Reader in SD Legacy mode ->
-> 2. SD Express card insert ->
-> 3. MMC driver selects the SD Express mode ->
-> 4. SD Express initial and use NVMe driver and NVMe disk mount ->
-> 5. system goes to S4 ->
-> 6. system exits S4 ->
-> 7. HW selects SD Express mode ->
-> 8. SD Express still uses NVMe driver and disk keeps the same
-> Therefore, after S4, disk is still keep the same.
->
-> Because of HW mechanism selects SD legacy mode when write protect.
-> If driver can't select SD legacy mode when write protect, disk might unmo=
-unt and than mount after S3/S4.
-> Here is an example for write protect.
-> 1. Reader in SD Legacy mode ->
-> 2. SD Express card insert with write protect ->
-> 3. MMC driver selects the SD Express mode ->
-> 4. SD Express initial and use NVMe driver and NVMe disk mount ->
-> 5. system goes to S4 ->
-> 6. system exits S4 ->
-> 7. Because write protect, HW selects SD legacy mode ->
-> 8. linux detect HW change, use MMC driver and NVMe disk unmount ->
-> 9. MMC driver selects the SD Express mode ->
-> 10. SD Express initial and use NVMe driver and NVMe disk mount
->
-> If driver can select SD legacy mode when write protect, disk can keep the=
- same after S3/S4.
-> Here is an example for write protect.
-> 1. Reader in SD Legacy mode ->
-> 2. SD Express card insert with write protect ->
-> 3. MMC driver selects the SD legacy mode and disk mount ->
-> 5. system goes to S4 ->
-> 6. system exits S4 ->
-> 7. Because write protect, HW selects SD legacy mode ->
-> 8. MMC driver selects the SD legacy mode and disk keeps the same.
-> If I ignore the write protect switch in mmc host driver, behavior of SW w=
-ill not be consistent with HW.
+On Wed, Oct 28, 2020 at 09:18:44AM +0100, Daniel Vetter wrote:
+> On Wed, Oct 28, 2020 at 01:43:07AM -0400, Peilin Ye wrote:
+> > On Tue, Oct 27, 2020 at 07:50:58PM +0100, Daniel Vetter wrote:
+> > > On Tue, Oct 27, 2020 at 12:33:05PM -0400, Peilin Ye wrote:
+> > > > It is improper to define `width` and `height` as signed in `struct
+> > > > font_desc`. Make them unsigned. Also, change the corresponding printk()
+> > > > format identifiers from `%d` to `%u`, in sti_select_fbfont().
+> > > > 
+> > > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> > > 
+> > > I'm not entirely sure of the motivation here ... height/width should never
+> > > ever be even close to the limit here. Or have you seen integer math that
+> > > could potentially go wrong if we go with unsigned instead of int?
+> > 
+> > Oh... No, I have not. I just thought we shouldn't represent a length
+> > using a signed value. Also, width and height in console_font are
+> > unsigned int - that shouldn't matter that much though.
+> 
+> Oh this is actually a good reason, since that's the uapi structure. And so
+> using the exact same signedness should help a bit with accidental casting
+> bugs.
+> 
+> If you mention this in the commit message I think this is good to go.
 
-Alright, let's keep the code monitoring the write protect switch then.
-However, please add a comment in the code that it's needed because the
-HW reads it when resuming from S3/S4 (and then picks SD legacy
-interface if it's set in read-only mode).
+Ah, I see, v2 on the way. Please ignore [v2 3/5], that doesn't hunk with
+this patch in effect...
 
-[...]
+One newbie question, should I mention in the commit message, if a patch
+depends on another patch in the series in order to hunk properly?
 
-Kind regards
-Uffe
+Peilin
+
