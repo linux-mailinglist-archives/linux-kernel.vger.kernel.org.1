@@ -2,223 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349A129E066
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C1429DFAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbgJ1WE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:04:56 -0400
-Received: from mail-eopbgr20064.outbound.protection.outlook.com ([40.107.2.64]:47759
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728414AbgJ1WBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:01:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mqdo/apY19Idj11+WTFwvUE07yQu6y8l3c7cvH6xgPWn//Pvk5rjusiMyjbJvxcCbf5vvZIsb61mMeqX/Z6Kax6z6JcQ2YyDylPcbBH0IiBtSmA2LQT95mSSZnnUmlDAs6xBe4xU05/JGxFABEwgJSnwF420rX2yjPcd5gKb8S52E7hBe8FAfE3JKCYkhTNtMLQEJozVQvM7fLMy3Fcv5KISZBIHBMAi+NfTxDpiCxWWcvuQ8r9B001XlU3s9pRtT44x1vo2nBXM8a5uhmO8h5DXgWb6/BOoXSX6IQn5JHLmRvT+Vk5rOrfy8tuai/xaAOq+6JOeF/NrdT4y9hdrZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eb+XpipCnqaadX6iEykOH178TrYJObh9TA9L2ilQS5s=;
- b=PKCZWRTnA/14n6UTl0rNjT02c0KNVuFuPJOnYmcqbMAw4Gzt47wOb3HTuq+besnoFTZJfdjC4VEsvZ8hXYVjz/crr6HxsSXtoCTx2nPzx9HBW8uKMPJkoG8YD7eWVX/7qYMZxAaKmxL83B8K5f+9gI0kCFErts9TRhXnAq5ZlmN4Qm9ofoId1IKDAgSOwy03X4Qxw7xnDs5XAA1doU6fRFrQW6ToJKn78PT04MC1N/QTBszS1fx2Y4SE9ikeko/hS+5vayoeLapjHU7pXogxgVzA/mpvS8o9PTmAX2F+i0QkhMPVPDeamcvXQSyuATGtZy3zxHMpErvcL9MyCw/lDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eb+XpipCnqaadX6iEykOH178TrYJObh9TA9L2ilQS5s=;
- b=p2R0G+MMOmAxfg3sUc6SXZIFFE3uSFD33nPPpcl5fD7X2PYafFzAsugO6wP1HU0DClFNkFtG35ZAe4CtawNQFVfTEF6HqdAVRwE2LuNtTB9ROMa+q91eS+2BxloSLCValXyeSFMx+wFBqLViBwLJETli7bEk31/HuqsSBfGV3nc=
-Received: from DBBPR04MB7930.eurprd04.prod.outlook.com (20.182.190.140) by
- DBAPR04MB7416.eurprd04.prod.outlook.com (20.181.181.214) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.24; Wed, 28 Oct 2020 01:28:33 +0000
-Received: from DBBPR04MB7930.eurprd04.prod.outlook.com
- ([fe80::681b:7b29:32bf:d4f]) by DBBPR04MB7930.eurprd04.prod.outlook.com
- ([fe80::681b:7b29:32bf:d4f%7]) with mapi id 15.20.3477.029; Wed, 28 Oct 2020
- 01:28:33 +0000
-From:   Jacky Bai <ping.bai@nxp.com>
-To:     Abel Vesa <abel.vesa@nxp.com>, Lucas Stach <l.stach@pengutronix.de>
-CC:     Adam Ford <aford173@gmail.com>, Marek Vasut <marex@denx.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [RFC 0/3] clk: imx: Implement blk-ctl driver for i.MX8MN
-Thread-Topic: [RFC 0/3] clk: imx: Implement blk-ctl driver for i.MX8MN
-Thread-Index: AQHWqiGtoXq/x0MkwUy9f67NgUFbzamnMtWAgAALGICAAPv6gIAAA9AAgAA/WgCAAX6zAIAAC+WAgAEr4gCAAChOgIAA4L5g
-Date:   Wed, 28 Oct 2020 01:28:33 +0000
-Message-ID: <DBBPR04MB79308492BEA811389AC289D687170@DBBPR04MB7930.eurprd04.prod.outlook.com>
-References: <20201024162016.1003041-1-aford173@gmail.com>
- <20201024202335.y3npwtgragpp5wcz@fsr-ub1664-175>
- <CAHCN7xJiygvLStO56v4xSnOEqR_5fbYQHn5juA8YeDiWh2awbg@mail.gmail.com>
- <20201025120509.r5kl76wo5mdmapo5@fsr-ub1664-175>
- <3dadade8-6e77-e27f-d5a6-307de17a4dd0@denx.de>
- <CAHCN7xLC-gKquDNS3ToQCff=g610PscQE+T4zfO=_05GpLyK4w@mail.gmail.com>
- <20201026145516.shmb55gaeh6u7oru@fsr-ub1664-175>
- <c976125e45e2fe46afbee1735004668677383805.camel@pengutronix.de>
- <20201027093110.jaslelqecwudn22k@fsr-ub1664-175>
- <20201027115525.gxt2oqavqulsqolo@fsr-ub1664-175>
-In-Reply-To: <20201027115525.gxt2oqavqulsqolo@fsr-ub1664-175>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8bb76533-c087-4880-7afd-08d87ae0c921
-x-ms-traffictypediagnostic: DBAPR04MB7416:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBAPR04MB7416B47DCD47CDBEE136A99487170@DBAPR04MB7416.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3NdFUIyRmAT3VL8ZAXCkWqH4gXzdvTHZ+yBr/iLmw7YB+B/0ly69+0iDNGKHR5JfjDLoaPoJFDvLOZh6C8m/UkZfaxGD+AhcRTZJ/6noUpRhte64hWdRGXOE11ieEJEKn0p5yq9jogE4EWjeUQjyjYsCOvHgU5HezspKPyI2IcZe5zAvg9hVLgeNoJTWhz2Iad3FMrs8Qf1mo6pAf97FxoUwzCNtliqQ/ftyQ10GvDM7+gijPTvLfwbXgaHRoWeZqMDXapgHa238PSS9BRXmkPLlp2P2RyJHjyYvDcj2qXSaKFTGsoSk0W1YBilLlyzvyW74dCkCp2HupDDCMh49Ef0/2ZCIrAblJAB0PljgwGnmQQEH8P3oF5mfTr/1ITZtftVsLmM1mqtjMfHSHLhg6A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7930.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(55016002)(2906002)(9686003)(478600001)(7696005)(15974865002)(5660300002)(54906003)(4326008)(966005)(53546011)(45080400002)(110136005)(52536014)(6506007)(83380400001)(66556008)(26005)(316002)(71200400001)(7416002)(76116006)(186003)(8936002)(86362001)(66946007)(8676002)(64756008)(66476007)(33656002)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: aDxcnq//5VzVk7iQBmn9bXgsNdN7/Sec9yIndfQE0zQCw1cJ6NswiAFXR2Il5wnZcm5JSiOGyzv03PMnZ5KSDSC7bWwEVCr1k7tDAO+Gv4IcY2BYXX2PBqG471XABLMEJxFuo31cWf+JaQRn0O3vh/0JzBM4y72iNp+5Gv6ILPkmRfQBGjnwxK55gGkeVpAP4WgwCNkNKuN7z46Vf6MAKgeuYU5ANsmSK8nc87cZuYWw2VowMi/Al8WTPjdiCdyt2o3+/PSPWULeux8bKQ8PIJe5NixLNkb7SgBSkrSFpVQOc3rC+HEjYRCy0JRendMMCGEpyLz8pc4/UZ1rGut9VwwA0+ijkJSVNYN5a8mspU41DR5eoxtor/94mSPUYppEowEPQubNTjqehS3eL6BCF4Z5EvmyPUnhvlTegt/hLpsvI9cFYYsIfPhIeKKn0WoAmsLig90qmguoOJbMzFL/fVTB2JKrgk4ZymSm8R3FglPB9PCk0i86mOazkNICbrS0b+3Jk+JGtShCpemS2PCWFgfhl6ZVRWfuW4eHnLgW6U9T7KJ2fx4zxZU7Wc7Ru3EkjcqcYjkUAH4qrvnNhSNgJOrt/HZ31dfD8/kL9ZeKbxocx3RzGFnuqUm5vnVUpcMXf2DYp/qYGX20BwI/S1leTw==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1731177AbgJ2BDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:03:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730439AbgJ1WKN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603923011;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GRpKE5Cdwr3RDaBFCr/RWPUxnNpwM44/7nn8un+KnLw=;
+        b=F1mKT/ojoCiElCd96v9QmST0RcT46TI6M04PYgbA2ztAGR60UsHgHd+e9i1zpvkqoqww6D
+        OzAofTNsiu0BbST+4d37lmdjGR+EIg6qyJP+1d7sFRZXKSw0fEA8wbCS+nT2etKTNrgagJ
+        /tU3hYzPZGa2UJjJE4LcM8TboTOPPR8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-nadouN5SNTWHW6rhd_KTgg-1; Tue, 27 Oct 2020 22:03:20 -0400
+X-MC-Unique: nadouN5SNTWHW6rhd_KTgg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9A7A57208;
+        Wed, 28 Oct 2020 02:03:19 +0000 (UTC)
+Received: from [10.72.13.38] (ovpn-13-38.pek2.redhat.com [10.72.13.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 50C2860C15;
+        Wed, 28 Oct 2020 02:03:15 +0000 (UTC)
+Subject: Re: [PATCH] vdpa_sim: Fix DMA mask
+To:     Laurent Vivier <lvivier@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org
+References: <20201027175914.689278-1-lvivier@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <96308d58-910e-2a17-d6b7-81f5ec4234eb@redhat.com>
+Date:   Wed, 28 Oct 2020 10:03:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7930.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bb76533-c087-4880-7afd-08d87ae0c921
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 01:28:33.7846
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cwDunVd6Dqc5tKU1XeRwevL/g6xjg7pLXvtbWfTEuvovulI35C6txV2I/Sx5GqFiULt2ew15f7pbKgmnrm974w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7416
+In-Reply-To: <20201027175914.689278-1-lvivier@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBYmVsIFZlc2EgW21haWx0bzph
-YmVsLnZlc2FAbnhwLmNvbV0NCj4gU2VudDogVHVlc2RheSwgT2N0b2JlciAyNywgMjAyMCA3OjU1
-IFBNDQo+IFRvOiBMdWNhcyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25peC5kZT4NCj4gQ2M6IEFk
-YW0gRm9yZCA8YWZvcmQxNzNAZ21haWwuY29tPjsgTWFyZWsgVmFzdXQgPG1hcmV4QGRlbnguZGU+
-Ow0KPiBkZXZpY2V0cmVlIDxkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZz47IFNhc2NoYSBIYXVl
-cg0KPiA8cy5oYXVlckBwZW5ndXRyb25peC5kZT47IFBoaWxpcHAgWmFiZWwgPHAuemFiZWxAcGVu
-Z3V0cm9uaXguZGU+Ow0KPiBTdGVwaGVuIEJveWQgPHNib3lkQGtlcm5lbC5vcmc+OyBGYWJpbyBF
-c3RldmFtIDxmZXN0ZXZhbUBnbWFpbC5jb20+Ow0KPiBNaWNoYWVsIFR1cnF1ZXR0ZSA8bXR1cnF1
-ZXR0ZUBiYXlsaWJyZS5jb20+OyBMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0DQo+IDxsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgUm9iIEhlcnJpbmcgPHJvYmgrZHRAa2VybmVsLm9yZz47
-DQo+IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBQZW5ndXRyb25peCBLZXJuZWwg
-VGVhbQ0KPiA8a2VybmVsQHBlbmd1dHJvbml4LmRlPjsgU2hhd24gR3VvIDxzaGF3bmd1b0BrZXJu
-ZWwub3JnPjsgbGludXgtY2xrDQo+IDxsaW51eC1jbGtAdmdlci5rZXJuZWwub3JnPjsgYXJtLXNv
-YyA8bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnPg0KPiBTdWJqZWN0OiBSZTog
-W1JGQyAwLzNdIGNsazogaW14OiBJbXBsZW1lbnQgYmxrLWN0bCBkcml2ZXIgZm9yIGkuTVg4TU4N
-Cj4gDQo+IE9uIDIwLTEwLTI3IDExOjMxOjEwLCBBYmVsIFZlc2Egd3JvdGU6DQo+ID4gT24gMjAt
-MTAtMjYgMTY6Mzc6NTEsIEx1Y2FzIFN0YWNoIHdyb3RlOg0KPiA+ID4gQW0gTW9udGFnLCBkZW4g
-MjYuMTAuMjAyMCwgMTY6NTUgKzAyMDAgc2NocmllYiBBYmVsIFZlc2E6DQo+ID4gPiA+IE9uIDIw
-LTEwLTI1IDExOjA1OjMyLCBBZGFtIEZvcmQgd3JvdGU6DQo+ID4gPiA+ID4gT24gU3VuLCBPY3Qg
-MjUsIDIwMjAgYXQgNzoxOSBBTSBNYXJlayBWYXN1dCA8bWFyZXhAZGVueC5kZT4NCj4gd3JvdGU6
-DQo+ID4gPiA+ID4gPiBPbiAxMC8yNS8yMCAxOjA1IFBNLCBBYmVsIFZlc2Egd3JvdGU6DQo+ID4g
-PiA+ID4gPg0KPiA+ID4gPiA+ID4gWy4uLl0NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4g
-VG9nZXRoZXIsIGJvdGggdGhlIEdQQyBhbmQgdGhlIGNsay1ibGsgZHJpdmVyIHNob3VsZCBiZQ0K
-PiA+ID4gPiA+ID4gPiA+IGFibGUgdG8gcHVsbCB0aGUgbXVsdGltZWRpYSBibG9jayBvdXQgb2Yg
-cmVzZXQuDQo+ID4gPiA+ID4gPiA+ID4gQ3VycmVudGx5LCB0aGUgR1BDIGNhbiBoYW5kbGUgdGhl
-IFVTQiBPVEcgYW5kIHRoZSBHUFUsIGJ1dA0KPiA+ID4gPiA+ID4gPiA+IHRoZSBMQ0RJRiBhbmQg
-TUlQSSBEU0kgYXBwZWFyIHRvIGJlIGdhdGVkIGJ5IHRoZSBjbG9jaw0KPiA+ID4gPiA+ID4gPiA+
-IGJsb2NrDQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBNeSBvcmlnaW5hbCBwYXRj
-aCBSRkMgZGlkbid0IGluY2x1ZGUgdGhlIGlteDhtbiBub2RlLA0KPiA+ID4gPiA+ID4gPiA+IGJl
-Y2F1c2UgaXQgaGFuZ3MsIGJ1dCB0aGUgbm9kZSBJIGFkZGVkIGxvb2tzIGxpa2U6DQo+ID4gPiA+
-ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBtZWRpYV9ibGtfY3RsOiBjbG9jay1jb250cm9sbGVy
-QDMyZTI4MDAwIHsNCj4gPiA+ID4gPiA+ID4gPiAgICAgIGNvbXBhdGlibGUgPSAiZnNsLGlteDht
-bi1tZWRpYS1ibGstY3RsIiwgInN5c2NvbiI7DQo+ID4gPiA+ID4gPiA+ID4gICAgICByZWcgPSA8
-MHgzMmUyODAwMCAweDEwMDA+Ow0KPiA+ID4gPiA+ID4gPiA+ICAgICAgI2Nsb2NrLWNlbGxzID0g
-PDE+Ow0KPiA+ID4gPiA+ID4gPiA+ICAgICAgI3Jlc2V0LWNlbGxzID0gPDE+Ow0KPiA+ID4gPiA+
-ID4gPiA+IH07DQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBJIHdhcyBob3Bpbmcg
-eW91IG1pZ2h0IGhhdmUgc29tZSBmZWVkYmFjayBvbiB0aGUgOG1uDQo+ID4gPiA+ID4gPiA+ID4g
-Y2xrLWJsayBkcml2ZXIgc2luY2UgeW91IGRpZCB0aGUgOG1wIGNsay1ibGsgZHJpdmUgYW5kDQo+
-ID4gPiA+ID4gPiA+ID4gdGhleSBhcHBlYXIgdG8gYmUgdmVyeSBzaW1pbGFyLg0KPiA+ID4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IEknbGwgZG8geW91IG9uZSBiZXR0
-ZXIgc3RpbGwuIEknbGwgYXBwbHkgdGhlIHBhdGNoIGluIG15DQo+ID4gPiA+ID4gPiA+IHRyZWUg
-YW5kIGdpdmUgaXQgYSB0ZXN0IHRvbW9ycm93IG1vcm5pbmcuDQo+ID4gPiA+ID4NCj4gPiA+ID4g
-PiBJIGRvIGhhdmUgc29tZSBtb3JlIHVwZGF0ZXMgb24gaG93IHRvIGdldCB0aGUgc3lzdGVtIHRv
-IG5vdA0KPiA+ID4gPiA+IGhhbmcsIGFuZCB0byBlbnVtZXJhdGUgbW9yZSBjbG9ja3MuDQo+ID4g
-PiA+ID4gTG9va2luZyBhdCBNYXJlaydzIHdvcmsgb24gZW5hYmxpbmcgY2xvY2tzIGluIHRoZSA4
-TU0sIGhlIGFkZGVkDQo+ID4gPiA+ID4gYSBwb3dlci1kb21haW4gaW4gZGlzcG1peF9ibGtfY3Rs
-IHBvaW50aW5nIHRvIHRoZSBkaXNwbWl4IGluIHRoZSBHUEMuDQo+ID4gPiA+ID4gQnkgZm9yY2lu
-ZyB0aGUgR1BDIGRyaXZlciB0byB3cml0ZSAweDFmZmYgIHRvIDMyZTI4MDA0LCAweDdmIHRvDQo+
-ID4gPiA+ID4gMzJlMjgwMDAgYW5kIDB4MzAwMDAgdG8gMzJlMjgwMDgsIHRoZSBpLk1YOE1NIGNh
-biBicmluZyB0aGUNCj4gPiA+ID4gPiBkaXNwbGF5IGNsb2NrcyBvdXQgb2YgcmVzZXQuDQo+ID4g
-PiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gWWVhaCwgdGhhdCBtYWtlcyBzZW5zZS4gQmFzaWNhbGx5
-LCBpdCB3YXMgdHJ5aW5nIHRvIGRpc2FibGUgdW51c2VkDQo+ID4gPiA+IGNsb2NrcyAoc2VlIGNs
-a19kaXNhYmxlX3VudXNlZCkgYnV0IGluIG9yZGVyIHRvIGRpc2FibGUgdGhlIGNsb2Nrcw0KPiA+
-ID4gPiBmcm9tIHRoZSBtZWRpYSBCTEtfQ1RMICh3aGljaCBJIHRoaW5rIHNob3VsZCBiZSByZW5h
-bWVkIGluIGRpc3BsYXkNCj4gPiA+ID4gQkxLX0NUTCkgdGhlIFBEIG5lZWQgdG8gYmUgb24uIFNp
-bmNlIHlvdSBpbml0aWFsbHkgZGlkbid0IGdpdmUgaXQNCj4gPiA+ID4gYW55IFBELCBpdCB3YXMg
-dHJ5aW5nIHRvIGJsaW5kbHkgd3JpdGUvcmVhZCB0aGUgZ2F0ZSBiaXQgYW5kIHRoZXJlZm9yZQ0K
-PiBmcmVlemUuDQo+ID4gPiA+DQo+ID4gPiA+ID4gVW5mb3J0dW5hdGVseSwgdGhlIGkuTVg4TU4g
-bmVlZHMgdG8gaGF2ZSAweDEwMCB3cml0dGVuIHRvIGJvdGgNCj4gPiA+ID4gPiAzMmUyODAwMCBh
-bmQgMzJlMjgwMDQsIGFuZCB0aGUgdmFsdWVzIHdyaXR0ZW4gZm9yIHRoZSA4TU0gYXJlDQo+ID4g
-PiA+ID4gbm90IGNvbXBhdGlibGUuDQo+ID4gPiA+ID4gQnkgZm9yY2luZyB0aGUgR1BDIHRvIHdy
-aXRlIHRob3NlIHZhbHVlcywgSSBjYW4gZ2V0DQo+ID4gPiA+ID4gbGNkaWZfcGl4ZWxfY2xrIGFu
-ZCB0aGUgbWlwaV9kc2lfY2xrcmVmICBhcHBlYXJpbmcgb24gdGhlIE5hbm8uDQo+ID4gPiA+DQo+
-ID4gPiA+IEknbSB0cnlpbmcgdG8gbWFrZSBhIGJyYW5jaCB3aXRoIGFsbCB0aGUgcGF0Y2hlcyBm
-b3IgYWxsIGkuTVg4TSBzbw0KPiA+ID4gPiBJIGNhbiBrZWVwIHRyYWNrIG9mIGl0IGFsbC4gT24g
-dGhpcyBicmFuY2ggSSd2ZSBhbHNvIGFwcGxpZWQgdGhlDQo+ID4gPiA+IGZvbGxvd2luZyBwYXRj
-aHNldCBmcm9tIEx1Y2FzIFN0YWNoOg0KPiA+ID4gPiBodHRwczovL2V1cjAxLnNhZmVsaW5rcy5w
-cm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0cHMlM0ElMkYlMkYNCj4gPiA+ID4NCj4gd3d3
-LnNwaW5pY3MubmV0JTJGbGlzdHMlMkZhcm0ta2VybmVsJTJGbXNnODQzMDA3Lmh0bWwmYW1wO2Rh
-dGE9MDQlDQo+ID4gPiA+DQo+IDdDMDElN0NwaW5nLmJhaSU0MG54cC5jb20lN0MwYzU0NjIzMjk0
-MzM0YTA0YTAxMjA4ZDg3YTZmMzE2MyU3DQo+IEM2ODYNCj4gPiA+ID4NCj4gZWExZDNiYzJiNGM2
-ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3QzYzNzM5Mzk2NTI4MjIxNTAxNCU3Qw0KPiBVbmtu
-bw0KPiA+ID4gPg0KPiB3biU3Q1RXRnBiR1pzYjNkOGV5SldJam9pTUM0d0xqQXdNREFpTENKUUlq
-b2lWMmx1TXpJaUxDSkJUaUk2SWsxaA0KPiBhDQo+ID4gPiA+DQo+IFd3aUxDSlhWQ0k2TW4wJTNE
-JTdDMTAwMCZhbXA7c2RhdGE9dkZiQm45NENQc1NoVjcyck9DdGJUY3o1dTANCj4gcWg3QXUNCj4g
-PiA+ID4gbzQ0U2IyJTJCaUJsckUlM0QmYW1wO3Jlc2VydmVkPTAgYnV0IEknbSBnZXR0aW5nIHRo
-ZSBmb2xvd2luZw0KPiA+ID4gPiBlcnJvcnM6DQo+ID4gPiA+DQo+ID4gPiA+IFsgICAxNi42OTA4
-ODVdIGlteC1wZ2MgaW14LXBnYy1kb21haW4uMzogZmFpbGVkIHRvIHBvd2VyIHVwIEFEQjQwMA0K
-PiA+ID4gPiBbICAgMTYuNzE2ODM5XSBpbXgtcGdjIGlteC1wZ2MtZG9tYWluLjM6IGZhaWxlZCB0
-byBwb3dlciB1cCBBREI0MDANCj4gPiA+ID4gWyAgIDE2LjczMDUwMF0gaW14LXBnYyBpbXgtcGdj
-LWRvbWFpbi4zOiBmYWlsZWQgdG8gcG93ZXIgdXAgQURCNDAwDQo+ID4gPiA+DQo+ID4gPiA+IEx1
-Y2FzLCBhbnkgdGhvdWdodHM/DQo+ID4gPiA+DQo+ID4gPiA+IE1heWJlIGl0J3Mgc29tZXRoaW5n
-IHJlbGF0ZWQgdG8gOE1OLg0KPiA+ID4NCj4gPiA+IFRoZSBBREIgaXMgYXBwYXJlbnRseSBjbG9j
-a2VkIGJ5IG9uZSBvZiB0aGUgQkxLX0NUTCBjbG9ja3MsIHNvIHRoZQ0KPiA+ID4gQURCIGhhbmRz
-aGFrZSBhY2sgd2lsbCBvbmx5IHdvcmsgd2hlbiB0aGUgQkxLX0NUTCBjbG9ja3MgYXJlDQo+ID4g
-PiBlbmFibGVkLiBTbyBJIGd1ZXNzIHRoZSBHUEMgZHJpdmVyIHNob3VsZCBlbmFibGUgdGhvc2Ug
-Y2xvY2tzIGFuZA0KPiA+ID4gYXNzZXJ0IHRoZSByZXNldHMgYXQgdGhlIHJpZ2h0IHRpbWUgaW4g
-dGhlIHBvd2VyLXVwIHNlcXVlbmNpbmcuDQo+ID4gPiBVbmZvcnR1bmF0ZWx5IHRoaXMgbWVhbnMg
-d2UgY2FuJ3QgcHJvcGVybHkgcHV0IHRoZSBCTEtfQ1RMIGRyaXZlciBpbg0KPiA+ID4gdGhlIHBv
-d2VyLWRvbWFpbiB3aXRob3V0IGhhdmluZyBhIGN5Y2xpYyBkZXBlbmRlbmN5IGluIHRoZSBEVC4g
-SSdtDQo+ID4gPiBzdGlsbCB0aGlua2luZyBhYm91dCBob3cgdG8gc29sdmUgdGhpcyBwcm9wZXJs
-eS4NCj4gPiA+DQo+ID4NCj4gPiBJIHJlbWVtYmVyIHdlIGhhZCBzb21ldGhpbmcgc2ltaWxhciBp
-biBvdXIgaW50ZXJuYWwgdHJlZSB3aXRoIHRoZQ0KPiA+IGJ1c19ibGtfY2xrIG9uIDhNUCwgd2hp
-Y2ggd2FzIGFkZGVkIGJ5IHRoZSBtZWRpYSBCTEtfQ1RMLiBXaGF0IEkgZGlkDQo+ID4gd2FzIHRv
-IGp1c3QgZHJvcCB0aGUgcmVnaXN0cmF0aW9uIG9mIHRoYXQgY2xvY2sgZW50aXJlbHkuIE15IHJh
-dGlvbmFsZQ0KPiA+IHdhcyB0aGF0IGlmIHRoZSBjbG9jayBpcyBwYXJ0IG9mIHRoZSBCTEtfQ1RM
-IGJ1dCBhbHNvIG5lZWRlZCBieSB0aGUNCj4gPiBCTEtfQ1RMIHRvIHdvcmssIEkgY2FuIGxlYXZl
-IGl0IGFsb25lICh0aGF0IGlzLCBlbmFibGVkIGJ5IGRlZmF1bHQpDQo+ID4gc2luY2Ugd2hlbiB0
-aGUgUEQgd2lsbCBiZSBwb3dlcmVkIG9mZiB0aGUgY2xvY2sgd2lsbCBnYXRlZCB0b28uIEkNCj4g
-PiBndWVzcyBhbm90aGVyIG9wdGlvbiB3b3VsZCBiZSB0byBtYXJrIGl0IGFzIGNyaXRpY2FsLCB0
-aGF0IHdheSwgaXQNCj4gPiB3aWxsIG5ldmVyIGJlIGRpc2FibGVkICh3aWxsIGJlIGxlZnQgYWxv
-bmUgYnkgdGhlIGNsa19kaXNhYmxlX3VudXNlZA0KPiA+IHRvbykgYnV0IGF0IHRoZSBzYW1lIHRp
-bWUgd2lsbCBiZSB2aXNpYmxlIGluIHRoZSBjbG9jayBoaWVyYXJjaHkuDQo+ID4NCj4gDQo+IERv
-IGlnbm9yZSBldnJ5dGhpbmcgSSBzYWlkIGFib3V0IHRoZSBidXNfYmxrX2N0bCwgdGhhdCBkaWQg
-d29yayBvbiBvdXIgdHJlZQ0KPiBzaW5jZSB0aGUgd2hvbGUgUEQgcG93ZXIgb24vb2ZmICJtYWdp
-YyIgaXMgZG9uZSBpbiBURi1BLg0KPiANCj4gU28gdGhlIHByb2JsZW0sIGFzIEkgdW5kZXJzdGFu
-ZCBpdCBub3csIGlzIHRoZSBmYWN0IHRoYXQgdGhlIGJsa19jdGwgZHJpdmVyIHdvbid0DQo+IHBy
-b2JlIGJlY2F1c2UgaXQgbmVlZHMgaXRzIFBELCBidXQgdGhlIFBEIGlzIG5vdCByZWdpc3RlcmVk
-IGJlY2F1c2UgdGhlDQo+IEFEQjQwMCBjYW4ndCBwb3dlciB1cCBzaW5jZSBpdCBuZWVkcyB0aGUg
-YnVzX2Jsa19jdGwgY2xvY2sgZW5hYmxlZCwgY2xvY2sNCj4gd2hpY2ggaXMgcmVnaXN0ZXJlZCBi
-eSB0aGUgYmxrX2N0bC4NCg0KMS4gRm9yIHNvbWUgTUlYJ3MgQkxLX0NUTCBHUFJzLCBpdCBjYW4g
-b25seSBiZSBhY2Nlc3NlZCB3aGVuIHRoZSBNSVggUEQgaXMgb24NCjIuIGZvciBzb21lIE1JWCdz
-IEFEQiBoYW5kc2hha2UsIG5lZWQgdG8gY29uZmlnIHNvbWUgQkxLX0NUTCBjbG9ja19lbiBiaXQg
-dG8gZW5hYmxlIHRoZSBNSVggaW50ZXJuYWwgYnVzIGNsb2NrLg0KDQpUaGF0J3Mgd2h5IEkgaGF2
-ZSBjb25jZXJuIG9uIGltcGxlbWVudGluZyBzdWNoIE1JWCBHUFIgYXMgY2xvY2sgJiByZXNldCBk
-cml2ZXIsIGFuZCBpbXBsZW1lbnRpbmcgR1BDIFBEIGluIGxpbnV4IGtlcm5lbC4NCkl0IHdpbGwg
-aW50cm9kdWNlIHNvbWUgY2hpY2tlbi1lZ2cgaXNzdWUgdGhhdCBub3QgZWFzeSB0byBoYW5kbGUg
-aW4gbGludXgga2VybmVsLg0KDQoNCkJSDQpKYWNreSBCYWkNCg0KPiANCj4gPiA+IFJlZ2FyZHMs
-DQo+ID4gPiBMdWNhcw0KPiA+ID4NCg==
+
+On 2020/10/28 =E4=B8=8A=E5=8D=881:59, Laurent Vivier wrote:
+> Since commit f959dcd6ddfd
+> ("dma-direct: Fix potential NULL pointer dereference")
+> an error is reported when we load vdpa_sim and virtio-vdpa:
+>
+> [  129.351207] net eth0: Unexpected TXQ (0) queue failure: -12
+>
+> It seems that dma_mask is not initialized.
+>
+> This patch initializes dma_mask() and calls dma_set_mask_and_coherent()=
+
+> to fix the problem.
+>
+> Full log:
+>
+> [  128.548628] ------------[ cut here ]------------
+> [  128.553268] WARNING: CPU: 23 PID: 1105 at kernel/dma/mapping.c:149 d=
+ma_map_page_attrs+0x14c/0x1d0
+> [  128.562139] Modules linked in: virtio_net net_failover failover virt=
+io_vdpa vdpa_sim vringh vhost_iotlb vdpa xt_CHECKSUM xt_MASQUERADE xt_con=
+ntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_=
+nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun br=
+idge stp llc iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi rfkill =
+intel_rapl_msr intel_rapl_common isst_if_common sunrpc skx_edac nfit libn=
+vdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel ipmi_ssif =
+kvm mgag200 i2c_algo_bit irqbypass drm_kms_helper crct10dif_pclmul crc32_=
+pclmul syscopyarea ghash_clmulni_intel iTCO_wdt sysfillrect iTCO_vendor_s=
+upport sysimgblt rapl fb_sys_fops dcdbas intel_cstate drm acpi_ipmi ipmi_=
+si mei_me dell_smbios intel_uncore ipmi_devintf mei i2c_i801 dell_wmi_des=
+criptor wmi_bmof pcspkr lpc_ich i2c_smbus ipmi_msghandler acpi_power_mete=
+r ip_tables xfs libcrc32c sd_mod t10_pi sg ahci libahci libata megaraid_s=
+as tg3 crc32c_intel wmi dm_mirror dm_region_hash dm_log
+> [  128.562188]  dm_mod
+> [  128.651334] CPU: 23 PID: 1105 Comm: NetworkManager Tainted: G S     =
+   I       5.10.0-rc1+ #59
+> [  128.659939] Hardware name: Dell Inc. PowerEdge R440/04JN2K, BIOS 2.8=
+=2E1 06/30/2020
+> [  128.667419] RIP: 0010:dma_map_page_attrs+0x14c/0x1d0
+> [  128.672384] Code: 1c 25 28 00 00 00 0f 85 97 00 00 00 48 83 c4 10 5b=
+ 5d 41 5c 41 5d c3 4c 89 da eb d7 48 89 f2 48 2b 50 18 48 89 d0 eb 8d 0f =
+0b <0f> 0b 48 c7 c0 ff ff ff ff eb c3 48 89 d9 48 8b 40 40 e8 2d a0 aa
+> [  128.691131] RSP: 0018:ffffae0f0151f3c8 EFLAGS: 00010246
+> [  128.696357] RAX: ffffffffc06b7400 RBX: 00000000000005fa RCX: 0000000=
+000000000
+> [  128.703488] RDX: 0000000000000040 RSI: ffffcee3c7861200 RDI: ffff9e2=
+bc16cd000
+> [  128.710620] RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000=
+000000000
+> [  128.717754] R10: 0000000000000002 R11: 0000000000000000 R12: ffff9e4=
+72cb291f8
+> [  128.724886] R13: ffff9e2bc14da780 R14: ffff9e472bc20000 R15: ffff9e2=
+bc1b14940
+> [  128.732020] FS:  00007f887bae23c0(0000) GS:ffff9e4ac01c0000(0000) kn=
+lGS:0000000000000000
+> [  128.740105] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  128.745852] CR2: 0000562bc09de998 CR3: 00000003c156c006 CR4: 0000000=
+0007706e0
+> [  128.752982] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
+000000000
+> [  128.760114] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
+000000400
+> [  128.767247] PKRU: 55555554
+> [  128.769961] Call Trace:
+> [  128.772418]  virtqueue_add+0x81e/0xb00
+> [  128.776176]  virtqueue_add_inbuf_ctx+0x26/0x30
+> [  128.780625]  try_fill_recv+0x3a2/0x6e0 [virtio_net]
+> [  128.785509]  virtnet_open+0xf9/0x180 [virtio_net]
+> [  128.790217]  __dev_open+0xe8/0x180
+> [  128.793620]  __dev_change_flags+0x1a7/0x210
+> [  128.797808]  dev_change_flags+0x21/0x60
+> [  128.801646]  do_setlink+0x328/0x10e0
+> [  128.805227]  ? __nla_validate_parse+0x121/0x180
+> [  128.809757]  ? __nla_parse+0x21/0x30
+> [  128.813338]  ? inet6_validate_link_af+0x5c/0xf0
+> [  128.817871]  ? cpumask_next+0x17/0x20
+> [  128.821535]  ? __snmp6_fill_stats64.isra.54+0x6b/0x110
+> [  128.826676]  ? __nla_validate_parse+0x47/0x180
+> [  128.831120]  __rtnl_newlink+0x541/0x8e0
+> [  128.834962]  ? __nla_reserve+0x38/0x50
+> [  128.838713]  ? security_sock_rcv_skb+0x2a/0x40
+> [  128.843158]  ? netlink_deliver_tap+0x2c/0x1e0
+> [  128.847518]  ? netlink_attachskb+0x1d8/0x220
+> [  128.851793]  ? skb_queue_tail+0x1b/0x50
+> [  128.855641]  ? fib6_clean_node+0x43/0x170
+> [  128.859652]  ? _cond_resched+0x15/0x30
+> [  128.863406]  ? kmem_cache_alloc_trace+0x3a3/0x420
+> [  128.868110]  rtnl_newlink+0x43/0x60
+> [  128.871602]  rtnetlink_rcv_msg+0x12c/0x380
+> [  128.875701]  ? rtnl_calcit.isra.39+0x110/0x110
+> [  128.880147]  netlink_rcv_skb+0x50/0x100
+> [  128.883987]  netlink_unicast+0x1a5/0x280
+> [  128.887913]  netlink_sendmsg+0x23d/0x470
+> [  128.891839]  sock_sendmsg+0x5b/0x60
+> [  128.895331]  ____sys_sendmsg+0x1ef/0x260
+> [  128.899255]  ? copy_msghdr_from_user+0x5c/0x90
+> [  128.903702]  ___sys_sendmsg+0x7c/0xc0
+> [  128.907369]  ? dev_forward_change+0x130/0x130
+> [  128.911731]  ? sysctl_head_finish.part.29+0x24/0x40
+> [  128.916616]  ? new_sync_write+0x11f/0x1b0
+> [  128.920628]  ? mntput_no_expire+0x47/0x240
+> [  128.924727]  __sys_sendmsg+0x57/0xa0
+> [  128.928309]  do_syscall_64+0x33/0x40
+> [  128.931887]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  128.936937] RIP: 0033:0x7f88792e3857
+> [  128.940518] Code: c3 66 90 41 54 41 89 d4 55 48 89 f5 53 89 fb 48 83=
+ ec 10 e8 0b ed ff ff 44 89 e2 48 89 ee 89 df 41 89 c0 b8 2e 00 00 00 0f =
+05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 48 89 44 24 08 e8 44 ed ff ff 48
+> [  128.959263] RSP: 002b:00007ffdca60dea0 EFLAGS: 00000293 ORIG_RAX: 00=
+0000000000002e
+> [  128.966827] RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007f8=
+8792e3857
+> [  128.973960] RDX: 0000000000000000 RSI: 00007ffdca60def0 RDI: 0000000=
+00000000c
+> [  128.981095] RBP: 00007ffdca60def0 R08: 0000000000000000 R09: 0000000=
+000000000
+> [  128.988224] R10: 0000000000000001 R11: 0000000000000293 R12: 0000000=
+000000000
+> [  128.995357] R13: 0000000000000000 R14: 00007ffdca60e0a8 R15: 00007ff=
+dca60e09c
+> [  129.002492] CPU: 23 PID: 1105 Comm: NetworkManager Tainted: G S     =
+   I       5.10.0-rc1+ #59
+> [  129.011093] Hardware name: Dell Inc. PowerEdge R440/04JN2K, BIOS 2.8=
+=2E1 06/30/2020
+> [  129.018571] Call Trace:
+> [  129.021027]  dump_stack+0x57/0x6a
+> [  129.024346]  __warn.cold.14+0xe/0x3d
+> [  129.027925]  ? dma_map_page_attrs+0x14c/0x1d0
+> [  129.032283]  report_bug+0xbd/0xf0
+> [  129.035602]  handle_bug+0x44/0x80
+> [  129.038922]  exc_invalid_op+0x13/0x60
+> [  129.042589]  asm_exc_invalid_op+0x12/0x20
+> [  129.046602] RIP: 0010:dma_map_page_attrs+0x14c/0x1d0
+> [  129.051566] Code: 1c 25 28 00 00 00 0f 85 97 00 00 00 48 83 c4 10 5b=
+ 5d 41 5c 41 5d c3 4c 89 da eb d7 48 89 f2 48 2b 50 18 48 89 d0 eb 8d 0f =
+0b <0f> 0b 48 c7 c0 ff ff ff ff eb c3 48 89 d9 48 8b 40 40 e8 2d a0 aa
+> [  129.070311] RSP: 0018:ffffae0f0151f3c8 EFLAGS: 00010246
+> [  129.075536] RAX: ffffffffc06b7400 RBX: 00000000000005fa RCX: 0000000=
+000000000
+> [  129.082669] RDX: 0000000000000040 RSI: ffffcee3c7861200 RDI: ffff9e2=
+bc16cd000
+> [  129.089803] RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000=
+000000000
+> [  129.096936] R10: 0000000000000002 R11: 0000000000000000 R12: ffff9e4=
+72cb291f8
+> [  129.104068] R13: ffff9e2bc14da780 R14: ffff9e472bc20000 R15: ffff9e2=
+bc1b14940
+> [  129.111200]  virtqueue_add+0x81e/0xb00
+> [  129.114952]  virtqueue_add_inbuf_ctx+0x26/0x30
+> [  129.119399]  try_fill_recv+0x3a2/0x6e0 [virtio_net]
+> [  129.124280]  virtnet_open+0xf9/0x180 [virtio_net]
+> [  129.128984]  __dev_open+0xe8/0x180
+> [  129.132390]  __dev_change_flags+0x1a7/0x210
+> [  129.136575]  dev_change_flags+0x21/0x60
+> [  129.140415]  do_setlink+0x328/0x10e0
+> [  129.143994]  ? __nla_validate_parse+0x121/0x180
+> [  129.148528]  ? __nla_parse+0x21/0x30
+> [  129.152107]  ? inet6_validate_link_af+0x5c/0xf0
+> [  129.156639]  ? cpumask_next+0x17/0x20
+> [  129.160306]  ? __snmp6_fill_stats64.isra.54+0x6b/0x110
+> [  129.165443]  ? __nla_validate_parse+0x47/0x180
+> [  129.169890]  __rtnl_newlink+0x541/0x8e0
+> [  129.173731]  ? __nla_reserve+0x38/0x50
+> [  129.177483]  ? security_sock_rcv_skb+0x2a/0x40
+> [  129.181928]  ? netlink_deliver_tap+0x2c/0x1e0
+> [  129.186286]  ? netlink_attachskb+0x1d8/0x220
+> [  129.190560]  ? skb_queue_tail+0x1b/0x50
+> [  129.194401]  ? fib6_clean_node+0x43/0x170
+> [  129.198411]  ? _cond_resched+0x15/0x30
+> [  129.202163]  ? kmem_cache_alloc_trace+0x3a3/0x420
+> [  129.206869]  rtnl_newlink+0x43/0x60
+> [  129.210361]  rtnetlink_rcv_msg+0x12c/0x380
+> [  129.214462]  ? rtnl_calcit.isra.39+0x110/0x110
+> [  129.218908]  netlink_rcv_skb+0x50/0x100
+> [  129.222747]  netlink_unicast+0x1a5/0x280
+> [  129.226672]  netlink_sendmsg+0x23d/0x470
+> [  129.230599]  sock_sendmsg+0x5b/0x60
+> [  129.234090]  ____sys_sendmsg+0x1ef/0x260
+> [  129.238015]  ? copy_msghdr_from_user+0x5c/0x90
+> [  129.242461]  ___sys_sendmsg+0x7c/0xc0
+> [  129.246128]  ? dev_forward_change+0x130/0x130
+> [  129.250487]  ? sysctl_head_finish.part.29+0x24/0x40
+> [  129.255368]  ? new_sync_write+0x11f/0x1b0
+> [  129.259381]  ? mntput_no_expire+0x47/0x240
+> [  129.263478]  __sys_sendmsg+0x57/0xa0
+> [  129.267058]  do_syscall_64+0x33/0x40
+> [  129.270639]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  129.275689] RIP: 0033:0x7f88792e3857
+> [  129.279268] Code: c3 66 90 41 54 41 89 d4 55 48 89 f5 53 89 fb 48 83=
+ ec 10 e8 0b ed ff ff 44 89 e2 48 89 ee 89 df 41 89 c0 b8 2e 00 00 00 0f =
+05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 48 89 44 24 08 e8 44 ed ff ff 48
+> [  129.298015] RSP: 002b:00007ffdca60dea0 EFLAGS: 00000293 ORIG_RAX: 00=
+0000000000002e
+> [  129.305581] RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007f8=
+8792e3857
+> [  129.312712] RDX: 0000000000000000 RSI: 00007ffdca60def0 RDI: 0000000=
+00000000c
+> [  129.319846] RBP: 00007ffdca60def0 R08: 0000000000000000 R09: 0000000=
+000000000
+> [  129.326978] R10: 0000000000000001 R11: 0000000000000293 R12: 0000000=
+000000000
+> [  129.334109] R13: 0000000000000000 R14: 00007ffdca60e0a8 R15: 00007ff=
+dca60e09c
+> [  129.341249] ---[ end trace c551e8028fbaf59d ]---
+> [  129.351207] net eth0: Unexpected TXQ (0) queue failure: -12
+> [  129.360445] net eth0: Unexpected TXQ (0) queue failure: -12
+> [  129.824428] net eth0: Unexpected TXQ (0) queue failure: -12
+>
+> Fixes: 2c53d0f64c06 ("vdpasim: vDPA device simulator")
+> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+> ---
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/v=
+dpa_sim.c
+> index 2629911c29bb..dc69e8085643 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -361,7 +361,9 @@ static struct vdpasim *vdpasim_create(void)
+>   	spin_lock_init(&vdpasim->iommu_lock);
+>  =20
+>   	dev =3D &vdpasim->vdpa.dev;
+> -	dev->coherent_dma_mask =3D DMA_BIT_MASK(64);
+> +	dev->dma_mask =3D &dev->coherent_dma_mask;
+> +	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)))
+> +		goto err_iommu;
+>   	set_dma_ops(dev, &vdpasim_dma_ops);
+>  =20
+>   	vdpasim->iommu =3D vhost_iotlb_alloc(2048, 0);
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+
