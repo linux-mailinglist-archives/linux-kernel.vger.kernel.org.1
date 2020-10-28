@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3402A5D1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFE52A5D37
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Nov 2020 04:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730689AbgKDD2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Nov 2020 22:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728759AbgKDD2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Nov 2020 22:28:43 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45A4C061A4D;
-        Tue,  3 Nov 2020 19:28:42 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x23so9626132plr.6;
-        Tue, 03 Nov 2020 19:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Mt/RRK3an2hQPGbvsD2/R/AL64mvbosYpdUxFPxb2m8=;
-        b=WclOyY96b15QadMQxE/zRVI5+wiy86jbRFZs0lg6gXb1B7RPvps7ruITvDbzCCCH5+
-         Ugok5Rdxa307HtpHk3+E+OVCDMhEJyWUZ3bz8GVoKnnZbwfDhN4PKPqNOulfY65o6wh2
-         8pjFGLcVFxkQeaqsl5X/WZZ+ERDnQjeh73/LoHl34GoQFiO4FTd9iRsMnyDjog9axYLT
-         xMehspWKeMXVJ3KIr4cqwkKW+g6Xk6PWtkEiSNe1q4n08U90aidM3wMYx4EK23Eskmc4
-         JbhnLN/15i6bW2goAExeDwlnqFYeHG6BKWqP5F4tvejOV5+ntQJO3Vr5/Hb96ox9vjC9
-         AblQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Mt/RRK3an2hQPGbvsD2/R/AL64mvbosYpdUxFPxb2m8=;
-        b=RySM2XaaXMZDsnLS1kuRDs6l1hj1nA8FeRko0fxs94Up7jVToJ6lXDZiI8zxX7WRbe
-         d8WQmMu3EivhrBO+4KjDZGICEgS1R5BJabEYTo4FiTOnFo2pFbnrNCpm+3EMIQ4TNcfp
-         JKP+h1esRoY1vqJJpcjz74RgVAeagCExa3es4t3GU+DU4uuANInl1Kookr5TI8MocIiP
-         w5aMTiaBqAq+/ArgIKzYZUmpdNWG2F7IYB5O7YzrsrTe78LkPN336k0Bs6Flk+D+0Vrr
-         t5MsQ3bVZYFV5EKRFBsbHEUXfA5b+ze4owBQvUOUDM+9ebK0Gw85q0ol0bMqTEB/k9ha
-         PIdw==
-X-Gm-Message-State: AOAM531mSuKQsevjDNDtbQ06/zTByxFh56QStBNKMnzqtqRYzMUvqU5h
-        P19MU91UbUJGkqn2uIHN6/qjiKnh4xs=
-X-Google-Smtp-Source: ABdhPJzBHB7KZeH1cj3Irv9cB+2DgtQi/j0gssxzYxE77mu4AU61W3spBjZA0E8HCE63AQBNuBnWVg==
-X-Received: by 2002:a17:902:d917:b029:d6:d1b8:5d9a with SMTP id c23-20020a170902d917b02900d6d1b85d9amr10331443plz.72.1604460522073;
-        Tue, 03 Nov 2020 19:28:42 -0800 (PST)
-Received: from [10.230.28.234] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y23sm514067pju.35.2020.11.03.19.28.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 19:28:41 -0800 (PST)
-Subject: Re: [PATCH 3/5] i2c: brcmstb: remove unnecessary CONFIG_PM_SLEEP
-To:     Coiby Xu <coiby.xu@gmail.com>, linux-i2c@vger.kernel.org
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201029074654.227263-1-coiby.xu@gmail.com>
- <20201029074654.227263-3-coiby.xu@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <4b5622c5-fb29-fef5-1d56-76550118eca6@gmail.com>
-Date:   Tue, 3 Nov 2020 19:28:39 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201029074654.227263-3-coiby.xu@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728415AbgKDDzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Nov 2020 22:55:04 -0500
+Received: from ozlabs.ru ([107.174.27.60]:41794 "EHLO ozlabs.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726008AbgKDDzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Nov 2020 22:55:04 -0500
+Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
+        by ozlabs.ru (Postfix) with ESMTP id ED6EFAE80273;
+        Wed, 28 Oct 2020 02:59:51 -0400 (EDT)
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: [PATCH kernel v3 0/2] DMA, powerpc/dma: Fallback to dma_ops when persistent memory present
+Date:   Wed, 28 Oct 2020 18:00:28 +1100
+Message-Id: <20201028070030.60643-1-aik@ozlabs.ru>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This allows mixing direct DMA (to/from RAM) and
+IOMMU (to/from apersistent memory) on the PPC64/pseries
+platform.
+
+This replaces https://lkml.org/lkml/2020/10/27/418
+which replaces https://lkml.org/lkml/2020/10/20/1085
 
 
-On 10/29/2020 12:46 AM, Coiby Xu wrote:
-> SIMPLE_DEV_PM_OPS has already took good care of CONFIG_PM_CONFIG.
-> 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+This is based on sha1
+4525c8781ec0 Linus Torvalds "scsi: qla2xxx: remove incorrect sparse #ifdef".
 
-You need to annotate brcmstb_i2c_suspend and brcmstb_i2c_resume with
-__maybe_unused to avoid generating compiler warnings about unused
-functions with CONFIG_PM_SLEEP disabled.
+Please comment. Thanks.
+
+
+
+Alexey Kardashevskiy (2):
+  dma: Allow mixing bypass and mapped DMA operation
+  powerpc/dma: Fallback to dma_ops when persistent memory present
+
+ arch/powerpc/kernel/dma-iommu.c        | 70 +++++++++++++++++++++++++-
+ arch/powerpc/platforms/pseries/iommu.c | 44 ++++++++++++----
+ kernel/dma/mapping.c                   | 24 +++++++--
+ arch/powerpc/Kconfig                   |  1 +
+ kernel/dma/Kconfig                     |  4 ++
+ 5 files changed, 127 insertions(+), 16 deletions(-)
+
 -- 
-Florian
+2.17.1
+
