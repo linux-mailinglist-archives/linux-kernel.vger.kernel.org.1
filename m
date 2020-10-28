@@ -2,132 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BDA29DEDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D3529DCE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403784AbgJ2A5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:57:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731609AbgJ1WRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:36 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7588B246C8;
-        Wed, 28 Oct 2020 11:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603884970;
-        bh=MKVtSvPsm7PqyEOfnI8yAO4yCQEnbhAOESNXVqEGrQY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=atBaBGCdhAwJWg/QcyVafBBPtr/ae+fCCJ7gGftj2cm3n0KPEcn2JTpUB8O8i+iEy
-         vLz0EFdvQFKiETGQAcHpb4mDH4FUPIy0JgfwUpzXxlCB0sUDPeVKTKPHk/9Bqo5jXW
-         Ds4QLnqmrJuoetzSMkaTyC0CkLyUTVJ4EFnV5sw0=
-Date:   Wed, 28 Oct 2020 20:36:07 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Have insn decoder functions return success/failure
-Message-Id: <20201028203607.194db3f95690674022887d7a@kernel.org>
-In-Reply-To: <20201027134251.GH15580@zn.tnic>
-References: <20201022093044.GA29222@zn.tnic>
-        <20201022222140.f46e6db1243e05fdd049b504@kernel.org>
-        <CALCETrWhzzZ=EAoKZ4=k3FjffvS_3R4o5N1Rkj9FkHQdiUag6A@mail.gmail.com>
-        <20201023182850.c54ac863159fb312c411c029@kernel.org>
-        <20201023093254.GC23324@zn.tnic>
-        <20201023194704.f723c86e5f8dfc1133dd5930@kernel.org>
-        <20201023232741.GF23324@zn.tnic>
-        <CALCETrVQDVLPwTTXgsRYSjxVmzeK5ekmrEiT2rWkQKO0inRLGQ@mail.gmail.com>
-        <20201024082316.GA11562@zn.tnic>
-        <CALCETrW0Ub-vA8iS=0JGOpZL3P7p7Ac8Agq+6N-k4Rsv6k_1zA@mail.gmail.com>
-        <20201027134251.GH15580@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729380AbgJ2AdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731746AbgJ1WXT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:23:19 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775FBC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:23:19 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b69so506992qkg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/44VlBK6OKm+RXk0OJTWh6hF3WHJ///hTwLxttFcS6M=;
+        b=moy3QtjPyL3cZ9xsAR+crMwlJ3jr7ixVIebxppVrc8dGFCovMimfDfFD90LygZcrsh
+         Rx3LGU4VxFLTFIzKoaXqh75BHUiacUo02JaByhdySLZupWOYbHwbpwILgLI1FSLGWBjC
+         ZLc2N+6dGWVTyl/zDZjvlcTglANqUFxj7H3XV381T1NhVv4/7m64Q15gIQhNfrKpYuFG
+         I3xEltXbMvRa+iaqGSNHYKa6jgEz3JXVVURdPoh/DM45eUheJRBx83WeIojfALhx7q02
+         jywkx5zTOHyz2jCXytrzHix59yRvFRwuawP0qHmWCoXaBpSMNWSWpKQyrOtBpw/up7tG
+         n19Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/44VlBK6OKm+RXk0OJTWh6hF3WHJ///hTwLxttFcS6M=;
+        b=Eqhm5X8wQ3TsJuZcyUPXqXglRg9puuWBcEhhMi/rJ14Wjk3+y4k5G2xOAf2WgoDQPq
+         dWuRLaTAKUGKeziyUZqdlPycLZS56wVVhKWx0wAAwTN20jiIq4sSdlcgSyJ+q12TXfjk
+         POdypRAA9G/ySBXYimdmrEKqRnvLe3i1zhtcWh6nAbbQgpmn4xWSIyx9jT/sj1M9CJl+
+         lgvfRtiCp31W/ptCYJqIZIwTJvxh3bB7PVcuoY3opd0xIJmTBC8TNKNowhxBNgGNB+yK
+         FZAs09tIzpq3UPXDGS74Ifpq+nLx089c9TE8QaMe5arDWznVfHVkAKLpnmLfaq7/Ny6N
+         hZ6g==
+X-Gm-Message-State: AOAM533hiwlcnF/QX3qeDL7Ke1W7+FMG9rgC6hDUWdXLoQ1aSzZBVM1O
+        k4W1qOdTiE7RlBk5gJ52f9himFh/c/8/GzaiACUH2HOjWWdulw==
+X-Google-Smtp-Source: ABdhPJxWIdsJfS6ydyqUNERfH2TM2/Kde07YNypvw2f5tV+AK4gxs6r74i0fEIC6gEuqLgxHTNr/UVLd8f9srNcIMgo=
+X-Received: by 2002:a05:620a:1188:: with SMTP id b8mr6917152qkk.265.1603885134792;
+ Wed, 28 Oct 2020 04:38:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1603372719.git.andreyknvl@google.com> <ae2caac58051ea4182c0278a1c1e4a945c3a1529.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <ae2caac58051ea4182c0278a1c1e4a945c3a1529.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 12:38:43 +0100
+Message-ID: <CACT4Y+bG_xHcJqmXWKJseR7DWT=hg0AyJzmt8vC85jjL6JO-ZQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 13/21] arm64: kasan: Add cpu_supports_tags helper
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 14:42:51 +0100
-Borislav Petkov <bp@alien8.de> wrote:
+On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Add an arm64 helper called cpu_supports_mte() that exposes information
+> about whether the CPU supports memory tagging and that can be called
+> during early boot (unlike system_supports_mte()).
+>
+> Use that helper to implement a generic cpu_supports_tags() helper, that
+> will be used by hardware tag-based KASAN.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Ib4b56a42c57c6293df29a0cdfee334c3ca7bdab4
 
-> On Sat, Oct 24, 2020 at 09:10:25AM -0700, Andy Lutomirski wrote:
-> > I can pretty much guarantee that a real modern CPU is able to decode a
-> > <15 byte instruction that is followed by unmapped or non-executable
-> > pages.  I don't know specifically how the CPU implements it, but it
-> > works.
-> 
-> Yes, so reportedly and architecturally, a CPU tries to execute every
-> last byte it has fetched. If it fails decoding an instruction because it
-> is incomplete, then it raises a #PF. So you're correct.
-> 
-> > If I have a page that ends in 0x0F followed by an unmapped page, then
-> > the correct response to an attempt to decode is SIGSEGV or -EFAULT.
-> > If there's a page there that contains garbage, then the correct
-> > response is SIGILL or -EINVAL or similar.  These are different
-> > scenarios, and I don't think the current decoder API can be used to
-> > distinguish them.
-> 
-> See above - the insn decoder should be taught to look only at the bytes
-> it is *allowed* to look, i.e., the bytes which have been fetched and not
-> peek forward. And I believe it does that to some extent but I need to
-> look closer.
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-Yeah, it always does except for the prefix decoding. Anyway, it always
-check the boundary (end address) when peek the byte.
-
-> And it should detect the cases where the insn bytes come short. But that
-> needs also looking but first things first.
-> 
-> Bottomline: it should do exactly what a CPU does, IMO.
-> 
-> Again, find me on IRC to hash out details but I believe we're in an
-> agreement here.
-> 
-> > Take a look at fixup_umip_exception().  It currently has two bugs:
-> > 
-> > 1. If it tries to decode a short instruction followed by something
-> > like a userfaultfd page, it will incorrectly trigger the userfaultfd.
-> > This is because it tries to fetch MAX_INSN_SIZE even if the
-> > instruction is shorter than that.
-
-Hmm, did it pass the correct buf_size to insn_init()?
-...
-        nr_copied = insn_fetch_from_user(regs, buf);
-...
-Ah, I got it. It copies not until the page boundary but +MAX_INSN_SIZE...
-
-> > 
-> > 2. It will fail on execute-only memory, and it will succeed on NX
-> > memory.  copy_from_user() is the wrong API to use here.  We don't have
-> > the right API, and we should add it.  (Hi Dave - what's the best way
-> > to do this?  New get_user_pages() mode?  Try to fault it in, hold an
-> > appropriate lock, walk the page tables to check permissions, and then
-> > access the user address directly?)
-
-Good point! If we can not read the page we can not decode it by software.
-
-Thank you,
-
-> > 
-> > I don't know how much anyone really cares about this for UMIP, but
-> > with SEV-ES and such, I can see this becoming more important.
-> 
-> I'll have a look at those when I do the patchset.
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  arch/arm64/include/asm/memory.h    |  1 +
+>  arch/arm64/include/asm/mte-kasan.h |  6 ++++++
+>  arch/arm64/kernel/mte.c            | 20 ++++++++++++++++++++
+>  mm/kasan/kasan.h                   |  4 ++++
+>  4 files changed, 31 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index b5d6b824c21c..f496abfcf7f5 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -232,6 +232,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>  }
+>
+>  #ifdef CONFIG_KASAN_HW_TAGS
+> +#define arch_cpu_supports_tags()               cpu_supports_mte()
+>  #define arch_init_tags(max_tag)                        mte_init_tags(max_tag)
+>  #define arch_get_random_tag()                  mte_get_random_tag()
+>  #define arch_get_mem_tag(addr)                 mte_get_mem_tag(addr)
+> diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+> index a4c61b926d4a..4c3f2c6b4fe6 100644
+> --- a/arch/arm64/include/asm/mte-kasan.h
+> +++ b/arch/arm64/include/asm/mte-kasan.h
+> @@ -9,6 +9,7 @@
+>
+>  #ifndef __ASSEMBLY__
+>
+> +#include <linux/init.h>
+>  #include <linux/types.h>
+>
+>  /*
+> @@ -30,6 +31,7 @@ u8 mte_get_random_tag(void);
+>  void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+>
+>  void mte_init_tags(u64 max_tag);
+> +bool __init cpu_supports_mte(void);
+>
+>  #else /* CONFIG_ARM64_MTE */
+>
+> @@ -54,6 +56,10 @@ static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>  static inline void mte_init_tags(u64 max_tag)
+>  {
+>  }
+> +static inline bool cpu_supports_mte(void)
+> +{
+> +       return false;
+> +}
+>
+>  #endif /* CONFIG_ARM64_MTE */
+>
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index ca8206b7f9a6..8fcd17408515 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -134,6 +134,26 @@ void mte_init_tags(u64 max_tag)
+>         gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+>  }
+>
+> +/*
+> + * This function can be used during early boot to determine whether the CPU
+> + * supports MTE. The alternative that must be used after boot is completed is
+> + * system_supports_mte(), but it only works after the cpufeature framework
+> + * learns about MTE.
+> + */
+> +bool __init cpu_supports_mte(void)
+> +{
+> +       u64 pfr1;
+> +       u32 val;
+> +
+> +       if (!IS_ENABLED(CONFIG_ARM64_MTE))
+> +               return false;
+> +
+> +       pfr1 = read_cpuid(ID_AA64PFR1_EL1);
+> +       val = cpuid_feature_extract_unsigned_field(pfr1, ID_AA64PFR1_MTE_SHIFT);
+> +
+> +       return val >= ID_AA64PFR1_MTE;
+> +}
+> +
+>  static void update_sctlr_el1_tcf0(u64 tcf0)
+>  {
+>         /* ISB required for the kernel uaccess routines */
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index da08b2533d73..f7ae0c23f023 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -240,6 +240,9 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+>  #define set_tag(addr, tag)     ((void *)arch_kasan_set_tag((addr), (tag)))
+>  #define get_tag(addr)          arch_kasan_get_tag(addr)
+>
+> +#ifndef arch_cpu_supports_tags
+> +#define arch_cpu_supports_tags() (false)
+> +#endif
+>  #ifndef arch_init_tags
+>  #define arch_init_tags(max_tag)
+>  #endif
+> @@ -253,6 +256,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+>  #define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
+>  #endif
+>
+> +#define cpu_supports_tags()                    arch_cpu_supports_tags()
+>  #define init_tags(max_tag)                     arch_init_tags(max_tag)
+>  #define get_random_tag()                       arch_get_random_tag()
+>  #define get_mem_tag(addr)                      arch_get_mem_tag(addr)
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
