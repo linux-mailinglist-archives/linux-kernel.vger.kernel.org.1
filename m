@@ -2,181 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5EE29D939
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C7829D93D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389527AbgJ1WuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
+        id S2389554AbgJ1WuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389461AbgJ1Wto (ORCPT
+        with ESMTP id S2389459AbgJ1WtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:49:44 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF77C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:49:42 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id f93so717212qtb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:49:42 -0700 (PDT)
+        Wed, 28 Oct 2020 18:49:16 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FABC0613CF;
+        Wed, 28 Oct 2020 15:49:16 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h6so734269pgk.4;
+        Wed, 28 Oct 2020 15:49:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hsdkNzdMfWbXcZddXcT8aNBIhrkn1PkorkEU1qPCnjs=;
-        b=EchNxfjWzAUq7C9Ti1qSHxWy2ojph/urHy60IprjNwVnnSHv7akwPxW+W2Gw79lVrr
-         LBbC8gDgPCvGF57RQQ7Dilxntcq9QqyIP0hw2I5p0AViyp/dUDzvzA5xOrfpTbIi8+Qs
-         8Pv9zi0mH6SAJpljfdLeMgoLkyH3mGsakv8Kcc5zmt0yfZS1SpaQeUwLVrsH5fzsd3lK
-         iYnLuOdfZavOXph0Z9SmP8/S8UV6MpNMXLcVwfU4LL/RUeKjJ9nav4TIpS8wHWRitI4c
-         PUHVbQ/ww+WTSzqXxmoctill4YXA+t3xUpvV5z1XlFCEzqqmEpb3ZFVcqJbJBMMB3X83
-         nFTQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xlNmuHQ+BurcadNmXEhYfuLEuxMLXCWKJpkTUb50b+g=;
+        b=PKxE3xP/JzhxCXC9xc9VcOMaEeH41Fp1vAVLYXvbr/UcZa6AvEhiC5PrvPmfb4oSPu
+         YFq64YKVHoZewsVowHUwvsLgYA9ILCEmkB/iN5uKHtzrO2YUjkH7RzyiZPxxc0mxhePV
+         jv1dpbV+8fujEh5BKZPbed279Rx1IRsLNZdSqk5h1YiL0oYeMfT5CL/aronCy8OllAAD
+         VttxFU4i+Mh+wKMUK6VOr8UR7Ias1+dyWicGygRqurCePrCLIvcTHXraF22KEju5t6W0
+         fIAsXJ9l9oKdJ+yhWhfhjK9Tg07iNeAGj3NW9hNnMdSsWSO/R7OQnhxaCymC5yfoaagl
+         41Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hsdkNzdMfWbXcZddXcT8aNBIhrkn1PkorkEU1qPCnjs=;
-        b=lHtI/R499frVhwa0wSV1ozcbxWY+SxiA8+flxIbefmvPGO/TBxi+zRCbLQ+jgs3Ls/
-         WBz54KABe4w7fniQX1weu1N0S5Iv99yvKu2SUg02kKLfMS0jtho2Ci9FxVupPabUh7Wq
-         NQXHTBxQ27jr9XObMo2/pi8M/0tlJp+EpQ20hVkE1EIQnCgQj1PqRWXNeG1iV1Rd/hDt
-         9bdfkpiH73w8BCzntQp3Lh9S5mz8ggQ6htagOSbSDAhp+fbfiEIqTaCP7zAu2SztfttI
-         tQr+JtqGoL1N/vPZaXYsLCSjKce5lkUwwIra9C8o+He4R5TTc68PSDE1xN/0EawloU6T
-         zgLQ==
-X-Gm-Message-State: AOAM532cFTdeyJbi/W0M6eSBw89iBv7KdKzb+ALx+5kCu2Wlsh5/j3cz
-        0pKIefqoa3UDCUeez+H1fvuG4Awjw12q0DpOYfIoVHvbvbneVQ==
-X-Google-Smtp-Source: ABdhPJydQ3JF4RJPCBrrrnsibfOQNjmnkH8RvdYTDaT4t9agLmajW2JLdDceJKZXK/JBoej4wJGe7HarOCof+hiFJhU=
-X-Received: by 2002:ac8:6c54:: with SMTP id z20mr6093592qtu.337.1603882568390;
- Wed, 28 Oct 2020 03:56:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xlNmuHQ+BurcadNmXEhYfuLEuxMLXCWKJpkTUb50b+g=;
+        b=XmE+6htB6VkfTPTdMCPzQWk8PkTu10LWKrk7LXW+IMemuOEIdpHpUqatswV62UAu1+
+         nBXPMqWEDbhXxYpGfPnxgmr3yN0qokF709n8MQrjLP2wz7O5EMdnjxaILQL/NYDIFw1I
+         Y7Qb7np+p1C2yPAdDN5TWjg0/DSt6WBias6nJkzg3qUUILf3PGl2pXRpjTLNEsIQN3vd
+         5JiBhK4W/cpV71MpEBp0NsOWakMqAa6XUBXck7187zB1zdrSDGfzXoL0Fjq93t+5cqsG
+         vcQ0Kg5CmkjA2cAU7ifL5iqya273OvkmSg2B1v4+S+hNuoKGqj0psQA/nDYn5Vw/R8L+
+         FbOA==
+X-Gm-Message-State: AOAM531KPPJqmexK9+HkIt/jk2W8ehytFrBOjBFpHFRtZwBWKZJDp50z
+        0hCF7m2HOfZlULT/nDBSXI2ny3e5QUM=
+X-Google-Smtp-Source: ABdhPJzR/50Cvki4QOdiAEIFpTQPSl3W+0IduE+iI0wuY7/YptCUkm0sFcZnU/njVHopJ6z9v/eAgw==
+X-Received: by 2002:a17:902:9695:b029:d3:8b4f:558c with SMTP id n21-20020a1709029695b02900d38b4f558cmr6797176plp.27.1603882670711;
+        Wed, 28 Oct 2020 03:57:50 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:a46c:8b86:395a:7a3d])
+        by smtp.gmail.com with ESMTPSA id 65sm557863pge.37.2020.10.28.03.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 03:57:50 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next 1/4] net: hdlc_fr: Simpify fr_rx by using "goto rx_drop" to drop frames
+Date:   Wed, 28 Oct 2020 03:57:02 -0700
+Message-Id: <20201028105705.460551-2-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028105705.460551-1-xie.he.0141@gmail.com>
+References: <20201028105705.460551-1-xie.he.0141@gmail.com>
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 28 Oct 2020 11:55:57 +0100
-Message-ID: <CACT4Y+Y6jbXh28U=9oK_1ihMhePRhZ6WP9vBwr8nVm_aU3BmNQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 07/21] kasan, arm64: move initialization message
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Tag-based KASAN modes are fully initialized with kasan_init_tags(),
-> while the generic mode only requireds kasan_init(). Move the
-> initialization message for tag-based modes into kasan_init_tags().
->
-> Also fix pr_fmt() usage for KASAN code: generic mode doesn't need it,
+When the fr_rx function drops a received frame (because the protocol type
+is not supported, or because the PVC virtual device that corresponds to
+the DLCI number and the protocol type doesn't exist), the function frees
+the skb and returns.
 
-Why doesn't it need it? What's the difference with tag modes?
+The code for freeing the skb and returning is repeated several times, this
+patch uses "goto rx_drop" to replace them so that the code looks cleaner.
 
-> tag-based modes should use "kasan:" instead of KBUILD_MODNAME.
+Also add code to increase the stats.rx_dropped count whenever we drop a
+frame.
 
-With generic KASAN I currently see:
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/hdlc_fr.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-[    0.571473][    T0] kasan: KernelAddressSanitizer initialized
+diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
+index 409e5a7ad8e2..c774eff44534 100644
+--- a/drivers/net/wan/hdlc_fr.c
++++ b/drivers/net/wan/hdlc_fr.c
+@@ -904,8 +904,7 @@ static int fr_rx(struct sk_buff *skb)
+ 		netdev_info(frad, "No PVC for received frame's DLCI %d\n",
+ 			    dlci);
+ #endif
+-		dev_kfree_skb_any(skb);
+-		return NET_RX_DROP;
++		goto rx_drop;
+ 	}
+ 
+ 	if (pvc->state.fecn != fh->fecn) {
+@@ -963,14 +962,12 @@ static int fr_rx(struct sk_buff *skb)
+ 		default:
+ 			netdev_info(frad, "Unsupported protocol, OUI=%x PID=%x\n",
+ 				    oui, pid);
+-			dev_kfree_skb_any(skb);
+-			return NET_RX_DROP;
++			goto rx_drop;
+ 		}
+ 	} else {
+ 		netdev_info(frad, "Unsupported protocol, NLPID=%x length=%i\n",
+ 			    data[3], skb->len);
+-		dev_kfree_skb_any(skb);
+-		return NET_RX_DROP;
++		goto rx_drop;
+ 	}
+ 
+ 	if (dev) {
+@@ -982,12 +979,13 @@ static int fr_rx(struct sk_buff *skb)
+ 		netif_rx(skb);
+ 		return NET_RX_SUCCESS;
+ 	} else {
+-		dev_kfree_skb_any(skb);
+-		return NET_RX_DROP;
++		goto rx_drop;
+ 	}
+ 
+- rx_error:
++rx_error:
+ 	frad->stats.rx_errors++; /* Mark error */
++rx_drop:
++	frad->stats.rx_dropped++;
+ 	dev_kfree_skb_any(skb);
+ 	return NET_RX_DROP;
+ }
+-- 
+2.25.1
 
-So KBUILD_MODNAME somehow works. Is there some difference between files?
-
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Idfd1e50625ffdf42dfc3dbf7455b11bd200a0a49
-> ---
->  arch/arm64/mm/kasan_init.c | 3 +++
->  mm/kasan/generic.c         | 2 --
->  mm/kasan/hw_tags.c         | 4 ++++
->  mm/kasan/sw_tags.c         | 4 +++-
->  4 files changed, 10 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> index b6b9d55bb72e..8f17fa834b62 100644
-> --- a/arch/arm64/mm/kasan_init.c
-> +++ b/arch/arm64/mm/kasan_init.c
-> @@ -290,5 +290,8 @@ void __init kasan_init(void)
->  {
->         kasan_init_shadow();
->         kasan_init_depth();
-> +#if defined(CONFIG_KASAN_GENERIC)
-> +       /* CONFIG_KASAN_SW/HW_TAGS also requires kasan_init_tags(). */
-
-A bit cleaner way may be to introduce kasan_init_early() and
-kasan_init_late(). Late() will do tag init and always print the
-message.
-
->         pr_info("KernelAddressSanitizer initialized\n");
-> +#endif
->  }
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index de6b3f03a023..d259e4c3aefd 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -9,8 +9,6 @@
->   *        Andrey Konovalov <andreyknvl@gmail.com>
->   */
->
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> -
->  #include <linux/export.h>
->  #include <linux/interrupt.h>
->  #include <linux/init.h>
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 0128062320d5..b372421258c8 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -6,6 +6,8 @@
->   * Author: Andrey Konovalov <andreyknvl@google.com>
->   */
->
-> +#define pr_fmt(fmt) "kasan: " fmt
-> +
->  #include <linux/kasan.h>
->  #include <linux/kernel.h>
->  #include <linux/memory.h>
-> @@ -18,6 +20,8 @@
->  void __init kasan_init_tags(void)
->  {
->         init_tags(KASAN_TAG_MAX);
-> +
-> +       pr_info("KernelAddressSanitizer initialized\n");
->  }
->
->  void *kasan_reset_tag(const void *addr)
-> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> index bf1422282bb5..099af6dc8f7e 100644
-> --- a/mm/kasan/sw_tags.c
-> +++ b/mm/kasan/sw_tags.c
-> @@ -6,7 +6,7 @@
->   * Author: Andrey Konovalov <andreyknvl@google.com>
->   */
->
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +#define pr_fmt(fmt) "kasan: " fmt
->
->  #include <linux/export.h>
->  #include <linux/interrupt.h>
-> @@ -41,6 +41,8 @@ void __init kasan_init_tags(void)
->
->         for_each_possible_cpu(cpu)
->                 per_cpu(prng_state, cpu) = (u32)get_cycles();
-> +
-> +       pr_info("KernelAddressSanitizer initialized\n");
->  }
->
->  /*
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
