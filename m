@@ -2,108 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2E829DE7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556C129DE81
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgJ1WSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
+        id S1731796AbgJ1WSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731654AbgJ1WRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:40 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731648AbgJ1WRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:39 -0400
+Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AEB92417E;
-        Wed, 28 Oct 2020 07:51:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B40C24197;
+        Wed, 28 Oct 2020 08:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603871464;
-        bh=5CnDlGXayyFOYH2dTVvk7eaghhMV+C1UUuCxwi3GGmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hmj1uJtQNt65yUTovMQ4dJtCggiEI7V3Zy82V7yP1FafK6pDVaJ0fiEufCDAlOHTE
-         +3b0rRDzZ8PRRUQDHCGs4VrfSqcCuYGSQxlBScO6OFwHl/PsYnMDdv4JeLDFb30A3E
-         hku2SGt0DoF6SoB48S1+utefLVjVMbDI4KQ03fn4=
-Date:   Wed, 28 Oct 2020 09:50:56 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v3 01/12] mm: Make pagecache tagged lookups return only
- head pages
-Message-ID: <20201028075056.GB1362354@kernel.org>
-References: <20201026041408.25230-1-willy@infradead.org>
- <20201026041408.25230-2-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026041408.25230-2-willy@infradead.org>
+        s=default; t=1603872289;
+        bh=S7JrzMswvUuPbRJxoo3zOS2sxFdQoBIPq4Twumglvts=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HuXd6ATOL21iYpp7E1zoCqcZ3Jsl7qJKRb5xkP9hPT+XULusufkUPutCimgXy7Uxp
+         Opo3Od96ZmT5pYJHsMpP+U3yiOGW+qT7SHBYrOhWwh/Hy4FSVX62DZnm+1G4maeTRS
+         qFv5XO+l7Nnb98kyAry85wC3hQuKALM7pLIijb5Q=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, Ard Biesheuvel <ardb@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH] powerpc: avoid broken GCC __attribute__((optimize))
+Date:   Wed, 28 Oct 2020 09:04:33 +0100
+Message-Id: <20201028080433.26799-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 04:13:57AM +0000, Matthew Wilcox (Oracle) wrote:
-> Pagecache tags are used for dirty page writeback.  Since dirtiness is
-> tracked on a per-THP basis, we only want to return the head page rather
-> than each subpage of a tagged page.  All the filesystems which use huge
-> pages today are in-memory, so there are no tagged huge pages today.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-> ---
->  mm/filemap.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index d5e7c2029d16..edde5dc0d28f 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2066,7 +2066,7 @@ unsigned find_get_pages_contig(struct address_space *mapping, pgoff_t index,
->  EXPORT_SYMBOL(find_get_pages_contig);
->  
->  /**
-> - * find_get_pages_range_tag - find and return pages in given range matching @tag
-> + * find_get_pages_range_tag - Find and return head pages matching @tag.
->   * @mapping:	the address_space to search
->   * @index:	the starting page index
->   * @end:	The final page index (inclusive)
-> @@ -2074,8 +2074,8 @@ EXPORT_SYMBOL(find_get_pages_contig);
->   * @nr_pages:	the maximum number of pages
->   * @pages:	where the resulting pages are placed
->   *
-> - * Like find_get_pages, except we only return pages which are tagged with
-> - * @tag.   We update @index to index the next page for the traversal.
-> + * Like find_get_pages(), except we only return head pages which are tagged
-> + * with @tag.   We update @index to index the next page for the traversal.
+Commit 7053f80d9696 ("powerpc/64: Prevent stack protection in early boot")
+introduced a couple of uses of __attribute__((optimize)) with function
+scope, to disable the stack protector in some early boot code.
 
-Nit:                                           ^ next head page
+Unfortunately, and this is documented in the GCC man pages [0], overriding
+function attributes for optimization is broken, and is only supported for
+debug scenarios, not for production: the problem appears to be that
+setting GCC -f flags using this method will cause it to forget about some
+or all other optimization settings that have been applied.
 
->   *
->   * Return: the number of pages which were found.
->   */
-> @@ -2109,9 +2109,9 @@ unsigned find_get_pages_range_tag(struct address_space *mapping, pgoff_t *index,
->  		if (unlikely(page != xas_reload(&xas)))
->  			goto put_page;
->  
-> -		pages[ret] = find_subpage(page, xas.xa_index);
-> +		pages[ret] = page;
->  		if (++ret == nr_pages) {
-> -			*index = xas.xa_index + 1;
-> +			*index = page->index + thp_nr_pages(page);
->  			goto out;
->  		}
->  		continue;
-> -- 
-> 2.28.0
-> 
-> 
+So the only safe way to disable the stack protector is to disable it for
+the entire source file.
 
+[0] https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html
+
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kees Cook <keescook@chromium.org>
+Fixes: 7053f80d9696 ("powerpc/64: Prevent stack protection in early boot")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+Related discussion here:
+https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
+
+TL;DR using __attribute__((optimize("-fno-gcse"))) in the BPF interpreter
+causes the compiler to forget about -fno-asynchronous-unwind-tables passed
+on the command line, resulting in unexpected .eh_frame sections in vmlinux.
+
+ arch/powerpc/kernel/Makefile   | 3 +++
+ arch/powerpc/kernel/paca.c     | 2 +-
+ arch/powerpc/kernel/setup.h    | 6 ------
+ arch/powerpc/kernel/setup_64.c | 2 +-
+ 4 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index bf0bf1b900d2..fe2ef598e2ea 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -173,6 +173,9 @@ KCOV_INSTRUMENT_cputable.o := n
+ KCOV_INSTRUMENT_setup_64.o := n
+ KCOV_INSTRUMENT_paca.o := n
+ 
++CFLAGS_setup_64.o		+= -fno-stack-protector
++CFLAGS_paca.o			+= -fno-stack-protector
++
+ extra-$(CONFIG_PPC_FPU)		+= fpu.o
+ extra-$(CONFIG_ALTIVEC)		+= vector.o
+ extra-$(CONFIG_PPC64)		+= entry_64.o
+diff --git a/arch/powerpc/kernel/paca.c b/arch/powerpc/kernel/paca.c
+index 0ad15768d762..fe70834d7283 100644
+--- a/arch/powerpc/kernel/paca.c
++++ b/arch/powerpc/kernel/paca.c
+@@ -208,7 +208,7 @@ static struct rtas_args * __init new_rtas_args(int cpu, unsigned long limit)
+ struct paca_struct **paca_ptrs __read_mostly;
+ EXPORT_SYMBOL(paca_ptrs);
+ 
+-void __init __nostackprotector initialise_paca(struct paca_struct *new_paca, int cpu)
++void __init initialise_paca(struct paca_struct *new_paca, int cpu)
+ {
+ #ifdef CONFIG_PPC_PSERIES
+ 	new_paca->lppaca_ptr = NULL;
+diff --git a/arch/powerpc/kernel/setup.h b/arch/powerpc/kernel/setup.h
+index 2ec835574cc9..2dd0d9cb5a20 100644
+--- a/arch/powerpc/kernel/setup.h
++++ b/arch/powerpc/kernel/setup.h
+@@ -8,12 +8,6 @@
+ #ifndef __ARCH_POWERPC_KERNEL_SETUP_H
+ #define __ARCH_POWERPC_KERNEL_SETUP_H
+ 
+-#ifdef CONFIG_CC_IS_CLANG
+-#define __nostackprotector
+-#else
+-#define __nostackprotector __attribute__((__optimize__("no-stack-protector")))
+-#endif
+-
+ void initialize_cache_info(void);
+ void irqstack_early_init(void);
+ 
+diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
+index bb9cab3641d7..da447a62ea1e 100644
+--- a/arch/powerpc/kernel/setup_64.c
++++ b/arch/powerpc/kernel/setup_64.c
+@@ -283,7 +283,7 @@ void __init record_spr_defaults(void)
+  * device-tree is not accessible via normal means at this point.
+  */
+ 
+-void __init __nostackprotector early_setup(unsigned long dt_ptr)
++void __init early_setup(unsigned long dt_ptr)
+ {
+ 	static __initdata struct paca_struct boot_paca;
+ 
 -- 
-Sincerely yours,
-Mike.
+2.17.1
+
