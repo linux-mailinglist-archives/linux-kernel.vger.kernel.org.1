@@ -2,64 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182B129E0E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9799929E16F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgJ2BnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:43:25 -0400
-Received: from ms.lwn.net ([45.79.88.28]:45136 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729098AbgJ1V55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:57:57 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id CEA8A99C;
-        Wed, 28 Oct 2020 17:11:43 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 11:11:42 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] docs: Makefile: honor V=0 for docs building
-Message-ID: <20201028111142.7cc8833a@lwn.net>
-In-Reply-To: <478c114a2399b68a18de94ee5f98649304f3903b.1603796153.git.mchehab+huawei@kernel.org>
-References: <20201016165504.3cc33889@canb.auug.org.au>
-        <478c114a2399b68a18de94ee5f98649304f3903b.1603796153.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        id S1727483AbgJ2CBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:01:05 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:46717 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728079AbgJ1Vuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:50:51 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 701635C0032;
+        Wed, 28 Oct 2020 13:44:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 28 Oct 2020 13:44:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=2
+        8qnJnc+eeyqFQKlSstideW9an1PTHl7M5jm4rsFseA=; b=E9jefSgp0MClmUmr5
+        Yl6QMykUxKlcVWlnSQehrxapW8kDS8aFIR+6hZpVq04YpruAaGepEfCbjkzEbvA0
+        wlSN9EcRlWHNANE+z7zIOrRtH84oynrjvJhjwXRzIA7leqfHM9A6qN8KyGC/MvbZ
+        6cRNSdpR7/PbDDkvmvWHt3jB+g8giSfi4aGVX30MAEn/JZIIswaQiy/z6mixjewC
+        CRyqBbM04zKzorDOBdowpzOAjWpkn2CK4Z1r8ssBGlg/iL7fY3mDdipXC2ZB934G
+        TvLlYTqJEegG390ZjeNF7+J/wjGUDoo3A8xhb5uLQqVKFenK4d4ORDJiSmXt6dCy
+        +6GXQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=28qnJnc+eeyqFQKlSstideW9an1PTHl7M5jm4rsFs
+        eA=; b=Od+1R2MoOVG5QLp0r/NWqcHrzHxBu4zWHtrVYrWD+TpNWzTxQveoxFl/S
+        86l3bsueu4RC/RjOoq+nuwuk2UdTlExl1wL9x1vflKrPXk0+5N3NPeFZqIVELjuV
+        PzK9VnTRZBQX+EMMd+DLRKO+i0fKDukX5YocjJ2ojRKtaDSI9dqum5DSg6WGs1MO
+        cv6jVWL1yIQ4ZiPPn9mCMl/sAgh3Ax1ghZjv2vKAG8McknLHj7aKrOkob88SLGpk
+        B4xyZuypxT9J4IzYo8YFrWqrlB9cDRJ+MyODyn0L4kJftFS2mJ53jp6OtuP6gj6j
+        drIHmMB52lhz1os0XQuzfL4XTLHDg==
+X-ME-Sender: <xms:Bq6ZX4V-UhstxWAd6oTRrB-caqJwOlUjK0J4hpdd321n7BB_Zs6t9w>
+    <xme:Bq6ZX8l4XQAbxblCuTWb43UrD7rRhEX6h3-uQbxaeGNmUdmGqpWz2YhY5TMD-DzoV
+    aZJ4iwOR6othtB3ID0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledugddutddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
+    gedvudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Bq6ZX8Zb_cAB1Px_Tak1URXQaq602uAKywnNI_fSqptXce2rMTEj6w>
+    <xmx:Bq6ZX3Vjv19lHAusEVKBDfEDx_1-Jg0ITC8MEU2HtbP3hY3x97yAVQ>
+    <xmx:Bq6ZXyk7-BlYmu9JIwgfC7B2xHV9344BtVdfKujjuEQRFjLOYPZviA>
+    <xmx:Ca6ZX5uKoCdCJJsbUUQ8bVKoGaAiWonyJ1qEr720Bnhzm9YiDhLGvQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E00C13280074;
+        Wed, 28 Oct 2020 13:44:36 -0400 (EDT)
+Date:   Wed, 28 Oct 2020 18:44:35 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>, linux-rtc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v3] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+Message-ID: <20201028174435.dksz6b7jwabzloxt@gilmour.lan>
+References: <20201020061226.6572-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201020061226.6572-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 11:56:15 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Tue, Oct 20, 2020 at 02:12:26PM +0800, Dinghao Liu wrote:
+> When clk_hw_register_fixed_rate_with_accuracy() fails,
+> clk_data should be freed. It's the same for the subsequent
+> two error paths, but we should also unregister the already
+> registered clocks in them.
+>=20
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-> Reduce the number of displayed mesages when building the
-> docs with V=0.
-> 
-> Suggested-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/Makefile | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/Makefile b/Documentation/Makefile
-> index 6a59a13d3c53..61a7310b49e0 100644
-> --- a/Documentation/Makefile
-> +++ b/Documentation/Makefile
-> @@ -26,6 +26,10 @@ BUILDDIR      = $(obj)/output
->  PDFLATEX      = xelatex
->  LATEXOPTS     = -interaction=batchmode
->  
-> +ifeq ($(KBUILD_VERBOSE),0)
-> +SPHINXOPTS    += "-q"
-> +endif
-> +
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Applied, thanks.  ...ahhh the silence....:)
-
-jon
+Maxime
