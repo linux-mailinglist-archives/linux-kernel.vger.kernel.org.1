@@ -2,141 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B57A29E316
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8D529E2D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729981AbgJ2CpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:45:06 -0400
-Received: from mail-dm6nam11on2089.outbound.protection.outlook.com ([40.107.223.89]:53249
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726342AbgJ1Vd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cVOsedQgYxBVieCC7U3LA5kiAj8tHS1tl8KNo+cEBlJ+7UAvqyqH2xbqbL50kn5uGm52vVH63Wja6u0XbJ5eZ8oFdQQkwrbwgbJnm1BOunf7qzMfqJifSfqPArQnDyXWJGr8apLH0Inr+JkOWcN9fIf4SmAgvZOcQSXOfJZs0VVqlpNylfLqTSEnYZSLjpgxgYCXlw42S3YN/dRySA7nzgcfPdcRxoxTlsCV2UFwtazJfmnBHqJL94YjJA9cxYvMPw3X/+htKyy9adFFx1Zy2EUd06N1epbuPGUIFcjIEbEazwhDnMX+T6mFrfbLJ5bSiJwX/wP+cEbDr79h9vliaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vdQzdrz3mrI/PCr8nhAhn3y2t1XIg6vTzLhwDRhvR18=;
- b=bFV/PBmqOonrDvx01jB71DXuEmL9QxnuDj9dd2C9ksxBPAGBfrBHhbVhsOmyblYAreo8E83ARIj91D43YoBoJH3PjDnamuobaiovdFK7fRU4k+3LPr8gATL/fr4qCI2wAVwDrmCdPJyHkPmb98WDHjgBOKncG4Yza8UUwxPwEzTV0IaLZE7A9AkO+RY7LOanAOZlvTsono/Q1zSUAu/LV83DWMzsX49UtpXZyWe4OF3IyH8iYyCI4lagXn3tIckKKr4H/q75XYUnHwxVRDQ5Jcnin4G/MaT2ONhs+Q+HX6+XpzNVOlRiAF3evC9bN5yXRvnLjk+enHrBxcUk3TN/Gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vdQzdrz3mrI/PCr8nhAhn3y2t1XIg6vTzLhwDRhvR18=;
- b=JNFE/5jNHdE89+tdFLTEhixVNvaHAP4sv5pqEjF98vguE6PaqNScoWYUlhrjGueLyzI53qAu/dwaQzVuggaW4YC9nVPUzfqZApKwYmuG0XPW9ooeiqSDyvLnbNNnqQ+6EZer2rRi6cxP6RbujMfNTC3W3m5krQal9bypFx1bRT4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2542.namprd12.prod.outlook.com (2603:10b6:802:26::28)
- by SA0PR12MB4429.namprd12.prod.outlook.com (2603:10b6:806:73::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Wed, 28 Oct
- 2020 15:59:47 +0000
-Received: from SN1PR12MB2542.namprd12.prod.outlook.com
- ([fe80::10c4:c28f:2a60:c805]) by SN1PR12MB2542.namprd12.prod.outlook.com
- ([fe80::10c4:c28f:2a60:c805%7]) with mapi id 15.20.3455.029; Wed, 28 Oct 2020
- 15:59:47 +0000
-Subject: Re: [PATCH 2/3] ARM: dts: aspeed: amd-ethanolx: Enable KCS channel 3
-To:     Joel Stanley <joel@jms.id.au>,
-        Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201027123722.2935-1-aladyshev22@gmail.com>
- <20201027123722.2935-2-aladyshev22@gmail.com>
- <CACPK8XeaWbrWBKonxqW0Gu2AnB3mXBNXsEDmsEP_hzT1e8gX1w@mail.gmail.com>
-From:   Supreeth Venkatesh <supreeth.venkatesh@amd.com>
-Message-ID: <5e829382-3a6b-7905-52ea-3ae274dd60b1@amd.com>
-Date:   Wed, 28 Oct 2020 10:59:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CACPK8XeaWbrWBKonxqW0Gu2AnB3mXBNXsEDmsEP_hzT1e8gX1w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM6PR11CA0001.namprd11.prod.outlook.com
- (2603:10b6:5:190::14) To SN1PR12MB2542.namprd12.prod.outlook.com
- (2603:10b6:802:26::28)
+        id S1726692AbgJ1VfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:35:22 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:38078 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgJ1VfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:35:15 -0400
+Date:   Wed, 28 Oct 2020 12:49:36 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Camille Mougey <commial@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Denis Efremov <efremov@linux.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [seccomp] Request for a "enable on execve" mode for Seccomp
+ filters
+Message-ID: <20201028164936.GC534@brightrain.aerifal.cx>
+References: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
+ <CAG48ez3ZXmJ1ndEmZtoieOAm05p+5X7+HXo61LwpuiWFWGWK4w@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.21.55] (165.204.77.1) by DM6PR11CA0001.namprd11.prod.outlook.com (2603:10b6:5:190::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 15:59:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4fb98b36-5ceb-4ecd-be71-08d87b5a7e7f
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4429:
-X-Microsoft-Antispam-PRVS: <SA0PR12MB44295FAA65AA0A6AF3BD07CB96170@SA0PR12MB4429.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jDMqAifmgzVV2ZYlqD2gNsqf6g2I1EbrawA5EJqOeAkrqmeTooVGYQmHmMQ+UfKA/M8Hlk3nkCrzkVqu8mA6gNmV+9dbSvbnLPJ7KlKsLpGsjfj0MCb+lKhJGE6XXm3g6rFFDhJOM09g9GpXd62qMz9l/6NVxVJZs+v11SgankegM5Fw0ELnQWLiMZbwCRrV7jmZl///CKKvBGwR5dzZRBE30HbRdlSEx3sguthKEMpwOUcd7nG9LLZ1pRHpA1ERmSVN4B11s8F8fS3VCWsSRzM7iX6YuOX5446igTNcsNVFqJ6tjFIcVjbnOxBc/IBN1/TPrnEG5Dx3/kjLMNZBdTk0jcZsszO4QMy+6FoxkGgG6Yl5X5QjlAWoZfDkoY30
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2542.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(478600001)(8936002)(53546011)(66556008)(66476007)(2616005)(956004)(5660300002)(4326008)(26005)(8676002)(44832011)(6486002)(16576012)(31696002)(31686004)(110136005)(16526019)(54906003)(316002)(52116002)(86362001)(2906002)(66946007)(36756003)(186003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 8KcXjjZUZDBTO0mUWKmgyKvjwW4jzHU1rVuxr4yyvWa6h69ML0cR7HCvgDiOfSK2LaHNaFPGvQZo8sPr7QbxNL5diMrMvEYNKkmxCG9EeHPs0XbQzHblSgJDeJAJ2Z21dvfdu1XS5JI2tEyzeBDARrD1lwGxYbOAIwTMRh8bunSMwCA1wgxrFn5SbBZz0joDx+K5J1Fef1BLixlK/6X0es6t+YVHg14rKzGS0feyOpuFKIsi60BiMRnD/9MGwEYV9fm5TOa+G91A5q/82Yq2aGY1O7SbiN6SaWLmQOX3qAYWp2Sw0ZWf6uFHQ7wxKKjD+4KhrRLKdDqsrDd9TmEtfdkdwqussoYW9hPXBSc4y8Pw7Mq+cDciSmX0+tOFXjx1oFDJ0bKvy2FAcdXjzBz/WE1271qxUcZAXvEeTRjUZOhKdSHrZlzMsB+bHZsp1sNb/yXrPejtYhrd8LRHWXqAAT8Xkbp5JFdNey/fuXDWd2v42Ln9yjDxyChCmXxibVWqL4U6cqx6uVHXWEaTn6aAYoZRwJCujF3q+eBevC9/NpN8GbBt1XyVpQY2oEM2lL4WvotDmMFKSL24ZkUkolXi7JCMBpOicAoc4Qv9m0NxmXh9c9bqTlvIBKHauNnxi/pobURx/HmeYW5/vjd35GaVNg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fb98b36-5ceb-4ecd-be71-08d87b5a7e7f
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2542.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2020 15:59:47.3948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rled2H1a4AStKRBhyYvs8Lp1V5jXrsx8GIiolVyfA/ena3paOY7lnmn6+1DcZC+Me4XGKkzWdbWAMct3bDn7/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4429
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez3ZXmJ1ndEmZtoieOAm05p+5X7+HXo61LwpuiWFWGWK4w@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Konstantin for this patch.
-Thanks Joel for reviewing this.
+On Wed, Oct 28, 2020 at 01:42:13PM +0100, Jann Horn wrote:
+> +luto just in case he has opinions on this
+> 
+> On Wed, Oct 28, 2020 at 12:18 PM Camille Mougey <commial@gmail.com> wrote:
+> > From my understanding, there is no way to delay the activation of
+> > seccomp filters, for instance "until an _execve_ call".
+> 
+> (FWIW, there are some tricks that you can use for this. In particular,
+> you can attach to the child with ptrace before the child runs
+> execve(), and then use seccomp to inject a filter after execve(), or
+> something like that. The disadvantage is that this is not super pretty
+> because it interferes with debugging of the parent process. IIRC e.g.
+> Ubuntu's launchd did things this way.)
 
-On 10/28/20 12:28 AM, Joel Stanley wrote:
-> [CAUTION: External Email]
-> 
-> On Tue, 27 Oct 2020 at 12:41, Konstantin Aladyshev
-> <aladyshev22@gmail.com> wrote:
->>
->> The KCS interface on the LPC channel 3 in the controller
->> is used for the in-band BMC<->BIOS IPMI communication.
->> 0xCA2 is a default host CPU LPC IO address for this
->> interface.
->>
->> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
-> 
-> I don't have any docs on the platform so I'll wait for a review from
-> Supreeth before applying this one.
-Done.
-> 
-> It's a correct use of the bindings:
-> 
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
-Reviewed-by: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
+Yes, in principle everything seccomp does could have been done with
+ptrace but the whole point was not to use ptrace as a primitive to
+build hacks upon. So this is not a good solution.
 
+> > But this might be useful, especially for tools who sandbox other,
+> > non-cooperative, executables, such as "systemd" or "FireJail".
+> >
+> > It seems to be a caveat of seccomp specific to the system call
+> > _execve_. For now, some tools such as "systemd" explicitly mention
+> > this exception, and do not support it (from the man page):
+> > > Note that strict system call filters may impact execution and
+> > > error handling code paths of the service invocation.
+> > > Specifically, access to the execve system call is required for
+> > > the execution of the service binary — if it is blocked service
+> > > invocation will necessarily fail
+> >
+> > "FireJail" takes a different approach[1], with a kind of workaround:
+> > the project uses an external library to be loaded through LD_PRELOAD
+> > mechanism, in order to install filters during the loader stage.
+> > This approach, a bit hacky, also has several caveats:
+> > * _openat_, _mmap_, etc. must be allowed in order to reach the
+> > LD_PRELOAD mechanism, and for the crafted library to work ;
 > 
->> ---
->>  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
->> index 89ddc3847222..2a86bda8afd8 100644
->> --- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
->> +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
->> @@ -147,6 +147,11 @@
->>         aspeed,lpc-io-reg = <0x62>;
->>  };
->>
->> +&kcs3 {
->> +       status = "okay";
->> +       aspeed,lpc-io-reg = <0xCA2>;
->> +};
->> +
->>  &kcs4 {
->>         status = "okay";
->>         aspeed,lpc-io-reg = <0x97DE>;
->> --
->> 2.17.1
->>
+> Those caveats are not specific to the LD_PRELOAD approach. Actually,
+> the LD_PRELOAD approach is the only one which I would expect to *not*
+> have that caveat. (Of course, non-executable mmap() and probably also
+> openat() are anyway needed for almost any real-world service to do its
+> job correctly.)
+> 
+> > * it doesn't work for static binaries.
+> 
+> IMO the important thing about LD_PRELOAD is that it is unreliable:
+> When the LD_PRELOAD library can't be opened, glibc just prints a
+> warning and continues execution - and an attacker may be able to cause
+> opening an LD_PRELOAD library to fail by opening so many files in
+> other processes that the global limit is reached. So you can't build
+> reliable security infrastructure on LD_PRELOAD. This is not a
+> fundamental problem though - glibc could address this.
+
+Using LD_PRELOAD for security infrastructure is a really bad idea
+anyway. There are nearly unboundedly many ways code could end up
+executing before the preloaded ctors. Preinit arrays, malformed ELF
+headers seizing control of execution of ldso, etc. The seccomp filters
+really need to be in place *before* the untrusted code runs.
+
+> > I only see hackish ways to restrict the use of _execve_ in a
+> > non-cooperative executable. These methods seem globally bypassables
+> > and not satisfactory from a security point of view.
+> 
+> You're just focusing on execve() - I think it's important to keep in
+> mind what happens after execve() for normal, dynamically-linked
+> binaries: The next step is that the dynamic linker runs, and it will
+> poke around in the file system with access() and openat() and fstat(),
+> it will mmap() executable libraries into memory, it will mprotect()
+> some memory regions, it will set up thread-local storage (e.g. using
+> arch_prctl(); even if the process is single-threaded), and so on.
+> 
+> The earlier you install the seccomp filter, the more of these steps
+> you have to permit in the filter. And if you want the filter to take
+> effect directly after execve(), the syscalls you'll be forced to
+> permit are sufficient to cobble something together in userspace that
+> effectively does almost the same thing as execve().
+
+I would assume you use SECCOMP_RET_USER_NOTIF to implement policy for
+controlling these operations and allowing only the ones that are valid
+during dynamic linking. This also allows you to defer application of
+the filter until after execve. So unless I'm missing some reason why
+this doesn't work, I think the requested functionality is already
+available.
+
+If you really just want the "activate at exec" behavior, it might be
+possible (depending on how SECCOMP_RET_USER_NOTIF behaves when there's
+no notify fd open; I forget) to setup the filter so that the "mode
+switch" happens automatically at exec by having the notify fd being
+close-on-exec (notifications handled by a thread before exec). If this
+works it would avoid having an extra process involved and managing its
+lifetime.
+
+> Your usecase might be better served by adding a glibc feature for
+> "unskippable LD_PRELOAD" paired with a constructor function, or
+> something along those lines.
+
+I don't think this can be made into a safe security boundary.
+
+> > and have the very firsts
+> > instructions of potentially untrusted binaries already subject to
+> > seccomp filters.
+> 
+> By "untrusted", do you mean "actively malicious" or "exploitable"? If
+> they are just exploitable, you probably don't need to apply filters
+> from the first instruction, only from when the buggy code actually
+> starts running and parsing input.
+> If they are actively malicious, it'd be a different story; but as far
+> as I know, normally even if a service has been compromised, its
+> executables and libraries are owned by root, and so an attacker
+> shouldn't be able to overwrite those.
+> (And you could apply a basic filter before execve and then add some
+> finer restrictions for things like mmap() at a later point.)
+
+This distinction is probably over-rated. Certainly there's a lot of
+software (see the example of systemd) that's on a spectrum between
+"actively malicious" and "actively doing things that the developers
+don't intend or perceive as malicious but that the user does, and that
+would be harmful to their system if allowed to execute outside of the
+sandbox". This also applies to things like games with invasive/spyware
+anti-cheat features, proprietary software with license manager
+interactions, etc.
+
+Rich
