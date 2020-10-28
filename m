@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7CE29E0D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A8529E13D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729886AbgJ1WDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729478AbgJ1WBc (ORCPT
+        id S1728099AbgJ2B4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:56:15 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:44208 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727139AbgJ2BzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:01:32 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC746C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:01:32 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id a12so452156ybg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X61PD0Eqa415e78dHBCu8gVP7gz9DiO/HA7a3ClV984=;
-        b=NEOWjCOdoW+dKxV90REiSNshDKbdF16fZjphJCyW4sXCsrz9B1bTlOsgmoBmn5SiEj
-         Ttg/Sbh7iyvA1URHLm7Yhnoeex0MgCqwY9HsUCdVIe+5eud+5/AjV+fgOBuFzWp9p1bY
-         GHQw4cFWy+Exvei93CFPwEI3PCFpZ5owzNGTU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X61PD0Eqa415e78dHBCu8gVP7gz9DiO/HA7a3ClV984=;
-        b=JJh/lNlkt6yC8WVqrTNjbe2NOcZ3g4nys/w7Alr3KrGajD0Ygydmc++TXEavsMLvi4
-         ULePb0vXpJAaKfpLLPy981Z1815rIY9Dykbnq+h8hKwxLM/TQ1KTbYWNaRLyNANFhyE1
-         5O4mmx+mEa1RMZP6ekEIWh+32RKGqZWUO4KZKy6+2zkdWAKMRkwIzLbkYvIkqbVkj/Dq
-         jL+Jrq6+EL4orZmz8H0Dv7gUWrUimrj/DKLD1EHnfY1JO4zfEivlqVWEvRxWCtkesRLV
-         C0vMOVNBRIMQE66+z1K7a/9ljMQplW3F3YsvPfyv/OYwUFAw56gnNID7c6MTEFuTD89V
-         YJ4g==
-X-Gm-Message-State: AOAM531F+xTa2dAuUvMLTkTwmwtBwS3mVbZ+G3LkuLEoHbqNxdV/bnfM
-        HDFg8HqRCMjl5U09lwsEJJ5cCTALc87F1g==
-X-Google-Smtp-Source: ABdhPJz3wKCI1R1v82li77slb+pKYKtURPSYLGW2vkwuJGiuqtcBV8nGA0rinAewwypUB8TJX2fMWA==
-X-Received: by 2002:a9f:2f15:: with SMTP id x21mr791147uaj.104.1603910701381;
-        Wed, 28 Oct 2020 11:45:01 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id o2sm27776vkd.16.2020.10.28.11.45.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 11:45:00 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id y78so110630vsy.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 11:45:00 -0700 (PDT)
-X-Received: by 2002:a67:e3b9:: with SMTP id j25mr594499vsm.37.1603910699981;
- Wed, 28 Oct 2020 11:44:59 -0700 (PDT)
+        Wed, 28 Oct 2020 21:55:19 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SIjMeh153267;
+        Wed, 28 Oct 2020 18:48:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=uDQ5BM3hbkhk4YSWy/Thm03XBgjemEvk/Pf2a3J9hIc=;
+ b=ILeclu69TR4C3jJ918ppU9GKE/sFNqrA7ft70NLwxIFO92ExP71aMHVmKBxTJ+6w+O76
+ NlVCi9W2KLXKon+jxmoE9qEMk3K9cIRTcK7AjUlXo6d9OzwHtkaXVNm/dMOSmxEVQ+ll
+ PfzwGTqiojnO5RCDruqTBeGihQvsS7SuMCldseZX+syFfdteSsownRDpdK5Jbajy9E/d
+ jwXXG3mN6nl7seKFfkN9Q8O0cTm8hM1fQOn3KMRwoC0sXGl+h4qcV8ds2QZzFqZxOBpS
+ qHWj+ttwk7/dBIvN5t6lQVU+e9RCdWea1+qDeodDOyPUWSkJ52/ZEfINfQ5KPOqlTSJW +A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34c9sb1atg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 28 Oct 2020 18:48:05 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SIkThZ027035;
+        Wed, 28 Oct 2020 18:48:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 34cwunx6pv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Oct 2020 18:48:04 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09SIlwJ9010274;
+        Wed, 28 Oct 2020 18:47:59 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 28 Oct 2020 11:47:58 -0700
+Subject: Re: [RFC PATCH 0/3] Allocate memmap from hotadded memory (per device)
+To:     Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
+References: <20201022125835.26396-1-osalvador@suse.de>
+ <3c18e078-25df-3fd4-9988-1b7677d8e05f@redhat.com>
+ <20201027154031.GA11489@linux>
+ <daedbc08-7275-40ad-0d07-007ef89ca25f@redhat.com>
+ <20201027155851.GA11785@linux>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <259889fb-f01b-9537-7948-f1a75a372617@oracle.com>
+Date:   Wed, 28 Oct 2020 11:47:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
-In-Reply-To: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 28 Oct 2020 11:44:48 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
-Message-ID: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available event
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k <ath10k@lists.infradead.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhishek Kumar <kuabhs@chromium.org>,
-        Brian Norris <briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201027155851.GA11785@linux>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=952 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010280120
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=949 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/27/20 8:58 AM, Oscar Salvador wrote:
+> On Tue, Oct 27, 2020 at 04:44:33PM +0100, David Hildenbrand wrote:
+>> I'm planning on looking into patch #2/3 later this or next week (this week
+>> is open source summit / KVM Forum).
+> 
+> Sure, aprecciated the time ;-)
+> 
+>>
+>> One thing to look into right now is how to make this fly this with vmemmap
+>> optimizations for hugetlb pages.
+>>
+>> https://lkml.kernel.org/r/20201026145114.59424-1-songmuchun@bytedance.com
+> 
+> I was about to have a look at that series eitherway, but good you mentioned.
+> 
 
-On Wed, Oct 28, 2020 at 10:01 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
->
-> The wmi service available event has been
-> extended to contain extra 128 bit for new services
-> to be indicated by firmware.
->
-> Currently the presence of any optional TLVs in
-> the wmi service available event leads to a parsing
-> error with the below error message:
-> ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
->
-> The wmi service available event parsing should
-> not return error for the newly added optional TLV.
-> Fix this parsing for service available event message.
->
-> Tested-on: WCN3990 hw1.0 SNOC
->
-> Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT support")
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> ---
-> Changes from v1:
-> - Access service_map_ext only if this TLV was sent in service
->   available event.
-> ---
->  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
->  drivers/net/wireless/ath/ath10k/wmi.c     | 5 +++--
->  drivers/net/wireless/ath/ath10k/wmi.h     | 1 +
->  3 files changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> index 932266d..7b58341 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-> @@ -1401,13 +1401,15 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
->
->         switch (tag) {
->         case WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT:
-> +               arg->service_map_ext_valid = true;
->                 arg->service_map_ext_len = *(__le32 *)ptr;
->                 arg->service_map_ext = ptr + sizeof(__le32);
->                 return 0;
->         default:
->                 break;
->         }
-> -       return -EPROTO;
-> +
-> +       return 0;
+More eyes on that series would be appreciated.
 
-I notice your v2 now returns 0 for _all_ unknown tags.  v1 just had a
-special case for "WMI_TLV_TAG_FIRST_ARRAY_ENUM".  I don't have enough
-experience with this driver to know which is better, but this change
-wasn't mentioned in the changes from v1.  I guess you had a change of
-heart and decided this way was better?
-
-
->  }
->
->  static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index 1fa7107..2e4b561 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -5751,8 +5751,9 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
->                             ret);
->         }
->
-> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
-> -                              __le32_to_cpu(arg.service_map_ext_len));
-> +       if (arg.service_map_ext_valid)
-> +               ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
-> +                                      __le32_to_cpu(arg.service_map_ext_len));
-
-Your new patch still requires the caller to init the
-"service_map_ext_valid" to false before calling, but I guess there's
-not a whole lot more we can do because we might be parsing more than
-one tag.  It does seem nice that at least we now have a validity bit
-instead of just relying on a non-zero length to be valid.
-
-It might be nice to have a comment saying that it's up to us to init
-"arg.service_map_ext_valid" to false before calling
-ath10k_wmi_pull_svc_avail(), but I won't insist.  Maybe that's obvious
-to everyone but me...
-
-
--Doug
+That series will dynamically free and allocate memmap pages as hugetlb
+pages are allocated or freed.  I haven't looked through this series, but
+my first thought is that we would need to ensure those allocs/frees are
+directed to the device.  Not sure if there are interfaces for that.
+-- 
+Mike Kravetz
