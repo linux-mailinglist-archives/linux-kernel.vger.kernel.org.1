@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4DA29D956
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127E029D861
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389454AbgJ1WsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
+        id S2387960AbgJ1Wbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733008AbgJ1WsV (ORCPT
+        with ESMTP id S2387927AbgJ1Wbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:48:21 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F62C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:48:20 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 184so872359lfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2NxpuTMIkBSZkM0mJufCFmjjTklL6oX2HIuD+SIJm2k=;
-        b=ZZ8T3fdh/zfwiT8hUZ2K+wC4T6tiGmG6+WRajoysdo14KqFRyLxbxKwCQPtwr/cSMv
-         PB+zVxXXUR86jN9p5Lxp+EdMLn1f+FXYaatkg/wwP+kYzJU2OksrSMXQvZ+Z96sAOJH7
-         DmZiR4WAIFpRc02n8A0qEMu691V6ZCuD1e4SunrqkSwnZnKMj4ibSlgmH8MHOD818Em0
-         c8d2V0iwHXjo3GqmTmXO6Z4hSHRdzzJqbqsy/sJwpQjegF9PMTosta+LcmE4Bk6Txaun
-         1gIfagqK4ypG4n0pw1+eTQH5GFDIMj4u7jouHoTH49ni+SoRPhJgQt0zUn+a3jL+OV9W
-         9N3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2NxpuTMIkBSZkM0mJufCFmjjTklL6oX2HIuD+SIJm2k=;
-        b=pE4apTAOgHWWAAhqf1kFdC3duXNQprkq9a20pW0xnnSx0NqEW3RIdRd/6js2FSlr62
-         PCiLZmTE+grCItlYM/2rH5G0yE3NwayKMLh70UCo9dbOoP3eARfJIFWBJrpgRKhnD5Rk
-         euo5jOVsfSEGI21uL10vQcppm7XRzDZjSGqxn0+AhnH1pmylcHYqxPBm9fzl7RkWs13Z
-         8q/ogyo1kf7aXPZho0aEJWaJt4ZnsGf51YOFeEo6URCBCicuStYIbYEL32LaW8dQRuwG
-         Od8zAD+1HpUhwi5vsqxj/xGU6jUoaumkZUdb7Alt2IPqFhj7LnMvYgp7w0F3a+XxKBJo
-         GQNA==
-X-Gm-Message-State: AOAM531uZv9RNIKlWVtoXQw1WIzQe/o22c1SE+K/MYFN7CfpRXuhSM3T
-        +VF8dYDOlOEx+w9zwa4gDiewkilY+lSJF2/Q0m9Dew5BfnE=
-X-Google-Smtp-Source: ABdhPJwewA3joVUu2zr8gvOnaNcOj8uuogndiEJjNdym2R57djeXCtniHnaUSvB3QhNhulAa1K5JwtVgPv/47IcCM/g=
-X-Received: by 2002:a2e:b888:: with SMTP id r8mr147310ljp.138.1603906522684;
- Wed, 28 Oct 2020 10:35:22 -0700 (PDT)
+        Wed, 28 Oct 2020 18:31:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFBCC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=TYXwyDweTdlROEn0LKotPPCUWy/YdCFJnxIV8tWbKOY=; b=fyot2M6wdT1GjHX/vIjWe7CRgG
+        n+NLQZc8OREKTSLmSisX4TYSLXTFjZ2polVVRdNnyTWHXhbIwrdL1r2rRrWp30y0mApO5UKkRmqPq
+        W3PsVn77EJXak6Wmh4jfgTg5bdGxmzwzD0Xn8Fj8GLkACz9Us6l2FY7xAd17BPF46GysGRLvyCfYi
+        vOXt9zNX+yWy+AFbI6SepEUiro0ZOqUeQ+5bP+/B202KhmGVw+SsjWUc4sLu3DCQST1w6rHOCCN6n
+        dtBWOJF8h9fu8/CKM6/4ow1W0j3imQ+GUC3EY+XL6U+yuNIRLUkFcfSGpB044Xp0IYKYBwobJXYNt
+        DSOvT0Fg==;
+Received: from [2601:1c0:6280:3f0::507c] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXpTn-0007Sv-E4; Wed, 28 Oct 2020 17:43:24 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Subject: [PATCH] KUnit: Docs: usage: wording fixes
+Date:   Wed, 28 Oct 2020 10:43:19 -0700
+Message-Id: <20201028174319.11817-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
- <CAG48ez3ZXmJ1ndEmZtoieOAm05p+5X7+HXo61LwpuiWFWGWK4w@mail.gmail.com> <20201028164936.GC534@brightrain.aerifal.cx>
-In-Reply-To: <20201028164936.GC534@brightrain.aerifal.cx>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 28 Oct 2020 18:34:56 +0100
-Message-ID: <CAG48ez2rC1OKYMM6eG4Fyq2xvTit6t3PUY0VE8A56EAqNmEVzg@mail.gmail.com>
-Subject: Re: [seccomp] Request for a "enable on execve" mode for Seccomp filters
-To:     Rich Felker <dalias@libc.org>
-Cc:     Camille Mougey <commial@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 5:49 PM Rich Felker <dalias@libc.org> wrote:
-> On Wed, Oct 28, 2020 at 01:42:13PM +0100, Jann Horn wrote:
-> > On Wed, Oct 28, 2020 at 12:18 PM Camille Mougey <commial@gmail.com> wrote:
-> > You're just focusing on execve() - I think it's important to keep in
-> > mind what happens after execve() for normal, dynamically-linked
-> > binaries: The next step is that the dynamic linker runs, and it will
-> > poke around in the file system with access() and openat() and fstat(),
-> > it will mmap() executable libraries into memory, it will mprotect()
-> > some memory regions, it will set up thread-local storage (e.g. using
-> > arch_prctl(); even if the process is single-threaded), and so on.
-> >
-> > The earlier you install the seccomp filter, the more of these steps
-> > you have to permit in the filter. And if you want the filter to take
-> > effect directly after execve(), the syscalls you'll be forced to
-> > permit are sufficient to cobble something together in userspace that
-> > effectively does almost the same thing as execve().
->
-> I would assume you use SECCOMP_RET_USER_NOTIF to implement policy for
-> controlling these operations and allowing only the ones that are valid
-> during dynamic linking. This also allows you to defer application of
-> the filter until after execve. So unless I'm missing some reason why
-> this doesn't work, I think the requested functionality is already
-> available.
+Fix minor grammar and punctutation glitches.
+Hyphenate "architecture-specific" instances.
 
-Ah, yeah, good point.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Gow <davidgow@google.com>
+Cc: linux-kselftest@vger.kernel.org
+Cc: kunit-dev@googlegroups.com
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Brendan Higgins <brendanhiggins@google.com>
+---
+ Documentation/dev-tools/kunit/usage.rst |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> If you really just want the "activate at exec" behavior, it might be
-> possible (depending on how SECCOMP_RET_USER_NOTIF behaves when there's
-> no notify fd open; I forget)
-
-syscall returns -ENOSYS. Yeah, that'd probably do the job. (Even
-though it might be a bit nicer if userspace had control over the errno
-there, such that it could be EPERM instead... oh well.)
+--- linux-next-20201027.orig/Documentation/dev-tools/kunit/usage.rst
++++ linux-next-20201027/Documentation/dev-tools/kunit/usage.rst
+@@ -92,7 +92,7 @@ behavior of a function called ``add``; t
+ the second parameter, in this case, is what the value is expected to be; the
+ last value is what the value actually is. If ``add`` passes all of these
+ expectations, the test case, ``add_test_basic`` will pass; if any one of these
+-expectations fail, the test case will fail.
++expectations fails, the test case will fail.
+ 
+ It is important to understand that a test case *fails* when any expectation is
+ violated; however, the test will continue running, potentially trying other
+@@ -202,7 +202,7 @@ Example:
+ 	kunit_test_suite(example_test_suite);
+ 
+ In the above example the test suite, ``example_test_suite``, would run the test
+-cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``,
++cases ``example_test_foo``, ``example_test_bar``, and ``example_test_baz``;
+ each would have ``example_test_init`` called immediately before it and would
+ have ``example_test_exit`` called immediately after it.
+ ``kunit_test_suite(example_test_suite)`` registers the test suite with the
+@@ -229,7 +229,7 @@ through some sort of indirection where a
+ such that the definition of that function can be changed without affecting the
+ rest of the code base. In the kernel this primarily comes from two constructs,
+ classes, structs that contain function pointers that are provided by the
+-implementer, and architecture specific functions which have definitions selected
++implementer, and architecture-specific functions which have definitions selected
+ at compile time.
+ 
+ Classes
+@@ -459,7 +459,7 @@ KUnit on non-UML architectures
+ By default KUnit uses UML as a way to provide dependencies for code under test.
+ Under most circumstances KUnit's usage of UML should be treated as an
+ implementation detail of how KUnit works under the hood. Nevertheless, there
+-are instances where being able to run architecture specific code or test
++are instances where being able to run architecture-specific code or test
+ against real hardware is desirable. For these reasons KUnit supports running on
+ other architectures.
+ 
+@@ -599,7 +599,7 @@ writing normal KUnit tests. One special
+ hardware state in between test cases; if this is not possible, you may only be
+ able to run one test case per invocation.
+ 
+-.. TODO(brendanhiggins@google.com): Add an actual example of an architecture
++.. TODO(brendanhiggins@google.com): Add an actual example of an architecture-
+    dependent KUnit test.
+ 
+ KUnit debugfs representation
