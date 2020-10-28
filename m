@@ -2,202 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3941F29DED0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF9C29DCB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgJ2A4u convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 20:56:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60546 "EHLO mail.kernel.org"
+        id S2387825AbgJ1WbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:31:01 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:17676 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731631AbgJ1WRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:36 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387818AbgJ1Wa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:30:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603924259; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=kOcg0WYKaIRshihN1c1cKYUb+IAy+ds7gbPfrP+HBck=; b=HuPrDIkPlzpqtkLIryKtgC3aBOS/8XRONmGRN3UMcpTGzns+IEsLgFuSs4TlLhLha768a+JA
+ 50GUdBa17sI86CtzA3FDev5KW4Q6ChrPz7Vzr8ireJT14PFLJAj/Y5wE2eUzDkB9isYh3vku
+ gL22kEaT6wgH/SU7yjIen9PqTfc=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f9981abfb7f8d1c8b243da3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 14:35:23
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A47E7C43391; Wed, 28 Oct 2020 14:35:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1A8824770;
-        Wed, 28 Oct 2020 14:25:03 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 10:25:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [RFC][PATCH 1/2 v2] ftrace/x86: Allow for arguments to be passed in
- to REGS by default
-Message-ID: <20201028102502.28095c95@oasis.local.home>
-In-Reply-To: <20201028131909.738751907@goodmis.org>
-References: <20201028131542.963014814@goodmis.org>
-        <20201028131909.738751907@goodmis.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10B6DC433C9;
+        Wed, 28 Oct 2020 14:35:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10B6DC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: [PATCH v2 2/2] drm/msm: Fix duplicate gpu node in icc summary
+Date:   Wed, 28 Oct 2020 20:05:11 +0530
+Message-Id: <1603895711-23755-2-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1603895711-23755-1-git-send-email-akhilpo@codeaurora.org>
+References: <1603895711-23755-1-git-send-email-akhilpo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From b5f5cfc63f38415b4ca7eb4cfb8c78113bfa17e0 Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date: Tue, 27 Oct 2020 10:55:55 -0400
-Subject: [PATCH] ftrace/x86: Allow for arguments to be passed in to REGS by
- default
+The dev_pm_opp_of_add_table() api initializes the icc nodes for gpu
+indirectly. So we can avoid using of_icc_get() api in the common
+probe path. To improve this, move of_icc_get() to target specific code
+where it is required.
 
-Currently, the only way to get access to the registers of a function via a
-ftrace callback is to set the "FL_SAVE_REGS" bit in the ftrace_ops. But as this
-saves all regs as if a breakpoint were to trigger (for use with kprobes), it
-is expensive.
+This patch helps to fix duplicate gpu node listed in the interconnect
+summary from the debugfs.
 
-The regs are already saved on the stack for the default ftrace callbacks, as
-that is required otherwise a function being traced will get the wrong
-arguments and possibly crash. And on x86, the argumentes are already stored
-where they would be on a pt_regs structure to use that code for both the
-regs version of a callback, it makes sense to pass that information always
-to all functions.
-
-If an architecture does this (as x86 now does), it is to set
-HAVE_DYNAMIC_FTRACE_WITH_ARGS, and this will let the generic code that it
-could use the regs without having to set the flags if it wants to access the
-arguments from the regs pointer.
-
-The stack pointer is also saved in the regs, and this could be useful for
-having the function graph tracer not require its own trampoline!
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
 ---
-Changes since v1:
+Changes in v2:
+	1. Minor updates (Jordan)
 
- - Fixed change log from "FL_FLAGS" to "FL_SAVE_REGS"
- - Add ftrace_valid_regs() macro to test if regs are safe to use
-   for full regs operations.
+ drivers/gpu/drm/msm/adreno/a3xx_gpu.c   | 21 +++++++++++++++++++--
+ drivers/gpu/drm/msm/adreno/a4xx_gpu.c   | 20 ++++++++++++++++++--
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c | 32 +-------------------------------
+ 3 files changed, 38 insertions(+), 35 deletions(-)
 
-
- arch/x86/Kconfig              |  1 +
- arch/x86/include/asm/ftrace.h |  4 ++++
- arch/x86/kernel/ftrace_64.S   | 15 ++++++++++-----
- include/linux/ftrace.h        |  4 ++++
- kernel/trace/Kconfig          |  9 +++++++++
- kernel/trace/ftrace.c         |  2 +-
- 6 files changed, 29 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac64bb20..b4d2b1fcfd09 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -167,6 +167,7 @@ config X86
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
-+	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_EBPF_JIT
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 84b9449be080..d3b26d61a1f6 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -49,6 +49,10 @@ struct dyn_arch_ftrace {
+diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+index f29c77d..93da668 100644
+--- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+@@ -519,6 +519,8 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
+ 	struct msm_gpu *gpu;
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 	struct platform_device *pdev = priv->gpu_pdev;
++	struct icc_path *ocmem_icc_path;
++	struct icc_path *icc_path;
+ 	int ret;
  
- #define FTRACE_GRAPH_TRAMP_ADDR FTRACE_GRAPH_ADDR
+ 	if (!pdev) {
+@@ -566,13 +568,28 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
+ 		goto fail;
+ 	}
  
-+#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+#define ftrace_valid_regs(regs) (((struct pt_regs *)(regs))->ip != 0)
-+#endif
++	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
++	ret = IS_ERR(icc_path);
++	if (ret)
++		goto fail;
 +
- #endif /*  CONFIG_DYNAMIC_FTRACE */
- #endif /* __ASSEMBLY__ */
- #endif /* CONFIG_FUNCTION_TRACER */
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index ac3d5f22fe64..f769881b1cdf 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -86,6 +86,11 @@
- 	movq %r8, R8(%rsp)
- 	movq %r9, R9(%rsp)
- 	movq $0, ORIG_RAX(%rsp)
++	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
++	ret = IS_ERR(ocmem_icc_path);
++	if (ret) {
++		/* allow -ENODATA, ocmem icc is optional */
++		if (ret != -ENODATA)
++			goto fail;
++		ocmem_icc_path = NULL;
++	}
 +
-+	/* Stack - skipping return address and flags */
-+	leaq MCOUNT_REG_SIZE+\added+8(%rsp), %rcx
-+	movq %rcx, RSP(%rsp)
 +
  	/*
- 	 * Save the original RBP. Even though the mcount ABI does not
- 	 * require this, it helps out callers.
-@@ -144,8 +149,11 @@ SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
- 	/* Load the ftrace_ops into the 3rd parameter */
- 	movq function_trace_op(%rip), %rdx
- 
--	/* regs go into 4th parameter (but make it NULL) */
--	movq $0, %rcx
-+	/* regs go into 4th parameter */
-+	leaq (%rsp), %rcx
-+
-+	/* Only ops with REGS flag set should have RIP set */
-+	movq $0, RIP(%rcx)
- 
- SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
- 	call ftrace_stub
-@@ -204,9 +212,6 @@ SYM_INNER_LABEL(ftrace_regs_caller_op_ptr, SYM_L_GLOBAL)
- 	movq %rcx, SS(%rsp)
- 	movq $__KERNEL_CS, %rcx
- 	movq %rcx, CS(%rsp)
--	/* Stack - skipping return address and flags */
--	leaq MCOUNT_REG_SIZE+8*2(%rsp), %rcx
--	movq %rcx, RSP(%rsp)
- 
- 	ENCODE_FRAME_POINTER
- 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 8dde9c17aaa5..fbc095393f9b 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -90,6 +90,10 @@ ftrace_enable_sysctl(struct ctl_table *table, int write,
- 
- struct ftrace_ops;
- 
-+#ifndef ftrace_valid_regs
-+#define ftrace_valid_regs(regs) ((regs) != NULL)
-+#endif
-+
- typedef void (*ftrace_func_t)(unsigned long ip, unsigned long parent_ip,
- 			      struct ftrace_ops *op, struct pt_regs *regs);
- 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index a4020c0b4508..6a5b7a818d7d 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -31,6 +31,15 @@ config HAVE_DYNAMIC_FTRACE_WITH_REGS
- config HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	bool
- 
-+config HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+	bool
-+	help
-+	 If this is set, then arguments and stack can be found from
-+	 the pt_regs passed into the function callback regs parameter
-+	 by default, even without setting the REGS flag in the ftrace_ops.
-+	 This allows for use of regs_get_kernel_argument() and
-+	 kernel_stack_pointer().
-+
- config HAVE_FTRACE_MCOUNT_RECORD
- 	bool
- 	help
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 2dcae8251104..6b7e097a8c5e 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1484,7 +1484,7 @@ ftrace_ops_test(struct ftrace_ops *ops, unsigned long ip, void *regs)
- 	 * that wants regs, may be called without them. We can not
- 	 * allow that handler to be called if regs is NULL.
+ 	 * Set the ICC path to maximum speed for now by multiplying the fastest
+ 	 * frequency by the bus width (8). We'll want to scale this later on to
+ 	 * improve battery life.
  	 */
--	if (regs == NULL && (ops->flags & FTRACE_OPS_FL_SAVE_REGS))
-+	if (!ftrace_valid_regs(regs) && (ops->flags & FTRACE_OPS_FL_SAVE_REGS))
- 		return 0;
- #endif
+-	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+-	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
++	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
++	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
  
+ 	return gpu;
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+index 2b93b33..c0be3a0 100644
+--- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+@@ -648,6 +648,8 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
+ 	struct msm_gpu *gpu;
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 	struct platform_device *pdev = priv->gpu_pdev;
++	struct icc_path *ocmem_icc_path;
++	struct icc_path *icc_path;
+ 	int ret;
+ 
+ 	if (!pdev) {
+@@ -694,13 +696,27 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
+ 		goto fail;
+ 	}
+ 
++	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
++	ret = IS_ERR(icc_path);
++	if (ret)
++		goto fail;
++
++	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
++	ret = IS_ERR(ocmem_icc_path);
++	if (ret) {
++		/* allow -ENODATA, ocmem icc is optional */
++		if (ret != -ENODATA)
++			goto fail;
++		ocmem_icc_path = NULL;
++	}
++
+ 	/*
+ 	 * Set the ICC path to maximum speed for now by multiplying the fastest
+ 	 * frequency by the bus width (8). We'll want to scale this later on to
+ 	 * improve battery life.
+ 	 */
+-	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+-	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
++	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
++	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+ 
+ 	return gpu;
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+index fd8f491..ddbd863 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+@@ -899,7 +899,6 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+ 	struct adreno_platform_config *config = dev->platform_data;
+ 	struct msm_gpu_config adreno_gpu_config  = { 0 };
+ 	struct msm_gpu *gpu = &adreno_gpu->base;
+-	int ret;
+ 
+ 	adreno_gpu->funcs = funcs;
+ 	adreno_gpu->info = adreno_info(config->rev);
+@@ -918,37 +917,8 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_enable(dev);
+ 
+-	ret = msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
++	return msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
+ 			adreno_gpu->info->name, &adreno_gpu_config);
+-	if (ret)
+-		return ret;
+-
+-	/*
+-	 * The legacy case, before "interconnect-names", only has a
+-	 * single interconnect path which is equivalent to "gfx-mem"
+-	 */
+-	if (!of_find_property(dev->of_node, "interconnect-names", NULL)) {
+-		gpu->icc_path = of_icc_get(dev, NULL);
+-	} else {
+-		gpu->icc_path = of_icc_get(dev, "gfx-mem");
+-		gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
+-	}
+-
+-	if (IS_ERR(gpu->icc_path)) {
+-		ret = PTR_ERR(gpu->icc_path);
+-		gpu->icc_path = NULL;
+-		return ret;
+-	}
+-
+-	if (IS_ERR(gpu->ocmem_icc_path)) {
+-		ret = PTR_ERR(gpu->ocmem_icc_path);
+-		gpu->ocmem_icc_path = NULL;
+-		/* allow -ENODATA, ocmem icc is optional */
+-		if (ret != -ENODATA)
+-			return ret;
+-	}
+-
+-	return 0;
+ }
+ 
+ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
 -- 
-2.25.4
+2.7.4
 
