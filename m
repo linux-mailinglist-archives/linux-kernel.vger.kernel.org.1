@@ -2,251 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A819F29DADD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE28D29DB70
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389102AbgJ1Xgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        id S2389300AbgJ1X4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388349AbgJ1XgV (ORCPT
+        with ESMTP id S2389299AbgJ1Xzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:36:21 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB43C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:36:21 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x1so1353090oic.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:36:21 -0700 (PDT)
+        Wed, 28 Oct 2020 19:55:52 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA17C0613CF;
+        Wed, 28 Oct 2020 16:55:52 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id b12so433335plr.4;
+        Wed, 28 Oct 2020 16:55:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Yce2yiNewFI2iY/zOa+oQW9hS6ij7XHoRO2uiMEqpAc=;
-        b=lMeN0+pZvj3P8r89g9GaQz5eQqKRRMGBpiztTu2ol7AgmAGqZ34/tBQ8enrP+4MZU9
-         at8+QY3FIoq5xrMj4cpnWnQ+f8DM0aAxPOt3qkNAJr/5z6QivWpy+HWZT/U804aYa3Oc
-         uaav2pE8L/m2ZR83px1u+m5EbphHspztdlVmDACWMnorkdChDcwgpTRDVqT84xWOFuQU
-         VJEAE7b0YxxsoSw7qD7Avfx6/8BTgSi9LIp9iujJjbYnsVC/eI5FSI4BkypvUV4Zio+t
-         YCtp3p/4GqZWeVeAq5h5Vx3a7sMJOhXcH1zr6M2VALCLd29VNmtMt+gSJwP1VP9vcrpC
-         Ossg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CnlZYxkwJJLo9grLc9JR4ofLfA3mMxlZOcb0oXJV6X8=;
+        b=dmrKOPgjnpuio2WPYe9adMQ5Fu8pVE3k4Wi/w03k/0u6JF+2rd0CiH+0Bioi2yJkcC
+         S0deV5TasPlwPkn0cQ4MyyEsBtFUV/qXm3YWEqeGjPMze4Y1UezS34Xjk3nTyRSEmRaB
+         4ZPAsRflprWHhwz59G/UPag11Tt5MfNKVvXNQ3Md89Dt+bciLRUmTwNXF710LuduiIj0
+         GfAhD+R42h0mpcHdPG1QIdwpalnkLuTvghNpsRVxlJPerJI0ClVKrLxU2mDPYwD5t5Bd
+         VI1jYEUq6axZxTzfqZjeCeRHg8AsI51n6n7wbUK0L/rJuJUxviZmt8VM0oQlZB77Dbaf
+         ASRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Yce2yiNewFI2iY/zOa+oQW9hS6ij7XHoRO2uiMEqpAc=;
-        b=Zfzb9VnLnhscONRS1Mbb0g3LT7YCK+pZdHxIRPGQ1sqpSwYjjheW09mmpk/7dh4Hv7
-         vThrtW/0H1by/bzMuGd5xn5bs+2C1zeXmoKYWiNCl00RCreTW0vUUEOdo+gvXdXFyNU8
-         FMzz5gax3fZEtlMCDgPItxAto2uPlgEaOakRe7gtCWZBOf9IGgLAsvHXQGNspgVYKezO
-         6Dlm/MNZKiWkylxGpcqgM5NkJb3N7z6wBdjum70vNsG9cyAAYPXc84gKmm+1ORpb59FH
-         wj/fHg/EVFuCp+NYl2X4tTxbdZr6rMvF2/XfnY8XK2IafYiJcxARmS0Y6voWzwgJiL3s
-         GJtA==
-X-Gm-Message-State: AOAM531sainR6Me5c/Bgu9vjfH0HG50dyK67Tbgvmpx26Cx5Jzrz2c8v
-        cJvHlx+fEkjAp66ejqWdX/WzCWnhFyaTMQ==
-X-Google-Smtp-Source: ABdhPJxpAd7uGcnRHNvggQC5XPdIIhFQntCLzZWllZAO7S6C3Rdb/go+r17medLMX9XsBOyG36hKmw==
-X-Received: by 2002:a17:90b:111:: with SMTP id p17mr5475326pjz.159.1603864112455;
-        Tue, 27 Oct 2020 22:48:32 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id z16sm4439446pfq.33.2020.10.27.22.48.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 22:48:31 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 11:18:29 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
- probe deferral properly
-Message-ID: <20201028054829.42zckdtwvj67tcfl@vireshk-i7>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
- <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
- <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
- <20201013095613.mbgmjwzojg5wxmau@vireshk-i7>
- <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
- <20201016050347.ers54itzmxgijzsy@vireshk-i7>
- <CAMuHMdUUzoFxbJts3gVC7i5A5daa_TYzKdrGEHho=3a1eeC_ww@mail.gmail.com>
- <20201016080730.h7u3jmlyjbyhqn3t@vireshk-i7>
- <CAMuHMdV1pnE===53_8r596G=9ktw-UMqD3N=T_F34Yk9aw9wWA@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CnlZYxkwJJLo9grLc9JR4ofLfA3mMxlZOcb0oXJV6X8=;
+        b=a1iLuOcUw/X2Tb7xcp75OxMUl3alzsOPL9sXuEzAsiYbDCxH3+pO1QSJh8VLNy6esC
+         Y1VX6vF8kD+gFgn23ov0g+CHwTJYmuZMUX2Alx9D9w5plMGFGSUBBchmd+w3wo/8yEKX
+         7ENcjg9AYBbiBQw9IMaD6Dxvqju+7Xr9fKTcklqVYXjt3qHrRYg7uhmL/VFn2q7VIkxV
+         XpfsfWOI36wZt82heQHEd0H0EnPxZc9zk87DH9yVQF8Tv4jOFiM0gJm7OouUlfK8R7qC
+         heug422PVIO7MVwarEbtB28sOTGkK7qSkNdAyaNbN940N6Ja+jlwbsDMA/XNzSl1iy9f
+         roeA==
+X-Gm-Message-State: AOAM533K5dT5EHWyaHDPN1ujgk4xqeumoxh5SedHkZXy59D9RH9ERgv6
+        +OB68LOHrmzfyjGskxe3o7hURclKojwB
+X-Google-Smtp-Source: ABdhPJwN9pWc6SgNrQdHQVoHdTi/4KewCbxwqHjDs5apNgsRBCqiaB/UFtHbcNuOSzCUB8UzBnLflA==
+X-Received: by 2002:a17:902:bf43:b029:d6:19b1:7942 with SMTP id u3-20020a170902bf43b02900d619b17942mr5920732pls.61.1603865166424;
+        Tue, 27 Oct 2020 23:06:06 -0700 (PDT)
+Received: from localhost.localdomain (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id o22sm4021658pgb.83.2020.10.27.23.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 23:06:05 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sven Schneider <s.schneider@arkona-technologies.de>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>
+Subject: [PATCH 3/5 v2] Fonts: Add charcount field to font_desc
+Date:   Wed, 28 Oct 2020 02:05:33 -0400
+Message-Id: <20201028060533.1206307-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
+References: <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV1pnE===53_8r596G=9ktw-UMqD3N=T_F34Yk9aw9wWA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-20, 17:29, Geert Uytterhoeven wrote:
-> On plain v5.9, with #define DEBUG and a few extra debug prints
-> added, I get:
-> 
->     cpufreq_dt: cpufreq_init:164: policy->cpu = 0
->     cpufreq_dt: cpufreq_init:165: policy->cpus = 0
->     cpufreq_dt: cpufreq_init:166: policy->related_cpus =
->     cpufreq_dt: cpufreq_init:167: policy->real_cpus =
->     cpu cpu0: dev_pm_opp_of_get_sharing_cpus: Couldn't find opp node.
->     of: dev_pm_opp_of_cpumask_add_table:1049
->     of: dev_pm_opp_of_cpumask_add_table:1054: cpu 0
->     cpu cpu0: dev_pm_opp_of_add_table:954
->     cpu cpu0: dev_pm_opp_of_add_table:956:
-> dev_pm_opp_get_opp_table_indexed() returned (ptrval)
->     cpu cpu0: _of_add_opp_table_v1:891
->     cpu cpu0: _of_add_opp_table_v1:893: _find_opp_table() returned (ptrval)
->     cpu cpu0: _of_add_opp_table_v1:909: 6 entries
->     cpu cpu0: dev_pm_opp_get_opp_count:331
->     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
->     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
->     cpu cpu0: dev_pm_opp_get_opp_count:331
->     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
->     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
->     cpu cpu0: dev_pm_opp_get_opp_count:331
->     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
->     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
->     cpu cpu0: Couldn't find proper 'dynamic-power-coefficient' in DT
->     cpu cpu0: Couldn't register Energy Model -22
-> 
-> This happens quite late in the boot sequence, long after cpu1 has been
-> brought online.
-> So it finds the v1 opp table for cpu0, which has 6 entries.
-> The last two messages should be harmless, right?
+Subsystems are assuming the number of characters of our built-in fonts.
+Include that information in our kernel font descriptor, `struct
+font_desc`.
 
-Yes.
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+---
+Change in v2:
+  - Rebase onto 5.10-rc1.
 
-> So you say cpufreq is not working? How can I verify that?
+ include/linux/font.h       | 1 +
+ lib/fonts/font_10x18.c     | 1 +
+ lib/fonts/font_6x10.c      | 1 +
+ lib/fonts/font_6x11.c      | 1 +
+ lib/fonts/font_6x8.c       | 1 +
+ lib/fonts/font_7x14.c      | 1 +
+ lib/fonts/font_8x16.c      | 1 +
+ lib/fonts/font_8x8.c       | 1 +
+ lib/fonts/font_acorn_8x8.c | 1 +
+ lib/fonts/font_mini_4x6.c  | 1 +
+ lib/fonts/font_pearl_8x8.c | 1 +
+ lib/fonts/font_sun12x22.c  | 1 +
+ lib/fonts/font_sun8x16.c   | 1 +
+ lib/fonts/font_ter16x32.c  | 1 +
+ 14 files changed, 14 insertions(+)
 
-I said it because your earlier logs showed that we defered probed
-again or the count was 0 and we failed. Something like that.
-
-Give output of this to verify if cpufreq is working or not:
-
-grep . /sys/devices/system/cpu/cpufreq/policy*/*
-
-This will be empty if there is no cpufreq.
-
-> Note that it never tries to do anything for cpu1.
-
-Yes, because we set policy->cpus to both CPU0 and CPU1.
-
-> Note that during s2ram, nothing related is printed.
-> 
-> On v5.10, with similar debug code, things are different. During boot:
-> 
->     cpu cpu0: dev_pm_opp_of_get_sharing_cpus: Couldn't find opp node.
->     cpufreq_dt: cpufreq_init:112: policy->cpu = 0
->     cpufreq_dt: cpufreq_init:113: policy->cpus = 0
->     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
->     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
->     of: dev_pm_opp_of_cpumask_add_table:1075
->     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 0
->     cpu cpu0: dev_pm_opp_of_add_table:980
->     cpu cpu0: dev_pm_opp_of_add_table:982:
-> dev_pm_opp_get_opp_table_indexed() returned (ptrval)
->     cpu cpu0: _of_add_opp_table_v1:914
->     cpu cpu0: _of_add_opp_table_v1:916: _find_opp_table() returned (ptrval)
->     cpu cpu0: _of_add_opp_table_v1:937: 6 entries
-> 
-> Good, found the table with 6 entries.
-
-Good.
-
->     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 1
->     cpu cpu1: dev_pm_opp_of_add_table:980
->     cpu cpu1: dev_pm_opp_of_add_table:982:
-> dev_pm_opp_get_opp_table_indexed() returned (ptrval)
->     cpu cpu1: _of_add_opp_table_v1:914
->     cpu cpu1: _of_add_opp_table_v1:916: _find_opp_table() returned (ptrval)
->     cpu cpu1: _of_add_opp_table_v1:937: 6 entries
-> 
-> Oh, this time it checked cpu1, too (why?), and found 6 entries, good.
-
-Yeah, because of some changes in cpufreq-dt.c, it shouldn't cause any
-issues though.
-
->     cpu cpu0: dev_pm_opp_get_opp_count:331
->     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
->     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 0
->     cpu cpu0: OPP table can't be empty
-> 
-> Wait, _get_opp_count() returns 0?
-
-Does this fix it for you as well ?
-
-https://lore.kernel.org/lkml/2c73ab54717ef358b118ea0cfb727b1427e7730a.1602648719.git.viresh.kumar@linaro.org/
-
-I didn't point you to this earlier as your logs said something else.
-
-This is already there in linux-next now.
-
->     cpufreq_dt: cpufreq_init:112: policy->cpu = 1
->     cpufreq_dt: cpufreq_init:113: policy->cpus = 1
->     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
->     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
-> 
-> Oh, this time cpufreq_init() is called for cpu1, too.
-
-Because we failed for CPU0.
-
-> During s2ram, v5.10-rc1, it redoes most of the above, incl. touching the
-> PMIC, which it shouldn't due in this phase of system resume:
-> 
->     Disabling non-boot CPUs ...
->     Enabling non-boot CPUs ...
->     cpufreq_dt: cpufreq_init:112: policy->cpu = 1
->     cpufreq_dt: cpufreq_init:113: policy->cpus = 1
->     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
->     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
->     of: dev_pm_opp_of_cpumask_add_table:1075
->     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 0
->     cpu cpu0: dev_pm_opp_of_add_table:980
->     cpu cpu0: dev_pm_opp_of_add_table:982:
-> dev_pm_opp_get_opp_table_indexed() returned f680980b
->     cpu cpu0: _of_add_opp_table_v1:914
->     cpu cpu0: _of_add_opp_table_v1:916: _find_opp_table() returned a4afd426
->     cpu cpu0: _of_add_opp_table_v1:937: 6 entries
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-> 
-> The i2c controller is suspended, this could go boom...
-> 
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 1
->     cpu cpu1: dev_pm_opp_of_add_table:980
->     cpu cpu1: dev_pm_opp_of_add_table:982:
-> dev_pm_opp_get_opp_table_indexed() returned f680980b
->     cpu cpu1: _of_add_opp_table_v1:914
->     cpu cpu1: _of_add_opp_table_v1:916: _find_opp_table() returned 9087c76d
->     cpu cpu1: _of_add_opp_table_v1:937: 6 entries
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     cpu cpu0: dev_pm_opp_get_opp_count:331
->     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned f680980b
->     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 0
->     cpu cpu0: OPP table can't be empty
->     CPU1 is up
-
-Lets make the normal boot work first and see about this later.
-
-Also for your next version of debug prints, use %px while printing
-addresses, that way the kernel doesn't hide them anymore and we can
-see which OPP table pointer is getting used at different places. That
-also means that you need to print the opp table's address at different
-places.
-
+diff --git a/include/linux/font.h b/include/linux/font.h
+index b5b312c19e46..54e60ad2252b 100644
+--- a/include/linux/font.h
++++ b/include/linux/font.h
+@@ -17,6 +17,7 @@ struct font_desc {
+     int idx;
+     const char *name;
+     int width, height;
++    unsigned int charcount;
+     const void *data;
+     int pref;
+ };
+diff --git a/lib/fonts/font_10x18.c b/lib/fonts/font_10x18.c
+index 0e2deac97da0..4096c6562494 100644
+--- a/lib/fonts/font_10x18.c
++++ b/lib/fonts/font_10x18.c
+@@ -5137,6 +5137,7 @@ const struct font_desc font_10x18 = {
+ 	.name	= "10x18",
+ 	.width	= 10,
+ 	.height	= 18,
++	.charcount = 256,
+ 	.data	= fontdata_10x18.data,
+ #ifdef __sparc__
+ 	.pref	= 5,
+diff --git a/lib/fonts/font_6x10.c b/lib/fonts/font_6x10.c
+index 87da8acd07db..32786674cf65 100644
+--- a/lib/fonts/font_6x10.c
++++ b/lib/fonts/font_6x10.c
+@@ -3083,6 +3083,7 @@ const struct font_desc font_6x10 = {
+ 	.name	= "6x10",
+ 	.width	= 6,
+ 	.height	= 10,
++	.charcount = 256,
+ 	.data	= fontdata_6x10.data,
+ 	.pref	= 0,
+ };
+diff --git a/lib/fonts/font_6x11.c b/lib/fonts/font_6x11.c
+index 5e975dfa10a5..81e4a3aed44a 100644
+--- a/lib/fonts/font_6x11.c
++++ b/lib/fonts/font_6x11.c
+@@ -3346,6 +3346,7 @@ const struct font_desc font_vga_6x11 = {
+ 	.name	= "ProFont6x11",
+ 	.width	= 6,
+ 	.height	= 11,
++	.charcount = 256,
+ 	.data	= fontdata_6x11.data,
+ 	/* Try avoiding this font if possible unless on MAC */
+ 	.pref	= -2000,
+diff --git a/lib/fonts/font_6x8.c b/lib/fonts/font_6x8.c
+index 700039a9ceae..5618ae7ef9fa 100644
+--- a/lib/fonts/font_6x8.c
++++ b/lib/fonts/font_6x8.c
+@@ -2571,6 +2571,7 @@ const struct font_desc font_6x8 = {
+ 	.name	= "6x8",
+ 	.width	= 6,
+ 	.height	= 8,
++	.charcount = 256,
+ 	.data	= fontdata_6x8.data,
+ 	.pref	= 0,
+ };
+diff --git a/lib/fonts/font_7x14.c b/lib/fonts/font_7x14.c
+index 86d298f38505..7708e73d491f 100644
+--- a/lib/fonts/font_7x14.c
++++ b/lib/fonts/font_7x14.c
+@@ -4113,6 +4113,7 @@ const struct font_desc font_7x14 = {
+ 	.name	= "7x14",
+ 	.width	= 7,
+ 	.height	= 14,
++	.charcount = 256,
+ 	.data	= fontdata_7x14.data,
+ 	.pref	= 0,
+ };
+diff --git a/lib/fonts/font_8x16.c b/lib/fonts/font_8x16.c
+index 37cedd36ca5e..74125d3570cf 100644
+--- a/lib/fonts/font_8x16.c
++++ b/lib/fonts/font_8x16.c
+@@ -4627,6 +4627,7 @@ const struct font_desc font_vga_8x16 = {
+ 	.name	= "VGA8x16",
+ 	.width	= 8,
+ 	.height	= 16,
++	.charcount = 256,
+ 	.data	= fontdata_8x16.data,
+ 	.pref	= 0,
+ };
+diff --git a/lib/fonts/font_8x8.c b/lib/fonts/font_8x8.c
+index 8ab695538395..96da4bb31ae4 100644
+--- a/lib/fonts/font_8x8.c
++++ b/lib/fonts/font_8x8.c
+@@ -2578,6 +2578,7 @@ const struct font_desc font_vga_8x8 = {
+ 	.name	= "VGA8x8",
+ 	.width	= 8,
+ 	.height	= 8,
++	.charcount = 256,
+ 	.data	= fontdata_8x8.data,
+ 	.pref	= 0,
+ };
+diff --git a/lib/fonts/font_acorn_8x8.c b/lib/fonts/font_acorn_8x8.c
+index 069b3e80c434..ba74053fec7b 100644
+--- a/lib/fonts/font_acorn_8x8.c
++++ b/lib/fonts/font_acorn_8x8.c
+@@ -270,6 +270,7 @@ const struct font_desc font_acorn_8x8 = {
+ 	.name	= "Acorn8x8",
+ 	.width	= 8,
+ 	.height	= 8,
++	.charcount = 256,
+ 	.data	= acorndata_8x8.data,
+ #ifdef CONFIG_ARCH_ACORN
+ 	.pref	= 20,
+diff --git a/lib/fonts/font_mini_4x6.c b/lib/fonts/font_mini_4x6.c
+index 1449876c6a27..637708e8c67e 100644
+--- a/lib/fonts/font_mini_4x6.c
++++ b/lib/fonts/font_mini_4x6.c
+@@ -2152,6 +2152,7 @@ const struct font_desc font_mini_4x6 = {
+ 	.name	= "MINI4x6",
+ 	.width	= 4,
+ 	.height	= 6,
++	.charcount = 256,
+ 	.data	= fontdata_mini_4x6.data,
+ 	.pref	= 3,
+ };
+diff --git a/lib/fonts/font_pearl_8x8.c b/lib/fonts/font_pearl_8x8.c
+index 32d65551e7ed..06cde43c7bd2 100644
+--- a/lib/fonts/font_pearl_8x8.c
++++ b/lib/fonts/font_pearl_8x8.c
+@@ -2582,6 +2582,7 @@ const struct font_desc font_pearl_8x8 = {
+ 	.name	= "PEARL8x8",
+ 	.width	= 8,
+ 	.height	= 8,
++	.charcount = 256,
+ 	.data	= fontdata_pearl8x8.data,
+ 	.pref	= 2,
+ };
+diff --git a/lib/fonts/font_sun12x22.c b/lib/fonts/font_sun12x22.c
+index 641a6b4dca42..d0290d79df2c 100644
+--- a/lib/fonts/font_sun12x22.c
++++ b/lib/fonts/font_sun12x22.c
+@@ -6156,6 +6156,7 @@ const struct font_desc font_sun_12x22 = {
+ 	.name	= "SUN12x22",
+ 	.width	= 12,
+ 	.height	= 22,
++	.charcount = 256,
+ 	.data	= fontdata_sun12x22.data,
+ #ifdef __sparc__
+ 	.pref	= 5,
+diff --git a/lib/fonts/font_sun8x16.c b/lib/fonts/font_sun8x16.c
+index 193fe6d988e0..7d83760354a6 100644
+--- a/lib/fonts/font_sun8x16.c
++++ b/lib/fonts/font_sun8x16.c
+@@ -268,6 +268,7 @@ const struct font_desc font_sun_8x16 = {
+ 	.name	= "SUN8x16",
+ 	.width	= 8,
+ 	.height	= 16,
++	.charcount = 256,
+ 	.data	= fontdata_sun8x16.data,
+ #ifdef __sparc__
+ 	.pref	= 10,
+diff --git a/lib/fonts/font_ter16x32.c b/lib/fonts/font_ter16x32.c
+index 91b9c283bd9c..a2cc25b9f8e3 100644
+--- a/lib/fonts/font_ter16x32.c
++++ b/lib/fonts/font_ter16x32.c
+@@ -2062,6 +2062,7 @@ const struct font_desc font_ter_16x32 = {
+ 	.name	= "TER16x32",
+ 	.width	= 16,
+ 	.height = 32,
++	.charcount = 256,
+ 	.data	= fontdata_ter16x32.data,
+ #ifdef __sparc__
+ 	.pref	= 5,
 -- 
-viresh
+2.25.1
+
