@@ -2,155 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0FC29D444
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158D629D4BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgJ1Vur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728054AbgJ1Vuo (ORCPT
+        id S1728725AbgJ1VyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:54:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728686AbgJ1VyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:50:44 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C655C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:50:44 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l2so494283qkf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UmdsUTh3B9YwBmIyRk8PHKy+xdS4Bu60NprWzgHMHHA=;
-        b=qjVuFgKj9zWsRxvsKEVSihx5n/yAdbp8OnbLa4TE04FvO3iYWLYq/tNQ85l9qCkQbi
-         uRSw8paRf6SA4WsvIUHd2wq6UOoDmahP722uMotiK/zipWXxx2KEoKOho5Snoqdx3ozC
-         T3VYvx7m+MTaXCxc+fNobOPRPnPCZHN7UzDomGuXEUg3YwI6TinUY62sZBdSBe3MI9kp
-         XWIJwmsbj7tTJ5KZpRpkhNXAzNGmyprVCqihIP4a3mPl8m2APyF1JQrIZsfu8PHLShhS
-         osrvE21ERtv5h6BQYoZcZHrLk0qDpc4lRtEpXUsNO8uzUKWazVXsxZxH+xCvHiejHrAF
-         DdGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UmdsUTh3B9YwBmIyRk8PHKy+xdS4Bu60NprWzgHMHHA=;
-        b=eGkewA2EWJTqO3+9PUfNa8l1lVhQXUM93qmzTDXvb98qxq0jcrHqxM2/hCcjJqrpCe
-         ocbaOUXPKfGC7HFPMjws/tEXnBk8gEvKeu6LHE59G+C40lODJ783zDYDBdsuhkQZzJJF
-         qKrypAfXCnRMT6rVnFuvrgvZ38xII94GRhl5VHygyvpoegf6DXSlRrA7XIkZOETb+0EC
-         m9xtDQDAAnMXPDGetVqCR8q8e2+GLxFbrwG9UeuL0/50BHTNU2zQG1M+m3MuUg/kLAO7
-         D/bLAbFcI+Q0SsxfII7LWK2U+L6J1P+IQ/EAe5mVqjFpzSTmUts9JmUUKpM8/9KzC0na
-         4FAw==
-X-Gm-Message-State: AOAM533wgmpvMVnYrjpl1xS8h7fYla9K7uHiJ06jg+yz/1uEpULSJQZ4
-        EKRNPZSqtME/iwrpIgkJUakr0WqLdgsmUQ==
-X-Google-Smtp-Source: ABdhPJyUSI4BD7MozZPTcQSlqo0UBBLrHZ6NGqwy4GLOZuJWHi+Ja2eeJ7GYHfBit5Ia1WFJd7Jrng==
-X-Received: by 2002:ac8:76c7:: with SMTP id q7mr7980077qtr.39.1603903554700;
-        Wed, 28 Oct 2020 09:45:54 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id e1sm3222646qkm.35.2020.10.28.09.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 09:45:53 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 28 Oct 2020 12:45:51 -0400
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
-Message-ID: <20201028164551.GA1989568@rani.riverdale.lan>
-References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
- <20201027200803.GL15580@zn.tnic>
- <20201027211422.GC1833548@rani.riverdale.lan>
- <20201028133909.GA27112@zn.tnic>
+        Wed, 28 Oct 2020 17:54:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603922050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K/CEDYM98JgXCxM3nau3BhO1AzT+ER9RnJI9yDKsTOQ=;
+        b=CUA77STAZuNsXVe4kdajTN4SkN2fmKq+4hbpX0nxZbLRFhFKb6xCmj2z0secLypZjyPUwR
+        n7tiJEhspYBOvhZl660eElQoor9KCo8xYbGA0sz+KcdIO0Do8cEpFERqFzp/ddYPRlLfvM
+        dy4ahBuktYt+Dw0ml8o+MVCqaFNuYp4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-GZHC4amIP2eEWsNtbuZ6BQ-1; Wed, 28 Oct 2020 12:53:04 -0400
+X-MC-Unique: GZHC4amIP2eEWsNtbuZ6BQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22DFF57212;
+        Wed, 28 Oct 2020 16:53:03 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D7DB45C22D;
+        Wed, 28 Oct 2020 16:53:01 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201028143442.GA20115@casper.infradead.org>
+References: <20201028143442.GA20115@casper.infradead.org> <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk> <160389426655.300137.17487677797144804730.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        kernel test robot <lkp@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201028133909.GA27112@zn.tnic>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <541368.1603903981.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 28 Oct 2020 16:53:01 +0000
+Message-ID: <541369.1603903981@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:39:09PM +0100, Borislav Petkov wrote:
-> On Tue, Oct 27, 2020 at 05:14:22PM -0400, Arvind Sankar wrote:
-> > This is indeed just a small correctness fixlet, but I'm not following
-> > the rest of your comments.
-> 
-> I'm just trying to make sense of that house of cards we have here.
-> 
-> > PHYSICAL_START has an effect independent of the setting of
-> > RELOCATABLE.
-> 
-> Theoretically you can set PHYSICAL_START to 0x0:
-> 
-> config PHYSICAL_START
->         hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
->         default "0x1000000"
->         help
->           This gives the physical address where the kernel is loaded.
-> 
->           If kernel is a not relocatable (CONFIG_RELOCATABLE=n) then
->           bzImage will decompress itself to above physical address and
->           run from there.
-> 	  ^^^^^^^^^^^^^^
-> 
-> and disable RELOCATABLE:
-> 
-> CONFIG_PHYSICAL_START=0x0
-> # CONFIG_RELOCATABLE is not set
-> 
-> but then you hit this:
-> 
-> ld: per-CPU data too large - increase CONFIG_PHYSICAL_START
-> 
-> full output at the end of the mail.
+Matthew Wilcox <willy@infradead.org> wrote:
 
-You don't want to try to run the kernel from physical address 0 in any
-case. The default is set to 16MiB to avoid low memory, historically to
-avoid the 24-bit ISA DMA range.
+> > +static inline unsigned int afs_page_dirty_resolution(void)
+> =
 
-> > That said, AFAICT, RELOCATABLE and PHYSICAL_START look like historical
-> > artifacts at this point: RELOCATABLE should be completely irrelevant for
-> > the 64-bit kernel, and there's really no reason to be able to configure
-> > the start VA of the kernel, that should just be constant independent of
-> > PHYSICAL_START.
-> 
-> See the CONFIG_PHYSICAL_START help text. Apparently there has been a
-> use case where one can set PHYSICAL_START to the region where a kdump
-> kernel is going to be loaded and that kdump kernel is a vmlinux and not
-> a bzImage and thus not relocatable.
+> I've been using size_t for offsets within a struct page.  I don't know
+> that we'll ever support pages larger than 2GB (they're completely
+> impractical with today's bus speeds), but I'd rather not be the one
+> who has to track down all the uses of 'int' in the kernel in fifteen
+> years time.
 
-This doesn't matter for the 64-bit kernel, which can be run from any
-physical address independent of the RELOCATABLE/PHYSICAL_START settings.
-It only matters on 32-bit, where VA and PA are tied together by
-	VA == __PAGE_OFFSET + PA
-On 64-bit, the kernel's location in VA space and physical space can be
-independently moved around, so a kernel that starts at 16MiB in VA space
-can be loaded anywhere above 16MiB in physical space.
+Going beyond 2G page size won't be fun and a lot of our APIs will break -
+write_begin, write_end, invalidatepage to name a few.
 
-> 
-> Going back to the question at hand, if you think about it, the kernel
-> image *is* between _text or _stext and _end. And KERNEL_IMAGE_SIZE is
-> exactly what it is - the size of the kernel image.
-> 
-> Now, if you were talking about a kernel *mapping* size, then I'd
-> understand but this check is for the kernel *image* size.
-> 
+It would probably require an analysis program to trace all the usages of s=
+uch
+information within the kernel.
 
-KERNEL_IMAGE_SIZE is _not_ the size of the kernel image, the name is
-misleading. It is the maximum VA that the kernel can occupy, it is used
-to prepopulate the PMD-level pagetable for initial boot (level2_kernel_pgt)
-and is also used to define MODULES_VADDR, so it _is_ talking about
-mappings. If you have a 30MiB kernel that is placed at a starting VA of
-510MiB when KERNEL_IMAGE_SIZE is 512MiB, it won't boot.
+> > +{
+> > +	if (PAGE_SIZE - 1 <=3D __AFS_PAGE_PRIV_MASK)
+> > +		return 1;
+> > +	else
+> > +		return PAGE_SIZE / (__AFS_PAGE_PRIV_MASK + 1);
+> =
 
-> But reading that commit message again:
-> 
->     these build-time and link-time checks would have prevented the
->     vmlinux size regression.
-> 
-> this *is* talking about vmlinux size and that starts at _text...
-> 
+> Could this be DIV_ROUND_UP(PAGE_SIZE, __AFS_PAGE_PRIV_MASK + 1); avoidin=
+g
+> a conditional?  I appreciate it's calculated at compile time today, but
+> it'll be dynamic with THP.
 
-Increasing vmlinux size can trigger the problem by pushing _end beyond
-KERNEL_IMAGE_SIZE, but the problem occurs once _end - __START_KERNEL_map
-exceeds KERNEL_IMAGE_SIZE, not when _end - _text exceeds it, hence this
-patch.
+That seems to work.
+
+> >  static inline unsigned int afs_page_dirty_to(unsigned long priv)
+> >  {
+> > -	return ((priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK) + 1;
+> > +	unsigned int x =3D (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV=
+_MASK;
+> > +
+> > +	/* The upper bound is exclusive */
+> =
+
+> I think you mean 'inclusive'.
+
+The returned upper bound points immediately beyond the range.  E.g. 0-0 is=
+ an
+empty range.  Changing that is way too big an overhaul outside the merge
+window.
+
+> > +	return (x + 1) * afs_page_dirty_resolution();
+> >  }
+> >  =
+
+> >  static inline unsigned long afs_page_dirty(unsigned int from, unsigne=
+d int to)
+> >  {
+> > +	unsigned int res =3D afs_page_dirty_resolution();
+> > +	from /=3D res; /* Round down */
+> > +	to =3D (to + res - 1) / res; /* Round up */
+> >  	return ((unsigned long)(to - 1) << __AFS_PAGE_PRIV_SHIFT) | from;
+> =
+
+> Wouldn't it produce the same result to just round down?  ie:
+> =
+
+> 	to =3D (to - 1) / res;
+> 	return ((unsigned long)to << __AFS_PAGE_PRIV_SHIFT) | from;
+
+Actually, yes, because res/res=3D=3D1, which I then subtract afterwards.
+
+David
+
