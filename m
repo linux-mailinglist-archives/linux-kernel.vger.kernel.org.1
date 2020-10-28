@@ -2,152 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F274F29E19E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D621529E1A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgJ2CCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:02:35 -0400
-Received: from ozlabs.org ([203.11.71.1]:55439 "EHLO ozlabs.org"
+        id S1728050AbgJ2CCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:02:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57801 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726364AbgJ1Vsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726334AbgJ1Vsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 17:48:51 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLcMN2vl1z9sWL;
-        Wed, 28 Oct 2020 16:19:43 +1100 (AEDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLcPv3x0rz9sWR;
+        Wed, 28 Oct 2020 16:21:55 +1100 (AEDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1603862385;
-        bh=HsQ+BMZS4Im1PO5FHVBGT6a0Wzm4f131MXdYTkoyax4=;
+        s=201909; t=1603862517;
+        bh=nf1mLdFJ0kx+l4bAzc8TDSq5oJ1BVY7ziOLLxVUp4Ec=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pEGGL58TwZOn5qcYDnG7NyRDXlbjMEPuH4GtsZZHG+WrweEKY7c7MBd+AHh7Zk/D6
-         LO4fSRjHdKaZ6C8QcOkq9MixLG1GF2SCPpGGg7O6zpsIO7TUkqktYjqmsPu8nvU8rX
-         D7sPVRF3NA5e2ofpEDWQo/08kXcYNGxjbkPMaJp1CYWPMzaL/dGoRskOAZd1px5m8C
-         PuHotvoTgLfC7aatvbA37Fnnwe+JqpDa/GPyE3i/IN4KVzItJuSgoXu80x4k11FCy0
-         jEgQCzajGg75gy7jpVPnnzNAzkY+XwcgRJN1tELLk84xQp+oMODFRbPoD5B12GaGCb
-         gt3j13u/TyV3g==
+        b=b2XLqh82Ft0BUKNmxn6WyYG3MvYWbcldWNHuB1m53NzFePCrmosVnlIj8ykkV3HDX
+         SqS5GtgZhko82slMH+mrT+4gxr2bLXW6iGTj/C6c9ro9DhC7UH0aQyObVk/Swn1mb3
+         ceSFoFaxbuQtUaq26iJTgHEhcbBUn4pVNp2rEQFG+0pP1McVeVISWnEElHAw2UmW5O
+         nALchLvR1IJehEWMw7fn0BKXBXl4Bbix/VP1IEktUuGpzZOW1g/Fn1J/Eq7iW9OGGr
+         yFAhni8dMYOgy3eEbaKMT9xxpQ/43w8SJzuwFfIUzC04ErSSbOiqnVmNSGb4e9L2Nj
+         cncTTn5+1o96g==
 From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Andreas Schwab <schwab@linux-m68k.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] powerpc/uaccess: Switch __put_user_size_allowed() to __put_user_asm_goto()
-In-Reply-To: <87imav9r64.fsf@igel.home>
-References: <94ba5a5138f99522e1562dbcdb38d31aa790dc89.1599216721.git.christophe.leroy__44535.5968013004$1599217383$gmane$org@csgroup.eu> <87mu079ron.fsf@igel.home> <87imav9r64.fsf@igel.home>
-Date:   Wed, 28 Oct 2020 16:19:42 +1100
-Message-ID: <87pn53vsep.fsf@mpe.ellerman.id.au>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] ibmvscsi: fix race potential race after loss of transport
+In-Reply-To: <20201025001355.4527-1-tyreld@linux.ibm.com>
+References: <20201025001355.4527-1-tyreld@linux.ibm.com>
+Date:   Wed, 28 Oct 2020 16:21:54 +1100
+Message-ID: <87o8knvsb1.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas Schwab <schwab@linux-m68k.org> writes:
-> On Okt 28 2020, Andreas Schwab wrote:
+Tyrel Datwyler <tyreld@linux.ibm.com> writes:
+> After a loss of tranport due to an adatper migration or crash/disconnect from
+> the host partner there is a tiny window where we can race adjusting the
+> request_limit of the adapter. The request limit is atomically inc/dec to track
+> the number of inflight requests against the allowed limit of our VIOS partner.
+> After a transport loss we set the request_limit to zero to reflect this state.
+> However, there is a window where the adapter may attempt to queue a command
+> because the transport loss event hasn't been fully processed yet and
+> request_limit is still greater than zero. The hypercall to send the event will
+> fail and the error path will increment the request_limit as a result. If the
+> adapter processes the transport event prior to this increment the request_limit
+> becomes out of sync with the adapter state and can result in scsi commands being
+> submitted on the now reset connection prior to an SRP Login resulting in a
+> protocol violation.
 >
->> On Sep 04 2020, Christophe Leroy wrote:
->>
->>> __put_user_asm_goto() provides more flexibility to GCC and avoids using
->>> a local variable to tell if the write succeeded or not.
->>> GCC can then avoid implementing a cmp in the fast path.
->>
->> That breaks CLONE_CHILD_SETTID.  I'm getting an assertion failure in
->> __libc_fork (THREAD_GETMEM (self, tid) != ppid).
+> Fix this race by protecting request_limit with the host lock when changing the
+> value via atomic_set() to indicate no transport.
 >
-> This is what schedule_tail now looks like.  As you can see, put_user has
-> become a nop:
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  drivers/scsi/ibmvscsi/ibmvscsi.c | 36 +++++++++++++++++++++++---------
+>  1 file changed, 26 insertions(+), 10 deletions(-)
 >
-> 000000000000455c <.schedule_tail>:
->     455c:       7c 08 02 a6     mflr    r0
->     4560:       f8 01 00 10     std     r0,16(r1)
->     4564:       f8 21 ff 91     stdu    r1,-112(r1)
->     4568:       4b ff cd 4d     bl      12b4 <.finish_task_switch>
->     456c:       4b ff c0 99     bl      604 <.balance_callback>
->     4570:       e8 6d 01 88     ld      r3,392(r13)
->     4574:       e9 23 06 b0     ld      r9,1712(r3)
->     4578:       2f a9 00 00     cmpdi   cr7,r9,0
->     457c:       41 9e 00 14     beq     cr7,4590 <.schedule_tail+0x34>
->     4580:       38 80 00 00     li      r4,0
->     4584:       38 a0 00 00     li      r5,0
->     4588:       48 00 00 01     bl      4588 <.schedule_tail+0x2c>
->                         4588: R_PPC64_REL24     .__task_pid_nr_ns
->     458c:       60 00 00 00     nop
->     4590:       48 00 00 01     bl      4590 <.schedule_tail+0x34>
->                         4590: R_PPC64_REL24     .calculate_sigpending
->     4594:       60 00 00 00     nop
->     4598:       38 21 00 70     addi    r1,r1,112
->     459c:       e8 01 00 10     ld      r0,16(r1)
->     45a0:       7c 08 03 a6     mtlr    r0
->     45a4:       4e 80 00 20     blr
+> diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
+> index b1f3017b6547..188ed75417a5 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvscsi.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
+> @@ -806,6 +806,22 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
+>  	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+>  }
+>  
+> +/**
+> + * ibmvscsi_set_request_limit - Set the adapter request_limit in response to
+> + * an adapter failure, reset, or SRP Login. Done under host lock to prevent
+> + * race with scsi command submission.
+> + * @hostdata:	adapter to adjust
+> + * @limit:	new request limit
+> + */
+> +static void ibmvscsi_set_request_limit(struct ibmvscsi_host_data *hostdata, int limit)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(hostdata->host->host_lock, flags);
+> +	atomic_set(&hostdata->request_limit, limit);
+> +	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+> +}
+> +
+>  /**
+>   * ibmvscsi_reset_host - Reset the connection to the server
+>   * @hostdata:	struct ibmvscsi_host_data to reset
+...
+> @@ -2137,12 +2153,12 @@ static void ibmvscsi_do_work(struct ibmvscsi_host_data *hostdata)
+>  	}
+>  
+>  	hostdata->action = IBMVSCSI_HOST_ACTION_NONE;
+> +	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
 
-Not for me, see below.
+You drop the lock ...
 
-What config and compiler are you using?
+>  	if (rc) {
+> -		atomic_set(&hostdata->request_limit, -1);
+> +		ibmvscsi_set_request_limit(hostdata, -1);
+
+.. then retake it, then drop it again in ibmvscsi_set_request_limit().
+
+Which introduces the possibility that something else gets the lock
+before you can set the limit to -1.
+
+I'm not sure that's a bug, but it's not obviously correct either?
 
 cheers
 
-
-
-c000000000181aa0 <schedule_tail>:
-c000000000181aa0:       82 01 4c 3c     addis   r2,r12,386
-c000000000181aa4:       60 1b 42 38     addi    r2,r2,7008
-c000000000181aa8:       a6 02 08 7c     mflr    r0
-c000000000181aac:       cd b5 ee 4b     bl      c00000000006d078 <_mcount>
-c000000000181ab0:       a6 02 08 7c     mflr    r0
-c000000000181ab4:       f8 ff e1 fb     std     r31,-8(r1)
-c000000000181ab8:       10 00 01 f8     std     r0,16(r1)
-c000000000181abc:       d1 ff 21 f8     stdu    r1,-48(r1)
-c000000000181ac0:       c9 7d ff 4b     bl      c000000000179888 <finish_task_switch+0x8>
-c000000000181ac4:       40 0a 23 e9     ld      r9,2624(r3)
-c000000000181ac8:       00 00 a9 2f     cmpdi   cr7,r9,0
-c000000000181acc:       b4 00 9e 40     bne     cr7,c000000000181b80 <schedule_tail+0xe0>
-c000000000181ad0:       68 09 6d e8     ld      r3,2408(r13)
-c000000000181ad4:       48 07 e3 eb     ld      r31,1864(r3)
-c000000000181ad8:       00 00 bf 2f     cmpdi   cr7,r31,0
-c000000000181adc:       88 00 9e 41     beq     cr7,c000000000181b64 <schedule_tail+0xc4>
-c000000000181ae0:       00 00 a0 38     li      r5,0
-c000000000181ae4:       00 00 80 38     li      r4,0
-c000000000181ae8:       21 4b fe 4b     bl      c000000000166608 <__task_pid_nr_ns+0x8>
-c000000000181aec:       00 00 00 60     nop
-c000000000181af0:       ff ff 20 39     li      r9,-1
-c000000000181af4:       00 03 29 79     clrldi  r9,r9,12
-c000000000181af8:       40 48 bf 7f     cmpld   cr7,r31,r9
-c000000000181afc:       68 00 9d 41     bgt     cr7,c000000000181b64 <schedule_tail+0xc4>
-c000000000181b00:       01 00 29 39     addi    r9,r9,1
-c000000000181b04:       50 48 3f 7d     subf    r9,r31,r9
-c000000000181b08:       03 00 a9 2b     cmpldi  cr7,r9,3
-c000000000181b0c:       58 00 9d 40     ble     cr7,c000000000181b64 <schedule_tail+0xc4>
-c000000000181b10:       02 00 42 3d     addis   r10,r2,2
-c000000000181b14:       18 25 4a 39     addi    r10,r10,9496
-c000000000181b18:       00 00 2a e9     ld      r9,0(r10)
-c000000000181b1c:       22 00 29 e9     lwa     r9,32(r9)
-c000000000181b20:       00 00 89 2f     cmpwi   cr7,r9,0
-c000000000181b24:       24 00 9c 40     bge     cr7,c000000000181b48 <schedule_tail+0xa8>
-c000000000181b28:       2c 01 00 4c     isync
-c000000000181b2c:       00 40 20 3d     lis     r9,16384
-c000000000181b30:       c6 07 29 79     rldicr  r9,r9,32,31
-
-c000000000181b34:       a6 03 3d 7d     mtspr   29,r9		# put_user() begins here
-c000000000181b38:       2c 01 00 4c     isync
-c000000000181b3c:       00 00 2a e9     ld      r9,0(r10)
-c000000000181b40:       22 00 29 e9     lwa     r9,32(r9)
-c000000000181b44:       00 00 89 2f     cmpwi   cr7,r9,0
-c000000000181b48:       00 00 7f 90     stw     r3,0(r31)
-c000000000181b4c:       18 00 9c 40     bge     cr7,c000000000181b64 <schedule_tail+0xc4>
-c000000000181b50:       2c 01 00 4c     isync
-c000000000181b54:       ff ff 20 39     li      r9,-1
-c000000000181b58:       44 00 29 79     rldicr  r9,r9,0,1
-c000000000181b5c:       a6 03 3d 7d     mtspr   29,r9
-c000000000181b60:       2c 01 00 4c     isync
-
-c000000000181b64:       b5 c9 fc 4b     bl      c00000000014e518 <calculate_sigpending+0x8>
-c000000000181b68:       00 00 00 60     nop
-c000000000181b6c:       30 00 21 38     addi    r1,r1,48
-c000000000181b70:       10 00 01 e8     ld      r0,16(r1)
-c000000000181b74:       f8 ff e1 eb     ld      r31,-8(r1)
-c000000000181b78:       a6 03 08 7c     mtlr    r0
-c000000000181b7c:       20 00 80 4e     blr
-c000000000181b80:       39 40 ff 4b     bl      c000000000175bb8 <__balance_callback+0x8>
-c000000000181b84:       4c ff ff 4b     b       c000000000181ad0 <schedule_tail+0x30>
+>  		dev_err(hostdata->dev, "error after %s\n", action);
+>  	}
+> -	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+>  
+>  	scsi_unblock_requests(hostdata->host);
+>  }
