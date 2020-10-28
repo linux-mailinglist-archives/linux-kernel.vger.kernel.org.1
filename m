@@ -2,169 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7025329D965
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0647C29D955
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389768AbgJ1Wy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388439AbgJ1Wyf (ORCPT
+        id S2389636AbgJ1Wu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:57 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:42694 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389543AbgJ1Wu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:54:35 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76B6C0613CF;
-        Wed, 28 Oct 2020 15:54:34 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id z23so1326835oic.1;
-        Wed, 28 Oct 2020 15:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UEQBkEXiJOfBE5LzS0jxlJBj5IlPjaXUmPkuEF50Xpo=;
-        b=E3cy/fT07MNJXvIqKs8Ay+Od40l7u8VQgFHMmrPTYIcEtp91rFYrJRtfCN5Yi9pQ7q
-         lAtrmR6EKuawCWn84aNM9AKjn6apJcLp0iEJIM7Ttjj0sIKdbVi3u/xn7qAKb8C1A7h6
-         OawNqGyneFTjh/XxH5iIR4Awd/W4HCEU3L9LlLOO9WyUYerQqlLriqDn7MCj9HAKayXV
-         t8vYy8CPHfeNYDW5NcHH/3nC0Sg+eruF5qO6R8trzqeXzskpbgMgtLl2yvYS2Nv7h761
-         zVD1IIOTWUzxW9t/NEkuM8rT2KYmppvgFxJxwH2Lmm6S3KrAsnLcltyt50eGFLYjcEn1
-         mXyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UEQBkEXiJOfBE5LzS0jxlJBj5IlPjaXUmPkuEF50Xpo=;
-        b=U49ryd3OBmaQLmnxsU8yuNdjsBhL25hh0hhmkW1LjeWRETdOEjlIY+nCq3IBIP0Al3
-         lA1d89dkncvx5/KncjcEFqYEqs+246yJdLvacCi1YLm3YUFba5gZm+OsynhwsAatQBzx
-         7N0SeMR/gFvUAHVpY6V3mgXIqNPyjxC3aWokYR2DlHWKS+G8Q/VQQqBh3pebWb/Sk1J2
-         1wx+74OGnHZNfElEmO3PBFQUqBrURhynydGzWFeMgt9zxzVpI3JxKa6kZwZfnJw2Wvyp
-         WVmSwwQne8yoUohdADBXnyt5zV8wfK6ZXKZT45THpiGmM6evLE6I8DW1jii/p1WEVxOi
-         b+6g==
-X-Gm-Message-State: AOAM531L4Js5CzTHy08H9sXQVUSMIkaZWcYKjGW2o4QFL3M3WvW+OV48
-        GBDEfxO1p9+AhANyaf2SN7B7C8JpHsU=
-X-Google-Smtp-Source: ABdhPJwZHZX2/Z3qoeSvLZlJdb/IZ4Y4uUPQVCXbUpXEyHQTg3krOYoj3p5ikKw2CzqOuXw9wKn67Q==
-X-Received: by 2002:a17:90b:17c4:: with SMTP id me4mr6438096pjb.120.1603882676309;
-        Wed, 28 Oct 2020 03:57:56 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:a46c:8b86:395a:7a3d])
-        by smtp.gmail.com with ESMTPSA id 65sm557863pge.37.2020.10.28.03.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 03:57:55 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next 2/4] net: hdlc_fr: Change the use of "dev" in fr_fx to make the code cleaner
-Date:   Wed, 28 Oct 2020 03:57:03 -0700
-Message-Id: <20201028105705.460551-3-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201028105705.460551-1-xie.he.0141@gmail.com>
-References: <20201028105705.460551-1-xie.he.0141@gmail.com>
+        Wed, 28 Oct 2020 18:50:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=Thn9yqgRHu/PXpLQKdHMdfKNVEezxunukJ744Cn+7Tk=; b=DCCY2JzqrNAIofTLINRtIninIU
+        a1rlBzms85wcDG6fpjkFODtWeJSnrEaf8/Ds/LP0Sy84xJMdvwhDwwpen+4bF1j9qsVdU8uvcQmvm
+        E1ZSyNJoGYJuxT+lQ5cszzKAgoXuNzfJCwLmHbJxWT8o5BgsBX3adXDxq+zeknWpPsuprjcowYWdA
+        jJviq7h4inNHF84G3URlltQwgjxkcC8ypRhvq6cJGvuplSJIZbZqzQmYuSKzYCAZug83bjyFcU+XJ
+        8JW4dzFsipINye1YWqN9YSjSlvvjyvYXsgqpQBKqVaU5w5MwHrOChxWkaXyJTfQ/xLxXy+dDOSIvN
+        AKXj2hxQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXjOP-0005LI-Fc; Wed, 28 Oct 2020 11:13:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A41C2307197;
+        Wed, 28 Oct 2020 12:13:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id D4F1F20B285AB; Wed, 28 Oct 2020 12:13:21 +0100 (CET)
+Message-ID: <20201028111221.464733855@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 28 Oct 2020 12:07:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
+        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
+        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
+        oleg@redhat.com, vincent.guittot@linaro.org, peterz@infradead.org
+Subject: [PATCH v3 4/6] irq_work: Unconditionally build on SMP
+References: <20201028110707.971887448@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The eth_type_trans function is called when we receive frames carrying
-Ethernet frames. This function expects a non-NULL pointer as a argument,
-and assigns it directly to skb->dev.
 
-However, the code handling other types of frames first assigns a pointer
-to "dev", and then at the end checks whether the value is NULL, and if it
-is not NULL, assigns it to skb->dev.
-
-The two flows are different. Letting them co-exist in this function makes
-the code messy. It's better that we convert the second flow to align with
-how eth_type_trans does things.
-
-So this patch changes the code to: first make sure the pointer is not
-NULL, then assign it directly to skb->dev. "dev" is no longer needed until
-the end where we use it to update stats.
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/net/wan/hdlc_fr.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ kernel/Makefile   |    1 +
+ kernel/irq_work.c |    3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index c774eff44534..ac65f5c435ef 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -880,7 +880,7 @@ static int fr_rx(struct sk_buff *skb)
- 	u8 *data = skb->data;
- 	u16 dlci;
- 	struct pvc_device *pvc;
--	struct net_device *dev = NULL;
-+	struct net_device *dev;
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -105,6 +105,7 @@ obj-$(CONFIG_TRACE_CLOCK) += trace/
+ obj-$(CONFIG_RING_BUFFER) += trace/
+ obj-$(CONFIG_TRACEPOINTS) += trace/
+ obj-$(CONFIG_IRQ_WORK) += irq_work.o
++obj-$(CONFIG_SMP) += irq_work.o
+ obj-$(CONFIG_CPU_PM) += cpu_pm.o
+ obj-$(CONFIG_BPF) += bpf/
+ obj-$(CONFIG_KCSAN) += kcsan/
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -20,6 +20,7 @@
+ #include <linux/smp.h>
+ #include <asm/processor.h>
  
- 	if (skb->len <= 4 || fh->ea1 || data[2] != FR_UI)
- 		goto rx_error;
-@@ -930,13 +930,17 @@ static int fr_rx(struct sk_buff *skb)
- 	}
++#ifdef CONFIG_IRQ_WORK
  
- 	if (data[3] == NLPID_IP) {
-+		if (!pvc->main)
-+			goto rx_drop;
- 		skb_pull(skb, 4); /* Remove 4-byte header (hdr, UI, NLPID) */
--		dev = pvc->main;
-+		skb->dev = pvc->main;
- 		skb->protocol = htons(ETH_P_IP);
- 
- 	} else if (data[3] == NLPID_IPV6) {
-+		if (!pvc->main)
-+			goto rx_drop;
- 		skb_pull(skb, 4); /* Remove 4-byte header (hdr, UI, NLPID) */
--		dev = pvc->main;
-+		skb->dev = pvc->main;
- 		skb->protocol = htons(ETH_P_IPV6);
- 
- 	} else if (skb->len > 10 && data[3] == FR_PAD &&
-@@ -950,13 +954,16 @@ static int fr_rx(struct sk_buff *skb)
- 		case ETH_P_IPX:
- 		case ETH_P_IP:	/* a long variant */
- 		case ETH_P_IPV6:
--			dev = pvc->main;
-+			if (!pvc->main)
-+				goto rx_drop;
-+			skb->dev = pvc->main;
- 			skb->protocol = htons(pid);
- 			break;
- 
- 		case 0x80C20007: /* bridged Ethernet frame */
--			if ((dev = pvc->ether) != NULL)
--				skb->protocol = eth_type_trans(skb, dev);
-+			if (!pvc->ether)
-+				goto rx_drop;
-+			skb->protocol = eth_type_trans(skb, pvc->ether);
- 			break;
- 
- 		default:
-@@ -970,17 +977,13 @@ static int fr_rx(struct sk_buff *skb)
- 		goto rx_drop;
- 	}
- 
--	if (dev) {
--		dev->stats.rx_packets++; /* PVC traffic */
--		dev->stats.rx_bytes += skb->len;
--		if (pvc->state.becn)
--			dev->stats.rx_compressed++;
--		skb->dev = dev;
--		netif_rx(skb);
--		return NET_RX_SUCCESS;
--	} else {
--		goto rx_drop;
--	}
-+	dev = skb->dev;
-+	dev->stats.rx_packets++; /* PVC traffic */
-+	dev->stats.rx_bytes += skb->len;
-+	if (pvc->state.becn)
-+		dev->stats.rx_compressed++;
-+	netif_rx(skb);
-+	return NET_RX_SUCCESS;
- 
- rx_error:
- 	frad->stats.rx_errors++; /* Mark error */
--- 
-2.25.1
+ static DEFINE_PER_CPU(struct llist_head, raised_list);
+ static DEFINE_PER_CPU(struct llist_head, lazy_list);
+@@ -212,3 +213,5 @@ void irq_work_sync(struct irq_work *work
+ 		cpu_relax();
+ }
+ EXPORT_SYMBOL_GPL(irq_work_sync);
++
++#endif /* CONFIG_IRQ_WORK */
+
 
