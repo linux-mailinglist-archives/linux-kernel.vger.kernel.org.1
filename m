@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC95029D839
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5999929D83C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387751AbgJ1Waj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:30:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
+        id S2387761AbgJ1Wam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:30:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732937AbgJ1Wae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:30:34 -0400
+        id S2387750AbgJ1Waj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:30:39 -0400
 Received: from kozik-lap.proceq-device.com (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 187AF20714;
-        Wed, 28 Oct 2020 22:30:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4302320719;
+        Wed, 28 Oct 2020 22:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603924233;
-        bh=0ZjT6w62frwssv+4Ks9l2/OnlDfcFnkYb7WrZ7cRmdw=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=gdXf2TRB2cFgLK3RjJRUXTsicinW2NjNQp8VYMED099C67W/RHpcOER7hNp/CKizU
-         C5qhDjS5W8MPibbk14g+qhxWMDKRSjtEKSuA6Ut9c6h8RRHouhmDCyM831A+UXCKGJ
-         zpTBYP/asH7yg3E01pl3AOfLF/ckUAJS4noL6KzA=
+        s=default; t=1603924239;
+        bh=4t8zrcPE4o8Nqeis7vmtHzncTzgCdna72xDyDxw631Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=W+FvBYc4U/y9NdU0NTeySTkwuIqsuiLP9hupjAB7cQ9E2wkS55FRVoDbOWXOnyfac
+         WbozmzVobO0JS99BQ4Bsg6R5ty+BbJ9FEjawgVKbOnZPY0X6joSGuXCXaTiCsz7XAL
+         aPZPhaGrHsOpu2OFFEzIP5sc2wd2Xbnp8C0LQzv4=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Lee Jones <lee.jones@linaro.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -44,9 +44,10 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-arm-kernel@lists.infradead.org,
         linux-rpi-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [RESEND PATCH 04/42] mfd: atmel-hlcdc: use PLATFORM_DEVID_NONE
-Date:   Wed, 28 Oct 2020 23:29:31 +0100
-Message-Id: <20201028223009.369824-4-krzk@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [RESEND PATCH 05/42] mfd: axp20x: use PLATFORM_DEVID_NONE
+Date:   Wed, 28 Oct 2020 23:29:32 +0100
+Message-Id: <20201028223009.369824-5-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201028223009.369824-1-krzk@kernel.org>
 References: <20201028223009.369824-1-krzk@kernel.org>
@@ -61,24 +62,24 @@ Use PLATFORM_DEVID_NONE define instead of "-1" value because:
  - it might point attention why auto device ID was not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/mfd/atmel-hlcdc.c | 2 +-
+ drivers/mfd/axp20x.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/atmel-hlcdc.c b/drivers/mfd/atmel-hlcdc.c
-index 3c2414ba4b01..8ba13bc6fcf8 100644
---- a/drivers/mfd/atmel-hlcdc.c
-+++ b/drivers/mfd/atmel-hlcdc.c
-@@ -129,7 +129,7 @@ static int atmel_hlcdc_probe(struct platform_device *pdev)
+diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
+index aa59496e4376..70aa538a4b64 100644
+--- a/drivers/mfd/axp20x.c
++++ b/drivers/mfd/axp20x.c
+@@ -967,7 +967,7 @@ int axp20x_device_probe(struct axp20x_dev *axp20x)
+ 		return ret;
+ 	}
  
- 	dev_set_drvdata(dev, hlcdc);
+-	ret = mfd_add_devices(axp20x->dev, -1, axp20x->cells,
++	ret = mfd_add_devices(axp20x->dev, PLATFORM_DEVID_NONE, axp20x->cells,
+ 			      axp20x->nr_cells, NULL, 0, NULL);
  
--	return devm_mfd_add_devices(dev, -1, atmel_hlcdc_cells,
-+	return devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, atmel_hlcdc_cells,
- 				    ARRAY_SIZE(atmel_hlcdc_cells),
- 				    NULL, 0, NULL);
- }
+ 	if (ret) {
 -- 
 2.25.1
 
