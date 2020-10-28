@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC3829D511
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B778D29D310
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgJ1V6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:58:32 -0400
-Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:17589
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728802AbgJ1V63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:58:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WUk6gJLJLuDvDG+45r+qG6dXqZYiXitHi0S1l3RO3DFs/Y5KQvx85KhV+FKiU+9L4WjGgmlTwSAmubOpRan34kP+fKh/f1xZZkR506BTVZ/g3gl1yES4NLaZ/LtbmP8ndnR/4JQYmThJIOLhcwCTQQwT43VlpchCkq888+qR5zYgxPHOGd0VKfg22D3IJBbtOlYL6c+dCuAFi+NYHBCrsJeI2/1AujkP+0yFZJIaSsbykYk2OK2EHOCk9N8qhnsyJKE7JdlIuXwu8u688cR0UlZrKbYPMFIO/mpk0VcpAxuRQo/9Jky1aVagDCB4vyVa7orFHxV1QNtbH92tiXw8Lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UuVywQtfSgvvNzElvBrO1UvcAUxUw9DemPCrIucXMkg=;
- b=hYd1kxhX1AXq2qALBGU4bHudaczau7aE0CKjBc2kbbDqibhtdf/ZSVIU87CxYVk72A6iikDyk5KWin5+UohhpY3bHxdQNUUSTQ74/VDblRp8tvvJFvJH3eiRRgUeiee/X6gNrWpkXbVsY8fGTMjPtw6wNiY5GmrHpIbjz5ITuTV5LbQ3ydbjEW9wj+mAMgSLBpp0+Fl+eplyB8EnEmVRZZoDdZ2m2NvFm/sQX7V+LzaBPIsAMdU1cTqTGX5oh69G5Z5DHRfc/neHus5iC42FWBO/JTA7BtpsPSBdadLebJe9rwh3DEAD3KIsVEhki8PscXBh0t5CWwbWMiYxbzDZAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1727148AbgJ1Vjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727134AbgJ1Vjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:39:36 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD81C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:39:36 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id m13so621569wrj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:39:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UuVywQtfSgvvNzElvBrO1UvcAUxUw9DemPCrIucXMkg=;
- b=nvOY36EhGou9en4GRAGwCFoEMOoTrNYUUf4XcLPhgBUCwcCa2OiK3228lFVnqfsLNH3iVFz4wzPmCh47E6TvrsPtqRTroazT6QZwke05mz4HYneGETbzbdTW6YFRVwRHwz+/xymaF5mETgv/Od2gCPB5lTa+fWfeeHNhOLOihIw=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by SJ0PR11MB5184.namprd11.prod.outlook.com (2603:10b6:a03:2d5::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 28 Oct
- 2020 02:47:54 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::80e9:e002:eeff:4d05]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::80e9:e002:eeff:4d05%3]) with mapi id 15.20.3455.030; Wed, 28 Oct 2020
- 02:47:53 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Jens Axboe <axboe@kernel.dk>
-CC:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBpby13cTogc2V0IHRhc2sgVEFTS19JTlRFUlJVUFRJ?=
- =?gb2312?Q?BLE_state_before_schedule=5Ftimeout?=
-Thread-Topic: [PATCH] io-wq: set task TASK_INTERRUPTIBLE state before
- schedule_timeout
-Thread-Index: AQHWrA6So/PefgDq40imjt0Gr/M086mrc9IAgADN/6k=
-Date:   Wed, 28 Oct 2020 02:47:53 +0000
-Message-ID: <BYAPR11MB2632A45DB4DA30E34D412528FF170@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <20201027030911.16596-1-qiang.zhang@windriver.com>,<bc138db4-4609-b8e6-717a-489cf2027fc0@kernel.dk>
-In-Reply-To: <bc138db4-4609-b8e6-717a-489cf2027fc0@kernel.dk>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5b2dc80c-9a92-46ea-4498-08d87aebde3c
-x-ms-traffictypediagnostic: SJ0PR11MB5184:
-x-microsoft-antispam-prvs: <SJ0PR11MB5184DA12F8C35736CA6CF491FF170@SJ0PR11MB5184.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y7wx/mlwmD2OtPMBr+HTu87E+nwVT/f9EvXz4GvaeVFViPOalDpJPd2EwJtsdR8Uh2H63zgeDTefNJa+zj9QSr9OZiv64I4EiBffmha+PDxFkMUxmaQhPZpp7J2Qkxk3c9KI+atc8mWct1yFzWYeaYk2dfGYTktMYT57Zco5pSOKOAvZ8tdkY77LBEuu2MtYbGrX61DCwtQc8B6GMNAP5EgEJXYdhkJuL7mFVkk2WdHWsf3KkMurC/MdhWsGKQqgv3YdgHybyPIpCpuMXjrwelP9EHkmxG3IVQqWPZPIno41dhHe1Z1jkTBK9h6xLDQ9HoesoowZghp21zCrOThXzg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39850400004)(366004)(376002)(346002)(2906002)(8936002)(91956017)(9686003)(55016002)(224303003)(478600001)(4326008)(26005)(186003)(53546011)(54906003)(316002)(7696005)(52536014)(6506007)(66946007)(33656002)(76116006)(66446008)(66556008)(66476007)(64756008)(71200400001)(86362001)(6916009)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: cdO5OiIS65WcCBemq2rI7cbDts26d7jXtrzS23xEz6flg7TDWH6DAE51KpPTLmB0jH/L3i9sFMdWe8Xw/cs9s3YPP+VMQPhxCg2smc5yKrH4LcOzIFC1qx+d3C823f4o4qXkMfys6t28zCBpTy98Y/iXZdIV9HxsaQYGkxqZgFEGOeiY92jzle/GP89oejoJPQfM7+oVN+I6IytnLhslK+MwBfs/rHzts8FGuKvEe9Xzx+y8033adbFk8cdtokHbYq1RNPiw8fpZDylvKee/0FcRS/B4SHTwa6uimbY8C5T0cxbk6uGYpONZHhtab0t1QYesTiXpB9+n12blOATb8TRsQbWKZpwDfyVLG/8hmMWHGOUhKcOoIGiJCKGtCjjoL5TmUz/EnD3NcMLpZys4XqJWdu3yJHrj0sgNTbH3WFAwS+Ljm3BjgMnWGPqsTKQ6t6ko7ipXzruvHXd0M8hdA1Ay0rwwl4h7jpbfBXRnPySoTuQhwxAQW5EONeG/zueCjHJr1P1xwgU9qriTzTcYPGtTPeLdt/2v5Ttqg0HyVAaWgIv3sgJG31WC4SVkllYfjVPz3qcrFemGRBu4i1qhD8s0LMcLB0Eim959UGEzwoVJeIajSt31yOv+/KbiDxL50/LiraCB6+NJvtPLzdbZ2A==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OhXbzz0jUd2ouNJ1702kQcn1I79hMZdbasdGII6+h5c=;
+        b=J+qnhlZSZCGqciGOVRu8UXOc5yQJ29bhxTt7RSiOhmCifYU1PKHZCXpB1FBcxdFz2p
+         Ed/r1YxqFraYaFSJPi3eywD5yqxq7FuGKtUlqSTCA+MKYJ3A+b6nAO8HLl/Hqxkva6Lk
+         7X5yX828znMMHRwhaB3fE6jRLs9TEq5MbG/sffZB6P/26cRNV0quiAVCXwEbfcFih/e2
+         mBGv3fOev51hKNDHSzUFxt9ObKpbs/m5i2k3sHPBOu0ln5M8yliSXSO+MCIaJmeMCCDA
+         jVxPqGGFsnzYWn6lHzGdBk37o7xQMdIvkTFjn1IiNm9b68bIaRfFzt68NGkQaV5S/qoO
+         Fx7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OhXbzz0jUd2ouNJ1702kQcn1I79hMZdbasdGII6+h5c=;
+        b=e0X1stNBnl8OmzStkoI1fRAizRnbqA4+cuieYunsdg1K37Z1RPkQvU03hTfkXobdnp
+         hmvv1w8q95N7oRMKTETvuccwo28lXfF6uZvRHdBcXR9O3fEQLzmzU1TgGfDrX+/z/QrR
+         5WVpbf2Mn95DfMKtvoaqFseGV/xcBHIPG5R44SWOit0hmZfJFRJHyqg5ck6xQ/69nMoW
+         1mALtvMGWJzen38cGy2fwe3D61RATTJVh57yet3YHp0yJk0YPKYZmzZGxSqOS1gjOPEZ
+         dysmQx7sdD+3VJhL5Gz3X50ovZ/ZjARuMdm/FwKcBS/huM1PDIKMDbEKF7jSBm6J1qQ+
+         gfJg==
+X-Gm-Message-State: AOAM5335O8WW3w6kfD4Eex2bdvORZwr6LK0ReL13XRhy/lVntNNxMZeD
+        avrAwJT5g0Hr8b4853DciumnuxcxhCWGI9sHXp242pd9iV9Abw==
+X-Google-Smtp-Source: ABdhPJy9hdrKih3/vRFFidKj98rZEPTvPBdg5+TSPoXdegSBjJdPRD5dmnhatqK8xsL/a8GhM8JT6nGOQbpt7j58Yok=
+X-Received: by 2002:ac2:561a:: with SMTP id v26mr1920118lfd.167.1603854058688;
+ Tue, 27 Oct 2020 20:00:58 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b2dc80c-9a92-46ea-4498-08d87aebde3c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 02:47:53.4751
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1O7OlhOiD7b18B6NpcMY03eTaDHW1NCH74rqWnrMFGAD26+MDOuWAKfjHAqKE0aSM4bDcqG0O7PuekmGJy+5S2N9KgiQKZffs4/OQFqJ9vA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5184
-X-OriginatorOrg: windriver.com
+References: <20201027184909.20881-1-rdunlap@infradead.org>
+In-Reply-To: <20201027184909.20881-1-rdunlap@infradead.org>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 28 Oct 2020 11:00:47 +0800
+Message-ID: <CABVgOSmtTK=V8EFL8KTmN+e+pP6HKZQo+LMsmqG3PnxuhFtZ9A@mail.gmail.com>
+Subject: Re: [PATCH] KUnit: Docs: style: fix some Kconfig example issues
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogSmVucyBB
-eGJvZSA8YXhib2VAa2VybmVsLmRrPgq3osvNyrG85DogMjAyMMTqMTDUwjI3yNUgMjE6MzUKytW8
-/sjLOiBaaGFuZywgUWlhbmcKs63LzTogaW8tdXJpbmdAdmdlci5rZXJuZWwub3JnOyBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnCtb3zOI6IFJlOiBbUEFUQ0hdIGlvLXdxOiBzZXQgdGFzayBU
-QVNLX0lOVEVSUlVQVElCTEUgc3RhdGUgYmVmb3JlIHNjaGVkdWxlX3RpbWVvdXQKCk9uIDEwLzI2
-LzIwIDk6MDkgUE0sIHFpYW5nLnpoYW5nQHdpbmRyaXZlci5jb20gd3JvdGU6Cj4gRnJvbTogWnFp
-YW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPgo+Cj4gSW4gJ2lvX3dxZV93b3JrZXInIHRo
-cmVhZCwgaWYgdGhlIHdvcmsgd2hpY2ggaW4gJ3dxZS0+d29ya19saXN0JyBiZQo+IGZpbmlzaGVk
-LCB0aGUgJ3dxZS0+d29ya19saXN0JyBpcyBlbXB0eSwgYW5kIGFmdGVyIHRoYXQgdGhlCj4gJ19f
-aW9fd29ya2VyX2lkbGUnIGZ1bmMgcmV0dXJuIGZhbHNlLCB0aGUgdGFzayBzdGF0ZSBpcyBUQVNL
-X1JVTk5JTkcsCj4gbmVlZCB0byBiZSBzZXQgVEFTS19JTlRFUlJVUFRJQkxFIGJlZm9yZSBjYWxs
-IHNjaGVkdWxlX3RpbWVvdXQgZnVuYy4KPgo+SSBkb24ndCB0aGluayB0aGF0J3Mgc2FmZSAtIHdo
-YXQgaWYgc29tZW9uZSBhZGRlZCB3b3JrIHJpZ2h0IGJlZm9yZSB5b3UKPmNhbGwgc2NoZWR1bGVf
-dGltZW91dF9pbnRlcnJ1cHRpYmxlPyBTb21ldGhpbmcgYWxhOgo+Cj4KPmlvX3dxX2VucXVldWUo
-KQo+ICAgICAgICAgICAgICAgICAgICAgICAgc2V0X2N1cnJlbnRfc3RhdGUoVEFTS19JTlRFUlJV
-UFRJQkxFKCk7Cj4gICAgICAgICAgICAgICAgICAgICAgICBzY2hlZHVsZV90aW1lb3V0KFdPUktF
-Ul9JRExFX1RJTUVPVVQpOwo+Cj50aGVuIHdlJ2xsIGhhdmUgd29yayBhZGRlZCBhbmQgdGhlIHRh
-c2sgc3RhdGUgc2V0IHRvIHJ1bm5pbmcsIGJ1dCB0aGUKPndvcmtlciBpdHNlbGYganVzdCBzZXRz
-IHVzIHRvIG5vbi1ydW5uaW5nIGFuZCB3aWxsIGhlbmNlIHdhaXQKPldPUktFUl9JRExFX1RJTUVP
-VVQgYmVmb3JlIHRoZSB3b3JrIGlzIHByb2Nlc3NlZC4KPgo+VGhlIGN1cnJlbnQgc2l0dWF0aW9u
-IHdpbGwgZG8gb25lIGV4dHJhIGxvb3AgZm9yIHRoaXMgY2FzZSwgYXMgdGhlCj5zY2hlZHVsZV90
-aW1lb3V0KCkganVzdCBlbmRzIHVwIGJlaW5nIGEgbm9wIGFuZCB3ZSBnbyBhcm91bmQgYWdhaW4K
-CmFsdGhvdWdoIHRoZSB3b3JrZXIgdGFzayBzdGF0ZSBpcyBydW5uaW5nLCAgZHVlIHRvIHRoZSBj
-YWxsIHNjaGVkdWxlX3RpbWVvdXQsIHRoZSAKY3VycmVudCB3b3JrZXIgc3RpbGwgcG9zc2libGUg
-dG8gYmUgc3dpdGNoZWQgb3V0LgppZiBzZXQgY3VycmVudCB3b3JrZXIgdGFzayBpcyBuby1ydW5u
-aW5nLCB0aGUgY3VycmVudCB3b3JrZXIgYmUgc3dpdGNoZWQgb3V0LCBidXQKdGhlIHNjaGVkdWxl
-IHdpbGwgY2FsbCBpb193cV93b3JrZXJfc2xlZXBpbmcgZnVuYyAgdG8gd2FrZSB1cCBmcmVlIHdv
-cmtlciB0YXNrLCBpZiAKd3FlLT5mcmVlX2xpc3QgaXMgbm90IGVtcHR5LiAgCgo+Y2hlY2tpbmcg
-Zm9yIHdvcmsuIFNpbmNlIHdlIGFscmVhZHkgdW51c2VkIHRoZSBtbSwgdGhlIG5leHQgaXRlcmF0
-aW9uCj53aWxsIGdvIHRvIHNsZWVwIHByb3Blcmx5IHVubGVzcyBuZXcgd29yayBjYW1lIGluLgo+
-Cj4tLQo+SmVucyBBeGJvZQoK
+On Wed, Oct 28, 2020 at 2:49 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Fix the Kconfig example to be closer to Kconfig coding style.
+> (Except that it still uses spaces instead of tabs for indentation;
+> I guess that Sphinx wants it that way.)
+>
+> Also add punctuation and a trailing slash ('/') to a sub-directory
+> name -- this is how the text mostly appears in other Kconfig files.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: David Gow <davidgow@google.com>
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: kunit-dev@googlegroups.com
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> ---
+
+Thanks for fixing this!
+
+For what it's worth, I _think_ we could get away with tabs for
+indentation in the file without Sphinx actually complaining, but it
+does annoy some of the editors, and as far as I can tell, Sphinx
+converts them back to spaces in its output. I'm far from an expert,
+though...
+
+Regardless, this is:
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+-- David
