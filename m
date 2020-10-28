@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D09929D7FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FCB29D6D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733269AbgJ1W1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:27:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6570 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733245AbgJ1W1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:27:22 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CLdGt2GKFzhckW;
-        Wed, 28 Oct 2020 14:00:54 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.238) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Wed, 28 Oct 2020
- 14:00:45 +0800
-Subject: Re: [PATCH] pipe: fix potential inode leak in create_pipe_files()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-CC:     <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <cai@redhat.com>
-References: <779f767d-c08b-0c03-198e-06270100d529@huawei.com>
- <20201028035453.GI3576660@ZenIV.linux.org.uk>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Message-ID: <5b121dd9-7752-2ea0-ef8b-63ba2a3c3966@huawei.com>
-Date:   Wed, 28 Oct 2020 14:00:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1732251AbgJ1WSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:18:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731691AbgJ1WRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:41 -0400
+Received: from localhost (unknown [122.171.163.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5336223B0;
+        Wed, 28 Oct 2020 06:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603865102;
+        bh=N+NQkdWPKn2ZUTudXOvRWBS+Bm1QxJ7KxNnTg2lH5w0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HdBCODyFXQJPKZZCNVCFGMmwM+oAYK6nWAuoP3a0QN/qGX2xImUaCFJYl0icPzGTC
+         SXFKMDPGQGpMC9txs/LOurxUqaH6dM3GRg8N8p9H8B7L6ISdBFrzJJV/FtmVS9lpF/
+         4maXtsgQGkD8oSp2zImvIdnOtUjXCJpdUhtS2xJE=
+Date:   Wed, 28 Oct 2020 11:34:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sudeep Dutt <sudeep.dutt@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Sherry Sun <sherry.sun@nxp.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        Nikhil Rao <nikhil.rao@intel.com>
+Subject: Re: [PATCH char-misc-next 1/1] misc: mic: remove the MIC drivers
+Message-ID: <20201028060458.GK3550@vkoul-mobl>
+References: <8c1443136563de34699d2c084df478181c205db4.1603854416.git.sudeep.dutt@intel.com>
+ <20201028055429.GA244117@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201028035453.GI3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.238]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028055429.GA244117@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 28-10-20, 06:54, Greg Kroah-Hartman wrote:
+> On Tue, Oct 27, 2020 at 08:14:15PM -0700, Sudeep Dutt wrote:
+> > This patch removes the MIC drivers from the kernel tree
+> > since the corresponding devices have been discontinued.
+> 
+> Does "discontinued" mean "never shipped a device so no one has access to
+> this hardware anymore", or does it mean "we stopped shipping devices and
+> there are customers with this?"
+> 
+> > Removing the dma and char-misc changes in one patch and
+> > merging via the char-misc tree is best to avoid any
+> > potential build breakage.
+> > 
+> > Cc: Nikhil Rao <nikhil.rao@intel.com>
+> > Reviewed-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
+> > Signed-off-by: Sudeep Dutt <sudeep.dutt@intel.com>
+> 
+> I like deleting code, can this go into 5.10-final?
 
+I would like that, if unused lets get it cleaned now rather than later
+:-)
 
-On 2020/10/28 11:54, Al Viro wrote:
-> On Wed, Oct 28, 2020 at 11:03:52AM +0800, Zhiqiang Liu wrote:
->>
->> In create_pipe_files(), if alloc_file_clone() fails, we will call
->> put_pipe_info to release pipe, and call fput() to release f.
->> However, we donot call iput() to free inode.
-> 
-> Huh?  Have you actually tried to trigger that failure exit?
->
->> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
->> Signed-off-by: Feilong Lin <linfeilong@huawei.com>
->> ---
->>  fs/pipe.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/pipe.c b/fs/pipe.c
->> index 0ac197658a2d..8856607fde65 100644
->> --- a/fs/pipe.c
->> +++ b/fs/pipe.c
->> @@ -924,6 +924,7 @@ int create_pipe_files(struct file **res, int flags)
->>  	if (IS_ERR(res[0])) {
->>  		put_pipe_info(inode, inode->i_pipe);
->>  		fput(f);
->> +		iput(inode);
->>  		return PTR_ERR(res[0]);
-> 
-> No.  That inode is created with refcount 1.  If alloc_file_pseudo()
-> succeeds, the reference we'd been holding has been transferred into
-> dentry allocated by alloc_file_pseudo() (and attached to f).
->>From that point on we do *NOT* own a reference to inode and no
-> subsequent failure exits have any business releasing it.
-> 
-> In particular, alloc_file_clone() DOES NOT create extra references
-> to inode, whether it succeeds or fails.  Dropping the reference
-> to f will take care of everything.
-> 
-> If you tried to trigger that failure exit with your patch applied,
-> you would've seen double iput(), as soon as you return from sys_pipe()
-> to userland and task_work is processed (which is where the real
-> destructor of struct file will happen).
-> 
-> NAK.
-> 
+Said that, for all dmaengine bits:
 
-Thanks for your patient response. Learned a lot from your reply.
-Please ignore the patch.
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-> .
-> 
-
+-- 
+~Vinod
