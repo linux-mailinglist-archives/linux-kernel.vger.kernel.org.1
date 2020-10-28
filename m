@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3C229D3FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB2F29D2E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgJ1Vhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35476 "EHLO mail.kernel.org"
+        id S1726991AbgJ1Vh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726949AbgJ1VhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726952AbgJ1VhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 17:37:25 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E5B824828;
-        Wed, 28 Oct 2020 21:00:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89E2324724;
+        Wed, 28 Oct 2020 21:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603918843;
-        bh=w8Adt+DgZhtcRUqHXQcSpd5t5zZ9mo0QyjcUXXzx+94=;
+        s=default; t=1603918867;
+        bh=cQJGuWfvLs1OyxCH5Hveq93nka68GE77I3EkBKGcDVw=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=0y1TaBF2DmtbC1eIjvDualGIbJaBaQdJFsdqVa8zTE9KWl9c6DMbSPQdNUjhB4k8U
-         qKy0T73omL1hJF6ZCIzCOqTXZI3sOmSXaHL2/S0Jels+I7zXDD2OHp7aKSaRAX08nB
-         h09biKyNFWyirNNWiu7fnC6WaVHUNvmLT/GJ1IuA=
+        b=nztoUpclkAs/vX/8RPAPt/UxcB8PP7Z2qKHsBlFmgVbhuaYpGSwRaeBIB5B0rYuXw
+         7PuhsqozVQB7s5CUrz7qoOSNnCr5jZ/LkkoYmyD0XQP3aLWVXb1Nxzo6d+KgYzA0HI
+         bzFS0F55hqurCUFlacConpqlCkv6QAixyO3CqF/c=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4BA3E35229CE; Wed, 28 Oct 2020 14:00:43 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 14:00:43 -0700
+        id 2F8D735229CE; Wed, 28 Oct 2020 14:01:07 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:01:07 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Qian Cai <cai@redhat.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/smp: Move rcu_cpu_starting() earlier
-Message-ID: <20201028210043.GG3249@paulmck-ThinkPad-P72>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] s390/smp: Move rcu_cpu_starting() earlier
+Message-ID: <20201028210107.GH3249@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20201028182614.13655-1-cai@redhat.com>
+References: <20201028182742.13773-1-cai@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028182614.13655-1-cai@redhat.com>
+In-Reply-To: <20201028182742.13773-1-cai@redhat.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:26:14PM -0400, Qian Cai wrote:
-> The call to rcu_cpu_starting() in secondary_start_kernel() is not early
+On Wed, Oct 28, 2020 at 02:27:42PM -0400, Qian Cai wrote:
+> The call to rcu_cpu_starting() in smp_init_secondary() is not early
 > enough in the CPU-hotplug onlining process, which results in lockdep
 > splats as follows:
 > 
@@ -60,48 +61,51 @@ On Wed, Oct 28, 2020 at 02:26:14PM -0400, Qian Cai wrote:
 >  rcu_scheduler_active = 1, debug_locks = 1
 >  no locks held by swapper/1/0.
 > 
->  Call trace:
->   dump_backtrace+0x0/0x3c8
->   show_stack+0x14/0x60
->   dump_stack+0x14c/0x1c4
->   lockdep_rcu_suspicious+0x134/0x14c
->   __lock_acquire+0x1c30/0x2600
->   lock_acquire+0x274/0xc48
->   _raw_spin_lock+0xc8/0x140
->   vprintk_emit+0x90/0x3d0
->   vprintk_default+0x34/0x40
->   vprintk_func+0x378/0x590
->   printk+0xa8/0xd4
->   __cpuinfo_store_cpu+0x71c/0x868
->   cpuinfo_store_cpu+0x2c/0xc8
->   secondary_start_kernel+0x244/0x318
+>  Call Trace:
+>  show_stack+0x158/0x1f0
+>  dump_stack+0x1f2/0x238
+>  __lock_acquire+0x2640/0x4dd0
+>  lock_acquire+0x3a8/0xd08
+>  _raw_spin_lock_irqsave+0xc0/0xf0
+>  clockevents_register_device+0xa8/0x528
+>  init_cpu_timer+0x33e/0x468
+>  smp_init_secondary+0x11a/0x328
+>  smp_start_secondary+0x82/0x88
 > 
 > This is avoided by moving the call to rcu_cpu_starting up near the
-> beginning of the secondary_start_kernel() function.
+> beginning of the smp_init_secondary() function. Note that the
+> raw_smp_processor_id() is required in order to avoid calling into
+> lockdep before RCU has declared the CPU to be watched for readers.
 > 
 > Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
 > Signed-off-by: Qian Cai <cai@redhat.com>
 
-Interesting way to compute "cpu" earlier in the code, but nevertheless:
-
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  arch/arm64/kernel/smp.c | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/s390/kernel/smp.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 82e75fc2c903..09c96f57818c 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -222,6 +222,7 @@ asmlinkage notrace void secondary_start_kernel(void)
->  	if (system_uses_irq_prio_masking())
->  		init_gic_priority_masking();
+> diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+> index ebfe86d097f0..390d97daa2b3 100644
+> --- a/arch/s390/kernel/smp.c
+> +++ b/arch/s390/kernel/smp.c
+> @@ -855,13 +855,14 @@ void __init smp_detect_cpus(void)
 >  
+>  static void smp_init_secondary(void)
+>  {
+> -	int cpu = smp_processor_id();
+> +	int cpu = raw_smp_processor_id();
+>  
+>  	S390_lowcore.last_update_clock = get_tod_clock();
+>  	restore_access_regs(S390_lowcore.access_regs_save_area);
+>  	set_cpu_flag(CIF_ASCE_PRIMARY);
+>  	set_cpu_flag(CIF_ASCE_SECONDARY);
+>  	cpu_init();
 > +	rcu_cpu_starting(cpu);
 >  	preempt_disable();
->  	trace_hardirqs_off();
->  
+>  	init_cpu_timer();
+>  	vtime_init();
 > -- 
 > 2.28.0
 > 
