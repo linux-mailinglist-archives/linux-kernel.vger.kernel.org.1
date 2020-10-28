@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A354F29D339
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3DF29D281
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgJ1Vl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgJ1Vlx (ORCPT
+        id S1725888AbgJ1VdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:33:03 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:32877 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgJ1VdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:41:53 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1837C0613D1;
-        Wed, 28 Oct 2020 14:41:52 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u62so1064165iod.8;
-        Wed, 28 Oct 2020 14:41:52 -0700 (PDT)
+        Wed, 28 Oct 2020 17:33:00 -0400
+Received: by mail-pl1-f194.google.com with SMTP id b19so283212pld.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:32:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1KYUIsk757yjfOxOTjonub4YNOxpUYnyLgvt2WlwCKA=;
-        b=CAj6eWB0sS+KsIEA8xhTCYPe5pKspk9Ybsrx10g+8JQkR4ESP2zrbUkymyWAqsq/xs
-         yp0cbkj/HY3yu/hbdX4Sbi7hBUS3W+lUF2jmV7VixEZ4x8skpPJoCA3dbKLvdbUHvdM7
-         GZiHCfEh+1ocFVmHvVqBqL37mcGEqztbBVIG0=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eWYH94BORZv4ozup4OC59HMYznaFyiTGBncXRcc6tuM=;
+        b=YXgUXHApiqcAnVatjPnEi407J7W2aEza7kXEObfTTVd4VTsEZwUSGbitW4GzZ44reN
+         HL52RtVoffqrmmiRa+J70ZoM0IBk8HwhDGtbpoJosVs+5haUvB6Bf7mQiSB3rZAgcOki
+         RMbhDoTHDUm0PK+fgKRoV2b5Qd7NkcKwkQB3tDXHJ59EbjLL2S3nzrbIm0eBy3ag3kSs
+         C6WC8KlnfhJ7qRGM3u15oVHwr0039EAlAbRtfkWqsuPEeXVWkUhHyokqVdAzCjydisum
+         qapHgHsBv9KYGQexSIGxivUrVR0j7yNmiNHhrA6QR9mdKUIvw66PVHpD3nM/I9arppu0
+         7Qzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1KYUIsk757yjfOxOTjonub4YNOxpUYnyLgvt2WlwCKA=;
-        b=MXTICkLPfqFjkb8yuGoQGug3wVNzBnA39BfluSHDMGKB7r48MEW5fHKK0q1O/xrtHS
-         LuZj82Ph61QmZkYHQamobpztEGNNnEHb+FmXeZuboEd4BI+CTos2gekZpViNygBsx1Yn
-         NyM1OW7p9K44j5/lXG5WFdYtwifXFn7b6IwmgIEGjWnUpp6pXcEhnJH6YjQzWG8Y2PDU
-         xWxC+msRwSrct8fyCmj+AOIklZP+XwGSzwsZz0uBaq1gLMlCEpDQv/3qu0u5JH57XLv/
-         IFTTNqRkpaQCTeNcR7iefaZvXxp89TSZQZCrnM0bprgpZxDjenA1lhV35X8SNDnMNmYa
-         sskA==
-X-Gm-Message-State: AOAM533Hy2AeOeSV8L8hwcnITlagSfs/Fl8Kuh1EHsC6+r2jUprdfKdX
-        TseDO6I7vCmAk7ggr+4UbDXKxsM8aB0zZwZkiuCxVcm5H/abrw==
-X-Google-Smtp-Source: ABdhPJxjYiVx/jlqIHQCiS7hEo1CokIeLOSw3uzWA56UCJv3gAepbfgYpwPTPl37ADtRKOhjzlpQ7YzLLsQdjIMDdXw=
-X-Received: by 2002:a05:622a:d5:: with SMTP id p21mr67362qtw.363.1603862906529;
- Tue, 27 Oct 2020 22:28:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eWYH94BORZv4ozup4OC59HMYznaFyiTGBncXRcc6tuM=;
+        b=PTshk/97BQMcAAWAWGbHIFKNjKuk2draABF9k2yUy5n6+WLpjhkj85WlNqqI4u6aW4
+         C2OypJ+wtWC3w51ij1gRS3IZrFGnDN51/D8LyiJhxD8yEC9v4vlqSddF7Ah8pCkgVzdy
+         t9P7QqmtaV6Uzl+9s9vIS75L+nTy1CQGtL//l46h0KDYj6gk+vkEpJ5LmT+NQbHugMqe
+         TWlWxYjFgMsofUtyCokc7eumXEyBaMWXyrUOui/3yyMTfmj+kyjemSqH0W4JSrD7iL7n
+         sMMp2/3Biy6qZVj8/vWldzFWe739UUHfynY9lPMCHpoMoJ/p4olMbyjUNd++Hrdut4aK
+         0nOQ==
+X-Gm-Message-State: AOAM531Icl3IctQInVSfn1n8coQg0ufbtoau9zTMlVt4CMLmx8INM+3t
+        ZyehxKKu47DdAptzSHxTix9LLIDlsj/HoQ==
+X-Google-Smtp-Source: ABdhPJy32sza5hlY9q9DusherzKtC59C8yPszw9dBZkXd2Ch6JlZ9EJGtRX781Qk5m0PYnI6dFRCzg==
+X-Received: by 2002:aa7:9095:0:b029:164:75c4:5d15 with SMTP id i21-20020aa790950000b029016475c45d15mr578656pfa.49.1603864199760;
+        Tue, 27 Oct 2020 22:49:59 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id v79sm4207978pfc.197.2020.10.27.22.49.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 22:49:59 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 11:19:57 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH V2 1/2] sched/core: Rename and move schedutil_cpu_util()
+ to core.c
+Message-ID: <20201028054957.vr47r3wd3zjycten@vireshk-i7>
+References: <cover.1603448113.git.viresh.kumar@linaro.org>
+ <80c66f55ac7f04b3ecd4ebf12d69d86c89480fa7.1603448113.git.viresh.kumar@linaro.org>
+ <20201023103407.GK2594@hirez.programming.kicks-ass.net>
+ <20201023105452.aivb5o6dws76evc3@vireshk-i7>
+ <CAKfTPtBgqiR1zaoqL_q_sMNnXYrzZczTeE1TMF+WR6knHFjGRw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201027123722.2935-1-aladyshev22@gmail.com> <20201027123722.2935-2-aladyshev22@gmail.com>
-In-Reply-To: <20201027123722.2935-2-aladyshev22@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 28 Oct 2020 05:28:13 +0000
-Message-ID: <CACPK8XeaWbrWBKonxqW0Gu2AnB3mXBNXsEDmsEP_hzT1e8gX1w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] ARM: dts: aspeed: amd-ethanolx: Enable KCS channel 3
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBgqiR1zaoqL_q_sMNnXYrzZczTeE1TMF+WR6knHFjGRw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 12:41, Konstantin Aladyshev
-<aladyshev22@gmail.com> wrote:
->
-> The KCS interface on the LPC channel 3 in the controller
-> is used for the in-band BMC<->BIOS IPMI communication.
-> 0xCA2 is a default host CPU LPC IO address for this
-> interface.
->
-> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+On 23-10-20, 14:34, Vincent Guittot wrote:
+> Maybe it's time to make sched_util and pelt available for !SMP too.
+> 
+> With util_est and uclamp, I can see some benefits for !SMP compare to ondemand
 
-I don't have any docs on the platform so I'll wait for a review from
-Supreeth before applying this one.
+That's a decision you guys (sched maintainers) need to make :)
 
-It's a correct use of the bindings:
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-> ---
->  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> index 89ddc3847222..2a86bda8afd8 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> @@ -147,6 +147,11 @@
->         aspeed,lpc-io-reg = <0x62>;
->  };
->
-> +&kcs3 {
-> +       status = "okay";
-> +       aspeed,lpc-io-reg = <0xCA2>;
-> +};
-> +
->  &kcs4 {
->         status = "okay";
->         aspeed,lpc-io-reg = <0x97DE>;
-> --
-> 2.17.1
->
+-- 
+viresh
