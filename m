@@ -2,223 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9AA29D4F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BDC29D527
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgJ1Vzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:55:49 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:39232 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728492AbgJ1Vzp (ORCPT
+        id S1729249AbgJ1V7B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 17:59:01 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:49250 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729165AbgJ1V65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:55:45 -0400
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 09SA5d5yA015858, This message is accepted by code: ctloc85258
-Received: from RSEXMBS02.realsil.com.cn ([172.29.17.196])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 09SA5d5yA015858
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 28 Oct 2020 18:05:40 +0800
-Received: from RSEXMBS02.realsil.com.cn (172.29.17.196) by
- RSEXMBS02.realsil.com.cn (172.29.17.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 28 Oct 2020 18:05:39 +0800
-Received: from RSEXMBS02.realsil.com.cn ([fe80::f8fc:93be:88f4:52ef]) by
- RSEXMBS02.realsil.com.cn ([fe80::f8fc:93be:88f4:52ef%7]) with mapi id
- 15.01.2044.004; Wed, 28 Oct 2020 18:05:39 +0800
-From:   =?utf-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggMy8zXSBtbWM6IHJ0c3g6IEFkZCBTRCBFeHByZXNz?= =?utf-8?Q?_mode_support_for_RTS5261?=
-Thread-Topic: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-Thread-Index: AQHWkt9BwBVjFlHHd0at7hFkgpI9BamhuQuAgAGMm/CAATQjgIAAlwdAgAYEBgCAAV+VAIAAhqzA
-Date:   Wed, 28 Oct 2020 10:05:38 +0000
-Message-ID: <dd3bb2880b3e4da1b601b7e2b21f55c1@realsil.com.cn>
-References: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
- <CAPDyKFrnkF3mU5PJsy0VtEjPSToktSsRRtyMvQF97vymc+rY5A@mail.gmail.com>
- <dd210290eef6467cbffca8cbaddb8b84@realsil.com.cn>
- <CAPDyKFqwsJaYrXMVabR7qui6yqr4FAHfYq1ghfsf0HtRSZpGGw@mail.gmail.com>
- <ba3c68fea4614434838a0a8cbc0e892a@realsil.com.cn>
- <CAPDyKFrDLJtDkkWsSENLDu2xLqptkjDk94YxYfkfW7UPBoG+bg@mail.gmail.com> 
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.40.150]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 28 Oct 2020 17:58:57 -0400
+Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id E05353B2D07;
+        Wed, 28 Oct 2020 10:08:58 +0000 (UTC)
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 35AD01BF20B;
+        Wed, 28 Oct 2020 10:08:36 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 11:08:35 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Praveenkumar I <ipkumar@codeaurora.org>
+Cc:     richard@nod.at, vigneshr@ti.com, sivaprak@codeaurora.org,
+        peter.ujfalusi@ti.com, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, kathirav@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: Fix DMA sync on FLASH_STATUS
+ register read
+Message-ID: <20201028110835.2f319c0a@xps13>
+In-Reply-To: <1602230872-25616-1-git-send-email-ipkumar@codeaurora.org>
+References: <1602230872-25616-1-git-send-email-ipkumar@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gPg0KPiA+IE9uIE1vbiwgMjYgT2N0IDIwMjAgYXQgMDk6MjIsIOWGr+mUkCA8cnVpX2Zl
-bmdAcmVhbHNpbC5jb20uY24+IHdyb3RlOg0KPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gKyBDaHJp
-c3RvcGggKHRvIGhlbHAgdXMgdW5kZXJzdGFuZCBpZiBQQ0llL05WTWUgZGV2aWNlcyBjYW4gYmUN
-Cj4gPiA+ID4gKyBtYXJrZWQNCj4gPiA+ID4gKyByZWFkLW9ubHkpDQo+ID4gPiA+DQo+ID4gPiA+
-IE9uIFRodSwgMjIgT2N0IDIwMjAgYXQgMDg6MDQsIOWGr+mUkCA8cnVpX2ZlbmdAcmVhbHNpbC5j
-b20uY24+IHdyb3RlOg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gT24gRnJp
-LCAyNSBTZXAgMjAyMCBhdCAwMzo1NywgPHJ1aV9mZW5nQHJlYWxzaWwuY29tLmNuPiB3cm90ZToN
-Cj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gRnJvbTogUnVpIEZlbmcgPHJ1aV9mZW5nQHJl
-YWxzaWwuY29tLmNuPg0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBSVFM1MjYxIHN1cHBv
-cnQgbGVnYWN5IFNEIG1vZGUgYW5kIFNEIEV4cHJlc3MgbW9kZS4NCj4gPiA+ID4gPiA+ID4gSW4g
-U0Q3LngsIFNEIGFzc29jaWF0aW9uIGludHJvZHVjZSBTRCBFeHByZXNzIGFzIGEgbmV3IG1vZGUu
-DQo+ID4gPiA+ID4gPiA+IFRoaXMgcGF0Y2ggbWFrZXMgUlRTNTI2MSBzdXBwb3J0IFNEIEV4cHJl
-c3MgbW9kZS4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBBcyBwZXIgcGF0Y2ggMiwgY2FuIHlv
-dSBwbGVhc2UgYWRkIHNvbWUgbW9yZSBpbmZvcm1hdGlvbiBhYm91dA0KPiA+ID4gPiA+ID4gd2hh
-dCBjaGFuZ2VzIGFyZSBuZWVkZWQgdG8gc3VwcG9ydCBTRCBFeHByZXNzPyBUaGlzIGp1c3QNCj4g
-PiA+ID4gPiA+IHN0YXRlcyB0aGF0IHRoZSBzdXBwb3J0IGlzIGltcGxlbWVudGVkLCBidXQgcGxl
-YXNlIGVsYWJvcmF0ZSBob3cuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBSdWkgRmVuZyA8cnVpX2ZlbmdAcmVhbHNpbC5jb20uY24+DQo+
-ID4gPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ID4gPiAgZHJpdmVycy9tbWMvaG9zdC9ydHN4X3Bj
-aV9zZG1tYy5jIHwgNTkNCj4gPiA+ID4gPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKw0KPiA+ID4gPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDU5IGluc2VydGlvbnMoKykNCj4g
-PiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbW1jL2hvc3Qv
-cnRzeF9wY2lfc2RtbWMuYw0KPiA+ID4gPiA+ID4gPiBiL2RyaXZlcnMvbW1jL2hvc3QvcnRzeF9w
-Y2lfc2RtbWMuYw0KPiA+ID4gPiA+ID4gPiBpbmRleCAyNzYzYTM3NmIwNTQuLmVmZGUzNzRhNGE1
-ZSAxMDA2NDQNCj4gPiA+ID4gPiA+ID4gLS0tIGEvZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9z
-ZG1tYy5jDQo+ID4gPiA+ID4gPiA+ICsrKyBiL2RyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2Rt
-bWMuYw0KPiA+ID4gPiA+ID4gPiBAQCAtODk1LDcgKzg5NSw5IEBAIHN0YXRpYyBpbnQgc2Rfc2V0
-X2J1c193aWR0aChzdHJ1Y3QNCj4gPiA+ID4gPiA+ID4gcmVhbHRla19wY2lfc2RtbWMgKmhvc3Qs
-ICBzdGF0aWMgaW50IHNkX3Bvd2VyX29uKHN0cnVjdA0KPiA+ID4gPiA+ID4gPiByZWFsdGVrX3Bj
-aV9zZG1tYyAqaG9zdCkgIHsNCj4gPiA+ID4gPiA+ID4gICAgICAgICBzdHJ1Y3QgcnRzeF9wY3Ig
-KnBjciA9IGhvc3QtPnBjcjsNCj4gPiA+ID4gPiA+ID4gKyAgICAgICBzdHJ1Y3QgbW1jX2hvc3Qg
-Km1tYyA9IGhvc3QtPm1tYzsNCj4gPiA+ID4gPiA+ID4gICAgICAgICBpbnQgZXJyOw0KPiA+ID4g
-PiA+ID4gPiArICAgICAgIHUzMiB2YWw7DQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ICAg
-ICAgICAgaWYgKGhvc3QtPnBvd2VyX3N0YXRlID09IFNETU1DX1BPV0VSX09OKQ0KPiA+ID4gPiA+
-ID4gPiAgICAgICAgICAgICAgICAgcmV0dXJuIDA7DQo+ID4gPiA+ID4gPiA+IEBAIC05MjIsNiAr
-OTI0LDE0IEBAIHN0YXRpYyBpbnQgc2RfcG93ZXJfb24oc3RydWN0DQo+ID4gPiA+ID4gPiA+IHJl
-YWx0ZWtfcGNpX3NkbW1jDQo+ID4gPiA+ID4gPiAqaG9zdCkNCj4gPiA+ID4gPiA+ID4gICAgICAg
-ICBpZiAoZXJyIDwgMCkNCj4gPiA+ID4gPiA+ID4gICAgICAgICAgICAgICAgIHJldHVybiBlcnI7
-DQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ICsgICAgICAgaWYgKFBDSV9QSUQocGNyKSA9
-PSBQSURfNTI2MSkgew0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgdmFsID0gcnRzeF9w
-Y2lfcmVhZGwocGNyLCBSVFNYX0JJUFIpOw0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAg
-aWYgKHZhbCAmIFNEX1dSSVRFX1BST1RFQ1QpIHsNCj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgcGNyLT5leHRyYV9jYXBzICY9DQo+ID4gPiA+ID4gPiB+RVhUUkFfQ0FQU19T
-RF9FWFBSRVNTOw0KPiA+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICBtbWMtPmNh
-cHMyICY9DQo+IH4oTU1DX0NBUDJfU0RfRVhQDQo+ID4gfA0KPiA+ID4gPiA+ID4gPiArIE1NQ19D
-QVAyX1NEX0VYUF8xXzJWKTsNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBUaGlzIGxvb2tzIGEg
-Yml0IHdlaXJkIHRvIG1lLiBGb3IgYSB3cml0ZSBwcm90ZWN0ZWQgY2FyZCB5b3UNCj4gPiA+ID4g
-PiA+IHdhbnQgdG8gZGlzYWJsZSB0aGUgU0RfRVhQUkVTUyBzdXBwb3J0LCByaWdodD8NCj4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gUmlnaHQuIElmIGVuZCB1c2VyIGluc2VydCBhIHdyaXRlIHByb3Rl
-Y3RlZCBTRCBleHByZXNzIGNhcmQsIEkNCj4gPiA+ID4gPiB3aWxsIGRpc2FibGUNCj4gPiA+ID4g
-U0RfRVhQUkVTUyBzdXBwb3J0Lg0KPiA+ID4gPiA+IElmIGhvc3Qgc3dpdGNoIHRvIFNEIEVYUFJF
-U1MgbW9kZSwgdGhlIGNhcmQgd2lsbCBiZSByZWNvZ25pemVkDQo+ID4gPiA+ID4gYXMgYSB3cml0
-YWJsZSBQQ0llL05WTWUgZGV2aWNlLCBJIHRoaW5rIHRoaXMgaXMgbm90IGVuZCB1c2VyJ3MgcHVy
-cG9zZS4NCj4gPiA+ID4NCj4gPiA+ID4gSG1tLg0KPiA+ID4gPg0KPiA+ID4gPiBGYWxsaW5nIGJh
-Y2sgdG8gdXNlIHRoZSBsZWdhY3kgU0QgaW50ZXJmYWNlIGlzIHByb2JhYmx5IG5vdCB3aGF0DQo+
-ID4gPiA+IHRoZSB1c2VyIGV4cGVjdHMgZWl0aGVyLg0KPiA+ID4gPg0KPiA+ID4gPiBOb3RlIHRo
-YXQgdGhlIHBoeXNpY2FsIHdyaXRlIHByb3RlY3Qgc3dpdGNoL3BpbiBpc24ndCBtYW5kYXRvcnkg
-dG8NCj4gPiA+ID4gc3VwcG9ydCBhbmQgaXQgZG9lc24ndCBldmVuIGV4aXN0IGZvciBhbGwgZm9y
-bWF0cyBvZiBTRCBjYXJkcy4gSW4NCj4gPiA+ID4gdGhlIG1tYyBjb3JlLCB3ZSBhcmUgZGVmYXVs
-dGluZyB0byBtYWtlIHRoZSBjYXJkIHdyaXRlIGVuYWJsZWQsIGlmDQo+ID4gPiA+IHRoZSBzd2l0
-Y2ggaXNuJ3Qgc3VwcG9ydGVkIGJ5IHRoZSBob3N0IGRyaXZlci4gQWRkaXRpb25hbGx5LA0KPiA+
-ID4gPiBub3RoaW5nIHByZXZlbnRzIHRoZSBlbmQgdXNlciBmcm9tIG1vdW50aW5nIHRoZSBmaWxl
-c3lzdGVtIGluDQo+ID4gPiA+IHJlYWQtb25seSBtb2RlLCBpZg0KPiA+IHRoYXQgaXMgcHJlZmVy
-cmVkLg0KPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBJcyB0aGVyZSBubyBtZWNoYW5p
-c20gdG8gc3VwcG9ydCByZWFkLW9ubHkgUENJZS9OVk1lIGJhc2VkDQo+ID4gPiA+ID4gPiBzdG9y
-YWdlDQo+ID4gPiA+IGRldmljZXM/DQo+ID4gPiA+ID4gPiBJZiB0aGF0IGlzIHRoZSBjYXNlLCBt
-YXliZSBpdCdzIHNpbXBseSBiZXR0ZXIgdG8gbm90IHN1cHBvcnQNCj4gPiA+ID4gPiA+IHRoZSBy
-ZWFkb25seSBvcHRpb24gYXQgYWxsIGZvciBTRCBleHByZXNzIGNhcmRzPw0KPiA+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiBJIHRoaW5rIHRoZXJlJ3Mgbm8gbWVjaGFuaXNtIHRvIHN1cHBvcnQgcmVhZC1v
-bmx5IFBDSWUvTlZNZQ0KPiA+ID4gPiA+IGJhc2VkIHN0b3JhZ2UNCj4gPiA+ID4gZGV2aWNlcy4N
-Cj4gPiA+ID4NCj4gPiA+ID4gSSBoYXZlIGxvb3BlZCBpbiBDaHJpc3RvcGgsIG1heWJlIGhlIGNh
-biBnaXZlIHVzIGhpcyBvcGluaW9uIG9uIHRoaXMuDQo+ID4gPiA+DQo+ID4gPiA+ID4gQnV0IGRp
-ZmZlcmVudCB2ZW5kZXJzIG1heSBoYXZlIGRpZmZlcmVudCBvcGluaW9ucy4gVGhpcyBpcyBvbmx5
-DQo+ID4gPiA+ID4gUmVhbHRlaydzDQo+ID4gPiA+IG9waW5pb24uDQo+ID4gPiA+DQo+ID4gPiA+
-IEkgdW5kZXJzdGFuZC4gSG93ZXZlciwgdGhlIG1vc3QgaW1wb3J0YW50IHBvaW50IGZvciBtZSwg
-aXMgdGhhdCB3ZQ0KPiA+ID4gPiBkb24ndCBlbmQgdXAgaW4gYSBzaXR1YXRpb24gd2hlcmUgZWFj
-aCBtbWMgaG9zdCBoYW5kbGVzIHRoaXMNCj4gPiA+ID4gZGlmZmVyZW50bHkuIFdlIHNob3VsZCBz
-dHJpdmUgdG93YXJkcyBhIGNvbnNpc3RlbnQgYmVoYXZpb3IuDQo+ID4gPiA+DQo+ID4gPiA+IEF0
-IHRoaXMgcG9pbnQgSSB0ZW5kIHRvIHByZWZlciB0byBkZWZhdWx0IHRvIGlnbm9yZSB0aGUgd3Jp
-dGUNCj4gPiA+ID4gcHJvdGVjdCBzd2l0Y2ggZm9yIFNEIGV4cHJlc3MsIHVubGVzcyB3ZSBjYW4g
-ZmluZCBhIHdheSB0bw0KPiA+ID4gPiBwcm9wZXJseSBzdXBwb3J0DQo+ID4gaXQuDQo+ID4gPiA+
-DQo+ID4gPiBGb3IgaW5mb3JtYXRpb24gc2VjdXJpdHkgcHVycG9zZSwgc29tZSBjb21wYW5pZXMg
-b3IgYnVzaW5lc3MgdXNlcnMNCj4gPiA+IHNldCB0aGVpcg0KPiA+IG5vdGVib29rIFNEIGFzICJy
-ZWFkIG9ubHkiLg0KPiA+ID4gQmVjYXVzZSBhIGxvdCBvZiAicmVhZCBvbmx5IiByZXF1aXJlbWVu
-dHMgZnJvbSB0aG9zZSBjb21wYW5pZXMgb3INCj4gPiA+IGJ1c2luZXNzDQo+ID4gdXNlcnMsIG5v
-dGVib29rIHZlbmRvciBjb250cm9scyByZWFkZXIgd3JpdGUgcHJvdGVjdCBwaW4gdG8gYWNoaWV2
-ZSBpdC4NCj4gPiA+IE5vdGVib29rIEJJT1MgbWlnaHQgaGF2ZSBvcHRpb24gdG8gY2hvb3NlICJy
-ZWFkIG9ubHkiIG9yIG5vdC4NCj4gPiA+IFRoaXMgaXMgd2h5IHdlIHRoaW5rIHdyaXRlIHByb3Rl
-Y3QgaXMgbW9yZSBpbXBvcnRhbnQgdGhhbiBzcGVlZC4NCj4gPg0KPiA+IEkgdW5kZXJzdGFuZCB0
-aGF0IGl0IG1heSBiZSB1c2VkLCBpbiBzb21lIHdheSBvciB0aGUgb3RoZXIgdG8gcHJvdmlkZQ0K
-PiA+IGEgaGludCB0byB0aGUgb3BlcmF0aW5nIHN5c3RlbSB0byBtb3VudCBpdCBpbiByZWFkLW9u
-bHkgbW9kZS4NCj4gPg0KPiA+IEFsdGhvdWdoLCBpZiB0aGVyZSB3ZXJlIGEgcmVhbCBzZWN1cml0
-eSBmZWF0dXJlIGludm9sdmVkLCB0aGUgaW50ZXJuYWwNCj4gPiBGVyBvZiB0aGUgU0QgY2FyZCB3
-b3VsZCBhbHNvIG1vbml0b3IgdGhlIHN3aXRjaCwgdG8gc3VwcG9ydCByZWFkLW9ubHkNCj4gPiBt
-b2RlLiBBcyBJIHVuZGVyc3RhbmQgaXQsIHRoYXQncyBub3QgdGhlIGNvbW1vbiBjYXNlLg0KPiA+
-DQo+ID4gPiBJZiB5b3UgcHJlZmVyIHRvIGNvbnNpc3RlbnQgYmVoYXZpb3IsIEkgY2FuIGlnbm9y
-ZSB0aGUgd3JpdGUgcHJvdGVjdA0KPiA+ID4gc3dpdGNoIGZvcg0KPiA+IFNEIGV4cHJlc3MuDQo+
-ID4NCj4gPiBBdCB0aGlzIHBvaW50LCBJIHByZWZlciBpZiB5b3Ugd291bGQgaWdub3JlIHRoZSB3
-cml0ZSBwcm90ZWN0IHN3aXRjaA0KPiA+IGluIHRoZSBTRCBjb250cm9sbGVyIGRyaXZlci4NCj4g
-Pg0KPiBJIHdpbGwgaWdub3JlIHdyaXRlIHByb3RlY3Qgc3dpdGNoIGluIFYzLg0KPiANClNvcnJ5
-IEkgaWdub3JlIHRoZSBIVyBkZXNpZ24uDQpUaGUgcmVhZGVyIGhhcyB0d28gbWVjaGFuaXNtIGZv
-ciBtb2RlIHNlbGVjdGlvbiAoU0QgTGVnYWN5IG9yIFNEIEV4cHJlc3MpLiBPbmUgaXMgU1cgKE1N
-QyBkcml2ZXIpIGFuZCBhbm90aGVyIGlzIEhXLg0KV2UgdXNlIEhXIG1lY2hhbmlzbSB3aGVuIHN5
-c3RlbSBleGl0IFMzIG9yIFM0Lg0KSFcgbWVjaGFuaXNtIHNlbGVjdHMgbW9kZSB3aGVuIGNoaXAg
-aXMgcG93ZXIgb24uDQpIZXJlIGlzIGFuIGV4YW1wbGUgZm9yIEhXIG1lY2hhbmlzbS4NCjEuIFJl
-YWRlciBpbiBTRCBMZWdhY3kgbW9kZSAtPg0KMi4gU0QgRXhwcmVzcyBjYXJkIGluc2VydCAtPg0K
-My4gTU1DIGRyaXZlciBzZWxlY3RzIHRoZSBTRCBFeHByZXNzIG1vZGUgLT4NCjQuIFNEIEV4cHJl
-c3MgaW5pdGlhbCBhbmQgdXNlIE5WTWUgZHJpdmVyIGFuZCBOVk1lIGRpc2sgbW91bnQgLT4NCjUu
-IHN5c3RlbSBnb2VzIHRvIFM0IC0+DQo2LiBzeXN0ZW0gZXhpdHMgUzQgLT4NCjcuIEhXIHNlbGVj
-dHMgU0QgRXhwcmVzcyBtb2RlIC0+DQo4LiBTRCBFeHByZXNzIHN0aWxsIHVzZXMgTlZNZSBkcml2
-ZXIgYW5kIGRpc2sga2VlcHMgdGhlIHNhbWUNClRoZXJlZm9yZSwgYWZ0ZXIgUzQsIGRpc2sgaXMg
-c3RpbGwga2VlcCB0aGUgc2FtZS4NCg0KQmVjYXVzZSBvZiBIVyBtZWNoYW5pc20gc2VsZWN0cyBT
-RCBsZWdhY3kgbW9kZSB3aGVuIHdyaXRlIHByb3RlY3QuDQpJZiBkcml2ZXIgY2FuJ3Qgc2VsZWN0
-IFNEIGxlZ2FjeSBtb2RlIHdoZW4gd3JpdGUgcHJvdGVjdCwgZGlzayBtaWdodCB1bm1vdW50IGFu
-ZCB0aGFuIG1vdW50IGFmdGVyIFMzL1M0Lg0KSGVyZSBpcyBhbiBleGFtcGxlIGZvciB3cml0ZSBw
-cm90ZWN0Lg0KMS4gUmVhZGVyIGluIFNEIExlZ2FjeSBtb2RlIC0+DQoyLiBTRCBFeHByZXNzIGNh
-cmQgaW5zZXJ0IHdpdGggd3JpdGUgcHJvdGVjdCAtPg0KMy4gTU1DIGRyaXZlciBzZWxlY3RzIHRo
-ZSBTRCBFeHByZXNzIG1vZGUgLT4NCjQuIFNEIEV4cHJlc3MgaW5pdGlhbCBhbmQgdXNlIE5WTWUg
-ZHJpdmVyIGFuZCBOVk1lIGRpc2sgbW91bnQgLT4NCjUuIHN5c3RlbSBnb2VzIHRvIFM0IC0+DQo2
-LiBzeXN0ZW0gZXhpdHMgUzQgLT4NCjcuIEJlY2F1c2Ugd3JpdGUgcHJvdGVjdCwgSFcgc2VsZWN0
-cyBTRCBsZWdhY3kgbW9kZSAtPg0KOC4gbGludXggZGV0ZWN0IEhXIGNoYW5nZSwgdXNlIE1NQyBk
-cml2ZXIgYW5kIE5WTWUgZGlzayB1bm1vdW50IC0+DQo5LiBNTUMgZHJpdmVyIHNlbGVjdHMgdGhl
-IFNEIEV4cHJlc3MgbW9kZSAtPg0KMTAuIFNEIEV4cHJlc3MgaW5pdGlhbCBhbmQgdXNlIE5WTWUg
-ZHJpdmVyIGFuZCBOVk1lIGRpc2sgbW91bnQNCg0KSWYgZHJpdmVyIGNhbiBzZWxlY3QgU0QgbGVn
-YWN5IG1vZGUgd2hlbiB3cml0ZSBwcm90ZWN0LCBkaXNrIGNhbiBrZWVwIHRoZSBzYW1lIGFmdGVy
-IFMzL1M0Lg0KSGVyZSBpcyBhbiBleGFtcGxlIGZvciB3cml0ZSBwcm90ZWN0Lg0KMS4gUmVhZGVy
-IGluIFNEIExlZ2FjeSBtb2RlIC0+DQoyLiBTRCBFeHByZXNzIGNhcmQgaW5zZXJ0IHdpdGggd3Jp
-dGUgcHJvdGVjdCAtPg0KMy4gTU1DIGRyaXZlciBzZWxlY3RzIHRoZSBTRCBsZWdhY3kgbW9kZSBh
-bmQgZGlzayBtb3VudCAtPg0KNS4gc3lzdGVtIGdvZXMgdG8gUzQgLT4NCjYuIHN5c3RlbSBleGl0
-cyBTNCAtPg0KNy4gQmVjYXVzZSB3cml0ZSBwcm90ZWN0LCBIVyBzZWxlY3RzIFNEIGxlZ2FjeSBt
-b2RlIC0+DQo4LiBNTUMgZHJpdmVyIHNlbGVjdHMgdGhlIFNEIGxlZ2FjeSBtb2RlIGFuZCBkaXNr
-IGtlZXBzIHRoZSBzYW1lLg0KSWYgSSBpZ25vcmUgdGhlIHdyaXRlIHByb3RlY3Qgc3dpdGNoIGlu
-IG1tYyBob3N0IGRyaXZlciwgYmVoYXZpb3Igb2YgU1cgd2lsbCBub3QgYmUgY29uc2lzdGVudCB3
-aXRoIEhXLg0KDQo+ID4gQWNjb3JkaW5nIHRvIENocmlzdG9waCwgaXQgc2hvdWxkIGJlIHBvc3Np
-YmxlIHRvIHN1cHBvcnQgcmVhZC1vbmx5DQo+ID4gbW9kZSB2aWEgUENJZS9OVk1lLiBZb3UgbWF5
-IG5lZWQgdG8gYWRkIHNvbWUgdHdlYWtzIHRvIHN1cHBvcnQgdGhpcyBpbg0KPiA+IHRoZSBQQ0ll
-IGNvbnRyb2xsZXIgZHJpdmVyLCBidXQgSSBjYW4ndCBhZHZpc2UgeW91IGhvdyB0byBleGFjdGx5
-IGRvIHRoaXMuDQo+ID4NCj4gPiBQZXJoYXBzIHlvdSBuZWVkIHRvIHJlYWQvc3RvcmUgdGhlIHN0
-YXRlIG9mIFNEIHdyaXRlLXByb3RlY3QgcGluDQo+ID4gYmVmb3JlIHN3aXRjaGluZyB0byBTRCBl
-eHByZXNzIG1vZGUsIGJlY2F1c2UgeW91IG1heSBub3QgYmUgYWJsZSB0bw0KPiA+IHJlYWQgaXQg
-YmV5b25kIHNvbWUgcG9pbnQ/DQo+ID4NCj4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEZyb20gdGhp
-cywgSSBhc3N1bWUgdGhhdCBteSBpbnRlcnByZXRhdGlvbnMgb2YgdGhlIGJlaGF2aW9yIHdhcyBj
-b3JyZWN0Lg0KPiA+ID4gPg0KPiA+ID4gPiBBbHRob3VnaCwgY2FuIHlvdSBwbGVhc2UgZWxhYm9y
-YXRlIG9uIHdoYXQgeW91IG1lYW4gYnkgdGhhdCBpdA0KPiA+ID4gPiB3aWxsICJub3Qgd29yayI/
-DQo+ID4gPiA+DQo+ID4gPiA+IERvIHlvdSBtZWFuIHRoYXQgcnRzeF9wY2lfY2FyZF9leGNsdXNp
-dmVfY2hlY2soKSB0aGF0IGlzIGNhbGxlZA0KPiA+ID4gPiBlYXJseSBpbg0KPiA+ID4gPiBzZG1t
-Y19zZXRfaW9zKCkgd2lsbCBmYWlsIGFuZCB0aGVuIG1ha2UgaXQgYmFpbCBvdXQ/IFRoZW4sIGNv
-dWxkDQo+ID4gPiA+IHlvdSBwbGVhc2UgYWRkIGEgY29tbWVudCBhYm91dCB0aGF0IGluIHRoZSBj
-b2RlPw0KPiA+ID4gPg0KPiA+ID4gSW4gaW5pdF9zZF9leHByZXNzKCkgZHJpdmVyIHNldHMgMHhG
-RjU0IGJpdDA9MSBhbmQgMHhGRjU1IGJpdDQ9MCwNCj4gPiA+IHRoZW4NCj4gPiBSVFM1MjYxIHdp
-bGwgc3dpdGNoIE1DVSBhbmQgZW50ZXIgU0QgRVhQUkVTUyBtb2RlLg0KPiA+ID4gQWZ0ZXIgdGhh
-dCBSVFM1MjYxIGNhbid0IHJlY2VpdmUgYW55IENNRCBmcm9tIFBDSWUsIHNvDQo+ID4gPiBtbWNf
-cG93ZXJfb2ZmKCkNCj4gPiB3aWxsIG5vdCB3b3JrLg0KPiA+DQo+ID4gVGhhbmtzIGZvciB0cnlp
-bmcgdG8gY2xhcmlmeS4NCj4gPg0KPiA+IEhvd2V2ZXIsIHRoaXMgc3RpbGwgZG9lc24ndCBleHBs
-YWluIHRvIG1lLCB3aGF0ICpleGFjdGx5KiB3aWxsIGhhcHBlbg0KPiA+IHdoZW4NCj4gPiBydHN4
-X3BjaV9jYXJkX2V4Y2x1c2l2ZV9jaGVjaygpIGlzIGNhbGxlZCAob3IgYW55IG90aGVyIGZ1bmN0
-aW9ucyBpbg0KPiAtPnNldF9pb3MoKSkuDQo+ID4NCj4gPiBJbiBwcmluY2lwbGUsICJ3aWxsIG5v
-dCB3b3JrIiBjb3VsZCBtZWFuIHRoYXQgdGhlIGNhbGxzIHRvIHRoZQ0KPiA+IHJ0c3hfcGNpXyog
-Y2FyZHJlYWRlciBpbnRlcmZhY2UgaGFuZ3MgLSBhbmQgdGhhdCB3b3VsZCBub3QgYmUgb2theSAo
-YXMNCj4gPiBpdCBjb3VsZCBsZWFkIHRvIHRoYXQgdGhlIC0+cmVtb3ZlKCkgY2FsbGJhY2sgaGFu
-Z3MpLiBTbywgZWl0aGVyIHlvdQ0KPiA+IG5lZWQgdG8gcHV0IGEgd2VsbCB3cml0dGVuIGNvbW1l
-bnQgaW4gdGhlIGNvZGUgYWJvdXQgd2hhdCB3aWxsIGhhcHBlbg0KPiA+IC0gb3IgYWRkIHNvbWUg
-a2luZCBvZiBwcm90ZWN0aW9uIGFnYWluc3QgcG90ZW50aWFsIHByb2JsZW1zIGZvciB0aGlzLg0K
-PiA+DQo+ICJ3aWxsIG5vdCB3b3JrIiBtZWFuIGZhaWwgYW5kIHdpbGwgbm90IGhhbmcgaW50ZXJm
-YWNlLiBJIHdpbGwgYWRkICJob3N0LT5lamVjdCA9DQo+IHRydWUiIGluIHRoZSBlbmQgb2YgaW5p
-dF9zZF9leHByZXNzKCksIHNvIHRoYXQgc2V0X2lvcygpIHdpbGwgZG8gbm90aGluZyBqdXN0DQo+
-IHJldHVybi4NCj4gDQo+ID4gS2luZCByZWdhcmRzDQo+ID4gVWZmZQ0KPiA+DQo+ID4gLS0tLS0t
-UGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1h
-aWwuDQo=
+Hello,
+
+Praveenkumar I <ipkumar@codeaurora.org> wrote on Fri,  9 Oct 2020
+13:37:52 +0530:
+
+> After each codeword NAND_FLASH_STATUS is read for possible operational
+> failures. But there is no DMA sync for CPU operation before reading it
+> and this leads to incorrect or older copy of DMA buffer in reg_read_buf.
+> 
+> This patch adds the DMA sync on reg_read_buf for CPU before reading it.
+> 
+> Fixes: 5bc36b2bf6e2 ("mtd: rawnand: qcom: check for operation errors in case of raw read")
+
+I guess this deserves a proper Cc: stable tag?
+
+> Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
+
+I think your full name is required in the SoB line (should match the
+authorship).
+
+Otherwise looks good to me.
+
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index bd7a7251429b..5bb85f1ba84c 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -1570,6 +1570,8 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	int i;
+>  
+> +	nandc_read_buffer_sync(nandc, true);
+> +
+>  	for (i = 0; i < cw_cnt; i++) {
+>  		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
+>  
+
+Thanks,
+Miquèl
