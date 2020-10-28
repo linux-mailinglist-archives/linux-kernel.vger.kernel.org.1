@@ -2,65 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132AE29D3BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506DC29D4DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgJ1VqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:46:14 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:46389 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbgJ1VqH (ORCPT
+        id S1728481AbgJ1VzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728459AbgJ1VzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:46:07 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n6so597416wrm.13;
-        Wed, 28 Oct 2020 14:46:06 -0700 (PDT)
+        Wed, 28 Oct 2020 17:55:07 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E430EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:55:07 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id r9so1110440ioo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DFXhmhnE0HABF0BXWy7FPG6M7auqIQQvigvYJvceh4w=;
+        b=XgxDaYlcXD9VneIWZ0+tEYxjrB075Cu/ikkDKfbLtF35LmwU+N/0bMXfOuzN0z2f6t
+         m3wzPAjY3WYxaz8YkjDVKl7qcN6yumeH8d4dgpDXdJbiD0QfNX7ebYT2Ctf1GMLn3/WW
+         BdKBZEw/mmum2r7fTvmbRUVO0asKpizsMNN8pKM80rPyeDyzefYm9f3KobmINHM9kg2M
+         dgZeXHKZbS53M0KW2ifZwOYlDqH5QwSJbckbHlIFFtxqhBA7WBOGIM5bg56a/1/kXQop
+         HuMcZ21r7E0Z7Nw+cfSvrL3INEjdBOOtnw9FFlWfjNXwNt2g392uE1iy+4tPGpIbL9Zm
+         bxow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xYyqVjGxVBN3EBsp63KVaNu+q8t9Scw3HyfXR69i9jY=;
-        b=gj9BuMa56Q2MqXIrfeWDdcQ8sdHi/l8Caq2UQfBLXWS4IDRloBEaLT5UGhmedz7Ca3
-         /DhEZCeXB+XbOWX/VFtOat79GgHbLzjgXLG9XzXGeWJfHZx/zkOjQzhSNF9D8ZLzBybk
-         z0mTGYhaHtHf+RJ6uOyCUqS2g4kEVF81KRpIEbjP7j7JUKa0++zWG4tqYy+SQW6huBd7
-         p7OAVeQvg8T+pqkwRVVvZt4toNPcCTa/VZidEjAv1fAj5dlKqO95LxfitMnUEhMSPVEs
-         dAxexBXkFc+bKqsa8a4y8cXKkoE0m8CT60TJP0ilKZ1fOyNhkyPJq6latytGTN8KffVu
-         55Cw==
-X-Gm-Message-State: AOAM530xdtfDw9TzNM5do5p3ShKTr2LqjJDU7vkGhSlqE6z11rPd+kRC
-        71llujgiTIpZ9r8v+OP0FG0PhFpQE5FWIA==
-X-Google-Smtp-Source: ABdhPJzDpghLl+3TD6eqjgXqttTTYOYYwYFz/QvwKAXHI2VfcG/Q6EcvM3sN1JHQc4hfW39DJGZF+w==
-X-Received: by 2002:a17:906:a282:: with SMTP id i2mr6365239ejz.39.1603874330838;
-        Wed, 28 Oct 2020 01:38:50 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id g8sm2472979ejp.73.2020.10.28.01.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 01:38:49 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 09:38:47 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: i2c: imx258: add HDR control
-Message-ID: <20201028083847.GB32155@kozik-lap>
-References: <20201005151559.12003-1-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DFXhmhnE0HABF0BXWy7FPG6M7auqIQQvigvYJvceh4w=;
+        b=stfMXr6p0t33ZpDhV6kaAkuz8gQYnUoZDGTjnEsb6eh9ouZA0axRKWcQgcnEkncbH9
+         Ukm5cw2ydIBtc8qnGRtPqaWLzPfaviP65omK1nhpzOaQpsU5+4821XzsPsSFkJChmfr8
+         N6Q1KB6XzU6DIycXd+TTVKd7GOcjmiS/MMNgB2IOsr9pOCgnDbTzbMl2pEypQAi49LWc
+         UpYh+4nQkgo7SwYI80wLi+0esymcrXyRhT2bt1UmSY65LvHAl8B8DJlJDRM5BafoRsFv
+         4h+ZYJTNOtq5aiD16koTJxzfNvfoEYx2TZ8917yo0SToz/wRjXk0zHhoiaDGMtsEJN/m
+         vhHA==
+X-Gm-Message-State: AOAM530oQvtY/IqnuwKhKWfN/m356HhdWPAvf79lE0ycyfJXLA1bZMSv
+        nQnIDB2axCRlA56goRR51pluP0uX/1UJe66G/c479i5MbKYfGLQu
+X-Google-Smtp-Source: ABdhPJwsBNCa9tGNVxqh7UFIxLXZTMNgEfqLLnBSEU/1OZJL7n0MFXc/F3fsV7zd4kQ1GDw3rwoBriJ7AAh32Ay0TSc=
+X-Received: by 2002:a92:9944:: with SMTP id p65mr4688477ili.127.1603874858750;
+ Wed, 28 Oct 2020 01:47:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201005151559.12003-1-krzk@kernel.org>
+References: <20201027135430.632029009@linuxfoundation.org>
+In-Reply-To: <20201027135430.632029009@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 28 Oct 2020 14:17:27 +0530
+Message-ID: <CA+G9fYsP=i9aRDxSqAZM_BvXn3xRDFHEZLT3poomjZuCrgW28g@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/264] 4.19.153-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:15:58PM +0200, Krzysztof Kozlowski wrote:
-> The IMX258 supports High Dynamic Range with 5 levels of low/high
-> exposure ratio.  Add a V4L2 control for HDR (WIDE_DYNAMIC_RANGE).
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/media/i2c/imx258.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
+On Tue, 27 Oct 2020 at 19:52, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.153 release.
+> There are 264 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 29 Oct 2020 13:53:47 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.153-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Any comments here?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Best regards,
-Krzysztof
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.153-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 8919185062d40d0559c701be480cc8fa547291ed
+git describe: v4.19.152-265-g8919185062d4
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.152-265-g8919185062d4
+
+No regressions (compared to build v4.19.152)
+
+No fixes (compared to build v4.19.152)
+
+Ran 28857 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* network-basic-tests
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-fs-tests
+* ltp-math-tests
+* ltp-open-posix-tests
+* ltp-tracing-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
