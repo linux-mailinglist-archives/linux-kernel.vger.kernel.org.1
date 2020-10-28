@@ -2,119 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85AD29D701
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B93229D705
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731997AbgJ1WTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60520 "EHLO mail.kernel.org"
+        id S1732025AbgJ1WTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731779AbgJ1WRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731783AbgJ1WRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 18:17:45 -0400
-Received: from kernel.org (unknown [87.70.96.83])
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E673E246A2;
-        Wed, 28 Oct 2020 11:09:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4ABF246B1;
+        Wed, 28 Oct 2020 11:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603883399;
-        bh=eCXz+icsPBbUt7e5/gqYfjD87B/R7/XDnyNtNoyBXrk=;
+        s=default; t=1603883579;
+        bh=RJ9ykVp5/VBMVYU2UaC4tSf7S71M609QGWBo1zd6fvU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rSkA1LMThGYa8UMoSh4pNOLlYk0Lxh/6LDfGk3lRhOIkmwmSNIL5gi4KdTIE8Tsxu
-         qd8mkHa8sLSEDYsQV8mEhfTUE/HscCn3fQbHDAv2vipDt0prchwp0fFl1i7QNwuZ5Y
-         aIHs1RviptzndqpoN78OxdW+Os4KYEQl9gh6FnDI=
-Date:   Wed, 28 Oct 2020 13:09:45 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        b=fJtEWKRDcVR3PZzvaXM6+dpyvhhGPlwT5TeHV8luPiDQWAA3aI6KJ21c1c4U4wSRu
+         NjJNY5iYrVHN0iOpdRtyRyvQtkpDyovYKl4TVqWJmC/9be1nLEmgZ0mp7PpDpO3xe5
+         1WFpwyaAZ7KgaLhktVRT9qtImxzQIEEcLs92iTQs=
+Date:   Wed, 28 Oct 2020 12:13:51 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Andy Duan <fugang.duan@nxp.com>
+Cc:     Sherry Sun <sherry.sun@nxp.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "vincent.whitchurch@axis.com" <vincent.whitchurch@axis.com>,
+        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-Message-ID: <20201028110945.GE1428094@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
- <20201026090526.GA1154158@kernel.org>
- <a0212b073b3b2f62c3dbf1bf398f03fa402997be.camel@intel.com>
- <20201027083816.GG1154158@kernel.org>
- <e5fc62b6-f644-4ed5-de5b-ffd8337861e4@redhat.com>
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [EXT] Re: [PATCH V5 0/2] Change vring space from nomal memory to
+ dma coherent memory
+Message-ID: <20201028111351.GA1964851@kroah.com>
+References: <20201028020305.10593-1-sherry.sun@nxp.com>
+ <20201028055836.GA244690@kroah.com>
+ <AM0PR04MB4947032368486CC9874C812692170@AM0PR04MB4947.eurprd04.prod.outlook.com>
+ <20201028070712.GA1649838@kroah.com>
+ <AM8PR04MB7315D583A9490E642ED13071FF170@AM8PR04MB7315.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5fc62b6-f644-4ed5-de5b-ffd8337861e4@redhat.com>
+In-Reply-To: <AM8PR04MB7315D583A9490E642ED13071FF170@AM8PR04MB7315.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 09:46:35AM +0100, David Hildenbrand wrote:
-> On 27.10.20 09:38, Mike Rapoport wrote:
-> > On Mon, Oct 26, 2020 at 06:05:30PM +0000, Edgecombe, Rick P wrote:
+On Wed, Oct 28, 2020 at 10:17:39AM +0000, Andy Duan wrote:
+> From: Greg KH <gregkh@linuxfoundation.org> Sent: Wednesday, October 28, 2020 3:07 PM
+> > On Wed, Oct 28, 2020 at 06:05:28AM +0000, Sherry Sun wrote:
+> > > Hi Greg,
+> > >
+> > > > Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory to
+> > > > dma coherent memory
+> > > >
+> > > > On Wed, Oct 28, 2020 at 10:03:03AM +0800, Sherry Sun wrote:
+> > > > > Changes in V5:
+> > > > > 1. Reorganize the vop_mmap function code in patch 1, which is done
+> > > > > by
+> > > > Christoph.
+> > > > > 2. Completely remove the unnecessary code related to reassign the
+> > > > > used ring for card in patch 2.
+> > > > >
+> > > > > The original vop driver only supports dma coherent device, as it
+> > > > > allocates and maps vring by _get_free_pages and dma_map_single,
+> > > > > but not use dma_sync_single_for_cpu/device to sync the updates of
+> > > > > device_page/vring between EP and RC, which will cause memory
+> > > > > synchronization problem for device don't support hardware dma coherent.
+> > > > >
+> > > > > And allocate vrings use dma_alloc_coherent is a common way in
+> > > > > kernel, as the memory interacted between two systems should use
+> > > > > consistent memory to avoid caching effects. So here add
+> > > > > noncoherent platform
+> > > > support for vop driver.
+> > > > > Also add some related dma changes to make sure noncoherent
+> > > > > platform works well.
+> > > > >
+> > > > > Sherry Sun (2):
+> > > > >   misc: vop: change the way of allocating vrings and device page
+> > > > >   misc: vop: do not allocate and reassign the used ring
+> > > > >
+> > > > >  drivers/misc/mic/bus/vop_bus.h     |   2 +
+> > > > >  drivers/misc/mic/host/mic_boot.c   |   9 ++
+> > > > >  drivers/misc/mic/host/mic_main.c   |  43 ++------
+> > > > >  drivers/misc/mic/vop/vop_debugfs.c |   4 -
+> > > > >  drivers/misc/mic/vop/vop_main.c    |  70 +-----------
+> > > > >  drivers/misc/mic/vop/vop_vringh.c  | 166 ++++++++++-------------------
+> > > > >  include/uapi/linux/mic_common.h    |   9 +-
+> > > > >  7 files changed, 85 insertions(+), 218 deletions(-)
+> > > >
+> > > > Have you all seen:
+> > > >
+> > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%25
+> > > >
+> > 2Flore.kernel.org%2Fr%2F8c1443136563de34699d2c084df478181c205db4.16
+> > > >
+> > 03854416.git.sudeep.dutt%40intel.com&amp;data=04%7C01%7Csherry.sun%
+> > > >
+> > 40nxp.com%7Cc19c987667434969847e08d87b0685e8%7C686ea1d3bc2b4c6f
+> > > >
+> > a92cd99c5c301635%7C0%7C0%7C637394615238940323%7CUnknown%7CTW
+> > > >
+> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> > > >
+> > VCI6Mn0%3D%7C1000&amp;sdata=Zq%2FtHWTq%2BuIVBYXFGoeBmq0JJzYd
+> > > > 9zDyv4NVN4TpC%2FU%3D&amp;reserved=0
+> > > >
+> > > > Looks like this code is asking to just be deleted, is that ok with you?
+> > >
+> > > Yes, I saw that patch. I'm ok with it.
 > > 
-> > > Beyond whatever you are seeing, for the latter case of new things
-> > > getting introduced to an interface with hidden dependencies... Another
-> > > edge case could be a new caller to set_memory_np() could result in
-> > > large NP pages. None of the callers today should cause this AFAICT, but
-> > > it's not great to rely on the callers to know these details.
-
-> > A caller of set_memory_*() or set_direct_map_*() should expect a failure
-> > and be ready for that. So adding a WARN to safe_copy_page() is the first
-> > step in that direction :)
+> > Great, can you please provide a "Reviewed-by:" or "Acked-by:" for it?
 > > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> I am probably missing something important, but why are we saving/restoring
-> the content of pages that were explicitly removed from the identity mapping
-> such that nobody will access them?
+> Sherry took much effort on the features support on i.MX series like i.MX8QM/i.MX8QXP/i.MX8MM.
+> 
+> Now it is a pity to delete the vop code.
+> 
+> One question, 
+> can we resubmit vop code by clean up, now only for i.MX series as Dutt's suggestion ?
+> Or we have to drop the design and switch to select other solutions ?
 
-Actually, we should not be saving/restoring free pages during
-hibernation as there are several calls to mark_free_pages() that should
-exclude the free pages from the snapshot. I've tried to find why the fix
-that maps/unmaps a page to save it was required at the first place, but
-I could not find bug reports.
+If this whole subsystem is being deleted because it is not used and
+never shipped, yes, please use a different solution.
 
-The closest I've got is an email from Rafael that asked to update
-"hibernate: handle DEBUG_PAGEALLOC" patch:
+I don't understand why you were trying to piggy-back on this codebase if
+the hardware was totally different, for some reason I thought this was
+the same hardware.  What exactly is this?
 
-https://lore.kernel.org/linux-pm/200802200133.44098.rjw@sisk.pl/
+thanks,
 
-Could it be that safe_copy_page() tries to workaround a non-existent
-problem?
-
--- 
-Sincerely yours,
-Mike.
+greg k-h
