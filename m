@@ -2,75 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5221129E247
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF9F29E1EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387858AbgJ2CMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgJ1Vg1 (ORCPT
+        id S1727929AbgJ1Vsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:48:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60748 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726984AbgJ1Vhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:36:27 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940CBC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:36:27 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 471CE4C4; Wed, 28 Oct 2020 09:38:21 +0100 (CET)
-Date:   Wed, 28 Oct 2020 09:38:19 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Wed, 28 Oct 2020 17:37:48 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S9Wgu7144314;
+        Wed, 28 Oct 2020 05:35:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : references : in-reply-to : mime-version : message-id : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=psd+OHOYF3+Ht8DKGiCudqcblb2fJY5VAJYYFPUhkHQ=;
+ b=mFpdcx3ziyU5ny6V/yGm0RZYgbXV2bPVwYzmmCSyRN/aWTIQhmWNg8C7A/uDQnPbTbnb
+ E3KMuZpkpkLw4nvXIy3jaMG0xQe2iswZi0BtZB4FcZ5ThemBNQWsSvFuCh2qPtpp4Sxh
+ 5FGsoUvi8NNbFOqZXrEKXgIUcHz0tE/LpRYXjYSXbKw0h3b2TI0WFl/sFg8W4J4VAb8d
+ I9GhWGVt0rntE+NJfSqhxKDzXdBRlBS7z3xEhgNgYY5AwjnnSkqnB2+khi6V3azYZk78
+ sQOCDDwCqC5rbpA0MdQ50ddk+p8yb2G0dbJVU7kA/dzmnzQvDYD++TX00LY3ZPxM1lSE 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34endjnpv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 05:35:10 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09S9XDcj149347;
+        Wed, 28 Oct 2020 05:35:09 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34endjnptv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 05:35:09 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09S9XCKb022906;
+        Wed, 28 Oct 2020 09:35:07 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 34cbhh4a87-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 09:35:07 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09S9Z5qG22151652
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Oct 2020 09:35:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1F225AE051;
+        Wed, 28 Oct 2020 09:35:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AD520AE055;
+        Wed, 28 Oct 2020 09:35:04 +0000 (GMT)
+Received: from localhost (unknown [9.102.2.144])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Oct 2020 09:35:04 +0000 (GMT)
+Date:   Wed, 28 Oct 2020 15:05:03 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 8/9] perf mem: Return NULL for event 'ldst' on PowerPC
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Al Grant <Al.Grant@arm.com>,
+        =?iso-8859-1?b?QW5kcuk=?= Przywara <andre.przywara@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Wei Li <liwei391@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
         Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] x86/boot/compressed/64: Check SEV encryption in
- 64-bit boot-path
-Message-ID: <20201028083819.GC18723@8bytes.org>
-References: <20201021123938.3696-1-joro@8bytes.org>
- <20201021123938.3696-4-joro@8bytes.org>
- <20201027110812.GC15580@zn.tnic>
+        Kemeng Shi <shikemeng@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>
+References: <20201028063813.8562-1-leo.yan@linaro.org>
+        <20201028063813.8562-9-leo.yan@linaro.org>
+In-Reply-To: <20201028063813.8562-9-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027110812.GC15580@zn.tnic>
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1603877629.hjro28ddup.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-28_04:2020-10-26,2020-10-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 priorityscore=1501 malwarescore=0 adultscore=0 suspectscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 12:08:12PM +0100, Borislav Petkov wrote:
-> On Wed, Oct 21, 2020 at 02:39:36PM +0200, Joerg Roedel wrote:
-> > diff --git a/arch/x86/kernel/sev_verify_cbit.S b/arch/x86/kernel/sev_verify_cbit.S
-> > new file mode 100644
-> > index 000000000000..5075458ecad0
-> > --- /dev/null
-> > +++ b/arch/x86/kernel/sev_verify_cbit.S
-> 
-> Why a separate file? You're using it just like verify_cpu.S and this is
-> kinda verifying CPU so you could simply add the functionality there...
+[+ Maddy]
 
-verify_cpu.S is also used on 32bit and this function is 64bit code. It
-can be made working with some #ifdef'fery but I think it is cleaner to
-just keep it in a separate file, also given that sev_verify_cbit() is
-not needed at every place verify_cpu() is called.
-
-> Yeah, can you please use the callee-clobbered registers in the order as
-> they're used by the ABI, see arch/x86/entry/calling.h.
-> 
-> Because I'm looking at this and wondering are rsi, rdx and rcx somehow
-> live here and you're avoiding them...
-
-Makes sense, will update the function.
-
-Regards,
-
-	Joerg
-
+Leo Yan wrote:
+> If user specifies event type "ldst", PowerPC's perf_mem_events__name()
+> will wrongly return the store event name "cpu/mem-stores/".
+>=20
+> This patch changes to return NULL for the event "ldst" on PowerPC.
+>=20
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/arch/powerpc/util/mem-events.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/tools/perf/arch/powerpc/util/mem-events.c b/tools/perf/arch/=
+powerpc/util/mem-events.c
+> index 07fb5e049488..90c5a0760685 100644
+> --- a/tools/perf/arch/powerpc/util/mem-events.c
+> +++ b/tools/perf/arch/powerpc/util/mem-events.c
+> @@ -7,6 +7,8 @@ char *perf_mem_events__name(int i)
+>  {
+>  	if (i =3D=3D PERF_MEM_EVENTS__LOAD)
+>  		return (char *) "cpu/mem-loads/";
+> -
+> -	return (char *) "cpu/mem-stores/";
+> +	else if (i =3D=3D PERF_MEM_EVENTS__STORE)
+> +		return (char *) "cpu/mem-stores/";
+> +	else
+> +		return NULL;
+>  }
+> --=20
+> 2.17.1
+>=20
+>=20
