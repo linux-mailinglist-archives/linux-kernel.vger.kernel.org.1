@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E1F29DABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2011129DA80
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390477AbgJ1X3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
+        id S2390224AbgJ1XXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727143AbgJ1X26 (ORCPT
+        with ESMTP id S2388185AbgJ1XXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:28:58 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B433C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:28:57 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t22so388888plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:28:57 -0700 (PDT)
+        Wed, 28 Oct 2020 19:23:51 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36116C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:23:51 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id c72so1349826oig.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=w3jvPkaI6Fvufscz5TOGN3cMyWxi/xK+/XekPoieKuM=;
-        b=nbHmMt5Ofz7dpI4oVG8er172WLWhYn3iy87HwpWDGZroHblR40SYYb12GE6tOGhAYL
-         VUsDndG8Qeikh/AigBMf6S9lz43v38jUqnkrO4GROlXKjIVbQ/J5FzQedEKVUq27kRjB
-         uMY1Ne8mSFyap/KOnSR8/cYkvXw4YIZznl/wRfierXV+0B7r97oT9Jws8fK32ljjJZup
-         a9l+E0uarqBeTPRnqC6H9/ncEibZqRZyYaA2j1JBVzdSeV/D+xTdxMd1AnyTJCZ+w1c5
-         orxLgmLdaoKE6ONBlyyjsiCHFV4ZKpRl/zFxb6i4MA5pnulZNJafWq81G/qKne6tXBhn
-         ZkLQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRIVhEzHo1XPH6PloaXFLB5fbBAOJPEuMdhJUY10d78=;
+        b=iYOIaz1lxvCXYXcNu+M4bI10tLNyS4M9A6CZD5JmtScTgP2CA5ampy0XyQktbCzrM4
+         ceakwVehkdY/LSqm0tglgrQrFLMxrSzd5TaJyZKvXoxWuCkMqFjxHRfXCvUmBxOEeBC4
+         57vXFD6qCgSo0XOh4N70icprcdVJJu/U6FPp6uXalYDeubBNbKCFyhWyXlWYOhTrXmN9
+         111vfz9NNBLBF7Gvxfc/9K/YkdW9/DtxWCkRM4yC8iaExAzHBgoBCqSQKPVxk1WH76am
+         qq8qlPNy71RraDWoum8l5+HopRZsSa/Bw0h5Sj+YvUecZ8GJsT/tllUFSCBCz7Jp1CjQ
+         mmCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=w3jvPkaI6Fvufscz5TOGN3cMyWxi/xK+/XekPoieKuM=;
-        b=e7jEkxqvp/at1axsGXSwjQMLaQXhkVwN/iS0hEPTyL1dvSc8Cs8iQ0O3KtUUqS2jFS
-         W3NYFkg7yH0OL/snrt9/xSwNzEYrk9Cer3mTdwZkVpMcfq/O2oBaIElyE1B7B4I3N2e/
-         T+FUgF52ROhgRSeVqM4ealeymmLDwGr1AIcoEl+07GyNJW7pCw8Wla8BMeGXycLBrNMl
-         f6iXjjyPptfgjBuj6wXCNDcoo/aTzzNjkC+JTTy/NjDbKWhZnm6sNX8H89L/HvEIlMpX
-         ErxP/PI/h0NMAQs+n+qwgYtHxnH8YEFCaQHL5fKZ4UDqqwJsjL/WqdXo97sMecuPOcLc
-         REcA==
-X-Gm-Message-State: AOAM531GHxYyQl93aTDaRT0bBuxMqKvKTzH9hYy98ufNUDihpUqELY/+
-        QJSLu6iEfvJ/kQnRr+MREEraSHYhdd+LH3nA
-X-Google-Smtp-Source: ABdhPJweHXefCoW8ZQA9mpLM4Yu8KeZfkGcFKKE2c8zmiq39SmIfmF+GSWMPp9wmAlimk0jqQYHJnQ==
-X-Received: by 2002:a17:902:16b:b029:d6:7a92:451a with SMTP id 98-20020a170902016bb02900d67a92451amr32383plb.85.1603867149280;
-        Tue, 27 Oct 2020 23:39:09 -0700 (PDT)
-Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id i123sm4324281pfc.13.2020.10.27.23.39.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Oct 2020 23:39:08 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ian Rogers <irogers@google.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        =?UTF-8?q?Andr=C3=A9=20Przywara?= <andre.przywara@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 9/9] perf mem: Document event type 'ldst'
-Date:   Wed, 28 Oct 2020 14:38:13 +0800
-Message-Id: <20201028063813.8562-10-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201028063813.8562-1-leo.yan@linaro.org>
-References: <20201028063813.8562-1-leo.yan@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRIVhEzHo1XPH6PloaXFLB5fbBAOJPEuMdhJUY10d78=;
+        b=el+0f9DsVNouy63Jn0rNG8D8HDt+nIwyYPkn4+zJ9pcIxA2rvx26XXJ+azipWZVpVT
+         LMc19cOBBa2bnYfvOjk1pUPi54GAg15aRIonyDw5pQnGuiPJljGaD9RV5pImIOaM0JtK
+         d1mW9sB5F5m5KfZ5OB0+uShPXfGC6uF1iW7uyvzD/S99a8frPVtHzV1lyvWPg8YV7EaJ
+         8hCiaKJgnsQW6spatmGzf3ZKfR5t18/+EiTRkAxyLDVKiueTDWHe2kiHO6XnEazYn80t
+         Ig37JjXv1AhXab0KIs94g/GkHhXnHhZkWHOjzZmeOr42Ek54loF3UTDWSWa+p9Ge/yv6
+         96cA==
+X-Gm-Message-State: AOAM532OoYCcIwZOpDGgiokcHcRCWDoLvcAwi8PfdsTnGcNp12hpTd4f
+        p1hMKhXK5V8ItgxVVicsoAFCuGQYwIoS2Q==
+X-Google-Smtp-Source: ABdhPJxsjXO4BzH/gTE1g7vUyycm0va7CGlKvoKvhDoyNRMPGXbtCie5OuI0yJ2/DOj01voeRbrUHg==
+X-Received: by 2002:a17:90a:f3d4:: with SMTP id ha20mr5577064pjb.28.1603867467388;
+        Tue, 27 Oct 2020 23:44:27 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id t10sm3948706pjr.37.2020.10.27.23.44.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 23:44:26 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     robdclark@gmail.com, Qiang Yu <yuq825@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        lima@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 Resend 1/2] drm/lima: Unconditionally call dev_pm_opp_of_remove_table()
+Date:   Wed, 28 Oct 2020 12:14:21 +0530
+Message-Id: <c995335d16d8b4b4ff47b1273869c33e14782b32.1603867405.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The event type 'ldst' is added for recording both load and store memory
-operations, this patch documents for the new event type.
+dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
+find the OPP table with error -ENODEV (i.e. OPP table not present for
+the device). And we can call dev_pm_opp_of_remove_table()
+unconditionally here.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Reviewed-by: Qiang Yu <yuq825@gmail.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+
 ---
- tools/perf/Documentation/perf-mem.txt | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+V2: Applied Reviewed by tag.
+---
+ drivers/gpu/drm/lima/lima_devfreq.c | 6 +-----
+ drivers/gpu/drm/lima/lima_devfreq.h | 1 -
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
-index 199ea0f0a6c0..c50ef37dba72 100644
---- a/tools/perf/Documentation/perf-mem.txt
-+++ b/tools/perf/Documentation/perf-mem.txt
-@@ -38,7 +38,11 @@ OPTIONS
+diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
+index bbe02817721b..cd290d866a04 100644
+--- a/drivers/gpu/drm/lima/lima_devfreq.c
++++ b/drivers/gpu/drm/lima/lima_devfreq.c
+@@ -105,10 +105,7 @@ void lima_devfreq_fini(struct lima_device *ldev)
+ 		devfreq->devfreq = NULL;
+ 	}
  
- -t::
- --type=<type>::
--	Select the memory operation type: load or store (default: load,store)
-+	Select the memory operation type: load, store, ldst (default: load,store).
-+	The type 'ldst' means the single event can record both for load and store
-+	operations; Intel and PowerPC support the types 'load' and 'store' but
-+	'ldst' cannot be used; on Arm64, it uses Arm SPE as memory events and
-+	user needs to specify one of these three types.
+-	if (devfreq->opp_of_table_added) {
+-		dev_pm_opp_of_remove_table(ldev->dev);
+-		devfreq->opp_of_table_added = false;
+-	}
++	dev_pm_opp_of_remove_table(ldev->dev);
  
- -D::
- --dump-raw-samples::
+ 	if (devfreq->regulators_opp_table) {
+ 		dev_pm_opp_put_regulators(devfreq->regulators_opp_table);
+@@ -162,7 +159,6 @@ int lima_devfreq_init(struct lima_device *ldev)
+ 	ret = dev_pm_opp_of_add_table(dev);
+ 	if (ret)
+ 		goto err_fini;
+-	ldevfreq->opp_of_table_added = true;
+ 
+ 	lima_devfreq_reset(ldevfreq);
+ 
+diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
+index 5eed2975a375..2d9b3008ce77 100644
+--- a/drivers/gpu/drm/lima/lima_devfreq.h
++++ b/drivers/gpu/drm/lima/lima_devfreq.h
+@@ -18,7 +18,6 @@ struct lima_devfreq {
+ 	struct opp_table *clkname_opp_table;
+ 	struct opp_table *regulators_opp_table;
+ 	struct thermal_cooling_device *cooling;
+-	bool opp_of_table_added;
+ 
+ 	ktime_t busy_time;
+ 	ktime_t idle_time;
 -- 
-2.17.1
+2.25.0.rc1.19.g042ed3e048af
 
