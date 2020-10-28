@@ -2,66 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE82729D499
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9E129D43C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbgJ1Vx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:53:28 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:36732 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJ1VxX (ORCPT
+        id S1728062AbgJ1Vuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:50:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49776 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728049AbgJ1Vud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:53:23 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4CLgvx6Dwnz1qs0h;
-        Wed, 28 Oct 2020 08:59:41 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4CLgvx4VDmz1qy5f;
-        Wed, 28 Oct 2020 08:59:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id F6Ke24xfduVy; Wed, 28 Oct 2020 08:59:40 +0100 (CET)
-X-Auth-Info: g6YLjoFgv0DoaMRKZby0YxkPV7g+CL2IBGQ4YndSz+j/jsZQYZy8k8hrvsK+kosi
-Received: from igel.home (ppp-46-244-182-148.dynamic.mnet-online.de [46.244.182.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 28 Oct 2020 08:59:40 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 65E8C2C082A; Wed, 28 Oct 2020 08:59:40 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] powerpc/uaccess: Switch __put_user_size_allowed()
- to __put_user_asm_goto()
-References: <94ba5a5138f99522e1562dbcdb38d31aa790dc89.1599216721.git.christophe.leroy__44535.5968013004$1599217383$gmane$org@csgroup.eu>
-        <87mu079ron.fsf@igel.home> <87imav9r64.fsf@igel.home>
-        <87pn53vsep.fsf@mpe.ellerman.id.au>
-X-Yow:  YOW!!  I'm in a very clever and adorable INSANE ASYLUM!!
-Date:   Wed, 28 Oct 2020 08:59:40 +0100
-In-Reply-To: <87pn53vsep.fsf@mpe.ellerman.id.au> (Michael Ellerman's message
-        of "Wed, 28 Oct 2020 16:19:42 +1100")
-Message-ID: <87blgm3hn7.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Wed, 28 Oct 2020 17:50:33 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S81Je7034609;
+        Wed, 28 Oct 2020 04:11:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Xjcl4QL6d3IFw54Qeh5O0ngW2PwMHNTczq+fLXfbPrM=;
+ b=XKG7ly6tRPOq/Zl7A1Gb6/t6fRybHwfDsSH9+lyHNJ9tmfq73Y3NdeHu1RvbDZ4s0G9H
+ gbXNGtgISqJVl1pncZuteh+Q6HwhnpOAShw0AMXOObSFeVc73Hi/Fr8cwJOaXgh+lzCI
+ 5HUka4GVKozziDWUW8mQ75e86W/US33l2Of4iUw4qbXNOHShFixcKJKUCgZuBzyYat/A
+ qShbKidpcHum2xDenMvHX/CAs2oX7RK0TJg9iAEL2Hf42zWHR6pu6SJ2d6dPgfihE52P
+ JRo2LGd15yuE1xr2BmkBDt03TITGFDuuapR6hsv59Fn0fdDjT10ufOKUWvrmxU1h6xSK 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34ejc2d5tu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 04:11:29 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09S81jsQ037896;
+        Wed, 28 Oct 2020 04:11:28 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34ejc2d5rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 04:11:28 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09S877n3001765;
+        Wed, 28 Oct 2020 08:11:26 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 34cbw7v7sj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 08:11:26 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09S8BNQt27918754
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Oct 2020 08:11:24 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D45464C040;
+        Wed, 28 Oct 2020 08:11:23 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1FBE54C046;
+        Wed, 28 Oct 2020 08:11:23 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.18.81])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Oct 2020 08:11:23 +0000 (GMT)
+Date:   Wed, 28 Oct 2020 09:11:21 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v11 06/14] s390/vfio-ap: introduce shadow APCB
+Message-ID: <20201028091121.0db418cf.pasic@linux.ibm.com>
+In-Reply-To: <20201022171209.19494-7-akrowiak@linux.ibm.com>
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+        <20201022171209.19494-7-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-28_01:2020-10-26,2020-10-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ clxscore=1015 adultscore=0 suspectscore=0 bulkscore=0 phishscore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 28 2020, Michael Ellerman wrote:
+On Thu, 22 Oct 2020 13:12:01 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> What config and compiler are you using?
+> The APCB is a field within the CRYCB that provides the AP configuration
+> to a KVM guest. Let's introduce a shadow copy of the KVM guest's APCB and
+> maintain it for the lifespan of the guest.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_ops.c     | 24 +++++++++++++++++++-----
+>  drivers/s390/crypto/vfio_ap_private.h |  2 ++
+>  2 files changed, 21 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 9e9fad560859..9791761aa7fd 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -320,6 +320,19 @@ static void vfio_ap_matrix_init(struct ap_config_info *info,
+>  	matrix->adm_max = info->apxa ? info->Nd : 15;
+>  }
+>  
+> +static bool vfio_ap_mdev_has_crycb(struct ap_matrix_mdev *matrix_mdev)
+> +{
+> +	return (matrix_mdev->kvm && matrix_mdev->kvm->arch.crypto.crycbd);
+> +}
+> +
+> +static void vfio_ap_mdev_commit_shadow_apcb(struct ap_matrix_mdev *matrix_mdev)
+> +{
+> +	kvm_arch_crypto_set_masks(matrix_mdev->kvm,
+> +				  matrix_mdev->shadow_apcb.apm,
+> +				  matrix_mdev->shadow_apcb.aqm,
+> +				  matrix_mdev->shadow_apcb.adm);
+> +}
+> +
+>  static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
+>  {
+>  	struct ap_matrix_mdev *matrix_mdev;
+> @@ -335,6 +348,7 @@ static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
+>  
+>  	matrix_mdev->mdev = mdev;
+>  	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
+> +	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->shadow_apcb);
+>  	hash_init(matrix_mdev->qtable);
+>  	mdev_set_drvdata(mdev, matrix_mdev);
+>  	matrix_mdev->pqap_hook.hook = handle_pqap;
+> @@ -1213,13 +1227,12 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>  	if (ret)
+>  		return NOTIFY_DONE;
+>  
+> -	/* If there is no CRYCB pointer, then we can't copy the masks */
+> -	if (!matrix_mdev->kvm->arch.crypto.crycbd)
+> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
+>  		return NOTIFY_DONE;
+>  
+> -	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
+> -				  matrix_mdev->matrix.aqm,
+> -				  matrix_mdev->matrix.adm);
+> +	memcpy(&matrix_mdev->shadow_apcb, &matrix_mdev->matrix,
+> +	       sizeof(matrix_mdev->shadow_apcb));
+> +	vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+>  
+>  	return NOTIFY_OK;
+>  }
+> @@ -1329,6 +1342,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+>  		kvm_put_kvm(matrix_mdev->kvm);
+>  		matrix_mdev->kvm = NULL;
+>  	}
+> +
 
-gcc 4.9.
+Unrelated change.
 
-Andreas.
+Otherwise patch looks OK.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+
+>  	mutex_unlock(&matrix_dev->lock);
+>  
+>  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
+> index c1d8b5507610..fc8634cee485 100644
+> --- a/drivers/s390/crypto/vfio_ap_private.h
+> +++ b/drivers/s390/crypto/vfio_ap_private.h
+> @@ -75,6 +75,7 @@ struct ap_matrix {
+>   * @list:	allows the ap_matrix_mdev struct to be added to a list
+>   * @matrix:	the adapters, usage domains and control domains assigned to the
+>   *		mediated matrix device.
+> + * @shadow_apcb:    the shadow copy of the APCB field of the KVM guest's CRYCB
+>   * @group_notifier: notifier block used for specifying callback function for
+>   *		    handling the VFIO_GROUP_NOTIFY_SET_KVM event
+>   * @kvm:	the struct holding guest's state
+> @@ -82,6 +83,7 @@ struct ap_matrix {
+>  struct ap_matrix_mdev {
+>  	struct list_head node;
+>  	struct ap_matrix matrix;
+> +	struct ap_matrix shadow_apcb;
+>  	struct notifier_block group_notifier;
+>  	struct notifier_block iommu_notifier;
+>  	struct kvm *kvm;
+
