@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D78C29E1F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC8029E25D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbgJ2CEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:04:49 -0400
-Received: from mail-eopbgr70047.outbound.protection.outlook.com ([40.107.7.47]:53806
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727122AbgJ1VjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:39:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MAdrpXFDrigqo834Y5AOs2DS5Tg+kYn+jYI2FanJAgKoNovzt9Akdx8O0EWQ0uXWbI7FEie6NsQYmlqEN91LN4kdF7UcGKx9XpQ0GPO+0wNlyIspaA4lp5KhGmcgWjtXoI/CetM/BHI61MBtX3MyIpdxEuPUzw+Kj1t+Q1IWug3wZJwuY/gErTzkkpEqv225itI3f3i7urX7VomUYrwJInDSefUPc7bSEQU7wqrqZxU/oHTpM1osy8+SxLeeFhAmq390wWOtXQ+gRuAssZjd8CoEquKiZC1Ilg2KtYAhyCnh14tW1hGdeFb6vhzAja9b80siVHlMrRGexlanUgQEBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AM28SGWvT0R7/4p29UhuNgrX3RybQcI24etQ5jSDfV4=;
- b=Mxbxqh8XVQoV29AFtCKtGZiwJEnKdxeiCBM4SJjEIWkd0saBQaZq5dUZRhtK9rKF58/6egZFDm9wKdaMgAIIAOHpicr3vNLrej0g6ISu/aIrPMDwWHYOIIfQitN3ahZlUlmTad1qxXuXgumrAV3IibaorjYPV9armHOYj0UmG7ViptK4jJpY+ig3LG1zvWZCefmyaGVXoutIil7NSDMD395lIVWcZR33mQKT36Zztabx/hXF+nbbrSJqD6feDhQoNnUrZTJA2KnP55j0GITptFnPhO4a7C2rKEeGyiMHjAoMkoKcLu8y2UEUjFCSBVWowm1xvGGJljwSapyScT3V2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AM28SGWvT0R7/4p29UhuNgrX3RybQcI24etQ5jSDfV4=;
- b=g+Hu04zpjhOuNLBCQVk9E5EAslswMJI6gyws20mAfDtldJb9j9da+XCKGgEzO/BcTCuoyhH9Gg09aogXv82XKNP3VGj9gTc8Q69cSbwclkb2N38P7Lcgax0uuPBCJvIFmRzyf4HgM5120xqQl2wXujDqRs7KDZ9hWkh8eLclHAA=
-Received: from AM0PR04MB4947.eurprd04.prod.outlook.com (2603:10a6:208:c8::16)
- by AM0PR04MB5907.eurprd04.prod.outlook.com (2603:10a6:208:12f::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 28 Oct
- 2020 06:05:28 +0000
-Received: from AM0PR04MB4947.eurprd04.prod.outlook.com
- ([fe80::2a:11b5:6807:7518]) by AM0PR04MB4947.eurprd04.prod.outlook.com
- ([fe80::2a:11b5:6807:7518%5]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
- 06:05:28 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "hch@infradead.org" <hch@infradead.org>,
-        "vincent.whitchurch@axis.com" <vincent.whitchurch@axis.com>,
-        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
-        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>, Andy Duan <fugang.duan@nxp.com>
-Subject: RE: [PATCH V5 0/2] Change vring space from nomal memory to dma
- coherent memory
-Thread-Topic: [PATCH V5 0/2] Change vring space from nomal memory to dma
- coherent memory
-Thread-Index: AQHWrM6hrUxx3H5v+0a5i9aKIfcorqmshSIAgAABZvA=
-Date:   Wed, 28 Oct 2020 06:05:28 +0000
-Message-ID: <AM0PR04MB4947032368486CC9874C812692170@AM0PR04MB4947.eurprd04.prod.outlook.com>
-References: <20201028020305.10593-1-sherry.sun@nxp.com>
- <20201028055836.GA244690@kroah.com>
-In-Reply-To: <20201028055836.GA244690@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4f74875b-f687-4b86-5c13-08d87b07780d
-x-ms-traffictypediagnostic: AM0PR04MB5907:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR04MB5907C1A30587F1926E91373A92170@AM0PR04MB5907.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: deW9XBB+yUJimmJMe4HYIB943FoLrgpCsp1WR7Q3MQYVv3Qh29Hbc10lA49WX3Dfld6Ff9JWDH9zM9HO8ZhCeZ54I7qwBuC3SNUl+Ax1CCafVzRoS4IJkZ8gbvEskuCavqvnwLZovZxgxxRskDS9z4Y9Q9hzY0onv0QHhE0aXd6EsdUqZxEaD0+9wa+hk3X3KwXznrIaH/6ryOXt1d/25zyZjIott+4pslvhAgdGUS9R85GqzuBsFXuBEVqQFN4I4aMraNArRmcam0eLzBHa61hga1vLFxjmP6ZZAGOmVw6344m4FKYN7d1VoghfBqb6UPISXlrqpoT5SvpovR6H2Qud8lG0jWU7Yx9gO4p5vUfkyckzByn/cgdvMrQT+q6agNatjEmVsZCoGw5ysGiFUQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4947.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(8676002)(6506007)(7416002)(186003)(83380400001)(6916009)(76116006)(66476007)(5660300002)(64756008)(66556008)(66446008)(52536014)(71200400001)(4326008)(86362001)(316002)(7696005)(2906002)(66946007)(33656002)(966005)(8936002)(54906003)(55016002)(9686003)(26005)(478600001)(44832011)(45080400002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ZrLf33yo3vRTVWnpUt3KZZ7m4DN3LKglOuXVzhfkcyh49N3ti2WkYLuGQ6AIRgyPPw3LrKZYMfqAU+CGYuWNmfvnEnJ3F51JNEheaUKQ9WZLmWu0mpuGmkNMX6yetk2pQw4BH+nredhgvhfDZvXnORVsN5L3klGXbSMlDvyNOOtXpUsel/AxWKEN2sYepEnLyRGnQQyEPhPJKTtK5+I23/T2R/WAxwy9Aom2hDYrBbn9ShcGOvvapv9DKCc6UYmp3k6gvfSDFInF5nLhZzoTSyRcZ4Sjh8C1Z/8Yzb2PMmWlcTiyjgQzS3MwTi215M/QzchoBTCAe8Ys1/yVFgbxr99XbhTUH7ql8K/RAWA3sOyQNIVY3ATtJKETDlNIdfG9/8Dje1WSMUndORkmczXuubD+mBOVEseTQgndLRPJTJRDZ9oXv8NxvLUO6ps1Pp7PLid07cUD8hvacbCtD5WFcQQAN4qGirv+35CtCOXbE2NahmwvoOC6k7f1w1Zty2yW5SoHZoNOiO27C/fZoinTKsIQhXoh4l+LyMu1W23nDMGuAj/vR+Wc+GIZgs9bs1AyBzaY0IeQo6S87Mg1JWsNE4qA2hKYh7SoacTR2VdDxxlhib3+cVPfPK091iiXwQonP3cR0UjBNPwWCROhJizK1w==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2404312AbgJ2CNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:13:34 -0400
+Received: from condef-04.nifty.com ([202.248.20.69]:18145 "EHLO
+        condef-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726788AbgJ1Vf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:35:59 -0400
+Received: from conssluserg-02.nifty.com ([10.126.8.81])by condef-04.nifty.com with ESMTP id 09S6rF5w005243;
+        Wed, 28 Oct 2020 15:53:15 +0900
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 09S6qjja010426;
+        Wed, 28 Oct 2020 15:52:45 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 09S6qjja010426
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1603867965;
+        bh=V942qKpMUO7DvF5BzcB686P1EgBaXdJ00WeWzVnIkbk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xbTxWkKxaQIELI8IMov70NFPoRNAm4udHDYLxo2tABPtAhjKvbL3yz+hlSl0jdK0D
+         0n79pK/KQtFIkMNR7v/1PnUgs8N0oiIqn8vawvVaJcrAnmVe84SRH5stV7kh6FIqO0
+         rokLmippBZ/H/ni5N64ATI6oRvNRe4gnsVINtCk3BfCa6RgIs/Yu++QuRfnY7jVbw+
+         SEoi6kmA+FDgm6eOqyzIWrZNVRtMaQrFSlvwMHXialYCV+foa5pni8937+FnwEulWV
+         GyQoCCkdK5aGp2/9KAWwqGS0BdnY6qBQ5PG0WBzwEnVLmmeEpaOmos1E7ugHr2PszX
+         OK9Vz1lhtirtQ==
+X-Nifty-SrcIP: [209.85.214.177]
+Received: by mail-pl1-f177.google.com with SMTP id t6so1488143plq.11;
+        Tue, 27 Oct 2020 23:52:45 -0700 (PDT)
+X-Gm-Message-State: AOAM531moL9IVjGEse7dJEfFjjCTrZ2GPMgZSVLlLxtZY1luA7Ne6JlC
+        NmbztWhYYHCKtofvuf5gTJVJeHwXkRTWd1OOk58=
+X-Google-Smtp-Source: ABdhPJziBkbf7PTF6i3dTgZuQKKfGo7UOR4koM70+tf8L+eWu1yOmAKVrXv3lXpqtatZziJBxN8HICEImjcaNUj7QmM=
+X-Received: by 2002:a17:902:be0c:b029:d2:8ceb:f39c with SMTP id
+ r12-20020a170902be0cb02900d28cebf39cmr5866527pls.71.1603867964784; Tue, 27
+ Oct 2020 23:52:44 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB4947.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f74875b-f687-4b86-5c13-08d87b07780d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 06:05:28.1204
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1Jgt98CL0m3DvIcMk+TwSz3ckvWu3Wk2jE0zE+00/OAZdcGBr6t9rHlk5JNX3AVcbhJweYqUHqY5VXbWWuIeQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5907
+References: <20201026193217.402412-1-svenjoac@gmx.de> <20201026193217.402412-2-svenjoac@gmx.de>
+In-Reply-To: <20201026193217.402412-2-svenjoac@gmx.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 28 Oct 2020 15:52:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARFVy_2y883jig2_QrwTyGe=Xmu91z8LWuZuCeruWXa6A@mail.gmail.com>
+Message-ID: <CAK7LNARFVy_2y883jig2_QrwTyGe=Xmu91z8LWuZuCeruWXa6A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] builddeb: Consolidate consecutive chmod calls into one
+To:     Sven Joachim <svenjoac@gmx.de>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Tue, Oct 27, 2020 at 4:32 AM Sven Joachim <svenjoac@gmx.de> wrote:
+>
+> No need to call chmod three times when it can do everything at once.
+>
+> Signed-off-by: Sven Joachim <svenjoac@gmx.de>
+> ---
+>  scripts/package/builddeb | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+> index 91a502bb97e8..81ec6414726c 100755
+> --- a/scripts/package/builddeb
+> +++ b/scripts/package/builddeb
+> @@ -42,11 +42,7 @@ create_package() {
+>         else
+>                 chown -R root:root "$pdir"
+>         fi
+> -       chmod -R go-w "$pdir"
+> -       # in case we are in a restrictive umask environment like 0077
+> -       chmod -R a+rX "$pdir"
+> -       # in case we build in a setuid/setgid directory
+> -       chmod -R ug-s "$pdir"
+> +       chmod -R go-w,a+rX,ug-s "$pdir"
 
-> Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory to dma
-> coherent memory
->=20
-> On Wed, Oct 28, 2020 at 10:03:03AM +0800, Sherry Sun wrote:
-> > Changes in V5:
-> > 1. Reorganize the vop_mmap function code in patch 1, which is done by
-> Christoph.
-> > 2. Completely remove the unnecessary code related to reassign the used
-> > ring for card in patch 2.
-> >
-> > The original vop driver only supports dma coherent device, as it
-> > allocates and maps vring by _get_free_pages and dma_map_single, but
-> > not use dma_sync_single_for_cpu/device to sync the updates of
-> > device_page/vring between EP and RC, which will cause memory
-> > synchronization problem for device don't support hardware dma coherent.
-> >
-> > And allocate vrings use dma_alloc_coherent is a common way in kernel,
-> > as the memory interacted between two systems should use consistent
-> > memory to avoid caching effects. So here add noncoherent platform
-> support for vop driver.
-> > Also add some related dma changes to make sure noncoherent platform
-> > works well.
-> >
-> > Sherry Sun (2):
-> >   misc: vop: change the way of allocating vrings and device page
-> >   misc: vop: do not allocate and reassign the used ring
-> >
-> >  drivers/misc/mic/bus/vop_bus.h     |   2 +
-> >  drivers/misc/mic/host/mic_boot.c   |   9 ++
-> >  drivers/misc/mic/host/mic_main.c   |  43 ++------
-> >  drivers/misc/mic/vop/vop_debugfs.c |   4 -
-> >  drivers/misc/mic/vop/vop_main.c    |  70 +-----------
-> >  drivers/misc/mic/vop/vop_vringh.c  | 166 ++++++++++-------------------
-> >  include/uapi/linux/mic_common.h    |   9 +-
-> >  7 files changed, 85 insertions(+), 218 deletions(-)
->=20
-> Have you all seen:
-> 	https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%
-> 2Flore.kernel.org%2Fr%2F8c1443136563de34699d2c084df478181c205db4.16
-> 03854416.git.sudeep.dutt%40intel.com&amp;data=3D04%7C01%7Csherry.sun%
-> 40nxp.com%7Cc19c987667434969847e08d87b0685e8%7C686ea1d3bc2b4c6f
-> a92cd99c5c301635%7C0%7C0%7C637394615238940323%7CUnknown%7CTW
-> FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
-> VCI6Mn0%3D%7C1000&amp;sdata=3DZq%2FtHWTq%2BuIVBYXFGoeBmq0JJzYd
-> 9zDyv4NVN4TpC%2FU%3D&amp;reserved=3D0
->=20
-> Looks like this code is asking to just be deleted, is that ok with you?
 
-Yes, I saw that patch. I'm ok with it.
+You added the comment in 1/2, then
+you are deleting it in this patch.
 
-Best regards
-Sherry
+Could you keep the comments for clarification?
 
->=20
-> thanks,
->=20
-> greg k-h
+
+# a+rX in case we are in a restrictive umask environment like 0077
+# ug-s in case we build in a setuid/setgid directory
+chmod -R go-w,a+rX,ug-s "$pdir"
+
+
+
+
+
+
+>         # Create the package
+>         dpkg-gencontrol -p$pname -P"$pdir"
+> --
+> 2.28.0
+>
+
+
+--
+Best Regards
+Masahiro Yamada
