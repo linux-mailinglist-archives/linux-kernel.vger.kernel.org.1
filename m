@@ -2,196 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE8729E052
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB9929DFB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729818AbgJ1WFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:05:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50714 "EHLO mail.kernel.org"
+        id S1730182AbgJ1WIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:08:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:38890 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729505AbgJ1WCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:23 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C166624802
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 18:24:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603909476;
-        bh=M1whgnZOJadzH3ZqD/41ILHdWSiXvpcDWZEAb4SE7+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZsVc/sMcFdoTr2EbAio4ExRQYe6ZkSHBFnZCxMP68LWN9WYrH+2VyT2tSKR2Ojf/A
-         9oe34hjYGRJXOQk6CJtOwIaR3LHZJJex29m5yEmePDcpnV/3bP1aoTGP84XxdCboTc
-         0cYjviCsnee5IKV6nD3qG7D6Emrx9hwprSG2tkXE=
-Received: by mail-oi1-f171.google.com with SMTP id j7so508103oie.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 11:24:36 -0700 (PDT)
-X-Gm-Message-State: AOAM533Cc5RQOiP1JJo6K93+CCQO6JRAbcz40WgyUJt0a9DKw8+CZrLq
-        SKA2vyJz04G6W2xkXfWCkDo7H+5Ob4OakGeCNQ==
-X-Google-Smtp-Source: ABdhPJyXpqjoGHD1yMAHx6mddJw4rJxGdzINyVXxqgHhTZozTbPMuEIK/CXamZ0Se8Ri+6CmN549wosnDEPFnTMsC9k=
-X-Received: by 2002:aca:5dc2:: with SMTP id r185mr221994oib.106.1603909475904;
- Wed, 28 Oct 2020 11:24:35 -0700 (PDT)
+        id S1729546AbgJ1WHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:07:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 204E21AC1;
+        Wed, 28 Oct 2020 11:29:50 -0700 (PDT)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5434A3F719;
+        Wed, 28 Oct 2020 11:29:49 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 18:29:46 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc:     Yun Hsiang <hsiang023167@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        peterz@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201028182946.6qfmt7q35ewrjjua@e107158-lin>
+References: <20201025073632.720393-1-hsiang023167@gmail.com>
+ <08b7cdda-291c-bdf1-b72d-0a3ef411fcf3@arm.com>
+ <20201026154538.GA807103@ubuntu>
+ <605c21f7-3c4d-5c24-6d23-9f2604e6757b@arm.com>
+ <20201027155813.GA818508@ubuntu>
+ <87v9eumzic.derkling@matbug.net>
+ <20201028113943.7jzxbytizrv7wsm3@e107158-lin>
+ <87sg9ymdmw.derkling@matbug.net>
 MIME-Version: 1.0
-References: <20201026170947.10567-1-srinivas.kandagatla@linaro.org>
- <20201026170947.10567-2-srinivas.kandagatla@linaro.org> <20201028150135.GA4009047@bogus>
- <31981724-b260-e94d-ebc6-ccea21763531@linaro.org>
-In-Reply-To: <31981724-b260-e94d-ebc6-ccea21763531@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 28 Oct 2020 13:24:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLUYCrqbgxJPc_CTH9MtQo=h4JBqcmpgwJgWncyLN2gtQ@mail.gmail.com>
-Message-ID: <CAL_JsqLUYCrqbgxJPc_CTH9MtQo=h4JBqcmpgwJgWncyLN2gtQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Add SM8250 sound card bindings
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        spapothi@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87sg9ymdmw.derkling@matbug.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:19 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 28/10/2020 15:01, Rob Herring wrote:
-> > On Mon, Oct 26, 2020 at 05:09:46PM +0000, Srinivas Kandagatla wrote:
-> >> This patch adds bindings required for SM8250 based soundcards
-> >> for example Qualcomm Robotics RB5 Development Kit which makes
-> >> use of ADSP and Internal LPASS codec.
+On 10/28/20 19:03, Patrick Bellasi wrote:
+> 
+> On Wed, Oct 28, 2020 at 12:39:43 +0100, Qais Yousef <qais.yousef@arm.com> wrote...
+> 
+> > On 10/28/20 11:11, Patrick Bellasi wrote:
+> >> >>  
+> >> >>  		/*
+> >> >>  		 * RT by default have a 100% boost value that could be modified
+> >> >>  		 * at runtime.
+> >> >>  		 */
+> >> >>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> >> >> -			__uclamp_update_util_min_rt_default(p);
+> >> >> +			value = sysctl_sched_uclamp_util_min_rt_default;
+> >> 
+> >> By removing this usage of __uclamp_updadate_util_min_rt_default(p),
+> >> the only other usage remaining is the call from:
+> >>    uclamp_udpate_util_min_rt_default().
+> >> 
+> >> What about an additional cleanup by in-lining the only surviving usage?
 > >
-> > You didn't send to DT list...
->
-> Ah.. my bad.. I did not realize that I missed it!
->
+> > This is not a cleanup IMO. There is special rule about updating that are
+> > encoded and documented in this helper function. Namely:
 > >
-> >>
-> >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> >> ---
-> >>   .../bindings/sound/qcom,sm8250.yaml           | 161 ++++++++++++++++=
-++
-> >>   1 file changed, 161 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,sm82=
-50.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml =
-b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> >> new file mode 100644
-> >> index 000000000000..b8f97fe6e92c
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> >> @@ -0,0 +1,161 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/sound/qcom,sm8250.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Qualcomm Technologies Inc. SM8250 ASoC sound card driver
-> >> +
-> >> +maintainers:
-> >> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> >> +
-> >> +description:
-> >> +  This bindings describes SC8250 SoC based sound cards
-> >> +  which uses LPASS internal codec for audio.
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    oneOf:
-> >> +      - const: qcom,qrb5165-rb5
-> >> +      - items:
-> >> +        - const: qcom,sm8250
-> >
-> > This collides with the top level SoC compatible resulting in:
-> >
->
-> I did run dt_binding_check before sending out this patch, I might have
-> missed it somehow because the make dt_binding_check did not
-> end/termnitate in any errors, however if I had scrolled 15-20 Page ups
-> it does have this error log!
+> > 	* p->pi_lock must be held.
+> > 	* p->uclamp_req[].user_defined must be false.
+> 
+> Both these conditions are satisfied in the above call site:
+>  - user_defined is tested just 4 lines above
+>  - pi_lock is taken by the caller, i.e. __sched_setscheduler()
+> Thus, there is no need to test them two times.
+> Moreover, the same granted pi_lock you check in
+> __ucalmp_update_util_min_rt_default() is not checked at all in the rest
+> of __setscheduler_uclamp().
 
-make -sk
+Updating the default rt value is done from different contexts. Hence it is
+important to document the rules under which this update must happen and ensure
+the update happens through a common path.
 
-:)
+__setscheduler_uclamp() is not called from 2 different contexts.
 
-> > /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/=
-sound/qcom,sm8250.example.dt.yaml: sound: $nodename:0: '/' was expected
-> >       From schema: /builds/robherring/linux-dt-bindings/Documentation/d=
-evicetree/bindings/arm/qcom.yaml
-> > /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/=
-sound/qcom,sm8250.example.dt.yaml: sound: compatible: ['qcom,qrb5165-rb5'] =
-is not valid under any of the given schemas (Possible causes of the failure=
-):
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible: ['qcom,qrb5165-=
-rb5'] is too short
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,apq8016-sbc']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,apq8064-cm-qs600', 'qcom,apq8064-ifc6410']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,apq8074-dragonboard']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,apq8060-dragonboard', 'qcom,msm8660-surf']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,apq8084-mtp', 'qcom,apq8084-sbc']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,msm8960-cdp']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['fairphone,fp2', 'lge,hammerhead', 'sony,xperia-amami'=
-, 'sony,xperia-castor', 'sony,xperia-honami']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,msm8916=
--mtp/1' was expected
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['longcheer,l8150', 'samsung,a3u-eur', 'samsung,a5u-eur=
-']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,msm8996=
--mtp' was expected
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,ipq4019-ap-dk04.1-c3', 'qcom,ipq4019-ap-dk07.1-c=
-1', 'qcom,ipq4019-ap-dk07.1-c2', 'qcom,ipq4019-dk04.1-c1']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,ipq8064-ap148']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,ipq8074-hk01', 'qcom,ipq8074-hk10-c1', 'qcom,ipq=
-8074-hk10-c2']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,sc7180-idp']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['xiaomi,lavender']
-> >       /builds/robherring/linux-dt-bindings/Documentation/devicetree/bin=
-dings/sound/qcom,sm8250.example.dt.yaml: sound: compatible:0: 'qcom,qrb5165=
--rb5' is not one of ['qcom,ipq6018-cp01-c1']
-> >
-> >       From schema: /builds/robherring/linux-dt-bindings/Documentation/d=
-evicetree/bindings/arm/qcom.yaml
-> >
-> Documentation/devicetree/bindings/arm/qcom.yaml does have
-> qcom,qrb5165-rb5 entry under [qcom,sm8250]
->
-> Can you help me understand why is this not a valid compatible?
+> Thus, perhaps we should have just avoided to add
+> __uclamp_update_util_min_rt_default() since the beginning and:
+>  - have all its logic in the _only_ place where it's required
+>  - added the lockdep_assert_held() in __setscheduler_uclamp()
+> 
+> That's why I consider this a very good cleanup opportunity.
 
-Those compatibles are used at the top level for the SoC. You can't use
-the same compatible to mean 2 different things.
+I disagree. This is unnecessary churn.
 
-Rob
+Thanks
+
+--
+Qais Yousef
+
+> > I don't see open coding helps but rather makes the code harder to read and
+> > prone to introduce bugs if anything gets reshuffled in the future.
+> 
+> It's not open coding IMHO, it's just adding the code that's required.
