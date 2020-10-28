@@ -2,131 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA1129E159
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C86229E128
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgJ2CAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:00:37 -0400
-Received: from casper.infradead.org ([90.155.50.34]:44160 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728180AbgJ1Vvh (ORCPT
+        id S1728694AbgJ2Bx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:53:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728682AbgJ1V5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:51:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=tx4qoiH3PUHFWV8+AgjV+uBCV7VzasfH+zR58zkiQYE=; b=LjTEJ9FGCiPiQ0hyqiLxvpRpE3
-        NYR0z4PjM/+yVq1Yt9GT4Na+0EdrqSLUeWngyqBJdGrVa0bUJ2MYE5NB7DdBnQjRch+iX4hS9VI+a
-        g8p8psI8WT2W2/ZlZ4c+ZJoQQu83oiK34MEPU24cBBwudJDO+eXhY4388CD0ZvlybFRWRvJ9pxwfj
-        ga4KvJwnIGBRjknJvraRZVT6HCOKn4W0s5oq7WIyDV/5cVJWIyFwRsauncJc7j/Osyzki0B5Ph7tT
-        NJQdEgJX84sQf/7oBv5JmJ3hACJXoi6NZ/7fYyh5mo0hGq7m+P9yFLIkt7e5OQfqHTSycEkl3v+uE
-        bRCnI2cA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXjON-0000Pu-9l; Wed, 28 Oct 2020 11:13:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 119C6305DD1;
-        Wed, 28 Oct 2020 12:13:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id CEE6520B285A4; Wed, 28 Oct 2020 12:13:21 +0100 (CET)
-Message-ID: <20201028111221.405177398@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 28 Oct 2020 12:07:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, vincent.guittot@linaro.org, peterz@infradead.org
-Subject: [PATCH v3 3/6] irq_work: Optimize irq_work_single()
-References: <20201028110707.971887448@infradead.org>
+        Wed, 28 Oct 2020 17:57:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603922242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7H6fn0sflmDKqkVqjVyUYl4il+uaeJMTU2fENiZAfKY=;
+        b=IlxD5ZvqfCZoDxG9JOCWsutMIdqX+kmawcmefVRWlopzX12/hJ78op/prNT3vZY5pIyX+5
+        tky7C/SbEdEBuUy3MbTcdqdV7+voJK3eetmSEPHfvAAbpRlPr2dJm9JXJNKUVL6eprbkdb
+        DnrzHXDpTOVCc/qk0sEQcvU10y8QHcc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-38TkBNg8PLmcPbR1FBSbNQ-1; Wed, 28 Oct 2020 07:54:44 -0400
+X-MC-Unique: 38TkBNg8PLmcPbR1FBSbNQ-1
+Received: by mail-ed1-f69.google.com with SMTP id m1so1994315edr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 04:54:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7H6fn0sflmDKqkVqjVyUYl4il+uaeJMTU2fENiZAfKY=;
+        b=YF8Voi1TNvoDffH8rWdRHUXgeBDYjzo/zYmi5Z/NqKV4cjyY2zYLm+QkLo9JXVm0Lj
+         rEbyiX6QQcuRGMb0DmenqEtVgPw5X0XPhYnYFK13E3IeWvFaZSLRUQc6LXpzH6jI5O6L
+         yiyro+cvMQqBQ+at/fAMkMIF4RoytTX75WUD4IQW7OdO/gJaAZkbbAIPPucn4dSBHRzh
+         V6ZM15vd4SeBej/TX3lUMov+dAboDWj0rWTF1UKCGS+MuOxQllZqiNQ1mzoHwsERZdiR
+         OfLyV9hcXqGaFh0GdKnMIclScaVs7JBeuT/l5j86oP1N91sn8jipFA/dSGcpbcKDV8pL
+         B38A==
+X-Gm-Message-State: AOAM531rEvtTPmzvgvCS6xhRriOFksT0+JoXvgnkKGhHyHGKztvMxZhX
+        C8gBvXhcI1GyVPWZ0n7VpmqFSeu/C1Tao3O3/RMlB/j9Er9rEDjeBLU/2NSl2uZaWKtMcjp7YLa
+        7+X9UP4AGt0iZWW8kdRssrGZz
+X-Received: by 2002:a17:906:3290:: with SMTP id 16mr7055823ejw.308.1603886082962;
+        Wed, 28 Oct 2020 04:54:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyki7zPz1WgRhVvswcqc8DYrUa2nHa46FuIilVQLasUTTavgZEBiFJ8BDY2RERDV8wGBbiebg==
+X-Received: by 2002:a17:906:3290:: with SMTP id 16mr7055799ejw.308.1603886082717;
+        Wed, 28 Oct 2020 04:54:42 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id r3sm2768715edw.42.2020.10.28.04.54.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 04:54:42 -0700 (PDT)
+Subject: Re: [PATCH] Documentation: Add documentation for new platform_profile
+ sysfs attribute
+To:     Mark Pearson <markpearson@lenovo.com>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, eliadevito@gmail.com,
+        hadess@hadess.net, bberg@redhat.com, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <markpearson@lenovo.com>
+ <20201027164219.868839-1-markpearson@lenovo.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <8749d17c-4d0b-5c29-a8c9-4a6704b422d6@redhat.com>
+Date:   Wed, 28 Oct 2020 12:54:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20201027164219.868839-1-markpearson@lenovo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trade one atomic op for a full memory barrier.
+Hi,
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/irqflags.h |    8 ++++----
- kernel/irq_work.c        |   29 +++++++++++++++++------------
- 2 files changed, 21 insertions(+), 16 deletions(-)
+A few minor nitpicks below, mostly stuff which I missed before, sorry.
 
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -88,14 +88,14 @@ do {						\
- 		  current->irq_config = 0;			\
- 	  } while (0)
- 
--# define lockdep_irq_work_enter(__work)					\
-+# define lockdep_irq_work_enter(_flags)					\
- 	  do {								\
--		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
-+		  if (!((_flags) & IRQ_WORK_HARD_IRQ))			\
- 			current->irq_config = 1;			\
- 	  } while (0)
--# define lockdep_irq_work_exit(__work)					\
-+# define lockdep_irq_work_exit(_flags)					\
- 	  do {								\
--		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
-+		  if (!((_flags) & IRQ_WORK_HARD_IRQ))			\
- 			current->irq_config = 0;			\
- 	  } while (0)
- 
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -34,7 +34,7 @@ static bool irq_work_claim(struct irq_wo
- 	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->node.a_flags);
- 	/*
- 	 * If the work is already pending, no need to raise the IPI.
--	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
-+	 * The pairing smp_mb() in irq_work_single() makes sure
- 	 * everything we did before is visible.
- 	 */
- 	if (oflags & IRQ_WORK_PENDING)
-@@ -136,22 +136,27 @@ void irq_work_single(void *arg)
- 	int flags;
- 
- 	/*
--	 * Clear the PENDING bit, after this point the @work
--	 * can be re-used.
--	 * Make it immediately visible so that other CPUs trying
--	 * to claim that work don't rely on us to handle their data
--	 * while we are in the middle of the func.
-+	 * Clear the PENDING bit, after this point the @work can be re-used.
-+	 * The PENDING bit acts as a lock, and we own it, so we can clear it
-+	 * without atomic ops.
- 	 */
--	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->node.a_flags);
-+	flags = atomic_read(&work->node.a_flags);
-+	flags &= ~IRQ_WORK_PENDING;
-+	atomic_set(&work->node.a_flags, flags);
-+
-+	/*
-+	 * See irq_work_claim().
-+	 */
-+	smp_mb();
- 
--	lockdep_irq_work_enter(work);
-+	lockdep_irq_work_enter(flags);
- 	work->func(work);
--	lockdep_irq_work_exit(work);
-+	lockdep_irq_work_exit(flags);
-+
- 	/*
--	 * Clear the BUSY bit and return to the free state if
--	 * no-one else claimed it meanwhile.
-+	 * Clear the BUSY bit, if set, and return to the free state if no-one
-+	 * else claimed it meanwhile.
- 	 */
--	flags &= ~IRQ_WORK_PENDING;
- 	(void)atomic_cmpxchg(&work->node.a_flags, flags, flags & ~IRQ_WORK_BUSY);
- }
- 
+I suggest you make v2 part of the series where you actually add the
+drivers/acpi/... and the thinkpad_acpi.c bits to implement this.
 
+On 10/27/20 5:42 PM, Mark Pearson wrote:
+> From: Hans de Goede <hdegoede@redhat.com>
+> 
+> On modern systems the platform performance, temperature, fan and other
+> hardware related characteristics are often dynamically configurable. The
+> profile is often automatically adjusted to the load by somei
+
+s/somei/some/
+
+> automatic-mechanism (which may very well live outside the kernel).
+> 
+> These auto platform-adjustment mechanisms often can be configured with
+> one of several 'platform-profiles', with either a bias towards low-power
+> consumption or towards performance (and higher power consumption and
+> thermals).
+
+I think it is better to also drop the " (and higher power consumption and
+thermals)" bit here (and below) like you did for the cool and quiet parts.
+
+Regards,
+
+Hans
+
+> Introduce a new platform_profile sysfs API which offers a generic API for
+> selecting the performance-profile of these automatic-mechanisms.
+> 
+> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
+> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Changes in V1:
+>  - Moved from RFC to proposed patch
+>  - Added cool profile as requested
+>  - removed extra-profiles as no longer relevant
+> 
+>  .../ABI/testing/sysfs-platform_profile        | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-platform_profile b/Documentation/ABI/testing/sysfs-platform_profile
+> new file mode 100644
+> index 000000000000..240bd3d7532b
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-platform_profile
+> @@ -0,0 +1,66 @@
+> +Platform-profile selection (e.g. /sys/firmware/acpi/platform_profile)
+> +
+> +On modern systems the platform performance, temperature, fan and other
+> +hardware related characteristics are often dynamically configurable. The
+> +profile is often automatically adjusted to the load by some
+> +automatic-mechanism (which may very well live outside the kernel).
+> +
+> +These auto platform-adjustment mechanisms often can be configured with
+> +one of several 'platform-profiles', with either a bias towards low-power
+> +consumption or towards performance (and higher power consumption and
+> +thermals).
+> +
+> +The purpose of the platform_profile attribute is to offer a generic sysfs
+> +API for selecting the platform-profile of these automatic-mechanisms.
+> +
+> +Note that this API is only for selecting the platform-profile, it is
+> +NOT a goal of this API to allow monitoring the resulting performance
+> +characteristics. Monitoring performance is best done with device/vendor
+> +specific tools such as e.g. turbostat.
+> +
+> +Specifically when selecting a high-performance profile the actual achieved
+> +performance may be limited by various factors such as: the heat generated
+> +by other components, room temperature, free air flow at the bottom of a
+> +laptop, etc. It is explicitly NOT a goal of this API to let userspace know
+> +about any sub-optimal conditions which are impeding reaching the requested
+> +performance level.
+> +
+> +Since numbers are a rather meaningless way to describe platform-profiles
+> +this API uses strings to describe the various profiles. To make sure that
+> +userspace gets a consistent experience when using this API this API
+> +document defines a fixed set of profile-names. Drivers *must* map their
+> +internal profile representation/names onto this fixed set.
+> +
+> +If for some reason there is no good match when mapping then a new profile-name
+> +may be added. Drivers which wish to introduce new profile-names must:
+> +1. Have very good reasons to do so.
+> +2. Add the new profile-name to this document, so that future drivers which also
+> +   have a similar problem can use the same name.
+> +
+> +What:		/sys/firmware/acpi/platform_profile_choices
+> +Date:		October 2020
+> +Contact:	Hans de Goede <hdegoede@redhat.com>
+> +Description:
+> +		Reading this file gives a space separated list of profiles
+> +		supported for this device.
+> +
+> +		Drivers must use the following standard profile-names:
+> +
+> +		low-power:		Emphasises low power consumption
+> +		cool:			Emphasises cooler operation
+> +		quiet:			Emphasises quieter operation
+> +		balanced:		Balance between low power consumption
+> +					and performance
+> +		performance:		Emphasises performance (and may lead to
+> +					higher temperatures and fan speeds)
+> +
+> +		Userspace may expect drivers to offer at least several of these
+> +		standard profile-names.
+> +
+> +What:		/sys/firmware/acpi/platform_profile
+> +Date:		October 2020
+> +Contact:	Hans de Goede <hdegoede@redhat.com>
+> +Description:
+> +		Reading this file gives the current selected profile for this
+> +		device. Writing this file with one of the strings from
+> +		available_profiles changes the profile to the new value.
+> 
 
