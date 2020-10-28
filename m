@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC9429D974
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E02B29D889
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389730AbgJ1Wyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:54:51 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16475 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389712AbgJ1Wyq (ORCPT
+        id S2388175AbgJ1WdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388134AbgJ1Wco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:54:46 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f99728f0000>; Wed, 28 Oct 2020 06:30:55 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
- 2020 13:30:51 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 13:30:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QIT8HE18ev8MtQKD+PWqB3hvv+wwYbJVlWUi9sSuEV5YJX/LrkgJ8esmFcCVYknQEXl+mW70K5AtPOHLPJFJmNrbOx7BAV5HAeMcU1tmuy8Z42872uoEp3ZEMfeiYTytjS2RDNgNy+MB7N4X93HA2Vc3UJv0i4tNmc40ErRefijXVqsQvav36fKHejHJIlLiQyQmqQA87or1qcyxHlQNjKPeXq7VLyq8TycsnAB0xMokJ+0rbl5s4O2hsBukCkzZqZjqMI/wQc3BvtvC89rKh/+0IzWg8WxXMy49oOe9F8A7m2NI+meQ/csKZ1XJvLZbaPzW9A7zf9OSGSH7MLV24Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=irEPFy+7WXrSL6ffq4cjb3Cxj0XjBZJBO4D8J1WsKG8=;
- b=ntvAI/Zg2/+mKgnYOa80vJl/KheOY5weruIiPfFAR/LIkCov8cffS1L9/EBDOeIZPWsBXO9loTzum86hJEZZ/hl3NoQuNO1YHJJVA3IbkE1IZjMS5oW8c+vkoM/RhItuQK7ZQmBaxIs6/STbV0Uxj3HSwzguLuoJefYZoU8OT/3W7Pevc40jHNlE2YPhKd8F8wPpYOMlGgX2zPJKk6X1F+QsyG560WESL+7GB2kIGygXg+NEX+kLMTzkxeF2VB8GB6jDtX5N9KHRHtoQRpq2vz9OkGEzvJMWdqoCunLDGhrZgMFPjR2DNuJz1XWDyIHKrFVOhyPf6rtvnv7GcPBHWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 28 Oct
- 2020 13:30:50 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
- 13:30:50 +0000
-Date:   Wed, 28 Oct 2020 10:30:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leon@kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB/verbs: avoid nested container_of()
-Message-ID: <20201028133048.GA2406668@nvidia.com>
-References: <20201026161549.3709175-1-arnd@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201026161549.3709175-1-arnd@kernel.org>
-X-ClientProxiedBy: MN2PR20CA0029.namprd20.prod.outlook.com
- (2603:10b6:208:e8::42) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0029.namprd20.prod.outlook.com (2603:10b6:208:e8::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 13:30:50 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXlXM-00A66u-Jo; Wed, 28 Oct 2020 10:30:48 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603891855; bh=irEPFy+7WXrSL6ffq4cjb3Cxj0XjBZJBO4D8J1WsKG8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=M0/Evwi66wduOry7TDsfPaMUCBAT0AoBUodYbqS0mQ7YW4NXI0PByKDqSAKBaERum
-         MFDVmNX4FK8awltB4P+E1fylDEyoXyO08M3u1aldRH/I0FxNFrQe+rjt8oh/XTtKpn
-         9wwWcyX85r1KDCGyV8zZz+2aWwe9iyjB/W8Q8ngV2hRr7xBZunyga2zjuxaJo+3YAj
-         36Mxp7zsT6ox4Jo0ta/1z3ebD1CzFRAbwhAciNYc86CtMYEJPOx4h0AxsfG7wzwcaj
-         /ocPJTAWl8T4QMHymcrbU0C3KGOsvr+Iv/CYn012+kH1ixSwTdiZnS1V1fvwtBPPZJ
-         +6FKfEgtmhKFw==
+        Wed, 28 Oct 2020 18:32:44 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7107BC0613CF;
+        Wed, 28 Oct 2020 15:32:44 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n18so737477wrs.5;
+        Wed, 28 Oct 2020 15:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5BWRuAigFz9km9p6yXg2RqfU876ueFRRadA3U73oXM0=;
+        b=mg0c3Trr7UnelD/TS7jZb3IcNYeg9PUNHKBgqgm2EOd5jhChVWzR7Apqj6AK9Q1KcM
+         tMxe2Td1CttKGmKE3XNu4yHzvYGc2d/3FPBr1E7Y33kuY17IGo9E+HePbnXDW1qhbzZf
+         Mo2K88bcLPkj3qUuqSOJ62RsHUgRuZDO1xsh0Op1D/JeaiG4MEZ+W4Rm513htVXedB0b
+         /NHjMeVlr8JNFxof3gbATzlE+7fDvqAm0BEIS8KcqBQ+MXPy4XkLAtJHm74dq5PgUmbr
+         T5a2ETgU0vHk9mdGPq6gyauAO/i7Z60Hxli1OIslYELpFfZqe5XIgX2ZOsYacCET9rfi
+         xfYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5BWRuAigFz9km9p6yXg2RqfU876ueFRRadA3U73oXM0=;
+        b=GNWxlFEM3hN4lTz5FQBeTd5YAwqTQxNwUVZ/ANw5brqc4AYoJizXW/QErqiBAbnvUL
+         TShvR9cAgZR0IzEiwWPJZVAysO6W0rACyZG3Ue6ptWprufzN7qr7ZEPLxzAQ31WP4IA3
+         DP2i4jonvtc4a0G8SSHTwKMfRPn/E28uFFEaTTdSTyCw+21lWpBVpKc7yybA62UT0Qk/
+         HVlB7FfQEYc9DpmaUC4KS6lOJ9wKN7YsSb2W85ST427V2HDzPvC/Rwi8usDKnirn4HoI
+         dXVViHEYhZhF5QVer4IqstYWs+CIGpsXXruOAGqwIPIn3626qkJXWLfCzG1AGZfrsAKa
+         3YMA==
+X-Gm-Message-State: AOAM531FW7Mo6HB1+sPo6RQ12yV/j70bv5oKtuOKGUYnpgxvxVzz2jHR
+        woeKxLGqR7FNyIa+n9n7LyQz5qNxotJvBP3b
+X-Google-Smtp-Source: ABdhPJxxUMVps4Zr+8JbLjrzekWhd1FMxqWLG6CU91v4PGo6av3pY1PrmLW11eVHAE269DrpgpOWBw==
+X-Received: by 2002:a17:906:3a55:: with SMTP id a21mr7365323ejf.357.1603891879235;
+        Wed, 28 Oct 2020 06:31:19 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d7a:200:a915:6596:e9b0:4f60])
+        by smtp.gmail.com with ESMTPSA id ce15sm3186691ejc.39.2020.10.28.06.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 06:31:18 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     David Airlie <airlied@linux.ie>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-safety@lists.elisa.tech,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] agp: amd64: remove unneeded initialization
+Date:   Wed, 28 Oct 2020 14:31:06 +0100
+Message-Id: <20201028133106.5420-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:15:39PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Nested container_of() calls work correctly but cause a warning when
-> building with W=2. Invoking it from an inline function like in
-> drivers/infiniband/hw/mlx5/mlx5_ib.h means we get hundreds of
-> warnings like:
-> 
-> include/linux/kernel.h:852:8: warning: declaration of '__mptr' shadows a previous local [-Wshadow]
->   852 |  void *__mptr = (void *)(ptr);     \
->       |        ^~~~~~
-> include/rdma/uverbs_ioctl.h:651:11: note: in expansion of macro 'container_of'
->   651 |  (udata ? container_of(container_of(udata, struct uverbs_attr_bundle,   \
->       |           ^~~~~~~~~~~~
-> include/rdma/uverbs_ioctl.h:651:24: note: in expansion of macro 'container_of'
->   651 |  (udata ? container_of(container_of(udata, struct uverbs_attr_bundle,   \
->       |                        ^~~~~~~~~~~~
-> drivers/infiniband/hw/mthca/mthca_qp.c:564:35: note: in expansion of macro 'rdma_udata_to_drv_context'
->   564 |  struct mthca_ucontext *context = rdma_udata_to_drv_context(
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/kernel.h:852:8: note: shadowed declaration is here
->   852 |  void *__mptr = (void *)(ptr);     \
->       |        ^~~~~~
-> include/rdma/uverbs_ioctl.h:651:11: note: in expansion of macro 'container_of'
->   651 |  (udata ? container_of(container_of(udata, struct uverbs_attr_bundle,   \
->       |           ^~~~~~~~~~~~
-> drivers/infiniband/hw/mthca/mthca_qp.c:564:35: note: in expansion of macro 'rdma_udata_to_drv_context'
->   564 |  struct mthca_ucontext *context = rdma_udata_to_drv_context(
->       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from <command-line>:
-> include/linux/kernel.h:852:8: warning: declaration of '__mptr' shadows a previous local [-Wshadow]
->   852 |  void *__mptr = (void *)(ptr);     \
->       |        ^~~~~~
-> 
-> Rewrite the macro to use an inline function internally, which makes
-> it more readable and reduces the amount of useless output from
-> make W=2.
-> 
-> Fixes: 730623f4a56f ("IB/verbs: Add helper function rdma_udata_to_drv_context")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/rdma/uverbs_ioctl.h | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+make clang-analyzer on x86_64 defconfig caught my attention with:
 
-Applied to rdma for-next, thanks
+  drivers/char/agp/amd64-agp.c:336:2: warning: \
+  Value stored to 'i' is never read [clang-analyzer-deadcode.DeadStores]
+          i = 0;
+          ^
 
-Jason
+Remove this unneeded initialization to make clang-analyzer happy.
+
+Commit a32073bffc65 ("x86_64: Clean and enhance up K8 northbridge access
+code") refactored cache_nbs() and introduced this unneeded dead-store
+initialization.
+
+As compilers will detect this unneeded assignment and optimize this anyway,
+the resulting binary is identical before and after this change.
+
+No functional change. No change in binary code.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20201028
+
+David, please pick this minor non-urgent clean-up patch.
+
+ drivers/char/agp/amd64-agp.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
+index b40edae32817..0413b3136541 100644
+--- a/drivers/char/agp/amd64-agp.c
++++ b/drivers/char/agp/amd64-agp.c
+@@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
+ 	if (!amd_nb_has_feature(AMD_NB_GART))
+ 		return -ENODEV;
+ 
+-	i = 0;
+ 	for (i = 0; i < amd_nb_num(); i++) {
+ 		struct pci_dev *dev = node_to_amd_nb(i)->misc;
+ 		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
+-- 
+2.17.1
+
