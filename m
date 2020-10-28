@@ -2,87 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9799929E16F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7CE29E0D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgJ2CBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:01:05 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:46717 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728079AbgJ1Vuv (ORCPT
+        id S1729886AbgJ1WDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729478AbgJ1WBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:50:51 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 701635C0032;
-        Wed, 28 Oct 2020 13:44:41 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 28 Oct 2020 13:44:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=2
-        8qnJnc+eeyqFQKlSstideW9an1PTHl7M5jm4rsFseA=; b=E9jefSgp0MClmUmr5
-        Yl6QMykUxKlcVWlnSQehrxapW8kDS8aFIR+6hZpVq04YpruAaGepEfCbjkzEbvA0
-        wlSN9EcRlWHNANE+z7zIOrRtH84oynrjvJhjwXRzIA7leqfHM9A6qN8KyGC/MvbZ
-        6cRNSdpR7/PbDDkvmvWHt3jB+g8giSfi4aGVX30MAEn/JZIIswaQiy/z6mixjewC
-        CRyqBbM04zKzorDOBdowpzOAjWpkn2CK4Z1r8ssBGlg/iL7fY3mDdipXC2ZB934G
-        TvLlYTqJEegG390ZjeNF7+J/wjGUDoo3A8xhb5uLQqVKFenK4d4ORDJiSmXt6dCy
-        +6GXQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=28qnJnc+eeyqFQKlSstideW9an1PTHl7M5jm4rsFs
-        eA=; b=Od+1R2MoOVG5QLp0r/NWqcHrzHxBu4zWHtrVYrWD+TpNWzTxQveoxFl/S
-        86l3bsueu4RC/RjOoq+nuwuk2UdTlExl1wL9x1vflKrPXk0+5N3NPeFZqIVELjuV
-        PzK9VnTRZBQX+EMMd+DLRKO+i0fKDukX5YocjJ2ojRKtaDSI9dqum5DSg6WGs1MO
-        cv6jVWL1yIQ4ZiPPn9mCMl/sAgh3Ax1ghZjv2vKAG8McknLHj7aKrOkob88SLGpk
-        B4xyZuypxT9J4IzYo8YFrWqrlB9cDRJ+MyODyn0L4kJftFS2mJ53jp6OtuP6gj6j
-        drIHmMB52lhz1os0XQuzfL4XTLHDg==
-X-ME-Sender: <xms:Bq6ZX4V-UhstxWAd6oTRrB-caqJwOlUjK0J4hpdd321n7BB_Zs6t9w>
-    <xme:Bq6ZX8l4XQAbxblCuTWb43UrD7rRhEX6h3-uQbxaeGNmUdmGqpWz2YhY5TMD-DzoV
-    aZJ4iwOR6othtB3ID0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledugddutddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Bq6ZX8Zb_cAB1Px_Tak1URXQaq602uAKywnNI_fSqptXce2rMTEj6w>
-    <xmx:Bq6ZX3Vjv19lHAusEVKBDfEDx_1-Jg0ITC8MEU2HtbP3hY3x97yAVQ>
-    <xmx:Bq6ZXyk7-BlYmu9JIwgfC7B2xHV9344BtVdfKujjuEQRFjLOYPZviA>
-    <xmx:Ca6ZX5uKoCdCJJsbUUQ8bVKoGaAiWonyJ1qEr720Bnhzm9YiDhLGvQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E00C13280074;
-        Wed, 28 Oct 2020 13:44:36 -0400 (EDT)
-Date:   Wed, 28 Oct 2020 18:44:35 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>, linux-rtc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v3] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
-Message-ID: <20201028174435.dksz6b7jwabzloxt@gilmour.lan>
-References: <20201020061226.6572-1-dinghao.liu@zju.edu.cn>
+        Wed, 28 Oct 2020 18:01:32 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC746C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:01:32 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id a12so452156ybg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X61PD0Eqa415e78dHBCu8gVP7gz9DiO/HA7a3ClV984=;
+        b=NEOWjCOdoW+dKxV90REiSNshDKbdF16fZjphJCyW4sXCsrz9B1bTlOsgmoBmn5SiEj
+         Ttg/Sbh7iyvA1URHLm7Yhnoeex0MgCqwY9HsUCdVIe+5eud+5/AjV+fgOBuFzWp9p1bY
+         GHQw4cFWy+Exvei93CFPwEI3PCFpZ5owzNGTU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X61PD0Eqa415e78dHBCu8gVP7gz9DiO/HA7a3ClV984=;
+        b=JJh/lNlkt6yC8WVqrTNjbe2NOcZ3g4nys/w7Alr3KrGajD0Ygydmc++TXEavsMLvi4
+         ULePb0vXpJAaKfpLLPy981Z1815rIY9Dykbnq+h8hKwxLM/TQ1KTbYWNaRLyNANFhyE1
+         5O4mmx+mEa1RMZP6ekEIWh+32RKGqZWUO4KZKy6+2zkdWAKMRkwIzLbkYvIkqbVkj/Dq
+         jL+Jrq6+EL4orZmz8H0Dv7gUWrUimrj/DKLD1EHnfY1JO4zfEivlqVWEvRxWCtkesRLV
+         C0vMOVNBRIMQE66+z1K7a/9ljMQplW3F3YsvPfyv/OYwUFAw56gnNID7c6MTEFuTD89V
+         YJ4g==
+X-Gm-Message-State: AOAM531F+xTa2dAuUvMLTkTwmwtBwS3mVbZ+G3LkuLEoHbqNxdV/bnfM
+        HDFg8HqRCMjl5U09lwsEJJ5cCTALc87F1g==
+X-Google-Smtp-Source: ABdhPJz3wKCI1R1v82li77slb+pKYKtURPSYLGW2vkwuJGiuqtcBV8nGA0rinAewwypUB8TJX2fMWA==
+X-Received: by 2002:a9f:2f15:: with SMTP id x21mr791147uaj.104.1603910701381;
+        Wed, 28 Oct 2020 11:45:01 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id o2sm27776vkd.16.2020.10.28.11.45.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 11:45:00 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id y78so110630vsy.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 11:45:00 -0700 (PDT)
+X-Received: by 2002:a67:e3b9:: with SMTP id j25mr594499vsm.37.1603910699981;
+ Wed, 28 Oct 2020 11:44:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201020061226.6572-1-dinghao.liu@zju.edu.cn>
+References: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1603904469-598-1-git-send-email-pillair@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 28 Oct 2020 11:44:48 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+Message-ID: <CAD=FV=V0apTHaemMKvRx1HWLaO9ArC2t4ohfZ7-CthFz2NiA2A@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: Fix the parsing error in service available event
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k <ath10k@lists.infradead.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Brian Norris <briannorris@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:12:26PM +0800, Dinghao Liu wrote:
-> When clk_hw_register_fixed_rate_with_accuracy() fails,
-> clk_data should be freed. It's the same for the subsequent
-> two error paths, but we should also unregister the already
-> registered clocks in them.
->=20
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Hi,
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+On Wed, Oct 28, 2020 at 10:01 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
+>
+> The wmi service available event has been
+> extended to contain extra 128 bit for new services
+> to be indicated by firmware.
+>
+> Currently the presence of any optional TLVs in
+> the wmi service available event leads to a parsing
+> error with the below error message:
+> ath10k_snoc 18800000.wifi: failed to parse svc_avail tlv: -71
+>
+> The wmi service available event parsing should
+> not return error for the newly added optional TLV.
+> Fix this parsing for service available event message.
+>
+> Tested-on: WCN3990 hw1.0 SNOC
+>
+> Fixes: cea19a6ce8bf ("ath10k: add WMI_SERVICE_AVAILABLE_EVENT support")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+> Changes from v1:
+> - Access service_map_ext only if this TLV was sent in service
+>   available event.
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 +++-
+>  drivers/net/wireless/ath/ath10k/wmi.c     | 5 +++--
+>  drivers/net/wireless/ath/ath10k/wmi.h     | 1 +
+>  3 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> index 932266d..7b58341 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+> @@ -1401,13 +1401,15 @@ static int ath10k_wmi_tlv_svc_avail_parse(struct ath10k *ar, u16 tag, u16 len,
+>
+>         switch (tag) {
+>         case WMI_TLV_TAG_STRUCT_SERVICE_AVAILABLE_EVENT:
+> +               arg->service_map_ext_valid = true;
+>                 arg->service_map_ext_len = *(__le32 *)ptr;
+>                 arg->service_map_ext = ptr + sizeof(__le32);
+>                 return 0;
+>         default:
+>                 break;
+>         }
+> -       return -EPROTO;
+> +
+> +       return 0;
 
-Maxime
+I notice your v2 now returns 0 for _all_ unknown tags.  v1 just had a
+special case for "WMI_TLV_TAG_FIRST_ARRAY_ENUM".  I don't have enough
+experience with this driver to know which is better, but this change
+wasn't mentioned in the changes from v1.  I guess you had a change of
+heart and decided this way was better?
+
+
+>  }
+>
+>  static int ath10k_wmi_tlv_op_pull_svc_avail(struct ath10k *ar,
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 1fa7107..2e4b561 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -5751,8 +5751,9 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
+>                             ret);
+>         }
+>
+> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+> -                              __le32_to_cpu(arg.service_map_ext_len));
+> +       if (arg.service_map_ext_valid)
+> +               ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+> +                                      __le32_to_cpu(arg.service_map_ext_len));
+
+Your new patch still requires the caller to init the
+"service_map_ext_valid" to false before calling, but I guess there's
+not a whole lot more we can do because we might be parsing more than
+one tag.  It does seem nice that at least we now have a validity bit
+instead of just relying on a non-zero length to be valid.
+
+It might be nice to have a comment saying that it's up to us to init
+"arg.service_map_ext_valid" to false before calling
+ath10k_wmi_pull_svc_avail(), but I won't insist.  Maybe that's obvious
+to everyone but me...
+
+
+-Doug
