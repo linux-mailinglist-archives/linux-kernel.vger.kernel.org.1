@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB0229DEF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2422329DE8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403928AbgJ2A6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:58:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60546 "EHLO mail.kernel.org"
+        id S2390936AbgJ2AzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:55:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731587AbgJ1WRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:32 -0400
+        id S1731652AbgJ1WRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:40 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEE64247B4;
-        Wed, 28 Oct 2020 15:12:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09DD3247C1;
+        Wed, 28 Oct 2020 15:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603897968;
-        bh=G+a9tAqKfo1FKngndd1wk/6n9OaUyZGsZA67OwoudG4=;
+        s=default; t=1603897975;
+        bh=HZmLg7SlaBNEBZr6yuif6M5CcMd4/KqwKEaK+Y+Ve60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uqaV11gbUEV4zvNXiGpLI51CWpkthZ3eLlf/UK+rqHMVIQdd7836W3aMcVJEDUn4O
-         anOuCYwDkUXDOpbLFVxImekHbJ/q1bzMz8j7Fh/k2EiUj8xw7IfaI54bfHElMNmZxD
-         nwldbbREuijDa/Si90aWB+aAFtbbED3tbxzlP0rw=
+        b=nxi08IAw2J/t9u9TcUgPVUOWxwfHzYekp3jddaAxsa/f/o0Gk/JAdg8xMgODOCs5L
+         xE6ELEDB2wxonO+xpRJlR4iC9QUQEELPiOYPrQDFIsTMlvBw5ehoqZTilf/YjuLHnB
+         ftRYAkGGU6eaS7YX/Ayl42bJyMbVa3MuTLNoiX2E=
 From:   Will Deacon <will@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH] module: use hidden visibility for weak symbol references
-Date:   Wed, 28 Oct 2020 15:12:34 +0000
-Message-Id: <160389413619.1112960.12611093041695506337.b4-ty@kernel.org>
+        Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Gabor Kertesz <gabor.kertesz@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>
+Subject: Re: [PATCH 0/6] kselftest/arm64: MTE fixes
+Date:   Wed, 28 Oct 2020 15:12:37 +0000
+Message-Id: <160389254446.1108215.12233305220868499790.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201027151132.14066-1-ardb@kernel.org>
-References: <20201027151132.14066-1-ardb@kernel.org>
+In-Reply-To: <20201026121248.2340-1-vincenzo.frascino@arm.com>
+References: <20201026121248.2340-1-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 16:11:32 +0100, Ard Biesheuvel wrote:
-> Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
-> unwanted sections") results in build errors on arm64 for configurations
-> that have CONFIG_MODULES disabled.
+On Mon, 26 Oct 2020 12:12:42 +0000, Vincenzo Frascino wrote:
+> This series contains a set of fixes for the arm64 MTE kselftests [1].
 > 
-> The commit in question added ASSERT()s to the arm64 linker script to
-> ensure that linker generated sections such as .got, .plt etc are empty,
-> but as it turns out, there are corner cases where the linker does emit
-> content into those sections. More specifically, weak references to
-> function symbols (which can remain unsatisfied, and can therefore not
-> be emitted as relative references) will be emitted as GOT and PLT
-> entries when linking the kernel in PIE mode (which is the case when
-> CONFIG_RELOCATABLE is enabled, which is on by default).
+> A version of the fixes rebased on 5.10-rc1 can be found at [2].
+> 
+> To verify the fixes it is possible to use the command below:
+> 
+> make -C tools/testing/selftests/ ARCH=arm64 TARGETS=arm64 ARM64_SUBTARGETS=mte \
+>         CC=<gcc compiler with MTE support>
 > 
 > [...]
 
 Applied to arm64 (for-next/fixes), thanks!
 
-[1/1] module: use hidden visibility for weak symbol references
-      https://git.kernel.org/arm64/c/13150bc5416f
+[1/6] kselftest/arm64: Fix check_buffer_fill test
+      https://git.kernel.org/arm64/c/5bc7c1156f3f
+[2/6] kselftest/arm64: Fix check_tags_inclusion test
+      https://git.kernel.org/arm64/c/041fa41f5422
+[3/6] kselftest/arm64: Fix check_child_memory test
+      https://git.kernel.org/arm64/c/386cf789fa6d
+[4/6] kselftest/arm64: Fix check_mmap_options test
+      https://git.kernel.org/arm64/c/7419390a466e
+[5/6] kselftest/arm64: Fix check_ksm_options test
+      https://git.kernel.org/arm64/c/cbb268af05de
+[6/6] kselftest/arm64: Fix check_user_mem test
+      https://git.kernel.org/arm64/c/493b35db0548
 
 Cheers,
 -- 
