@@ -2,133 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D787E29D8CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5EE29D939
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388391AbgJ1WgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:36:23 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:39476 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388434AbgJ1Wdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:33:49 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id B6360205A9;
-        Wed, 28 Oct 2020 11:45:14 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id obkiekkmCsOh; Wed, 28 Oct 2020 11:45:10 +0100 (CET)
-Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 90A3620512;
-        Wed, 28 Oct 2020 11:45:10 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Wed, 28 Oct 2020 11:45:10 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Wed, 28 Oct
- 2020 11:45:10 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id EA627318136E;
- Wed, 28 Oct 2020 11:45:09 +0100 (CET)
-Date:   Wed, 28 Oct 2020 11:45:09 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     syzbot <syzbot+a7e701c8385bd8543074@syzkaller.appspotmail.com>,
-        "Dmitry Safonov" <dima@arista.com>
-CC:     <davem@davemloft.net>, <herbert@gondor.apana.org.au>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-Subject: Re: WARNING in xfrm_alloc_compat
-Message-ID: <20201028104509.GB8805@gauss3.secunet.de>
-References: <00000000000021315205b29353aa@google.com>
+        id S2389527AbgJ1WuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389461AbgJ1Wto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:49:44 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF77C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:49:42 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id f93so717212qtb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hsdkNzdMfWbXcZddXcT8aNBIhrkn1PkorkEU1qPCnjs=;
+        b=EchNxfjWzAUq7C9Ti1qSHxWy2ojph/urHy60IprjNwVnnSHv7akwPxW+W2Gw79lVrr
+         LBbC8gDgPCvGF57RQQ7Dilxntcq9QqyIP0hw2I5p0AViyp/dUDzvzA5xOrfpTbIi8+Qs
+         8Pv9zi0mH6SAJpljfdLeMgoLkyH3mGsakv8Kcc5zmt0yfZS1SpaQeUwLVrsH5fzsd3lK
+         iYnLuOdfZavOXph0Z9SmP8/S8UV6MpNMXLcVwfU4LL/RUeKjJ9nav4TIpS8wHWRitI4c
+         PUHVbQ/ww+WTSzqXxmoctill4YXA+t3xUpvV5z1XlFCEzqqmEpb3ZFVcqJbJBMMB3X83
+         nFTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hsdkNzdMfWbXcZddXcT8aNBIhrkn1PkorkEU1qPCnjs=;
+        b=lHtI/R499frVhwa0wSV1ozcbxWY+SxiA8+flxIbefmvPGO/TBxi+zRCbLQ+jgs3Ls/
+         WBz54KABe4w7fniQX1weu1N0S5Iv99yvKu2SUg02kKLfMS0jtho2Ci9FxVupPabUh7Wq
+         NQXHTBxQ27jr9XObMo2/pi8M/0tlJp+EpQ20hVkE1EIQnCgQj1PqRWXNeG1iV1Rd/hDt
+         9bdfkpiH73w8BCzntQp3Lh9S5mz8ggQ6htagOSbSDAhp+fbfiEIqTaCP7zAu2SztfttI
+         tQr+JtqGoL1N/vPZaXYsLCSjKce5lkUwwIra9C8o+He4R5TTc68PSDE1xN/0EawloU6T
+         zgLQ==
+X-Gm-Message-State: AOAM532cFTdeyJbi/W0M6eSBw89iBv7KdKzb+ALx+5kCu2Wlsh5/j3cz
+        0pKIefqoa3UDCUeez+H1fvuG4Awjw12q0DpOYfIoVHvbvbneVQ==
+X-Google-Smtp-Source: ABdhPJydQ3JF4RJPCBrrrnsibfOQNjmnkH8RvdYTDaT4t9agLmajW2JLdDceJKZXK/JBoej4wJGe7HarOCof+hiFJhU=
+X-Received: by 2002:ac8:6c54:: with SMTP id z20mr6093592qtu.337.1603882568390;
+ Wed, 28 Oct 2020 03:56:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <00000000000021315205b29353aa@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+References: <cover.1603372719.git.andreyknvl@google.com> <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 11:55:57 +0100
+Message-ID: <CACT4Y+Y6jbXh28U=9oK_1ihMhePRhZ6WP9vBwr8nVm_aU3BmNQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 07/21] kasan, arm64: move initialization message
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Same here, Dmitry please look into it.
+On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Tag-based KASAN modes are fully initialized with kasan_init_tags(),
+> while the generic mode only requireds kasan_init(). Move the
+> initialization message for tag-based modes into kasan_init_tags().
+>
+> Also fix pr_fmt() usage for KASAN code: generic mode doesn't need it,
 
-I guess we can just remove the WARN_ON() that
-triggeres here.
+Why doesn't it need it? What's the difference with tag modes?
 
-On Mon, Oct 26, 2020 at 06:58:28AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    f11901ed Merge tag 'xfs-5.10-merge-7' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17b35564500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fb79b5c2dc1e69e3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a7e701c8385bd8543074
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a7e701c8385bd8543074@syzkaller.appspotmail.com
-> 
-> netlink: 404 bytes leftover after parsing attributes in process `syz-executor.4'.
-> ------------[ cut here ]------------
-> unsupported nla_type 0
-> WARNING: CPU: 0 PID: 9953 at net/xfrm/xfrm_compat.c:279 xfrm_xlate64_attr net/xfrm/xfrm_compat.c:279 [inline]
-> WARNING: CPU: 0 PID: 9953 at net/xfrm/xfrm_compat.c:279 xfrm_xlate64 net/xfrm/xfrm_compat.c:300 [inline]
-> WARNING: CPU: 0 PID: 9953 at net/xfrm/xfrm_compat.c:279 xfrm_alloc_compat+0xf39/0x10d0 net/xfrm/xfrm_compat.c:327
-> Modules linked in:
-> CPU: 0 PID: 9953 Comm: syz-executor.4 Not tainted 5.9.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:xfrm_xlate64_attr net/xfrm/xfrm_compat.c:279 [inline]
-> RIP: 0010:xfrm_xlate64 net/xfrm/xfrm_compat.c:300 [inline]
-> RIP: 0010:xfrm_alloc_compat+0xf39/0x10d0 net/xfrm/xfrm_compat.c:327
-> Code: de e8 4b 68 d3 f9 84 db 0f 85 b0 f8 ff ff e8 2e 70 d3 f9 8b 74 24 08 48 c7 c7 40 b9 51 8a c6 05 f7 0d 3c 05 01 e8 b7 db 0e 01 <0f> 0b e9 8d f8 ff ff e8 0b 70 d3 f9 8b 14 24 48 c7 c7 00 b9 51 8a
-> RSP: 0018:ffffc9000bb4f4b8 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: 0000000000040000 RSI: ffffffff8158cf25 RDI: fffff52001769e89
-> RBP: 00000000000001a0 R08: 0000000000000001 R09: ffff8880b9e2005b
-> R10: 0000000000000000 R11: 0000000000000000 R12: 00000000ffffffa1
-> R13: ffff88802ed1d8f8 R14: ffff888014403c80 R15: ffff88801514fc80
-> FS:  00007f188bbe6700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000074b698 CR3: 000000001aabe000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  xfrm_alloc_userspi+0x66a/0xa30 net/xfrm/xfrm_user.c:1388
->  xfrm_user_rcv_msg+0x42f/0x8b0 net/xfrm/xfrm_user.c:2752
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
->  xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2764
->  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
->  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
->  sock_sendmsg_nosec net/socket.c:651 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:671
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
->  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45de59
-> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007f188bbe5c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 000000000002e640 RCX: 000000000045de59
-> RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000003
-> RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-> R13: 000000000169fb7f R14: 00007f188bbe69c0 R15: 000000000118bf2c
-> 
-> 
+> tag-based modes should use "kasan:" instead of KBUILD_MODNAME.
+
+With generic KASAN I currently see:
+
+[    0.571473][    T0] kasan: KernelAddressSanitizer initialized
+
+So KBUILD_MODNAME somehow works. Is there some difference between files?
+
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Idfd1e50625ffdf42dfc3dbf7455b11bd200a0a49
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>  arch/arm64/mm/kasan_init.c | 3 +++
+>  mm/kasan/generic.c         | 2 --
+>  mm/kasan/hw_tags.c         | 4 ++++
+>  mm/kasan/sw_tags.c         | 4 +++-
+>  4 files changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+> index b6b9d55bb72e..8f17fa834b62 100644
+> --- a/arch/arm64/mm/kasan_init.c
+> +++ b/arch/arm64/mm/kasan_init.c
+> @@ -290,5 +290,8 @@ void __init kasan_init(void)
+>  {
+>         kasan_init_shadow();
+>         kasan_init_depth();
+> +#if defined(CONFIG_KASAN_GENERIC)
+> +       /* CONFIG_KASAN_SW/HW_TAGS also requires kasan_init_tags(). */
+
+A bit cleaner way may be to introduce kasan_init_early() and
+kasan_init_late(). Late() will do tag init and always print the
+message.
+
+>         pr_info("KernelAddressSanitizer initialized\n");
+> +#endif
+>  }
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index de6b3f03a023..d259e4c3aefd 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -9,8 +9,6 @@
+>   *        Andrey Konovalov <andreyknvl@gmail.com>
+>   */
+>
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> -
+>  #include <linux/export.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/init.h>
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index 0128062320d5..b372421258c8 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -6,6 +6,8 @@
+>   * Author: Andrey Konovalov <andreyknvl@google.com>
+>   */
+>
+> +#define pr_fmt(fmt) "kasan: " fmt
+> +
+>  #include <linux/kasan.h>
+>  #include <linux/kernel.h>
+>  #include <linux/memory.h>
+> @@ -18,6 +20,8 @@
+>  void __init kasan_init_tags(void)
+>  {
+>         init_tags(KASAN_TAG_MAX);
+> +
+> +       pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>
+>  void *kasan_reset_tag(const void *addr)
+> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+> index bf1422282bb5..099af6dc8f7e 100644
+> --- a/mm/kasan/sw_tags.c
+> +++ b/mm/kasan/sw_tags.c
+> @@ -6,7 +6,7 @@
+>   * Author: Andrey Konovalov <andreyknvl@google.com>
+>   */
+>
+> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +#define pr_fmt(fmt) "kasan: " fmt
+>
+>  #include <linux/export.h>
+>  #include <linux/interrupt.h>
+> @@ -41,6 +41,8 @@ void __init kasan_init_tags(void)
+>
+>         for_each_possible_cpu(cpu)
+>                 per_cpu(prng_state, cpu) = (u32)get_cycles();
+> +
+> +       pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>
+>  /*
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
