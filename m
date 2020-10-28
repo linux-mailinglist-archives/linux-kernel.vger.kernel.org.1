@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2075E29D945
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D85029D91A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389605AbgJ1Wuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        id S2389338AbgJ1WoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389556AbgJ1Wua (ORCPT
+        with ESMTP id S2389345AbgJ1Wmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:50:30 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6AAC0613CF;
-        Wed, 28 Oct 2020 15:50:30 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id h22so788283wmb.0;
-        Wed, 28 Oct 2020 15:50:29 -0700 (PDT)
+        Wed, 28 Oct 2020 18:42:47 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73AFC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:42:46 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id a7so831978lfk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1CEqaQjMv77SiJCZ+Ml1JB/3M4/OfgLP7wUO6uiGBUs=;
-        b=bR1CCcPMmvIaitAJ/L84I7wG4ssUkX6QgTxmEp/5I9tT9LEQJAPNiwovP4N9tQTfh2
-         Wr8TKpV/V8w+yJzzl2HmH5UmTZpbyF/nkkFvM7fDV5Ir1FKuR+biYo81+yI9z36wzJzy
-         jH2b7uUSYFiQwgrxSq77T/GGugeBJjB03YXIH4tOf/lhiEW1M2rjuHsmE9QA9yUyzCIP
-         5o+h00bEHO5+1ILSbxExqsnbv8HlTFJZnwfuOW9vG422xU3XpjGKA8uebqR6h6ysTGgL
-         6dvfdF5qWz26EzBDfpaxavnTYl13oe4zKP7KFSGv/kH/Y7I2TrgF3SuzxKS/hUIbnIfR
-         ITlw==
+        bh=JzxgzmFEKg3uyOYq0U+7u1Sr88Fa5cBf5J/ai9Bi9w4=;
+        b=c8YXWXabra4sW5/XLNopgCr1Ey4kEIOYZ1bnz6+tWCnkIM88z4M2Q3I8N6B+DLSZt4
+         cJzYWSgKqRYIP05RISLd1JWNSMYFkd9oJV/3pYM+4YbdbwwpPxZY4yZg7EkQpNCDvAMI
+         gD29S7F17ZYzpny8Auzr9eQgNQUDt2NXaN1SE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1CEqaQjMv77SiJCZ+Ml1JB/3M4/OfgLP7wUO6uiGBUs=;
-        b=T7ZMnw65WO8+vKrv2XlcnlwOH9v5J049l+mNorO8f5BoFd7hfsPo1ZDQDxq9gS7Hi4
-         x60TdE+wmzjbHxY3le6qbUdurm00zpbhG718sbXMz/N9AyuBxmrgU9jgvBItHyoE4EVR
-         Rx4q3z1o68Bo/LtPXMwRXbKhCDBayEduaud71il/7GeuWvwNEDAYnFB8z12VijjyLmY/
-         1eRX1L65S2OAxUB7vmQui1Zqrn7sJ6GhkkVi29AQz7yYGuSPaTIpmM704GY/MHz1BwAd
-         0eYiVDKn7NVjXAxCp4I27Nd8nwWHWIJSuVZY+wPTsKoaZDOAms8D/LCYRizIlJnp8yQu
-         OENQ==
-X-Gm-Message-State: AOAM5323xd3v9hddGDpf5y0hEukWxY/1sCjeIjX0LvH7Nbl/x2OdPngX
-        IvwEiItnOWANOMbz7oeGpRNMxwZS3LWlPQ==
-X-Google-Smtp-Source: ABdhPJwgSnehTc5xNqyLCaar1RruRoIGZbX080UjPug3t5nj2z72U/3mB1I9KQxqePWsIqRhpk1atA==
-X-Received: by 2002:a7b:c081:: with SMTP id r1mr425801wmh.158.1603904857092;
-        Wed, 28 Oct 2020 10:07:37 -0700 (PDT)
-Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id v6sm211757wrp.69.2020.10.28.10.07.36
+        bh=JzxgzmFEKg3uyOYq0U+7u1Sr88Fa5cBf5J/ai9Bi9w4=;
+        b=Drsqdwq3cEFi8qiuvpWrCPsRhOz9vciExu//VJA1i8yHrKPwpSDQU5K9wOyNkLSDFU
+         Ppjd1GII5Zz1CdHDu09etEcgZUOpMPMBhFHmWM+nhuJHH8GzmPO01mnj1rSR262pA2lk
+         RVOD/BRJv0mG/lrXat1M44Yt34urgf8H0HbFXHA9Tuaxg8I2peDzzKvpgqXtBqAYGZ+X
+         VM68FT7LSvR0xwx+kjdpNbgYouYC6CbvQheMkK3RApO6wfx74FAXq/I8GNMe+cKe6Kev
+         zqnsaV9oqCAjHnPrF2yKsoqP4ILunsD/hin4rPQjkw6NC83dOAmpyOd9aaeu2Ba961v3
+         ABwA==
+X-Gm-Message-State: AOAM533kYuq7Y3kSA5rX/c0ebOG6VfiAlnVVJf7cLQRCAY76YNOrk0sa
+        T5XTs/XJ/XNGVhsLneKBBiyliW/XyJ2wHKkOPQw=
+X-Google-Smtp-Source: ABdhPJw9WvnFCFfe0bMtDkbOl61PKkk2WINL/17GJ+UJzZwPlfMZ2z28uuVsBREELq+J+ey2Z9mmqA==
+X-Received: by 2002:adf:e685:: with SMTP id r5mr390473wrm.340.1603905483580;
+        Wed, 28 Oct 2020 10:18:03 -0700 (PDT)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id y4sm222505wrp.74.2020.10.28.10.18.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 10:07:36 -0700 (PDT)
-From:   Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-To:     stephen@networkplumber.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     andreyknvl@google.com, dvyukov@google.com, elver@google.com,
-        rdunlap@infradead.org, dave.taht@gmail.com, edumazet@google.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>,
-        syzbot+ec762a6342ad0d3c0d8f@syzkaller.appspotmail.com
-Subject: [PATCH v2] netem: fix zero division in tabledist
-Date:   Wed, 28 Oct 2020 17:07:31 +0000
-Message-Id: <20201028170731.1383332-1-aleksandrnogikh@gmail.com>
+        Wed, 28 Oct 2020 10:18:02 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH] gpiolib: acpi: Support GpioInt with active_low polarity
+Date:   Wed, 28 Oct 2020 18:17:57 +0100
+Message-Id: <20201028171757.765866-1-ribalda@chromium.org>
 X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,75 +63,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Nogikh <nogikh@google.com>
+On the current implementation we only support active_high polarity for
+GpioInt.
 
-Currently it is possible to craft a special netlink RTM_NEWQDISC
-command that can result in jitter being equal to 0x80000000. It is
-enough to set the 32 bit jitter to 0x02000000 (it will later be
-multiplied by 2^6) or just set the 64 bit jitter via
-TCA_NETEM_JITTER64. This causes an overflow during the generation of
-uniformly distributed numbers in tabledist(), which in turn leads to
-division by zero (sigma != 0, but sigma * 2 is 0).
+There can be cases where a GPIO has active_low polarity and it is also a
+IRQ source.
 
-The related fragment of code needs 32-bit division - see commit
-9b0ed89 ("netem: remove unnecessary 64 bit modulus"), so switching to
-64 bit is not an option.
+De-couple the irq_polarity and active_low fields instead of re-use it.
 
-Fix the issue by keeping the value of jitter within the range that can
-be adequately handled by tabledist() - [0;INT_MAX]. As negative std
-deviation makes no sense, take the absolute value of the passed value
-and cap it at INT_MAX. Inside tabledist(), switch to unsigned 32 bit
-arithmetic in order to prevent overflows.
+With this patch we support ACPI devices such as:
 
-Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-Reported-by: syzbot+ec762a6342ad0d3c0d8f@syzkaller.appspotmail.com
+Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
+{
+        GpioInt (Edge, ActiveBoth, Exclusive, PullDefault, 0x0000,
+        "\\_SB.PCI0.GPIO", 0x00, ResourceConsumer, ,
+        )
+        {   // Pin list
+                0x0064
+        }
+})
+Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
+{
+        ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301") /* Device Properties for _DSD */,
+        Package (0x01)
+        {
+        Package (0x02)
+        {
+                "privacy-gpio",
+                Package (0x04)
+                {
+                \_SB.PCI0.XHCI.RHUB.HS07,
+                Zero,
+                Zero,
+                One
+                }
+        }
+        }
+})
 
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
-v2:
-* Capping the value when receiving it from the userspace instead of
-  checking it each time when a new skb is enqueued.
-v1:
-http://lkml.kernel.org/r/20201016121007.2378114-1-a.nogikh@yandex.ru
----
- net/sched/sch_netem.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/gpio/gpiolib-acpi.c | 8 ++++----
+ drivers/gpio/gpiolib-acpi.h | 6 ++++--
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index 84f82771cdf5..0c345e43a09a 100644
---- a/net/sched/sch_netem.c
-+++ b/net/sched/sch_netem.c
-@@ -330,7 +330,7 @@ static s64 tabledist(s64 mu, s32 sigma,
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 834a12f3219e..bc33c1056391 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -624,7 +624,7 @@ int acpi_gpio_update_gpiod_lookup_flags(unsigned long *lookupflags,
+ 		break;
+ 	}
  
- 	/* default uniform distribution */
- 	if (dist == NULL)
--		return ((rnd % (2 * sigma)) + mu) - sigma;
-+		return ((rnd % (2 * (u32)sigma)) + mu) - sigma;
+-	if (info->polarity == GPIO_ACTIVE_LOW)
++	if (info->active_low)
+ 		*lookupflags |= GPIO_ACTIVE_LOW;
  
- 	t = dist->table[rnd % dist->size];
- 	x = (sigma % NETEM_DIST_SCALE) * t;
-@@ -812,6 +812,10 @@ static void get_slot(struct netem_sched_data *q, const struct nlattr *attr)
- 		q->slot_config.max_packets = INT_MAX;
- 	if (q->slot_config.max_bytes == 0)
- 		q->slot_config.max_bytes = INT_MAX;
-+
-+	/* capping dist_jitter to the range acceptable by tabledist() */
-+	q->slot_config.dist_jitter = min_t(__s64, INT_MAX, abs(q->slot_config.dist_jitter));
-+
- 	q->slot.packets_left = q->slot_config.max_packets;
- 	q->slot.bytes_left = q->slot_config.max_bytes;
- 	if (q->slot_config.min_delay | q->slot_config.max_delay |
-@@ -1037,6 +1041,9 @@ static int netem_change(struct Qdisc *sch, struct nlattr *opt,
- 	if (tb[TCA_NETEM_SLOT])
- 		get_slot(q, tb[TCA_NETEM_SLOT]);
+ 	return 0;
+@@ -665,6 +665,7 @@ static int acpi_populate_gpio_lookup(struct acpi_resource *ares, void *data)
+ 					      agpio->pin_table[pin_index]);
+ 		lookup->info.pin_config = agpio->pin_config;
+ 		lookup->info.gpioint = gpioint;
++		lookup->info.active_low = !!lookup->active_low;
  
-+	/* capping jitter to the range acceptable by tabledist() */
-+	q->jitter = min_t(s64, abs(q->jitter), INT_MAX);
-+
- 	return ret;
+ 		/*
+ 		 * Polarity and triggering are only specified for GpioInt
+@@ -675,11 +676,10 @@ static int acpi_populate_gpio_lookup(struct acpi_resource *ares, void *data)
+ 		 */
+ 		if (lookup->info.gpioint) {
+ 			lookup->info.flags = GPIOD_IN;
+-			lookup->info.polarity = agpio->polarity;
++			lookup->info.irq_polarity = agpio->polarity;
+ 			lookup->info.triggering = agpio->triggering;
+ 		} else {
+ 			lookup->info.flags = acpi_gpio_to_gpiod_flags(agpio);
+-			lookup->info.polarity = lookup->active_low;
+ 		}
+ 	}
  
- get_table_failure:
-
-base-commit: 1c86f90a16d413621918ae1403842b43632f0b3d
+@@ -958,7 +958,7 @@ int acpi_dev_gpio_irq_get(struct acpi_device *adev, int index)
+ 				return ret;
+ 
+ 			irq_flags = acpi_dev_get_irq_type(info.triggering,
+-							  info.polarity);
++							  info.irq_polarity);
+ 
+ 			/* Set type if specified and different than the current one */
+ 			if (irq_flags != IRQ_TYPE_NONE &&
+diff --git a/drivers/gpio/gpiolib-acpi.h b/drivers/gpio/gpiolib-acpi.h
+index 1c6d65cf0629..816a2d7a21ed 100644
+--- a/drivers/gpio/gpiolib-acpi.h
++++ b/drivers/gpio/gpiolib-acpi.h
+@@ -16,7 +16,8 @@ struct acpi_device;
+  * @flags: GPIO initialization flags
+  * @gpioint: if %true this GPIO is of type GpioInt otherwise type is GpioIo
+  * @pin_config: pin bias as provided by ACPI
+- * @polarity: interrupt polarity as provided by ACPI
++ * @irq_polarity: interrupt polarity as provided by ACPI
++ * @active_low: pin polarity as provided by ACPI
+  * @triggering: triggering type as provided by ACPI
+  * @quirks: Linux specific quirks as provided by struct acpi_gpio_mapping
+  */
+@@ -25,7 +26,8 @@ struct acpi_gpio_info {
+ 	enum gpiod_flags flags;
+ 	bool gpioint;
+ 	int pin_config;
+-	int polarity;
++	int irq_polarity;
++	bool active_low;
+ 	int triggering;
+ 	unsigned int quirks;
+ };
 -- 
 2.29.0.rc2.309.g374f81d7ae-goog
 
