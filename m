@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F3429D2F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC05329D456
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727204AbgJ1VkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        id S1728127AbgJ1VvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbgJ1Vjr (ORCPT
+        with ESMTP id S1727787AbgJ1VvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:39:47 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98A9C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:39:46 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id e3so383153vsr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:39:46 -0700 (PDT)
+        Wed, 28 Oct 2020 17:51:01 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE3CC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:51:01 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id k65so1129030oih.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CnGd0myaGbrgCsckEbhxfAYv+vOjDrh9eSSRfyxpk2I=;
-        b=c2yfBekdm6PlkIPU7fgQMYHaICdliVF4WCcOVe9eK+JjB4GxYMiWaHeEX8dcq6vBG0
-         rKZ+0OzoEN0HL/qbvLEXmh/axfVlKsnfhqFbV7FqsP37QJG26JS7byOvmjc+4W33402B
-         q7dW/p6i8yiRrGPF238aGpIid4A05Z9z1BZ/It9LoHjRqIf10+JRQBFgcAzdpFKxte+/
-         d7x2V8OoITjpTLSbYy1GtjrfXUnTa370JZ4u3iLr/QZAjBB4iTTqRh7zTCD++yFo2zgK
-         xkvvk1MDMavsIN1OMfi4s1NwRmaitx6Y+bvpTEZlr3WZZMeO9or2Bp5emk9OnZdNJZBA
-         KzLw==
+        bh=8TBnjK5wZnIi4uA7A5I6QhsQOmsey9iIWx5yjyuhrm8=;
+        b=MV8tNFDch4xo8/kRa0T+S+PjvrdY2jBFYYkNZUMlzKayjmIGPayGPAsPHnL2e0wVEl
+         lAkfL1AOb+1O1sysTc+jk7G8UvgiSG7gef9E1E+FQt2n8Qh3g/tTH47flqyMP5yk3tHG
+         ZSr8WnmaLf5hRd2Od2W0qsr58TtEuuHpwV/F4xWCp9RgmBNTcpWCtdzbBxkpRNIyWmuE
+         zNLtt723PQ0ssr6ddcio9HHs4arvs7BIl26SR/kuCkwqHab6S7wvCJFWv2JFJlITP3Gr
+         1TzMCHJk1+6XKp/FIDuql//zanBThHE2OSNzXsD+Cab8MzpQBpBCN7nqUhW/IKLMU4Yu
+         EE7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CnGd0myaGbrgCsckEbhxfAYv+vOjDrh9eSSRfyxpk2I=;
-        b=TZjxiD/EMBEhBi8uLjouK1AqAYLf1tnRForvw1jx/bUHFrxJqsHzLD5/sTkLqX5nnc
-         Q3qEjDj16Vt4OPd2s42+MVR3LDe5sp6UWpIHlSKoutJ2voPCN/+PhXGshK+RTv1GAr9y
-         WGOmA9vC2iMUqpL/6l0CcmzuTfMOKFRc9EortfeQ1WASeVZ3T/MGBJCrXTa5o5nPjB2g
-         oqI0AhdXhUbtKAcqSyzotbObM7YlpP8Ztic0zv2eZ3fA+z1HT3lWqvfoXwtZj0Vbfa/U
-         UHarjBp3lL1MWwviqxe4632Kftt2TRQHzMpVPmmzdVurUX0H0e8HTxDMk/ls9bBYQGT4
-         7ipQ==
-X-Gm-Message-State: AOAM532bXp/eJ3yaFC3KHqsJZhWxZW8cjtAmt4WobsHJBcTYZKkIjUOJ
-        I8u41ZMZRnbVOabcO4SzPvwbvd5fc1imXp+u
-X-Google-Smtp-Source: ABdhPJx0ZEbc59P22w/IWoDfPC81ya5y4VjSU5yhWH21ZL+g+Jsh6+mKF6ExAhxIGweGK7qalmv/PQ==
-X-Received: by 2002:a17:902:6bc4:b029:d5:ef85:1a63 with SMTP id m4-20020a1709026bc4b02900d5ef851a63mr6985982plt.73.1603887653906;
-        Wed, 28 Oct 2020 05:20:53 -0700 (PDT)
+        bh=8TBnjK5wZnIi4uA7A5I6QhsQOmsey9iIWx5yjyuhrm8=;
+        b=NFiFUhykrQW44WXjagqHTcnWqr9FHFs6LTpTBvm4ZIJpBb2fgCF+MYyls3JCns/WqV
+         IfY+NGX6SIcjKsOcAML2P4MU7wDjSIl1SKHQUdA4GM7I8nkYepdjB0rcP6e1zSZA5QTs
+         STl6HabPSzteU5t4n0D4bKsWj5FMmSjp0WmeQkxx705xiaY4KezU6q5oR1090zU7QBSb
+         Apvey+J92ztIyo0nzGRoAUUAxc8kAuxmYhnpLPnDRAkSB7L7f0OaOWf569TUT5hivN1g
+         X5pAJOSY8tpRu2N9KNJj0iJbkDQLeD4HzRTRr56Jxsra0MmEIavtxAUUvK2UVoLybOlJ
+         jUrg==
+X-Gm-Message-State: AOAM531JTz5eQsgcsQy28Pr7dQH2wZtBPoFsTK/e9iWmQUr3tDKM3drF
+        p6hVxelJJTdy2bc1xvItsVX7mMOedtQPy+uS
+X-Google-Smtp-Source: ABdhPJxpBaJdcsWjbhnGsxbZWpYTjw5lI9EKLbjpsLDoVj2RuXMvZ21MXZsZeDe1oM2ySoOL62fDfQ==
+X-Received: by 2002:a17:90a:7c03:: with SMTP id v3mr6534197pjf.233.1603887656589;
+        Wed, 28 Oct 2020 05:20:56 -0700 (PDT)
 Received: from Monkey.fios-router.home ([47.144.162.13])
-        by smtp.gmail.com with ESMTPSA id a143sm6329137pfd.138.2020.10.28.05.20.51
+        by smtp.gmail.com with ESMTPSA id a143sm6329137pfd.138.2020.10.28.05.20.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 05:20:53 -0700 (PDT)
+        Wed, 28 Oct 2020 05:20:56 -0700 (PDT)
 From:   "John B. Wyatt IV" <jbwyatt4@gmail.com>
 To:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Nishanth Aravamudan <naravamudan@digitalocean.com>,
@@ -80,9 +80,9 @@ To:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen ' <tim.c.chen@intel.com>
 Cc:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
-Subject: [PATCH 7/8] sched: Replace spaces with tabs
-Date:   Wed, 28 Oct 2020 05:19:16 -0700
-Message-Id: <20201028121917.635203-8-jbwyatt4@gmail.com>
+Subject: [PATCH 8/8] sched: Add newlines after declarations
+Date:   Wed, 28 Oct 2020 05:19:17 -0700
+Message-Id: <20201028121917.635203-9-jbwyatt4@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201028121917.635203-1-jbwyatt4@gmail.com>
 References: <20201028121917.635203-1-jbwyatt4@gmail.com>
@@ -92,37 +92,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matches the convention of the surrounding code.
+Silences checkpatch warnings.
 
 Issue reported by checkpatch.
 
 Signed-off-by: John B. Wyatt IV <jbwyatt4@gmail.com>
 ---
- arch/x86/include/asm/thread_info.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index 45b6dbdf116e..c29b62ff7701 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -99,7 +99,7 @@ struct thread_info {
- #define TIF_SPEC_FORCE_UPDATE	23	/* Force speculation MSR update in context switch */
- #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
- #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
--#define TIF_UNSAFE_RET   	26	/* On return to process/guest, perform safety checks. */
-+#define TIF_UNSAFE_RET		26	/* On return to process/guest, perform safety checks. */
- #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
- #define TIF_SYSCALL_TRACEPOINT	28	/* syscall tracepoint instrumentation */
- #define TIF_ADDR32		29	/* 32-bit address space on 64 bits */
-@@ -130,7 +130,7 @@ struct thread_info {
- #define _TIF_SPEC_FORCE_UPDATE	(1 << TIF_SPEC_FORCE_UPDATE)
- #define _TIF_FORCED_TF		(1 << TIF_FORCED_TF)
- #define _TIF_BLOCKSTEP		(1 << TIF_BLOCKSTEP)
--#define _TIF_UNSAFE_RET 	(1 << TIF_UNSAFE_RET)
-+#define _TIF_UNSAFE_RET		(1 << TIF_UNSAFE_RET)
- #define _TIF_LAZY_MMU_UPDATES	(1 << TIF_LAZY_MMU_UPDATES)
- #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
- #define _TIF_ADDR32		(1 << TIF_ADDR32)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7bf20110fdf5..b38cdb54ec81 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5034,6 +5034,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	if (!fi_before) {
+ 		for_each_cpu(i, smt_mask) {
+ 			struct rq *rq_i = cpu_rq(i);
++
+ 			rq_i->cfs.min_vruntime_fi = rq_i->cfs.min_vruntime;
+ 		}
+ 	}
+@@ -5200,6 +5201,7 @@ next_class:;
+ 	if (!fi_before && rq->core->core_forceidle) {
+ 		for_each_cpu(i, smt_mask) {
+ 			struct rq *rq_i = cpu_rq(i);
++
+ 			rq_i->cfs.min_vruntime_fi = rq_i->cfs.min_vruntime;
+ 		}
+ 	}
 -- 
 2.28.0
 
