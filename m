@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A112729D8A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E727229D8E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388222AbgJ1Wfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388039AbgJ1Wfg (ORCPT
+        id S1730617AbgJ1Wkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:40:36 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37475 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388994AbgJ1Wjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:35:36 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95F2C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:35:35 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id m188so546420ybf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B1ciQs0tIUrzamgMFIiR9+0gbuBBSi5PbiyG4MiAZuo=;
-        b=fmJX2ejnDVI8dcSjhMLymoA7Z2Eqy+pQYeWFz5jhy63fgQy2ttCBz1h6z0zaM6SjnA
-         IXAwdr5gcrzyxaftD/b6bXEPCqeuu1x+S1NelVa/5nT9g8XINQaL4+rxRAyy7wvdjAa6
-         /BIGiYKHme6ALbRPbCAzPK72rEhO74wu+a6ks=
+        Wed, 28 Oct 2020 18:39:47 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m22so659757ots.4;
+        Wed, 28 Oct 2020 15:39:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B1ciQs0tIUrzamgMFIiR9+0gbuBBSi5PbiyG4MiAZuo=;
-        b=GuI4Rcsuffjj0jmLpqbVC+9PRneVoFFbuH1mO7wlWrof4ob5/OEYkXSBYyoYkCCKP5
-         z3BvJfjZZ8APLbeplWc3fu+6pu/b4vq/OuwKaiAHQ3um3tdLeCmt+nbAYGYjg1xy/edv
-         ExpfMWYiBEp8rZDwbm3+PAq03aC/zrOASBA95M4THZtwM8fYqO0YfspNEip1siX5C1eL
-         cbEFHIFoOdpiLJz9Ae21N86bqcBin7ZDkUGk4gGO31xutY8GFg3q9jlhVlkmt9uu52uQ
-         6FDMDj4dSw3qhe7Q3ZwoO69+fej+BjHNxMBzfXNhRGqv28S+mFQWCH0ceZrbQvWUdjNV
-         IZFA==
-X-Gm-Message-State: AOAM531orgpNDZ8jQXJtnigjlU6Q2mlfFDmTRyacJECjvL/7NU4hIWym
-        K3UOD3hZfGiRIYdLpyxT3Y7FSnxic+FlEw==
-X-Google-Smtp-Source: ABdhPJxIhDXad77eNUS6JVTDUuoz5BPKcp8l4YkIqQuFS+EEs1MCsoLBv8wRS1ctm7FG86BaJHPlkQ==
-X-Received: by 2002:a9d:1ee5:: with SMTP id n92mr5985068otn.152.1603898453779;
-        Wed, 28 Oct 2020 08:20:53 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d11sm2221331oti.69.2020.10.28.08.20.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 08:20:52 -0700 (PDT)
-Subject: Re: [PATCH v4 0/5] kselftest: Extend vDSO tests
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201026114945.48532-1-vincenzo.frascino@arm.com>
- <87y2js1tic.fsf@nanos.tec.linutronix.de>
- <127f025c-1ce5-0dcb-30a2-a26b4a8e5b35@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <c7f84f84-7e76-05ee-9fc6-915dec1d51f0@linuxfoundation.org>
-Date:   Wed, 28 Oct 2020 09:20:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=o6EwXQBfcMS/8hppO1O8Dg2kVJUq26B2UJyAmaDjbzk=;
+        b=sRd22aRNw6zB6w/gluvROBwovTKpgYdsfCTCx/XJI8t+aLYXKHUchELoq+O5iqicEx
+         B3lmmug5j/oQmHOgyR+4/EAJjkhmfhdIMsHp/6Qi3oLmGBh0ojWzA3YKviFFAP1a04v/
+         7rcLJC8RsnISJzeCghZWLhB6iAzqprh88lNEBiTyxQ2chWIZJgVP/zpT1eeDuZ70wxVQ
+         PtqDbYH8RcPaka8eqeLXYF2b5q6k6q/KDgAlJa7nG5dZClgq8jO33lxe7JJmwdRG3wnr
+         A+t4Rfe1J9ufjzfYulrUN6Af1R28k+a4OKB8df/QWV20Bgjgov+LG6Y7+nZGdt9cPqOU
+         P5+g==
+X-Gm-Message-State: AOAM533DGIIz9S5G7j0mqgcBQf66m5C+K1SShYVUAgq+UgoRMcEWrQj8
+        1GVLhzFl7nEc44X3mom8m36PEMobvw==
+X-Google-Smtp-Source: ABdhPJwj/TyDdKmqYTN4xYvs7B9zlCOZD1OUjrbHekbCo/ATjXWibtj5dLIGJwVVW7gCH9am8fXsDQ==
+X-Received: by 2002:a4a:ea4b:: with SMTP id j11mr6145795ooe.56.1603898585153;
+        Wed, 28 Oct 2020 08:23:05 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c20sm2076568otm.49.2020.10.28.08.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 08:23:04 -0700 (PDT)
+Received: (nullmailer pid 4050074 invoked by uid 1000);
+        Wed, 28 Oct 2020 15:23:03 -0000
+Date:   Wed, 28 Oct 2020 10:23:03 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 04/52] dt-bindings: memory: tegra20: emc: Document
+ nvidia,memory-controller property
+Message-ID: <20201028152303.GA4041470@bogus>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-5-digetx@gmail.com>
+ <20201027085417.GD4244@kozik-lap>
+ <54191034-dcb9-7cab-333b-5bb2553f0ed1@gmail.com>
+ <20201027193039.GA140636@kozik-lap>
 MIME-Version: 1.0
-In-Reply-To: <127f025c-1ce5-0dcb-30a2-a26b4a8e5b35@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201027193039.GA140636@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/20 6:50 PM, Shuah Khan wrote:
-> On 10/26/20 5:01 PM, Thomas Gleixner wrote:
->> On Mon, Oct 26 2020 at 11:49, Vincenzo Frascino wrote:
->>> This series extends the kselftests for the vDSO library making sure: 
->>> that
->>> they compile correctly on non x86 platforms, that they can be cross
->>> compiled and introducing new tests that verify the correctness of the
->>> library.
->>>
->>> The so extended vDSO kselftests have been verified on all the platforms
->>> supported by the unified vDSO library [1].
->>>
->>> The only new patch that this series introduces is the first one, 
->>> patch 2 and
->>> patch 3 have already been reviewed in past as part of other series 
->>> [2] [3].
->>>
->>> [1] 
->>> https://lore.kernel.org/lkml/20190621095252.32307-1-vincenzo.frascino@arm.com 
->>>
->>> [2] 
->>> https://lore.kernel.org/lkml/20190621095252.32307-26-vincenzo.frascino@arm.com 
->>>
->>> [3] 
->>> https://lore.kernel.org/lkml/20190523112116.19233-4-vincenzo.frascino@arm.com 
->>>
->>>
->>> It is possible to build the series using the command below:
->>>
->>> make -C tools/testing/selftests/ ARCH=<arch> TARGETS=vDSO CC=<compiler>
->>>
->>> A version of the series rebased on 5.10-rc1 to simplify the testing 
->>> can be found
->>> at [4].
->>>
->>> [4] https://git.gitlab.arm.com/linux-arm/linux-vf.git vdso/v4.tests
->>
->> Assuming Shuah will pick them up:
->>
->>    Acked-by: Thomas Gleixner <tglx@linutronix.de>
->>
+On Tue, Oct 27, 2020 at 08:30:39PM +0100, Krzysztof Kozlowski wrote:
+> On Tue, Oct 27, 2020 at 10:17:19PM +0300, Dmitry Osipenko wrote:
+> > 27.10.2020 11:54, Krzysztof Kozlowski пишет:
+> > > On Mon, Oct 26, 2020 at 01:16:47AM +0300, Dmitry Osipenko wrote:
+> > >> Tegra20 External Memory Controller talks to DRAM chips and it needs to be
+> > >> reprogrammed when memory frequency changes. Tegra Memory Controller sits
+> > >> behind EMC and these controllers are tightly coupled. This patch adds the
+> > >> new phandle property which allows to properly express connection of EMC
+> > >> and MC hardware in a device-tree, it also put the Tegra20 EMC binding on
+> > >> par with Tegra30+ EMC bindings, which is handy to have.
+> > >>
+> > >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > >> ---
+> > >>  .../bindings/memory-controllers/nvidia,tegra20-emc.txt          | 2 ++
+> > >>  1 file changed, 2 insertions(+)
+> > >>
+> > >> diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> > >> index 567cffd37f3f..1b0d4417aad8 100644
+> > >> --- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> > >> +++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.txt
+> > >> @@ -12,6 +12,7 @@ Properties:
+> > >>    irrespective of ram-code configuration.
+> > >>  - interrupts : Should contain EMC General interrupt.
+> > >>  - clocks : Should contain EMC clock.
+> > >> +- nvidia,memory-controller : Phandle of the Memory Controller node.
+> > > 
+> > > It looks like you adding a required property which is an ABI break.
+> > The T20 EMC driver is unused so far in upstream and it will become used
+> > only once this series is applied. Hence it's fine to change the ABI.
 > 
-> 
-> Thanks. I will pick these up.
+> The ABI is not about upstream, but downstream. 
 
+"If it's not upstream, it doesn't exist."
 
-Applied to linux-kselftest next
+Though we do have to account for out of tree users where the DT is not 
+in tree, but upstream drivers are used. Downstream as in vendor kernels 
+typically has loads of other crap.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=next
+> There are no other
+> upstreams using this ABI. Unless you have in mind that existing T20 EMC
+> driver was a noop, doing absolutely nothing, therefore there is no
+> breakage of any other users?
 
-thanks,
--- Shuah
+ABI breaks are ultimately up to the platform maintainers to decide.
 
+Rob
