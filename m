@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD7029F41A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FE629F458
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 19:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725807AbgJ2Saa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 29 Oct 2020 14:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34678 "EHLO mail.kernel.org"
+        id S1725893AbgJ2S6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 29 Oct 2020 14:58:01 -0400
+Received: from mga12.intel.com ([192.55.52.136]:54656 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725648AbgJ2Saa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:30:30 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F09DA20732;
-        Thu, 29 Oct 2020 18:30:28 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 14:30:26 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Qiujun Huang <hqjagain@gmail.com>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v3] tracing: Fix out of bounds write in get_trace_buf
-Message-ID: <20201029143026.420e25ec@gandalf.local.home>
-In-Reply-To: <20201029155714.3935-1-hqjagain@gmail.com>
-References: <20201029155714.3935-1-hqjagain@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725747AbgJ2S6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 29 Oct 2020 14:58:00 -0400
+IronPort-SDR: i4s4dyfQJldxuIR9ph6WqlOpyOYUAvqh/YFfI5a3P5GzVs3mtfh03lTRXkVWrWeLfWz6Bdl69O
+ ODnPtG9UxwXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9789"; a="147773401"
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="147773401"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 11:57:59 -0700
+IronPort-SDR: UK3Qydu0Rriw2Lo7rkzAIGtS40oJzJ0upAjn3JZf5bTC0ARUmAatHXnZVsbxQ8rN4RTn4Tniwb
+ 2NOiBB1j0uxg==
+X-IronPort-AV: E=Sophos;i="5.77,430,1596524400"; 
+   d="scan'208";a="536780539"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2020 11:57:58 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kYD8W-001S2D-Ve; Thu, 29 Oct 2020 20:59:00 +0200
+Date:   Wed, 28 Oct 2020 18:27:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peng Hao <peng.hao2@zte.com.cn>
+Subject: Re: [PATCH v1 4/5] misc: pvpanic: Combine ACPI and platform drivers
+Message-ID: <20201028162727.GX4077@smile.fi.intel.com>
+References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+ <20201027175806.20305-4-andriy.shevchenko@linux.intel.com>
+ <CAK8P3a3XgTD2bFej0=WsD3a=uMur36_C71EiOvw3wb5A9QPAfQ@mail.gmail.com>
+ <CAK8P3a2L2FWj2z6w_cgz41sg=AXJJ2gEC8Z+wC8FUY6Uq9TdDw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2L2FWj2z6w_cgz41sg=AXJJ2gEC8Z+wC8FUY6Uq9TdDw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 23:57:14 +0800
-Qiujun Huang <hqjagain@gmail.com> wrote:
-
-> The subscript should be nesting - 1, as nesting had self-added.
-
-Thanks Qiujun! I'll add this to my urgent queue, and mark it for stable.
-
-I'll update the change log to state:
-
-"The nesting count of trace_printk allows for 4 levels of nesting. The
-nesting counter starts at zero and is incremented before being used to
-retrieve the current context's buffer. But the index to the buffer uses the
-nesting counter after it was incremented, and not its original number,
-which in needs to do."
-
--- Steve
-
+On Wed, Oct 28, 2020 at 04:51:19PM +0100, Arnd Bergmann wrote:
+> (resending from the kernel.org address because of bounces)
 > 
-> Fixes: e2ace001176dc ("tracing: Choose static tp_printk buffer by explicit nesting count")
-> Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-> ---
-> v3:
-> Modify the way of array reference instead.
-> v2:
-> Fix a typo in the title.
-> ---
->  kernel/trace/trace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 528971714fc6..daa96215e294 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -3132,7 +3132,7 @@ static char *get_trace_buf(void)
->  
->  	/* Interrupts must see nesting incremented before we use the buffer */
->  	barrier();
-> -	return &buffer->buffer[buffer->nesting][0];
-> +	return &buffer->buffer[buffer->nesting - 1][0];
->  }
->  
->  static void put_trace_buf(void)
+> On Tue, Oct 27, 2020 at 11:07 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Tue, Oct 27, 2020 at 6:58 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > >  static int pvpanic_mmio_probe(struct platform_device *pdev)
+> > >  {
+> > > -       base = devm_platform_ioremap_resource(pdev, 0);
+> > > +       struct device *dev = &pdev->dev;
+> > > +       struct resource *res;
+> > > +
+> > > +       res = platform_get_mem_or_io_resource(pdev, 0);
+> > > +       if (res && resource_type(res) == IORESOURCE_IO)
+> > > +               base = devm_ioport_map(dev, res->start, resource_size(res));
+> > > +       else
+> > > +               base = devm_ioremap_resource(dev, res);
+> >
+> > Maybe this could already be combined into a devm_platform_iomap_resource()
+> > similar to pci_iomap()?
+
+Why not as a next iteration, because I don't see right now many users of this.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
