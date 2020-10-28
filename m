@@ -2,82 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7591429DF75
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A6929E05C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404069AbgJ2BB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:01:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731192AbgJ1WR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:27 -0400
-Received: from localhost (i15-lef02-th2-89-83-213-3.ft.lns.abo.bbox.fr [89.83.213.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16DBE2416E;
-        Wed, 28 Oct 2020 13:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603892063;
-        bh=DberZiErRVOoIhqno/qoc+dXE44GikMCW9mm2pyaM0c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hdJOXD2GirTHcSEv+h2FezILG4lelgQcsvMT01NY7rMhI4eBAPJufKv43GiXfe2sL
-         YmqfoyOx8V2kggfcfGwugJyjFd2EmKXHgQwgWIwxC+ONrq8OXwiMePOfX2+3n0sWqF
-         vsYpSBkjsJYUu5RTMRbnS7EGb+/EDu93mYxRNiMY=
-Date:   Wed, 28 Oct 2020 14:34:20 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        paulmck@kernel.org, hch@lst.de, axboe@kernel.dk,
-        chris@chris-wilson.co.uk, davem@davemloft.net, kuba@kernel.org,
-        fweisbec@gmail.com, oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [PATCH v3 4/6] irq_work: Unconditionally build on SMP
-Message-ID: <20201028133420.GD229044@lothringen>
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.464733855@infradead.org>
+        id S1729695AbgJ1WE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:04:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52557 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729493AbgJ1WCG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603922525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o9/CLvMtl/VDe8FAQKlYw2/08Jd6hZteFLUw3bqy7TU=;
+        b=db12ESVBae3v4+CsABMTMO7X5KyT2VlO8gDHQAzB1e7G5DHjXiYCs5UMtIDQTjlC3xvG4R
+        FiHhEMOm1QfoSLF4UF/MTSRwZuGC1boZ58EWWtQlhFE/WSWvfN+wo2e1SZX0Yi1AfDysl4
+        MWfs9fEWRNMElmZSCY7Cgwst35X7Rmk=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-_huvMD0sMyablBtIVJL7XQ-1; Wed, 28 Oct 2020 09:59:07 -0400
+X-MC-Unique: _huvMD0sMyablBtIVJL7XQ-1
+Received: by mail-oi1-f200.google.com with SMTP id 204so2246022oid.21
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 06:59:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=o9/CLvMtl/VDe8FAQKlYw2/08Jd6hZteFLUw3bqy7TU=;
+        b=pvAJup28SoZEFEzRlbxAISRkat9KP4ryoU1WYyfcTFvnbHZnzTlFFgXi2mXzdbWpVQ
+         Lhar7OOxWCJUqe7c2b1muclMtYoYtv3NSKrFKlbuxH1/hzQEcd8ZYYQ111rL6eKAmVjC
+         LlYdqMrljxxhVtwRnQ/6yeZuq7Vjr/ApKGgtKtlSs40vYdIWS1ewN53awfUQv1kYquPb
+         MdQNOF5VGWk/GdYC5w14n8OnhTimHjNVy6PZD6nPCXia8E+GraHIHM1GLlrWzxRYaG3r
+         C7VMBdIvcSGMa3sXEG/towwJ4VR9QYhfkIcpduRL3pRaqdsxopSMWMGQI3u0LrjIoOSB
+         bZKw==
+X-Gm-Message-State: AOAM53012IT2Wx9qpkHVbWzdRA9QNY+XVMxDBrMpW97OXoY7iZxjLSCG
+        K6pj3W7KcKn/wZ9hUhVE0Ly9z3NkOvz2oobAPKuYfFhlcKeRsI3H4NZHEe0foUzvlMtHeusnJP+
+        5Cdyi7c/OteZwrejQn3A2JewB
+X-Received: by 2002:a05:6830:1009:: with SMTP id a9mr3705439otp.312.1603893546068;
+        Wed, 28 Oct 2020 06:59:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzeg7tSjhUnhor6fkPxapZ8CezKup/neyZauptgkF/vARmTGWA1Kn0lF3+D4cF2Xma1oQSK6Q==
+X-Received: by 2002:a05:6830:1009:: with SMTP id a9mr3705422otp.312.1603893545799;
+        Wed, 28 Oct 2020 06:59:05 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c20sm2031463otm.49.2020.10.28.06.59.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 06:59:05 -0700 (PDT)
+Subject: Re: [PATCH] net: cls_api: remove unneeded local variable in
+ tc_dump_chain()
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+References: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <d956a5a5-c064-3fd4-5e78-809638ba14ef@redhat.com>
+Date:   Wed, 28 Oct 2020 06:59:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028111221.464733855@infradead.org>
+In-Reply-To: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 12:07:11PM +0100, Peter Zijlstra wrote:
 
-This may need a changelog :-)
-
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On 10/28/20 4:35 AM, Lukas Bulwahn wrote:
+> make clang-analyzer on x86_64 defconfig caught my attention with:
+>
+> net/sched/cls_api.c:2964:3: warning: Value stored to 'parent' is never read
+>   [clang-analyzer-deadcode.DeadStores]
+>                 parent = 0;
+>                 ^
+>
+> net/sched/cls_api.c:2977:4: warning: Value stored to 'parent' is never read
+>   [clang-analyzer-deadcode.DeadStores]
+>                         parent = q->handle;
+>                         ^
+>
+> Commit 32a4f5ecd738 ("net: sched: introduce chain object to uapi")
+> introduced tc_dump_chain() and this initial implementation already
+> contained these unneeded dead stores.
+>
+> Simplify the code to make clang-analyzer happy.
+>
+> As compilers will detect these unneeded assignments and optimize this
+> anyway, the resulting binary is identical before and after this change.
+>
+> No functional change. No change in object code.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  kernel/Makefile   |    1 +
->  kernel/irq_work.c |    3 +++
->  2 files changed, 4 insertions(+)
-> 
-> --- a/kernel/Makefile
-> +++ b/kernel/Makefile
-> @@ -105,6 +105,7 @@ obj-$(CONFIG_TRACE_CLOCK) += trace/
->  obj-$(CONFIG_RING_BUFFER) += trace/
->  obj-$(CONFIG_TRACEPOINTS) += trace/
->  obj-$(CONFIG_IRQ_WORK) += irq_work.o
-> +obj-$(CONFIG_SMP) += irq_work.o
->  obj-$(CONFIG_CPU_PM) += cpu_pm.o
->  obj-$(CONFIG_BPF) += bpf/
->  obj-$(CONFIG_KCSAN) += kcsan/
-> --- a/kernel/irq_work.c
-> +++ b/kernel/irq_work.c
-> @@ -20,6 +20,7 @@
->  #include <linux/smp.h>
->  #include <asm/processor.h>
+> applies cleanly on current master and next-20201028
+>
+> Jamal, Cong, Jiri, please ack.
+> David, Jakub, please pick this minor non-urgent clean-up patch.
+>
+>  net/sched/cls_api.c | 16 +++-------------
+>  1 file changed, 3 insertions(+), 13 deletions(-)
+>
+> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+> index faeabff283a2..8ce830ca5f92 100644
+> --- a/net/sched/cls_api.c
+> +++ b/net/sched/cls_api.c
+> @@ -2940,7 +2940,6 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
+>  	struct tcf_chain *chain;
+>  	long index_start;
+>  	long index;
+> -	u32 parent;
+>  	int err;
 >  
-> +#ifdef CONFIG_IRQ_WORK
+>  	if (nlmsg_len(cb->nlh) < sizeof(*tcm))
+> @@ -2955,13 +2954,6 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
+>  		block = tcf_block_refcnt_get(net, tcm->tcm_block_index);
+>  		if (!block)
+>  			goto out;
+> -		/* If we work with block index, q is NULL and parent value
+> -		 * will never be used in the following code. The check
+> -		 * in tcf_fill_node prevents it. However, compiler does not
+> -		 * see that far, so set parent to zero to silence the warning
+> -		 * about parent being uninitialized.
+> -		 */
+> -		parent = 0;
+>  	} else {
+>  		const struct Qdisc_class_ops *cops;
+>  		struct net_device *dev;
+> @@ -2971,13 +2963,11 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
+>  		if (!dev)
+>  			return skb->len;
 >  
->  static DEFINE_PER_CPU(struct llist_head, raised_list);
->  static DEFINE_PER_CPU(struct llist_head, lazy_list);
-> @@ -212,3 +213,5 @@ void irq_work_sync(struct irq_work *work
->  		cpu_relax();
->  }
->  EXPORT_SYMBOL_GPL(irq_work_sync);
+> -		parent = tcm->tcm_parent;
+> -		if (!parent) {
+> +		if (!tcm->tcm_parent)
+>  			q = dev->qdisc;
+> -			parent = q->handle;
+
+This looks like a an unused error handler.
+
+and the later call to
+
+if (TC_H_MIN(tcm->tcm_parent)
+
+maybe should be
+
+if (TC_H_MIN(parent))
+
+so I am skeptical that this change is ok because the code around it looks buggy.
+
+Tom
+
+> -		} else {
+> +		else
+>  			q = qdisc_lookup(dev, TC_H_MAJ(tcm->tcm_parent));
+> -		}
 > +
-> +#endif /* CONFIG_IRQ_WORK */
-> 
-> 
+>  		if (!q)
+>  			goto out;
+>  		cops = q->ops->cl_ops;
+
