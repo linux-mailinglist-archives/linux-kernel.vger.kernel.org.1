@@ -2,132 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E5429D94B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DCB29D8AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389618AbgJ1Wui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389609AbgJ1Wue (ORCPT
+        id S2388262AbgJ1Wfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:35:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57618 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732560AbgJ1We2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:50:34 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ABCC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:34 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id j24so1166508ejc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:50:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T/mISl4pg2C3Yg5kNFUKUKGfi4SXF1l5cc8dUSNajpE=;
-        b=lVPgk539IYHFg5Ur5L1PfIGULcCeChL7FwHoUoDv1+mm6SG4DS2Xy1L/B/F7fd5+mP
-         f5ADCVWTqB+KUcGrgPIXDxiVUctXLtzHuZJGtBP5hwmDhc8Okj9Cg3KvFn/EqBSoInjW
-         HBvkqW1DpVt/VW6Hw8UQ4zfyvuAx8OcUMB6CjXeBvwIAkM5qMGZez67+8iuB134XJffR
-         APakBda1Pa9buNE9GBl9n8v3BTW0+g4X/Hv0dLM8xCP+lhZ2VYUObPhvXmy/kZgdY027
-         pyXF3k/yAbW7Dy8sg/6pJ/vWonHbtg6z7Hq1WNj2rRh60pk+h93L2Pe7NTrC2V0LJ983
-         H2WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T/mISl4pg2C3Yg5kNFUKUKGfi4SXF1l5cc8dUSNajpE=;
-        b=rA1xfvlZSR02FSILTmgKLUYfwPPMZLJKEdWnakwZ8VP5Ndtdh8toSODqcO1kkOd1pw
-         Q0sX1yb5lB7SctWQqL1mLWpFo8rzqGe/qf61rR1GPhjspwfuttNsTKHIaPWrK+S7yiu0
-         9niWJfqwb1+tnWRgus58RphGEkLu5ic9uTpCPXpTGYt1Htfhs1BWtUAKVMhDDOitv3Js
-         0wmvUQiE5qO7aeLhUWfZ0MuiuPu02+ebt3xK061UgNxZCcLAw26/QFhbTDSgNIm6ucqj
-         YosW09WTN0fmigiCXeTOWFwPYRfVR2PqGxhAalADEbLe8vSBR3KwbtSk+5Eei1X7qtMg
-         NNqw==
-X-Gm-Message-State: AOAM531s5Ums3F8JLQUf5P828OvDX+e8qVFxS5As0fBKYqMYB8dS5cek
-        8FZuNYfCGe+EbvEbqoi9PJcaO9kIo42PkB5T
-X-Google-Smtp-Source: ABdhPJwaYxESH8zh1v1ocaDitaPtaxX2VCV1QfjTTXry7ovuw85IrQFJV99PZPRQnGLR73/7yfPDnw==
-X-Received: by 2002:a5d:5387:: with SMTP id d7mr8316847wrv.224.1603885603821;
-        Wed, 28 Oct 2020 04:46:43 -0700 (PDT)
-Received: from localhost.localdomain (dh207-98-200.xnet.hr. [88.207.98.200])
-        by smtp.googlemail.com with ESMTPSA id f11sm5873604wml.43.2020.10.28.04.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 04:46:43 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH v2] watchdog: qcom_wdt: set WDOG_HW_RUNNING bit when appropriate
-Date:   Wed, 28 Oct 2020 12:46:35 +0100
-Message-Id: <20201028114635.7570-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.28.0
+        Wed, 28 Oct 2020 18:34:28 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603886321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gw4bPdg7UIOF5tNu1YmicaVB3DTvzo6EZfXK3Th8+c4=;
+        b=MX4TukT1xfBkkrDuCYiqJwBBwTEdBuYeGp0aqmBiJx3tCI7IaWX44lUiRI+dQQTcZvt0IB
+        AJiKk4F+rCczmw5D1FZQrQ+P9f3GLgwLwTzvzUKt/1pV5KXCZO02Hy/8iM3bgmTl+Bh4OG
+        BjGVc0+FxB5aueTktxjp+0u89qtHbX9HhdTWK/Pz2mD8Ifn/NhsMxScTuhePEV1MgsUszr
+        Ezrk4At6VJXF+nJNtd9+UnUbKl7Se/VjPvArl3R7JZlp/gSenZ5mxlCHU4HR72XsvHl5y6
+        h/iAgzm8gZovAYkyghdVQYQPk+88K9XtTGhHi8/Ni5WmPa9TdjBsviFtX+qYgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603886321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gw4bPdg7UIOF5tNu1YmicaVB3DTvzo6EZfXK3Th8+c4=;
+        b=Lr35cQttKvFG91m77VZgOyBgsMALCGkOZuui8Hc/E4FnPTx5SjHW8CAsvfrhwrCO5ZzZQP
+        7eIcfAheP6b200Cw==
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Guilherme Piccoli <gpiccoli@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH 0/3] warn and suppress irqflood
+In-Reply-To: <CAFgQCTtnKB+p5uhRu3JpmBvHbQ8Vhv0TrKek9_3CWbtbcyM1Kw@mail.gmail.com>
+References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com> <871rhq7j1h.fsf@nanos.tec.linutronix.de> <CAFgQCTvFwvvtPE0Eow4cebCEe5OD5OhgAQarckpbFc38Bphaag@mail.gmail.com> <CAHD1Q_x99XW1zDr5HpVR27F_ksHLkaxc2W83e-N6F_xLYKyGbQ@mail.gmail.com> <87y2js3ghv.fsf@nanos.tec.linutronix.de> <CAFgQCTtnKB+p5uhRu3JpmBvHbQ8Vhv0TrKek9_3CWbtbcyM1Kw@mail.gmail.com>
+Date:   Wed, 28 Oct 2020 12:58:41 +0100
+Message-ID: <87tuueftou.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the watchdog hardware is enabled/running during boot, e.g.
-due to a boot loader configuring it, we must tell the
-watchdog framework about this fact so that it can ping the
-watchdog until userspace opens the device and takes over
-control.
+On Wed, Oct 28 2020 at 14:02, Pingfan Liu wrote:
+> On Tue, Oct 27, 2020 at 3:59 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> Also Liu's patch only works if:
+>>
+>>   1) CONFIG_IRQ_TIME_ACCOUNTING is enabled
+>
+> I wonder whether it can not be a default option or not by the following method:
+>   DEFINE_STATIC_KEY_FALSE(irqtime_account), and enable it according to
+> a boot param.
 
-Do so using the WDOG_HW_RUNNING flag that exists for exactly
-that use-case.
+How so?
 
-Given the watchdog driver core doesn't know what timeout was
-originally set by whoever started the watchdog (boot loader),
-we make sure to update the timeout in the hardware according
-to what the watchdog core thinks it is.
+	config IRQ_TIME_ACCOUNTING
+		depends on HAVE_IRQ_TIME_ACCOUNTING && !VIRT_CPU_ACCOUNTING_NATIVE
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
+> This will have no impact on performance with the disabled branch.
+> Meanwhile users can easily turn on the option to detect an irq flood
+> without  recompiling the kernel.
+>
+> If it is doable, I will rework only on [1/2].
+
+See above :)
+
+>>   2) the runaway interrupt has been requested by the relevant driver in
+>>      the dump kernel.
+>
+> Yes, it raises a big challenge to my method. Kdump kernel miss the
+> whole picture of the first kernel's irq routing.
+
+Correct. If there is anything stale then you get what Guilherme
+observed. But the irq core can do nothing about that.
+
+Something like the completly untested below should work independent of
+config options.
+
+Thanks,
+
+        tglx
 ---
-Changes in v2:
-* Correct authorship
+ include/linux/irqdesc.h |    4 ++
+ kernel/irq/manage.c     |    3 +
+ kernel/irq/spurious.c   |   74 +++++++++++++++++++++++++++++++++++-------------
+ 3 files changed, 61 insertions(+), 20 deletions(-)
 
- drivers/watchdog/qcom-wdt.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-index ab7465d186fd..28c93a918e38 100644
---- a/drivers/watchdog/qcom-wdt.c
-+++ b/drivers/watchdog/qcom-wdt.c
-@@ -152,6 +152,13 @@ static int qcom_wdt_restart(struct watchdog_device *wdd, unsigned long action,
- 	return 0;
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -30,6 +30,8 @@ struct pt_regs;
+  * @tot_count:		stats field for non-percpu irqs
+  * @irq_count:		stats field to detect stalled irqs
+  * @last_unhandled:	aging timer for unhandled count
++ * @storm_count:	Counter for irq storm detection
++ * @storm_checked:	Timestamp for irq storm detection
+  * @irqs_unhandled:	stats field for spurious unhandled interrupts
+  * @threads_handled:	stats field for deferred spurious detection of threaded handlers
+  * @threads_handled_last: comparator field for deferred spurious detection of theraded handlers
+@@ -65,6 +67,8 @@ struct irq_desc {
+ 	unsigned int		tot_count;
+ 	unsigned int		irq_count;	/* For detecting broken IRQs */
+ 	unsigned long		last_unhandled;	/* Aging timer for unhandled count */
++	unsigned long		storm_count;
++	unsigned long		storm_checked;
+ 	unsigned int		irqs_unhandled;
+ 	atomic_t		threads_handled;
+ 	int			threads_handled_last;
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1581,6 +1581,9 @@ static int
+ 	if (!shared) {
+ 		init_waitqueue_head(&desc->wait_for_threads);
+ 
++		/* Take a timestamp for interrupt storm detection */
++		desc->storm_checked = jiffies;
++
+ 		/* Setup the type (level, edge polarity) if configured: */
+ 		if (new->flags & IRQF_TRIGGER_MASK) {
+ 			ret = __irq_set_trigger(desc,
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -21,6 +21,7 @@ static void poll_spurious_irqs(struct ti
+ static DEFINE_TIMER(poll_spurious_irq_timer, poll_spurious_irqs);
+ static int irq_poll_cpu;
+ static atomic_t irq_poll_active;
++static unsigned long irqstorm_limit __ro_after_init;
+ 
+ /*
+  * We wait here for a poller to finish.
+@@ -189,18 +190,21 @@ static inline int bad_action_ret(irqretu
+  * (The other 100-of-100,000 interrupts may have been a correctly
+  *  functioning device sharing an IRQ with the failing one)
+  */
+-static void __report_bad_irq(struct irq_desc *desc, irqreturn_t action_ret)
++static void __report_bad_irq(struct irq_desc *desc, irqreturn_t action_ret,
++			     bool storm)
+ {
+ 	unsigned int irq = irq_desc_get_irq(desc);
+ 	struct irqaction *action;
+ 	unsigned long flags;
+ 
+-	if (bad_action_ret(action_ret)) {
+-		printk(KERN_ERR "irq event %d: bogus return value %x\n",
+-				irq, action_ret);
+-	} else {
+-		printk(KERN_ERR "irq %d: nobody cared (try booting with "
++	if (!storm) {
++		if (bad_action_ret(action_ret)) {
++			pr_err("irq event %d: bogus return value %x\n",
++			       irq, action_ret);
++		} else {
++			pr_err("irq %d: nobody cared (try booting with "
+ 				"the \"irqpoll\" option)\n", irq);
++		}
+ 	}
+ 	dump_stack();
+ 	printk(KERN_ERR "handlers:\n");
+@@ -228,7 +232,7 @@ static void report_bad_irq(struct irq_de
+ 
+ 	if (count > 0) {
+ 		count--;
+-		__report_bad_irq(desc, action_ret);
++		__report_bad_irq(desc, action_ret, false);
+ 	}
  }
  
-+static int qcom_wdt_is_running(struct watchdog_device *wdd)
+@@ -267,6 +271,33 @@ try_misrouted_irq(unsigned int irq, stru
+ 	return action && (action->flags & IRQF_IRQPOLL);
+ }
+ 
++static void disable_stuck_irq(struct irq_desc *desc, irqreturn_t action_ret,
++			      const char *reason, bool storm)
 +{
-+	struct qcom_wdt *wdt = to_qcom_wdt(wdd);
-+
-+	return (readl(wdt_addr(wdt, WDT_EN)) & 1);
++	__report_bad_irq(desc, action_ret, storm);
++	pr_emerg("Disabling %s IRQ #%d\n", reason, irq_desc_get_irq(desc));
++	desc->istate |= IRQS_SPURIOUS_DISABLED;
++	desc->depth++;
++	irq_disable(desc);
 +}
 +
- static const struct watchdog_ops qcom_wdt_ops = {
- 	.start		= qcom_wdt_start,
- 	.stop		= qcom_wdt_stop,
-@@ -294,6 +301,21 @@ static int qcom_wdt_probe(struct platform_device *pdev)
- 	wdt->wdd.timeout = min(wdt->wdd.max_timeout, 30U);
- 	watchdog_init_timeout(&wdt->wdd, 0, dev);
- 
-+	if (qcom_wdt_is_running(&wdt->wdd)) {
-+		/*
-+		 * Make sure to apply timeout from watchdog core, taking
-+		 * the prescaler of this driver here into account (the
-+		 * boot loader might be using a different prescaler).
-+		 *
-+		 * To avoid spurious resets because of different scaling,
-+		 * we first disable the watchdog, set the new prescaler
-+		 * and timeout, and then re-enable the watchdog.
-+		 */
-+		qcom_wdt_stop(&wdt->wdd);
-+		qcom_wdt_start(&wdt->wdd);
-+		set_bit(WDOG_HW_RUNNING, &wdt->wdd.status);
++/* Interrupt storm detector for runaway interrupts (handled or not). */
++static bool irqstorm_detected(struct irq_desc *desc)
++{
++	unsigned long now = jiffies;
++
++	if (++desc->storm_count < irqstorm_limit) {
++		if (time_after(now, desc->storm_checked + HZ)) {
++			desc->storm_count = 0;
++			desc->storm_checked = now;
++		}
++		return false;
 +	}
 +
- 	ret = devm_watchdog_register_device(dev, &wdt->wdd);
- 	if (ret)
- 		return ret;
--- 
-2.28.0
++	disable_stuck_irq(desc, IRQ_NONE, "runaway", true);
++	return true;
++}
++
+ #define SPURIOUS_DEFERRED	0x80000000
+ 
+ void note_interrupt(struct irq_desc *desc, irqreturn_t action_ret)
+@@ -403,24 +434,16 @@ void note_interrupt(struct irq_desc *des
+ 			desc->irqs_unhandled -= ok;
+ 	}
+ 
++	if (unlikely(irqstorm_limit && irqstorm_detected(desc)))
++		return;
++
+ 	desc->irq_count++;
+ 	if (likely(desc->irq_count < 100000))
+ 		return;
+ 
+ 	desc->irq_count = 0;
+ 	if (unlikely(desc->irqs_unhandled > 99900)) {
+-		/*
+-		 * The interrupt is stuck
+-		 */
+-		__report_bad_irq(desc, action_ret);
+-		/*
+-		 * Now kill the IRQ
+-		 */
+-		printk(KERN_EMERG "Disabling IRQ #%d\n", irq);
+-		desc->istate |= IRQS_SPURIOUS_DISABLED;
+-		desc->depth++;
+-		irq_disable(desc);
+-
++		disable_stuck_irq(desc, action_ret, "unhandled", false);
+ 		mod_timer(&poll_spurious_irq_timer,
+ 			  jiffies + POLL_SPURIOUS_IRQ_INTERVAL);
+ 	}
+@@ -462,5 +485,16 @@ static int __init irqpoll_setup(char *st
+ 				"performance\n");
+ 	return 1;
+ }
+-
+ __setup("irqpoll", irqpoll_setup);
++
++static int __init irqstorm_setup(char *arg)
++{
++	int res = kstrtoul(arg, 0, &irqstorm_limit);
++
++	if (!res) {
++		pr_info("Interrupt storm detector enabled. Limit=%lu / s\n",
++			irqstorm_limit);
++	}
++	return !!res;
++}
++__setup("irqstorm_limit", irqstorm_setup);
+
+
 
