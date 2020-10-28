@@ -2,191 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D46629E12C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B607D29E0C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgJ2ByM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:54:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:38652 "EHLO foss.arm.com"
+        id S1729630AbgJ1WDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:03:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:38790 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728679AbgJ1V5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:57:15 -0400
+        id S1729329AbgJ1WCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:16 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDF351A00;
-        Wed, 28 Oct 2020 07:51:11 -0700 (PDT)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55C003F66E;
-        Wed, 28 Oct 2020 07:51:09 -0700 (PDT)
-Subject: Re: [PATCH v2 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     Will Deacon <will@kernel.org>, John Stultz <john.stultz@linaro.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2E021A25;
+        Wed, 28 Oct 2020 07:55:19 -0700 (PDT)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 929253F66E;
+        Wed, 28 Oct 2020 07:55:18 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:55:16 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Elliot Berman <eberman@codeaurora.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Todd Kjos <tkjos@google.com>
-References: <20200625001039.56174-1-john.stultz@linaro.org>
- <20200625001039.56174-6-john.stultz@linaro.org>
- <20200702141825.GA16941@willie-the-truck>
- <CALAqxLVZ2EhutYjOt7Be1RgnYwHT6-4m6DxA-t1wuxuSy=6yDQ@mail.gmail.com>
- <20200710075411.GA30011@willie-the-truck>
- <CALAqxLWadLrxckRHRAR0Q417RnFKquQJbRfO_DLEVH56cykRow@mail.gmail.com>
- <20200713204133.GA3731@willie-the-truck>
- <CALAqxLUDVEq4ds2Wbic6uaK3=dELKKO4eGQxjHFFz19GeUFd_w@mail.gmail.com>
- <20201028135118.GA28554@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <ae6ba27a-d3c8-8b98-c263-ec779ef35738@arm.com>
-Date:   Wed, 28 Oct 2020 14:51:03 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
+Message-ID: <20201028145516.23lm66mora5b3wqr@e107158-lin>
+References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
+ <87v9f04n8r.fsf@nanos.tec.linutronix.de>
+ <a6d7f84679240fcf580520230a88c058@codeaurora.org>
+ <20201026171224.GV2611@hirez.programming.kicks-ass.net>
+ <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201028135118.GA28554@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a9fa1f8d-52c7-adca-9087-160b1ecda6b8@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-28 13:51, Will Deacon wrote:
-> On Tue, Oct 27, 2020 at 10:53:47PM -0700, John Stultz wrote:
->> On Mon, Jul 13, 2020 at 1:41 PM Will Deacon <will@kernel.org> wrote:
->>> On Fri, Jul 10, 2020 at 03:21:53PM -0700, John Stultz wrote:
->>>> On Fri, Jul 10, 2020 at 12:54 AM Will Deacon <will@kernel.org> wrote:
->>>>> On Thu, Jul 09, 2020 at 08:28:45PM -0700, John Stultz wrote:
->>>>>> On Thu, Jul 2, 2020 at 7:18 AM Will Deacon <will@kernel.org> wrote:
->>>>>>> On Thu, Jun 25, 2020 at 12:10:39AM +0000, John Stultz wrote:
->>>>>>>> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
->>>>>>>> index b510f67dfa49..714893535dd2 100644
->>>>>>>> --- a/drivers/iommu/Kconfig
->>>>>>>> +++ b/drivers/iommu/Kconfig
->>>>>>>> @@ -381,6 +381,7 @@ config SPAPR_TCE_IOMMU
->>>>>>>>   config ARM_SMMU
->>>>>>>>        tristate "ARM Ltd. System MMU (SMMU) Support"
->>>>>>>>        depends on (ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)) && MMU
->>>>>>>> +     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
->>>>>>>>        select IOMMU_API
->>>>>>>>        select IOMMU_IO_PGTABLE_LPAE
->>>>>>>>        select ARM_DMA_USE_IOMMU if ARM
->>>>>>>
->>>>>>> This looks like a giant hack. Is there another way to handle this?
->>>>>>
->>>>>> Sorry for the slow response here.
->>>>>>
->>>>>> So, I agree the syntax looks strange (requiring a comment obviously
->>>>>> isn't a good sign), but it's a fairly common way to ensure drivers
->>>>>> don't get built in if they optionally depend on another driver that
->>>>>> can be built as a module.
->>>>>>    See "RFKILL || !RFKILL", "EXTCON || !EXTCON", or "USB_GADGET ||
->>>>>> !USB_GADGET" in various Kconfig files.
->>>>>>
->>>>>> I'm open to using a different method, and in a different thread you
->>>>>> suggested using something like symbol_get(). I need to look into it
->>>>>> more, but that approach looks even more messy and prone to runtime
->>>>>> failures. Blocking the unwanted case at build time seems a bit cleaner
->>>>>> to me, even if the syntax is odd.
->>>>>
->>>>> Maybe just split it out then, so that the ARM_SMMU entry doesn't have this,
->>>>> as that driver _really_ doesn't care about SoC details like this. In other
->>>>> words, add a new entry along the lines of:
->>>>>
->>>>>          config ARM_SMMU_QCOM_IMPL
->>>>>          default y
->>>>>          #if QCOM_SCM=m this can't be =y
->>>>>          depends on ARM_SMMU & (QCOM_SCM || !QCOM_SCM)
->>>>>
->>>>> and then have arm-smmu.h provide a static inline qcom_smmu_impl_init()
->>>>> which returns -ENODEV if CONFIG_ARM_SMMU_QCOM_IMPL=n and hack the Makefile
->>>>> so that we don't bother to compile arm-smmu-qcom.o in that case.
->>>>>
->>>>> Would that work?
->>>>
->>>> I think this proposal still has problems with the directionality of the call.
->>>>
->>>> The arm-smmu-impl.o calls to arm-smmu-qcom.o which calls qcom_scm.o
->>>> So if qcom_scm.o is part of a module, the calling code in
->>>> arm-smmu-qcom.o also needs to be a module, which means CONFIG_ARM_SMMU
->>>> needs to be a module.
->>>>
->>>> I know you said the arm-smmu driver doesn't care about SoC details,
->>>> but the trouble is that currently the arm-smmu driver does directly
->>>> call the qcom-scm code. So it is a real dependency. However, if
->>>> QCOM_SCM is not configured, it calls stubs and that's ok.  In that
->>>> way, the "depends on QCOM_SCM || !QCOM_SCM" line actually makes sense.
->>>> It looks terrible because we're used to boolean logic, but it's
->>>> ternary.
->>>
->>> Yes, it looks ugly, but the part I really have issues with is that building
->>> QCOM_SCM=m and ARM_SMMU=y is perfectly fine if you don't run on an SoC
->>> with the qcom implementation. I don't see why we need to enforce things
->>> here beyond making sure that all selectable permutations _build_ and
->>> fail gracefully at runtime on the qcom SoC if SCM isn't available.
->>
->> Hey Will,
->>    Sorry to dredge up this old thread. I've been off busy with other
->> things and didn't get around to trying to rework this until now.
->>
->> Unfortunately I'm still having some trouble coming up with a better
->> solution. Initially I figured I'd rework the qcom_scm driver to, so
->> that we have the various qcom_scm_* as inline functions, which call
->> out to function pointers that the qcom_scm driver would register when
->> the module loaded (Oof, and unfortunately there are a *ton* qcom_scm_*
->> functions so its a bunch of churn).
->>
->> The trouble I realized with that approach is that if the ARM_SMMU code
->> is built in, then it may try to use the qcom_scm code before the
->> module loads and sets those function pointers. So while it would build
->> ok, the issue would be when the arm_smmu_device_reset() is done by
->> done on arm_smmu_device_probe(), it wouldn't actually call the right
->> code.  There isn't a really good way to deal with the module loading
->> at some random time after arm_smmu_device_probe() completes.
->>
->> This is the benefit of the module symbol dependency tracking: If the
->> arm_smmu.ko calls symbols in qcom_scm.ko then qcom_scm.ko has to load
->> first.
->> But if arm_smmu is built in, I haven't found a clear mechanism to
->> force qcom_scm to load before we probe, if it's configured as a
->> module.
->>
->> I also looked into the idea of reworking the arm-smmu-impl code to be
->> modular instead, and while it does provide a similar method of using
->> function pointers to minimize the amount of symbols the arm-smmu code
->> needs to know about, the initialization call path is
->> arm_smmu_device_probe -> arm_smmu_impl_init -> qcom_smmu_impl_init. So
->> it doesn't really allow for dynamic registration of implementation
->> modules at runtime.
->>
->> So I'm sort of stewing on maybe trying to rework the directionality,
->> so the arm-smmu-qcom.o code probes and calls arm_smmu_impl_init and
->> that is what initializes the arm_smmu_device_probe logic?
->>
->> Alternatively, I'm considering trying to switch the module dependency
->> annotation so that the CONFIG_QCOM_SCM modularity depends on ARM_SMMU
->> being a module. But that is sort of putting the restriction on the
->> callee instead of the caller (sort of flipping the meaning of the
->> depends), which feels prone to later trouble (and with multiple users
->> of CONFIG_QCOM_SCM needing similar treatment, it would make it
->> difficult to discover the right combination of configs needed to allow
->> it to be a module).
->>
->> Anyway, I wanted to reach out to see if you had any further ideas
->> here. Sorry for letting such a large time gap pass!
-> 
-> Well we can always go with your original hack, if it helps?
-> 
-> https://lore.kernel.org/linux-iommu/20200714075603.GE4277@willie-the-truck/
+Hi Elliot
 
-Hmm, perhaps I'm missing something here, but even if the config options 
-*do* line up, what prevents arm-smmu probing before qcom-scm and 
-dereferencing NULL in qcom_scm_qsmmu500_wait_safe_toggle() before __scm 
-is initialised?
++ Sudeep
 
-Robin.
+On 10/27/20 10:06, Elliot Berman wrote:
+> 
+> On 10/26/2020 10:12 AM, Peter Zijlstra wrote:
+> > On Mon, Oct 26, 2020 at 10:08:47AM -0700, psodagud@codeaurora.org wrote:
+> > > On 2020-10-23 14:59, Thomas Gleixner wrote:
+> > > > On Thu, Oct 22 2020 at 15:04, Elliot Berman wrote:
+> > > > > In a heterogeneous multiprocessor system, specifying the 'maxcpus'
+> > > > > parameter on kernel command line does not provide sufficient control
+> > > > > over which CPUs are brought online at kernel boot time, since CPUs may
+> > > > > have nonuniform performance characteristics. Thus, add bootcpus kernel
+> > > > > parameter to control which CPUs should be brought online during kernel
+> > > > > boot. When both maxcpus and bootcpus is set, the more restrictive of
+> > > > > the
+> > > > > two are booted.
+> > > > 
+> > > > What for? 'maxcpus' is a debug hack at best and outright dangerous on
+> > > > certain architectures. Why do we need more of that? Just let the machine
+> > > > boot and offline the CPUs from user space.
+> > > 
+> > > Hi Thomas and Peter,
+> > > 
+> > > Based on my understanding with maxcpus option provides, maximum no of CPUs
+> > > are brough up during the device boot up. There is a different case, in which
+> > > we want to restrict which CPUs to be brough up.
+> > > On a system with 8 cpus, if we set maxcpus as 3, cpu0, cpu1, and cpu2 are
+> > > brough up during the bootup.  For example, if we want to bring core0, core3
+> > > and core4 current maxcpu(as 3) setting would not help us.
+> > > On some platform we want the flexibility on which CPUs to bring up during
+> > > the device bootup. bootcpus command line is helping to bring specific CPUs
+> > > and these patches are working downstream.
+> > 
+> > That's a lot of words, but exactly 0 on _WHY_ you would want to do that.
+> > 
+> 
+> We find the ability to limit the number of cpus brought online at bootup
+> useful, and to possibly later enable those cores. One use case is when
+> device is undergoing initial testing is to use bootcpus to limit bootup to
+> only a couple cores and later bring up the other cores for a controlled
+> stress test. A core brought up during boot is also running device
+> initialization. Besides being useful for SoC vendor bringup which typically
+> occurs downstream, this particular use case could be exercised by developer
+> of upstream support for a SoC when initial CPU settings are being
+> determined.
+> 
+> Another use case is if user wishes to limit bootup only to the smaller or
+> bigger cores. maxcpus= is not sufficient here to ensure that only those
+> cores are booted since it limits only to the first N cores, which may not be
+> the desired small or big cores. User may want to bring up only the smaller
+> cores during bootup for thermal reasons. For instance, device may be later
+> sufficiently charged such that boot up of the bigger cores is now
+> permissible. Relying on thermal drivers to later take care of putting core
+> into lower power idle may not occur until much later in boot (for instance,
+> if the governor is a module).
+
+I would have thought that FW/SCP would have the power to block booting up the
+CPUs if it deemed that to be unsafe.
+
+Any thoughts Sudeep?
+
+Thanks
+
+--
+Qais Yousef
