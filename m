@@ -2,235 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAE329DC1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 920C029DC47
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388951AbgJ1Wim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731038AbgJ1WiZ (ORCPT
+        id S2388499AbgJ2AXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:23:42 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55198 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388354AbgJ1Whn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:38:25 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FDAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:38:23 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id c5so735947qtw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nP3MQU8G+NZhAzitdmwy6AlCbQvBr5GUXkIbmBlAkpw=;
-        b=sZI9EN1o4DdLSN0nkdlMc0F05VxohxEjHcdqbRDc8xUh73UKjUwd+xiZu6dTFBCVhF
-         YlpT0NN4s0boGSj9Wonvwk5teEYQk9svAgU6xXIpfjq43GLV5bcuJRtSW8SEG0lRwAfS
-         3EfR4NqI81KRV8/ctmHrKu/smncjn2131FU2Mgp6DZPoRxK//WTpn8DAl4+0p7BQP8lH
-         RznzugM8jWV4ZVAkK8dK1H1cJNCgkR2Kp/3W9E4R0iBYNwcTFiwKIQwJwQqdffub0SX3
-         bOcOIudsYbozLBJaSr8+9UtELeJ1sYtamAuxy95n1FMLJl9qwNxIJbx7AeJBEQMcFVV0
-         Bi4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nP3MQU8G+NZhAzitdmwy6AlCbQvBr5GUXkIbmBlAkpw=;
-        b=qtnD+5sQydJSsN0wTRhnUECbV0zLdK1+iRrPwEtMfzuFjNjLChnCvozSC409BLJWFL
-         UrpGnmAVCDQctczs1mStVUAZlaYeIDXEEi08F26Qg/i0Ovbl9THn4+WYGfhhnd/ioVsZ
-         YhZAxytDm+bjPTcZcReMyETmw+GzHsZ2M55s2rWWgnDytfjEHjHv1t99XbO7M2zwLH4N
-         e51V/1QN/ftToqQAJCHgHuRnWrVVefp+SIEfCzqzIq8v8zAWkSFaUoxYD6R0GaSz97VL
-         hmu2yEAOBkc+eIGz4r8Gfzfv1Nr3v0vzwv+1jEdFMafcAyc0GzT8nucjgG+G5Zth3gB0
-         46wg==
-X-Gm-Message-State: AOAM531SF8xmPf4BuOx6z4mPalgpVDVHKhcLEp4qvEGlsVXMpWf6V9pq
-        fKFrHZ+vmw3GstSfbLv+PrBkJJbYQ7b4Jemf
-X-Google-Smtp-Source: ABdhPJxWkVqYKo0f/78uYBARYXx/X8aXb6FzydzdsvrrY9i1JSW/wuO7rV4BwSp9AtLC8R/RuTWqmA==
-X-Received: by 2002:a05:6638:2208:: with SMTP id l8mr740026jas.22.1603914120719;
-        Wed, 28 Oct 2020 12:42:00 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id m66sm359828ill.69.2020.10.28.12.41.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 12:42:00 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        sujitka@chromium.org, willemdebruijn.kernel@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net 5/5] net: ipa: avoid going past end of resource group array
-Date:   Wed, 28 Oct 2020 14:41:48 -0500
-Message-Id: <20201028194148.6659-6-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201028194148.6659-1-elder@linaro.org>
-References: <20201028194148.6659-1-elder@linaro.org>
+        Wed, 28 Oct 2020 18:37:43 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09SK2OQ2015527;
+        Wed, 28 Oct 2020 15:02:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603915344;
+        bh=o3y/Ko52UWOP2r6NyGzju3m7wUK+9F50IDH+1PbV1+I=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=nAcmELvF+vjrrNcZ81hM8wmF68PPe10VPfwKmZrWz/XYSRMnDLoDoh+hs9UOG/+zE
+         nTszN8+SY4GsULIBwZLVpNvyG2lpwFP3nWiIKYALcy9SIjP+SVepLE3ggIDUdcllia
+         IAvXSYIvF3WiAzhyBLCUC7oIC1JhpS6BjjY0mUxM=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09SK2OT3092998
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 28 Oct 2020 15:02:24 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 28
+ Oct 2020 15:02:23 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 28 Oct 2020 15:02:23 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09SK2Mgs047010;
+        Wed, 28 Oct 2020 15:02:23 -0500
+Date:   Thu, 29 Oct 2020 01:32:22 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v16 00/15] mtd: spi-nor: add xSPI Octal DTR support
+Message-ID: <20201028200220.eskcgrf2bqzzijz5@ti.com>
+References: <20201005153138.6437-1-p.yadav@ti.com>
+ <d0d702c1-761b-1480-c74d-135193b33c26@microchip.com>
+ <20201028124920.pot77v4phkqiswhr@ti.com>
+ <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d9d96eda-4cb6-fe68-7469-e73dc7ba2fda@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The minimum and maximum limits for resources assigned to a given
-resource group are programmed in pairs, with the limits for two
-groups set in a single register.
+On 28/10/20 03:21PM, Tudor.Ambarus@microchip.com wrote:
+> On 10/28/20 2:49 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Hi Tudor,
+> > 
+> > On 28/10/20 07:53AM, Tudor.Ambarus@microchip.com wrote:
+> >> Hi, Pratyush,
+> >>
+> >> On 10/5/20 6:31 PM, Pratyush Yadav wrote:
+> >>> Tested on Micron MT35X and S28HS flashes for Octal DTR.
+> >>
+> >> Do these flashes define the "Command Sequences to Change to
+> >> Octal DDR (8D-8D-8D) mode" table? Can't we use that table
+> >> instead of defining our own octal dtr enable functions?
+> > 
+> > The Micron flash does not have this table. The Cypress flash does. The
+> > problem is that one of the samples of the Cypress flash I tested on had
+> > incorrect data in that table which meant the sequence would fail. The
+> > newer samples of the flash have the correct data.
+> 
+> Can we differentiate the Cypress flashes?
 
-If the number of supported resource groups is odd, only half of the
-register that defines these limits is valid for the last group; that
-group has no second group in the pair.
+No way I know of.
 
-Currently we ignore this constraint, and it turns out to be harmless,
-but it is not guaranteed to be.  This patch addresses that, and adds
-support for programming the 5th resource group's limits.
+> Do you remember what was the incorrect data?
 
-Rework how the resource group limit registers are programmed by
-having a single function program all group pairs rather than having
-one function program each pair.  Add the programming of the 4-5
-resource group pair limits to this function.  If a resource group is
-not supported, pass a null pointer to ipa_resource_config_common()
-for that group and have that function write zeroes in that case.
+The address width for the write register command was 4 bytes when the 
+flash uses 3 bytes by default.
+ 
+> > 
+> > I don't know how many of those faulty flashes are out there in the wild.
+> > IMO, to be on the safe side spi_nor_cypress_octal_dtr_enable() needs to
+> > be implemented. So from the point of view of this series there is no
+> > need to parse the Octal DDR enable table.
+> 
+> Meh, we cover manufacturer's mistakes. On the long run, our aim should be
+> to follow the SFDP standard and if a flash implements it wrong, to either
+> fix it via a fixup hook (if the fix is minimal), or to skip the faulty
+> table.
+> 
+> Regarding "Command Sequences to Change to Octal DDR (8D-8D-8D) mode"
+> table. Have you looked over
+> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
+> ?
+> Is there a standard way to determine the offsets of opcode, addr and
+> data in the cmd seq?
 
-Fixes: cdf2e9419dd91 ("soc: qcom: ipa: main code")
-Tested-by: Sujit Kautkar <sujitka@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v2: Fixed comparison error identified by Willem de Bruijn.
+To be honest the spec does not say much about how the data should be 
+interpreted so I am not sure either. My understanding is that those are 
+effectively data bytes to send out on the bus.
 
- drivers/net/ipa/ipa_main.c | 89 +++++++++++++++++++++++---------------
- 1 file changed, 53 insertions(+), 36 deletions(-)
+One way to implement such a function, would be to put the first byte as 
+the command opcode and the rest as data [0], with no address and dummy 
+cycles. So no matter the address length, the controller should send out 
+the bytes in sequence and then the flash can interpret them according to 
+the address width it expects.
 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 74b1e15ebd6b2..f4dd14d9550fe 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -370,8 +370,11 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
- 	u32 i;
- 	u32 j;
+The downside is that someone debugging this on the controller's end 
+might get confused seeing an opcode that expects an address phase but 
+SPI NOR not sending one.
+
+The other way would be to use the first byte as opcode, the next 
+nor->addr_width bytes as address and the remaining as data, with no 
+dummy cycles. This would fail if the 8D enable command does not use 
+nor->addr_width address bytes [1].
+
+I don't know which of the two is better but I think both are better than 
+the switch-case hackery in Mason's patch which has to assume either the 
+address width or the data length and leaves no way to play around with 
+them in fixup hooks. If you have any better ideas I'm all ears.
+
+[0] AFAIK many controllers can't have 0 command bytes.
+[1] I'm not sure how common that would be though.
  
-+	/* We program at most 6 source or destination resource group limits */
-+	BUILD_BUG_ON(IPA_RESOURCE_GROUP_SRC_MAX > 6);
-+
- 	group_count = ipa_resource_group_src_count(ipa->version);
--	if (!group_count)
-+	if (!group_count || group_count > IPA_RESOURCE_GROUP_SRC_MAX)
- 		return false;
- 
- 	/* Return an error if a non-zero resource limit is specified
-@@ -387,7 +390,7 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
- 	}
- 
- 	group_count = ipa_resource_group_dst_count(ipa->version);
--	if (!group_count)
-+	if (!group_count || group_count > IPA_RESOURCE_GROUP_DST_MAX)
- 		return false;
- 
- 	for (i = 0; i < data->resource_dst_count; i++) {
-@@ -421,46 +424,64 @@ ipa_resource_config_common(struct ipa *ipa, u32 offset,
- 
- 	val = u32_encode_bits(xlimits->min, X_MIN_LIM_FMASK);
- 	val |= u32_encode_bits(xlimits->max, X_MAX_LIM_FMASK);
--	val |= u32_encode_bits(ylimits->min, Y_MIN_LIM_FMASK);
--	val |= u32_encode_bits(ylimits->max, Y_MAX_LIM_FMASK);
-+	if (ylimits) {
-+		val |= u32_encode_bits(ylimits->min, Y_MIN_LIM_FMASK);
-+		val |= u32_encode_bits(ylimits->max, Y_MAX_LIM_FMASK);
-+	}
- 
- 	iowrite32(val, ipa->reg_virt + offset);
- }
- 
--static void ipa_resource_config_src_01(struct ipa *ipa,
--				       const struct ipa_resource_src *resource)
-+static void ipa_resource_config_src(struct ipa *ipa,
-+				    const struct ipa_resource_src *resource)
- {
--	u32 offset = IPA_REG_SRC_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
-+	u32 group_count = ipa_resource_group_src_count(ipa->version);
-+	const struct ipa_resource_limits *ylimits;
-+	u32 offset;
- 
--	ipa_resource_config_common(ipa, offset,
--				   &resource->limits[0], &resource->limits[1]);
--}
-+	offset = IPA_REG_SRC_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
-+	ylimits = group_count == 1 ? NULL : &resource->limits[1];
-+	ipa_resource_config_common(ipa, offset, &resource->limits[0], ylimits);
- 
--static void ipa_resource_config_src_23(struct ipa *ipa,
--				       const struct ipa_resource_src *resource)
--{
--	u32 offset = IPA_REG_SRC_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
-+	if (group_count < 2)
-+		return;
- 
--	ipa_resource_config_common(ipa, offset,
--				   &resource->limits[2], &resource->limits[3]);
--}
-+	offset = IPA_REG_SRC_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
-+	ylimits = group_count == 3 ? NULL : &resource->limits[3];
-+	ipa_resource_config_common(ipa, offset, &resource->limits[2], ylimits);
- 
--static void ipa_resource_config_dst_01(struct ipa *ipa,
--				       const struct ipa_resource_dst *resource)
--{
--	u32 offset = IPA_REG_DST_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
-+	if (group_count < 4)
-+		return;
- 
--	ipa_resource_config_common(ipa, offset,
--				   &resource->limits[0], &resource->limits[1]);
-+	offset = IPA_REG_SRC_RSRC_GRP_45_RSRC_TYPE_N_OFFSET(resource->type);
-+	ylimits = group_count == 5 ? NULL : &resource->limits[5];
-+	ipa_resource_config_common(ipa, offset, &resource->limits[4], ylimits);
- }
- 
--static void ipa_resource_config_dst_23(struct ipa *ipa,
--				       const struct ipa_resource_dst *resource)
-+static void ipa_resource_config_dst(struct ipa *ipa,
-+				    const struct ipa_resource_dst *resource)
- {
--	u32 offset = IPA_REG_DST_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
-+	u32 group_count = ipa_resource_group_dst_count(ipa->version);
-+	const struct ipa_resource_limits *ylimits;
-+	u32 offset;
-+
-+	offset = IPA_REG_DST_RSRC_GRP_01_RSRC_TYPE_N_OFFSET(resource->type);
-+	ylimits = group_count == 1 ? NULL : &resource->limits[1];
-+	ipa_resource_config_common(ipa, offset, &resource->limits[0], ylimits);
-+
-+	if (group_count < 2)
-+		return;
-+
-+	offset = IPA_REG_DST_RSRC_GRP_23_RSRC_TYPE_N_OFFSET(resource->type);
-+	ylimits = group_count == 3 ? NULL : &resource->limits[3];
-+	ipa_resource_config_common(ipa, offset, &resource->limits[2], ylimits);
-+
-+	if (group_count < 4)
-+		return;
- 
--	ipa_resource_config_common(ipa, offset,
--				   &resource->limits[2], &resource->limits[3]);
-+	offset = IPA_REG_DST_RSRC_GRP_45_RSRC_TYPE_N_OFFSET(resource->type);
-+	ylimits = group_count == 5 ? NULL : &resource->limits[5];
-+	ipa_resource_config_common(ipa, offset, &resource->limits[4], ylimits);
- }
- 
- static int
-@@ -471,15 +492,11 @@ ipa_resource_config(struct ipa *ipa, const struct ipa_resource_data *data)
- 	if (!ipa_resource_limits_valid(ipa, data))
- 		return -EINVAL;
- 
--	for (i = 0; i < data->resource_src_count; i++) {
--		ipa_resource_config_src_01(ipa, &data->resource_src[i]);
--		ipa_resource_config_src_23(ipa, &data->resource_src[i]);
--	}
-+	for (i = 0; i < data->resource_src_count; i++)
-+		ipa_resource_config_src(ipa, data->resource_src);
- 
--	for (i = 0; i < data->resource_dst_count; i++) {
--		ipa_resource_config_dst_01(ipa, &data->resource_dst[i]);
--		ipa_resource_config_dst_23(ipa, &data->resource_dst[i]);
--	}
-+	for (i = 0; i < data->resource_dst_count; i++)
-+		ipa_resource_config_dst(ipa, data->resource_dst);
- 
- 	return 0;
- }
+> Cheers,
+> ta
+> > 
+> >> I see that Mason used this table for a macronix flash:
+> >> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw/
+> >> https://patchwork.ozlabs.org/project/linux-mtd/patch/1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw/
+> >>
+> >> Cheers,
+> >> ta
+> > 
+> > --
+> > Regards,
+> > Pratyush Yadav
+> > Texas Instruments India
+> > 
+> 
+
 -- 
-2.20.1
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
