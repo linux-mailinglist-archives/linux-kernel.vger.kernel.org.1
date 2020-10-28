@@ -2,232 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8672829D9E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6496829DA2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390073AbgJ1XGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
+        id S1731467AbgJ1XPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387842AbgJ1XF5 (ORCPT
+        with ESMTP id S1731477AbgJ1XMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:05:57 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F4BC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:05:57 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a200so700032pfa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:05:57 -0700 (PDT)
+        Wed, 28 Oct 2020 19:12:39 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0ABC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:12:37 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a200so712929pfa.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rFOCR0z2k088YX66ZBfrxJZH18ogpQbHQLbfk8+8CYU=;
-        b=t0Q+e2FBNi/gftNkFBdCTLi3hN6RhvPuqrjrAeVOgKjK0yetO6ZVmJ9PoviQAZiAav
-         2uQ4+Vj+6OJ2rDvCyt2uyBu3twAoqDxpPQ6HKCdcNsfQt3fKQ2VVySd+/O7ZhT+omSvS
-         qZb5XlF2ct60QyTPLgt0a8Lieq3qhoMKPpQRDi4d7p/5pbyAiEwESnQWV9cwbVPkgwyk
-         BAyL5QTuIq0WENXagPIbA0m6crAXFshFYRKBVua2yDvn4vjkUGv3eanVsknBQaVhtaiA
-         ZmBGY8UiNIxoTPgMxz+0ofvcOYRNPR4a6i82osws4JKcgiLpHKTuugXL6LkqKE3r0k7B
-         z0aQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cfgFzKKhNnMi/GMVV82Uo8k8bscPVazRnoozeWTLycw=;
+        b=rS+WVklmfAY6KhDUrbki4jt4B18LTB6p22yrLLmnk1UDDko9AbIk1TGEZWZlhqIivC
+         zCU/ojARnMEbsZz7jLseoKhAWaCVUBiQBqiG10bmzVWXbEJeO5wddw/YKCkvJZrQ5cDL
+         64XYdYSl6oBTARNV2zP0QvbVXEb3SNrX5EznPJZK+sPRpxJ2iiAmR6VCPX/nVsNfr3b2
+         gA01p83XGuwkO/GQqc7TsoG4aedAnPeq+5XK+Mi0Aqy9CKyq7U7WchIYEap71a6n2oZ9
+         0KVdoQpuYBvGradBQMMXowW1jSaXt3ejdLogjwP4DwIJhD+DNJOE1N59Xkx+E1WTiINF
+         YXZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rFOCR0z2k088YX66ZBfrxJZH18ogpQbHQLbfk8+8CYU=;
-        b=joABcny51vezVlbAWDHyqx7WSL0y/Uw3x16sIRz17w0dEAj09KzNIb/G66C8Svsj5D
-         jOGi3AgJXfsn9IN3gW8Gzm2cdiq6roiaL39apRpIGr/aXtAfoEn4lrLyJGO+/o+nR9Go
-         NgqgXrLU/F7XHrCbC4xO0cEVJ/AVRlowc/w57CHe3GI2dmVXOxFQFek+1jrKNTAq8GsM
-         WPyKIJKZag79RkGwYBjOHNYnUSqKbgYuF6Kvpkq0xpZX7rkk4zcapy+tN6Beddc31JXO
-         Qnv+0Y2N2PvGQMwlQDPRCC02ErzlJqyyqZdsE4J8eBxjQdWV+rbPyIYiOi2cxtRtlN4i
-         czPQ==
-X-Gm-Message-State: AOAM531cEAjrT+BTNrgYdgtXUq/+nxzVBiUT8QP30TSGRxE9LS49zDov
-        zvZ7vkMTNvnfhIiMXIm9BP2t6xJsWjpG7oAg
-X-Google-Smtp-Source: ABdhPJw85ywrViQDutYz7H0AcVWUMgaMzewvZdsi2bR6wV3akldT5YSxgNVzdtytLLB0N19+6b94gg==
-X-Received: by 2002:a63:4d45:: with SMTP id n5mr4488139pgl.389.1603857072734;
-        Tue, 27 Oct 2020 20:51:12 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.89])
-        by smtp.gmail.com with ESMTPSA id s8sm3412273pjn.46.2020.10.27.20.51.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cfgFzKKhNnMi/GMVV82Uo8k8bscPVazRnoozeWTLycw=;
+        b=p0uPQJYCugD5GsWCKdwYiNR3xe2etrJ8glwIqF/9TxjeI7X5+50rgmJHRRH2jhRSGb
+         OviEka47zLP8X+D6r6bIxAF5NpnOrP8GdvH1KiD1NAxgyozUTm+vp5Pxwu9fTA/xaD8f
+         Z78IPn8X9F22EH9gD3FEgzjKbZ/OLbOXibjD5Ehz6FN32KF8uK+PWDPsOEDKj1b/5eqM
+         l5XiQHtTC1SgW4QI6NMEabpogSDFGlnRulaB5RaTdPQ+WW76hEVKllpwso8AphsPIChm
+         UBgdq70fmOEjAJ9/oPscvid//QrZdf1VG4SCiq9g0ulgo6jd9AvU/Rw1NQ9/g1cCau0x
+         qUmQ==
+X-Gm-Message-State: AOAM533EfH9ThWsivHeXQ9ppXXpMcKQZE8PlpAeFFzbiHgCkSqKpmGVu
+        kFCuDU9iyt75A11PfSPkx+Ia6rnb8Jl65w==
+X-Google-Smtp-Source: ABdhPJxEyfjVX+9NzhgMjwDCbve9fGqcrs+hg+9fV5pCpQ6gtYvRjQy7s5mLW87vm46wmiqhAncEaQ==
+X-Received: by 2002:a17:902:8341:b029:d4:e3fa:e464 with SMTP id z1-20020a1709028341b02900d4e3fae464mr5788637pln.66.1603858318187;
+        Tue, 27 Oct 2020 21:11:58 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id u194sm2753541pfc.176.2020.10.27.21.11.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 20:51:12 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
-        christian.brauner@ubuntu.com, peterz@infradead.org,
-        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
-        esyr@redhat.com, surenb@google.com, areber@redhat.com,
-        elver@google.com
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
-Date:   Wed, 28 Oct 2020 11:50:13 +0800
-Message-Id: <20201028035013.99711-4-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201028035013.99711-1-songmuchun@bytedance.com>
-References: <20201028035013.99711-1-songmuchun@bytedance.com>
+        Tue, 27 Oct 2020 21:11:54 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 09:41:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] cpufreq: tegra186: Fix initial frequency
+Message-ID: <20201028041152.733tkghz4vnqz2io@vireshk-i7>
+References: <20200824145907.331899-1-jonathanh@nvidia.com>
+ <20200825055003.qfsuktsv7cyouxei@vireshk-i7>
+ <09ac354e-a55b-5300-12ae-3f24c8f8b193@nvidia.com>
+ <20201016040700.wzfegk7hmabxgpff@vireshk-i7>
+ <9c37db70-9406-8005-3478-dc4a5e94c566@nvidia.com>
+ <c6ab92fe-e5ea-4568-6457-7a28c8496114@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6ab92fe-e5ea-4568-6457-7a28c8496114@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can reuse the code of mem_cgroup_lruvec() to simplify the code
-of the mem_cgroup_page_lruvec().
+On 26-10-20, 12:57, Jon Hunter wrote:
+> Thinking about this some more, what are your thoughts on making the
+> following change? 
+> 
+> Basically, if the driver sets the CPUFREQ_NEED_INITIAL_FREQ_CHECK,
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- changelog in v2:
- 1. Move mem_cgroup_node_lruvec to memcontrol.c to avoid abuse.
+This flag only means that the platform would like the core to check
+the currently programmed frequency and get it in sync with the table.
 
- include/linux/memcontrol.h | 41 ++++-------------------------
- mm/memcontrol.c            | 53 ++++++++++++++++++++++++++------------
- 2 files changed, 42 insertions(+), 52 deletions(-)
+> then I wonder if we should not fail if the frequency return by
+> >get() is not known.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 95807bf6be64..bbdc694d26b1 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -445,48 +445,17 @@ void mem_cgroup_uncharge_list(struct list_head *page_list);
- 
- void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
- 
--static struct mem_cgroup_per_node *
-+static inline struct mem_cgroup_per_node *
- mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
- {
- 	return memcg->nodeinfo[nid];
- }
- 
--/**
-- * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-- * @memcg: memcg of the wanted lruvec
-- *
-- * Returns the lru list vector holding pages for a given @memcg &
-- * @node combination. This can be the node lruvec, if the memory
-- * controller is disabled.
-- */
--static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
--					       struct pglist_data *pgdat)
--{
--	struct mem_cgroup_per_node *mz;
--	struct lruvec *lruvec;
--
--	if (mem_cgroup_disabled()) {
--		lruvec = &pgdat->__lruvec;
--		goto out;
--	}
--
--	if (!memcg)
--		memcg = root_mem_cgroup;
--
--	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
--	lruvec = &mz->lruvec;
--out:
--	/*
--	 * Since a node can be onlined after the mem_cgroup was created,
--	 * we have to be prepared to initialize lruvec->pgdat here;
--	 * and if offlined then reonlined, we need to reinitialize it.
--	 */
--	if (unlikely(lruvec->pgdat != pgdat))
--		lruvec->pgdat = pgdat;
--	return lruvec;
--}
-+struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-+				 struct pglist_data *pgdat);
- 
--struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-+struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-+				      struct pglist_data *pgdat);
- 
- struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index bbd40c5af61e..28095a1711aa 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1332,18 +1332,15 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
- 	return ret;
- }
- 
--/**
-- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-- * @page: the page
-- * @pgdat: pgdat of the page
-- *
-- * This function relies on page->mem_cgroup being stable - see the
-- * access rules in commit_charge().
-+/*
-+ * Note: Do not use this function directly. Please use mem_cgroup_lruvec()
-+ * or mem_cgroup_page_lruvec() instead.
-  */
--struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
-+static struct lruvec *
-+__mem_cgroup_node_lruvec(struct mem_cgroup *memcg, struct pglist_data *pgdat,
-+			 int nid)
- {
- 	struct mem_cgroup_per_node *mz;
--	struct mem_cgroup *memcg;
- 	struct lruvec *lruvec;
- 
- 	if (mem_cgroup_disabled()) {
-@@ -1351,20 +1348,15 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
- 		goto out;
- 	}
- 
--	memcg = page->mem_cgroup;
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
--	mz = mem_cgroup_page_nodeinfo(memcg, page);
-+	mz = mem_cgroup_nodeinfo(memcg, nid);
- 	lruvec = &mz->lruvec;
- out:
- 	/*
- 	 * Since a node can be onlined after the mem_cgroup was created,
--	 * we have to be prepared to initialize lruvec->zone here;
-+	 * we have to be prepared to initialize lruvec->pgdat here;
- 	 * and if offlined then reonlined, we need to reinitialize it.
- 	 */
- 	if (unlikely(lruvec->pgdat != pgdat))
-@@ -1372,6 +1364,35 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
- 	return lruvec;
- }
- 
-+/**
-+ * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-+ * @memcg: memcg of the wanted lruvec
-+ *
-+ * Returns the lru list vector holding pages for a given @memcg &
-+ * @node combination. This can be the node lruvec, if the memory
-+ * controller is disabled.
-+ */
-+struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-+				 struct pglist_data *pgdat)
-+{
-+	return __mem_cgroup_node_lruvec(memcg, pgdat, pgdat->node_id);
-+}
-+
-+/**
-+ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-+ * @page: the page
-+ * @pgdat: pgdat of the page
-+ *
-+ * This function relies on page->mem_cgroup being stable - see the
-+ * access rules in commit_charge().
-+ */
-+struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-+				      struct pglist_data *pgdat)
-+{
-+	return __mem_cgroup_node_lruvec(page->mem_cgroup, pgdat,
-+					page_to_nid(page));
-+}
-+
- /**
-  * mem_cgroup_update_lru_size - account for adding or removing an lru page
-  * @lruvec: mem_cgroup per zone lru vector
+When do we fail if the frequency isn't known ? That's the case where
+we try to set it to one from the table.
+
+But (looking at your change), ->get() can't really return 0. We depend
+on it to get us the exact frequency the hardware is programmed at
+instead of reading a cached value in the software.
+
+> >This would fix the problem I see on Tegra186
+> where the initial boot frequency may not be in the frequency table.
+
+With current mainline, what's the problem you see now ? Sorry I missed
+track of it a bit :)
+
 -- 
-2.20.1
-
+viresh
