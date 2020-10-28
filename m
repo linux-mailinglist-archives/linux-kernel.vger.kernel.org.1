@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE9329D653
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D87629D67F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731159AbgJ1WN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731141AbgJ1WNu (ORCPT
+        id S1731327AbgJ1WPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:15:20 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51986 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731268AbgJ1WPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:13:50 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC820C0613CF;
-        Wed, 28 Oct 2020 15:13:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CLYnk4qtVz9sVZ;
-        Wed, 28 Oct 2020 14:23:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603855434;
-        bh=oJhuytnB292Ilh+yRwjz/kSE+ZRELSDD89xS25RdtzA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bOsixbOWOpmsOMNQlUbHGNiQHW5lPRaOlrV0r2qtV37gmGgaz75R5PAnCc1Fkxn19
-         OxgSO5PxsdOfghGNZE0hbBt58OzoTNAXTiqIq8NvDNACxxocM+6Ze66SadtYs1hvgM
-         dOjTkdeXSMXQtzR8xFetCMXqpvPePr+gVtRNrMnyYKPjc6P8o6QPfCetjvVEFd3fLe
-         Q3fhCRMsFMRbO50MxcNOYLsg69SqrxETBNja8fGj1nGHXYdy+qDV4n+ibfZ9IDWjyT
-         mJVm9Ff/C8T/VCoSwL7JUclV8PcgC/PAdPntbV+gZkZqEBN+7F3FqX30vqMUHOm+Cx
-         VNl5LIKmqDrng==
-Date:   Wed, 28 Oct 2020 14:23:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the counters tree
-Message-ID: <20201028142354.11d42e47@canb.auug.org.au>
-In-Reply-To: <20201028142039.6c7eb38a@canb.auug.org.au>
-References: <20201028142039.6c7eb38a@canb.auug.org.au>
+        Wed, 28 Oct 2020 18:15:06 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A654929A58;
+        Tue, 27 Oct 2020 23:26:19 -0400 (EDT)
+Date:   Wed, 28 Oct 2020 14:26:12 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Tom Rix <trix@redhat.com>
+cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Subject: Re: [RFC] clang tooling cleanups
+In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
+Message-ID: <alpine.LNX.2.23.453.2010281344120.31@nippy.intranet>
+References: <20201027164255.1573301-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tR5wFMhIVnqkvtzkrEgxdnZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tR5wFMhIVnqkvtzkrEgxdnZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Tue, 27 Oct 2020, trix@redhat.com wrote:
 
-On Wed, 28 Oct 2020 14:20:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the counters tree, today's linux-next build (htmldocs)
-> produced these warnings:
->=20
->=20
-> Documentation/core-api/counters.rst:45: WARNING: undefined label: test co=
-unters module (if the link has no caption the label must precede a section =
-header)
-> Documentation/core-api/counters.rst:48: WARNING: undefined label: selftes=
-t for counters (if the link has no caption the label must precede a section=
- header)
-> Documentation/core-api/counters.rst:61: WARNING: undefined label: atomic_=
-ops (if the link has no caption the label must precede a section header)
->=20
-> Introduced by commit
->=20
->   37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
+> This rfc will describe
+> An upcoming treewide cleanup.
+> How clang tooling was used to programatically do the clean up.
+> Solicit opinions on how to generally use clang tooling.
+> 
 
-Also:
+This tooling is very impressive. It makes possible an idea that I had a 
+while ago, to help make code review more efficient. It works like this. 
 
-Documentation/core-api/counters.rst: WARNING: document isn't included in an=
-y toctree
+Suppose a patch, p, is the difference between the new tree, n, and the old 
+tree, o. That is, p = n - o.
 
---=20
-Cheers,
-Stephen Rothwell
+Now let clang-tidy be the transformation 't'. This gets you a much more 
+readable patch submission, P = t(n) - t(o).
 
---Sig_/tR5wFMhIVnqkvtzkrEgxdnZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The only difficulty is that, if I submit P intead of p then 'git am' will 
+probably reject it. This is solved by a little tooling around git, such 
+that, should a patch P fail to apply, the relevant files are automatically 
+reformatted with the officially endorsed transformation t, to generate a 
+minimal cleanup patch, such that P can be automatically applied on top.
 
------BEGIN PGP SIGNATURE-----
+If the patch submission process required* that every patch submission was 
+generated like P and not like p, it would immediately eliminate all 
+clean-up patches from the workload of all reviewers, and also make the 
+reviewers' job easier because all submissions are now formatted correctly, 
+and also avoid time lost to round-trips, such as, "you can have a 
+reviewed-by if you respin to fix some minor style issues".
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Y5EoACgkQAVBC80lX
-0GzvAAgAoKmOxrb2OBqecpH5hSq6vGq+8aH2DYiEwNN3l8yMweHtPtZIy1KP8/fn
-vD2otOhmai1EE017z4E/UW7MBc8FjLSJQx7EwwtBRdKLN99tSHPvsom7IHAatzxm
-EKenwXEzBWfpBxPiIXlN9nuASKmvIvov9anNYnwJK0RECk8KpICBkVmy85RDfzaf
-gl6xaaRKyaaEBQFPKwlLYhdId9iBe2ytHqqp//0wH4g1wEf6F0kTZZrTgBvs31ZQ
-uUXdkxy812l1tbWzTrSywXuMi+CX6JQnqqSokjUnS6OoQQ0iFzsMSXZhheRVsf3C
-bFrbV4ZWHSbTqhtKujOlXZrxrj7lkA==
-=Sj3U
------END PGP SIGNATURE-----
-
---Sig_/tR5wFMhIVnqkvtzkrEgxdnZ--
+* Enforcing this, e.g. with checkpatch, is slightly more complicated, but 
+it works the same way: generate a minimal cleanup patch for the relevant 
+files, apply the patch-to-be-submitted, and finally confirm that the 
+modified files are unchanged under t.
