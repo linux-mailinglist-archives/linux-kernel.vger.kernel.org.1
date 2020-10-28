@@ -2,80 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8E029D5C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C7129D5F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730401AbgJ1WIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53242 "EHLO mail.kernel.org"
+        id S1730427AbgJ1WKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:10:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:39004 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730324AbgJ1WI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:08:28 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BE2624724;
-        Wed, 28 Oct 2020 22:08:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603922907;
-        bh=yL5J7c1q5ay690O6rsSJuvA1s+2PdZYpho9NQRq8YWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XalUGPqlra2XP8lwKDPMvpxskZkdfBM9b/GDI7B3tQ87XeRlSYn9K6j60JPFbqrDz
-         rJg9FXRu3jJX9GoYhgfuaqIqiEfawZMnKChIm24CBR5wLETc8IbY6rflU0IIvN8SMK
-         Xlv5pKee3cw5Nx1VMiUWN7GMGdOnmLcFcN1FRYvA=
-Date:   Wed, 28 Oct 2020 18:08:26 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 5.8 574/633] selftests/bpf: Fix overflow tests to reflect
- iter size increase
-Message-ID: <20201028220826.GB87646@sasha-vm>
-References: <20201027135522.655719020@linuxfoundation.org>
- <20201027135549.734594680@linuxfoundation.org>
- <alpine.LRH.2.21.2010271538290.12876@localhost>
+        id S1729440AbgJ1WKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8B8D16F8;
+        Wed, 28 Oct 2020 15:09:59 -0700 (PDT)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EF7513F68F;
+        Wed, 28 Oct 2020 15:09:58 -0700 (PDT)
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH v3 00/26] coresight: Support for ETM system instructions
+Date:   Wed, 28 Oct 2020 22:09:18 +0000
+Message-Id: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.21.2010271538290.12876@localhost>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 03:42:10PM +0000, Alan Maguire wrote:
->On Tue, 27 Oct 2020, Greg Kroah-Hartman wrote:
->
->> From: Alan Maguire <alan.maguire@oracle.com>
->>
->> [ Upstream commit eb58bbf2e5c7917aa30bf8818761f26bbeeb2290 ]
->>
->> bpf iter size increase to PAGE_SIZE << 3 means overflow tests assuming
->> page size need to be bumped also.
->>
->
->Alexei can correct me if I've got this wrong but I don't believe
->it's a stable backport candidate.
->
->This selftests change should only be relevant when the BPF iterator
->size has been bumped up as it was in
->
->af65320 bpf: Bump iter seq size to support BTF representation of large
->data structures
->
->...so I don't _think_ this commit belongs in stable unless the
->above commit is backported also (and unless I'm missing something
->I don't see a burning reason to do that currently).
->
->Backporting this alone will likely induce bpf test failures.
->Apologies if the "Fix" in the title was misleading; it should
->probably have been "Update" to reflect the fact it's not fixing
->an existing bug but rather updating the test to operate correctly
->in the context of other changes in the for-next patch series
->it was part of.
+CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
+mandates the system instructions for registers.
+This also implies that they may not be on the amba bus.
+Right now all the CoreSight components are accessed via memory
+map. Also, we have some common routines in coresight generic
+code driver (e.g, CS_LOCK, claim/disclaim), which assume the
+mmio. In order to preserve the generic algorithms at a single
+place and to allow dynamic switch for ETMs, this series introduces
+an abstraction layer for accessing a coresight device. It is
+designed such that the mmio access are fast tracked (i.e, without
+an indirect function call).
 
-I'll drop it, thanks!
+This will also help us to get rid of the driver+attribute specific
+sysfs show/store routines and replace them with a single routine
+to access a given register offset (which can be embedded in the
+dev_ext_attribute). This is not currently implemented in the series,
+but can be achieved.
+
+Further we switch the generic routines to work with the abstraction.
+With this in place, we refactor the etm4x code a bit to allow for
+supporting the system instructions with very little new code. The
+changes also switch to using the system instructions by default
+even when we may have an MMIO.
+
+We use TRCDEVARCH for the detection of the ETM component, which
+is a standard register as per CoreSight architecture, rather than
+the etm specific id register TRCIDR1. This is for making sure
+that we are able to detect the ETM via system instructions accurately,
+when the the trace unit could be anything (etm or a custom trace unit).
+To keep the backward compatibility for any existing broken impelementation
+which may not implement TRCDEVARCH, we fall back to TRCIDR1. Also
+this covers us for the changes in the future architecture [0].
+
+The series has been mildly tested on a model for system instructions.
+I would really appreciate any testing on real hardware.
+
+Applies on coresight/next.
+
+[0] https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcidr1
+
+Known issues: 
+  Checkpatch failure for "coresight: etm4x: Add sysreg access helpers" :
+
+  ERROR: Macros with complex values should be enclosed in parentheses
+  #121: FILE: drivers/hwtracing/coresight/coresight-etm4x.h:153:
+  +#define CASE_READ(res, x)                                      \
+  +       case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
+
+
+I don't know how to fix that without breaking the build ! Suggestions
+welcome.
+  
+
+Changes since V2:
+  - Several fixes to the ETM register accesses. Access a register
+    when it is present.
+  - Add support for TRCIDR3.NUMPROCS for v4.2+
+  - Drop OS lock detection. Use software lock only in case of mmio.
+  - Fix issues with the Exception level masks (Mike Leach)
+  - Fall back to using TRCIDR1 when TRCDEVARCH is not "present"
+  - Use a generic notion of ETM architecture (rather than using
+    the encoding as in registers)
+  - Fixed some checkpatch issues.
+  - Add support for Self Hosted tracing Arm v8.4 extensions. (Mike
+    Leach)
+    Originally written by Jonathan, refactored and cleaned up.
+  - Changed the dts compatible string to "arm,coresight-etm-sysreg"
+    (Mike Leach)
+
+Changes since V1:
+  - Flip the switch for iomem from no_iomem to io_mem in csdev_access.
+  - Split patches for claim/disclaim and CS_LOCK/UNLOCK conversions.
+  - Move device access initialisation for etm4x to the target CPU
+  - Cleanup secure exception level mask handling.
+  - Switch to use TRCDEVARCH for ETM component discovery. This
+    is for making 
+  - Check the availability of OS/Software Locks before using them.
+
+
+Suzuki K Poulose (26):
+  coresight: etm4x: Fix accesses to TRCVMIDCTLR1
+  coresight: etm4x: Fix accesses to TRCCIDCTLR1
+  coresight: etm4x: Update TRCIDR3.NUMPROCS handling to match v4.2
+  coresight: etm4x: Fix accesses to TRCPROCSELR
+  coresight: etm4x: Handle TRCVIPCSSCTLR accesses
+  coresight: etm4x: Handle access to TRCSSPCICRn
+  coresight: Introduce device access abstraction
+  coresight: tpiu: Prepare for using coresight device access abstraction
+  coresight: Convert coresight_timeout to use access abstraction
+  coresight: Convert claim/disclaim operations to use access wrappers
+  coresight: etm4x: Always read the registers on the host CPU
+  coresight: etm4x: Convert all register accesses
+  coresight: etm4x: Add commentary on the registers
+  coresight: etm4x: Add sysreg access helpers
+  coresight: etm4x: Define DEVARCH register fields
+  coresight: etm4x: Check for Software Lock
+  coresight: etm4x: Cleanup secure exception level masks
+  coresight: etm4x: Clean up exception level masks
+  coresight: etm4x: Detect access early on the target CPU
+  coresight: etm4x: Handle ETM architecture version
+  coresight: etm4x: Use TRCDEVARCH for component discovery
+  coresight: etm4x: Add necessary synchronization for sysreg access
+  coresight: etm4x: Detect system instructions support
+  coresight: etm4x: Refactor probing routine
+  coresight: etm4x: Add support for sysreg only devices
+  dts: bindings: coresight: ETM system register access only units
+
+ .../devicetree/bindings/arm/coresight.txt     |   5 +-
+ drivers/hwtracing/coresight/coresight-catu.c  |  12 +-
+ drivers/hwtracing/coresight/coresight-core.c  | 130 ++-
+ .../hwtracing/coresight/coresight-cti-core.c  |  18 +-
+ drivers/hwtracing/coresight/coresight-etb10.c |  10 +-
+ .../coresight/coresight-etm3x-core.c          |   9 +-
+ .../coresight/coresight-etm4x-core.c          | 758 +++++++++++-------
+ .../coresight/coresight-etm4x-sysfs.c         |  44 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h | 501 +++++++++++-
+ .../hwtracing/coresight/coresight-funnel.c    |   7 +-
+ .../coresight/coresight-replicator.c          |  17 +-
+ drivers/hwtracing/coresight/coresight-stm.c   |   4 +-
+ .../hwtracing/coresight/coresight-tmc-core.c  |  16 +-
+ .../hwtracing/coresight/coresight-tmc-etf.c   |  10 +-
+ .../hwtracing/coresight/coresight-tmc-etr.c   |   4 +-
+ drivers/hwtracing/coresight/coresight-tpiu.c  |  31 +-
+ include/linux/coresight.h                     | 230 +++++-
+ 17 files changed, 1376 insertions(+), 430 deletions(-)
 
 -- 
-Thanks,
-Sasha
+2.24.1
+
