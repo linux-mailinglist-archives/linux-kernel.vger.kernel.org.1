@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FC229D95B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F4429D994
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389686AbgJ1Ww4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        id S2389867AbgJ1W5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:57:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389676AbgJ1Www (ORCPT
+        with ESMTP id S2389785AbgJ1W5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:52:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04783C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:52:52 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id e7so664473pfn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:52:51 -0700 (PDT)
+        Wed, 28 Oct 2020 18:57:33 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62856C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:57:33 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x7so796081wrl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JDYiIX5M5YN4J997d/Mh3BGKj9X3sWCSLjXLFcNLDBc=;
-        b=eX60avSDqzA2bzgYLeQl527BhC+2uMYkb59k74qtgdwflOAZI5gDXtAcnAaKWs5aSZ
-         2GcSfxJEOVXkxwC1dYwb/hJxhKvn4pP7gAMDH8ZUCmJXF+SXdIvksy08noG+3kj0jVFk
-         vI8YmE5BP+4X98LlssotlRaptbR/EcWaTpBvD1NqzcbMpn2vq2pTaUwV5ZlczgIbEEwU
-         qWdlqwE3Dzt0MLNNM6cgeToL/1rP6HnzE7z+zjj1UgU+mPIAAXfqEcTVXzxM8zQJNB0v
-         pJR2sAigZTe8pHCq6uM9k9Ud4mj9GQ8/gxFExn/tS2GBPGC3siswjDsv6wwbJNotvmTy
-         ShlA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZhjeIVE20A01faSTkSkIK60VFjLSoytoTo0XKrz+6B4=;
+        b=zu8OkdgvEeQB5FHxzaWvI2AP3L0lWAa9WeW+xXlDJ6+2pWLtNcXQ5wNIfCU4nVPyZv
+         sEX7S/Ni9gTmlZamKn0bW05wkV15F01qn6zniIAn7u9/60jhKJEgvNUnO9U4kHhNY/Cn
+         zbIVJOxbQkM1QvAYEs+hCssyigeioz7fnlnXpjOH6ZkLR+w5TfgG6MTITaep4Ty4/8g1
+         fY0KyBGgCtJe2nHb842duBifxaRzc/WF2lCINQ/181ahWtSpOlpKssnt8k5ySkQ5WlL+
+         46QBaO7okEHX78Jlyrm0lIxH/CFNiDyGNJmFnbaN1iQmilA2lpQlZrSXHOP0LX9Rv9Yf
+         8gTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JDYiIX5M5YN4J997d/Mh3BGKj9X3sWCSLjXLFcNLDBc=;
-        b=bsA1vOF8oYHx0EFykENcK9hHp14X/ahggVWA9gtjxWkczs5l8yfWbB+5YS8gwxTbMp
-         5H8/2d4T3zkXKWycdOBQXk3mcqDrvNc5l4LtTFTdEoYx+rBM5Cxpf3S26vzG8jZcTsk2
-         qtovPWi1lpSx2x/oPMqvAVyaQCoN6sIXCyqC4ELb+Y6GZc8PK5rIHuT+PBNEq9PKCOuf
-         DxEDFOMKnWzpqzsfLwcJgKLqREH2eFrORPvZkdD6sEfmka7xWojq9xOG3dBJWCbyDYz8
-         /WoAVw9U/rmXTGF4CMI9PleEZFjgyIA1SmmyMRJFlnz9FtmQ/hKi9DALRK/IGdoGW7gn
-         p0AQ==
-X-Gm-Message-State: AOAM5335uAAQfY00HLW4AWIia2qYrnsUVe7BrlPZup7MfPnzx7NovKSF
-        mpAGCs2/7htniSeCMDPrHRNkR7pNDtwH2A==
-X-Google-Smtp-Source: ABdhPJz36ycURoS1BevCLdRL9PyoyED0cveEb+flOFPdJRDYuvjGRASX8lhp+syOzvHxS2toS7JX4w==
-X-Received: by 2002:a63:1a09:: with SMTP id a9mr5610362pga.188.1603875967506;
-        Wed, 28 Oct 2020 02:06:07 -0700 (PDT)
-Received: from image-900X5T-900X5U ([220.120.123.224])
-        by smtp.gmail.com with ESMTPSA id b3sm5039077pfd.66.2020.10.28.02.06.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 02:06:07 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 18:06:03 +0900
-From:   Jongpil Jung <jongpuls@gmail.com>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, jongpil19.jung@samsung.com
-Subject: Re: [PATCH 1/1] nvme: Add quirk for LiteON CL1 devices running FW
- 220TQ,22001
-Message-ID: <20201028090603.GB599972@image-900X5T-900X5U>
-References: <20201027155438.GA111754@jongpil-desktop>
- <20201027202334.GA1942708@dhcp-10-100-145-180.wdc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZhjeIVE20A01faSTkSkIK60VFjLSoytoTo0XKrz+6B4=;
+        b=Sxf3+dYdctnekM8tO0rlI6UBVYpxfOIP+SHoRdhjsb2ymD0IBz7Qkyis4bHpYb6K7D
+         y7MQNBWU95zChe25EsnZpfyM61ESwXTGGqODeTzhhcwWR5MmP5jYk/PMSt+m16fpeCS4
+         ZtwByRnVnts4ff8fkA2VQgXRz+KOk6iJn2nsxbLGn+0sXodulkwFhUaybnC5htWuzyPh
+         j1hwleX7gGDcjotsQxLlgz/WQmNBXE3en5ocqFYXde6NTLzVaH6HO+Br+nKveZMhtX/l
+         Kfw3vP3ogCBxbIxuEhNm0H0iFbcixPorTdvFHqyiSlQ3YZSvQExIz4DpDnpDJZeUMb2q
+         GKZg==
+X-Gm-Message-State: AOAM533oTaT7AhXy65ZbcCg0kwLJWtj5TZ45orX9eQnjuhRdvC7cImdP
+        VpsLO/1bTeLCKINTZivcbrSCJnyQH8whqGbQ4n/bzz9ptt80YZLO
+X-Google-Smtp-Source: ABdhPJwSQkD6mafcdYyymrwBIsfD/N0YGAX8rdtfY3Ffnid6SuSqbtYCE2OHtfi22H2ousjzURn4kfC/HdDb1CQZ7Ic=
+X-Received: by 2002:a2e:8986:: with SMTP id c6mr3020719lji.29.1603878212020;
+ Wed, 28 Oct 2020 02:43:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027202334.GA1942708@dhcp-10-100-145-180.wdc.com>
+References: <20201027111422.4008114-1-anders.roxell@linaro.org> <20201027211536.GB19979@codeaurora.org>
+In-Reply-To: <20201027211536.GB19979@codeaurora.org>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Wed, 28 Oct 2020 10:43:21 +0100
+Message-ID: <CADYN=9LP1p9Kg0BJRHs5JMgfWKB-vHxVkr=DdFt3Uyb5Ka0=UQ@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
+To:     Lina Iyer <ilina@codeaurora.org>
+Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mkshah@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 01:23:34PM -0700, Keith Busch wrote:
-> On Wed, Oct 28, 2020 at 12:54:38AM +0900, Jongpil Jung wrote:
-> > suspend.
-> > 
-> > When NVMe device receive D3hot from host, NVMe firmware will do
-> > garbage collection. While NVMe device do Garbage collection,
-> > firmware has chance to going incorrect address.
-> > In that case, NVMe storage device goes to no device available state.
-> > Finally, host can't access the device any more.
-> > 
-> > Quirk devices will not use simple suspend even if HMB is enabled.
-> > In case of poweroff scenario, NVMe receive "PME turn off".
-> > So garbage collection will not be happening.
-> > 
-> > Liteon(SSSTC) will fix the issue, that's why quirk apply on specific
-> > vendor id and firmware version.
-> 
-> This is a concerning quirk. We use the simple suspend when HMB is
-> enabled because at least some platforms disable device DMA access in the
-> runtime suspend state. Many devices continue to access their HMB while
-> in low power, so we can't let both conditions occur concurrently.
-> Unless you know for sure this device doesn't access host memory in
-> low-power, there will be at least some platform combinations where this
-> quirk will fail.
-I will submit another patch to check platform.
+On Tue, 27 Oct 2020 at 22:15, Lina Iyer <ilina@codeaurora.org> wrote:
+>
+> Hi Anders,
+>
+> On Tue, Oct 27 2020 at 05:14 -0600, Anders Roxell wrote:
+> >When building allmodconfig leading to the following link error with
+> >CONFIG_QCOM_RPMH=y and CONFIG_QCOM_COMMAND_DB=m:
+> >
+> >aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
+> >  drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr'
+> >  drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
+> >
+> >Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
+> >module when QCOM_COMMAND_DB is a module. Also removing the dependency on
+> >'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
+> >QCOM_COMMAND_DB.
+> >
+> >Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
+> >Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> >---
+> > drivers/soc/qcom/Kconfig | 2 +-
+> > 1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> >diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> >index 9b4ae9c16ba7..3bdd1604f78f 100644
+> >--- a/drivers/soc/qcom/Kconfig
+> >+++ b/drivers/soc/qcom/Kconfig
+> >@@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
+> >
+> > config QCOM_RPMH
+> >       tristate "Qualcomm RPM-Hardened (RPMH) Communication"
+> >-      depends on ARCH_QCOM || COMPILE_TEST
+> >+      depends on QCOM_COMMAND_DB
+> A solution was posted in the mailing list alredy -
+> https://lore.kernel.org/linux-arm-msm/20201008040907.7036-1-ilina@codeaurora.org/
+
+I missed that one, thanks.
+
+>
+> If you get a chance, please give that a shot to see if that works for
+> you.
+
+That will work too, but the "depends on ARCH_QCOM || COMPILE_TEST"
+isn't needed since that is already the dependency for QCOM_COMMAND_DB.
+So that should be met here too or am I missing something?
+
+Cheers,
+Anders
+
+>
+> Thanks,
+> Lina
+>
+> >       help
+> >         Support for communication with the hardened-RPM blocks in
+> >         Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
+> >--
+> >2.28.0
+> >
