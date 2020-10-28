@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D456129D56D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783F229D811
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729541AbgJ1WCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:02:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729513AbgJ1WCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387576AbgJ1W3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:29:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60843 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387547AbgJ1W3P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:29:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603924153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UE3dvpTXYD1TxjvaPfVy+gsIUVv7GO6zARCwT2Egia8=;
+        b=QoYJthvwTM+H8U5F84maiSz4O0uUx5pLHD+O8UwCd/Je7VcWYcOv8dRmbECmBGpNDi0Brc
+        uq0DKNtmvA1voIeT8m7XjXGBdp0QDnOmFNlQPYRvZL5UcJw0Y56dMXRayJc5oro7pONn3Q
+        n6lK8+BmjKZn+XbyVAIs7bqYcBxoLdA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-lnOqo2DdOK-TTluihTk1Og-1; Wed, 28 Oct 2020 14:26:42 -0400
+X-MC-Unique: lnOqo2DdOK-TTluihTk1Og-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1AA824806;
-        Wed, 28 Oct 2020 18:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603909500;
-        bh=3FnfY0fopTr59guGzwZGYaUN3BeAH2JnTh3KcqqaSWc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pB0UJvsTww9Cb4vodrmJCAzxjzi2PoTLOXTLTfQJYGLwxvuWCEzVoOUaK8yLQ0Gta
-         qwHGdjLx0+1jeYb5jaTQhIgO808j+07gw0LBEOVFqyL1z9xBMRC6kzsqP/73fOiJhQ
-         TN5Z4OEMNYJKBIk+RHT6NVXZyADftH5vwx0kaG0A=
-Date:   Wed, 28 Oct 2020 18:24:54 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Guillaume Nault <gnault@redhat.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Martin Varghese <martin.varghese@nokia.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH RESEND 0/3] Fix wrong identifiers on kernel-doc markups
-Message-ID: <20201028182454.GA16143@sirena.org.uk>
-References: <cover.1603705472.git.mchehab+huawei@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3A88805F1E;
+        Wed, 28 Oct 2020 18:26:40 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-66-92.rdu2.redhat.com [10.10.66.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF4985C1D7;
+        Wed, 28 Oct 2020 18:26:36 +0000 (UTC)
+From:   Qian Cai <cai@redhat.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@redhat.com>
+Subject: [PATCH] arm64/smp: Move rcu_cpu_starting() earlier
+Date:   Wed, 28 Oct 2020 14:26:14 -0400
+Message-Id: <20201028182614.13655-1-cai@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
-Content-Disposition: inline
-In-Reply-To: <cover.1603705472.git.mchehab+huawei@kernel.org>
-X-Cookie: They just buzzed and buzzed...buzzed.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The call to rcu_cpu_starting() in secondary_start_kernel() is not early
+enough in the CPU-hotplug onlining process, which results in lockdep
+splats as follows:
 
---ikeVEW9yuYc//A+q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ WARNING: suspicious RCU usage
+ -----------------------------
+ kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
 
-On Mon, Oct 26, 2020 at 10:47:35AM +0100, Mauro Carvalho Chehab wrote:
-> Hi Mark/Jakub,
->=20
-> As you requested, I'm resending the three -net patches
-> from the /56 patch series I sent last Friday:
+ other info that might help us debug this:
 
-I was asking for you to do the same for the patches for my subsystems
-rather than resend the net patches to me - in general it's better to
-not to bundle things for multiple subsystems (or tangentially related
-changes in general) together like this.  Splitting things up makes it
-easier to find the relevant changes and means that automations that work
-with patch serieses don't have to deal with things that span multiple
-different trees when it's not required.
+ RCU used illegally from offline CPU!
+ rcu_scheduler_active = 1, debug_locks = 1
+ no locks held by swapper/1/0.
 
---ikeVEW9yuYc//A+q
-Content-Type: application/pgp-signature; name="signature.asc"
+ Call trace:
+  dump_backtrace+0x0/0x3c8
+  show_stack+0x14/0x60
+  dump_stack+0x14c/0x1c4
+  lockdep_rcu_suspicious+0x134/0x14c
+  __lock_acquire+0x1c30/0x2600
+  lock_acquire+0x274/0xc48
+  _raw_spin_lock+0xc8/0x140
+  vprintk_emit+0x90/0x3d0
+  vprintk_default+0x34/0x40
+  vprintk_func+0x378/0x590
+  printk+0xa8/0xd4
+  __cpuinfo_store_cpu+0x71c/0x868
+  cpuinfo_store_cpu+0x2c/0xc8
+  secondary_start_kernel+0x244/0x318
 
------BEGIN PGP SIGNATURE-----
+This is avoided by moving the call to rcu_cpu_starting up near the
+beginning of the secondary_start_kernel() function.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Zt3UACgkQJNaLcl1U
-h9DjbAf/agKKFquaatNyS+9PsKXVvTKCZRLor3HaSfL2YuKiSVcuy9YH2azZEL+7
-CCbmpjmpsEKeKsGJqSgklV0iTDhpmjSRHcG7hvBdFyC2oHAoQOgQvl1sQ7+itktr
-Cjj6xWYMl9lBTxbdWXeI5m0cl3I+0LcJ5yB808GbpkpW6MoEUAyLvIOHBQjkfSMy
-FQC5359kfk65bfQjyIcHE+sgVc0+8j4zks5blibAQarOmpv5vF+z7TYd3OUrsnxJ
-KKZjxtwtTwzOQ7SRpz5NuX9gomuRDUNA0OTrsOQSMuxdYGlkPdeBlJoYnVNZZkD7
-ZIkRA2RvEZIZQTo7Z5BUtHYi7AEikQ==
-=a1MC
------END PGP SIGNATURE-----
+Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ arch/arm64/kernel/smp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---ikeVEW9yuYc//A+q--
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 82e75fc2c903..09c96f57818c 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -222,6 +222,7 @@ asmlinkage notrace void secondary_start_kernel(void)
+ 	if (system_uses_irq_prio_masking())
+ 		init_gic_priority_masking();
+ 
++	rcu_cpu_starting(cpu);
+ 	preempt_disable();
+ 	trace_hardirqs_off();
+ 
+-- 
+2.28.0
+
