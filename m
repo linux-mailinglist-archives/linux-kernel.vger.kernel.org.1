@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFE929DA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E1F29DABB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390273AbgJ1XVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
+        id S2390477AbgJ1X3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgJ1XTY (ORCPT
+        with ESMTP id S1727143AbgJ1X26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:19:24 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C7EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:19:23 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id u127so1355339oib.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:19:23 -0700 (PDT)
+        Wed, 28 Oct 2020 19:28:58 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B433C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:28:57 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t22so388888plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=wIjhrssAiBDg/GkLmZoS0mFtmljZ0v4XQMutOe+GHHs=;
-        b=j/Zycd4OcQN/6MVCLd6KQJ0aGo2E4uyI8jB5BYH+fkgtx7WL1R+hJxgUvFEi/p1Zjm
-         Qwi7nMzNR+tMHrtUjZ9x+E/nmu7AcO2ZNqQZxfF4WEJ3CUzXzTTIjCvUu1n17uYzJYEw
-         fiv2LB5UkkesJ1RFqI7zBoRA/Ii2dySGG2wy/qNiAJj3StbNdDvx7wqTdHxBRw0pvih3
-         fsQKNs4aaPVLRcmLPuLUsuQhDZlWTIFh5XLZK3JFgiw5uH61Sub/89GBxEw82uRo9JdT
-         6PS5zIzLkWf7dGDyuWXOIKskjH5DzQvGu7khktrZQwykE83qR345d/KRbRXCQvZQF9IQ
-         9GbQ==
+        bh=w3jvPkaI6Fvufscz5TOGN3cMyWxi/xK+/XekPoieKuM=;
+        b=nbHmMt5Ofz7dpI4oVG8er172WLWhYn3iy87HwpWDGZroHblR40SYYb12GE6tOGhAYL
+         VUsDndG8Qeikh/AigBMf6S9lz43v38jUqnkrO4GROlXKjIVbQ/J5FzQedEKVUq27kRjB
+         uMY1Ne8mSFyap/KOnSR8/cYkvXw4YIZznl/wRfierXV+0B7r97oT9Jws8fK32ljjJZup
+         a9l+E0uarqBeTPRnqC6H9/ncEibZqRZyYaA2j1JBVzdSeV/D+xTdxMd1AnyTJCZ+w1c5
+         orxLgmLdaoKE6ONBlyyjsiCHFV4ZKpRl/zFxb6i4MA5pnulZNJafWq81G/qKne6tXBhn
+         ZkLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=wIjhrssAiBDg/GkLmZoS0mFtmljZ0v4XQMutOe+GHHs=;
-        b=eRzraS2h/cksrHGyF5AZC0FUtL9Itcb9gqwC+r5oh0ySZSflv7VCnz5Jk4SdurmfgL
-         ChudClBaZsZ+XamLciy7IDPsiUGWm/tixRNjDQ09DzyoNRF3O1ZUkuWD6Oz7RkqOj4Q+
-         YCDMK07ITkx9PiYMMVj121pJhbDsLq3vIqnAJbzayDQos95A8BcFQ3JpdnFHzlIlkrOu
-         fpUN1sXvG06H3hXj9ylszv0pQzBqd9koBjuSXZ4w8NFORGz3YVpQf7iLvsRVQ7A06BEQ
-         EOC9K3YWKGxLR2k04FurxA5EyMlyERBbACStt9eqnmFCR+x0irnC6pmWYMIdCh0+Rw+z
-         j+SA==
-X-Gm-Message-State: AOAM530N128hJUys9fAz+qXivCo+zXFz8YIFNWJTi8Fc/k5Ko/4mZPcv
-        zR7sqG0Jq0Luwk1WNur2MDTvrOtg058Zj+Tc
-X-Google-Smtp-Source: ABdhPJzJ+3PQl78egCx2uY0oKSXzWLtHnfR1btWr9nPTX9rxZSv2lyHGzB4bX7md6yQDkz/oHtM0WA==
-X-Received: by 2002:a17:90a:1102:: with SMTP id d2mr5789627pja.178.1603867114673;
-        Tue, 27 Oct 2020 23:38:34 -0700 (PDT)
+        bh=w3jvPkaI6Fvufscz5TOGN3cMyWxi/xK+/XekPoieKuM=;
+        b=e7jEkxqvp/at1axsGXSwjQMLaQXhkVwN/iS0hEPTyL1dvSc8Cs8iQ0O3KtUUqS2jFS
+         W3NYFkg7yH0OL/snrt9/xSwNzEYrk9Cer3mTdwZkVpMcfq/O2oBaIElyE1B7B4I3N2e/
+         T+FUgF52ROhgRSeVqM4ealeymmLDwGr1AIcoEl+07GyNJW7pCw8Wla8BMeGXycLBrNMl
+         f6iXjjyPptfgjBuj6wXCNDcoo/aTzzNjkC+JTTy/NjDbKWhZnm6sNX8H89L/HvEIlMpX
+         ErxP/PI/h0NMAQs+n+qwgYtHxnH8YEFCaQHL5fKZ4UDqqwJsjL/WqdXo97sMecuPOcLc
+         REcA==
+X-Gm-Message-State: AOAM531GHxYyQl93aTDaRT0bBuxMqKvKTzH9hYy98ufNUDihpUqELY/+
+        QJSLu6iEfvJ/kQnRr+MREEraSHYhdd+LH3nA
+X-Google-Smtp-Source: ABdhPJweHXefCoW8ZQA9mpLM4Yu8KeZfkGcFKKE2c8zmiq39SmIfmF+GSWMPp9wmAlimk0jqQYHJnQ==
+X-Received: by 2002:a17:902:16b:b029:d6:7a92:451a with SMTP id 98-20020a170902016bb02900d67a92451amr32383plb.85.1603867149280;
+        Tue, 27 Oct 2020 23:39:09 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id nk13sm1256725pjb.1.2020.10.27.23.38.33
+        by smtp.gmail.com with ESMTPSA id i123sm4324281pfc.13.2020.10.27.23.39.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Oct 2020 23:38:34 -0700 (PDT)
+        Tue, 27 Oct 2020 23:39:08 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -66,9 +66,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         =?UTF-8?q?Andr=C3=A9=20Przywara?= <andre.przywara@arm.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 2/9] perf mem: Introduce weak function perf_mem_events__ptr()
-Date:   Wed, 28 Oct 2020 14:38:06 +0800
-Message-Id: <20201028063813.8562-3-leo.yan@linaro.org>
+Subject: [PATCH v3 9/9] perf mem: Document event type 'ldst'
+Date:   Wed, 28 Oct 2020 14:38:13 +0800
+Message-Id: <20201028063813.8562-10-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201028063813.8562-1-leo.yan@linaro.org>
 References: <20201028063813.8562-1-leo.yan@linaro.org>
@@ -76,215 +76,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Different architectures might use different event or different event
-parameters for memory profiling, this patch introduces weak function
-perf_mem_events__ptr(), which allows to return back architecture
-specific memory event.
-
-Since the variable 'perf_mem_events' can be only accessed by the
-function perf_mem_events__ptr(), marks the variable as 'static', this
-allows the architectures to define its own memory event array.
+The event type 'ldst' is added for recording both load and store memory
+operations, this patch documents for the new event type.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/builtin-c2c.c     | 18 ++++++++++++------
- tools/perf/builtin-mem.c     | 21 ++++++++++++++-------
- tools/perf/util/mem-events.c | 26 +++++++++++++++++++-------
- tools/perf/util/mem-events.h |  2 +-
- 4 files changed, 46 insertions(+), 21 deletions(-)
+ tools/perf/Documentation/perf-mem.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index d5bea5d3cd51..4d1a08e38233 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -2867,6 +2867,7 @@ static int perf_c2c__record(int argc, const char **argv)
- 	int ret;
- 	bool all_user = false, all_kernel = false;
- 	bool event_set = false;
-+	struct perf_mem_event *e;
- 	struct option options[] = {
- 	OPT_CALLBACK('e', "event", &event_set, "event",
- 		     "event selector. Use 'perf c2c record -e list' to list available events",
-@@ -2894,11 +2895,15 @@ static int perf_c2c__record(int argc, const char **argv)
- 	rec_argv[i++] = "record";
+diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
+index 199ea0f0a6c0..c50ef37dba72 100644
+--- a/tools/perf/Documentation/perf-mem.txt
++++ b/tools/perf/Documentation/perf-mem.txt
+@@ -38,7 +38,11 @@ OPTIONS
  
- 	if (!event_set) {
--		perf_mem_events[PERF_MEM_EVENTS__LOAD].record  = true;
--		perf_mem_events[PERF_MEM_EVENTS__STORE].record = true;
-+		e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
-+		e->record = true;
-+
-+		e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
-+		e->record = true;
- 	}
+ -t::
+ --type=<type>::
+-	Select the memory operation type: load or store (default: load,store)
++	Select the memory operation type: load, store, ldst (default: load,store).
++	The type 'ldst' means the single event can record both for load and store
++	operations; Intel and PowerPC support the types 'load' and 'store' but
++	'ldst' cannot be used; on Arm64, it uses Arm SPE as memory events and
++	user needs to specify one of these three types.
  
--	if (perf_mem_events[PERF_MEM_EVENTS__LOAD].record)
-+	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
-+	if (e->record)
- 		rec_argv[i++] = "-W";
- 
- 	rec_argv[i++] = "-d";
-@@ -2906,12 +2911,13 @@ static int perf_c2c__record(int argc, const char **argv)
- 	rec_argv[i++] = "--sample-cpu";
- 
- 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
--		if (!perf_mem_events[j].record)
-+		e = perf_mem_events__ptr(j);
-+		if (!e->record)
- 			continue;
- 
--		if (!perf_mem_events[j].supported) {
-+		if (!e->supported) {
- 			pr_err("failed: event '%s' not supported\n",
--			       perf_mem_events[j].name);
-+			       perf_mem_events__name(j));
- 			free(rec_argv);
- 			return -1;
- 		}
-diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-index 3523279af6af..9a7df8d01296 100644
---- a/tools/perf/builtin-mem.c
-+++ b/tools/perf/builtin-mem.c
-@@ -64,6 +64,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 	const char **rec_argv;
- 	int ret;
- 	bool all_user = false, all_kernel = false;
-+	struct perf_mem_event *e;
- 	struct option options[] = {
- 	OPT_CALLBACK('e', "event", &mem, "event",
- 		     "event selector. use 'perf mem record -e list' to list available events",
-@@ -86,13 +87,18 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 
- 	rec_argv[i++] = "record";
- 
--	if (mem->operation & MEM_OPERATION_LOAD)
--		perf_mem_events[PERF_MEM_EVENTS__LOAD].record = true;
-+	if (mem->operation & MEM_OPERATION_LOAD) {
-+		e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
-+		e->record = true;
-+	}
- 
--	if (mem->operation & MEM_OPERATION_STORE)
--		perf_mem_events[PERF_MEM_EVENTS__STORE].record = true;
-+	if (mem->operation & MEM_OPERATION_STORE) {
-+		e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
-+		e->record = true;
-+	}
- 
--	if (perf_mem_events[PERF_MEM_EVENTS__LOAD].record)
-+	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
-+	if (e->record)
- 		rec_argv[i++] = "-W";
- 
- 	rec_argv[i++] = "-d";
-@@ -101,10 +107,11 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 		rec_argv[i++] = "--phys-data";
- 
- 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
--		if (!perf_mem_events[j].record)
-+		e = perf_mem_events__ptr(j);
-+		if (!e->record)
- 			continue;
- 
--		if (!perf_mem_events[j].supported) {
-+		if (!e->supported) {
- 			pr_err("failed: event '%s' not supported\n",
- 			       perf_mem_events__name(j));
- 			free(rec_argv);
-diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-index 35c8d175a9d2..7a5a0d699e27 100644
---- a/tools/perf/util/mem-events.c
-+++ b/tools/perf/util/mem-events.c
-@@ -17,7 +17,7 @@ unsigned int perf_mem_events__loads_ldlat = 30;
- 
- #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
- 
--struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
-+static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
- 	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"cpu/events/mem-loads"),
- 	E("ldlat-stores",	"cpu/mem-stores/P",		"cpu/events/mem-stores"),
- };
-@@ -28,19 +28,31 @@ struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
- static char mem_loads_name[100];
- static bool mem_loads_name__init;
- 
-+struct perf_mem_event * __weak perf_mem_events__ptr(int i)
-+{
-+	if (i >= PERF_MEM_EVENTS__MAX)
-+		return NULL;
-+
-+	return &perf_mem_events[i];
-+}
-+
- char * __weak perf_mem_events__name(int i)
- {
-+	struct perf_mem_event *e = perf_mem_events__ptr(i);
-+
-+	if (!e)
-+		return NULL;
-+
- 	if (i == PERF_MEM_EVENTS__LOAD) {
- 		if (!mem_loads_name__init) {
- 			mem_loads_name__init = true;
- 			scnprintf(mem_loads_name, sizeof(mem_loads_name),
--				  perf_mem_events[i].name,
--				  perf_mem_events__loads_ldlat);
-+				  e->name, perf_mem_events__loads_ldlat);
- 		}
- 		return mem_loads_name;
- 	}
- 
--	return (char *)perf_mem_events[i].name;
-+	return (char *)e->name;
- }
- 
- int perf_mem_events__parse(const char *str)
-@@ -61,7 +73,7 @@ int perf_mem_events__parse(const char *str)
- 
- 	while (tok) {
- 		for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
--			struct perf_mem_event *e = &perf_mem_events[j];
-+			struct perf_mem_event *e = perf_mem_events__ptr(j);
- 
- 			if (strstr(e->tag, tok))
- 				e->record = found = true;
-@@ -90,7 +102,7 @@ int perf_mem_events__init(void)
- 
- 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
- 		char path[PATH_MAX];
--		struct perf_mem_event *e = &perf_mem_events[j];
-+		struct perf_mem_event *e = perf_mem_events__ptr(j);
- 		struct stat st;
- 
- 		scnprintf(path, PATH_MAX, "%s/devices/%s",
-@@ -108,7 +120,7 @@ void perf_mem_events__list(void)
- 	int j;
- 
- 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
--		struct perf_mem_event *e = &perf_mem_events[j];
-+		struct perf_mem_event *e = perf_mem_events__ptr(j);
- 
- 		fprintf(stderr, "%-13s%-*s%s\n",
- 			e->tag,
-diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-index 904dad34f7f7..726a9c8103e4 100644
---- a/tools/perf/util/mem-events.h
-+++ b/tools/perf/util/mem-events.h
-@@ -31,13 +31,13 @@ enum {
- 	PERF_MEM_EVENTS__MAX,
- };
- 
--extern struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX];
- extern unsigned int perf_mem_events__loads_ldlat;
- 
- int perf_mem_events__parse(const char *str);
- int perf_mem_events__init(void);
- 
- char *perf_mem_events__name(int i);
-+struct perf_mem_event *perf_mem_events__ptr(int i);
- 
- void perf_mem_events__list(void);
- 
+ -D::
+ --dump-raw-samples::
 -- 
 2.17.1
 
