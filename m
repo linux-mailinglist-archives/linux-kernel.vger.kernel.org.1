@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A90429E1BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5166529E27F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391205AbgJ2CDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:03:01 -0400
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:56277 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727953AbgJ1Vsu (ORCPT
+        id S1726768AbgJ1VfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:35:25 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43012 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726700AbgJ1VfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:48:50 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id DF3BF100E4169;
-        Wed, 28 Oct 2020 10:59:46 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id A7AAA12805F; Wed, 28 Oct 2020 10:59:46 +0100 (CET)
-Date:   Wed, 28 Oct 2020 10:59:46 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: Use after free in bcm2835_spi_remove()
-Message-ID: <20201028095946.GA25358@wunner.de>
-References: <bd6eaa71-46cc-0aca-65ff-ae716864cbe3@gmail.com>
- <20201014140912.GB24850@wunner.de>
- <20201014194035.ukduovokggu37uba@skbuf>
- <20201014202505.GF4580@sirena.org.uk>
- <20201015053829.GA2461@wunner.de>
- <20201015125335.GB4390@sirena.org.uk>
+        Wed, 28 Oct 2020 17:35:20 -0400
+Received: by mail-wr1-f67.google.com with SMTP id g12so591115wrp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=z0bo9p/MHEtnqQo3sYgSNQdn7CC7jYK4NuW7gro8gUQ=;
+        b=EjigtYeY5Z4vpwcIl4MJFuY9I6ZyMqhUA1zVC5c+gjfE4oPozccC6kfD6777IpAlGO
+         mc7jYs3S+C4MqN5J7lJCxxzJ0WrohShRPgXDyhbAkadQVZUvER7XMM+Ubx0s9JmQnFVd
+         tmfWRuYNN3zXDTJsgfnnNky6CXlsMAufYHZHfDQW0XT3L7x+M4Y8Ghdo6aO8wkcupmCG
+         qxourfq8Nw66DL49D1ZJeijEs/lS2IJ50yqkXGEkxcKA8/CBeod3gjAm1aMKgB9Cyyos
+         yPKmK/QQJ8B2IjkdMT+dkwfD0dRbXNsmOq4MAnD2232N9us6chr6eum9moM9/jjJz7jH
+         hNJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=z0bo9p/MHEtnqQo3sYgSNQdn7CC7jYK4NuW7gro8gUQ=;
+        b=fB2z1YbRMHvLwSyzjVuXvvyOvphTN2j9R2WFAO/0Ns6n+BkLdMJH0A8VPGksk7HOja
+         LJgIFzyREamh8j1bskGMivSkDzFhoxOa6F/bw2e8QfbhgeHMLYKMDSQJnL1Uhda1PmCT
+         uHE4Nb8L433nu9kQQtht4ESVlgxZ0AcQTbJG6ym7ezf6qtONeRv5lDw4O0h0ZwnarKKH
+         XhaLvPcUFgx6gcdclctlog8CXj5fmg5Uea9hMK+2W8RW0VKE9800jhz+4hQ1B7ISCKTa
+         AwbZFlCJ3kTvZJeAsn7gKUzZK5QBIcpF3lmYEkVAXWQJ2Csz9+/sWFuwzPVyc21AFLW/
+         QGYQ==
+X-Gm-Message-State: AOAM531T0xQtMJWYQkK0aBbRE5TwRi/LwRPdPbnYIlYwF4ECKu3w/X/7
+        dmL8v2LI2OV1SZJL4mBX/1xWmdPAbCu3Rb/+y5oWfSjEpg==
+X-Google-Smtp-Source: ABdhPJzWkjUo+wzmC+Aid/66YzC6oFHXQvvnXtV3qjYBPDSYSSuo3+DRnzB3mjF3mxvZfHNxyDT1fLGdC7mZRjuKEig=
+X-Received: by 2002:a17:906:2894:: with SMTP id o20mr6822049ejd.221.1603883932463;
+ Wed, 28 Oct 2020 04:18:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015125335.GB4390@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Camille Mougey <commial@gmail.com>
+Date:   Wed, 28 Oct 2020 12:18:47 +0100
+Message-ID: <CAAnLoWnS74dK9Wq4EQ-uzQ0qCRfSK-dLqh+HCais-5qwDjrVzg@mail.gmail.com>
+Subject: [seccomp] Request for a "enable on execve" mode for Seccomp filters
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Rich Felker <dalias@libc.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Denis Efremov <efremov@linux.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 01:53:35PM +0100, Mark Brown wrote:
-> On Thu, Oct 15, 2020 at 07:38:29AM +0200, Lukas Wunner wrote:
-> > On Wed, Oct 14, 2020 at 09:25:05PM +0100, Mark Brown wrote:
-> > How about holding a ref on the controller as long as the SPI driver
-> > is bound to the controller's parent device?  See below for a patch,
-> > compile-tested only for lack of an SPI-equipped machine.
-[...]
-> > +	spi_controller_get(ctlr);
-> > +	ret = devm_add_action(dev, __spi_controller_put, ctlr);
-> > +	if (ret) {
-> > +		kfree(ctlr);
-> 
-> This feels a bit icky - we're masking a standard use after free bug that
-> affects devm in general, not just this instance, and so while it will
-> work it doesn't feel great.  If we did do this it'd need more comments
-> and should probably be conditional on using the feature.  TBH I'm just
-> thinking it's better to just remove the feature, it's clearly error
-> prone and pretty redundant with devm.  I'm not sure any memory savings
-> it's delivering are worth the sharp edges.
+Hello,
 
-A combined memory allocation for struct spi_controller and the private
-data has more benefits than just memory savings:  Having them adjacent
-in memory reduces the chance of cache misses.  Also, one can get from
-one struct to the other with a cheap subtraction (using container_of())
-instead of having to chase pointers.  So it helps performance.  And a
-lack of pointers arguably helps security.
+(This is my first message to the kernel list, I hope I'm doing it right)
 
-Most subsystems embed the controller struct in the private data, but
-there *is* precedence for doing it the other way round.  E.g. the IIO
-subsystem likewise appends the private data to the controller struct.
-So I think that's fine, it need not and should not be changed.
+From my understanding, there is no way to delay the activation of
+seccomp filters, for instance "until an _execve_ call".
+But this might be useful, especially for tools who sandbox other,
+non-cooperative, executables, such as "systemd" or "FireJail".
 
-The problem is that the ->probe() and ->remove() code is currently
-asymmetric, which is unintuitive:  On ->probe(), there's an allocation
-step and a registration step:
+It seems to be a caveat of seccomp specific to the system call
+_execve_. For now, some tools such as "systemd" explicitly mention
+this exception, and do not support it (from the man page):
+> Note that strict system call filters may impact execution and error handl=
+ing code paths of the service invocation. Specifically, access to the execv=
+e system call is required for the execution of the service binary =E2=80=94=
+ if it is blocked service invocation will necessarily fail
 
-	spi_alloc_master()
-	spi_register_controller()
+"FireJail" takes a different approach[1], with a kind of workaround:
+the project uses an external library to be loaded through LD_PRELOAD
+mechanism, in order to install filters during the loader stage.
+This approach, a bit hacky, also has several caveats:
+* _openat_, _mmap_, etc. must be allowed in order to reach the
+LD_PRELOAD mechanism, and for the crafted library to work ;
+* it doesn't work for static binaries.
 
-Whereas on ->remove(), there's no step to free the master which would
-balance the prior alloc step:
+I only see hackish ways to restrict the use of _execve_ in a
+non-cooperative executable. These methods seem globally bypassables
+and not satisfactory from a security point of view.
 
-	spi_unregister_controller()
+IMHO, a way to prepare filter and enable them only on the next
+_execve_ would have some benefit:
+* have a way to restrict _execve_ in a non-cooperative executable;
+* install filters atomically, ie. before the _execve_ system call
+return. That would limit racy situations, and have the very firsts
+instructions of potentially untrusted binaries already subject to
+seccomp filters. It would also ensure there is only one thread running
+at the filter enabling time.
 
-That's because the spi_controller struct is ref-counted and the last
-ref is usually dropped by spi_unregister_controller().  If the private
-data is accessed after the spi_unregister_controller() step, a ref
-needs to be held.
+From what I understand, there is a relative use case[2] where the
+"enable on exec" mode would also be a solution.
 
-I maintain that it would be more intuitive to automatically hold a ref.
-We could offer a devm_spi_alloc_master() function which holds this ref
-and automatically releases it on unbind.
+Thanks for your attention,
+C. Mougey
 
-There are three drivers which call spi_alloc_master() with a size of zero
-for the private data.  In these three cases it is fine to free the
-spi_controller struct upon spi_unregister_controller().  So these drivers
-can continue to use spi_alloc_master().  All other drivers could be
-changed to use the new devm_spi_alloc_master(), or I could scrutinize
-each of them and convert to the new function only if necessary.
-
-Does this sound more convincing to you?
-
-Thanks,
-
-Lukas
+[1]: https://github.com/netblue30/firejail/issues/3685
+[2]: https://lore.kernel.org/linux-man/202010250759.F9745E0B6@keescook/
