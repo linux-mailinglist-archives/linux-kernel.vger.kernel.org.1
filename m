@@ -2,75 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27DB29D2E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6BA29D50F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgJ1Vhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726950AbgJ1VhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:37:25 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87D5E2483A;
-        Wed, 28 Oct 2020 21:22:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603920136;
-        bh=EJQkK2roS7SBBH2NKUDZvqNoOZjq9icIXI82V7St+Ek=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=hAIIgT2Wg3fIK/UjRyToe65sfkAbD3F8y8ciTb/Jbf1g+pEowfs9DNO9/NdmvyM3J
-         498HO574eeR1JUDsfJlS+kqvp+UxUhdUQ3ZT5200M64xSSQpU9z9wyqqZo19krc087
-         nSz91PVOCuz/EbTEgvhbPSLNxI2PX7/Tq7vHSook=
-Date:   Wed, 28 Oct 2020 21:22:10 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-In-Reply-To: <20201028142001.22431-1-srinivas.kandagatla@linaro.org>
-References: <20201028142001.22431-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qcom: sm8250: Fix array out of bounds access
-Message-Id: <160392012411.40829.8539672124304600568.b4-ty@kernel.org>
+        id S1728651AbgJ1V4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728633AbgJ1V4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:56:41 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76264C0613D3;
+        Wed, 28 Oct 2020 14:56:41 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t22so286221plr.9;
+        Wed, 28 Oct 2020 14:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q0deFER1y5zH2dnb8wEA8nqaA8hp/wl10D8xfdso/0c=;
+        b=DdrTWbJkBqbLsnyefrkAsK0JQLW/j43ySTRFlT2YhIuPRzBZoxzes9lqvDs1XYFr1M
+         Qbk4xZlfYZjxMzPuXICnNi2vFpZRdooS41ZoW34Vzsl5B04oJhvVQYsqzJAwQ5jt9u48
+         EXd6jeJQu1m7TlIJPVAMq/FtTexBsc3tW7GMwPBkeuQDseOzpfqHbuvhHZ4O8Nbo8Gad
+         YtscQbM9tVl7GPxX8T3xMaio3LEU+VIt0CjSYReAqTPSClw2CEOaVVaWzTRl0Yq2DdV5
+         326CaoG+9BUMVeMRGS2T833z/ZEChB98wm/Agz0jaoP9TM5xLUycjnBaNQBB/fp5mTxf
+         CbdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q0deFER1y5zH2dnb8wEA8nqaA8hp/wl10D8xfdso/0c=;
+        b=nruYa54BnPsJuEFAFBEHvA4CJE3DCGg4jt3paxysKL1iJPcxwz3+30TlE/q+RhIKjR
+         wRwhFXMNigqw2ioZ0OKI1/dRH2yCrXym8owv5P/xfxJ/3BTpkPaJyyYyIGAE+pzSCe70
+         lNZ4MYG17Ja6hhVDQKGYzswZ+Z5NCthHyJcRS7I7JwBCfozpU9loMtWppxZ6uG2Nzc+e
+         7YELJZdbSgvuX4pJt2KoIDS8zDXZUAnY09PZ9TKpLdwF65UkXqJcoW9yjaOMNZXrhjnI
+         uOpMQRLMBqCFaj9NBOdz9K3LIScjF37lH3NjS8YGvxOmW8rpoWKfg3G7K+/Bli2AS24M
+         J1Kg==
+X-Gm-Message-State: AOAM532Y+oyZ2jBwPBqdaY9zH6nVPOiFpDFC9zKHF1OhBVGQXp+b457M
+        kLTocn11h+pXKbDugoevnj3+lVuy2HfUAQ==
+X-Google-Smtp-Source: ABdhPJymJjE2L2a9NUrMrih2ODObIj/y609DDc4WIfVc9enlv0bVkzgNhyftNNcqrAdIECpWfAE/bQ==
+X-Received: by 2002:aa7:8055:0:b029:15f:cbe9:1aad with SMTP id y21-20020aa780550000b029015fcbe91aadmr1173932pfm.71.1603920238453;
+        Wed, 28 Oct 2020 14:23:58 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::4:1c8])
+        by smtp.gmail.com with ESMTPSA id x26sm514837pfn.178.2020.10.28.14.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 14:23:57 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 14:23:50 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
+Message-ID: <20201028212350.jj4mbnbk6hdcbymo@ast-mbp.dhcp.thefacebook.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+ <20201023195352.26269-2-mjeanson@efficios.com>
+ <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com>
+ <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 14:20:01 +0000, Srinivas Kandagatla wrote:
-> Static analysis Coverity had detected a potential array out-of-bounds
-> write issue due to the fact that MAX AFE port Id was set to 16 instead
-> of using AFE_PORT_MAX macro.
+On Tue, Oct 27, 2020 at 09:37:08AM -0400, Mathieu Desnoyers wrote:
 > 
-> Fix this by properly using AFE_PORT_MAX macro.
+> ----- On Oct 26, 2020, at 6:43 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
+> 
+> > On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
+> >> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
+> >> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
+> >>  	do {								\
+> >>  		struct tracepoint_func *it_func_ptr;			\
+> >>  		void *it_func;						\
+> >>  		void *__data;						\
+> >>  		int __maybe_unused __idx = 0;				\
+> >> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
+> >>  									\
+> >>  		if (!(cond))						\
+> >>  			return;						\
+> >> @@ -170,8 +178,13 @@ static inline struct tracepoint
+> >> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> >>  		/* srcu can't be used from NMI */			\
+> >>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
+> >>  									\
+> >> -		/* keep srcu and sched-rcu usage consistent */		\
+> >> -		preempt_disable_notrace();				\
+> >> +		if (maysleep) {						\
+> >> +			might_sleep();					\
+> > 
+> > The main purpose of the patch set is to access user memory in tracepoints,
+> > right?
+> 
+> Yes, exactly.
+> 
+> > In such case I suggest to use stronger might_fault() here.
+> > We used might_sleep() in sleepable bpf and it wasn't enough to catch
+> > a combination where sleepable hook was invoked while mm->mmap_lock was
+> > taken which may cause a deadlock.
+> 
+> Good point! We will do that for the next round.
+> 
+> By the way, we named this "sleepable" tracepoint (with flag TRACEPOINT_MAYSLEEP),
+> but we are open to a better name. Would TRACEPOINT_MAYFAULT be more descriptive ?
+> (a "faultable" tracepoint sounds weird though)
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: qcom: sm8250: Fix array out of bounds access
-      commit: 7c91d02068c342918003606bf378b259f37b31ba
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+bpf kept 'sleepable' as a name. 'faultable' is too misleading.
