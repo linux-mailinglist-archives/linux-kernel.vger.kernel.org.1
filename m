@@ -2,53 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1362129DCF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBE829DF46
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732410AbgJ1WU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60544 "EHLO mail.kernel.org"
+        id S2404011AbgJ2BAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:00:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731667AbgJ1WRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:41 -0400
-Received: from localhost (unknown [122.171.163.58])
+        id S1731552AbgJ1WR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:28 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B757C2231B;
-        Wed, 28 Oct 2020 05:56:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CEBF223AB;
+        Wed, 28 Oct 2020 05:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603864605;
-        bh=XPg4SEeqKrCMXwqHCp6LcifvhrM3ld8XV/RL6baPbrg=;
+        s=default; t=1603864720;
+        bh=S+T1g/75keSFr0V0daEFLuZRzriMpG3CH6cVm0SyMPM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=klApAEC0oKB+qer/j+opIGAlfrANR7UnFTZbrStUDvw5/vDWKWc46c1tpgOZz+b1a
-         ogq1U35gUn+VEg9fpSAn5LCcOzrYMd7p35XBpFA4jGby1v1NG+63Dng3vUExRDJgrz
-         aOxmXwc6EK46dOTK+Z8TrrXka3GBW5iVVaKAis28=
-Date:   Wed, 28 Oct 2020 11:26:41 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        dmaengine@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] dmaengine: stm32-mdma: Use struct_size() in
- kzalloc()
-Message-ID: <20201028055641.GI3550@vkoul-mobl>
-References: <20201008141828.GA20325@embeddedor>
+        b=d+4DS8AfQdxNoQ74BGZqaEhQm/i/vh4zTprBfBIZwGt+kA5PhuG39OXoWomGLeFwH
+         XVOpyskothizvsyIdbtG/vZ1g7+FbNr47QqFzJ1iTNW8j7aDhzTD9Ob18K7z/CeQ9Y
+         lzKGU2R5K9580h9R5dwjhT0SEL1yGqqJFqGTBJ5k=
+Date:   Wed, 28 Oct 2020 06:58:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     hch@infradead.org, vincent.whitchurch@axis.com,
+        sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
+        kishon@ti.com, lorenzo.pieralisi@arm.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com, fugang.duan@nxp.com
+Subject: Re: [PATCH V5 0/2] Change vring space from nomal memory to dma
+ coherent memory
+Message-ID: <20201028055836.GA244690@kroah.com>
+References: <20201028020305.10593-1-sherry.sun@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008141828.GA20325@embeddedor>
+In-Reply-To: <20201028020305.10593-1-sherry.sun@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-10-20, 09:18, Gustavo A. R. Silva wrote:
-> Make use of the new struct_size() helper instead of the offsetof() idiom.
+On Wed, Oct 28, 2020 at 10:03:03AM +0800, Sherry Sun wrote:
+> Changes in V5:
+> 1. Reorganize the vop_mmap function code in patch 1, which is done by Christoph. 
+> 2. Completely remove the unnecessary code related to reassign the used ring for
+> card in patch 2.
+> 
+> The original vop driver only supports dma coherent device, as it allocates and
+> maps vring by _get_free_pages and dma_map_single, but not use 
+> dma_sync_single_for_cpu/device to sync the updates of device_page/vring between
+> EP and RC, which will cause memory synchronization problem for device don't
+> support hardware dma coherent.
+> 
+> And allocate vrings use dma_alloc_coherent is a common way in kernel, as the
+> memory interacted between two systems should use consistent memory to avoid
+> caching effects. So here add noncoherent platform support for vop driver.
+> Also add some related dma changes to make sure noncoherent platform works
+> well.
+> 
+> Sherry Sun (2):
+>   misc: vop: change the way of allocating vrings and device page
+>   misc: vop: do not allocate and reassign the used ring
+> 
+>  drivers/misc/mic/bus/vop_bus.h     |   2 +
+>  drivers/misc/mic/host/mic_boot.c   |   9 ++
+>  drivers/misc/mic/host/mic_main.c   |  43 ++------
+>  drivers/misc/mic/vop/vop_debugfs.c |   4 -
+>  drivers/misc/mic/vop/vop_main.c    |  70 +-----------
+>  drivers/misc/mic/vop/vop_vringh.c  | 166 ++++++++++-------------------
+>  include/uapi/linux/mic_common.h    |   9 +-
+>  7 files changed, 85 insertions(+), 218 deletions(-)
 
-Applied, thanks
+Have you all seen:
+	https://lore.kernel.org/r/8c1443136563de34699d2c084df478181c205db4.1603854416.git.sudeep.dutt@intel.com
 
--- 
-~Vinod
+Looks like this code is asking to just be deleted, is that ok with you?
+
+thanks,
+
+greg k-h
