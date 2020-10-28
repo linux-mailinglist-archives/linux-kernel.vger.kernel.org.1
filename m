@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB6A29E2F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD25229E320
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgJ1Vdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:33:46 -0400
+        id S1730114AbgJ2Cpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:45:30 -0400
 Received: from smtp2.axis.com ([195.60.68.18]:29487 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgJ1Vdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:40 -0400
+        id S1726199AbgJ1Vdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:33:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1582; q=dns/txt; s=axis-central1;
-  t=1603920821; x=1635456821;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wShs6Il8676fEisJ9OqkRk7Glv/K0kWtHAFo/leZB64=;
-  b=XueiRrt/TAHzdubbGmnVUpFvbr7WJRhWdQUAfkDeXQv2mFheCSUAtmhB
-   WPtKT9/R3VHqoyNLd7bYb6oGMVqRFk1AfQoAyK80LdGVIxNGkWpsP4Hv+
-   pz35u3QkxKWCdIPgylYwKzXunm2DI702z76LGKlnkN2Rrh2iu6onywlUX
-   eiEXSL00y8j2gSfMKScnxC0M77j9WbUXjyhPJwn4U456Ozx9zB8bXCBD1
-   evTL/IkKz2gfm1F4Yh+u7kjiMcTs7Y7hZvGnFyGHusWWddnz2hTyHtNRC
-   zzRUUg4lINfteKhB7EIfJdEqKhxafHvr9JAG1yEtnVR6RLQUs6FQbSg+n
-   A==;
-IronPort-SDR: U8zltDoScmoPmC4fPkt4No97bd/rwXnqaOG5X7a0JcHti08Il8LC8DtC222YcI/kIB6HgvWfwt
- J/+H8AGXxQE/W2fpGK68aV/w+DL+bhkqgv8ZEqqoOf4EuyFJp7vUDOaI7ntfwxhFqFf5opGXoz
- 7AM11J2KHztE6qRm628hbygd7ayww1h2buIKls+eNCank0Tl1VE92QLqmH0a4JS/oC5LabwAlC
- slCRd1L83rroA2diWK8sYxBEz1gB2QvUU67wzHmoeKXcM9DyYQLhBPQy1LrCU5xy+74tC8qHFo
- pCs=
+  d=axis.com; l=1903; q=dns/txt; s=axis-central1;
+  t=1603920823; x=1635456823;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8WighlFxUCPG64E8rsKp51mjFDumWu/9Js1XeZaqNfY=;
+  b=hWTC//3AXQl4vaj8Ub2OfTMByzTPkg8QlLoaJXRnBy9EWaRSnBVSQNBY
+   ROMkSZcGUTT6p0+8ednqJZf4iT0Mi/0vo4u2ea/W2feTOFTL7ZYdIUjCA
+   KFboJmuKUstnT8NGyfUUBFwaN9RIX38WuD9uV3xYvW93exJ/PMKOuwfJQ
+   3iItUnHJM/OuY+j1QS+vL8mMFPl2L5xjBea8h84+1TS5H4zgYAl5WfVUm
+   AsmdT4EHFc8VrIUtBaO5Qg2fsmlkARZvjkOnh61awP6dKYp4XLHr5KoH6
+   D4oT9SKviNxnvcXfPAJ7Mqqff5ydEj668CRF9Ot2j09h5swLevNiRBe71
+   g==;
+IronPort-SDR: 9zQLRP0OGoRnoLBhjIuJp4l2jQDybWCBoKOjYwOSfnl3EMs1BA8SKp2nUvG+7u4f4TuoyXe4H1
+ mOU2i9QicPYfCXj9ZrG1jC/E+f5wg4rLNDTNRZfYLbj4zdGjhYmZJFu41i/19SfvcAETkigbQD
+ 5gzyICUvb/TfZwlRPKgucXIuzf91M3UdHzhXQ7RRw+wWci7JPguXiZN9ldODeEuyIWGog18yIg
+ 8NhArZgXNFNMnTw2dcE/92y7KhdzQJmLJ37m1VHd0Mr2RPTWpoMP70nGMQhQ14BtqlzPtZ5oER
+ mWM=
 X-IronPort-AV: E=Sophos;i="5.77,425,1596492000"; 
-   d="scan'208";a="13984860"
-Date:   Wed, 28 Oct 2020 09:57:46 +0100
+   d="scan'208";a="13984864"
 From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-CC:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel <kernel@axis.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] gpio: mockup: Allow probing from device tree
-Message-ID: <20201028085746.bmyb4y6ypburdy5s@axis.com>
-References: <20201027135325.22235-1-vincent.whitchurch@axis.com>
- <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] gpio: mockup: Allow probing from device tree
+Date:   Wed, 28 Oct 2020 09:57:48 +0100
+Message-ID: <20201028085748.17388-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=Mdjm8tgxF_76T3f6r3TwghLKtrFtUv7ywtX3-nEQzVGtA@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 07:12:13PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Oct 27, 2020 at 2:54 PM Vincent Whitchurch
-> <vincent.whitchurch@axis.com> wrote:
-> > diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-> > index 67ed4f238d43..c93892a6936a 100644
-> > --- a/drivers/gpio/gpio-mockup.c
-> > +++ b/drivers/gpio/gpio-mockup.c
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/gpio/driver.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/irq.h>
-> > +#include <linux/of.h>
-> 
-> Please keep the includes ordered alphabetically.
+Allow the mockup driver to be probed via the device tree without any
+module parameters, allowing it to be used to configure and test higher
+level drivers like the leds-gpio driver and corresponding userspace
+before actual hardware is available.
 
-Thanks, fixed in v3.
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
 
-> >  #include <linux/irq_sim.h>
-> >  #include <linux/irqdomain.h>
-> >  #include <linux/module.h>
-> > @@ -460,9 +461,18 @@ static int gpio_mockup_probe(struct platform_device *pdev)
-> >         return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_OF
-> > +static const struct of_device_id gpio_mockup_of_match[] = {
-> > +       { .compatible = "gpio-mockup", },
-> > +       {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
-> > +#endif
-> 
-> You don't need this ifdef - of_match_ptr() will evaluate to NULL if
-> CONFIG_OF is disabled and the compiler will optimize this struct out.
+Notes:
+    v3:
+    - Keep includes sorted alphabetically
+    - Drop CONFIG_OF ifdefs
+    
+    v2:
+    - Remove most of the added code, since the latest driver doesn't need it.
+    - Drop DT binding document, since Rob Herring was OK with not documenting this:
+      https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
 
-The compiler can't optimise out the struct in the case of a module build
-since there is a reference from the MODULE_DEVICE_TABLE:
+ drivers/gpio/gpio-mockup.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
- $ grep CONFIG_OF .config
- # CONFIG_OF is not set
- $ nm drivers/gpio/gpio-mockup.ko  | grep of_
- 00000000 r gpio_mockup_of_match
- 00000000 R __mod_of__gpio_mockup_of_match_device_table
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index 67ed4f238d43..ca87c590ef3f 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -16,6 +16,7 @@
+ #include <linux/irq_sim.h>
+ #include <linux/irqdomain.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
+@@ -460,9 +461,16 @@ static int gpio_mockup_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id gpio_mockup_of_match[] = {
++	{ .compatible = "gpio-mockup", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
++
+ static struct platform_driver gpio_mockup_driver = {
+ 	.driver = {
+ 		.name = "gpio-mockup",
++		.of_match_table = of_match_ptr(gpio_mockup_of_match),
+ 	},
+ 	.probe = gpio_mockup_probe,
+ };
+@@ -556,8 +564,7 @@ static int __init gpio_mockup_init(void)
+ {
+ 	int i, num_chips, err;
+ 
+-	if ((gpio_mockup_num_ranges < 2) ||
+-	    (gpio_mockup_num_ranges % 2) ||
++	if ((gpio_mockup_num_ranges % 2) ||
+ 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
+ 		return -EINVAL;
+ 
+-- 
+2.28.0
 
-But these few wasted bytes don't matter so I removed the CONFIG_OF
-anyway as you suggested.
