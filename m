@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BE429D838
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA92C29D827
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387741AbgJ1Wae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
+        id S2387656AbgJ1WaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387590AbgJ1W30 (ORCPT
+        with ESMTP id S2387570AbgJ1W30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 18:29:26 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290EC0613D3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9C4C0613D2;
         Wed, 28 Oct 2020 15:29:26 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 14:12:02 -0000
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603894324;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=2020; t=1603894382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EXxmKj+v4EMB2p2dT4DK72DXJA0Fy8oVpTc4Y0PzkWw=;
-        b=iGlheWU/oN6/5nx9K0ZsRXLcUTT7v45A3vG/+dt+Bm0Q95TseVMEZ1kjv4e2i+1iUe/fNJ
-        JI5Krlr41pbuFygIffjVrC3ier+xLNLq7KP2PLK3pLJsBTByj+ws8lkiT7Sv5YhT9VoQtI
-        SHchE6WB/CuWi8yEh62BtWObE+scATZhi6Ym4UXKKSi6ONUuohw9fiXuJBXhgZoiEyW9UA
-        4AqUJ29/tIYk/NLLNMKGJQx/s8b6WZstVMl5TvtW0hAXIJQgroiNYTHYApO05ZbSmug398
-        FMrg+OZj5Sh+e13RIhVwe1kC79uK0czCrAI80sPsDQckTjNYxpFrDmrPgC1rfQ==
+        bh=CqSkQpMY6URuz0G0Q4TnfzC+8Rq7slmLYOYzQAzOWGc=;
+        b=31D5ynv45XvdzRDTEELN87qhI/8dZPSaNTNTJOCAB47le0wvb6YrGebef1K6+R/yD/U6aU
+        aZ64XufcS/VUufhS7Ix6k2Xdd/nsIwWTrOQMf1QxkAHv0VF+qOQygb1VZGNOUnEwAknB17
+        xZ2CrxmX+E4AELBSKoqbTUFaG3OuM3ZlDPxznTpQuXbTGUdIGacOtnmb13e1fJx6IBSKuC
+        OhJpbARqtRuXXBOqZjh0a2y+lpPXH6A7pPv+nNAzKUKCF7M1fewCX05oSLRGX78+aldNf2
+        /PNLIH4ZgPav3aYvutCTrNdtRazco7kK/v1SHMy7J1oywJ3q/DP6BoFlCvGTeA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603894324;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=2020e; t=1603894382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EXxmKj+v4EMB2p2dT4DK72DXJA0Fy8oVpTc4Y0PzkWw=;
-        b=uZ4q5iEHVBTYpDytSSv2FD9qD3dWS2EZKgZtNJVAa1yGAWPBvy01fVIJET0OLpbJ02ysrN
-        8nONK0mNJkVAX/Bg==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/setup: Remove unused MCA variables
-Cc:     Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201021165614.23023-1-bp@alien8.de>
-References: <20201021165614.23023-1-bp@alien8.de>
+        bh=CqSkQpMY6URuz0G0Q4TnfzC+8Rq7slmLYOYzQAzOWGc=;
+        b=VzXM6tXWEg+XudQIjBFsQQy6kC9HVzTMeWbxvOMd5pYMok+TJDPH/B6ziFhpiKsdGF2Njk
+        C3Ye3gLCeVxDAXCg==
+To:     linux-block@vger.kernel.org
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 1/3] blk-mq: Don't complete on a remote CPU in force threaded mode
+Date:   Wed, 28 Oct 2020 15:12:49 +0100
+Message-Id: <20201028141251.3608598-1-bigeasy@linutronix.de>
+In-Reply-To: <20201028065616.GA24449@infradead.org>
+References: <20201028065616.GA24449@infradead.org>
 MIME-Version: 1.0
-Message-ID: <160389432296.397.3377847013706678496.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+With force threaded interrupts enabled, raising softirq from an SMP
+function call will always result in waking the ksoftirqd thread. This is
+not optimal given that the thread runs at SCHED_OTHER priority.
 
-Commit-ID:     0d847ce7c17613d63401ac82336ee1d5df749120
-Gitweb:        https://git.kernel.org/tip/0d847ce7c17613d63401ac82336ee1d5df749120
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 21 Oct 2020 18:39:47 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 28 Oct 2020 14:58:51 +01:00
+Completing the request in hard IRQ-context on PREEMPT_RT (which enforces
+the force threaded mode) is bad because the completion handler may
+acquire sleeping locks which violate the locking context.
 
-x86/setup: Remove unused MCA variables
+Disable request completing on a remote CPU in force threaded mode.
 
-Commit
-
-  bb8187d35f82 ("MCA: delete all remaining traces of microchannel bus support.")
-
-removed the remaining traces of Micro Channel Architecture support but
-one trace remained - three variables in setup.c which have been unused
-since 2012 at least.
-
-Drop them finally.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201021165614.23023-1-bp@alien8.de
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/x86/kernel/setup.c | 5 -----
- 1 file changed, 5 deletions(-)
+ block/blk-mq.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 84f581c..a23130c 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -119,11 +119,6 @@ EXPORT_SYMBOL(boot_cpu_data);
- 
- unsigned int def_to_bigsmp;
- 
--/* For MCA, but anyone else can use it if they want */
--unsigned int machine_id;
--unsigned int machine_submodel_id;
--unsigned int BIOS_revision;
--
- struct apm_info apm_info;
- EXPORT_SYMBOL(apm_info);
- 
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 55bcee5dc0320..421a40968c9ff 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -648,6 +648,14 @@ static inline bool blk_mq_complete_need_ipi(struct req=
+uest *rq)
+ 	if (!IS_ENABLED(CONFIG_SMP) ||
+ 	    !test_bit(QUEUE_FLAG_SAME_COMP, &rq->q->queue_flags))
+ 		return false;
++	/*
++	 * With force threaded interrupts enabled, raising softirq from an SMP
++	 * function call will always result in waking the ksoftirqd thread.
++	 * This is probably worse than completing the request on a different
++	 * cache domain.
++	 */
++	if (force_irqthreads)
++		return false;
+=20
+ 	/* same CPU or cache domain?  Complete locally */
+ 	if (cpu =3D=3D rq->mq_ctx->cpu ||
+--=20
+2.28.0
+
