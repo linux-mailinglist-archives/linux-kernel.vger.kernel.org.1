@@ -2,63 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A9529DFDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBA729E0A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731252AbgJ2BFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:05:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:6981 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730034AbgJ1WFo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:05:44 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CLjTC2m4QzhbQF;
-        Wed, 28 Oct 2020 17:10:07 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 28 Oct 2020 17:09:52 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH] mips: Vr41xx: add missing iounmap() on error in vr41xx_pciu_init()
-Date:   Wed, 28 Oct 2020 17:15:48 +0800
-Message-ID: <20201028091548.136303-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1729809AbgJ2BXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:23:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47940 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729805AbgJ1WDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:03:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B92E9ABAE;
+        Wed, 28 Oct 2020 09:54:25 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 10:54:24 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Erdem Aktas <erdemaktas@google.com>, dcovelli@vmware.com
+Cc:     linux-kernel@vger.kernel.org,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        linux-tip-commits@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>
+Subject: Re: [tip: x86/seves] x86/vmware: Add VMware-specific handling for
+ VMMCALL under SEV-ES
+Message-ID: <20201028095424.GJ22179@suse.de>
+References: <20200907131613.12703-65-joro@8bytes.org>
+ <159972972557.20229.773744278485296601.tip-bot2@tip-bot2>
+ <CAAYXXYwFxuK7NvaXTebag0vczRRRyYNRdVPd66GeiCz9_2TXCA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAYXXYwFxuK7NvaXTebag0vczRRRyYNRdVPd66GeiCz9_2TXCA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add missing iounmap() of pciu_base on error when failed to init
-io_map_base.
+On Tue, Oct 27, 2020 at 04:19:45PM -0700, Erdem Aktas wrote:
+> Looking at the VMWARE_VMCALL(cmd, eax, ebx, ecx, edx) definition, it
+> seems to me only 4 registers are required to be shared with
+> hypervisor. I don't know much about vmware but is not
+> vmware_sev_es_hcall_prepare expose more registers than needed and also
+> vmware_sev_es_hcall_finish might let the hypvervisor to modify
+> additional registers which are not used?
+> 
+> Just checking if this is intentional and what I am missing here.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- arch/mips/pci/pci-vr41xx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Original patch is from Doug, maybe he can clarify what needs to be
+shared. I only adapted it to the call-backs.
 
-diff --git a/arch/mips/pci/pci-vr41xx.c b/arch/mips/pci/pci-vr41xx.c
-index 1fa4e1014..4f250c55b 100644
---- a/arch/mips/pci/pci-vr41xx.c
-+++ b/arch/mips/pci/pci-vr41xx.c
-@@ -293,8 +293,10 @@ static int __init vr41xx_pciu_init(void)
- 		master = setup->master_io;
- 		io_map_base = ioremap(master->bus_base_address,
- 				      resource_size(res));
--		if (!io_map_base)
-+		if (!io_map_base) {
-+			iounmap(pciu_base);
- 			return -EBUSY;
-+		}
- 
- 		vr41xx_pci_controller.io_map_base = (unsigned long)io_map_base;
- 	}
--- 
-2.23.0
+Doug?
 
+Regards,
+
+	Joerg
