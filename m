@@ -2,54 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB929D712
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0575329D794
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729953AbgJ1WU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731727AbgJ1WRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:43 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A23E6207E8;
-        Wed, 28 Oct 2020 08:27:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603873664;
-        bh=kGeTSVloFHr3vmIk7mbyMryFYqWLWcWuNWQqBFEuTx0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u/iu6UIO39dVpQ0k+hluHaFX92ReeSUfv1UXBU8Gioupul3N5NHuzi8dsEBnFo8G1
-         zN2lT1rlOOAwwvQF62ve+x1kExzCxh0kygwMFEvJ0hZ9DmAHD00kt7WtFyvdNWHGR5
-         vOcDeRCd9heQjO89+fVnv6rdFrMCJptn/m+ymVWU=
-Date:   Wed, 28 Oct 2020 16:27:39 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 07/13] ARM: dts: imx7-mba7: configure watchdog
-Message-ID: <20201028082738.GB28467@dragon>
-References: <20200918112942.1367-1-matthias.schiffer@ew.tq-group.com>
- <20200918112942.1367-7-matthias.schiffer@ew.tq-group.com>
+        id S1732986AbgJ1WZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:25:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:6984 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732968AbgJ1WZo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:25:44 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CLhK8686pzhcj8;
+        Wed, 28 Oct 2020 16:18:04 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 28 Oct 2020 16:17:52 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] firmware: tegra: Use memdup_user() as a cleanup
+Date:   Wed, 28 Oct 2020 16:29:51 +0800
+Message-ID: <1603873791-106258-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918112942.1367-7-matthias.schiffer@ew.tq-group.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 01:29:36PM +0200, Matthias Schiffer wrote:
-> The external watchdog reset is necessary, as the internal reset is
-> unreliable on i.MX7.
-> 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Fix coccicheck warning which recommends to use memdup_user().
 
-Applied, thanks.
+This patch fixes the following coccicheck warning:
+
+./drivers/firmware/tegra/bpmp-debugfs.c:335:11-18: WARNING opportunity for memdup_user
+
+Fixes: 5e37b9c137ee ("firmware: tegra: Add support for in-band debug")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/firmware/tegra/bpmp-debugfs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
+index c1bbba9..7234136 100644
+--- a/drivers/firmware/tegra/bpmp-debugfs.c
++++ b/drivers/firmware/tegra/bpmp-debugfs.c
+@@ -332,12 +332,9 @@ static ssize_t bpmp_debug_store(struct file *file, const char __user *buf,
+ 	if (!filename)
+ 		return -ENOENT;
+ 
+-	databuf = kmalloc(count, GFP_KERNEL);
+-	if (!databuf)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(databuf, buf, count)) {
+-		err = -EFAULT;
++	databuf = memdup_user(buf, count);
++	if (IS_ERR(databuf)) {
++		err = PTR_ERR(databuf);
+ 		goto free_ret;
+ 	}
+ 
+-- 
+2.6.2
+
