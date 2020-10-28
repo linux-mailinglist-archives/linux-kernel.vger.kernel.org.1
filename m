@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0905E29E270
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F1E29E1DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404366AbgJ2COg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:14:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28904 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726776AbgJ1Vfk (ORCPT
+        id S2388149AbgJ2CEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:04:20 -0400
+Received: from one.firstfloor.org ([193.170.194.197]:49278 "EHLO
+        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727255AbgJ1Vkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:35:40 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S4WliL042557;
-        Wed, 28 Oct 2020 00:33:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Zl37AZXairTdHgkwm1QP/KXTOciNg0D8eezgRstoutI=;
- b=AaNyw8FtAIfEbYQItLs37c1l2SwrtWl0uP066o+Tg3bILFUwGW/xohOT5SLA1trp5aLI
- o4TD1qT9GuZsb6wvaPbyFiPyzi3DY47LO1YQJQg+P7dNdAxKD262+4Xl08HydRbppTzz
- W2VkY75BFP51dOhR0ZdQCzxgWwnT1aDkp7b4cpwZOLUlzWkALGV9la8RrRyIRiuUnlWZ
- Q8WlK3hi04WbGrNfaPcHShH6mSMPCMI2rL0YczBoGqWY4JhZzjCzd1Yzq/AD3DrYZSIh
- c+yRXO7vh9PvxGhIAPs/gyzT2v9e86gYnNNJhwmP7U6/Q/pc3vqKDHq1BTaSIbaz6KZM Rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34ec5ur226-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 00:33:08 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09S4X7Zk043438;
-        Wed, 28 Oct 2020 00:33:07 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34ec5ur21p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 00:33:07 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09S4Wo2D018174;
-        Wed, 28 Oct 2020 04:33:05 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 34cbw823sa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 04:33:05 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09S4X3b026476964
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 04:33:03 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 54F25A4051;
-        Wed, 28 Oct 2020 04:33:03 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EFB8BA4040;
-        Wed, 28 Oct 2020 04:33:01 +0000 (GMT)
-Received: from [9.199.33.247] (unknown [9.199.33.247])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Oct 2020 04:33:01 +0000 (GMT)
-Subject: Re: [PATCH] ext4: properly check for dirty state in
- ext4_inode_datasync_dirty()
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20201024140115.GA35973@xps-13-7390>
- <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
- <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
- <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Message-ID: <f41af253-bd90-805d-a304-71f2f8f454f7@linux.ibm.com>
-Date:   Wed, 28 Oct 2020 10:03:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 28 Oct 2020 17:40:49 -0400
+Received: from firstfloor.org (c-71-237-255-61.hsd1.or.comcast.net [71.237.255.61])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by one.firstfloor.org (Postfix) with ESMTPSA id 5399486766;
+        Wed, 28 Oct 2020 06:15:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
+        s=mail; t=1603862115;
+        bh=PpI0teziI0VYma/TqTR0yi5ir0d/ttc56gOqlluhAOE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SXbvFNhoqqKDjZ+wy5kE7CwI4/F0kWWjR+SK0SYzQEboeN+Jq7qhjmHhVZmtsX5hr
+         hUGa2Bn/jnOdFtcHw6iDyakO3cjVM/2sYibWH47YyykOs8sSa58QAD0+YbBhqHzlxx
+         a4d9+x73jtOeLYftYdvrUOKyivK+53vHOenBX4vs=
+Received: by firstfloor.org (Postfix, from userid 1000)
+        id 9BF6EA0E64; Tue, 27 Oct 2020 22:15:11 -0700 (PDT)
+From:   Andi Kleen <andi@firstfloor.org>
+To:     acme@kernel.org
+Cc:     jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <andi@firstfloor.org>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH v2] perf tools: Support -x for perf stat report
+Date:   Tue, 27 Oct 2020 22:15:10 -0700
+Message-Id: <20201028051510.9526-1-andi@firstfloor.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_01:2020-10-26,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=999
- impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010280023
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for the -x, option to enable CSV output with perf stat
+report. Useful to parse the information with other programs.
 
+% perf stat record --quiet -a -I 1000 sleep 5
+% perf stat report -x,
+     1.000838672,4003.55,msec,cpu-clock,4003548736,100.00,,
+     1.000838672,11243,,context-switches,4003631885,100.00,0.003,M/sec
+     1.000838672,1682,,cpu-migrations,4003672150,100.00,0.420,K/sec
+     1.000838672,13244,,page-faults,4003697471,100.00,0.003,M/sec
+     1.000838672,2953214077,,cycles,4003715495,100.00,0.738,GHz
+     1.000838672,4380820799,,instructions,4003738270,100.00,1.48,insn per cycle
+     1.000838672,809865653,,branches,4003760616,100.00,202.287,M/sec
+     1.000838672,12439843,,branch-misses,4003780785,100.00,1.54,of all branches
+...
 
-On 10/28/20 9:18 AM, harshad shirwadkar wrote:
-> Actually the simpler fix for this in case of fast commits is to check
-> if the inode is on the fast commit list or not. Since we clear the
-> fast commit list after every fast and / or full commit, it's always
-> true that if the inode is not on the list, that means it isn't dirty.
-> This will simplify the logic here and then we can probably get rid of
-> i_fc_committed_subtid field altogether. I'll test this and send out a
-> patch.
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
 
-Yes, sounds like a better solution. Thanks!
+---
 
--ritesh
+v2: Fix default output (Jiri). Also handle \t as special value like the
+original parser (Andi)
+---
+ tools/perf/builtin-stat.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 743fe47e7a88..2f7eb6b68344 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1988,6 +1988,8 @@ static int __cmd_report(int argc, const char **argv)
+ 		     "aggregate counts per numa node", AGGR_NODE),
+ 	OPT_SET_UINT('A', "no-aggr", &perf_stat.aggr_mode,
+ 		     "disable CPU count aggregation", AGGR_NONE),
++	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
++		   "print counts with custom separator"),
+ 	OPT_END()
+ 	};
+ 	struct stat st;
+@@ -2002,6 +2004,13 @@ static int __cmd_report(int argc, const char **argv)
+ 			input_name = "perf.data";
+ 	}
+ 
++	if (strcmp(stat_config.csv_sep, " ")) {
++		stat_config.csv_output = true;
++		if (!strcmp(stat_config.csv_sep, "\\t"))
++			stat_config.csv_sep = "\t";
++		stat_config.big_num = false;
++	}
++
+ 	perf_stat.data.path = input_name;
+ 	perf_stat.data.mode = PERF_DATA_MODE_READ;
+ 
+-- 
+2.28.0
+
