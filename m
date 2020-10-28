@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3D029E239
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B77B29E21C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387469AbgJ2CLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:11:49 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:39660 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbgJ1Vgn (ORCPT
+        id S1729656AbgJ2CF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:05:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52673 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727068AbgJ1ViF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:36:43 -0400
-Received: by mail-lf1-f68.google.com with SMTP id 184so673379lfd.6;
-        Wed, 28 Oct 2020 14:36:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IJ/1u3561E6mMIfNICLY2s/NugY/WQD7O6Mrlmn0Hsg=;
-        b=EDxqe/JRW7wHEr7E1J2zF5OK08poCt6hNmvLZ0LEvJoqmYzaZQOHCEtNYw5qRPV5VC
-         yn/NBFEcRRwmsp19F+k0OuqO280SjFWFZGHHnkhKA+h69kRT2Uti45JAMoYq1Ho5sG/g
-         72fg4yyCpkmqBiM05SPOVGWz8ZWKUGcHCGQeqhghPo4dgAqjtHA1H4jX9gvzCtL06t5+
-         VvhjxC765mswwlye6mxlHTZAoVO17h+Gda7A0qEH0ENcr/d9OZRUeoFCCDBnR68c+vjM
-         oa9XC0GuIBvJPh4ilpqfEKP0DDf5qXcwmYTKIpDBpPFqT4KnoFjHnn9wNfCVeeGkdpIB
-         UQVw==
-X-Gm-Message-State: AOAM5315q6PCrFPkeEp20topQoAJ0MNx6L/RBqnfT+M9HmgkEovojE5W
-        TGx5pZYfBEP4EEKJLccXNTe1wLZO0sD2NRe1PQSVOOyd
-X-Google-Smtp-Source: ABdhPJyXpf89lCPGYFZaY8h+h/+oPb5/uuHIuKvMA2YLEzqIyFtpe9ibvh4k+NwwFMqSBXRjCwz+PPzbuyu2OUfH7nw=
-X-Received: by 2002:ac2:5329:: with SMTP id f9mr2819996lfh.525.1603900518718;
- Wed, 28 Oct 2020 08:55:18 -0700 (PDT)
+        Wed, 28 Oct 2020 17:38:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603921084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fkWfC7xHRg1lPmbvoyIGn22t41mdB4f5tgL/7eVd4rM=;
+        b=UxvNdOaEKNqnVqL2NAC2VnLXkxf2+qJ5wRsdkVS0oqUPyBLk3qnv/mRytj7d3frKtoZ5xL
+        Ji1n0p9PJX8ZzQmi3doDL/plDYjLDpLw7i5rEn+T0VUw9K5y4row5K9lnnxRlG8AOfCIcB
+        j9+CZfxVGJ8jysa+KlaOhRxt6zz4+4M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-_uhFhELPM_WVyShU7iOP6Q-1; Wed, 28 Oct 2020 12:34:29 -0400
+X-MC-Unique: _uhFhELPM_WVyShU7iOP6Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2472E8EBA0A;
+        Wed, 28 Oct 2020 16:34:28 +0000 (UTC)
+Received: from [10.10.115.31] (ovpn-115-31.rdu2.redhat.com [10.10.115.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EE8056EF4A;
+        Wed, 28 Oct 2020 16:34:26 +0000 (UTC)
+Subject: Re: [PATCH] dcookies: Make dcookies depend on CONFIG_OPROFILE
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        anmar.oueja@linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <51a9a594a38ae6e0982e78976cf046fb55b63a8e.1603191669.git.viresh.kumar@linaro.org>
+ <20201027085152.GB10053@infradead.org>
+ <CAHk-=whw9t3ZtV8iA2SJWYQS1VOJuS14P_qhj3v5-9PCBmGQww@mail.gmail.com>
+From:   William Cohen <wcohen@redhat.com>
+Message-ID: <b3a8e2e8-350f-65af-9707-a6d847352f8e@redhat.com>
+Date:   Wed, 28 Oct 2020 12:34:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
-In-Reply-To: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
-From:   Sudeep Holla <sudeep.holla@arm.com>
-Date:   Wed, 28 Oct 2020 15:55:06 +0000
-Message-ID: <CAPKp9ubYYtteYc7SDdDBPFpt3ErJpYeykQ49ey_hJbZ0yQEQSg@mail.gmail.com>
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-To:     Elliot Berman <eberman@codeaurora.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=whw9t3ZtV8iA2SJWYQS1VOJuS14P_qhj3v5-9PCBmGQww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 7:24 AM Elliot Berman <eberman@codeaurora.org> wrote:
->
-> In a heterogeneous multiprocessor system, specifying the 'maxcpus'
-> parameter on kernel command line does not provide sufficient control
-> over which CPUs are brought online at kernel boot time, since CPUs may
-> have nonuniform performance characteristics. Thus, add bootcpus kernel
-> parameter to control which CPUs should be brought online during kernel
-> boot. When both maxcpus and bootcpus is set, the more restrictive of the
-> two are booted.
->
-> Signed-off-by: Elliot Berman <eberman@codeaurora.org>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  8 +++++++
->  include/linux/cpu.h                             |  2 +-
->  kernel/cpu.c                                    |  4 ++--
->  kernel/smp.c                                    | 28 +++++++++++++++++++++++--
->  4 files changed, 37 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 65d047f..ea31af3 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -449,6 +449,14 @@
->
->                         See Documentation/admin-guide/bootconfig.rst
->
-> +       bootcpus=       [SMP]  List of processors that an SMP kernel
-> +                       will bring up during bootup. Similar to maxcpus, except
-> +                       as a cpu list as described above. The more restrictive
-> +                       of maxcpus and bootcpus applies. If bootcpus=1-3 and
-> +                       maxcpus=2, only processors 1 and 2 are booted. As with
-> +                       maxcpus, you can bring up other plugged cpu by executing
-> +                       "echo 1 > /sys/devices/system/cpu/cpuX/online"
-> +
+On 10/27/20 12:54 PM, Linus Torvalds wrote:
+> On Tue, Oct 27, 2020 at 1:52 AM Christoph Hellwig <hch@infradead.org> wrote:
+>>
+>> Is it time to deprecate and eventually remove oprofile while we're at
+>> it?
+> 
+> I think it's well past time.
+> 
+> I think the user-space "oprofile" program doesn't actually use the
+> legacy kernel code any more, and hasn't for a long time.
+> 
+> But I might be wrong. Adding William Cohen to the cc, since he seems
+> to still maintain it to make sure it builds etc.
+> 
+>              Linus
+> 
 
-There is a fundamental assumption here that the user of this cmdline
-understands how
-the logical cpu numbers are allocated for the physical cpus. Based on
-the discussion
-I understand that you want to boot specific physical cpus for whatever
-reasons and
-here you want to specify the logical cpu numbers for them. So NACK for
-that concept
-alone irrespective of whether this concept as a whole is acceptable or not.
+Hi,
 
--- 
-Regards,
-Sudeep
+Yes, current OProfile code uses the existing linux perf infrastructure and doesn't use the old oprofile kernel code.  I have thought about removing that old oprofile driver code from kernel, but have not submitted patches for it. I would be fine with eliminating that code from the kernel.
+
+-Will
+
