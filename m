@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212E729D9FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716ED29D9BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389703AbgJ1WxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        id S2389907AbgJ1W6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733228AbgJ1WxH (ORCPT
+        with ESMTP id S2389676AbgJ1W4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:53:07 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2829EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:53:07 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id e7so664917pfn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:53:07 -0700 (PDT)
+        Wed, 28 Oct 2020 18:56:09 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C22C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:56:08 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id r10so369040plx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0Xy/2zadYFsZw40LFEtdOiEBtCWDHEhIZKqPxiXGDgo=;
-        b=bBaojgDCytTeCZe09Aniv5ZCo9/1FqsTT/3OVeHNHiQoo0VRsUJwEEF+dAKR8keSyL
-         yRWbSBM9isY011JSCr6qCTcRwh2CYocjn/3k5iQI8Ss/5A/CGKTOriZdbyXDN2ys6BHT
-         tIbkFOOYefNeoQ0CJz/hUYR7ERPfwa7Bx6B6I=
+        bh=6zGOuhTIRZSvVyxx3m4aE8CgCO2YW8w7ueb9xYPds3c=;
+        b=SEdMz9fsLWNQgMVzf4o0RAPD/AcIAPbuNHJfefzMBnk/O9d9g6sgbDmqXfCec5Xzxj
+         caBrjlmHD8fifIVTuqhHxUI5XhRh2T890Af5tLexqvSiZ266TQyAe+pQq/Xy1hRXF9YR
+         +U+lTkSiEjRN3SU9Xq1u0+VGj18uqELgouFRA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0Xy/2zadYFsZw40LFEtdOiEBtCWDHEhIZKqPxiXGDgo=;
-        b=kxb8wLbjsXKlYWQds7wAie7epWqlcR7QDVZKGk1LYTaC5zxleVHBwgZ3+XZtTGkjYf
-         RgCN+FMqfx5rWVNPRI+5pygHWqRJhuu2gLdQLKHYogQB/Hh31aPNaLbP1nqt2nLWA/fv
-         rEyhGJ2Me7+eC1I2LGk476kjmVqFIGBGRZHpoy2p9QQWT/o3qZSKHq6C5E/W8yo2o3s1
-         CkMhrJjJcRQjrFwZsJhGmiV8DXLZXCCZEp8R1AvKEpYkVyfHp9IoB14VOx8lAXMNGOuW
-         gFhf6Ws4Fcqa2TAlvPrK3tqX8864QaP5InVJ8jMbU9zSs7W/Rrknfsf5eK/WzYpKMrwy
-         hdEQ==
-X-Gm-Message-State: AOAM533sB/yXELr9aWjykxhaDtv03eHfHSKS7cafArNtLYJpw1sqnVnH
-        FuUB2i0zOMBzETYeNasmaC2JQA==
-X-Google-Smtp-Source: ABdhPJzNUPngBSBllGfVxFqpThpHmKtVDwZBWHpI1tUv5u0YsP97zuSXYttLoLqCl2FU2MQmSaZy8A==
-X-Received: by 2002:a17:90b:90d:: with SMTP id bo13mr1086316pjb.111.1603925586677;
-        Wed, 28 Oct 2020 15:53:06 -0700 (PDT)
+        bh=6zGOuhTIRZSvVyxx3m4aE8CgCO2YW8w7ueb9xYPds3c=;
+        b=WU9s12+jIybezqFJtmoCYSG/oolFupjnQ5RZT1FdfX65025bb7kRqnGL41KQG+/TMc
+         CFYrdZQErGtdxiFGauQ6fDEdvZ1DERQ1OjU82Q+Q0miWvdZgMyweyg5t4jQY1XNsZVnq
+         eQcyl5ZBk+82ZayHunM7DVKGogFNOxWbxuNMyjydeBYMviokR9FIYmPTygUz0qJT4k7I
+         hnFRN972bjuWs4UDqFBv9pIV9MsLxLpw1bWss06tQs7KF0MAPclJrUBRzqRpcuMxedTV
+         U4bgLLO0ANHV2mf0Gvt9gOdT2tMGcf4eEZBKfOEzxUDUZWWYKIfTB/XP/M2Lebx2iggX
+         qexQ==
+X-Gm-Message-State: AOAM531syzXwQQmtXhTHGrNpOEtqn1gTOzWVY4KkpkVB7An6xxTVgR/Z
+        yKHcLg8kVtvf2UsCktD9nKzUwQ==
+X-Google-Smtp-Source: ABdhPJwAExtMg0Y9nbbQflCfUuQOXDWjgWSEdOk1MQhIgdQjFdwVeqs8tTy00tz6CV1C4vksZxX49Q==
+X-Received: by 2002:a17:902:b90c:b029:d6:868d:f566 with SMTP id bf12-20020a170902b90cb02900d6868df566mr913093plb.2.1603925768287;
+        Wed, 28 Oct 2020 15:56:08 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l7sm465074pja.11.2020.10.28.15.53.05
+        by smtp.gmail.com with ESMTPSA id m129sm637972pfd.177.2020.10.28.15.56.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 15:53:05 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 15:53:04 -0700
+        Wed, 28 Oct 2020 15:56:07 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 15:56:06 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Jann Horn <jannh@google.com>
 Cc:     Tycho Andersen <tycho@tycho.pizza>,
@@ -64,7 +64,7 @@ Cc:     Tycho Andersen <tycho@tycho.pizza>,
         Giuseppe Scrivano <gscrivan@redhat.com>,
         Robert Sesek <rsesek@google.com>
 Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <202010281548.CCA92731F@keescook>
+Message-ID: <202010281553.A72E162A7@keescook>
 References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
  <20200930150330.GC284424@cisco>
  <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
@@ -74,48 +74,24 @@ References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
  <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
  <202010251725.2BD96926E3@keescook>
  <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
+ <CAG48ez2OWhpH3HHUJSrAmokJ8=SVwKrmQMSw0gEbTJmKE4myCw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
+In-Reply-To: <CAG48ez2OWhpH3HHUJSrAmokJ8=SVwKrmQMSw0gEbTJmKE4myCw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:51:02AM +0100, Jann Horn wrote:
-> The problem is the scenario where a process is interrupted while it's
-> waiting for the supervisor to reply.
-> 
-> Consider the following scenario (with supervisor "S" and target "T"; S
-> wants to wait for events on two file descriptors seccomp_fd and
-> other_fd):
-> 
-> S: starts poll() to wait for events on seccomp_fd and other_fd
-> T: performs a syscall that's filtered with RET_USER_NOTIF
-> S: poll() returns and signals readiness of seccomp_fd
-> T: receives signal SIGUSR1
-> T: syscall aborts, enters signal handler
-> T: signal handler blocks on unfiltered syscall (e.g. write())
-> S: starts SECCOMP_IOCTL_NOTIF_RECV
-> S: blocks because no syscalls are pending
+On Mon, Oct 26, 2020 at 11:31:01AM +0100, Jann Horn wrote:
+> Or I guess we could also just set O_NONBLOCK on the fd by default?
+> Since the one existing user is eventloop-based...
 
-Oooh, yes, ew. Thanks for the illustration.
-
-Thinking about this from userspace's least-surprise view, I would expect
-the "recv" to stay "queued", in the sense we'd see this:
-
-S: starts poll() to wait for events on seccomp_fd and other_fd
-T: performs a syscall that's filtered with RET_USER_NOTIF
-S: poll() returns and signals readiness of seccomp_fd
-T: receives signal SIGUSR1
-T: syscall aborts, enters signal handler
-T: signal handler blocks on unfiltered syscall (e.g. write())
-S: starts SECCOMP_IOCTL_NOTIF_RECV
-S: gets (stale) seccomp_notif from seccomp_fd
-S: sends seccomp_notif_resp, receives ENOENT (or some better errno?)
-
-This is not at all how things are designed internally right now, but
-that behavior would work, yes?
+I thought about that initially, but it rubs me the wrong way: it
+violates least-surprise for me. File descriptors are expected to be
+default-blocking. It *is* a special fd, though, so maybe it could work.
+The only case I can think of it would break would be ioctl-loop case
+that is already buggy in that it didn't handle non-zero returns?
 
 -- 
 Kees Cook
