@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48D429DC12
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8CA29DBF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390657AbgJ2AVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
+        id S2389231AbgJ1Wq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727315AbgJ2AUz (ORCPT
+        with ESMTP id S1731884AbgJ1WqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 20:20:55 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D39DC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:20:55 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so907183pgg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 17:20:55 -0700 (PDT)
+        Wed, 28 Oct 2020 18:46:13 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43448C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:13 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id bn26so1195606ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lIDedNlfgZ1oog3IrHLVaiNsZPdquv/snadYKp5vh58=;
-        b=AQPWAMS61o9C2pgZgGy869tf3lXXylVcqXe+ikHWir/EyId4ku2Uf4dVFHo75eRxM0
-         pU70ulSbdeyn4CjKwEO9adG6Mnz4iOyxseQEmvlzHIkrnGErHk3m3EshZMBhm59jPQHD
-         VI7t12b5AQU91NcmIRc6DBggtiuW4Fb+Gu1Ag=
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0jVxeGv6lE9HxG3ioZ1jNMfiO7oQfXoYg0ePUwTMDgQ=;
+        b=Y47tug5b8PS5GVPWZ5arNveYafl4JnStVgSr/qZmy4WMW6wLuDTGfKhQt582GpTP9n
+         VaX4J1iOOfcC9cqURSGuBTpjB5MHJyq1mNBcQTvCskhYUqF6bkLCy5AQk3k1tAi11Zlj
+         InKArBY6f0SHcVV6CdqF5hqhWXzbBTzIbMK8EO/b0Trpp/V1bwmsJ5iTQXadbQUpXO93
+         gVT6KwN/yGKCVG9w8JM2XKakHZ2v7HUoGkEUjlIlnzZp8L9L71mAsvpQuk9v+oa7XOAs
+         tqHKWRGPBACtP/01HsIquOdIS4+cs+Ld2MZqc5GHCGyGS6uhT0AJb9uwlt6FqK25Kryw
+         iFnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lIDedNlfgZ1oog3IrHLVaiNsZPdquv/snadYKp5vh58=;
-        b=Ue/QwJB0bZLxeZpj2toZ351vpfhZtKemTvdERBWZV0fP5g0ElibXo7hZAypjTcdL2v
-         wdcNYVEbygUcF5irDiFssD8Q/6uEOlkDYGqgVCy7nbPyu352u+Q9IVVGObqOcrtFOLkF
-         p3L5oHIazLXSbe1BvGketUbxQlz+W0bTjwolrf9KrdRhidXFxyf+gf0ngQuHF+swGr2n
-         Yedf9aIi81qMs49gL7hqm7mD0QTwAWLi0kynkahRTUyxWRy/mwp2880baD6CHk9hagfb
-         XUM924MTH6ZcN+/3VlPvVT+ZJI8OGDk6I5jjnNQNPUIBpfU+aRbj2ClpzFwgBckQj/Xp
-         XxnQ==
-X-Gm-Message-State: AOAM5331KalEiKfssDaE5qJyd9UWKHMwdQBsJ0hW7gOkpCEZw96mfFR8
-        HV3x9QbGdRq4EY/ceZGicd1I9dP6TwOY9w==
-X-Google-Smtp-Source: ABdhPJyC5mG5Vd1iSzO7J5KCCw8uK60zFkD3M2QaSd8ZJFFK04kgCWtjeWEJlAdQcSZ2tE/Xgk1QMQ==
-X-Received: by 2002:a63:2021:: with SMTP id g33mr4048563pgg.5.1603844405194;
-        Tue, 27 Oct 2020 17:20:05 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b4sm3590451pfi.208.2020.10.27.17.20.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 17:20:04 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <yifeifz2@illinois.edu>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm: Enable seccomp architecture tracking
-Date:   Tue, 27 Oct 2020 17:20:00 -0700
-Message-Id: <20201028002000.2666043-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201028002000.2666043-1-keescook@chromium.org>
-References: <20201028002000.2666043-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0jVxeGv6lE9HxG3ioZ1jNMfiO7oQfXoYg0ePUwTMDgQ=;
+        b=OHy8tau3AvEfG4kYXwWKx2UNInR+CbFzwDE5isBT04D7XMyoC+q6Aqo+5Q67m/n66u
+         iHU/yhq81EijHzhLZU/MhU5uUHUFzTxewGUoP+UtYIDf/gBrXuyxjfn9xMEIQsniBdmP
+         xVFZ253cvFMbzoqoQJivUR8cKUz5WPP+kCmtZYboFcjJUXrKLe0a3jYnEGT+b9MOkFGd
+         +3GNiarPhCukPUkytlGOcjB/f0ojoIQPjJjGzaFpSCuGbPK1N5OjUuy4cvJMMQNjirwT
+         AxmlXl083VgqcwrtcimoJlaW0dKT3T6Hbg5fMd5rSoVqeTVT/1MwuhorGj9COqa9DhfK
+         yAUw==
+X-Gm-Message-State: AOAM533yfXRDHNaQ+Fnvf+doxlFhD+OqwpXH6I9cuWv4byxLL/OvZ5uN
+        DliMGbjiF+f8ynDllqOwwO+/O9f1zGdMOwh5iTC5S0GNTQ==
+X-Google-Smtp-Source: ABdhPJwEzZ6iuiYaqP3D8WgJUCMcZ88Ip3ZyPs/mRAVgBH9lthbImUjuYFxHiRFl7WkTjg/dMh67mJNU6KVwr/0CDdc=
+X-Received: by 2002:a17:906:af87:: with SMTP id mj7mr5178601ejb.178.1603848385218;
+ Tue, 27 Oct 2020 18:26:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
+ <CAHC9VhSPk2RiMsnjTKw02_+_1Kagm06m+-r=ooNruT+fuuixYQ@mail.gmail.com>
+ <20200923144852.GK822320@madcap2.tricolour.ca> <CAHC9VhRu4KEyp+e0tbSbObL1y0+90z_Znp+0z-hmnj5V68bh0w@mail.gmail.com>
+In-Reply-To: <CAHC9VhRu4KEyp+e0tbSbObL1y0+90z_Znp+0z-hmnj5V68bh0w@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 27 Oct 2020 21:26:14 -0400
+Message-ID: <CAHC9VhTBxdtC8YF_Vze54WQgfhf3kH+2RAGnsjzf2whwJw8SOA@mail.gmail.com>
+Subject: Re: [PATCH ghak120 V5] audit: trigger accompanying records when no
+ rules present
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Eric Paris <eparis@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable seccomp constant action bitmaps, we need to have a static
-mapping to the audit architecture and system call table size. Add these
-for arm.
+On Wed, Sep 23, 2020 at 1:47 PM Paul Moore <paul@paul-moore.com> wrote:
+> On Wed, Sep 23, 2020 at 10:49 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > On 2020-09-23 10:29, Paul Moore wrote:
+> > > I've gone over this revision a couple of times now and it looks okay,
+> > > but past experience is whispering in my ear that perhaps this is
+> > > better to wait on this for the next cycle so it gets a full set of
+> > > -rcX releases.  Thoughts?
+> >
+> > I thought I had lots of time since we were just at the end of the
+> > previous cycle when this failed the previous time...  Ran out yet
+> > again...  (there were two weeks of PTO and a devel system rebuild in
+> > there somewhere...)
+>
+> We are at -rc6 and assuming v5.9 is released after -rc7 that would
+> give this roughly a week and a half in v5.9-rcX; considering the
+> history of this patch (reverted, obvious problems in development) I'm
+> not confident -rc6 provides enough soak time (even if we go to -rc8 I
+> remain skeptical).  In addition, we've got a history of not taking new
+> work that isn't a bug-fix past the -rc5/-rc6 timeframe.  This is why
+> I'm debating holding this until after the merge window.
+>
+> > It isn't my call.
+>
+> I asked for your thoughts on the matter, surely you have the liberty
+> to comment on your own opinion :)
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/arm/include/asm/Kbuild    |  1 -
- arch/arm/include/asm/seccomp.h | 11 +++++++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/include/asm/seccomp.h
+I never heard back on this, but the patch is in audit/next now.
 
-diff --git a/arch/arm/include/asm/Kbuild b/arch/arm/include/asm/Kbuild
-index 383635b68763..4a0848aef207 100644
---- a/arch/arm/include/asm/Kbuild
-+++ b/arch/arm/include/asm/Kbuild
-@@ -4,7 +4,6 @@ generic-y += extable.h
- generic-y += flat.h
- generic-y += local64.h
- generic-y += parport.h
--generic-y += seccomp.h
- 
- generated-y += mach-types.h
- generated-y += unistd-nr.h
-diff --git a/arch/arm/include/asm/seccomp.h b/arch/arm/include/asm/seccomp.h
-new file mode 100644
-index 000000000000..e9ad0f37d2ba
---- /dev/null
-+++ b/arch/arm/include/asm/seccomp.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef _ASM_SECCOMP_H
-+#define _ASM_SECCOMP_H
-+
-+#include <asm-generic/seccomp.h>
-+
-+#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_ARM
-+#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+#define SECCOMP_ARCH_NATIVE_NAME	"arm"
-+
-+#endif /* _ASM_SECCOMP_H */
 -- 
-2.25.1
-
+paul moore
+www.paul-moore.com
