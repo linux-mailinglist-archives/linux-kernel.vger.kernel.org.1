@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FA529D780
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5421B29D7C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732789AbgJ1WZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:25:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55240 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732579AbgJ1WV4 (ORCPT
+        id S1733127AbgJ1W0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:26:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54176 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733111AbgJ1W0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:21:56 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EE19D1C0BB3; Wed, 28 Oct 2020 18:32:17 +0100 (CET)
-Date:   Wed, 28 Oct 2020 18:32:17 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     dmitry.torokhov@gmail.com, vojtech@suse.cz,
-        linux-input@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: Proper support for Saitek X36F joystick
-Message-ID: <20201028173217.GA25456@amd>
-References: <20201027124235.GA27148@duo.ucw.cz>
- <nycvar.YFH.7.76.2010272006490.18859@cbobk.fhfr.pm>
- <20201027210732.GA4479@amd>
- <20201028162621.GA18184@amd>
- <nycvar.YFH.7.76.2010281728260.18859@cbobk.fhfr.pm>
+        Wed, 28 Oct 2020 18:26:49 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CD3D020B9C34;
+        Wed, 28 Oct 2020 10:40:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CD3D020B9C34
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1603906808;
+        bh=9V/wA3eXya9REkla/z2rwncx5LLcdFmF/Ap1Ekj0sjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NflQEIxO3XBHmrmUqH90zd3OayoD/Scy0UPhkh0+nac9jaT38VztFcWZ5eqfaOa95
+         EaZtVM4a2uGCtavOI2YM1PfSZZEnYBWY0HmRbmIQ0sUHefFo2WPrgG23zxrgZj7Gbq
+         oLyXB3CYM3c91nbIPdZuoeXvoR5vpxAb2JvbtRp4=
+Date:   Wed, 28 Oct 2020 12:39:58 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Kenneth R . Crudup" <kenny@panix.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org,
+        =?iso-8859-1?Q?Thi=E9baud?= Weksteen <tweek@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] tpm: efi: Don't create binary_bios_measurements file for
+ an empty log
+Message-ID: <20201028173958.GA4624@sequoia>
+References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
+ <20201028154102.9595-1-tyhicks@linux.microsoft.com>
+ <20201028163002.GA5150@sequoia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2010281728260.18859@cbobk.fhfr.pm>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201028163002.GA5150@sequoia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-28 11:30:11, Tyler Hicks wrote:
+> So, we need help from Kai, Kenneth, or Mimi to verify my assumption that
+> their firmware is providing an empty main event log and a populated
+> final event log.
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Kai, Kenneth, and Mimi - could one or two of you please follow these
+steps:
 
-On Wed 2020-10-28 17:29:23, Jiri Kosina wrote:
-> On Wed, 28 Oct 2020, Pavel Machek wrote:
->=20
-> > So no, I can't even replace it with equivalent one. Perhaps hrdc got
-> > decompilation wrong, or I'm doing something else wrong.
->=20
-> You don't need to do any decompilation -- the descriptor can be obtained=
-=20
-> from /sys/kernel/debug/hid/<device>/rdesc (also lsusb in verbose enough=
-=20
-> mode should present it in case no driver is bound to the device).
+1) Apply the proposed patch in the grandparent of this email so that
+   your kernel doesn't crash
+2) Revert commit 7f3d176f5f7e ("tpm: Require that all digests are
+   present in TCG_PCR_EVENT2 structures") so that
+   __calc_tpm2_event_size() goes back to being less picky and may treat
+   a final log event as a valid event log header
+3) Add some debugging warnings in efi_tpm_eventlog_init() to check for
+   an empty main event log and a populated final event log, as shown
+   below
+4) Boot the resulting kernel build, look for the warnings, and report
+   back
 
-I discovered problem in the meantime. hrdc (I was using to de-compile
-and re-compile hid descriptors) was adding padding.
+diff --git a/drivers/firmware/efi/tpm.c b/drivers/firmware/efi/tpm.c
+index c1955d320fec..c4d2dbd5ed42 100644
+--- a/drivers/firmware/efi/tpm.c
++++ b/drivers/firmware/efi/tpm.c
+@@ -78,6 +78,9 @@ int __init efi_tpm_eventlog_init(void)
+ 		goto out;
+ 	}
+ 
++	WARN(!log_tbl->size && final_tbl->nr_events,
++	     "nr_events = %llu\n", final_tbl->nr_events);
++
+ 	tbl_size = 0;
+ 	if (final_tbl->nr_events != 0) {
+ 		void *events = (void *)efi.tpm_final_log
+@@ -95,6 +98,8 @@ int __init efi_tpm_eventlog_init(void)
+ 		goto out_calc;
+ 	}
+ 
++	WARN(!log_tbl->size && tbl_size, "tbl_size = %d\n", tbl_size);
++
+ 	memblock_reserve((unsigned long)final_tbl,
+ 			 tbl_size + sizeof(*final_tbl));
+ 	efi_tpm_final_log_size = tbl_size;
 
-But thanks for the pointer. That is very useful:
+For your convenience, I've created a branch with these changes on top of
+v5.9:
 
-This device has four hat switches... I declared two so far
+ https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/linux.git/log/?h=tpm/bin-bios-measurements-debug
 
-     0x0b, 0x39, 0x00, 0x01, 0x00,  //     Usage (desktop.HatSwitch)
-     0x35, 0x00,                    //     PhysicalMinimum (0)
-     0x46, 0x3b, 0x01,              //     PhysicalMaximum (315)
-     0x15, 0x01,                    //     LogicalMinimum (1)
-     0x25, 0x08,                    //     LogicalMaximum (8)
-     0x65, 0x14,                    //     Unit (Degree)
-     0x55, 0x00,                    //     UnitExponent (0)
-     0x95, 0x01,                    //     ReportCount (1)
-     0x75, 0x04,                    //     ReportSize (4)
-     0x81, 0x42,                    //     Input (Variable|NullState)
+Thank you!
 
-     0x95, 0x01,                    //     ReportCount (1)
-     0x75, 0x02,                    //     ReportSize (2)
-     0x81, 0x03,                    //     Input (Constant|Variable)
-     0x0b, 0x39, 0x00, 0x01, 0x00,  //     Usage (desktop.HatSwitch)
-     0x35, 0x00,                    //     PhysicalMinimum (0)
-     0x46, 0x3b, 0x01,              //     PhysicalMaximum (315)
-     0x15, 0x01,                    //     LogicalMinimum (1)
-     0x25, 0x08,                    //     LogicalMaximum (8)
-     0x65, 0x14,                    //     Unit (Degree)
-     0x55, 0x00,                    //     UnitExponent (0)
-     0x95, 0x01,                    //     ReportCount (1)
-     0x75, 0x04,                    //     ReportSize (4)
-     0x81, 0x42,                    //     Input (Variable|NullState)
-     0xc0,                          // EndCollection
-
-=2E..but Linux seems to only recognize first of them:
-
-GenericDesktop.HatSwitch ---> Absolute.Hat0X
-GenericDesktop.HatSwitch ---> Sync.Report
-
-Is there way to get extra hats mapped as Hat1X, Hat2X and Hat3X?
-
-(Plus, they may have different bit orders than hid expects...?)
-
-I'm thinking that maybe I should ignore this hid stuff and just do
-"normal" driver in C? Is there precedent/example for that?
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---1yeeQ81UyVL57Vl7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+ZqyEACgkQMOfwapXb+vLxTACgmvMmM5SOmT2oxn4z9VHx2PTt
-ndMAn3gIvY7zXJbVeyIiRlJQBcJlZuuf
-=3dCK
------END PGP SIGNATURE-----
-
---1yeeQ81UyVL57Vl7--
+Tyler
