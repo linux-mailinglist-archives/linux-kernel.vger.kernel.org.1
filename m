@@ -2,171 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC91D29E0B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF4329E12D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391267AbgJ2B2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:28:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23220 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731690AbgJ2B2j (ORCPT
+        id S1728924AbgJ2ByR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:54:17 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45622 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728678AbgJ1V5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 21:28:39 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09T11IjI175015;
-        Wed, 28 Oct 2020 21:28:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8d3tL3+CWG6reyVHWOsX5v+g3AMRGFiqPzn7EwvoYgc=;
- b=I5wVyzUMz6OYb3aGV+CfyOohDqyn0zHNhJo51cIEn/U/tQtMT1EZVf9mbbhFs2GqOjFo
- W0LSS3A9nOz+gpwGRn3RA3C8VOW3L65yddYmCoP2sAznLW+19/L8yuoNiQ4CnArlJBnU
- mOlD9DYqFSTkX70u+2Vp7xwl7U6JUTczC1nZ9LabLkswCbPTDf2h5MYtTmAaTb/H0L+4
- TrVHZiYO/Jg+UvviVKmJgiF4pfmWVmQe//Jr29B/HQ3qqs3RwJ2d+SDr2io9kqFQhXm7
- 5O1u6H7nCzCUNObXHfoEMYaVQDFz2Y0vodBVgAtiCuCKSB6BPw1loEIKbW9/hdXqA1qV vw== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34feghhhhv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 21:28:24 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09T1QbdE016052;
-        Thu, 29 Oct 2020 01:28:24 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03dal.us.ibm.com with ESMTP id 34etf94a4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 29 Oct 2020 01:28:24 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09T1SNAY14025070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Oct 2020 01:28:23 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07F7FC605A;
-        Thu, 29 Oct 2020 01:28:23 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8228DC605D;
-        Thu, 29 Oct 2020 01:28:21 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.55.172])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 29 Oct 2020 01:28:21 +0000 (GMT)
-Subject: Re: [PATCH] ibmvscsi: fix race potential race after loss of transport
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org
-References: <20201025001355.4527-1-tyreld@linux.ibm.com>
- <87o8knvsb1.fsf@mpe.ellerman.id.au>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <d527dffd-1af2-7da0-d1f1-1f192a537aed@linux.ibm.com>
-Date:   Wed, 28 Oct 2020 18:28:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 28 Oct 2020 17:57:10 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09S1KGKw003081;
+        Tue, 27 Oct 2020 18:22:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=e4RL/7HCoPVcmioFolLk4LZu2wf6T+ZmDZ1xqXV6NRk=;
+ b=kReSp1UnPXTNe+RTRF3mxwCj3D0eprPX7Mga5O1Y0oavq92okU5Y3AvpPP6I1sBzP9Az
+ ak3y+Gra2jga+7wTIxAaW9dRUwkcc10Je0zNqAtooqS5WZY1bmGKkMJPIMQ3YK2lFJ5R
+ Nrly0Y7mjxivd14iI5ln1NZDrzQWgOPvvpk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 34ejk24ghv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 27 Oct 2020 18:22:14 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 27 Oct 2020 18:22:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nev0nFkr7V3IT9WTNmYCO+1t+Jz1PKC74YxlqF3OeFqaIiT+wXC8hkh2T8wd1iBxbTWV2i19HWMnkNbZ6E9p2u14MYcEw9NB46U9DQMNsUyj5+7SFXaHL1bG/nLPFr7kZunVQAWfiWinaFj2zSLAik0eYiXdT20PsaAcajVgir2TPBNy3OiZCdH3rn+IsASiP4DMlanE5DdKttk2E310H33Wk957XQCvbEPKHv+NHBQqOQwXktNof4TqjBNo9H3mPG0Go5qhhv+VgcAVX4QeSqs4Ldg3FZLgH4KhTLUFjjP88o8yd/mg1BB/VjoLShOiw4rLjTKM57BUtJVcdVg8+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e4RL/7HCoPVcmioFolLk4LZu2wf6T+ZmDZ1xqXV6NRk=;
+ b=WPVYibrPNz2cjb8XO8gGAVzGontjQZHU/YZy8mg3XiX2/TM8jarCMjnqybKaIQ/7vnWPOQOmchliGeMd5sEdmlQGH2h+99Cq8MNXkPuU9VkpqFhHHEo9TVnHOswvhUVnG1F9YCZZqJSrxkuUBFCDUwJbNtc4l5W4KMce+OKGPxsyC+Hr8o6G+1LIqkvUespFgoDKyodzyDG0B5JrKQdma2q/pdbGAiNhfKv/OCWA6fnRoqF5it5XZXfzmoq4x7qNa+MK1KBSLZbKUu1IzdbwTNWSdrgsBiojMdKS+pkUWRghMPzCls3IMBZm7HxqN+XNzPEZ53OIFk1v4VCAPeaINg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e4RL/7HCoPVcmioFolLk4LZu2wf6T+ZmDZ1xqXV6NRk=;
+ b=kRCEHVwlVcee821TbVXjNJbIzfKzBOiXdEJcBd2o4g6EdZRG9Mg0Akxiq2yxMpUSGByLthFVcOuw4hYXbjr5QdZJOWyHYaN4qurQ/EmLBsgGylcvEGmdOI3rqTjuB6uNBPR8MjHFrKduKfbSb94H4SpNagfeWYduCjuI64AOmVg=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2200.namprd15.prod.outlook.com (2603:10b6:a02:89::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Wed, 28 Oct
+ 2020 01:22:13 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
+ 01:22:13 +0000
+Date:   Tue, 27 Oct 2020 18:22:06 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
+Message-ID: <20201028012206.zsa3udr7rqqe3q7y@kafai-mbp>
+References: <20201027170317.2011119-1-kpsingh@chromium.org>
+ <20201027170317.2011119-2-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027170317.2011119-2-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::4:9723]
+X-ClientProxiedBy: MWHPR08CA0058.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::32) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-In-Reply-To: <87o8knvsb1.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::4:9723) by MWHPR08CA0058.namprd08.prod.outlook.com (2603:10b6:300:c0::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 01:22:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 77a4c03d-72b4-4a81-07d0-08d87adfe605
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2200:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB22001B0F6F1568F5879A6D12D5170@BYAPR15MB2200.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xYDBHy1xzb0pz78HpdawzCCQCcO0Vo6U+zR2bw8cJOgmpZNRgB7wOYXVURrxLIX7TFZILkSO0hlQbTHUkP7TspMkqWZmnN+fcN1jbh2qPhSL0tgHKGK3MBPNmqLsH0fgbqD9O/7VY3p9mbQttgXI+BGtmX2hGmmaQR92tYB6h6Si2JiZm8Vq1ewjZ7W5iQb/fsjVI3yQK2HBdLKGI5/1yf8t/VMMHmDWAZTTX1klKMHyb9ghHozlD80WKbeGWL76aWTRh6b86g7Qf/rBt4ExbVCwsm3cKXygz8ukqn3Twwlh5NcBDXtk9j1O4oANr0cyXqePFvqTy/v+54GpjOqc1w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(396003)(376002)(39850400004)(5660300002)(83380400001)(9686003)(6916009)(6496006)(52116002)(8936002)(478600001)(54906003)(33716001)(55016002)(4326008)(66476007)(66556008)(316002)(16526019)(186003)(1076003)(6666004)(86362001)(2906002)(66946007)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: QOxjvD2Zb5kRnQXjeEEec4IMFbl8D1pEC+S1wE4wEkexIKqgFiqGHrmlBjvEPro4F1pggzIpRvU9OIxLgbsulHxex4CATXxb09MIBBgmj6iR+1h/gUza6S1cG+60sWW0/hOEMqWKviZ3m6iVvM8805Uo+jLji9bOTq67T+tPV1OYBTdRoT8tTsFX/GzBbJ8gKlUuQX/rfBifSdPqcNKNSg614dYzN2a1L/d6+5TJioowMcDboMoiUp1WkieeW+S2KB1jxaWLziFE8Pv+krfLdjdBPzf27ASAkKKomeDBNjH682e5Xm6CdGdPRzkNYzkQCZXYaj4FKfk7jrQc+Pj7fZ1f3NxQIqdiSpcjrMqAjZ6urjAfl+6VbOyE7/UkwSeZTo/XTWV2bOnmb07ishiDX6uYeCp502QSQ15xHljyPD7EQ4ffxassHxuTMtcfnrdI64zq2VxYMBnLYBaLzd8p/70wzzU7G4e2YGopRApwxHeykc01YDAx7QL2Mv4tc6nPM6rj7fA+c3ZXXs0wVNBz8F8h3D2aJyXp85JCOQ50T2nbWjWuF5ef7shEnJ2Y2MQRSrqawzcwBU6D9T3eck/IgsEgmDNQPwKBLZUggOk6NU64z9UFA3De/nFbZLqVLjRdZKxe9P9FNy3EXkdUi6jBuq2A77UUqNSnm+2sl3whlMQCreUxgeUHL302Tj1uypSy
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77a4c03d-72b4-4a81-07d0-08d87adfe605
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2020 01:22:12.9899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oCnCO9ViOGYfcrNdZSqXqfQrYYPv89c39jVYB7EYlqk/XdMhNUE5iumgT6pCxGEb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2200
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_09:2020-10-28,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 clxscore=1015 phishscore=0 mlxscore=0
- suspectscore=0 bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290000
+ definitions=2020-10-27_17:2020-10-26,2020-10-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=870 clxscore=1015
+ phishscore=0 suspectscore=1 adultscore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280004
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 10:21 PM, Michael Ellerman wrote:
-> Tyrel Datwyler <tyreld@linux.ibm.com> writes:
->> After a loss of tranport due to an adatper migration or crash/disconnect from
->> the host partner there is a tiny window where we can race adjusting the
->> request_limit of the adapter. The request limit is atomically inc/dec to track
->> the number of inflight requests against the allowed limit of our VIOS partner.
->> After a transport loss we set the request_limit to zero to reflect this state.
->> However, there is a window where the adapter may attempt to queue a command
->> because the transport loss event hasn't been fully processed yet and
->> request_limit is still greater than zero. The hypercall to send the event will
->> fail and the error path will increment the request_limit as a result. If the
->> adapter processes the transport event prior to this increment the request_limit
->> becomes out of sync with the adapter state and can result in scsi commands being
->> submitted on the now reset connection prior to an SRP Login resulting in a
->> protocol violation.
->>
->> Fix this race by protecting request_limit with the host lock when changing the
->> value via atomic_set() to indicate no transport.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/scsi/ibmvscsi/ibmvscsi.c | 36 +++++++++++++++++++++++---------
->>  1 file changed, 26 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
->> index b1f3017b6547..188ed75417a5 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvscsi.c
->> +++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
->> @@ -806,6 +806,22 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
->>  	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
->>  }
->>  
->> +/**
->> + * ibmvscsi_set_request_limit - Set the adapter request_limit in response to
->> + * an adapter failure, reset, or SRP Login. Done under host lock to prevent
->> + * race with scsi command submission.
->> + * @hostdata:	adapter to adjust
->> + * @limit:	new request limit
->> + */
->> +static void ibmvscsi_set_request_limit(struct ibmvscsi_host_data *hostdata, int limit)
->> +{
->> +	unsigned long flags;
->> +
->> +	spin_lock_irqsave(hostdata->host->host_lock, flags);
->> +	atomic_set(&hostdata->request_limit, limit);
->> +	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
->> +}
->> +
->>  /**
->>   * ibmvscsi_reset_host - Reset the connection to the server
->>   * @hostdata:	struct ibmvscsi_host_data to reset
-> ...
->> @@ -2137,12 +2153,12 @@ static void ibmvscsi_do_work(struct ibmvscsi_host_data *hostdata)
->>  	}
->>  
->>  	hostdata->action = IBMVSCSI_HOST_ACTION_NONE;
->> +	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
-> 
-> You drop the lock ...
-> 
->>  	if (rc) {
->> -		atomic_set(&hostdata->request_limit, -1);
->> +		ibmvscsi_set_request_limit(hostdata, -1);
-> 
-> .. then retake it, then drop it again in ibmvscsi_set_request_limit().
-> 
-> Which introduces the possibility that something else gets the lock
-> before you can set the limit to -1.
-> 
-> I'm not sure that's a bug, but it's not obviously correct either?
+On Tue, Oct 27, 2020 at 06:03:13PM +0100, KP Singh wrote:
+[ ... ] 
 
-Yeah, I'd already moved the request_limit update into its own function before I
-got to this case which made me a bit uneasy when I realized I had to drop the
-lock because my new function takes the lock. However, we only need to protect
-ourselves from from racing with queuecommand() which is locked for its entire
-call. Further, if we've gotten here it means we were either resetting or
-re-enabling the adapter which would have already set request_limit to zero. At
-this point the transport was already gone and we've further failed to reset it.
-Also, we've blocked any new scsi requests at this point.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e6ceac3f7d62..bb443c4f3637 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -157,6 +157,7 @@ enum bpf_map_type {
+>  	BPF_MAP_TYPE_STRUCT_OPS,
+>  	BPF_MAP_TYPE_RINGBUF,
+>  	BPF_MAP_TYPE_INODE_STORAGE,
+> +	BPF_MAP_TYPE_TASK_STORAGE,
+>  };
+>  
+>  /* Note that tracing related programs such as
+> @@ -3742,6 +3743,42 @@ union bpf_attr {
+>   * 	Return
+>   * 		The helper returns **TC_ACT_REDIRECT** on success or
+>   * 		**TC_ACT_SHOT** on error.
+> + *
+> + * void *bpf_task_storage_get(struct bpf_map *map, void *task, void *value, u64 flags)
+After peeking patch 2,  I think the pointer type should be
+"struct task_struct *task" instead of "void *task".
 
--Tyrel
+Same for bpf_task_storage_delete().
 
-> 
-> cheers
-> 
->>  		dev_err(hostdata->dev, "error after %s\n", action);
->>  	}
->> -	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
->>  
->>  	scsi_unblock_requests(hostdata->host);
->>  }
-
+> + *	Description
+> + *		Get a bpf_local_storage from the *task*.
+> + *
+> + *		Logically, it could be thought of as getting the value from
+> + *		a *map* with *task* as the **key**.  From this
+> + *		perspective,  the usage is not much different from
+> + *		**bpf_map_lookup_elem**\ (*map*, **&**\ *task*) except this
+> + *		helper enforces the key must be an task_struct and the map must also
+> + *		be a **BPF_MAP_TYPE_TASK_STORAGE**.
+> + *
+> + *		Underneath, the value is stored locally at *task* instead of
+> + *		the *map*.  The *map* is used as the bpf-local-storage
+> + *		"type". The bpf-local-storage "type" (i.e. the *map*) is
+> + *		searched against all bpf_local_storage residing at *task*.
+> + *
+> + *		An optional *flags* (**BPF_LOCAL_STORAGE_GET_F_CREATE**) can be
+> + *		used such that a new bpf_local_storage will be
+> + *		created if one does not exist.  *value* can be used
+> + *		together with **BPF_LOCAL_STORAGE_GET_F_CREATE** to specify
+> + *		the initial value of a bpf_local_storage.  If *value* is
+> + *		**NULL**, the new bpf_local_storage will be zero initialized.
+> + *	Return
+> + *		A bpf_local_storage pointer is returned on success.
+> + *
+> + *		**NULL** if not found or there was an error in adding
+> + *		a new bpf_local_storage.
+> + *
+> + * int bpf_task_storage_delete(struct bpf_map *map, void *task)
+> + *	Description
+> + *		Delete a bpf_local_storage from a *task*.
+> + *	Return
+> + *		0 on success.
+> + *
+> + *		**-ENOENT** if the bpf_local_storage cannot be found.
+>   */
