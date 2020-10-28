@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D5A29D7BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B874F29D6E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733088AbgJ1W02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
+        id S1732138AbgJ1WTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733082AbgJ1W01 (ORCPT
+        with ESMTP id S1732189AbgJ1WSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:27 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6354DC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:26:26 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id q199so502924qke.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:26:26 -0700 (PDT)
+        Wed, 28 Oct 2020 18:18:38 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A5C0613CF;
+        Wed, 28 Oct 2020 15:18:36 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g12so680540wrp.10;
+        Wed, 28 Oct 2020 15:18:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EA88P84wG7kGfxM9G+4L3+CwyjZDcOPZBnLgcdYKwco=;
-        b=cbY/uyv1cCh6c4oVgWj/70SyO8pIWpjKKYS24jIL8ftPfO8BZWFXtfKrzozYnJCUaJ
-         eJKpqiICo94HYV9FZPpoIl9y1TYV/HUPAuccmo2xG6x97wDJN2wNPhkHcV/PmQoLTBAO
-         opk2srUWE6ryeNqyO1otV0FCocX0IWzROBPY0aNwK9bwWbjajVs+7NwgVL4pOYUHAISo
-         bvPV6EQ2ItsFWRI4fcbRGpdI+PFF2frNS7z/9TnVlSGOj7HLj/pnRmz/kADfKvRDVkJ3
-         U6xDnw758nFkmx+UvIe37zMR3saHZ9/sPhYH68otLUJHA2QZ28A3E/79TV/oQlnxeIT7
-         ZUlQ==
+        bh=crsJn958YPx+DfiUeCUXF8zFkw8B7ZgM1ok7UnCgjBc=;
+        b=SpU9X23c0TEXgzS51opwaIWf2xC0Vz5Mon/ZEP0E0lIupE5LmXZrhj7AOIdodA/mzF
+         SPMP5bd+zN5zwp6EoeedpLXqljCllRH1ennrUZ1C1gIrcbywAcJDLtvAsvE7h6PwR9Ge
+         HQKj+nRElMTqbeFrx2zkyvP/HGotboA9G3EV2fm61FDxdW224daICDMqU3YyN4uiZ2Qf
+         qSvGnPqK6Xc+GZQx9O1oWc+ko4hUfTcYiu3KwHsGXuzXZt2pAJnLaRGNLEZ6C/cHruBz
+         P/n3NREfc2KNd/zJeaJ11ebVmxIKxuLUz+1la0xdkxxDf3YzNzwUs7Qpoafwc2YAX4yU
+         W13A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EA88P84wG7kGfxM9G+4L3+CwyjZDcOPZBnLgcdYKwco=;
-        b=BGqUU/vJ8zuqAdgHfuoixzZIcpvBs49RsFM8IrrxtjwQIK3U24YRlc1n4f1FNa9N7B
-         ztAn4KX8HvD4WNmL2feqTEQqeM/swOTTTrMkmXjsELHKZA4o733kaxDES8NDJHI2oRD0
-         sS09dLkQJaAel64vt6JuXEQRCTo4lIgfPHxUNuczPs/PfR1BMPYac1jcU7pPu9APZGsA
-         m/9Yy8Tn0P0dtjoOi0p6S+H97VmGNoQhjrZ12u9bY43rjilBv/dhyvf5xySYzNyqx90b
-         M9zFI1UWT88gTxosQ+mbHCg/+EUG1abscZDylMZkcK/pVpPaYAqemfm44Z2DS7EnamQk
-         qZVw==
-X-Gm-Message-State: AOAM530uhZG8IeJVt57ca3vhN57qGqTNLnanB2sOr1zSw7N4PbIaU89U
-        AqseJPKdNkdGJ9rBMeaJQf0QjV+1MV9I7PItbTPr+4HMHlA/sQ==
-X-Google-Smtp-Source: ABdhPJxTS7XfOF1hOSGhrrT3dGmt5XHhPd9PotQKYgC0JpwNp0z3cpU1oZp83OQvirnXXXWdiSnJmLOpSs1e8J3LLtw=
-X-Received: by 2002:a37:a00c:: with SMTP id j12mr799887qke.231.1603882684633;
- Wed, 28 Oct 2020 03:58:04 -0700 (PDT)
+        bh=crsJn958YPx+DfiUeCUXF8zFkw8B7ZgM1ok7UnCgjBc=;
+        b=p4AJPLVbZlVOfXnkq8091Oj22pvoJ3niDzJD5TCC0mldMd6NnKRy5QiLkGbHp91Xch
+         BKJe2hocoiGRYTfcMiOeefOGiRcu1cMWheWPK5C1sOsfC0Evk5U3JBb3ZNwtN8F/0kDV
+         mzvkfTipVgm+Q8e5LxG4quIChCxK/eoJFKaIjBWvd02Jze3XWHDTkMPKH2fhDv88NZTL
+         eSpZ6o9D00hM4EkNREHWTRnjAnZ2xdAp8F/VAMTxJWesyyYaBwREOuIDxuAvp2v87acc
+         tvCd7bpoFbaUzTkmfOjrdAIGEHW77H2APJu2C3D+6xDLsng8S0r80/q8TJzjJIkprn8j
+         haBg==
+X-Gm-Message-State: AOAM531AX8kd5RIiHd/QErez3rtdMV71hWJ0rwOYVc9by+ymaGPagjUK
+        XhBeniBZGf0qLqs0C/gkozMen/5LbqA1RsGSLmPNzcIL2wAnUQ==
+X-Google-Smtp-Source: ABdhPJwoGVdRqfsqvWuWzdPRnNZe3lb2Vi57v7g4MvL1w570aMKiksqMTfhLx8AO2bJTRqclXeS9Facr25x2VLhnKkk=
+X-Received: by 2002:a17:906:ec9:: with SMTP id u9mr6992083eji.400.1603882986071;
+ Wed, 28 Oct 2020 04:03:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <84dc684519c5de460c58b85f0351c4f9ab57e897.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <84dc684519c5de460c58b85f0351c4f9ab57e897.1603372719.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 28 Oct 2020 11:57:53 +0100
-Message-ID: <CACT4Y+Zqg475fdxWp_ARvb0APS=zKdLmzRW_0m4ZcoH6rADrzA@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 08/21] kasan: remove __kasan_unpoison_stack
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201012135517.19468-1-frank@allwinnertech.com>
+ <20201012135517.19468-3-frank@allwinnertech.com> <20201028102942.zc5hgqpo2bfrn6in@vireshk-i7>
+In-Reply-To: <20201028102942.zc5hgqpo2bfrn6in@vireshk-i7>
+From:   Frank Lee <tiny.windzz@gmail.com>
+Date:   Wed, 28 Oct 2020 19:02:54 +0800
+Message-ID: <CAEExFWvNgK2wbvmxZjsJR4g-VBq=ggsBLew77rzmNdkpqTRuDA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] opp: Add devres wrapper for dev_pm_opp_set_prop_name
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Lee <frank@allwinnertech.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        airlied@linux.ie, daniel@ffwll.ch,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, jcrouse@codeaurora.org,
+        eric@anholt.net, kholk11@gmail.com, emil.velikov@collabora.com,
+        gustavoars@kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+On Wed, Oct 28, 2020 at 6:29 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> There's no need for __kasan_unpoison_stack() helper, as it's only
-> currently used in a single place. Removing it also removes undeed
-> arithmetic.
+> On 12-10-20, 21:55, Frank Lee wrote:
+> > From: Yangtao Li <tiny.windzz@gmail.com>
+> >
+> > Add devres wrapper for dev_pm_opp_set_prop_name() to simplify driver
+> > code.
+> >
+> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > ---
+> >  drivers/opp/core.c     | 39 +++++++++++++++++++++++++++++++++++++++
+> >  include/linux/pm_opp.h |  6 ++++++
+> >  2 files changed, 45 insertions(+)
 >
-> No functional changes.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Ie5ba549d445292fe629b4a96735e4034957bcc50
+> On a second thought I am looking at dropping this one as you haven't
+> added any users yet and I am afraid it will stay unused.
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Now it looks like that dev_pm_opp_set_prop_name() is used relatively less.
+Maybe we can wait until a caller, and then pick up the patch.
 
-> ---
->  mm/kasan/common.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index a3e67d49b893..9008fc6b0810 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -59,18 +59,12 @@ void kasan_disable_current(void)
->  #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
->
->  #if CONFIG_KASAN_STACK
-> -static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
-> -{
-> -       void *base = task_stack_page(task);
-> -       size_t size = sp - base;
-> -
-> -       kasan_unpoison_memory(base, size);
-> -}
-> -
->  /* Unpoison the entire stack for a task. */
->  void kasan_unpoison_task_stack(struct task_struct *task)
->  {
-> -       __kasan_unpoison_stack(task, task_stack_page(task) + THREAD_SIZE);
-> +       void *base = task_stack_page(task);
-> +
-> +       kasan_unpoison_memory(base, THREAD_SIZE);
->  }
->
->  /* Unpoison the stack for the current task beyond a watermark sp value. */
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+MBR,
+Yangtao
