@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD25229E320
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9176429E305
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbgJ2Cpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:45:30 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:29487 "EHLO smtp2.axis.com"
+        id S2404471AbgJ2CoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:44:24 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46482 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgJ1Vdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1903; q=dns/txt; s=axis-central1;
-  t=1603920823; x=1635456823;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8WighlFxUCPG64E8rsKp51mjFDumWu/9Js1XeZaqNfY=;
-  b=hWTC//3AXQl4vaj8Ub2OfTMByzTPkg8QlLoaJXRnBy9EWaRSnBVSQNBY
-   ROMkSZcGUTT6p0+8ednqJZf4iT0Mi/0vo4u2ea/W2feTOFTL7ZYdIUjCA
-   KFboJmuKUstnT8NGyfUUBFwaN9RIX38WuD9uV3xYvW93exJ/PMKOuwfJQ
-   3iItUnHJM/OuY+j1QS+vL8mMFPl2L5xjBea8h84+1TS5H4zgYAl5WfVUm
-   AsmdT4EHFc8VrIUtBaO5Qg2fsmlkARZvjkOnh61awP6dKYp4XLHr5KoH6
-   D4oT9SKviNxnvcXfPAJ7Mqqff5ydEj668CRF9Ot2j09h5swLevNiRBe71
-   g==;
-IronPort-SDR: 9zQLRP0OGoRnoLBhjIuJp4l2jQDybWCBoKOjYwOSfnl3EMs1BA8SKp2nUvG+7u4f4TuoyXe4H1
- mOU2i9QicPYfCXj9ZrG1jC/E+f5wg4rLNDTNRZfYLbj4zdGjhYmZJFu41i/19SfvcAETkigbQD
- 5gzyICUvb/TfZwlRPKgucXIuzf91M3UdHzhXQ7RRw+wWci7JPguXiZN9ldODeEuyIWGog18yIg
- 8NhArZgXNFNMnTw2dcE/92y7KhdzQJmLJ37m1VHd0Mr2RPTWpoMP70nGMQhQ14BtqlzPtZ5oER
- mWM=
-X-IronPort-AV: E=Sophos;i="5.77,425,1596492000"; 
-   d="scan'208";a="13984864"
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-CC:     <kernel@axis.com>, <devicetree@vger.kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] gpio: mockup: Allow probing from device tree
-Date:   Wed, 28 Oct 2020 09:57:48 +0100
-Message-ID: <20201028085748.17388-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S1726603AbgJ1Ved (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:34:33 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6DEB81A1508;
+        Wed, 28 Oct 2020 10:44:33 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5510D1A14FF;
+        Wed, 28 Oct 2020 10:44:28 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id BFE44402B7;
+        Wed, 28 Oct 2020 10:44:21 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc for aud2htx module
+Date:   Wed, 28 Oct 2020 17:38:49 +0800
+Message-Id: <1603877930-10553-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the mockup driver to be probed via the device tree without any
-module parameters, allowing it to be used to configure and test higher
-level drivers like the leds-gpio driver and corresponding userspace
-before actual hardware is available.
+AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
+IP module found on i.MX8MP.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
+changes in v2:
+- fix indentation issue
+- remove nodename
 
-Notes:
-    v3:
-    - Keep includes sorted alphabetically
-    - Drop CONFIG_OF ifdefs
-    
-    v2:
-    - Remove most of the added code, since the latest driver doesn't need it.
-    - Drop DT binding document, since Rob Herring was OK with not documenting this:
-      https://lore.kernel.org/linux-devicetree/5baa1ae6.1c69fb81.847f2.3ab1@mx.google.com/
+ .../bindings/sound/fsl,aud2htx.yaml           | 64 +++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
 
- drivers/gpio/gpio-mockup.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index 67ed4f238d43..ca87c590ef3f 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -16,6 +16,7 @@
- #include <linux/irq_sim.h>
- #include <linux/irqdomain.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
- #include <linux/slab.h>
-@@ -460,9 +461,16 @@ static int gpio_mockup_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id gpio_mockup_of_match[] = {
-+	{ .compatible = "gpio-mockup", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, gpio_mockup_of_match);
+diff --git a/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml b/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+new file mode 100644
+index 000000000000..6d9ba2946bfb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,aud2htx.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/fsl,aud2htx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static struct platform_driver gpio_mockup_driver = {
- 	.driver = {
- 		.name = "gpio-mockup",
-+		.of_match_table = of_match_ptr(gpio_mockup_of_match),
- 	},
- 	.probe = gpio_mockup_probe,
- };
-@@ -556,8 +564,7 @@ static int __init gpio_mockup_init(void)
- {
- 	int i, num_chips, err;
- 
--	if ((gpio_mockup_num_ranges < 2) ||
--	    (gpio_mockup_num_ranges % 2) ||
-+	if ((gpio_mockup_num_ranges % 2) ||
- 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
- 		return -EINVAL;
- 
++title: NXP Audio Subsystem to HDMI RTX Subsystem Controller
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++properties:
++  compatible:
++    const: fsl,imx8mp-aud2htx
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Peripheral clock
++
++  clock-names:
++    items:
++      - const: bus
++
++  dmas:
++    items:
++      - description: DMA controller phandle and request line for TX
++
++  dma-names:
++    items:
++      - const: tx
++
++  power-domains:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/imx8mp-clock.h>
++
++    aud2htx: aud2htx@30cb0000 {
++        compatible = "fsl,imx8mp-aud2htx";
++        reg = <0x30cb0000 0x10000>;
++        interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&audiomix_clk IMX8MP_CLK_AUDIOMIX_AUD2HTX_IPG>;
++        clock-names = "bus";
++        dmas = <&sdma2 26 2 0>;
++        dma-names = "tx";
++        power-domains = <&audiomix_pd>;
++    };
 -- 
-2.28.0
+2.27.0
 
