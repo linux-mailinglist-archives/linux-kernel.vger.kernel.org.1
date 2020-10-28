@@ -2,120 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB4429DC0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2421B29DC2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389196AbgJ1Wo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:44:58 -0400
-Received: from mout.gmx.net ([212.227.15.18]:47667 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731064AbgJ1WmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:42:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603924922;
-        bh=mjjgd5ywvv3HNXkKe5faSF1dHJHIMuYeEx9hiIOdEh8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
-        b=e3DmSyyfBc+guSAyIs3YUwc4qrLsWdo0YGyopaPjPoKjoqAkAd9jYzhPAmbXvFGdq
-         rtetInYKpNEUgmhGf23EIdzfH9qjwy/JqXYPE39KPmzKMajEKY3ZNfnAs0fyAK7ajP
-         ilWeYo8UmeYpivnPR3sY/tODDi0qawhtpHtVZL28=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.223.32.86]) by mail.gmx.com
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1N0XCw-1kCrOG1TYi-00wUJi; Wed, 28 Oct 2020 19:30:24 +0100
-Received: by localhost.localdomain (Postfix, from userid 1000)
-        id 62417800D8; Wed, 28 Oct 2020 19:30:23 +0100 (CET)
-From:   Sven Joachim <svenjoac@gmx.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guillem Jover <guillem@hadrons.org>
-Subject: Re: [PATCH 1/2] builddeb: Fix rootless build in setuid/setgid
- directory
-References: <20201026193217.402412-1-svenjoac@gmx.de>
-        <CAK7LNAS4VfYLLBZn=Fkd+D5D+3ejVd4jPFLtWu6joLxVXtxKUg@mail.gmail.com>
-Date:   Wed, 28 Oct 2020 19:30:23 +0100
-In-Reply-To: <CAK7LNAS4VfYLLBZn=Fkd+D5D+3ejVd4jPFLtWu6joLxVXtxKUg@mail.gmail.com>
-        (Masahiro Yamada's message of "Wed, 28 Oct 2020 15:00:22 +0900")
-Message-ID: <871rhi19vk.fsf@turtle.gmx.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.50 (gnu/linux)
-MIME-Version: 1.0
+        id S2390848AbgJ2AWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:22:14 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1415 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388929AbgJ1WiG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:38:06 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f99be410000>; Wed, 28 Oct 2020 11:53:53 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 18:53:44 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 18:53:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LcFPQ+Lu8NRGsc0hU3VO841M6CUgCNfePBWPOyr7Mu/ITaRg2qLdcBVDaBoutJ+MJi+YnWPhqsLNdgqM6x3VTBPBmw45KJSnqz8+wchby8vCzGUm+0F/K4IswCk0mqK2Hsg9bQcGF0cxc8Uu2nCpLe6qKBZ0qwsEll/Nci5LiAn62B7M4avwENduf3soVOTritN5icZ7Jvcb+cozk1Uj4oIHOtFRxwij20ALkyvzNw1dc14FHEMqSmYkG4ONHobLPcl+UQOn8VVMvA2oartzz8E+/PLvirZERbw2ExSyNuUsjV8dkrA5Ajg/nIPuGkdKSCocxGssNS1iaOYOEcX3Yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YjnFmVRHDs222kZEwa4GZhPlUPzdcatFGZwVKM3UH1Y=;
+ b=aIEJI9uCEee88f8BU0RUGu7nWdd4BSPP0LFdsbBZ9ib94UrfDpsqSzuQea2A/2vQ+KNZf61BLe3m8v3vd7wG453WyzYz/3oSPC89IyluEnDBlHleBqFaiZyQScRUKzWO7YkH565z2vDjDa2mCwtysSVVjarxPk+vwpsOSMf5By/C1UY1SZUw3zH+hthoFvKkaYWh9eo4pCnVBicrf8DVYRTL3pH6rF1h362uuXGWd3D+lJ+mK2GBxD49luzoB28vqU4lCYSYP68BH/IZrQr6w8jokg+RdEwaWcn4EE1S4SURejyK3YOHVtdQkRc9JKvXksfCa6Wr7xHbL3yS/JYsRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1659.namprd12.prod.outlook.com (2603:10b6:4:11::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 28 Oct
+ 2020 18:53:42 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
+ 18:53:42 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Dave Young" <dyoung@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        <kasan-dev@googlegroups.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        <kvm@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        Larry Woodman <lwoodman@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rik van Riel <riel@redhat.com>,
+        =?utf-8?b?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Toshimitsu Kani <toshi.kani@hpe.com>
+Subject: [PATCH rc] mm: always have io_remap_pfn_range() set pgprot_decrypted()
+Date:   Wed, 28 Oct 2020 15:53:40 -0300
+Message-ID: <0-v1-025d64bdf6c4+e-amd_sme_fix_jgg@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-X-Provags-ID: V03:K1:Yl6/pxi4e/xbPe4GCfZUCwKzrh9fZJX/GZ2OIKcQmsACydYSDYf
- aiRC2bhxwZXaQU63FPIBSDo3opoaFHI+qABi60moHMy601HTzDG6yFF5Yc/LPP970XALYwN
- jBOI4bQsvE0eccEhLt7vcbYkKoMGix8cnBIF+joWEDDwCeW9gcOWx/+nNcgi/l88YZkgmHv
- q33yhyfq4s2ZPFQtZCk2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:R5fUqhJ/1WM=:hDagFnQG+3Zv/jY8bJJbBk
- mBI8lx4FAf+68qBKu+FGehObFPZkrgpPRJNFzFKTExJGn8Gws8xOCy0rnPMIQF0uDS2um5PEK
- 9mRUM5QSuEAOVuos8Ur1ENNIdUf+is8A7ZUx0WYKP0fAR16BB8Uc4WEQGzQBouKDmoarVxRRx
- sGUTC/WqyAqpo0eEn4+rpaexGYa9SwI2UshFSSydy7cYYVAQEGzlk+DoB98ENvR3r1/DUi0e8
- aEGTU6GswOdTGRWCPIOrjYTGr+L8Kbol0ukoV5MniMvwA1hKyHyXpNttzGuL1JqGgFiNs/TqS
- Zt3F6nsGrVfmLvlPEXQJVGko63h2RW7KjFJXZn61/A8XcKZPWtpWPKRU4ow03ceiR9WV7yorN
- /FfBdnfeQhbNyYMK56t1b4C9Piz+XAh8Yw1p3MVR3fB+HthVxH7wF66j5xlXwtVUATz+y3S6k
- /R7DVMmpEbipMjJZbTnrHwlYxO08aRyW48LxEKp0d12jDNiIuSnbDSTezOV0qoCKL45SiMoSj
- KFpPO1oWdnawYgHg1etVL3ivl96m07rWMUHc/EUS4xV6VyElFNeSMt9iYIBZimJh9La+LUcED
- wi0ym2ny7f++T1hs8Gr3/TqU2O/R39BXtNy+akxiAQ1uHsaE2fa/A4H8GIjHiYyhTkPPgk020
- mhh5R1WT8PAklObbk92jUaasq/bf5J8dBLYKHm0yvc1ZSJleu3VPjSgn4auIulbGsPXFPTpYP
- bNauEFeBcAMYWZCsi7Lg3FIGU7hVjUOGkf9oaq+V67IJvNQwj0ErhSQ0P4aNrl9JLhaESfNQq
- Lgmf50eC7IpCL92wR+Sg1NJ/ty8x8UH2bc0d2Gfq4a9HxcYPS2OGNaqWHy4gIWnv+7Z5mb/lV
- cxrfFW1fZSxJ4jv5tFjw==
+X-ClientProxiedBy: MN2PR11CA0021.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR11CA0021.namprd11.prod.outlook.com (2603:10b6:208:23b::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Wed, 28 Oct 2020 18:53:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXqZo-00Aqpy-KK; Wed, 28 Oct 2020 15:53:40 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603911233; bh=yzNe+Ngjn17ZkMrMdUy/PH/+E8Zp+x0w7K5TfBboL80=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=GxQ9oqbWOYZZc4FRlIve/II9FoO+eC5e+4xuITgZ3PmGB86vTMQ/Q/wrJ8oFhRMWk
+         Tly5ybe6SFyveDQbbQ5RWRjONuTlTmeowg8WlhfqF8gnj50hvcJ+bT/TKT48c5V/0u
+         Fp5I1x7yeeK+jo6QjsG3NU/qh5cD6GVom0/mW7bAIDTRehIM9Gh/beB6Q0vknkQRf9
+         c2FLFuf30TFvgyBug/9yPLk33pvZFe/E4MwbYg/WBD9z8tkV2eaXByI6MSN3F7bk9O
+         N9lKPYUTMBxJF0FjPsI7NlCcaLL1OtPOkLuIqKVM5tHtrBfK9qb3LscKXWuC3oVWJl
+         ql2RTwL8QmW/w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-28 15:00 +0900, Masahiro Yamada wrote:
+The purpose of io_remap_pfn_range() is to map IO memory, such as a memory
+mapped IO exposed through a PCI BAR. IO devices do not understand
+encryption, so this memory must always be decrypted. Automatically call
+pgprot_decrypted() as part of the generic implementation.
 
-> On Tue, Oct 27, 2020 at 4:32 AM Sven Joachim <svenjoac@gmx.de> wrote:
->>
->> Building 5.10-rc1 in a setgid directory failed with the following
->> error:
->>
->> dpkg-deb: error: control directory has bad permissions 2755 (must be
->> >=0755 and <=0775)
->>
->> When building with fakeroot, the earlier chown call would have removed
->> the setgid bits, but in a rootless build they remain.
->>
->
->
-> Applied to linux-kbuild. Thanks.
+This fixes a bug where enabling AMD SME causes subsystems, such as RDMA,
+using io_remap_pfn_range() to expose BAR pages to user space to fail. The
+CPU will encrypt access to those BAR pages instead of passing unencrypted
+IO directly to the device.
 
-I don't see it there, have you pushed it out yet?
+Places not mapping IO should use remap_pfn_range().
 
-> I agreed with "g-s" but was not sure about "u-s"
-> because nothing is explained about setuid,
-> and the setuid bit against directories seems to have no effect.
->
->
->
->
->
-> It was interesting to read this article:
-> https://superuser.com/questions/471844/why-is-setuid-ignored-on-directories
->
->
->
-> Also, it is summarized in the wikipedia
-> https://en.wikipedia.org/wiki/Setuid#setuid_and_setgid_on_directories
->
-> "The setuid permission set on a directory is ignored on most UNIX and
-> Linux systems.[citation needed] However FreeBSD can be configured to
-> interpret setuid in a manner similar to setgid, in which case it
-> forces all files and sub-directories created in a directory to be
-> owned by that directory's owner - a simple form of inheritance.[5]
-> This is generally not needed on most systems derived from BSD, since
-> by default directories are treated as if their setgid bit is always
-> set, regardless of the actual value. As is stated in open(2), "When a
-> new file is created it is given the group of the directory which
-> contains it.""
->
->
-> After all, I am convinced that it would not hurt to do "u-s"
-> although I have never tested kernel builds on FreeBSD.
+Cc: stable@kernel.org
+Fixes: aca20d546214 ("x86/mm: Add support to make use of Secure Memory Encr=
+yption")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ include/linux/mm.h      | 9 +++++++++
+ include/linux/pgtable.h | 4 ----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-Agreed, setuid directories should not end up in the .deb files even if
-that bit does currently nothing.
+I have a few other patches after this to remove some now-redundant pgprot_d=
+ecrypted()
+and to update vfio-pci to call io_remap_pfn_range()
 
-Cheers,
-       Sven
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ef360fe70aafcf..db6ae4d3fb4edc 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2759,6 +2759,15 @@ static inline vm_fault_t vmf_insert_page(struct vm_a=
+rea_struct *vma,
+ 	return VM_FAULT_NOPAGE;
+ }
+=20
++#ifndef io_remap_pfn_range
++static inline int io_remap_pfn_range(struct vm_area_struct *vma,
++				     unsigned long addr, unsigned long pfn,
++				     unsigned long size, pgprot_t prot)
++{
++	return remap_pfn_range(vma, addr, pfn, size, pgprot_decrypted(prot));
++}
++#endif
++
+ static inline vm_fault_t vmf_error(int err)
+ {
+ 	if (err =3D=3D -ENOMEM)
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 38c33eabea8942..71125a4676c4a6 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -1427,10 +1427,6 @@ typedef unsigned int pgtbl_mod_mask;
+=20
+ #endif /* !__ASSEMBLY__ */
+=20
+-#ifndef io_remap_pfn_range
+-#define io_remap_pfn_range remap_pfn_range
+-#endif
+-
+ #ifndef has_transparent_hugepage
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define has_transparent_hugepage() 1
+--=20
+2.28.0
+
