@@ -2,238 +2,684 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884DF29D2C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A67E129D352
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgJ1Vey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:34:54 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47728 "EHLO mga02.intel.com"
+        id S1726009AbgJ1VmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:42:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:38112 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726624AbgJ1Vet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:34:49 -0400
-IronPort-SDR: NS1QV3ugPTpXzvO/dx+V2+2S9cCCuYqZwGX4tjQi9kd7CJKEWFwXCxl5/fcjkSbydd921hymWt
- +kHSir93HpoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="155306536"
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="155306536"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 14:03:36 -0700
-IronPort-SDR: 8Fnp/m19OoQ0PF94x+pIsBXqe80yUPmUNRJphy71q+x/GktXHCxJ5kepMftnOVAi6MUaTHu2qi
- WcfBF5VSowNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="351158856"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Oct 2020 14:03:35 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 28 Oct 2020 14:03:35 -0700
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 28 Oct 2020 14:03:34 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 28 Oct 2020 14:03:34 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.172)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 28 Oct 2020 14:03:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U/3Mpb+SGN4+cSQ0FYq9/PJlC/wYmKNvukJkKSBmxUS7YkhdZcUs4C2/xbgA4l14f/okwUYcghZZ4/lL1N6L5k0uV/h82A17JS08yrUklD58lxmYSGKkyHsa+JiOfq2cz5+fv0XPVwhrpzeswj1F9t9OJIxJkcD78WbaP+a1GmQ/7JTdZM5KpMA+fyfqjFdh1fDBlpPe2cpxXW1v9Bv1hovTC/+hjWkN9BjuUQ48eoDFPsgZWx2Q3FSkSJl21JkcfrATJZALOfw6rBULRk2HfGbQ0Ubgq3/9QXwixkzCh1XkgPoWxfOgi58V/4Pbdeqb26JVvw7K/vV6lhj7W+TMIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zAZhJfD6OsQo5ORolnzWi25k4gfuBM7Onv0jt2kzKUg=;
- b=iJ8hwZc9zd5TCwo+ZDyxZczaMNmILA2IaI7W3Ac2Aoehq6zLmBdTMS86yrXmWq6mRkkG6difG38+d1ZRFvLh54wYL9uM36kmuT1oY/wi0ncRdW7GqdyptJ5ZPaHUUkLY3GOfTZpwUzg1D3rMuEicCilppAY+1JEwTmz9Af/tr4wQqLNpjo+0gWDVHfidLHXkjigSMgVo+OChRacczHGVlc9lybir+Dcqu88N5jJn/NYBUvmpoFB5ivmcZX10uL/EXb/RWG2Qtw4LFSOQ+KrMerC2CuvY/Jv6MkFv7RZIMoZtfR9s8O+509gAIS8yEPn2fA/0/eqP+641H7G1unuXhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zAZhJfD6OsQo5ORolnzWi25k4gfuBM7Onv0jt2kzKUg=;
- b=wqW1ZG0AtZzRHmDuhHgb+8Ww4Jfeep1mPb5qcFiXapOydJD0B27pnbNGUWzfF5AHpgyWtkhO03Mx96gMHkjsqe5bVFepeONx8Zr6ykBdGdGLwuIg8aHsklOBlD3yf2v9TIgj3//BPuY3C72bNvz1oYpdXZmLK7jyVjn9k/Ytqc8=
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
- by SN6PR11MB3437.namprd11.prod.outlook.com (2603:10b6:805:db::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 28 Oct
- 2020 21:03:33 +0000
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::b901:8e07:4340:6704]) by SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::b901:8e07:4340:6704%7]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
- 21:03:31 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "will@kernel.org" <will@kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>
-CC:     "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-Thread-Topic: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-Thread-Index: AQHWqrf3SYgZeORHqEa1kMKSitw9UKmpFReAgACDwgCAAJbiAIAA89wAgAG/kwCAAAMDgIAAn/WA
-Date:   Wed, 28 Oct 2020 21:03:31 +0000
-Message-ID: <9e77d0a939eda3029d6ae89bd14d7f1465b0559d.camel@intel.com>
-References: <20201025101555.3057-1-rppt@kernel.org>
-         <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
-         <20201026090526.GA1154158@kernel.org>
-         <a0212b073b3b2f62c3dbf1bf398f03fa402997be.camel@intel.com>
-         <20201027083816.GG1154158@kernel.org>
-         <20201028112011.GB27927@willie-the-truck>
-         <20201028113059.GG1428094@kernel.org>
-In-Reply-To: <20201028113059.GG1428094@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.30.1 (3.30.1-1.fc29) 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.137.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1172831f-adbc-41cc-b38e-08d87b84ed44
-x-ms-traffictypediagnostic: SN6PR11MB3437:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB34375DA7570B1F899B151780C9170@SN6PR11MB3437.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tJfm5p48V+DiodzMvNLUYiWMC39XjyMOSoDghzvvfmUr32QKdjniwAu8ktLu0jy9EFu5i8OZ4jEe7Uu6pd8BzRRZbt1HH+F3c9a2b1e5Q3cittABLg5E5GbOtu3nkaDtRrORnPHrIFaguRroyR0G9qeUEnCElcy0rU1XyNMshMZiE+88imLbGHRLJcgm3qnjtSF13srsSoy/12iL1gD4bSOy5EAxSTSAHzMrW0uzYfxoVx6eWZ8+bCRCuxE/0OT97Id5O5OHjaGsUh/TcgWtPPCf5q/ABGi2Nc9XxFsVg3YDhoNlBnborB2ehaH9R4fmxiudVBZiaISyVu94q9wc3w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(396003)(136003)(346002)(7406005)(91956017)(66476007)(64756008)(4001150100001)(186003)(2616005)(8936002)(26005)(76116006)(36756003)(66946007)(478600001)(66446008)(66556008)(6486002)(86362001)(4326008)(110136005)(8676002)(6506007)(71200400001)(83380400001)(54906003)(7416002)(5660300002)(316002)(6512007)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: fBWAiccndId9oskYRy9/C10+ebq6uEZ7vhv224LX0XWtxIHvu+YCYAudwl7ybJg5CfRMRqcfhMFtQOU2RQJWBfUWYqFM4Zf/AYfmIIH0RDQNeCiFiPsZFpmRZ/m8ZQ7WSX1nZQbxUdSqVGPkd3AKh1mPQfdB1BWeAeX7Bjap+yxJQVenZ0pBKAmlQgL8qTSz/9xXcD+TXTrmMBBwvJgSyvEzzNEBDT+2bsw/7RrLJG11eB4MM7GiwCsIWszHKQBKugWPM7Dbd7Xi/tsx/MjRNc/QfQjldVmHao01ZZueJ2+XFxUeEY7sO7DHkg51x8FPpR6oW+Yxb7LHCj41XjuTY43vG0w5FBFu6zzTbFwoFUXszrqSUdVt7BozJkPurleB8vUU9Zf1vH8uHMP9XqgPmUF+SaMFQ7USlW01GfGYHmFsuE9Jt0+54Zzq4j69N5MjDfTn8roqze0nm4i+XS7rdv/MCs4X4Pn3C/ku3EGkFGiGp0Bq71T71rWfxHlFA8RfI7ciqYXC7bUaX5R+hKRDxj0eFr9rgbD3n7izcIsdBMHYZgXmcYEDvzwTPN+LEaAsNngtFOEsgOf6adtLiOM6wHQMEu49iPyqt4j3JzkoGTWvrXI/0XoDLZfuNJ5Oe6kx9nj3y64izN7VpdSufyM9sg==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6A57DF794371B74D8EDF50341EA0B257@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1725982AbgJ1VmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:42:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DCCF1C01;
+        Wed, 28 Oct 2020 14:04:48 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7F343F66E;
+        Wed, 28 Oct 2020 14:04:46 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 21:04:44 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH 03/11] firmware: arm_scmi: introduce common protocol
+ interface
+Message-ID: <20201028210444.GG20482@e120937-lin>
+References: <20201014150545.44807-1-cristian.marussi@arm.com>
+ <20201014150545.44807-4-cristian.marussi@arm.com>
+ <64254fdf-dcb3-b27f-9624-de2abacf55d2@linaro.org>
+ <20201021102741.GB20482@e120937-lin>
+ <0f931edf-4cae-d393-f59d-1609c03ab9e7@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1172831f-adbc-41cc-b38e-08d87b84ed44
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2020 21:03:31.7828
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /v7YTfuF7d6l8QAVjaRFt8aGtaUV+331a/dKdsPQ5YuwSDYBuLMmOUdoDn6N6zBfw2g0WOPCtth+2tso3T3TfDQTIOdkHoTlltxTNbIlz44=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3437
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f931edf-4cae-d393-f59d-1609c03ab9e7@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTEwLTI4IGF0IDEzOjMwICswMjAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
-PiBPbiBXZWQsIE9jdCAyOCwgMjAyMCBhdCAxMToyMDoxMkFNICswMDAwLCBXaWxsIERlYWNvbiB3
-cm90ZToNCj4gPiBPbiBUdWUsIE9jdCAyNywgMjAyMCBhdCAxMDozODoxNkFNICswMjAwLCBNaWtl
-IFJhcG9wb3J0IHdyb3RlOg0KPiA+ID4gT24gTW9uLCBPY3QgMjYsIDIwMjAgYXQgMDY6MDU6MzBQ
-TSArMDAwMCwgRWRnZWNvbWJlLCBSaWNrIFANCj4gPiA+IHdyb3RlOg0KPiA+ID4gPiBPbiBNb24s
-IDIwMjAtMTAtMjYgYXQgMTE6MDUgKzAyMDAsIE1pa2UgUmFwb3BvcnQgd3JvdGU6DQo+ID4gPiA+
-ID4gT24gTW9uLCBPY3QgMjYsIDIwMjAgYXQgMDE6MTM6NTJBTSArMDAwMCwgRWRnZWNvbWJlLCBS
-aWNrIFANCj4gPiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gPiA+IE9uIFN1biwgMjAyMC0xMC0yNSBh
-dCAxMjoxNSArMDIwMCwgTWlrZSBSYXBvcG9ydCB3cm90ZToNCj4gPiA+ID4gPiA+ID4gSW5kZWVk
-LCBmb3IgYXJjaGl0ZWN0dXJlcyB0aGF0IGRlZmluZQ0KPiA+ID4gPiA+ID4gPiBDT05GSUdfQVJD
-SF9IQVNfU0VUX0RJUkVDVF9NQVANCj4gPiA+ID4gPiA+ID4gaXQgaXMNCj4gPiA+ID4gPiA+ID4g
-cG9zc2libGUgdGhhdCBfX2tlcm5lbF9tYXBfcGFnZXMoKSB3b3VsZCBmYWlsLCBidXQgc2luY2UN
-Cj4gPiA+ID4gPiA+ID4gdGhpcw0KPiA+ID4gPiA+ID4gPiBmdW5jdGlvbiBpcw0KPiA+ID4gPiA+
-ID4gPiB2b2lkLCB0aGUgZmFpbHVyZSB3aWxsIGdvIHVubm90aWNlZC4NCj4gPiA+ID4gPiA+IA0K
-PiA+ID4gPiA+ID4gQ291bGQgeW91IGVsYWJvcmF0ZSBvbiBob3cgdGhpcyBjb3VsZCBoYXBwZW4/
-IERvIHlvdSBtZWFuDQo+ID4gPiA+ID4gPiBkdXJpbmcNCj4gPiA+ID4gPiA+IHJ1bnRpbWUgdG9k
-YXkgb3IgaWYgc29tZXRoaW5nIG5ldyB3YXMgaW50cm9kdWNlZD8NCj4gPiA+ID4gPiANCj4gPiA+
-ID4gPiBBIGZhaWx1cmUgaW5fX2tlcm5lbF9tYXBfcGFnZXMoKSBtYXkgaGFwcGVuIHRvZGF5LiBG
-b3INCj4gPiA+ID4gPiBpbnN0YW5jZSwgb24NCj4gPiA+ID4gPiB4ODYNCj4gPiA+ID4gPiBpZiB0
-aGUga2VybmVsIGlzIGJ1aWx0IHdpdGggREVCVUdfUEFHRUFMTE9DLg0KPiA+ID4gPiA+IA0KPiA+
-ID4gPiA+ICAgICAgICAgX19rZXJuZWxfbWFwX3BhZ2VzKHBhZ2UsIDEsIDApOw0KPiA+ID4gPiA+
-IA0KPiA+ID4gPiA+IHdpbGwgbmVlZCB0byBzcGxpdCwgc2F5LCAyTSBwYWdlIGFuZCBkdXJpbmcg
-dGhlIHNwbGl0IGFuDQo+ID4gPiA+ID4gYWxsb2NhdGlvbg0KPiA+ID4gPiA+IG9mDQo+ID4gPiA+
-ID4gcGFnZSB0YWJsZSBjb3VsZCBmYWlsLg0KPiA+ID4gPiANCj4gPiA+ID4gT24geDg2IGF0IGxl
-YXN0LCBERUJVR19QQUdFQUxMT0MgZXhwZWN0cyB0byBuZXZlciBoYXZlIHRvIGJyZWFrDQo+ID4g
-PiA+IGEgcGFnZQ0KPiA+ID4gPiBvbiB0aGUgZGlyZWN0IG1hcCBhbmQgZXZlbiBkaXNhYmxlcyBs
-b2NraW5nIGluIGNwYSBiZWNhdXNlIGl0DQo+ID4gPiA+IGFzc3VtZXMNCj4gPiA+ID4gdGhpcy4g
-SWYgdGhpcyBpcyBoYXBwZW5pbmcgc29tZWhvdyBhbnl3YXkgdGhlbiB3ZSBzaG91bGQNCj4gPiA+
-ID4gcHJvYmFibHkgZml4DQo+ID4gPiA+IHRoYXQuIEV2ZW4gaWYgaXQncyBhIGRlYnVnIGZlYXR1
-cmUsIGl0IHdpbGwgbm90IGJlIGFzIHVzZWZ1bCBpZg0KPiA+ID4gPiBpdCBpcw0KPiA+ID4gPiBj
-YXVzaW5nIGl0cyBvd24gY3Jhc2hlcy4NCj4gPiA+ID4gDQo+ID4gPiA+IEknbSBzdGlsbCB3b25k
-ZXJpbmcgaWYgdGhlcmUgaXMgc29tZXRoaW5nIEknbSBtaXNzaW5nIGhlcmUuIEl0DQo+ID4gPiA+
-IHNlZW1zDQo+ID4gPiA+IGxpa2UgeW91IGFyZSBzYXlpbmcgdGhlcmUgaXMgYSBidWcgaW4gc29t
-ZSBhcmNoJ3MsIHNvIGxldCdzIGFkZA0KPiA+ID4gPiBhIFdBUk4NCj4gPiA+ID4gaW4gY3Jvc3Mt
-YXJjaCBjb2RlIHRvIGxvZyBpdCBhcyBpdCBjcmFzaGVzLiBBIHdhcm4gYW5kIG1ha2luZw0KPiA+
-ID4gPiB0aGluZ3MNCj4gPiA+ID4gY2xlYXJlciBzZWVtIGxpa2UgZ29vZCBpZGVhcywgYnV0IGlm
-IHRoZXJlIGlzIGEgYnVnIHdlIHNob3VsZA0KPiA+ID4gPiBmaXggaXQuDQo+ID4gPiA+IFRoZSBj
-b2RlIGFyb3VuZCB0aGUgY2FsbGVycyBzdGlsbCBmdW5jdGlvbmFsbHkgYXNzdW1lIHJlLQ0KPiA+
-ID4gPiBtYXBwaW5nIGNhbid0DQo+ID4gPiA+IGZhaWwuDQo+ID4gPiANCj4gPiA+IE9oLCBJJ3Zl
-IG1lYW50IHg4NiBrZXJuZWwgKndpdGhvdXQqIERFQlVHX1BBR0VBTExPQywgYW5kIGluZGVlZA0K
-PiA+ID4gdGhlIGNhbGwNCj4gPiA+IHRoYXQgdW5tYXBzIHBhZ2VzIGJhY2sgaW4gc2FmZV9jb3B5
-X3BhZ2Ugd2lsbCBqdXN0IHJlc2V0IGEgNEsNCj4gPiA+IHBhZ2UgdG8NCj4gPiA+IE5QIGJlY2F1
-c2Ugd2hhdGV2ZXIgbWFkZSBpdCBOUCBhdCB0aGUgZmlyc3QgcGxhY2UgYWxyZWFkeSBkaWQgdGhl
-DQo+ID4gPiBzcGxpdC4NCj4gPiA+IA0KPiA+ID4gU3RpbGwsIG9uIGFybTY0IHdpdGggREVCVUdf
-UEFHRUFMTE9DPW4gdGhlcmUgaXMgYSBwb3NzaWJpbGl0eSBvZg0KPiA+ID4gYSByYWNlDQo+ID4g
-PiBiZXR3ZWVuIG1hcC91bm1hcCBkYW5jZSBpbiBfX3Z1bm1hcCgpIGFuZCBzYWZlX2NvcHlfcGFn
-ZSgpIHRoYXQNCj4gPiA+IG1heQ0KPiA+ID4gY2F1c2UgYWNjZXNzIHRvIHVubWFwcGVkIG1lbW9y
-eToNCj4gPiA+IA0KPiA+ID4gX192dW5tYXAoKQ0KPiA+ID4gICAgIHZtX3JlbW92ZV9tYXBwaW5n
-cygpDQo+ID4gPiAgICAgICAgIHNldF9kaXJlY3RfbWFwX2ludmFsaWQoKQ0KPiA+ID4gCQkJCQlz
-YWZlX2NvcHlfcGFnZSgpCQ0KPiA+ID4gCQkJCQkgICAgX19rZXJuZWxfbWFwX3BhZ2VzKCkNCj4g
-PiA+IAkJCQkJICAgIAlyZXR1cm4NCj4gPiA+IAkJCQkJICAgIGRvX2NvcHlfcGFnZSgpIC0+IGZh
-dWx0DQo+ID4gPiAJCQkJCSAgIAkNCj4gPiA+IFRoaXMgaXMgYSB0aGVvcmV0aWNhbCBidWcsIGJ1
-dCBpdCBpcyBzdGlsbCBub3QgbmljZSA6KSAJCQ0KPiA+ID4gCQkJCQkNCj4gPiANCj4gPiBKdXN0
-IHRvIGNsYXJpZnk6IHRoaXMgcGF0Y2ggc2VyaWVzIGZpeGVzIHRoaXMgcHJvYmxlbSwgcmlnaHQ/
-DQo+IA0KPiBZZXMuDQo+IA0KDQpXZWxsLCBub3cgSSdtIGNvbmZ1c2VkIGFnYWluLg0KDQpBcyBE
-YXZpZCBwb2ludGVkLCBfX3Z1bm1hcCgpIHNob3VsZCBub3QgYmUgZXhlY3V0aW5nIHNpbXVsdGFu
-ZW91c2x5DQp3aXRoIHRoZSBoaWJlcm5hdGUgb3BlcmF0aW9uIGJlY2F1c2UgaGliZXJuYXRlIGNh
-bid0IHNuYXBzaG90IHdoaWxlDQpkYXRhIGl0IG5lZWRzIHRvIHNhdmUgaXMgc3RpbGwgdXBkYXRp
-bmcuIElmIGEgdGhyZWFkIHdhcyBwYXVzZWQgd2hlbiBhDQpwYWdlIHdhcyBpbiBhbiAiaW52YWxp
-ZCIgc3RhdGUsIGl0IHNob3VsZCBiZSByZW1hcHBlZCBieSBoaWJlcm5hdGUNCmJlZm9yZSB0aGUg
-Y29weS4NCg0KVG8gbGV2ZWwgc2V0LCBiZWZvcmUgcmVhZGluZyB0aGlzIG1haWwsIG15IHRha2Vh
-d2F5cyBmcm9tIHRoZQ0KZGlzY3Vzc2lvbnMgb24gcG90ZW50aWFsIGhpYmVybmF0ZS9kZWJ1ZyBw
-YWdlIGFsbG9jIHByb2JsZW1zIHdlcmU6DQoNClBvdGVudGlhbCBSSVNDLVYgaXNzdWU6DQpEb2Vz
-bid0IGhhdmUgaGliZXJuYXRlIHN1cHBvcnQNCg0KUG90ZW50aWFsIEFSTSBpc3N1ZToNClRoZSBs
-b2dpYyBhcm91bmQgd2hlbiBpdCdzIGNwYSBkZXRlcm1pbmVzIHBhZ2VzIG1pZ2h0IGJlIHVubWFw
-cGVkIGxvb2tzDQpjb3JyZWN0IGZvciBjdXJyZW50IGNhbGxlcnMuDQoNClBvdGVudGlhbCB4ODYg
-cGFnZSBicmVhayBpc3N1ZToNClNlZW1zIHRvIGJlIG9rIGZvciBub3csIGJ1dCBhIG5ldyBzZXRf
-bWVtb3J5X25wKCkgY2FsbGVyIGNvdWxkIHZpb2xhdGUNCmFzc3VtcHRpb25zIGluIGhpYmVybmF0
-ZS4NCg0KTm9uLW9idmlvdXMgdGhvcm55IGxvZ2ljOiANCkdlbmVyYWwgYWdyZWVtZW50IGl0IHdv
-dWxkIGJlIGdvb2QgdG8gc2VwYXJhdGUgZGVwZW5kZW5jaWVzLg0KDQpCZWhhdmlvciBvZiBWMSBv
-ZiB0aGlzIHBhdGNoc2V0Og0KTm8gZnVuY3Rpb25hbCBjaGFuZ2Ugb3RoZXIgdGhhbiBhZGRpdGlv
-biBvZiBhIHdhcm4gaW4gaGliZXJuYXRlLg0KDQoNClNvICJkb2VzIHRoaXMgZml4IHRoZSBwcm9i
-bGVtIiwgInllcyIgbGVhdmVzIG1lIGEgYml0IGNvbmZ1c2VkLi4uIE5vdA0Kc2F5aW5nIHRoZXJl
-IGNvdWxkbid0IGJlIGFueSBwcm9ibGVtcywgZXNwZWNpYWxseSBkdWUgdG8gdGhlIHRob3JuaW5l
-c3MNCmFuZCBjcm9zcyBhcmNoIHN0cmlkZSwgYnV0IHdoYXQgaXMgaXQgZXhhY3RseSBhbmQgaG93
-IGRvZXMgdGhpcyBzZXJpZXMNCmZpeCBpdD8NCg0K
+On Mon, Oct 26, 2020 at 09:07:12AM -0400, Thara Gopinath wrote:
+
+Hi Thara,
+
+> 
+> 
+> On 10/21/20 6:27 AM, Cristian Marussi wrote:
+> > On Tue, Oct 20, 2020 at 10:47:10PM -0400, Thara Gopinath wrote:
+> > > 
+> > > 
+> > > On 10/14/20 11:05 AM, Cristian Marussi wrote:
+> > > > Introduce generic get_ops/put_ops handle operations: any protocol, both
+> > > > standard or custom, now exposes its operations through this common
+> > > > interface which internally takes care to account for protocols' usage:
+> > > > protocols' initialization is now performed on demand as soon as the first
+> > > > user shows up while deinitialization (if any) is performed once
+> > > > the last user of a protocol has gone.
+> > > > Registered events' notifier are tracked too against the related protocol.
+> > > > Convert all SCMI drivers to the new interface too.
+> > > > 
+> > > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > > ---
+> > > 
+> > > [...]
+> > > 
+> > > 
+> > > > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > > > index bad1d0130e96..049220efd227 100644
+> > > > --- a/drivers/firmware/arm_scmi/driver.c
+> > > > +++ b/drivers/firmware/arm_scmi/driver.c
+> > > > @@ -585,7 +585,7 @@ void *scmi_get_proto_priv(const struct scmi_handle *handle, u8 protocol_id)
+> > > >     * Return: A reference to an initialized protocol instance or error on failure.
+> > > >     */
+> > > >    static struct scmi_protocol_instance * __must_check
+> > > > -scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+> > > > +scmi_get_protocol_instance(const struct scmi_handle *handle, u8 protocol_id)
+> > > >    {
+> > > >    	int ret = -ENOMEM;
+> > > >    	void *gid;
+> > > > @@ -655,7 +655,7 @@ scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+> > > >     *
+> > > >     * Return: 0 if protocol was acquired successfully.
+> > > >     */
+> > > > -int scmi_acquire_protocol(struct scmi_handle *handle, u8 protocol_id)
+> > > > +int scmi_acquire_protocol(const struct scmi_handle *handle, u8 protocol_id)
+> > > >    {
+> > > >    	return IS_ERR(scmi_get_protocol_instance(handle, protocol_id));
+> > > >    }
+> > > > @@ -668,7 +668,7 @@ int scmi_acquire_protocol(struct scmi_handle *handle, u8 protocol_id)
+> > > >     * Remove one user for the specified protocol and triggers de-initialization
+> > > >     * and resources de-allocation once the last user has gone.
+> > > >     */
+> > > > -void scmi_release_protocol(struct scmi_handle *handle, u8 protocol_id)
+> > > > +void scmi_release_protocol(const struct scmi_handle *handle, u8 protocol_id)
+> > > >    {
+> > > >    	struct scmi_info *info = handle_to_scmi_info(handle);
+> > > >    	struct scmi_protocol_instance *pi;
+> > > > @@ -700,6 +700,29 @@ void scmi_release_protocol(struct scmi_handle *handle, u8 protocol_id)
+> > > >    	mutex_unlock(&info->protocols_mtx);
+> > > >    }
+> > > > +/**
+> > > > + * scmi_get_protocol_operations  - Get protocol operations
+> > > > + * @handle: A reference to the SCMI platform instance.
+> > > > + * @protocol_id: The protocol being requested.
+> > > > + *
+> > > > + * Get hold of a protocol accounting for its usage, eventually triggering its
+> > > > + * initialization, and returning the protocol specific operations.
+> > > > + *
+> > > > + * Return: A reference to the requested protocol operations or error.
+> > > > + *	   Must be checked for errors by caller.
+> > > > + */
+> > > > +static const void __must_check
+> > > > +*scmi_get_protocol_operations(const struct scmi_handle *handle, u8 protocol_id)
+> > > > +{
+> > > > +	struct scmi_protocol_instance *pi;
+> > > > +
+> > > > +	pi = scmi_get_protocol_instance(handle, protocol_id);
+> > > > +	if (IS_ERR(pi))
+> > > > +		return pi;
+> > > > +
+> > > > +	return pi->proto->ops;
+> > > > +} > +
+> > > >    void scmi_setup_protocol_implemented(const struct scmi_handle *handle,
+> > > >    				     u8 *prot_imp)
+> > > >    {
+> > > > @@ -975,6 +998,8 @@ static int scmi_probe(struct platform_device *pdev)
+> > > >    	handle = &info->handle;
+> > > >    	handle->dev = info->dev;
+> > > >    	handle->version = &info->version;
+> > > > +	handle->get_ops = scmi_get_protocol_operations;
+> > > > +	handle->put_ops = scmi_release_protocol;
+> > > 
+> > > 
+> > > Why do you need get_ops and put_ops? Why not have the drivers call
+> > > scmi_acquire_protocol and scmi_release_protocol directly and get the ops
+> > > from retrieved scmi_get_protocol_instance ? IMHO, this makes it more
+> > > readable. Also, this will make the usage of scmi_acquire_protocol and
+> > > scmi_release_protocol more consistent. Right now, notify.c uses
+> > > scmi_acquire_protocol to acquire protocol because there is no need for ops
+> > > and other drivers use get_ops to acquire protocol. Kind of confusing..
+> > > 
+> > 
+> > Trying to avoid exporting new synbols if not strictly needed, I exposed
+> > get_ops()/put_ops() via handle for the usage of the SCMI drivers users,
+> > while keeping scmi_acquire/release as internal non-exported wrappers used
+> > only by the SCMI core itself like notifications.
+> > You cannot call acquire/release from a loadable module as of now.
+> > 
+> > Additionally I thougt to add these wrappers for cases in which like
+> > notifications you don't need the ops really (like notif or base) nor
+> > the related forced __must_check(like notif), but just to get hold of
+> > the protocol to avoid it being possibly unloaded.
+> > 
+> > I would antyway keep the get_ops/put_ops and I could just drop
+> > acquire/release if confusing and use the raw ops methods also internally,
+> > properly checking for the result everytime: currently notifications core
+> > takes care to acquire a protocol only once the requested event has been
+> > registered by some protocol (i.e. event handler is NOT pending) so that
+> > I do not trigger a protocol initialization when registering a notifier
+> > against a still unknown event: as a consequence acquire/release when
+> > called in the notif context cannot fail, so I don;t check.
+> > 
+> > I'll try to simplify this though.
+> 
+> I think a standard interface is better. So either a get_ops/put_ops or
+> acquire_release that can be called by all users/drivers of a protocol will
+> standardize it. I will wait for your next version.
+
+The idea was to minimize the number of needed exported symbols to
+maintain while keeping loadable modules working: currently any SCMI driver
+in order to work has anyway to grab the SCMI instance handle which identifies
+the SCMI instance that you are addressing (in the hyp that you could have
+multiple SCMI server instances running on different MC).
+
+In order to do that you define your driver module_scmi_driver() which
+registers it onto the SCMI bus using scmi_driver_register() which is
+indeed EXPORT_SYMBOL_GPL().
+
+On the other side you can write a new protocol now and define it with
+module_scmi_protocol() which in turn registers it with the SCMI core
+using scmi_protocol_register(), which is another EXPORT_SYMBOL_GPL.
+
+But at this point you have exported the bare minimum you need since:
+
+- all the generic get_ops/put_ops are attached to the handle that the
+SCMI driver receives mandatorily at probe time (instead of the old
+perf_ops, power_ops...)
+
+- the new (in V2) protocol handle descriptor is passed along from the
+  core to the protocols code so that they can be loadable modules too
+  and accessing all the core xfer ops without the need to export also
+  all of those internal message handling methods.
+
+
+The acquire/release interface are indeed just internal wrappers used by
+the core to grab a protocol when you don't really need the ops, and as
+such are currenly not accessible from the modules sitting outside the
+core.
+
+Regards
+
+Cristian
+
+
+> > 
+> > Regards
+> > 
+> > Cristian
+> > 
+> > > -- 
+> > > Warm Regards
+> > > Thara
+> > > 
+> > > >    	ret = scmi_txrx_setup(info, dev, SCMI_PROTOCOL_BASE);
+> > > >    	if (ret)
+> > > > diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
+> > > > index eae58b2a92cc..02b00af9b08f 100644
+> > > > --- a/drivers/firmware/arm_scmi/notify.c
+> > > > +++ b/drivers/firmware/arm_scmi/notify.c
+> > > > @@ -367,7 +367,7 @@ static struct scmi_event_handler *
+> > > >    scmi_get_active_handler(struct scmi_notify_instance *ni, u32 evt_key);
+> > > >    static void scmi_put_active_handler(struct scmi_notify_instance *ni,
+> > > >    				    struct scmi_event_handler *hndl);
+> > > > -static void scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
+> > > > +static bool scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
+> > > >    				      struct scmi_event_handler *hndl);
+> > > >    /**
+> > > > @@ -899,9 +899,21 @@ static inline int scmi_bind_event_handler(struct scmi_notify_instance *ni,
+> > > >    	if (!r_evt)
+> > > >    		return -EINVAL;
+> > > > -	/* Remove from pending and insert into registered */
+> > > > +	/*
+> > > > +	 * Remove from pending and insert into registered while getting hold
+> > > > +	 * of protocol instance.
+> > > > +	 */
+> > > >    	hash_del(&hndl->hash);
+> > > > +	/*
+> > > > +	 * Acquire protocols only for NON pending handlers, so as NOT to trigger
+> > > > +	 * protocol initialization when a notifier is registered against a still
+> > > > +	 * not registered protocol, since it would make little sense to force init
+> > > > +	 * protocols for which still no SCMI driver user exists: they wouldn't
+> > > > +	 * emit any event anyway till some SCMI driver starts using it.
+> > > > +	 */
+> > > > +	scmi_acquire_protocol(ni->handle, KEY_XTRACT_PROTO_ID(hndl->key));
+> > > >    	hndl->r_evt = r_evt;
+> > > > +
+> > > >    	mutex_lock(&r_evt->proto->registered_mtx);
+> > > >    	hash_add(r_evt->proto->registered_events_handlers,
+> > > >    		 &hndl->hash, hndl->key);
+> > > > @@ -1192,41 +1204,65 @@ static int scmi_disable_events(struct scmi_event_handler *hndl)
+> > > >     * * unregister and free the handler itself
+> > > >     *
+> > > >     * Context: Assumes all the proper locking has been managed by the caller.
+> > > > + *
+> > > > + * Return: True if handler was freed (users dropped to zero)
+> > > >     */
+> > > > -static void scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
+> > > > +static bool scmi_put_handler_unlocked(struct scmi_notify_instance *ni,
+> > > >    				      struct scmi_event_handler *hndl)
+> > > >    {
+> > > > +	bool freed = false;
+> > > > +
+> > > >    	if (refcount_dec_and_test(&hndl->users)) {
+> > > >    		if (!IS_HNDL_PENDING(hndl))
+> > > >    			scmi_disable_events(hndl);
+> > > >    		scmi_free_event_handler(hndl);
+> > > > +		freed = true;
+> > > >    	}
+> > > > +
+> > > > +	return freed;
+> > > >    }
+> > > >    static void scmi_put_handler(struct scmi_notify_instance *ni,
+> > > >    			     struct scmi_event_handler *hndl)
+> > > >    {
+> > > > +	bool freed;
+> > > > +	u8 protocol_id;
+> > > >    	struct scmi_registered_event *r_evt = hndl->r_evt;
+> > > >    	mutex_lock(&ni->pending_mtx);
+> > > > -	if (r_evt)
+> > > > +	if (r_evt) {
+> > > > +		protocol_id = r_evt->proto->id;
+> > > >    		mutex_lock(&r_evt->proto->registered_mtx);
+> > > > +	}
+> > > > -	scmi_put_handler_unlocked(ni, hndl);
+> > > > +	freed = scmi_put_handler_unlocked(ni, hndl);
+> > > > -	if (r_evt)
+> > > > +	if (r_evt) {
+> > > >    		mutex_unlock(&r_evt->proto->registered_mtx);
+> > > > +		/*
+> > > > +		 * Only registered handler acquired protocol; must be here
+> > > > +		 * released only AFTER unlocking registered_mtx, since
+> > > > +		 * releasing a protocol can trigger its de-initialization
+> > > > +		 * (ie. including r_evt and registered_mtx)
+> > > > +		 */
+> > > > +		if (freed)
+> > > > +			scmi_release_protocol(ni->handle, protocol_id);
+> > > > +	}
+> > > >    	mutex_unlock(&ni->pending_mtx);
+> > > >    }
+> > > >    static void scmi_put_active_handler(struct scmi_notify_instance *ni,
+> > > >    				    struct scmi_event_handler *hndl)
+> > > >    {
+> > > > +	bool freed;
+> > > >    	struct scmi_registered_event *r_evt = hndl->r_evt;
+> > > > +	u8 protocol_id = r_evt->proto->id;
+> > > >    	mutex_lock(&r_evt->proto->registered_mtx);
+> > > > -	scmi_put_handler_unlocked(ni, hndl);
+> > > > +	freed = scmi_put_handler_unlocked(ni, hndl);
+> > > >    	mutex_unlock(&r_evt->proto->registered_mtx);
+> > > > +	if (freed)
+> > > > +		scmi_release_protocol(ni->handle, protocol_id);
+> > > >    }
+> > > >    /**
+> > > > diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> > > > index 13e215f359fb..bd9cb2583557 100644
+> > > > --- a/drivers/firmware/arm_scmi/perf.c
+> > > > +++ b/drivers/firmware/arm_scmi/perf.c
+> > > > @@ -857,7 +857,7 @@ static const struct scmi_event_ops perf_event_ops = {
+> > > >    	.fill_custom_report = scmi_perf_fill_custom_report,
+> > > >    };
+> > > > -static int scmi_perf_protocol_init(struct scmi_handle *handle)
+> > > > +static int scmi_perf_protocol_init(const struct scmi_handle *handle)
+> > > >    {
+> > > >    	int domain;
+> > > >    	u32 version;
+> > > > @@ -896,7 +896,6 @@ static int scmi_perf_protocol_init(struct scmi_handle *handle)
+> > > >    				      pinfo->num_domains);
+> > > >    	pinfo->version = version;
+> > > > -	handle->perf_ops = &perf_ops;
+> > > >    	return scmi_set_proto_priv(handle, SCMI_PROTOCOL_PERF, pinfo);
+> > > >    }
+> > > > diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
+> > > > index e0b29ed4e09a..1e026b5530a7 100644
+> > > > --- a/drivers/firmware/arm_scmi/power.c
+> > > > +++ b/drivers/firmware/arm_scmi/power.c
+> > > > @@ -262,7 +262,7 @@ static const struct scmi_event_ops power_event_ops = {
+> > > >    	.fill_custom_report = scmi_power_fill_custom_report,
+> > > >    };
+> > > > -static int scmi_power_protocol_init(struct scmi_handle *handle)
+> > > > +static int scmi_power_protocol_init(const struct scmi_handle *handle)
+> > > >    {
+> > > >    	int domain;
+> > > >    	u32 version;
+> > > > @@ -297,7 +297,6 @@ static int scmi_power_protocol_init(struct scmi_handle *handle)
+> > > >    				      pinfo->num_domains);
+> > > >    	pinfo->version = version;
+> > > > -	handle->power_ops = &power_ops;
+> > > >    	return scmi_set_proto_priv(handle, SCMI_PROTOCOL_POWER, pinfo);
+> > > >    }
+> > > > diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
+> > > > index f70e9b5108d5..b7da4de0e56e 100644
+> > > > --- a/drivers/firmware/arm_scmi/reset.c
+> > > > +++ b/drivers/firmware/arm_scmi/reset.c
+> > > > @@ -274,7 +274,7 @@ static const struct scmi_event_ops reset_event_ops = {
+> > > >    	.fill_custom_report = scmi_reset_fill_custom_report,
+> > > >    };
+> > > > -static int scmi_reset_protocol_init(struct scmi_handle *handle)
+> > > > +static int scmi_reset_protocol_init(const struct scmi_handle *handle)
+> > > >    {
+> > > >    	int domain;
+> > > >    	u32 version;
+> > > > @@ -309,7 +309,6 @@ static int scmi_reset_protocol_init(struct scmi_handle *handle)
+> > > >    				      pinfo->num_domains);
+> > > >    	pinfo->version = version;
+> > > > -	handle->reset_ops = &reset_ops;
+> > > >    	return scmi_set_proto_priv(handle, SCMI_PROTOCOL_RESET, pinfo);
+> > > >    }
+> > > > diff --git a/drivers/firmware/arm_scmi/scmi_pm_domain.c b/drivers/firmware/arm_scmi/scmi_pm_domain.c
+> > > > index 9e44479f0284..bfea56f77890 100644
+> > > > --- a/drivers/firmware/arm_scmi/scmi_pm_domain.c
+> > > > +++ b/drivers/firmware/arm_scmi/scmi_pm_domain.c
+> > > > @@ -2,7 +2,7 @@
+> > > >    /*
+> > > >     * SCMI Generic power domain support.
+> > > >     *
+> > > > - * Copyright (C) 2018 ARM Ltd.
+> > > > + * Copyright (C) 2018-2020 ARM Ltd.
+> > > >     */
+> > > >    #include <linux/err.h>
+> > > > @@ -11,6 +11,8 @@
+> > > >    #include <linux/pm_domain.h>
+> > > >    #include <linux/scmi_protocol.h>
+> > > > +static const struct scmi_power_ops *power_ops;
+> > > > +
+> > > >    struct scmi_pm_domain {
+> > > >    	struct generic_pm_domain genpd;
+> > > >    	const struct scmi_handle *handle;
+> > > > @@ -25,16 +27,15 @@ static int scmi_pd_power(struct generic_pm_domain *domain, bool power_on)
+> > > >    	int ret;
+> > > >    	u32 state, ret_state;
+> > > >    	struct scmi_pm_domain *pd = to_scmi_pd(domain);
+> > > > -	const struct scmi_power_ops *ops = pd->handle->power_ops;
+> > > >    	if (power_on)
+> > > >    		state = SCMI_POWER_STATE_GENERIC_ON;
+> > > >    	else
+> > > >    		state = SCMI_POWER_STATE_GENERIC_OFF;
+> > > > -	ret = ops->state_set(pd->handle, pd->domain, state);
+> > > > +	ret = power_ops->state_set(pd->handle, pd->domain, state);
+> > > >    	if (!ret)
+> > > > -		ret = ops->state_get(pd->handle, pd->domain, &ret_state);
+> > > > +		ret = power_ops->state_get(pd->handle, pd->domain, &ret_state);
+> > > >    	if (!ret && state != ret_state)
+> > > >    		return -EIO;
+> > > > @@ -61,10 +62,14 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+> > > >    	struct generic_pm_domain **domains;
+> > > >    	const struct scmi_handle *handle = sdev->handle;
+> > > > -	if (!handle || !handle->power_ops)
+> > > > +	if (!handle)
+> > > >    		return -ENODEV;
+> > > > -	num_domains = handle->power_ops->num_domains_get(handle);
+> > > > +	power_ops = handle->get_ops(handle, SCMI_PROTOCOL_POWER);
+> > > > +	if (IS_ERR(power_ops))
+> > > > +		return PTR_ERR(power_ops);
+> > > > +
+> > > > +	num_domains = power_ops->num_domains_get(handle);
+> > > >    	if (num_domains < 0) {
+> > > >    		dev_err(dev, "number of domains not found\n");
+> > > >    		return num_domains;
+> > > > @@ -85,14 +90,14 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+> > > >    	for (i = 0; i < num_domains; i++, scmi_pd++) {
+> > > >    		u32 state;
+> > > > -		if (handle->power_ops->state_get(handle, i, &state)) {
+> > > > +		if (power_ops->state_get(handle, i, &state)) {
+> > > >    			dev_warn(dev, "failed to get state for domain %d\n", i);
+> > > >    			continue;
+> > > >    		}
+> > > >    		scmi_pd->domain = i;
+> > > >    		scmi_pd->handle = handle;
+> > > > -		scmi_pd->name = handle->power_ops->name_get(handle, i);
+> > > > +		scmi_pd->name = power_ops->name_get(handle, i);
+> > > >    		scmi_pd->genpd.name = scmi_pd->name;
+> > > >    		scmi_pd->genpd.power_off = scmi_pd_power_off;
+> > > >    		scmi_pd->genpd.power_on = scmi_pd_power_on;
+> > > > @@ -111,6 +116,13 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+> > > >    	return 0;
+> > > >    }
+> > > > +static void scmi_pm_domain_remove(struct scmi_device *sdev)
+> > > > +{
+> > > > +	const struct scmi_handle *handle = sdev->handle;
+> > > > +
+> > > > +	handle->put_ops(handle, SCMI_PROTOCOL_POWER);
+> > > > +}
+> > > > +
+> > > >    static const struct scmi_device_id scmi_id_table[] = {
+> > > >    	{ SCMI_PROTOCOL_POWER, "genpd" },
+> > > >    	{ },
+> > > > @@ -120,6 +132,7 @@ MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> > > >    static struct scmi_driver scmi_power_domain_driver = {
+> > > >    	.name = "scmi-power-domain",
+> > > >    	.probe = scmi_pm_domain_probe,
+> > > > +	.remove = scmi_pm_domain_remove,
+> > > >    	.id_table = scmi_id_table,
+> > > >    };
+> > > >    module_scmi_driver(scmi_power_domain_driver);
+> > > > diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+> > > > index 8a0a599558ba..e0129dcd322f 100644
+> > > > --- a/drivers/firmware/arm_scmi/sensors.c
+> > > > +++ b/drivers/firmware/arm_scmi/sensors.c
+> > > > @@ -334,7 +334,7 @@ static const struct scmi_event_ops sensor_event_ops = {
+> > > >    	.fill_custom_report = scmi_sensor_fill_custom_report,
+> > > >    };
+> > > > -static int scmi_sensors_protocol_init(struct scmi_handle *handle)
+> > > > +static int scmi_sensors_protocol_init(const struct scmi_handle *handle)
+> > > >    {
+> > > >    	u32 version;
+> > > >    	struct sensors_info *sinfo;
+> > > > @@ -364,7 +364,6 @@ static int scmi_sensors_protocol_init(struct scmi_handle *handle)
+> > > >    				      sinfo->num_sensors);
+> > > >    	sinfo->version = version;
+> > > > -	handle->sensor_ops = &sensor_ops;
+> > > >    	return scmi_set_proto_priv(handle, SCMI_PROTOCOL_SENSOR, sinfo);
+> > > >    }
+> > > > diff --git a/drivers/firmware/arm_scmi/system.c b/drivers/firmware/arm_scmi/system.c
+> > > > index 8f53f93c63ca..30e3510c1f07 100644
+> > > > --- a/drivers/firmware/arm_scmi/system.c
+> > > > +++ b/drivers/firmware/arm_scmi/system.c
+> > > > @@ -101,7 +101,7 @@ static const struct scmi_event_ops system_event_ops = {
+> > > >    	.fill_custom_report = scmi_system_fill_custom_report,
+> > > >    };
+> > > > -static int scmi_system_protocol_init(struct scmi_handle *handle)
+> > > > +static int scmi_system_protocol_init(const struct scmi_handle *handle)
+> > > >    {
+> > > >    	u32 version;
+> > > >    	struct scmi_system_info *pinfo;
+> > > > diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
+> > > > index d421e691318b..27ef71996a15 100644
+> > > > --- a/drivers/hwmon/scmi-hwmon.c
+> > > > +++ b/drivers/hwmon/scmi-hwmon.c
+> > > > @@ -2,7 +2,7 @@
+> > > >    /*
+> > > >     * System Control and Management Interface(SCMI) based hwmon sensor driver
+> > > >     *
+> > > > - * Copyright (C) 2018 ARM Ltd.
+> > > > + * Copyright (C) 2018-2020 ARM Ltd.
+> > > >     * Sudeep Holla <sudeep.holla@arm.com>
+> > > >     */
+> > > > @@ -13,6 +13,8 @@
+> > > >    #include <linux/sysfs.h>
+> > > >    #include <linux/thermal.h>
+> > > > +static const struct scmi_sensor_ops *sensor_ops;
+> > > > +
+> > > >    struct scmi_sensors {
+> > > >    	const struct scmi_handle *handle;
+> > > >    	const struct scmi_sensor_info **info[hwmon_max];
+> > > > @@ -72,7 +74,7 @@ static int scmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
+> > > >    	const struct scmi_handle *h = scmi_sensors->handle;
+> > > >    	sensor = *(scmi_sensors->info[type] + channel);
+> > > > -	ret = h->sensor_ops->reading_get(h, sensor->id, &value);
+> > > > +	ret = sensor_ops->reading_get(h, sensor->id, &value);
+> > > >    	if (ret)
+> > > >    		return ret;
+> > > > @@ -170,10 +172,14 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
+> > > >    	const struct hwmon_channel_info **ptr_scmi_ci;
+> > > >    	const struct scmi_handle *handle = sdev->handle;
+> > > > -	if (!handle || !handle->sensor_ops)
+> > > > +	if (!handle)
+> > > >    		return -ENODEV;
+> > > > -	nr_sensors = handle->sensor_ops->count_get(handle);
+> > > > +	sensor_ops = handle->get_ops(handle, SCMI_PROTOCOL_SENSOR);
+> > > > +	if (IS_ERR(sensor_ops))
+> > > > +		return PTR_ERR(sensor_ops);
+> > > > +
+> > > > +	nr_sensors = sensor_ops->count_get(handle);
+> > > >    	if (!nr_sensors)
+> > > >    		return -EIO;
+> > > > @@ -184,7 +190,7 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
+> > > >    	scmi_sensors->handle = handle;
+> > > >    	for (i = 0; i < nr_sensors; i++) {
+> > > > -		sensor = handle->sensor_ops->info_get(handle, i);
+> > > > +		sensor = sensor_ops->info_get(handle, i);
+> > > >    		if (!sensor)
+> > > >    			return -EINVAL;
+> > > > @@ -234,7 +240,7 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
+> > > >    	}
+> > > >    	for (i = nr_sensors - 1; i >= 0 ; i--) {
+> > > > -		sensor = handle->sensor_ops->info_get(handle, i);
+> > > > +		sensor = sensor_ops->info_get(handle, i);
+> > > >    		if (!sensor)
+> > > >    			continue;
+> > > > @@ -258,6 +264,13 @@ static int scmi_hwmon_probe(struct scmi_device *sdev)
+> > > >    	return PTR_ERR_OR_ZERO(hwdev);
+> > > >    }
+> > > > +static void scmi_hwmon_remove(struct scmi_device *sdev)
+> > > > +{
+> > > > +	const struct scmi_handle *handle = sdev->handle;
+> > > > +
+> > > > +	handle->put_ops(handle, SCMI_PROTOCOL_SENSOR);
+> > > > +}
+> > > > +
+> > > >    static const struct scmi_device_id scmi_id_table[] = {
+> > > >    	{ SCMI_PROTOCOL_SENSOR, "hwmon" },
+> > > >    	{ },
+> > > > @@ -267,6 +280,7 @@ MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> > > >    static struct scmi_driver scmi_hwmon_drv = {
+> > > >    	.name		= "scmi-hwmon",
+> > > >    	.probe		= scmi_hwmon_probe,
+> > > > +	.remove		= scmi_hwmon_remove,
+> > > >    	.id_table	= scmi_id_table,
+> > > >    };
+> > > >    module_scmi_driver(scmi_hwmon_drv);
+> > > > diff --git a/drivers/reset/reset-scmi.c b/drivers/reset/reset-scmi.c
+> > > > index 8d3a858e3b19..e48220dedb35 100644
+> > > > --- a/drivers/reset/reset-scmi.c
+> > > > +++ b/drivers/reset/reset-scmi.c
+> > > > @@ -2,7 +2,7 @@
+> > > >    /*
+> > > >     * ARM System Control and Management Interface (ARM SCMI) reset driver
+> > > >     *
+> > > > - * Copyright (C) 2019 ARM Ltd.
+> > > > + * Copyright (C) 2019-2020 ARM Ltd.
+> > > >     */
+> > > >    #include <linux/module.h>
+> > > > @@ -11,6 +11,8 @@
+> > > >    #include <linux/reset-controller.h>
+> > > >    #include <linux/scmi_protocol.h>
+> > > > +static const struct scmi_reset_ops *reset_ops;
+> > > > +
+> > > >    /**
+> > > >     * struct scmi_reset_data - reset controller information structure
+> > > >     * @rcdev: reset controller entity
+> > > > @@ -39,7 +41,7 @@ scmi_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
+> > > >    {
+> > > >    	const struct scmi_handle *handle = to_scmi_handle(rcdev);
+> > > > -	return handle->reset_ops->assert(handle, id);
+> > > > +	return reset_ops->assert(handle, id);
+> > > >    }
+> > > >    /**
+> > > > @@ -57,7 +59,7 @@ scmi_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
+> > > >    {
+> > > >    	const struct scmi_handle *handle = to_scmi_handle(rcdev);
+> > > > -	return handle->reset_ops->deassert(handle, id);
+> > > > +	return reset_ops->deassert(handle, id);
+> > > >    }
+> > > >    /**
+> > > > @@ -75,7 +77,7 @@ scmi_reset_reset(struct reset_controller_dev *rcdev, unsigned long id)
+> > > >    {
+> > > >    	const struct scmi_handle *handle = to_scmi_handle(rcdev);
+> > > > -	return handle->reset_ops->reset(handle, id);
+> > > > +	return reset_ops->reset(handle, id);
+> > > >    }
+> > > >    static const struct reset_control_ops scmi_reset_ops = {
+> > > > @@ -91,9 +93,13 @@ static int scmi_reset_probe(struct scmi_device *sdev)
+> > > >    	struct device_node *np = dev->of_node;
+> > > >    	const struct scmi_handle *handle = sdev->handle;
+> > > > -	if (!handle || !handle->reset_ops)
+> > > > +	if (!handle)
+> > > >    		return -ENODEV;
+> > > > +	reset_ops = handle->get_ops(handle, SCMI_PROTOCOL_RESET);
+> > > > +	if (IS_ERR(reset_ops))
+> > > > +		return PTR_ERR(reset_ops);
+> > > > +
+> > > >    	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> > > >    	if (!data)
+> > > >    		return -ENOMEM;
+> > > > @@ -101,12 +107,19 @@ static int scmi_reset_probe(struct scmi_device *sdev)
+> > > >    	data->rcdev.ops = &scmi_reset_ops;
+> > > >    	data->rcdev.owner = THIS_MODULE;
+> > > >    	data->rcdev.of_node = np;
+> > > > -	data->rcdev.nr_resets = handle->reset_ops->num_domains_get(handle);
+> > > > +	data->rcdev.nr_resets = reset_ops->num_domains_get(handle);
+> > > >    	data->handle = handle;
+> > > >    	return devm_reset_controller_register(dev, &data->rcdev);
+> > > >    }
+> > > > +static void scmi_reset_remove(struct scmi_device *sdev)
+> > > > +{
+> > > > +	const struct scmi_handle *handle = sdev->handle;
+> > > > +
+> > > > +	handle->put_ops(handle, SCMI_PROTOCOL_RESET);
+> > > > +}
+> > > > +
+> > > >    static const struct scmi_device_id scmi_id_table[] = {
+> > > >    	{ SCMI_PROTOCOL_RESET, "reset" },
+> > > >    	{ },
+> > > > @@ -116,6 +129,7 @@ MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> > > >    static struct scmi_driver scmi_reset_driver = {
+> > > >    	.name = "scmi-reset",
+> > > >    	.probe = scmi_reset_probe,
+> > > > +	.remove = scmi_reset_remove,
+> > > >    	.id_table = scmi_id_table,
+> > > >    };
+> > > >    module_scmi_driver(scmi_reset_driver);
+> > > > diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+> > > > index bc4f06d46bfb..bfe7017cff19 100644
+> > > > --- a/include/linux/scmi_protocol.h
+> > > > +++ b/include/linux/scmi_protocol.h
+> > > > @@ -257,11 +257,6 @@ struct scmi_notify_ops {
+> > > >     *
+> > > >     * @dev: pointer to the SCMI device
+> > > >     * @version: pointer to the structure containing SCMI version information
+> > > > - * @power_ops: pointer to set of power protocol operations
+> > > > - * @perf_ops: pointer to set of performance protocol operations
+> > > > - * @clk_ops: pointer to set of clock protocol operations
+> > > > - * @sensor_ops: pointer to set of sensor protocol operations
+> > > > - * @reset_ops: pointer to set of reset protocol operations
+> > > >     * @notify_ops: pointer to set of notifications related operations
+> > > >     * @notify_priv: pointer to private data structure specific to notifications
+> > > >     *	(for internal use only)
+> > > > @@ -269,11 +264,11 @@ struct scmi_notify_ops {
+> > > >    struct scmi_handle {
+> > > >    	struct device *dev;
+> > > >    	struct scmi_revision_info *version;
+> > > > -	const struct scmi_perf_ops *perf_ops;
+> > > > -	const struct scmi_clk_ops *clk_ops;
+> > > > -	const struct scmi_power_ops *power_ops;
+> > > > -	const struct scmi_sensor_ops *sensor_ops;
+> > > > -	const struct scmi_reset_ops *reset_ops;
+> > > > +
+> > > > +	const void __must_check *(*get_ops)(const struct scmi_handle *handle,
+> > > > +					    u8 proto);
+> > > > +	void (*put_ops)(const struct scmi_handle *handle, u8 proto);
+> > > > +
+> > > >    	const struct scmi_notify_ops *notify_ops;
+> > > >    	void *notify_priv;
+> > > >    };
+> > > > 
+> > > 
+> > > 
+> 
+> -- 
+> Warm Regards
+> Thara
