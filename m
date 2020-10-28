@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771BD29D638
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A4B29D610
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730852AbgJ1WMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
+        id S1729547AbgJ1WLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:11:33 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34574 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730832AbgJ1WMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:12:24 -0400
-Received: from google.com (unknown [104.132.1.66])
+        id S1730665AbgJ1WLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:11:23 -0400
+Received: from zn.tnic (p200300ec2f0aab00f97e6c5296953a73.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ab00:f97e:6c52:9695:3a73])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2A9E24795;
-        Wed, 28 Oct 2020 19:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603914234;
-        bh=Uig8XlVVywuZSs/xiHVDxKfmc2EvUkGvRLURSxmRfOM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dfusWPKWqTKRnMdbvN3oZ846WjjPGP1zahpiGLPq7lLhrOPyDeFDLz1cHc9PWFcZx
-         AfCnIMUYVw2KHtvQTMXiA8EyfosDwA6yEnKTaOfqCqREvHybxFLydVlbuyxPljCaBW
-         36b9cwb9UexFKfBKUhyXKkEQkJPSzToDbMT4hDOI=
-Date:   Wed, 28 Oct 2020 12:43:52 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org
-Subject: Re: [PATCH v4 1/5] scsi: ufs: atomic update for clkgating_enable
-Message-ID: <20201028194352.GA3060274@google.com>
-References: <20201026195124.363096-1-jaegeuk@kernel.org>
- <20201026195124.363096-2-jaegeuk@kernel.org>
- <20d1c2ca06e95beb207fd4ba1b61dc80@codeaurora.org>
- <20201027033311.GA1745317@google.com>
- <76df977d164683c7404d2dc702f2e5ad@codeaurora.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 561D51EC03C1;
+        Wed, 28 Oct 2020 20:44:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603914244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kmhsCqnOlHi4ixOVZ87EzyZjkxp8ouvhlUNx8nUfMNI=;
+        b=KM2UZ92zuUSHGj0wXw1SSR97tAhO8TD14jN4ALj3QsH/FMGj68Squ6Qf/ED6JOmNn6X9DD
+        qbnNPmqy4PYEyoPfu/cEofZhVuWfBHQgqqvAlBjMS6HSt4y+/u0FHVoNH1J7GQILHaVxIN
+        BLJNlTRd/dw9XJ2nn/YnsfriM9zBOfc=
+Date:   Wed, 28 Oct 2020 20:43:55 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
+Message-ID: <20201028194355.GB27112@zn.tnic>
+References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
+ <20201027200803.GL15580@zn.tnic>
+ <20201027211422.GC1833548@rani.riverdale.lan>
+ <20201028133909.GA27112@zn.tnic>
+ <20201028164551.GA1989568@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <76df977d164683c7404d2dc702f2e5ad@codeaurora.org>
+In-Reply-To: <20201028164551.GA1989568@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27, Can Guo wrote:
-> On 2020-10-27 11:33, Jaegeuk Kim wrote:
-> > On 10/27, Can Guo wrote:
-> > > On 2020-10-27 03:51, Jaegeuk Kim wrote:
-> > > > From: Jaegeuk Kim <jaegeuk@google.com>
-> > > >
-> > > > When giving a stress test which enables/disables clkgating, we hit
-> > > > device
-> > > > timeout sometimes. This patch avoids subtle racy condition to address
-> > > > it.
-> > > >
-> > > > Note that, this requires a patch to address the device stuck by
-> > > > REQ_CLKS_OFF in
-> > > > __ufshcd_release().
-> > > >
-> > > > The fix is "scsi: ufs: avoid to call REQ_CLKS_OFF to CLKS_OFF".
-> > > 
-> > > Why don't you just squash the fix into this one?
-> > 
-> > I'm seeing this patch just revealed that problem.
-> 
-> That scenario (back to back calling of ufshcd_release()) only happens
-> when you stress the clkgate_enable sysfs node, so let's keep the fix
-> as one to make things simple. What do you think?
+On Wed, Oct 28, 2020 at 12:45:51PM -0400, Arvind Sankar wrote:
+> You don't want to try to run the kernel from physical address 0 in any
+> case. The default is set to 16MiB to avoid low memory, historically to
+> avoid the 24-bit ISA DMA range.
 
-If we don't have this patch, do you think this issue won't happen at all?
+Sure, that's why I wrote:
 
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > Can Guo.
-> > > 
-> > > >
-> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> > > > ---
-> > > >  drivers/scsi/ufs/ufshcd.c | 12 ++++++------
-> > > >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > > > index cc8d5f0c3fdc..6c9269bffcbd 100644
-> > > > --- a/drivers/scsi/ufs/ufshcd.c
-> > > > +++ b/drivers/scsi/ufs/ufshcd.c
-> > > > @@ -1808,19 +1808,19 @@ static ssize_t
-> > > > ufshcd_clkgate_enable_store(struct device *dev,
-> > > >  		return -EINVAL;
-> > > >
-> > > >  	value = !!value;
-> > > > +
-> > > > +	spin_lock_irqsave(hba->host->host_lock, flags);
-> > > >  	if (value == hba->clk_gating.is_enabled)
-> > > >  		goto out;
-> > > >
-> > > > -	if (value) {
-> > > > -		ufshcd_release(hba);
-> > > > -	} else {
-> > > > -		spin_lock_irqsave(hba->host->host_lock, flags);
-> > > > +	if (value)
-> > > > +		__ufshcd_release(hba);
-> > > > +	else
-> > > >  		hba->clk_gating.active_reqs++;
-> > > > -		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > > > -	}
-> > > >
-> > > >  	hba->clk_gating.is_enabled = value;
-> > > >  out:
-> > > > +	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > > >  	return count;
-> > > >  }
+"... so I guess this should be a range > 0 specification but I guess not
+important."
+
+So how about a sentence or two alluding to that fact in the help text of
+that option?
+
+> This doesn't matter for the 64-bit kernel, which can be run from any
+> physical address independent of the RELOCATABLE/PHYSICAL_START settings.
+> It only matters on 32-bit, where VA and PA are tied together by
+> 	VA == __PAGE_OFFSET + PA
+
+You mean the kernel text mapping I assume because we do
+
+#define __va(x)                 ((void *)((unsigned long)(x)+PAGE_OFFSET))
+
+on 64-bit too but that's the direct mapping of all physical memory.
+
+> On 64-bit, the kernel's location in VA space and physical space can be
+> independently moved around, so a kernel that starts at 16MiB in VA space
+> can be loaded anywhere above 16MiB in physical space.
+
+Right.
+
+> KERNEL_IMAGE_SIZE is _not_ the size of the kernel image, the name is
+> misleading.
+
+So that needs fixing too, I guess.
+
+> It is the maximum VA that the kernel can occupy, it is used
+> to prepopulate the PMD-level pagetable for initial boot (level2_kernel_pgt)
+> and is also used to define MODULES_VADDR, so it _is_ talking about
+> mappings. If you have a 30MiB kernel that is placed at a starting VA of
+> 510MiB when KERNEL_IMAGE_SIZE is 512MiB, it won't boot.
+
+... because not the whole kernel will be mapped, sure. There's a comment
+above KERNEL_IMAGE_SIZE which could use some of that explanation.
+
+> Increasing vmlinux size can trigger the problem by pushing _end
+> beyond KERNEL_IMAGE_SIZE, but the problem occurs once _end -
+> __START_KERNEL_map exceeds KERNEL_IMAGE_SIZE, not when _end - _text
+> exceeds it, hence this patch.
+
+Understood - in both cases, once _end goes beyond the 512MiB end of the
+PMD mapping, we've lost. Please add that part to the commit message too
+because we will forget.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
