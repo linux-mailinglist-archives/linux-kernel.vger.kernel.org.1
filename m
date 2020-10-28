@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59B929D29B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E18A729D2D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgJ1Vdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:33:37 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57780 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725964AbgJ1Vdc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:32 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09SCWDbK134428;
-        Wed, 28 Oct 2020 08:35:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=I5JcxohQrT3TjuBGQEwWlf663PWz64CJ5RSVCJUk+OU=;
- b=HsMke5n9hB/9Hw1M8Izb003Pu/8MLaUJyy1L1JtP+z2rYdeAPH32Vmodgkv3VKAuy0Cb
- l4OkXc7w35zA+TadM1sfQIaGkwkDixOsg8nTzvO6dH/KsEObYGULgW9drsRDVZ8Zgioi
- 4f8amY7cpmIFRB3DoTgSho8sD7KupnOYTRtu23Tmy9J9zj2xail40DTVhn9/tUFgX2//
- H2nsd0/KostYNJQRlJKqWspGOONVx8iIFmPmzJnofDD+ocqhNDk4H6io/MIEM94AX1oR
- AGd+2ZhoWNONoGwi5KCJJqpblPuZnXRR4+OyTK1Bbz5Ld5PhbtyOsQGEbHPcdcMrT5Wf 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34esjks9kx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 08:35:55 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09SCYRjQ143835;
-        Wed, 28 Oct 2020 08:35:55 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34esjks9jv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 08:35:54 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09SCR2QT011225;
-        Wed, 28 Oct 2020 12:35:52 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 34cbhh4g64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 12:35:52 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09SCZo7535783166
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 12:35:50 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12B17A404D;
-        Wed, 28 Oct 2020 12:35:50 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 076BBA4040;
-        Wed, 28 Oct 2020 12:35:48 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.79.210.102])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 28 Oct 2020 12:35:47 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Phil Auld <pauld@redhat.com>
-Subject: [PATCH 4/4] powerpc/paravirt: Use is_kvm_guest in vcpu_is_preempted
-Date:   Wed, 28 Oct 2020 18:05:12 +0530
-Message-Id: <20201028123512.871051-5-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201028123512.871051-1-srikar@linux.vnet.ibm.com>
-References: <20201028123512.871051-1-srikar@linux.vnet.ibm.com>
+        id S1726724AbgJ1VfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:35:13 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:11845 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726703AbgJ1VfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:35:10 -0400
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f99732d0000>; Wed, 28 Oct 2020 21:33:33 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 13:33:28 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 13:33:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ck/wuCJEDTtJGfLj+hJiGD7cpCk7mJHek5bANWji2uvCZbBE2nWXlZPcphb7fcaRnuZ2SoW4FuJpLBYwBlMMl/8M/qTtKyjlaYK29Bn9cCPMFwydRQb5yCOnOV8w64kQgQ26tv7eJpkdaMcie5BMCiVnyLIwlFvuhpeChYZkYuZQYdog4zM4GeWiapVEyWfBi3NdGLhJU4Qs1SIj4GiaeRt2IRReIE5Mo8WoGPms8PtNamEpZjTwJ4aZfs6t+CKtkHvbTTlep9mf2w/LNtqY4VFcMakurfHgPHl0qfwEvJAM0xgJ4mnkGjnVWQ9pPkwnzzkY+778qLYVsBjdrao4WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Psxsz9YuMQF8C6dHzvkuZjnpYRrloQUZ+WbtQ6jXfBg=;
+ b=YcFtLLrxfliDzl+/a/LjBjvyj1E3gAIBoh27I1JyA4vkjeGRonFbDHSKgXDjqaBkNv1dcWDggc5OdKz0BYqgJZZCI6szoGrhPXKsjCTHdGu4iOAmlNf87U0AT3DjbROWF/dsS56LNC5JS7J8aVcnMK/bzhQfdILE41gVUoqB2tsFnKSgKIwkJGNMqDbD27RveqzLlmMCg92tA9QnN/SE6B+5aSnv3sbwKrGkWEodwIUkh79ZsooG/B8maNHvDRRJekFCuTwknYWzJpLIjXM8ukTDWzol6/08JmNZF/yJbz4etRazDnJGdfallSlb40KY7NUa3mMTij1AnBRjXIEhRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4943.namprd12.prod.outlook.com (2603:10b6:5:1bc::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 28 Oct
+ 2020 13:33:24 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
+ 13:33:24 +0000
+Date:   Wed, 28 Oct 2020 10:33:22 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>, <maorg@mellanox.com>,
+        <parav@mellanox.com>, <galpress@amazon.com>, <monis@mellanox.com>,
+        <chuck.lever@oracle.com>, <maxg@mellanox.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/core: Fix error return in _ib_modify_qp()
+Message-ID: <20201028133322.GA2410517@nvidia.com>
+References: <20201016075845.129562-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201016075845.129562-1-jingxiangfeng@huawei.com>
+X-ClientProxiedBy: BL0PR02CA0034.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::47) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_06:2020-10-26,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- adultscore=0 mlxscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010280083
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0034.namprd02.prod.outlook.com (2603:10b6:207:3c::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 13:33:23 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXlZq-00A76G-Df; Wed, 28 Oct 2020 10:33:22 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603892013; bh=Psxsz9YuMQF8C6dHzvkuZjnpYRrloQUZ+WbtQ6jXfBg=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=Z+xFWBa8k8DuW3ZGy0gsgxTtIE8HGH8ZB9U+k0eIdcDiiPRZaAWXGtyuNIwzAmvhp
+         IEqsTyFMAVBtk7zUELD9toWKxaf3DVgRHtY3bJn4DaK+/UvUmHLZDgK1gpdLnQvFsp
+         aBsv26idm//P5hY5/9xizJVfdH0Gvp3GPCgwR0m8EB+m0rT/DU9XoffsDNEzr4s2A4
+         XcohJdMxzYqN0vVTVpR6a7fzTB+GxqgaN9RstIvd9OyPlAxsEnZh//MIUs9aoPpJIA
+         8aOSv8M/j+ZKHzoumzuE5DxfUmb6eMKH5YnSgWq2c0PuG5CMIcKTmp60V26gLjb1E1
+         EXcb+NaEstR5Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If its a shared lpar but not a KVM guest, then see if the vCPU is
-related to the calling vCPU. On PowerVM, only cores can be preempted.
-So if one vCPU is a non-preempted state, we can decipher that all other
-vCPUs sharing the same core are in non-preempted state.
+On Fri, Oct 16, 2020 at 03:58:45PM +0800, Jing Xiangfeng wrote:
+> Fix to return error code PTR_ERR() from the error handling case instead of
+> 0.
+> 
+> Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+> ---
+>  drivers/infiniband/core/verbs.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Phil Auld <pauld@redhat.com>
----
- arch/powerpc/include/asm/paravirt.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Applied to for-next, thanks
 
-diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-index 9362c94fe3aa..edc08f04aef7 100644
---- a/arch/powerpc/include/asm/paravirt.h
-+++ b/arch/powerpc/include/asm/paravirt.h
-@@ -10,6 +10,9 @@
- #endif
- 
- #ifdef CONFIG_PPC_SPLPAR
-+#include <asm/kvm_guest.h>
-+#include <asm/cputhreads.h>
-+
- DECLARE_STATIC_KEY_FALSE(shared_processor);
- 
- static inline bool is_shared_processor(void)
-@@ -74,6 +77,21 @@ static inline bool vcpu_is_preempted(int cpu)
- {
- 	if (!is_shared_processor())
- 		return false;
-+
-+#ifdef CONFIG_PPC_SPLPAR
-+	if (!is_kvm_guest()) {
-+		int first_cpu = cpu_first_thread_sibling(smp_processor_id());
-+
-+		/*
-+		 * Preemption can only happen at core granularity. This CPU
-+		 * is not preempted if one of the CPU of this core is not
-+		 * preempted.
-+		 */
-+		if (cpu_first_thread_sibling(cpu) == first_cpu)
-+			return false;
-+	}
-+#endif
-+
- 	if (yield_count_of(cpu) & 1)
- 		return true;
- 	return false;
--- 
-2.18.4
-
+Jason
