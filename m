@@ -2,206 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6E529D711
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF1529D70E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732176AbgJ1WUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60516 "EHLO mail.kernel.org"
+        id S1732122AbgJ1WUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:20:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731735AbgJ1WRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:43 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1731745AbgJ1WRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:44 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AED8022228;
-        Wed, 28 Oct 2020 11:47:37 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 07:47:35 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 41940246CC;
+        Wed, 28 Oct 2020 11:56:14 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kXk3o-005ZFy-Dp; Wed, 28 Oct 2020 07:56:12 -0400
+Message-ID: <20201028115244.995788961@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Wed, 28 Oct 2020 07:52:44 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] tracing, synthetic events: Replace buggy strcat() with
- seq_buf operations
-Message-ID: <20201028074735.67b2ccf4@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 0/9] ftrace: Have callbacks handle their own recursion
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+I found that having the ftrace infrastructure use its own trampoline to
+handle recursion and RCU by defaulte unless the ftrace_ops set the
+appropriate flags, was an issue that nobody set those flags. But then their
+callbacks would suffer from an unnecessary overhead instead of simply
+handling the recursion itself.
 
-Fix synthetic event "strcat" overrun
+This series makes it mandatory that ftrace callbacks handle recursion or set
+a flag asking ftrace to do it for it. It also creates helper functions to
+help these callbacks to have recursion protection.
 
-New synthetic event code used strcat() and miscalculated the ending, causing
-the concatenation to write beyond the allocated memory.
-
-Instead of using strncat(), the code is switched over to seq_buf which has
-all the mechanisms in place to protect against writing more than what is
-allocated, and cleans up the code a bit.
-
-
-Please pull the latest trace-v5.10-rc1 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.10-rc1
-
-Tag SHA1: 34fd93ca55a98a83a72964e69c55e5b701d10113
-Head SHA1: 761a8c58db6bc884994b28cd6d9707b467d680c1
-
-
-Steven Rostedt (VMware) (1):
-      tracing, synthetic events: Replace buggy strcat() with seq_buf operations
+Steven Rostedt (VMware) (9):
+      ftrace: Move the recursion testing into global headers
+      ftrace: Add ftrace_test_recursion_trylock() helper function
+      ftrace: Optimize testing what context current is in
+      pstore/ftrace: Add recursion protection to the ftrace callback
+      kprobes/ftrace: Add recursion protection to the ftrace callback
+      livepatch/ftrace: Add recursion protection to the ftrace callback
+      perf/ftrace: Add recursion protection to the ftrace callback
+      perf/ftrace: Check for rcu_is_watching() in callback function
+      ftrace: Reverse what the RECURSION flag means in the ftrace_ops
 
 ----
- kernel/trace/trace_events_synth.c | 36 ++++++++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 14 deletions(-)
----------------------------
-commit 761a8c58db6bc884994b28cd6d9707b467d680c1
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Fri Oct 23 19:00:49 2020 -0400
-
-    tracing, synthetic events: Replace buggy strcat() with seq_buf operations
-    
-    There was a memory corruption bug happening while running the synthetic
-    event selftests:
-    
-     kmemleak: Cannot insert 0xffff8c196fa2afe5 into the object search tree (overlaps existing)
-     CPU: 5 PID: 6866 Comm: ftracetest Tainted: G        W         5.9.0-rc5-test+ #577
-     Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
-     Call Trace:
-      dump_stack+0x8d/0xc0
-      create_object.cold+0x3b/0x60
-      slab_post_alloc_hook+0x57/0x510
-      ? tracing_map_init+0x178/0x340
-      __kmalloc+0x1b1/0x390
-      tracing_map_init+0x178/0x340
-      event_hist_trigger_func+0x523/0xa40
-      trigger_process_regex+0xc5/0x110
-      event_trigger_write+0x71/0xd0
-      vfs_write+0xca/0x210
-      ksys_write+0x70/0xf0
-      do_syscall_64+0x33/0x40
-      entry_SYSCALL_64_after_hwframe+0x44/0xa9
-     RIP: 0033:0x7fef0a63a487
-     Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-     RSP: 002b:00007fff76f18398 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-     RAX: ffffffffffffffda RBX: 0000000000000039 RCX: 00007fef0a63a487
-     RDX: 0000000000000039 RSI: 000055eb3b26d690 RDI: 0000000000000001
-     RBP: 000055eb3b26d690 R08: 000000000000000a R09: 0000000000000038
-     R10: 000055eb3b2cdb80 R11: 0000000000000246 R12: 0000000000000039
-     R13: 00007fef0a70b500 R14: 0000000000000039 R15: 00007fef0a70b700
-     kmemleak: Kernel memory leak detector disabled
-     kmemleak: Object 0xffff8c196fa2afe0 (size 8):
-     kmemleak:   comm "ftracetest", pid 6866, jiffies 4295082531
-     kmemleak:   min_count = 1
-     kmemleak:   count = 0
-     kmemleak:   flags = 0x1
-     kmemleak:   checksum = 0
-     kmemleak:   backtrace:
-          __kmalloc+0x1b1/0x390
-          tracing_map_init+0x1be/0x340
-          event_hist_trigger_func+0x523/0xa40
-          trigger_process_regex+0xc5/0x110
-          event_trigger_write+0x71/0xd0
-          vfs_write+0xca/0x210
-          ksys_write+0x70/0xf0
-          do_syscall_64+0x33/0x40
-          entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    
-    The cause came down to a use of strcat() that was adding an string that was
-    shorten, but the strcat() did not take that into account.
-    
-    strcat() is extremely dangerous as it does not care how big the buffer is.
-    Replace it with seq_buf operations that prevent the buffer from being
-    overwritten if what is being written is bigger than the buffer.
-    
-    Fixes: 10819e25799a ("tracing: Handle synthetic event array field type checking correctly")
-    Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-    Tested-by: Tom Zanussi <zanussi@kernel.org>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 3212e2c653b3..84b7cab55291 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -585,6 +585,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 	struct synth_field *field;
- 	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
- 	int len, ret = 0;
-+	struct seq_buf s;
- 	ssize_t size;
- 
- 	if (field_type[0] == ';')
-@@ -630,13 +631,9 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		field_type++;
- 	len = strlen(field_type) + 1;
- 
--        if (array) {
--                int l = strlen(array);
-+	if (array)
-+		len += strlen(array);
- 
--                if (l && array[l - 1] == ';')
--                        l--;
--                len += l;
--        }
- 	if (prefix)
- 		len += strlen(prefix);
- 
-@@ -645,14 +642,18 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		ret = -ENOMEM;
- 		goto free;
- 	}
-+	seq_buf_init(&s, field->type, len);
- 	if (prefix)
--		strcat(field->type, prefix);
--	strcat(field->type, field_type);
-+		seq_buf_puts(&s, prefix);
-+	seq_buf_puts(&s, field_type);
- 	if (array) {
--		strcat(field->type, array);
--		if (field->type[len - 1] == ';')
--			field->type[len - 1] = '\0';
-+		seq_buf_puts(&s, array);
-+		if (s.buffer[s.len - 1] == ';')
-+			s.len--;
- 	}
-+	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-+		goto free;
-+	s.buffer[s.len] = '\0';
- 
- 	size = synth_field_size(field->type);
- 	if (size < 0) {
-@@ -663,14 +664,21 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		if (synth_field_is_string(field->type)) {
- 			char *type;
- 
--			type = kzalloc(sizeof("__data_loc ") + strlen(field->type) + 1, GFP_KERNEL);
-+			len = sizeof("__data_loc ") + strlen(field->type) + 1;
-+			type = kzalloc(len, GFP_KERNEL);
- 			if (!type) {
- 				ret = -ENOMEM;
- 				goto free;
- 			}
- 
--			strcat(type, "__data_loc ");
--			strcat(type, field->type);
-+			seq_buf_init(&s, type, len);
-+			seq_buf_puts(&s, "__data_loc ");
-+			seq_buf_puts(&s, field->type);
-+
-+			if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-+				goto free;
-+			s.buffer[s.len] = '\0';
-+
- 			kfree(field->type);
- 			field->type = type;
- 
+ Documentation/trace/ftrace-uses.rst  |  82 +++++++++++----
+ arch/csky/kernel/probes/ftrace.c     |  12 ++-
+ arch/parisc/kernel/ftrace.c          |  13 ++-
+ arch/powerpc/kernel/kprobes-ftrace.c |  11 +-
+ arch/s390/kernel/ftrace.c            |  13 ++-
+ arch/x86/kernel/kprobes/ftrace.c     |  12 ++-
+ fs/pstore/ftrace.c                   |   6 ++
+ include/linux/ftrace.h               |  13 +--
+ include/linux/trace_recursion.h      | 199 +++++++++++++++++++++++++++++++++++
+ kernel/livepatch/patch.c             |   5 +
+ kernel/trace/fgraph.c                |   3 +-
+ kernel/trace/ftrace.c                |  20 ++--
+ kernel/trace/trace.h                 | 156 ---------------------------
+ kernel/trace/trace_event_perf.c      |  13 ++-
+ kernel/trace/trace_events.c          |   1 -
+ kernel/trace/trace_functions.c       |  14 ++-
+ kernel/trace/trace_selftest.c        |   7 +-
+ kernel/trace/trace_stack.c           |   1 -
+ 18 files changed, 358 insertions(+), 223 deletions(-)
+ create mode 100644 include/linux/trace_recursion.h
