@@ -2,279 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7414429D7CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C8729D69A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733145AbgJ1W05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:26:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54178 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733112AbgJ1W0v (ORCPT
+        id S1731434AbgJ1WQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:16:41 -0400
+Received: from mail-pf1-f197.google.com ([209.85.210.197]:44933 "EHLO
+        mail-pf1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730066AbgJ1WQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:51 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8D9F420B4907;
-        Wed, 28 Oct 2020 09:30:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8D9F420B4907
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1603902611;
-        bh=0yTGgN/EY5AaVArBqci9i/YzNbbtn+Po5WFE/mNjXAU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YfKx1FJYPXmm2qCo5YexXOre5VXTY2p9ERBHX0pKj3W7LhstT0Pjy9+WB4twzHlFq
-         ct95kXusmJNtT/TCA2SElN/cx7c1fumHnmmopqdltIMSZK2fhaDQ2l28KoRXbOR5ZC
-         REeGIP7xzVM5IuwTkBfzC1/eR6H7lWAS6MF5Fbaw=
-Date:   Wed, 28 Oct 2020 11:30:02 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Kenneth R . Crudup" <kenny@panix.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?iso-8859-1?Q?Thi=E9baud?= Weksteen <tweek@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] tpm: efi: Don't create binary_bios_measurements file for
- an empty log
-Message-ID: <20201028163002.GA5150@sequoia>
-References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
- <20201028154102.9595-1-tyhicks@linux.microsoft.com>
+        Wed, 28 Oct 2020 18:16:38 -0400
+Received: by mail-pf1-f197.google.com with SMTP id s12so526581pfu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:16:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XCSAEIF7yxudBBUUr3qUjTib7D5OltngZoG8wvpMOQI=;
+        b=SPi2mixsKGtAjQDU9PjoYYj5HxZ8+mWHNHJBedtCrqbi1Ac4J2WosEVl6cyBwaMbKA
+         nExy5M6isOG3W+gDTk/Yo6L8nDQCuh8v9z/b9fP6xS1CLdF5iXzovUNfKV2+TO77eRE6
+         lDiv40sMmZgzvNcdo+XwqYW2s/Ya3shMlqR4YCal7aIfakaMPrAyz5/uWRidL5GQSaqq
+         t/yPzb4oSWeW4Kru2WP0xoF2g8n7b0VoFrDgotoFolkevz/JWOIrk2pdKH8plY+8FXJI
+         9xwm25h9k+YdU1efVFSnPuk2i0fnBAfJNm41R6XqeI7xPHAtINIb3p+Gr05P6JajO/Ap
+         PLWw==
+X-Gm-Message-State: AOAM530XMgjCge0xCkTUvAIlgKNaZ2lTsfYTTto1YBsD/0LU+sbV06lA
+        XlXOVVKMvaaDS5O8n2b6PYKMMiv0Zu6n5EM9liRCffHZq2Vv
+X-Google-Smtp-Source: ABdhPJzl37aBwYIDKept4UZfHp9QtamUc+1RORwkGP8e3BHgiENeCyDaGrdCvVxp9qvnK94gNCfZZZnYqc+M4UYPzQ7LeWwLnF2x
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201028154102.9595-1-tyhicks@linux.microsoft.com>
+X-Received: by 2002:a92:98c5:: with SMTP id a66mr6545587ill.50.1603902742690;
+ Wed, 28 Oct 2020 09:32:22 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 09:32:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003b856d05b2bdb5f7@google.com>
+Subject: general protection fault in wext_handle_ioctl
+From:   syzbot <syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-28 10:41:02, Tyler Hicks wrote:
-> Mimic the pre-existing ACPI and Device Tree event log behavior by not
-> creating the binary_bios_measurements file when the EFI TPM event log is
-> empty.
-> 
-> This fixes the following NULL pointer dereference that can occur when
-> reading /sys/kernel/security/tpm0/binary_bios_measurements after the
-> kernel received an empty event log from the firmware:
-> 
->  BUG: kernel NULL pointer dereference, address: 000000000000002c
->  #PF: supervisor read access in kernel mode
->  #PF: error_code(0x0000) - not-present page
->  PGD 0 P4D 0
->  Oops: 0000 [#1] SMP PTI
->  CPU: 2 PID: 3932 Comm: fwupdtpmevlog Not tainted 5.9.0-00003-g629990edad62 #17
->  Hardware name: LENOVO 20LCS03L00/20LCS03L00, BIOS N27ET38W (1.24 ) 11/28/2019
->  RIP: 0010:tpm2_bios_measurements_start+0x3a/0x550
->  Code: 54 53 48 83 ec 68 48 8b 57 70 48 8b 1e 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 48 8b 82 c0 06 00 00 48 8b 8a c8 06 00 00 <44> 8b 60 1c 48 89 4d a0 4c 89 e2 49 83 c4 20 48 83 fb 00 75 2a 49
->  RSP: 0018:ffffa9c901203db0 EFLAGS: 00010246
->  RAX: 0000000000000010 RBX: 0000000000000000 RCX: 0000000000000010
->  RDX: ffff8ba1eb99c000 RSI: ffff8ba1e4ce8280 RDI: ffff8ba1e4ce8258
->  RBP: ffffa9c901203e40 R08: ffffa9c901203dd8 R09: ffff8ba1ec443300
->  R10: ffffa9c901203e50 R11: 0000000000000000 R12: ffff8ba1e4ce8280
->  R13: ffffa9c901203ef0 R14: ffffa9c901203ef0 R15: ffff8ba1e4ce8258
->  FS:  00007f6595460880(0000) GS:ffff8ba1ef880000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 000000000000002c CR3: 00000007d8d18003 CR4: 00000000003706e0
->  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  Call Trace:
->   ? __kmalloc_node+0x113/0x320
->   ? kvmalloc_node+0x31/0x80
->   seq_read+0x94/0x420
->   vfs_read+0xa7/0x190
->   ksys_read+0xa7/0xe0
->   __x64_sys_read+0x1a/0x20
->   do_syscall_64+0x37/0x80
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> In this situation, the bios_event_log pointer in the tpm_bios_log struct
-> was not NULL but was equal to the ZERO_SIZE_PTR (0x10) value. This was
-> due to the following kmemdup() in tpm_read_log_efi():
-> 
-> int tpm_read_log_efi(struct tpm_chip *chip)
-> {
-> ...
-> 	/* malloc EventLog space */
-> 	log->bios_event_log = kmemdup(log_tbl->log, log_size, GFP_KERNEL);
-> 	if (!log->bios_event_log) {
-> 		ret = -ENOMEM;
-> 		goto out;
-> 	}
-> ...
-> }
-> 
-> When log_size is zero, due to an empty event log from firmware,
-> ZERO_SIZE_PTR is returned from kmemdup(). Upon a read of the
-> binary_bios_measurements file, the tpm2_bios_measurements_start()
-> function does not perform a ZERO_OR_NULL_PTR() check on the
-> bios_event_log pointer before dereferencing it.
-> 
-> Rather than add a ZERO_OR_NULL_PTR() check in functions that make use of
-> the bios_event_log pointer, simply avoid creating the
-> binary_bios_measurements_file as is done in other event log retrieval
-> backends.
-> 
-> Explicitly ignore all of the events in the final event log when the main
-> event log is empty. The list of events in the final event log cannot be
-> accurately parsed without referring to the first event in the main event
-> log (the event log header) so the final event log is useless in such a
-> situation.
-> 
-> Fixes: 58cc1e4faf10 ("tpm: parse TPM event logs based on EFI table")
-> Link: https://lore.kernel.org/linux-integrity/E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com/
-> Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Reported-by: Kenneth R. Crudup <kenny@panix.com>
-> Reported-by: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: Thiébaud Weksteen <tweek@google.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Hello,
 
-While I was never able to get my firmware to provide me an empty event
-log, I reproduced this issue locally and verified the fix by forcing the EFI
-stub to create an empty event log like so:
+syzbot found the following issue on:
 
-diff --git a/drivers/firmware/efi/libstub/tpm.c b/drivers/firmware/efi/libstub/tpm.c
-index 7acbac16eae0..a9b9478cff14 100644
---- a/drivers/firmware/efi/libstub/tpm.c
-+++ b/drivers/firmware/efi/libstub/tpm.c
-@@ -85,7 +85,7 @@ void efi_retrieve_tpm2_eventlog(void)
- 	/*
- 	 * We populate the EFI table even if the logs are empty.
- 	 */
--	if (!log_last_entry) {
-+	if (true) {
- 		log_size = 0;
- 	} else {
- 		last_entry_addr = (unsigned long) log_last_entry;
+HEAD commit:    8c2ab803 Merge tag 'orphan-handling-v5.10-rc2' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e57870500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3140f5be49a06bf9
+dashboard link: https://syzkaller.appspot.com/bug?extid=8b2a88a09653d4084179
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
 
-With that EFI stub change, I was able to verify that this crash happens
-with or without commit 7f3d176f5f7e ("tpm: Require that all digests are
-present in TCG_PCR_EVENT2 structures"). So, there's still the question
-of why commit 7f3d176f5f7e uncovered this crash?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-My theory, which I personally cannot prove since my Thinkpad's firmware
-isn't acting the same as Kai's, Kenneth's, or Mimi's, is that some
-EFI firmware is providing an empty main event log and a populated final
-event log.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
 
-If this is true, prior to commit 7f3d176f5f7e, the EFI stub's
-efi_retrieve_tpm2_eventlog() function would follow suite and provide the
-same empty main event log and populated final event log to the kernel.
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 10716 Comm: syz-executor.0 Not tainted 5.10.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:call_commit_handler net/wireless/wext-core.c:900 [inline]
+RIP: 0010:ioctl_standard_call net/wireless/wext-core.c:1029 [inline]
+RIP: 0010:wireless_process_ioctl net/wireless/wext-core.c:954 [inline]
+RIP: 0010:wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
+RIP: 0010:wext_handle_ioctl+0x974/0xb20 net/wireless/wext-core.c:1048
+Code: e8 a1 87 a3 f8 eb 6c 48 8b 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 d6 78 e5 f8 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 bd 78 e5 f8 48 8b 1b 48 89 d8 48
+RSP: 0018:ffffc900018afe00 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff88d17b88
+RDX: ffff88801a3ccec0 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffff88802b398000 R08: ffffffff88d17baf R09: ffffed1005673009
+R10: ffffed1005673009 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008b04
+FS:  00007f0710ce1700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ce26000 CR3: 000000001efa8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ sock_ioctl+0xdc/0x690 net/socket.c:1119
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45de49
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f0710ce0c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000013440 RCX: 000000000045de49
+RDX: 00000000200000c0 RSI: 0000000000008b04 RDI: 0000000000000003
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007fff190b875f R14: 00007f0710ce19c0 R15: 000000000118bf2c
+Modules linked in:
+---[ end trace 82d7ada5671b3a90 ]---
+RIP: 0010:call_commit_handler net/wireless/wext-core.c:900 [inline]
+RIP: 0010:ioctl_standard_call net/wireless/wext-core.c:1029 [inline]
+RIP: 0010:wireless_process_ioctl net/wireless/wext-core.c:954 [inline]
+RIP: 0010:wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
+RIP: 0010:wext_handle_ioctl+0x974/0xb20 net/wireless/wext-core.c:1048
+Code: e8 a1 87 a3 f8 eb 6c 48 8b 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 d6 78 e5 f8 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 bd 78 e5 f8 48 8b 1b 48 89 d8 48
+RSP: 0018:ffffc900018afe00 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff88d17b88
+RDX: ffff88801a3ccec0 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffff88802b398000 R08: ffffffff88d17baf R09: ffffed1005673009
+R10: ffffed1005673009 R11: 0000000000000000 R12: dffffc0000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008b04
+FS:  00007f0710ce1700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f04025f6000 CR3: 000000001efa8000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-After commit 7f3d176f5f7e and when the main event log is empty, the
-while loop below would start returning 0 because log_location is not a
-valid event log header. It would either be zeroes or otherwise
-junk/unexpected data (I'm not sure). The point is that final_events_size
-is not incremented and the final event log is (rightfully, IMO) treated
-as being empty after commit 7f3d176f5f7e.
 
-void efi_retrieve_tpm2_eventlog(void)
-{
-...
-	/*
-	 * Figure out whether any events have already been logged to the
-	 * final events structure, and if so how much space they take up
-	 */
-	if (version == EFI_TCG2_EVENT_LOG_FORMAT_TCG_2)
-		final_events_table = get_efi_config_table(LINUX_EFI_TPM_FINAL_LOG_GUID);
-	if (final_events_table && final_events_table->nr_events) {
-		struct tcg_pcr_event2_head *header;
-		int offset;
-		void *data;
-		int event_size;
-		int i = final_events_table->nr_events;
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-		data = (void *)final_events_table;
-		offset = sizeof(final_events_table->version) +
-			sizeof(final_events_table->nr_events);
-
-		while (i > 0) {
-			header = data + offset + final_events_size;
-			event_size = __calc_tpm2_event_size(header,
-						   (void *)(long)log_location,
-						   false);
-			final_events_size += event_size;
-			i--;
-		}
-	}
-...
-	log_tbl->final_events_preboot_size = final_events_size;
-...
-}
-
-Now we'll move to tpm_read_log_efi() to see why it matters whether or
-not final_events_size is zero:
-
-/* read binary bios log from EFI configuration table */
-int tpm_read_log_efi(struct tpm_chip *chip)
-{
-...
-	efi_tpm_final_log_size -= log_tbl->final_events_preboot_size;
-
-	tmp = krealloc(log->bios_event_log,
-		       log_size + efi_tpm_final_log_size,
-		       GFP_KERNEL);
-	if (!tmp) {
-		kfree(log->bios_event_log);
-		ret = -ENOMEM;
-		goto out;
-	}
-
-	log->bios_event_log = tmp;
-
-	/*
-	 * Copy any of the final events log that didn't also end up in the
-	 * main log. Events can be logged in both if events are generated
-	 * between GetEventLog() and ExitBootServices().
-	 */
-	memcpy((void *)log->bios_event_log + log_size,
-	       final_tbl->events + log_tbl->final_events_preboot_size,
-	       efi_tpm_final_log_size);
-	log->bios_event_log_end = log->bios_event_log +
-		log_size + efi_tpm_final_log_size;
-...
-}
-
-There's nothing in tpm_read_log_efi(), prior to the patch I just
-proposed, that prevents the final event log from being copied into an
-otherwise empty main event log. In that situation, log->bios_event_log
-is allocated (remember, it was not initially allocated because log_size
-was 0) and the NULL pointer dereference crash upon reading the
-binary_bios_measurements file would not happen.
-
-The problem is that the resulting event log is not usable because
-there's no event log header. __calc_tpm2_event_size() was too lax, prior
-to commit 7f3d176f5f7e, to notice that the event log header was not
-actually an event log header and, instead, was a regular event from the
-final event log.
-
-So, we need help from Kai, Kenneth, or Mimi to verify my assumption that
-their firmware is providing an empty main event log and a populated
-final event log. If that assumption is correct, then we could either:
-
-A) Be alright with my proposed patch that bails out of
-   tpm_read_log_efi() when the main event log is empty. The crash would
-   be fixed and the binary_bios_measurements file simply would not
-   exist.
-
-or
-
-B) Write an additional, separate patch for the EFI stub that ignores the
-   final event log when the main event log is empty. Perhaps something
-   like this (untested):
-
-diff --git a/drivers/firmware/efi/libstub/tpm.c b/drivers/firmware/efi/libstub/tpm.c
-index 7acbac16eae0..ad8f9ecf6dc2 100644
---- a/drivers/firmware/efi/libstub/tpm.c
-+++ b/drivers/firmware/efi/libstub/tpm.c
-@@ -127,7 +127,7 @@ void efi_retrieve_tpm2_eventlog(void)
- 	 * Figure out whether any events have already been logged to the
- 	 * final events structure, and if so how much space they take up
- 	 */
--	if (version == EFI_TCG2_EVENT_LOG_FORMAT_TCG_2)
-+	if (log_size && version == EFI_TCG2_EVENT_LOG_FORMAT_TCG_2)
- 		final_events_table = get_efi_config_table(LINUX_EFI_TPM_FINAL_LOG_GUID);
- 	if (final_events_table && final_events_table->nr_events) {
- 		struct tcg_pcr_event2_head *header;
-
-Tyler
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
