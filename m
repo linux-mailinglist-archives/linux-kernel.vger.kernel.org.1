@@ -2,142 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0850829DB6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B15729DAED
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389330AbgJ1X4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S2390612AbgJ1Xim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389291AbgJ1Xzj (ORCPT
+        with ESMTP id S2389019AbgJ1Xha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:55:39 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F51C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:55:38 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id 7so1428003ejm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:55:38 -0700 (PDT)
+        Wed, 28 Oct 2020 19:37:30 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8844C0613CF;
+        Wed, 28 Oct 2020 16:37:30 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r9so1392712ioo.7;
+        Wed, 28 Oct 2020 16:37:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6y4QOceXe8zRQKZs06ORTkquPOtHQn77ARvbGZP9r1M=;
-        b=gFRUCQCFuTR8+JtdmcXcAlK5X7E61XmvvyAGA/K18mnTt93AI2o+wSqfYUI4n8Y0lU
-         +48KACrQVO3Qw2aB5MwS/gPxeoLzJZw2XI2pEtuKlzoaB/ELqONtZsDRg2xOHXNYJiB6
-         ur5YGrTWS0kXoutcPvKSjtwakbK/45cyXDu+4=
+        bh=/A3CEwa9ZFQ6exulGwUCkA+aZ+1mPx+5qugmy/RoAHc=;
+        b=VoD311MDfxBIgRqk43Hi8k7w5dsWdemKv5g5D01kst8I7lYMqYEw7EHrLuiMDMhnMJ
+         Nfkd2V53e45RjYqUKzFzAGwjpydQ0M/Ediw6eN6lwRxkof2o3jbc2nRiScnfdbDG6zcR
+         b2l++CcrXH555WrlbATUIsuEyuCx4z8q1XT7V7RDHDSjCFkKQ/ZymlJwTdgCSjH7PwJl
+         V4zXyG583t1Xx3JzxAr/QIdV2u0QCgoeoAb8Nhgzcy9dXlhv+ky5+hBFmT7MoefWFWu1
+         vNoTrcOl9VmI4XJeHv3IsmTomuUdjw4oiORf/KUFOerYOIddmvfsxrNsQ/QQDPf65kSr
+         qMsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6y4QOceXe8zRQKZs06ORTkquPOtHQn77ARvbGZP9r1M=;
-        b=BUn37PtuYmRevJ1+YqEiKHXfdvo1L2w4lQczCPzOvM60/1zBb0C5DCictXOAphIa/g
-         cyPDr88YpGsJeL0JaoJSW4DKxJSTOQlFelFhcpuMXGgGviwKob1IAR/j8kHeaOljocDo
-         iJhox8f8IkI8UDYv3iv4tuxYFf+FqHEhqYMJouc814omrgOpn0PYTdxU7JVTBnJ+nZbf
-         oR20R3ezeXeO6F4pKRa5wsgzau1Sz9Sbl0n7zlBXWmc6Xt1qg80Ani09J/3HbYuigSGN
-         odddiPnkWdsYJKBzv5AOQoOllwMTruNJdKXsjFjRqxU/8WOpqjT0eo4jmbcNwJGfLx8z
-         gz1g==
-X-Gm-Message-State: AOAM531/gC8gK6568WTj2AGUyCr36mHn6o77A1W4WL3YvR0KVIb2Wk1X
-        EvXKXZ9M1kSjuxvrR5Kqdv6XrQmepiNGsA==
-X-Google-Smtp-Source: ABdhPJzls00cI8z19mJi3Xzfak5jZQ/eSlfLp9Q+AuWkXFtHQZ2N9CQSJGdSuGHfYZ7f20vqhAUxsA==
-X-Received: by 2002:a17:907:2177:: with SMTP id rl23mr7131993ejb.243.1603886921595;
-        Wed, 28 Oct 2020 05:08:41 -0700 (PDT)
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
-        by smtp.gmail.com with ESMTPSA id ao17sm2936382ejc.18.2020.10.28.05.08.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 05:08:40 -0700 (PDT)
-Received: by mail-wr1-f49.google.com with SMTP id n6so5367441wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 05:08:40 -0700 (PDT)
-X-Received: by 2002:adf:ab05:: with SMTP id q5mr8280571wrc.32.1603886919796;
- Wed, 28 Oct 2020 05:08:39 -0700 (PDT)
+        bh=/A3CEwa9ZFQ6exulGwUCkA+aZ+1mPx+5qugmy/RoAHc=;
+        b=t41vYzgOomOF1OQJS37exK6E7PO8A9ZKRpeoP6XSN6R7VmCslHDWL+2W/47OUVDxK2
+         mIABJQRRwyxiU1N/6d8m7xZpG5fdhdAXN5ZXVyrq6f7LGd5O0WYe2QmxkV7yFXCFupN/
+         kmcqk3qAUvjcrsvNf1qKWRv1Pu1UXeXVE3SwVBQou+8HdvUCrDBGVrMLdf11HJogC9Tk
+         nnjTYIw8rx7F3Errqj1+r4jBXaVwfoXhiIySVTEVyfg/cPpm9DLGKFST+3c61sy6I1Ay
+         EcDzIPPsLDGN5Qt1I4EtK8kBhdNQloJ5E87c0JrAPGllT9mKPGPr+G9Nr6BoVm1KPMTy
+         bxTw==
+X-Gm-Message-State: AOAM531v5y90HCKPX32IkT9wZ1KHs5kB1GmbWQEVgPWkoY+EJNL0iayf
+        zBynFQkhBfXacVZ3sHtPzRwkOr+tspGsW+hgs7lzx1fwXm8=
+X-Google-Smtp-Source: ABdhPJxB39cK4LoLPV+rayymmlN4yuGJL6W04dfmN5biZiNchT7DQioArPW9ZWexdAhR2Swk3KQ5KSCHwBGQEvqE+sA=
+X-Received: by 2002:a5d:8487:: with SMTP id t7mr5793859iom.35.1603887047936;
+ Wed, 28 Oct 2020 05:10:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028091947.93097-1-krzk@kernel.org> <MWHPR11MB0046B799E9AD3648C6F67BFE87170@MWHPR11MB0046.namprd11.prod.outlook.com>
- <CAJKOXPePfsRNZkY+L1XM3_iz6dMYFNZAJgrcut9JriuwYkKWsw@mail.gmail.com>
- <CAJKOXPf6zhpu_3oQZ2bL_FnkBx7-NwH65N_OzVkH=Nh1bYkHxw@mail.gmail.com>
- <20201028100311.GF26150@paasikivi.fi.intel.com> <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
-In-Reply-To: <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 28 Oct 2020 13:08:28 +0100
-X-Gmail-Original-Message-ID: <CAAFQd5AwvuuxekSdDnHNB7KiC7+mHFisEkCW71F3XQMWaFqamw@mail.gmail.com>
-Message-ID: <CAAFQd5AwvuuxekSdDnHNB7KiC7+mHFisEkCW71F3XQMWaFqamw@mail.gmail.com>
-Subject: Re: [PATCH] media: i2c: imx258: correct mode to GBGB/RGRG
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Yeh, Andy" <andy.yeh@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jason Chen <jasonx.z.chen@intel.com>,
-        Alan Chiang <alanx.chiang@intel.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20200502125949.194032-1-aford173@gmail.com> <20200502125949.194032-2-aford173@gmail.com>
+ <20200520010348.GE11739@dragon>
+In-Reply-To: <20200520010348.GE11739@dragon>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 28 Oct 2020 07:10:37 -0500
+Message-ID: <CAHCN7xKBx_YXCGSUJWO3YCaGfx4oc7iuv6S4qi500_NjV9pW=w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm: Add support for micfil
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        aford@beaconemedded.com, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:15 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Tue, May 19, 2020 at 8:03 PM Shawn Guo <shawnguo@kernel.org> wrote:
 >
-> On Wed, 28 Oct 2020 at 11:03, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> On Sat, May 02, 2020 at 07:59:48AM -0500, Adam Ford wrote:
+> > The i.MX8M Mini has supports the MICFIL digital interface.
+> > It's a 16-bit audio signal from a PDM microphone bitstream.
+> > The driver is already in the kernel, but the node is missing.
 > >
-> > On Wed, Oct 28, 2020 at 10:56:55AM +0100, Krzysztof Kozlowski wrote:
-> > > On Wed, 28 Oct 2020 at 10:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > >
-> > > > On Wed, 28 Oct 2020 at 10:43, Yeh, Andy <andy.yeh@intel.com> wrote:
-> > > > >
-> > > > > But the sensor settings for the original submission is to output GRBG Bayer RAW.
-> > > > >
-> > > > > Regards, Andy
-> > > >
-> > > > No, not to my knowledge. There are no settings for color output
-> > > > because it is fixed to GBGB/RGRG. I was looking a lot into this driver
-> > > > (I have few other problems with it, already few other patches posted)
-> > > > and I could not find a setting for this in datasheet. If you know the
-> > > > setting for the other color - can you point me to it?
-> > >
-> > > And except the datasheet which mentions the specific format, the
-> > > testing confirms it. With original color the pictures are pink/purple.
-> > > With proper color, the pictures are correct (with more green color as
-> > > expected for bayer).
+> > This patch adds the micfil node.
 > >
-> > Quoting the driver's start_streaming function:
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
 > >
-> >         /* Set Orientation be 180 degree */
-> >         ret = imx258_write_reg(imx258, REG_MIRROR_FLIP_CONTROL,
-> >                                IMX258_REG_VALUE_08BIT, REG_CONFIG_MIRROR_FLIP);
->
-> I understand that you think it will replace the lines and columns and
-> the first line will be RG, instead of GB.... or actually BG because it
-> flips horizontal and vertical? So why does it not work?
-
-Any chance your SoC capture interface performs this flipping on its own as well?
-
->
-> BTW, this nicely points that the comment around
-> device_property_read_u32() for rotation is a little bit misleading :)
->
-
-Are you referring to the comment below?
-
-/*
-* Check that the device is mounted upside down. The driver only
-* supports a single pixel order right now.
-*/
-ret = device_property_read_u32(&client->dev, "rotation", &val);
-if (ret || val != 180)
-    return -EINVAL;
-
-What's misleading about it?
-
-> >         if (ret) {
-> >                 dev_err(&client->dev, "%s failed to set orientation\n",
-> >                         __func__);
-> >                 return ret;
-> >         }
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > index c63685ae80ee..d46e727fc362 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > @@ -339,6 +339,25 @@ sai6: sai@30060000 {
+> >                               status = "disabled";
+> >                       };
 > >
-> > Could it be you're taking pictures of pink objects? ;-)
+> > +                     micfil: micfil@30080000 {
 >
-> I can send a few sample pictures taken with GStreamer (RAW8, not
-> original RAW10)...
+> Find a generic node name, audio-controller maybe?
+
+The SAI's nodes are called SAI@xxxx
+
+If that's a deal-breaker, I can push a V3.
+
+I didn't see anyone from the device tree side comment, and the device
+tree binding doc states 'micfil@xxxxxx' so I used what was documented
+in the fsl,micfil.txt
+
+adam
 >
-> Best regards,
-> Krzysztof
+> Shawn
+>
+> > +                             compatible = "fsl,imx8mm-micfil";
+> > +                             reg = <0x30080000 0x10000>;
+> > +                             interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                          <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                          <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                          <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+> > +                             clocks = <&clk IMX8MM_CLK_PDM_IPG>,
+> > +                                      <&clk IMX8MM_CLK_PDM_ROOT>,
+> > +                                      <&clk IMX8MM_AUDIO_PLL1_OUT>,
+> > +                                      <&clk IMX8MM_AUDIO_PLL2_OUT>,
+> > +                                      <&clk IMX8MM_CLK_EXT3>;
+> > +                             clock-names = "ipg_clk", "ipg_clk_app",
+> > +                                           "pll8k", "pll11k", "clkext3";
+> > +                             dmas = <&sdma2 24 25 0x80000000>;
+> > +                             dma-names = "rx";
+> > +                             status = "disabled";
+> > +                     };
+> > +
+> >                       gpio1: gpio@30200000 {
+> >                               compatible = "fsl,imx8mm-gpio", "fsl,imx35-gpio";
+> >                               reg = <0x30200000 0x10000>;
+> > --
+> > 2.25.1
+> >
