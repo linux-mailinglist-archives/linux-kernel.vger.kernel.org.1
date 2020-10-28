@@ -2,294 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA0029D790
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E41529D59A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732962AbgJ1WZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:25:35 -0400
-Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:63492 "EHLO
-        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732935AbgJ1WZd (ORCPT
+        id S1730016AbgJ1WFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729449AbgJ1WFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:25:33 -0400
-X-Greylist: delayed 2995 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Oct 2020 18:25:33 EDT
-Received: from pps.filterd (m0122332.ppops.net [127.0.0.1])
-        by mx0a-00190b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09SHbWhl002635;
-        Wed, 28 Oct 2020 17:46:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=6wX4+YUFFlN6GjX/L0NOGDRSt7BL+3KQlhqyt0N2YFE=;
- b=g0q3fSMca64I61CCk+QrR4Suhn8lFJ1pbMndtRFaWDFg8cDfqf+nzeD1ir3AVaj1T6Oy
- A5f57UyHE+G2ve1UX0qNJzsRelZFqxCxDaUtqRMomndIGveBqJF2qaWEmJ4f61G2tGe3
- fyA3hfcXJZeP80WDF7VFvsVObFulvP+0EFY6pl3DcqjdgBJhHNyKUAsuNJmwSjah0Xjk
- At9pxaUg7lWnNjYEIBQK2j92FvnhGbDHGv/W3R+qMWO2RxudcIqVGtVJ/gu9ab16uv2/
- 3XJTO3rBiS4Vs/inlc904qCj5nwfxW59eheN5tgcLshuPZZHIkS2GWILbn5RfarOB2Yn dw== 
-Received: from prod-mail-ppoint8 (a72-247-45-34.deploy.static.akamaitechnologies.com [72.247.45.34] (may be forged))
-        by mx0a-00190b01.pphosted.com with ESMTP id 34ccbhk52w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Oct 2020 17:46:13 +0000
-Received: from pps.filterd (prod-mail-ppoint8.akamai.com [127.0.0.1])
-        by prod-mail-ppoint8.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 09SHZ8Hc016636;
-        Wed, 28 Oct 2020 13:46:12 -0400
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-        by prod-mail-ppoint8.akamai.com with ESMTP id 34f1pxdj6x-1;
-        Wed, 28 Oct 2020 13:46:12 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 41E22604F7;
-        Wed, 28 Oct 2020 17:46:11 +0000 (GMT)
-Subject: Re: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "Hunt, Joshua" <johunt@akamai.com>
-References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
- <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
- <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
-From:   Vishwanath Pai <vpai@akamai.com>
-Message-ID: <05ff05ff-884e-a3b9-2186-3ba0e3e88f28@akamai.com>
-Date:   Wed, 28 Oct 2020 13:46:10 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 28 Oct 2020 18:05:32 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FA8C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:05:32 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id j21so542448ota.13
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dpvqDFTkgoj21BdY1pTBOrwAo1cSX7C2DrwyEeBthb0=;
+        b=hmu6Uyd1Gc7QqAmRGDaehKNzIEHFFVZG/PPYkq4ZaUmooqpshdaE0gVQJL47IyDUs0
+         aa2GXsroHFjXApjXlR2NG81QyRF6TWy8OJ5Ruho6lV2jn0OOiJwvcsnUyKGGbE4Qun6p
+         yLV+PoWlWh/lpdxMCeKORAUXgoGP5QKakKGhvfB0kHShumuv9SKYcLJLacUFkVePZY/I
+         kZGqUs4Bky+kPkKzU8jeJpqdHvRisSNEuDmsTftWGirndVwGm3n8ES2p2NUNTlrAiH7k
+         N/gb0RjAJy5/x+EklKbygR1hyS3FlR8Tmu9bNer1/vqXlrkKvwQEXxwz9qaCfprZswEk
+         3YKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dpvqDFTkgoj21BdY1pTBOrwAo1cSX7C2DrwyEeBthb0=;
+        b=BORDhEXqq9jqeO9PRRls+fvdHVc4m7GVj4PfjeEALWSZK5RO4PzNBr1uaUuluDsmcp
+         t5bCFcxu9C03GCk0rmRTRWCiL9Pvk2HViG5O+BSNMpif1+v0DkTyFzLfwxeXPtXwbXNj
+         7HbFrubnAXrYK9h99Nemp6wegUmbbV40m7jXItXvnr9RNlJH+1HC0wz3FpO2P3zuMaOD
+         DgiqWH0AQWnL0jYAz7Cd/YkLQzG07ONDTUqwJjXIzg/2T5PLOehw+iv+K1cN3eaVrH0S
+         rG3kIijNrKY2jBATNxpFxZhqPkD57vLKcRqEtZbAMnCFQU+h0ilv/FOXMAcjpSRBiHJy
+         0WBw==
+X-Gm-Message-State: AOAM530SBX0tO9dyri4RQ9cXbscKu1fsMuf9EVOB4ztdPwoiogLJRmAr
+        kidGIO7wFyvVk0rPcr6kx4WoTqzKZuBB4fZN/psS/QvF/w9CFYZM
+X-Google-Smtp-Source: ABdhPJwg81J95bq/E6nPimq6xCcVhmcL1hYDUWbH2VVxCaOeVS3rOgpWN0zdv6OGnLhkSCFQJPP7LbhuFVKXhlqIBBM=
+X-Received: by 2002:a25:d906:: with SMTP id q6mr531935ybg.316.1603908196352;
+ Wed, 28 Oct 2020 11:03:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpU_tbRNO=Lznz_d6YjXmenYhowEfBoOiJgEmo9x8bEevw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_08:2020-10-28,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
- adultscore=0 spamscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010280116
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_08:2020-10-28,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 spamscore=0 adultscore=0 phishscore=0
- malwarescore=0 priorityscore=1501 bulkscore=0 mlxscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010280116
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.34)
- smtp.mailfrom=vpai@akamai.com smtp.helo=prod-mail-ppoint8
+References: <20200907131613.12703-64-joro@8bytes.org> <159972972598.20229.12880317872521101289.tip-bot2@tip-bot2>
+ <CAAYXXYx=Eq4gYfUqdO7u37VRD_GpPYFQgN=GZySmAMcDc2AM=g@mail.gmail.com>
+ <CAAYXXYw7ZKM+4ZCzn_apb4iy07R5VfcYeyus-kc0ETh_vkBkPg@mail.gmail.com> <20201028094952.GI22179@suse.de>
+In-Reply-To: <20201028094952.GI22179@suse.de>
+From:   Erdem Aktas <erdemaktas@google.com>
+Date:   Wed, 28 Oct 2020 11:03:05 -0700
+Message-ID: <CAAYXXYwqYeXY3gaExMYX9Pt0nN_D=jbz9FWSuk1hDF8GcK-kfA@mail.gmail.com>
+Subject: Re: [tip: x86/seves] x86/kvm: Add KVM-specific VMMCALL handling under SEV-ES
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     linux-kernel@vger.kernel.org,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        linux-tip-commits@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/20 3:26 PM, Cong Wang wrote:
- > On Fri, Sep 11, 2020 at 1:13 AM Yunsheng Lin <linyunsheng@huawei.com> 
-wrote:
- >>
- >> On 2020/9/11 4:07, Cong Wang wrote:
- >>> On Tue, Sep 8, 2020 at 4:06 AM Yunsheng Lin 
-<linyunsheng@huawei.com> wrote:
- >>>>
- >>>> Currently there is concurrent reset and enqueue operation for the
- >>>> same lockless qdisc when there is no lock to synchronize the
- >>>> q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
- >>>> qdisc_deactivate() called by dev_deactivate_queue(), which may cause
- >>>> out-of-bounds access for priv->ring[] in hns3 driver if user has
- >>>> requested a smaller queue num when __dev_xmit_skb() still enqueue a
- >>>> skb with a larger queue_mapping after the corresponding qdisc is
- >>>> reset, and call hns3_nic_net_xmit() with that skb later.
- >>>>
- >>>> Reused the existing synchronize_net() in dev_deactivate_many() to
- >>>> make sure skb with larger queue_mapping enqueued to old qdisc(which
- >>>> is saved in dev_queue->qdisc_sleeping) will always be reset when
- >>>> dev_reset_queue() is called.
- >>>>
- >>>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
- >>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
- >>>> ---
- >>>> ChangeLog V2:
- >>>>         Reuse existing synchronize_net().
- >>>> ---
- >>>>  net/sched/sch_generic.c | 48 
-+++++++++++++++++++++++++++++++++---------------
- >>>>  1 file changed, 33 insertions(+), 15 deletions(-)
- >>>>
- >>>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
- >>>> index 265a61d..54c4172 100644
- >>>> --- a/net/sched/sch_generic.c
- >>>> +++ b/net/sched/sch_generic.c
- >>>> @@ -1131,24 +1131,10 @@ EXPORT_SYMBOL(dev_activate);
- >>>>
- >>>>  static void qdisc_deactivate(struct Qdisc *qdisc)
- >>>>  {
- >>>> -       bool nolock = qdisc->flags & TCQ_F_NOLOCK;
- >>>> -
- >>>>         if (qdisc->flags & TCQ_F_BUILTIN)
- >>>>                 return;
- >>>> -       if (test_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state))
- >>>> -               return;
- >>>> -
- >>>> -       if (nolock)
- >>>> - spin_lock_bh(&qdisc->seqlock);
- >>>> -       spin_lock_bh(qdisc_lock(qdisc));
- >>>>
- >>>>         set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
- >>>> -
- >>>> -       qdisc_reset(qdisc);
- >>>> -
- >>>> -       spin_unlock_bh(qdisc_lock(qdisc));
- >>>> -       if (nolock)
- >>>> - spin_unlock_bh(&qdisc->seqlock);
- >>>>  }
- >>>>
- >>>>  static void dev_deactivate_queue(struct net_device *dev,
- >>>> @@ -1165,6 +1151,30 @@ static void dev_deactivate_queue(struct 
-net_device *dev,
- >>>>         }
- >>>>  }
- >>>>
- >>>> +static void dev_reset_queue(struct net_device *dev,
- >>>> +                           struct netdev_queue *dev_queue,
- >>>> +                           void *_unused)
- >>>> +{
- >>>> +       struct Qdisc *qdisc;
- >>>> +       bool nolock;
- >>>> +
- >>>> +       qdisc = dev_queue->qdisc_sleeping;
- >>>> +       if (!qdisc)
- >>>> +               return;
- >>>> +
- >>>> +       nolock = qdisc->flags & TCQ_F_NOLOCK;
- >>>> +
- >>>> +       if (nolock)
- >>>> + spin_lock_bh(&qdisc->seqlock);
- >>>> +       spin_lock_bh(qdisc_lock(qdisc));
- >>>
- >>>
- >>> I think you do not need this lock for lockless one.
- >>
- >> It seems so.
- >> Maybe another patch to remove qdisc_lock(qdisc) for lockless
- >> qdisc?
- >
- > Yeah, but not sure if we still want this lockless qdisc any more,
- > it brings more troubles than gains.
- >
- >>
- >>
- >>>
- >>>> +
- >>>> +       qdisc_reset(qdisc);
- >>>> +
- >>>> +       spin_unlock_bh(qdisc_lock(qdisc));
- >>>> +       if (nolock)
- >>>> + spin_unlock_bh(&qdisc->seqlock);
- >>>> +}
- >>>> +
- >>>>  static bool some_qdisc_is_busy(struct net_device *dev)
- >>>>  {
- >>>>         unsigned int i;
- >>>> @@ -1213,12 +1223,20 @@ void dev_deactivate_many(struct list_head 
-*head)
- >>>>                 dev_watchdog_down(dev);
- >>>>         }
- >>>>
- >>>> -       /* Wait for outstanding qdisc-less dev_queue_xmit calls.
- >>>> +       /* Wait for outstanding qdisc-less dev_queue_xmit calls or
- >>>> +        * outstanding qdisc enqueuing calls.
- >>>>          * This is avoided if all devices are in dismantle phase :
- >>>>          * Caller will call synchronize_net() for us
- >>>>          */
- >>>>         synchronize_net();
- >>>>
- >>>> +       list_for_each_entry(dev, head, close_list) {
- >>>> +               netdev_for_each_tx_queue(dev, dev_reset_queue, NULL);
- >>>> +
- >>>> +               if (dev_ingress_queue(dev))
- >>>> +                       dev_reset_queue(dev, 
-dev_ingress_queue(dev), NULL);
- >>>> +       }
- >>>> +
- >>>>         /* Wait for outstanding qdisc_run calls. */
- >>>>         list_for_each_entry(dev, head, close_list) {
- >>>>                 while (some_qdisc_is_busy(dev)) {
- >>>
- >>> Do you want to reset before waiting for TX action?
- >>>
- >>> I think it is safer to do it after, at least prior to commit 759ae57f1b
- >>> we did after.
- >>
- >> The reference to the txq->qdisc is always protected by RCU, so the 
-synchronize_net()
- >> should be enought to ensure there is no skb enqueued to the old 
-qdisc that is saved
- >> in the dev_queue->qdisc_sleeping, because __dev_queue_xmit can only 
-see the new qdisc
- >> after synchronize_net(), which is noop_qdisc, and noop_qdisc will 
-make sure any skb
- >> enqueued to it will be dropped and freed, right?
- >
- > Hmm? In net_tx_action(), we do not hold RCU read lock, and we do not
- > reference qdisc via txq->qdisc but via sd->output_queue.
- >
- >
- >>
- >> If we do any additional reset that is not related to qdisc in 
-dev_reset_queue(), we
- >> can move it after some_qdisc_is_busy() checking.
- >
- > I am not suggesting to do an additional reset, I am suggesting to move
- > your reset after the busy waiting.
- >
- > Thanks.
+I might be missing something here but I think what you say is only
+correct for the kvm_hypercall4 cases. All other functions use a
+smaller number of registers. #VC blindly assumes that all those
+registers are used in the vmcall and exposes them. Here are some
+examples:
 
-Re-sending this, looks like my previous email did not get delivered
-somehow.
+For example in the kvm_hypercall2 only rax, rbx, and rcx should be
+exposed. apic_id address is leaked with rdx when this hypercall is
+used in kvm_kick_cpu function. RSI is never used. I am not sure what
+value will be exposed to VMM in this case:
 
-We noticed some problems when testing the latest 5.4 LTS kernel and
-traced it back to this commit using git bisect. When running our tests
-the machine stops responding to all traffic and the only way to recover
-is a reboot. I do not see a stack trace on the console.
+ 54 static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
+ 55                                   unsigned long p2)
+ 56 {
+ 57         long ret;
+ 58         asm volatile(KVM_HYPERCALL
+ 59                      : "=a"(ret)
+ 60                      : "a"(nr), "b"(p1), "c"(p2)
+ 61                      : "memory");
+ 62         return ret;
+ 63 }
+And this function is called in :
 
-This can be reproduced using the packetdrill test below, it should be
-run a few times or in a loop. You should hit this issue within a few
-tries but sometimes might take up to 15-20 tries.
+820 static void kvm_kick_cpu(int cpu)
+821 {
+822         int apicid;
+823         unsigned long flags = 0;
+824
+825         apicid = per_cpu(x86_cpu_to_apicid, cpu);
+826         kvm_hypercall2(KVM_HC_KICK_CPU, flags, apicid);
+827 }
 
-*** TEST BEGIN ***
+looking to what it is compiled in my machine :
 
-0 `echo 4 > /proc/sys/net/ipv4/tcp_min_tso_segs`
+151215 ffffffff8105def0 <kvm_kick_cpu>:
+ 151216 {
+ 151217 ffffffff8105def0:       e8 fb 9e ff ff          callq
+ffffffff81057df0 <__fentry__>
+ 151218         apicid = per_cpu(x86_cpu_to_apicid, cpu);
+ 151219 ffffffff8105def5:       48 63 ff                movslq %edi,%rdi
+ 151220 {
+ 151221 ffffffff8105def8:       53                      push   %rbx
+ 151222         apicid = per_cpu(x86_cpu_to_apicid, cpu);
+ 151223 ffffffff8105def9:       48 c7 c0 58 16 01 00    mov    $0x11658,%rax
+ 151224
+ 151225 static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
+ 151226                                   unsigned long p2)
+ 151227 {
+ 151228         long ret;
+ 151229         asm volatile(KVM_HYPERCALL
+ 151230 ffffffff8105df00:       31 db                   xor    %ebx,%ebx
+ 151231 ffffffff8105df02:       48 8b 14 fd 00 19 cb    mov
+-0x7e34e700(,%rdi,8),%rdx
+ 151232 ffffffff8105df09:       81
+ 151233         kvm_hypercall2(KVM_HC_KICK_CPU, flags, apicid);
+ 151234 ffffffff8105df0a:       0f b7 0c 02             movzwl
+(%rdx,%rax,1),%ecx
+ 151235 ffffffff8105df0e:       b8 05 00 00 00          mov    $0x5,%eax
+ 151236 ffffffff8105df13:       0f 01 c1                vmcall
+ 151237 }
+ 151238 ffffffff8105df16:       5b                      pop    %rbx
+ 151239 ffffffff8105df17:       c3                      retq
 
-0.400 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
-0.400 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
 
-// set maxseg to 1000 to work with both ipv4 and ipv6
-0.500 setsockopt(3, SOL_TCP, TCP_MAXSEG, [1000], 4) = 0
-0.500 bind(3, ..., ...) = 0
-0.500 listen(3, 1) = 0
+Similarly kvm_hypercall1 only need 2 registers to expose:
 
-// Establish connection
-0.600 < S 0:0(0) win 32792 <mss 1000,sackOK,nop,nop,nop,wscale 5>
-0.600 > S. 0:0(0) ack 1 <...>
+ 44 static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
+ 45 {
+ 46         long ret;
+ 47         asm volatile(KVM_HYPERCALL
+ 48                      : "=a"(ret)
+ 49                      : "a"(nr), "b"(p1)
+ 50                      : "memory");
+ 51         return ret;
+ 52 }
 
-0.800 < . 1:1(0) ack 1 win 320
-0.800 accept(3, ..., ...) = 4
+And an example where it is used:
 
-// Send 4 data segments.
-+0 write(4, ..., 4000) = 4000
-+0 > P. 1:4001(4000) ack 1
+562 static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
+563 {
+564         int cpu;
+565
+566         native_send_call_func_ipi(mask);
+567
+568         /* Make sure other vCPUs get a chance to run if they need to. */
+569         for_each_cpu(cpu, mask) {
+570                 if (vcpu_is_preempted(cpu)) {
+571                         kvm_hypercall1(KVM_HC_SCHED_YIELD,
+per_cpu(x86_cpu_to_apicid, cpu));
+572                         break;
+573                 }
+574         }
+575 }
 
-// Receive a SACK
-+.1 < . 1:1(0) ack 1 win 320 <sack 1001:2001,nop,nop>
+If we look at the function decompiled in my platform, here
+x86_cpu_to_apicid address is leaked in rdx. RSI also leaks some
+information from kvm_smp_send_call_function_ipi function. RCX is not
+used so it might include something from a higher caller.
 
-+.3 %{ print "TCP CA state: ",tcpi_ca_state  }%
+ 151243 ffffffff8105df20 <kvm_smp_send_call_func_ipi>:
+ 151244 {
+ 151245 ffffffff8105df20:       e8 cb 9e ff ff          callq
+ffffffff81057df0 <__fentry__>
+ 151246 ffffffff8105df25:       53                      push   %rbx
+ 151247 ffffffff8105df26:       48 89 fb                mov    %rdi,%rbx
+ 151248         native_send_call_func_ipi(mask);
+ 151249 ffffffff8105df29:       e8 a2 45 ff ff          callq
+ffffffff810524d0 <native_send_call_func_ipi>
+ 151250         for_each_cpu(cpu, mask) {
+ 151251 ffffffff8105df2e:       41 b8 ff ff ff ff       mov    $0xffffffff,%r8d
+ 151252 ffffffff8105df34:       eb 0e                   jmp
+ffffffff8105df44 <kvm_smp_send_call_func_ipi+0x24>
+ 151253         return PVOP_CALLEE1(bool, lock.vcpu_is_preempted, cpu);
+ 151254 ffffffff8105df36:       49 63 f8                movslq %r8d,%rdi
+ 151255 ffffffff8105df39:       ff 14 25 90 93 02 82    callq
+*0xffffffff82029390
+ 151256                 if (vcpu_is_preempted(cpu)) {
+ 151257 ffffffff8105df40:       84 c0                   test   %al,%al
+ 151258 ffffffff8105df42:       75 18                   jne
+ffffffff8105df5c <kvm_smp_send_call_func_ipi+0x3c>
+ 151259         for_each_cpu(cpu, mask) {
+ 151260 ffffffff8105df44:       44 89 c7                mov    %r8d,%edi
+ 151261 ffffffff8105df47:       48 89 de                mov    %rbx,%rsi
+ 151262 ffffffff8105df4a:       e8 61 44 39 00          callq
+ffffffff813f23b0 <cpumask_next>
+ 151263 ffffffff8105df4f:       3b 05 2f 7e 12 01       cmp
+0x1127e2f(%rip),%eax        # ffffffff82185d84 <nr_cpu_ids>
+ 151264 ffffffff8105df55:       41 89 c0                mov    %eax,%r8d
+ 151265 ffffffff8105df58:       72 dc                   jb
+ffffffff8105df36 <kvm_smp_send_call_func_ipi+0x16>
+ 151266 }
+ 151267 ffffffff8105df5a:       5b                      pop    %rbx
+ 151268 ffffffff8105df5b:       c3                      retq
+ 151269                         kvm_hypercall1(KVM_HC_SCHED_YIELD,
+per_cpu(x86_cpu_to_apicid, cpu));
+ 151270 ffffffff8105df5c:       48 8b 14 fd 00 19 cb    mov
+-0x7e34e700(,%rdi,8),%rdx
+ 151271 ffffffff8105df63:       81
+ 151272 ffffffff8105df64:       48 c7 c0 58 16 01 00    mov    $0x11658,%rax
+ 151273 ffffffff8105df6b:       0f b7 1c 02             movzwl
+(%rdx,%rax,1),%ebx
+ 151274         asm volatile(KVM_HYPERCALL
+ 151275 ffffffff8105df6f:       b8 0b 00 00 00          mov    $0xb,%eax
+ 151276 ffffffff8105df74:       0f 01 c1                vmcall
+ 151277 }
 
-*** TEST END ***
+I am not sure how those leaked registers can be used, but depending on
+which function call hypercall[0-3], there will be some leak.
 
-I can reproduce the issue easily on v5.4.68, and after reverting this 
-commit it
-does not happen anymore.
+-Erdem
 
-Thanks,
-Vishwanath
 
+
+On Wed, Oct 28, 2020 at 2:49 AM Joerg Roedel <jroedel@suse.de> wrote:
+>
+> On Tue, Oct 27, 2020 at 04:14:15PM -0700, Erdem Aktas wrote:
+> > It seems to me that the kvm_sev_es_hcall_prepare is leaking more
+> > information than it is needed. Is this an expected behavior?
+>
+> What exactly is leaked? The kvm hypercall uses RAX, RBX, RCX, RDX and
+> RSI for parameters.
+>
+> Regards,
+>
+>         Joerg
