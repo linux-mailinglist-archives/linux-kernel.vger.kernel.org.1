@@ -2,135 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B911829DF19
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50BD29DECB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgJ2A7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:59:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60534 "EHLO mail.kernel.org"
+        id S1727320AbgJ2A4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731577AbgJ1WRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:32 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        id S1731622AbgJ1WRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:36 -0400
+Received: from kernel.org (unknown [87.70.96.83])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EF09246EF;
-        Wed, 28 Oct 2020 12:11:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A1702470A;
+        Wed, 28 Oct 2020 12:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603887075;
-        bh=3mDV7UGgJkHhus9iZLVgqdY7eLz8YzVtJsoZEb/BReo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eiefGJVGN5B3kZ3G+RSyh80WIzaovH4DUThEEnU2Q1UI9eNNUqmcL9ixN0AbfS/jO
-         nbyMJe6SWm+WuArAhjUOMd9RF4yDGVsgUxDNwRcYiAEw1H+MWm8YyGlOZK1jzmt1zg
-         TxXb9gy1dvqRgci1nsBW+md+i/vdv7FQmJhiXOlU=
-Date:   Wed, 28 Oct 2020 21:11:09 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, luto@kernel.org, me@kylehuey.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, rocallahan@gmail.com,
-        alexandre.chartre@oracle.com, paulmck@kernel.org,
-        frederic@kernel.org, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, pmladek@suse.com,
-        joel@joelfernandes.org, rostedt@goodmis.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, brgerst@gmail.com,
-        jpoimboe@redhat.com, daniel.thompson@linaro.org,
-        julliard@winehq.org, pgofman@codeweavers.com
-Subject: Re: [PATCH 1/3] x86/debug: Fix BTF handling
-Message-Id: <20201028211109.a25f52fa6fb0412e3a65ea52@kernel.org>
-In-Reply-To: <20201028095919.GX2628@hirez.programming.kicks-ass.net>
-References: <20201027091504.712183781@infradead.org>
-        <20201027093607.956147736@infradead.org>
-        <20201027194126.GR2628@hirez.programming.kicks-ass.net>
-        <20201028182025.4bb6d633719d7ce76300aafa@kernel.org>
-        <20201028095919.GX2628@hirez.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1603887744;
+        bh=Lr1BM+VW6ajXZ7BXxVkd5/Y50jW7UBQ7IyfJE4pxvbc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1im01t3jg6XLnQ4t88jFGyjzvs+ZIk4/rFUDH74Y7mcgp2hP2qxTFC8UySBuUYtE9
+         u6gUgHROWu15mNV2JA7LSO7BQZVSuhi5Y33PU4pj91Fm+m4ekLRfSEgCkjbLtBEgrv
+         IAOdJsmH151mptkBB/WbzhQhvbykxlMVYr1bucrs=
+Date:   Wed, 28 Oct 2020 14:22:09 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "bp@alien8.de" <bp@alien8.de>, "pavel@ucw.cz" <pavel@ucw.cz>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
+ manipulation
+Message-ID: <20201028122209.GH1428094@kernel.org>
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
+ <20201026090526.GA1154158@kernel.org>
+ <a0212b073b3b2f62c3dbf1bf398f03fa402997be.camel@intel.com>
+ <20201027083816.GG1154158@kernel.org>
+ <e5fc62b6-f644-4ed5-de5b-ffd8337861e4@redhat.com>
+ <20201028110945.GE1428094@kernel.org>
+ <5805fdd9-14e5-141c-773b-c46d2da57258@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5805fdd9-14e5-141c-773b-c46d2da57258@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 10:59:19 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Wed, Oct 28, 2020 at 06:20:25PM +0900, Masami Hiramatsu wrote:
-> > On Tue, 27 Oct 2020 20:41:26 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Oct 28, 2020 at 12:17:35PM +0100, David Hildenbrand wrote:
+> On 28.10.20 12:09, Mike Rapoport wrote:
+> > On Tue, Oct 27, 2020 at 09:46:35AM +0100, David Hildenbrand wrote:
+> > > On 27.10.20 09:38, Mike Rapoport wrote:
+> > > > On Mon, Oct 26, 2020 at 06:05:30PM +0000, Edgecombe, Rick P wrote:
+> > > > 
+> > > > > Beyond whatever you are seeing, for the latter case of new things
+> > > > > getting introduced to an interface with hidden dependencies... Another
+> > > > > edge case could be a new caller to set_memory_np() could result in
+> > > > > large NP pages. None of the callers today should cause this AFAICT, but
+> > > > > it's not great to rely on the callers to know these details.
 > > 
-> > > On Tue, Oct 27, 2020 at 10:15:05AM +0100, Peter Zijlstra wrote:
+> > > > A caller of set_memory_*() or set_direct_map_*() should expect a failure
+> > > > and be ready for that. So adding a WARN to safe_copy_page() is the first
+> > > > step in that direction :)
+> > > > 
 > > > 
-> > > > @@ -873,6 +866,20 @@ static __always_inline void exc_debug_ke
-> > > >  	 */
-> > > >  	WARN_ON_ONCE(user_mode(regs));
-> > > >  
-> > > > +	if (test_thread_flag(TIF_BLOCKSTEP)) {
-> > > > +		/*
-> > > > +		 * The SDM says "The processor clears the BTF flag when it
-> > > > +		 * generates a debug exception." but PTRACE_BLOCKSTEP requested
-> > > > +		 * it for userspace, but we just took a kernel #DB, so re-set
-> > > > +		 * BTF.
-> > > > +		 */
-> > > > +		unsigned long debugctl;
-> > > > +
-> > > > +		rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-> > > > +		debugctl |= DEBUGCTLMSR_BTF;
-> > > > +		wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-> > > > +	}
-> > > > +
-> > > >  	/*
-> > > >  	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
-> > > >  	 * watchpoint at the same time then that will still be handled.
-> > > 
-> > > Masami, how does BTF interact with !optimized kprobes that single-step?
+> > > I am probably missing something important, but why are we saving/restoring
+> > > the content of pages that were explicitly removed from the identity mapping
+> > > such that nobody will access them?
 > > 
-> > Good question, BTF is cleared right before single-stepping and restored
-> > after single-stepping. It will be done accoding to TIF_BLOCKSTEP bit as below.
+> > Actually, we should not be saving/restoring free pages during
+> > hibernation as there are several calls to mark_free_pages() that should
+> > exclude the free pages from the snapshot. I've tried to find why the fix
+> > that maps/unmaps a page to save it was required at the first place, but
+> > I could not find bug reports.
 > > 
-> > (in arch/x86/kernel/kprobes/core.c)
+> > The closest I've got is an email from Rafael that asked to update
+> > "hibernate: handle DEBUG_PAGEALLOC" patch:
 > > 
-> > static nokprobe_inline void clear_btf(void)
-> > {
-> >         if (test_thread_flag(TIF_BLOCKSTEP)) {
-> >                 unsigned long debugctl = get_debugctlmsr();
+> > https://lore.kernel.org/linux-pm/200802200133.44098.rjw@sisk.pl/
 > > 
-> >                 debugctl &= ~DEBUGCTLMSR_BTF;
-> >                 update_debugctlmsr(debugctl);
-> >         }
-> > }
+> > Could it be that safe_copy_page() tries to workaround a non-existent
+> > problem?
 > > 
-> > static nokprobe_inline void restore_btf(void)
-> > {
-> >         if (test_thread_flag(TIF_BLOCKSTEP)) {
-> >                 unsigned long debugctl = get_debugctlmsr();
-> > 
-> >                 debugctl |= DEBUGCTLMSR_BTF;
-> >                 update_debugctlmsr(debugctl);
-> >         }
-> > }
-> > 
-> > Hrm, so it seems that we do same ... maybe we don't need clear_btf() too?
 > 
-> No, I think you do very much need clear_btf(). But with my patch perhaps
-> restore_btf() is no longer needed. Is there only a single single-step
-> between setup_singlestep() and resume_execution() ? (I think so).
-
-It depends on what the single step instruction does, if it access to the non-present
-memory (like user-memory) it kicks the fault handler instead of debug handler.
-(e.g. putting a kprobe on the fixup source address in copy_from_user() )
-Hmm, on this path, it seems not calling restore_btf()...
-
-Thanks,
-
-> Also, I note that we should employ get_debugctlmsr() more consistently.
+> Clould be! Also see
 > 
-> > > The best answer I can come up with is 'poorly' :/
-> > 
-> > Is this what you expected? :)
+> https://lkml.kernel.org/r/38de5bb0-5559-d069-0ce0-daec66ef2746@suse.cz
 > 
-> Nah, I missed the above, you seems to do the right thing.
+> which restores free page content based on more kernel parameters, not based
+> on the original content.
 
+Ah, after looking at it now I've run kernel with DEBUG_PAGEALLOC=y and
+CONFIG_INIT_ON_FREE_DEFAULT_ON=y and restore crahsed nicely.
+
+[   27.210093] PM: Image successfully loaded
+[   27.226709] Disabling non-boot CPUs ...                                      
+[   27.231208] smpboot: CPU 1 is now offline                                    
+[   27.363926] kvm-clock: cpu 0, msr 5c889001, primary cpu clock, resume        
+[   27.363995] BUG: unable to handle page fault for address: ffff9f7a40108000   
+[   27.367996] #PF: supervisor write access in kernel mode                      
+[   27.369558] #PF: error_code(0x0002) - not-present page                       
+[   27.371098] PGD 5ca01067 P4D 5ca01067 PUD 5ca02067 PMD 5ca03067 PTE 800ffffff
+fef7060                                                                         
+[   27.373421] Oops: 0002 [#1] SMP DEBUG_PAGEALLOC PTI                          
+[   27.374905] CPU: 0 PID: 1200 Comm: bash Not tainted 5.10.0-rc1 #5            
+[   27.376700] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14
+.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014                                 
+[   27.379879] RIP: 0010:clear_page_rep+0x7/0x10          
+[   27.381218] Code: e8 be 88 75 00 44 89 e2 48 89 ee 48 89 df e8 60 ff ff ff c6
+ 03 00 5b 5d 41 5c c3 cc cc cc cc cc cc cc cc b9 00 02 00 00 31 c0 <f3> 48 ab c3
+ 0f 1f 44 00 00 31 c0 b9 40 00 00 00 66 0f 1f 84 00 00                          
+[   27.386457] RSP: 0018:ffffb6838046be08 EFLAGS: 00010046                      
+[   27.388011] RAX: 0000000000000000 RBX: ffff9f7a487c0ec0 RCX: 0000000000000200
+[   27.390082] RDX: ffff9f7a4c788000 RSI: 0000000000000000 RDI: ffff9f7a40108000
+[   27.392138] RBP: ffffffff8629c860 R08: 0000000000000000 R09: 0000000000000007
+[   27.394205] R10: 0000000000000004 R11: ffffb6838046bbf8 R12: 0000000000000000
+[   27.396271] R13: ffff9f7a419a62a0 R14: 0000000000000005 R15: ffff9f7a484f4da0
+[   27.398334] FS:  00007fe0c3f6a700(0000) GS:ffff9f7abf800000(0000) knlGS:0000000000000000                                                                     
+[   27.400717] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033                
+[   27.402432] CR2: ffff9f7a40108000 CR3: 000000000859a001 CR4: 0000000000060ef0
+[   27.404485] Call Trace:                                                      
+[   27.405326]  clear_free_pages+0xf5/0x150                                     
+[   27.406568]  hibernation_snapshot+0x390/0x3d0                                
+[   27.407908]  hibernate+0xdb/0x240                                            
+[   27.408978]  state_store+0xd7/0xe0                                           
+[   27.410078]  kernfs_fop_write+0x10e/0x1a0                                    
+[   27.411333]  vfs_write+0xbb/0x210                                            
+[   27.412423]  ksys_write+0x9c/0xd0                      
+[   27.413488]  do_syscall_64+0x33/0x40                                         
+[   27.414636]  entry_SYSCALL_64_after_hwframe+0x44/0xa9                        
+[   27.416150] RIP: 0033:0x7fe0c364e380                                         
+ 66 0f 1f 44 00 00 83 3d c9 23 2d 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0
+ ff ff 73 31 c3 48 83 ec 08 e8 fe dd 01 00 48 89 04 24
+[   27.422500] RSP: 002b:00007ffeb64bd0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000
+00001
+[   27.424724] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fe0c364e380
+[   27.426761] RDX: 0000000000000005 RSI: 0000000001eb6408 RDI: 0000000000000001
+[   27.428791] RBP: 0000000001eb6408 R08: 00007fe0c391d780 R09: 00007fe0c3f6a700
+[   27.430863] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000005
+[   27.432920] R13: 0000000000000001 R14: 00007fe0c391c620 R15: 0000000000000000
+[   27.434989] Modules linked in:
+[   27.436004] CR2: ffff9f7a40108000
+[   27.437075] ---[ end trace 424c466bcd2bfcad ]---
+
+
+
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Sincerely yours,
+Mike.
