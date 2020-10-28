@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B37B29DCCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756B529DD03
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387537AbgJ1W3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387519AbgJ1W3J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:29:09 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A4FC0613CF;
-        Wed, 28 Oct 2020 15:29:09 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id h22so754139wmb.0;
-        Wed, 28 Oct 2020 15:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DQuN3G1QJvsPZrMdEIGvp5UTrwD1/Moi8emoV7bj3lU=;
-        b=LC4YHuuaO3S5nUzs7zaNiLYtN3uzYyBPbHmVlyELMjyYQI2K3s5mLTvKZeYQKRBMcq
-         sjORrjlPXAScZvnJSKJ8jtshEw1AYZMyrcZWgtzut8M6MgvPhyNXHh9gFG8nMaYMQlv8
-         w7zxui7LntcCnup3JLTHNAVtq2+d4tyQjUwm9i4mkglptLWMEXCD/0MeW7e/13G6o8zJ
-         qMsdpNv4Pt4d0ZHaeLfukoJoc6YJQxyvV94n6/9IzcOdRoFHPaJUTXXVglbDM7A6iON0
-         UF/JQkV5NVgN9uavRPtlf7UXj7XIiaALHyl6dfFnZmqE7UT7TI52KNfa+BlxgyFb6bX8
-         ixaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DQuN3G1QJvsPZrMdEIGvp5UTrwD1/Moi8emoV7bj3lU=;
-        b=ZoAKWHN4xrrhF33LxhxhJa+4/x/xR0nFrQgmjd9cg763cSTR2xMeog1ThCi7RInAhf
-         s8Yzk3EsvtRWo6DmHhynsyCWlAyX2ebC7ntsd7EH3XE7RRSmGHpymNWqghF1XnEf2ui+
-         ME14FTBMAkf3wwCNxQyfQYQ7WMLfRun8qZaMxZMpvKIUtLmRTx+rpQIBOXxrrrn24x/Y
-         rz27cDFB5nC0wvJTVBOMudppKEfEzwnaAjQzzOq1Wo037sxSUJ4UXR5I9X/uLfdNq3Q5
-         KUIWJDZgbvwj9a/gV2DJDXXJfqXX7XBWzYrgKuOWRNxHRdBpDRTl7IU+GPxGbapOdMRv
-         XKoA==
-X-Gm-Message-State: AOAM530T95ROvDGRYt3xZ/PyHYuZMSm9ae3/FP4i6epIhd48TczPnKZC
-        PZk3IqZV9g9sKIKRCZ0QqEue68grazVRNw==
-X-Google-Smtp-Source: ABdhPJxeUhBlNyysFLBT7LARqEkmyOal5vA/3C8IvhTxsjlghwyoGttTKXfUBkKui85S/NaXf8eFCw==
-X-Received: by 2002:a1c:7d49:: with SMTP id y70mr40839wmc.103.1603909267772;
-        Wed, 28 Oct 2020 11:21:07 -0700 (PDT)
-Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id r28sm531178wrr.81.2020.10.28.11.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 11:21:07 -0700 (PDT)
-From:   Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net
-Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: [PATCH v4 3/3] mac80211: add KCOV remote annotations to incoming frame processing
-Date:   Wed, 28 Oct 2020 18:20:18 +0000
-Message-Id: <20201028182018.1780842-4-aleksandrnogikh@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-In-Reply-To: <20201028182018.1780842-1-aleksandrnogikh@gmail.com>
-References: <20201028182018.1780842-1-aleksandrnogikh@gmail.com>
+        id S1729450AbgJ2Ae3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:34:29 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:13364 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732181AbgJ1WU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:20:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603923629; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lvCzBP89PUcXDLkZrLQas8tpiINggPlX3IHCAMSWkpI=;
+ b=l4o4HvEEi9kl3HibJLfCRzvYsXwlHLCdKJDZxibqb0csptn7sO4APuZoIl4VlDAwEDg2s0h4
+ IyDD5kX6iQxBRBbMHUmKPg8LSfY4vZxEcwUyIvd2T1rnASUHCKuTLT44iEA8Zm3ZxmhEj+0e
+ xoaNpZaG8U02PhBjG2JU5dhmYz4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f99b75a2ef825cbc2d0cfd8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 18:24:26
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D8F16C433F0; Wed, 28 Oct 2020 18:24:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F22FC433CB;
+        Wed, 28 Oct 2020 18:24:23 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Wed, 28 Oct 2020 23:54:23 +0530
+From:   mdalam@codeaurora.org
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, richard@nod.at,
+        vigneshr@ti.com, robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH 0/5] mtd: rawnand: qcom: Add support for QSPI nand
+In-Reply-To: <20201028104835.3dc31745@xps13>
+References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
+ <20201028104835.3dc31745@xps13>
+Message-ID: <10db598eed716d7759bc0125b6977cf1@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Nogikh <nogikh@google.com>
+On 2020-10-28 15:18, Miquel Raynal wrote:
+> Hello,
+> 
+> Md Sadre Alam <mdalam@codeaurora.org> wrote on Sat, 10 Oct 2020
+> 11:01:37 +0530:
+> 
+>> QPIC 2.0 supports Serial NAND support in addition to all features and
+>> commands in QPIC 1.0 for parallel NAND. Parallel and Serial NAND 
+>> cannot
+>> operate simultaneously. QSPI nand devices will connect to QPIC 
+>> IO_MACRO
+>> block of QPIC controller. There is a separate IO_MACRO clock for 
+>> IO_MACRO
+>> block. Default IO_MACRO block divide the input clock by 4. so if 
+>> IO_MACRO
+>> input clock is 320MHz then on bus it will be 80MHz, so QSPI nand 
+>> device
+>> should also support this frequency.
+>> 
+>> QPIC provides 4 data pins to QSPI nand. In standard SPI mode (x1 mode) 
+>> data
+>> transfer will occur on only 2 pins one pin for Serial data in and one 
+>> for
+>> serial data out. In QUAD SPI mode (x4 mode) data transfer will occur 
+>> at all
+>> the four data lines. QPIC controller supports command for x1 mode and 
+>> x4 mode.
+>> 
+>> Md Sadre Alam (5):
+>>   dt-bindings: qcom_nandc: IPQ5018 QPIC NAND documentation
+>>   mtd: rawnand: qcom: Add initial support for qspi nand
+>>   mtd: rawnand: qcom: Read QPIC version
+>>   mtd: rawnand: qcom: Enable support for erase,read & write for serial
+>>     nand.
+>>   mtd: rawnand: qcom: Add support for serial training.
+>> 
+>>  .../devicetree/bindings/mtd/qcom_nandc.txt         |   3 +
+>>  drivers/mtd/nand/raw/nand_ids.c                    |  13 +
+>>  drivers/mtd/nand/raw/qcom_nandc.c                  | 502 
+>> ++++++++++++++++++++-
+>>  3 files changed, 494 insertions(+), 24 deletions(-)
+>> 
+> 
+> I'm sorry but this series clearly breaks the current layering. I cannot
+> authorize SPI-NAND code to fall into the raw NAND subsystem.
+> 
 
-Add KCOV remote annotations to ieee80211_iface_work and
-ieee80211_rx. This will enable coverage-guided fuzzing of
-mac80211 code that processes incoming 802.11 frames.
+I am agree with you, we should not add SPI-NAND changes inside
+raw NAND subsystem.
 
-Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
----
-v1 -> v2:
-* The commit now affects ieee80211_rx instead of
-  ieee80211_tasklet_handler.
----
- include/net/mac80211.h | 2 ++
- net/mac80211/iface.c   | 2 ++
- 2 files changed, 4 insertions(+)
+> As both typologies cannot be used at the same time, I guess you should
+> have another driver handling this feature under the spi/ subsystem +
+> a few declarations in the SPI-NAND devices list.
+> 
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index e8e295dae744..f4c37a1b381e 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -4499,7 +4499,9 @@ void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
-  */
- static inline void ieee80211_rx(struct ieee80211_hw *hw, struct sk_buff *skb)
- {
-+	kcov_remote_start_common(skb_get_kcov_handle(skb));
- 	ieee80211_rx_napi(hw, NULL, skb, NULL);
-+	kcov_remote_stop();
- }
- 
- /**
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 1be775979132..56a1bcea2c1c 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1356,6 +1356,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 	while ((skb = skb_dequeue(&sdata->skb_queue))) {
- 		struct ieee80211_mgmt *mgmt = (void *)skb->data;
- 
-+		kcov_remote_start_common(skb_get_kcov_handle(skb));
- 		if (ieee80211_is_action(mgmt->frame_control) &&
- 		    mgmt->u.action.category == WLAN_CATEGORY_BACK) {
- 			int len = skb->len;
-@@ -1465,6 +1466,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 		}
- 
- 		kfree_skb(skb);
-+		kcov_remote_stop();
- 	}
- 
- 	/* then other type-dependent work */
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
+Initially I was started writing separate driver under SPI-NAND subsystem 
+then I
+realized that more than 85% of raw/qcom_nand.c code getting duplicated.
 
+That's why I have added this SPI-NAND change in raw/qcom_nand.c since
+more than 85% of code will be reused.
+
+If I will add this change inside SPI-NAND subsystem then much of
+raw/qcom_nand.c code will get duplicated. Would it be ok ?
+
+> Thanks,
+> Miquèl
