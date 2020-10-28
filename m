@@ -2,86 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B4829D4FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717E129D48A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728549AbgJ1V4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:56:04 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51272 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728235AbgJ1Vv4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:51:56 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DE5EA1C0BA8; Wed, 28 Oct 2020 08:43:10 +0100 (CET)
-Date:   Wed, 28 Oct 2020 08:43:10 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Rohit Kumar <rohitkr@codeaurora.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 072/264] ASoC: qcom: lpass-platform: fix memory leak
-Message-ID: <20201028074310.GA9902@amd>
-References: <20201027135430.632029009@linuxfoundation.org>
- <20201027135434.080956764@linuxfoundation.org>
- <20201028070207.GB8084@amd>
- <917df715-be29-8b99-8058-6ef4e4254483@codeaurora.org>
+        id S1728383AbgJ1VxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:53:02 -0400
+Received: from verein.lst.de ([213.95.11.211]:45155 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728331AbgJ1Vw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:52:27 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 14C0B67373; Wed, 28 Oct 2020 08:46:43 +0100 (CET)
+Date:   Wed, 28 Oct 2020 08:46:42 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jongpil Jung <jongpuls@gmail.com>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gloria.tsai@ssstc.com, jongpil19.jung@samsung.com,
+        jongheony.kim@samsung.com, dj54.sohn@samsung.com
+Subject: Re: [PATCH V2 1/1] nvme: Add quirk for LiteON CL1 devices running
+ FW 220TQ,22001
+Message-ID: <20201028074642.GA16651@lst.de>
+References: <20201028074000.GA320668@image-900X5T-900X5U>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <917df715-be29-8b99-8058-6ef4e4254483@codeaurora.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201028074000.GA320668@image-900X5T-900X5U>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 28, 2020 at 04:40:00PM +0900, Jongpil Jung wrote:
+> When NVMe device receive D3hot from host, NVMe firmware will do
+> garbage collection. While NVMe device do Garbage collection,
+> firmware has chance to going incorrect address.
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed 2020-10-28 13:04:02, Rohit Kumar wrote:
-> Thanks Pavel for the review.
->=20
-> On 10/28/2020 12:32 PM, Pavel Machek wrote:
-> >Hi!
-> >
-> >>From: Rohit kumar <rohitkr@codeaurora.org>
-> >>
-> >>[ Upstream commit 5fd188215d4eb52703600d8986b22311099a5940 ]
-> >>
-> >>lpass_pcm_data is never freed. Free it in close
-> >>ops to avoid memory leak.
-> >AFAICT this introduces memory leaks in the error paths.
-> Yes, I will post the fix soon. Thanks for review.
-
-Well, the email had a fix attached :-). Feel free to review it and use
-it...
-
-Best regards,
-
-								Pavel
-
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+ZIQ4ACgkQMOfwapXb+vKxrACfad7S6Olm4jEHF+1ya+cUStyc
-mjcAnir4CMpopDrwvcmUt/Mhx/EDT1a8
-=OWf9
------END PGP SIGNATURE-----
-
---gKMricLos+KVdGMg--
+What does "going incorrect address" mean?
