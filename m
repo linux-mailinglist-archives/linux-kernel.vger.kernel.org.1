@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B5829D86F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F3029D97D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388054AbgJ1WcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388042AbgJ1WcJ (ORCPT
+        id S2389821AbgJ1Wzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:55:35 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:50342 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731789AbgJ1Wxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:32:09 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EC0C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:32:09 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id x13so688792pgp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w1/8IrO8sx/YyG3QLb2LPvf5Eh9es6JpHKDrqMRrszo=;
-        b=ZBZ5kVEOIS02s7h9dKCzwFiyJFIitPQF7K2Zamgd+7ssGuXsVjhLdUtNZVPWpSyowI
-         VGsjGEME7y7+ytVh4AfbkfnJtcShmwhjFW1SGDy2sJyzbj/VuWN9Qn34ULKkw9edimXC
-         XBEp3rpuHaVVa6FXMsPR2Oha6jeDppF8SHDPU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w1/8IrO8sx/YyG3QLb2LPvf5Eh9es6JpHKDrqMRrszo=;
-        b=VpSFHwIR4MjIcIT4xOy+rZYxkYrUbOkd/o8nr2XqJsJj5qmOT0uw5fnVutW8ooeRjm
-         MP/tFt81IIwtQVh3eUJvT6jgHMvRCaVilklJYX+gYlVW06grplJHXNuqJDbP5N1/T+7Z
-         1EIKzjwvzzRu7yY+zVJgOMb4fO3CnYG1hgWhYRZmZH1RMtL5bPCpLYJgU9apGKMQ0Xfe
-         hdfyUR8BIkNarh5s1WvY4A3i4dFro8wteeiW5IsvCwQgUo0kmy1CZB9c8cjTYMNSK3Mk
-         ahLVE4iqLb9UPyxwEZGqvgFlj5jjKBb5wKh3fQWq+2Hk3Io8iy0CvI0koE7rH4O4QCCH
-         J6nw==
-X-Gm-Message-State: AOAM531iqsHNOteA7+lhYDGiijWSs3iNE076tKKzaW5XNFE/qpUkhgFM
-        VRwP5gn09ydo6AYVykf0NSPdMvsgs/30tg==
-X-Google-Smtp-Source: ABdhPJxAkhbJrCYboUrSVTzSaLQQA/LDRJyFEr4ekcyxOGjc0AuhcZIRoF7aNuuJRohG6nL5wWP0/Q==
-X-Received: by 2002:a5d:9819:: with SMTP id a25mr6472582iol.156.1603895903544;
-        Wed, 28 Oct 2020 07:38:23 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c2sm2531544ioc.29.2020.10.28.07.38.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 07:38:22 -0700 (PDT)
-Subject: Re: linux-next: build warnings after merge of the counters tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201028142039.6c7eb38a@canb.auug.org.au>
- <20201028142354.11d42e47@canb.auug.org.au>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <9b2593f6-b160-52d8-521e-3ad9b059d5a4@linuxfoundation.org>
-Date:   Wed, 28 Oct 2020 08:38:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Oct 2020 18:53:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f2XUd9q63Shpn8ECuQrksUMR0DROrEu1ijIel4+9FnQ=; b=seEto5hPizgDdrB9OUOxoOOLmR
+        +CqxCzgTBy/UrV7q7GISf2SM8Nb60I+sULvS5RMghKDO8O5CUaqjJp4wydKPcznAzxZdAemxIzPAn
+        BlcoZhFmbGkM79LkH4Ojf13Nk2wVAKycWT1AzoL/h82Fp+sxbkAQBPbZH/2xnlUA6v/Zge/RHzLgU
+        31gcCK5/BZBNdG+MMy0egcGhF5pTHheV7jDND+rwN+ToMjKjUzTav/9Q1MS4m3/D2A0eehh9Fj1b/
+        vnkphp2ITon/DWDT/zydoTHQrf30JU8y9Yo65kr7CgEsQqueI58/w3rTHCR7/YOyULQPwA1yeQeYZ
+        4kcxpcFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kXmaq-0004nh-Dc; Wed, 28 Oct 2020 14:38:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6DE2B3006D0;
+        Wed, 28 Oct 2020 15:38:26 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 21AD6203D0A43; Wed, 28 Oct 2020 15:38:26 +0100 (CET)
+Date:   Wed, 28 Oct 2020 15:38:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
+        paulmck@kernel.org, hch@lst.de, axboe@kernel.dk,
+        chris@chris-wilson.co.uk, davem@davemloft.net, kuba@kernel.org,
+        fweisbec@gmail.com, oleg@redhat.com, vincent.guittot@linaro.org
+Subject: Re: [PATCH v3 5/6] irq_work: Provide irq_work_queue_remote()
+Message-ID: <20201028143826.GB2628@hirez.programming.kicks-ass.net>
+References: <20201028110707.971887448@infradead.org>
+ <20201028111221.526249871@infradead.org>
+ <20201028134046.GE229044@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <20201028142354.11d42e47@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028134046.GE229044@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 9:23 PM, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Oct 28, 2020 at 02:40:46PM +0100, Frederic Weisbecker wrote:
+> On Wed, Oct 28, 2020 at 12:07:12PM +0100, Peter Zijlstra wrote:
+> > While the traditional irq_work relies on the ability to self-IPI, it
+> > makes sense to provide an unconditional irq_work_queue_remote()
+> > interface.
 > 
-> On Wed, 28 Oct 2020 14:20:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> After merging the counters tree, today's linux-next build (htmldocs)
->> produced these warnings:
->>
->>
->> Documentation/core-api/counters.rst:45: WARNING: undefined label: test counters module (if the link has no caption the label must precede a section header)
->> Documentation/core-api/counters.rst:48: WARNING: undefined label: selftest for counters (if the link has no caption the label must precede a section header)
->> Documentation/core-api/counters.rst:61: WARNING: undefined label: atomic_ops (if the link has no caption the label must precede a section header)
->>
->> Introduced by commit
->>
->>    37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
-> 
-> Also:
-> 
-> Documentation/core-api/counters.rst: WARNING: document isn't included in any toctree
-> 
+> We may need a reason as well here.
 
-Hi Stephen,
+Well, it doesn't rely on arch self-IPI code. The remote irq_work bits
+are generic SMP code.
 
-This patch series is still is progress. I will drop them from this
-topic branch.
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1308,13 +1308,14 @@ static int rcu_implicit_dynticks_qs(stru
+> >  			resched_cpu(rdp->cpu);
+> >  			WRITE_ONCE(rdp->last_fqs_resched, jiffies);
+> >  		}
+> > -		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
+> > -		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
+> > +#ifdef CONFIG_IRQ_WORK
+> > +		if (!rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
+> 
+> If it's unconditional on SMP, I expect it to be unconditional on rcutree.
+> 
+> Also this chunk seems unrelated to this patch.
 
-thanks,
--- Shuah
+This hunk is due to irq_work_queue_on() no longer existing for
+CONFIG_IRQ_WORK and hence breaking the compile with that IS_ENABLED()
+crud.
+
+That is, this changes IS_ENABLED() for a proper #ifdef.
+
+> >  		    (rnp->ffmask & rdp->grpmask)) {
+> >  			rdp->rcu_iw_pending = true;
+> >  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
+> >  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
+> >  		}
+> > +#endif
+> >  	}
+> >  
+> >  	return 0;
+> > 
+> > 
