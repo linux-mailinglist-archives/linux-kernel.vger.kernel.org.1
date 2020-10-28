@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BE529DCC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3613C29DF3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbgJ2Ac0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:32:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387544AbgJ1W3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:29:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603924156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2SCyw0MgDOHFJTfd5PusUshasNlUpVC0PdQO3C9hYF4=;
-        b=dCnwaS0uFF3PTFI5FSSj0XclZ2CTn7ExGOY2InFDq8NWA0BeCONHayMtXnuXK3fIHrwA4y
-        QovhWwFwN3Fm9ywPf+UEliLRBirPnsejsF6pxExYR6y1XRKrK/IKplPUjDqNomK/CW/GQx
-        Ip9UbEjaL/NiusIRkOTq1MKohPzh7Jg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-111-8iaP2f06P9aMvLjwi3vFEA-1; Wed, 28 Oct 2020 13:27:55 -0400
-X-MC-Unique: 8iaP2f06P9aMvLjwi3vFEA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72A76188C122;
-        Wed, 28 Oct 2020 17:27:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 65BA15C1D0;
-        Wed, 28 Oct 2020 17:27:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201028171159.GB20115@casper.infradead.org>
-References: <20201028171159.GB20115@casper.infradead.org> <20201028143442.GA20115@casper.infradead.org> <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk> <160389426655.300137.17487677797144804730.stgit@warthog.procyon.org.uk> <548209.1603904708@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        kernel test robot <lkp@intel.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
+        id S2403996AbgJ2BAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:00:01 -0400
+Received: from verein.lst.de ([213.95.11.211]:45249 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731500AbgJ1WR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:29 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7742C68BFE; Wed, 28 Oct 2020 18:31:08 +0100 (CET)
+Date:   Wed, 28 Oct 2020 18:31:08 +0100
+From:   "hch@lst.de" <hch@lst.de>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     "hch@lst.de" <hch@lst.de>, Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linaro-mm-sig-owner@lists.linaro.org" 
+        <linaro-mm-sig-owner@lists.linaro.org>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: WARNING in dma_map_page_attrs
+Message-ID: <20201028173108.GA10135@lst.de>
+References: <000000000000335adc05b23300f6@google.com> <000000000000a0f8a305b261fe4a@google.com> <20201024111516.59abc9ec@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net> <BY5PR12MB4322CC03CE0D34B83269676ADC190@BY5PR12MB4322.namprd12.prod.outlook.com> <20201027081103.GA22877@lst.de> <BY5PR12MB43221380BB0259FF0693BB0CDC160@BY5PR12MB4322.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <550614.1603906072.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 28 Oct 2020 17:27:52 +0000
-Message-ID: <550615.1603906072@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR12MB43221380BB0259FF0693BB0CDC160@BY5PR12MB4322.namprd12.prod.outlook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Oct 27, 2020 at 12:52:30PM +0000, Parav Pandit wrote:
+> 
+> > From: hch@lst.de <hch@lst.de>
+> > Sent: Tuesday, October 27, 2020 1:41 PM
+> > 
+> > On Mon, Oct 26, 2020 at 05:23:48AM +0000, Parav Pandit wrote:
+> > > Hi Christoph,
+> > >
+> > > > From: Jakub Kicinski <kuba@kernel.org>
+> > > > Sent: Saturday, October 24, 2020 11:45 PM
+> > > >
+> > > > CC: rdma, looks like rdma from the stack trace
+> > > >
+> > > > On Fri, 23 Oct 2020 20:07:17 -0700 syzbot wrote:
+> > > > > syzbot has found a reproducer for the following issue on:
+> > > > >
+> > > > > HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of
+> > git://git.kernel.org/..
+> > >
+> > > In [1] you mentioned that dma_mask should not be set for dma_virt_ops.
+> > > So patch [2] removed it.
+> > >
+> > > But check to validate the dma mask for all dma_ops was added in [3].
+> > >
+> > > What is the right way? Did I misunderstood your comment about
+> > dma_mask in [1]?
+> > 
+> > No, I did not say we don't need the mask.  I said copying over the various
+> > dma-related fields from the parent is bogus.
+> > 
+> > I think rxe (and ther other drivers/infiniband/sw drivers) need a simple
+> > dma_coerce_mask_and_coherent and nothing else.
+> 
+> I see. Does below fix make sense?
+> Is DMA_MASK_NONE correct?
 
-> > > > +{
-> > > > +	if (PAGE_SIZE - 1 <=3D __AFS_PAGE_PRIV_MASK)
-> > > > +		return 1;
-> > > > +	else
-> > > > +		return PAGE_SIZE / (__AFS_PAGE_PRIV_MASK + 1);
-> > > =
-
-> > > Could this be DIV_ROUND_UP(PAGE_SIZE, __AFS_PAGE_PRIV_MASK + 1); avo=
-iding
-> > > a conditional?  I appreciate it's calculated at compile time today, =
-but
-> > > it'll be dynamic with THP.
-> > =
-
-> > Hmmm - actually, I want a shift size, not a number of bytes as I divid=
-e by it
-> > twice in afs_page_dirty().
-> =
-
-> __AFS_PAGE_PRIV_MASK is a constant though.  If your compiler can't
-> optimise a divide-by-a-constant-power-of-two into a shift-by-a-constant =
-(*),
-> it's time to get yourself a new compiler.
-> =
-
-> (*) assuming that's faster on the CPU it's targetting.
-
-I'm dividing by the resolution, which is calculated from the page size - w=
-hich
-in a THP world is variable:
-
-	static inline unsigned long afs_page_dirty(size_t from, size_t to)
-	{
-		size_t res =3D afs_page_dirty_resolution();
-		from /=3D res; /* Round down */
-		to =3D (to - 1) / res; /* Round up */
-		return ((unsigned long)to << __AFS_PAGE_PRIV_SHIFT) | from;
-	}
-
-David
-
+DMA_MASK_NONE is gone in 5.10.  I think you want DMA_BIT_MASK(64).
+That isn't actually correct for 32-bit platforms, but good enough.
