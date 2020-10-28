@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B9529D967
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21CA29D88C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389752AbgJ1Wyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:54:53 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16469 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389709AbgJ1Wyq (ORCPT
+        id S2388255AbgJ1WdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388348AbgJ1Wcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:54:46 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f99b80d0000>; Wed, 28 Oct 2020 11:27:25 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
- 2020 18:27:22 +0000
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 18:27:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UDCt4gUnfcQeWpSX1yljF9tWqxMPYXosm3RAvoP2gTazlsogCVFaYAagfY57FZSc6afU932rzl0rXPbirdDdoMVFk6WprgwieDHyiermzrgv4mhF524Sz8Hzi8ef+iU6/5yTLgCb/NemQ3l0HSIuBit47lAzy6Ld2HjDzf9WT3FT5FocCdfn27Htz7BOjpE/P1S8n9BvZjSj9SxiIyIDLH7mkzibBLmZ/Y6202wdDsXmWMJFsO+wuDWcZI07O/GxaQwc/8Fbmiit+wSP/pzuF25CvXFIimtKY+Sypyxg7Y2cgvAZyXZ8EqjzpimKHsjvji5SAXrotu30QHPUCCdtlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FBMPHJuyCV1qEvghOQ9mNJcFcIJpFIEfKh71YUrL6qI=;
- b=GG/N4B8f30I0h9lIxoKp1GoLA2HqAp1t1PVKoO1xQXFeweeG+TcyaCoY+LH/nBFT1m/9qqf7fLJrgUGxuaxnToLBwR3rCYTtqnQ+cbXAGuXCHTr9K0kWeituRcfsEjokgn5S6N+v2JdE9Nmj8Gfq4fcvjCN43+1RTDEuRulhzga7yCFjbE1qBYvNOKghVCmBjfSgy1pz5R6TCYJ+dqcnbPNxqNsE8kPjF87EUDDZ/XAGFLgUjUhqtO5yCTFLgqnEmu2y7J+yeI9fZAYZCKp76uZ3ZMj3hlJNsU7vFNmbC+mi0oSgI1qeqY53W7wS+dP+dk6xtlBvUk1aHGSuHtVSEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3018.namprd12.prod.outlook.com (2603:10b6:5:118::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.24; Wed, 28 Oct
- 2020 18:27:21 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
- 18:27:21 +0000
-Date:   Wed, 28 Oct 2020 15:27:19 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Joe Perches <joe@perches.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
-Message-ID: <20201028182719.GA2481497@nvidia.com>
-References: <cover.1602122879.git.joe@perches.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1602122879.git.joe@perches.com>
-X-ClientProxiedBy: MN2PR17CA0033.namprd17.prod.outlook.com
- (2603:10b6:208:15e::46) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Wed, 28 Oct 2020 18:32:53 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37B7C0613CF;
+        Wed, 28 Oct 2020 15:32:53 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id g21so480750vsp.0;
+        Wed, 28 Oct 2020 15:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dzmFu1wXCXtNHysWLv1cdt1YiWFdK19uGwaHHiwDGp0=;
+        b=DYTyzKHbzP1xLIGuWeU4m+XJ/NzTPV4+oICdd9uy3aRlbUYbZ4WUFa3Vlvxum8TUMp
+         /SvJJORfHgcdgvcIQsbtCxPzDVoqgiQnTrA6IjLjMn44yjTz8MuJFzKZLP2cqiEgcI/7
+         Mi6fXEVjFo3TFXOB9McRdx/yHy8T/zdRtlZgAas1VVk6nwBWQTkWdGYo43Mb1J1VGjnH
+         NV6O9j/ZSEc18fNcF9jxnqYoZaer4B21Al6f4gKe/7L+KHZp9nmTM9G4EHsCjxgmVU3M
+         zFkLuKy6zQQERyHVVRfuaVk7IMv3AM2tv3nMiPbF5QGeXqCV+F8hMDE7C2fSatI5CpRq
+         808Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dzmFu1wXCXtNHysWLv1cdt1YiWFdK19uGwaHHiwDGp0=;
+        b=kdSz9dEbLSnlB/eQRry2RCCZCExFNNOrK0tPu1/mzaXGjqO+DvLVm8AwF3BsaTIbMM
+         qAkZ0NAvNNPpALk7OYoefoi7kYj/V4Y9uYLoiegzMaL2bskvi8bo3uNRg0iPO/pVAJRh
+         ALO7z1yNizdMIkKD/qlZRDmeyKQ9egKiT8IXFaNg1iAvFAYr+aOHB1PYOGLnyRfGIIJP
+         x/K6xpEGyauqx7MbH+RXu9SFEWltQ3qE3+/5g//gOYW48LCXYOye1mJns8tZrYNaKAJC
+         H+81PCIl0mMwJVERBgzIcchxcwDcn5F2JQGqSfQ7B5cKJLI/ihbhW5zNF4tc95fN0xgN
+         O+JQ==
+X-Gm-Message-State: AOAM533Grw7iPvXRGecgtNvt3fdcl+/jxY2x6b1HrSJvQ63nFWJZwkSR
+        BBuKltfUQ7n3c77P2z1lR8pFR3gLlMc=
+X-Google-Smtp-Source: ABdhPJw6j6kXCP8WeJLDd7HQFOexljFPUo9l/qsONHi+x2NLKNm10tCzjcEHMj25FV1wPvf32gKcUw==
+X-Received: by 2002:a17:902:ab89:b029:d5:b297:2cc1 with SMTP id f9-20020a170902ab89b02900d5b2972cc1mr648759plr.7.1603910598149;
+        Wed, 28 Oct 2020 11:43:18 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:6d80:dec8:7340:3009])
+        by smtp.gmail.com with ESMTPSA id y27sm309785pfr.122.2020.10.28.11.43.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 11:43:17 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next v3 0/4] net: hdlc_fr: Add support for any Ethertype
+Date:   Wed, 28 Oct 2020 11:43:06 -0700
+Message-Id: <20201028184310.7017-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0033.namprd17.prod.outlook.com (2603:10b6:208:15e::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 18:27:21 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXqAJ-00APZ2-O2; Wed, 28 Oct 2020 15:27:19 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603909645; bh=FBMPHJuyCV1qEvghOQ9mNJcFcIJpFIEfKh71YUrL6qI=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=npFNQ9zQ2IjKyvaHIWaAEuzLE1Qc3GYbL3qo7p1f/EdYYRO93gJmzM6NTFjSRtFc1
-         1LzOVz0GKXWToKtIcdBjjNiiAZ52pZ8+KrzBctjlUq/qEd+LhW1uy0HFhS8QIPR3PY
-         6yNt/H/b5MPBqsIYftK7ysfNHjDOzC4yCfCKDzTYBUBBsdArMLPyoFsr/0rNwpUNMd
-         BMlW4FeCA85K93z4nRcEgugDcxofFJfIAy+WjeDoRYErK8rAlupWonAGDddAPccY64
-         J1jPnyXOeVGQ+/fpWDAUG0J9c3hr++gH9bGhF9JJn5LOsOzqqBxI702hN6MrZCfOAS
-         bQCjPbRQ6/KjQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
-> Joe Perches (4):
->   RDMA: manual changes for sysfs_emit and neatening
->   RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit
+The main purpose of this series is the last patch. The previous 3 patches
+are just code clean-ups so that the last patch will not make the code too
+messy. The patches must be applied in sequence.
 
-Applied to rdma for-next, thanks
+The receiving code of this driver doesn't support arbitrary Ethertype
+values. It only recognizes a few known Ethertypes when receiving and drops
+skbs with other Ethertypes.
 
-Jason
+However, the standard document RFC 2427 allows Frame Relay to support any
+Ethertype values. This series adds support for this.
+
+Change from v2:
+Small fix to the commit message of the 2nd and 3rd patch
+
+Change from v1:
+Small fix to the commit message of the 2nd patch
+
+Xie He (4):
+  net: hdlc_fr: Simpify fr_rx by using "goto rx_drop" to drop frames
+  net: hdlc_fr: Change the use of "dev" in fr_rx to make the code
+    cleaner
+  net: hdlc_fr: Improve the initial checks when we receive an skb
+  net: hdlc_fr: Add support for any Ethertype
+
+ drivers/net/wan/hdlc_fr.c | 119 +++++++++++++++++++++++---------------
+ 1 file changed, 73 insertions(+), 46 deletions(-)
+
+-- 
+2.25.1
+
