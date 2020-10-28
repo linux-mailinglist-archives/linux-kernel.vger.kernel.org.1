@@ -2,169 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FDC29E165
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0905E29E270
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbgJ2CAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:00:48 -0400
-Received: from mga14.intel.com ([192.55.52.115]:8640 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728154AbgJ2CAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:00:45 -0400
-IronPort-SDR: u+1gxMzAhiC3RV/DZwT9EZY5xukIUbzfFVNupoY5Jh37p+YfvgtP8wshe+osFkgRZrCFfgTi/R
- gf06lIrAUKjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9788"; a="167584496"
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="167584496"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 19:00:44 -0700
-IronPort-SDR: XxFghTyA6w8QDfZr+xwlqacxftlr9aeB+qLNteqaBZ9XbJojHNCj03uVZ3Ao1XHL2D373STQj+
- 43meZYHGJhuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,428,1596524400"; 
-   d="scan'208";a="536474458"
-Received: from lkp-server02.sh.intel.com (HELO 0471ce7c9af6) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 28 Oct 2020 19:00:43 -0700
-Received: from kbuild by 0471ce7c9af6 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kXxF4-0000JZ-Eh; Thu, 29 Oct 2020 02:00:42 +0000
-Date:   Thu, 29 Oct 2020 09:59:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/mm] BUILD SUCCESS
- 1fcd009102ee02e217f2e7635ab65517d785da8e
-Message-ID: <5f9a221b.ctytuLBG2npby998%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2404366AbgJ2COg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:14:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28904 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726776AbgJ1Vfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:35:40 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S4WliL042557;
+        Wed, 28 Oct 2020 00:33:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Zl37AZXairTdHgkwm1QP/KXTOciNg0D8eezgRstoutI=;
+ b=AaNyw8FtAIfEbYQItLs37c1l2SwrtWl0uP066o+Tg3bILFUwGW/xohOT5SLA1trp5aLI
+ o4TD1qT9GuZsb6wvaPbyFiPyzi3DY47LO1YQJQg+P7dNdAxKD262+4Xl08HydRbppTzz
+ W2VkY75BFP51dOhR0ZdQCzxgWwnT1aDkp7b4cpwZOLUlzWkALGV9la8RrRyIRiuUnlWZ
+ Q8WlK3hi04WbGrNfaPcHShH6mSMPCMI2rL0YczBoGqWY4JhZzjCzd1Yzq/AD3DrYZSIh
+ c+yRXO7vh9PvxGhIAPs/gyzT2v9e86gYnNNJhwmP7U6/Q/pc3vqKDHq1BTaSIbaz6KZM Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34ec5ur226-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 00:33:08 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09S4X7Zk043438;
+        Wed, 28 Oct 2020 00:33:07 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34ec5ur21p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 00:33:07 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09S4Wo2D018174;
+        Wed, 28 Oct 2020 04:33:05 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 34cbw823sa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Oct 2020 04:33:05 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09S4X3b026476964
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 28 Oct 2020 04:33:03 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54F25A4051;
+        Wed, 28 Oct 2020 04:33:03 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFB8BA4040;
+        Wed, 28 Oct 2020 04:33:01 +0000 (GMT)
+Received: from [9.199.33.247] (unknown [9.199.33.247])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 28 Oct 2020 04:33:01 +0000 (GMT)
+Subject: Re: [PATCH] ext4: properly check for dirty state in
+ ext4_inode_datasync_dirty()
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20201024140115.GA35973@xps-13-7390>
+ <CAD+ocby3hA0GCm5Rf6T3UF+2UWgWoUjrz7=VzbeUMjX6Qx8D5g@mail.gmail.com>
+ <da6697a0-4a23-ee68-fa2e-121b3d23c972@linux.ibm.com>
+ <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Message-ID: <f41af253-bd90-805d-a304-71f2f8f454f7@linux.ibm.com>
+Date:   Wed, 28 Oct 2020 10:03:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CAD+ocbz0NpXYK9fCxpEYGz6fvWJ_SLw+rYQ2yo3UbKJbbEX8hg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-28_01:2020-10-26,2020-10-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=999
+ impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010280023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/mm
-branch HEAD: 1fcd009102ee02e217f2e7635ab65517d785da8e  x86/mm/ident_map: Check for errors from ident_pud_init()
 
-elapsed time: 726m
 
-configs tested: 105
-configs skipped: 58
+On 10/28/20 9:18 AM, harshad shirwadkar wrote:
+> Actually the simpler fix for this in case of fast commits is to check
+> if the inode is on the fast commit list or not. Since we clear the
+> fast commit list after every fast and / or full commit, it's always
+> true that if the inode is not on the list, that means it isn't dirty.
+> This will simplify the logic here and then we can probably get rid of
+> i_fc_committed_subtid field altogether. I'll test this and send out a
+> patch.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Yes, sounds like a better solution. Thanks!
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    socrates_defconfig
-powerpc64                           defconfig
-arm                         nhk8815_defconfig
-arm                          pxa3xx_defconfig
-ia64                                defconfig
-arm                          prima2_defconfig
-ia64                        generic_defconfig
-mips                          malta_defconfig
-sh                          lboxre2_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      chrp32_defconfig
-arc                     haps_hs_smp_defconfig
-m68k                       m5249evb_defconfig
-arm                           tegra_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                           se7206_defconfig
-mips                          rb532_defconfig
-sh                           se7343_defconfig
-powerpc                      walnut_defconfig
-mips                     decstation_defconfig
-m68k                        m5407c3_defconfig
-mips                            gpr_defconfig
-arc                          axs103_defconfig
-sh                               j2_defconfig
-mips                            e55_defconfig
-ia64                      gensparse_defconfig
-microblaze                          defconfig
-arm                        multi_v7_defconfig
-arm                            zeus_defconfig
-sh                          rsk7264_defconfig
-powerpc                    klondike_defconfig
-arm                          pxa168_defconfig
-riscv                    nommu_virt_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201028
-i386                 randconfig-a005-20201028
-i386                 randconfig-a003-20201028
-i386                 randconfig-a001-20201028
-i386                 randconfig-a004-20201028
-i386                 randconfig-a006-20201028
-x86_64               randconfig-a011-20201028
-x86_64               randconfig-a013-20201028
-x86_64               randconfig-a016-20201028
-x86_64               randconfig-a015-20201028
-x86_64               randconfig-a012-20201028
-x86_64               randconfig-a014-20201028
-i386                 randconfig-a016-20201028
-i386                 randconfig-a014-20201028
-i386                 randconfig-a015-20201028
-i386                 randconfig-a013-20201028
-i386                 randconfig-a012-20201028
-i386                 randconfig-a011-20201028
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20201028
-x86_64               randconfig-a002-20201028
-x86_64               randconfig-a003-20201028
-x86_64               randconfig-a006-20201028
-x86_64               randconfig-a005-20201028
-x86_64               randconfig-a004-20201028
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-ritesh
