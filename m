@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A5A29D85C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B5829D86F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387928AbgJ1Wbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:31:36 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:25284 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387900AbgJ1Wb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:31:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603924288; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=Uun2BBWyN9O6gGUON67BLRc5oqgnJ4TIcEJ9tL9SWV0=; b=TT6mUTgTmMM58vVGkFiXC8TfoIySxWLa1qjHUFKnicmB7073ddl7Tq2ckdazVJXIMz5lPYSw
- H8eW6iX9pCzuzfFPV4Q10lyyJI8faeU9EDehsHOkt3Kvw8Bnl7V1YCpKolG2hz69YxPFbZ9B
- zxiCEkyOunw2pTNYrccKwlLhVBo=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f9981ab4e4fe7071da1fdaf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 14:35:23
- GMT
-Sender: ilina=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8CCEC433F0; Wed, 28 Oct 2020 14:35:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: ilina)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26B23C433CB;
-        Wed, 28 Oct 2020 14:35:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26B23C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ilina@codeaurora.org
-Date:   Wed, 28 Oct 2020 08:35:21 -0600
-From:   Lina Iyer <ilina@codeaurora.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     agross@kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mkshah@codeaurora.org
-Subject: Re: [PATCH] soc: qcom: QCOM_RPMH fix build with modular QCOM_RPMH
-Message-ID: <20201028143521.GD19979@codeaurora.org>
-References: <20201027111422.4008114-1-anders.roxell@linaro.org>
- <20201027211536.GB19979@codeaurora.org>
- <CADYN=9LP1p9Kg0BJRHs5JMgfWKB-vHxVkr=DdFt3Uyb5Ka0=UQ@mail.gmail.com>
+        id S2388054AbgJ1WcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388042AbgJ1WcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:32:09 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EC0C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:32:09 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x13so688792pgp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w1/8IrO8sx/YyG3QLb2LPvf5Eh9es6JpHKDrqMRrszo=;
+        b=ZBZ5kVEOIS02s7h9dKCzwFiyJFIitPQF7K2Zamgd+7ssGuXsVjhLdUtNZVPWpSyowI
+         VGsjGEME7y7+ytVh4AfbkfnJtcShmwhjFW1SGDy2sJyzbj/VuWN9Qn34ULKkw9edimXC
+         XBEp3rpuHaVVa6FXMsPR2Oha6jeDppF8SHDPU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w1/8IrO8sx/YyG3QLb2LPvf5Eh9es6JpHKDrqMRrszo=;
+        b=VpSFHwIR4MjIcIT4xOy+rZYxkYrUbOkd/o8nr2XqJsJj5qmOT0uw5fnVutW8ooeRjm
+         MP/tFt81IIwtQVh3eUJvT6jgHMvRCaVilklJYX+gYlVW06grplJHXNuqJDbP5N1/T+7Z
+         1EIKzjwvzzRu7yY+zVJgOMb4fO3CnYG1hgWhYRZmZH1RMtL5bPCpLYJgU9apGKMQ0Xfe
+         hdfyUR8BIkNarh5s1WvY4A3i4dFro8wteeiW5IsvCwQgUo0kmy1CZB9c8cjTYMNSK3Mk
+         ahLVE4iqLb9UPyxwEZGqvgFlj5jjKBb5wKh3fQWq+2Hk3Io8iy0CvI0koE7rH4O4QCCH
+         J6nw==
+X-Gm-Message-State: AOAM531iqsHNOteA7+lhYDGiijWSs3iNE076tKKzaW5XNFE/qpUkhgFM
+        VRwP5gn09ydo6AYVykf0NSPdMvsgs/30tg==
+X-Google-Smtp-Source: ABdhPJxAkhbJrCYboUrSVTzSaLQQA/LDRJyFEr4ekcyxOGjc0AuhcZIRoF7aNuuJRohG6nL5wWP0/Q==
+X-Received: by 2002:a5d:9819:: with SMTP id a25mr6472582iol.156.1603895903544;
+        Wed, 28 Oct 2020 07:38:23 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c2sm2531544ioc.29.2020.10.28.07.38.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 07:38:22 -0700 (PDT)
+Subject: Re: linux-next: build warnings after merge of the counters tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201028142039.6c7eb38a@canb.auug.org.au>
+ <20201028142354.11d42e47@canb.auug.org.au>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <9b2593f6-b160-52d8-521e-3ad9b059d5a4@linuxfoundation.org>
+Date:   Wed, 28 Oct 2020 08:38:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CADYN=9LP1p9Kg0BJRHs5JMgfWKB-vHxVkr=DdFt3Uyb5Ka0=UQ@mail.gmail.com>
+In-Reply-To: <20201028142354.11d42e47@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28 2020 at 03:43 -0600, Anders Roxell wrote:
->On Tue, 27 Oct 2020 at 22:15, Lina Iyer <ilina@codeaurora.org> wrote:
+On 10/27/20 9:23 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Wed, 28 Oct 2020 14:20:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >>
->> Hi Anders,
+>> After merging the counters tree, today's linux-next build (htmldocs)
+>> produced these warnings:
 >>
->> On Tue, Oct 27 2020 at 05:14 -0600, Anders Roxell wrote:
->> >When building allmodconfig leading to the following link error with
->> >CONFIG_QCOM_RPMH=y and CONFIG_QCOM_COMMAND_DB=m:
->> >
->> >aarch64-linux-gnu-ld: drivers/clk/qcom/clk-rpmh.o: in function `clk_rpmh_probe':
->> >  drivers/clk/qcom/clk-rpmh.c:474: undefined reference to `cmd_db_read_addr'
->> >  drivers/clk/qcom/clk-rpmh.c:474:(.text+0x254): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `cmd_db_read_addr'
->> >
->> >Fix this by adding a Kconfig depenency and forcing QCOM_RPMH to be a
->> >module when QCOM_COMMAND_DB is a module. Also removing the dependency on
->> >'ARCH_QCOM || COMPILE_TEST' since that is already a dependency for
->> >QCOM_COMMAND_DB.
->> >
->> >Fixes: 778279f4f5e4 ("soc: qcom: cmd-db: allow loading as a module")
->> >Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
->> >---
->> > drivers/soc/qcom/Kconfig | 2 +-
->> > 1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> >diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
->> >index 9b4ae9c16ba7..3bdd1604f78f 100644
->> >--- a/drivers/soc/qcom/Kconfig
->> >+++ b/drivers/soc/qcom/Kconfig
->> >@@ -109,7 +109,7 @@ config QCOM_RMTFS_MEM
->> >
->> > config QCOM_RPMH
->> >       tristate "Qualcomm RPM-Hardened (RPMH) Communication"
->> >-      depends on ARCH_QCOM || COMPILE_TEST
->> >+      depends on QCOM_COMMAND_DB
->> A solution was posted in the mailing list alredy -
->> https://lore.kernel.org/linux-arm-msm/20201008040907.7036-1-ilina@codeaurora.org/
->
->I missed that one, thanks.
->
 >>
->> If you get a chance, please give that a shot to see if that works for
->> you.
->
->That will work too, but the "depends on ARCH_QCOM || COMPILE_TEST"
->isn't needed since that is already the dependency for QCOM_COMMAND_DB.
->So that should be met here too or am I missing something?
->
-Sure, if you want to post an update to the patch, that would be fine
-too.
-Bjorn: Have you picked up this patch yet? If he hasn't please feel free
-to update the patch. Or, I can do that as well.
+>> Documentation/core-api/counters.rst:45: WARNING: undefined label: test counters module (if the link has no caption the label must precede a section header)
+>> Documentation/core-api/counters.rst:48: WARNING: undefined label: selftest for counters (if the link has no caption the label must precede a section header)
+>> Documentation/core-api/counters.rst:61: WARNING: undefined label: atomic_ops (if the link has no caption the label must precede a section header)
+>>
+>> Introduced by commit
+>>
+>>    37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
+> 
+> Also:
+> 
+> Documentation/core-api/counters.rst: WARNING: document isn't included in any toctree
+> 
 
---Lina
+Hi Stephen,
 
->Cheers,
->Anders
->
->>
->> Thanks,
->> Lina
->>
->> >       help
->> >         Support for communication with the hardened-RPM blocks in
->> >         Qualcomm Technologies Inc (QTI) SoCs. RPMH communication uses an
->> >--
->> >2.28.0
->> >
+This patch series is still is progress. I will drop them from this
+topic branch.
+
+thanks,
+-- Shuah
