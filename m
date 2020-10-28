@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F7B29D7CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF3629D80B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733181AbgJ1W1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:27:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55674 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733126AbgJ1W0z (ORCPT
+        id S2387517AbgJ1W3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:29:08 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:40473 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387508AbgJ1W3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:26:55 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DB79D1C0BA7; Wed, 28 Oct 2020 08:10:57 +0100 (CET)
-Date:   Wed, 28 Oct 2020 08:10:57 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 228/264] PM: hibernate: remove the bogus call to
- get_gendisk() in software_resume()
-Message-ID: <20201028071057.GC8084@amd>
-References: <20201027135430.632029009@linuxfoundation.org>
- <20201027135441.360964081@linuxfoundation.org>
+        Wed, 28 Oct 2020 18:29:07 -0400
+Received: by mail-wr1-f67.google.com with SMTP id m13so723569wrj.7;
+        Wed, 28 Oct 2020 15:29:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TuERzv+I0rpz7wGuytgD+7FYdwTEBi7hw79iaAsE+F4=;
+        b=btqzOokfPjt7hK371Su1Cq8JRNnPaZQdPkQhzKVPNRW5K/NnmOzcHTFtvQYXaq0tA2
+         qCVelsYrzMIe629X6wRHEAo4wyAQxC1kU47Ix3WPAMXWXCPQzJ5LL64WXKriQKbiw00N
+         rcnc17+BG7hZUaw4wjGL2SFNL8vEfjnUbRLE4VdMzYECbrDTdzeQTVUWOvM88JmuaZf8
+         eoxk0DuETyur54p2HqpPVwGEPbtFW9C1tzSVverhocN8CoPVfgnmhryPg99e37maPyG0
+         txn4jghMi9Tv2e/PLx9204TFJYRZuZDQJ6Oz2fSWlDXFE+5TuZxMG7BBNtO2K6XRzUpe
+         cZRg==
+X-Gm-Message-State: AOAM531z4OnbwuPkHRht3V9dRRscv2ckceIU0JXaEuWO6n8DgYEJGLEn
+        gMcnmqhBTd4cSEDiKCVEurLHl/8lh50mHw==
+X-Google-Smtp-Source: ABdhPJzqFo3mj4of5jE+IZvMiFxXULXKc0DG0DwWkOdEK2aXLgDE+YvMXSsMl4K4YrUuxRL82hp0jg==
+X-Received: by 2002:a17:906:c0d8:: with SMTP id bn24mr6127669ejb.480.1603869716907;
+        Wed, 28 Oct 2020 00:21:56 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id q3sm2287534edv.17.2020.10.28.00.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 00:21:55 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 08:21:54 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Wolfram Sang <wsa@kernel.org>, Andrzej Hajda <a.hajda@samsung.com>,
+        linux-i2c@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: exynos5: fix platform_get_irq error handling
+Message-ID: <20201028072154.GA3494@kozik-lap>
+References: <20201027214257.8099-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Clx92ZfkiYIKRjnr"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201027135441.360964081@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201027214257.8099-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 10:42:57PM +0100, Martin Kaiser wrote:
+> platform_get_irq already prints an error message if the requested irq
+> was not found. Don't print another message in the driver.
+> 
+> If platform_get_irq returns an error, relay this error to the caller of the
+> probe function. Don't change all errors to -EINVAL. This breaks the case
+> where platform_get_irq returns -EPROBE_DEFER.
+> 
+> platform_get_irq never returns 0. Don't check for this. Make it clear that
+> the error path always returns a negative error code.
 
---Clx92ZfkiYIKRjnr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+These should be three separate commits.
 
-On Tue 2020-10-27 14:54:46, Greg Kroah-Hartman wrote:
-> From: Christoph Hellwig <hch@lst.de>
->=20
-> [ Upstream commit 428805c0c5e76ef643b1fbc893edfb636b3d8aef ]
->=20
-> get_gendisk grabs a reference on the disk and file operation, so this
-> code will leak both of them while having absolutely no use for the
-> gendisk itself.
->=20
-> This effectively reverts commit 2df83fa4bce421f ("PM / Hibernate: Use
-> get_gendisk to verify partition if resume_file is integer format")
-
-This does not fix anything in 4.19, and should not be there.
-
-It will break resume for people using resumewait option and using
-numeric values, as original changelog explains. Eventually, someone
-will cry regression and we'll have to fix it in the mainline, but no
-need to bring this to -stable, too.
-
-								Pavel
-> +++ b/kernel/power/hibernate.c
-> @@ -842,17 +842,6 @@ static int software_resume(void)
-> =20
->  	/* Check if the device is there */
->  	swsusp_resume_device =3D name_to_dev_t(resume_file);
-> -
-> -	/*
-> -	 * name_to_dev_t is ineffective to verify parition if resume_file is in
-> -	 * integer format. (e.g. major:minor)
-> -	 */
-> -	if (isdigit(resume_file[0]) && resume_wait) {
-> -		int partno;
-> -		while (!get_gendisk(swsusp_resume_device, &partno))
-> -			msleep(10);
-> -	}
-> -
->  	if (!swsusp_resume_device) {
->  		/*
->  		 * Some device discovery might still be in progress; we need
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---Clx92ZfkiYIKRjnr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+ZGYEACgkQMOfwapXb+vKgcgCglC6VPB3QxXCD4LK7LE68kqWA
-nuwAnRhTCK3UnXaj6YT7IlIuFpC/bOmb
-=XBYh
------END PGP SIGNATURE-----
-
---Clx92ZfkiYIKRjnr--
+Best regards,
+Krzysztof
