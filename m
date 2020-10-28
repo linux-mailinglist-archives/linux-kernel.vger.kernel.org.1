@@ -2,130 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756B529DD03
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1728529DD11
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729450AbgJ2Ae3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:34:29 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:13364 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732181AbgJ1WU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:20:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603923629; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lvCzBP89PUcXDLkZrLQas8tpiINggPlX3IHCAMSWkpI=;
- b=l4o4HvEEi9kl3HibJLfCRzvYsXwlHLCdKJDZxibqb0csptn7sO4APuZoIl4VlDAwEDg2s0h4
- IyDD5kX6iQxBRBbMHUmKPg8LSfY4vZxEcwUyIvd2T1rnASUHCKuTLT44iEA8Zm3ZxmhEj+0e
- xoaNpZaG8U02PhBjG2JU5dhmYz4=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f99b75a2ef825cbc2d0cfd8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 28 Oct 2020 18:24:26
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8F16C433F0; Wed, 28 Oct 2020 18:24:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F22FC433CB;
-        Wed, 28 Oct 2020 18:24:23 +0000 (UTC)
+        id S1729960AbgJ2Aeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732016AbgJ1WTn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:19:43 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA76FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:19:42 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id w5so552537qvn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=CVcyGK+s/f9bZqsQmhebTHh1esD4cvYl9/Wlm95INbI=;
+        b=uDMxC6fjJDnSIGJY8GrrxsB/K3C6Gj8Qi7whbl9sNEhTDJrO3ucXNigOr0XXqDeB+o
+         F6LTG2aons5C9ubd+7UUQbK09QCBP6M6RuZdpDObIo4Jw9Xf/zaIkjWfvobtcsXUF6Sc
+         dxIuIcyoSUKBmsoUXW1BbFvBQqE4ZZ+vAriGbhyYkiP6Uo/yyMDN+VvqT/nDtXpl6nXG
+         QTfx7LBqt9z3vniGCjP9CAyI6VkDJlbFFREnHbb1/+qoX2j91XPF1XgYA9b3n6JOl31p
+         S6vSTOhlbb9GiBxDOYdh7HLlHAYZaj4gYMl5soAy+Z28vXPruyOn3chx+23GfySuPnrZ
+         CymA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=CVcyGK+s/f9bZqsQmhebTHh1esD4cvYl9/Wlm95INbI=;
+        b=KjaMKMDqPkgQ0PPjxWxH9/uRixPCtiE3mmMkO3WJoAq1P6tnyqaVHk2XYCNBuQ75KU
+         pWSY+08we1dlmn7T1vefc2XxLRCd4dxqddZSEiYiuN/xOGi8lVRsZW4W++UPv2iqEDoP
+         +shWgJQ9aEP6I9DsZUZsgNpkuotqGrA435qJ13gPgXSIIGtBLyD3OcAtOmIr1Iyx12iB
+         aMgmNpiVqfqkHR4R2SuCp8MPu7pzTRUzvFNcPlbxRZ3dLNeJgysL18nVqOZZChDZ7ZxN
+         F196PAyf2QNF4JxIN0XrnbsJq0lWN22N7s9rmwqw0hMrqMmP3sZlcV/Ra3G0QWqo1g0C
+         S2Vg==
+X-Gm-Message-State: AOAM53117RctI9N10odMOhGg6GhaPSSPC318bb/QJT57l7HI+6IUd7SZ
+        +fcKwyHyk6/qQ8eksgkgXTjyRxJYjh4C0NyZ
+X-Google-Smtp-Source: ABdhPJzDVC1/tpPq0nTJeuAK07yts2PNXubu4HAxTT0K/RcMsNSRDaXcqvR90gEBmU84pJEBWwSzjA==
+X-Received: by 2002:aa7:9891:0:b029:161:690b:8dcf with SMTP id r17-20020aa798910000b0290161690b8dcfmr543316pfl.65.1603911523014;
+        Wed, 28 Oct 2020 11:58:43 -0700 (PDT)
+Received: from ManjaroKDE ([47.144.162.13])
+        by smtp.gmail.com with ESMTPSA id 198sm362888pfy.41.2020.10.28.11.58.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 11:58:42 -0700 (PDT)
+Message-ID: <6de890917af3a3aa6544f5d7c892455f71964c44.camel@gmail.com>
+Subject: Re: [PATCH 0/8] Style and small fixes for core-scheduling
+From:   John Wyatt <jbwyatt4@gmail.com>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen ' <tim.c.chen@intel.com>
+Date:   Wed, 28 Oct 2020 11:58:34 -0700
+In-Reply-To: <20201028143742.GB121779@lorien.usersys.redhat.com>
+References: <20201028121917.635203-1-jbwyatt4@gmail.com>
+         <20201028143742.GB121779@lorien.usersys.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 28 Oct 2020 23:54:23 +0530
-From:   mdalam@codeaurora.org
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, richard@nod.at,
-        vigneshr@ti.com, robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 0/5] mtd: rawnand: qcom: Add support for QSPI nand
-In-Reply-To: <20201028104835.3dc31745@xps13>
-References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
- <20201028104835.3dc31745@xps13>
-Message-ID: <10db598eed716d7759bc0125b6977cf1@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-28 15:18, Miquel Raynal wrote:
-> Hello,
+Hi Phil,
+
+> Hi John,
 > 
-> Md Sadre Alam <mdalam@codeaurora.org> wrote on Sat, 10 Oct 2020
-> 11:01:37 +0530:
+> Welcome!
+
+Thank you!
+
 > 
->> QPIC 2.0 supports Serial NAND support in addition to all features and
->> commands in QPIC 1.0 for parallel NAND. Parallel and Serial NAND 
->> cannot
->> operate simultaneously. QSPI nand devices will connect to QPIC 
->> IO_MACRO
->> block of QPIC controller. There is a separate IO_MACRO clock for 
->> IO_MACRO
->> block. Default IO_MACRO block divide the input clock by 4. so if 
->> IO_MACRO
->> input clock is 320MHz then on bus it will be 80MHz, so QSPI nand 
->> device
->> should also support this frequency.
->> 
->> QPIC provides 4 data pins to QSPI nand. In standard SPI mode (x1 mode) 
->> data
->> transfer will occur on only 2 pins one pin for Serial data in and one 
->> for
->> serial data out. In QUAD SPI mode (x4 mode) data transfer will occur 
->> at all
->> the four data lines. QPIC controller supports command for x1 mode and 
->> x4 mode.
->> 
->> Md Sadre Alam (5):
->>   dt-bindings: qcom_nandc: IPQ5018 QPIC NAND documentation
->>   mtd: rawnand: qcom: Add initial support for qspi nand
->>   mtd: rawnand: qcom: Read QPIC version
->>   mtd: rawnand: qcom: Enable support for erase,read & write for serial
->>     nand.
->>   mtd: rawnand: qcom: Add support for serial training.
->> 
->>  .../devicetree/bindings/mtd/qcom_nandc.txt         |   3 +
->>  drivers/mtd/nand/raw/nand_ids.c                    |  13 +
->>  drivers/mtd/nand/raw/qcom_nandc.c                  | 502 
->> ++++++++++++++++++++-
->>  3 files changed, 494 insertions(+), 24 deletions(-)
->> 
+> > Please feel free to advise on any corrections or improvements that
+> > can be
+> > made.
 > 
-> I'm sorry but this series clearly breaks the current layering. I cannot
-> authorize SPI-NAND code to fall into the raw NAND subsystem.
-> 
+> Thanks for these. I wonder, though, if it would not make more sense
+> to post these changes as comments on the original as-yet-unmerged
+> patches that you are fixing up? 
 
-I am agree with you, we should not add SPI-NAND changes inside
-raw NAND subsystem.
+Patch 23/26 has a lot of spaces to tabs issues that are isolated to one
+file (and one patch if I read it correctly). It would definitely make
+sense for those to be a comment. Especially with patch 23 being a later
+patch in the patch series. Most of those issues are not fixed by this
+patch series I submitted.
 
-> As both typologies cannot be used at the same time, I guess you should
-> have another driver handling this feature under the spi/ subsystem +
-> a few declarations in the SPI-NAND devices list.
-> 
+For the rest, I am willing to do resubmit as comments if that would be
+easier for the submitter.
 
-Initially I was started writing separate driver under SPI-NAND subsystem 
-then I
-realized that more than 85% of raw/qcom_nand.c code getting duplicated.
+Please let me know if that is how I should resubmit them.
 
-That's why I have added this SPI-NAND change in raw/qcom_nand.c since
-more than 85% of code will be reused.
+Being a patch set does makes them easier to verify. Some warnings
+against the individual patches, like braces surrounding a one line in a
+if block, disappear with later patches as the code is added. For
+clarity for the mailing list, I used the jfern tree with the
+'coresched-v8-posted-to-list'.
 
-If I will add this change inside SPI-NAND subsystem then much of
-raw/qcom_nand.c code will get duplicated. Would it be ok ?
+https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/tag/?h=coresched-v8-posted-to-list
 
-> Thanks,
-> Miquèl
+Thank you for your feedback.
+
+-- 
+Sincerely,
+John Wyatt
+
