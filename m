@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B15729DAED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57BC29DB39
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390612AbgJ1Xim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S2388119AbgJ1XqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389019AbgJ1Xha (ORCPT
+        with ESMTP id S1725890AbgJ1Xp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:37:30 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8844C0613CF;
-        Wed, 28 Oct 2020 16:37:30 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id r9so1392712ioo.7;
-        Wed, 28 Oct 2020 16:37:30 -0700 (PDT)
+        Wed, 28 Oct 2020 19:45:56 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84860C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:45:56 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id f7so1431061oib.4
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:45:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/A3CEwa9ZFQ6exulGwUCkA+aZ+1mPx+5qugmy/RoAHc=;
-        b=VoD311MDfxBIgRqk43Hi8k7w5dsWdemKv5g5D01kst8I7lYMqYEw7EHrLuiMDMhnMJ
-         Nfkd2V53e45RjYqUKzFzAGwjpydQ0M/Ediw6eN6lwRxkof2o3jbc2nRiScnfdbDG6zcR
-         b2l++CcrXH555WrlbATUIsuEyuCx4z8q1XT7V7RDHDSjCFkKQ/ZymlJwTdgCSjH7PwJl
-         V4zXyG583t1Xx3JzxAr/QIdV2u0QCgoeoAb8Nhgzcy9dXlhv+ky5+hBFmT7MoefWFWu1
-         vNoTrcOl9VmI4XJeHv3IsmTomuUdjw4oiORf/KUFOerYOIddmvfsxrNsQ/QQDPf65kSr
-         qMsg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=p7ntHaHHOHrtggdb+F7Ufp0GAHOrhmhBnRrIBUPbXhk=;
+        b=ev+XrUr0qiMTSh/ogxszH3mrbBkVB2ZcRUdzqG4tl6t+ACwmRwdOaVxpzhdz/JVM3c
+         9c72OOjTQo/uchJXzQXrPirJ62yBqpnz+gnaV624ZyOJ4XHEArFS0ZNquiGoGxzO/rLq
+         44+FsnHPp+Vv1Bov+OB6fCqg/VUgLPmDCfUeL16vhpkLBWNOBrDQq8dCi9kk2p0f1Nh1
+         uc7PFXCIjAbkh9YG5/FZw/7fQ1po9cIroKzjV4efe3CsJq/wTSAqGJ0y9Zly2jptHFt2
+         7QncknEvYmCVrnVFuudoG+VtizDw8eZhsCH9N8IpPfLAYoZQpdM/vmMrW+62n+lIIBLA
+         cXfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/A3CEwa9ZFQ6exulGwUCkA+aZ+1mPx+5qugmy/RoAHc=;
-        b=t41vYzgOomOF1OQJS37exK6E7PO8A9ZKRpeoP6XSN6R7VmCslHDWL+2W/47OUVDxK2
-         mIABJQRRwyxiU1N/6d8m7xZpG5fdhdAXN5ZXVyrq6f7LGd5O0WYe2QmxkV7yFXCFupN/
-         kmcqk3qAUvjcrsvNf1qKWRv1Pu1UXeXVE3SwVBQou+8HdvUCrDBGVrMLdf11HJogC9Tk
-         nnjTYIw8rx7F3Errqj1+r4jBXaVwfoXhiIySVTEVyfg/cPpm9DLGKFST+3c61sy6I1Ay
-         EcDzIPPsLDGN5Qt1I4EtK8kBhdNQloJ5E87c0JrAPGllT9mKPGPr+G9Nr6BoVm1KPMTy
-         bxTw==
-X-Gm-Message-State: AOAM531v5y90HCKPX32IkT9wZ1KHs5kB1GmbWQEVgPWkoY+EJNL0iayf
-        zBynFQkhBfXacVZ3sHtPzRwkOr+tspGsW+hgs7lzx1fwXm8=
-X-Google-Smtp-Source: ABdhPJxB39cK4LoLPV+rayymmlN4yuGJL6W04dfmN5biZiNchT7DQioArPW9ZWexdAhR2Swk3KQ5KSCHwBGQEvqE+sA=
-X-Received: by 2002:a5d:8487:: with SMTP id t7mr5793859iom.35.1603887047936;
- Wed, 28 Oct 2020 05:10:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=p7ntHaHHOHrtggdb+F7Ufp0GAHOrhmhBnRrIBUPbXhk=;
+        b=INbxH2VC1WHx3aBZp0+zuzwi/OB5+IEaxm7HJxLvoDzm9VJUnBDbR7w/a7k9R2bryo
+         OKOHQb4X0I1wNtXlRE4UjN17Kc3W1dD3nCw9gPInwbbn9SyiVHj6QrBPRHg4Mzd2x4wS
+         XxFjOdvuQGqBxsQyflgHfobCFk+TR2ZVipOSzNo9bs75Z+KovKsxdj2/IaPZYpezjtGe
+         25ODFOGaVdlgrNGNY1fsKNTAvl2aPw1CXQtmbNRgp2r9gsgVsPKG0NfcsaEsThjP0+uS
+         Z02qKDP22g7D4G+nVxr3jXQbrgVeVhez138HNFW6rvsItzqFmXqaksxhzt0D3tjtujnt
+         +05w==
+X-Gm-Message-State: AOAM532NJZjzqu4KD+UiEdjeeJCARKK0B0iJT3usC4awz/6fWL/6gzWy
+        l7DhitPv5bqWZ4pl4eLOx8RipGppkxIVmVPt
+X-Google-Smtp-Source: ABdhPJzJLEEdVOdAJbzeZFkWpiGRDBvm/qlDQFnn98sJfb2o7rmHDtKAAx4A/4U2kShok2rVhESyLw==
+X-Received: by 2002:a17:90a:4a95:: with SMTP id f21mr6012711pjh.223.1603887648448;
+        Wed, 28 Oct 2020 05:20:48 -0700 (PDT)
+Received: from Monkey.fios-router.home ([47.144.162.13])
+        by smtp.gmail.com with ESMTPSA id a143sm6329137pfd.138.2020.10.28.05.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 05:20:47 -0700 (PDT)
+From:   "John B. Wyatt IV" <jbwyatt4@gmail.com>
+To:     "' Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen ' <tim.c.chen@intel.com>
+Cc:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
+Subject: [PATCH 5/8] sched: Add newline after declaration
+Date:   Wed, 28 Oct 2020 05:19:14 -0700
+Message-Id: <20201028121917.635203-6-jbwyatt4@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201028121917.635203-1-jbwyatt4@gmail.com>
+References: <20201028121917.635203-1-jbwyatt4@gmail.com>
 MIME-Version: 1.0
-References: <20200502125949.194032-1-aford173@gmail.com> <20200502125949.194032-2-aford173@gmail.com>
- <20200520010348.GE11739@dragon>
-In-Reply-To: <20200520010348.GE11739@dragon>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 28 Oct 2020 07:10:37 -0500
-Message-ID: <CAHCN7xKBx_YXCGSUJWO3YCaGfx4oc7iuv6S4qi500_NjV9pW=w@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm: Add support for micfil
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        aford@beaconemedded.com, Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 19, 2020 at 8:03 PM Shawn Guo <shawnguo@kernel.org> wrote:
->
-> On Sat, May 02, 2020 at 07:59:48AM -0500, Adam Ford wrote:
-> > The i.MX8M Mini has supports the MICFIL digital interface.
-> > It's a 16-bit audio signal from a PDM microphone bitstream.
-> > The driver is already in the kernel, but the node is missing.
-> >
-> > This patch adds the micfil node.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > index c63685ae80ee..d46e727fc362 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> > @@ -339,6 +339,25 @@ sai6: sai@30060000 {
-> >                               status = "disabled";
-> >                       };
-> >
-> > +                     micfil: micfil@30080000 {
->
-> Find a generic node name, audio-controller maybe?
+Silences checkpatch warning.
 
-The SAI's nodes are called SAI@xxxx
+Issue reported by checkpatch.
 
-If that's a deal-breaker, I can push a V3.
+Signed-off-by: John B. Wyatt IV <jbwyatt4@gmail.com>
+---
+ kernel/sched/coretag.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I didn't see anyone from the device tree side comment, and the device
-tree binding doc states 'micfil@xxxxxx' so I used what was documented
-in the fsl,micfil.txt
+diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+index 11139dbed648..6d17d11cb46f 100644
+--- a/kernel/sched/coretag.c
++++ b/kernel/sched/coretag.c
+@@ -287,6 +287,7 @@ unsigned long cpu_core_get_group_cookie(struct task_group *tg)
+ 
+ 		if (tg->core_tagged) {
+ 			unsigned long cookie = ((unsigned long)tg << 8) | color;
++
+ 			cookie &= SCHED_CORE_GROUP_COOKIE_MASK;
+ 			return cookie;
+ 		}
+-- 
+2.28.0
 
-adam
->
-> Shawn
->
-> > +                             compatible = "fsl,imx8mm-micfil";
-> > +                             reg = <0x30080000 0x10000>;
-> > +                             interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-> > +                                          <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-> > +                                          <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-> > +                                          <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-> > +                             clocks = <&clk IMX8MM_CLK_PDM_IPG>,
-> > +                                      <&clk IMX8MM_CLK_PDM_ROOT>,
-> > +                                      <&clk IMX8MM_AUDIO_PLL1_OUT>,
-> > +                                      <&clk IMX8MM_AUDIO_PLL2_OUT>,
-> > +                                      <&clk IMX8MM_CLK_EXT3>;
-> > +                             clock-names = "ipg_clk", "ipg_clk_app",
-> > +                                           "pll8k", "pll11k", "clkext3";
-> > +                             dmas = <&sdma2 24 25 0x80000000>;
-> > +                             dma-names = "rx";
-> > +                             status = "disabled";
-> > +                     };
-> > +
-> >                       gpio1: gpio@30200000 {
-> >                               compatible = "fsl,imx8mm-gpio", "fsl,imx35-gpio";
-> >                               reg = <0x30200000 0x10000>;
-> > --
-> > 2.25.1
-> >
