@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC9A29D483
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9064729D330
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgJ1Vwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:52:41 -0400
-Received: from casper.infradead.org ([90.155.50.34]:44318 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728343AbgJ1Vwc (ORCPT
+        id S1727334AbgJ1VlV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 28 Oct 2020 17:41:21 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:46390 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727270AbgJ1VlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:52:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=goA5wJsndJL71CyqHFXaVIdsUi4qYa0t0DekgleEdZg=; b=aGCyXro6jdMIKQtXTrBZGq1MjU
-        uX+30tZuxwN7QjPuWa/msg9mo+UKxR+qPIiDYP7gCfoagaqbsD/amh7hVO+rsP8pPwHD6cUSe94X4
-        aWiedg6gb5yK1fCVHFGkxnJ1JXDlONz3hv7+QxJSSCK3cn4ejd4AjzcYhOXmuv6Rvibibc/y8PqeZ
-        iGGI3u9kAem+18o9/XPajqlvT1JMPCS1z8ob0q6L+AZMPqQOjIRs/SGAW0Sz0o6jExObu1Bx06T1S
-        LYlI6I7dps93HWtfCcgPNNd49wwaeMbtV+uYBH/HJomz3oRNN4wugEZCx/hmEKizNukt8UG0owBiP
-        T4i4N1Ag==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXmJd-0003Uu-4S; Wed, 28 Oct 2020 14:20:41 +0000
-Date:   Wed, 28 Oct 2020 14:20:41 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/11] afs: Fix to take ref on page when PG_private is set
-Message-ID: <20201028142041.GZ20115@casper.infradead.org>
-References: <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk>
- <160389422491.300137.18176057671220409936.stgit@warthog.procyon.org.uk>
+        Wed, 28 Oct 2020 17:41:03 -0400
+Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 9964B3A5CD2;
+        Wed, 28 Oct 2020 14:23:27 +0000 (UTC)
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id C3CD91BF20B;
+        Wed, 28 Oct 2020 14:23:04 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 15:23:02 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Praveenkumar I <ipkumar@codeaurora.org>
+Cc:     richard@nod.at, vigneshr@ti.com, sivaprak@codeaurora.org,
+        peter.ujfalusi@ti.com, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, kathirav@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: Fix DMA sync on FLASH_STATUS
+ register read
+Message-ID: <20201028152302.2f830077@xps13>
+In-Reply-To: <24a781a3-488c-b638-1b92-0f279807446f@codeaurora.org>
+References: <1602230872-25616-1-git-send-email-ipkumar@codeaurora.org>
+        <20201028110835.2f319c0a@xps13>
+        <24a781a3-488c-b638-1b92-0f279807446f@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160389422491.300137.18176057671220409936.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:10:24PM +0000, David Howells wrote:
-> +++ b/fs/afs/dir.c
-> @@ -283,6 +283,7 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
->  
->  			set_page_private(req->pages[i], 1);
->  			SetPagePrivate(req->pages[i]);
-> +			get_page(req->pages[i]);
+Hello,
 
-Alternative spelling:
+Praveenkumar I <ipkumar@codeaurora.org> wrote on Wed, 28 Oct 2020
+19:48:34 +0530:
 
--			set_page_private(req->pages[i], 1);
--			SetPagePrivate(req->pages[i]);
-+			attach_page_private(req->pages[i], (void *)1);
+> Hi Miquel,
+> 
+> Please find the inline reply.
+> 
+> Thanks,
+> Praveenkumar I
+> 
+> 
+> On 10/28/2020 3:38 PM, Miquel Raynal wrote:
+> > Hello,
+> >
+> > Praveenkumar I <ipkumar@codeaurora.org> wrote on Fri,  9 Oct 2020
+> > 13:37:52 +0530:
+> >  
+> >> After each codeword NAND_FLASH_STATUS is read for possible operational
+> >> failures. But there is no DMA sync for CPU operation before reading it
+> >> and this leads to incorrect or older copy of DMA buffer in reg_read_buf.
+> >>
+> >> This patch adds the DMA sync on reg_read_buf for CPU before reading it.
+> >>
+> >> Fixes: 5bc36b2bf6e2 ("mtd: rawnand: qcom: check for operation errors in case of raw read")  
+> > I guess this deserves a proper Cc: stable tag?  
+> >    >> Yes. I will send a V2 Patch with stable tag in Cc  
 
-AFS is an anomaly; most filesystems actually stick a pointer in page->private.
+That's fine for this one, I'll add it myself.
 
-> +++ b/fs/afs/write.c
-> @@ -151,7 +151,8 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
->  	priv |= f;
->  	trace_afs_page_dirty(vnode, tracepoint_string("begin"),
->  			     page->index, priv);
-> -	SetPagePrivate(page);
-> +	if (!TestSetPagePrivate(page))
-> +		get_page(page);
->  	set_page_private(page, priv);
->  	_leave(" = 0");
->  	return 0;
+> >> Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>  
+> > I think your full name is required in the SoB line (should match the
+> > authorship).  
+> >     >> "Praveenkumar I" is my full name and it is same as the authorship.  
 
-There's an efficiency question here that I can't answer ... how often do
-you call afs_write_begin() on a page which already has PagePrivate set?
-It's fewer atomic ops to do:
+Ok, sorry for the confusion.
 
-	if (PagePrivate(page))
-		set_page_private(page, priv);
-	else
-		attach_page_private(page, (void *)priv);
+> > Otherwise looks good to me.
+> >  
+> >> ---
+> >>   drivers/mtd/nand/raw/qcom_nandc.c | 2 ++
+> >>   1 file changed, 2 insertions(+)
+> >>
+> >> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> >> index bd7a7251429b..5bb85f1ba84c 100644
+> >> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> >> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> >> @@ -1570,6 +1570,8 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
+> >>   	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> >>   	int i;  
+> >>   >> +	nandc_read_buffer_sync(nandc, true);  
+> >> +
+> >>   	for (i = 0; i < cw_cnt; i++) {
+> >>   		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);  
+> >>   > Thanks,  
+> > Miquèl  
+> 
 
-I have no objection to adding TestSetPagePrivate per se; I just don't
-know if it's really what you want or not.
+Cheers,
+Miquèl
