@@ -2,123 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92FD29DAE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D766229DB45
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390537AbgJ1XfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        id S2389407AbgJ1WsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389600AbgJ1Xer (ORCPT
+        with ESMTP id S1733116AbgJ1Wr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:34:47 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CB8C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:34:46 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id l28so954971lfp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:34:46 -0700 (PDT)
+        Wed, 28 Oct 2020 18:47:56 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFB9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:47:55 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w11so347949pll.8
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qt8DJxbLetO1WoXKcxRo5toKKtnSgKB5eVlWB58cOkk=;
-        b=OH+AqmBT9Kdmi64IsMGc8MSNykUCembPpixPv4zzBrzrPu4ucwFsORVaHkMGcfPA4r
-         8uCQVHV+8Wyli+9AttwM7qpv4f4tNC2hdEunrUWLLkSkWs0PWOUCa+n8YKIabHg6GLd7
-         hiwxshPZf7ZvPf+4dweotp+Ny/sGKfx7EeycI=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=1cQOz6xe20uUsRkiyAuJXh3GxeGLZykdgg7FMJb+9TM=;
+        b=ntnVw4zWPTSF52CfSWIdiqgEPO4CfxGZ21R82hCOg03zVqyRyFeEKdVTSJzffVd38J
+         kVwbwfRz3Q0kzb+9YLMZWcZLV7nxrFTQNomneeaWtckMrwU1qIBKgzTz6rvfGee4e88u
+         liB2uR5zLpgl6RGDJEGlLZVI5VeNr/QiwgqlHtPQZOJnH+2gsYaYvf0Mb5t/aLOGsPlp
+         vFZvPF8qK3teef8a+A2x1jwFDKTZiKufP2yl9Ba1oKCxWFUUAT5J6tjBwQcjYmUABH40
+         aAuBTPJgzP9BGUVuurvbNmJelWeXxahqSclq0PmKdW1SugPDCDWak4v5iExHv8YGpAKf
+         7ncA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qt8DJxbLetO1WoXKcxRo5toKKtnSgKB5eVlWB58cOkk=;
-        b=FJsO/fzmx8Dr9xjo27sKU5autTwG1RFVnj6Ci1YpLBonEc5NOwSOlJo8vD8mI8H725
-         x9y1KcelRcRi66g38a+wyNFjX60uYZG+VElJ4QZfMx/7qg5acmkbMXqMVRURm3A4EkUC
-         2/z9LblDwdyREHwJylth7GIaAzH7apsOeFTt9b+3mpdyUcKGaitHaiu3z+WDvFu5eoKE
-         5dnPwaftWhyQCziPyGftQjM9PVfl5RoCypk1tO4JlSwX8r9foXyr8xnW/E/We430WYJT
-         /w0vF0EJDTixUZxiuFvBRZSNqaquD4aCwTTBRrRQbIX5vt3UAhqABzkqOsdFJcGLT0fR
-         //xA==
-X-Gm-Message-State: AOAM533GiYY/cG6nSU4/loUE3vDPZEhS1uwDcBQ7NymW+jJYIKpQQiAS
-        FgYle8h7PbeHzmCeR747Ze2GG+FwGN+toGAvCGyxbDQr4WZZVQPz
-X-Google-Smtp-Source: ABdhPJwxL/cNreEkGxZEeBkLMJW+nXtxbWJBnh3oGKara0Jkz/gJF9pPGAqnIO/XhWtV5NKiBIa/b6QweHKnigrOa6I=
-X-Received: by 2002:a50:fb06:: with SMTP id d6mr6238984edq.312.1603866735356;
- Tue, 27 Oct 2020 23:32:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
- <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
- <CAG48ez3kpEDO1x_HfvOM2R9M78Ach9O_4+Pjs-vLLfqvZL+13A@mail.gmail.com>
- <656a37b5-75e3-0ded-6ba8-3bb57b537b24@gmail.com> <CAG48ez2Uy8=Tz9k1hcr0suLPHjbJi1qUviSGzDQ-XWEGsdNU+A@mail.gmail.com>
- <e2643168-b5d5-4d8c-947a-7895bcabc268@gmail.com> <CAG48ez2Nb95ae+XwZPYRju1KO-Ps_4R6QxN6ioUhOy2Uok=uAg@mail.gmail.com>
-In-Reply-To: <CAG48ez2Nb95ae+XwZPYRju1KO-Ps_4R6QxN6ioUhOy2Uok=uAg@mail.gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Tue, 27 Oct 2020 23:31:39 -0700
-Message-ID: <CAMp4zn_Qt2MYuoLojn5ikRkr-J5yGimirjevoAvorK5wfzrBHg@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Jann Horn <jannh@google.com>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1cQOz6xe20uUsRkiyAuJXh3GxeGLZykdgg7FMJb+9TM=;
+        b=Fceph9glkZmc9NEI6nk1sy7PKIQKq/tPtBiO5JfrKVqT1UWufcxZedAm5rUeZ5g4uI
+         RbHMGm1CtdRVOA/P8q8YGD5MNejhoO9dtVix743or/XkaBsqw4ceILgzc93+vtTU9w/x
+         1zrmYJDlwII69WdX1jfTNF0XwwXd4xhqbBntj9NHrl6Mb4UNhRd/6D9DzQwLx5tXJioF
+         OTWR6CapLuurrgYQZbPzKM7sfoY7IQV2LFSUqMF6T2PbzwfCvuxANXHGIwAeqA5MFzZr
+         GNsrvKqhhmkmqhasJuYoM29XjwfcHq3um7SBwq+wnaFEJb10OhCO8AgEOGGT7WLF90oZ
+         XPWQ==
+X-Gm-Message-State: AOAM530q7K8CVLY0rO8665+d5MMUFI9wFqPmGMIl2L/hurgl3QrtF+Yp
+        87oFCYkyobEM6lQq35SbOZ2inKOS8pcUhm9t
+X-Google-Smtp-Source: ABdhPJzSSQLsObq9R6Qna2EWklpUp7kMkjkQsi/Stm0Xg/CGBjSQq8PXNnA/hGApdSSBbqZLrbrCBw==
+X-Received: by 2002:aa7:85c3:0:b029:156:78e8:1455 with SMTP id z3-20020aa785c30000b029015678e81455mr5261262pfn.68.1603867104520;
+        Tue, 27 Oct 2020 23:38:24 -0700 (PDT)
+Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id f4sm4451655pfc.63.2020.10.27.23.38.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 27 Oct 2020 23:38:23 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ian Rogers <irogers@google.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        =?UTF-8?q?Andr=C3=A9=20Przywara?= <andre.przywara@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v3 0/9] perf mem/c2c: Support AUX trace
+Date:   Wed, 28 Oct 2020 14:38:04 +0800
+Message-Id: <20201028063813.8562-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 3:28 AM Jann Horn <jannh@google.com> wrote:
->
-> On Tue, Oct 27, 2020 at 7:14 AM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
-> > On 10/26/20 4:54 PM, Jann Horn wrote:
-> > > I'm a bit on the fence now on whether non-blocking mode should use
-> > > ENOTCONN or not... I guess if we returned ENOENT even when there are
-> > > no more listeners, you'd have to disambiguate through the poll()
-> > > revents, which would be kinda ugly?
-> >
-> > I must confess, I'm not quite clear on which two cases you
-> > are trying to distinguish. Can you elaborate?
->
-> Let's say someone writes a program whose responsibilities are just to
-> handle seccomp events and to listen on some other fd for commands. And
-> this is implemented with an event loop. Then once all the target
-> processes are gone (including zombie reaping), we'll start getting
-> EPOLLERR.
->
-> If NOTIF_RECV starts returning -ENOTCONN at this point, the event loop
-> can just call into the seccomp logic without any arguments; it can
-> just call NOTIF_RECV one more time, see the -ENOTCONN, and terminate.
-> The downside is that there's one more error code userspace has to
-> special-case.
-> This would be more consistent with what we'd be doing in the blocking case.
->
-> If NOTIF_RECV keeps returning -ENOENT, the event loop has to also tell
-> the seccomp logic what the revents are.
->
-> I guess it probably doesn't really matter much.
+The patch set v2 [1] mixed the patches for support perf mem/c2c AUX
+trace and for enabling Arm SPE's memory event.  To make easier
+reviewing, this patch set extracts the changes for perf mem/c2c AUX
+trace.
 
-So, in practice, if you're emulating a blocking syscall (such as open,
-perf_event_open, or any of a number of other syscalls), you probably
-have to do it on a separate thread in the supervisor because you want
-to continue to be able to receive new notifications if any other process
-generates a seccomp notification event that you need to handle.
+Patches 01, 02, 03 extend to support more flexible memory event name
+and introduce a new event type 'ldst' (besides the existed types 'load'
+and 'store').
 
-In addition to that, some of these syscalls are preemptible, so you need
-to poll SECCOMP_IOCTL_NOTIF_ID_VALID to make sure that the program
-under supervision hasn't left the syscall.
+Patch 04 is a minor refactoring to initailize memory event for recording
+but not for reporting.
 
-If we're to implement a mechanism that makes the seccomp ioctl receive
-non-blocking, it would be valuable to address this problem as well (getting
-a notification when the supervisor is processing a syscall and needs to
-preempt it). In the best case, this can be a minor inconvenience, and
-in the worst case this can result in weird errors where you're keeping
-resources open that the container expects to be closed.
+Patches 05, 06 are to support AUX trace for "perf mem" and "perf c2c"
+tools.
+
+Patch 07 enabled SPE memory events for Arm64 arch; patch 08 fixes the
+memory event name issue on PowerPC.
+
+Patch 09 is to update documentation to reflect the latest changes.
+
+This patch set has been applied clearly on the perf/core branch with the
+latest commit 7cf726a59435 ("Merge tag 'linux-kselftest-kunit-5.10-rc1'
+of git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest").
+
+This patch set has been verified on x86 and Arm64.
+
+On x86, below commands have been tested:
+
+  # perf c2c record -e ldlat-loads  -- ~/false_sharing.exe 2
+  # perf c2c record -e ldlat-stores  -- ~/false_sharing.exe 2
+  # perf mem record -t load -- ~/false_sharing.exe 2
+  # perf mem record -t store -- ~/false_sharing.exe 2
+  # perf mem record -t ldst -- ~/false_sharing.exe 2
+      `-> report failure due the type 'ldst' is not supported on x86
+  # perf mem record -e ldlat-loads  -- ~/false_sharing.exe 2
+  # perf mem record -e ldlat-stores  -- ~/false_sharing.exe 2
+
+On Arm64, below commands have been tested:
+
+  # perf c2c record -e spe-load  -- ~/false_sharing.exe 2
+  # perf c2c record -e spe-store  -- ~/false_sharing.exe 2
+  # perf c2c record -e spe-ldst  -- ~/false_sharing.exe 2
+  # perf mem record -t load -- ~/false_sharing.exe 2
+  # perf mem record -t store -- ~/false_sharing.exe 2
+  # perf mem record -t ldst -- ~/false_sharing.exe 2
+  # perf mem record -e spe-load  -- ~/false_sharing.exe 2
+  # perf mem record -e spe-store  -- ~/false_sharing.exe 2
+  # perf mem record -e spe-ldst  -- ~/false_sharing.exe 2
+
+[1] https://lore.kernel.org/patchwork/cover/1298085/
+
+
+Leo Yan (9):
+  perf mem: Search event name with more flexible path
+  perf mem: Introduce weak function perf_mem_events__ptr()
+  perf mem: Support new memory event PERF_MEM_EVENTS__LOAD_STORE
+  perf mem: Only initialize memory event for recording
+  perf mem: Support AUX trace
+  perf c2c: Support AUX trace
+  perf mem: Support Arm SPE events
+  perf mem: Return NULL for event 'ldst' on PowerPC
+  perf mem: Document event type 'ldst'
+
+Changes from v2:
+* Patch 02 went back to use loops with PERF_MEM_EVENTS__MAX (Jiri);
+* Patch 06 for "perf c2c" AUX trace is supported;
+* Patch 08 for fixing memory event name on PowerPC.
+
+
+Changes from v1:
+* Refined patch 02 to use perf_mem_events__ptr() to return event pointer
+  and check if pointer is NULL, and remove the condition checking for
+  PERF_MEM_EVENTS__MAX; (James Clark)
+* Added new itrace option 'M' for memory events;
+* Added patch 14 to update documentation.
+
+
+ tools/perf/Documentation/perf-mem.txt     |  6 ++-
+ tools/perf/arch/arm64/util/Build          |  2 +-
+ tools/perf/arch/arm64/util/mem-events.c   | 37 +++++++++++++++++
+ tools/perf/arch/powerpc/util/mem-events.c |  6 ++-
+ tools/perf/builtin-c2c.c                  | 22 +++++++---
+ tools/perf/builtin-mem.c                  | 49 ++++++++++++++++-------
+ tools/perf/util/mem-events.c              | 45 ++++++++++++++++-----
+ tools/perf/util/mem-events.h              |  3 +-
+ 8 files changed, 133 insertions(+), 37 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/util/mem-events.c
+
+-- 
+2.17.1
+
