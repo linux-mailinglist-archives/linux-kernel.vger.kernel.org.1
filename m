@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48E529D9D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C72529D9E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389929AbgJ1XE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        id S2390089AbgJ1XG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388196AbgJ1XEN (ORCPT
+        with ESMTP id S2390075AbgJ1XG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:04:13 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CD8C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:04:12 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a9so756668wrg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:04:12 -0700 (PDT)
+        Wed, 28 Oct 2020 19:06:26 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D8DC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:24 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id x1so1251646eds.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hM0rbzQPb+TSKGempjX+VBzQUrYZY3aGqxwljGgjo5M=;
-        b=aZt+HicBEZUhf1884Lhve5iIj5FxIs951qs6/RcYAfsIlyP5AhUCCaZoNeXvkBvEW4
-         mNIk49OTpJklyL9GuEQJEykqsB7a9Umm1Q21c+k5o+yhKaVwCaDDvtf9wAR5pF4L6tFY
-         otg2wpYl1UIeDi3rjAee3iGsKLIDJ2oaWbTFterLidrD9oe8XiCC1r4QcYRgLjhM3QSc
-         llBUCdWDd3GUFisPc33ejIwXT2iZlZQoDBiT7aI02haeudzhYoCSKH/WrAn0aCmasULn
-         Vc2F6RkKIpePMAwHeUXoIhKJzeIv8MrPf+GyThYGAa/Xjd6nc5eTQKVBSUyZeHutfF3W
-         j+Cg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=obX9bOfBc5uikoFMarb3dNU1LogIPrbFVnFPCam7D9s=;
+        b=Gy+sIahMxUApJBBwADXHtP9oKZmq9WOrAPXB9bJWMCLxyYQl22CBrKvU3OKhA7ZAbN
+         Zkxs7rKZ1glFXqBA+nDP4Nh+I/5ypuJhD3PPkuXJEnQZtIuGYGlTTJRgPDayWN2au9pP
+         jzYnYewCUQon28ISS19O6pd3uI0qI+KssN494XGBEyybM3KFme8muyi/zmp2C2nt9Ss6
+         kubMy6fvOn0nveo72eGyblra0v4VU7CEkEvXl9Ojo3npCwq27G9zV/hdO4krJRR2cOxC
+         ti4N9hKS+zs/nWsfP/27lCCATIB4TdK4LHtz1QJ71EoC2X9n/PW1UU23NB1nia6y7sMX
+         kDOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hM0rbzQPb+TSKGempjX+VBzQUrYZY3aGqxwljGgjo5M=;
-        b=DujnSvkrFxDk/5jH8Al1kgGHicSqmjLVmzRG7jXr9nzdbC2iKE5REE3CZkSKH1lGZO
-         SoVQ2u1mUCfWnIt/qWfoIEblxkda0KHcSl2Jik1Prw8YH2mg1CvmEogj8lthPzDyU3e9
-         S2JHrBo22Gl+k3OPqmN4iTaZbI4Neor/HUDpds0ujbaZ5/fVvDVyn0eNNMs3OPV1pkKi
-         FxQgbwEEMGHGMZX6/zw2hGR3lOwVtFLyetJ5suGQA9Do1BCBhxhiS9iFYVwPxx9ixpre
-         iDOuP0XfT5lRNw7epKYB6nyhwtivK+QVw5IUBFapaYwjAj9O5IKyAcAWC26EX5/p2k7R
-         9h3w==
-X-Gm-Message-State: AOAM5335aexYEW4RjZHg1hgu8seHAMXr318VnRFZimqOrICdPiUNBS5m
-        h4+Z5ssdWYYqUz2n8uBF0XuU/nKqChARrg==
-X-Google-Smtp-Source: ABdhPJycIJUox/uaqmQGSJ7pkSXTWDzPXRxyvjjvCUryaByWL3GsvfoL65GxN9I7c103OaLskXKCZw==
-X-Received: by 2002:a05:6000:18d:: with SMTP id p13mr9206720wrx.248.1603894807270;
-        Wed, 28 Oct 2020 07:20:07 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id o186sm6771380wmb.12.2020.10.28.07.20.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 07:20:06 -0700 (PDT)
+        bh=obX9bOfBc5uikoFMarb3dNU1LogIPrbFVnFPCam7D9s=;
+        b=i57eIoQlsMh+1nsmOhoAGdSFUR8AAQuYoXMU/OAMAp+pCuT/WvvXr9Bj99qIYp2Iuo
+         8E+4reT/w/ZMxOurUxZcjWPKBlWhbP1muFjxBo3cdddZy3+1bSysJFAz7fzaZUcPrKGr
+         9ZUKGdR5KN99YpGZHnDAXwceiKYNOVTQYbIcwCLQ5hRS6F5UJIDy2xFa4E7xRWbZ1ee3
+         St7ZsfvzhSM1s3Uh/dh8BJwOAlVliN8Mb3zGAmmd6ybOElcbrHGgoZi+u998ekNbJZlZ
+         usXHMli3S9IT2ffQQhmYiDZez/irwoyEhg8ENo4QH2Xx+2nu8rQv+y7eqLgIj6bU3st7
+         hh8g==
+X-Gm-Message-State: AOAM531xXaFb8pcEwCsbShq6is5QxKf5Tcvsy7b+eHp2TN0NQ7WEDeet
+        bmj2+Dz5/+WQ3dK0hG1phXOALW2jkBApqQ==
+X-Google-Smtp-Source: ABdhPJwiD7zU2hdGncHxTC//AnN6ATPTo0Cfz9yxiGD7wm0p3+gr8xeT014iGEUOF1AzkWJEcxeoqw==
+X-Received: by 2002:adf:9361:: with SMTP id 88mr8873458wro.37.1603894858300;
+        Wed, 28 Oct 2020 07:20:58 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id y201sm6549626wmd.27.2020.10.28.07.20.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Oct 2020 07:20:57 -0700 (PDT)
+Subject: Re: ASoC: qcom: sm8250: add sound card qrb5165-rb5 support
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Patrick Lai <plai@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org
+References: <f441bb6c-12eb-a565-c34d-950da2b045d7@canonical.com>
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: qcom: sm8250: Fix array out of bounds access
-Date:   Wed, 28 Oct 2020 14:20:01 +0000
-Message-Id: <20201028142001.22431-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+Message-ID: <66ba82c4-f08a-2e35-385f-8822934b2c54@linaro.org>
+Date:   Wed, 28 Oct 2020 14:20:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f441bb6c-12eb-a565-c34d-950da2b045d7@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Static analysis Coverity had detected a potential array out-of-bounds
-write issue due to the fact that MAX AFE port Id was set to 16 instead
-of using AFE_PORT_MAX macro.
+Thanks for reporting this,
 
-Fix this by properly using AFE_PORT_MAX macro.
+On 28/10/2020 12:15, Colin Ian King wrote:
+> Hi,
+> 
+> Static analysis on linux-next with Coverity had detected a potential
+> array out-of-bounds write issue in the following commit:
 
-Fixes: aa2e2785545a ("ASoC: qcom: sm8250: add sound card qrb5165-rb5 support")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/sm8250.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Sent out a fix to address this!
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index 7d43de6d909f..52c40512102f 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -13,12 +13,11 @@
- 
- #define DRIVER_NAME		"sm8250"
- #define MI2S_BCLK_RATE		1536000
--#define MAX_SDW_STREAMS		16
- 
- struct sm8250_snd_data {
--	bool stream_prepared[MAX_SDW_STREAMS];
-+	bool stream_prepared[AFE_PORT_MAX];
- 	struct snd_soc_card *card;
--	struct sdw_stream_runtime *sruntime[MAX_SDW_STREAMS];
-+	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
- };
- 
- static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
--- 
-2.21.0
-
+--srini
+> 
+> commit aa2e2785545aab21b6cb2e23f111ae0751cbcca7
+> Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Date:   Mon Oct 26 17:09:47 2020 +0000
+> 
+>      ASoC: qcom: sm8250: add sound card qrb5165-rb5 support
+> 
