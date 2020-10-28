@@ -2,161 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06F329E27C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B21C29E225
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgJ2COz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:14:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726772AbgJ1Vfh (ORCPT
+        id S1727261AbgJ2CLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727049AbgJ1ViA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:35:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603920935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QJHhfZ2V2kb0ESkGQZCAib+1qqkooRbQR95yCbytl7s=;
-        b=EFZBLLoFENA5ieRplqxCSfzhUzYAHdUhuFnztpG3/I+HOaIOZvKdFBrar1dsvK/Fy8S6oW
-        GmAASkgGdqgguknAhyLsQuDUeI0Qt3TIrEes2vaYCQ6Pp2hyXvcW2BWHC7pa5KNAtLC0yB
-        0KHtRt9QumE53cCL/aY8Htike29JoC4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-95NiMNOMN0i5xv_8YuE0BA-1; Wed, 28 Oct 2020 07:33:42 -0400
-X-MC-Unique: 95NiMNOMN0i5xv_8YuE0BA-1
-Received: by mail-ed1-f72.google.com with SMTP id b16so1988650edn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 04:33:42 -0700 (PDT)
+        Wed, 28 Oct 2020 17:38:00 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5E7C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:38:00 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id r7so454829qkf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xtWeH9vKHS87nYy3SpCk02misk39ek51FjthjBeLR7U=;
+        b=nVxi4QmlPRwCG5ENSq6Y/kcS/R/tAH6ALJ5DL1Q0SkjHocaBBe36+73OwpRYK1p73k
+         6NlXVzpjzeSPJ7ZvL1Pv8y2esMIkA4EFuj80+WjoF+OJln9RmRcsiIpFQ4dP6MPPj4sG
+         r1lWtlA77yP3pANJ3SG0zMXOAvmkKI614IV98c5NvoDiNMflp4X9Z8o2NzRkVbV6K39o
+         yU7WAl2vG5YJ3sT6tFPeIqr56Q5knPRmQleMuj4npWX4M+2JlNrElSFx7ZOWYiit4qO/
+         Kyi3h/oDiTddlytJM+UuIHGAgHWEiGwTi4a21qCmNUr5gSrOqJv8/CmIjEGXE9h+IA5k
+         QE3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QJHhfZ2V2kb0ESkGQZCAib+1qqkooRbQR95yCbytl7s=;
-        b=SJhacxQFhWb5jf1TgDpD2KXJlFBjQ6Vrgnm3OHfMX+A5QCaL/JeKdSm1fR+zuIUOwX
-         zSmAsxJAGZnhB+9yIJF/1QXnQDq6lygNHsiNj/I8Lb+dIA9yyMYYwdXHPw7H1gRrN9xx
-         mcMKlV/4n5RzERfqs+uG9f74lIPPfXs0G7c6pv7EtbgjCIMGjMRCpm2JIw7ZzTCc47RT
-         LXoKd7FSwGPTl9CsNcwkr9u3y0c310ZpQM0N27Aje3wIHWeKFgEwRasGLtU2L8BqlbVe
-         eY7h9bpz5/EBcpEiRRunYmLu0Sm6bci8aAJvclC51WCT7qxpATDgWD3Gyge0k7wiJJr9
-         OS1w==
-X-Gm-Message-State: AOAM531QpSkIyV8kD+nKD9Ajn4VHJewFySlWd4YfyXZ5lhRF/lb7NpKW
-        srO47V5UNxOVMpgSrJVKQnhTqBsg95SoNDq8GmtP30gCq2EmxQf5autTbzumFIbxFfsURjzGvTX
-        tKPZOVX1cAn7rNbiyYMJVPjIp
-X-Received: by 2002:a17:906:402:: with SMTP id d2mr3293514eja.165.1603884820790;
-        Wed, 28 Oct 2020 04:33:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIKV5nnNTcNuopRKBG+aVCqjxcweo+pTjYRN//cyr5S9Wkk3HlbZG1Mt+zdaQ2EMO5feyEGA==
-X-Received: by 2002:a17:906:402:: with SMTP id d2mr3293495eja.165.1603884820534;
-        Wed, 28 Oct 2020 04:33:40 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id k18sm2651040edx.54.2020.10.28.04.33.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 04:33:39 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: remove unneeded break
-To:     trix@redhat.com, jlee@suse.com, mgross@linux.intel.com,
-        malattia@linux.it
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201019133212.12671-1-trix@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <dd06e057-7ca8-972b-3d71-8e06aa68961f@redhat.com>
-Date:   Wed, 28 Oct 2020 12:33:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xtWeH9vKHS87nYy3SpCk02misk39ek51FjthjBeLR7U=;
+        b=StikMaCndjjmmtMAZPxgWVoRBHmLgV1kfzM+3A5gEmenxFXTnHZHua6m0TZga5iQs6
+         iC1Z/WQDJitTnrJ8Av2MfA+GEp0vNJarx/V83Dgsxi0g/mIChy19wY2/OaMugSPNNLVL
+         IEO8cNv1fEhR8e7CWclAW3wokMD8bwWhfwJri6uwOZVGvXtR6tIQsuANLoG/KPFLW8go
+         kr+OupEac+kpPxwoXh/zEi8Y9L1+ytzCJFVFRu/Z/yd9fMSEI11AQ/Y/SzWLkV2cmNk2
+         GaJgna8dnH/7uvYgEAAg+On2bTEIN2ta/25H2kukAQKsRubUU9bkutMuHUzcqzBhdnVC
+         BVFA==
+X-Gm-Message-State: AOAM5303rjbUjLkR386rhr7F9hGXj03JlLHXs1d3dI/MFKfwxhIIoJil
+        sHKMN9W1fILRIDqej8lHuSkrAph3GjcC8H2tP56URFIKmqxHLg==
+X-Google-Smtp-Source: ABdhPJz/AewA5C088h4+b6/U+Mjkm80aV8Lk6rSvIZIJVDXlLxxf0tWbupmZlj8P/uKrQE4AnpQA2e+GJOdJ1tn2wvM=
+X-Received: by 2002:ac8:44ae:: with SMTP id a14mr6754128qto.67.1603885007705;
+ Wed, 28 Oct 2020 04:36:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201019133212.12671-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1603372719.git.andreyknvl@google.com> <6f87cb86aeeca9f4148d435ff01ad7d21af4bdfc.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <6f87cb86aeeca9f4148d435ff01ad7d21af4bdfc.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 28 Oct 2020 12:36:36 +0100
+Message-ID: <CACT4Y+bJxJ+EeStyytnnRyjRwoZNPGJ9ws20GfoCBFGWvUSBPg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 12/21] kasan: inline and rename kasan_unpoison_memory
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Currently kasan_unpoison_memory() is used as both an external annotation
+> and as internal memory poisoning helper. Rename external annotation to
+> kasan_unpoison_data() and inline the internal helper for for hardware
+> tag-based mode to avoid undeeded function calls.
+>
+> There's the external annotation kasan_unpoison_slab() that is currently
+> defined as static inline and uses kasan_unpoison_memory(). With this
+> change it's turned into a function call. Overall, this results in the
+> same number of calls for hardware tag-based mode as
+> kasan_unpoison_memory() is now inlined.
 
-On 10/19/20 3:32 PM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> A break is not needed if it is preceded by a return
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+Can't we leave kasan_unpoison_slab as is? Or there are other reasons
+to uninline it?
+It seems that uninling it is orthogonal to the rest of this patch.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up there once I've pushed my local branch there,
-which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Ia7c8b659f79209935cbaab3913bf7f082cc43a0e
 > ---
->  drivers/platform/x86/acer-wmi.c    | 1 -
->  drivers/platform/x86/sony-laptop.c | 3 ---
->  drivers/platform/x86/wmi.c         | 3 ---
->  3 files changed, 7 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-> index 49f4b73be513..1c2084c74a57 100644
-> --- a/drivers/platform/x86/acer-wmi.c
-> +++ b/drivers/platform/x86/acer-wmi.c
-> @@ -792,7 +792,6 @@ static acpi_status AMW0_set_u32(u32 value, u32 cap)
->  		switch (quirks->brightness) {
->  		default:
->  			return ec_write(0x83, value);
-> -			break;
->  		}
->  	default:
->  		return AE_ERROR;
-> diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
-> index e5a1b5533408..704813374922 100644
-> --- a/drivers/platform/x86/sony-laptop.c
-> +++ b/drivers/platform/x86/sony-laptop.c
-> @@ -2467,13 +2467,11 @@ static int __sony_nc_gfx_switch_status_get(void)
->  		 * 0: integrated GFX (stamina)
->  		 */
->  		return result & 0x1 ? SPEED : STAMINA;
-> -		break;
->  	case 0x015B:
->  		/* 0: discrete GFX (speed)
->  		 * 1: integrated GFX (stamina)
->  		 */
->  		return result & 0x1 ? STAMINA : SPEED;
-> -		break;
->  	case 0x0128:
->  		/* it's a more elaborated bitmask, for now:
->  		 * 2: integrated GFX (stamina)
-> @@ -2482,7 +2480,6 @@ static int __sony_nc_gfx_switch_status_get(void)
->  		dprintk("GFX Status: 0x%x\n", result);
->  		return result & 0x80 ? AUTO :
->  			result & 0x02 ? STAMINA : SPEED;
-> -		break;
->  	}
->  	return -EINVAL;
+>  include/linux/kasan.h | 16 ++++++----------
+>  kernel/fork.c         |  2 +-
+>  mm/kasan/common.c     | 10 ++++++++++
+>  mm/kasan/hw_tags.c    |  6 ------
+>  mm/kasan/kasan.h      |  7 +++++++
+>  mm/slab_common.c      |  2 +-
+>  6 files changed, 25 insertions(+), 18 deletions(-)
+>
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 6377d7d3a951..2b9023224474 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -66,14 +66,15 @@ static inline void kasan_disable_current(void) {}
+>
+>  #ifdef CONFIG_KASAN
+>
+> -void kasan_unpoison_memory(const void *address, size_t size);
+> -
+>  void kasan_alloc_pages(struct page *page, unsigned int order);
+>  void kasan_free_pages(struct page *page, unsigned int order);
+>
+>  void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+>                         slab_flags_t *flags);
+>
+> +void kasan_unpoison_data(const void *address, size_t size);
+> +void kasan_unpoison_slab(const void *ptr);
+> +
+>  void kasan_poison_slab(struct page *page);
+>  void kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
+>  void kasan_poison_object_data(struct kmem_cache *cache, void *object);
+> @@ -98,11 +99,6 @@ struct kasan_cache {
+>         int free_meta_offset;
+>  };
+>
+> -size_t __ksize(const void *);
+> -static inline void kasan_unpoison_slab(const void *ptr)
+> -{
+> -       kasan_unpoison_memory(ptr, __ksize(ptr));
+> -}
+>  size_t kasan_metadata_size(struct kmem_cache *cache);
+>
+>  bool kasan_save_enable_multi_shot(void);
+> @@ -110,8 +106,6 @@ void kasan_restore_multi_shot(bool enabled);
+>
+>  #else /* CONFIG_KASAN */
+>
+> -static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+> -
+>  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+>  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+>
+> @@ -119,6 +113,9 @@ static inline void kasan_cache_create(struct kmem_cache *cache,
+>                                       unsigned int *size,
+>                                       slab_flags_t *flags) {}
+>
+> +static inline void kasan_unpoison_data(const void *address, size_t size) { }
+> +static inline void kasan_unpoison_slab(const void *ptr) { }
+> +
+>  static inline void kasan_poison_slab(struct page *page) {}
+>  static inline void kasan_unpoison_object_data(struct kmem_cache *cache,
+>                                         void *object) {}
+> @@ -158,7 +155,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+>         return false;
 >  }
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index d88f388a3450..44e802f9f1b4 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -1260,13 +1260,10 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physical_address address,
->  	switch (result) {
->  	case -EINVAL:
->  		return AE_BAD_PARAMETER;
-> -		break;
->  	case -ENODEV:
->  		return AE_NOT_FOUND;
-> -		break;
->  	case -ETIME:
->  		return AE_TIME;
-> -		break;
->  	default:
->  		return AE_OK;
->  	}
-> 
-
+>
+> -static inline void kasan_unpoison_slab(const void *ptr) { }
+>  static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>
+>  #endif /* CONFIG_KASAN */
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index b41fecca59d7..858d78eee6ec 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -225,7 +225,7 @@ static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
+>                         continue;
+>
+>                 /* Mark stack accessible for KASAN. */
+> -               kasan_unpoison_memory(s->addr, THREAD_SIZE);
+> +               kasan_unpoison_data(s->addr, THREAD_SIZE);
+>
+>                 /* Clear stale pointers from reused stack. */
+>                 memset(s->addr, 0, THREAD_SIZE);
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 9008fc6b0810..1a5e6c279a72 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -184,6 +184,16 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+>         return (void *)reset_tag(object) + cache->kasan_info.free_meta_offset;
+>  }
+>
+> +void kasan_unpoison_data(const void *address, size_t size)
+> +{
+> +       kasan_unpoison_memory(address, size);
+> +}
+> +
+> +void kasan_unpoison_slab(const void *ptr)
+> +{
+> +       kasan_unpoison_memory(ptr, __ksize(ptr));
+> +}
+> +
+>  void kasan_poison_slab(struct page *page)
+>  {
+>         unsigned long i;
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index f03161f3da19..915142da6b57 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -24,12 +24,6 @@ void __init kasan_init_tags(void)
+>         pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>
+> -void kasan_unpoison_memory(const void *address, size_t size)
+> -{
+> -       set_mem_tag_range(reset_tag(address),
+> -                         round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
+> -}
+> -
+>  void kasan_set_free_info(struct kmem_cache *cache,
+>                                 void *object, u8 tag)
+>  {
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8d84ae6f58f1..da08b2533d73 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -280,6 +280,12 @@ static inline void kasan_poison_memory(const void *address, size_t size, u8 valu
+>                           round_up(size, KASAN_GRANULE_SIZE), value);
+>  }
+>
+> +static inline void kasan_unpoison_memory(const void *address, size_t size)
+> +{
+> +       set_mem_tag_range(reset_tag(address),
+> +                         round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
+> +}
+> +
+>  static inline bool check_invalid_free(void *addr)
+>  {
+>         u8 ptr_tag = get_tag(addr);
+> @@ -292,6 +298,7 @@ static inline bool check_invalid_free(void *addr)
+>  #else /* CONFIG_KASAN_HW_TAGS */
+>
+>  void kasan_poison_memory(const void *address, size_t size, u8 value);
+> +void kasan_unpoison_memory(const void *address, size_t size);
+>  bool check_invalid_free(void *addr);
+>
+>  #endif /* CONFIG_KASAN_HW_TAGS */
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 53d0f8bb57ea..f1b0c4a22f08 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1176,7 +1176,7 @@ size_t ksize(const void *objp)
+>          * We assume that ksize callers could use whole allocated area,
+>          * so we need to unpoison this area.
+>          */
+> -       kasan_unpoison_memory(objp, size);
+> +       kasan_unpoison_data(objp, size);
+>         return size;
+>  }
+>  EXPORT_SYMBOL(ksize);
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
