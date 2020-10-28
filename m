@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B24029DAB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474D029DAB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390618AbgJ1X2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:28:45 -0400
+        id S2390610AbgJ1X2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:28:43 -0400
 Received: from esa3.hgst.iphmx.com ([216.71.153.141]:20041 "EHLO
         esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbgJ1X2H (ORCPT
+        with ESMTP id S2390569AbgJ1X2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 28 Oct 2020 19:28:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1603927686; x=1635463686;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cbfVGaWnMu+8pgVF8g9CD+iaCR7rsYJqW/fz2SXidbQ=;
-  b=Mn3sDuQScwyjtmKbPlOHBmyouzgGVJ/WTyDwEMUbuL+t7S2HzKilMZnw
-   38SJStGReIgseYw7ql37FVKYNsXALHzpOrFCaADlMIVkXEX5R0LvZVCen
-   AktJRXgxnnkw8Xl9yLy6tjl5LVGy6rgp8eJF2W+YZs2J0U78aFWkBvfWM
-   ARVsTQ0iu0p5ZQPdXrVQEpQYOghm1/nbL78twEfKp2eJLglyjtwMCq9ys
-   a2OJp0mi1DJzEThG+PMmtYU77wYYpM72wOHarGF9hcwYaaOAlKm7GiS2/
-   zhJ/h7h9oqt9SDrMcKgEHdTRq3JkS/bs6Mv5Jwig16H+fm/SQsfn+R8xa
-   w==;
-IronPort-SDR: KJ6wjcLoiXERxdvDeXajzUeWMliQmDTCJdxvDFN09bjQJemXkNYaYOZv36YbSk5T22a9/oNjsL
- cQnhWblP4pPA6RdKYbdLz2pagF1yeF3D3H6si/AVvxhntGyw2H7dXJT0xmvrlnKrf9ulKaPtXY
- kKs4Mng9VmFgBlmKVBdqRjIKRIQXl+GENWPMfOPqsQLJ5hKoA7Bt9NSdMCU0Vr1l72j+jtYW1M
- sWGukp1Vn/g5etmuqcGz744gbgIgBHu7ZHHjyBpOxiczbyhqRWDQ9T41k22B4mOJXXGGk9gSxZ
- 10E=
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=6n2d3Nw4+/BvSQCZVekBcYAwmYCImlxAQwh3nDgopHc=;
+  b=TJMtRRrdbeT92L6GRmQff7c2Kl0lNwfaurtCdQfhX25SalFmFYrj3pGm
+   bo5yR3KrzFBvdbdd5BB+I2ZNHgflnFDZhDaVRsk3Fu+OFLuctlPo0lrgp
+   Mjn/6YDoyc9ernLzmnoUgq7VywFvl4+rSJ7qBVEf4g5lcjOD58dTloM+Y
+   Cj+jmnBXKfUEvrZi1TMmdyQKXOk9MuWHTO9xHAdJysjJobPykJ1RHUOkX
+   wfLPW/lD3EDQOyNfD8yeur3JFXVVn013MgPbBNezEoz2zjrz9c+DY0rGJ
+   H5VGjU0EAeM+oWQntEpv4HRB2rKT1qnat5h5WjfWr42pM3OISXe4ovYNL
+   g==;
+IronPort-SDR: ZuF6SaX8tEiW5f16jD7tWKEby97hSaifxwgWFCJ5Hl1DQeSYG4grbHNr0TjstNovClQdAa7dUF
+ xhBRdftK9YCY2ZZGAZy880+dHk2Umm20DYoxlsGcVSjC3YXW2aEooXnZexv4jBJP9LzYDZfmZ4
+ wV8nsAKu/B5tMkm+UURY8AraQbbcTDucLbJSqxMAv/1hZ7i+9wkWpbsh1OSpyvwb2PLrNWMVic
+ +IGa/72R8aFLzL2Dk9I98A7R5TCTLIEUogfeaG5FzSU9ghakGS9++F5ufOTwKeY/vqbIyuFYCU
+ B3w=
 X-IronPort-AV: E=Sophos;i="5.77,428,1596470400"; 
-   d="scan'208";a="155611417"
+   d="scan'208";a="155611420"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
   by ob1.hgst.iphmx.com with ESMTP; 29 Oct 2020 07:28:06 +0800
-IronPort-SDR: VzlkUCNeuiucAlbc+gyL0aodpnzYM5fLzwxytRyoGYduZ3X3C+oLdxxmocaNnVJ5czRBuUOy/v
- ljlJSKGVnwhwiSWB2F2rmSUcYBmywtTkd+ugr5nakFcxV6ZTUPEPzJnwNFOSlFMV89eTvYlvH5
- iD7FyGvf1IiT/hgfg/ct+k3kuq0HwuzB53xYl2KBV9BIjIY5mmr7446OFdBPYYDWnlPEdUfw8s
- 90dcxZTP4znap9l5Tu8SyIw3K6/DrAP0IbTkws+YM/ag8QIkgHGOoSuSuagzg2inf8vXSyVK2j
- IGBNmppPuORVzBxevAfHma72
+IronPort-SDR: XrKxTqml/lbAFmiO0hYnR/rMWHty/+5vaCfy5/3mWqZu4eRzBOxfDEwiEztTeRn6AF9BrDH4Nz
+ qoaZzm/2LFEQnKOyuTzLiPVnoutpec8cp2+k2jqhWNflIjSl+xZHGfpLlv/OCYFHQ7pfvzs+1t
+ wS0qJ3FBrdQVnDFIEG93drDcQcHbnaXtDy9t+TvI0TqrWe+WI01FO4lVNXBwPnc0uQHraNZxbk
+ FWaqVzEMN37i8oQCbQ9VSTOzAuwKVE+0Cuw3RmLN+f0VApQSmeNunDHjGnuq20KGCh3Mi73S4r
+ PKtaHSVOmCClQ5bJZuUgRk/S
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2020 16:14:22 -0700
-IronPort-SDR: buavO+3n128wXApNGIFfrqEjjKBm1I1PnymmXX6X25/PUwDn5yG4TfLzSC3aE2blO728jSGeng
- ZYeuijWei4Rk96OnUtunZLZLpZ8I8ZF8kBAwFll7TWFGOFYd+USFDHf28rNgHOg1kK6CBbOvEg
- 2ne1I12LnBypDbBQB2RIMi+VZJRwgjVqnm/MHzx9HfJMpfW9eN7HbjCtMB8+TA8F7C6Ab31MPf
- ygcujc57MY7V/gNCT4VLsSKPv0htxzY3Vi3usUONWUKMZJTk01Q2pOZ1r1bYLYPudWSqa4oxUc
- U2k=
+IronPort-SDR: dEjHin5uDaUncBBDKai1yiEDYvkh/5xbx9tbjqOIIhUNxWR9COUDwsaTbfD8OhLCHXAKBaH8sO
+ JRl/JzxvEXUrLoKVtX0dihBQAcbnboJDogsemdy1o8lwaB7zYsw2Km4OpwbeHRFcpx7AeO83lt
+ g3UI16nVWp3Ux4rzKEYXSD5NKtfbJD1AUT3Qh0a3pAs4kQggbMpqlb/nv42qU2VUGP+rmgyGjA
+ 6eQj7oGORrPbysgCtZOcbPDzR0utnwrJpjKg6+DDH+Wlu1pzyltYsnMrkCMFCRqtKbZydeseKA
+ PNg=
 WDCIronportException: Internal
 Received: from myd002180.ad.shared (HELO jedi-01.hgst.com) ([10.86.60.107])
   by uls-op-cesaip01.wdc.com with ESMTP; 28 Oct 2020 16:28:07 -0700
@@ -62,48 +62,44 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         padmarao.begari@microchip.com,
         Daire McNamara <daire.mcnamara@microchip.com>,
         Cyril.Jean@microchip.com
-Subject: [RFC PATCH 0/3] Add Microchip PolarFire Soc Support 
-Date:   Wed, 28 Oct 2020 16:27:56 -0700
-Message-Id: <20201028232759.1928479-1-atish.patra@wdc.com>
+Subject: [RFC PATCH 1/3] RISC-V: Add Microchip PolarFire SoC kconfig option
+Date:   Wed, 28 Oct 2020 16:27:57 -0700
+Message-Id: <20201028232759.1928479-2-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201028232759.1928479-1-atish.patra@wdc.com>
+References: <20201028232759.1928479-1-atish.patra@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds minimal support for Microchip Polar Fire Soc Icicle kit.
-It is rebased on v5.10-rc1 and depends on clock support. 
-Only MMC and ethernet drivers are enabled via this series.
-The idea here is to add the foundational patches so that other drivers
-can be added to on top of this.
+Add Microchip PolarFire kconfig option which selects SoC specific
+and common drivers that is required for this SoC.
 
-This series has been tested on Qemu and Polar Fire Soc Icicle kit.
-The following qemu series is necessary to test it on Qemu.
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+ arch/riscv/Kconfig.socs | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-The series can also be found at the following github repo.
-
-I noticed the latest version of mmc driver[2] hangs on the board with
-the latest clock driver. That's why, I have tested with the old clock
-driver available in the above github repo.
-
-[1] https://lists.nongnu.org/archive/html/qemu-devel/2020-10/msg08582.html
-[2] https://www.spinics.net/lists/devicetree/msg383626.html
-
-Atish Patra (3):
-RISC-V: Add Microchip PolarFire SoC kconfig option
-RISC-V: Initial DTS for Microchip ICICLE board
-RISC-V: Enable Microchip PolarFire ICICLE SoC
-
-arch/riscv/Kconfig.socs                       |   7 +
-arch/riscv/boot/dts/Makefile                  |   1 +
-arch/riscv/boot/dts/microchip/Makefile        |   2 +
-.../microchip/microchip-icicle-kit-a000.dts   | 313 ++++++++++++++++++
-arch/riscv/configs/defconfig                  |   4 +
-5 files changed, 327 insertions(+)
-create mode 100644 arch/riscv/boot/dts/microchip/Makefile
-create mode 100644 arch/riscv/boot/dts/microchip/microchip-icicle-kit-a000.dts
-
---
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 8a55f6156661..74d07250ecc5 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -22,6 +22,13 @@ config SOC_VIRT
+ 	help
+ 	  This enables support for QEMU Virt Machine.
+ 
++config SOC_MICROCHIP_POLARFIRE
++	bool "Microchip PolarFire SoCs"
++	select MCHP_CLK_PFSOC
++	select SIFIVE_PLIC
++	help
++	  This enables support for Microchip PolarFire SoC platforms.
++
+ config SOC_KENDRYTE
+ 	bool "Kendryte K210 SoC"
+ 	depends on !MMU
+-- 
 2.25.1
 
