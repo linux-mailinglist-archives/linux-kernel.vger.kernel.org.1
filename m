@@ -2,153 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152DF29E20F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0C629E1DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 03:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733166AbgJ2CFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 22:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727084AbgJ1ViR (ORCPT
+        id S1729752AbgJ2CEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 22:04:14 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:37841 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727200AbgJ1Vkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:38:17 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2BAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:38:16 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id j20so568310qkl.7
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=dLAZp75cCByBX0dApe3sqiLCgJj4EGqL5QEg0Gtk9z8=;
-        b=t4mgoMeOcXh+1SZ2IRANoepguh4zdI1XFMagy1iLEe3x+FdsOA670APWjrCXmQEbgB
-         Ak8vFOwz+ucWE/D3/CGYFu/9t4vdHUmLtXJh+bq493sIyfCsec68EkOkP7cvbb0U8w0O
-         tcEFHJ/OnBMY6zz9QS+sBrWdymySQGa81wE7bv+cB8GcJzaVSbhhso+IZnPamib4/cU6
-         K2JQcLfqeVzK1oNalf/rAj6mCNfsXIVFxUx/QibS+/l3G757uCx9OKueNVs/7hQj/VZ7
-         YhQp1vJSAS1pcMopGkOOTemDAr/K3xYuvqNJ6PAmpVCNStGkOZprtCW/0wg+0XeCfUkt
-         OTXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=dLAZp75cCByBX0dApe3sqiLCgJj4EGqL5QEg0Gtk9z8=;
-        b=AZIpnfp+dikjQupGhjloW9Rs5EmrpQ55j8XxhOWZI4AcC3bakCN8xzqBUxLW4fFG3N
-         vu7TgH2VPysEabMzo3M6n56NnztYLMj/Ce4EUkcH5bswxszE04hL2fJxOYulP3D6qRxy
-         elg+CvMI7bF+BZmnQF8BWV8piSreF2JJAxhXwoyZKNwb0ohok2fXrAo3wibcnrdF2CVj
-         DqgiuNNe02ffSDiTvztlaNr8Dj20ziUjSmGEUcxbE8ZO5NB28kV4PLTO6whMx2Sp9x/N
-         9SI4ZalSlEDCeMwcQbf01PzxLAOWAS3ALjDpnEaCugZ1xjDCZiApK4YKb9KNzr2vtsTY
-         uJMg==
-X-Gm-Message-State: AOAM5339vUY56z277rNlQcGO2K2Cn6Gndf7+HRlNh0/RHIDXFrzcaave
-        3ptTs3Xc5qsmXxAs4MfMemPlA3nF8DjR3PV24/vcN2fQV9f6yCCtvTH5FE0wXNMjKTsWemYof7w
-        7s34AQvMViyE2Kn1gUBA/6YPum1H9Q4NmK8L1j80Qy/ErgeW0amxqM6z4gHcz69Dye5/Vj/mm
-X-Google-Smtp-Source: ABdhPJzoFO4dkR1sxzYXCkvC3Mg0yWUoFmXTmqEVpE1gSjjZ/0ZiBaiziYrFH3KQMh4Vp6hP4dV/0Y+WhO2h
-Sender: "eranian via sendgmr" <eranian@uluru3.svl.corp.google.com>
-X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:7220:84ff:fe0f:9db2])
- (user=eranian job=sendgmr) by 2002:a0c:9e20:: with SMTP id
- p32mr1007145qve.44.1603914174652; Wed, 28 Oct 2020 12:42:54 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 12:42:47 -0700
-Message-Id: <20201028194247.3160610-1-eranian@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH v2] perf/x86/intel: make anythread filter support conditional
-From:   Stephane Eranian <eranian@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, kan.liang@intel.com, jolsa@redhat.com,
-        peterz@infradead.org, mingo@elte.hu, irogers@google.com,
-        namhyung@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 28 Oct 2020 17:40:53 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 83137391;
+        Wed, 28 Oct 2020 16:21:04 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 28 Oct 2020 16:21:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=tvzO3u8ximtfLtetGoZ5bDtCG8K
+        Ex2uEX5PE3riL5Qk=; b=WkQAm15t2lksX7079w98tgwTTHYXSK8s5zvDlxnWeNA
+        NZQFKvfLYHtnqKLNlxS5Dt4VxIP6SOeFchT/4lhUOFzGtX8x3YSzLZH/6lgichWb
+        xunO8bmyDP+JspqMUFpOgNUVw+tfn7Uwh//37qQu2zobVANVlY455T4+xbSQ4nz8
+        Pi+VUhVLXxhUyCzdCvfs4k+rcoXxyUEWLuSmD1J6yNKBQ21KOh0DA4NvwG/4eyej
+        gE3WGfte1f3yCUs4OjpNspOiCS0Hy8PRKJLRPhfPBABekx8KyFxOkD7mPXpt/UX5
+        gcFXBBe2uPvoQ/WU4asEBz3zZDCji6iGVU0RYeKNOtw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tvzO3u
+        8ximtfLtetGoZ5bDtCG8KEx2uEX5PE3riL5Qk=; b=TjLzXiLb7C1bP3dFxc/hKW
+        h2PFDvJmKJYBkKhtoz+/KDkpleQKtEzRQty8zi6yfU+uqSmBthb4smnyVuMyW8oK
+        00AH3F7peSOm1vAWymoWUHnSpYS8XgrCU/h5PO+OxyEyEwUNkVHbo6eTPS53dLgq
+        dr9gw/zQCrf4TN7hDPYLa6pl8VKsvGjnYKBURx4p+Hz0ftygSRLpN5+iqsrKlMZK
+        9FttsRgoP52hTfmbUjwFhhSuBfobsLyF6zSDRgCYh7A6k8hCsOV/O5WRGtG5hDgd
+        C/MEcdaePSmpwAXibGgyiaXERxza8SEO8+QR5oMvDBOVTUiMIOWmqOgNUivKnOew
+        ==
+X-ME-Sender: <xms:r9KZX73JeYVFZ87lpHjwYA4xFkrkXjgP7RV73X4xpy2zKvPh_LNOyw>
+    <xme:r9KZX6HPTGir2nxcIHbIeUfjZYCsMaDFOIQoKrmyqSgN-4P-f1i3rYfJ4mGLt1KqH
+    1xCXxxzsZrqNzj3aw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledvgddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
+    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
+    htvghrnhepgfffveetveffudeluefhleegudektdevtedthedtgeevudffveegieejfeff
+    feeunecuffhomhgrihhnpegrtghkrdhpihhnghenucfkphepieejrdduiedtrddvudejrd
+    dvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    rghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:r9KZX75lC2kG_Xjifgy_0QyjmGCIX-pD5_N9bJp3BPZHDMY3s02eiQ>
+    <xmx:r9KZXw1yTsu0i1lcW6upjw6yENe-jBC3Zeo1CUsvZ9c2dxyeZ-YDxg>
+    <xmx:r9KZX-EBHrFqjn05BnXCcD9plHeMeDFYCSnKbBgqRRtS7koUxGkQGA>
+    <xmx:sNKZXzQKWTmxqDtIOVKsD-0UBDMuS2UMhLlcmjIDge97OwnCqcoKyA>
+Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DD76B3064686;
+        Wed, 28 Oct 2020 16:21:02 -0400 (EDT)
+Date:   Wed, 28 Oct 2020 13:21:01 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Tushar Dave <tushar.n.dave@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
+ PCH.
+Message-ID: <20201028202101.2m2jp3tfa6mh3brz@alap3.anarazel.de>
+References: <20200115184415.1726953-1-andres@anarazel.de>
+ <2a5e9df32e2df27297149a577512f6b1557de241.camel@linux.intel.com>
+ <20200116184250.qlvc3ilx2b42czqk@alap3.anarazel.de>
+ <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2de70e961f24592d2d157b8586526df2eaf0ae6e.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with Arch Perfmon v5, the anythread filter on generic counters may be
-deprecated. The current kernel was exporting the any filter without checking.
-On Icelake, it means you could do cpu/event=0x3c,any/ even though the filter
-does not exist. This patch corrects the problem by relying on the CPUID 0xa leaf
-function to determine if anythread is supported or not as described in the
-Intel SDM Vol3b 18.2.5.1 AnyThread Deprecation section.
+Hi,
 
-In V2, we remove intel_arch_v4_format_attrs because it is a duplicate
-of intel_arch_format_attrs.
+On 2020-01-16 11:41:34 -0800, Srinivas Pandruvada wrote:
+> On Thu, 2020-01-16 at 10:42 -0800, Andres Freund wrote:
+> > Hi,
+> > 
+> > On 2020-01-16 05:53:13 -0800, Srinivas Pandruvada wrote:
+> > > On Wed, 2020-01-15 at 10:44 -0800, Andres Freund wrote:
+> > > > I noticed that I couldn't read the PCH temperature on my
+> > > > workstation
+> > > > (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but
+> > > > had to
+> > > > go
+> > > > through IPMI. Looking at the data sheet, it looks to me like the
+> > > > existing intel PCH thermal driver should work without changes for
+> > > > Lewisburg.
+> > > Does the temperature reading match with what you read via IPMI?
+> > 
+> > It does:
+> > 
+> > root@awork3:~# ipmitool sdr|grep ^PCH
+> > PCH Temp         | 58 degrees C      | ok
+> > 
+> > andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/type
+> > pch_lewisburg
+> > andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
+> > 58000
+> > 
+> > And if I generate some load, it rises for both:
+> > root@awork3:~# ipmitool sdr|grep ^PCH
+> > PCH Temp         | 60 degrees C      | ok
+> > andres@awork3:~$ cat /sys/class/thermal/thermal_zone0/temp
+> > 60000
+> > 
+> Thanks for the test.
+> 
+> Rui can add his ACK.
 
-Signed-off-by: Stephane Eranian <eranian@google.com>
----
- arch/x86/events/intel/core.c      | 10 ++++++++++
- arch/x86/events/perf_event.h      |  1 +
- arch/x86/include/asm/perf_event.h |  4 +++-
- arch/x86/kvm/cpuid.c              |  4 +++-
- 4 files changed, 17 insertions(+), 2 deletions(-)
+Ping? Looks like this got lost somewhere?
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index f1926e9f2143..7daab613052b 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4987,6 +4987,12 @@ __init int intel_pmu_init(void)
- 
- 	x86_add_quirk(intel_arch_events_quirk); /* Install first, so it runs last */
- 
-+	if (version >= 5) {
-+		x86_pmu.intel_cap.anythread_deprecated = edx.split.anythread_deprecated;
-+		if (x86_pmu.intel_cap.anythread_deprecated)
-+			pr_cont(" AnyThread deprecated, ");
-+	}
-+
- 	/*
- 	 * Install the hw-cache-events table:
- 	 */
-@@ -5512,6 +5518,10 @@ __init int intel_pmu_init(void)
- 	x86_pmu.intel_ctrl |=
- 		((1LL << x86_pmu.num_counters_fixed)-1) << INTEL_PMC_IDX_FIXED;
- 
-+	/* AnyThread may be deprecated on arch perfmon v5 or later */
-+	if (x86_pmu.intel_cap.anythread_deprecated)
-+		x86_pmu.format_attrs = intel_arch_formats_attr;
-+
- 	if (x86_pmu.event_constraints) {
- 		/*
- 		 * event on fixed counter2 (REF_CYCLES) only works on this
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index ee2b9b9fc2a5..906b494083a8 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -585,6 +585,7 @@ union perf_capabilities {
- 		u64     pebs_baseline:1;
- 		u64	perf_metrics:1;
- 		u64	pebs_output_pt_available:1;
-+		u64	anythread_deprecated:1;
- 	};
- 	u64	capabilities;
- };
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 6960cd6d1f23..b9a7fd0a27e2 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -137,7 +137,9 @@ union cpuid10_edx {
- 	struct {
- 		unsigned int num_counters_fixed:5;
- 		unsigned int bit_width_fixed:8;
--		unsigned int reserved:19;
-+		unsigned int reserved1:2;
-+		unsigned int anythread_deprecated:1;
-+		unsigned int reserved2:16;
- 	} split;
- 	unsigned int full;
- };
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 7456f9ad424b..09097d430961 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -636,7 +636,9 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 
- 		edx.split.num_counters_fixed = min(cap.num_counters_fixed, MAX_FIXED_COUNTERS);
- 		edx.split.bit_width_fixed = cap.bit_width_fixed;
--		edx.split.reserved = 0;
-+		edx.split.anythread_deprecated = 1;
-+		edx.split.reserved1 = 0;
-+		edx.split.reserved2 = 0;
- 
- 		entry->eax = eax.full;
- 		entry->ebx = cap.events_mask;
--- 
-2.29.1.341.ge80a0c044ae-goog
+Greetings,
 
+Andres Freund
