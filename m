@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABCF29D88D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CDB29D899
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388328AbgJ1WdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S2388186AbgJ1WfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388566AbgJ1WdC (ORCPT
+        with ESMTP id S2388039AbgJ1WfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:33:02 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DF0C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:33:02 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id d24so937792ljg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:33:02 -0700 (PDT)
+        Wed, 28 Oct 2020 18:35:12 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FF7C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:35:12 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r186so723622pgr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sJ4wXj2K7lJdOYLrd0jjyxtKvvbExzYsZz6tEJ6wk7o=;
-        b=mM89ZJBbiOM2uifaVqXNKqSvyE2s1UPxX02cbg2psjG2RIj0UXsi1Jjgz1Oryq1Qpm
-         nNtWV/Lrq7xaMOk1nJUvpvDcRkMIdXEYqEEPQNx0EvW2fb18AxSruEfievimQTV2NSfy
-         d0ZLC0dIboHF2NU3uV6aWrN39eLuYFOWlQFDS8HE82cJyQv58B1iQYh8FUIVQimKPUBs
-         MLmpU9GAuvttzfyZH62cYrJkwYEM6/nTI48cqRrX/HBH394+76DrhzeIYjoGxOMY6O/1
-         WuTtGpzaeuJe62Yr9yIyeS1BzuZq3pkYhGrezT1vDZgBDsXXtyz4klkHdsp/3vDFLiQ4
-         ehDw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ywjXoX2kkK2KmqL6ZyGoB6Pybvnry+Rvqj9uaI5d5iE=;
+        b=X5W234U1YTYXSeJeyK2Vk+eLiUVBUfulNxLgtgDTC7Y2iq0ShIDFDyJL/pdwnwYUa+
+         OEYlEzLQjjCTHnrkgNNR7g00BW8ESFAEEQT1XcoJj6ZFN54o+wKgCxjD+O60PhuDQ7vD
+         84AXSoKF6QrULCiwA8LXd2DmMUV2GG7NtSjIJ6BviQWr4LdyVlTkrWrzwGw1XwH04BXw
+         wUann1odVUWJfSTWmw+2UN7YWM3rbwimRI5KzkuOeG5fKlaBIz9oc3Vs4E2lZJFK3gLq
+         v5fMgJHzOEzcx8IjzPNRfwrnMS/3QWCVvcyZ6Acqu806VBeEArIYp+nxMc7wfmvp6hZI
+         ASUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sJ4wXj2K7lJdOYLrd0jjyxtKvvbExzYsZz6tEJ6wk7o=;
-        b=oU1/XyeD2uUFrumrTo4qf8H0HmrQkmOvSV5gTiCN7Vu8XhR4zIUPxJAfmjpMGLNCDe
-         QH8za6x72NG1laXUZOkvIO9ifzmCTQKnoz/A9X4sUlj3GghX0OI23ROtPTC2Kf2emZyb
-         IdaElcry7t4MECJmdZ/zGOukjc/JzzgE3TnG/55tBbONSeQr+4xp/6WIC8SN7x82NRSg
-         cd5RGutSLA7rGiMaJqCIs5RSid9Ms1ZoHs+vpaB4ntv4UrfLzDqVW00bQYgFN3qXQv69
-         h4RsLUOalFRRa2/c3YDlR9f4jW9Yq5naq2og7bwIXpgNvD7Dmnmcy3Ijmfe6z2H2K0IH
-         DDeg==
-X-Gm-Message-State: AOAM5307SlrbEGMyMGChjpJE+fmdjl05/BpvbtDohDvcLgCPNQ7LrxUX
-        EXOSX2Rp9sOcdoWAhN+gw5yWabeuoiXZ9FiHaWG+N8GC+H9i/ZV7
-X-Google-Smtp-Source: ABdhPJx8co+572PLantQaUV7Gqe51Vag+Xsh6dam5kO2twasvje9+9Se8vxhWJ1wtDg0J7s2tzvkIaPm0Y/N1NL42uQ=
-X-Received: by 2002:a2e:8706:: with SMTP id m6mr3509012lji.129.1603896102594;
- Wed, 28 Oct 2020 07:41:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ywjXoX2kkK2KmqL6ZyGoB6Pybvnry+Rvqj9uaI5d5iE=;
+        b=iRolIGekerjSD7YVGx9mnKP3j3x3+gwBJ3Ocf7hNe1qh5/7j9PMx6ex9UH3ynPSokC
+         WQ5SdsItMXYEkPQG0Ep3LSM6WTeu7wsM50uoxdrZB2mfEFUNyjXn+WRe9I3DrsrqZ8Aq
+         40Tc9Y0yxPK2muPD4N5dMr5WCXM2J5+S3GWefFjH6csl527kAaQsMSXsarTIkN6H9aw2
+         x6oV+xfw/0JnRlnXZY5ax47gij4XjF+jmL5+F8QBOlKGa5h0unrpYIkYH7+wE/Hjr63W
+         tNjjfis3gabbc1zb0Z4zm87UsT+uU3+hCZKdQsiaZj2xv916ClIYCKgtGpFD6XypFvkj
+         lKBw==
+X-Gm-Message-State: AOAM531AIkgCHvH5pLMkCYHXHp2GE9KH69wy1N/OP+RUBQlquJWQFhhQ
+        qfLX+5yq4rHZ8IO+xCyaj4rJUNXKOwBKfQ==
+X-Google-Smtp-Source: ABdhPJxGfGHUfZR5/hgoqBA9Cp4UZZF2zoq2xSX/vVSEcnm+GlrQO4gwem8tQVD3yMYhu0Zz27HGPQ==
+X-Received: by 2002:a63:e444:: with SMTP id i4mr6715119pgk.304.1603896392305;
+        Wed, 28 Oct 2020 07:46:32 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id y5sm3087840pfq.79.2020.10.28.07.46.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Oct 2020 07:46:31 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 20:16:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Lee <tiny.windzz@gmail.com>
+Cc:     Frank Lee <frank@allwinnertech.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        airlied@linux.ie, daniel@ffwll.ch,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, jcrouse@codeaurora.org,
+        eric@anholt.net, kholk11@gmail.com, emil.velikov@collabora.com,
+        gustavoars@kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 2/3] opp: Add devres wrapper for dev_pm_opp_set_prop_name
+Message-ID: <20201028144628.qm2t2hbzmouqkciy@vireshk-i7>
+References: <20201012135517.19468-1-frank@allwinnertech.com>
+ <20201012135517.19468-3-frank@allwinnertech.com>
+ <20201028102942.zc5hgqpo2bfrn6in@vireshk-i7>
+ <CAEExFWvNgK2wbvmxZjsJR4g-VBq=ggsBLew77rzmNdkpqTRuDA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026194110.3817470-1-arnd@kernel.org> <20201026194110.3817470-4-arnd@kernel.org>
- <20201027093350.GI401619@phenom.ffwll.local> <CAMeQTsZ9rBh2W_y8W4aaGJR3v5CA4g2BLmr-wAvcoKjOQtL68g@mail.gmail.com>
- <CAK8P3a35i9Z7sfFfVk_COotmyKVN6jcXadhaHu-BbbWCy_8ypQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a35i9Z7sfFfVk_COotmyKVN6jcXadhaHu-BbbWCy_8ypQ@mail.gmail.com>
-From:   Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Date:   Wed, 28 Oct 2020 15:41:31 +0100
-Message-ID: <CAMeQTsbATjR2KZ9ML8OsmXgZpbSEsWU3FjYArG8enPtY=yoQww@mail.gmail.com>
-Subject: Re: [PATCH 4/4] drm/gma500: avoid Woverride-init warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Stefan Christ <contact@stefanchrist.eu>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEExFWvNgK2wbvmxZjsJR4g-VBq=ggsBLew77rzmNdkpqTRuDA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 5:50 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Oct 27, 2020 at 10:54 AM Patrik Jakobsson
-> <patrik.r.jakobsson@gmail.com> wrote:
-> > On Tue, Oct 27, 2020 at 10:33 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > On Mon, Oct 26, 2020 at 08:41:04PM +0100, Arnd Bergmann wrote:
-> > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > >
-> > > > gcc -Wextra notices that one of the fields in psbfb_roll_ops has two
-> > > > initializers:
-> > > >
-> > > > drivers/gpu/drm/gma500/framebuffer.c:185:20: warning: initialized field overwritten [-Woverride-init]
-> > > >
-> > > > Open-code this instead, leaving out the extraneous initializers for
-> > > > .fb_pan_display.
-> > > >
-> > > > Fixes: 3da6c2f3b730 ("drm/gma500: use DRM_FB_HELPER_DEFAULT_OPS for fb_ops")
-> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 28-10-20, 19:02, Frank Lee wrote:
+> On Wed, Oct 28, 2020 at 6:29 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 12-10-20, 21:55, Frank Lee wrote:
+> > > From: Yangtao Li <tiny.windzz@gmail.com>
 > > >
-> > > Scrollback is dead, so I'm not sure it's even worth to keep all this. I'd
-> > > just garbage-collect this, maybe als the entire accelerator code and just
-> > > leave psbfb_unaccel_ops behind ...
-> > > -Daniel
+> > > Add devres wrapper for dev_pm_opp_set_prop_name() to simplify driver
+> > > code.
+> > >
+> > > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+> > > Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> > > ---
+> > >  drivers/opp/core.c     | 39 +++++++++++++++++++++++++++++++++++++++
+> > >  include/linux/pm_opp.h |  6 ++++++
+> > >  2 files changed, 45 insertions(+)
 > >
-> > That's been my idea for quite some time. The gtt roll code is also
-> > broken in multi display setups.
-> >
-> > Arnd, I can take care of this unless you feel an urge to do it yourself.
->
-> That would be good, thanks
+> > On a second thought I am looking at dropping this one as you haven't
+> > added any users yet and I am afraid it will stay unused.
+> 
+> Now it looks like that dev_pm_opp_set_prop_name() is used relatively less.
+> Maybe we can wait until a caller, and then pick up the patch.
 
-Should be fixed with:
-https://patchwork.freedesktop.org/patch/397482/?series=83153&rev=1
+I am even wondering if we should be adding any of the devm_* helpers
+for now to be honest. Even for the other one we have only one user.
+Them major user of the OPP core is the CPU subsystem and it is never
+going to use these devm_* helpers as the CPU device doesn't get bound
+to a driver, it is rather a fake platform device which gets the
+cpufreq drivers probed. So the only users of these devm_* helpers is
+going to be non-CPU devices. Considering that we have only one user
+right now, it may be better to just fix it instead of adding any of
+the devm_* helpers.
 
->
-> I have no specific interest in the drm drivers, this is just part of a
-> larger work to enable more of the W=1 options across the kernel
-> by default, after all the existing warnings are addressed.
->
->        Arnd
+-- 
+viresh
