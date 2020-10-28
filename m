@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F3029D97D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABCF29D88D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389821AbgJ1Wzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:55:35 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:50342 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731789AbgJ1Wxf (ORCPT
+        id S2388328AbgJ1WdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388566AbgJ1WdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:53:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=f2XUd9q63Shpn8ECuQrksUMR0DROrEu1ijIel4+9FnQ=; b=seEto5hPizgDdrB9OUOxoOOLmR
-        +CqxCzgTBy/UrV7q7GISf2SM8Nb60I+sULvS5RMghKDO8O5CUaqjJp4wydKPcznAzxZdAemxIzPAn
-        BlcoZhFmbGkM79LkH4Ojf13Nk2wVAKycWT1AzoL/h82Fp+sxbkAQBPbZH/2xnlUA6v/Zge/RHzLgU
-        31gcCK5/BZBNdG+MMy0egcGhF5pTHheV7jDND+rwN+ToMjKjUzTav/9Q1MS4m3/D2A0eehh9Fj1b/
-        vnkphp2ITon/DWDT/zydoTHQrf30JU8y9Yo65kr7CgEsQqueI58/w3rTHCR7/YOyULQPwA1yeQeYZ
-        4kcxpcFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXmaq-0004nh-Dc; Wed, 28 Oct 2020 14:38:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6DE2B3006D0;
-        Wed, 28 Oct 2020 15:38:26 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 21AD6203D0A43; Wed, 28 Oct 2020 15:38:26 +0100 (CET)
-Date:   Wed, 28 Oct 2020 15:38:26 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        paulmck@kernel.org, hch@lst.de, axboe@kernel.dk,
-        chris@chris-wilson.co.uk, davem@davemloft.net, kuba@kernel.org,
-        fweisbec@gmail.com, oleg@redhat.com, vincent.guittot@linaro.org
-Subject: Re: [PATCH v3 5/6] irq_work: Provide irq_work_queue_remote()
-Message-ID: <20201028143826.GB2628@hirez.programming.kicks-ass.net>
-References: <20201028110707.971887448@infradead.org>
- <20201028111221.526249871@infradead.org>
- <20201028134046.GE229044@lothringen>
+        Wed, 28 Oct 2020 18:33:02 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DF0C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:33:02 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id d24so937792ljg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sJ4wXj2K7lJdOYLrd0jjyxtKvvbExzYsZz6tEJ6wk7o=;
+        b=mM89ZJBbiOM2uifaVqXNKqSvyE2s1UPxX02cbg2psjG2RIj0UXsi1Jjgz1Oryq1Qpm
+         nNtWV/Lrq7xaMOk1nJUvpvDcRkMIdXEYqEEPQNx0EvW2fb18AxSruEfievimQTV2NSfy
+         d0ZLC0dIboHF2NU3uV6aWrN39eLuYFOWlQFDS8HE82cJyQv58B1iQYh8FUIVQimKPUBs
+         MLmpU9GAuvttzfyZH62cYrJkwYEM6/nTI48cqRrX/HBH394+76DrhzeIYjoGxOMY6O/1
+         WuTtGpzaeuJe62Yr9yIyeS1BzuZq3pkYhGrezT1vDZgBDsXXtyz4klkHdsp/3vDFLiQ4
+         ehDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sJ4wXj2K7lJdOYLrd0jjyxtKvvbExzYsZz6tEJ6wk7o=;
+        b=oU1/XyeD2uUFrumrTo4qf8H0HmrQkmOvSV5gTiCN7Vu8XhR4zIUPxJAfmjpMGLNCDe
+         QH8za6x72NG1laXUZOkvIO9ifzmCTQKnoz/A9X4sUlj3GghX0OI23ROtPTC2Kf2emZyb
+         IdaElcry7t4MECJmdZ/zGOukjc/JzzgE3TnG/55tBbONSeQr+4xp/6WIC8SN7x82NRSg
+         cd5RGutSLA7rGiMaJqCIs5RSid9Ms1ZoHs+vpaB4ntv4UrfLzDqVW00bQYgFN3qXQv69
+         h4RsLUOalFRRa2/c3YDlR9f4jW9Yq5naq2og7bwIXpgNvD7Dmnmcy3Ijmfe6z2H2K0IH
+         DDeg==
+X-Gm-Message-State: AOAM5307SlrbEGMyMGChjpJE+fmdjl05/BpvbtDohDvcLgCPNQ7LrxUX
+        EXOSX2Rp9sOcdoWAhN+gw5yWabeuoiXZ9FiHaWG+N8GC+H9i/ZV7
+X-Google-Smtp-Source: ABdhPJx8co+572PLantQaUV7Gqe51Vag+Xsh6dam5kO2twasvje9+9Se8vxhWJ1wtDg0J7s2tzvkIaPm0Y/N1NL42uQ=
+X-Received: by 2002:a2e:8706:: with SMTP id m6mr3509012lji.129.1603896102594;
+ Wed, 28 Oct 2020 07:41:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028134046.GE229044@lothringen>
+References: <20201026194110.3817470-1-arnd@kernel.org> <20201026194110.3817470-4-arnd@kernel.org>
+ <20201027093350.GI401619@phenom.ffwll.local> <CAMeQTsZ9rBh2W_y8W4aaGJR3v5CA4g2BLmr-wAvcoKjOQtL68g@mail.gmail.com>
+ <CAK8P3a35i9Z7sfFfVk_COotmyKVN6jcXadhaHu-BbbWCy_8ypQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a35i9Z7sfFfVk_COotmyKVN6jcXadhaHu-BbbWCy_8ypQ@mail.gmail.com>
+From:   Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Date:   Wed, 28 Oct 2020 15:41:31 +0100
+Message-ID: <CAMeQTsbATjR2KZ9ML8OsmXgZpbSEsWU3FjYArG8enPtY=yoQww@mail.gmail.com>
+Subject: Re: [PATCH 4/4] drm/gma500: avoid Woverride-init warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Stefan Christ <contact@stefanchrist.eu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:40:46PM +0100, Frederic Weisbecker wrote:
-> On Wed, Oct 28, 2020 at 12:07:12PM +0100, Peter Zijlstra wrote:
-> > While the traditional irq_work relies on the ability to self-IPI, it
-> > makes sense to provide an unconditional irq_work_queue_remote()
-> > interface.
-> 
-> We may need a reason as well here.
+On Tue, Oct 27, 2020 at 5:50 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Oct 27, 2020 at 10:54 AM Patrik Jakobsson
+> <patrik.r.jakobsson@gmail.com> wrote:
+> > On Tue, Oct 27, 2020 at 10:33 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > On Mon, Oct 26, 2020 at 08:41:04PM +0100, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > gcc -Wextra notices that one of the fields in psbfb_roll_ops has two
+> > > > initializers:
+> > > >
+> > > > drivers/gpu/drm/gma500/framebuffer.c:185:20: warning: initialized field overwritten [-Woverride-init]
+> > > >
+> > > > Open-code this instead, leaving out the extraneous initializers for
+> > > > .fb_pan_display.
+> > > >
+> > > > Fixes: 3da6c2f3b730 ("drm/gma500: use DRM_FB_HELPER_DEFAULT_OPS for fb_ops")
+> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > Scrollback is dead, so I'm not sure it's even worth to keep all this. I'd
+> > > just garbage-collect this, maybe als the entire accelerator code and just
+> > > leave psbfb_unaccel_ops behind ...
+> > > -Daniel
+> >
+> > That's been my idea for quite some time. The gtt roll code is also
+> > broken in multi display setups.
+> >
+> > Arnd, I can take care of this unless you feel an urge to do it yourself.
+>
+> That would be good, thanks
 
-Well, it doesn't rely on arch self-IPI code. The remote irq_work bits
-are generic SMP code.
+Should be fixed with:
+https://patchwork.freedesktop.org/patch/397482/?series=83153&rev=1
 
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1308,13 +1308,14 @@ static int rcu_implicit_dynticks_qs(stru
-> >  			resched_cpu(rdp->cpu);
-> >  			WRITE_ONCE(rdp->last_fqs_resched, jiffies);
-> >  		}
-> > -		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
-> > -		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
-> > +#ifdef CONFIG_IRQ_WORK
-> > +		if (!rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
-> 
-> If it's unconditional on SMP, I expect it to be unconditional on rcutree.
-> 
-> Also this chunk seems unrelated to this patch.
-
-This hunk is due to irq_work_queue_on() no longer existing for
-CONFIG_IRQ_WORK and hence breaking the compile with that IS_ENABLED()
-crud.
-
-That is, this changes IS_ENABLED() for a proper #ifdef.
-
-> >  		    (rnp->ffmask & rdp->grpmask)) {
-> >  			rdp->rcu_iw_pending = true;
-> >  			rdp->rcu_iw_gp_seq = rnp->gp_seq;
-> >  			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-> >  		}
-> > +#endif
-> >  	}
-> >  
-> >  	return 0;
-> > 
-> > 
+>
+> I have no specific interest in the drm drivers, this is just part of a
+> larger work to enable more of the W=1 options across the kernel
+> by default, after all the existing warnings are addressed.
+>
+>        Arnd
