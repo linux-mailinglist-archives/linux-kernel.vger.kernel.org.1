@@ -2,93 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818E929D862
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B3929D964
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387971AbgJ1Wbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387937AbgJ1Wbk (ORCPT
+        id S2389760AbgJ1Wyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:54:54 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16470 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389708AbgJ1Wyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:31:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DC5C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=wdyb7qRuLjR6s6XwwT89tkhrLT43vXhm0ixZ6vQNaB8=; b=hp0ozUsPB0Fw0gJZivtfAYk/bf
-        B3KQahTA80SGKkWIi0hizERQVDna+C8kieHsEy5H+ZmnPW21mAy6mbkJoUGlMXk6ACxJDftsb6i72
-        LiKErYWinHPh0kJeJLhA7IA7FoE/cq1oKWV/cIJyELTLtXm1XGg8nEt9miOxHuJvD1tNor6oajeI4
-        5+nZ0oTtfnVjFCQAEo7N3e8ysg2bp1V1Et7ryebPWpkJfhdgKiOc/rOjXjl7/U3tD+S/hXYcuphfM
-        34hn8ghQSFdXtHknDES69h1fSYRe6pzzjLDcWJnObIRtAvGoFUPMiVh2Q71UGv0b2JsGcHc50v7Lk
-        Shzlo54A==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXe4V-0001wK-41; Wed, 28 Oct 2020 05:32:31 +0000
-Subject: Re: [PATCH] KUnit: Docs: style: fix some Kconfig example issues
-To:     David Gow <davidgow@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20201027184909.20881-1-rdunlap@infradead.org>
- <CABVgOSmtTK=V8EFL8KTmN+e+pP6HKZQo+LMsmqG3PnxuhFtZ9A@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <07963645-1644-53c2-b1da-8f89fe865eda@infradead.org>
-Date:   Tue, 27 Oct 2020 22:32:26 -0700
+        Wed, 28 Oct 2020 18:54:46 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9908fa0001>; Tue, 27 Oct 2020 23:00:26 -0700
+Received: from [10.2.58.85] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 06:00:22 +0000
+Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>
+CC:     <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
+References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
+ <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
+ <20201027093301.GA16090@quack2.suse.cz> <20201027131509.GU36674@ziepe.ca>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <0e04a7ed-a3e6-76f6-0fa8-26e2bbf10ee3@nvidia.com>
+Date:   Tue, 27 Oct 2020 23:00:22 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CABVgOSmtTK=V8EFL8KTmN+e+pP6HKZQo+LMsmqG3PnxuhFtZ9A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201027131509.GU36674@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603864826; bh=DvH8rRYN+1btG24CbugM+DbRy3SuuPBLL4zfqXI2x70=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=UFaVq85de//dl0Jhx4SQC8+HZZkH78201146S2/JEhYEqUWnkNzX+bMeKzceyFZ+O
+         Rhp7WNN9kDmhSLbSbKObLLpQRN7fQnZFlriOgcBhZk/jZRuUv+cdgBCy4ozgOXwyFf
+         M0OoKUIniQvD1XHkUS2491uLXIYc3w2nw/j/zUuJBHkyYETty9g5s0iVbrb14pOQ2Z
+         6JdrsAKfifv5/4gJPJC1VmK7NUR2bXbZPhnQI6Rh/7YwIfzBrjayjqFMHLdAUx7yDC
+         nOkr/JSsirijfDgHVdqy5zwq5PGxOk7sAdLE2bgHZ2rgb1QMQkJ5YljKeWKtpL0Grv
+         GbQpwzb9V8wHw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 8:00 PM, David Gow wrote:
-> On Wed, Oct 28, 2020 at 2:49 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+On 10/27/20 6:15 AM, Jason Gunthorpe wrote:
+> On Tue, Oct 27, 2020 at 10:33:01AM +0100, Jan Kara wrote:
+>> On Fri 23-10-20 21:44:17, John Hubbard wrote:
+>>> On 10/23/20 5:19 PM, Jason Gunthorpe wrote:
+>>>> +	start += (unsigned long)nr_pinned << PAGE_SHIFT;
+>>>> +	pages += nr_pinned;
+>>>> +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
+>>>> +				      pages);
+>>>> +	if (ret < 0) {
+>>>>    		/* Have to be a bit careful with return values */
+>>>
+>>> ...and can we move that comment up one level, so that it reads:
+>>>
+>>> 	/* Have to be a bit careful with return values */
+>>> 	if (ret < 0) {
+>>> 		if (nr_pinned)
+>>> 			return nr_pinned;
+>>> 		return ret;
+>>> 	}
+>>> 	return ret + nr_pinned;
+>>>
+>>> Thinking about this longer term, it would be nice if the whole gup/pup API
+>>> set just stopped pretending that anyone cares about partial success, because
+>>> they *don't*. If we had return values of "0 or -ERRNO" throughout, and an
+>>> additional set of API wrappers that did some sort of limited retry just like
+>>> some of the callers do, that would be a happier story.
 >>
->> Fix the Kconfig example to be closer to Kconfig coding style.
->> (Except that it still uses spaces instead of tabs for indentation;
->> I guess that Sphinx wants it that way.)
->>
->> Also add punctuation and a trailing slash ('/') to a sub-directory
->> name -- this is how the text mostly appears in other Kconfig files.
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: David Gow <davidgow@google.com>
->> Cc: linux-kselftest@vger.kernel.org
->> Cc: kunit-dev@googlegroups.com
->> Cc: Shuah Khan <shuah@kernel.org>
->> Cc: Shuah Khan <skhan@linuxfoundation.org>
->> Cc: Brendan Higgins <brendanhiggins@google.com>
->> ---
+>> Actually there are callers that care about partial success. See e.g.
+>> iov_iter_get_pages() usage in fs/direct_io.c:dio_refill_pages() or
+>> bio_iov_iter_get_pages(). These places handle partial success just fine and
+>> not allowing partial success from GUP could regress things...
 > 
-> Thanks for fixing this!
-> 
-> For what it's worth, I _think_ we could get away with tabs for
-> indentation in the file without Sphinx actually complaining, but it
-> does annoy some of the editors, and as far as I can tell, Sphinx
-> converts them back to spaces in its output. I'm far from an expert,
-> though...
-> 
-> Regardless, this is:
-> 
-> Reviewed-by: David Gow <davidgow@google.com>
+> I looked through a bunch of call sites, and there are a wack that
 
-I tested with tabs for indentation and it's no problem with Sphinx.
-Some editors care?  I am surprised.  and don't much care.
+So did I! :)
 
-I would be happy to submit a v2 using tabs for indentation.
+> actually do only want a complete return and are carrying a bunch of
+> code to fix it:
+> 
+> 	pvec = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+> 	if (!pvec)
+> 		return -ENOMEM;
+> 
+> 	do {
+> 		unsigned num_pages = npages - pinned;
+> 		uint64_t ptr = userptr->ptr + pinned * PAGE_SIZE;
+> 		struct page **pages = pvec + pinned;
+> 
+> 		ret = pin_user_pages_fast(ptr, num_pages,
+> 					  !userptr->ro ? FOLL_WRITE : 0, pages);
+> 		if (ret < 0) {
+> 			unpin_user_pages(pvec, pinned);
+> 			kvfree(pvec);
+> 			return ret;
+> 		}
+> 
+> 		pinned += ret;
+> 
+> 	} while (pinned < npages);
+> 
+> Is really a lot better if written as:
+> 
+>     	pvec = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+> 	if (!pvec)
+> 		return -ENOMEM;
+> 	ret = pin_user_pages_fast(userptr->ptr, npages, FOLL_COMPLETE |
+> 	                          (!userptr->ro ? FOLL_WRITE : 0),
+> 				  pvec);
+>          if (ret) {
+>                kvfree(pvec);
+> 	      return ret;
+>          }
+> 
+> (eg FOLL_COMPLETE says to return exactly npages or fail)
 
-thanks.
+
+Yes, exactly. And if I reverse the polarity (to Christoph's FOLL_PARTIAL, instead
+of FOLL_COMPLETE) it's even smaller, slightly. Which is where I am leaning now.
+
+
+> 
+> Some code assumes things work that way already anyhow:
+> 
+> 	/* Pin user pages for DMA Xfer */
+> 	err = pin_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
+> 			dma->map, FOLL_FORCE);
+> 
+> 	if (user_dma.page_count != err) {
+> 		IVTV_DEBUG_WARN("failed to map user pages, returned %d instead of %d\n",
+> 			   err, user_dma.page_count);
+> 		if (err >= 0) {
+> 			unpin_user_pages(dma->map, err);
+> 			return -EINVAL;
+> 		}
+> 		return err;
+> 	}
+> 
+> Actually I'm quite surprised I didn't find too many missing the tricky
+> unpin_user_pages() on the error path - eg
+> videobuf_dma_init_user_locked() is wrong.
+> 
+
+Well. That's not accidental. "Some People" (much thanks to Souptick Joarder, btw) have
+been fixing up many of those sites, during the pin_user_pages() conversions. Otherwise
+you would have found about 10 or 15 more.
+
+I'll fix up that one above (using your Reported-by, I assume), unless someone else is
+already taking care of it.
+
+
+thanks,
 -- 
-~Randy
+John Hubbard
+NVIDIA
