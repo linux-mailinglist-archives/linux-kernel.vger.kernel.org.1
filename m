@@ -2,146 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC5529DF00
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEBA29DEE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 01:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403825AbgJ2A6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 20:58:33 -0400
+        id S2403793AbgJ2A5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 20:57:20 -0400
 Received: from mail.kernel.org ([198.145.29.99]:60516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731574AbgJ1WRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:32 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1731608AbgJ1WRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:17:35 -0400
+Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 664C1246CA;
-        Wed, 28 Oct 2020 14:07:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7071F247B9;
+        Wed, 28 Oct 2020 14:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603894073;
-        bh=DsEwn1Aha0aISLTxhqMFeop4UEe24Ykwyy3xN/SnAJU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y08StW8cfkj105JGXGm6iImQCDwPVwR+LXCEKF1cbyQAyEZqjo75Gtt0TAGj4bYPv
-         gYY/vhLIlnEIrKILv7vbgoNZNgeyntbnOjL2P3goFEIYSIgCXuuNlEHmmLJ4mMo0oy
-         vLa1b0hR6yqm8Ndop2Y4XuoLMDz6bHHyWj0k0adE=
-Date:   Wed, 28 Oct 2020 14:07:48 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] module: use hidden visibility for weak symbol references
-Message-ID: <20201028140747.GB28554@willie-the-truck>
-References: <20201027151132.14066-1-ardb@kernel.org>
- <20201028100049.GA27873@willie-the-truck>
- <CAMj1kXHFwmjz9CJGrBJ_E4nau=0gqSnR6B6wv6wVq5QHd0tYJg@mail.gmail.com>
- <20201028132437.GA28251@willie-the-truck>
- <20201028140344.GB6867@linux-8ccs>
+        s=default; t=1603895015;
+        bh=o5fpMFDz7DGix7Klrhn+855AGlng0F/UM59klpo7meE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=glqK3lNEhlpqNfzjo6sGVhMCfhp2VX561tLmn1u8nBGnl52o9rqtoqyGU02jVZ9NG
+         cud0eedCdX3QDYHWtRP23c/2zIneuC1ce03hZwRDTSScSOwaoW3plJJgNIkESrd8kJ
+         xgp9IttxqvIYNAl4lmQDAAdRG2+0pjxze/QJnqwA=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kXmMO-003hkn-2A; Wed, 28 Oct 2020 15:23:32 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 01/33] scripts: get_abi.pl: change script to allow parsing in ReST mode
+Date:   Wed, 28 Oct 2020 15:22:59 +0100
+Message-Id: <6bed15a4dc1587faf5312d4f63e57775b27f1ff6.1603893146.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1603893146.git.mchehab+huawei@kernel.org>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028140344.GB6867@linux-8ccs>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 03:03:44PM +0100, Jessica Yu wrote:
-> +++ Will Deacon [28/10/20 13:24 +0000]:
-> > On Wed, Oct 28, 2020 at 01:27:01PM +0100, Ard Biesheuvel wrote:
-> > > On Wed, 28 Oct 2020 at 11:00, Will Deacon <will@kernel.org> wrote:
-> > > > On Tue, Oct 27, 2020 at 04:11:32PM +0100, Ard Biesheuvel wrote:
-> > > > > Geert reports that commit be2881824ae9eb92 ("arm64/build: Assert for
-> > > > > unwanted sections") results in build errors on arm64 for configurations
-> > > > > that have CONFIG_MODULES disabled.
-> > > > >
-> > > > > The commit in question added ASSERT()s to the arm64 linker script to
-> > > > > ensure that linker generated sections such as .got, .plt etc are empty,
-> > > > > but as it turns out, there are corner cases where the linker does emit
-> > > > > content into those sections. More specifically, weak references to
-> > > > > function symbols (which can remain unsatisfied, and can therefore not
-> > > > > be emitted as relative references) will be emitted as GOT and PLT
-> > > > > entries when linking the kernel in PIE mode (which is the case when
-> > > > > CONFIG_RELOCATABLE is enabled, which is on by default).
-> > > > >
-> > > > > What happens is that code such as
-> > > > >
-> > > > >       struct device *(*fn)(struct device *dev);
-> > > > >       struct device *iommu_device;
-> > > > >
-> > > > >       fn = symbol_get(mdev_get_iommu_device);
-> > > > >       if (fn) {
-> > > > >               iommu_device = fn(dev);
-> > > > >
-> > > > > essentially gets converted into the following when CONFIG_MODULES is off:
-> > > > >
-> > > > >       struct device *iommu_device;
-> > > > >
-> > > > >       if (&mdev_get_iommu_device) {
-> > > > >               iommu_device = mdev_get_iommu_device(dev);
-> > > > >
-> > > > > where mdev_get_iommu_device is emitted as a weak symbol reference into
-> > > > > the object file. The first reference is decorated with an ordinary
-> > > > > ABS64 data relocation (which yields 0x0 if the reference remains
-> > > > > unsatisfied). However, the indirect call is turned into a direct call
-> > > > > covered by a R_AARCH64_CALL26 relocation, which is converted into a
-> > > > > call via a PLT entry taking the target address from the associated
-> > > > > GOT entry.
-> > > > >
-> > > > > Given that such GOT and PLT entries are unnecessary for fully linked
-> > > > > binaries such as the kernel, let's give these weak symbol references
-> > > > > hidden visibility, so that the linker knows that the weak reference
-> > > > > via R_AARCH64_CALL26 can simply remain unsatisfied.
-> > > > >
-> > > > > Cc: Jessica Yu <jeyu@kernel.org>
-> > > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > > > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > > ---
-> > > > >  include/linux/module.h | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > Cheers. I gave this a spin, but I unfortunately still see the following
-> > > > linker warning with allnoconfig:
-> > > >
-> > > >   aarch64-linux-gnu-ld: warning: orphan section `.igot.plt' from `arch/arm64/kernel/head.o' being placed in section `.igot.plt'
-> > > >
-> > > > which looks unrelated to symbol_get(), but maybe it's worth knocking these
-> > > > things on the head (no pun intended) at the same time?
-> > > >
-> > > 
-> > > Yeah, that is just one of those spurious sections that turns up empty
-> > > anyway. The head.o is a red herring, it is simply the first file
-> > > appearing in the link.
-> > > 
-> > > This should fix it
-> > > 
-> > > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> > > index 6567d80dd15f..48b222f1c700 100644
-> > > --- a/arch/arm64/kernel/vmlinux.lds.S
-> > > +++ b/arch/arm64/kernel/vmlinux.lds.S
-> > > @@ -278,7 +278,7 @@ SECTIONS
-> > >          * explicitly check instead of blindly discarding.
-> > >          */
-> > >         .plt : {
-> > > -               *(.plt) *(.plt.*) *(.iplt) *(.igot)
-> > > +               *(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
-> > >         }
-> > >         ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure
-> > > linkages detected!")
-> > 
-> > Cheers, that fixes the extra warning for me. If you could send a proper
-> > patch, I'm happy to queue as an arm64 fix! (I'm assuming the former is going
-> > via Jessica, but I can also take that with her Ack).
-> 
-> Hi! Yes, please feel free to take this patch along with the other fix:
-> 
-> Acked-by: Jessica Yu <jeyu@kernel.org>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-Cheers, Jessica -- I'll queue them in a sec!
+Right now, several ABI files won't parse as ReST, as they
+contain severe violations to the spec, with makes the script
+to crash.
 
-Will
+So, the code has a sanity logic with escapes bad code and
+cleans tags that can cause Sphinx to crash.
+
+Add support for disabling this mode.
+
+Right now, as enabling rst-mode causes crash, it is disabled
+by default.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ scripts/get_abi.pl | 74 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 48 insertions(+), 26 deletions(-)
+
+diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
+index c738cb795514..107672cdacb3 100755
+--- a/scripts/get_abi.pl
++++ b/scripts/get_abi.pl
+@@ -12,8 +12,14 @@ my $man;
+ my $debug;
+ my $prefix="Documentation/ABI";
+ 
++#
++# If true, assumes that the description is formatted with ReST
++#
++my $description_is_rst = 0;
++
+ GetOptions(
+ 	"debug|d+" => \$debug,
++	"rst-source!" => \$description_is_rst,
+ 	"dir=s" => \$prefix,
+ 	'help|?' => \$help,
+ 	man => \$man
+@@ -137,14 +143,15 @@ sub parse_abi {
+ 					next;
+ 				}
+ 				if ($tag eq "description") {
+-					next if ($content =~ m/^\s*$/);
+-					if ($content =~ m/^(\s*)(.*)/) {
+-						my $new_content = $2;
+-						$space = $new_tag . $sep . $1;
+-						while ($space =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {}
+-						$space =~ s/./ /g;
+-						$data{$what}->{$tag} .= "$new_content\n";
++					# Preserve initial spaces for the first line
++					$content = ' ' x length($new_tag) . $sep . $content;
++					$content =~ s,^(\s*):,$1 ,;
++					if ($content =~ m/^(\s*)(.*)$/) {
++						$space = $1;
++						$content = $2;
+ 					}
++					while ($space =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {}
++					$data{$what}->{$tag} .= $content;
+ 				} else {
+ 					$data{$what}->{$tag} = $content;
+ 				}
+@@ -160,11 +167,15 @@ sub parse_abi {
+ 
+ 		if ($tag eq "description") {
+ 			if (!$data{$what}->{description}) {
+-				next if (m/^\s*\n/);
++				s/^($space)//;
+ 				if (m/^(\s*)(.*)/) {
+-					$space = $1;
+-					while ($space =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {}
+-					$data{$what}->{$tag} .= "$2\n";
++					my $sp = $1;
++					while ($sp =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {}
++					my $content = "$sp$2";
++
++					$content =~ s/^($space)//;
++
++					$data{$what}->{$tag} .= "$content";
+ 				}
+ 			} else {
+ 				my $content = $_;
+@@ -274,23 +285,27 @@ sub output_rest {
+ 		print "Defined on file :ref:`$file <$fileref>`\n\n" if ($type ne "File");
+ 
+ 		my $desc = $data{$what}->{description};
+-		$desc =~ s/^\s+//;
+-
+-		# Remove title markups from the description, as they won't work
+-		$desc =~ s/\n[\-\*\=\^\~]+\n/\n/g;
+ 
+ 		if (!($desc =~ /^\s*$/)) {
+-			if ($desc =~ m/\:\n/ || $desc =~ m/\n[\t ]+/  || $desc =~ m/[\x00-\x08\x0b-\x1f\x7b-\xff]/) {
+-				# put everything inside a code block
+-				$desc =~ s/\n/\n /g;
+-
+-				print "::\n\n";
+-				print " $desc\n\n";
+-			} else {
+-				# Escape any special chars from description
+-				$desc =~s/([\x00-\x08\x0b-\x1f\x21-\x2a\x2d\x2f\x3c-\x40\x5c\x5e-\x60\x7b-\xff])/\\$1/g;
+-
++			if ($description_is_rst) {
+ 				print "$desc\n\n";
++			} else {
++				$desc =~ s/^\s+//;
++
++				# Remove title markups from the description, as they won't work
++				$desc =~ s/\n[\-\*\=\^\~]+\n/\n\n/g;
++
++				if ($desc =~ m/\:\n/ || $desc =~ m/\n[\t ]+/  || $desc =~ m/[\x00-\x08\x0b-\x1f\x7b-\xff]/) {
++					# put everything inside a code block
++					$desc =~ s/\n/\n /g;
++
++					print "::\n\n";
++					print " $desc\n\n";
++				} else {
++					# Escape any special chars from description
++					$desc =~s/([\x00-\x08\x0b-\x1f\x21-\x2a\x2d\x2f\x3c-\x40\x5c\x5e-\x60\x7b-\xff])/\\$1/g;
++					print "$desc\n\n";
++				}
+ 			}
+ 		} else {
+ 			print "DESCRIPTION MISSING for $what\n\n" if (!$data{$what}->{is_file});
+@@ -382,7 +397,7 @@ abi_book.pl - parse the Linux ABI files and produce a ReST book.
+ 
+ =head1 SYNOPSIS
+ 
+-B<abi_book.pl> [--debug] [--man] [--help] [--dir=<dir>] <COMAND> [<ARGUMENT>]
++B<abi_book.pl> [--debug] [--man] [--help] --[(no-)rst-source] [--dir=<dir>] <COMAND> [<ARGUMENT>]
+ 
+ Where <COMMAND> can be:
+ 
+@@ -405,6 +420,13 @@ B<validate>              - validate the ABI contents
+ Changes the location of the ABI search. By default, it uses
+ the Documentation/ABI directory.
+ 
++=item B<--rst-source> and B<--no-rst-source>
++
++The input file may be using ReST syntax or not. Those two options allow
++selecting between a rst-compliant source ABI (--rst-source), or a
++plain text that may be violating ReST spec, so it requres some escaping
++logic (--no-rst-source).
++
+ =item B<--debug>
+ 
+ Put the script in verbose mode, useful for debugging. Can be called multiple
+-- 
+2.26.2
+
