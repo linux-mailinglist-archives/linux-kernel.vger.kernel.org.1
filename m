@@ -2,291 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C1429DFAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4835229E057
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731177AbgJ2BDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:03:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58289 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730439AbgJ1WKN (ORCPT
+        id S1729760AbgJ1WFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:02 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7077 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729496AbgJ1WCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:10:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603923011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GRpKE5Cdwr3RDaBFCr/RWPUxnNpwM44/7nn8un+KnLw=;
-        b=F1mKT/ojoCiElCd96v9QmST0RcT46TI6M04PYgbA2ztAGR60UsHgHd+e9i1zpvkqoqww6D
-        OzAofTNsiu0BbST+4d37lmdjGR+EIg6qyJP+1d7sFRZXKSw0fEA8wbCS+nT2etKTNrgagJ
-        /tU3hYzPZGa2UJjJE4LcM8TboTOPPR8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-nadouN5SNTWHW6rhd_KTgg-1; Tue, 27 Oct 2020 22:03:20 -0400
-X-MC-Unique: nadouN5SNTWHW6rhd_KTgg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9A7A57208;
-        Wed, 28 Oct 2020 02:03:19 +0000 (UTC)
-Received: from [10.72.13.38] (ovpn-13-38.pek2.redhat.com [10.72.13.38])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 50C2860C15;
-        Wed, 28 Oct 2020 02:03:15 +0000 (UTC)
-Subject: Re: [PATCH] vdpa_sim: Fix DMA mask
-To:     Laurent Vivier <lvivier@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org
-References: <20201027175914.689278-1-lvivier@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <96308d58-910e-2a17-d6b7-81f5ec4234eb@redhat.com>
-Date:   Wed, 28 Oct 2020 10:03:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Oct 2020 18:02:13 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CLX4R4ZNszLqVp;
+        Wed, 28 Oct 2020 10:06:31 +0800 (CST)
+Received: from mdc.huawei.com (10.175.112.208) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 28 Oct 2020 10:06:17 +0800
+From:   Chen Jun <chenjun102@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
+CC:     <casey@schaufler-ca.com>, <stephen.smalley.work@gmail.com>,
+        <eparis@parisplace.org>, <rui.xiang@huawei.com>,
+        <guohanjun@huawei.com>, <houtao1@huawei.com>
+Subject: [RFC PATCH v2] selinux: Fix kmemleak after disabling selinux runtime
+Date:   Wed, 28 Oct 2020 02:06:15 +0000
+Message-ID: <20201028020615.8789-1-chenjun102@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20201027175914.689278-1-lvivier@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chen Jun <c00424029@huawei.com>
 
-On 2020/10/28 =E4=B8=8A=E5=8D=881:59, Laurent Vivier wrote:
-> Since commit f959dcd6ddfd
-> ("dma-direct: Fix potential NULL pointer dereference")
-> an error is reported when we load vdpa_sim and virtio-vdpa:
->
-> [  129.351207] net eth0: Unexpected TXQ (0) queue failure: -12
->
-> It seems that dma_mask is not initialized.
->
-> This patch initializes dma_mask() and calls dma_set_mask_and_coherent()=
+Kmemleak will report a problem after using
+"echo 1 > /sys/fs/selinux/disable" to disable selinux on runtime.
 
-> to fix the problem.
->
-> Full log:
->
-> [  128.548628] ------------[ cut here ]------------
-> [  128.553268] WARNING: CPU: 23 PID: 1105 at kernel/dma/mapping.c:149 d=
-ma_map_page_attrs+0x14c/0x1d0
-> [  128.562139] Modules linked in: virtio_net net_failover failover virt=
-io_vdpa vdpa_sim vringh vhost_iotlb vdpa xt_CHECKSUM xt_MASQUERADE xt_con=
-ntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_=
-nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun br=
-idge stp llc iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi rfkill =
-intel_rapl_msr intel_rapl_common isst_if_common sunrpc skx_edac nfit libn=
-vdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel ipmi_ssif =
-kvm mgag200 i2c_algo_bit irqbypass drm_kms_helper crct10dif_pclmul crc32_=
-pclmul syscopyarea ghash_clmulni_intel iTCO_wdt sysfillrect iTCO_vendor_s=
-upport sysimgblt rapl fb_sys_fops dcdbas intel_cstate drm acpi_ipmi ipmi_=
-si mei_me dell_smbios intel_uncore ipmi_devintf mei i2c_i801 dell_wmi_des=
-criptor wmi_bmof pcspkr lpc_ich i2c_smbus ipmi_msghandler acpi_power_mete=
-r ip_tables xfs libcrc32c sd_mod t10_pi sg ahci libahci libata megaraid_s=
-as tg3 crc32c_intel wmi dm_mirror dm_region_hash dm_log
-> [  128.562188]  dm_mod
-> [  128.651334] CPU: 23 PID: 1105 Comm: NetworkManager Tainted: G S     =
-   I       5.10.0-rc1+ #59
-> [  128.659939] Hardware name: Dell Inc. PowerEdge R440/04JN2K, BIOS 2.8=
-=2E1 06/30/2020
-> [  128.667419] RIP: 0010:dma_map_page_attrs+0x14c/0x1d0
-> [  128.672384] Code: 1c 25 28 00 00 00 0f 85 97 00 00 00 48 83 c4 10 5b=
- 5d 41 5c 41 5d c3 4c 89 da eb d7 48 89 f2 48 2b 50 18 48 89 d0 eb 8d 0f =
-0b <0f> 0b 48 c7 c0 ff ff ff ff eb c3 48 89 d9 48 8b 40 40 e8 2d a0 aa
-> [  128.691131] RSP: 0018:ffffae0f0151f3c8 EFLAGS: 00010246
-> [  128.696357] RAX: ffffffffc06b7400 RBX: 00000000000005fa RCX: 0000000=
-000000000
-> [  128.703488] RDX: 0000000000000040 RSI: ffffcee3c7861200 RDI: ffff9e2=
-bc16cd000
-> [  128.710620] RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000=
-000000000
-> [  128.717754] R10: 0000000000000002 R11: 0000000000000000 R12: ffff9e4=
-72cb291f8
-> [  128.724886] R13: ffff9e2bc14da780 R14: ffff9e472bc20000 R15: ffff9e2=
-bc1b14940
-> [  128.732020] FS:  00007f887bae23c0(0000) GS:ffff9e4ac01c0000(0000) kn=
-lGS:0000000000000000
-> [  128.740105] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  128.745852] CR2: 0000562bc09de998 CR3: 00000003c156c006 CR4: 0000000=
-0007706e0
-> [  128.752982] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> [  128.760114] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> [  128.767247] PKRU: 55555554
-> [  128.769961] Call Trace:
-> [  128.772418]  virtqueue_add+0x81e/0xb00
-> [  128.776176]  virtqueue_add_inbuf_ctx+0x26/0x30
-> [  128.780625]  try_fill_recv+0x3a2/0x6e0 [virtio_net]
-> [  128.785509]  virtnet_open+0xf9/0x180 [virtio_net]
-> [  128.790217]  __dev_open+0xe8/0x180
-> [  128.793620]  __dev_change_flags+0x1a7/0x210
-> [  128.797808]  dev_change_flags+0x21/0x60
-> [  128.801646]  do_setlink+0x328/0x10e0
-> [  128.805227]  ? __nla_validate_parse+0x121/0x180
-> [  128.809757]  ? __nla_parse+0x21/0x30
-> [  128.813338]  ? inet6_validate_link_af+0x5c/0xf0
-> [  128.817871]  ? cpumask_next+0x17/0x20
-> [  128.821535]  ? __snmp6_fill_stats64.isra.54+0x6b/0x110
-> [  128.826676]  ? __nla_validate_parse+0x47/0x180
-> [  128.831120]  __rtnl_newlink+0x541/0x8e0
-> [  128.834962]  ? __nla_reserve+0x38/0x50
-> [  128.838713]  ? security_sock_rcv_skb+0x2a/0x40
-> [  128.843158]  ? netlink_deliver_tap+0x2c/0x1e0
-> [  128.847518]  ? netlink_attachskb+0x1d8/0x220
-> [  128.851793]  ? skb_queue_tail+0x1b/0x50
-> [  128.855641]  ? fib6_clean_node+0x43/0x170
-> [  128.859652]  ? _cond_resched+0x15/0x30
-> [  128.863406]  ? kmem_cache_alloc_trace+0x3a3/0x420
-> [  128.868110]  rtnl_newlink+0x43/0x60
-> [  128.871602]  rtnetlink_rcv_msg+0x12c/0x380
-> [  128.875701]  ? rtnl_calcit.isra.39+0x110/0x110
-> [  128.880147]  netlink_rcv_skb+0x50/0x100
-> [  128.883987]  netlink_unicast+0x1a5/0x280
-> [  128.887913]  netlink_sendmsg+0x23d/0x470
-> [  128.891839]  sock_sendmsg+0x5b/0x60
-> [  128.895331]  ____sys_sendmsg+0x1ef/0x260
-> [  128.899255]  ? copy_msghdr_from_user+0x5c/0x90
-> [  128.903702]  ___sys_sendmsg+0x7c/0xc0
-> [  128.907369]  ? dev_forward_change+0x130/0x130
-> [  128.911731]  ? sysctl_head_finish.part.29+0x24/0x40
-> [  128.916616]  ? new_sync_write+0x11f/0x1b0
-> [  128.920628]  ? mntput_no_expire+0x47/0x240
-> [  128.924727]  __sys_sendmsg+0x57/0xa0
-> [  128.928309]  do_syscall_64+0x33/0x40
-> [  128.931887]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  128.936937] RIP: 0033:0x7f88792e3857
-> [  128.940518] Code: c3 66 90 41 54 41 89 d4 55 48 89 f5 53 89 fb 48 83=
- ec 10 e8 0b ed ff ff 44 89 e2 48 89 ee 89 df 41 89 c0 b8 2e 00 00 00 0f =
-05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 48 89 44 24 08 e8 44 ed ff ff 48
-> [  128.959263] RSP: 002b:00007ffdca60dea0 EFLAGS: 00000293 ORIG_RAX: 00=
-0000000000002e
-> [  128.966827] RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007f8=
-8792e3857
-> [  128.973960] RDX: 0000000000000000 RSI: 00007ffdca60def0 RDI: 0000000=
-00000000c
-> [  128.981095] RBP: 00007ffdca60def0 R08: 0000000000000000 R09: 0000000=
-000000000
-> [  128.988224] R10: 0000000000000001 R11: 0000000000000293 R12: 0000000=
-000000000
-> [  128.995357] R13: 0000000000000000 R14: 00007ffdca60e0a8 R15: 00007ff=
-dca60e09c
-> [  129.002492] CPU: 23 PID: 1105 Comm: NetworkManager Tainted: G S     =
-   I       5.10.0-rc1+ #59
-> [  129.011093] Hardware name: Dell Inc. PowerEdge R440/04JN2K, BIOS 2.8=
-=2E1 06/30/2020
-> [  129.018571] Call Trace:
-> [  129.021027]  dump_stack+0x57/0x6a
-> [  129.024346]  __warn.cold.14+0xe/0x3d
-> [  129.027925]  ? dma_map_page_attrs+0x14c/0x1d0
-> [  129.032283]  report_bug+0xbd/0xf0
-> [  129.035602]  handle_bug+0x44/0x80
-> [  129.038922]  exc_invalid_op+0x13/0x60
-> [  129.042589]  asm_exc_invalid_op+0x12/0x20
-> [  129.046602] RIP: 0010:dma_map_page_attrs+0x14c/0x1d0
-> [  129.051566] Code: 1c 25 28 00 00 00 0f 85 97 00 00 00 48 83 c4 10 5b=
- 5d 41 5c 41 5d c3 4c 89 da eb d7 48 89 f2 48 2b 50 18 48 89 d0 eb 8d 0f =
-0b <0f> 0b 48 c7 c0 ff ff ff ff eb c3 48 89 d9 48 8b 40 40 e8 2d a0 aa
-> [  129.070311] RSP: 0018:ffffae0f0151f3c8 EFLAGS: 00010246
-> [  129.075536] RAX: ffffffffc06b7400 RBX: 00000000000005fa RCX: 0000000=
-000000000
-> [  129.082669] RDX: 0000000000000040 RSI: ffffcee3c7861200 RDI: ffff9e2=
-bc16cd000
-> [  129.089803] RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000=
-000000000
-> [  129.096936] R10: 0000000000000002 R11: 0000000000000000 R12: ffff9e4=
-72cb291f8
-> [  129.104068] R13: ffff9e2bc14da780 R14: ffff9e472bc20000 R15: ffff9e2=
-bc1b14940
-> [  129.111200]  virtqueue_add+0x81e/0xb00
-> [  129.114952]  virtqueue_add_inbuf_ctx+0x26/0x30
-> [  129.119399]  try_fill_recv+0x3a2/0x6e0 [virtio_net]
-> [  129.124280]  virtnet_open+0xf9/0x180 [virtio_net]
-> [  129.128984]  __dev_open+0xe8/0x180
-> [  129.132390]  __dev_change_flags+0x1a7/0x210
-> [  129.136575]  dev_change_flags+0x21/0x60
-> [  129.140415]  do_setlink+0x328/0x10e0
-> [  129.143994]  ? __nla_validate_parse+0x121/0x180
-> [  129.148528]  ? __nla_parse+0x21/0x30
-> [  129.152107]  ? inet6_validate_link_af+0x5c/0xf0
-> [  129.156639]  ? cpumask_next+0x17/0x20
-> [  129.160306]  ? __snmp6_fill_stats64.isra.54+0x6b/0x110
-> [  129.165443]  ? __nla_validate_parse+0x47/0x180
-> [  129.169890]  __rtnl_newlink+0x541/0x8e0
-> [  129.173731]  ? __nla_reserve+0x38/0x50
-> [  129.177483]  ? security_sock_rcv_skb+0x2a/0x40
-> [  129.181928]  ? netlink_deliver_tap+0x2c/0x1e0
-> [  129.186286]  ? netlink_attachskb+0x1d8/0x220
-> [  129.190560]  ? skb_queue_tail+0x1b/0x50
-> [  129.194401]  ? fib6_clean_node+0x43/0x170
-> [  129.198411]  ? _cond_resched+0x15/0x30
-> [  129.202163]  ? kmem_cache_alloc_trace+0x3a3/0x420
-> [  129.206869]  rtnl_newlink+0x43/0x60
-> [  129.210361]  rtnetlink_rcv_msg+0x12c/0x380
-> [  129.214462]  ? rtnl_calcit.isra.39+0x110/0x110
-> [  129.218908]  netlink_rcv_skb+0x50/0x100
-> [  129.222747]  netlink_unicast+0x1a5/0x280
-> [  129.226672]  netlink_sendmsg+0x23d/0x470
-> [  129.230599]  sock_sendmsg+0x5b/0x60
-> [  129.234090]  ____sys_sendmsg+0x1ef/0x260
-> [  129.238015]  ? copy_msghdr_from_user+0x5c/0x90
-> [  129.242461]  ___sys_sendmsg+0x7c/0xc0
-> [  129.246128]  ? dev_forward_change+0x130/0x130
-> [  129.250487]  ? sysctl_head_finish.part.29+0x24/0x40
-> [  129.255368]  ? new_sync_write+0x11f/0x1b0
-> [  129.259381]  ? mntput_no_expire+0x47/0x240
-> [  129.263478]  __sys_sendmsg+0x57/0xa0
-> [  129.267058]  do_syscall_64+0x33/0x40
-> [  129.270639]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  129.275689] RIP: 0033:0x7f88792e3857
-> [  129.279268] Code: c3 66 90 41 54 41 89 d4 55 48 89 f5 53 89 fb 48 83=
- ec 10 e8 0b ed ff ff 44 89 e2 48 89 ee 89 df 41 89 c0 b8 2e 00 00 00 0f =
-05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 48 89 44 24 08 e8 44 ed ff ff 48
-> [  129.298015] RSP: 002b:00007ffdca60dea0 EFLAGS: 00000293 ORIG_RAX: 00=
-0000000000002e
-> [  129.305581] RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007f8=
-8792e3857
-> [  129.312712] RDX: 0000000000000000 RSI: 00007ffdca60def0 RDI: 0000000=
-00000000c
-> [  129.319846] RBP: 00007ffdca60def0 R08: 0000000000000000 R09: 0000000=
-000000000
-> [  129.326978] R10: 0000000000000001 R11: 0000000000000293 R12: 0000000=
-000000000
-> [  129.334109] R13: 0000000000000000 R14: 00007ffdca60e0a8 R15: 00007ff=
-dca60e09c
-> [  129.341249] ---[ end trace c551e8028fbaf59d ]---
-> [  129.351207] net eth0: Unexpected TXQ (0) queue failure: -12
-> [  129.360445] net eth0: Unexpected TXQ (0) queue failure: -12
-> [  129.824428] net eth0: Unexpected TXQ (0) queue failure: -12
->
-> Fixes: 2c53d0f64c06 ("vdpasim: vDPA device simulator")
-> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/v=
-dpa_sim.c
-> index 2629911c29bb..dc69e8085643 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -361,7 +361,9 @@ static struct vdpasim *vdpasim_create(void)
->   	spin_lock_init(&vdpasim->iommu_lock);
->  =20
->   	dev =3D &vdpasim->vdpa.dev;
-> -	dev->coherent_dma_mask =3D DMA_BIT_MASK(64);
-> +	dev->dma_mask =3D &dev->coherent_dma_mask;
-> +	if (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)))
-> +		goto err_iommu;
->   	set_dma_ops(dev, &vdpasim_dma_ops);
->  =20
->   	vdpasim->iommu =3D vhost_iotlb_alloc(2048, 0);
+kmemleak report：
+unreferenced object 0xffff901281c208a0 (size 96):
+  comm "swapper/0", pid 1, jiffies 4294668265 (age 692.799s)
+  hex dump (first 32 bytes):
+    00 40 c8 81 12 90 ff ff 03 00 00 00 05 00 00 00  .@..............
+    03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000014622ef8>] selinux_sb_alloc_security+0x1b/0xa0
+    [<00000000044914e1>] security_sb_alloc+0x1d/0x30
+    [<000000009f9d5ffd>] alloc_super+0xa7/0x310
+    [<000000003c5f0b5b>] sget_fc+0xca/0x230
+    [<00000000367a9996>] vfs_get_super+0x37/0x110
+    [<000000001c47e818>] vfs_get_tree+0x20/0xc0
+    [<00000000d239b404>] fc_mount+0x9/0x30
+    [<00000000708a102f>] vfs_kern_mount.part.36+0x6a/0x80
+    [<000000005db542fe>] kern_mount+0x1b/0x30
+    [<0000000051919f9f>] init_sel_fs+0x8b/0x119
+    [<000000000f328fe0>] do_one_initcall+0x3f/0x1d0
+    [<000000008a6ceb81>] kernel_init_freeable+0x1b4/0x1f2
+    [<000000003a425dcd>] kernel_init+0x5/0x110
+    [<000000004e8d6c9d>] ret_from_fork+0x22/0x30
 
+"echo 1 > /sys/fs/selinux/disable" will delete the hooks.
+Any memory alloced by calling HOOKFUNCTION (like call_int_hook(sb_alloc_security, 0, sb))
+has no chance to be freed after deleting hooks.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Add a flag to mark a hook not be delete when deleting hooks.
 
+Signed-off-by: Chen Jun <chenjun102@huawei.com>
+---
+ include/linux/lsm_hooks.h |  6 +++++-
+ security/selinux/hooks.c  | 20 ++++++++++----------
+ 2 files changed, 15 insertions(+), 11 deletions(-)
 
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index c503f7ab8afb..85de731b0c74 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -1554,6 +1554,7 @@ struct security_hook_list {
+ 	struct hlist_head		*head;
+ 	union security_list_options	hook;
+ 	char				*lsm;
++	bool				no_del;
+ } __randomize_layout;
+ 
+ /*
+@@ -1582,6 +1583,8 @@ struct lsm_blob_sizes {
+  */
+ #define LSM_HOOK_INIT(HEAD, HOOK) \
+ 	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
++#define LSM_HOOK_INIT_NO_DEL(HEAD, HOOK) \
++	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK }, .no_del = 1 }
+ 
+ extern struct security_hook_heads security_hook_heads;
+ extern char *lsm_names;
+@@ -1638,7 +1641,8 @@ static inline void security_delete_hooks(struct security_hook_list *hooks,
+ 	int i;
+ 
+ 	for (i = 0; i < count; i++)
+-		hlist_del_rcu(&hooks[i].list);
++		if (!hooks[i].no_del)
++			hlist_del_rcu(&hooks[i].list);
+ }
+ #endif /* CONFIG_SECURITY_SELINUX_DISABLE */
+ 
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 6b1826fc3658..daff084fd1c7 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -6974,8 +6974,8 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(bprm_committing_creds, selinux_bprm_committing_creds),
+ 	LSM_HOOK_INIT(bprm_committed_creds, selinux_bprm_committed_creds),
+ 
+-	LSM_HOOK_INIT(sb_free_security, selinux_sb_free_security),
+-	LSM_HOOK_INIT(sb_free_mnt_opts, selinux_free_mnt_opts),
++	LSM_HOOK_INIT_NO_DEL(sb_free_security, selinux_sb_free_security),
++	LSM_HOOK_INIT_NO_DEL(sb_free_mnt_opts, selinux_free_mnt_opts),
+ 	LSM_HOOK_INIT(sb_remount, selinux_sb_remount),
+ 	LSM_HOOK_INIT(sb_kern_mount, selinux_sb_kern_mount),
+ 	LSM_HOOK_INIT(sb_show_options, selinux_sb_show_options),
+@@ -7081,7 +7081,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 
+ 	LSM_HOOK_INIT(ismaclabel, selinux_ismaclabel),
+ 	LSM_HOOK_INIT(secctx_to_secid, selinux_secctx_to_secid),
+-	LSM_HOOK_INIT(release_secctx, selinux_release_secctx),
++	LSM_HOOK_INIT_NO_DEL(release_secctx, selinux_release_secctx),
+ 	LSM_HOOK_INIT(inode_invalidate_secctx, selinux_inode_invalidate_secctx),
+ 	LSM_HOOK_INIT(inode_notifysecctx, selinux_inode_notifysecctx),
+ 	LSM_HOOK_INIT(inode_setsecctx, selinux_inode_setsecctx),
+@@ -7107,7 +7107,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(socket_getpeersec_stream,
+ 			selinux_socket_getpeersec_stream),
+ 	LSM_HOOK_INIT(socket_getpeersec_dgram, selinux_socket_getpeersec_dgram),
+-	LSM_HOOK_INIT(sk_free_security, selinux_sk_free_security),
++	LSM_HOOK_INIT_NO_DEL(sk_free_security, selinux_sk_free_security),
+ 	LSM_HOOK_INIT(sk_clone_security, selinux_sk_clone_security),
+ 	LSM_HOOK_INIT(sk_getsecid, selinux_sk_getsecid),
+ 	LSM_HOOK_INIT(sock_graft, selinux_sock_graft),
+@@ -7121,7 +7121,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(secmark_refcount_inc, selinux_secmark_refcount_inc),
+ 	LSM_HOOK_INIT(secmark_refcount_dec, selinux_secmark_refcount_dec),
+ 	LSM_HOOK_INIT(req_classify_flow, selinux_req_classify_flow),
+-	LSM_HOOK_INIT(tun_dev_free_security, selinux_tun_dev_free_security),
++	LSM_HOOK_INIT_NO_DEL(tun_dev_free_security, selinux_tun_dev_free_security),
+ 	LSM_HOOK_INIT(tun_dev_create, selinux_tun_dev_create),
+ 	LSM_HOOK_INIT(tun_dev_attach_queue, selinux_tun_dev_attach_queue),
+ 	LSM_HOOK_INIT(tun_dev_attach, selinux_tun_dev_attach),
+@@ -7130,7 +7130,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(ib_pkey_access, selinux_ib_pkey_access),
+ 	LSM_HOOK_INIT(ib_endport_manage_subnet,
+ 		      selinux_ib_endport_manage_subnet),
+-	LSM_HOOK_INIT(ib_free_security, selinux_ib_free_security),
++	LSM_HOOK_INIT_NO_DEL(ib_free_security, selinux_ib_free_security),
+ #endif
+ #ifdef CONFIG_SECURITY_NETWORK_XFRM
+ 	LSM_HOOK_INIT(xfrm_policy_free_security, selinux_xfrm_policy_free),
+@@ -7144,7 +7144,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ #endif
+ 
+ #ifdef CONFIG_KEYS
+-	LSM_HOOK_INIT(key_free, selinux_key_free),
++	LSM_HOOK_INIT_NO_DEL(key_free, selinux_key_free),
+ 	LSM_HOOK_INIT(key_permission, selinux_key_permission),
+ 	LSM_HOOK_INIT(key_getsecurity, selinux_key_getsecurity),
+ #ifdef CONFIG_KEY_NOTIFICATIONS
+@@ -7162,13 +7162,13 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(bpf, selinux_bpf),
+ 	LSM_HOOK_INIT(bpf_map, selinux_bpf_map),
+ 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
+-	LSM_HOOK_INIT(bpf_map_free_security, selinux_bpf_map_free),
+-	LSM_HOOK_INIT(bpf_prog_free_security, selinux_bpf_prog_free),
++	LSM_HOOK_INIT_NO_DEL(bpf_map_free_security, selinux_bpf_map_free),
++	LSM_HOOK_INIT_NO_DEL(bpf_prog_free_security, selinux_bpf_prog_free),
+ #endif
+ 
+ #ifdef CONFIG_PERF_EVENTS
+ 	LSM_HOOK_INIT(perf_event_open, selinux_perf_event_open),
+-	LSM_HOOK_INIT(perf_event_free, selinux_perf_event_free),
++	LSM_HOOK_INIT_NO_DEL(perf_event_free, selinux_perf_event_free),
+ 	LSM_HOOK_INIT(perf_event_read, selinux_perf_event_read),
+ 	LSM_HOOK_INIT(perf_event_write, selinux_perf_event_write),
+ #endif
+-- 
+2.25.0
 
