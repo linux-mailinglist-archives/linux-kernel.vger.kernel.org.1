@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753CB29D48E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DB729D49D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgJ1VxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:53:09 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33872 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728380AbgJ1VxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:53:04 -0400
-Received: by mail-wr1-f68.google.com with SMTP id i1so689709wro.1;
-        Wed, 28 Oct 2020 14:53:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5ZnXxaz23SCoShQOgk04jnieqtpf5ln6p39aeLgtVB8=;
-        b=LKW9u5UBBiaiMvt1+yJ6p89g8Y0Vrto+YLj98F6E6vKMeTnt6b6rob47hBju4kLsaU
-         J2JArWFhNPXUYJcD8nvBMEy2Ae2pTchacut8ubTUQH9bmHwqKxpS86MdE7ZpFpD0Cd6U
-         ENnWKkSAvW0htcwWvpe5M3+9rH3xIGraGsPDwlkeHCSHdoApeIKE25rtKwDh6bcD3A7S
-         PpP11SO/mES9AZvAYwIPZYypEsbcKdMkWU3cmWeGgXjlT5L1JPUJQib04l7wUdCyHcmY
-         GgiVtm++VwyLSgVdjZuwm8AAIypD6+p6M7fgwhRc1UvxIiwRs3zS7eISM3uzjNKks6cj
-         oeug==
-X-Gm-Message-State: AOAM5325aa4CwuKey/lFPpv3kx6PPCuwqIwjxPFPB/FFnlX7kdZ2aRnX
-        v86ZZjUrxD0rxva8YxZ80yA=
-X-Google-Smtp-Source: ABdhPJx6PPpAmbXbui196s2L7gRKKwN9GgVw23nSKqFPGMzwAEuM+i4FQGV8bGHvzHBeLrjYddOkng==
-X-Received: by 2002:adf:a501:: with SMTP id i1mr1586091wrb.162.1603921981824;
-        Wed, 28 Oct 2020 14:53:01 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id x1sm1250159wrl.41.2020.10.28.14.52.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 14:53:00 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 22:52:57 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org
-Cc:     Kamil Debski <kamil@wypas.org>
-Subject: Re: [PATCH 1/4] MAINTAINERS: move Kamil Debski to credits
-Message-ID: <20201028215257.GA269525@kozik-lap>
-References: <20201016151528.7553-1-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201016151528.7553-1-krzk@kernel.org>
+        id S1728522AbgJ1Vxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728498AbgJ1Vxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:53:32 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CD6E246CD;
+        Wed, 28 Oct 2020 21:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603922011;
+        bh=w0+pxBjU+zt4O2vwvDzMt1r0M9UokpQ6mVEdgrP7ujI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kZij+PrTtTiHIS3et04LeuL1PA8cVhJV9S9ZksXTaBfbaRNDl2VI00pkPk5ti7+Gz
+         S/z+3dLqlDaS5jtaJWlpvT2DEEfr3dBAH75BSiMjv9BWEPkXbui0LEytjdoYFdb6u2
+         gvB5JJmo1/1V+bjKU/Z4NpUstwN0WJMb1imPd7i8=
+Date:   Wed, 28 Oct 2020 14:53:30 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Hui Su <sh_def@163.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/oom_kill: remove comment and rename
+ is_dump_unreclaim_slabs()
+Message-Id: <20201028145330.1cf7a32bb109ccb50d2b0dbb@linux-foundation.org>
+In-Reply-To: <20201028153141.GB77196@rlk>
+References: <20201027144529.GA3558@rlk>
+        <20201027145814.GY20500@dhcp22.suse.cz>
+        <20201027151156.GA4336@rlk>
+        <20201027192322.GA20500@dhcp22.suse.cz>
+        <20201028153141.GB77196@rlk>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 05:15:25PM +0200, Krzysztof Kozlowski wrote:
-> Kamil Debski has not been active on LKML since 2017:
-> https://lore.kernel.org/lkml/?q=f%3A%22Kamil+Debski%22
-> 
-> Move Kamil Debski to the CREDITS file.  Thank you for the effort you put
-> in to the upstream Linux kernel work.
-> 
-> Cc: Kamil Debski <kamil@wypas.org>
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  CREDITS     | 6 ++++++
->  MAINTAINERS | 4 ----
+On Wed, 28 Oct 2020 23:31:41 +0800 Hui Su <sh_def@163.com> wrote:
 
-Applied.
+> Comment for is_dump_unreclaim_slabs is not really clear whether it is
+> meant to instruct how to use the function or whether it is an outdated
+> information of the past implementation of the function. it doesn't realy
+> help that is_dump_unreclaim_slabs is hard to grasp on its own.
+> 
+> Rename the helper to should_dump_unreclaim_slabs which should make it
+> clear what it is meant to do and drop the comment as the purpose
+> should be pretty evident now.
+> 
 
-Best regards,
-Krzysztof
+I think your recent attempt to improve the comment:
+
+/*
+ * Check whether unreclaimable slabs amount is greater than all user
+ * memory(LRU pages).
+ */
+
+was actually somewhat useful, and worth retaining.
+
+It would be better if it explained *why* we're doing this, rather than
+simply "what we are doing"?
+
+<looks at the code>
+
+It's actually quite unobvious why we're doing this!
 
