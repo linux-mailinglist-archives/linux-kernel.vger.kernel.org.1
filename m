@@ -2,332 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4A829DA5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504D629DA8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390125AbgJ1XVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:21:03 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:46919 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728764AbgJ1XU7 (ORCPT
+        id S2390371AbgJ1XZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:25:58 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36241 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390287AbgJ1XZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:20:59 -0400
-Received: by mail-lf1-f67.google.com with SMTP id v6so899415lfa.13;
-        Wed, 28 Oct 2020 16:20:56 -0700 (PDT)
+        Wed, 28 Oct 2020 19:25:37 -0400
+Received: by mail-oi1-f195.google.com with SMTP id y186so1389869oia.3;
+        Wed, 28 Oct 2020 16:25:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8i7Bc7KFVLsx0fKOAsAyF3DaujVKz4hLo6VsJaJEHnI=;
-        b=QC3O304ntgYI8wryc6DBpkjC3ETjLpVcaC3iV7v8SzmgXuDdIgfgECZLHSS3Q/4gG2
-         5fWGsGLY182scjRN0vpT9cFvH8ScG7SnFXm4UBS7do0IDhKuLqxk0aoOgClhKb5o7AQ+
-         XqgXBUvSOJrYCkqZDTpsiqKHvuPDKluJvvtKI7b0LsDAWGq1zIZF6tckOP7BTd3OzWkU
-         EOh2pWg4oKg8ieysPj+0PUpoweTt3CyW3jO+7FBwf2eO6d5Ir+ADrytJ0whsS/SE3eRe
-         6NUmHgdPfftODmW1caU1yfHHtCaBN4p+eRJfMJyOfr9ES2fFT30LoFR35bIsKqfAV6Q5
-         Y0ng==
-X-Gm-Message-State: AOAM530SKMd//u710Q/bC7Qt0YOlmlbnLXbLX4sw81tcLJUGaAwgza9d
-        Ip18a29MZsYC5UwwhKlVYvZhF1nB4GEPnw==
-X-Google-Smtp-Source: ABdhPJw+/DJDETZf+qXtendnQg83lCMOsmSDDv7cxqwiBLCl/XtNa8Q3AO4mET1xfaqT/piCf5pOtg==
-X-Received: by 2002:ac2:592c:: with SMTP id v12mr2231006lfi.400.1603878407819;
-        Wed, 28 Oct 2020 02:46:47 -0700 (PDT)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id q27sm470092lfd.261.2020.10.28.02.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 02:46:47 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 11:46:37 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v4 2/4] mfd: Support ROHM BD9576MUF and BD9573MUF
-Message-ID: <c7a838830b7d5ea1c281e419cf0eff0cc50363e0.1603877481.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1603877481.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WRqdyxaHVERacl4jf/075/U1BNHD64QQhedn3+Sdi/8=;
+        b=Pb/rR75SIF+nwxRlmSbuUBwghXPIVLP3kqE+fwaRhW2TM9kCgWPGBHqIf9OtXtWn/a
+         22ZmW2KTl/85e49X1vy3W6nZUO9SavD4XgdihogxwFYXi/fN+xCY83box/Jfo67c1jGH
+         v7K4ev3WDBiQELzjwg+EW1WY78lEKI9CsslEJkckXeVh5QbxT5i9B5X7/rchK2PrAUvJ
+         9Cpsl7V1Yd3UxDtZE4MFU1O+d9cjHh10AOS01YmSuXe2848K7Q6drsrgSFUCAHufYywu
+         5G2onKErn+wHwxZbnuOADaVoAWWFH8NGw9Lt5fhow4V6kzhhmgc1+KvEM17gQyrolboU
+         qKjw==
+X-Gm-Message-State: AOAM530NFWvoVhhaDqaOwBIZMVku1sCTAHLYpOSij6jeKo0+hqTKvmOO
+        RCxtyZtErk2p6nNCYEjnxoeHQvgXv9WGrMN0b6Bu0CgEs84JLg==
+X-Google-Smtp-Source: ABdhPJyXYiynuJcGVEVWbMjMQv17WJ9Bdi5zI7Wuu0SiRqN/fHDXAy41dVJBMeByjeXKfMb+nbbdqdgyyPIFu/7hCdI=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr4696584oif.54.1603878596951;
+ Wed, 28 Oct 2020 02:49:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1603877481.git.matti.vaittinen@fi.rohmeurope.com>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+ <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
+ <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
+ <20201013095613.mbgmjwzojg5wxmau@vireshk-i7> <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
+ <20201016050347.ers54itzmxgijzsy@vireshk-i7> <CAMuHMdUUzoFxbJts3gVC7i5A5daa_TYzKdrGEHho=3a1eeC_ww@mail.gmail.com>
+ <20201016080730.h7u3jmlyjbyhqn3t@vireshk-i7> <CAMuHMdV1pnE===53_8r596G=9ktw-UMqD3N=T_F34Yk9aw9wWA@mail.gmail.com>
+ <20201028054829.42zckdtwvj67tcfl@vireshk-i7>
+In-Reply-To: <20201028054829.42zckdtwvj67tcfl@vireshk-i7>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 28 Oct 2020 10:49:45 +0100
+Message-ID: <CAMuHMdXnfG8riHYsd9PYSHTDvJ11zQ27y_JJh_9+obUxxLen0g@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
+ probe deferral properly
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add core support for ROHM BD9576MUF and BD9573MUF PMICs which are
-mainly used to power the R-Car series processors.
+Hi Viresh,
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/mfd/Kconfig              |  11 +++
- drivers/mfd/Makefile             |   1 +
- drivers/mfd/rohm-bd9576.c        | 130 +++++++++++++++++++++++++++++++
- include/linux/mfd/rohm-bd957x.h  |  59 ++++++++++++++
- include/linux/mfd/rohm-generic.h |   2 +
- 5 files changed, 203 insertions(+)
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
+On Wed, Oct 28, 2020 at 6:48 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> On 27-10-20, 17:29, Geert Uytterhoeven wrote:
+> > On plain v5.9, with #define DEBUG and a few extra debug prints
+> > added, I get:
+> >
+> >     cpufreq_dt: cpufreq_init:164: policy->cpu = 0
+> >     cpufreq_dt: cpufreq_init:165: policy->cpus = 0
+> >     cpufreq_dt: cpufreq_init:166: policy->related_cpus =
+> >     cpufreq_dt: cpufreq_init:167: policy->real_cpus =
+> >     cpu cpu0: dev_pm_opp_of_get_sharing_cpus: Couldn't find opp node.
+> >     of: dev_pm_opp_of_cpumask_add_table:1049
+> >     of: dev_pm_opp_of_cpumask_add_table:1054: cpu 0
+> >     cpu cpu0: dev_pm_opp_of_add_table:954
+> >     cpu cpu0: dev_pm_opp_of_add_table:956:
+> > dev_pm_opp_get_opp_table_indexed() returned (ptrval)
+> >     cpu cpu0: _of_add_opp_table_v1:891
+> >     cpu cpu0: _of_add_opp_table_v1:893: _find_opp_table() returned (ptrval)
+> >     cpu cpu0: _of_add_opp_table_v1:909: 6 entries
+> >     cpu cpu0: dev_pm_opp_get_opp_count:331
+> >     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+> >     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
+> >     cpu cpu0: dev_pm_opp_get_opp_count:331
+> >     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+> >     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
+> >     cpu cpu0: dev_pm_opp_get_opp_count:331
+> >     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+> >     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 6
+> >     cpu cpu0: Couldn't find proper 'dynamic-power-coefficient' in DT
+> >     cpu cpu0: Couldn't register Energy Model -22
+> >
+> > This happens quite late in the boot sequence, long after cpu1 has been
+> > brought online.
+> > So it finds the v1 opp table for cpu0, which has 6 entries.
+> > The last two messages should be harmless, right?
+>
+> Yes.
+>
+> > So you say cpufreq is not working? How can I verify that?
+>
+> I said it because your earlier logs showed that we defered probed
+> again or the count was 0 and we failed. Something like that.
+>
+> Give output of this to verify if cpufreq is working or not:
+>
+> grep . /sys/devices/system/cpu/cpufreq/policy*/*
+>
+> This will be empty if there is no cpufreq.
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 8b99a13669bf..dcb2b14a570e 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -2010,6 +2010,17 @@ config MFD_ROHM_BD71828
- 	  Also included is a Coulomb counter, a real-time clock (RTC), and
- 	  a 32.768 kHz clock gate.
- 
-+config MFD_ROHM_BD957XMUF
-+	tristate "ROHM BD9576MUF and BD9573MUF Power Management ICs"
-+	depends on I2C=y
-+	depends on OF
-+	select REGMAP_I2C
-+	select MFD_CORE
-+	help
-+	  Select this option to get support for the ROHM BD9576MUF and
-+	  BD9573MUF Power Management ICs. BD9576 and BD9573 are primarily
-+	  designed to be used to power R-Car series processors.
-+
- config MFD_STM32_LPTIMER
- 	tristate "Support for STM32 Low-Power Timer"
- 	depends on (ARCH_STM32 && OF) || COMPILE_TEST
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 1780019d2474..837f68c9f336 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -261,6 +261,7 @@ obj-$(CONFIG_RAVE_SP_CORE)	+= rave-sp.o
- obj-$(CONFIG_MFD_ROHM_BD70528)	+= rohm-bd70528.o
- obj-$(CONFIG_MFD_ROHM_BD71828)	+= rohm-bd71828.o
- obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
-+obj-$(CONFIG_MFD_ROHM_BD957XMUF)	+= rohm-bd9576.o
- obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
- obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- 
-diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
-new file mode 100644
-index 000000000000..a23ded510209
---- /dev/null
-+++ b/drivers/mfd/rohm-bd9576.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+//
-+// Copyright (C) 2020 ROHM Semiconductors
-+//
-+// ROHM BD9576MUF and BD9573MUF PMIC driver
-+
-+#include <linux/i2c.h>
-+#include <linux/interrupt.h>
-+#include <linux/ioport.h>
-+#include <linux/irq.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/rohm-bd957x.h>
-+#include <linux/mfd/rohm-generic.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/regmap.h>
-+#include <linux/types.h>
-+
-+static struct mfd_cell bd9573_mfd_cells[] = {
-+	{ .name = "bd9573-pmic", },
-+	{ .name = "bd9576-wdt", },
-+};
-+
-+
-+static struct mfd_cell bd9576_mfd_cells[] = {
-+	{ .name = "bd9576-pmic", },
-+	{ .name = "bd9576-wdt", },
-+};
-+
-+static const struct regmap_range volatile_ranges[] = {
-+	{
-+		.range_min = BD957X_REG_SMRB_ASSERT,
-+		.range_max = BD957X_REG_SMRB_ASSERT,
-+	},
-+	{
-+		.range_min = BD957X_REG_PMIC_INTERNAL_STAT,
-+		.range_max = BD957X_REG_PMIC_INTERNAL_STAT,
-+	},
-+	{
-+		.range_min = BD957X_REG_INT_THERM_STAT,
-+		.range_max = BD957X_REG_INT_THERM_STAT,
-+	},
-+	{
-+		.range_min = BD957X_REG_INT_OVP_STAT,
-+		.range_max = BD957X_REG_INT_SYS_STAT,
-+	}, {
-+		.range_min = BD957X_REG_INT_MAIN_STAT,
-+		.range_max = BD957X_REG_INT_MAIN_STAT,
-+	},
-+};
-+
-+static const struct regmap_access_table volatile_regs = {
-+	.yes_ranges = &volatile_ranges[0],
-+	.n_yes_ranges = ARRAY_SIZE(volatile_ranges),
-+};
-+
-+static struct regmap_config bd957x_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.volatile_table = &volatile_regs,
-+	.max_register = BD957X_MAX_REGISTER,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static int bd957x_i2c_probe(struct i2c_client *i2c,
-+			     const struct i2c_device_id *id)
-+{
-+	int ret;
-+	struct regmap *regmap;
-+	struct mfd_cell *mfd;
-+	int cells;
-+	unsigned int chip_type;
-+
-+	chip_type = (unsigned int)(uintptr_t)
-+		    of_device_get_match_data(&i2c->dev);
-+
-+	switch (chip_type) {
-+	case ROHM_CHIP_TYPE_BD9576:
-+		mfd = bd9576_mfd_cells;
-+		cells = ARRAY_SIZE(bd9576_mfd_cells);
-+		break;
-+	case ROHM_CHIP_TYPE_BD9573:
-+		mfd = bd9573_mfd_cells;
-+		cells = ARRAY_SIZE(bd9573_mfd_cells);
-+		break;
-+	default:
-+		dev_err(&i2c->dev, "Unknown device type");
-+		return -EINVAL;
-+	}
-+
-+	regmap = devm_regmap_init_i2c(i2c, &bd957x_regmap);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&i2c->dev, "Failed to initialize Regmap\n");
-+		return PTR_ERR(regmap);
-+	}
-+
-+	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd, cells,
-+				   NULL, 0, NULL);
-+	if (ret)
-+		dev_err(&i2c->dev, "Failed to create subdevices\n");
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bd957x_of_match[] = {
-+	{
-+		.compatible = "rohm,bd9576",
-+		.data = (void *)ROHM_CHIP_TYPE_BD9576,
-+	},
-+	{
-+		.compatible = "rohm,bd9573",
-+		.data = (void *)ROHM_CHIP_TYPE_BD9573,
-+	},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, bd957x_of_match);
-+
-+static struct i2c_driver bd957x_drv = {
-+	.driver = {
-+		.name = "rohm-bd957x",
-+		.of_match_table = bd957x_of_match,
-+	},
-+	.probe = &bd957x_i2c_probe,
-+};
-+
-+module_i2c_driver(bd957x_drv);
-+
-+MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-+MODULE_DESCRIPTION("ROHM BD9576MUF and BD9573MUF Power Management IC driver");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/mfd/rohm-bd957x.h b/include/linux/mfd/rohm-bd957x.h
-new file mode 100644
-index 000000000000..3e7ca6fe5d4f
---- /dev/null
-+++ b/include/linux/mfd/rohm-bd957x.h
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/* Copyright (C) 2020 ROHM Semiconductors */
-+
-+#ifndef __LINUX_MFD_BD957X_H__
-+#define __LINUX_MFD_BD957X_H__
-+
-+enum {
-+	BD957X_VD50,
-+	BD957X_VD18,
-+	BD957X_VDDDR,
-+	BD957X_VD10,
-+	BD957X_VOUTL1,
-+	BD957X_VOUTS1,
-+};
-+
-+#define BD957X_REG_SMRB_ASSERT		0x15
-+#define BD957X_REG_PMIC_INTERNAL_STAT	0x20
-+#define BD957X_REG_INT_THERM_STAT	0x23
-+#define BD957X_REG_INT_THERM_MASK 0x24
-+#define BD957X_REG_INT_OVP_STAT 0x25
-+#define BD957X_REG_INT_SCP_STAT 0x26
-+#define BD957X_REG_INT_OCP_STAT 0x27
-+#define BD957X_REG_INT_OVD_STAT 0x28
-+#define BD957X_REG_INT_UVD_STAT 0x29
-+#define BD957X_REG_INT_UVP_STAT 0x2a
-+#define BD957X_REG_INT_SYS_STAT 0x2b
-+#define BD957X_REG_INT_SYS_MASK 0x2c
-+#define BD957X_REG_INT_MAIN_STAT 0x30
-+#define BD957X_REG_INT_MAIN_MASK 0x31
-+
-+#define BD957X_REG_WDT_CONF 0x16
-+
-+#define BD957X_REG_POW_TRIGGER1 0x41
-+#define BD957X_REG_POW_TRIGGER2 0x42
-+#define BD957X_REG_POW_TRIGGER3 0x43
-+#define BD957X_REG_POW_TRIGGER4 0x44
-+#define BD957X_REG_POW_TRIGGERL1 0x45
-+#define BD957X_REG_POW_TRIGGERS1 0x46
-+
-+#define BD957X_REGULATOR_EN_MASK 0xff
-+#define BD957X_REGULATOR_DIS_VAL 0xff
-+
-+#define BD957X_VSEL_REG_MASK	0xff
-+
-+#define BD957X_MASK_VOUT1_TUNE	0x87
-+#define BD957X_MASK_VOUT2_TUNE	0x87
-+#define BD957X_MASK_VOUT3_TUNE	0x1f
-+#define BD957X_MASK_VOUT4_TUNE	0x1f
-+#define BD957X_MASK_VOUTL1_TUNE	0x87
-+
-+#define BD957X_REG_VOUT1_TUNE	0x50
-+#define BD957X_REG_VOUT2_TUNE	0x53
-+#define BD957X_REG_VOUT3_TUNE	0x56
-+#define BD957X_REG_VOUT4_TUNE	0x59
-+#define BD957X_REG_VOUTL1_TUNE	0x5c
-+
-+#define BD957X_MAX_REGISTER 0x61
-+
-+#endif
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..58b4f1a0f4af 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -12,6 +12,8 @@ enum rohm_chip_type {
- 	ROHM_CHIP_TYPE_BD71847,
- 	ROHM_CHIP_TYPE_BD70528,
- 	ROHM_CHIP_TYPE_BD71828,
-+	ROHM_CHIP_TYPE_BD9576,
-+	ROHM_CHIP_TYPE_BD9573,
- 	ROHM_CHIP_TYPE_AMOUNT
- };
- 
--- 
-2.21.3
+/sys/devices/system/cpu/cpufreq/policy0/affected_cpus:0 1
+/sys/devices/system/cpu/cpufreq/policy0/cpuinfo_cur_freq:375000
+/sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq:1500000
+/sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq:375000
+/sys/devices/system/cpu/cpufreq/policy0/cpuinfo_transition_latency:300000
+/sys/devices/system/cpu/cpufreq/policy0/related_cpus:0 1
+/sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies:375000
+750000 937500 1125000 1312500 1500000
+/sys/devices/system/cpu/cpufreq/policy0/scaling_available_governors:conservative
+ondemand userspace powersave performance schedutil
+/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq:375000
+/sys/devices/system/cpu/cpufreq/policy0/scaling_driver:cpufreq-dt
+/sys/devices/system/cpu/cpufreq/policy0/scaling_governor:schedutil
+/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq:1500000
+/sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq:375000
+/sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed:<unsupported>
 
+So it works in v5.9, but not in v5.10-rc1.
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Bisection says it was broken by commit 90d46d71cce279d8 ("opp: Handle
+multiple calls for same OPP table in _of_add_opp_table_v1()").
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+> >     cpu cpu0: dev_pm_opp_get_opp_count:331
+> >     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned (ptrval)
+> >     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 0
+> >     cpu cpu0: OPP table can't be empty
+> >
+> > Wait, _get_opp_count() returns 0?
+>
+> Does this fix it for you as well ?
+>
+> https://lore.kernel.org/lkml/2c73ab54717ef358b118ea0cfb727b1427e7730a.1602648719.git.viresh.kumar@linaro.org/
+
+Thanks, it does. I had arrived at the same conclusion after bisection.
+
+> I didn't point you to this earlier as your logs said something else.
+
+All my logs said _get_opp_count() returns 0.
+
+> > During s2ram, v5.10-rc1, it redoes most of the above, incl. touching the
+> > PMIC, which it shouldn't due in this phase of system resume:
+> >
+> >     Disabling non-boot CPUs ...
+> >     Enabling non-boot CPUs ...
+> >     cpufreq_dt: cpufreq_init:112: policy->cpu = 1
+> >     cpufreq_dt: cpufreq_init:113: policy->cpus = 1
+> >     cpufreq_dt: cpufreq_init:114: policy->related_cpus =
+> >     cpufreq_dt: cpufreq_init:115: policy->real_cpus =
+> >     of: dev_pm_opp_of_cpumask_add_table:1075
+> >     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 0
+> >     cpu cpu0: dev_pm_opp_of_add_table:980
+> >     cpu cpu0: dev_pm_opp_of_add_table:982:
+> > dev_pm_opp_get_opp_table_indexed() returned f680980b
+> >     cpu cpu0: _of_add_opp_table_v1:914
+> >     cpu cpu0: _of_add_opp_table_v1:916: _find_opp_table() returned a4afd426
+> >     cpu cpu0: _of_add_opp_table_v1:937: 6 entries
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >
+> > The i2c controller is suspended, this could go boom...
+> >
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     of: dev_pm_opp_of_cpumask_add_table:1080: cpu 1
+> >     cpu cpu1: dev_pm_opp_of_add_table:980
+> >     cpu cpu1: dev_pm_opp_of_add_table:982:
+> > dev_pm_opp_get_opp_table_indexed() returned f680980b
+> >     cpu cpu1: _of_add_opp_table_v1:914
+> >     cpu cpu1: _of_add_opp_table_v1:916: _find_opp_table() returned 9087c76d
+> >     cpu cpu1: _of_add_opp_table_v1:937: 6 entries
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+> >     cpu cpu0: dev_pm_opp_get_opp_count:331
+> >     cpu cpu0: dev_pm_opp_get_opp_count:333: _find_opp_table() returned f680980b
+> >     cpu cpu0: dev_pm_opp_get_opp_count:342: _get_opp_count() returned 0
+> >     cpu cpu0: OPP table can't be empty
+> >     CPU1 is up
+>
+> Lets make the normal boot work first and see about this later.
+
+This is also fixed by your patch: the PMIC is no longer accessed while
+suspended.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
