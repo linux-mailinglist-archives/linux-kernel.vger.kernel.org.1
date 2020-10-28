@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158D629D4BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD9129D3E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728725AbgJ1VyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:54:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57124 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728686AbgJ1VyM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:54:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603922050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K/CEDYM98JgXCxM3nau3BhO1AzT+ER9RnJI9yDKsTOQ=;
-        b=CUA77STAZuNsXVe4kdajTN4SkN2fmKq+4hbpX0nxZbLRFhFKb6xCmj2z0secLypZjyPUwR
-        n7tiJEhspYBOvhZl660eElQoor9KCo8xYbGA0sz+KcdIO0Do8cEpFERqFzp/ddYPRlLfvM
-        dy4ahBuktYt+Dw0ml8o+MVCqaFNuYp4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-GZHC4amIP2eEWsNtbuZ6BQ-1; Wed, 28 Oct 2020 12:53:04 -0400
-X-MC-Unique: GZHC4amIP2eEWsNtbuZ6BQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726074AbgJ1VnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:43:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726097AbgJ1VmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:42:24 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22DFF57212;
-        Wed, 28 Oct 2020 16:53:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D7DB45C22D;
-        Wed, 28 Oct 2020 16:53:01 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20201028143442.GA20115@casper.infradead.org>
-References: <20201028143442.GA20115@casper.infradead.org> <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk> <160389426655.300137.17487677797144804730.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        kernel test robot <lkp@intel.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] afs: Fix dirty-region encoding on ppc32 with 64K pages
+        by mail.kernel.org (Postfix) with ESMTPSA id 9710E247F2;
+        Wed, 28 Oct 2020 16:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603904029;
+        bh=F55CaKuNqy8kbVd0WsJiDP97cLglVFbjvcBXO78m1Jc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YwXYBzDQhSs3ZjvP/WeJPKnySEt0WC4uog5M4PS0pidC9ifUHsxnMM2oiosuaLJHY
+         sggxQ+qPufRo5azbQpS3ONOXUbNKuF2lIia+ofFMLvDjkPIPwk0P6tVaWuKqhFKmAK
+         L+2/hcZBe2Vz45ClPLSW0hs0CCYaFEUhFznu/3sQ=
+Date:   Wed, 28 Oct 2020 17:54:35 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Benson Leung <bleung@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Richard Gong <richard.gong@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>,
+        Tony Luck <tony.luck@intel.com>, Wu Hao <hao.wu@intel.com>
+Subject: Re: [PATCH 00/33] ABI: add it to the documentation build system
+Message-ID: <20201028165435.GA2792004@kroah.com>
+References: <cover.1603893146.git.mchehab+huawei@kernel.org>
+ <20201028144321.GA2302351@kroah.com>
+ <20201028102246.6af578ee@lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <541368.1603903981.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 28 Oct 2020 16:53:01 +0000
-Message-ID: <541369.1603903981@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028102246.6af578ee@lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Oct 28, 2020 at 10:22:46AM -0600, Jonathan Corbet wrote:
+> On Wed, 28 Oct 2020 15:43:21 +0100
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > If there's no complaints, I'd like to take all of the Documentation/ABI/
+> > updates in for 5.10-rc2 at the least, to make it easier to build on top
+> > of and to keep these types of mistakes from living longer than they
+> > should be.  And make merging easier with other trees over time.
+> 
+> No complaints here, even if you want to take the whole set.  Feel free to
+> add:
+> 
+> Acked-by: Jonathan Corbet <corbet@lwn.net>
+> 
+> ...if you like.
 
-> > +static inline unsigned int afs_page_dirty_resolution(void)
-> =
+Great, I can do that, it's even easier that way, thanks!
 
-> I've been using size_t for offsets within a struct page.  I don't know
-> that we'll ever support pages larger than 2GB (they're completely
-> impractical with today's bus speeds), but I'd rather not be the one
-> who has to track down all the uses of 'int' in the kernel in fifteen
-> years time.
-
-Going beyond 2G page size won't be fun and a lot of our APIs will break -
-write_begin, write_end, invalidatepage to name a few.
-
-It would probably require an analysis program to trace all the usages of s=
-uch
-information within the kernel.
-
-> > +{
-> > +	if (PAGE_SIZE - 1 <=3D __AFS_PAGE_PRIV_MASK)
-> > +		return 1;
-> > +	else
-> > +		return PAGE_SIZE / (__AFS_PAGE_PRIV_MASK + 1);
-> =
-
-> Could this be DIV_ROUND_UP(PAGE_SIZE, __AFS_PAGE_PRIV_MASK + 1); avoidin=
-g
-> a conditional?  I appreciate it's calculated at compile time today, but
-> it'll be dynamic with THP.
-
-That seems to work.
-
-> >  static inline unsigned int afs_page_dirty_to(unsigned long priv)
-> >  {
-> > -	return ((priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK) + 1;
-> > +	unsigned int x =3D (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV=
-_MASK;
-> > +
-> > +	/* The upper bound is exclusive */
-> =
-
-> I think you mean 'inclusive'.
-
-The returned upper bound points immediately beyond the range.  E.g. 0-0 is=
- an
-empty range.  Changing that is way too big an overhaul outside the merge
-window.
-
-> > +	return (x + 1) * afs_page_dirty_resolution();
-> >  }
-> >  =
-
-> >  static inline unsigned long afs_page_dirty(unsigned int from, unsigne=
-d int to)
-> >  {
-> > +	unsigned int res =3D afs_page_dirty_resolution();
-> > +	from /=3D res; /* Round down */
-> > +	to =3D (to + res - 1) / res; /* Round up */
-> >  	return ((unsigned long)(to - 1) << __AFS_PAGE_PRIV_SHIFT) | from;
-> =
-
-> Wouldn't it produce the same result to just round down?  ie:
-> =
-
-> 	to =3D (to - 1) / res;
-> 	return ((unsigned long)to << __AFS_PAGE_PRIV_SHIFT) | from;
-
-Actually, yes, because res/res=3D=3D1, which I then subtract afterwards.
-
-David
-
+greg k-h
