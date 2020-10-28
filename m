@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F4E29D9E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4174229D9C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 00:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390066AbgJ1XGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 19:06:19 -0400
-Received: from mail-pf1-f200.google.com ([209.85.210.200]:55492 "EHLO
-        mail-pf1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389785AbgJ1XGN (ORCPT
+        id S2390016AbgJ1XCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 19:02:35 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51880 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730802AbgJ1XBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:06:13 -0400
-Received: by mail-pf1-f200.google.com with SMTP id z12so585707pfa.22
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:06:11 -0700 (PDT)
+        Wed, 28 Oct 2020 19:01:34 -0400
+Received: by mail-io1-f70.google.com with SMTP id m25so648090ioh.18
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 16:01:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MqjoSdva1wfK+hQdS37oMwtOGGifvUM6vcpSTQxQdrQ=;
-        b=bRpodyDGvywhbYyOMRLiIWoGLpJAtSQbZE/LCceTXhsqAzPRZe/ERtF4j9rNqU60kd
-         xY2rEPMPCFY7RPAMd/djBnFBV3TUTYtk5PYQmM0LoA11d8MgqMAc+qQ8eZd47cLUsRkC
-         eUte684zY1wNmre0EiPKEjz8zpqF+AFesPxkDQ7Odb2jAtFqF7uqIzQJqxNUZDRcOw6h
-         XWbYLvkHGJINgnOfEwZRo503o5rZx2GBuDnqfUuTD6H/d3Wrx8/KUOUc0/c1o4+Ys1Mb
-         42Zhw7fR4FZgYA6wzlPMja2Ncw2cxhKBlS0Smw+1ymuAHh1+IfSsrqceaSXb8f17jd3C
-         +vzg==
-X-Gm-Message-State: AOAM531KANuY7f9XrA6MnLKbQ/Lxgpgpn+JgkR4R9mMVI1IxCad5jW4e
-        VVYGsJSLHbKyttQCTXbHecH8kYhTerVu7hkKe3fCp9f0wTP9
-X-Google-Smtp-Source: ABdhPJx2SIcqpONqSHWatP8dAS6iVcIj+SrI5NXPfmppkaaJMp/6HoiWQcW951WoP33zEbBBiRzemuMy6VQGpaQx5te6qm3H04OY
+        bh=I6Tv0mZbA3G3bm/uFU3fYpeMhFGdLavDRFYielkX/qA=;
+        b=ggr0abyuz053su1eOuaIi82vBj86y7ih6KUvvGJ/6fXk4raxaRGwoLMMdz8aVIqEiE
+         j88wXQofuGrBrYX7CX0PK/7lnPzpzNrTLTwZR2OaW6Aj/qgdGMWpAAWoV9S+V7WmFYKt
+         6zBRcmIF3gaMNM+TrXGMWCFk6vZvsf12+DMZCytnvHb2+j1cjuQyDIK7xQVF2PInCmBz
+         F3+ExpwuvAEK00TF2pNjuW023r8byVDARkdI+2gFYoWw2pkSfo9UefXkmK3zC4fNxS4a
+         mWhGcAnui8AyAOUuT70OXSoBixuVUaImaHYrBaX8qsYPU9ZQV9xjelKRiKDUPp4nvMuS
+         R0Ow==
+X-Gm-Message-State: AOAM532FQZT/clRiV3H1llAzxDeL9e6y8cHjzlpwUY0CT4icsya+61ds
+        2NrrDWFuBB9rTVpkn8eNBA71BQgHwi+1cakkZ3yc522rvkh8
+X-Google-Smtp-Source: ABdhPJyvkYDWO+MkW+GPCkfakucDqW9Hg44YfadMBs6jV2DHt/jCKIE8L/gnqUoHI6yNY3G7ACZNkuRZvv0g+FRnZh3ag17bqYv1
 MIME-Version: 1.0
-X-Received: by 2002:a92:d709:: with SMTP id m9mr6503546iln.226.1603899197532;
+X-Received: by 2002:a92:8746:: with SMTP id d6mr6602712ilm.255.1603899197781;
  Wed, 28 Oct 2020 08:33:17 -0700 (PDT)
 Date:   Wed, 28 Oct 2020 08:33:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ecb1de05b2bce118@google.com>
-Subject: WARNING in ovs_dp_cmd_new
-From:   syzbot <syzbot+d35e01f2daf3cee35470@syzkaller.appspotmail.com>
-To:     amit.kucheria@linaro.org, daniel.lezcano@linaro.org,
-        davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
+Message-ID: <000000000000f07eb205b2bce11b@google.com>
+Subject: WARNING: suspicious RCU usage in ovs_flow_tbl_masks_cache_resize
+From:   syzbot <syzbot+9a8f8bfcc56e8578016c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pshelar@ovn.org, rui.zhang@intel.com,
-        syzkaller-bugs@googlegroups.com
+        pshelar@ovn.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,54 +48,41 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of git://git.kernel.org/..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=155125b0500000
+HEAD commit:    6daa1da4 chelsio/chtls: fix memory leaks in CPL handlers
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=10defae4500000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=46c6fea3eb827ae1
-dashboard link: https://syzkaller.appspot.com/bug?extid=d35e01f2daf3cee35470
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a8f8bfcc56e8578016c
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144916df900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14eee964500000
-
-The issue was bisected to:
-
-commit 1ce50e7d408ef2bdc8ca021363fd46d1b8bfad00
-Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-Date:   Mon Jul 6 10:55:37 2020 +0000
-
-    thermal: core: genetlink support for events/cmd/sampling
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14d64554500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16d64554500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d64554500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fed5bc500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12afff40500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d35e01f2daf3cee35470@syzkaller.appspotmail.com
-Fixes: 1ce50e7d408e ("thermal: core: genetlink support for events/cmd/sampling")
+Reported-by: syzbot+9a8f8bfcc56e8578016c@syzkaller.appspotmail.com
 
-netlink: 44 bytes leftover after parsing attributes in process `syz-executor235'.
-------------[ cut here ]------------
-Dropping previously announced user features
-WARNING: CPU: 1 PID: 8534 at net/openvswitch/datapath.c:1587 ovs_dp_reset_user_features net/openvswitch/datapath.c:1587 [inline]
-WARNING: CPU: 1 PID: 8534 at net/openvswitch/datapath.c:1587 ovs_dp_cmd_new+0xca7/0xec0 net/openvswitch/datapath.c:1725
-Modules linked in:
-CPU: 1 PID: 8534 Comm: syz-executor235 Not tainted 5.9.0-syzkaller #0
+netlink: 44 bytes leftover after parsing attributes in process `syz-executor522'.
+=============================
+WARNING: suspicious RCU usage
+5.9.0-syzkaller #0 Not tainted
+-----------------------------
+net/openvswitch/flow_table.c:393 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by syz-executor522/8493:
+ #0: ffffffff8c9af210 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+
+stack backtrace:
+CPU: 1 PID: 8493 Comm: syz-executor522 Not tainted 5.9.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ovs_dp_reset_user_features net/openvswitch/datapath.c:1587 [inline]
-RIP: 0010:ovs_dp_cmd_new+0xca7/0xec0 net/openvswitch/datapath.c:1725
-Code: 2a 0f b6 04 02 84 c0 74 04 3c 03 7e 21 c7 43 68 00 00 00 00 e9 17 fe ff ff e8 05 86 d6 f8 48 c7 c7 a0 fa 6a 8a e8 89 f2 11 00 <0f> 0b eb be 4c 89 e7 e8 4d fb 17 f9 eb d5 e8 e6 fa 17 f9 e9 3f ff
-RSP: 0018:ffffc9000162f510 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888025989300 RCX: 0000000000000000
-RDX: ffff88801fcb1a40 RSI: ffffffff8158ce35 RDI: fffff520002c5e94
-RBP: ffff88801cd87100 R08: 0000000000000001 R09: ffff8880b9f2005b
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888025989368
-R13: 0000000000000006 R14: ffff8880188d9ff8 R15: ffff888027e1b3c0
-FS:  0000000001138880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055600d8b5628 CR3: 0000000020260000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ovs_flow_tbl_masks_cache_resize+0x1bf/0x200 net/openvswitch/flow_table.c:393
+ ovs_dp_change+0x231/0x2b0 net/openvswitch/datapath.c:1616
+ ovs_dp_cmd_new+0x4c1/0xec0 net/openvswitch/datapath.c:1706
  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
@@ -113,14 +98,13 @@ Call Trace:
  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4419b9
-Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe494aefa8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004419b9
+RIP: 0033:0x440ad9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffff6e416d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440ad9
 RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000003
-RBP: 0000000000015d76 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000402760
-R13: 00000000004027f0 R14: 0000000000000000 R15: 0000000000000000
+RBP: 00000000006cb018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022e0
 
 
 ---
@@ -130,6 +114,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
