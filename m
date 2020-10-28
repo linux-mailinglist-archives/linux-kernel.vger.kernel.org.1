@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2B029DFAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329D829DFAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731287AbgJ2BDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:03:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:39068 "EHLO foss.arm.com"
+        id S1731227AbgJ2BDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 21:03:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:39076 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730414AbgJ1WKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:10:07 -0400
+        id S1730466AbgJ1WKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:10:11 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99034176A;
-        Wed, 28 Oct 2020 15:10:06 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6A3B176B;
+        Wed, 28 Oct 2020 15:10:07 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AC3CD3F73C;
-        Wed, 28 Oct 2020 15:10:05 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C63BD3F68F;
+        Wed, 28 Oct 2020 15:10:06 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
         coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v3 05/26] coresight: etm4x: Handle TRCVIPCSSCTLR accesses
-Date:   Wed, 28 Oct 2020 22:09:24 +0000
-Message-Id: <20201028220945.3826358-7-suzuki.poulose@arm.com>
+Subject: [PATCH v3 06/26] coresight: etm4x: Handle access to TRCSSPCICRn
+Date:   Wed, 28 Oct 2020 22:09:25 +0000
+Message-Id: <20201028220945.3826358-8-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20201028220945.3826358-1-suzuki.poulose@arm.com>
 References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
@@ -34,51 +34,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TRCVIPCSSCTLR is not present if the TRCIDR4.NUMPC > 0. Thus we
-should only access the register if it is present, preventing
-any undesired behavior.
+TRCSSPCICR<n> is present only if all of the following are true:
+	TRCIDR4.NUMSSCC > n.
+	TRCIDR4.NUMPC > 0b0000 .
+	TRCSSCSR<n>.PC == 0b1
 
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 28dd278f6d47..d78a37b6592c 100644
+index d78a37b6592c..0310eac9dc16 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -141,8 +141,9 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 	writel_relaxed(config->viiectlr, drvdata->base + TRCVIIECTLR);
- 	writel_relaxed(config->vissctlr,
- 		       drvdata->base + TRCVISSCTLR);
--	writel_relaxed(config->vipcssctlr,
--		       drvdata->base + TRCVIPCSSCTLR);
-+	if (drvdata->nr_pe_cmp)
-+		writel_relaxed(config->vipcssctlr,
-+			       drvdata->base + TRCVIPCSSCTLR);
- 	for (i = 0; i < drvdata->nrseqstate - 1; i++)
- 		writel_relaxed(config->seq_ctrl[i],
- 			       drvdata->base + TRCSEQEVRn(i));
-@@ -1202,7 +1203,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	state->trcvictlr = readl(drvdata->base + TRCVICTLR);
- 	state->trcviiectlr = readl(drvdata->base + TRCVIIECTLR);
- 	state->trcvissctlr = readl(drvdata->base + TRCVISSCTLR);
--	state->trcvipcssctlr = readl(drvdata->base + TRCVIPCSSCTLR);
-+	if (drvdata->nr_pe_cmp)
-+		state->trcvipcssctlr = readl(drvdata->base + TRCVIPCSSCTLR);
- 	state->trcvdctlr = readl(drvdata->base + TRCVDCTLR);
- 	state->trcvdsacctlr = readl(drvdata->base + TRCVDSACCTLR);
- 	state->trcvdarcctlr = readl(drvdata->base + TRCVDARCCTLR);
-@@ -1310,7 +1312,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 	writel_relaxed(state->trcvictlr, drvdata->base + TRCVICTLR);
- 	writel_relaxed(state->trcviiectlr, drvdata->base + TRCVIIECTLR);
- 	writel_relaxed(state->trcvissctlr, drvdata->base + TRCVISSCTLR);
--	writel_relaxed(state->trcvipcssctlr, drvdata->base + TRCVIPCSSCTLR);
-+	if (drvdata->nr_pe_cmp)
-+		writel_relaxed(state->trcvipcssctlr, drvdata->base + TRCVIPCSSCTLR);
- 	writel_relaxed(state->trcvdctlr, drvdata->base + TRCVDCTLR);
- 	writel_relaxed(state->trcvdsacctlr, drvdata->base + TRCVDSACCTLR);
- 	writel_relaxed(state->trcvdarcctlr, drvdata->base + TRCVDARCCTLR);
+@@ -175,8 +175,9 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+ 			       drvdata->base + TRCSSCCRn(i));
+ 		writel_relaxed(config->ss_status[i],
+ 			       drvdata->base + TRCSSCSRn(i));
+-		writel_relaxed(config->ss_pe_cmp[i],
+-			       drvdata->base + TRCSSPCICRn(i));
++		if (drvdata->nr_pe)
++			writel_relaxed(config->ss_pe_cmp[i],
++				       drvdata->base + TRCSSPCICRn(i));
+ 	}
+ 	for (i = 0; i < drvdata->nr_addr_cmp; i++) {
+ 		writeq_relaxed(config->addr_val[i],
+@@ -1228,7 +1229,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+ 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+ 		state->trcssccr[i] = readl(drvdata->base + TRCSSCCRn(i));
+ 		state->trcsscsr[i] = readl(drvdata->base + TRCSSCSRn(i));
+-		state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
++		if (drvdata->nr_pe)
++			state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
+ 	}
+ 
+ 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
+@@ -1344,8 +1346,9 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+ 			       drvdata->base + TRCSSCCRn(i));
+ 		writel_relaxed(state->trcsscsr[i],
+ 			       drvdata->base + TRCSSCSRn(i));
+-		writel_relaxed(state->trcsspcicr[i],
+-			       drvdata->base + TRCSSPCICRn(i));
++		if (drvdata->nr_pe)
++			writel_relaxed(state->trcsspcicr[i],
++				       drvdata->base + TRCSSPCICRn(i));
+ 	}
+ 
+ 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
 -- 
 2.24.1
 
