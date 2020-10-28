@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21C029D621
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF6029D6A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730771AbgJ1WL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730738AbgJ1WLy (ORCPT
+        id S1731444AbgJ1WQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:16:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54638 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730800AbgJ1WQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:11:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7A6C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=11r151o8JcIiklZdrY5InpTby+OlWFUHOfysaQ6dEeo=; b=MEr4Wj2p6V6PCicC2/5IqSL14D
-        CvUuk7+ZmDja8bW9YCBqbzS8GUFijYKiYAa8vT88s7Kjl3vvBnadljzN5Rz40L7uUZrkrzbdF8Ygi
-        EyGe1dGZjF7bB+ADMWngAr7MMW24qcbizYzZ9MkxaAH205OLRzXiWGJtYkgRIEnSrzNtE+s4CxZeg
-        9NKDrKFx2xKV1pli4hqdxkQq5IaEfSBQgSlHHh6hNrRwaqAkPfDjBDimONIEyPSlK8DP5shpCF+Et
-        2suFpQ2fDAA413qvSqCUppesziln55ZKBg3rRqod8rJ3M/wZ3aP/tzXLXfVfNOFWZL8sImIqowjYv
-        eE4oaCjg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXfNY-0006jP-FQ; Wed, 28 Oct 2020 06:56:16 +0000
-Date:   Wed, 28 Oct 2020 06:56:16 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Runge <dave@sleepmap.de>, linux-rt-users@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH RFC] blk-mq: Don't IPI requests on PREEMPT_RT
-Message-ID: <20201028065616.GA24449@infradead.org>
-References: <20201021175059.GA4989@hmbx>
- <20201023110400.bx3uzsb7xy5jtsea@linutronix.de>
- <20201023112130.GA23790@infradead.org>
- <20201023135219.mzzl76eqqy6tqwhe@linutronix.de>
- <20201027092606.GA20805@infradead.org>
- <20201027101102.cvczdb3mkvtoguo5@linutronix.de>
- <20201027160742.GA19073@infradead.org>
- <87eelj1tx0.fsf@nanos.tec.linutronix.de>
- <20201027172309.GA15004@infradead.org>
- <20201027205806.s7qau5xf4lzuslcu@linutronix.de>
+        Wed, 28 Oct 2020 18:16:56 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D77A11C0BAC; Wed, 28 Oct 2020 07:58:04 +0100 (CET)
+Date:   Wed, 28 Oct 2020 07:58:04 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 4.19 018/264] chelsio/chtls: correct function return and
+ return type
+Message-ID: <20201028065803.GA8084@amd>
+References: <20201027135430.632029009@linuxfoundation.org>
+ <20201027135431.522408687@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
 Content-Disposition: inline
-In-Reply-To: <20201027205806.s7qau5xf4lzuslcu@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201027135431.522408687@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The remaining part is a switch to llist which avoids locking (IRQ
-> off/on) and it allows invoke the IPI/raise softirq only if something was
-> added. The entries are now processed in the reverse order but this
-> shouldn't matter right?
 
-For correctness it should not matter, but I think it could have
-performance implications.  I think you'll have to throw in a
-llist_reverse_order.
+--0F1p//8PRICkK4MW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I would split this into two patches (the blk_mq_complete_need_ipi() hunk
-> and the llist part) unless there are objections.
+Hi!
 
-Yes, please do.
+> From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+>=20
+> [ Upstream commit 8580a61aede28d441e1c80588803411ee86aa299 ]
+>=20
+> csk_mem_free() should return true if send buffer is available,
+> false otherwise.
+
+> Fixes: 3b8305f5c844 ("crypto: chtls - wait for memory sendmsg, sendpage")
+
+This does not fix anything. In fact, binary code should be exactly
+equivalent. It does not need to be in 4.19-stable.
+
+Best regards,
+								Pavel
+
+
+> --- a/drivers/crypto/chelsio/chtls/chtls_io.c
+> +++ b/drivers/crypto/chelsio/chtls/chtls_io.c
+> @@ -914,9 +914,9 @@ static int tls_header_read(struct tls_hd
+>  	return (__force int)cpu_to_be16(thdr->length);
+>  }
+> =20
+> -static int csk_mem_free(struct chtls_dev *cdev, struct sock *sk)
+> +static bool csk_mem_free(struct chtls_dev *cdev, struct sock *sk)
+>  {
+> -	return (cdev->max_host_sndbuf - sk->sk_wmem_queued);
+> +	return (cdev->max_host_sndbuf - sk->sk_wmem_queued > 0);
+>  }
+> =20
+>  static int csk_wait_memory(struct chtls_dev *cdev,
+>=20
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--0F1p//8PRICkK4MW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+ZFnsACgkQMOfwapXb+vJNTgCeItp/T9ZclAOY2oIVNBMk8CoR
+lA4AoLJMrpmAXhRkMkZ511r7rU8Romm1
+=0raj
+-----END PGP SIGNATURE-----
+
+--0F1p//8PRICkK4MW--
