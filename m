@@ -2,174 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A6929E05C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F80B29DF68
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgJ1WE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:04:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52557 "EHLO
+        id S1730696AbgJ1WM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:12:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57608 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729493AbgJ1WCG (ORCPT
+        by vger.kernel.org with ESMTP id S1730815AbgJ1WMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:02:06 -0400
+        Wed, 28 Oct 2020 18:12:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603922525;
+        s=mimecast20190719; t=1603923139;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o9/CLvMtl/VDe8FAQKlYw2/08Jd6hZteFLUw3bqy7TU=;
-        b=db12ESVBae3v4+CsABMTMO7X5KyT2VlO8gDHQAzB1e7G5DHjXiYCs5UMtIDQTjlC3xvG4R
-        FiHhEMOm1QfoSLF4UF/MTSRwZuGC1boZ58EWWtQlhFE/WSWvfN+wo2e1SZX0Yi1AfDysl4
-        MWfs9fEWRNMElmZSCY7Cgwst35X7Rmk=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-_huvMD0sMyablBtIVJL7XQ-1; Wed, 28 Oct 2020 09:59:07 -0400
-X-MC-Unique: _huvMD0sMyablBtIVJL7XQ-1
-Received: by mail-oi1-f200.google.com with SMTP id 204so2246022oid.21
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 06:59:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=o9/CLvMtl/VDe8FAQKlYw2/08Jd6hZteFLUw3bqy7TU=;
-        b=pvAJup28SoZEFEzRlbxAISRkat9KP4ryoU1WYyfcTFvnbHZnzTlFFgXi2mXzdbWpVQ
-         Lhar7OOxWCJUqe7c2b1muclMtYoYtv3NSKrFKlbuxH1/hzQEcd8ZYYQ111rL6eKAmVjC
-         LlYdqMrljxxhVtwRnQ/6yeZuq7Vjr/ApKGgtKtlSs40vYdIWS1ewN53awfUQv1kYquPb
-         MdQNOF5VGWk/GdYC5w14n8OnhTimHjNVy6PZD6nPCXia8E+GraHIHM1GLlrWzxRYaG3r
-         C7VMBdIvcSGMa3sXEG/towwJ4VR9QYhfkIcpduRL3pRaqdsxopSMWMGQI3u0LrjIoOSB
-         bZKw==
-X-Gm-Message-State: AOAM53012IT2Wx9qpkHVbWzdRA9QNY+XVMxDBrMpW97OXoY7iZxjLSCG
-        K6pj3W7KcKn/wZ9hUhVE0Ly9z3NkOvz2oobAPKuYfFhlcKeRsI3H4NZHEe0foUzvlMtHeusnJP+
-        5Cdyi7c/OteZwrejQn3A2JewB
-X-Received: by 2002:a05:6830:1009:: with SMTP id a9mr3705439otp.312.1603893546068;
-        Wed, 28 Oct 2020 06:59:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzeg7tSjhUnhor6fkPxapZ8CezKup/neyZauptgkF/vARmTGWA1Kn0lF3+D4cF2Xma1oQSK6Q==
-X-Received: by 2002:a05:6830:1009:: with SMTP id a9mr3705422otp.312.1603893545799;
-        Wed, 28 Oct 2020 06:59:05 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id c20sm2031463otm.49.2020.10.28.06.59.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 06:59:05 -0700 (PDT)
-Subject: Re: [PATCH] net: cls_api: remove unneeded local variable in
- tc_dump_chain()
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-References: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <d956a5a5-c064-3fd4-5e78-809638ba14ef@redhat.com>
-Date:   Wed, 28 Oct 2020 06:59:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        bh=hhBCr/kNOv10l2PohOVnQJvYd1RPY4KWC4eptFHnJ5k=;
+        b=SljYjCIT21fnZDcm8/QoZdSt9sq9JMk7euSjl1IWXq3A/UriemBDoBT4Qk4JG1ipsTsuU5
+        HSYuAc4GeukwPDECdamzDERwkuidEDB2bs1fEjK+x2MrLXTooKdx5mQbVm5+f3iptriuZW
+        TQC/cSI/kiGtMSTCyb49wXliv3UYVHE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-AaNgwSGTM9OS7uJAJBCRaw-1; Wed, 28 Oct 2020 10:10:14 -0400
+X-MC-Unique: AaNgwSGTM9OS7uJAJBCRaw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F08371005513;
+        Wed, 28 Oct 2020 14:10:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EAFC360C11;
+        Wed, 28 Oct 2020 14:10:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 03/11] afs: Fix a use after free in afs_xattr_get_acl()
+From:   David Howells <dhowells@redhat.com>
+To:     linux-afs@lists.infradead.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 28 Oct 2020 14:10:11 +0000
+Message-ID: <160389421120.300137.10032530738711983051.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk>
+References: <160389418807.300137.8222864749005731859.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <20201028113533.26160-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-On 10/28/20 4:35 AM, Lukas Bulwahn wrote:
-> make clang-analyzer on x86_64 defconfig caught my attention with:
->
-> net/sched/cls_api.c:2964:3: warning: Value stored to 'parent' is never read
->   [clang-analyzer-deadcode.DeadStores]
->                 parent = 0;
->                 ^
->
-> net/sched/cls_api.c:2977:4: warning: Value stored to 'parent' is never read
->   [clang-analyzer-deadcode.DeadStores]
->                         parent = q->handle;
->                         ^
->
-> Commit 32a4f5ecd738 ("net: sched: introduce chain object to uapi")
-> introduced tc_dump_chain() and this initial implementation already
-> contained these unneeded dead stores.
->
-> Simplify the code to make clang-analyzer happy.
->
-> As compilers will detect these unneeded assignments and optimize this
-> anyway, the resulting binary is identical before and after this change.
->
-> No functional change. No change in object code.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on current master and next-20201028
->
-> Jamal, Cong, Jiri, please ack.
-> David, Jakub, please pick this minor non-urgent clean-up patch.
->
->  net/sched/cls_api.c | 16 +++-------------
->  1 file changed, 3 insertions(+), 13 deletions(-)
->
-> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-> index faeabff283a2..8ce830ca5f92 100644
-> --- a/net/sched/cls_api.c
-> +++ b/net/sched/cls_api.c
-> @@ -2940,7 +2940,6 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
->  	struct tcf_chain *chain;
->  	long index_start;
->  	long index;
-> -	u32 parent;
->  	int err;
->  
->  	if (nlmsg_len(cb->nlh) < sizeof(*tcm))
-> @@ -2955,13 +2954,6 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
->  		block = tcf_block_refcnt_get(net, tcm->tcm_block_index);
->  		if (!block)
->  			goto out;
-> -		/* If we work with block index, q is NULL and parent value
-> -		 * will never be used in the following code. The check
-> -		 * in tcf_fill_node prevents it. However, compiler does not
-> -		 * see that far, so set parent to zero to silence the warning
-> -		 * about parent being uninitialized.
-> -		 */
-> -		parent = 0;
->  	} else {
->  		const struct Qdisc_class_ops *cops;
->  		struct net_device *dev;
-> @@ -2971,13 +2963,11 @@ static int tc_dump_chain(struct sk_buff *skb, struct netlink_callback *cb)
->  		if (!dev)
->  			return skb->len;
->  
-> -		parent = tcm->tcm_parent;
-> -		if (!parent) {
-> +		if (!tcm->tcm_parent)
->  			q = dev->qdisc;
-> -			parent = q->handle;
+The "op" pointer is freed earlier when we call afs_put_operation().
 
-This looks like a an unused error handler.
+Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Colin Ian King <colin.king@canonical.com>
+---
 
-and the later call to
+ fs/afs/xattr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-if (TC_H_MIN(tcm->tcm_parent)
+diff --git a/fs/afs/xattr.c b/fs/afs/xattr.c
+index 84f3c4f57531..38884d6c57cd 100644
+--- a/fs/afs/xattr.c
++++ b/fs/afs/xattr.c
+@@ -85,7 +85,7 @@ static int afs_xattr_get_acl(const struct xattr_handler *handler,
+ 			if (acl->size <= size)
+ 				memcpy(buffer, acl->data, acl->size);
+ 			else
+-				op->error = -ERANGE;
++				ret = -ERANGE;
+ 		}
+ 	}
+ 
 
-maybe should be
-
-if (TC_H_MIN(parent))
-
-so I am skeptical that this change is ok because the code around it looks buggy.
-
-Tom
-
-> -		} else {
-> +		else
->  			q = qdisc_lookup(dev, TC_H_MAJ(tcm->tcm_parent));
-> -		}
-> +
->  		if (!q)
->  			goto out;
->  		cops = q->ops->cl_ops;
 
