@@ -2,138 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AF329D2E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472F029D508
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 22:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgJ1Vhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 17:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S1728638AbgJ1V43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 17:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726957AbgJ1VhZ (ORCPT
+        with ESMTP id S1728602AbgJ1V4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:37:25 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81DAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:37:24 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id k21so1048361ioa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:37:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V5xT/TVNJaEN5+iWNdQc+ZQaG4gZCPhnf9TiZ66aFMc=;
-        b=0OZ20SAJwtEwhFAnooWd+EM+C1BJreT+JGFVuEjQ2FCq6IlFnFpbweNlMOGweIeXcK
-         12yLw6FMBrlxkyh8o1mMPwHoKeLm3EYqcmUoL7xbnDf0uoSG10g8VTldzP0gz6ozUQm/
-         KlnnbelMs8PCigZE71PsI6YcNxRvvT+FNRPKHH3/eudfPlTkyrUkSVyi3rFOy1m2LfeB
-         AlhKZlqWkqSG2JcWdzDGNMs7NfXTXISfuvx5vSNtxzyxsxBdyDkZUH96usLP0R0rLXz9
-         77YEGwX97Svf8k7Ol4iZFBfmIwPfYWLNvr2w9LjUjddvJYP5UuU5ALYV7mzdtZY4340n
-         J9hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V5xT/TVNJaEN5+iWNdQc+ZQaG4gZCPhnf9TiZ66aFMc=;
-        b=OJ7dbaMv768QS/Oh/K7QkvLp4HBrDUVlFbt8tFaoCd2nGRWOnePQdUYDrv8BQpWZiO
-         1yV5tSMIMk47PV0D+5pjggNhkwYBKekPx98Iy6Ur+mlSebMBgOs+3keJCCHa/YVuHoTW
-         ag5HC1w1Mg3omie5aqo1jRIg83mWmkDyrf8Otz3PqtAOPRQreBNgWcNpsk3SXfLfLjP6
-         gJvAWLQGm5KEbkTfLPcsqQvYHQMCjj/zzIqbmg1Wh+tSYA6f+LYyee5MOyiFquSVFO+I
-         lR4jLGGERjbdchv3dqhf6ieFKM0ds2VMxExx2Qny6ZYZSum5R1NEU57hsJwNhP3iIlNx
-         MtoA==
-X-Gm-Message-State: AOAM532/Eowg9EhG+3qqOV+wRXnkOyQM6wnOMTJvvIetjPKmJglnQ/Es
-        Y3if01o6qMralmhP9Ewzc5w6zrIkVggcNg==
-X-Google-Smtp-Source: ABdhPJyxZGbwrFiWBMmAn2MSWLAucBtK1gUChIjQgOeuSgYz6/DriQVdARII6bLA0yu6RBPggRHgeA==
-X-Received: by 2002:a6b:db06:: with SMTP id t6mr6131111ioc.204.1603892193673;
-        Wed, 28 Oct 2020 06:36:33 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id g185sm2729808ilh.35.2020.10.28.06.36.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Oct 2020 06:36:33 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIXSBpby13cTogc2V0IHRhc2sgVEFTS19J?=
- =?UTF-8?Q?NTERRUPTIBLE_state_before_schedule=5ftimeout?=
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201027030911.16596-1-qiang.zhang@windriver.com>
- <bc138db4-4609-b8e6-717a-489cf2027fc0@kernel.dk>
- <BYAPR11MB2632A45DB4DA30E34D412528FF170@BYAPR11MB2632.namprd11.prod.outlook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <32a5ce10-bdbf-57fe-4318-ce53ad47f161@kernel.dk>
-Date:   Wed, 28 Oct 2020 07:36:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 28 Oct 2020 17:56:23 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF8C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 14:56:23 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0aab002bb6ddc5d07837c1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ab00:2bb6:ddc5:d078:37c1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 390491EC0494;
+        Wed, 28 Oct 2020 14:39:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603892358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=yVbuVYVOUKsblE/68+tpjrSrUjA614WzS6Qde3GZktc=;
+        b=CFx2SWS8+FYLt45SKJ6BjT2UQz0QS83pysRPhR9P5t8pIyaMk2sNel72AzUGWlrNry92rE
+        fF1WFZ7fNpWxO9JvTCHOkwuTC+w/e0rUHD/DW4g4O+U+SDcc06c9kooSD2ccdoL4pJdiju
+        e1bHJ/fEmg6Kl3baIlNPLgYdmRhoE6k=
+Date:   Wed, 28 Oct 2020 14:39:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/build: Fix vmlinux size check on 64-bit
+Message-ID: <20201028133909.GA27112@zn.tnic>
+References: <20201005151539.2214095-1-nivedita@alum.mit.edu>
+ <20201027200803.GL15580@zn.tnic>
+ <20201027211422.GC1833548@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <BYAPR11MB2632A45DB4DA30E34D412528FF170@BYAPR11MB2632.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=gbk
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201027211422.GC1833548@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/27/20 8:47 PM, Zhang, Qiang wrote:
-> 
-> 
-> ________________________________________
-> 发件人: Jens Axboe <axboe@kernel.dk>
-> 发送时间: 2020年10月27日 21:35
-> 收件人: Zhang, Qiang
-> 抄送: io-uring@vger.kernel.org; linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH] io-wq: set task TASK_INTERRUPTIBLE state before schedule_timeout
-> 
-> On 10/26/20 9:09 PM, qiang.zhang@windriver.com wrote:
->> From: Zqiang <qiang.zhang@windriver.com>
->>
->> In 'io_wqe_worker' thread, if the work which in 'wqe->work_list' be
->> finished, the 'wqe->work_list' is empty, and after that the
->> '__io_worker_idle' func return false, the task state is TASK_RUNNING,
->> need to be set TASK_INTERRUPTIBLE before call schedule_timeout func.
->>
->> I don't think that's safe - what if someone added work right before you
->> call schedule_timeout_interruptible? Something ala:
->>
->>
->> io_wq_enqueue()
->>                        set_current_state(TASK_INTERRUPTIBLE();
->>                        schedule_timeout(WORKER_IDLE_TIMEOUT);
->>
->> then we'll have work added and the task state set to running, but the
->> worker itself just sets us to non-running and will hence wait
->> WORKER_IDLE_TIMEOUT before the work is processed.
->>
->> The current situation will do one extra loop for this case, as the
->> schedule_timeout() just ends up being a nop and we go around again
-> 
-> although the worker task state is running,  due to the call
-> schedule_timeout, the current worker still possible to be switched
-> out. if set current worker task is no-running, the current worker be
-> switched out, but the schedule will call io_wq_worker_sleeping func
-> to wake up free worker task, if wqe->free_list is not empty.  
+On Tue, Oct 27, 2020 at 05:14:22PM -0400, Arvind Sankar wrote:
+> This is indeed just a small correctness fixlet, but I'm not following
+> the rest of your comments.
 
-It'll only be swapped out for TASK_RUNNING if we should be running other
-work, which would happen on next need-resched event anyway. And the miss
-you're describing is an expensive one, as it entails creating a new
-thread and switching to that. That's not a great way to handle a race.
+I'm just trying to make sense of that house of cards we have here.
 
-So I'm a bit puzzled here - yes we'll do an extra loop and check for the
-dropping of mm, but that's really minor. The solution is a _lot_ more
-expensive for hitting the race of needing a new worker, but missing it
-because you unconditionally set the task to non-running. On top of that,
-it's also not the idiomatic way to wait for events, which is typically:
+> PHYSICAL_START has an effect independent of the setting of
+> RELOCATABLE.
 
-is event true, break if so
-set_current_state(TASK_INTERRUPTIBLE);
-					event comes in, task set runnable
-check again, schedule
-doesn't schedule, since we were set runnable
+Theoretically you can set PHYSICAL_START to 0x0:
 
-or variants thereof, using waitqueues.
+config PHYSICAL_START
+        hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
+        default "0x1000000"
+        help
+          This gives the physical address where the kernel is loaded.
 
-So while I'm of course not opposed to fixing the io-wq loop so that we
-don't do that last loop when going idle, a) it basically doesn't matter,
-and b) the proposed solution is much worse. If there was a more elegant
-solution without worse side effects, then we can discuss that.
+          If kernel is a not relocatable (CONFIG_RELOCATABLE=n) then
+          bzImage will decompress itself to above physical address and
+          run from there.
+	  ^^^^^^^^^^^^^^
+
+and disable RELOCATABLE:
+
+CONFIG_PHYSICAL_START=0x0
+# CONFIG_RELOCATABLE is not set
+
+but then you hit this:
+
+ld: per-CPU data too large - increase CONFIG_PHYSICAL_START
+
+full output at the end of the mail.
+
+> It's where the kernel image starts in virtual address space, as shown
+> by the 16MiB difference between __START_KERNEL_map and _text in the
+> usual .config situation. In all configs, not just majority, the kernel
+> image itself starts at _text.
+
+Of course.
+
+> The 16MiB gap below _text is not actually mapped, but the important
+> point is that the way the initial construction of pagetables is
+> currently setup, the code cannot map anything above __START_KERNEL_map
+> + KERNEL_IMAGE_SIZE, so _end needs to be below that.
+
+Right.
+
+> If KASLR was disabled (either at build-time or run-time), these
+> link-time addresses are where the kernel actually lives (in VA space);
+> and if it was enabled, it will make sure to place the _end of the kernel
+> below KERNEL_IMAGE_SIZE when choosing a random virtual location.
+
+Yes.
+
+> That said, AFAICT, RELOCATABLE and PHYSICAL_START look like historical
+> artifacts at this point: RELOCATABLE should be completely irrelevant for
+> the 64-bit kernel, and there's really no reason to be able to configure
+> the start VA of the kernel, that should just be constant independent of
+> PHYSICAL_START.
+
+See the CONFIG_PHYSICAL_START help text. Apparently there has been a
+use case where one can set PHYSICAL_START to the region where a kdump
+kernel is going to be loaded and that kdump kernel is a vmlinux and not
+a bzImage and thus not relocatable.
+
+And I just produced a .config which doesn't work. I guess
+
+	"Don't change this unless you know what you are doing."
+
+is supposed to say that that value can't be just anything but that ain't
+good enough.
+
+Lemme try a different offset after reading this:
+
+	  Otherwise if you plan to use vmlinux
+          for capturing the crash dump change this value to start of
+          the reserved region.  In other words, it can be set based on
+          the "X" value as specified in the "crashkernel=YM@XM"
+
+Setting it to 256M works:
+
+$ readelf -a vmlinux | grep -E "\W(_end|_text)"
+ 95509: ffffffff90000000     0 NOTYPE  GLOBAL DEFAULT    1 _text
+ 97868: ffffffff9aa26000     0 NOTYPE  GLOBAL DEFAULT   30 _end
+
+Setting to 8M works too, it seems:
+
+$ readelf -a vmlinux | grep -E "\W(_end|_text)"
+ 95509: ffffffff80800000     0 NOTYPE  GLOBAL DEFAULT    1 _text
+ 97868: ffffffff8b226000     0 NOTYPE  GLOBAL DEFAULT   30 _end
+
+so I guess this should be a range > 0 specification but I guess not
+important.
+
+Going back to the question at hand, if you think about it, the kernel
+image *is* between _text or _stext and _end. And KERNEL_IMAGE_SIZE is
+exactly what it is - the size of the kernel image.
+
+Now, if you were talking about a kernel *mapping* size, then I'd
+understand but this check is for the kernel *image* size.
+
+But reading that commit message again:
+
+    these build-time and link-time checks would have prevented the
+    vmlinux size regression.
+
+this *is* talking about vmlinux size and that starts at _text...
+
+Thx.
+
+ld: per-CPU data too large - increase CONFIG_PHYSICAL_START
+init/main.o: in function `perf_trace_initcall_level':
+/home/boris/kernel/linux/./include/trace/events/initcall.h:10:(.text+0x147): relocation truncated to fit: R_X86_64_PC32 against symbol `this_cpu_off' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
+init/main.o: in function `perf_trace_initcall_start':
+/home/boris/kernel/linux/./include/trace/events/initcall.h:27:(.text+0x252): relocation truncated to fit: R_X86_64_PC32 against symbol `this_cpu_off' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
+init/main.o: in function `perf_trace_initcall_finish':
+/home/boris/kernel/linux/./include/trace/events/initcall.h:48:(.text+0x319): relocation truncated to fit: R_X86_64_PC32 against symbol `this_cpu_off' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
+init/main.o: in function `preempt_count':
+/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:26:(.text+0x823): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
+/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:26:(.text+0x84f): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
+init/main.o: in function `preempt_count_set':
+/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:34:(.text+0x88f): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
+/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:37:(.text+0x8a3): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
+init/main.o: in function `trace_initcall_start':
+/home/boris/kernel/linux/./include/trace/events/initcall.h:27:(.text+0x8e5): relocation truncated to fit: R_X86_64_PC32 against symbol `cpu_number' defined in .data..percpu..read_mostly section in arch/x86/kernel/setup_percpu.o
+init/main.o: in function `__preempt_count_add':
+/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:79:(.text+0x8fc): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
+init/main.o: in function `__preempt_count_dec_and_test':
+/home/boris/kernel/linux/./arch/x86/include/asm/preempt.h:94:(.text+0x91b): relocation truncated to fit: R_X86_64_PC32 against symbol `__preempt_count' defined in .data..percpu section in arch/x86/kernel/cpu/common.o
+init/main.o: in function `trace_initcall_finish':
+/home/boris/kernel/linux/./include/trace/events/initcall.h:48:(.text+0x932): additional relocation overflows omitted from the output
+make: *** [Makefile:1164: vmlinux] Error 1
+
 
 -- 
-Jens Axboe
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
