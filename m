@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2CF29D70D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D0E29D5D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732112AbgJ1WUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731742AbgJ1WRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:17:44 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47F50246B0;
-        Wed, 28 Oct 2020 10:15:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603880117;
-        bh=E57TRRP55Kk9vg5tur1KhYG5qx7b3ky4jZL+p+sXuoY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MrdU+GtBcZwjT+vZ+g8Hw6gZHvwWzT4GZ+SrmHeBOThKai89DQFRg3IRa6i/wLsbi
-         9oXfv2GsWan0iTEVWd6s8Uc7GCICsJ7Vb4CS+WAncE8FpLa9n0f9+F/iZgTmtEHQim
-         Sc2XD/nbGU1AmKMLAuCRjVRBJorO4jHJsQVP7IqU=
-Received: by mail-ed1-f44.google.com with SMTP id x1so4523300eds.1;
-        Wed, 28 Oct 2020 03:15:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532qAFPQWwXKiy51ycWtsZvHgS1ewyTUIiBpduGY/UUKlO4W5CHD
-        4gNHuMLG0UkgcDWsp0LIV8MrkxtUQkpcia5swfY=
-X-Google-Smtp-Source: ABdhPJz4yllQgyYZ8Tamki1QBJ8R6wNyadcvzqNfdvF4QwTASSCCiWTVEZ36r/fo7dWTUfe04TsIynmfdLIh/mOJ5uk=
-X-Received: by 2002:a05:6402:cf:: with SMTP id i15mr2651762edu.246.1603880115644;
- Wed, 28 Oct 2020 03:15:15 -0700 (PDT)
+        id S1730284AbgJ1WJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:09:15 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:41615 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730306AbgJ1WJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:09:11 -0400
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kXiUj-0002Qk-8m; Wed, 28 Oct 2020 11:15:53 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kXiUi-0000Xa-FY; Wed, 28 Oct 2020 11:15:52 +0100
+Date:   Wed, 28 Oct 2020 11:15:52 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>, linux-clk@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] clk: imx: gate2: Fix the is_enabled op
+Message-ID: <20201028101552.GA26805@pengutronix.de>
+References: <1603738248-8193-1-git-send-email-abel.vesa@nxp.com>
+ <20201028082412.GU26805@pengutronix.de>
+ <20201028095057.cuaxqqr4yzxvzwvp@fsr-ub1664-175>
 MIME-Version: 1.0
-References: <20201028091947.93097-1-krzk@kernel.org> <MWHPR11MB0046B799E9AD3648C6F67BFE87170@MWHPR11MB0046.namprd11.prod.outlook.com>
- <CAJKOXPePfsRNZkY+L1XM3_iz6dMYFNZAJgrcut9JriuwYkKWsw@mail.gmail.com>
- <CAJKOXPf6zhpu_3oQZ2bL_FnkBx7-NwH65N_OzVkH=Nh1bYkHxw@mail.gmail.com> <20201028100311.GF26150@paasikivi.fi.intel.com>
-In-Reply-To: <20201028100311.GF26150@paasikivi.fi.intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 28 Oct 2020 11:15:01 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
-Message-ID: <CAJKOXPcjtZidY1prH1ZCj+i-SM1mhABGbS_6_g1cH5WSGVhOAA@mail.gmail.com>
-Subject: Re: [PATCH] media: i2c: imx258: correct mode to GBGB/RGRG
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     "Yeh, Andy" <andy.yeh@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Jason Chen <jasonx.z.chen@intel.com>,
-        Alan Chiang <alanx.chiang@intel.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028095057.cuaxqqr4yzxvzwvp@fsr-ub1664-175>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:04:33 up 251 days, 17:35, 155 users,  load average: 0.06, 0.22,
+ 0.24
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Oct 2020 at 11:03, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
->
-> On Wed, Oct 28, 2020 at 10:56:55AM +0100, Krzysztof Kozlowski wrote:
-> > On Wed, 28 Oct 2020 at 10:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > >
-> > > On Wed, 28 Oct 2020 at 10:43, Yeh, Andy <andy.yeh@intel.com> wrote:
-> > > >
-> > > > But the sensor settings for the original submission is to output GRBG Bayer RAW.
-> > > >
-> > > > Regards, Andy
-> > >
-> > > No, not to my knowledge. There are no settings for color output
-> > > because it is fixed to GBGB/RGRG. I was looking a lot into this driver
-> > > (I have few other problems with it, already few other patches posted)
-> > > and I could not find a setting for this in datasheet. If you know the
-> > > setting for the other color - can you point me to it?
-> >
-> > And except the datasheet which mentions the specific format, the
-> > testing confirms it. With original color the pictures are pink/purple.
-> > With proper color, the pictures are correct (with more green color as
-> > expected for bayer).
->
-> Quoting the driver's start_streaming function:
->
->         /* Set Orientation be 180 degree */
->         ret = imx258_write_reg(imx258, REG_MIRROR_FLIP_CONTROL,
->                                IMX258_REG_VALUE_08BIT, REG_CONFIG_MIRROR_FLIP);
+On Wed, Oct 28, 2020 at 11:50:57AM +0200, Abel Vesa wrote:
+> On 20-10-28 09:24:12, Sascha Hauer wrote:
+> > Hi Abel,
+> > 
+> > On Mon, Oct 26, 2020 at 08:50:48PM +0200, Abel Vesa wrote:
+> > > The clock is considered to be enabled only if the controlling bits
+> > > match the cgr_val mask. Also make sure the is_enabled returns the
+> > > correct vaule by locking the access to the register.
+> > > 
+> > > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> > > Fixes: 1e54afe9fcfe ("clk: imx: gate2: Allow single bit gating clock")
+> > > ---
+> > >  drivers/clk/imx/clk-gate2.c | 60 ++++++++++++++++++++-------------------------
+> > >  drivers/clk/imx/clk.h       |  8 ++----
+> > >  2 files changed, 29 insertions(+), 39 deletions(-)
+> > > 
+> > > diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
+> > > index 7eed708..f320bd2b 100644
+> > > --- a/drivers/clk/imx/clk-gate2.c
+> > > +++ b/drivers/clk/imx/clk-gate2.c
+> > > @@ -37,10 +37,22 @@ struct clk_gate2 {
+> > >  
+> > >  #define to_clk_gate2(_hw) container_of(_hw, struct clk_gate2, hw)
+> > >  
+> > > +static void clk_gate2_do_shared_clks(struct clk_hw *hw, bool enable)
+> > > +{
+> > > +	struct clk_gate2 *gate = to_clk_gate2(hw);
+> > > +	u32 reg;
+> > > +
+> > > +	reg = readl(gate->reg);
+> > > +	if (enable)
+> > > +		reg |= gate->cgr_val << gate->bit_idx;
+> > > +	else
+> > > +		reg &= ~(gate->cgr_val << gate->bit_idx);
+> > 
+> > Shouldn't this be:
+> > 
+> > 	reg &= ~(3 << gate->bit_idx);
+> > 	if (enable)
+> > 		reg |= gate->cgr_val << gate->bit_idx;
+> > 
+> > At least that's how it was without this patch and that's how it makes
+> > sense to me with cgr_val != 3.
+> > 
+> 
+> Well, that's the actual problem. The value 3 forces all the clocks
+> that register with this clock type to have 2 bits for controlling the gate.
+> 
+> My patch (though now I think I should split it into 2 separate patches) allows
+> two HW gates to be controlled by as many bits necessary. For example, there
+> could be multiple HW gates that are controled by the same bit. By passing
+> the cgr_val when registering the clocks you can specify how many bits (as a mask)
+> control all those HW gates that share their control bits.
 
-I understand that you think it will replace the lines and columns and
-the first line will be RG, instead of GB.... or actually BG because it
-flips horizontal and vertical? So why does it not work?
+cgr_val is not a mask, it's a value that shall be written to the two
+bits to enable the clock. cgr_val could also be 0b10, see imx_clk_gate2_cgr().
 
-BTW, this nicely points that the comment around
-device_property_read_u32() for rotation is a little bit misleading :)
+Sascha
 
->         if (ret) {
->                 dev_err(&client->dev, "%s failed to set orientation\n",
->                         __func__);
->                 return ret;
->         }
->
-> Could it be you're taking pictures of pink objects? ;-)
-
-I can send a few sample pictures taken with GStreamer (RAW8, not
-original RAW10)...
-
-Best regards,
-Krzysztof
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
