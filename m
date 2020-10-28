@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9359A29D90E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A6129D8F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Oct 2020 23:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389483AbgJ1Wnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 18:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57934 "EHLO
+        id S2389028AbgJ1Wk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389471AbgJ1WnK (ORCPT
+        with ESMTP id S2388996AbgJ1WkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:43:10 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE403C0613CF;
-        Wed, 28 Oct 2020 15:43:09 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id i7so730627qti.6;
-        Wed, 28 Oct 2020 15:43:09 -0700 (PDT)
+        Wed, 28 Oct 2020 18:40:02 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB7DC0613CF;
+        Wed, 28 Oct 2020 15:40:02 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id k1so1115090ilc.10;
+        Wed, 28 Oct 2020 15:40:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NjGFPMz23GeVlRYE79yV94NhJ+KQ8xemp1yemHfgYCA=;
-        b=f9aolMCoETy+r8HT4s3ma4ObPD5sntGlOcNjtkyBnJfoWL4TIHpS47ar38wzs+Unn5
-         lmXlw3dDHAzsoGSvuqJ1e/1JEtBZ5dbzUSJc2w8ujNW4LnXiwLy1Ri9R0tHUuTFPX6j0
-         i5noJ3zdd8nHt82DrHtCzFdUW4GlYBJJs0LEA=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oVUnL5kaK/5rf5G4sA+8aqXRjWDzkxcWebk6ujgD/a4=;
+        b=lVdjvlJU8QJiTeX+orF6aiSQkRhcTKXek6pC70EbrVTGQRVobxa66NKgA+x8PuyWhl
+         7i51fj9jrqvaY/A+Nq0rUmnagneca6PbrtahlzFwb1oX10Zz7IjDcEYKtKToagfhiKk9
+         nZYsz2oDRR8+cBnaHrBk995yn3o0KthFHODqWTmVZ6oWZhh+SQZ4CT3/Y1NgEd4eXJXB
+         gY3c+gl2Vp7G1ttS7UXUC9LZiUcWKZ1DBUNf101rzl3vzIm+8SqZwU7esW5mvCcpLYqt
+         dlT8aMX4y+r5CvAXeK8QUrg+XWtPiCnylPhhDe6fWShg+SNW0py2hw4zCtU6xpbDOxIC
+         3g2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NjGFPMz23GeVlRYE79yV94NhJ+KQ8xemp1yemHfgYCA=;
-        b=DAh8zS+yRAhTaeIEF7yp3W+yD0dm7YrOO7BBVCmY8fXp/Tk7w2KOPAfNp4xgK9Xzd6
-         nRecNmbao5IPnqaTiiF2SkWSXuQ3r4yfbr58OFC+hYKxehCgWo+yq1c5AFHFy4l7kfab
-         dlpmTTW4j7rJwk4rbOuYLE7b+wuWs6t6hmoZxzFhEcvmwCEBYqgi77+quS7Jib7BK++4
-         CNb8FEOHPlI8MRWE8NPJITYOUncSZsRFTvVSiQANveUxtlxjThks7QyhoCCCvTPGqI+e
-         3b/Ih+Vwvi+9OvU3ONIK9/m8EVVFQ38xEKPfKrMb4fAEZmS1/NSr+decLK0YfaW+JcJq
-         eP1Q==
-X-Gm-Message-State: AOAM5307is6P9gipmvDqMcpwN7eJ6AgnAfixm5LnslXyX4j4S9l+dF1i
-        ena53E6VTr5JBVm++gMkLx3lXYqmut90+kuFTP33Qrh0k3ZT4Q==
-X-Google-Smtp-Source: ABdhPJzh4xRpIRTmAWBzbR+sxgmkiQthr+b6gtWBimSB7/2L7ZAZVIQHzhpOjgAFO4+k9KA9abyW8Ww0SFRootb7al4=
-X-Received: by 2002:ac8:5854:: with SMTP id h20mr5549863qth.176.1603862939691;
- Tue, 27 Oct 2020 22:28:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oVUnL5kaK/5rf5G4sA+8aqXRjWDzkxcWebk6ujgD/a4=;
+        b=mtaiSImGLciSd83KvlcutPj+voqrFnYh+zrjWKkRdMNNCZLc1mNu7JEYDNzPw4Bq70
+         PRwEq69bpqqgRCwgjWPau2fEn6zs9/WdbAUPa1s0N+Po8dQTFyKJkg1ugWDo+CQzYULO
+         TopjwXhxd89dkHFiuIlsaYv7Pl9xx1AMcZZG1Oh7quJ58RyJkLeBQj/9f2Dqtq4tjLUp
+         B67EqrJmpjdW7/MXJZX2KzTjEc96Z95ID/spMyo7xVfxZ3vv2ML6PVaW5bMXyC/3i1l1
+         wxioueo6Gn8izIuGUgo8eoVxQoXFpNXrS9+MWEz1RO5mndBkQ10/1+q342uSTIHfqYV5
+         /yng==
+X-Gm-Message-State: AOAM530AX6aiKK870p1kanAxwAOvEqccANLP4B5AzaGq58uIxglDK4jp
+        nEsdu657w4UnRXZIya+lG/5Je9ow8nFy
+X-Google-Smtp-Source: ABdhPJwEfZ3S8cf5PNLPqQJlTMzx7UgTYspNtvNwe66BtBr0YbnEEqapRdlrd4oUtTF14CnlZ5pGnw==
+X-Received: by 2002:a63:9d4d:: with SMTP id i74mr4838250pgd.182.1603863047104;
+        Tue, 27 Oct 2020 22:30:47 -0700 (PDT)
+Received: from PWN (n11212042025.netvigator.com. [112.120.42.25])
+        by smtp.gmail.com with ESMTPSA id q8sm4300935pfg.118.2020.10.27.22.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 22:30:46 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 01:30:34 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] fbcon: Avoid hard-coding built-in font charcount
+Message-ID: <20201028053034.GA1205431@PWN>
+References: <cover.1603788511.git.yepeilin.cs@gmail.com>
+ <cb5bb49a33ff54fef41e719ee9d301a6a73c5f9c.1603788512.git.yepeilin.cs@gmail.com>
+ <54f7d42e07eca2a2f13669575a9de88023ebc1ac.1603788512.git.yepeilin.cs@gmail.com>
+ <6c28279a10dbe7a7e5ac3e3a8dd7c67f8d63a9f2.1603788512.git.yepeilin.cs@gmail.com>
+ <a3b1b3cdc160fb9aef389c366f387fb27f0aef38.1603788512.git.yepeilin.cs@gmail.com>
+ <20201027191353.GO401619@phenom.ffwll.local>
 MIME-Version: 1.0
-References: <20201027123722.2935-1-aladyshev22@gmail.com> <20201027123722.2935-3-aladyshev22@gmail.com>
-In-Reply-To: <20201027123722.2935-3-aladyshev22@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 28 Oct 2020 05:28:47 +0000
-Message-ID: <CACPK8XdDZTYuOb-0QvpStAO0iZH+Si4t2f3sNjPjmPwLrGMc5g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ARM: dts: aspeed: amd-ethanolx: Enable devices for
- the iKVM functionality
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027191353.GO401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 at 12:41, Konstantin Aladyshev
-<aladyshev22@gmail.com> wrote:
->
-> Enable the USB 2.0 Virtual Hub Controller and
-> the Video Engine with it's reserved memory region for the implementation
-> of the iKVM functionality in the BMC.
->
-> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+On Tue, Oct 27, 2020 at 08:13:53PM +0100, Daniel Vetter wrote:
+> On Tue, Oct 27, 2020 at 12:37:29PM -0400, Peilin Ye wrote:
+> > fbcon_startup() and fbcon_init() are hard-coding the number of characters
+> > of our built-in fonts as 256. Recently, we included that information in
+> > our kernel font descriptor `struct font_desc`, so use `font->charcount`
+> > instead of a hard-coded value.
+> > 
+> > This patch depends on patch "Fonts: Add charcount field to font_desc".
+> > 
+> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> 
+> So I think this is correct, but it also doesn't do a hole lot yet. fbcon.c
+> still has tons of hard-coded 256 all over, and if (p->userfont).
+> 
+> I think if we instead set vc->vc_font.charcount both in fbcon_init and in
+> fbcon_do_set_font (probably just replace the userfont parameter with
+> font_charcount for now), then we could replace these all with
+> vc->vc_font.charcount. And the code would already improve quite a bit I
+> think.
+> 
+> With just this change here I think we have even more inconsistency, since
+> for built-in fonts vc->vc_font.charcount is now set correctly, but for
+> userfonts we need to instead look at FNTCHARCNT(vc->vc_font.data).
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+You are right, let's remove FNTCHARCNT() altogether. fbcon_do_set_font()
+still needs a userfont parameter for refcount handling, I'll just add a
+charcount parameter to it.
 
-> ---
->  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> index 2a86bda8afd8..b93ed44eba0c 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> @@ -13,6 +13,21 @@
->         memory@80000000 {
->                 reg = <0x80000000 0x20000000>;
->         };
-> +
-> +       reserved-memory {
-> +               #address-cells = <1>;
-> +               #size-cells = <1>;
-> +               ranges;
-> +
-> +               video_engine_memory: jpegbuffer {
-> +                       size = <0x02000000>;    /* 32M */
-> +                       alignment = <0x01000000>;
-> +                       compatible = "shared-dma-pool";
-> +                       reusable;
-> +               };
-> +       };
-> +
-> +
->         aliases {
->                 serial0 = &uart1;
->                 serial4 = &uart5;
-> @@ -220,5 +235,12 @@
->         };
->  };
->
-> +&video {
-> +       status = "okay";
-> +       memory-region = <&video_engine_memory>;
-> +};
->
-> +&vhub {
-> +       status = "okay";
-> +};
->
-> --
-> 2.17.1
->
+Peilin
+
