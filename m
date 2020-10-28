@@ -2,93 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF1E29E070
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E549E29E055
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Oct 2020 02:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732856AbgJ2BWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 28 Oct 2020 21:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729634AbgJ1WEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:04:55 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F831C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:04:55 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id p10so1066341ile.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Oct 2020 15:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tKIGBxSmn3rugAetd5KJVZleOctBFQ6YAeyg0+yYtzE=;
-        b=hLp75HXJoi1yVHo2at7snNjLCNnkf4+5rvP+rOIxyDFecNu+TcGWs7XcvBLLyeiVWS
-         ObEdXXZwd+pRAPOf0hAobEAQBun9Ep55XE0GPdpGMg/JnvKjKFuSl5XUk4GybIBi69Jv
-         QjhQG1Lnnywc4X/29FZnymNiTtNLhbEYaDAo4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tKIGBxSmn3rugAetd5KJVZleOctBFQ6YAeyg0+yYtzE=;
-        b=jSOSiGDq/gL2t4vokY2R90PC0PKlgxL5On8WIzE3UhpySbe9MVGgIsm4Aa9Fmfsw+l
-         LFdK4tAwsl6LX0sx7c1wT+19ToOexcxuVhluhEHYKTf586hebKAeZhVbeNt/9YCLoLJ5
-         C52TaNz0lskW084isCfeWBQdAhOcmH5U6sUs3g0eT0nuR99jVnr47aUZrV+QFGu8L4bp
-         E10lytwVFANjDjy0ZHLMZ3nrXb1p45qYePokAWsGlhqy7zsvaLSwYV4siSgpNDeVhYP9
-         RMvq/iM/0TJ4JMWfnkZVV3atgjbBRS6/Sut59iPQ9JMLR5UkwnVlEU58gICOdViDQ0le
-         7nWw==
-X-Gm-Message-State: AOAM530EH7u1X4EJkeKdx5JYvdPHNTtBSn5oe6SJNC5xCMWApNQKH/SP
-        LWl6tnMg+uFjnUka6NkTOTrX8xJ858xk0Q==
-X-Google-Smtp-Source: ABdhPJzPnmAOHD666ZXlTSGi73YgwNi4o3QFVIcpQxGvEhWNHg5HlgamAoVC/hiqM0BDPWMv48r4qg==
-X-Received: by 2002:a63:6c09:: with SMTP id h9mr953122pgc.214.1603915897192;
-        Wed, 28 Oct 2020 13:11:37 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id n6sm222409pjj.34.2020.10.28.13.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 13:11:36 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 13:11:35 -0700
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH 6/7] platform/chrome: cros_ec_typec: Parse partner PD ID
- VDOs
-Message-ID: <20201028201135.GA3913249@google.com>
-References: <20201021205317.708008-1-pmalani@chromium.org>
- <20201021205317.708008-7-pmalani@chromium.org>
- <20201028131633.GA2026875@kuha.fi.intel.com>
+        id S1729788AbgJ1WFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:38780 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729499AbgJ1WCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 013FD1C00;
+        Wed, 28 Oct 2020 13:44:21 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25A343F66E;
+        Wed, 28 Oct 2020 13:44:19 -0700 (PDT)
+Date:   Wed, 28 Oct 2020 20:44:17 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Etienne Carriere <etienne.carriere@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>, lukasz.luba@arm.com,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan.Cameron@huawei.com, broonie@kernel.org,
+        Rob Herring <robh@kernel.org>, satyakim@qti.qualcomm.com,
+        f.fainelli@gmail.com, Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Subject: Re: [PATCH v3 1/4] firmware: arm_scmi: Add Voltage Domain Support
+Message-ID: <20201028204416.GF20482@e120937-lin>
+References: <20201026203148.47416-1-cristian.marussi@arm.com>
+ <20201026203148.47416-2-cristian.marussi@arm.com>
+ <CAN5uoS8gOwA4-fttH1=XdKWZWFzX3HXpHAqgHW=jKxAxEq6C1Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028131633.GA2026875@kuha.fi.intel.com>
+In-Reply-To: <CAN5uoS8gOwA4-fttH1=XdKWZWFzX3HXpHAqgHW=jKxAxEq6C1Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
-
-Thanks a lot for reviewing the patch!
-
-On Wed, Oct 28, 2020 at 03:16:33PM +0200, Heikki Krogerus wrote:
-> > +
-> > +	/* Copy the remaining identity VDOs till a maximum of 6. */
-> > +	for (i = 3; i < sop_disc->identity_count && i < VDO_MAX_OBJECTS; i++)
-> > +		port->p_identity.vdo[i - 3] = sop_disc->discovery_vdo[i];
+On Wed, Oct 28, 2020 at 03:29:57PM +0100, Etienne Carriere wrote:
+> Hi Cristian,
 > 
-> Why do you need to put the product type VDOs in reverse order?
+> Some remaining minor comments see below.
+> FYI I've successfully tested this series (the 4 patches).
+> 
 
-The Chrome EC returns all the Identity VDOs as an array of 6 VDOs (the
-discovery_vdo[] array). The first three entries are assigned to the
-pd_identity.{id_header,cert_stat,product} members.
+Hi
 
-This for loop assigns the next three discovery_vdo entries (i.e indices
-3-5) to pd_identity.vdo[0-2] respectively.
+Thanks a lot !
 
-The "i-3" is because discovery_vdo[3] corresponds to pd_identity.vdo[0]
-and so on.
+Replies inline down below.
 
-Does that help to clarify the for loop?
+[snip]
+> > +struct scmi_msg_cmd_config_set {
+> > +       __le32 domain_id;
+> > +       __le32 config;
+> > +};
+> > +
+> > +struct scmi_msg_cmd_level_set {
+> > +       __le32 domain_id;
+> > +       __le32 flags;
+> > +       __le32 voltage_level;
+> > +};
+> > +
+> > +struct voltage_info {
+> > +       u32 version;
+> > +       u16 num_domains;
+> 
+> Could be an unsigned int.
+> 
 
-Best regards,
+I tend to use fixed size types matching the protocols messages sizing on
+the internal while exposing non-fixed size types in scmi_protocol.h like
+in scmi_voltage_info, but these indeed are values exposed directly to
+the user afterwards. Any other reason to prefer non-fixed size here ?
 
-Prashant
+> > +       struct scmi_voltage_info **domains;
+> > +};
+> > +
+> > +static int scmi_protocol_attributes_get(const struct scmi_handle *handle,
+> > +                                       struct voltage_info *vinfo)
+> > +{
+> > +       int ret;
+> > +       struct scmi_xfer *t;
+> > +       struct scmi_msg_resp_protocol_attributes *resp;
+> > +
+> > +       ret = scmi_xfer_get_init(handle, PROTOCOL_ATTRIBUTES,
+> > +                                SCMI_PROTOCOL_VOLTAGE, 0, sizeof(*resp), &t);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       resp = t->rx.buf;
+> > +       ret = scmi_do_xfer(handle, t);
+> > +       if (!ret)
+> > +               vinfo->num_domains =
+> > +                       NUM_VOLTAGE_DOMAINS(le32_to_cpu(resp->attr));
+> > +
+> > +       scmi_xfer_put(handle, t);
+> > +       return ret;
+> > +}
+> > +
+> > +static inline int scmi_init_voltage_levels(struct device *dev,
+> 
+> Should remove this inline attribute.
+> 
+
+Ah right, I removed one and left this. I'll do.
+
+> > +                                          struct scmi_voltage_info *v,
+> > +                                          u32 flags, u32 num_returned,
+> > +                                          u32 num_remaining)
+
+[snip]
+
+> > +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_VOLTAGE, voltage)
+> > diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+> > index 9cd312a1ff92..181fdebc2793 100644
+> > --- a/include/linux/scmi_protocol.h
+> > +++ b/include/linux/scmi_protocol.h
+> > @@ -209,6 +209,64 @@ struct scmi_reset_ops {
+> >         int (*deassert)(const struct scmi_handle *handle, u32 domain);
+> >  };
+> >
+> > +/**
+> > + * struct scmi_voltage_info - describe one available SCMI Voltage Domain
+> > + *
+> > + * @id: the domain ID as advertised by the platform
+> > + * @segmented: defines the layout of the entries of array @levels_uv.
+> > + *            - when True the entries are to be interpreted as triplets,
+> > + *              each defining a segment representing a range of equally
+> > + *              space voltages: <lowest_volts>, <highest_volt>, <step_uV>
+> > + *            - when False the entries simply represent a single discrete
+> > + *              supported voltage level
+> > + * @negative_volts_allowed: True if any of the entries of @levels_uv represent
+> > + *                         a negative voltage.
+> > + * @attributes: represents Voltage Domain advertised attributes
+> > + * @name: name assigned to the Voltage Domain by platform
+> > + * @num_levels: number of total entries in @levels_uv.
+> > + * @levels_uv: array of entries describing the available voltage levels for
+> > + *            this domain.
+> > + */
+> > +struct scmi_voltage_info {
+> > +       unsigned int id;
+> > +       bool segmented;
+> > +#define SCMI_VOLTAGE_SEGMENT_LOW       0
+> > +#define SCMI_VOLTAGE_SEGMENT_HIGH      1
+> > +#define SCMI_VOLTAGE_SEGMENT_STEP      2
+> 
+> Maybe move these macros before 'int *level_us;' as these are indices
+> in that array.
+> 
+
+Right, I'll do.
+
+Thanks
+
+Cristian
+
+> > +       bool negative_volts_allowed;
+> > +       unsigned int attributes;
+> > +       char name[SCMI_MAX_STR_SIZE];
+> > +       unsigned int num_levels;
+> > +       int *levels_uv;
+> > +};
+> > +
+> > +/**
+> > + * struct scmi_voltage_ops - represents the various operations provided
+> > + * by SCMI Voltage Protocol
+> > + *
+> > + * @num_domains_get: get the count of voltage domains provided by SCMI
+> > + * @info_get: get the information of the specified domain
+> > + * @config_set: set the config for the specified domain
+> > + * @config_get: get the config of the specified domain
+> > + * @level_set: set the voltage level for the specified domain
+> > + * @level_get: get the voltage level of the specified domain
+> > + */
+> > +struct scmi_voltage_ops {
+> > +       int (*num_domains_get)(const struct scmi_handle *handle);
+> > +       const struct scmi_voltage_info __must_check *(*info_get)
+> > +               (const struct scmi_handle *handle, u32 domain_id);
+> > +       int (*config_set)(const struct scmi_handle *handle, u32 domain_id,
+> > +                         u32 config);
+> > +#define        SCMI_VOLTAGE_ARCH_STATE_OFF             0x0
+> > +#define        SCMI_VOLTAGE_ARCH_STATE_ON              0x7
+> > +       int (*config_get)(const struct scmi_handle *handle, u32 domain_id,
+> > +                         u32 *config);
+> > +       int (*level_set)(const struct scmi_handle *handle, u32 domain_id,
+> > +                        u32 flags, s32 volt_uV);
+> > +       int (*level_get)(const struct scmi_handle *handle, u32 domain_id,
+> > +                        s32 *volt_uV);
+> > +};
+> > +
+> >  /**
+> >   * struct scmi_notify_ops  - represents notifications' operations provided by
+> >   * SCMI core
+> > @@ -262,6 +320,7 @@ struct scmi_notify_ops {
+> >   * @clk_ops: pointer to set of clock protocol operations
+> >   * @sensor_ops: pointer to set of sensor protocol operations
+> >   * @reset_ops: pointer to set of reset protocol operations
+> > + * @voltage_ops: pointer to set of voltage protocol operations
+> >   * @notify_ops: pointer to set of notifications related operations
+> >   * @perf_priv: pointer to private data structure specific to performance
+> >   *     protocol(for internal use only)
+> > @@ -273,6 +332,8 @@ struct scmi_notify_ops {
+> >   *     protocol(for internal use only)
+> >   * @reset_priv: pointer to private data structure specific to reset
+> >   *     protocol(for internal use only)
+> > + * @voltage_priv: pointer to private data structure specific to voltage
+> > + *     protocol(for internal use only)
+> >   * @notify_priv: pointer to private data structure specific to notifications
+> >   *     (for internal use only)
+> >   */
+> > @@ -284,6 +345,7 @@ struct scmi_handle {
+> >         const struct scmi_power_ops *power_ops;
+> >         const struct scmi_sensor_ops *sensor_ops;
+> >         const struct scmi_reset_ops *reset_ops;
+> > +       const struct scmi_voltage_ops *voltage_ops;
+> >         const struct scmi_notify_ops *notify_ops;
+> >         /* for protocol internal use */
+> >         void *perf_priv;
+> > @@ -291,6 +353,7 @@ struct scmi_handle {
+> >         void *power_priv;
+> >         void *sensor_priv;
+> >         void *reset_priv;
+> > +       void *voltage_priv;
+> >         void *notify_priv;
+> >         void *system_priv;
+> >  };
+> > @@ -303,6 +366,7 @@ enum scmi_std_protocol {
+> >         SCMI_PROTOCOL_CLOCK = 0x14,
+> >         SCMI_PROTOCOL_SENSOR = 0x15,
+> >         SCMI_PROTOCOL_RESET = 0x16,
+> > +       SCMI_PROTOCOL_VOLTAGE = 0x17,
+> >  };
+> >
+> >  enum scmi_system_events {
+> > --
+> > 2.17.1
+> >
